@@ -24,11 +24,15 @@ import {
   lazyLoadLottiePlayer,
   linkImage,
   toClassName,
+  getLanguage,
 } from '../../scripts/scripts.js';
 
 import { Masonry } from '../shared/masonry.js';
 
 import { buildCarousel } from '../shared/carousel.js';
+
+import { fetchTemplates, isValidTemplate} from './template-search-api-v3.js';
+import renderTemplate from './template-rendering.js';
 
 function wordStartsWithVowels(word) {
   return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
@@ -38,6 +42,28 @@ function camelize(str) {
   return str.replace(/^\w|[A-Z]|\b\w/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase())).replace(/\s+/g, '');
 }
 
+async function fetchAndRenderTemplates(props) {
+  const [placeholders, response] = await Promise.all([fetchPlaceholders(), fetchTemplates(props)]);
+  if (!response || !response.items || !Array.isArray(response.items)) {
+    return null;
+  }
+
+  if ('_links' in response) {
+    // eslint-disable-next-line no-underscore-dangle
+    const nextQuery = response._links.next.href;
+    const starts = new URLSearchParams(nextQuery).get('start').split(',');
+    props.start = starts.join(',');
+  } else {
+    props.start = '';
+  }
+
+  props.total = response.metadata.totalHits;
+
+  return response.items
+    .filter((item) => isValidTemplate(item))
+    .map((template) => renderTemplate(template, placeholders, props));
+}
+
 async function processContentRow(block, props) {
   const placeholders = await fetchPlaceholders();
 
@@ -45,6 +71,7 @@ async function processContentRow(block, props) {
   templateTitle.innerHTML = props.contentRow.outerHTML;
 
   const aTags = templateTitle.querySelectorAll(':scope a');
+
   if (aTags.length > 0) {
     templateTitle.classList.add('with-link');
     aTags.forEach((aTag) => {
@@ -60,40 +87,45 @@ async function processContentRow(block, props) {
 
   if (props.orientation.toLowerCase() === 'horizontal') templateTitle.classList.add('horizontal');
 
-  if (block.classList.contains('collaboration')) {
-    const titleHeading = props.contentRow.querySelector('h3');
-    const anchorLink = createTag('a', {
-      class: 'collaboration-anchor',
-      href: `${document.URL.replace(/#.*$/, '')}#${titleHeading.id}`,
-    });
-    const clipboardTag = createTag('span', { class: 'clipboard-tag' });
-    clipboardTag.textContent = placeholders['tag-copied'];
-
-    anchorLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      navigator.clipboard.writeText(anchorLink.href);
-      anchorLink.classList.add('copied');
-      setTimeout(() => {
-        anchorLink.classList.remove('copied');
-      }, 2000);
-    });
-
-    anchorLink.append(clipboardTag);
-    titleHeading.append(anchorLink);
-  }
+  // todo: build collaboration and holiday variants
+  // if (block.classList.contains('collaboration')) {
+  //   const titleHeading = props.contentRow.querySelector('h3');
+  //   const anchorLink = createTag('a', {
+  //     class: 'collaboration-anchor',
+  //     href: `${document.URL.replace(/#.*$/, '')}#${titleHeading.id}`,
+  //   });
+  //   const clipboardTag = createTag('span', { class: 'clipboard-tag' });
+  //   clipboardTag.textContent = placeholders['tag-copied'];
+  //
+  //   anchorLink.addEventListener('click', (e) => {
+  //     e.preventDefault();
+  //     navigator.clipboard.writeText(anchorLink.href);
+  //     anchorLink.classList.add('copied');
+  //     setTimeout(() => {
+  //       anchorLink.classList.remove('copied');
+  //     }, 2000);
+  //   });
+  //
+  //   anchorLink.append(clipboardTag);
+  //   titleHeading.append(anchorLink);
+  // }
 }
 
 function constructProps(block) {
   const props = {
     templates: [],
     filters: {
-      locales: '(en)',
+      locales: 'en',
+    },
+    renditionParams: {
+      format: 'jpg',
+      size: 151,
     },
     tailButton: '',
     limit: 70,
     total: 0,
     start: '',
-    sort: '-_score,-remixCount',
+    sort: 'Most Viewed',
     masonry: undefined,
     headingTitle: null,
     headingSlug: null,
@@ -107,9 +139,12 @@ function constructProps(block) {
       [props.contentRow] = cols;
     } else if (cols.length === 2) {
       const value = cols[1].textContent.trim();
+
       if (key && value) {
         if (['tasks', 'topics', 'locales'].includes(key) || (['premium', 'animated'].includes(key) && value.toLowerCase() !== 'all')) {
           props.filters[camelize(key)] = value;
+        } else if (['yes', 'true', 'on', 'no', 'false', 'off'].includes(value.toLowerCase())) {
+          props[camelize(key)] = ['yes', 'true', 'on'].includes(value.toLowerCase());
         } else {
           props[camelize(key)] = value;
         }
@@ -137,7 +172,7 @@ function constructProps(block) {
 }
 
 function populateTemplates(block, props, templates) {
-  for (let tmplt of templates) {
+  for (const tmplt of templates) {
     const isPlaceholder = tmplt.querySelector(':scope > div:first-of-type > img[src*=".svg"], :scope > div:first-of-type > svg');
     const linkContainer = tmplt.querySelector(':scope > div:nth-of-type(2)');
     const rowWithLinkInFirstCol = tmplt.querySelector(':scope > div:first-of-type > a');
@@ -146,21 +181,24 @@ function populateTemplates(block, props, templates) {
     if (innerWrapper && linkContainer) {
       const link = linkContainer.querySelector(':scope a');
       if (link) {
-        const aTag = createTag('a', {
-          href: link.href ? addSearchQueryToHref(link.href) : '#',
-        });
+        // const aTag = createTag('a', {
+        //   href: link.href ? addSearchQueryToHref(link.href) : '#',
+        // });
 
-        aTag.append(...tmplt.children);
-        tmplt.remove();
-        tmplt = aTag;
-        innerWrapper.append(aTag);
+        // aTag.append(...tmplt.children);
+        // tmplt.remove();
+        // tmplt = aTag;
+        // innerWrapper.append(aTag);
+        innerWrapper.append(tmplt);
 
-        // convert A to SPAN
-        const newLink = createTag('span', { class: 'template-link' });
-        newLink.append(link.textContent.trim());
+        if (isPlaceholder) {
+          // convert A to SPAN
+          const newLink = createTag('span', { class: 'template-link' });
+          newLink.append(link.textContent.trim());
 
-        linkContainer.innerHTML = '';
-        linkContainer.append(newLink);
+          linkContainer.innerHTML = '';
+          linkContainer.append(newLink);
+        }
       }
     }
 
@@ -214,43 +252,6 @@ function populateTemplates(block, props, templates) {
     }
     tmplt.classList.add('template');
 
-    // wrap "linked images" with link
-    const imgLink = tmplt.querySelector(':scope > div:first-of-type a');
-    if (imgLink) {
-      const parent = imgLink.closest('div');
-      if (!imgLink.href.includes('.mp4')) {
-        linkImage(parent);
-      } else {
-        let videoLink = imgLink.href;
-        if (videoLink.includes('/media_')) {
-          videoLink = `./media_${videoLink.split('/media_')[1]}`;
-        }
-        tmplt.querySelectorAll(':scope br').forEach(($br) => $br.remove());
-        const picture = tmplt.querySelector('picture');
-        if (picture) {
-          const img = tmplt.querySelector('img');
-          const video = createTag('video', {
-            playsinline: '',
-            autoplay: '',
-            loop: '',
-            muted: '',
-            poster: img.getAttribute('src'),
-            title: img.getAttribute('alt'),
-          });
-          video.append(createTag('source', {
-            src: videoLink,
-            type: 'video/mp4',
-          }));
-          parent.replaceChild(video, picture);
-          imgLink.remove();
-          video.addEventListener('canplay', () => {
-            video.muted = true;
-            video.play();
-          });
-        }
-      }
-    }
-
     if (isPlaceholder) {
       tmplt.classList.add('placeholder');
     }
@@ -265,161 +266,8 @@ function updateLoadMoreButton(block, props, loadMore) {
   }
 }
 
-function formatFilterString(filters) {
-  // FIXME: check how filters can be formed, how it's handling or and and
-  const {
-    // eslint-disable-next-line no-unused-vars
-    animated, locales, premium, tasks, topics,
-  } = filters;
-  let str = '';
-  if (premium === 'false') {
-    str += '&filters=licensingCategory==free';
-  }
-  if (animated && animated !== '()') {
-    str += `&filters=animated==${animated}`;
-  }
-  if (tasks && tasks !== '()') {
-    str += `&filters=tasks==[${tasks}]`;
-  }
-  // FIXME: check if q is for topics now
-  if (topics && topics !== '()') {
-    str += `&q=${topics}`;
-  }
-  if (locales !== '()') {
-    str += `&filters=language==${locales.split('OR').map((l) => getLanguage(l))}`;
-  }
-
-  return str;
-}
-
-const fetchSearchUrl = async ({ limit, start, filters }) => {
-  // FIXME: orderBy fields are now different.
-  const base = 'https://spark-search.adobe.io/v3/content';
-  const collectionId = 'urn:aaid:sc:VA6C2:25a82757-01de-4dd9-b0ee-bde51dd3b418';
-  const queryType = 'search';
-  const filterStr = formatFilterString(filters);
-  const startParam = start ? `&start=${start}` : '';
-  const url = encodeURI(`${base}?collectionId=${collectionId}&queryType=${queryType}&limit=${limit}${startParam}${filterStr}`);
-
-  return fetch(url, {
-    headers: {
-      'x-api-key': 'projectx_webapp',
-    },
-  }).then((response) => response.json());
-};
-
-async function fetchTemplates(props) {
-  const result = await fetchSearchUrl(props);
-
-  if (result?.metadata?.totalHits > 0) {
-    return result;
-  } else {
-    // save fetch if search query returned 0 templates. "Bad result is better than no result"
-    return fetchSearchUrl({ ...props, filters: {} });
-  }
-}
-
-async function processApiResponse(props) {
-  const placeholders = await fetchPlaceholders();
-  const response = await fetchTemplates(props);
-  let templateFetched;
-  if (response) {
-    // eslint-disable-next-line no-underscore-dangle
-    templateFetched = response.items;
-
-    if ('_links' in response) {
-      // eslint-disable-next-line no-underscore-dangle
-      const nextQuery = response._links.next.href;
-      const starts = new URLSearchParams(nextQuery).get('start').split(',');
-      props.start = starts.join(',');
-    } else {
-      props.start = '';
-    }
-
-    props.total = response.metadata.totalHits;
-  }
-
-  const renditionParams = {
-    format: 'jpg',
-    size: 400,
-  };
-
-  if (!templateFetched) {
-    return null;
-  }
-
-  return templateFetched.map((template) => {
-    const tmpltEl = createTag('div');
-    const btnElWrapper = createTag('div', { class: 'button-container' });
-    const btnEl = createTag('a', {
-      href: template.customLinks.branchUrl,
-      title: placeholders['edit-this-template'] ?? 'Edit this template',
-      class: 'button accent',
-    });
-    const picElWrapper = createTag('div');
-    const videoWrapper = createTag('div');
-
-    // eslint-disable-next-line no-underscore-dangle
-    const imageHref = template._links['http://ns.adobe.com/adobecloud/rel/rendition'].href
-      .replace('{&page,size,type,fragment}',
-        `&size=${renditionParams.size}&type=image/jpg&fragment=id=${template.pages[0].rendition.image.thumbnail.componentId}`);
-
-    if (template.pages[0].rendition?.video) {
-      // eslint-disable-next-line no-underscore-dangle
-      const videoHref = template._links['http://ns.adobe.com/adobecloud/rel/component'].href
-        .replace('{&revision,component_id}',
-          `&revision=0&component_id=${template.pages[0].rendition.video.thumbnail.componentId}`);
-      const video = createTag('video', {
-        loop: true,
-        muted: true,
-        playsinline: '',
-        poster: imageHref,
-        title: template.title['i-default'],
-        preload: 'metadata',
-      });
-      video.append(createTag('source', {
-        src: videoHref,
-        type: 'video/mp4',
-      }));
-      // TODO: another approach: show an image, only insert the video node when hover
-      btnElWrapper.addEventListener('mouseenter', () => {
-        // video.src = videoHref;
-        video.muted = true;
-        video.play().catch((e) => {
-          if (e instanceof DOMException && e.name === 'AbortError') {
-            // ignore
-          }
-        });
-      });
-      btnElWrapper.addEventListener('mouseleave', () => {
-        // console.log('reloading');
-        // video.load();
-        // console.log('removing src');
-        // video.src = ''; // need to reset video.src=videoHref
-        // console.log('pausing and set time=0');
-        video.pause();
-        video.currentTime = 0;
-      });
-      videoWrapper.insertAdjacentElement('beforeend', video);
-      tmpltEl.insertAdjacentElement('beforeend', videoWrapper);
-    } else {
-      const picEl = createTag('img', {
-        src: imageHref,
-        alt: template.title['i-default'],
-      });
-      picElWrapper.insertAdjacentElement('beforeend', picEl);
-      tmpltEl.insertAdjacentElement('beforeend', picElWrapper);
-    }
-
-    btnEl.textContent = placeholders['edit-this-template'] ?? 'Edit this template';
-    btnElWrapper.insertAdjacentElement('beforeend', btnEl);
-    tmpltEl.insertAdjacentElement('beforeend', btnElWrapper);
-    return tmpltEl;
-  });
-}
-
 async function decorateNewTemplates(block, props, options = { reDrawMasonry: false }) {
-  const newTemplates = await processApiResponse(props);
+  const newTemplates = await fetchAndRenderTemplates(props);
   const loadMore = block.parentElement.querySelector('.load-more');
 
   props.templates = props.templates.concat(newTemplates);
@@ -466,8 +314,10 @@ async function decorateLoadMoreButton(block, props) {
 
 async function insertTemplateStats(props) {
   const locale = getLocale(window.location);
-
+  const lang = getLanguage(getLocale(window.location));
+  const templateCount = lang === 'es-ES' ? props.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : props.total.toLocaleString(lang);
   const heading = props.contentRow.textContent;
+  const camelHeading = heading === 'Adobe Express' ? heading : heading.charAt(0).toLowerCase() + heading.slice(1);
   if (!heading) return null;
 
   const placeholders = await fetchPlaceholders();
@@ -475,7 +325,7 @@ async function insertTemplateStats(props) {
   let grammarTemplate = props.templateStats || placeholders['template-placeholder'];
 
   if (grammarTemplate.indexOf('{{quantity}}') >= 0) {
-    grammarTemplate = grammarTemplate.replace('{{quantity}}', props.total.toLocaleString('en-US'));
+    grammarTemplate = grammarTemplate.replace('{{quantity}}', templateCount);
   }
 
   if (grammarTemplate.indexOf('{{Type}}') >= 0) {
@@ -483,7 +333,7 @@ async function insertTemplateStats(props) {
   }
 
   if (grammarTemplate.indexOf('{{type}}') >= 0) {
-    grammarTemplate = grammarTemplate.replace('{{type}}', heading.charAt(0).toLowerCase() + heading.slice(1));
+    grammarTemplate = grammarTemplate.replace('{{type}}', camelHeading);
   }
 
   if (locale === 'fr') {
@@ -498,21 +348,6 @@ async function insertTemplateStats(props) {
   }
 
   return grammarTemplate;
-}
-
-async function generateToolBar(block, props) {
-  const sectionHeading = createTag('h2');
-  const tBarWrapper = createTag('div', { class: 'toolbar-wrapper' });
-  const tBar = createTag('div', { class: 'api-templates-toolbar' });
-  const contentWrapper = createTag('div', { class: 'wrapper-content-search' });
-  const functionsWrapper = createTag('div', { class: 'wrapper-functions' });
-
-  sectionHeading.textContent = await insertTemplateStats(props);
-
-  block.prepend(tBarWrapper);
-  tBarWrapper.append(tBar);
-  tBar.append(contentWrapper, functionsWrapper);
-  contentWrapper.append(sectionHeading);
 }
 
 async function fetchBlueprint(pathname) {
@@ -1144,10 +979,11 @@ function getPlaceholderWidth(block) {
   return width;
 }
 
-function toggleMasonryView(block, props, button, toggleButtons) {
-  const $templatesToView = block.querySelectorAll('.template:not(.placeholder)');
+async function toggleMasonryView(block, props, button, toggleButtons) {
+  const templatesToView = block.querySelectorAll('.template:not(.placeholder)');
   const blockWrapper = block.closest('.template-x-wrapper');
-  if (!button.classList.contains('active') && $templatesToView.length > 0) {
+
+  if (!button.classList.contains('active') && templatesToView.length > 0) {
     toggleButtons.forEach((b) => {
       if (b !== button) {
         b.classList.remove('active');
@@ -1190,12 +1026,11 @@ function toggleMasonryView(block, props, button, toggleButtons) {
 
 function initViewToggle(block, props, toolBar) {
   const toggleButtons = toolBar.querySelectorAll('.view-toggle-button ');
+  block.classList.add('sm-view');
+  block.parentElement.classList.add('sm-view');
+  toggleButtons[0].classList.add('active');
 
-  toggleButtons.forEach((button, index) => {
-    if (index === 0) {
-      toggleMasonryView(block, props, button, toggleButtons);
-    }
-
+  toggleButtons.forEach((button) => {
     button.addEventListener('click', () => {
       toggleMasonryView(block, props, button, toggleButtons);
     }, { passive: true });
@@ -1215,12 +1050,20 @@ function initToolbarShadow(block, toolbar) {
 
 async function decorateToolbar(block, props) {
   const placeholders = await fetchPlaceholders();
-  const toolBar = block.querySelector('.api-templates-toolbar');
+  const sectionHeading = createTag('h2');
+  const tBarWrapper = createTag('div', { class: 'toolbar-wrapper' });
+  const tBar = createTag('div', { class: 'api-templates-toolbar' });
+  const contentWrapper = createTag('div', { class: 'wrapper-content-search' });
+  const functionsWrapper = createTag('div', { class: 'wrapper-functions' });
 
-  if (toolBar) {
-    const toolBarFirstWrapper = toolBar.querySelector('.wrapper-content-search');
-    const functionsWrapper = toolBar.querySelector('.wrapper-functions');
+  sectionHeading.textContent = await insertTemplateStats(props);
 
+  block.prepend(tBarWrapper);
+  tBarWrapper.append(tBar);
+  tBar.append(contentWrapper, functionsWrapper);
+  contentWrapper.append(sectionHeading);
+
+  if (tBar) {
     const viewsWrapper = createTag('div', { class: 'views' });
 
     const smView = createTag('a', { class: 'view-toggle-button small-view', 'data-view': 'sm' });
@@ -1236,12 +1079,54 @@ async function decorateToolbar(block, props) {
     viewsWrapper.append(smView, mdView, lgView);
     functionsWrapper.append(viewsWrapper, functions.desktop);
 
-    toolBar.append(toolBarFirstWrapper, functionsWrapper, functions.mobile);
+    tBar.append(contentWrapper, functionsWrapper, functions.mobile);
 
-    initDrawer(block, props, toolBar);
-    initFilterSort(block, props, toolBar);
-    initViewToggle(block, props, toolBar);
-    initToolbarShadow(block, toolBar);
+    initDrawer(block, props, tBar);
+    initFilterSort(block, props, tBar);
+    initViewToggle(block, props, tBar);
+    initToolbarShadow(block, tBar);
+  }
+}
+
+function updateURLParameter(url, param, paramVal) {
+  let newAdditionalURL = '';
+  let tempArray = url.split('?');
+  const baseURL = tempArray[0];
+  const additionalURL = tempArray[1];
+  let temp = '';
+  if (additionalURL) {
+    tempArray = additionalURL.split('&');
+    for (let i = 0; i < tempArray.length; i += 1) {
+      if (tempArray[i].split('=')[0] !== param) {
+        newAdditionalURL += temp + tempArray[i];
+        temp = '&';
+      }
+    }
+  }
+
+  const rowText = `${temp}${param}=${paramVal}`;
+  return `${baseURL}?${newAdditionalURL}${rowText}`;
+}
+
+function loadBetterAssetsInBackground(block, props) {
+  props.renditionParams.size = 400;
+  const existingTemplates = block.querySelectorAll('.template:not(.placeholder)');
+  if (existingTemplates.length > 0) {
+    existingTemplates.forEach((tmplt) => {
+      const img = tmplt.querySelector('div:first-of-type > img');
+      if (img && img.src) {
+        const updateImgRes = () => {
+          const imgParams = new URLSearchParams(img.src);
+          if (imgParams.get('size') !== '400') {
+            img.src = updateURLParameter(img.src, 'size', 400);
+          } else {
+            img.removeEventListener('load', updateImgRes);
+          }
+        };
+
+        img.addEventListener('load', updateImgRes);
+      }
+    });
   }
 }
 
@@ -1385,7 +1270,7 @@ async function buildTemplateList(block, props, type = []) {
     await processContentRow(block, props);
   }
 
-  const templates = await processApiResponse(props);
+  const templates = await fetchAndRenderTemplates(props);
   if (templates) {
     const blockInnerWrapper = createTag('div', { class: 'template-x-inner-wrapper' });
     block.append(blockInnerWrapper);
@@ -1393,10 +1278,6 @@ async function buildTemplateList(block, props, type = []) {
     props.templates.forEach((template) => {
       blockInnerWrapper.append(template);
     });
-  }
-
-  if (props.toolBar) {
-    await generateToolBar(block, props);
   }
 
   await decorateTemplates(block, props);
