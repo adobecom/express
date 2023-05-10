@@ -35,7 +35,7 @@ export class Masonry {
 
   // set up fresh grid if necessary
   setupColumns() {
-    const block = this.wrapper.classList.contains('template-list') ? this.wrapper : this.wrapper.parentElement;
+    const block = this.wrapper.parentElement;
     let result = 1;
     let colWidth = 264;
     if (block.classList.contains('sixcols')) {
@@ -75,11 +75,12 @@ export class Masonry {
       if (block.classList.contains('sm-view')) {
         colWidth = 120;
       }
-      if (block.classList.contains('md-view')) {
+
+      if (this.wrapper.classList.contains('md-view')) {
         colWidth = 172;
       }
 
-      if (block.classList.contains('lg-view')) {
+      if (this.wrapper.classList.contains('lg-view')) {
         colWidth = 340;
       }
     }
@@ -272,8 +273,6 @@ export class Masonry {
     if (workList.length > 0) {
       // draw rest
       this.draw(workList);
-    } else if (this.wrapper.classList.contains('template-list')) {
-      this.wrapper.classList.add('template-list-complete');
     } else {
       this.wrapper.parentElement.classList.add('template-x-complete');
     }

@@ -376,14 +376,13 @@ export function getIconElement(icons, size, alt, additionalClassName) {
   return ($div.firstElementChild);
 }
 
-export function transformLinkToAnimation($a, $videoLooping = 'yes') {
+export function transformLinkToAnimation($a) {
   if (!$a || !$a.href.endsWith('.mp4')) {
     return null;
   }
   const params = new URL($a.href).searchParams;
   const attribs = {};
-  let dataAttr = ($videoLooping && $videoLooping === 'yes') ? ['playsinline', 'autoplay', 'loop', 'muted'] : ['playsinline', 'autoplay', 'muted'];
-  dataAttr.forEach((p) => {
+  ['playsinline', 'autoplay', 'loop', 'muted'].forEach((p) => {
     if (params.get(p) !== 'false') attribs[p] = '';
   });
   // use closest picture as poster
@@ -1532,6 +1531,12 @@ async function decorateTesting() {
   try {
     // let reason = '';
     const usp = new URLSearchParams(window.location.search);
+    const martech = usp.get('martech');
+    if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
+      // eslint-disable-next-line no-console
+      console.log('rushing martech');
+      loadScript('/express/scripts/instrument.js', null, 'module');
+    }
 
     const experiment = getExperiment();
     const [forcedExperiment, forcedVariant] = usp.get('experiment') ? usp.get('experiment').split('/') : [];
@@ -1539,8 +1544,12 @@ async function decorateTesting() {
     if (experiment) {
       console.log('experiment', experiment);
       const config = await getExperimentConfig(experiment);
-      console.log('config -->', config);
-      if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
+      if (!config) {
+        console.error('config is null');
+        return;
+      }
+      console.log(config);
+      if (toCamelCase(config.status) === 'active' || forcedExperiment) {
         config.run = forcedExperiment || checkExperimentAudience(toClassName(config.audience));
         console.log('run', config.run, config.audience);
 
@@ -1590,12 +1599,6 @@ async function decorateTesting() {
           }
         }
       }
-    }
-    const martech = usp.get('martech');
-    if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
-      // eslint-disable-next-line no-console
-      console.log('rushing martech');
-      loadScript('/express/scripts/instrument.js', null, 'module');
     }
   } catch (e) {
     console.log('error testing', e);
@@ -1732,60 +1735,40 @@ export async function fetchPlainBlockFromFragment(url, blockName) {
 export async function fetchFloatingCta(path) {
   const env = getHelixEnv();
   const dev = new URLSearchParams(window.location.search).get('dev');
-  const { experiment } = window.hlx;
-  const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
-  let spreadsheet;
-  let floatingBtnData;
-
-  async function fetchFloatingBtnData(sheet) {
-    if (!window.floatingCta) {
-      try {
-        const locale = getLocale(window.location);
-        const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-        const resp = await fetch(`${urlPrefix}${sheet}`);
-        window.floatingCta = resp.ok ? (await resp.json()).data : [];
-      } catch {
-        const resp = await fetch(sheet);
-        window.floatingCta = resp.ok ? (await resp.json()).data : [];
-      }
-    }
-
-    if (window.floatingCta.length) {
-      const candidates = window.floatingCta.filter((p) => {
-        const urlToMatch = p.path.includes('*') ? convertGlobToRe(p.path) : p.path;
-        if (experiment && path !== 'default') {
-          return (path === p.path || path.match(urlToMatch))
-            && p.expID === experiment.run
-            && p.challengerID === experiment.selectedVariant;
-        } else {
-          return path === p.path || path.match(urlToMatch);
-        }
-      }).sort((a, b) => b.path.length - a.path.length);
-
-      if (env && env.name === 'stage') {
-        return candidates[0] || null;
-      }
-
-      return candidates[0] && candidates[0].live !== 'N' ? candidates[0] : null;
-    }
-    return null;
-  }
+  let sheet;
 
   if (['yes', 'true', 'on'].includes(dev) && env && env.name === 'stage') {
-    spreadsheet = '/express/floating-cta-dev.json?limit=10000';
+    sheet = '/express/floating-cta-dev.json?limit=10000';
   } else {
-    spreadsheet = '/express/floating-cta.json?limit=10000';
+    sheet = '/express/floating-cta.json?limit=10000';
   }
 
-  if (experimentStatus === 'active') {
-    const expSheet = '/express/experiments/floating-cta-experiments.json?limit=10000';
-    floatingBtnData = await fetchFloatingBtnData(expSheet);
+  if (!window.floatingCta) {
+    try {
+      const locale = getLocale(window.location);
+      const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+      const resp = await fetch(`${urlPrefix}${sheet}`);
+      window.floatingCta = resp.ok ? (await resp.json()).data : [];
+    } catch {
+      const resp = await fetch(sheet);
+      window.floatingCta = resp.ok ? (await resp.json()).data : [];
+    }
   }
 
-  if (!floatingBtnData) {
-    floatingBtnData = await fetchFloatingBtnData(spreadsheet);
+  if (window.floatingCta.length) {
+    const candidates = window.floatingCta.filter((p) => {
+      const urlToMatch = p.path.includes('*') ? convertGlobToRe(p.path) : p.path;
+      return path === p.path || path.match(urlToMatch);
+    }).sort((a, b) => b.path.length - a.path.length);
+
+    if (env && env.name === 'stage') {
+      return candidates[0] || null;
+    }
+
+    return candidates[0] && candidates[0].live !== 'N' ? candidates[0] : null;
   }
-  return floatingBtnData;
+
+  return null;
 }
 
 async function buildAutoBlocks($main) {
@@ -1843,18 +1826,24 @@ async function buildAutoBlocks($main) {
   if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) || ['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
     if (!window.floatingCtasLoaded) {
       const floatingCTAData = await fetchFloatingCta(window.location.pathname);
+      const defaultButton = await fetchFloatingCta('default');
       let desktopButton;
       let mobileButton;
 
       if (floatingCTAData) {
         const buttonTypes = {
-          desktop: floatingCTAData.desktop,
-          mobile: floatingCTAData.mobile,
+          desktop: floatingCTAData.desktop || defaultButton.desktop,
+          mobile: floatingCTAData.mobile || defaultButton.mobile,
         };
 
         desktopButton = buildBlock(buttonTypes.desktop, 'desktop');
         mobileButton = buildBlock(buttonTypes.mobile, 'mobile');
+      } else if (defaultButton) {
+        desktopButton = buildBlock(defaultButton.desktop, 'desktop');
+        mobileButton = buildBlock(defaultButton.mobile, 'mobile');
+      }
 
+      if (floatingCTAData || defaultButton) {
         [desktopButton, mobileButton].forEach((button) => {
           button.classList.add('spreadsheet-powered');
           if ($lastDiv) {
@@ -1904,8 +1893,7 @@ function splitSections($main) {
 function setTheme() {
   let theme = getMeta('theme');
   if (!theme && (window.location.pathname.startsWith('/express')
-    || window.location.pathname.startsWith('/education') 
-    || window.location.pathname.startsWith('/drafts'))) {
+  || window.location.pathname.startsWith('/education'))) {
     // mega nav, suppress brand header
     theme = 'no-brand-header';
   }
@@ -2118,7 +2106,7 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
  * @param {Element} main The main element
  */
 function decoratePictures(main) {
-  main.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
+  main.querySelectorAll('img[src*="/media_"').forEach((img, i) => {
     const newPicture = createOptimizedPicture(img.src, img.alt, !i);
     const picture = img.closest('picture');
     if (picture) picture.parentElement.replaceChild(newPicture, picture);
@@ -2339,7 +2327,7 @@ async function loadEager() {
     displayOldLinkWarning();
     wordBreakJapanese();
 
-    const lcpBlocks = ['columns', 'hero-animation', 'hero-3d', 'template-list', 'template-x', 'floating-button', 'fullscreen-marquee', 'collapsible-card'];
+    const lcpBlocks = ['columns', 'hero-animation', 'hero-3d', 'template-list', 'floating-button', 'fullscreen-marquee', 'collapsible-card'];
     const block = document.querySelector('.block');
     const hasLCPBlock = (block && lcpBlocks.includes(block.getAttribute('data-block-name')));
     if (hasLCPBlock) await loadBlock(block, true);
@@ -2572,41 +2560,10 @@ function registerPerformanceLogger() {
   }
 }
 
-function getPlacement(btn) {
-  const parentBlock = btn.closest('.block');
-  let placement = 'outside-blocks';
-
-  if (parentBlock) {
-    const blockName = parentBlock.dataset.blockName || parentBlock.classList[0];
-    const sameBlocks = btn.closest('main')?.querySelectorAll(`.${blockName}`);
-
-    if (sameBlocks && sameBlocks.length > 1) {
-      sameBlocks.forEach((b, i) => {
-        if (b === parentBlock) {
-          placement = `${blockName}-${i + 1}`;
-        }
-      });
-    } else {
-      placement = blockName;
-    }
-
-    if (['template-list', 'template-x'].includes(blockName) && btn.classList.contains('placeholder')) {
-      placement = 'blank-template-cta';
-    }
-  }
-
-  return placement;
-}
-
-export async function trackBranchParameters($links) {
-  const placeholders = await fetchPlaceholders();
+export function trackBranchParameters($links) {
   const rootUrl = new URL(window.location.href);
   const rootUrlParameters = rootUrl.searchParams;
 
-  const { experiment } = window.hlx;
-  const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
-  const templateSearchTag = getMetadata('short-title');
-  const pageUrl = window.location.pathname;
   const sdid = rootUrlParameters.get('sdid');
   const mv = rootUrlParameters.get('mv');
   const sKwcId = rootUrlParameters.get('s_kwcid');
@@ -2615,73 +2572,51 @@ export async function trackBranchParameters($links) {
   const trackingId = rootUrlParameters.get('trackingid');
   const cgen = rootUrlParameters.get('cgen');
 
-  $links.forEach(($a) => {
-    if ($a.href && $a.href.match('adobesparkpost.app.link')) {
-      const btnUrl = new URL($a.href);
-      const urlParams = btnUrl.searchParams;
-      const placement = getPlacement($a);
+  if (sdid || mv || sKwcId || efId || promoId || trackingId || cgen) {
+    $links.forEach(($a) => {
+      if ($a.href && $a.href.match('adobesparkpost.app.link')) {
+        const buttonUrl = new URL($a.href);
+        const urlParams = buttonUrl.searchParams;
 
-      if (templateSearchTag
-        && placeholders['search-branch-links']
-        && placeholders['search-branch-links']
-          .replace(/\s/g, '')
-          .split(',')
-          .includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
-        urlParams.set('search', templateSearchTag);
-      }
-
-      if (pageUrl) {
-        urlParams.set('url', pageUrl);
-      }
-
-      if (sdid) {
-        urlParams.set('sdid', sdid);
-      }
-
-      if (mv) {
-        urlParams.set('mv', mv);
-      }
-
-      if (efId) {
-        urlParams.set('efid', efId);
-      }
-
-      if (sKwcId) {
-        const sKwcIdParameters = sKwcId.split('!');
-
-        if (typeof sKwcIdParameters[2] !== 'undefined' && sKwcIdParameters[2] === '3') {
-          urlParams.set('customer_placement', 'Google%20AdWords');
+        if (sdid) {
+          urlParams.set('~campaign_id', sdid);
         }
 
-        if (typeof sKwcIdParameters[8] !== 'undefined' && sKwcIdParameters[8] !== '') {
-          urlParams.set('keyword', sKwcIdParameters[8]);
+        if (mv) {
+          urlParams.set('~customer_campaign', mv);
         }
-      }
 
-      if (promoId) {
-        urlParams.set('promoid', promoId);
-      }
+        if (sKwcId) {
+          const sKwcIdParameters = sKwcId.split('!');
 
-      if (trackingId) {
-        urlParams.set('keywordid', trackingId);
-      }
+          if (typeof sKwcIdParameters[2] !== 'undefined' && sKwcIdParameters[2] === '3') {
+            urlParams.set('~customer_placement', 'Google%20AdWords');
+          }
 
-      if (cgen) {
-        urlParams.set('cgen', cgen);
-      }
+          if (typeof sKwcIdParameters[8] !== 'undefined' && sKwcIdParameters[8] !== '') {
+            urlParams.set('~keyword', sKwcIdParameters[8]);
+          }
+        }
 
-      if (experimentStatus === 'active') {
-        urlParams.set('expid', `${experiment.id}-${experiment.selectedVariant}`);
-      }
+        if (promoId) {
+          urlParams.set('~ad_id', promoId);
+        }
 
-      if (placement) {
-        urlParams.set('ctaid', placement);
-      }
+        if (trackingId) {
+          urlParams.set('~keyword_id', trackingId);
+        }
 
-      btnUrl.search = urlParams.toString();
-      $a.href = btnUrl.toString();
-    }
-  });
+        if (cgen) {
+          urlParams.set('~customer_keyword', cgen);
+        }
+
+        urlParams.set('~feature', 'paid%20advertising');
+
+        buttonUrl.search = urlParams.toString();
+        $a.href = buttonUrl.toString();
+      }
+    });
+  }
 }
 
 if (window.name.includes('performance')) registerPerformanceLogger();

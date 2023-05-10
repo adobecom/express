@@ -9,19 +9,18 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+class Context {
+  constructor() {
+    this.stores = {};
+  }
 
-import {
-  createTag,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+  set(name, value) {
+    this.stores[name] = value;
+  }
 
-export default function decorate($block) {
-  const $close = createTag('button', {
-    class: 'close',
-    'aria-label': 'close',
-  });
-  $block.appendChild($close);
-  $close.addEventListener('click', () => {
-    $block.remove();
-  });
+  get(name) {
+    return this.stores[name];
+  }
 }
+
+export default new Context();

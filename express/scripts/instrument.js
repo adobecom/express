@@ -22,7 +22,8 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from './scripts.js';
 
-import BlockMediator from './block-mediator.js';
+// eslint-disable-next-line import/no-unresolved
+import Context from './context.js';
 
 // this saves on file size when this file gets minified...
 const w = window;
@@ -767,10 +768,10 @@ loadScript(martechURL, () => {
     trackBranchParameters($links);
 
     // for tracking all of the links
-    d.addEventListener('click', (event) => {
-      if (event.target.tagName === 'A') {
-        trackButtonClick(event.target);
-      }
+    $links.forEach(($a) => {
+      $a.addEventListener('click', () => {
+        trackButtonClick($a);
+      });
     });
 
     // for tracking the faq
@@ -976,8 +977,7 @@ loadScript(martechURL, () => {
     }
 
     // Tracking any link or links that is added after page loaded.
-    document.addEventListener('linkspopulated', async (e) => {
-      await trackBranchParameters(e.detail);
+    document.addEventListener('linkspopulated', (e) => {
       e.detail.forEach(($link) => {
         $link.addEventListener('click', () => {
           trackButtonClick($link);
@@ -1188,16 +1188,16 @@ loadScript(martechURL, () => {
     [24793488, 'enableReverseVideoRating'],
   ];
 
-  BlockMediator.set('audiences', []);
-  BlockMediator.set('segments', []);
+  Context.set('audiences', []);
+  Context.set('segments', []);
 
   function getAudiences() {
     const getSegments = (ecid) => {
       if (ecid) {
         w.setAudienceManagerSegments = (json) => {
           if (json && json.segments && json.segments.includes(RETURNING_VISITOR_SEGMENT_ID)) {
-            const audiences = BlockMediator.get('audiences');
-            const segments = BlockMediator.get('segments');
+            const audiences = Context.get('audiences');
+            const segments = Context.get('segments');
             audiences.push(ENABLE_PRICING_MODAL_AUDIENCE);
             segments.push(RETURNING_VISITOR_SEGMENT_ID);
 
@@ -1247,8 +1247,8 @@ loadScript(martechURL, () => {
 
           QUICK_ACTION_SEGMENTS.forEach((QUICK_ACTION_SEGMENT) => {
             if (json && json.segments && json.segments.includes(QUICK_ACTION_SEGMENT[0])) {
-              const audiences = BlockMediator.get('audiences');
-              const segments = BlockMediator.get('segments');
+              const audiences = Context.get('audiences');
+              const segments = Context.get('segments');
               audiences.push(QUICK_ACTION_SEGMENT[1]);
               segments.push(QUICK_ACTION_SEGMENT[0]);
             }
