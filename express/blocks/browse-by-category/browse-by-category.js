@@ -84,4 +84,13 @@ export default async function decorate($block) {
   decorateHeading($block, payload);
   decorateCategories($block, payload);
   buildCarousel('.browse-by-category-card', $block, false);
-}
+
+  if($block.classList.contains('fullwidth')) {
+    const $blockWrapper = $block.parentNode;
+    const $blockWrapperClass = $blockWrapper.className;
+
+    if($blockWrapperClass.includes('browse-by-category')) {
+      $blockWrapper.classList.add('fullwidth');
+    }
+  }
+};
