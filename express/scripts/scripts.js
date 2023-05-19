@@ -2329,6 +2329,11 @@ async function loadEager() {
     await import('./templates.js');
   }
 
+  if (window.location.href.includes('/express/colors/')) {
+    console.log('got here');
+    await import('./colors.js');
+  }
+
   if (main) {
     await decorateMain(main);
     decorateHeaderAndFooter();

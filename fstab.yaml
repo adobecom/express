@@ -3,7 +3,6 @@ mountpoints:
     url: https://adobe.sharepoint.com/:f:/r/sites/adobecom/Express/website
 
 folders:
-  /express/templates/content.json: /metadata.json
   /express/templates/: /express/templates/default
   /br/express/templates/: /express/templates/default
   /cn/express/templates/: /express/templates/default
@@ -34,4 +33,18 @@ folders:
   /no/express/templates/search: /express/templates/search
   /se/express/templates/search: /express/templates/search
   /tw/express/templates/search: /express/templates/search
-
+  /express/colors/: /express/colors/default
+  /br/express/colors/: /express/colors/default
+  /cn/express/colors/: /express/colors/default
+  /de/express/colors/: /express/colors/default
+  /dk/express/colors/: /express/colors/default
+  /es/express/colors/: /express/colors/default
+  /fi/express/colors/: /express/colors/default
+  /fr/express/colors/: /express/colors/default
+  /it/express/colors/: /express/colors/default
+  /jp/express/colors/: /express/colors/default
+  /kr/express/colors/: /express/colors/default
+  /nl/express/colors/: /express/colors/default
+  /no/express/colors/: /express/colors/default
+  /se/express/colors/: /express/colors/default
+  /tw/express/colors/: /express/colors/default
