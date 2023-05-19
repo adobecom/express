@@ -87,9 +87,8 @@ export default async function decorate(block) {
 
   if(block.classList.contains('fullwidth')) {
     const blockWrapper = block.parentNode;
-    const blockWrapperClass = blockWrapper.className;
 
-    if(blockWrapperClass.includes('browse-by-category')) {
+    if(blockWrapper && blockWrapper.classList.contains('browse-by-category-wrapper')) {
       blockWrapper.classList.add('fullwidth');
     }
   }
