@@ -178,6 +178,7 @@ function constructProps(block) {
       const value = cols[1].textContent.trim();
 
       if (key && value) {
+        // FIXME: facebook-post
         if (['tasks', 'topics', 'locales'].includes(key) || (['premium', 'animated'].includes(key) && value.toLowerCase() !== 'all')) {
           props.filters[camelize(key)] = value;
         } else if (['yes', 'true', 'on', 'no', 'false', 'off'].includes(value.toLowerCase())) {
@@ -1215,7 +1216,9 @@ async function decorateTemplates(block, props) {
 
 async function appendCategoryTemplatesCount(block, props) {
   const categories = block.querySelectorAll('ul.category-list > li');
+  // FIXME: props already contain start: 70 at this time
   const tempProps = JSON.parse(JSON.stringify(props));
+  tempProps.limit = 0;
   const lang = getLanguage(getLocale(window.location));
 
   for (const li of categories) {
