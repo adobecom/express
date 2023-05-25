@@ -153,11 +153,13 @@ main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-content {
 }
 
 main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-content {
-  height: 90%;
+  max-width: 90%;
+  max-height: 90%;
 }
 
 main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-content img {
-  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frame .fullscreen-marquee-desktop-app {
