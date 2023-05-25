@@ -79,6 +79,8 @@ main .template-x.fullwidth.holiday .template-x-inner-wrapper {
 
 main .template-x.fullwidth.holiday .expanded.template-x-inner-wrapper {
     max-height: 300px;
+    margin-left: 56px;
+    margin-left: 56px;
 }
 
 main .template-x.fullwidth.holiday .animation-background {
@@ -151,8 +153,11 @@ main .template-x-wrapper .template-title {
     margin: 0 12px 20px 12px;
 }
 
-main .template-x.horizontal .template-title {
-    margin-bottom: 0;
+main > .template-x-container .template-x-wrapper.horizontal > .template-x.horizontal > .template-title {
+    margin: 0;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0 30px 0 30px;
 }
 
 main .template-x-container .template-x-wrapper:not(:has(.toolbar-wrapper)) {
@@ -2005,7 +2010,7 @@ main .template-x-wrapper.horizontal {
 
 /* re-add max-width on elements that are not carousel */
 main .template-x-wrapper.horizontal > *:not(.template-x.horizontal),
-main .template-x-wrapper.horizontal > .template-x.horizontal > *:not(.carousel-container) {
+main .template-x-wrapper.horizontal > .template-x.horizontal:not(.holiday) > *:not(.carousel-container) {
     max-width: 800px;
     padding-left: 15px;
     padding-right: 15px;
@@ -2423,7 +2428,7 @@ main .template-x.horizontal.holiday .toggle-button {
     transition: margin 0.4s;
 }
 
-@media (min-width: 901px) {
+@media (min-width: 900px) {
     main .template-x.horizontal.holiday .toggle-button:not(.mobile) {
         display: flex;
     }
@@ -2441,7 +2446,7 @@ main .template-x.horizontal.holiday .toggle-button {
     main .template-x.horizontal.holiday .toggle-button.mobile {
         display: flex;
         transform: translate(-50%);
-        margin-left: 210px;
+        margin-left: 192px;
         padding: 0 0 16px 0;
         width: 110px;
     }    
