@@ -2410,11 +2410,21 @@ main .template-x.horizontal.holiday .toggle-bar p {
     margin: 0;
 }
 
-/* @media (max-width: 900px) {
+@media (max-width: 1200px) {
     main .template-x.horizontal.holiday .toggle-bar p {
-        font-size: 12px;
+        font-size: 14px;
     }
-} */
+
+    main .template-x.horizontal.holiday .toggle-bar h4 {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 900px) {
+    main .template-x.horizontal.holiday .toggle-bar p {
+        display: none;
+    }
+}
 
 main .template-x.horizontal.holiday .toggle-bar img {
     display: block;
