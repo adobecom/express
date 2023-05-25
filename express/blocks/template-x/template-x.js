@@ -23,6 +23,7 @@ import {
   lazyLoadLottiePlayer,
   toClassName,
   getLanguage,
+  getMetadata,
 } from '../../scripts/scripts.js';
 
 import { Masonry } from '../shared/masonry.js';
@@ -72,9 +73,9 @@ function getTextColorBasedOnBackground(colorString) {
 }
 
 async function fetchAndRenderTemplates(props) {
-  const [placeholders, response] = await Promise.all([fetchPlaceholders(), fetchTemplates(props)]);
+  const [placeholders, { response, fallbackMsg }] = await Promise.all([fetchPlaceholders(), fetchTemplates(props)]);
   if (!response || !response.items || !Array.isArray(response.items)) {
-    return null;
+    return { templates: null };
   }
 
   if ('_links' in response) {
@@ -88,9 +89,12 @@ async function fetchAndRenderTemplates(props) {
 
   props.total = response.metadata.totalHits;
 
-  return response.items
-    .filter((item) => isValidTemplate(item))
-    .map((template) => renderTemplate(template, placeholders, props));
+  return {
+    fallbackMsg,
+    templates: response.items
+      .filter((item) => isValidTemplate(item))
+      .map((template) => renderTemplate(template, placeholders, props)),
+  };
 }
 
 async function processContentRow(block, props) {
@@ -140,11 +144,49 @@ async function processContentRow(block, props) {
   // }
 }
 
+async function formatHeadingPlaceholder(props) {
+  const heading = getMetadata('short-title');
+  // special treatment for express/ root url
+  const camelHeading = heading === 'Adobe Express' ? heading : heading.charAt(0).toLowerCase() + heading.slice(1);
+  const placeholders = await fetchPlaceholders();
+  const locale = getLocale(window.location);
+  const lang = getLanguage(locale);
+  const templateCount = lang === 'es-ES' ? props.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : props.total.toLocaleString(lang);
+  let grammarTemplate;
+
+  if (getMetadata('template-search-page') === 'Y') {
+    grammarTemplate = props.total === 1 ? placeholders['template-search-heading-singular'] : placeholders['template-search-heading-plural'];
+  } else {
+    grammarTemplate = props.templateStats || placeholders['template-placeholder'];
+  }
+
+  if (grammarTemplate) {
+    grammarTemplate = grammarTemplate
+      .replace('{{quantity}}', templateCount)
+      .replace('{{Type}}', heading)
+      .replace('{{type}}', camelHeading);
+
+    if (locale === 'fr') {
+      grammarTemplate.split(' ').forEach((word, index, words) => {
+        if (index + 1 < words.length) {
+          if (word === 'de' && wordStartsWithVowels(words[index + 1])) {
+            words.splice(index, 2, `d'${words[index + 1].toLowerCase()}`);
+            grammarTemplate = words.join(' ');
+          }
+        }
+      });
+    }
+  }
+
+  return grammarTemplate;
+}
+
 function constructProps(block) {
   const props = {
     templates: [],
     filters: {
       locales: 'en',
+      topics: '',
     },
     renditionParams: {
       format: 'jpg',
@@ -174,6 +216,7 @@ function constructProps(block) {
       const value = cols[1].textContent.trim();
 
       if (key && value) {
+        // FIXME: facebook-post
         if (['tasks', 'topics', 'locales'].includes(key) || (['premium', 'animated'].includes(key) && value.toLowerCase() !== 'all')) {
           props.filters[camelize(key)] = value;
         } else if (['yes', 'true', 'on', 'no', 'false', 'off'].includes(value.toLowerCase())) {
@@ -305,7 +348,7 @@ function updateLoadMoreButton(block, props, loadMore) {
 }
 
 async function decorateNewTemplates(block, props, options = { reDrawMasonry: false }) {
-  const newTemplates = await fetchAndRenderTemplates(props);
+  const { templates: newTemplates } = await fetchAndRenderTemplates(props);
   const loadMore = block.parentElement.querySelector('.load-more');
 
   props.templates = props.templates.concat(newTemplates);
@@ -358,9 +401,7 @@ async function insertTemplateStats(props) {
   const camelHeading = heading === 'Adobe Express' ? heading : heading.charAt(0).toLowerCase() + heading.slice(1);
   if (!heading) return null;
 
-  const placeholders = await fetchPlaceholders();
-
-  let grammarTemplate = props.templateStats || placeholders['template-placeholder'];
+  let grammarTemplate = await formatHeadingPlaceholder(props) || '';
 
   if (grammarTemplate.indexOf('{{quantity}}') >= 0) {
     grammarTemplate = grammarTemplate.replace('{{quantity}}', templateCount);
@@ -730,8 +771,11 @@ async function updateOptionsStatus(block, props, toolBar) {
     options.forEach((option) => {
       const paramType = wrapper.dataset.param;
       const paramValue = option.dataset.value;
-      if (props[paramType] === paramValue
-        || props.filters[paramType] === paramValue
+      const propValue = props[paramType] ? props[paramType] : 'remove';
+      const filtervalue = props.filters[paramType] ? props[paramType] : 'remove';
+
+      if (propValue === paramValue
+        || filtervalue === paramValue
         || waysOfSort[props[paramType]] === paramValue) {
         if (currentOption) {
           currentOption.textContent = option.textContent;
@@ -865,23 +909,6 @@ async function redrawTemplates(block, props, toolBar) {
   }
 }
 
-async function toggleAnimatedText(block, props, toolBar) {
-  const toolbarWrapper = toolBar.parentElement;
-
-  const placeholders = await fetchPlaceholders();
-  const existingText = block.querySelector('.animated-template-text');
-  const animatedTemplateText = createTag('h5', { class: 'animated-template-text' });
-  animatedTemplateText.textContent = placeholders['open-to-see-animation'];
-
-  if (existingText) {
-    existingText.remove();
-  }
-
-  if (props.filters.animated === '(true)') {
-    toolbarWrapper.insertAdjacentElement('afterend', animatedTemplateText);
-  }
-}
-
 function initFilterSort(block, props, toolBar) {
   const buttons = toolBar.querySelectorAll('.button-wrapper');
   const applyFilterButton = toolBar.querySelector('.apply-filter-button');
@@ -927,10 +954,6 @@ function initFilterSort(block, props, toolBar) {
           updateQuery(wrapper, props, option);
           updateFilterIcon(block);
 
-          if (!optionsList.classList.contains('in-drawer')) {
-            await toggleAnimatedText(block, props, toolBar);
-          }
-
           if (!button.classList.contains('in-drawer')) {
             await redrawTemplates(block, props, toolBar);
           }
@@ -955,7 +978,6 @@ function initFilterSort(block, props, toolBar) {
         e.preventDefault();
         await redrawTemplates(block, props, toolBar);
         closeDrawer(toolBar);
-        await toggleAnimatedText(block, props, toolBar);
       });
     }
 
@@ -1425,7 +1447,9 @@ async function decorateTemplates(block, props) {
 
 async function appendCategoryTemplatesCount(block, props) {
   const categories = block.querySelectorAll('ul.category-list > li');
+  // FIXME: props already contain start: 70 at this time
   const tempProps = JSON.parse(JSON.stringify(props));
+  tempProps.limit = 0;
   const lang = getLanguage(getLocale(window.location));
 
   for (const li of categories) {
@@ -1434,8 +1458,8 @@ async function appendCategoryTemplatesCount(block, props) {
       const countSpan = createTag('span', { class: 'category-list-template-count' });
       tempProps.filters.tasks = anchor.dataset.tasks;
       // eslint-disable-next-line no-await-in-loop
-      const response = await fetchTemplates(tempProps, false);
-      if (!response || !response.items || !Array.isArray(response.items)) {
+      const { response } = await fetchTemplates(tempProps, false);
+      if (!response?.metadata?.totalHits) {
         countSpan.textContent = '(0)';
       } else {
         countSpan.textContent = `(${response.metadata.totalHits.toLocaleString(lang)})`;
@@ -1457,34 +1481,42 @@ async function buildTemplateList(block, props, type = []) {
     await processContentRow(block, props);
   }
 
-  const templates = await fetchAndRenderTemplates(props);
+  const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
   if (templates) {
+    if (fallbackMsg) {
+      const fallbackMsgWrapper = createTag('div', { class: 'template-x-fallback-msg-wrapper' });
+      fallbackMsgWrapper.textContent = fallbackMsg;
+      block.append(fallbackMsgWrapper);
+    }
     const blockInnerWrapper = createTag('div', { class: 'template-x-inner-wrapper' });
     block.append(blockInnerWrapper);
     props.templates = props.templates.concat(templates);
     props.templates.forEach((template) => {
       blockInnerWrapper.append(template);
     });
+
+    await decorateTemplates(block, props);
+  } else {
+    // fixme: better error message.
+    block.innerHTML = 'Oops. Our templates delivery got stolen. Please try refresh the page.';
   }
 
-  await decorateTemplates(block, props);
+  // templates are either finished rendering or API has crashed at this point.
 
-  // templates are finished rendering at this point.
-
-  if (props.loadMoreTemplates) {
+  if (templates && props.loadMoreTemplates) {
     const loadMore = await decorateLoadMoreButton(block, props);
     if (loadMore) {
       updateLoadMoreButton(block, props, loadMore);
     }
   }
 
-  if (props.toolBar) {
+  if (templates && props.toolBar) {
     await decorateToolbar(block, props);
     await decorateCategoryList(block, props);
     appendCategoryTemplatesCount(block, props);
   }
 
-  if (props.orientation && props.orientation.toLowerCase() === 'horizontal') {
+  if (templates && props.orientation && props.orientation.toLowerCase() === 'horizontal') {
     const innerWrapper = block.querySelector('.template-x-inner-wrapper');
     if (innerWrapper) {
       buildCarousel(':scope > .template', innerWrapper, false);
