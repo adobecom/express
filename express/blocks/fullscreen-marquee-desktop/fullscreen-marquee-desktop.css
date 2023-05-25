@@ -17,8 +17,12 @@ main .fullscreen-marquee-desktop {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding-bottom: 160px;
+  padding-bottom: 80px;
   padding-top: 80px;
+}
+
+main .fullscreen-marquee-desktop.has-background {
+  padding-bottom: 160px;
 }
 
 main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-heading {

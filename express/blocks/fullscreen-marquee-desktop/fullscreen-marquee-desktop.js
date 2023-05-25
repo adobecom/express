@@ -158,6 +158,7 @@ export default async function decorate(block) {
   }
 
   if (background) {
+    block.classList.add('has-background');
     block.append(buildBackground(block, background));
   }
 
