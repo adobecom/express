@@ -68,9 +68,7 @@ async function buildApp(block, content) {
   let editor;
   let variant;
 
-  if (block.classList.contains('image')) {
-    variant = 'image';
-  } else {
+  if (block.classList.contains('video')) {
     variant = 'video';
 
     if (content) {
@@ -83,7 +81,6 @@ async function buildApp(block, content) {
       content.addEventListener('loadedmetadata', () => {
         const framesContainer = createTag('div', { class: 'fullscreen-marquee-desktop-app-frames-container' });
         function createFrame(current, total) {
-          console.log(`Creating frame ${current} out of ${total}`);
           const frame = createTag('video', { src: `${content.currentSrc}#t=${current}` });
           framesContainer.append(frame);
 
@@ -97,10 +94,12 @@ async function buildApp(block, content) {
           });
         }
 
-        createFrame( 1, 10);
+        createFrame(1, 10);
         app.append(framesContainer);
       });
     }
+  } else {
+    variant = 'image';
   }
 
   await fetchPlaceholders().then((placeholders) => {
