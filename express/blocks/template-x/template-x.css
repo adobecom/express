@@ -66,6 +66,47 @@ main .template-x.fullwidth .template-x-inner-wrapper {
     justify-content: center;
 }
 
+main .template-x.horizontal .template-x-inner-wrapper {
+    margin-top: 0;
+}
+
+main .template-x.fullwidth.holiday .template-x-inner-wrapper {
+    max-height: 0;
+    position: relative;
+    transition: max-height 0.5s, padding-top 0.5s;
+    overflow: hidden;
+}
+
+main .template-x.fullwidth.holiday .expanded.template-x-inner-wrapper {
+    max-height: 300px;
+    margin-left: 56px;
+    margin-left: 56px;
+}
+
+main .template-x.fullwidth.holiday .animation-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    object-fit: cover;
+    height: 100%;
+    width: 100vw;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+main .template-x.fullwidth.holiday.expanded .animation-background {
+    opacity: 1;
+    transition: opacity 1s;
+}
+
+main .template-x.fullwidth.sm-view .template-x-inner-wrapper,
+main .template-x.fullwidth.md-view .template-x-inner-wrapper,
+main .template-x.fullwidth.lg-view .template-x-inner-wrapper {
+    padding: 0 28px;
+}
+
 main .template-x.with-categories-list .template-x.fullwidth {
     width: 100%;
 }
@@ -112,6 +153,13 @@ main .template-x-wrapper .template-title {
     margin: 0 12px 20px 12px;
 }
 
+main > .template-x-container .template-x-wrapper.horizontal > .template-x.horizontal > .template-title {
+    margin: 0;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0 30px 0 30px;
+}
+
 main .template-x-container .template-x-wrapper:not(:has(.toolbar-wrapper)) {
     padding-top: 60px;
 }
@@ -132,6 +180,10 @@ main .template-x-wrapper .template-title.horizontal > div > * {
     margin: 0;
 }
 
+main .template-x-wrapper .template-title.horizontal.holiday .template-title,picture,a,h4,p {
+    z-index: 1;
+}
+
 main .template-x-wrapper .template-title.horizontal p {
     margin-top: 8px;
     width: fit-content;
@@ -146,8 +198,13 @@ main .template-x-wrapper .template-title-link {
     display: flex;
 }
 
-main .template-x-wrapper .template-link::after,
-main .template-x-wrapper .template-title-link::after {
+main .template-x-wrapper .toggle-button {
+    display: flex;
+}
+
+main .template-x-wrapper:not(.holiday) .template-link::after,
+main .template-x-wrapper:not(.holiday) .template-title-link::after,
+main .holiday.template-x-wrapper .toggle-button-chev {
     display: flex;
     width: 6px;
     height: 6px;
@@ -163,6 +220,11 @@ main .template-x-wrapper .template-title-link::after {
     margin-top: 5px;
     margin-left: 5px;
     margin-right: 2.25px;
+    transition: transform 0.2s;
+}
+
+main .holiday.template-x-wrapper .expanded.toggle-button .toggle-button-chev {
+    transform: rotate(225deg);
 }
 
 main .template-x-wrapper .template-title-link {
@@ -170,7 +232,7 @@ main .template-x-wrapper .template-title-link {
     white-space: nowrap;
 }
 
-main .template-x-wrapper .template-title-link::after {
+main .template-x-wrapper:not(.holiday) .template-title-link::after {
     margin-top: 7px;
 }
 
@@ -278,7 +340,11 @@ main .template-x.horizontal {
     min-height: 220px;
 }
 
-main .template-x.horizontal.fullwidth {
+main .template-x.horizontal.holiday {
+    min-height: 54px;
+}
+
+main .template-x.horizontal.fullwidth:not(.holiday) {
     max-width: none;
     padding-right: 16px;
     display: block;
@@ -292,13 +358,11 @@ main .template-x.horizontal.fullwidth.mini {
 main .template-x.horizontal .template {
     min-height: 200px;
     width: max-content;
-    margin-left: 12px;
-    margin-right: 12px;
-    margin-bottom: 0;
+    margin: 12px;
 }
 
-main .template-x.horizontal .template img,
-main .template-x.horizontal .template video {
+main .template-x.horizontal .template .still-wrapper img,
+main .template-x.horizontal .template .still-wrapper video {
     height: 200px;
     width: auto;
 }
@@ -306,6 +370,19 @@ main .template-x.horizontal .template video {
 main .template-x-wrapper .template-title.horizontal h4 {
     font-size: 22px;
     line-height: 26px;
+}
+
+main .template-x-wrapper.holiday .template-title.horizontal h4 {
+    text-align: left;
+    margin-top: 14px;
+    margin-bottom: 14px;
+    font-size: 16px;
+}
+
+@media (max-width: 900px) {
+    main .template-x-wrapper.holiday .template-title.horizontal h4 {
+        margin: 0;
+    }
 }
 
 main .template-x-wrapper .template-title.horizontal .template:not(.placeholder) .template-link {
@@ -383,7 +460,6 @@ main .template-x.fullwidth .template:not(.placeholder) video {
     will-change: transform;
 }
 
-main .template-x.horizontal .template:not(.placeholder) .button-container,
 main .template-x.sixcols .template:not(.placeholder) .button-container,
 main .template-x.fullwidth .template:not(.placeholder) .button-container {
     position: absolute;
@@ -397,6 +473,22 @@ main .template-x.fullwidth .template:not(.placeholder) .button-container {
     text-align: center;
     transition: opacity .3s ease-in-out;
     will-change: opacity;
+}
+
+main .template-x.horizontal .template:not(.placeholder) .button-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    text-align: center;
+    transition: opacity .3s ease-in-out;
+    will-change: opacity;
+    border-radius: 12px;
+    min-height: unset;
+    box-sizing: border-box;
+    height: 120%;
+    width: 120%;
 }
 
 main .template-x.horizontal .template:not(.placeholder) .template-link,
@@ -707,11 +799,6 @@ main .template-x.fullwidth.sm-view > .template-x-inner-wrapper > .masonry-col {
         max-width: 187px;
     }
 
-    main .template-x-wrapper .template-title.with-link > div {
-        flex-direction: row;
-        justify-content: space-between;
-    }
-
     main .template-x-wrapper .template-title.horizontal > div > * {
         text-align: left;
     }
@@ -732,8 +819,8 @@ main .template-x.fullwidth.sm-view > .template-x-inner-wrapper > .masonry-col {
         margin-right: 20px;
     }
 
-    main .template-x.sixcols .template:not(.placeholder),
-    main .template-x.fullwidth .template:not(.placeholder) {
+    main .template-x:not(.horizontal).sixcols .template:not(.placeholder),
+    main .template-x:not(.horizontal).fullwidth .template:not(.placeholder) {
         margin: 11px 11px 9px 11px; /* make up for 4px height overlap in first child div */
     }
 
@@ -1925,6 +2012,7 @@ main .template-x-wrapper.horizontal {
 main .template-x-wrapper.horizontal > *:not(.template-x.horizontal),
 main .template-x-wrapper.horizontal > .template-x.horizontal > *:not(.carousel-container) {
     max-width: 350px;
+    max-width: 800px;
     padding-left: 15px;
     padding-right: 15px;
     margin-left: auto;
@@ -1938,6 +2026,17 @@ main .template-x.horizontal .carousel-container {
 
 main .template-x.horizontal .carousel-platform {
     scroll-padding: 12px;
+    padding: 20px 0;
+}
+
+main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    width: 170px;
+}
+
+main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-left {
+    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    width: 150px;
 }
 
 @media (min-width: 1200px) {
@@ -1990,6 +2089,7 @@ main .template-x.horizontal .carousel-platform {
 
     main .template-x.horizontal .carousel-container .carousel-fader-right {
         background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+        width: 170px;
     }
 
     main .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left {
@@ -2025,6 +2125,7 @@ main .template-x.horizontal .carousel-platform {
 
 @media (min-width: 900px) {
     main .template-x.horizontal .carousel-container {
+        max-width: 1090px;
         margin-left: 12px;
         margin-right: 12px;
         max-width: none;
@@ -2076,6 +2177,18 @@ main .template-x.horizontal .carousel-platform {
     }
 }
 
+main .template-x.horizontal.holiday .template-x-inner-wrapper .carousel-container {
+    max-width: 1090px;
+}
+
+main .template-x.horizontal.holiday .animation-background ~ .template-x-inner-wrapper {
+    padding: 0;
+}
+
+main .template-x.horizontal.holiday .animation-background ~ .template-x-inner-wrapper .carousel-container {
+    max-width: none;
+}
+
 @media (min-width: 1200px) {
     main .template-x-wrapper.horizontal {
         max-width: 1024px;
@@ -2089,6 +2202,7 @@ main .template-x.horizontal .carousel-platform {
     main .template-x.horizontal {
         max-width: 1090px;
     }
+
 }
 
 @media (max-width: 600px) {
@@ -2257,59 +2371,112 @@ main .template-x.collaboration .carousel-container {
     main .template-x.collaboration .template-title > div > h3 .collaboration-anchor.copied .clipboard-tag {
         left: 28px;
     }
+
+    main .template-x-wrapper.holiday .toggle-bar {
+        max-width: 1090px;
+    }
+
+    main .template-x.holiday .template-title .toggle-bar-bottom {
+        display: flex;
+        flex-grow: 1;
+    }
 }
 
-main .template-x-horizontal-holiday-container {
-    padding-bottom: 10px;
+main .template-x.horizontal.holiday {
     position: relative;
     overflow-x: hidden;
     background: var(--color-black);
 }
 
-main .template-x-horizontal-holiday-container.with-animation {
+main .template-x.horizontal.holiday.with-animation {
     color: var(--color-white);
     padding-top: 0;
 }
 
-main .template-x-horizontal-holiday-container p,
-main .template-x-horizontal-holiday-container picture {
+main .template-x.horizontal.holiday p,
+main .template-x.horizontal.holiday picture {
     z-index: 1;
 }
 
-main .template-x-horizontal-holiday-container .toggle-bar {
-    display: flex;
-    padding: 0 30px;
+main .template-x.horizontal.holiday .toggle-bar {
+    flex-direction: row;
     justify-content: space-between;
-    gap: 20px;
-    max-width: none;
-    cursor: pointer;
+    gap: 14px;
+    margin: auto;
+    align-items: center;
 }
 
-main .template-x-horizontal-holiday-container .toggle-bar p {
-    margin: 14px 0;
+main .template-x.horizontal.holiday .toggle-bar p {
     font-size: 16px;
+    margin: 0;
 }
 
-main .template-x-horizontal-holiday-container .toggle-bar img {
+@media (max-width: 1200px) {
+    main .template-x.horizontal.holiday .toggle-bar p {
+        font-size: 14px;
+    }
+
+    main .template-x.horizontal.holiday .toggle-bar h4 {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 900px) {
+    main .template-x.horizontal.holiday .toggle-bar p {
+        display: none;
+    }
+}
+
+main .template-x.horizontal.holiday .toggle-bar img {
     display: block;
     max-height: 32px;
     width: 84px;
     min-width: 84px;
 }
 
-main .template-x-horizontal-holiday-container .toggle-button {
-    display: flex;
+main .template-x.horizontal.holiday .toggle-button {
+    align-self: center;
+    transition: margin 0.4s;
 }
 
-main .template-x-horizontal-holiday-container .toggle-button a {
+@media (min-width: 900px) {
+    main .template-x.horizontal.holiday .toggle-button:not(.mobile) {
+        display: flex;
+    }
+
+    main .template-x.horizontal.holiday .toggle-button.mobile {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    main .template-x.horizontal.holiday .toggle-button:not(.mobile) {
+        display: none;
+    }
+
+    main .template-x.horizontal.holiday .toggle-button.mobile {
+        display: flex;
+        transform: translate(-50%);
+        margin-left: 192px;
+        padding: 0 0 16px 0;
+        width: 110px;
+    }    
+
+    main .template-x.horizontal.holiday .toggle-button.mobile.expanded {
+        margin-left: 50%;
+        transform: translate(-50%);
+    }
+}
+
+main .template-x.horizontal.holiday .toggle-button a {
     color: var(--color-white);
 }
 
-main .template-x-horizontal-holiday-container .toggle-button a:hover {
+main .template-x.horizontal.holiday .toggle-button a:hover {
     text-decoration: underline;
 }
 
-main .template-x-horizontal-holiday-container .toggle-button.mobile-only {
+main .template-x.horizontal.holiday .toggle-button.mobile-only {
     width: max-content;
     padding: 0 30px;
     margin-left: 0;
@@ -2318,22 +2485,22 @@ main .template-x-horizontal-holiday-container .toggle-button.mobile-only {
     transition: margin 0.5s, transform 0.5s;
 }
 
-main .template-x-horizontal-holiday-container.with-icon .toggle-button.mobile-only {
+main .template-x.horizontal.holiday.with-icon .toggle-button.mobile-only {
     margin: auto auto auto 190px;
     transform: translate(-50%, -6px);
 }
 
-main .template-x-horizontal-holiday-container .toggle-button.mobile-only.expanded {
+main .template-x.horizontal.holiday .toggle-button.mobile-only.expanded {
     transform: translate(-50%, -6px);
     margin: auto auto auto 50%;
 }
 
-main .template-x-horizontal-holiday-container.with-icon .toggle-button.mobile-only.expanded {
+main .template-x.horizontal.holiday.with-icon .toggle-button.mobile-only.expanded {
     margin-left: 50%;
     transform: translate(-50%, -6px);
 }
 
-main .template-x-horizontal-holiday-container .toggle-button .toggle-button-chev {
+main .template-x.horizontal.holiday .toggle-button .toggle-button-chev {
     display: flex;
     width: 6px;
     height: 6px;
@@ -2349,29 +2516,33 @@ main .template-x-horizontal-holiday-container .toggle-button .toggle-button-chev
     margin-left: 5px;
     margin-right: 2.25px;
     transition: transform 0.2s;
+    cursor: pointer;
 }
 
-main .template-x-horizontal-holiday-container .toggle-button.expanded .toggle-button-chev {
+main .template-x.horizontal.holiday .toggle-button.expanded .toggle-button-chev {
     transform: rotate(-135deg);
 }
 
-main .template-x-horizontal-holiday-container .toggle-bar-top,
-main .template-x-horizontal-holiday-container .toggle-bar-bottom {
-    text-align: left;
+main .template-x.horizontal.holiday .toggle-bar-top {
     display: flex;
     justify-content: space-between;
-    gap: 20px;
+    gap: 22px;
     align-items: center;
-    color: var(--color-white);
 }
 
-main .template-x-horizontal-holiday-container .toggle-bar-bottom {
-    display: none;
+main .template-x.horizontal.holiday .toggle-bar-bottom {
+    display: flex;
+    gap: 32px;
     z-index: 1;
-    flex-grow: 1;
 }
 
-main .template-x-horizontal-holiday-container .template-x-wrapper p.mobile-only {
+@media (max-width: 900px) {
+    main .template-x.horizontal.holiday .toggle-bar-bottom {
+        margin-left: 16px;
+    }
+}
+
+main .template-x.horizontal.holiday .template-x-wrapper p.mobile-only {
     color: var(--color-white);
     position: absolute;
     top: 0;
@@ -2381,32 +2552,38 @@ main .template-x-horizontal-holiday-container .template-x-wrapper p.mobile-only 
     padding: 0 30px;
 }
 
-main .template-x-horizontal-holiday-container .template-x-wrapper,
+main .template-x.horizontal.holiday .template-x-wrapper,
 main .template-x.holiday,
 main .template-x.holiday .carousel-container {
     max-width: none;
     z-index: 1;
 }
 
-main .template-x-horizontal-holiday-container .template-x-wrapper {
+@media (max-width: 900px) {
+    main .template-x.holiday .carousel-container {
+        margin-bottom: 0;
+    }
+}
+
+main .template-x.horizontal.holiday .template-x-wrapper {
     max-height: 0;
     position: relative;
     transition: max-height 0.5s, padding-top 0.5s;
     overflow: hidden;
 }
 
-main .template-x-horizontal-holiday-container .template-x-wrapper.expanded {
-    max-height: 300px;
+main .template-x.horizontal.holiday .template-x-wrapper.expanded {
     padding-top: 16px;
 }
 
 main .template-x.holiday .carousel-container .carousel-platform {
     scroll-padding: initial;
+    max-height: 200px;
 }
 
 /* holiday animations */
 
-main .template-x-horizontal-holiday-container .animation-background {
+main .template-x.horizontal.holiday .animation-background {
     position: absolute;
     top: 0;
     left: 0;
@@ -2419,36 +2596,29 @@ main .template-x-horizontal-holiday-container .animation-background {
     transition: opacity 0.2s;
 }
 
-main .template-x-horizontal-holiday-container.expanded .animation-background {
+main .template-x.horizontal.holiday.expanded .animation-background {
     opacity: 1;
     transition: opacity 1s;
+    padding: 0;
 }
 
-@media (min-width: 600px) {
-    main .template-x.horizontal.holiday .carousel-container .carousel-fader-left,
-    main .template-x.horizontal.holiday .carousel-container .carousel-fader-right {
-        background: initial;
+main .template-x.horizontal.holiday .toggle-bar {
+    max-width: 925px;
+    cursor: pointer;
+}
+
+@media (max-width: 900px) {
+    main .template-x.horizontal.holiday .toggle-bar {
+        margin-top: 16px;
     }
 }
 
 @media (min-width: 1200px) {
-    main .template-x-horizontal-holiday-container {
-        padding-bottom: 0;
-    }
-
-    main .template-x-horizontal-holiday-container .toggle-bar {
-        max-width: 1024px;
-    }
-
-    main .template-x-horizontal-holiday-container .mobile-only {
+    main .template-x.horizontal.holiday .mobile-only {
         display: none;
     }
 
-    main .template-x-horizontal-holiday-container .toggle-bar-bottom {
-        display: flex;
-    }
-
-    main .template-x-horizontal-holiday-container .template-x-wrapper.expanded {
+    main .template-x.horizontal.holiday .template-x-wrapper.expanded {
         padding-top: 0;
     }
 }
@@ -2526,18 +2696,35 @@ main .template-x .template .button-container:hover {
     z-index: 99;
 }
 
+main .template-x.horizontal .template:not(.placeholder):first-of-type .button-container {
+    margin-left: 16px;
+}
+
 main .template-x .template .button-container .media-wrapper {
     position: relative;
-    height: 100%;
+    height: calc(100% - 34px);
     width: 100%;
+}
+
+main .template-x.horizontal .template .button-container .media-wrapper {
+    flex-basis: 100%;
 }
 
 main .template-x .template .button-container a {
     margin: 6px 6px 0;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+main .template-x.horizontal .template .button-container a {
+    min-height: 16px;
 }
 
 main .template-x .template .button-container .media-wrapper .icon-share-arrow {
     cursor: pointer;
+    pointer-events: auto;
     width: 12px;
     height: 12px;
     padding: 4px;
