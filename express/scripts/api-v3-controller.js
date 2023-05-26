@@ -51,7 +51,7 @@ export async function getPillWordsMapping() {
 }
 
 export default async function getData(env = '', data = {}) {
-  const endpoint = endpoints[env];
+  const endpoint = endpoints.prod;
   const response = await fetch(endpoint.cdn, {
     method: 'POST',
     headers: {
