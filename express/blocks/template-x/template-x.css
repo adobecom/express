@@ -2137,7 +2137,7 @@ main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fade
         padding-right: 32px;
     }
 
-    main .template-x-wrapper.horizontal {
+    main .template-x-wrapper.horizontal:not(.holiday) {
         max-width: 836px;
     }
 
