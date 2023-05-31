@@ -1841,7 +1841,7 @@ main .template-x.with-categories-list .category-list-resize:after {
         position: absolute;
         height: 100%;
         transition: opacity 0.2s;
-        background: linear-gradient(180deg, #FFFFFF00 0%, #FFFFFF 50%);
+        background: linear-gradient(180deg, #FFFFFF00 0%, #FFFFFF 59%);
     }
 
     main .template-x.with-categories-list .category-list-wrapper.desktop-only:not(:hover) .category-list::before {
