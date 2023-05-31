@@ -41,7 +41,7 @@ function camelize(str) {
   return str.replace(/^\w|[A-Z]|\b\w/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase())).replace(/\s+/g, '');
 }
 
-function getTextColorBasedOnBackground(colorString) {
+function isDarkOverlayReadable(colorString) {
   let r;
   let g;
   let b;
@@ -62,9 +62,9 @@ function getTextColorBasedOnBackground(colorString) {
   const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
 
   if (hsp > 127.5) {
-    return '#242424';
+    return true;
   } else {
-    return '#fff';
+    return false;
   }
 }
 
@@ -219,7 +219,8 @@ function constructProps(block) {
           props.backgroundColor = backgroundColor;
         }
         props.backgroundAnimation = backgroundAnimation || null;
-        props.textColor = getTextColorBasedOnBackground(backgroundColor);
+        const contrastingTextColor = isDarkOverlayReadable(backgroundColor) ? '#242424' : '#fff';
+        props.textColor = contrastingTextColor;
       }
     }
   });
