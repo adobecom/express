@@ -89,20 +89,20 @@ export default function decorate(block) {
 
       if (primaryColor === "#000000") {
         const svgTag = svgWrapper.querySelector("svg");
-        svgTag.style.fill = "white";
+        svgTag.style.fill = "#ffffff";
       }
     });
 
   //dynamic colors
   const isLightBg = isDarkOverlayReadable(primaryColor);
   if (isLightBg) {
-    heroColorContentContainer.style.color = "black";
-    button.style.backgroundColor = "black";
-    button.style.color = "white";
+    heroColorContentContainer.style.color = "#000000";
+    button.style.backgroundColor = "#000000";
+    button.style.color = "#ffffff";
   } else {
-    heroColorContentContainer.style.color = "white";
-    button.style.backgroundColor = "white";
-    button.style.color = "black";
+    heroColorContentContainer.style.color = "#ffffff";
+    button.style.backgroundColor = "#ffffff";
+    button.style.color = "#000000";
   }
 
   heroColorContentContainer.append(text);
