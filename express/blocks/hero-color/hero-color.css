@@ -56,6 +56,7 @@ main .hero-color .content-container .color-svg {
 
 main .hero-color .content-container .color-svg svg {
   height: 100%;
+  width: 100%;
 }
 
 main .hero-color {
@@ -110,11 +111,15 @@ main .hero-color .fade-in {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  main .hero-color .content-container .color-svg {
+    margin: 0 0 0 365px;
+  }
 }
 
 @media (max-width: 375px) {
   main .hero-color .content-container .color-svg {
-    margin: -275px;
+    margin: 0 0 0 15px;
   }
 
   main .hero-color .text-container .text {

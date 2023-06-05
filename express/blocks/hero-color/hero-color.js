@@ -12,7 +12,7 @@
 
 import { createTag } from "../../scripts/scripts.js";
 
-export function isDarkOverlayReadable(colorString) {
+function isDarkOverlayReadable(colorString) {
   let r;
   let g;
   let b;
@@ -42,13 +42,30 @@ export function isDarkOverlayReadable(colorString) {
   }
 }
 
-export function cloneForSmallerMediaQueries(textBlock) {
+function cloneForSmallerMediaQueries(textBlock) {
   const clonedTextBlock = textBlock.cloneNode(true);
 
   clonedTextBlock.classList.add("text-container");
   clonedTextBlock.children[0].classList.add("text");
 
   return clonedTextBlock;
+}
+
+function changeColorAccordingToBg(
+  primaryColor,
+  heroColorContentContainer,
+  button
+) {
+  const isLightBg = isDarkOverlayReadable(primaryColor);
+  if (isLightBg) {
+    heroColorContentContainer.style.color = "#000000";
+    button.style.backgroundColor = "#000000";
+    button.style.color = "#ffffff";
+  } else {
+    heroColorContentContainer.style.color = "#ffffff";
+    button.style.backgroundColor = "#ffffff";
+    button.style.color = "#000000";
+  }
 }
 
 export default function decorate(block) {
@@ -76,36 +93,37 @@ export default function decorate(block) {
   text.classList.add("text");
   text.append(title, description, cta);
 
-  //svg
-  const svgUrl = svg.children[0].textContent;
-  svg.remove();
-  fetch(svgUrl)
-    .then((res) => res.text())
-    .then((svgText) => {
-      const svgWrapper = createTag("div", { class: "color-svg" });
-      svgWrapper.classList.add("fade-in");
-      svgWrapper.innerHTML = svgText;
-      heroColorContentContainer.append(svgWrapper);
-
-      if (primaryColor === "#000000") {
-        const svgTag = svgWrapper.querySelector("svg");
-        svgTag.style.fill = "#ffffff";
-      }
-    });
-
   //dynamic colors
-  const isLightBg = isDarkOverlayReadable(primaryColor);
-  if (isLightBg) {
-    heroColorContentContainer.style.color = "#000000";
-    button.style.backgroundColor = "#000000";
-    button.style.color = "#ffffff";
-  } else {
-    heroColorContentContainer.style.color = "#ffffff";
-    button.style.backgroundColor = "#ffffff";
-    button.style.color = "#000000";
-  }
+  changeColorAccordingToBg(primaryColor, heroColorContentContainer, button);
 
   heroColorContentContainer.append(text);
+  displaySvgWithObject(svg, heroColorContentContainer, secondaryColor);
   block.append(heroColorContentContainer);
   block.append(smallMediaQueryBlock);
+}
+
+function displaySvgWithObject(svg, heroColorContentContainer, secondaryColor) {
+  const svgId = svg.children[0].textContent;
+  svg.remove();
+
+  const svgWrapper = createTag("div", { class: "color-svg" });
+  svgWrapper.classList.add("fade-in");
+
+  //media
+  changeSvgAccordingToMediaQuery(svgId, svgWrapper);
+  window.addEventListener("resize", () =>
+    changeSvgAccordingToMediaQuery(svgId, svgWrapper)
+  );
+
+  svgWrapper.firstElementChild.style.fill = secondaryColor;
+  heroColorContentContainer.append(svgWrapper);
+}
+
+function changeSvgAccordingToMediaQuery(svgId, svgWrapper) {
+  const size = window.matchMedia("(min-width: 900px)").matches
+    ? "desktop"
+    : "mobile";
+  svgWrapper.innerHTML = `<svg class="color-svg-img">
+    <use href="/express/icons/hero-color.svg#${svgId}-${size}"></use>
+  </svg>`;
 }
