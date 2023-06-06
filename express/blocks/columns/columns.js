@@ -260,4 +260,23 @@ export default function decorate($block) {
       $button.classList.add('dark');
     });
   }
+
+  // variant for the colors pages
+  if ($block.classList.contains('custom-color')) {
+    const svgCol = Array.from(($rows[0].querySelectorAll('div')))[1];
+    const authoredColors = $rows[1].querySelector('div');
+    const primaryColor = authoredColors.textContent.trim().split(',')[0];
+    const accentColor = authoredColors.textContent.trim().split(',')[1];
+    const svgId = svgCol.textContent.trim();
+    const svg = createTag('div', { class: 'img-wrapper' });
+
+    svgCol.remove();
+    authoredColors.remove()
+
+    
+    svg.innerHTML = `<svg class='color-svg-img'> <use href='/express/icons/hero-color.svg#${svgId}'></use></svg>'`;
+    console.dir(svg);
+    svg.style.backgroundColor = primaryColor;
+    $rows[0].append(svg);
+  }
 }

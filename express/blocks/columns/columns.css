@@ -682,6 +682,22 @@ main .columns.highlight .column.column-picture {
   padding-right: 0px;
 }
 
+/* Custom color variant */
+
+main .columns.custom-color .color-svg-img {
+  height: 321px;
+  width: 234px;
+}
+
+main .columns.custom-color .img-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 500px;
+  border-radius: 20px;
+}
+
 @media (min-width: 900px) {
   body.no-brand-header main .columns.columns-marquee:not(.center):not(.fullsize) .brand.icon {
     padding-left: 0;
