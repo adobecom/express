@@ -47,11 +47,11 @@ function formatFilterString(filters) {
   }
 
   extractFilterTerms(tasks).forEach((t) => {
-    str += `&filters=pages.task.name==${t}`
-  })
+    str += `&filters=pages.task.name==${t}`;
+  });
   extractFilterTerms(topics).forEach((t) => {
-    str += `&filters=topics==${t}`
-  })
+    str += `&filters=topics==${t}`;
+  });
   // locale needs backward compatibility with old api
   const cleanedLocales = locales?.toLowerCase();
   if (cleanedLocales) {
@@ -64,10 +64,9 @@ function formatFilterString(filters) {
 }
 
 const fetchSearchUrl = async ({
-  limit, start, filters, sort, q,
+  limit, start, filters, sort, q, collectionId,
 }) => {
   const base = 'https://spark-search.adobe.io/v3/content';
-  const collectionId = 'urn:aaid:sc:VA6C2:25a82757-01de-4dd9-b0ee-bde51dd3b418';
   const collectionIdParam = `collectionId=${collectionId}`;
   const queryType = 'assets';
   const queryParam = `&queryType=${queryType}`;
@@ -94,9 +93,9 @@ const fetchSearchUrl = async ({
 };
 
 // FIXME: use placeholders/localize
-function getFallbackMsg (tasks) {
-  return `Sorry we couldn't find any results for what you searched for, try some of these popular `
-    + (tasks ? `${tasks.toString()} ` : '') + 'templates instead.';
+function getFallbackMsg(tasks) {
+  return `Sorry we couldn't find any results for what you searched for, try some of these popular ${
+    tasks ? `${tasks.toString()} ` : ''}templates instead.`;
 }
 
 export async function fetchTemplates(props, fallback = true) {
@@ -112,7 +111,7 @@ export async function fetchTemplates(props, fallback = true) {
   if (tasks) {
     response = await fetchSearchUrl({ ...props, filters: { tasks } });
     if (response?.metadata?.totalHits > 0) {
-      return { response, fallbackMsg: getFallbackMsg(tasks) }; 
+      return { response, fallbackMsg: getFallbackMsg(tasks) };
     }
   }
   response = await fetchSearchUrl({ ...props, filters: {} });
