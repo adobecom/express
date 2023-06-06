@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-disable no-underscore-dangle */
-import { getLanguage } from '../../scripts/scripts.js';
+import { fetchPlaceholders, getLanguage } from '../../scripts/scripts.js';
 
 function extractFilterTerms(input) {
   if (!input || typeof input !== 'string') {
@@ -92,10 +92,16 @@ const fetchSearchUrl = async ({
   }).then((response) => response.json());
 };
 
-// FIXME: use placeholders/localize
-function getFallbackMsg(tasks) {
+async function getFallbackMsg(tasks = '') {
+  const placeholders = await fetchPlaceholders();
+  const fallBacktextTemplate = tasks ? placeholders['templates-fallback-with-tasks'] : placeholders['templates-fallback-without-tasks'];
+
+  if (fallBacktextTemplate) {
+    return tasks ? fallBacktextTemplate.replaceAll('{{tasks}}', tasks.toString()) : fallBacktextTemplate;
+  }
+
   return `Sorry we couldn't find any results for what you searched for, try some of these popular ${
-    tasks ? `${tasks.toString()} ` : ''}templates instead.`;
+    tasks ? ` ${tasks.toString()} ` : ''}templates instead.`;
 }
 
 export async function fetchTemplates(props, fallback = true) {
@@ -111,11 +117,11 @@ export async function fetchTemplates(props, fallback = true) {
   if (tasks) {
     response = await fetchSearchUrl({ ...props, filters: { tasks } });
     if (response?.metadata?.totalHits > 0) {
-      return { response, fallbackMsg: getFallbackMsg(tasks) };
+      return { response, fallbackMsg: await getFallbackMsg(tasks) };
     }
   }
   response = await fetchSearchUrl({ ...props, filters: {} });
-  return { response, fallbackMsg: getFallbackMsg() };
+  return { response, fallbackMsg: await getFallbackMsg() };
 }
 
 function isValidBehaviors(behaviors) {
