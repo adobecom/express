@@ -126,6 +126,7 @@ function changeSvgAccordingToMediaQuery(svgId, svgWrapper) {
     : "mobile";
 
   // fixme: querySelector to the <use> and assign href as an attribute
+  // fixme: don't reassign if it's the same size
   svgWrapper.innerHTML = `<svg class="color-svg-img">
     <use href="/express/icons/hero-color.svg#${svgId}-${size}"></use>
   </svg>`;
