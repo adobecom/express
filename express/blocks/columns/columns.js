@@ -265,9 +265,8 @@ export default function decorate($block) {
   if ($block.classList.contains('custom-color')) {
     const svgCol = Array.from(($rows[0].querySelectorAll('div')))[1];
     const textCol = Array.from(($rows[0].querySelectorAll('div')))[0];
-    const authoredColors = $rows[1].querySelector('div');
-    const primaryColor = authoredColors.textContent.trim().split(',')[0];
-    const accentColor = authoredColors.textContent.trim().split(',')[1];
+    const primaryColor = $rows[1].querySelector('div').textContent.trim().split(',')[0];
+    const accentColor = $rows[1].querySelector('div').textContent.trim().split(',')[1];
     const svgId = svgCol.textContent.trim();
     const svg = createTag('div', { class: 'img-wrapper' });
 
@@ -275,8 +274,8 @@ export default function decorate($block) {
     $rows[1].remove();
     textCol.classList.add('text');
     svg.innerHTML = `<svg class='color-svg-img'> <use href='/express/icons/hero-color.svg#${svgId}'></use></svg>'`;
-    svg.style.fill = accentColor;
     svg.style.backgroundColor = primaryColor;
+    svg.style.fill = accentColor;
     $rows[0].append(svg);
   }
 }
