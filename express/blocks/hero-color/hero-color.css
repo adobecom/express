@@ -1,9 +1,11 @@
-main .section.hero-color-container {
+/* future proofing wrapper deprecation. To be removed after milo migration */
+main .section .hero-color-wrapper {
+  margin: 0;
   padding: 0;
 }
 
-main .hero-color-container .hero-color-wrapper {
-  margin: 0;
+/* fixme: change max-width to min-width media query */
+main .section.hero-color-container {
   padding: 0;
 }
 
