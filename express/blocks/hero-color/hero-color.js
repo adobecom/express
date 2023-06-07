@@ -77,6 +77,7 @@ export default function decorate(block) {
     class: "content-container",
   });
 
+  // fixme: wrap these commented blocks of code in functions and reduce the length of decorate function
   //colors
   const primaryColor = colors.children[0].textContent.split(",")[0].trim();
   const secondaryColor = colors.children[0].textContent.split(",")[1].trim();
@@ -101,7 +102,7 @@ export default function decorate(block) {
   block.append(heroColorContentContainer);
   block.append(smallMediaQueryBlock);
 }
-
+// fixme: move to above decorate function
 function displaySvgWithObject(svg, heroColorContentContainer, secondaryColor) {
   const svgId = svg.children[0].textContent;
   svg.remove();
@@ -123,7 +124,11 @@ function changeSvgAccordingToMediaQuery(svgId, svgWrapper) {
   const size = window.matchMedia("(min-width: 900px)").matches
     ? "desktop"
     : "mobile";
+
+  // fixme: querySelector to the <use> and assign href as an attribute
   svgWrapper.innerHTML = `<svg class="color-svg-img">
     <use href="/express/icons/hero-color.svg#${svgId}-${size}"></use>
   </svg>`;
 }
+
+// fixme: npm install and check for ES lint issues
