@@ -631,7 +631,7 @@ main .columns.custom-color h2 {
     font-size: 45px;
   }
 
-  main .columns.custom-color h2, p {
+  main .columns.custom-color h2, main .columns.custom-color p {
     text-align: left;
   }
 
