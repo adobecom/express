@@ -377,6 +377,7 @@ export function getIconElement(icons, size, alt, additionalClassName) {
 }
 
 export function transformLinkToAnimation($a, $videoLooping = 'yes') {
+  console.log($a);
   if (!$a || !$a.href.endsWith('.mp4')) {
     return null;
   }

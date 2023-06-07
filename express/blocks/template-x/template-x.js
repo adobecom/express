@@ -24,6 +24,7 @@ import {
   toClassName,
   getLanguage,
   getMetadata,
+  transformLinkToAnimation,
 } from '../../scripts/scripts.js';
 
 import { Masonry } from '../shared/masonry.js';
@@ -211,7 +212,7 @@ function constructProps(block) {
       if (key === 'holiday block' && ['yes', 'true', 'on'].includes(cols[1].textContent.trim().toLowerCase())) {
         const backgroundColor = cols[3].textContent.trim().toLowerCase();
         const holidayIcon = cols[2].querySelector('picture');
-        const backgroundAnimation = cols[4].textContent.trim().toLowerCase();
+        const backgroundAnimation = cols[4].querySelector('a');
 
         props.holidayBlock = true;
         props.holidayIcon = holidayIcon || null;
@@ -1109,24 +1110,6 @@ function setAttributes(element, attributes) {
   Object.keys(attributes).forEach((key) => element.setAttribute(key, attributes[key]));
 }
 
-function addBackgroundAnimation(block, animationUrl) {
-  const parent = block.closest('.template-x-wrapper.fullwidth.holiday');
-
-  if (parent) {
-    parent.classList.add('with-animation');
-    const videoBackground = createTag('video', { class: 'animation-background' });
-    videoBackground.append(createTag('source', { src: animationUrl, type: 'video/mp4' }));
-    setAttributes(videoBackground, {
-      autoplay: '',
-      muted: '',
-      loop: '',
-      playsinline: '',
-    });
-    block.prepend(videoBackground);
-    videoBackground.muted = true;
-  }
-}
-
 function initExpandCollapseBlock(block) {
   const toggleElements = Array.from(block.querySelectorAll('.toggle-button'));
   const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
@@ -1200,7 +1183,9 @@ function decorateHoliday(block, props) {
   }
 
   if (props.backgroundAnimation) {
-    addBackgroundAnimation(block, props.backgroundAnimation);
+    const animation = transformLinkToAnimation(props.backgroundAnimation);
+    animation.classList.add('animation-background');
+    block.prepend(animation);
   }
 
   if (props.backgroundColor) {
@@ -1230,16 +1215,8 @@ function decorateHoliday(block, props) {
   decorateBlankTemplate(props, templatesWrapper);
   initToggleHoliday(block);
 
-  block.addEventListener('mouseenter', () => {
-    mouseInBlock = true;
-  });
-
-  block.addEventListener('mouseleave', () => {
-    mouseInBlock = false;
-  });
-
   setTimeout(() => {
-    if (block.classList.contains('expanded') && !mouseInBlock) {
+    if (!block.matches(':hover')) {
       initExpandCollapseBlock(block);
     }
   }, 3000);
