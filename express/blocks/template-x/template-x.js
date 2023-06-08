@@ -1322,8 +1322,6 @@ async function buildTemplateList(block, props, type = []) {
     await processContentRow(block, props);
   }
 
-  await decorateBreadcrumbs(block);
-
   const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
   if (templates) {
     if (fallbackMsg) {
@@ -1358,6 +1356,8 @@ async function buildTemplateList(block, props, type = []) {
     await decorateCategoryList(block, props);
     appendCategoryTemplatesCount(block, props);
   }
+
+  await decorateBreadcrumbs(block);
 
   if (templates && props.orientation && props.orientation.toLowerCase() === 'horizontal') {
     const innerWrapper = block.querySelector('.template-x-inner-wrapper');
