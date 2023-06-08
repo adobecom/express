@@ -10,8 +10,18 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-disable no-underscore-dangle */
-import { getLanguage } from '../../scripts/scripts.js';
+import { fetchPlaceholders, getLanguage } from '../../scripts/scripts.js';
 
+function extractFilterTerms(input) {
+  if (!input || typeof input !== 'string') {
+    return [];
+  }
+  return input
+    .split(' AND ')
+    .map((t) => t
+      .replaceAll(' ', '')
+      .toLowerCase());
+}
 function formatFilterString(filters) {
   const {
     animated,
@@ -35,22 +45,18 @@ function formatFilterString(filters) {
       str += '&filters=behaviors==animated';
     }
   }
-  const cleanedTasks = tasks
-    ?.split(',')
-    ?.map((t) => t.trim().replaceAll(' ', '-'))
-    ?.join(',')
-    ?.toLowerCase();
-  if (cleanedTasks) {
-    str += `&filters=pages.task.name==${cleanedTasks}`;
-  }
-  const cleanedTopics = topics?.replaceAll(' ', '')?.toLowerCase();
-  if (cleanedTopics) {
-    str += `&filters=topics==${cleanedTopics}`;
-  }
-  const cleanedLocales = locales?.replaceAll(' ', '')?.toLowerCase();
+
+  extractFilterTerms(tasks).forEach((t) => {
+    str += `&filters=pages.task.name==${t}`;
+  });
+  extractFilterTerms(topics).forEach((t) => {
+    str += `&filters=topics==${t}`;
+  });
+  // locale needs backward compatibility with old api
+  const cleanedLocales = locales?.toLowerCase();
   if (cleanedLocales) {
     str += `&filters=language==${
-      cleanedLocales.split('or').map((l) => getLanguage(l)).toString()
+      cleanedLocales.split(' or ').map((l) => getLanguage(l.trim())).toString()
     }`;
   }
 
@@ -58,10 +64,9 @@ function formatFilterString(filters) {
 }
 
 const fetchSearchUrl = async ({
-  limit, start, filters, sort, q,
+  limit, start, filters, sort, q, collectionId,
 }) => {
   const base = 'https://spark-search.adobe.io/v3/content';
-  const collectionId = 'urn:aaid:sc:VA6C2:25a82757-01de-4dd9-b0ee-bde51dd3b418';
   const collectionIdParam = `collectionId=${collectionId}`;
   const queryType = 'assets';
   const queryParam = `&queryType=${queryType}`;
@@ -87,10 +92,16 @@ const fetchSearchUrl = async ({
   }).then((response) => response.json());
 };
 
-// FIXME: use placeholders/localize
-function getFallbackMsg (tasks) {
-  return `Sorry we couldn't find any results for what you searched for, try some of these popular `
-    + (tasks ? `${tasks.toString()} ` : '') + 'templates instead.';
+async function getFallbackMsg(tasks = '') {
+  const placeholders = await fetchPlaceholders();
+  const fallBacktextTemplate = tasks ? placeholders['templates-fallback-with-tasks'] : placeholders['templates-fallback-without-tasks'];
+
+  if (fallBacktextTemplate) {
+    return tasks ? fallBacktextTemplate.replaceAll('{{tasks}}', tasks.toString()) : fallBacktextTemplate;
+  }
+
+  return `Sorry we couldn't find any results for what you searched for, try some of these popular ${
+    tasks ? ` ${tasks.toString()} ` : ''}templates instead.`;
 }
 
 export async function fetchTemplates(props, fallback = true) {
@@ -106,11 +117,11 @@ export async function fetchTemplates(props, fallback = true) {
   if (tasks) {
     response = await fetchSearchUrl({ ...props, filters: { tasks } });
     if (response?.metadata?.totalHits > 0) {
-      return { response, fallbackMsg: getFallbackMsg(tasks) }; 
+      return { response, fallbackMsg: await getFallbackMsg(tasks) };
     }
   }
   response = await fetchSearchUrl({ ...props, filters: {} });
-  return { response, fallbackMsg: getFallbackMsg() };
+  return { response, fallbackMsg: await getFallbackMsg() };
 }
 
 function isValidBehaviors(behaviors) {
