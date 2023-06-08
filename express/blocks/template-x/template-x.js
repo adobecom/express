@@ -1122,9 +1122,8 @@ function initExpandCollapseBlock(block) {
 
 function initToggleHoliday(block) {
   const toggleBar = block.querySelector('.toggle-bar');
-  const aTag = toggleBar.querySelector('a');
-  const chev = toggleBar.querySelector('.toggle-button-chev');
-  const mobileChev = block.querySelector('.toggle-button.mobile');
+  const aTag = block.querySelector('.toggle-button a');
+  const chev = block.querySelector('.toggle-button-chev');
 
   aTag.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -1136,12 +1135,6 @@ function initToggleHoliday(block) {
   });
 
   chev.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    initExpandCollapseBlock(block);
-  });
-
-  mobileChev.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
     initExpandCollapseBlock(block);
@@ -1159,6 +1152,7 @@ function decorateBlankTemplate(props, templatesWrapper) {
 }
 
 function decorateHoliday(block, props) {
+  const mobileViewport = window.innerWidth < 901;
   const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
   const templateTitle = block.querySelector('.template-title');
   const toggleBar = templateTitle.querySelector('div');
@@ -1172,7 +1166,6 @@ function decorateHoliday(block, props) {
   const toggleChev = createTag('div', { class: 'toggle-button-chev' });
   const carouselFaderLeft = block.querySelector('.carousel-fader-left');
   const carouselFaderRight = block.querySelector('.carousel-fader-right');
-  let mouseInBlock;
 
   block.classList.add('expanded');
   toggleBar.classList.add('expanded', 'toggle-bar');
@@ -1200,17 +1193,20 @@ function decorateHoliday(block, props) {
 
   topElements.append(heading);
   toggle.append(link, toggleChev);
-  const mobileToggle = toggle.cloneNode(true);
-  mobileToggle.classList.add('mobile');
   linkWrapper.remove();
-  bottomElements.append(subheading, toggle);
-  toggleBar.append(topElements, bottomElements, toggle);
-  block.append(mobileToggle);
+  bottomElements.append(subheading);
+  toggleBar.append(topElements, bottomElements);
   heading.style.color = props.textColor;
   subheading.style.color = props.textColor;
   link.style.color = props.textColor;
   toggleChev.style.borderColor = props.textColor;
   block.style.backgroundColor = props.backgroundColor;
+
+  if (mobileViewport) {
+    block.append(toggle);
+  } else {
+    toggleBar.append(toggle);
+  }
 
   decorateBlankTemplate(props, templatesWrapper);
   initToggleHoliday(block);

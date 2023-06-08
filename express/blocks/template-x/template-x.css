@@ -507,6 +507,7 @@ main .template-x.sixcols .template:hover:not(.placeholder) .template-link,
 main .template-x.fullwidth .template:hover:not(.placeholder) .button-container,
 main .template-x.fullwidth .template:hover:not(.placeholder) .template-link {
     opacity: 1;
+    cursor: pointer;
 }
 
 main .template-x.horizontal .template:not(.placeholder) .template-link,
@@ -2010,7 +2011,7 @@ main .template-x-wrapper.horizontal {
 
 /* re-add max-width on elements that are not carousel */
 main .template-x-wrapper.horizontal > *:not(.template-x.horizontal),
-main .template-x-wrapper.horizontal > .template-x.horizontal > *:not(.carousel-container) {
+main .template-x-wrapper.horizontal > .template-x.horizontal > *:not(.carousel-container):not(.toggle-button) {
     max-width: 350px;
     max-width: 800px;
     padding-left: 15px;
@@ -2440,21 +2441,13 @@ main .template-x.horizontal.holiday .toggle-button {
 }
 
 @media (min-width: 900px) {
-    main .template-x.horizontal.holiday .toggle-button:not(.mobile) {
+    main .template-x.horizontal.holiday .toggle-button {
         display: flex;
-    }
-
-    main .template-x.horizontal.holiday .toggle-button.mobile {
-        display: none;
     }
 }
 
 @media (max-width: 900px) {
-    main .template-x.horizontal.holiday .toggle-button:not(.mobile) {
-        display: none;
-    }
-
-    main .template-x.horizontal.holiday .toggle-button.mobile {
+    main .template-x.horizontal.holiday .toggle-button {
         display: flex;
         transform: translate(-50%);
         margin-left: 192px;
@@ -2462,7 +2455,7 @@ main .template-x.horizontal.holiday .toggle-button {
         width: 110px;
     }    
 
-    main .template-x.horizontal.holiday .toggle-button.mobile.expanded {
+    main .template-x.horizontal.holiday.expanded .toggle-button {
         margin-left: 50%;
         transform: translate(-50%);
     }
