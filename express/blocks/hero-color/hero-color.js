@@ -68,7 +68,7 @@ function changeTextColorAccordingToBg(
   }
 }
 
-function loadSvgInsideWrapper(mediaQuery, svgId, svgWrapper) {
+function loadSvgInsideWrapper(mediaQuery, svgId, svgWrapper, secondaryColor) {
   const size = mediaQuery.matches ? 'desktop' : 'mobile';
   const svgNS = 'http://www.w3.org/2000/svg';
   const xlinkNS = 'http://www.w3.org/1999/xlink';
@@ -87,13 +87,14 @@ function loadSvgInsideWrapper(mediaQuery, svgId, svgWrapper) {
   // append new svg and remove old one
   svgWrapper.replaceChildren();
   svgWrapper.appendChild(svg);
+  svgWrapper.firstElementChild.style.fill = secondaryColor;
 }
 
-function changeSvgAccordingToMediaQuery(svgId, svgWrapper) {
+function changeSvgAccordingToMediaQuery(svgId, svgWrapper, secondaryColor) {
   const mediaQuery = window.matchMedia('(min-width: 900px)');
-  loadSvgInsideWrapper(mediaQuery, svgId, svgWrapper);
+  loadSvgInsideWrapper(mediaQuery, svgId, svgWrapper, secondaryColor);
   mediaQuery.addEventListener('change', (event) => {
-    loadSvgInsideWrapper(event, svgId, svgWrapper);
+    loadSvgInsideWrapper(event, svgId, svgWrapper, secondaryColor);
   });
 }
 
@@ -103,8 +104,7 @@ function displaySvgWithObject(svg, heroColorContentContainer, secondaryColor) {
 
   const svgWrapper = createTag('div', { class: 'color-svg' });
 
-  changeSvgAccordingToMediaQuery(svgId, svgWrapper);
-  svgWrapper.firstElementChild.style.fill = secondaryColor;
+  changeSvgAccordingToMediaQuery(svgId, svgWrapper, secondaryColor);
   heroColorContentContainer.append(svgWrapper);
 }
 
