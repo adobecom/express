@@ -1,28 +1,38 @@
-/* future proofing wrapper deprecation. To be removed after milo migration */
+/* Future proofing wrapper deprecation. To be removed after milo migration */
 main .section .hero-color-wrapper {
-  margin: 0;
-  padding: 0;
+  max-width: 100%;
 }
 
-/* fixme: change max-width to min-width media query */
-main .section.hero-color-container {
-  padding: 0;
+main .hero-color .content-container .text {
+  display: none;
 }
 
-main .hero-color .content-container .text,
+main .hero-color .content-container {
+  height: 200px;
+}
+
+main .hero-color .text-container {
+  display: flex;
+  justify-content: center;
+}
+
 main .hero-color .text-container .text {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin: 15px;
   text-align: left;
-  max-width: 486px;
-  margin: 0 0 0 120px;
 }
 
-main .hero-color .content-container {
-  display: flex;
-  align-items: center;
-  height: 336px;
+main .hero-color .content-container h2,
+main .hero-color .text-container h2 {
+  margin: 0 0 16px 0;
+  font-size: 42px;
+}
+
+main .hero-color .content-container p,
+main .hero-color .text-container p {
+  margin: 0 0 32px 0;
 }
 
 main .hero-color .content-container .text .button-container,
@@ -38,93 +48,58 @@ main .hero-color .text-container .button-container .button {
   font-size: 16px;
 }
 
-main .hero-color .content-container h2,
-main .hero-color .text-container h2 {
-  margin: 0 0 16px 0;
-  font-size: 42px;
-}
-
-main .hero-color .content-container p,
-main .hero-color .text-container p {
-  margin: 0 0 32px 0;
+main .hero-color .content-container .color-svg-img {
+  height: 100%;
+  width: 100%;
+  margin: 0 0 0 15px;
 }
 
 main .hero-color .content-container .color-svg {
   height: 100%;
-  overflow: hidden;
-  flex: 1;
-  margin: 0 0 0 60px;
-}
-
-main .hero-color .content-container .color-svg svg {
-  height: 100%;
   width: 100%;
 }
 
-main .hero-color {
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-}
-
-main .hero-color .text-container {
-  display: none;
-}
-
-main .hero-color .fade-in {
-  opacity: 0;
-  animation: fadeIn 1s ease-in-out forwards;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
+@media screen and (min-width: 600px) {
+  main .hero-color .content-container .color-svg-img {
+    margin: 0 0 0 365px;
   }
-  100% {
-    opacity: 1;
-  }
-}
 
-@media (max-width: 1200px) {
-  main .hero-color .content-container .text {
+  main .hero-color .text-container {
     margin: 32px;
   }
 }
 
-@media (max-width: 900px) {
-  main .hero-color .content-container {
-    height: 200px;
-  }
-
-  main .hero-color .content-container .text {
+@media screen and (min-width: 900px) {
+  main .hero-color .text-container {
     display: none;
   }
 
-  main .hero-color .text-container {
-    display: flex;
-    justify-content: center;
-    padding: 32px 0 32px 0;
-    margin: 32px 0 32px 0;
+  main .hero-color .content-container {
+    height: 336px;
   }
 
-  main .hero-color .text-container .text {
+  main .hero-color .content-container {
     display: flex;
+    gap: 60px;
+  }
+
+  main .hero-color .content-container .color-svg-img {
     margin: 0;
+    overflow: hidden;
+  }
+
+  main .hero-color .content-container .color-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  main .hero-color .content-container .text {
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  main .hero-color .content-container .color-svg {
-    margin: 0 0 0 365px;
-  }
-}
-
-@media (max-width: 375px) {
-  main .hero-color .content-container .color-svg {
-    margin: 0 0 0 15px;
-  }
-
-  main .hero-color .text-container .text {
-    margin: 0 23px 0 23px;
+    justify-content: center;
+    margin: 32px;
+    text-align: left;
+    min-width: 486px;
   }
 }
