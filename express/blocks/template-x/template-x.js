@@ -611,7 +611,7 @@ async function decorateCategoryList(block, props) {
   const locale = getLocale(window.location);
   const mobileDrawerWrapper = block.querySelector('.filter-drawer-mobile');
   const drawerWrapper = block.querySelector('.filter-drawer-mobile-inner-wrapper');
-  const categories = JSON.parse(placeholders['task-categories']);
+  const categories = JSON.parse(placeholders['x-task-categories']);
   const categoryIcons = placeholders['task-category-icons'].replace(/\s/g, '').split(',');
   const categoriesDesktopWrapper = createTag('div', { class: 'category-list-wrapper' });
   const categoriesToggleWrapper = createTag('div', { class: 'category-list-toggle-wrapper' });
@@ -661,8 +661,6 @@ async function decorateCategoryList(block, props) {
   drawerWrapper.append(categoriesMobileWrapper);
   lottieArrows.innerHTML = getLottie('purple-arrows', '/express/icons/purple-arrows.json');
   lazyLoadLottiePlayer();
-
-  categoriesDesktopWrapper.classList.add('desktop-only');
 
   block.prepend(categoriesDesktopWrapper);
   block.classList.add('with-categories-list');
