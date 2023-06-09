@@ -77,7 +77,7 @@ main .template-x.fullwidth.holiday .template-x-inner-wrapper {
     overflow: hidden;
 }
 
-main .template-x.fullwidth.holiday .expanded.template-x-inner-wrapper {
+main .template-x.fullwidth.holiday.expanded .template-x-inner-wrapper {
     max-height: 300px;
     margin-left: 56px;
     margin-left: 56px;
@@ -216,8 +216,8 @@ main .holiday.template-x-wrapper .toggle-button-chev {
     transition: transform 0.2s;
 }
 
-main .holiday.template-x-wrapper .expanded.toggle-button .toggle-button-chev {
-    transform: rotate(225deg);
+main .template-x.horizontal.holiday.expanded .toggle-button .toggle-button-chev {
+    transform: rotate(-135deg);
 }
 
 main .template-x-wrapper .template-title-link {
@@ -634,6 +634,14 @@ main .template-x .template.placeholder > div:first-of-type > img,
 main .template-x .template.placeholder > div:first-of-type > svg {
     width: 44px;
     height: 44px;
+}
+
+main .template-x.holiday.light-text svg {
+    fill: var(--color-white);
+}
+
+main .template-x.holiday.dark-text svg {
+    fill: var(--color-gray-900);
 }
 
 main .template-x.fullwidth.sm-view .template.placeholder > div:first-of-type > img,
@@ -2389,6 +2397,26 @@ main .template-x.horizontal.holiday.with-animation {
     padding-top: 0;
 }
 
+main .template-x.horizontal.holiday.light-text,
+main .template-x.horizontal.holiday.light-text .toggle-button a,
+main .template-x.horizontal.holiday.light-text .template-link {
+    color: var(--color-white);
+}
+
+main .template-x.horizontal.holiday.light-text .toggle-button .toggle-button-chev {
+    border-color: var(--color-white);
+}
+
+main .template-x.horizontal.holiday.dark-text,
+main .template-x.horizontal.holiday.dark-text .toggle-button a,
+main .template-x.horizontal.holiday.dark-text .template-link {
+    color: var(--color-gray-800);
+}
+
+main .template-x.horizontal.holiday.dark-text .toggle-button .toggle-button-chev {
+    border-color: var(--color-gray-800);
+}
+
 main .template-x.horizontal.holiday p,
 main .template-x.horizontal.holiday picture {
     z-index: 1;
@@ -2461,37 +2489,8 @@ main .template-x.horizontal.holiday.expanded .toggle-button.mobile {
     }    
 }
 
-
-main .template-x.horizontal.holiday .toggle-button a {
-    color: var(--color-white);
-}
-
 main .template-x.horizontal.holiday .toggle-button a:hover {
     text-decoration: underline;
-}
-
-main .template-x.horizontal.holiday .toggle-button.mobile-only {
-    width: max-content;
-    padding: 0 30px;
-    margin-left: 0;
-    transform: translate(0, -6px);
-    font-weight: 400;
-    transition: margin 0.5s, transform 0.5s;
-}
-
-main .template-x.horizontal.holiday.with-icon .toggle-button.mobile-only {
-    margin: auto auto auto 190px;
-    transform: translate(-50%, -6px);
-}
-
-main .template-x.horizontal.holiday .toggle-button.mobile-only.expanded {
-    transform: translate(-50%, -6px);
-    margin: auto auto auto 50%;
-}
-
-main .template-x.horizontal.holiday.with-icon .toggle-button.mobile-only.expanded {
-    margin-left: 50%;
-    transform: translate(-50%, -6px);
 }
 
 main .template-x.horizontal.holiday .toggle-button .toggle-button-chev {
@@ -2503,7 +2502,6 @@ main .template-x.horizontal.holiday .toggle-button .toggle-button-chev {
     border-bottom-width: 2px;
     border-right-width: 2px;
     border-style: solid;
-    border-color: var(--color-white);
     transform-origin: 75% 75%;
     transform: rotate(45deg);
     margin-top: 5px;
@@ -2511,10 +2509,6 @@ main .template-x.horizontal.holiday .toggle-button .toggle-button-chev {
     margin-right: 2.25px;
     transition: transform 0.2s;
     cursor: pointer;
-}
-
-main .template-x.horizontal.holiday .toggle-button.expanded .toggle-button-chev {
-    transform: rotate(-135deg);
 }
 
 main .template-x.horizontal.holiday .toggle-bar-top {
@@ -2537,16 +2531,6 @@ main .template-x.horizontal.holiday .toggle-bar-bottom {
     }
 }
 
-main .template-x.horizontal.holiday .template-x-wrapper p.mobile-only {
-    color: var(--color-white);
-    position: absolute;
-    top: 0;
-    font-size: 12px;
-    text-align: left;
-    margin: 0 0 16px;
-    padding: 0 30px;
-}
-
 main .template-x.horizontal.holiday .template-x-wrapper,
 main .template-x.holiday,
 main .template-x.holiday .carousel-container {
@@ -2567,7 +2551,7 @@ main .template-x.horizontal.holiday .template-x-wrapper {
     overflow: hidden;
 }
 
-main .template-x.horizontal.holiday .template-x-wrapper.expanded {
+main .template-x.horizontal.holiday.expanded .template-x-wrapper {
     padding-top: 16px;
 }
 
@@ -2616,11 +2600,7 @@ main .template-x.horizontal.holiday .toggle-bar {
 }
 
 @media (min-width: 1200px) {
-    main .template-x.horizontal.holiday .mobile-only {
-        display: none;
-    }
-
-    main .template-x.horizontal.holiday .template-x-wrapper.expanded {
+    main .template-x.horizontal.holiday.expanded .template-x-wrapper {
         padding-top: 0;
     }
 }

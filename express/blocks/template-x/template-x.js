@@ -221,7 +221,7 @@ function constructProps(block) {
           props.backgroundColor = backgroundColor;
         }
         props.backgroundAnimation = backgroundAnimation || null;
-        const contrastingTextColor = isDarkOverlayReadable(backgroundColor) ? '#242424' : '#fff';
+        const contrastingTextColor = isDarkOverlayReadable(backgroundColor) ? 'dark-text' : 'light-text';
         props.textColor = contrastingTextColor;
       }
     }
@@ -1109,6 +1109,7 @@ async function decorateToolbar(block, props) {
 
 function initExpandCollapseBlock(block) {
   const toggleElements = Array.from(block.querySelectorAll('.toggle-button'));
+  console.log(toggleElements);
   const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
   const toggleBar = block.querySelector('.toggle-bar');
   toggleElements.push(templatesWrapper, toggleBar, block);
@@ -1138,16 +1139,6 @@ function initToggleHoliday(block) {
   });
 }
 
-function decorateBlankTemplate(props, templatesWrapper) {
-  const blankTemplateSvg = templatesWrapper.querySelector('.placeholder svg');
-  const blankTemplateText = templatesWrapper.querySelector('.template-link');
-
-  if (blankTemplateSvg) {
-    blankTemplateSvg.style.fill = props.textColor;
-    blankTemplateText.style.color = props.textColor;
-  }
-}
-
 function decorateHoliday(block, props) {
   const mobileViewport = window.innerWidth < 901;
   const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
@@ -1164,7 +1155,7 @@ function decorateHoliday(block, props) {
   const carouselFaderLeft = block.querySelector('.carousel-fader-left');
   const carouselFaderRight = block.querySelector('.carousel-fader-right');
 
-  block.classList.add('expanded');
+  block.classList.add('expanded', props.textColor);
   toggleBar.classList.add('expanded', 'toggle-bar');
   templatesWrapper.classList.add('expanded');
 
@@ -1193,10 +1184,7 @@ function decorateHoliday(block, props) {
   linkWrapper.remove();
   bottomElements.append(subheading);
   toggleBar.append(topElements, bottomElements);
-  heading.style.color = props.textColor;
-  subheading.style.color = props.textColor;
-  link.style.color = props.textColor;
-  toggleChev.style.borderColor = props.textColor;
+
   block.style.backgroundColor = props.backgroundColor;
 
   if (mobileViewport) {
@@ -1206,7 +1194,6 @@ function decorateHoliday(block, props) {
     toggleBar.append(toggle);
   }
 
-  decorateBlankTemplate(props, templatesWrapper);
   initToggleHoliday(block);
 
   setTimeout(() => {
