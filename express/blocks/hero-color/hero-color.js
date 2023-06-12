@@ -10,7 +10,9 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag } from '../../scripts/scripts.js';
+import {
+  createTag,
+} from '../../scripts/scripts.js';
 
 function isDarkOverlayReadable(colorString) {
   let r;
