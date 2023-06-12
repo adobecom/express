@@ -12,14 +12,36 @@
 
 /* eslint-disable import/named, import/extensions */
 
-import {
-  createOptimizedPicture,
-  createTag,
-  fetchPlaceholders,
-} from '../../scripts/scripts.js';
+import { createOptimizedPicture, createTag, fetchPlaceholders, } from '../../scripts/scripts.js';
 
 let rotationInterval;
 let fixedImageSize = false;
+
+function isDarkOverlayReadable(colorString) {
+  let r;
+  let g;
+  let b;
+
+  if (colorString.match(/^rgb/)) {
+    const colorValues = colorString.match(
+      /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/,
+    );
+    [r, g, b] = colorValues.slice(1);
+  } else {
+    const hexToRgb = +`0x${colorString
+      .slice(1)
+      .replace(colorString.length < 5 ? /./g : '', '$&$&')}`;
+    // eslint-disable-next-line no-bitwise
+    r = (hexToRgb >> 16) & 255;
+    // eslint-disable-next-line no-bitwise
+    g = (hexToRgb >> 8) & 255;
+    // eslint-disable-next-line no-bitwise
+    b = hexToRgb & 255;
+  }
+
+  const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+  return hsp > 140;
+}
 
 function reset(block) {
   const howToWindow = block.ownerDocument.defaultView;
@@ -259,15 +281,28 @@ function layerTemplateImage(canvas, ctx, templateImg) {
   });
 }
 
+function getColorSVG(svgName) {
+  const symbols = ['hero-marquee', 'hands-and-heart', 'how-to-carousel-icon', 'how-to-carousel-graph'];
+
+  if (symbols.includes(svgName)) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-${svgName}">
+      ${svgName ? `<title>${svgName}</title>` : ''}
+      <use href="/express/icons/color-sprite.svg#${svgName}"></use>
+    </svg>`;
+  }
+
+  return null;
+}
+
 export default async function decorate(block) {
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
   const image = block.classList.contains('image');
+  const svg = block.classList.contains('svg');
 
   // move first image of container outside of div for styling
   const section = block.closest('.section');
-  const howto = block;
-  const rows = Array.from(howto.children);
+  const rows = Array.from(block.children);
   let picture;
 
   if (image) {
@@ -314,6 +349,16 @@ export default async function decorate(block) {
         });
       });
     });
+  } else if (svg) {
+    const colorDataDiv = rows.shift();
+    const colorDataRows = colorDataDiv.querySelector('div')?.children;
+    colorDataDiv.remove();
+
+    if (colorDataRows.length === 3) {
+      const hexVals = colorDataRows[1].textContent.split(',');
+      block.parentElement.style.backgroundColor = `${hexVals[0]}`;
+    }
+
   } else {
     picture = section.querySelector('picture');
     const parent = picture.parentElement;

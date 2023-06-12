@@ -288,6 +288,7 @@ export function getIcon(icons, alt, size = 44) {
     'brandswitch',
     'calendar',
     'certified',
+    'color-how-to-icon',
     'changespeed',
     'check',
     'chevron',
