@@ -66,6 +66,7 @@ main .fullscreen-marquee-desktop-heading h1 em {
 main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-background {
   position: absolute;
   height: 100%;
+  width: 100%;
   top: 0;
   left: 50%;
   z-index: -5;
@@ -77,6 +78,8 @@ main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-background {
 main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-background img {
   max-width: none;
   height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
 main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frame {
