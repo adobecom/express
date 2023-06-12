@@ -35,11 +35,7 @@ function isDarkOverlayReadable(colorString) {
   }
 
   const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
-  if (hsp > 140) {
-    return true;
-  } else {
-    return false;
-  }
+  return hsp > 140;
 }
 
 function cloneForSmallerMediaQueries(textBlock) {
@@ -54,18 +50,8 @@ function cloneForSmallerMediaQueries(textBlock) {
 function changeTextColorAccordingToBg(
   primaryColor,
   heroColorContentContainer,
-  button,
 ) {
-  const isLightBg = isDarkOverlayReadable(primaryColor);
-  if (isLightBg) {
-    heroColorContentContainer.style.color = '#000000';
-    button.style.backgroundColor = '#000000';
-    button.style.color = '#ffffff';
-  } else {
-    heroColorContentContainer.style.color = '#ffffff';
-    button.style.backgroundColor = '#ffffff';
-    button.style.color = '#000000';
-  }
+  heroColorContentContainer.classList.add(isDarkOverlayReadable(primaryColor) ? 'light-bg' : 'dark-bg');
 }
 
 function loadSvgInsideWrapper(mediaQuery, svgId, svgWrapper, secondaryColor) {
@@ -98,28 +84,26 @@ function changeSvgAccordingToMediaQuery(svgId, svgWrapper, secondaryColor) {
   });
 }
 
-function displaySvgWithObject(svg, heroColorContentContainer, secondaryColor) {
-  const svgId = svg.children[0].textContent;
-  svg.remove();
-
+function displaySvgWithObject(block, secondaryColor) {
+  const svg = block.firstElementChild;
+  const svgId = svg.firstElementChild.textContent;
   const svgWrapper = createTag('div', { class: 'color-svg' });
 
+  svg.remove();
   changeSvgAccordingToMediaQuery(svgId, svgWrapper, secondaryColor);
+  const heroColorContentContainer = block.querySelector('.content-container');
   heroColorContentContainer.append(svgWrapper);
 }
 
-function extractTextElements(text, block) {
+function groupTextElements(text, block) {
   const title = block.querySelector('h2');
   const description = block.querySelector('p');
   const cta = block.querySelector('.button-container');
   const button = cta.querySelector('.button');
+
   button.style.border = 'none';
   text.classList.add('text');
   text.append(title, description, cta);
-
-  return {
-    title, description, cta, button,
-  };
 }
 
 function extractColorElements(colors) {
@@ -130,31 +114,38 @@ function extractColorElements(colors) {
   return { primaryColor, secondaryColor };
 }
 
-function applyDynamicColors(primaryColor, heroColorContentContainer, button) {
-  changeTextColorAccordingToBg(primaryColor, heroColorContentContainer, button);
+function decorateColors(block) {
+  const colors = block.firstElementChild;
+  const { primaryColor, secondaryColor } = extractColorElements(colors);
+  const heroColorContentContainer = block.querySelector('.content-container');
+  heroColorContentContainer.style.backgroundColor = primaryColor;
+  changeTextColorAccordingToBg(primaryColor, heroColorContentContainer);
+
+  return { secondaryColor };
+}
+
+function decorateText(block) {
+  const text = block.firstElementChild;
+  const smallMediaQueryBlock = cloneForSmallerMediaQueries(text);
+  const heroColorContentContainer = block.querySelector('.content-container');
+
+  groupTextElements(text, block);
+  heroColorContentContainer.append(text);
+  block.append(smallMediaQueryBlock);
 }
 
 export default function decorate(block) {
-  const [text, colors, svg] = Array.from(block.children);
-
-  const smallMediaQueryBlock = cloneForSmallerMediaQueries(text);
-
   const heroColorContentContainer = createTag('div', {
     class: 'content-container',
   });
-
-  // colors
-  const { primaryColor, secondaryColor } = extractColorElements(colors);
-  heroColorContentContainer.style.backgroundColor = primaryColor;
+  block.append(heroColorContentContainer);
 
   // text
-  const { button } = extractTextElements(text, block);
+  decorateText(block);
 
-  // dynamic colors
-  applyDynamicColors(primaryColor, heroColorContentContainer, button);
+  // colors
+  const { secondaryColor } = decorateColors(block);
 
-  heroColorContentContainer.append(text);
-  displaySvgWithObject(svg, heroColorContentContainer, secondaryColor);
-  block.append(heroColorContentContainer);
-  block.append(smallMediaQueryBlock);
+  // svg
+  displaySvgWithObject(block, secondaryColor);
 }
