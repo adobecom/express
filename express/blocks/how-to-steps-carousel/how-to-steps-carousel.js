@@ -282,10 +282,10 @@ function layerTemplateImage(canvas, ctx, templateImg) {
 }
 
 function getColorSVG(svgName) {
-  const symbols = ['hero-marquee', 'hands-and-heart', 'how-to-carousel-icon', 'how-to-carousel-graph'];
+  const symbols = ['hero-marquee', 'hero-marquee-localized', 'hands-and-heart', 'color-how-to-graph'];
 
   if (symbols.includes(svgName)) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-${svgName}">
+    return `<svg xmlns="http://www.w3.org/2000/svg" class="${svgName}">
       ${svgName ? `<title>${svgName}</title>` : ''}
       <use href="/express/icons/color-sprite.svg#${svgName}"></use>
     </svg>`;
@@ -355,15 +355,21 @@ export default async function decorate(block) {
     colorDataDiv.remove();
 
     if (colorDataRows.length === 3) {
-      const hexVals = colorDataRows[1].textContent.split(',');
-      block.parentElement.style.backgroundColor = `${hexVals[0]}`;
-    }
+      const colorName = colorDataRows[0].innerText;
+      const [primaryHex, SecondaryHex] = colorDataRows[1].textContent.split(',');
+      const colorGraphName = colorDataRows[2].innerText;
+      const svgWrapper = createTag('div', { class: 'svg-wrapper' });
+      svgWrapper.innerHTML = getColorSVG(colorGraphName);
+      block.parentElement.style.backgroundColor = `${primaryHex}`;
 
+      block.parentElement.prepend(svgWrapper);
+    }
   } else {
     picture = section.querySelector('picture');
     const parent = picture.parentElement;
     parent.remove();
     section.prepend(picture);
   }
+
   buildHowToStepsCarousel(section, picture, block, howToDocument, rows, howToWindow);
 }
