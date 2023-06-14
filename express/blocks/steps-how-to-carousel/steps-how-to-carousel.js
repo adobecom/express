@@ -103,6 +103,22 @@ function buildSchema(block, payload) {
   });
 }
 
+function initRotation(payload) {
+  if (payload.howToWindow && !payload.rotationInterval) {
+    payload.rotationInterval = payload.howToWindow.setInterval(() => {
+      payload.howToDocument.querySelectorAll('.tip-numbers').forEach((numbers) => {
+        // find next adjacent sibling of the currently activated tip
+        let activeAdjacentSibling = numbers.querySelector('.tip-number.active+.tip-number');
+        if (!activeAdjacentSibling) {
+          // if no next adjacent, back to first
+          activeAdjacentSibling = numbers.firstElementChild;
+        }
+        activate(numbers.parentElement, payload, activeAdjacentSibling);
+      });
+    }, 5000);
+  }
+}
+
 function buildStepsHowToCarousel(block, payload) {
   const carouselDivs = block.querySelector('.content-wrapper');
   const rows = Array.from(carouselDivs.children);
@@ -258,4 +274,7 @@ export default async function decorate(block) {
   if (colorPageUseCase) {
     colorizeSVG(block, payload);
   }
+
+  activate(block, payload, block.querySelector('.tip-number.tip-1'));
+  initRotation(payload);
 }
