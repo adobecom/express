@@ -216,7 +216,7 @@ main .steps-how-to-carousel.color.dark .content-wrapper a.button:any-link {
     }
 
     main .steps-how-to-carousel > .content-wrapper {
-        padding: 80px 88px;
+        margin: 0 24px 0 80px;
     }
 
     main .steps-how-to-carousel .tips .tip {
@@ -247,10 +247,6 @@ main .steps-how-to-carousel.color.dark .content-wrapper a.button:any-link {
 }
 
 @media (min-width: 900px) {
-    main .steps-how-to-carousel > .content-wrapper {
-        margin: 0 80px;
-    }
-
     main .steps-how-to-carousel > .content-wrapper p.button-container {
         margin: 40px 0 0;
     }

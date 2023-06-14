@@ -12,7 +12,7 @@
 
 /* eslint-disable import/named, import/extensions */
 
-import { createOptimizedPicture, createTag, fetchPlaceholders } from '../../scripts/scripts.js';
+import { createTag } from '../../scripts/scripts.js';
 
 function isDarkOverlayReadable(colorString) {
   let r;
@@ -39,31 +39,6 @@ function isDarkOverlayReadable(colorString) {
   const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
   return hsp > 140;
 }
-
-function reset(block, payload) {
-  const howToWindow = block.ownerDocument.defaultView;
-
-  howToWindow.clearInterval(payload.rotationInterval);
-  payload.rotationInterval = null;
-
-  const picture = block.querySelector('picture');
-
-  if (picture) {
-    delete picture.style.height;
-  }
-
-  block.classList.remove('no-cover');
-  payload.fixedImageSize = false;
-}
-
-const loadImage = (img) => new Promise((resolve) => {
-  if (img.complete && img.naturalHeight !== 0) resolve();
-  else {
-    img.onload = () => {
-      resolve();
-    };
-  }
-});
 
 function setPictureHeight(block, payload, override) {
   if (!payload.fixedImageSize || override) {
@@ -94,20 +69,38 @@ function activate(block, payload, target) {
   block.querySelectorAll(`.tip-${i}`).forEach((elem) => elem.classList.add('active'));
 }
 
-function initRotation(payload) {
-  if (payload.howToWindow && !payload.rotationInterval) {
-    payload.rotationInterval = payload.howToWindow.setInterval(() => {
-      payload.howToDocument.querySelectorAll('.tip-numbers').forEach((numbers) => {
-        // find next adjacent sibling of the currently activated tip
-        let activeAdjacentSibling = numbers.querySelector('.tip-number.active+.tip-number');
-        if (!activeAdjacentSibling) {
-          // if no next adjacent, back to first
-          activeAdjacentSibling = numbers.firstElementChild;
-        }
-        activate(numbers.parentElement, payload, activeAdjacentSibling);
-      });
-    }, 5000);
-  }
+function buildSchema(block, payload) {
+  const carouselDivs = block.querySelector('.content-wrapper');
+  const rows = Array.from(carouselDivs.children);
+  const schemaObj = {
+    '@context': 'http://schema.org',
+    '@type': 'HowTo',
+    name: (payload.heading) || payload.howToDocument.title,
+    step: [],
+  };
+
+  const schema = createTag('script', { type: 'application/ld+json' });
+  schema.innerHTML = JSON.stringify(schemaObj);
+  const { head } = payload.howToDocument;
+  head.append(schema);
+
+  rows.forEach((row, i) => {
+    const cells = Array.from(row.children);
+    const h3 = createTag('h3');
+    h3.innerHTML = cells[0].textContent.trim();
+    const text = createTag('div', { class: 'tip-text' });
+    text.append(h3);
+
+    schemaObj.step.push({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: h3.textContent.trim(),
+      itemListElement: {
+        '@type': 'HowToDirection',
+        text: text.textContent.trim(),
+      },
+    });
+  });
 }
 
 function buildStepsHowToCarousel(block, payload) {
@@ -124,35 +117,7 @@ function buildStepsHowToCarousel(block, payload) {
   carouselDivs.append(payload.icon, payload.heading, carousel, payload.cta);
 
   if (includeSchema) {
-    const schemaObj = {
-      '@context': 'http://schema.org',
-      '@type': 'HowTo',
-      name: (payload.heading) || payload.howToDocument.title,
-      step: [],
-    };
-
-    const schema = createTag('script', { type: 'application/ld+json' });
-    schema.innerHTML = JSON.stringify(schemaObj);
-    const { head } = payload.howToDocument;
-    head.append(schema);
-
-    rows.forEach((row, i) => {
-      const cells = Array.from(row.children);
-      const h3 = createTag('h3');
-      h3.innerHTML = cells[0].textContent.trim();
-      const text = createTag('div', { class: 'tip-text' });
-      text.append(h3);
-
-      schemaObj.step.push({
-        '@type': 'HowToStep',
-        position: i + 1,
-        name: h3.textContent.trim(),
-        itemListElement: {
-          '@type': 'HowToDirection',
-          text: text.textContent.trim(),
-        },
-      });
-    });
+    buildSchema(block, payload);
   }
 
   rows.forEach((row, i) => {
@@ -209,70 +174,21 @@ function buildStepsHowToCarousel(block, payload) {
       number.classList.add('active');
     }
   });
-
-  if (payload.hotToWindow) {
-    payload.hotToWindow.addEventListener('resize', () => {
-      reset(block);
-      activate(block, payload, block.querySelector('.tip-number.tip-1'));
-      initRotation(payload);
-    });
-
-    // slgiht delay to allow panel to size correctly
-    payload.hotToWindow.setTimeout(() => {
-      activate(block, payload, block.querySelector('.tip-number.tip-1'));
-      initRotation(payload);
-    }, 100);
-  }
 }
 
-function roundedImage(x, y, width, height, radius, ctx) {
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + width - radius, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-  ctx.lineTo(x + width, y + height - radius);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-  ctx.lineTo(x + radius, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
-  ctx.closePath();
-}
-
-function layerTemplateImage(canvas, ctx, templateImg) {
-  templateImg.style.objectFit = 'contain';
-
-  return new Promise((outerResolve) => {
-    let prevWidth;
-    const drawImage = (centerX, centerY, maxWidth, maxHeight) => new Promise((resolve) => {
-      const obs = new ResizeObserver((changes) => {
-        for (const change of changes) {
-          if (change.contentRect.width === prevWidth) return;
-          prevWidth = change.contentRect.width;
-          if (prevWidth <= maxWidth && change.contentRect.height <= maxHeight) {
-            ctx.save();
-            roundedImage(centerX - (templateImg.width / 2), centerY - (templateImg.height / 2),
-              templateImg.width, templateImg.height, 7, ctx);
-            ctx.clip();
-            ctx.drawImage(templateImg, 0, 0, templateImg.naturalWidth,
-              templateImg.naturalHeight, centerX - (templateImg.width / 2),
-              centerY - (templateImg.height / 2), templateImg.width, templateImg.height);
-            ctx.restore();
-            obs.disconnect();
-            resolve();
-          }
-        }
-      });
-      obs.observe(templateImg);
-      templateImg.style.maxWidth = `${maxWidth}px`;
-      templateImg.style.maxHeight = `${maxHeight}px`;
-    });
-
-    // start and end areas were directly measured and transferred from the spec image
-    drawImage(1123, 600, 986, 652)
-      .then(() => drawImage(1816, 479, 312, 472))
-      .then(() => outerResolve());
+function colorizeSVG(block, payload) {
+  block.querySelectorAll(':scope > div')?.forEach((div) => {
+    div.style.backgroundColor = payload.primaryHex;
+    div.style.color = payload.secondaryHex;
   });
+
+  block.querySelectorAll('svg')?.forEach((svg) => {
+    svg.style.fill = payload.secondaryHex;
+  });
+
+  if (!isDarkOverlayReadable(payload.primaryHex)) {
+    block.classList.add('dark');
+  }
 }
 
 function getColorSVG(svgName) {
@@ -340,17 +256,6 @@ export default async function decorate(block) {
   buildStepsHowToCarousel(block, payload);
 
   if (colorPageUseCase) {
-    block.querySelectorAll(':scope > div')?.forEach((div) => {
-      div.style.backgroundColor = payload.primaryHex;
-      div.style.color = payload.secondaryHex;
-    });
-
-    block.querySelectorAll('svg')?.forEach((svg) => {
-      svg.style.fill = payload.secondaryHex;
-    });
-
-    if (!isDarkOverlayReadable(payload.primaryHex)) {
-      block.classList.add('dark');
-    }
+    colorizeSVG(block, payload);
   }
 }
