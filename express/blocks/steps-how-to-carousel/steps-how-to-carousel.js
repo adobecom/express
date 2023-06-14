@@ -14,9 +14,6 @@
 
 import { createOptimizedPicture, createTag, fetchPlaceholders } from '../../scripts/scripts.js';
 
-let rotationInterval;
-let fixedImageSize = false;
-
 function isDarkOverlayReadable(colorString) {
   let r;
   let g;
@@ -43,22 +40,20 @@ function isDarkOverlayReadable(colorString) {
   return hsp > 140;
 }
 
-function reset(block) {
+function reset(block, payload) {
   const howToWindow = block.ownerDocument.defaultView;
 
-  howToWindow.clearInterval(rotationInterval);
-  rotationInterval = null;
+  howToWindow.clearInterval(payload.rotationInterval);
+  payload.rotationInterval = null;
 
-  const container = block.parentElement.parentElement;
-  const picture = container.querySelector('picture');
+  const picture = block.querySelector('picture');
 
   if (picture) {
     delete picture.style.height;
   }
 
-  container.classList.remove('no-cover');
-
-  fixedImageSize = false;
+  block.classList.remove('no-cover');
+  payload.fixedImageSize = false;
 }
 
 const loadImage = (img) => new Promise((resolve) => {
@@ -70,8 +65,8 @@ const loadImage = (img) => new Promise((resolve) => {
   }
 });
 
-function setPictureHeight(block, override) {
-  if (!fixedImageSize || override) {
+function setPictureHeight(block, payload, override) {
+  if (!payload.fixedImageSize || override) {
     // trick to fix the image height when vw > 900 and avoid image resize when toggling the tips
     const container = block.parentElement.parentElement;
     const picture = container.querySelector('picture');
@@ -81,13 +76,13 @@ function setPictureHeight(block, override) {
       const panelHeight = block.parentElement.offsetHeight;
       const imgHeight = img.naturalHeight;
       picture.style.height = `${panelHeight || imgHeight}px`;
-      fixedImageSize = true;
+      payload.fixedImageSize = true;
     }
   }
 }
 
-function activate(block, target) {
-  setPictureHeight(block);
+function activate(block, payload, target) {
+  setPictureHeight(block, payload);
   // de-activate all
   block.querySelectorAll('.tip, .tip-number').forEach((item) => {
     item.classList.remove('active');
@@ -99,127 +94,133 @@ function activate(block, target) {
   block.querySelectorAll(`.tip-${i}`).forEach((elem) => elem.classList.add('active'));
 }
 
-function initRotation(howToWindow, howToDocument) {
-  if (howToWindow && !rotationInterval) {
-    rotationInterval = howToWindow.setInterval(() => {
-      howToDocument.querySelectorAll('.tip-numbers').forEach((numbers) => {
+function initRotation(payload) {
+  if (payload.howToWindow && !payload.rotationInterval) {
+    payload.rotationInterval = payload.howToWindow.setInterval(() => {
+      payload.howToDocument.querySelectorAll('.tip-numbers').forEach((numbers) => {
         // find next adjacent sibling of the currently activated tip
         let activeAdjacentSibling = numbers.querySelector('.tip-number.active+.tip-number');
         if (!activeAdjacentSibling) {
           // if no next adjacent, back to first
           activeAdjacentSibling = numbers.firstElementChild;
         }
-        activate(numbers.parentElement, activeAdjacentSibling);
+        activate(numbers.parentElement, payload, activeAdjacentSibling);
       });
     }, 5000);
   }
 }
 
 function buildStepsHowToCarousel(block, payload) {
-  const documentOfScope = block.ownerDocument;
-  const windowOfScope = documentOfScope.defaultView;
-  const rows = Array.from(block.children);
+  const carouselDivs = block.querySelector('.content-wrapper');
+  const rows = Array.from(carouselDivs.children);
   const carousel = createTag('div', { class: 'carousel-wrapper' });
 
   const includeSchema = block.classList.contains('schema');
-  const schemaObj = {
-    '@context': 'http://schema.org',
-    '@type': 'HowTo',
-    name: (payload.heading) || documentOfScope.title,
-    step: [],
-  };
 
   const numbers = createTag('div', { class: 'tip-numbers', 'aria-role': 'tablist' });
   carousel.prepend(numbers);
   const tips = createTag('div', { class: 'tips' });
   carousel.append(tips);
-  block.append(carousel);
-
-  console.log(rows)
-
-  // rows.forEach((row, i) => {
-  //   row.classList.add('tip');
-  //   row.classList.add(`tip-${i + 1}`);
-  //   row.setAttribute('data-tip-index', i + 1);
-  //
-  //   const cells = Array.from(row.children);
-  //
-  //   const h3 = createTag('h3');
-  //   h3.innerHTML = cells[0].textContent.trim();
-  //   const text = createTag('div', { class: 'tip-text' });
-  //   text.append(h3);
-  //   text.append(cells[1]);
-  //
-  //   row.innerHTML = '';
-  //   row.append(text);
-  //
-  //   tips.prepend(row);
-  //
-  //   schemaObj.step.push({
-  //     '@type': 'HowToStep',
-  //     position: i + 1,
-  //     name: h3.textContent.trim(),
-  //     itemListElement: {
-  //       '@type': 'HowToDirection',
-  //       text: text.textContent.trim(),
-  //     },
-  //   });
-  //
-  //   const number = createTag('div', {
-  //     class: `tip-number tip-${i + 1}`,
-  //     tabindex: '0',
-  //     title: `${i + 1}`,
-  //     'aria-role': 'tab',
-  //   });
-  //
-  //   number.innerHTML = `<span>${i + 1}</span>`;
-  //   number.setAttribute('data-tip-index', i + 1);
-  //
-  //   number.addEventListener('click', (e) => {
-  //     if (rotationInterval) {
-  //       windowOfScope.clearTimeout(rotationInterval);
-  //     }
-  //
-  //     let { target } = e;
-  //     if (e.target.nodeName.toLowerCase() === 'span') {
-  //       target = e.target.parentElement;
-  //     }
-  //     activate(block, target);
-  //   });
-  //
-  //   number.addEventListener('keyup', (e) => {
-  //     if (e.which === 13) {
-  //       e.preventDefault();
-  //       e.target.click();
-  //     }
-  //   });
-  //
-  //   numbers.append(number);
-  //
-  //   if (i === 0) {
-  //     row.classList.add('active');
-  //     number.classList.add('active');
-  //   }
-  // });
+  carouselDivs.append(payload.icon, payload.heading, carousel, payload.cta);
 
   if (includeSchema) {
+    const schemaObj = {
+      '@context': 'http://schema.org',
+      '@type': 'HowTo',
+      name: (payload.heading) || payload.howToDocument.title,
+      step: [],
+    };
+
     const schema = createTag('script', { type: 'application/ld+json' });
     schema.innerHTML = JSON.stringify(schemaObj);
-    const { head } = documentOfScope;
+    const { head } = payload.howToDocument;
     head.append(schema);
+
+    rows.forEach((row, i) => {
+      const cells = Array.from(row.children);
+      const h3 = createTag('h3');
+      h3.innerHTML = cells[0].textContent.trim();
+      const text = createTag('div', { class: 'tip-text' });
+      text.append(h3);
+
+      schemaObj.step.push({
+        '@type': 'HowToStep',
+        position: i + 1,
+        name: h3.textContent.trim(),
+        itemListElement: {
+          '@type': 'HowToDirection',
+          text: text.textContent.trim(),
+        },
+      });
+    });
   }
 
-  if (windowOfScope) {
-    windowOfScope.addEventListener('resize', () => {
+  rows.forEach((row, i) => {
+    row.classList.add('tip');
+    row.classList.add(`tip-${i + 1}`);
+    row.setAttribute('data-tip-index', i + 1);
+
+    const cells = Array.from(row.children);
+
+    const h3 = createTag('h3');
+    h3.innerHTML = cells[0].textContent.trim();
+    const text = createTag('div', { class: 'tip-text' });
+    text.append(h3);
+    text.append(cells[1]);
+
+    row.innerHTML = '';
+    row.append(text);
+
+    tips.prepend(row);
+
+    const number = createTag('div', {
+      class: `tip-number tip-${i + 1}`,
+      tabindex: '0',
+      title: `${i + 1}`,
+      'aria-role': 'tab',
+    });
+
+    number.innerHTML = `<span>${i + 1}</span>`;
+    number.setAttribute('data-tip-index', i + 1);
+
+    number.addEventListener('click', (e) => {
+      if (payload.rotationInterval) {
+        payload.howToWindow.clearTimeout(payload.rotationInterval);
+      }
+
+      let { target } = e;
+      if (e.target.nodeName.toLowerCase() === 'span') {
+        target = e.target.parentElement;
+      }
+      activate(block, payload, target);
+    });
+
+    number.addEventListener('keyup', (e) => {
+      if (e.which === 13) {
+        e.preventDefault();
+        e.target.click();
+      }
+    });
+
+    numbers.append(number);
+
+    if (i === 0) {
+      row.classList.add('active');
+      number.classList.add('active');
+    }
+  });
+
+  if (payload.hotToWindow) {
+    payload.hotToWindow.addEventListener('resize', () => {
       reset(block);
-      activate(block, block.querySelector('.tip-number.tip-1'));
-      initRotation(windowOfScope, documentOfScope);
+      activate(block, payload, block.querySelector('.tip-number.tip-1'));
+      initRotation(payload);
     });
 
     // slgiht delay to allow panel to size correctly
-    windowOfScope.setTimeout(() => {
-      activate(block, block.querySelector('.tip-number.tip-1'));
-      initRotation(windowOfScope, documentOfScope);
+    payload.hotToWindow.setTimeout(() => {
+      activate(block, payload, block.querySelector('.tip-number.tip-1'));
+      initRotation(payload);
     }, 100);
   }
 }
@@ -288,7 +289,13 @@ function getColorSVG(svgName) {
 }
 
 export default async function decorate(block) {
-  const payload = {};
+  const payload = {
+    rotationInterva: null,
+    fixedImageSize: false,
+    howToDocument: block.ownerDocument,
+    howToWindow: block.ownerDocument.defaultView,
+  };
+
   const colorPageUseCase = block.classList.contains('color');
   const rows = Array.from(block.children);
 
@@ -302,16 +309,23 @@ export default async function decorate(block) {
 
       if (colorDataRows.length === 6) {
         payload.icon = colorDataRows[0].querySelector('svg');
-        payload.heading = colorDataRows[1].querySelector('h2, h3, h4');
+        [, payload.heading] = colorDataRows;
         payload.colorName = colorDataRows[2].textContent.trim();
         [payload.primaryHex, payload.secondaryHex] = colorDataRows[3].textContent.split(',');
         payload.colorGraphName = colorDataRows[4].textContent.trim();
         payload.cta = colorDataRows[5].querySelector('a');
-        const svgWrapper = createTag('div', { class: 'img-wrapper' });
-        svgWrapper.innerHTML = getColorSVG(payload.colorGraphName);
-        block.style.backgroundColor = `${payload.primaryHex}`;
+        const imgWrapper = createTag('div', { class: 'img-wrapper' });
+        imgWrapper.innerHTML = getColorSVG(payload.colorGraphName);
 
-        block.prepend(svgWrapper);
+        const colorTextOverlay = createTag('div', { class: 'color-graph-text-overlay' });
+        const colorName = createTag('p', { class: 'color-name' });
+        const colorHex = createTag('p', { class: 'color-hex' });
+        colorName.textContent = payload.colorName;
+        colorHex.textContent = payload.primaryHex;
+
+        colorTextOverlay.append(colorName, colorHex);
+        imgWrapper.prepend(colorTextOverlay);
+        block.prepend(imgWrapper);
         colorDataDiv.remove();
       }
 
@@ -323,5 +337,20 @@ export default async function decorate(block) {
     }
   }
 
-  // buildStepsHowToCarousel(block, payload);
+  buildStepsHowToCarousel(block, payload);
+
+  if (colorPageUseCase) {
+    block.querySelectorAll(':scope > div')?.forEach((div) => {
+      div.style.backgroundColor = payload.primaryHex;
+      div.style.color = payload.secondaryHex;
+    });
+
+    block.querySelectorAll('svg')?.forEach((svg) => {
+      svg.style.fill = payload.secondaryHex;
+    });
+
+    if (!isDarkOverlayReadable(payload.primaryHex)) {
+      block.classList.add('dark');
+    }
+  }
 }
