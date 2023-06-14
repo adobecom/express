@@ -67,7 +67,7 @@ function loadSvgInsideWrapper(mediaQuery, svgId, svgWrapper, secondaryColor) {
 
   // create use element
   const useSvg = document.createElementNS(svgNS, 'use');
-  useSvg.setAttributeNS(xlinkNS, 'xlink:href', `/express/icons/colors-sprite.svg#${svgId}-${size}`);
+  useSvg.setAttributeNS(xlinkNS, 'xlink:href', `/express/icons/color-sprite.svg#${svgId}-${size}`);
 
   // append use element to svg element
   svg.appendChild(useSvg);
