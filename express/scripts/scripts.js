@@ -1004,7 +1004,6 @@ export function scrollToHash() {
 export function buildBlock(blockName, content) {
   const table = Array.isArray(content) ? content : [[content]];
   const blockEl = document.createElement('div');
-  console.log(blockEl)
   // build image block nested div structure
   blockEl.classList.add(blockName);
   table.forEach((row) => {
