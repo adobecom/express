@@ -12,36 +12,14 @@
 
 /* eslint-disable import/named, import/extensions */
 
-import { createOptimizedPicture, createTag, fetchPlaceholders, } from '../../scripts/scripts.js';
+import {
+  createOptimizedPicture,
+  createTag,
+  fetchPlaceholders,
+} from '../../scripts/scripts.js';
 
 let rotationInterval;
 let fixedImageSize = false;
-
-function isDarkOverlayReadable(colorString) {
-  let r;
-  let g;
-  let b;
-
-  if (colorString.match(/^rgb/)) {
-    const colorValues = colorString.match(
-      /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/,
-    );
-    [r, g, b] = colorValues.slice(1);
-  } else {
-    const hexToRgb = +`0x${colorString
-      .slice(1)
-      .replace(colorString.length < 5 ? /./g : '', '$&$&')}`;
-    // eslint-disable-next-line no-bitwise
-    r = (hexToRgb >> 16) & 255;
-    // eslint-disable-next-line no-bitwise
-    g = (hexToRgb >> 8) & 255;
-    // eslint-disable-next-line no-bitwise
-    b = hexToRgb & 255;
-  }
-
-  const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
-  return hsp > 140;
-}
 
 function reset(block) {
   const howToWindow = block.ownerDocument.defaultView;
@@ -281,28 +259,15 @@ function layerTemplateImage(canvas, ctx, templateImg) {
   });
 }
 
-function getColorSVG(svgName) {
-  const symbols = ['hero-marquee', 'hero-marquee-localized', 'hands-and-heart', 'color-how-to-graph'];
-
-  if (symbols.includes(svgName)) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" class="${svgName}">
-      ${svgName ? `<title>${svgName}</title>` : ''}
-      <use href="/express/icons/color-sprite.svg#${svgName}"></use>
-    </svg>`;
-  }
-
-  return null;
-}
-
 export default async function decorate(block) {
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
   const image = block.classList.contains('image');
-  const svg = block.classList.contains('svg');
 
   // move first image of container outside of div for styling
   const section = block.closest('.section');
-  const rows = Array.from(block.children);
+  const howto = block;
+  const rows = Array.from(howto.children);
   let picture;
 
   if (image) {
@@ -349,27 +314,11 @@ export default async function decorate(block) {
         });
       });
     });
-  } else if (svg) {
-    const colorDataDiv = rows.shift();
-    const colorDataRows = colorDataDiv.querySelector('div')?.children;
-    colorDataDiv.remove();
-
-    if (colorDataRows.length === 3) {
-      const colorName = colorDataRows[0].innerText;
-      const [primaryHex, SecondaryHex] = colorDataRows[1].textContent.split(',');
-      const colorGraphName = colorDataRows[2].innerText;
-      const svgWrapper = createTag('div', { class: 'svg-wrapper' });
-      svgWrapper.innerHTML = getColorSVG(colorGraphName);
-      block.parentElement.style.backgroundColor = `${primaryHex}`;
-
-      block.parentElement.prepend(svgWrapper);
-    }
   } else {
     picture = section.querySelector('picture');
     const parent = picture.parentElement;
     parent.remove();
     section.prepend(picture);
   }
-
   buildHowToStepsCarousel(section, picture, block, howToDocument, rows, howToWindow);
 }
