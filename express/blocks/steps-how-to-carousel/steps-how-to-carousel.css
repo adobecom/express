@@ -238,6 +238,7 @@ main .steps-how-to-carousel.color.dark .content-wrapper a.button:any-link {
     main .steps-how-to-carousel > .content-wrapper {
         max-width: 600px;
         flex-basis: 60%;
+        padding: 80px 70px;
     }
 
     main .steps-how-to-carousel.color .content-wrapper a.button:any-link {
