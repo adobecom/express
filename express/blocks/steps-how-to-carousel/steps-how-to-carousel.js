@@ -202,8 +202,12 @@ function colorizeSVG(block, payload) {
     svg.style.fill = payload.secondaryHex;
   });
 
-  if (!isDarkOverlayReadable(payload.primaryHex)) {
-    block.classList.add('dark');
+  if (!(block.classList.contains('dark') || block.classList.contains('light'))) {
+    if (!isDarkOverlayReadable(payload.primaryHex)) {
+      block.classList.add('dark');
+    } else {
+      block.classList.add('light');
+    }
   }
 }
 

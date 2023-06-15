@@ -174,7 +174,7 @@ main .steps-how-to-carousel.color > .img-wrapper > svg {
     width: inherit;
 }
 
-main .steps-how-to-carousel.color .content-wrapper a.button:any-link {
+main .steps-how-to-carousel.color.light .content-wrapper a.button:any-link {
     padding: 12px 24px;
     border-radius: 24px;
     border: none;
@@ -183,6 +183,9 @@ main .steps-how-to-carousel.color .content-wrapper a.button:any-link {
 }
 
 main .steps-how-to-carousel.color.dark .content-wrapper a.button:any-link {
+    padding: 12px 24px;
+    border-radius: 24px;
+    border: none;
     background-color: var(--color-black);
     color: var(--color-white);
 }
