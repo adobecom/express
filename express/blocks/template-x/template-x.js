@@ -1393,9 +1393,7 @@ async function decorateBreadcrumbs(block) {
   // breadcrumbs are desktop-only
   if (document.body.dataset.device !== 'desktop') return;
   const breadcrumbs = await getBreadcrumbs();
-  if (breadcrumbs) {
-    block.prepend(breadcrumbs);
-  }
+  if (breadcrumbs) block.prepend(breadcrumbs);
 }
 
 async function buildTemplateList(block, props, type = []) {
