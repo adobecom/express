@@ -40,15 +40,6 @@ function isDarkOverlayReadable(colorString) {
   return hsp > 140;
 }
 
-function cloneForSmallerMediaQueries(textBlock) {
-  const clonedTextBlock = textBlock.cloneNode(true);
-
-  clonedTextBlock.classList.add('text-container');
-  clonedTextBlock.children[0].classList.add('text');
-
-  return clonedTextBlock;
-}
-
 function changeTextColorAccordingToBg(
   primaryColor,
   block,
@@ -88,15 +79,64 @@ function displaySvgWithObject(block, secondaryColor) {
   heroColorContentContainer.append(svgWrapper);
 }
 
+// function groupTextElements(text, block) {
+//   const title = block.querySelector('h2');
+//   const description = block.querySelector('p');
+//   const cta = block.querySelector('.button-container');
+//   const button = cta.querySelector('.button');
+
+//   button.style.border = 'none';
+//   text.classList.add('text');
+//   text.append(title, description, cta);
+// }
+
+function cloneTextForSmallerMediaQueries(text) {
+  const clonedTextBlock = text.cloneNode(true);
+
+  const title = clonedTextBlock.querySelector('h2');
+  const cta = clonedTextBlock.querySelector('.button-container');
+  const descriptions = clonedTextBlock.querySelectorAll('p:not(:last-of-type)');
+  const descriptionContainer = createTag('div', { class: 'description-container' });
+  const description = [...descriptions];
+
+  description.forEach((textDescription) => {
+    descriptionContainer.append(textDescription);
+  });
+
+  clonedTextBlock.classList.add('text-container');
+  clonedTextBlock.children[0].classList.add('text');
+  const textContent = clonedTextBlock.children[0];
+
+  textContent.append(title, descriptionContainer, cta);
+
+  return clonedTextBlock;
+}
+
 function groupTextElements(text, block) {
   const title = block.querySelector('h2');
-  const description = block.querySelector('p');
   const cta = block.querySelector('.button-container');
   const button = cta.querySelector('.button');
+  const descriptions = block.querySelectorAll('p:not(:last-of-type)');
+  const descriptionContainer = createTag('div', { class: 'description-container' });
+  const description = [...descriptions];
+
+  description.forEach((textDescription) => {
+    descriptionContainer.append(textDescription);
+  });
 
   button.style.border = 'none';
   text.classList.add('text');
-  text.append(title, description, cta);
+  text.append(title, descriptionContainer, cta);
+}
+
+function decorateText(block) {
+  const text = block.firstElementChild;
+  const smallMediaQueryBlock = cloneTextForSmallerMediaQueries(text);
+  const heroColorContentContainer = block.querySelector('.content-container');
+
+  groupTextElements(text, block);
+  heroColorContentContainer.append(text);
+  block.append(smallMediaQueryBlock);
 }
 
 function extractColorElements(colors) {
@@ -118,15 +158,6 @@ function decorateColors(block) {
   return { secondaryColor };
 }
 
-function decorateText(block) {
-  const text = block.firstElementChild;
-  const smallMediaQueryBlock = cloneForSmallerMediaQueries(text);
-  const heroColorContentContainer = block.querySelector('.content-container');
-
-  groupTextElements(text, block);
-  heroColorContentContainer.append(text);
-  block.append(smallMediaQueryBlock);
-}
 
 function getContentContainerHeight() {
   const contentContainer = document.querySelector('.content-container');

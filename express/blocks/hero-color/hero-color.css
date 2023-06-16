@@ -92,9 +92,6 @@ main .hero-color .hidden-svg {
 
   main .hero-color .content-container {
     min-height: 336px;
-  }
-
-  main .hero-color .content-container {
     display: flex;
     gap: 60px;
   }
