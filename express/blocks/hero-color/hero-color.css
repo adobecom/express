@@ -49,6 +49,7 @@ main .hero-color .text-container h2 {
 main .hero-color .content-container p,
 main .hero-color .text-container p {
   margin: 0;
+  font-size: var(--body-font-size-l);
 }
 
 main .hero-color .content-container .text .button-container,
@@ -131,13 +132,13 @@ main .hero-color .hidden-svg {
   main .hero-color.dark-bg .button:hover {
     background-color: var(--color-white);
     color: var(--color-black);
-    border: var(--color-white);
+    border-color: var(--color-white);
   }
 
   main .hero-color.light-bg .button,
   main .hero-color.light-bg .button:hover {
     background-color: var(--color-black);
     color: var(--color-white);
-    border: var(--color-black);
+    border-color: var(--color-black);
   }
 }
