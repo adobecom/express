@@ -79,17 +79,6 @@ function displaySvgWithObject(block, secondaryColor) {
   heroColorContentContainer.append(svgWrapper);
 }
 
-// function groupTextElements(text, block) {
-//   const title = block.querySelector('h2');
-//   const description = block.querySelector('p');
-//   const cta = block.querySelector('.button-container');
-//   const button = cta.querySelector('.button');
-
-//   button.style.border = 'none';
-//   text.classList.add('text');
-//   text.append(title, description, cta);
-// }
-
 function cloneTextForSmallerMediaQueries(text) {
   const clonedTextBlock = text.cloneNode(true);
 
@@ -157,7 +146,6 @@ function decorateColors(block) {
 
   return { secondaryColor };
 }
-
 
 function getContentContainerHeight() {
   const contentContainer = document.querySelector('.content-container');
