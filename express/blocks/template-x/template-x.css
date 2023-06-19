@@ -52,7 +52,6 @@ main .template-x-horizontal-fullwidth-collaboration-container .default-content-w
 
 main .template-x-inner-wrapper {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     margin: 20px auto 0 auto;
     font-size: var(--body-font-size-m);
@@ -157,9 +156,9 @@ main .template-x-container .template-x-wrapper:not(:has(.toolbar-wrapper)) {
     padding-top: 60px;
 }
 
-main .template-x-container:not(.horizontal) .template-title h2 {
+/* main .template-x-container:not(.horizontal) .template-title h2 {
     padding-top: 80px;
-}
+} */
 
 main .template-x-wrapper .template-title.with-link > div {
     display: flex;
@@ -600,6 +599,8 @@ main .template-x.fullwidth.sm-view .template.placeholder {
     main .template-x.fullwidth.md-view .template.placeholder {
         width: 258.5px;
     }
+
+    
 }
 
 main .template-x .template.placeholder div:nth-of-type(2) {
@@ -801,6 +802,11 @@ main .template-x.fullwidth.sm-view > .template-x-inner-wrapper > .masonry-col {
         max-width: 187px;
     }
 
+    main .template-x-wrapper .template-title.with-link > div {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
     main .template-x-wrapper .template-title.horizontal > div > * {
         text-align: left;
     }
@@ -821,8 +827,8 @@ main .template-x.fullwidth.sm-view > .template-x-inner-wrapper > .masonry-col {
         margin-right: 20px;
     }
 
-    main .template-x:not(.horizontal).sixcols .template:not(.placeholder),
-    main .template-x:not(.horizontal).fullwidth .template:not(.placeholder) {
+    main .template-x.sixcols .template:not(.placeholder),
+    main .template-x.fullwidth .template:not(.placeholder) {
         margin: 11px 11px 9px 11px; /* make up for 4px height overlap in first child div */
     }
 
@@ -2012,13 +2018,13 @@ main .template-x-wrapper.horizontal {
 
 /* re-add max-width on elements that are not carousel */
 main .template-x-wrapper.horizontal > *:not(.template-x.horizontal),
-main .template-x-wrapper.horizontal:not(.holiday) > .template-x.horizontal > *:not(.carousel-container):not(.toggle-button) {
+main .template-x-wrapper.horizontal:not(.holiday) > .template-x.horizontal > *:not(.carousel-container) {
     max-width: 350px;
-    max-width: 800px;
+    max-width: unset;  
     padding-left: 15px;
     padding-right: 15px;
-    margin-left: auto;
     margin-right: auto;
+    margin-left: auto;
 }
 
 main .template-x.horizontal .carousel-container {
@@ -2028,7 +2034,6 @@ main .template-x.horizontal .carousel-container {
 
 main .template-x.horizontal .carousel-platform {
     scroll-padding: 12px;
-    padding: 20px 0;
 }
 
 main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
@@ -2139,16 +2144,12 @@ main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fade
         padding-right: 32px;
     }
 
-    main .template-x-wrapper.horizontal:not(.holiday) {
-        max-width: 836px;
-    }
-
-    main .template-x-wrapper.horizontal > *:not(.template-x.horizontal),
-    main .template-x-wrapper.horizontal > .template-x.horizontal > *:not(.carousel-container) {
+    /* main .template-x-wrapper.horizontal > *:not(.template-x.horizontal),
+    main .template-x-wrapper.horizontal > .template-x.horizontal > *:not(.carousel-container):not(.template-x-fallback-msg-wrapper):not(.template-x-inner-wrapper) {
         max-width: unset;
         margin-right: 56px;
         margin-left: 56px;
-    }
+    } */
 
     main .template-x.horizontal {
         max-width: 800px;
@@ -2183,6 +2184,7 @@ main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fade
 
 main .template-x.horizontal.holiday .template-x-inner-wrapper .carousel-container {
     max-width: 1090px;
+    margin-right: 56px;
 }
 
 main .template-x.horizontal.holiday .animation-background ~ .template-x-inner-wrapper {
@@ -2214,6 +2216,10 @@ main .template-x.horizontal.holiday .animation-background ~ .template-x-inner-wr
         margin-left: 0;
         margin-right: 0;
         max-width: unset;
+    }
+
+    main .template-x.horizontal.holiday .template-x-inner-wrapper .carousel-container {
+        margin-right: 16px;
     }
 }
 
@@ -2560,10 +2566,8 @@ main .template-x.holiday .carousel-container .carousel-platform {
     max-height: 200px;
 }
 
-main > .template-x-container .template-x-wrapper.horizontal > .template-x.horizontal > .template-title {
+main > .template-x-container .template-x-wrapper.horizontal.holiday > .template-x.horizontal > .template-title {
     margin: 0;
-    margin-left: 0;
-    margin-right: 0;
     padding: 0 30px 0 30px;
 }
 
