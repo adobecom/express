@@ -599,8 +599,6 @@ main .template-x.fullwidth.sm-view .template.placeholder {
     main .template-x.fullwidth.md-view .template.placeholder {
         width: 258.5px;
     }
-
-    
 }
 
 main .template-x .template.placeholder div:nth-of-type(2) {
@@ -2564,6 +2562,7 @@ main .template-x.horizontal.holiday.expanded .template-x-wrapper {
 main .template-x.holiday .carousel-container .carousel-platform {
     scroll-padding: initial;
     max-height: 200px;
+    padding: 20px 0;
 }
 
 main > .template-x-container .template-x-wrapper.horizontal.holiday > .template-x.horizontal > .template-title {
