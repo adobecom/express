@@ -532,7 +532,8 @@ main .columns.custom-color .column.text {
   max-width: 345px;
 }
 
-main .columns.custom-color h2, p {
+main .columns.custom-color h2,
+main .columns.custom-color p {
   hyphens: manual;
   text-align: center;
 }
