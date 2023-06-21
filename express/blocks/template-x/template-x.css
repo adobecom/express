@@ -2037,11 +2037,13 @@ main .template-x.horizontal .carousel-platform {
 main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
     width: 170px;
+    right: -2px;
 }
 
 main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-left {
     background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
     width: 150px;
+    left: -2px
 }
 
 @media (min-width: 1200px) {
@@ -2182,7 +2184,8 @@ main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fade
 
 main .template-x.horizontal.holiday .template-x-inner-wrapper .carousel-container {
     max-width: 1090px;
-    margin-right: 56px;
+    margin-right: 12px;
+    margin-left: 12px;
 }
 
 main .template-x.horizontal.holiday .animation-background ~ .template-x-inner-wrapper {
