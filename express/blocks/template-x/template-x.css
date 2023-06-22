@@ -79,7 +79,7 @@ main .template-x.fullwidth.holiday .template-x-inner-wrapper {
 main .template-x.fullwidth.holiday.expanded .template-x-inner-wrapper {
     max-height: 300px;
     margin-left: 56px;
-    margin-left: 56px;
+    margin-right: 56px;
 }
 
 main .template-x.fullwidth.holiday .animation-background {
@@ -2044,17 +2044,15 @@ main .template-x.horizontal .carousel-platform {
 
 main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    height: 232px;
     width: 170px;
     right: -2px;
 }
 
-main .template-x.horizontal.fullwidth.holiday:not(.expanded) .carousel-container .carousel-arrow-right {
-    display: none;
-}
-
 main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-left {
     background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-    width: 150px;
+    height: 232px;
+    width: 170px;
     left: -2px
 }
 
@@ -2232,6 +2230,16 @@ main .template-x.horizontal.holiday .animation-background ~ .template-x-inner-wr
     }
 
     main .template-x.horizontal.holiday .template-x-inner-wrapper .carousel-container {
+        margin-right: 16px;
+        margin-left: 16px;
+    }
+
+    main .template-x.horizontal.holiday .template-x-inner-wrapper .carousel-container {
+        margin-left: 16px;
+    }
+
+    main .template-x.fullwidth.holiday.expanded .template-x-inner-wrapper {
+        margin-left: 16px;
         margin-right: 16px;
     }
 }
