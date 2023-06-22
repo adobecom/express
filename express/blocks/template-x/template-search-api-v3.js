@@ -26,6 +26,7 @@ function formatFilterString(filters) {
   const {
     animated,
     locales,
+    behaviors,
     premium,
     tasks,
     topics,
@@ -38,14 +39,18 @@ function formatFilterString(filters) {
       str += '&filters=licensingCategory==premium';
     }
   }
-  if (animated && animated !== 'all') {
+  if (animated && animated !== 'all' && !behaviors) {
     if (animated.toLowerCase() === 'false') {
       str += '&filters=behaviors==still';
     } else {
       str += '&filters=behaviors==animated';
     }
   }
-
+  if (behaviors) {
+    extractFilterTerms(behaviors).forEach((b) => {
+      str += `&filters=behaviors==${b}`;
+    });
+  }
   extractFilterTerms(tasks).forEach((t) => {
     str += `&filters=pages.task.name==${t}`;
   });
@@ -68,7 +73,8 @@ const fetchSearchUrl = async ({
 }) => {
   const base = 'https://spark-search.adobe.io/v3/content';
   const collectionIdParam = `collectionId=${collectionId}`;
-  const queryType = 'assets';
+  // const queryType = 'assets';
+  const queryType = 'search'; // TODO: this has been back and forth. Needs finalization
   const queryParam = `&queryType=${queryType}`;
   const filterStr = formatFilterString(filters);
   const limitParam = limit || limit === 0 ? `&limit=${limit}` : '';
@@ -113,14 +119,14 @@ export async function fetchTemplates(props, fallback = true) {
   if (!fallback) {
     return { response: null };
   }
-  const { filters: { tasks } } = props;
+  const { filters: { tasks, locales } } = props;
   if (tasks) {
-    response = await fetchSearchUrl({ ...props, filters: { tasks } });
+    response = await fetchSearchUrl({ ...props, filters: { tasks, locales, premium: 'false' } });
     if (response?.metadata?.totalHits > 0) {
       return { response, fallbackMsg: await getFallbackMsg(tasks) };
     }
   }
-  response = await fetchSearchUrl({ ...props, filters: {} });
+  response = await fetchSearchUrl({ ...props, filters: { locales, premium: 'false' } });
   return { response, fallbackMsg: await getFallbackMsg() };
 }
 
