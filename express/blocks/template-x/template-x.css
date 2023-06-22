@@ -2040,6 +2040,10 @@ main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fade
     right: -2px;
 }
 
+main .template-x.horizontal.fullwidth.holiday:not(.expanded) .carousel-container .carousel-arrow-right {
+    display: none;
+}
+
 main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-left {
     background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
     width: 150px;
@@ -2184,8 +2188,8 @@ main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fade
 
 main .template-x.horizontal.holiday .template-x-inner-wrapper .carousel-container {
     max-width: 1090px;
-    margin-right: 12px;
-    margin-left: 12px;
+    /* margin-right: 12px;
+    margin-left: 12px; */
 }
 
 main .template-x.horizontal.holiday .animation-background ~ .template-x-inner-wrapper {
