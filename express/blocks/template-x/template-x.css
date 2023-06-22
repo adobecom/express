@@ -2472,6 +2472,10 @@ main .template-x.horizontal.holiday .toggle-bar p {
     main .template-x.horizontal.holiday .toggle-bar h4 {
         font-size: 15px;
     }
+
+    main .template-x-wrapper .template-title-link {
+        font-size: var(--body-font-size-s);
+    }
 }
 
 @media (max-width: 900px) {
@@ -2499,7 +2503,7 @@ main .template-x.horizontal.holiday .toggle-button {
 }
 
 
-main .template-x.horizontal.holiday .toggle-button.mobile {
+main .template-x.horizontal.holiday.mobile .toggle-button {
     display: flex;
     transform: translate(-50%);
     margin-left: 192px;
@@ -2507,13 +2511,13 @@ main .template-x.horizontal.holiday .toggle-button.mobile {
     width: 110px;
 }    
 
-main .template-x.horizontal.holiday.expanded .toggle-button.mobile {
+main .template-x.horizontal.holiday.expanded.mobile .toggle-button {
     margin-left: 50%;
     transform: translate(-50%);
 }
 
 @media (min-width: 900px) {
-    main .template-x.horizontal.holiday .toggle-button.mobile {
+    main .template-x.horizontal.holiday.mobile .toggle-button {
         margin-left: 50%;
     }    
 }
@@ -2568,7 +2572,7 @@ main .template-x.holiday .carousel-container {
 }
 
 @media (max-width: 900px) {
-    main .template-x.holiday .carousel-container {
+    main .template-x.holiday.mobile .carousel-container {
         margin-bottom: 0;
     }
 }

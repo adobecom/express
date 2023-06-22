@@ -1188,7 +1188,6 @@ function decorateHoliday(block, props) {
 
   if (mobileViewport) {
     block.classList.add('mobile');
-    toggle.classList.add('mobile');
     block.append(toggle);
   } else {
     toggleBar.append(toggle);
