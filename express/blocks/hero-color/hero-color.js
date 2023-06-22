@@ -79,49 +79,41 @@ function displaySvgWithObject(block, secondaryColor) {
   heroColorContentContainer.append(svgWrapper);
 }
 
-function cloneTextForSmallerMediaQueries(text) {
-  const clonedTextBlock = text.cloneNode(true);
-
-  const title = clonedTextBlock.querySelector('h2');
-  const cta = clonedTextBlock.querySelector('.button-container');
-  const descriptions = clonedTextBlock.querySelectorAll('p:not(:last-of-type)');
+function copyTextBlock(block, text) {
+  const title = block.querySelector('h2');
+  const cta = block.querySelector('.button-container');
+  const descriptions = block.querySelectorAll('p:not(:last-of-type)');
   const descriptionContainer = createTag('div', { class: 'description-container' });
-  const description = [...descriptions];
 
-  description.forEach((textDescription) => {
+  Array.from(descriptions).forEach((textDescription) => {
     descriptionContainer.append(textDescription);
   });
 
+  text.classList.add('text');
+  text.append(title, descriptionContainer, cta);
+}
+
+function cloneTextForSmallerMediaQueries(text) {
+  const clonedTextBlock = text.cloneNode(true);
   clonedTextBlock.classList.add('text-container');
-  clonedTextBlock.children[0].classList.add('text');
   const textContent = clonedTextBlock.children[0];
 
-  textContent.append(title, descriptionContainer, cta);
+  copyTextBlock(clonedTextBlock, textContent);
 
   return clonedTextBlock;
 }
 
 function groupTextElements(text, block) {
-  const title = block.querySelector('h2');
-  const cta = block.querySelector('.button-container');
-  const button = cta.querySelector('.button');
-  const descriptions = block.querySelectorAll('p:not(:last-of-type)');
-  const descriptionContainer = createTag('div', { class: 'description-container' });
-  const description = [...descriptions];
+  const button = block.querySelector('.button');
 
-  description.forEach((textDescription) => {
-    descriptionContainer.append(textDescription);
-  });
-
+  copyTextBlock(block, text);
   button.style.border = 'none';
-  text.classList.add('text');
-  text.append(title, descriptionContainer, cta);
 }
 
 function decorateText(block) {
   const text = block.firstElementChild;
-  const smallMediaQueryBlock = cloneTextForSmallerMediaQueries(text);
   const heroColorContentContainer = block.querySelector('.content-container');
+  const smallMediaQueryBlock = cloneTextForSmallerMediaQueries(text);
 
   groupTextElements(text, block);
   heroColorContentContainer.append(text);
