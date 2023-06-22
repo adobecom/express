@@ -2044,6 +2044,7 @@ main .template-x.horizontal .carousel-platform {
 
 main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    transform: translate3d(0, 0, 0);
     height: 232px;
     width: 170px;
     right: -2px;
@@ -2051,9 +2052,10 @@ main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fade
 
 main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-left {
     background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    transform: translate3d(0, 0, 0);
     height: 232px;
     width: 170px;
-    left: -2px
+    left: -4px
 }
 
 @media (min-width: 1200px) {

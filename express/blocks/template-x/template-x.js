@@ -1109,7 +1109,6 @@ async function decorateToolbar(block, props) {
 
 function initExpandCollapseBlock(block) {
   const toggleElements = Array.from(block.querySelectorAll('.toggle-button'));
-  console.log(toggleElements);
   const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
   const toggleBar = block.querySelector('.toggle-bar');
   toggleElements.push(templatesWrapper, toggleBar, block);
@@ -1188,6 +1187,7 @@ function decorateHoliday(block, props) {
   block.style.backgroundColor = props.backgroundColor;
 
   if (mobileViewport) {
+    block.classList.add('mobile');
     toggle.classList.add('mobile');
     block.append(toggle);
   } else {
