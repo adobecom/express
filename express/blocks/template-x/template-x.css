@@ -74,6 +74,8 @@ main .template-x.fullwidth.holiday .template-x-inner-wrapper {
     position: relative;
     transition: max-height 0.5s, padding-top 0.5s;
     overflow: hidden;
+    margin-right: 56px;
+    margin-left: 56px;
 }
 
 main .template-x.fullwidth.holiday.expanded .template-x-inner-wrapper {
@@ -1704,6 +1706,7 @@ main .template-x-wrapper.horizontal:not(.holiday) > .template-x.horizontal > *:n
     padding-right: 15px;
     margin-right: auto;
     margin-left: auto;
+    margin-bottom: 20px;
 }
 
 main .template-x.horizontal .carousel-container {
@@ -1730,6 +1733,15 @@ main .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fade
     width: 170px;
     left: -4px
 }
+
+main .template-x.horizontal .carousel-container .carousel-fader-right {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+}
+
+main .template-x.horizontal .carousel-container .carousel-fader-left {
+    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+}
+
 
 main .template-x.horizontal.holiday .template-x-inner-wrapper .carousel-container {
     max-width: 1090px;
@@ -2274,9 +2286,17 @@ main nav ol.templates-breadcrumbs li:not(:first-child):before {
         margin-bottom: 0;
     }
 
+    main .template-x.horizontal.holiday .toggle-bar h4 {
+        margin: 0;
+    }
+
     main .template-x.horizontal.holiday .toggle-bar {
         margin-top: 10px;
     }
+
+    /* main .template-x-wrapper.horizontal:not(.fullwidth):not(.holiday) {
+        max-width: 836px;
+    } */
 }
 
 @media (max-width: 1200px) {
@@ -2288,7 +2308,7 @@ main nav ol.templates-breadcrumbs li:not(:first-child):before {
         font-size: 15px;
     }
 
-    main .template-x-wrapper .template-title-link {
+    main .template-x-wrapper.holiday .template-title-link {
         font-size: var(--body-font-size-s);
     }
 }
@@ -2322,10 +2342,10 @@ main nav ol.templates-breadcrumbs li:not(:first-child):before {
         width: 165px;
     }
 
-    main .template-x-wrapper.fullwidth,
+    main .template-x-wrapper.fullwidth:not(.horizontal),
     main .template-x > .default-content-wrapper,
-    main .template-x-wrapper.fullwidth,
-    main .template-x > .default-content-wrapper {
+    main .template-x-wrapper.fullwidth:not(.horizontal),
+    main .template-x:not(.horizontal) > .default-content-wrapper {
         max-width: none;
         padding: 0 28px;
     }
@@ -2416,10 +2436,6 @@ main nav ol.templates-breadcrumbs li:not(:first-child):before {
 }
 
 @media (min-width: 900px) {
-    main .template-x-wrapper.holiday .template-title.horizontal h4 {
-        margin: 0;
-    }
-
     main .template-x.fullwidth.md-view .template.placeholder {
         width: 258.5px;
     }
@@ -2502,7 +2518,7 @@ main nav ol.templates-breadcrumbs li:not(:first-child):before {
         padding-right: 32px;
     }
 
-    main .template-x.horizontal {
+    main .template-x.horizonta:not(.holiday) {
         max-width: 800px;
     }
 
@@ -2542,7 +2558,11 @@ main nav ol.templates-breadcrumbs li:not(:first-child):before {
 
     main .template-x.horizontal.holiday.mobile .toggle-button {
         margin-left: 50%;
-    }   
+    }
+
+    main .template-x.horizontal:not(.fullwidth) {
+        max-width: 800px;
+    }
 }
 
 @media (min-width: 1200px) {
@@ -2681,13 +2701,6 @@ main nav ol.templates-breadcrumbs li:not(:first-child):before {
         scroll-snap-type: x mandatory;
     }
 
-    main .template-x.horizontal .carousel-container {
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 470px;
-        display: block;
-    }
-
     main .template-x.horizontal.fullwidth .carousel-container {
         margin-bottom: 20px;
         max-width: none;
@@ -2703,7 +2716,7 @@ main nav ol.templates-breadcrumbs li:not(:first-child):before {
         background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
     }
 
-    main .template-x.horizontal .carousel-container .carousel-fader-right {
+    main .template-x.horizontal.holiday .carousel-container .carousel-fader-right {
         background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
         width: 170px;
     }
@@ -2747,7 +2760,7 @@ main nav ol.templates-breadcrumbs li:not(:first-child):before {
         max-width: none;
     }
 
-    main .template-x.horizontal {
+    main .template-x.horizontal:not(.holiday) {
         max-width: 1090px;
     }
 
