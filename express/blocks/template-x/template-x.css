@@ -997,42 +997,6 @@ main .template-x .search-bar-wrapper .task-dropdown-list li.option.active
     color: var(--color-info-accent);
 }
 
-/*main .template-x .search-bar-wrapper .task-dropdown-list li.option .option-radio {*/
-/*  display: block;*/
-/*  height: 12px;*/
-/*  width: 12px;*/
-/*  color: var(--color-white);*/
-/*  font-size: 4px;*/
-/*  border: var(--color-black) 2px solid;*/
-/*  border-radius: 50%;*/
-/*  margin-right: 10px;*/
-/*}*/
-
-/*main .template-x .search-bar-wrapper .task-dropdown-list li.option:hover .option-radio {*/
-/*  border: #4646C6 6px solid;*/
-/*  max-height: 4px;*/
-/*  max-width: 4px;*/
-/*  border-radius: 50%;*/
-/*}*/
-
-/*main .template-x .search-bar-wrapper .task-dropdown-list li.option:active .option-radio {*/
-/*  border: #3D3DB4 6px solid;*/
-/*  max-height: 4px;*/
-/*  max-width: 4px;*/
-/*  border-radius: 50%;*/
-/*}*/
-
-/*main .template-x .search-bar-wrapper .task-dropdown-list li.option .option-radio:focus-visible {*/
-/*  outline-offset: 4px;*/
-/*}*/
-
-/*main .template-x .search-bar-wrapper .task-dropdown-list li.option.active .option-radio {*/
-/*  border: var(--color-info-accent) 6px solid;*/
-/*  max-height: 4px;*/
-/*  max-width: 4px;*/
-/*  border-radius: 50%;*/
-/*}*/
-
 main .template-x .animated-template-text {
     margin-top: -28px;
     background: linear-gradient(320deg, #7C84F3, #FF4DD2, #FF993B, #FF4DD2, #7C84F3, #FF4DD2, #FF993B);
@@ -1745,8 +1709,6 @@ main .template-x.horizontal .carousel-container .carousel-fader-left {
 
 main .template-x.horizontal.holiday .template-x-inner-wrapper .carousel-container {
     max-width: 1090px;
-    /* margin-right: 12px;
-    margin-left: 12px; */
 }
 
 main .template-x.horizontal.holiday .animation-background ~ .template-x-inner-wrapper {
@@ -2029,7 +1991,6 @@ main > .template-x-container .template-x-wrapper.horizontal.holiday > .template-
 }
 
 /* holiday animations */
-
 main .template-x.horizontal.holiday .animation-background {
     position: absolute;
     top: 0;
@@ -2293,10 +2254,6 @@ main nav ol.templates-breadcrumbs li:not(:first-child):before {
     main .template-x.horizontal.holiday .toggle-bar {
         margin-top: 10px;
     }
-
-    /* main .template-x-wrapper.horizontal:not(.fullwidth):not(.holiday) {
-        max-width: 836px;
-    } */
 }
 
 @media (max-width: 1200px) {
