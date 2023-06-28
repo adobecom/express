@@ -1103,40 +1103,26 @@ async function decorateToolbar(block, props) {
   }
 }
 
-function initExpandCollapseBlock(block) {
-  const toggleElements = Array.from(block.querySelectorAll('.toggle-button'));
-  const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
-  const toggleBar = block.querySelector('.toggle-bar');
-  toggleElements.push(templatesWrapper, toggleBar, block);
-  toggleElements.forEach((element) => {
-    element.classList.toggle('expanded');
-  });
-}
-
-function initToggleHoliday(block) {
-  const toggleBar = block.querySelector('.toggle-bar');
-  const aTag = block.querySelector('.toggle-button a');
+function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
   const chev = block.querySelector('.toggle-button-chev');
-
-  aTag.addEventListener('click', (e) => {
-    e.stopPropagation();
-  });
-
-  toggleBar.addEventListener('click', (e) => {
-    e.preventDefault();
-    initExpandCollapseBlock(block);
-  });
-
+  templateTitle.addEventListener('click', () => block.classList.toggle('expanded'));
   chev.addEventListener('click', (e) => {
-    e.preventDefault();
     e.stopPropagation();
-    initExpandCollapseBlock(block);
+    block.classList.toggle('expanded');
   });
+
+  toggle.addEventListener('click', () => block.classList.toggle('expanded'));
+  link.addEventListener('click', (e) => e.stopPropagation());
+
+  setTimeout(() => {
+    if (!block.matches(':hover')) {
+      block.classList.toggle('expanded');
+    }
+  }, 3000);
 }
 
 function decorateHoliday(block, props) {
   const mobileViewport = window.innerWidth < 901;
-  const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
   const templateTitle = block.querySelector('.template-title');
   const toggleBar = templateTitle.querySelector('div');
   const heading = templateTitle.querySelector('h4');
@@ -1150,17 +1136,10 @@ function decorateHoliday(block, props) {
   const carouselFaderLeft = block.querySelector('.carousel-fader-left');
   const carouselFaderRight = block.querySelector('.carousel-fader-right');
 
-  block.classList.add('expanded', props.textColor);
-  toggleBar.classList.add('expanded', 'toggle-bar');
-  templatesWrapper.classList.add('expanded');
-
-  if (props.holidayIcon) {
-    topElements.append(props.holidayIcon);
-  }
-
+  if (props.holidayIcon) topElements.append(props.holidayIcon);
   if (props.backgroundAnimation) {
     const animation = transformLinkToAnimation(props.backgroundAnimation);
-    animation.classList.add('animation-background');
+    block.classList.add('animated');
     block.prepend(animation);
   }
 
@@ -1174,12 +1153,13 @@ function decorateHoliday(block, props) {
     }
   }
 
+  block.classList.add('expanded', props.textColor);
+  toggleBar.classList.add('toggle-bar');
   topElements.append(heading);
   toggle.append(link, toggleChev);
   linkWrapper.remove();
   bottomElements.append(subheading);
   toggleBar.append(topElements, bottomElements);
-
   block.style.backgroundColor = props.backgroundColor;
 
   if (mobileViewport) {
@@ -1189,13 +1169,7 @@ function decorateHoliday(block, props) {
     toggleBar.append(toggle);
   }
 
-  initToggleHoliday(block);
-
-  setTimeout(() => {
-    if (!block.matches(':hover')) {
-      initExpandCollapseBlock(block);
-    }
-  }, 3000);
+  initExpandCollapseToolbar(block, templateTitle, toggle, link);
 }
 
 async function decorateTemplates(block, props) {
