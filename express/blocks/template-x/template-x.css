@@ -84,7 +84,7 @@ main .template-x.fullwidth.holiday.expanded .template-x-inner-wrapper {
     margin-right: 56px;
 }
 
-main .template-x.fullwidth.holiday .animation-background {
+main .template-x.fullwidth.holiday.animated video {
     position: absolute;
     top: 0;
     left: 0;
@@ -97,9 +97,10 @@ main .template-x.fullwidth.holiday .animation-background {
     transition: opacity 0.2s;
 }
 
-main .template-x.fullwidth.holiday.expanded .animation-background {
+main .template-x.fullwidth.holiday.expanded.animated video {
     opacity: 1;
     transition: opacity 1s;
+    padding: 0;
 }
 
 main .template-x.fullwidth.sm-view .template-x-inner-wrapper,
@@ -1711,11 +1712,12 @@ main .template-x.horizontal.holiday .template-x-inner-wrapper .carousel-containe
     max-width: 1090px;
 }
 
-main .template-x.horizontal.holiday .animation-background ~ .template-x-inner-wrapper {
+main .template-x.horizontal.holiday.animated video ~ .template-x-inner-wrapper {
     padding: 0;
+    margin: 0;
 }
 
-main .template-x.horizontal.holiday .animation-background ~ .template-x-inner-wrapper .carousel-container {
+main .template-x.horizontal.holiday.animated video ~ .template-x-inner-wrapper .carousel-container {
     max-width: none;
 }
 
@@ -1857,7 +1859,7 @@ main .template-x.horizontal.holiday {
     background: var(--color-black);
 }
 
-main .template-x.horizontal.holiday.with-animation {
+main .template-x.horizontal.holiday.animated {
     color: var(--color-white);
     padding-top: 0;
 }
@@ -1988,26 +1990,6 @@ main .template-x.holiday .carousel-container .carousel-platform {
 main > .template-x-container .template-x-wrapper.horizontal.holiday > .template-x.horizontal > .template-title {
     margin: 0;
     padding: 0 30px 0 30px;
-}
-
-/* holiday animations */
-main .template-x.horizontal.holiday .animation-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    object-fit: cover;
-    height: 100%;
-    width: 100vw;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-main .template-x.horizontal.holiday.expanded .animation-background {
-    opacity: 1;
-    transition: opacity 1s;
-    padding: 0;
 }
 
 main .template-x.horizontal.holiday .toggle-bar {
