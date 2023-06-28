@@ -2684,3 +2684,28 @@ export function titleCase(str) {
   }
   return splitStr.join(' ');
 }
+
+export function arrayToObject(arr) {
+  return arr.reduce(
+    (acc, curr) => {
+      const key = curr[0];
+      [, acc[key]] = curr;
+
+      return acc;
+    },
+
+    {},
+  );
+}
+
+export function gradateColorfulText(textElement) {
+  const $textToColor = textElement.querySelectorAll('em');
+
+  if ($textToColor.length > 0) {
+    $textToColor.forEach((span) => {
+      const $coloredText = createTag('span', { class: 'gradient-text' });
+      $coloredText.textContent = span.textContent;
+      textElement.replaceChild($coloredText, span);
+    });
+  }
+}

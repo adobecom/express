@@ -1,0 +1,202 @@
+main .section.intent-toggle-desktop-dark-container {
+    overflow: visible;
+    position: relative;
+    padding-top: 0;
+}
+
+main .section.intent-toggle-desktop-dark-container::before {
+    content: '';
+    position: absolute;
+    height: 711px;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background: transparent linear-gradient(180deg, #F9F9F9 0%, #FFFFFF00 100%) 0% 0% no-repeat padding-box;
+}
+
+main .section.intent-toggle-desktop-dark-container > .intent-toggle-desktop-wrapper {
+    margin: 0 auto;
+    padding: 0 16px;
+    max-width: 1306px;
+}
+
+main .intent-toggle-desktop-wrapper {
+    position: relative;
+    overflow: visible;
+}
+
+main .block.intent-toggle-desktop {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 33px 33px 0 0;
+    padding: 18px 24px;
+    background: var(--color-white);
+}
+
+main .block.intent-toggle-desktop .reduce-motion-switch-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-basis: 30%;
+}
+
+main .block.intent-toggle-desktop .reduce-motion-switch-container .reduce-motion-switch {
+    position: relative;
+    display: inline-block;
+    width: 28px;
+    height: 16px;
+}
+
+main .block.intent-toggle-desktop .reduce-motion-switch-container .reduce-motion-slider {
+    position: absolute;
+    cursor: pointer;
+    border: none;
+    border-radius: 34px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 28px;
+    height: 16px;
+    background-color: var(--color-gray-400);
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+main .block.intent-toggle-desktop .reduce-motion-switch-container .reduce-motion-slider.on {
+    background-color: var(--color-info-accent);
+}
+
+main .block.intent-toggle-desktop .reduce-motion-switch-container .reduce-motion-knob {
+    position: absolute;
+    border-radius: 50%;
+    content: "";
+    height: 12px;
+    width: 12px;
+    top: 2px;
+    left: 2px;
+    background-color: white;
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+main .block.intent-toggle-desktop .reduce-motion-switch-container .reduce-motion-slider.on .reduce-motion-knob {
+    left: calc(100% - 14px);
+}
+
+main .block.intent-toggle-desktop .reduce-motion-switch-container .reduce-motion-text {
+    font-size: var(--body-font-size-s);
+}
+
+main .block.intent-toggle-desktop .intent-toggle-desktop-buttons-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: max-content;
+    background-color: #EDEDED;
+    border-radius: 100px;
+    height: 28px;
+}
+
+main .intent-toggle-desktop .intent-toggle-desktop-buttons-container .intent-toggle-desktop-button {
+    position: relative;
+    display: block;
+    list-style-type: none;
+    background-color: transparent;
+    border-radius: 100px;
+    padding: 4px 36px;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 5px;
+    cursor: pointer;
+    user-select: none;
+    border: none;
+    font-family: var(--body-font-family);
+    color: black;
+}
+
+main .intent-toggle-desktop.dark .intent-toggle-desktop-button.active {
+    color: white;
+    transition: 0.5s;
+}
+
+main .intent-toggle-desktop .intent-toggle-desktop-buttons-container .intent-toggle-background  {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 28px;
+    padding: 0 4px;
+    border-radius: 100px;
+    background-color: white;
+    color: #000000;
+    transition: 0.5s;
+}
+
+main .intent-toggle-desktop.dark .intent-toggle-desktop-buttons-container .intent-toggle-background {
+    background-color: var(--color-gray-800);
+    color: var(--color-white);
+    transition: 0.5s;
+}
+
+main .intent-toggle-desktop .intent-toggle-desktop-buttons-container .intent-toggle-background.loading {
+    display: none;
+}
+
+main .intent-toggle-desktop .quick-action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    flex-basis: 30%;
+}
+
+main .intent-toggle-desktop .quick-action-buttons > a {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    padding: 7px 10px;
+    font-weight: normal;
+    color: var(--color-gray-800);
+    font-size: 14px;
+    border-radius: 6px;
+    background-color: #F8F8F8;
+    margin-left: 10px;
+}
+
+main .intent-toggle-desktop .quick-action-buttons > a > img {
+    display: block;
+}
+
+main .intent-toggle-desktop .intent-toggle-desktop-buttons-container .tag {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: -15px;
+    right: -15px;
+    z-index: 1;
+    font-size: 12px;
+    font-weight: 400;
+    background-color: #33AB84;
+    color: white;
+    height: 20px;
+    width: 61px;
+    border-radius: 4px;
+}
+
+main .intent-toggle-desktop .card-shadow {
+    display: flex;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    opacity: 0.5;
+    transform: translateX(-50%) rotate(180deg);
+    z-index: 2;
+}
+
+@media (min-width: 900px) {
+    main .block.intent-toggle-desktop {
+        display: flex;
+    }
+}
