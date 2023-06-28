@@ -67,7 +67,7 @@ main .hero-color .text-container .button-container .button {
 
 main .hero-color .content-container .color-svg-img {
   height: 100%;
-  width: 100%;
+  width: 200%;
   margin: 0 0 0 15px;
 }
 
@@ -84,10 +84,6 @@ main .hero-color .hidden-svg {
 }
 
 @media screen and (min-width: 600px) {
-  main .hero-color .content-container .color-svg-img {
-    margin: 0 0 0 340px;
-  }
-
   main .hero-color .text-container {
     padding: 32px;
   }
