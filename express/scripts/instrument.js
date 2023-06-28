@@ -22,8 +22,7 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from './scripts.js';
 
-// eslint-disable-next-line import/no-unresolved
-import Context from './context.js';
+import BlockMediator from './block-mediator.js';
 
 // this saves on file size when this file gets minified...
 const w = window;
@@ -145,12 +144,6 @@ loadScript(martechURL, () => {
   const pageName = `adobe.com:${pathSegments.join(':')}`;
 
   const language = getLanguage(getLocale(window.location));
-  const langSplits = language.split('-');
-  langSplits.pop();
-
-  const htmlLang = langSplits.join('-');
-
-  document.documentElement.setAttribute('lang', htmlLang);
 
   let category = getMetadata('category');
   if (!category && (pathname.includes('/create/')
@@ -622,12 +615,22 @@ loadScript(martechURL, () => {
         sparkEventName = 'landing:ctaPressed';
       }
     // quick actions clicks
+    } else if ($a.closest('ccl-quick-action') && $a.classList.contains('upload-your-photo')) {
+      // this event is handled at mock-file-input level
+      return;
     } else if ($a.href && ($a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || $a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?tools/g))) {
       adobeEventName = appendLinkText(adobeEventName, $a);
       sparkEventName = 'quickAction:ctaPressed';
     } else if ($a.href && ($a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || $a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?express-apps\/animate-from-audio/g))) {
       adobeEventName = appendLinkText(adobeEventName, $a);
       sparkEventName = 'quickAction:ctaPressed';
+      // Frictionless Quick Actions clicks
+    } else if ($a.closest('ccl-quick-action') && ($a.getAttribute('data-action') === 'Download')) {
+      adobeEventName = 'quickAction:downloadPressed';
+      sparkEventName = 'quickAction:downloadPressed';
+    } else if ($a.closest('ccl-quick-action') && ($a.getAttribute('data-action') === 'Editor')) {
+      adobeEventName = 'quickAction:openInEditorPressed';
+      sparkEventName = 'quickAction:openInEditorPressed';
     // ToC clicks
     } else if ($a.closest('.toc-container')) {
       if ($a.classList.contains('toc-toggle')) {
@@ -745,6 +748,80 @@ loadScript(martechURL, () => {
     }
   }
 
+  // Frictionless Quick Actions tracking events
+
+  function sendEventToAdobeAnaltics(eventName) {
+    if (useAlloy) {
+      _satellite.track('event', {
+        xdm: {},
+        data: {
+          eventType: 'web.webinteraction.linkClicks',
+          web: {
+            webInteraction: {
+              name: eventName,
+              linkClicks: {
+                value: 1,
+              },
+              type: 'other',
+            },
+          },
+          _adobe_corpnew: {
+            digitalData: {
+              primaryEvent: {
+                eventInfo: {
+                  eventName,
+                },
+              },
+              spark: {
+                eventData: {
+                  eventName,
+                  sendTimestamp: new Date().getTime(),
+                },
+              },
+            },
+          },
+        },
+      });
+    }
+  }
+
+  function handleQuickActionEvents(el) {
+    let frictionLessQuctionActionsTrackingEnabled = false;
+    sendEventToAdobeAnaltics('quickAction:uploadPageViewed');
+    el[0].addEventListener('ccl-quick-action-complete', () => {
+      if (frictionLessQuctionActionsTrackingEnabled) {
+        return;
+      }
+      sendEventToAdobeAnaltics('quickAction:assetUploaded');
+      sendEventToAdobeAnaltics('project:editorDisplayed');
+      const $links = d.querySelectorAll('ccl-quick-action a');
+      // for tracking all of the links
+      $links.forEach(($a) => {
+        $a.addEventListener('click', () => {
+          trackButtonClick($a);
+        });
+      });
+      frictionLessQuctionActionsTrackingEnabled = true;
+    });
+  }
+
+  const cclQuickAction = d.getElementsByTagName('ccl-quick-action');
+  if (cclQuickAction.length) {
+    handleQuickActionEvents(cclQuickAction);
+  } else {
+    d.addEventListener('ccl-quick-action-rendered', (e) => {
+      if (e.target.tagName === 'CCL-QUICK-ACTION') {
+        handleQuickActionEvents(d.getElementsByTagName('ccl-quick-action'));
+      }
+    });
+  }
+
+  d.addEventListener('click', (e) => {
+    if (e.target.id === 'mock-file-input') {
+      sendEventToAdobeAnaltics('adobe.com:express:cta:uploadYourPhoto');
+    }
+  });
+
   function trackVideoAnalytics($video, parameters) {
     const {
       videoName,
@@ -774,10 +851,10 @@ loadScript(martechURL, () => {
     trackBranchParameters($links);
 
     // for tracking all of the links
-    $links.forEach(($a) => {
-      $a.addEventListener('click', () => {
-        trackButtonClick($a);
-      });
+    d.addEventListener('click', (event) => {
+      if (event.target.tagName === 'A') {
+        trackButtonClick(event.target);
+      }
     });
 
     // for tracking the faq
@@ -983,7 +1060,8 @@ loadScript(martechURL, () => {
     }
 
     // Tracking any link or links that is added after page loaded.
-    document.addEventListener('linkspopulated', (e) => {
+    document.addEventListener('linkspopulated', async (e) => {
+      await trackBranchParameters(e.detail);
       e.detail.forEach(($link) => {
         $link.addEventListener('click', () => {
           trackButtonClick($link);
@@ -1194,16 +1272,16 @@ loadScript(martechURL, () => {
     [24793488, 'enableReverseVideoRating'],
   ];
 
-  Context.set('audiences', []);
-  Context.set('segments', []);
+  BlockMediator.set('audiences', []);
+  BlockMediator.set('segments', []);
 
   function getAudiences() {
     const getSegments = (ecid) => {
       if (ecid) {
         w.setAudienceManagerSegments = (json) => {
           if (json && json.segments && json.segments.includes(RETURNING_VISITOR_SEGMENT_ID)) {
-            const audiences = Context.get('audiences');
-            const segments = Context.get('segments');
+            const audiences = BlockMediator.get('audiences');
+            const segments = BlockMediator.get('segments');
             audiences.push(ENABLE_PRICING_MODAL_AUDIENCE);
             segments.push(RETURNING_VISITOR_SEGMENT_ID);
 
@@ -1253,8 +1331,8 @@ loadScript(martechURL, () => {
 
           QUICK_ACTION_SEGMENTS.forEach((QUICK_ACTION_SEGMENT) => {
             if (json && json.segments && json.segments.includes(QUICK_ACTION_SEGMENT[0])) {
-              const audiences = Context.get('audiences');
-              const segments = Context.get('segments');
+              const audiences = BlockMediator.get('audiences');
+              const segments = BlockMediator.get('segments');
               audiences.push(QUICK_ACTION_SEGMENT[1]);
               segments.push(QUICK_ACTION_SEGMENT[0]);
             }

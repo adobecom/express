@@ -12,7 +12,11 @@
 
 import {
   createOptimizedPicture,
-  createTag, fetchPlaceholders, getIcon, getIconElement, getMetadata,
+  createTag,
+  fetchPlaceholders,
+  getIcon,
+  getIconElement,
+  getMetadata,
 } from '../../scripts/scripts.js';
 
 /**
@@ -22,7 +26,7 @@ import {
  * @returns {String}
  */
 
-function createStandardImage(src, alt = '', eager = false, breakpoints = [{ media: '(min-width: 400px)', width: '2000' }, { width: '750' }]) {
+function createStandardImage(src, alt = '', eager = false, breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }]) {
   const url = new URL(src, window.location.origin);
   const picture = document.createElement('picture');
   const { pathname } = url;
@@ -233,4 +237,9 @@ export default async function decorate($block) {
   $block.innerHTML = '';
 
   decorateBlade($block, payload);
+  const blockLinks = $block.querySelectorAll('a');
+  if (blockLinks && blockLinks.length > 0) {
+    const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
+    document.dispatchEvent(linksPopulated);
+  }
 }

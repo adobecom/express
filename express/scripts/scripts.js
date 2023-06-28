@@ -10,10 +10,13 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-disable no-console */
-
 window.RUM_GENERATION = 'ccx-gen-4-experiment-high-sample-rate';
 window.RUM_LOW_SAMPLE_RATE = 100;
 window.RUM_HIGH_SAMPLE_RATE = 50;
+
+const TK_IDS = {
+  jp: 'dvg6awq',
+};
 
 /**
  * log RUM if part of the sample.
@@ -373,13 +376,14 @@ export function getIconElement(icons, size, alt, additionalClassName) {
   return ($div.firstElementChild);
 }
 
-export function transformLinkToAnimation($a) {
+export function transformLinkToAnimation($a, $videoLooping = true) {
   if (!$a || !$a.href.endsWith('.mp4')) {
     return null;
   }
   const params = new URL($a.href).searchParams;
   const attribs = {};
-  ['playsinline', 'autoplay', 'loop', 'muted'].forEach((p) => {
+  const dataAttr = $videoLooping ? ['playsinline', 'autoplay', 'loop', 'muted'] : ['playsinline', 'autoplay', 'muted'];
+  dataAttr.forEach((p) => {
     if (params.get(p) !== 'false') attribs[p] = '';
   });
   // use closest picture as poster
@@ -670,6 +674,7 @@ export function getLanguage(locale) {
   const langs = {
     us: 'en-US',
     fr: 'fr-FR',
+    in: 'en-IN',
     de: 'de-DE',
     it: 'it-IT',
     dk: 'da-DK',
@@ -727,6 +732,13 @@ export function getHelixEnv() {
     env.name = envName;
   }
   return env;
+}
+
+function convertGlobToRe(glob) {
+  let reString = glob.replace(/\*\*/g, '_');
+  reString = reString.replace(/\*/g, '[0-9a-z-]*');
+  reString = reString.replace(/_/g, '.*');
+  return (new RegExp(reString));
 }
 
 function getCurrencyDisplay(currency) {
@@ -1521,12 +1533,6 @@ async function decorateTesting() {
   try {
     // let reason = '';
     const usp = new URLSearchParams(window.location.search);
-    const martech = usp.get('martech');
-    if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
-      // eslint-disable-next-line no-console
-      console.log('rushing martech');
-      loadScript('/express/scripts/instrument.js', null, 'module');
-    }
 
     const experiment = getExperiment();
     const [forcedExperiment, forcedVariant] = usp.get('experiment') ? usp.get('experiment').split('/') : [];
@@ -1534,12 +1540,8 @@ async function decorateTesting() {
     if (experiment) {
       console.log('experiment', experiment);
       const config = await getExperimentConfig(experiment);
-      if (!config) {
-        console.error('config is null');
-        return;
-      }
-      console.log(config);
-      if (toCamelCase(config.status) === 'active' || forcedExperiment) {
+      console.log('config -->', config);
+      if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
         config.run = forcedExperiment || checkExperimentAudience(toClassName(config.audience));
         console.log('run', config.run, config.audience);
 
@@ -1564,6 +1566,15 @@ async function decorateTesting() {
             OfferName: window.hlx.experiment.variants[window.hlx.experiment.selectedVariant].label,
           };
           window.ttMETA.push(experimentDetails);
+          // add hlx experiment details as dynamic variables
+          // for Content Square integration
+          // eslint-disable-next-line no-underscore-dangle
+          if (window._uxa) {
+            for (const propName of Object.keys(experimentDetails)) {
+              // eslint-disable-next-line no-underscore-dangle
+              window._uxa.push(['trackDynamicVariable', { key: propName, value: experimentDetails[propName] }]);
+            }
+          }
           if (config.selectedVariant !== 'control') {
             const currentPath = window.location.pathname;
             const pageIndex = config.variants.control.pages.indexOf(currentPath);
@@ -1580,6 +1591,12 @@ async function decorateTesting() {
           }
         }
       }
+    }
+    const martech = usp.get('martech');
+    if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
+      // eslint-disable-next-line no-console
+      console.log('rushing martech');
+      loadScript('/express/scripts/instrument.js', null, 'module');
     }
   } catch (e) {
     console.log('error testing', e);
@@ -1681,7 +1698,7 @@ export function normalizeHeadings(block, allowedHeadings) {
   });
 }
 
-export async function fetchPlainBlockFromFragment($block, url, blockName) {
+export async function fetchPlainBlockFromFragment(url, blockName) {
   const location = new URL(window.location);
   const locale = getLocale(location);
   let fragmentUrl;
@@ -1694,24 +1711,82 @@ export async function fetchPlainBlockFromFragment($block, url, blockName) {
   const path = new URL(fragmentUrl).pathname.split('.')[0];
   const resp = await fetch(`${path}.plain.html`);
   if (resp.status === 404) {
-    $block.parentElement.parentElement.remove();
+    return null;
   } else {
     const html = await resp.text();
     const section = createTag('div');
     section.innerHTML = html;
     section.className = `section section-wrapper ${blockName}-container`;
     const block = section.querySelector(`.${blockName}`);
+    block.dataset.blockName = blockName;
+    block.dataset.blockStatus = 'loaded';
     block.parentElement.className = `${blockName}-wrapper`;
     block.classList.add('block');
     const img = section.querySelector('img');
     if (img) {
       img.setAttribute('loading', 'lazy');
     }
-    const $section = $block.closest('.section');
-    $section.parentNode.replaceChild(section, $section);
     return section;
   }
-  return null;
+}
+
+export async function fetchFloatingCta(path) {
+  const env = getHelixEnv();
+  const dev = new URLSearchParams(window.location.search).get('dev');
+  const { experiment } = window.hlx;
+  const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
+  let spreadsheet;
+  let floatingBtnData;
+
+  async function fetchFloatingBtnData(sheet) {
+    if (!window.floatingCta) {
+      try {
+        const locale = getLocale(window.location);
+        const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+        const resp = await fetch(`${urlPrefix}${sheet}`);
+        window.floatingCta = resp.ok ? (await resp.json()).data : [];
+      } catch {
+        const resp = await fetch(sheet);
+        window.floatingCta = resp.ok ? (await resp.json()).data : [];
+      }
+    }
+
+    if (window.floatingCta.length) {
+      const candidates = window.floatingCta.filter((p) => {
+        const urlToMatch = p.path.includes('*') ? convertGlobToRe(p.path) : p.path;
+        if (experiment && path !== 'default') {
+          return (path === p.path || path.match(urlToMatch))
+            && p.expID === experiment.run
+            && p.challengerID === experiment.selectedVariant;
+        } else {
+          return path === p.path || path.match(urlToMatch);
+        }
+      }).sort((a, b) => b.path.length - a.path.length);
+
+      if (env && env.name === 'stage') {
+        return candidates[0] || null;
+      }
+
+      return candidates[0] && candidates[0].live !== 'N' ? candidates[0] : null;
+    }
+    return null;
+  }
+
+  if (['yes', 'true', 'on'].includes(dev) && env && env.name === 'stage') {
+    spreadsheet = '/express/floating-cta-dev.json?limit=10000';
+  } else {
+    spreadsheet = '/express/floating-cta.json?limit=10000';
+  }
+
+  if (experimentStatus === 'active') {
+    const expSheet = '/express/experiments/floating-cta-experiments.json?limit=10000';
+    floatingBtnData = await fetchFloatingBtnData(expSheet);
+  }
+
+  if (!floatingBtnData) {
+    floatingBtnData = await fetchFloatingBtnData(spreadsheet);
+  }
+  return floatingBtnData;
 }
 
 async function buildAutoBlocks($main) {
@@ -1766,11 +1841,33 @@ async function buildAutoBlocks($main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
-    const $multifunctionButton = buildBlock('floating-button', '');
-    $multifunctionButton.classList.add('spreadsheet-powered');
-    if ($lastDiv) {
-      $lastDiv.append($multifunctionButton);
+  if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) || ['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
+    if (!window.floatingCtasLoaded) {
+      const floatingCTAData = await fetchFloatingCta(window.location.pathname);
+      const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+      let desktopButton;
+      let mobileButton;
+
+      if (floatingCTAData) {
+        const buttonTypes = {
+          desktop: floatingCTAData.desktop,
+          mobile: floatingCTAData.mobile,
+        };
+
+        desktopButton = validButtonVersion.includes(buttonTypes.desktop) ? buildBlock(buttonTypes.desktop, 'desktop') : null;
+        mobileButton = validButtonVersion.includes(buttonTypes.mobile) ? buildBlock(buttonTypes.mobile, 'mobile') : null;
+
+        [desktopButton, mobileButton].forEach((button) => {
+          if (button) {
+            button.classList.add('spreadsheet-powered');
+            if ($lastDiv) {
+              $lastDiv.append(button);
+            }
+          }
+        });
+      }
+
+      window.floatingCtasLoaded = true;
     }
   }
 
@@ -1811,7 +1908,8 @@ function splitSections($main) {
 function setTheme() {
   let theme = getMeta('theme');
   if (!theme && (window.location.pathname.startsWith('/express')
-  || window.location.pathname.startsWith('/education'))) {
+    || window.location.pathname.startsWith('/education')
+    || window.location.pathname.startsWith('/drafts'))) {
     // mega nav, suppress brand header
     theme = 'no-brand-header';
   }
@@ -1985,7 +2083,7 @@ function displayEnv() {
  * @param {Array} breakpoints breakpoints and corresponding params (eg. width)
  */
 
-export function createOptimizedPicture(src, alt = '', eager = false, breakpoints = [{ media: '(min-width: 400px)', width: '2000' }, { width: '750' }]) {
+export function createOptimizedPicture(src, alt = '', eager = false, breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }]) {
   const url = new URL(src, window.location.href);
   const picture = document.createElement('picture');
   const { pathname } = url;
@@ -2024,38 +2122,11 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
  * @param {Element} main The main element
  */
 function decoratePictures(main) {
-  main.querySelectorAll('img[src*="/media_"').forEach((img, i) => {
+  main.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
     const newPicture = createOptimizedPicture(img.src, img.alt, !i);
     const picture = img.closest('picture');
     if (picture) picture.parentElement.replaceChild(newPicture, picture);
   });
-}
-
-export async function fetchMultifunctionButton(path) {
-  if (!window.multifunctionButton) {
-    try {
-      const locale = getLocale(window.location);
-      const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-      const resp = await fetch(`${urlPrefix}/express/create/multifunction-button.json`);
-      window.multifunctionButton = resp.ok ? (await resp.json()).data : [];
-    } catch {
-      const resp = await fetch('/express/create/multifunction-button.json');
-      window.multifunctionButton = resp.ok ? (await resp.json()).data : [];
-    }
-  }
-
-  if (window.multifunctionButton.length) {
-    const multifunctionButton = window.multifunctionButton.find((p) => path === p.path);
-    const env = getHelixEnv();
-
-    if (env && env.name === 'stage') {
-      return multifunctionButton || null;
-    }
-
-    return multifunctionButton && multifunctionButton.live !== 'N' ? multifunctionButton : null;
-  }
-
-  return null;
 }
 
 export async function decorateMain($main) {
@@ -2248,13 +2319,20 @@ function decorateLegalCopy(main) {
  */
 async function loadEager() {
   setTheme();
+  const main = document.querySelector('main');
+  if (main) {
+    const language = getLanguage(getLocale(window.location));
+    const langSplits = language.split('-');
+    langSplits.pop();
+    const htmlLang = langSplits.join('-');
+    document.documentElement.setAttribute('lang', htmlLang);
+  }
   if (!window.hlx.lighthouse) await decorateTesting();
 
   if (window.location.href.includes('/express/templates/')) {
     await import('./templates.js');
   }
 
-  const main = document.querySelector('main');
   if (main) {
     await decorateMain(main);
     decorateHeaderAndFooter();
@@ -2265,7 +2343,7 @@ async function loadEager() {
     displayOldLinkWarning();
     wordBreakJapanese();
 
-    const lcpBlocks = ['columns', 'hero-animation', 'hero-3d', 'template-list', 'floating-button', 'fullscreen-marquee', 'collapsible-card'];
+    const lcpBlocks = ['columns', 'hero-animation', 'hero-3d', 'template-list', 'template-x', 'floating-button', 'fullscreen-marquee', 'collapsible-card'];
     const block = document.querySelector('.block');
     const hasLCPBlock = (block && lcpBlocks.includes(block.getAttribute('data-block-name')));
     if (hasLCPBlock) await loadBlock(block, true);
@@ -2321,38 +2399,7 @@ export async function buildStaticFreePlanWidget() {
     tagWrapper.append(checkMarkDiv, textDiv);
     widget.append(tagWrapper);
   }
-
   return widget;
-}
-
-export async function buildFreePlanHighlight(elem) {
-  const placeholders = await fetchPlaceholders();
-  const bullet = createTag('div', { class: 'free-plan-bullet' });
-
-  if (sessionStorage.getItem('highlight-optout')) {
-    elem.classList.add('highlight-optout');
-  }
-  const freePlanBulletContainer = createTag('div', { class: 'free-plan-bullet-container' });
-  const freePlanBulletTray = createTag('div', { class: 'free-plan-bullet-tray' });
-  const optoutButton = createTag('button', { class: 'free-plan-optout' });
-
-  optoutButton.append(getIconElement('close-black'));
-
-  for (let i = 0; i < 40; i += 1) {
-    const checkMarkColor = i % 2 === 0 ? '#c457f0' : '#f06dad';
-    const placeholder = i % 2 === 0 ? placeholders['free-plan-check-1'] : placeholders['free-plan-check-2'];
-    const tag = createTag('div', { class: 'free-plan-tag' });
-    const innerDiv = createTag('div', { style: `background-color: ${checkMarkColor}` });
-    tag.innerText = placeholder;
-    innerDiv.append(getIconElement('checkmark'));
-
-    tag.prepend(innerDiv);
-    freePlanBulletTray.append(tag);
-  }
-
-  freePlanBulletContainer.append(freePlanBulletTray);
-  bullet.append(freePlanBulletContainer);
-  elem.append(bullet, optoutButton);
 }
 
 export async function addFreePlanWidget(elem) {
@@ -2368,7 +2415,7 @@ export async function addFreePlanWidget(elem) {
       const lottieWrapper = createTag('span', { class: 'lottie-wrapper' });
 
       $learnMoreButton.textContent = placeholders['learn-more'];
-      lottieWrapper.innerHTML = getLottie('purple-arrows', '/express/blocks/floating-button/purple-arrows.json');
+      lottieWrapper.innerHTML = getLottie('purple-arrows', '/express/icons/purple-arrows.json');
       $learnMoreButton.append(lottieWrapper);
       lazyLoadLottiePlayer();
       widget.append($learnMoreButton);
@@ -2385,12 +2432,6 @@ export async function addFreePlanWidget(elem) {
     });
 
     elem.append(widget);
-
-    // add the free plan bullet if there's a CTA to attach to
-    if (elem.classList.contains('button-container')) {
-      await buildFreePlanHighlight(elem);
-    }
-
     elem.classList.add('free-plan-container');
   }
 }
@@ -2412,7 +2453,11 @@ async function loadLazy() {
   removeMetadata();
   addFavIcon('/express/icons/cc-express.svg');
   if (!window.hlx.lighthouse) loadMartech();
-
+  const tkID = TK_IDS[getLocale(window.location)];
+  if (tkID) {
+    const { default: loadFonts } = await import('./fonts.js');
+    loadFonts(tkID, loadCSS);
+  }
   sampleRUM('lazy');
   sampleRUM.observe(document.querySelectorAll('main picture > img'));
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
@@ -2494,10 +2539,42 @@ function registerPerformanceLogger() {
   }
 }
 
-export function trackBranchParameters($links) {
+function getPlacement(btn) {
+  const parentBlock = btn.closest('.block');
+  let placement = 'outside-blocks';
+
+  if (parentBlock) {
+    const blockName = parentBlock.dataset.blockName || parentBlock.classList[0];
+    const sameBlocks = btn.closest('main')?.querySelectorAll(`.${blockName}`);
+
+    if (sameBlocks && sameBlocks.length > 1) {
+      sameBlocks.forEach((b, i) => {
+        if (b === parentBlock) {
+          placement = `${blockName}-${i + 1}`;
+        }
+      });
+    } else {
+      placement = blockName;
+    }
+
+    if (['template-list', 'template-x'].includes(blockName) && btn.classList.contains('placeholder')) {
+      placement = 'blank-template-cta';
+    }
+  }
+
+  return placement;
+}
+
+export async function trackBranchParameters($links) {
+  const placeholders = await fetchPlaceholders();
   const rootUrl = new URL(window.location.href);
   const rootUrlParameters = rootUrl.searchParams;
 
+  const { experiment } = window.hlx;
+  const { referrer } = window.document;
+  const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
+  const templateSearchTag = getMetadata('short-title');
+  const pageUrl = window.location.pathname;
   const sdid = rootUrlParameters.get('sdid');
   const mv = rootUrlParameters.get('mv');
   const sKwcId = rootUrlParameters.get('s_kwcid');
@@ -2506,51 +2583,77 @@ export function trackBranchParameters($links) {
   const trackingId = rootUrlParameters.get('trackingid');
   const cgen = rootUrlParameters.get('cgen');
 
-  if (sdid || mv || sKwcId || efId || promoId || trackingId || cgen) {
-    $links.forEach(($a) => {
-      if ($a.href && $a.href.match('adobesparkpost.app.link')) {
-        const buttonUrl = new URL($a.href);
-        const urlParams = buttonUrl.searchParams;
+  $links.forEach(($a) => {
+    if ($a.href && $a.href.match('adobesparkpost.app.link')) {
+      const btnUrl = new URL($a.href);
+      const urlParams = btnUrl.searchParams;
+      const placement = getPlacement($a);
 
-        if (sdid) {
-          urlParams.set('~campaign_id', sdid);
-        }
-
-        if (mv) {
-          urlParams.set('~customer_campaign', mv);
-        }
-
-        if (sKwcId) {
-          const sKwcIdParameters = sKwcId.split('!');
-
-          if (typeof sKwcIdParameters[2] !== 'undefined' && sKwcIdParameters[2] === '3') {
-            urlParams.set('~customer_placement', 'Google%20AdWords');
-          }
-
-          if (typeof sKwcIdParameters[8] !== 'undefined' && sKwcIdParameters[8] !== '') {
-            urlParams.set('~keyword', sKwcIdParameters[8]);
-          }
-        }
-
-        if (promoId) {
-          urlParams.set('~ad_id', promoId);
-        }
-
-        if (trackingId) {
-          urlParams.set('~keyword_id', trackingId);
-        }
-
-        if (cgen) {
-          urlParams.set('~customer_keyword', cgen);
-        }
-
-        urlParams.set('~feature', 'paid%20advertising');
-
-        buttonUrl.search = urlParams.toString();
-        $a.href = buttonUrl.toString();
+      if (templateSearchTag
+        && placeholders['search-branch-links']
+        && placeholders['search-branch-links']
+          .replace(/\s/g, '')
+          .split(',')
+          .includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
+        urlParams.set('search', templateSearchTag);
       }
-    });
-  }
+
+      if (referrer) {
+        urlParams.set('referrer', referrer);
+      }
+
+      if (pageUrl) {
+        urlParams.set('url', pageUrl);
+      }
+
+      if (sdid) {
+        urlParams.set('sdid', sdid);
+      }
+
+      if (mv) {
+        urlParams.set('mv', mv);
+      }
+
+      if (efId) {
+        urlParams.set('efid', efId);
+      }
+
+      if (sKwcId) {
+        const sKwcIdParameters = sKwcId.split('!');
+
+        if (typeof sKwcIdParameters[2] !== 'undefined' && sKwcIdParameters[2] === '3') {
+          urlParams.set('customer_placement', 'Google%20AdWords');
+        }
+
+        if (typeof sKwcIdParameters[8] !== 'undefined' && sKwcIdParameters[8] !== '') {
+          urlParams.set('keyword', sKwcIdParameters[8]);
+        }
+      }
+
+      if (promoId) {
+        urlParams.set('promoid', promoId);
+      }
+
+      if (trackingId) {
+        urlParams.set('keywordid', trackingId);
+      }
+
+      if (cgen) {
+        urlParams.set('cgen', cgen);
+      }
+
+      if (experimentStatus === 'active') {
+        urlParams.set('expid', `${experiment.id}-${experiment.selectedVariant}`);
+      }
+
+      if (placement) {
+        urlParams.set('ctaid', placement);
+      }
+
+      btnUrl.search = urlParams.toString();
+      $a.href = btnUrl.toString();
+    }
+  });
 }
 
 if (window.name.includes('performance')) registerPerformanceLogger();

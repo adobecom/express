@@ -111,6 +111,7 @@ function transformToVideoLink($cell, $a) {
   $a.addEventListener('click', (e) => {
     e.preventDefault();
   });
+  $a.setAttribute('rel', 'nofollow');
   const title = $a.textContent.trim();
   // gather video urls from all links in cell
   const vidUrls = [];
@@ -128,7 +129,6 @@ function transformToVideoLink($cell, $a) {
         }
       }
     });
-
   $a.addEventListener('click', (e) => {
     e.preventDefault();
     displayVideoModal(vidUrls, title, true);
@@ -190,7 +190,7 @@ export default async function decorate($block) {
         const srcURL = new URL($poster.src);
         const srcUSP = new URLSearchParams(srcURL.search);
         srcUSP.set('format', 'webply');
-        srcUSP.set('width', typeHint === 'mobile' ? 750 : 2000);
+        srcUSP.set('width', typeHint === 'mobile' ? 750 : 4080);
         optimizedPosterSrc = `${srcURL.pathname}?${srcUSP.toString()}`;
       }
 

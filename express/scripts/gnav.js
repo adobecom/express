@@ -19,8 +19,13 @@ import {
   sampleRUM,
   getCookie,
   getMetadata,
+  fetchPlaceholders,
 // eslint-disable-next-line import/no-unresolved
 } from './scripts.js';
+
+import loadGoogleYOLO from './google-yolo.js';
+
+const isHomepage = window.location.pathname.endsWith('/express/');
 
 async function checkRedirect(location, geoLookup) {
   const splits = location.pathname.split('/express/');
@@ -67,7 +72,7 @@ function loadIMS() {
   loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
 }
 
-function loadFEDS() {
+async function loadFEDS() {
   const locale = getLocale(window.location);
 
   async function showRegionPicker() {
@@ -106,12 +111,7 @@ function loadFEDS() {
         console.log(`setting international based on language switch to: ${cookieValue}`);
         document.cookie = cookieValue;
         event.preventDefault();
-        const checkResp = await fetch(prefix + gPath);
-        if (checkResp.ok) {
-          window.location.href = prefix + gPath;
-        } else {
-          window.location.href = `${prefix}/express/`;
-        }
+        window.location.href = `${prefix}${gPath}`;
       });
     });
     // focus link of current region
@@ -144,12 +144,54 @@ function loadFEDS() {
   window.addEventListener('adobePrivacy:PrivacyReject', handleConsentSettings);
   window.addEventListener('adobePrivacy:PrivacyCustom', handleConsentSettings);
 
-  const isHomepage = window.location.pathname.endsWith('/express/');
   const isMegaNav = window.location.pathname.startsWith('/express')
-    || window.location.pathname.startsWith('/education');
+    || window.location.pathname.startsWith('/education')
+    || window.location.pathname.startsWith('/drafts');
   const fedsExp = isMegaNav
-    ? `adobe-express/ax-gnav${isHomepage ? '-homepage' : ''}`
+    ? `adobe-express/ax-gnav${isHomepage ? '-homepage' : ''}-beta`
     : 'cc-express/cc-express-gnav';
+
+  async function buildBreadCrumbArray() {
+    if (isHomepage || getMetadata('hide-breadcrumbs') === 'true') {
+      return undefined;
+    }
+    const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+    const buildBreadCrumb = (path, name, parentPath = '') => (
+      { title: capitalize(name), url: `${parentPath}/${path}` }
+    );
+
+    const placeholders = await fetchPlaceholders();
+    const validCategories = ['create', 'feature', 'templates'];
+    const pathSegments = window.location.pathname.split('/')
+      .filter((element) => element !== '')
+      .filter((element) => element !== locale);
+    const localePath = locale === 'us' ? '' : `${locale}/`;
+    let category = pathSegments[1];
+    const secondPathSegment = category.toLowerCase();
+    const pagesShortNameElement = document.querySelector('meta[name="short-title"]');
+    const pagesShortName = pagesShortNameElement ? pagesShortNameElement.getAttribute('content') : null;
+
+    if ((!pagesShortName && pathSegments.length > 2)
+      || !placeholders[`breadcrumbs-${category}`]
+      || locale !== 'us') { // Remove this line once locale translations are complete
+      return undefined;
+    }
+    category = capitalize(placeholders[`breadcrumbs-${category}`]);
+    validCategories.push(category);
+
+    const secondBreadCrumb = buildBreadCrumb(secondPathSegment, category, `${localePath}/express`);
+    const breadCrumbList = [secondBreadCrumb];
+
+    if (!validCategories.includes(category)) {
+      return undefined;
+    }
+
+    if (pathSegments.length >= 3) {
+      const thirdBreadCrumb = buildBreadCrumb(pagesShortName, pagesShortName, secondBreadCrumb.url);
+      breadCrumbList.push(thirdBreadCrumb);
+    }
+    return breadCrumbList;
+  }
 
   window.fedsConfig = {
     ...(window.fedsConfig || {}),
@@ -172,6 +214,9 @@ function loadFEDS() {
         if (env && env.spark) {
           sparkLoginUrl = sparkLoginUrl.replace('express.adobe.com', env.spark);
         }
+        if (isHomepage) {
+          sparkLoginUrl = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
+        }
         window.location.href = sparkLoginUrl;
       },
     },
@@ -185,6 +230,10 @@ function loadFEDS() {
         surfaceVersion: '1',
       }
       : {},
+    breadcrumbs: {
+      showLogo: true,
+      links: await buildBreadCrumbArray(),
+    },
   };
 
   window.addEventListener('feds.events.experience.loaded', async () => {
@@ -200,7 +249,7 @@ function loadFEDS() {
       }
     }
 
-    /* switch all links if lower envs */
+    /* switch all links if lower env */
     const env = getHelixEnv();
     if (env && env.spark) {
       // eslint-disable-next-line no-console
@@ -249,8 +298,8 @@ function loadFEDS() {
 if (!window.hlx || !window.hlx.lighthouse) {
   loadIMS();
   loadFEDS();
+  loadGoogleYOLO();
 }
-
 /* Core Web Vitals RUM collection */
 
 sampleRUM('cwv');

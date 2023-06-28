@@ -15,10 +15,11 @@ import {
 } from '../../../../scripts/scripts.js';
 import { CCXQuickActionElement, ELEMENT_NAME } from '../../../../blocks/quick-action/shared.js';
 
+const REMOVE_BACKGROUND_ELEMENT = 'cclqt-remove-background';
 const MOCK_ELEMENT_NAME = `mock-${ELEMENT_NAME}`;
 const MOCK_ELEMENT_CONTAINER = `${MOCK_ELEMENT_NAME}-container`;
 const BLOCK_NAME = '.quick-action';
-const QUICKACTION_HEIGHT_IN_PX = '525px';
+const QUICKACTION_HEIGHT_IN_PX = '475px';
 const QUICK_TASK_CLOSE_BUTTON = 'quick-task-close-button';
 const QUICK_ACTION_COMPLETED = 'quick-action-completed';
 const LOTTIE_ICONS = {
@@ -71,9 +72,11 @@ function createOverlays() {
   const overlay = document.createElement('div');
   overlay.className = 'quick-action-complete-overlay';
   const downloadCopy = document.querySelector(`${ELEMENT_NAME} [data-action='Download']`).cloneNode(true);
+  downloadCopy.classList.add('dark');
+  const editCopy = document.querySelector(`${ELEMENT_NAME} [data-action='Editor']`).cloneNode(true);
   const freeTagCopy = document.querySelectorAll(`${ELEMENT_NAME} .quick-action-tag-container`)[0].cloneNode(true);
   const noCreditCardTagCopy = document.querySelectorAll(`${ELEMENT_NAME} .quick-action-tag-container`)[1].cloneNode(true);
-  [downloadCopy, freeTagCopy, noCreditCardTagCopy].forEach((btn) => {
+  [downloadCopy, editCopy, freeTagCopy, noCreditCardTagCopy].forEach((btn) => {
     btn.classList.add('overlay-item');
     overlay.appendChild(btn);
   });
@@ -83,7 +86,18 @@ function createOverlays() {
   closeButton.title = 'Restart';
   document.querySelector(`${ELEMENT_NAME}`).appendChild(overlayContainer);
   document.querySelector(`${ELEMENT_NAME}`).appendChild(closeButton);
-  addLottieIcons(document.querySelectorAll(`${ELEMENT_NAME} [data-action='Download']`), 'arrow-up');
+}
+
+function renderMoreActions() {
+  const afterAction = document.querySelector(`${BLOCK_NAME} .after-action`);
+  const afterActionSubCopy = afterAction.firstElementChild;
+  const moreActions = afterActionSubCopy ? afterActionSubCopy.nextElementSibling : '';
+  if (moreActions) {
+    const quickAction = document.querySelector(`${ELEMENT_NAME}`);
+    const removeBackgroundEle = document.querySelector(REMOVE_BACKGROUND_ELEMENT);
+    quickAction.insertBefore(moreActions, removeBackgroundEle.nextElementSibling);
+    moreActions.classList.add('more-quick-actions-container');
+  }
 }
 
 function addListenersOnMockElements(ele) {
@@ -130,6 +144,7 @@ function addListenersOnMockElements(ele) {
     document.querySelector(`${BLOCK_NAME} .after-action`).style.display = 'block';
     document.querySelector(`${ELEMENT_NAME}`).classList.add(QUICK_ACTION_COMPLETED);
     createOverlays();
+    renderMoreActions();
   });
   document.querySelector(`${ELEMENT_NAME}`).addEventListener('click', (event) => {
     if (event.target.matches(` .${QUICK_TASK_CLOSE_BUTTON}`)) {
@@ -161,7 +176,7 @@ export default async function decorate(block) {
     }
   }
   const range = document.createRange();
-  const cclQuickAction = range.createContextualFragment(`<${ELEMENT_NAME} action="${config.action || 'remove-background'}" downloadLabel = "Download your image"></${ELEMENT_NAME}>`);
+  const cclQuickAction = range.createContextualFragment(`<${ELEMENT_NAME} action="${config.action || 'remove-background'}" downloadLabel = "Download" editLabel = "Edit in Adobe Express for free"></${ELEMENT_NAME}>`);
   block.append(cclQuickAction);
   const mockQuickActionEle = createMockQuickAction();
   if (quickActionMedia) {
@@ -171,4 +186,7 @@ export default async function decorate(block) {
   }
   addLottieIcons(document.querySelectorAll('a.button.upload-your-photo'), 'arrow-up');
   addListenersOnMockElements(mockQuickActionEle);
+  // trigger the quick-action-rendered event
+  const quickActionRenderedEvent = new Event('ccl-quick-action-rendered', { bubbles: true });
+  document.querySelector(ELEMENT_NAME).dispatchEvent(quickActionRenderedEvent);
 }

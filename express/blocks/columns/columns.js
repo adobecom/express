@@ -27,10 +27,6 @@ import {
   isVideoLink,
 } from '../shared/video.js';
 
-import {
-  createFloatingButton,
-} from '../floating-button/floating-button.js';
-
 function transformToVideoColumn($cell, $a) {
   const $parent = $cell.parentElement;
   const title = $a.textContent.trim();
@@ -42,6 +38,7 @@ function transformToVideoColumn($cell, $a) {
       $button.closest('.button-container').remove();
     }
   });
+  $a.setAttribute('rel', 'nofollow');
 
   $cell.classList.add('column-video');
   $parent.classList.add('columns-video');
@@ -197,7 +194,6 @@ export default function decorate($block) {
         if ($block.className.includes('fullsize')) {
           $a.classList.add('xlarge');
           $a.classList.add('primaryCTA');
-          createFloatingButton($a, $block.closest('.section').dataset.audience);
         } else if ($a.classList.contains('light')) {
           $a.classList.replace('accent', 'primary');
         }
