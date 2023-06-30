@@ -1,0 +1,108 @@
+/* Added a temporary bg color to show the cards since it's white on white */
+body {
+  background-color: lightgrey;
+}
+
+main .pricing-summary .pricing-description .details-cta,
+  background-color: transparent;
+  color: var(--color-info-accent);
+  border: none;
+  margin: 0;
+}
+
+main .pricing-summary .pricing-price > strong {
+  font-size: var(--heading-font-size-m);
+  font-weight: 900;
+}
+
+main .pricing-summary .pricing-price {
+  display: flex;
+  justify-content: center;
+  font-size: var(--heading-font-size-xs);
+  font-weight: 900;
+}
+
+main .pricing-summary .pricing-plan {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 10px 0 30px 0;
+  gap: 10px;
+}
+
+main .pricing-summary .pricing-description > p,
+main .pricing-summary .pricing-plan > p {
+  font-size: var(--body-font-size-s);
+}
+
+main .pricing-summary .pricing-header {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  gap: 15px;
+  font-size: var(--heading-font-size-l);
+}
+
+main .pricing-summary .pricing-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+main .pricing-summary .pricing-column {
+  background-color: var(--color-white);
+  border-radius: 20px;
+  min-width: 420px;
+  min-height: 345px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 23px 0 0 0;
+  justify-items: center;
+  justify-content: center;
+}
+
+main .pricing-summary .pricing-description {
+  max-width: 297px;
+  display: flex;
+  flex-direction: column;
+  margin: 17px 0 0 0;
+}
+
+main .pricing-summary .pricing-description > p,
+main .pricing-summary .pricing-plan > p {
+  margin: 0;
+  line-height: 22px;
+}
+
+main .pricing-summary .button-container:has(.cta) {
+  margin: 0 0 14px 0;
+}
+
+main .pricing-summary .button-container .white-cta,
+main .pricing-summary .button-container .white-cta:hover {
+  background-color: var(--color-white);
+  color: var(--color-black);
+  border: 2px solid var(--color-black);
+}
+
+main .pricing-summary .button-container .button.accent.cta {
+  padding: 14px 23px 16px 23px;
+  font-size: var(--body-font-size-m);
+  border-radius: 100px;
+}
+
+main .pricing-summary .button-container .purple-cta,
+main .pricing-summary .button-container .purple-cta:hover {
+  background-color: var(--color-info-accent);
+  color: var(--color-white);
+  border: 2px solid var(--color-info-accent);
+}
+
+main .pricing-summary .cta-colors {
+  display: none;
+}
+
+main .pricing-summary .spacer {
+  flex: 1;
+}
