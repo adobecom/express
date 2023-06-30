@@ -4,6 +4,7 @@ body {
 }
 
 main .pricing-summary .pricing-description .details-cta,
+main .pricing-summary .pricing-description .details-cta:hover {
   background-color: transparent;
   color: var(--color-info-accent);
   border: none;
