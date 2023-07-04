@@ -164,8 +164,8 @@ function cleanEmptyParagraphs(column) {
   });
 }
 
-function handleColumn(column, columnNumber) {
-  const header = handleHeader(column, columnNumber);
+function handleColumn(column) {
+  const header = handleHeader(column);
   const pricePlan = handlePrice(column);
   const cta = handleCtas(column);
   const description = handleDescription(column);
@@ -178,8 +178,8 @@ function handleColumn(column, columnNumber) {
 function processColumns(pricingContainer) {
   const columns = Array.from(pricingContainer.children);
 
-  columns.forEach((column, columnNumber) => {
-    handleColumn(column, columnNumber);
+  columns.forEach((column) => {
+    handleColumn(column);
   });
 }
 
