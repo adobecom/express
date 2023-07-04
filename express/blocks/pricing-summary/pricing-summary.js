@@ -82,7 +82,7 @@ async function fetchPlan(planUrl) {
   return plan;
 }
 
-function getFirstRow(block, className) {
+function getColumns(block, className) {
   const container = block.children[0];
   container.classList.add(className);
 
@@ -94,17 +94,6 @@ function removeEmptyColumns(pricingContainer) {
   if (!columns[2].hasChildNodes()) {
     columns[2].remove();
   }
-}
-
-function getSecondRow(block, className) {
-  const container = block.children[1];
-  container.classList.add(className);
-
-  return container;
-}
-
-function getColors(ctaColors) {
-  return ctaColors.children[0].textContent.split(',');
 }
 
 function handleHeader(column, columnNumber) {
@@ -140,13 +129,20 @@ function handleSpacer() {
 
 function handleCtas(column) {
   const ctaContainers = column.querySelectorAll('.button-container');
+
   const ctas = column.querySelectorAll('a');
   if (ctas.length > 1) {
     ctas[0].classList.add('details-cta');
-    ctas[1].classList.add('cta');
+    ctas[1].classList.add('cta', 'xlarge');
   } else {
-    ctas[0].classList.add('cta');
+    ctas[0].classList.add('cta', 'xlarge');
   }
+
+  ctaContainers.forEach((container) => {
+    if (container.children[0].matches('em')) {
+      container.children[0].children[0].classList.add('secondary', 'dark');
+    }
+  });
 
   return ctaContainers[ctaContainers.length - 1];
 }
@@ -168,16 +164,7 @@ function cleanEmptyParagraphs(column) {
   });
 }
 
-function setButtonColor(column, color) {
-  const ctaButton = column.querySelector('.cta');
-  if (color === 'white') {
-    ctaButton.classList.add('white-cta');
-  } else if (color === 'purple') {
-    ctaButton.classList.add('purple-cta');
-  }
-}
-
-function handleColumn(column, columnNumber, color) {
+function handleColumn(column, columnNumber) {
   const header = handleHeader(column, columnNumber);
   const pricePlan = handlePrice(column);
   const cta = handleCtas(column);
@@ -186,23 +173,19 @@ function handleColumn(column, columnNumber, color) {
 
   column.append(header, description, spacer, pricePlan, cta);
   cleanEmptyParagraphs(column);
-  setButtonColor(column, color);
 }
 
-function processColumns(pricingContainer, colors) {
+function processColumns(pricingContainer) {
   const columns = Array.from(pricingContainer.children);
 
   columns.forEach((column, columnNumber) => {
-    handleColumn(column, columnNumber, colors[columnNumber]);
+    handleColumn(column, columnNumber);
   });
 }
 
 export default function decorate(block) {
-  const pricingContainer = getFirstRow(block, 'pricing-container');
+  const pricingContainer = getColumns(block, 'pricing-container');
   removeEmptyColumns(pricingContainer);
 
-  const ctaColors = getSecondRow(block, 'cta-colors');
-  const colors = getColors(ctaColors);
-
-  processColumns(pricingContainer, colors);
+  processColumns(pricingContainer);
 }
