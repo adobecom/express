@@ -68,14 +68,6 @@ function handleDescription(column) {
   return description;
 }
 
-function cleanEmptyParagraphs(column) {
-  column.querySelectorAll('p').forEach((p) => {
-    if (p.textContent.trim() === '') {
-      p.remove();
-    }
-  });
-}
-
 export default function decorate(block) {
   const pricingContainer = block.children[0];
   pricingContainer.classList.add('pricing-container');
@@ -89,6 +81,5 @@ export default function decorate(block) {
     const spacer = createTag('div', { class: 'spacer' });
 
     column.append(header, description, spacer, pricePlan, cta);
-    cleanEmptyParagraphs(column);
   });
 }

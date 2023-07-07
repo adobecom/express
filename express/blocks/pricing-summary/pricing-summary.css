@@ -1,4 +1,4 @@
-main .pricing-summary > div {
+main .pricing-summary .pricing-container {
   display: flex;
   justify-content: center;
   gap: 20px;
