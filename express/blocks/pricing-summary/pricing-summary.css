@@ -1,9 +1,4 @@
-/* Added a temporary bg color to show the cards since it's white on white */
-body {
-  background-color: lightgrey;
-}
-
-main .pricing-summary .pricing-container {
+main .pricing-summary > div {
   display: flex;
   justify-content: center;
   gap: 20px;

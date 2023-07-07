@@ -18,7 +18,7 @@ import {
   fetchPlainBlockFromFragment,
 } from '../../scripts/scripts.js';
 
-async function fetchPlan(planUrl) {
+export async function fetchPlan(planUrl) {
   if (!window.pricingPlans) {
     window.pricingPlans = {};
   }
