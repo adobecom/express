@@ -9,8 +9,72 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import { createTag } from '../../scripts/scripts.js';
-import { fetchPlan } from '../plans-comparison/plans-comparison.js';
+
+import {
+  createTag,
+  getOffer,
+} from '../../scripts/scripts.js';
+
+async function fetchPlan(planUrl) {
+  if (!window.pricingPlans) {
+    window.pricingPlans = {};
+  }
+
+  let plan = window.pricingPlans[planUrl];
+
+  if (!plan) {
+    plan = {};
+    const link = new URL(planUrl);
+    const params = link.searchParams;
+
+    plan.url = planUrl;
+    plan.country = 'us';
+    plan.language = 'en';
+    plan.price = '9.99';
+    plan.currency = 'US';
+    plan.symbol = '$';
+
+    if (planUrl.includes('/sp/')) {
+      plan.offerId = 'FREE0';
+      plan.frequency = 'monthly';
+      plan.name = 'Free';
+      plan.stringId = 'free-trial';
+    } else {
+      plan.offerId = params.get('items[0][id]');
+      plan.frequency = null;
+      plan.name = 'Premium';
+      plan.stringId = '3-month-trial';
+    }
+
+    if (plan.offerId === '70C6FDFC57461D5E449597CC8F327CF1' || plan.offerId === 'CFB1B7F391F77D02FE858C43C4A5C64F') {
+      plan.frequency = 'Monthly';
+    } else if (plan.offerId === 'E963185C442F0C5EEB3AE4F4AAB52C24' || plan.offerId === 'BADDACAB87D148A48539B303F3C5FA92') {
+      plan.frequency = 'Annual';
+    } else {
+      plan.frequency = null;
+    }
+
+    const countryOverride = new URLSearchParams(window.location.search).get('country');
+    const offer = await getOffer(plan.offerId, countryOverride);
+
+    if (offer) {
+      plan.currency = offer.currency;
+      plan.price = offer.unitPrice;
+      plan.formatted = `${offer.unitPriceCurrencyFormatted}`;
+      plan.country = offer.country;
+      plan.vatInfo = offer.vatInfo;
+      plan.language = offer.lang;
+      plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
+      plan.prefix = offer.prefix ?? '';
+      plan.suffix = offer.suffix ?? '';
+      plan.formatted = plan.formatted.replace(plan.rawPrice[0], `<strong>${plan.prefix}${plan.rawPrice[0]}${plan.suffix}</strong>`);
+    }
+
+    window.pricingPlans[planUrl] = plan;
+  }
+
+  return plan;
+}
 
 function handleHeader(column) {
   column.classList.add('pricing-column');
@@ -69,8 +133,14 @@ function handleDescription(column) {
 }
 
 export default function decorate(block) {
-  const pricingContainer = block.children[0];
+  const pricingContainer = block.children[1];
   pricingContainer.classList.add('pricing-container');
+
+  Array.from(block.children).forEach((child) => {
+    if (child.children[0].innerHTML.trim() === '') {
+      child.children[0].remove();
+    }
+  });
 
   const columns = Array.from(pricingContainer.children);
   columns.forEach((column) => {

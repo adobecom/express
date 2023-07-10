@@ -1,3 +1,7 @@
+main .pricing-summary {
+  padding: 20px 0 20px 0;
+}
+
 main .pricing-summary .pricing-container {
   display: flex;
   justify-content: center;
@@ -87,4 +91,24 @@ main .pricing-summary .pricing-column .button-container .details-cta {
 
 main .pricing-summary .pricing-column .button-container .dark {
   border: 2px solid var(--color-black);
+}
+
+main .pricing-summary > div:first-of-type > div {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 0 60px 0;
+}
+
+main .pricing-summary > div:first-of-type > div > h2 {
+  font-size: var(--heading-font-size-xl);
+}
+
+main .pricing-summary > div:first-of-type > div > p {
+  margin: 0;
+}
+
+main .pricing-summary > div:last-of-type > div {
+  font-size: var(--body-font-size-xs);
+  margin: 18px 0 0 0;
 }
