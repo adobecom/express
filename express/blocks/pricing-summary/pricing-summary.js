@@ -79,7 +79,7 @@ async function fetchPlan(planUrl) {
 function handleHeader(column) {
   column.classList.add('pricing-column');
   const title = column.querySelector('h2');
-  const icon = column.querySelector('picture');
+  const icon = column.querySelector('img');
   const header = createTag('div', { class: 'pricing-header' });
   header.append(title, icon);
   return header;
