@@ -142,6 +142,7 @@ function isValidBehaviors(behaviors) {
 }
 
 export function isValidTemplate(template) {
+  console.log(template)
   return !!(template.status === 'approved'
     && template.customLinks?.branchUrl
     && template['dc:title']?.['i-default']

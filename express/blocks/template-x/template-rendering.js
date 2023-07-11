@@ -28,16 +28,17 @@ function getTemplateTitle(template) {
   return template['dc:title']['i-default'];
 }
 
-function extractRenditionLinkHref(template) {
-  return template._links?.['http://ns.adobe.com/adobecloud/rel/rendition']?.href;
-}
-
-function extractComponentLinkHref(template) {
-  return template._links?.['http://ns.adobe.com/adobecloud/rel/component']?.href;
+function extractlinkHref(template) {
+  return template._links?.['http://ns.adobe.com/adobecloud/rel/component']?.href
+    || template._links?.['http://ns.adobe.com/adobecloud/rel/rendition']?.href;
 }
 
 function extractVideoThumbnailId(page) {
   return page.rendition?.video?.thumbnail?.componentId;
+}
+
+function extractImageThumbnailId(page) {
+  return page.rendition?.image?.thumbnail?.componentId;
 }
 
 function extractImageThumbnail(page) {
@@ -57,19 +58,20 @@ function widthToSize(widthHeightRatio, targetWidth) {
   return Math.round(targetWidth / widthHeightRatio);
 }
 
-function getImageThumbnailSrc(renditionLinkHref, page) {
-  const thumbnail = extractImageThumbnail(page);
-  return renditionLinkHref.replace(
-    '{&page,size,type,fragment}',
-    `&size=${widthToSize(getWidthHeightRatio(page), thumbnail.width)}&type=image/jpg&fragment=id=${thumbnail.componentId}`,
-  );
-}
-
-function getImageCustomWidthSrc(renditionLinkHref, page, image) {
-  return renditionLinkHref.replace(
-    '{&page,size,type,fragment}',
-    `&size=${widthToSize(getWidthHeightRatio(page), 151)}&type=image/jpg&fragment=id=${image.componentId}`,
-  );
+function getImageThumbnailSrc(linkHref, page) {
+  if (linkHref.indexOf('{&revision,component_id}') > 0) {
+    const imageThumbnailId = extractImageThumbnailId(page);
+    return linkHref.replace(
+      '{&revision,component_id}',
+      `&revision=0&component_id=${imageThumbnailId}`,
+    );
+  } else {
+    const thumbnail = extractImageThumbnail(page);
+    return linkHref.replace(
+      '{&page,size,type,fragment}',
+      `&size=${widthToSize(getWidthHeightRatio(page), thumbnail.width)}&type=image/jpg&fragment=id=${thumbnail.componentId}`,
+    );
+  }
 }
 
 function getVideoSrc(componentLinkHref, page) {
@@ -146,19 +148,19 @@ function getPageIterator(pages) {
 }
 function renderRotatingMedias(wrapper,
   pages,
-  { templateTitle, renditionLinkHref, componentLinkHref }) {
+  { templateTitle, linkHref }) {
   const pageIterator = getPageIterator(pages);
   let imgTimeoutId;
 
   const constructVideo = () => {
     let src = '';
     if (containsVideo(pages)) {
-      src = getVideoSrc(componentLinkHref, pageIterator.current());
+      src = getVideoSrc(linkHref, pageIterator.current());
       const video = createTag('video', {
         muted: true,
         playsinline: '',
         title: templateTitle,
-        poster: getImageThumbnailSrc(renditionLinkHref, pageIterator.current()),
+        poster: getImageThumbnailSrc(linkHref, pageIterator.current()),
         class: 'unloaded hidden',
       });
       const videoSource = createTag('source', {
@@ -192,7 +194,7 @@ function renderRotatingMedias(wrapper,
 
   const playImage = () => {
     img.classList.remove('hidden');
-    img.src = getImageThumbnailSrc(renditionLinkHref, pageIterator.current());
+    img.src = getImageThumbnailSrc(linkHref, pageIterator.current());
 
     imgTimeoutId = setTimeout(dispatchImgEndEvent, 2000);
   };
@@ -201,8 +203,8 @@ function renderRotatingMedias(wrapper,
     if (video) {
       const videoSource = video.querySelector('source');
       video.classList.remove('hidden');
-      video.poster = getImageThumbnailSrc(renditionLinkHref, pageIterator.current());
-      videoSource.src = getVideoSrc(componentLinkHref, pageIterator.current());
+      video.poster = getImageThumbnailSrc(linkHref, pageIterator.current());
+      videoSource.src = getVideoSrc(linkHref, pageIterator.current());
       video.load();
       video.muted = true;
       video.play().catch((e) => {
@@ -266,14 +268,12 @@ function renderMediaWrapper(template) {
   let renderedMedia = null;
 
   const templateTitle = getTemplateTitle(template);
-  const renditionLinkHref = extractRenditionLinkHref(template);
-  const componentLinkHref = extractComponentLinkHref(template);
+  const linkHref = extractlinkHref(template);
   const { branchUrl } = template.customLinks;
   const templateInfo = {
     templateTitle,
     branchUrl,
-    renditionLinkHref,
-    componentLinkHref,
+    linkHref,
   };
 
   const enterHandler = (e) => {
@@ -343,10 +343,9 @@ function renderStillWrapper(template) {
   const firstPage = template.pages[0];
 
   const templateTitle = getTemplateTitle(template);
-  const renditionLinkHref = template._links['http://ns.adobe.com/adobecloud/rel/rendition'].href;
-
-  const thumbnailImageHref = getImageCustomWidthSrc(renditionLinkHref,
-    template.pages[0], firstPage.rendition.image?.thumbnail);
+  const linkHref = template._links['http://ns.adobe.com/adobecloud/rel/component']?.href
+  || template._links['http://ns.adobe.com/adobecloud/rel/rendition'].href;
+  const thumbnailImageHref = getImageThumbnailSrc(linkHref, template.pages[0]);
 
   const imgWrapper = createTag('div', { class: 'image-wrapper' });
 
