@@ -4,17 +4,22 @@ main .pricing-summary {
 }
 
 main .pricing-summary .pricing-container {
-  justify-content: center;
+  margin: 0 10px 0 10px;
+}
+
+main .pricing-summary .pricing-container .columns-container {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   gap: 20px;
-  margin: auto;
-  overflow: auto;
+  align-items: center;
 }
 
 main .pricing-summary .pricing-column {
   background-color: var(--color-white);
   border-radius: 20px;
-  min-width: 420px;
+  min-width: 370px;
+  width: 100%;
   max-width: 420px;
   min-height: 345px;
   display: flex;
@@ -123,8 +128,8 @@ main .pricing-summary > div:last-of-type > div {
     max-width: 100%;
   }
 
-  main .pricing-summary .pricing-container {
+  main .pricing-summary .pricing-container .columns-container {
+    display: flex;
     flex-direction: row;
-    overflow: visible;
   }
 }

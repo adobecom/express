@@ -142,6 +142,8 @@ export default function decorate(block) {
     }
   });
 
+  const columnsContainer = createTag('div', { class: 'columns-container' });
+
   const columns = Array.from(pricingContainer.children);
   columns.forEach((column) => {
     const header = handleHeader(column);
@@ -151,5 +153,9 @@ export default function decorate(block) {
     const spacer = createTag('div', { class: 'spacer' });
 
     column.append(header, description, spacer, pricePlan, cta);
+
+    columnsContainer.append(column);
   });
+
+  pricingContainer.append(columnsContainer);
 }
