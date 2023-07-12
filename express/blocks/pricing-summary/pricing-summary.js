@@ -78,27 +78,31 @@ async function fetchPlan(planUrl) {
 
 function handleHeader(column) {
   column.classList.add('pricing-column');
+
   const title = column.querySelector('h2');
   const icon = column.querySelector('img');
   const header = createTag('div', { class: 'pricing-header' });
+
   header.append(title, icon);
+
   return header;
 }
 
 function handlePrice(column) {
   const price = column.querySelector('[title="{{pricing}}"]');
-  const priceContainer = price.parentNode;
-  const plan = priceContainer.nextElementSibling;
+  const priceContainer = price?.parentNode;
+  const plan = priceContainer?.nextElementSibling;
 
   const priceText = createTag('div', { class: 'pricing-price' });
   const pricePlan = createTag('div', { class: 'pricing-plan' });
+
   pricePlan.append(priceText, plan);
 
-  fetchPlan(price.href).then((response) => {
+  fetchPlan(price?.href).then((response) => {
     priceText.innerHTML = response.formatted;
   });
 
-  priceContainer.remove();
+  priceContainer?.remove();
 
   return pricePlan;
 }
@@ -107,17 +111,11 @@ function handleCtas(column) {
   const ctaContainers = column.querySelectorAll('.button-container');
 
   const ctas = column.querySelectorAll('a');
-  if (ctas.length > 1) {
-    ctas[0].classList.add('details-cta');
-    ctas[1].classList.add('cta', 'xlarge');
-  } else {
-    ctas[0].classList.add('cta', 'xlarge');
-  }
+  ctas[0]?.classList.add(ctas[1] ? 'details-cta' : 'cta', 'xlarge');
+  ctas[1]?.classList.add('cta', 'xlarge');
 
   ctaContainers.forEach((container) => {
-    if (container.children[0].matches('em')) {
-      container.children[0].children[0].classList.add('secondary', 'dark');
-    }
+    container.querySelector('em')?.children[0]?.classList.add('secondary', 'dark');
   });
 
   return ctaContainers[ctaContainers.length - 1];
@@ -126,7 +124,9 @@ function handleCtas(column) {
 function handleDescription(column) {
   const description = createTag('div', { class: 'pricing-description' });
   const texts = [...column.children];
+
   texts.pop();
+
   description.append(...texts);
 
   return description;
@@ -134,17 +134,19 @@ function handleDescription(column) {
 
 export default function decorate(block) {
   const pricingContainer = block.children[1];
+
   pricingContainer.classList.add('pricing-container');
 
-  Array.from(block.children).forEach((child) => {
-    if (child.children[0].innerHTML.trim() === '') {
-      child.children[0].remove();
+  Array.from(block.children)?.forEach((child) => {
+    if (child.children[0]?.innerHTML.trim() === '') {
+      child.children[0]?.remove();
     }
   });
 
   const columnsContainer = createTag('div', { class: 'columns-container' });
 
   const columns = Array.from(pricingContainer.children);
+
   columns.forEach((column) => {
     const header = handleHeader(column);
     const pricePlan = handlePrice(column);
@@ -153,7 +155,6 @@ export default function decorate(block) {
     const spacer = createTag('div', { class: 'spacer' });
 
     column.append(header, description, spacer, pricePlan, cta);
-
     columnsContainer.append(column);
   });
 
