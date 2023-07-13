@@ -57,18 +57,18 @@ function widthToSize(widthHeightRatio, targetWidth) {
   return Math.round(targetWidth / widthHeightRatio);
 }
 
-function getImageThumbnailSrc(renditionLinkHref, page) {
+function getImageThumbnailSrc(renditionLinkHref, page, width) {
   const thumbnail = extractImageThumbnail(page);
-  return renditionLinkHref.replace(
-    '{&page,size,type,fragment}',
-    `&size=${widthToSize(getWidthHeightRatio(page), thumbnail.width)}&type=image/jpg&fragment=id=${thumbnail.componentId}`,
-  );
-}
+  if (page.rendition.image.thumbnail.mediaType === 'image/webp') {
+    return renditionLinkHref.replace(
+      '{&revision,component_id}',
+      `&revision=0&component_id=${thumbnail.componentId}`,
+    );
+  }
 
-function getImageCustomWidthSrc(renditionLinkHref, page, image) {
   return renditionLinkHref.replace(
     '{&page,size,type,fragment}',
-    `&size=${widthToSize(getWidthHeightRatio(page), 151)}&type=image/jpg&fragment=id=${image.componentId}`,
+    `&size=${widthToSize(getWidthHeightRatio(page), width || thumbnail.width)}&type=image/jpg&fragment=id=${thumbnail.componentId}`,
   );
 }
 
@@ -340,13 +340,12 @@ function renderHoverWrapper(template, placeholders, props) {
 
 function renderStillWrapper(template) {
   const stillWrapper = createTag('div', { class: 'still-wrapper' });
-  const firstPage = template.pages[0];
 
   const templateTitle = getTemplateTitle(template);
   const renditionLinkHref = template._links['http://ns.adobe.com/adobecloud/rel/rendition'].href;
 
-  const thumbnailImageHref = getImageCustomWidthSrc(renditionLinkHref,
-    template.pages[0], firstPage.rendition.image?.thumbnail);
+  const thumbnailImageHref = getImageThumbnailSrc(renditionLinkHref,
+    template.pages[0], 151);
 
   const imgWrapper = createTag('div', { class: 'image-wrapper' });
 
@@ -389,7 +388,7 @@ function renderStillWrapper(template) {
     imgWrapper.append(videoIcon);
   }
 
-  loadBetterAssetInBackground(img, firstPage);
+  loadBetterAssetInBackground(img, template.pages[0]);
 
   stillWrapper.append(imgWrapper);
   // TODO: API not ready for creator yet
