@@ -57,18 +57,19 @@ function widthToSize(widthHeightRatio, targetWidth) {
   return Math.round(targetWidth / widthHeightRatio);
 }
 
-function getImageThumbnailSrc(renditionLinkHref, page, width) {
+function getImageThumbnailSrc(renditionLinkHref, page) {
   const thumbnail = extractImageThumbnail(page);
-  if (page.rendition.image.thumbnail.mediaType === 'image/webp') {
+  const { mediaType, componentId, width } = thumbnail;
+  if (mediaType === 'image/webp') {
     return renditionLinkHref.replace(
       '{&revision,component_id}',
-      `&revision=0&component_id=${thumbnail.componentId}`,
+      `&revision=0&component_id=${componentId}`,
     );
   }
 
   return renditionLinkHref.replace(
     '{&page,size,type,fragment}',
-    `&size=${widthToSize(getWidthHeightRatio(page), width || thumbnail.width)}&type=image/jpg&fragment=id=${thumbnail.componentId}`,
+    `&size=${width}&type=${mediaType}&fragment=id=${componentId}`,
   );
 }
 
@@ -344,8 +345,7 @@ function renderStillWrapper(template) {
   const templateTitle = getTemplateTitle(template);
   const renditionLinkHref = template._links['http://ns.adobe.com/adobecloud/rel/rendition'].href;
 
-  const thumbnailImageHref = getImageThumbnailSrc(renditionLinkHref,
-    template.pages[0], 151);
+  const thumbnailImageHref = getImageThumbnailSrc(renditionLinkHref, template.pages[0]);
 
   const imgWrapper = createTag('div', { class: 'image-wrapper' });
 
@@ -388,7 +388,8 @@ function renderStillWrapper(template) {
     imgWrapper.append(videoIcon);
   }
 
-  loadBetterAssetInBackground(img, template.pages[0]);
+  // keep it simple for now
+  // loadBetterAssetInBackground(img, template.pages[0]);
 
   stillWrapper.append(imgWrapper);
   // TODO: API not ready for creator yet
