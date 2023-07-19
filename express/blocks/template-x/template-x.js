@@ -18,13 +18,14 @@ import {
   decorateMain,
   fetchPlaceholders,
   getIconElement,
+  getLanguage,
   getLocale,
   getLottie,
-  lazyLoadLottiePlayer,
-  toClassName,
-  getLanguage,
   getMetadata,
+  lazyLoadLottiePlayer,
   titleCase,
+  toClassName,
+  transformLinkToAnimation,
 } from '../../scripts/scripts.js';
 
 import { Masonry } from '../shared/masonry.js';
@@ -43,8 +44,33 @@ function camelize(str) {
   return str.replace(/^\w|[A-Z]|\b\w/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase())).replace(/\s+/g, '');
 }
 
+function isDarkOverlayReadable(colorString) {
+  let r;
+  let g;
+  let b;
+
+  if (colorString.match(/^rgb/)) {
+    const colorValues = colorString.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+    [r, g, b] = colorValues.slice(1);
+  } else {
+    const hexToRgb = +(`0x${colorString.slice(1).replace(colorString.length < 5 ? /./g : '', '$&$&')}`);
+    // eslint-disable-next-line no-bitwise
+    r = (hexToRgb >> 16) & 255;
+    // eslint-disable-next-line no-bitwise
+    g = (hexToRgb >> 8) & 255;
+    // eslint-disable-next-line no-bitwise
+    b = hexToRgb & 255;
+  }
+
+  const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+
+  return hsp > 127.5;
+}
+
 async function fetchAndRenderTemplates(props) {
-  const [placeholders, { response, fallbackMsg }] = await Promise.all([fetchPlaceholders(), fetchTemplates(props)]);
+  const [placeholders, { response, fallbackMsg }] = await Promise.all(
+    [fetchPlaceholders(), fetchTemplates(props)],
+  );
   if (!response || !response.items || !Array.isArray(response.items)) {
     return { templates: null };
   }
@@ -69,10 +95,10 @@ async function fetchAndRenderTemplates(props) {
 }
 
 async function processContentRow(block, props) {
-  // const placeholders = await fetchPlaceholders();
-
   const templateTitle = createTag('div', { class: 'template-title' });
-  templateTitle.innerHTML = props.contentRow.outerHTML;
+  const textWrapper = createTag('div', { class: 'text-wrapper' });
+  textWrapper.innerHTML = props.contentRow.outerHTML;
+  templateTitle.append(textWrapper);
 
   const aTags = templateTitle.querySelectorAll(':scope a');
 
@@ -80,9 +106,11 @@ async function processContentRow(block, props) {
     templateTitle.classList.add('with-link');
     aTags.forEach((aTag) => {
       aTag.className = 'template-title-link';
+
       const p = aTag.closest('p');
       if (p) {
-        p.classList.remove('button-container');
+        templateTitle.append(p);
+        p.className = 'view-all-link-wrapper';
       }
     });
   }
@@ -90,29 +118,6 @@ async function processContentRow(block, props) {
   block.prepend(templateTitle);
 
   if (props.orientation.toLowerCase() === 'horizontal') templateTitle.classList.add('horizontal');
-
-  // todo: build collaboration and holiday variants
-  // if (block.classList.contains('collaboration')) {
-  //   const titleHeading = props.contentRow.querySelector('h3');
-  //   const anchorLink = createTag('a', {
-  //     class: 'collaboration-anchor',
-  //     href: `${document.URL.replace(/#.*$/, '')}#${titleHeading.id}`,
-  //   });
-  //   const clipboardTag = createTag('span', { class: 'clipboard-tag' });
-  //   clipboardTag.textContent = placeholders['tag-copied'];
-  //
-  //   anchorLink.addEventListener('click', (e) => {
-  //     e.preventDefault();
-  //     navigator.clipboard.writeText(anchorLink.href);
-  //     anchorLink.classList.add('copied');
-  //     setTimeout(() => {
-  //       anchorLink.classList.remove('copied');
-  //     }, 2000);
-  //   });
-  //
-  //   anchorLink.append(clipboardTag);
-  //   titleHeading.append(anchorLink);
-  // }
 }
 
 async function formatHeadingPlaceholder(props) {
@@ -133,7 +138,7 @@ async function formatHeadingPlaceholder(props) {
 
   if (grammarTemplate) {
     grammarTemplate = grammarTemplate
-      .replace('{{quantity}}', templateCount)
+      .replace('{{quantity}}', props.fallbackMsg ? '0' : templateCount)
       .replace('{{Type}}', heading)
       .replace('{{type}}', camelHeading);
 
@@ -173,6 +178,10 @@ function constructProps(block) {
     headingTitle: null,
     headingSlug: null,
     viewAllLink: null,
+    holidayIcon: null,
+    backgroundColor: '#000B1D',
+    backgroundAnimation: null,
+    textColor: '#FFFFFF',
   };
 
   Array.from(block.children).forEach((row) => {
@@ -197,17 +206,25 @@ function constructProps(block) {
       if (key === 'template stats' && ['yes', 'true', 'on'].includes(cols[1].textContent.trim().toLowerCase())) {
         props[camelize(key)] = cols[2].textContent.trim().toLowerCase();
       }
-
-      if (key === 'holiday block' && ['yes', 'true', 'on'].includes(cols[1].textContent.trim().toLowerCase())) {
-        const graphic = cols[2].querySelector('picture');
-        if (graphic) {
-          props[camelize(key)] = graphic;
-        }
-      }
     } else if (cols.length === 4) {
       if (key === 'blank template') {
         cols[0].remove();
         props.templates.push(row);
+      }
+    } else if (cols.length === 5) {
+      if (key === 'holiday block' && ['yes', 'true', 'on'].includes(cols[1].textContent.trim().toLowerCase())) {
+        const backgroundColor = cols[3].textContent.trim().toLowerCase();
+        const holidayIcon = cols[2].querySelector('picture');
+        const backgroundAnimation = cols[4].querySelector('a');
+
+        props.holidayBlock = true;
+        props.holidayIcon = holidayIcon || null;
+        if (backgroundColor) {
+          props.backgroundColor = backgroundColor;
+        }
+        props.backgroundAnimation = backgroundAnimation || null;
+        const contrastingTextColor = isDarkOverlayReadable(backgroundColor) ? 'dark-text' : 'light-text';
+        props.textColor = contrastingTextColor;
       }
     }
   });
@@ -616,10 +633,12 @@ async function decorateCategoryList(block, props) {
   const categoriesDesktopWrapper = createTag('div', { class: 'category-list-wrapper' });
   const categoriesToggleWrapper = createTag('div', { class: 'category-list-toggle-wrapper' });
   const categoriesToggle = getIconElement('drop-down-arrow');
-  const $categories = createTag('ul', { class: 'category-list' });
+  const categoriesListHeading = createTag('div', { class: 'category-list-heading' });
+  const categoriesList = createTag('ul', { class: 'category-list' });
 
+  categoriesListHeading.append(getIconElement('template-search'), placeholders['jump-to-category']);
   categoriesToggleWrapper.append(categoriesToggle);
-  categoriesDesktopWrapper.append(categoriesToggleWrapper, $categories);
+  categoriesDesktopWrapper.append(categoriesToggleWrapper, categoriesListHeading, categoriesList);
 
   Object.entries(categories).forEach((category, index) => {
     const format = `${props.placeholderFormat[0]}:${props.placeholderFormat[1]}`;
@@ -627,9 +646,9 @@ async function decorateCategoryList(block, props) {
     const currentTasks = props.filters.tasks ? props.filters.tasks : "''";
     const currentTopic = props.filters.topics;
 
-    const $listItem = createTag('li');
+    const listItem = createTag('li');
     if (category[1] === currentTasks) {
-      $listItem.classList.add('active');
+      listItem.classList.add('active');
     }
 
     let icon;
@@ -641,15 +660,15 @@ async function decorateCategoryList(block, props) {
 
     const iconElement = getIconElement(icon);
     const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-    const $a = createTag('a', {
+    const a = createTag('a', {
       'data-tasks': targetTasks,
       href: `${urlPrefix}/express/templates/search?tasks=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"}`,
     });
-    [$a.textContent] = category;
+    [a.textContent] = category;
 
-    $a.prepend(iconElement);
-    $listItem.append($a);
-    $categories.append($listItem);
+    a.prepend(iconElement);
+    listItem.append(a);
+    categoriesList.append(listItem);
   });
 
   const categoriesMobileWrapper = categoriesDesktopWrapper.cloneNode({ deep: true });
@@ -1090,6 +1109,75 @@ async function decorateToolbar(block, props) {
   }
 }
 
+function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
+  const chev = block.querySelector('.toggle-button-chev');
+  templateTitle.addEventListener('click', () => block.classList.toggle('expanded'));
+  chev.addEventListener('click', (e) => {
+    e.stopPropagation();
+    block.classList.toggle('expanded');
+  });
+
+  toggle.addEventListener('click', () => block.classList.toggle('expanded'));
+  link.addEventListener('click', (e) => e.stopPropagation());
+
+  setTimeout(() => {
+    if (!block.matches(':hover')) {
+      block.classList.toggle('expanded');
+    }
+  }, 3000);
+}
+
+function decorateHoliday(block, props) {
+  const mobileViewport = window.innerWidth < 901;
+  const templateTitle = block.querySelector('.template-title');
+  const toggleBar = templateTitle.querySelector('div');
+  const heading = templateTitle.querySelector('h4');
+  const subheading = templateTitle.querySelector('p');
+  const link = templateTitle.querySelector('.template-title-link');
+  const linkWrapper = link.closest('p');
+  const toggle = createTag('div', { class: 'expanded toggle-button' });
+  const topElements = createTag('div', { class: 'toggle-bar-top' });
+  const bottomElements = createTag('div', { class: 'toggle-bar-bottom' });
+  const toggleChev = createTag('div', { class: 'toggle-button-chev' });
+  const carouselFaderLeft = block.querySelector('.carousel-fader-left');
+  const carouselFaderRight = block.querySelector('.carousel-fader-right');
+
+  if (props.holidayIcon) topElements.append(props.holidayIcon);
+  if (props.backgroundAnimation) {
+    const animation = transformLinkToAnimation(props.backgroundAnimation);
+    block.classList.add('animated');
+    block.prepend(animation);
+  }
+
+  if (props.backgroundColor) {
+    if (props.backgroundAnimation) {
+      carouselFaderRight.style.backgroundImage = 'none';
+      carouselFaderLeft.style.backgroundImage = 'none';
+    } else {
+      carouselFaderRight.style.backgroundImage = `linear-gradient(to right, rgba(0, 255, 255, 0), ${props.backgroundColor}`;
+      carouselFaderLeft.style.backgroundImage = `linear-gradient(to left, rgba(0, 255, 255, 0), ${props.backgroundColor}`;
+    }
+  }
+
+  block.classList.add('expanded', props.textColor);
+  toggleBar.classList.add('toggle-bar');
+  topElements.append(heading);
+  toggle.append(link, toggleChev);
+  linkWrapper.remove();
+  bottomElements.append(subheading);
+  toggleBar.append(topElements, bottomElements);
+  block.style.backgroundColor = props.backgroundColor;
+
+  if (mobileViewport) {
+    block.classList.add('mobile');
+    block.append(toggle);
+  } else {
+    toggleBar.append(toggle);
+  }
+
+  initExpandCollapseToolbar(block, templateTitle, toggle, link);
+}
+
 async function decorateTemplates(block, props) {
   const locale = getLocale(window.location);
   const innerWrapper = block.querySelector('.template-x-inner-wrapper');
@@ -1310,6 +1398,17 @@ async function decorateBreadcrumbs(block) {
   if (breadcrumbs) block.prepend(breadcrumbs);
 }
 
+async function getTaskNameInMapping(text) {
+  const placeholders = await fetchPlaceholders();
+  const taskMap = JSON.parse(placeholders['x-task-name-mapping']);
+  return Object.entries(taskMap)
+    .filter((task) => task[1].some((word) => {
+      const searchValue = text.toLowerCase();
+      return searchValue.indexOf(word.toLowerCase()) >= 0;
+    }))
+    .sort((a, b) => b[0].length - a[0].length);
+}
+
 async function buildTemplateList(block, props, type = []) {
   if (type?.length > 0) {
     type.forEach((typeName) => {
@@ -1323,10 +1422,12 @@ async function buildTemplateList(block, props, type = []) {
   }
 
   const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
+
   if (templates) {
     if (fallbackMsg) {
       const fallbackMsgWrapper = createTag('div', { class: 'template-x-fallback-msg-wrapper' });
       fallbackMsgWrapper.textContent = fallbackMsg;
+      props.fallbackMsg = fallbackMsg;
       block.append(fallbackMsgWrapper);
     }
     const blockInnerWrapper = createTag('div', { class: 'template-x-inner-wrapper' });
@@ -1340,6 +1441,64 @@ async function buildTemplateList(block, props, type = []) {
   } else {
     // fixme: better error message.
     block.innerHTML = 'Oops. Our templates delivery got stolen. Please try refresh the page.';
+  }
+
+  if (templates && props.tabs) {
+    block.classList.add('tabbed');
+    const tabs = props.tabs.split(',');
+    const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
+    const textWrapper = block.querySelector('.template-title .text-wrapper > div');
+    const tabsWrapper = createTag('div', { class: 'template-tabs' });
+
+    const promises = [];
+
+    for (const tab of tabs) {
+      promises.push(getTaskNameInMapping(tab));
+    }
+
+    const tasksFoundInInput = await Promise.all(promises);
+    if (tasksFoundInInput.length === tabs.length) {
+      tasksFoundInInput.forEach((taskObj, index) => {
+        const tabBtn = createTag('button', { class: 'template-tab-button' });
+        tabBtn.textContent = tabs[index];
+        tabsWrapper.append(tabBtn);
+
+        const [[task]] = taskObj;
+
+        if (props.filters.tasks === task) {
+          tabBtn.classList.add('active');
+        }
+
+        tabBtn.addEventListener('click', async () => {
+          templatesWrapper.style.opacity = 0;
+
+          if (tasksFoundInInput) {
+            const { templates: newTemplates } = await fetchAndRenderTemplates({
+              ...props,
+              filters: {
+                tasks: task,
+              },
+            });
+
+            templatesWrapper.innerHTML = '';
+            props.templates = newTemplates;
+            props.templates.forEach((template) => {
+              templatesWrapper.append(template);
+            });
+
+            await decorateTemplates(block, props);
+            buildCarousel(':scope > .template', templatesWrapper, false);
+            templatesWrapper.style.opacity = 1;
+            tabsWrapper.querySelectorAll('.template-tab-button').forEach((btn) => {
+              if (btn !== tabBtn) btn.classList.remove('active');
+            });
+            tabBtn.classList.add('active');
+          }
+        }, { passive: true });
+      });
+    }
+
+    textWrapper.append(tabsWrapper);
   }
 
   // templates are either finished rendering or API has crashed at this point.
@@ -1367,6 +1526,10 @@ async function buildTemplateList(block, props, type = []) {
       block.remove();
     }
   }
+
+  if (props.holidayBlock) {
+    decorateHoliday(block, props);
+  }
 }
 
 function determineTemplateXType(props) {
@@ -1384,7 +1547,6 @@ function determineTemplateXType(props) {
 
   // use case aspect
   if (props.holidayBlock) type.push('holiday');
-  if (props.collaborationBlock) type.push('collaboration');
 
   return type;
 }
