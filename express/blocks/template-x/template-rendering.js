@@ -36,10 +36,6 @@ function extractComponentLinkHref(template) {
   return template._links?.['http://ns.adobe.com/adobecloud/rel/component']?.href;
 }
 
-function extractVideoThumbnailId(page) {
-  return page.rendition?.video?.thumbnail?.componentId;
-}
-
 function extractImageThumbnail(page) {
   return page.rendition.image?.thumbnail;
 }
@@ -57,28 +53,55 @@ function widthToSize(widthHeightRatio, targetWidth) {
   return Math.round(targetWidth / widthHeightRatio);
 }
 
-function getImageThumbnailSrc(renditionLinkHref, page) {
+function getImageThumbnailSrc(renditionLinkHref, componentLinkHref, page) {
   const thumbnail = extractImageThumbnail(page);
-  const { mediaType, componentId, width } = thumbnail;
+  const { mediaType, componentId, width, height, hzRevision } = thumbnail;
   if (mediaType === 'image/webp') {
-    return renditionLinkHref.replace(
+    // webp only supported by componentLink
+    return componentLinkHref.replace(
       '{&revision,component_id}',
-      `&revision=0&component_id=${componentId}`,
+      `&revision=${hzRevision || 0}&component_id=${componentId}`,
     );
   }
 
   return renditionLinkHref.replace(
     '{&page,size,type,fragment}',
-    `&size=${width}&type=${mediaType}&fragment=id=${componentId}`,
+    `&size=${Math.max(width, height)}&type=${mediaType}&fragment=id=${componentId}`,
   );
 }
 
-function getVideoSrc(componentLinkHref, page) {
-  const videoThumbnailId = extractVideoThumbnailId(page);
-  return componentLinkHref.replace(
-    '{&revision,component_id}',
-    `&revision=0&component_id=${videoThumbnailId}`,
+const videoMetadataType = 'application/vnd.adobe.ccv.videometadata';
+
+async function getVideoUrls(renditionLinkHref, componentLinkHref, page) {
+  const videoThumbnail = page.rendition?.video?.thumbnail;
+  const { componentId } = videoThumbnail;
+  const preLink = renditionLinkHref.replace(
+    '{&page,size,type,fragment}',
+    `&type=${videoMetadataType}&fragment=id=${componentId}`,
   );
+  const backupPosterSrc = getImageThumbnailSrc(renditionLinkHref, componentLinkHref, page);
+  try {
+    const response = await fetch(preLink);
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    const { renditionsStatus : { state }, posterframe, renditions } = await response.json();
+    if (state !== 'COMPLETED') throw new Error('Video not ready');
+  
+    const mp4Rendition = renditions.find((r) => r.videoContainer === 'MP4');
+    if (!mp4Rendition?.url) throw new Error('No MP4 rendition found');
+  
+    return { src: mp4Rendition.url, poster: posterframe?.url || backupPosterSrc };
+  } catch (err) {
+    // use componentLink as backup
+    return {
+      src: componentLinkHref.replace(
+        '{&revision,component_id}',
+        `&revision=0&component_id=${componentId}`,
+      ),
+      poster: backupPosterSrc,
+    };
+  }
 }
 
 function renderShareWrapper(branchUrl) {
@@ -145,21 +168,20 @@ function getPageIterator(pages) {
     },
   };
 }
-function renderRotatingMedias(wrapper,
+async function renderRotatingMedias(wrapper,
   pages,
   { templateTitle, renditionLinkHref, componentLinkHref }) {
   const pageIterator = getPageIterator(pages);
   let imgTimeoutId;
 
-  const constructVideo = () => {
-    let src = '';
+  const constructVideo = async () => {
     if (containsVideo(pages)) {
-      src = getVideoSrc(componentLinkHref, pageIterator.current());
+      const { src, poster } = await getVideoUrls(renditionLinkHref, componentLinkHref, pageIterator.current());
       const video = createTag('video', {
         muted: true,
         playsinline: '',
         title: templateTitle,
-        poster: getImageThumbnailSrc(renditionLinkHref, pageIterator.current()),
+        poster,
         class: 'unloaded hidden',
       });
       const videoSource = createTag('source', {
@@ -171,8 +193,6 @@ function renderRotatingMedias(wrapper,
 
       return video;
     }
-
-    return undefined;
   };
 
   const constructImg = () => createTag('img', {
@@ -184,7 +204,7 @@ function renderRotatingMedias(wrapper,
   const img = constructImg();
   if (img) wrapper.prepend(img);
 
-  const video = constructVideo();
+  const video = await constructVideo();
   if (video) wrapper.prepend(video);
 
   const dispatchImgEndEvent = () => {
@@ -193,17 +213,18 @@ function renderRotatingMedias(wrapper,
 
   const playImage = () => {
     img.classList.remove('hidden');
-    img.src = getImageThumbnailSrc(renditionLinkHref, pageIterator.current());
+    img.src = getImageThumbnailSrc(renditionLinkHref, componentLinkHref, pageIterator.current());
 
     imgTimeoutId = setTimeout(dispatchImgEndEvent, 2000);
   };
 
-  const playVideo = () => {
+  const playVideo = async () => {
     if (video) {
       const videoSource = video.querySelector('source');
       video.classList.remove('hidden');
-      video.poster = getImageThumbnailSrc(renditionLinkHref, pageIterator.current());
-      videoSource.src = getVideoSrc(componentLinkHref, pageIterator.current());
+      const { src, poster } = await getVideoUrls(renditionLinkHref, componentLinkHref, pageIterator.current());
+      video.poster = poster;
+      videoSource.src = src;
       video.load();
       video.muted = true;
       video.play().catch((e) => {
@@ -277,11 +298,11 @@ function renderMediaWrapper(template) {
     componentLinkHref,
   };
 
-  const enterHandler = (e) => {
+  const enterHandler = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     if (!renderedMedia) {
-      renderedMedia = renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
+      renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
       mediaWrapper.append(renderShareWrapper(branchUrl));
     }
     renderedMedia.hover();
@@ -343,9 +364,10 @@ function renderStillWrapper(template) {
   const stillWrapper = createTag('div', { class: 'still-wrapper' });
 
   const templateTitle = getTemplateTitle(template);
-  const renditionLinkHref = template._links['http://ns.adobe.com/adobecloud/rel/rendition'].href;
+  const renditionLinkHref = extractRenditionLinkHref(template);
+  const componentLinkHref = extractComponentLinkHref(template);
 
-  const thumbnailImageHref = getImageThumbnailSrc(renditionLinkHref, template.pages[0]);
+  const thumbnailImageHref = getImageThumbnailSrc(renditionLinkHref, componentLinkHref, template.pages[0]);
 
   const imgWrapper = createTag('div', { class: 'image-wrapper' });
 
