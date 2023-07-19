@@ -12,10 +12,6 @@
 /* eslint-disable no-underscore-dangle */
 import { createTag, getIconElement } from '../../scripts/scripts.js';
 
-function shortenTitle(title) {
-  return title.length > 19 ? `${title.slice(0, 19)}...` : title;
-}
-
 function containsVideo(pages) {
   return pages.some((page) => !!page?.rendition?.video?.thumbnail?.componentId);
 }
@@ -40,22 +36,15 @@ function extractImageThumbnail(page) {
   return page.rendition.image?.thumbnail;
 }
 
-function getWidthHeightRatio(page) {
-  const preview = page.rendition.image?.preview;
-  return preview.width / preview.height;
-}
-
-// API takes size param as the longest side
-function widthToSize(widthHeightRatio, targetWidth) {
-  if (widthHeightRatio >= 1) {
-    return targetWidth;
-  }
-  return Math.round(targetWidth / widthHeightRatio);
-}
-
 function getImageThumbnailSrc(renditionLinkHref, componentLinkHref, page) {
   const thumbnail = extractImageThumbnail(page);
-  const { mediaType, componentId, width, height, hzRevision } = thumbnail;
+  const {
+    mediaType,
+    componentId,
+    width,
+    height,
+    hzRevision,
+  } = thumbnail;
   if (mediaType === 'image/webp') {
     // webp only supported by componentLink
     return componentLinkHref.replace(
@@ -85,12 +74,12 @@ async function getVideoUrls(renditionLinkHref, componentLinkHref, page) {
     if (!response.ok) {
       throw new Error(response.statusText);
     }
-    const { renditionsStatus : { state }, posterframe, renditions } = await response.json();
+    const { renditionsStatus: { state }, posterframe, renditions } = await response.json();
     if (state !== 'COMPLETED') throw new Error('Video not ready');
-  
+
     const mp4Rendition = renditions.find((r) => r.videoContainer === 'MP4');
     if (!mp4Rendition?.url) throw new Error('No MP4 rendition found');
-  
+
     return { src: mp4Rendition.url, poster: posterframe?.url || backupPosterSrc };
   } catch (err) {
     // use componentLink as backup
@@ -175,24 +164,27 @@ async function renderRotatingMedias(wrapper,
   let imgTimeoutId;
 
   const constructVideo = async () => {
-    if (containsVideo(pages)) {
-      const { src, poster } = await getVideoUrls(renditionLinkHref, componentLinkHref, pageIterator.current());
-      const video = createTag('video', {
-        muted: true,
-        playsinline: '',
-        title: templateTitle,
-        poster,
-        class: 'unloaded hidden',
-      });
-      const videoSource = createTag('source', {
-        src,
-        type: 'video/mp4',
-      });
+    if (!containsVideo(pages)) return null;
+    const { src, poster } = await getVideoUrls(
+      renditionLinkHref,
+      componentLinkHref,
+      pageIterator.current(),
+    );
+    const video = createTag('video', {
+      muted: true,
+      playsinline: '',
+      title: templateTitle,
+      poster,
+      class: 'unloaded hidden',
+    });
+    const videoSource = createTag('source', {
+      src,
+      type: 'video/mp4',
+    });
 
-      video.append(videoSource);
+    video.append(videoSource);
 
-      return video;
-    }
+    return video;
   };
 
   const constructImg = () => createTag('img', {
@@ -222,7 +214,11 @@ async function renderRotatingMedias(wrapper,
     if (video) {
       const videoSource = video.querySelector('source');
       video.classList.remove('hidden');
-      const { src, poster } = await getVideoUrls(renditionLinkHref, componentLinkHref, pageIterator.current());
+      const { src, poster } = await getVideoUrls(
+        renditionLinkHref,
+        componentLinkHref,
+        pageIterator.current(),
+      );
       video.poster = poster;
       videoSource.src = src;
       video.load();
@@ -314,37 +310,6 @@ function renderMediaWrapper(template) {
   return { mediaWrapper, enterHandler, leaveHandler };
 }
 
-function updateURLParameter(url, param, paramVal) {
-  let newAdditionalURL = '';
-  let tempArray = url.split('?');
-  const baseURL = tempArray[0];
-  const additionalURL = tempArray[1];
-  let temp = '';
-  if (additionalURL) {
-    tempArray = additionalURL.split('&');
-    for (let i = 0; i < tempArray.length; i += 1) {
-      if (tempArray[i].split('=')[0] !== param) {
-        newAdditionalURL += temp + tempArray[i];
-        temp = '&';
-      }
-    }
-  }
-
-  const rowText = `${temp}${param}=${paramVal}`;
-  return `${baseURL}?${newAdditionalURL}${rowText}`;
-}
-
-function loadBetterAssetInBackground(img, page) {
-  const size = widthToSize(getWidthHeightRatio(page), 400);
-
-  const updateImgRes = () => {
-    img.src = updateURLParameter(img.src, 'size', size);
-    img.removeEventListener('load', updateImgRes);
-  };
-
-  img.addEventListener('load', updateImgRes);
-}
-
 function renderHoverWrapper(template, placeholders, props) {
   const btnContainer = createTag('div', { class: 'button-container' });
 
@@ -367,7 +332,11 @@ function renderStillWrapper(template) {
   const renditionLinkHref = extractRenditionLinkHref(template);
   const componentLinkHref = extractComponentLinkHref(template);
 
-  const thumbnailImageHref = getImageThumbnailSrc(renditionLinkHref, componentLinkHref, template.pages[0]);
+  const thumbnailImageHref = getImageThumbnailSrc(
+    renditionLinkHref,
+    componentLinkHref,
+    template.pages[0],
+  );
 
   const imgWrapper = createTag('div', { class: 'image-wrapper' });
 
@@ -378,11 +347,8 @@ function renderStillWrapper(template) {
   imgWrapper.append(img);
 
   const isFree = template.licensingCategory === 'free';
-  const creator = template.attribution?.creators?.filter((c) => c.name && c.name !== 'Adobe Express')?.[0]?.name || null;
 
   const freeTag = createTag('span', { class: 'free-tag' });
-  const creatorDiv = createTag('div', { class: 'creator-span' });
-  creatorDiv.append(creator || shortenTitle(templateTitle));
 
   if (isFree) {
     freeTag.append('Free');
@@ -410,12 +376,7 @@ function renderStillWrapper(template) {
     imgWrapper.append(videoIcon);
   }
 
-  // keep it simple for now
-  // loadBetterAssetInBackground(img, template.pages[0]);
-
   stillWrapper.append(imgWrapper);
-  // TODO: API not ready for creator yet
-  // stillWrapper.append(creatorDiv);
   return stillWrapper;
 }
 
