@@ -1,24 +1,3 @@
-.feature-grid-desktop.block {
-  --grid-container-template-columns: repeat(6, 110px);
-  --grid-container-template-rows: repeat(12, 374px);
-  --grid-item-gap: 20px;
-  --grid-item-border-radius: 20px;
-}
-
-@media (min-width: 1200px) {
-  .feature-grid-desktop.block {
-    --grid-container-template-columns: repeat(8, 110px);
-    --grid-container-template-rows: repeat(8, 410px);
-  }
-}
-
-@media (min-width: 1440px) {
-  .feature-grid-desktop.block {
-    --grid-container-template-columns: repeat(17, 55px);
-    --grid-container-template-rows: repeat(7, 420px);
-  }
-}
-
 /* This block is desktop only */
 .feature-grid-desktop.block {
   position: relative;
@@ -41,9 +20,9 @@
   overflow: hidden;
   height: 2344px;
   margin-top: 28px;
-  grid-template-columns: var(--grid-container-template-columns);
-  grid-template-rows: var(--grid-container-template-rows);
-  grid-gap: var(--grid-item-gap);
+  grid-template-columns: repeat(6, 110px);
+  grid-template-rows: repeat(12, 374px);
+  grid-gap: 20px;
 }
 
 .feature-grid-desktop .grid-container:has(+ .load-more-div) {
@@ -59,7 +38,7 @@
   color: var(--body-color);
   font-weight: normal;
   align-items: flex-start;
-  border-radius: var(--grid-item-border-radius);
+  border-radius: 20px;
   padding: 2rem 2.5rem 2rem 1.5rem;
   background-image: linear-gradient(30deg, #7C84F3, #FF4DD2, #7C84F3, #FF4DD2, #7C84F3);
   background-repeat: no-repeat;
@@ -318,6 +297,11 @@
   }
 
   .feature-grid-desktop .grid-container {
+    grid-template-columns: repeat(8, 110px);
+    grid-template-rows: repeat(8, 410px);
+  }
+
+  .feature-grid-desktop .grid-container {
     height: 1700px
   }
 
@@ -417,6 +401,11 @@
   /* To be removed after wrapper deprecation */
   .section > .feature-grid-desktop-wrapper {
     max-width: 1255px;
+  }
+
+  .feature-grid-desktop .grid-container {
+    grid-template-columns: repeat(17, 55px);
+    grid-template-rows: repeat(7, 420px);
   }
 
   .feature-grid-desktop .grid-container {
