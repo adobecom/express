@@ -1,9 +1,8 @@
 mountpoints:
   /:
-    url: https://adobe.sharepoint.com/sites/CC-Express/Shared%20Documents/website
+    url: https://adobe.sharepoint.com/:f:/r/sites/adobecom/Express/website
 
 folders:
-  /express/templates/content.json: /metadata.json
   /express/templates/: /express/templates/default
   /br/express/templates/: /br/express/templates/default
   /de/express/templates/: /de/express/templates/default
@@ -14,4 +13,3 @@ folders:
   /kr/express/templates/: /kr/express/templates/default
   /nl/express/templates/: /nl/express/templates/default
   /tw/express/templates/: /tw/express/templates/default
-

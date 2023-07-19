@@ -21,7 +21,6 @@
   --color-black: #000;
   --color-brand-title: #000B1D;
   --color-info-accent: #5C5CE0;
-  --color-info-accent-disabled: #897DF2;
   --color-info-accent-hover: #4646C6;
   --color-info-accent-down: #3D3DB4;
   --color-info-accent-reverse: #eeeefc;
@@ -206,15 +205,6 @@ a.button.primaryCTA:any-link {
   color: var(--color-white);
   background-color: var(--color-info-accent);
   border-color: var(--color-info-accent);
-}
-
-a.button.disabled:any-link,
-a.button.accent.disabled:any-link,
-a.button.primaryCTA.disabled:any-link {
-  color: var(--color-white);
-  background-color: var(--color-info-accent-disabled);
-  border-color: var(--color-info-accent-disabled);
-  cursor: not-allowed;
 }
 
 a.button:any-link:hover,
@@ -543,10 +533,6 @@ main .section:last-of-type>.default-content-wrapper {
 
   main p {
     font-size: var(--body-font-size-l);
-  }
-
-  main .section div.promotion {
-      margin-bottom: 0;
   }
 }
 
@@ -891,7 +877,8 @@ main .block.template-list[data-block-status='initialized']>div {
   display: none;
 }
 
-main .template-list.sixcols {
+main .template-list.sixcols,
+main .template-x.sixcols .template-x-inner-wrapper {
   min-height: 700px;
 }
 
@@ -958,11 +945,11 @@ main .block.center .free-plan-widget {
 main .block .free-plan-widget>div {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 main .block .free-plan-widget>div>div:first-child {
   position: relative;
-  margin-top: 5px;
   margin-right: 6px;
   width: 14px;
   height: 14px;
@@ -980,14 +967,14 @@ main .block .free-plan-widget .icon.icon-checkmark {
 }
 
 @media (min-width: 900px) {
-
   main .block .button-container.free-plan-container {
     width: max-content;
   }
 
   main .block.fullscreen-marquee .button-container.free-plan-container {
-    width: 400px;
-    align-items: flex-start;
+    justify-content: center;
+    width: auto;
+    align-items: center;
   }
 
   main .block .button-container.free-plan-container a.button {
@@ -1046,13 +1033,10 @@ main .block .free-plan-widget .icon.icon-checkmark {
   main .template-list-sixcols-container>div {
     max-width: 1122px;
   }
-}
 
-@media (min-width: 900px) {
-  main .block.fullscreen-marquee .button-container.free-plan-container {
-    justify-content: center;
-    width: auto;
-    align-items: center;
+  main .block .free-plan-bullet .free-plan-bullet-container,
+  main .block .free-plan-widget-placeholder {
+    max-width: 400px;
   }
 }
 

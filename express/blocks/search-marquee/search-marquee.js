@@ -192,8 +192,6 @@ async function decorateSearchFunctions(block) {
     enterKeyHint: placeholders.search ?? 'Search',
   });
 
-  // Tasks Dropdown
-
   searchForm.append(searchBar);
   const searchIcon = getIconElement('search');
   searchIcon.loading = 'lazy';
@@ -204,8 +202,6 @@ async function decorateSearchFunctions(block) {
 
   block.append(searchBarWrapper);
 }
-
-// function downloadBackgroundImg(block) {}
 
 function decorateBackground(block) {
   const supportedImgFormat = ['jpeg', 'jpg', 'webp', 'png', 'svg'];

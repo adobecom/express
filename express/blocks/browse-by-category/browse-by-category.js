@@ -21,10 +21,7 @@ export function decorateHeading(block, payload) {
   const viewAllButtonWrapper = createTag('p', { class: 'browse-by-category-link-wrapper' });
 
   if (payload.viewAllLink.href !== '') {
-    const viewAllButton = createTag('a', {
-      class: 'browse-by-category-link',
-      href: payload.viewAllLink.href,
-    });
+    const viewAllButton = createTag('a', { class: 'browse-by-category-link', href: payload.viewAllLink.href });
     viewAllButton.textContent = payload.viewAllLink.text;
     viewAllButtonWrapper.append(viewAllButton);
   }
@@ -40,9 +37,7 @@ export function decorateCategories(block, payload) {
   payload.categories.forEach((categoryCard) => {
     const category = createTag('div', { class: 'browse-by-category-card' });
     const categoryImageWrapper = createTag('div', { class: 'browse-by-category-image-wrapper' });
-    const categoryImageShadowWrapper = createTag('div', {
-      class: 'browse-by-category-image-shadow-wrapper',
-    });
+    const categoryImageShadowWrapper = createTag('div', { class: 'browse-by-category-image-shadow-wrapper' });
     const categoryImageShadow = createTag('div', { class: 'browse-by-category-image-shadow' });
     const categoryImage = categoryCard.image;
     const categoryTitle = createTag('h4', { class: 'browse-by-category-card-title' });
@@ -64,13 +59,9 @@ export default async function decorate(block) {
   const headingDiv = rows.shift();
 
   const payload = {
-    heading: headingDiv.querySelector('h4')
-      ? headingDiv.querySelector('h4').textContent.trim()
-      : '',
+    heading: headingDiv.querySelector('h4') ? headingDiv.querySelector('h4').textContent.trim() : '',
     viewAllLink: {
-      text: headingDiv.querySelector('a.button')
-        ? headingDiv.querySelector('a.button').textContent.trim()
-        : '',
+      text: headingDiv.querySelector('a.button') ? headingDiv.querySelector('a.button').textContent.trim() : '',
       href: headingDiv.querySelector('a.button') ? headingDiv.querySelector('a.button').href : '',
     },
     categories: [],
@@ -79,12 +70,8 @@ export default async function decorate(block) {
   rows.forEach((row) => {
     payload.categories.push({
       image: row.querySelector('picture'),
-      text: row.querySelector('a.button')
-        ? row.querySelector('a.button').textContent.trim()
-        : 'missing category text',
-      link: row.querySelector('a.button')
-        ? row.querySelector('a.button').href
-        : 'missing category link',
+      text: row.querySelector('a.button') ? row.querySelector('a.button').textContent.trim() : 'missing category text',
+      link: row.querySelector('a.button') ? row.querySelector('a.button').href : 'missing category link',
     });
   });
 
