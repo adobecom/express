@@ -72,6 +72,7 @@ const decorateLoadMoreButton = (block, gradient) => {
 };
 
 const getGradient = (children) => {
+  // eslint-disable-next-line no-useless-escape
   const regex = /linear-gradient\(([^\)]+)\)/;
   let linearGradient = 'linear-gradient(#ffffff00, #FCFAFF, #FCFAFF)';
   const gradientRow = children.findIndex((row) => row.textContent.match(regex));
