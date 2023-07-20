@@ -19,10 +19,7 @@ const scopeEntities = [
 const wlLocales = ['en-US', 'fr-FR', 'de-DE', 'ja-JP'];
 const emptyRes = { queryResults: [{ items: [] }] };
 export default async function fetchAPI({ limit = 5, textQuery, locale = 'en-US' }) {
-  if (!textQuery) {
-    return emptyRes;
-  }
-  if (!wlLocales.includes(locale)) {
+  if (!textQuery || !wlLocales.includes(locale)) {
     return emptyRes;
   }
 
