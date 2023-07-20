@@ -91,7 +91,7 @@ input.sk-library-search-input {
   font-size: 14px;
   border: none;
   height: 35px;
-  padding-right: 31px;
+  padding-right: 42px;
   border-top: 1px solid rgba(100 100 100 / 20%);
   border-bottom: 1px solid rgba(100 100 100 / 20%);
 }
@@ -105,7 +105,7 @@ input.sk-library-search-input:focus {
   width: 16px;
   height: 30px;
   margin-top: 10px;
-  margin-right: 8px;
+  margin-right: 27px;
   position: absolute;
   right: 0;
   top: 0;
