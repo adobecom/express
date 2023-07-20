@@ -2352,14 +2352,19 @@ async function loadEager() {
     displayOldLinkWarning();
     wordBreakJapanese();
 
+    main
+      .querySelectorAll('div.section')
+      .forEach((section) => {
+        const audience = section.dataset?.audience;
+        if (audience && audience !== document.body.dataset?.device) {
+          section.remove();
+        }
+      });
+
     const lcpBlocks = ['columns', 'hero-animation', 'hero-3d', 'template-list', 'template-x', 'floating-button', 'fullscreen-marquee', 'fullscreen-marquee-desktop', 'collapsible-card', 'search-marquee'];
-    const blocks = document.querySelectorAll('.block');
-    const firstVisualBlock = Array.from(blocks).find((b) => {
-      const { audience } = b.closest('.section')?.dataset || {};
-      return audience === document.body.dataset.device;
-    });
-    const hasLCPBlock = (firstVisualBlock && lcpBlocks.includes(firstVisualBlock.getAttribute('data-block-name')));
-    if (hasLCPBlock) await loadBlock(firstVisualBlock, true);
+    const block = document.querySelector('.block');
+    const hasLCPBlock = (block && lcpBlocks.includes(block.getAttribute('data-block-name')));
+    if (hasLCPBlock) await loadBlock(block, true);
 
     document.querySelector('body').classList.add('appear');
 
