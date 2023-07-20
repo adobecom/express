@@ -277,6 +277,8 @@ border-bottom: 1px solid #676767;
 .sk-library .block-group-list p {
   margin: 0;
   padding: 0 24px;
+  font-size: unset;
+  line-height: unset;
 }
 
 .sk-library li.placeholder {
