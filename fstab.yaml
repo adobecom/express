@@ -2,8 +2,6 @@ mountpoints:
   /:
     url: https://adobe.sharepoint.com/:f:/r/sites/search-seo/Shared%20Documents/website
 
-    # adding a comment in order to test helix bot within dev branch
-
 folders:
   /express/templates/: /express/templates/default
   /br/express/templates/: /br/express/templates/default
