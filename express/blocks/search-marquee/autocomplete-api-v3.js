@@ -16,10 +16,14 @@ const scopeEntities = [
   'HzTemplate',
   // 'HzTextLockup', 'Icon', 'Photo', 'DesignAsset', 'Background'
 ];
+const wlLangs = ['en-US', 'fr-FR', 'de-DE', 'ja-JP'];
 const emptyRes = { queryResults: [{ items: [] }] };
 export default async function fetchAPI({ limit = 5, textQuery, locale = 'en-US' }) {
   if (!textQuery) {
-    return [];
+    return emptyRes;
+  }
+  if (!wlLangs.includes(locale)) {
+    return emptyRes;
   }
 
   const res = await fetch(url, {
