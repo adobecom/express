@@ -499,8 +499,6 @@ export function decorateSections($main) {
           section.id = toClassName(meta.anchor);
         } else if (key === 'background') {
           section.style.background = meta.background;
-        } else if (key === 'audience' && meta[key] && meta[key] !== document.body.dataset?.device) {
-          section.remove();
         } else {
           section.dataset[key] = meta[key];
         }
@@ -2353,6 +2351,15 @@ async function loadEager() {
     displayEnv();
     displayOldLinkWarning();
     wordBreakJapanese();
+
+    main
+      .querySelectorAll('div.section')
+      .forEach((section) => {
+        const audience = section.dataset?.audience;
+        if (audience && audience !== document.body.dataset?.device) {
+          section.remove();
+        }
+      });
 
     const lcpBlocks = ['columns', 'hero-animation', 'hero-3d', 'template-list', 'template-x', 'floating-button', 'fullscreen-marquee', 'fullscreen-marquee-desktop', 'collapsible-card', 'search-marquee'];
     const block = document.querySelector('.block');
