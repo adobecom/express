@@ -25,13 +25,13 @@
       "environments": [ "edit" ],
       "isPalette": true,
       "paletteRect": "top: auto; bottom: 25px; left: 25px; height: 388px; width: 360px;",
-      "url": "/docs/library/",
+      "url": "https://main--express--adobecom.hlx.live/docs/library/",
       "includePaths": [ "**.docx**" ]
     },
     {
       "id": "docs",
       "title": "Docs",
-      "url": "https://main--express--adobecom.hlx.page/docs/",
+      "url": "https://main--express--adobecom.hlx.live/docs/",
       "environments": [ "edit" ],
       "excludePaths": [ "/**" ],
       "includePaths": [ "**.docx**" ]
