@@ -465,11 +465,23 @@ export function readBlockConfig($block) {
   return config;
 }
 
+function deleteIrrelevantSections(main) {
+  main.querySelectorAll(':scope > div').forEach((section) => {
+    const sectionMeta = section.querySelector('div.section-metadata');
+    if (sectionMeta) {
+      const meta = readBlockConfig(sectionMeta);
+      if (meta.audience && meta.audience !== document.body.dataset?.device) {
+        section.remove();
+      }
+    }
+  });
+}
+
 /**
  * Decorates all sections in a container element.
  * @param {Element} $main The container element
  */
-export function decorateSections($main) {
+function decorateSections($main) {
   let noAudienceFound = false;
   $main.querySelectorAll(':scope > div').forEach((section) => {
     const wrappers = [];
@@ -963,7 +975,7 @@ export function decorateBlock(block) {
  * Decorates all blocks in a container element.
  * @param {Element} main The container element
  */
-export function decorateBlocks(main) {
+function decorateBlocks(main) {
   main
     .querySelectorAll('div.section > div > div')
     .forEach((block) => decorateBlock(block));
@@ -1652,7 +1664,7 @@ export async function fixIcons(block = document) {
   });
 }
 
-export function unwrapBlock($block) {
+function unwrapBlock($block) {
   const $section = $block.parentNode;
   const $elems = [...$section.children];
   const $blockSection = createTag('div');
@@ -1916,15 +1928,15 @@ function setTheme() {
     // mega nav, suppress brand header
     theme = 'no-brand-header';
   }
-  const $body = document.body;
+  const { body } = document;
   if (theme) {
     let themeClass = toClassName(theme);
     /* backwards compatibility can be removed again */
     if (themeClass === 'nobrand') themeClass = 'no-desktop-brand-header';
-    $body.classList.add(themeClass);
-    if (themeClass === 'blog') $body.classList.add('no-brand-header');
+    body.classList.add(themeClass);
+    if (themeClass === 'blog') body.classList.add('no-brand-header');
   }
-  $body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
+  body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
 
 function decorateLinkedPictures($main) {
@@ -2132,18 +2144,19 @@ function decoratePictures(main) {
   });
 }
 
-export async function decorateMain($main) {
-  await buildAutoBlocks($main);
-  splitSections($main);
-  decorateSections($main);
-  decorateButtons($main);
-  decorateBlocks($main);
-  decorateMarqueeColumns($main);
-  await fixIcons($main);
-  decoratePictures($main);
-  decorateLinkedPictures($main);
-  decorateSocialIcons($main);
-  makeRelativeLinks($main);
+export async function decorateMain(main) {
+  deleteIrrelevantSections(main);
+  await buildAutoBlocks(main);
+  splitSections(main);
+  decorateSections(main);
+  decorateButtons(main);
+  decorateBlocks(main);
+  decorateMarqueeColumns(main);
+  await fixIcons(main);
+  decoratePictures(main);
+  decorateLinkedPictures(main);
+  decorateSocialIcons(main);
+  makeRelativeLinks(main);
 }
 
 const usp = new URLSearchParams(window.location.search);
@@ -2320,9 +2333,8 @@ function decorateLegalCopy(main) {
 /**
  * loads everything needed to get to LCP.
  */
-async function loadEager() {
+async function loadEager(main) {
   setTheme();
-  const main = document.querySelector('main');
   if (main) {
     const language = getLanguage(getLocale(window.location));
     const langSplits = language.split('-');
@@ -2351,15 +2363,6 @@ async function loadEager() {
     displayEnv();
     displayOldLinkWarning();
     wordBreakJapanese();
-
-    main
-      .querySelectorAll('div.section')
-      .forEach((section) => {
-        const audience = section.dataset?.audience;
-        if (audience && audience !== document.body.dataset?.device) {
-          section.remove();
-        }
-      });
 
     const lcpBlocks = ['columns', 'hero-animation', 'hero-3d', 'template-list', 'template-x', 'floating-button', 'fullscreen-marquee', 'fullscreen-marquee-desktop', 'collapsible-card', 'search-marquee'];
     const block = document.querySelector('.block');
@@ -2454,9 +2457,7 @@ export async function addFreePlanWidget(elem) {
 /**
  * loads everything that doesn't need to be delayed.
  */
-async function loadLazy() {
-  const main = document.querySelector('main');
-
+async function loadLazy(main) {
   // post LCP actions go here
   sampleRUM('lcp');
 
@@ -2487,8 +2488,9 @@ async function decoratePage() {
   window.hlx.lighthouse = new URLSearchParams(window.location.search).get('lighthouse') === 'on';
   window.hlx.init = true;
 
-  await loadEager();
-  loadLazy();
+  const main = document.querySelector('main');
+  await loadEager(main);
+  loadLazy(main);
   loadGnav();
   if (window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) {
     import('../../tools/preview/preview.js');
