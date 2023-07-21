@@ -287,6 +287,8 @@ function decorateCard($block, cardClass) {
 
   if (!$cardBanner.textContent.trim()) {
     $cardBanner.style.display = 'none';
+  } else {
+    $cardBanner.classList.add('recommended');
   }
 
   $cardHeader.prepend($cardHeaderSvg);
