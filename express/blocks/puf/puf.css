@@ -251,6 +251,7 @@ main .block.puf .puf-highlighted-text {
 }
 
 main .block.puf .puf-pricing-footer {
+  max-width: 1220px;
   width: 100%;
 }
 
