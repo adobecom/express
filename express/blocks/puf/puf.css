@@ -238,7 +238,7 @@ main .puf .puf-card-container:has(.recommended) {
     main .block.puf .puf-card-container {
         display: block;
         width: auto;
-        padding: 30px 0 0 0;
+        padding: 48px 0 0 0;
     }
 
     main .puf .puf-card-container:has(.recommended) {
