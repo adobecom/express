@@ -388,6 +388,30 @@ function updatePUFCarousel($block) {
   }, 400);
 }
 
+function wrapTextAndSup($block) {
+  const supTags = $block.getElementsByTagName('sup');
+  Array.from(supTags).forEach((supTag) => {
+    supTag.classList.add('puf-sup');
+  });
+
+  const $listItems = $block.querySelectorAll('.puf-list-item');
+  $listItems.forEach(($listItem) => {
+    const $childNodes = $listItem.childNodes;
+
+    const filteredChildren = Array.from($childNodes).filter((node) => {
+      const isSvg = node.tagName && node.tagName.toLowerCase() === 'svg';
+      const isTextNode = node.nodeType === Node.TEXT_NODE;
+      return !isSvg && (isTextNode || node.nodeType === Node.ELEMENT_NODE);
+    });
+
+    const filteredChildrenExceptFirstText = filteredChildren.slice(1);
+
+    const $textAndSupWrapper = createTag('div', { class: 'puf-text-and-sup-wrapper' });
+    $textAndSupWrapper.append(...filteredChildrenExceptFirstText);
+    $listItem.append($textAndSupWrapper);
+  });
+}
+
 export default function decorate($block) {
   const $leftCard = decorateCard($block, 'puf-left');
   const $rightCard = decorateCard($block, 'puf-right');
@@ -400,4 +424,5 @@ export default function decorate($block) {
   buildCarousel('.puf-card-container', $block);
   updatePUFCarousel($block);
   addPublishDependencies('/express/system/offers-new.json');
+  wrapTextAndSup($block);
 }

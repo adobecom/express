@@ -213,6 +213,15 @@ main .puf .puf-right {
     width: 375px;
 }
 
+main .block .puf-sup {
+    font-size: 0.5em;
+    position: absolute;
+}
+
+main .block .puf-text-and-sup-wrapper {
+    display: inline;
+}
+
 @media (min-width: 900px) {
     main .puf.block {
         margin-bottom: 100px;
