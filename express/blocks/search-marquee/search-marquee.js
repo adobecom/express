@@ -31,7 +31,7 @@ function handlelize(str) {
     .toLowerCase(); // To lowercase
 }
 
-function logSearch(form, url = 'https://dev--express-seo--albrooks-ad.hlx.page/express/search-terms-log') {
+function logSearch(form, url = 'https://main--express-seo--albrooks-ad.hlx.page/express/search-terms-log') {
   if (form) {
     const input = form.querySelector('input');
     fetch(url, {
