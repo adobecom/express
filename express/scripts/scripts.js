@@ -465,7 +465,7 @@ export function readBlockConfig($block) {
   return config;
 }
 
-function deleteIrrelevantSections(main) {
+function removeIrrelevantSections(main) {
   main.querySelectorAll(':scope > div').forEach((section) => {
     const sectionMeta = section.querySelector('div.section-metadata');
     if (sectionMeta) {
@@ -2145,7 +2145,7 @@ function decoratePictures(main) {
 }
 
 export async function decorateMain(main) {
-  deleteIrrelevantSections(main);
+  removeIrrelevantSections(main);
   await buildAutoBlocks(main);
   splitSections(main);
   decorateSections(main);
