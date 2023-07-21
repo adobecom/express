@@ -53,7 +53,7 @@ export default async function decorate(block) {
       const audience = fragmentSection.dataset?.audience;
       if (audience) {
         if (audience !== document.body.dataset?.device) {
-          fragmentSection.remove();
+          block.closest('.section').remove();
           return;
         }
         block.closest('.section').dataset.audience = audience;
