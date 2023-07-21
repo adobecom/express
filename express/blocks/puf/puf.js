@@ -412,9 +412,28 @@ function wrapTextAndSup($block) {
   });
 }
 
+function highlightText($block) {
+  const $highlightRegex = /^\[\[.*\]\]$/;
+  const $blockElements = Array.from($block.querySelectorAll('*'));
+  const $highlightedElements = $blockElements
+    .filter(($element) => $highlightRegex.test($element.textContent));
+  $highlightedElements.forEach(($element) => {
+    $element.classList.add('puf-highlighted-text');
+    $element.textContent = $element.textContent.replace(/^\[\[/, '').replace(/\]\]$/, '');
+  });
+}
+
+function decorateFooter($block) {
+  const $footer = createTag('div', { class: 'puf-pricing-footer' });
+  $footer.append($block.children[3]);
+
+  return $footer;
+}
+
 export default function decorate($block) {
   const $leftCard = decorateCard($block, 'puf-left');
   const $rightCard = decorateCard($block, 'puf-right');
+  const $footer = decorateFooter($block);
 
   $block.innerHTML = '';
 
@@ -425,4 +444,7 @@ export default function decorate($block) {
   updatePUFCarousel($block);
   addPublishDependencies('/express/system/offers-new.json');
   wrapTextAndSup($block);
+
+  $block.append($footer);
+  highlightText($block);
 }
