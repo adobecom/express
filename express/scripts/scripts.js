@@ -1860,26 +1860,12 @@ async function buildAutoBlocks($main) {
     if (!window.floatingCtasLoaded) {
       const floatingCTAData = await fetchFloatingCta(window.location.pathname);
       const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
-      let desktopButton;
-      let mobileButton;
-
-      if (floatingCTAData) {
-        const buttonTypes = {
-          desktop: floatingCTAData.desktop,
-          mobile: floatingCTAData.mobile,
-        };
-
-        desktopButton = validButtonVersion.includes(buttonTypes.desktop) ? buildBlock(buttonTypes.desktop, 'desktop') : null;
-        mobileButton = validButtonVersion.includes(buttonTypes.mobile) ? buildBlock(buttonTypes.mobile, 'mobile') : null;
-
-        [desktopButton, mobileButton].forEach((button) => {
-          if (button) {
-            button.classList.add('spreadsheet-powered');
-            if ($lastDiv) {
-              $lastDiv.append(button);
-            }
-          }
-        });
+      const device = document.body.dataset?.device;
+      const blockName = floatingCTAData?.[device];
+      if (validButtonVersion.includes(blockName) && $lastDiv) {
+        const button = buildBlock(blockName, device);
+        button.classList.add('spreadsheet-powered');
+        $lastDiv.append(button);
       }
 
       window.floatingCtasLoaded = true;
