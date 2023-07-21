@@ -34,7 +34,6 @@ main .block.puf p {
 }
 
 main .block.puf .puf-card-container {
-    height: 1380px;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -221,6 +220,7 @@ main .block.puf .puf-card-banner.recommended {
 }
 
 main .block.puf .puf-card-container:has(:not(.recommended)) {
+    height: 1378px;
     border-top: 1px #E5E5E5 solid;
     border-left: 1px #E5E5E5 solid;
     border-bottom: 1px #E5E5E5 solid;
@@ -232,6 +232,7 @@ main .block.puf .puf-card-container:has(.recommended) {
     background: linear-gradient(156deg, #FF477B 0%, #5C5CE0 52%, #318FFF 100%);
     padding: 48px 8px 8px 8px;
     margin-top: 20px;
+    height: auto;
 }
 
 @media (min-width: 900px) {
