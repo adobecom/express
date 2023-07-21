@@ -495,7 +495,7 @@ function getRedirectUrl(tasks, topics, format, allTemplatesMetadata) {
   }
 }
 
-function logSearch(form, url = 'https://main--express-seo--albrooks-ad.hlx.page/express/search-terms-log') {
+function logSearch(form, url = '../search-terms-log') {
   if (form) {
     const input = form.querySelector('input');
     fetch(url, {
