@@ -150,8 +150,8 @@ async function loadFEDS() {
   window.addEventListener('adobePrivacy:PrivacyCustom', handleConsentSettings);
 
   const isMegaNav = window.location.pathname.startsWith('/express')
-  || window.location.pathname.startsWith('/education')
-  || window.location.pathname.startsWith('/drafts');
+    || window.location.pathname.startsWith('/education')
+    || window.location.pathname.startsWith('/drafts');
   const fedsExp = isMegaNav
     ? 'adobe-express/ax-gnav-x'
     : 'adobe-express/ax-gnav-x-row';
