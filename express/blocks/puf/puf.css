@@ -34,20 +34,20 @@ main .block.puf p {
 }
 
 main .block.puf .puf-card-container {
-    height: 1380px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-    border-radius: 20px;
+  height: 1380px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  border-radius: 20px;
 }
 
 main .block.puf .puf-card {
-    border-radius: 20px;
-    box-sizing: border-box;
-    padding: 40px 30px;
-    width: 325px;
-    background-color: var(--color-white);
+  border-radius: 20px;
+  box-sizing: border-box;
+  padding: 40px 30px;
+  width: 325px;
+  background-color: var(--color-white);
 }
 
 main .block.puf .puf-card .puf-card-top {
@@ -244,11 +244,13 @@ main .block.puf .puf-card .puf-text-and-sup-wrapper {
   display: inline;
 }
 
-main .block.puf .puf-highlighted-text {
+main .block.puf .puf-card-banner.recommended ~ .puf-card-bottom .puf-highlighted-text {
   background-color: #dedef9;
   width: 100%;
   padding: 16px 0;
   border-radius: 12px;
+  margin-top: 0;
+  margin-bottom: 10px;
 }
 
 main .block.puf .puf-pricing-footer {
@@ -257,23 +259,23 @@ main .block.puf .puf-pricing-footer {
 }
 
 main .block.puf .puf-card-banner.recommended {
-    color: white;
-    font-size: var(--body-font-size-xl);
-    font-weight: 700;
+  color: white;
+  font-size: var(--body-font-size-xl);
+  font-weight: 700;
 }
 
 main .block.puf .puf-card-container:has(:not(.recommended)) {
-    border-top: 1px #E5E5E5 solid;
-    border-left: 1px #E5E5E5 solid;
-    border-bottom: 1px #E5E5E5 solid;
-    margin: 70px 0 0 0;
-    padding: 0 0 8px 0;
+  border-top: 1px #e5e5e5 solid;
+  border-left: 1px #e5e5e5 solid;
+  border-bottom: 1px #e5e5e5 solid;
+  margin: 70px 0 0 0;
+  padding: 0 0 8px 0;
 }
 
 main .block.puf .puf-card-container:has(.recommended) {
-    background: linear-gradient(156deg, #FF477B 0%, #5C5CE0 52%, #318FFF 100%);
-    padding: 48px 8px 8px 8px;
-    margin-top: 20px;
+  background: linear-gradient(156deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
+  padding: 48px 8px 8px 8px;
+  margin-top: 20px;
 }
 
 @media (min-width: 900px) {
@@ -285,17 +287,17 @@ main .block.puf .puf-card-container:has(.recommended) {
     max-height: none !important;
   }
 
-    main .block.puf .puf-card-container {
-        display: block;
-        width: auto;
-        margin-top: 70px;
-        padding-top: 0px;
-    }
+  main .block.puf .puf-card-container {
+    display: block;
+    width: auto;
+    margin-top: 70px;
+    padding-top: 0px;
+  }
 
-    main .puf .puf-card-container:has(.recommended) {
-        padding: 48px 0 0 0;
-        padding: 48px 8px 8px 8px;
-    }
+  main .puf .puf-card-container:has(.recommended) {
+    padding: 48px 0 0 0;
+    padding: 48px 8px 8px 8px;
+  }
 
   main .block.puf .carousel-platform {
     max-height: unset;
@@ -309,29 +311,29 @@ main .block.puf .puf-card-container:has(.recommended) {
     padding: 40px 60px;
   }
 
-    main .block.puf .puf-card.puf-left {
-        border-radius: 20px;
-        box-shadow: none;
-        border-right: none;
-        margin-left: 20px;
-        min-height: 1200px;
-    }
+  main .block.puf .puf-card.puf-left {
+    border-radius: 20px;
+    box-shadow: none;
+    border-right: none;
+    margin-left: 20px;
+    min-height: 1200px;
+  }
 
-    main .block.puf .puf-card.puf-right {
-        min-height: 1260px;
-    }
+  main .block.puf .puf-card.puf-right {
+    min-height: 1260px;
+  }
 
-    main .block.puf .puf-card .puf-card-banner {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        top: -50px;
-        left: 0;
-        width: 100%;
-        height: 50px;
-        border-radius: 20px 20px 0 0;
-    }
+  main .block.puf .puf-card .puf-card-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -50px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    border-radius: 20px 20px 0 0;
+  }
 
   main .block.puf .puf-card .puf-card-top {
     justify-content: flex-start;
