@@ -34,12 +34,11 @@ main .block.puf p {
 }
 
 main .block.puf .puf-card-container {
-  height: 1380px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-  border-radius: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    border-radius: 20px;
 }
 
 main .block.puf .puf-card {
@@ -265,17 +264,19 @@ main .block.puf .puf-card-banner.recommended {
 }
 
 main .block.puf .puf-card-container:has(:not(.recommended)) {
-  border-top: 1px #e5e5e5 solid;
-  border-left: 1px #e5e5e5 solid;
-  border-bottom: 1px #e5e5e5 solid;
-  margin: 70px 0 0 0;
-  padding: 0 0 8px 0;
+    height: 1378px;
+    border-top: 1px #E5E5E5 solid;
+    border-left: 1px #E5E5E5 solid;
+    border-bottom: 1px #E5E5E5 solid;
+    margin: 70px 0 0 0;
+    padding: 0 0 8px 0;
 }
 
 main .block.puf .puf-card-container:has(.recommended) {
-  background: linear-gradient(156deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
-  padding: 48px 8px 8px 8px;
-  margin-top: 20px;
+    background: linear-gradient(156deg, #FF477B 0%, #5C5CE0 52%, #318FFF 100%);
+    padding: 48px 8px 8px 8px;
+    margin-top: 20px;
+    height: auto;
 }
 
 @media (min-width: 900px) {
