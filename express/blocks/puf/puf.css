@@ -34,11 +34,11 @@ main .block.puf p {
 }
 
 main .block.puf .puf-card-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-    border-radius: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  border-radius: 20px;
 }
 
 main .block.puf .puf-card {
@@ -243,8 +243,13 @@ main .block.puf .puf-card .puf-text-and-sup-wrapper {
   display: inline;
 }
 
-main .block.puf .puf-card-banner.recommended ~ .puf-card-bottom .puf-highlighted-text {
-  background-color: #dedef9;
+main
+  .block.puf
+  .puf-card-banner.recommended
+  ~ .puf-card-bottom
+  .puf-highlighted-text,
+main .block.puf .puf-highlighted-text {
+  background-color: var(--color-info-accent-light);
   width: 100%;
   padding: 16px 0;
   border-radius: 12px;
@@ -253,7 +258,7 @@ main .block.puf .puf-card-banner.recommended ~ .puf-card-bottom .puf-highlighted
 }
 
 main .block.puf .puf-pricing-footer {
-  max-width: 1220px;
+  max-width: 1260px;
   width: 100%;
 }
 
@@ -264,19 +269,19 @@ main .block.puf .puf-card-banner.recommended {
 }
 
 main .block.puf .puf-card-container:has(:not(.recommended)) {
-    height: 1378px;
-    border-top: 1px #E5E5E5 solid;
-    border-left: 1px #E5E5E5 solid;
-    border-bottom: 1px #E5E5E5 solid;
-    margin: 70px 0 0 0;
-    padding: 0 0 8px 0;
+  height: 1378px;
+  border-top: 1px #e5e5e5 solid;
+  border-left: 1px #e5e5e5 solid;
+  border-bottom: 1px #e5e5e5 solid;
+  margin: 70px 0 0 0;
+  padding: 0 0 8px 0;
 }
 
 main .block.puf .puf-card-container:has(.recommended) {
-    background: linear-gradient(156deg, #FF477B 0%, #5C5CE0 52%, #318FFF 100%);
-    padding: 48px 8px 8px 8px;
-    margin-top: 20px;
-    height: auto;
+  background: linear-gradient(156deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
+  padding: 48px 8px 8px 8px;
+  margin-top: 20px;
+  height: auto;
 }
 
 @media (min-width: 900px) {
