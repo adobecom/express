@@ -269,7 +269,7 @@ main .block.puf .puf-card-banner.recommended {
 }
 
 main .block.puf .puf-card-container:has(:not(.recommended)) {
-  height: 1378px;
+  height: 1444px;
   border-top: 1px #e5e5e5 solid;
   border-left: 1px #e5e5e5 solid;
   border-bottom: 1px #e5e5e5 solid;
