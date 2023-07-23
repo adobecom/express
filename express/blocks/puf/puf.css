@@ -295,7 +295,6 @@ main .block.puf .puf-card-container:has(.recommended) {
   }
 
   main .block.puf .puf-card-container {
-    /* display: block; */
     width: auto;
     margin-top: 70px;
     padding-top: 0px;
