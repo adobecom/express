@@ -347,6 +347,11 @@ export function getIcon(icons, alt, size = 44) {
     'star',
     'star-half',
     'star-empty',
+    'pricing-gen-ai',
+    'pricing-features',
+    'pricing-import',
+    'pricing-motion',
+    'pricing-stock'
   ];
 
   const size22Icons = [
