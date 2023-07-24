@@ -426,10 +426,14 @@ function highlightText($block) {
 }
 
 function decorateFooter($block) {
-  const $footer = createTag('div', { class: 'puf-pricing-footer' });
-  $footer.append($block.children[3]);
+  if ($block?.children?.[3]) {
+    const $footer = createTag('div', { class: 'puf-pricing-footer' });
+    $footer.append($block.children[3]);
 
-  return $footer;
+    return $footer;
+  } else {
+    return null;
+  }
 }
 
 export default function decorate($block) {
