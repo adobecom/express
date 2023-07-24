@@ -86,11 +86,33 @@ function syncWithStoredIntent(block) {
 }
 
 function initGNavObserver(block) {
-  // todo: bump the toggle bar with gnav
-  return block;
+  const gNav = document.querySelector('header.feds-header-wrapper');
+  if (gNav) {
+    const config = { attributes: true, childList: false, subtree: false };
+
+    const callback = (mutationList) => {
+      for (const mutation of mutationList) {
+        if (mutation.type === 'attributes') {
+          if (gNav.classList.contains('feds-header-wrapper--scrolled')
+            && !gNav.classList.contains('feds-header-wrapper--retracted')
+            && block.classList.contains('sticking')
+            && !block.classList.contains('hidden')) {
+            block.classList.add('bumped-by-gnav');
+          } else {
+            block.classList.remove('bumped-by-gnav');
+          }
+        }
+      }
+    };
+
+    const observer = new MutationObserver(callback);
+
+    // Start observing the target node for configured mutations
+    observer.observe(gNav, config);
+  }
 }
 
-function initFloatBehavior(block, props) {
+function initStickyBehavior(block, props) {
   const toggleBar = block.querySelector('div:nth-of-type(2)');
   if (toggleBar) {
     document.addEventListener('scroll', () => {
@@ -109,7 +131,9 @@ function initFloatBehavior(block, props) {
     }, { passive: true });
   }
 
-  initGNavObserver(block);
+  window.addEventListener('feds.events.experience.loaded', () => {
+    initGNavObserver(block);
+  });
 }
 
 export default function decorate(block) {
@@ -135,7 +159,7 @@ export default function decorate(block) {
     syncWithStoredIntent(block);
 
     if (block.classList.contains('sticky')) {
-      initFloatBehavior(block, props);
+      initStickyBehavior(block, props);
     }
   }
 }
