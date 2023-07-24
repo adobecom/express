@@ -37,7 +37,6 @@ main .block.puf .puf-card-container {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin: 20px 0;
   border-radius: 20px;
 }
 
@@ -267,14 +266,16 @@ main .block.puf .puf-card-banner.recommended {
   font-weight: 700;
 }
 
-main .block.puf .puf-card-container:has(:not(.recommended)) {
+main .block.puf .puf-card-container:not(:has(.recommended)) {
   flex: 1;
   align-self: stretch;
+  z-index: -1;
   border-top: 1px #e5e5e5 solid;
   border-left: 1px #e5e5e5 solid;
   border-bottom: 1px #e5e5e5 solid;
-  margin: 70px 0 0 0;
+  margin: 70px -16px 0 0;
   padding: 0 0 8px 0;
+  border-radius: 20px 0 0 20px;
 }
 
 main .block.puf .puf-card-container:has(.recommended) {
@@ -307,6 +308,10 @@ main .block.puf .puf-card-container:has(.recommended) {
   main .block.puf .carousel-platform {
     max-height: unset;
     margin: 0 auto;
+  }
+
+  main .block.puf .carousel-platform {
+    padding-left: 16px;
   }
 
   main .block.puf .puf-card {
