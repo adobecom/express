@@ -279,10 +279,23 @@ main .block.puf .puf-card-container:not(:has(.recommended)) {
 }
 
 main .block.puf .puf-card-container:has(.recommended) {
+  position: relative;
   background: linear-gradient(156deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
   padding: 48px 8px 8px 8px;
   margin-top: 20px;
   height: auto;
+}
+
+main .block.puf .puf-card-container:has(.recommended):after {
+  content: '';
+  top: 0px;
+  left: 0px;
+  box-shadow: 0px 0px 50px #000000;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  border-radius: 20px;
 }
 
 @media (min-width: 900px) {
@@ -305,13 +318,15 @@ main .block.puf .puf-card-container:has(.recommended) {
     padding: 48px 8px 8px 8px;
   }
 
-  main .block.puf .carousel-platform {
-    max-height: unset;
-    margin: 0 auto;
+  main .block.puf .carousel-container {
+    margin-bottom: 0;
   }
 
   main .block.puf .carousel-platform {
-    padding-left: 16px;
+    max-height: unset;
+    margin: 0 auto;
+    padding: 0 0 42px 16px;
+    overflow: visible;
   }
 
   main .block.puf .puf-card {
@@ -433,16 +448,19 @@ main .block.puf .puf-card-container:has(.recommended) {
     width: 100%;
     min-height: 100%;
   }
+
   main .block.puf .carousel-container.slide-2-selected .carousel-fader-right,
   main .block.puf .carousel-container.slide-1-selected .carousel-fader-left {
     opacity: 0;
     pointer-events: none;
   }
+
   main .block.puf .carousel-container.slide-1-selected .carousel-fader-right,
   main .block.puf .carousel-container.slide-2-selected .carousel-fader-left {
     opacity: 1;
     pointer-events: auto;
   }
+
   main .block.puf .carousel-container .carousel-platform .puf-card-container {
     position: absolute;
     transition: left 0.5s;
@@ -452,6 +470,7 @@ main .block.puf .puf-card-container:has(.recommended) {
     left: 50%;
     left: calc(50%);
   }
+
   main
     .block.puf
     .carousel-container.slide-2-selected
@@ -460,6 +479,7 @@ main .block.puf .puf-card-container:has(.recommended) {
     left: -150%;
     left: calc(-150%);
   }
+
   main
     .block.puf
     .carousel-container.slide-1-selected
