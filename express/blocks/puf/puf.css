@@ -7,7 +7,7 @@ main .puf.block .carousel-platform {
 }
 
 main .puf.block .carousel-container {
-  overflow: hidden;
+  overflow: visible;
   transition: max-height 0.3s, min-height 0.3s;
   max-width: 600px;
 }
@@ -290,7 +290,6 @@ main .block.puf .puf-card-container:has(.recommended):after {
   content: '';
   top: 0px;
   left: 0px;
-  box-shadow: 0px 0px 50px #000000;
   z-index: -1;
   height: 100%;
   width: 100%;
@@ -302,6 +301,7 @@ main .block.puf .puf-card-container:has(.recommended):after {
   main .puf.block {
     margin-bottom: 100px;
   }
+
   main .puf.block .carousel-container {
     max-width: none;
     max-height: none !important;
@@ -311,6 +311,10 @@ main .block.puf .puf-card-container:has(.recommended):after {
     width: auto;
     margin-top: 70px;
     padding-top: 0px;
+  }
+
+  main .puf.block .carousel-container .carousel-fader-right {
+    right: -3rem;
   }
 
   main .puf .puf-card-container:has(.recommended) {
@@ -346,6 +350,10 @@ main .block.puf .puf-card-container:has(.recommended):after {
 
   main .block.puf .puf-card.puf-right {
     min-height: 1260px;
+  }
+
+  main .block.puf .puf-card-container:has(.recommended):after {
+    box-shadow: 0px 0px 50px #00000029;
   }
 
   main .block.puf .puf-card .puf-card-banner {
@@ -440,6 +448,7 @@ main .block.puf .puf-card-container:has(.recommended):after {
     position: relative;
     overflow: hidden;
   }
+
   main .block.puf .carousel-platform {
     display: block;
     position: static;
