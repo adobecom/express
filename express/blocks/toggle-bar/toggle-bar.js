@@ -85,6 +85,11 @@ function syncWithStoredIntent(block) {
   }
 }
 
+function initGNavObserver(block) {
+  // todo: bump the toggle bar with gnav
+  return block;
+}
+
 function initFloatBehavior(block, props) {
   const toggleBar = block.querySelector('div:nth-of-type(2)');
   if (toggleBar) {
@@ -103,6 +108,8 @@ function initFloatBehavior(block, props) {
       }
     }, { passive: true });
   }
+
+  initGNavObserver(block);
 }
 
 export default function decorate(block) {
