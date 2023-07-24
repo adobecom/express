@@ -351,7 +351,7 @@ export function getIcon(icons, alt, size = 44) {
     'pricing-features',
     'pricing-import',
     'pricing-motion',
-    'pricing-stock'
+    'pricing-stock',
   ];
 
   const size22Icons = [
