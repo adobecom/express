@@ -417,8 +417,15 @@ function wrapTextAndSup($block) {
 function highlightText($block) {
   const $highlightRegex = /^\(\(.*\)\)$/;
   const $blockElements = Array.from($block.querySelectorAll('*'));
+
+  // Check if there's any element that matches the regex
+  if (!$blockElements.some(($element) => $highlightRegex.test($element.textContent))) {
+    return;
+  }
+
   const $highlightedElements = $blockElements
     .filter(($element) => $highlightRegex.test($element.textContent));
+
   $highlightedElements.forEach(($element) => {
     $element.classList.add('puf-highlighted-text');
     $element.textContent = $element.textContent.replace(/^\(\(/, '').replace(/\)\)$/, '');
