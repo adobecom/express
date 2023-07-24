@@ -26,6 +26,7 @@
       "isPalette": true,
       "paletteRect": "top: auto; bottom: 25px; left: 25px; height: 388px; width: 360px;",
       "url": "https://main--express--adobecom.hlx.live/docs/library/",
+      "excludePaths": [ "/**" ],
       "includePaths": [ "**.docx**" ]
     },
     {
