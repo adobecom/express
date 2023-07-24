@@ -415,13 +415,13 @@ function wrapTextAndSup($block) {
 }
 
 function highlightText($block) {
-  const $highlightRegex = /^\[\[.*\]\]$/;
+  const $highlightRegex = /^\(\(.*\)\)$/;
   const $blockElements = Array.from($block.querySelectorAll('*'));
   const $highlightedElements = $blockElements
     .filter(($element) => $highlightRegex.test($element.textContent));
   $highlightedElements.forEach(($element) => {
     $element.classList.add('puf-highlighted-text');
-    $element.textContent = $element.textContent.replace(/^\[\[/, '').replace(/\]\]$/, '');
+    $element.textContent = $element.textContent.replace(/^\(\(/, '').replace(/\)\)$/, '');
   });
 }
 
