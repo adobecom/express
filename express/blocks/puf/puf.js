@@ -438,7 +438,7 @@ function decorateFooter($block) {
 
     return $footer;
   } else {
-    return null;
+    return '';
   }
 }
 
