@@ -418,7 +418,6 @@ function highlightText($block) {
   const $highlightRegex = /^\(\(.*\)\)$/;
   const $blockElements = Array.from($block.querySelectorAll('*'));
 
-  // Check if there's any element that matches the regex
   if (!$blockElements.some(($element) => $highlightRegex.test($element.textContent))) {
     return;
   }
