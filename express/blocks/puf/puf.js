@@ -417,8 +417,14 @@ function wrapTextAndSup($block) {
 function highlightText($block) {
   const $highlightRegex = /^\(\(.*\)\)$/;
   const $blockElements = Array.from($block.querySelectorAll('*'));
+
+  if (!$blockElements.some(($element) => $highlightRegex.test($element.textContent))) {
+    return;
+  }
+
   const $highlightedElements = $blockElements
     .filter(($element) => $highlightRegex.test($element.textContent));
+
   $highlightedElements.forEach(($element) => {
     $element.classList.add('puf-highlighted-text');
     $element.textContent = $element.textContent.replace(/^\(\(/, '').replace(/\)\)$/, '');
@@ -426,10 +432,14 @@ function highlightText($block) {
 }
 
 function decorateFooter($block) {
-  const $footer = createTag('div', { class: 'puf-pricing-footer' });
-  $footer.append($block.children[3]);
+  if ($block?.children?.[3]) {
+    const $footer = createTag('div', { class: 'puf-pricing-footer' });
+    $footer.append($block.children[3]);
 
-  return $footer;
+    return $footer;
+  } else {
+    return '';
+  }
 }
 
 export default function decorate($block) {
