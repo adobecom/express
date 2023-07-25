@@ -480,6 +480,10 @@ main .block.puf .puf-card .puf-card-banner {
     box-shadow: none;
   }
 
+  main .block.puf .puf-card-banner.recommended ~ .puf-card-bottom .puf-highlighted-text {
+  margin-bottom: 40px;
+}
+
   main
     .block.puf
     .carousel-container.slide-2-selected
