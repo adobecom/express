@@ -204,7 +204,7 @@ async function loadFEDS() {
     },
     locale: (locale === 'us' ? 'en' : locale),
     content: {
-      experience: fedsExp,
+      experience: getMetadata('gnav') || fedsExp,
     },
     profile: {
       customSignIn: () => {
