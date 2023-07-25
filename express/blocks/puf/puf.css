@@ -215,7 +215,7 @@ main .block.puf .puf-card .puf-card-bottom h3 {
 }
 
 main .block.puf .puf-card .puf-card-bottom p {
-  font-size: var(--body-font-size-m);
+  font-size: var(--body-font-size-l);
   margin-bottom: 40px;
 }
 
@@ -226,7 +226,7 @@ main .block.puf .puf-card .puf-card-bottom svg {
 main .block.puf .puf-card .puf-card-bottom h6 {
   font-weight: var(--body-font-weight);
   font-size: var(--body-font-size-s);
-  margin: 0 0 40px 0;
+  margin: 0;
 }
 
 main .puf .puf-right {
@@ -284,17 +284,6 @@ main .block.puf .puf-card-container:has(.recommended) {
   padding: 48px 8px 8px 8px;
   margin-top: 20px;
   height: auto;
-}
-
-main .block.puf .puf-card-container:has(.recommended):after {
-  content: '';
-  top: 0px;
-  left: 0px;
-  z-index: -1;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  border-radius: 20px;
 }
 
 @media (min-width: 900px) {
@@ -399,7 +388,6 @@ main .block.puf .puf-card-container:has(.recommended):after {
     align-items: center;
     margin-bottom: 24px;
     text-align: left;
-    font-size: 18px;
   }
 
   main .block.puf .puf-card .puf-card-bottom h6 {
@@ -454,6 +442,10 @@ main .block.puf .puf-card-container:has(.recommended):after {
     min-height: 100%;
   }
 
+  main .block.puf .puf-card .puf-card-bottom p {
+    margin-bottom: 24px;
+  }
+
   main .block.puf .carousel-container.slide-2-selected .carousel-fader-right,
   main .block.puf .carousel-container.slide-1-selected .carousel-fader-left {
     opacity: 0;
@@ -468,12 +460,16 @@ main .block.puf .puf-card-container:has(.recommended):after {
 
   main .block.puf .carousel-container .carousel-platform .puf-card-container {
     position: absolute;
+    max-width: fit-content;
     transition: left 0.5s;
     transform: translateX(-50%);
     right: auto;
     top: 0;
     left: 50%;
     left: calc(50%);
+    border-right: 1px #e5e5e5 solid;
+    border-radius: 20px;
+    margin: 20px 0 0 0;
   }
 
   main
