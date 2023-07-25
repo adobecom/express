@@ -43,7 +43,7 @@ main .block.puf .puf-card-container {
 main .block.puf .puf-card {
   border-radius: 20px;
   box-sizing: border-box;
-  padding: 16px 30px;
+  padding: 32px 30px 16px 30px;
   width: 325px;
   background-color: var(--color-white);
 }
@@ -100,6 +100,7 @@ main .block.puf .puf-card .puf-card-top a {
 main .block.puf .puf-card .puf-card-top p {
   font-size: var(--body-font-size-m);
   margin-bottom: 20px;
+  text-align: left;
 }
 
 main .block.puf .puf-card .puf-card-top .puf-card-plans {
@@ -436,6 +437,7 @@ main .block.puf .puf-card .puf-card-banner {
   main .block.puf .carousel-container {
     position: relative;
     overflow: hidden;
+    margin-bottom: 0;
   }
 
   main .block.puf .carousel-platform {
@@ -475,6 +477,7 @@ main .block.puf .puf-card .puf-card-banner {
     border-right: 1px #e5e5e5 solid;
     border-radius: 20px;
     margin: 20px 0 0 0;
+    box-shadow: none;
   }
 
   main
