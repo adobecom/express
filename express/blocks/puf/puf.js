@@ -330,7 +330,7 @@ function updatePUFCarousel($block) {
   $carouselContainer.classList.add('slide-1-selected');
   const slideFunctionality = () => {
     $carouselPlatform.scrollLeft = $carouselPlatform.offsetWidth;
-    $carouselContainer.style.minHeight = `${$leftCard.clientHeight + 40}px`;
+    $carouselContainer.style.minHeight = `${$leftCard.clientHeight + 140}px`;
     const $rightArrow = $carouselContainer.querySelector('.carousel-fader-right');
     const $leftArrow = $carouselContainer.querySelector('.carousel-fader-left');
     const changeSlide = (index) => {
@@ -341,7 +341,7 @@ function updatePUFCarousel($block) {
       } else {
         $carouselContainer.classList.remove('slide-1-selected');
         $carouselContainer.classList.add('slide-2-selected');
-        $carouselContainer.style.minHeight = `${$rightCard.clientHeight + 40}px`;
+        $carouselContainer.style.minHeight = `${$rightCard.clientHeight + 110}px`;
       }
     };
     $leftArrow.addEventListener('click', () => changeSlide(0));
