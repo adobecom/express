@@ -352,6 +352,13 @@ export function getIcon(icons, alt, size = 44) {
     'pricing-import',
     'pricing-motion',
     'pricing-stock',
+    'pricing-one-click',
+    'pricing-collaborate',
+    'pricing-premium-plan',
+    'pricing-sync',
+    'pricing-brand',
+    'pricing-calendar',
+    'pricing-fonts',
   ];
 
   const size22Icons = [
