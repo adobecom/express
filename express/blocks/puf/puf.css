@@ -251,7 +251,7 @@ main
 main .block.puf .puf-highlighted-text {
   background-color: var(--color-info-accent-light);
   width: 100%;
-  padding: 16px 0;
+  padding: 16px;
   border-radius: 12px;
   margin-top: 0;
   margin-bottom: 24px;
