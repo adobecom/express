@@ -435,7 +435,6 @@ function decorateFooter($block) {
   if ($block?.children?.[3]) {
     const $footer = createTag('div', { class: 'puf-pricing-footer' });
     $footer.append($block.children[3]);
-
     return $footer;
   } else {
     return '';
@@ -448,9 +447,7 @@ export default function decorate($block) {
   const $footer = decorateFooter($block);
 
   $block.innerHTML = '';
-
-  $block.append($leftCard);
-  $block.append($rightCard);
+  $block.append($leftCard, $rightCard);
 
   buildCarousel('.puf-card-container', $block);
   updatePUFCarousel($block);
