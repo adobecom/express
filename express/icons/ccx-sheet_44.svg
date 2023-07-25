@@ -455,6 +455,31 @@
         </g>
       </g>
     </symbol>
+    <symbol id="pricing-libraries44" data-name="pricing-libraries44" viewBox="0 0 44 44">
+      <g id="Libraries" clip-path="url(#clip-Libraries)">
+        <g id="Group_379061" data-name="Group 379061" transform="translate(19399 7962)">
+          <rect id="Rectangle_353020" data-name="Rectangle 353020" width="44" height="44" transform="translate(-19399 -7962)" fill="none"/>
+          <g id="Group_379059" data-name="Group 379059" transform="translate(-19397 -7962)">
+            <g id="Group_379058" data-name="Group 379058" clip-path="url(#clip-path)">
+              <path id="Path_1050499" data-name="Path 1050499" d="M30.5,0H9.5A9.511,9.511,0,0,0,0,9.5v25A9.511,9.511,0,0,0,9.5,44h21A9.511,9.511,0,0,0,40,34.5V9.5A9.511,9.511,0,0,0,30.5,0M37,34.5A6.508,6.508,0,0,1,30.5,41H9.5A6.508,6.508,0,0,1,3,34.5V9.5A6.508,6.508,0,0,1,9.5,3H20V19.828a1.467,1.467,0,0,0,2.493,1.007l2.34-2.267a1.491,1.491,0,0,1,2.067,0l2.3,2.24a1.467,1.467,0,0,0,2.5-1V3.115A6.507,6.507,0,0,1,37,9.5Z" fill="#444"/>
+            </g>
+          </g>
+        </g>
+      </g>
+    </symbol>
+    <symbol id="pricing-cloud44" data-name="pricing-cloud44" viewBox="0 0 44 44">
+      <g id="Cloud" clip-path="url(#clip-Cloud)">
+        <g id="SXmock_UpdateCloudStorage_44_N">
+          <g id="SLMOCK">
+            <rect id="Canvas" width="44" height="44" fill="rgba(255,19,220,0)"/>
+          </g>
+          <g id="ICONS" transform="translate(-1 -1)">
+            <path id="Path_130850" data-name="Path 130850" d="M41.5,33H36V27.5a1.5,1.5,0,0,0-3,0V33H27.5a1.5,1.5,0,0,0,0,3H33v5.5a1.5,1.5,0,0,0,3,0V36h5.5a1.5,1.5,0,0,0,0-3Z" fill="#444"/>
+            <path id="Path_130851" data-name="Path 130851" d="M16.754,13.577A1.5,1.5,0,0,0,18.5,12.492c.114-.43,1.221-4.232,4.854-5.243q.27-.075.559-.129l.011,0a7.6,7.6,0,0,1,1.744-.1,7.12,7.12,0,0,1,3.822,1.31,6.343,6.343,0,0,1,2.657,5.248,4.96,4.96,0,0,1-.1.925A1.5,1.5,0,0,0,33.3,16.271c2.33.356,5.7,2.623,5.7,5.8a6.827,6.827,0,0,1-.155,1.487,1.5,1.5,0,1,0,2.932.637A9.83,9.83,0,0,0,42,22.065c0-4.092-3.338-7.316-6.851-8.431V13.6a9.341,9.341,0,0,0-3.927-7.726,10.1,10.1,0,0,0-5.408-1.856,10.517,10.517,0,0,0-2.441.152l-.022.006q-.412.077-.8.184a10.224,10.224,0,0,0-6.516,6.084A8.372,8.372,0,0,0,7.9,13.988,9.308,9.308,0,0,0,6.534,18.53a6.088,6.088,0,0,0-4.5,6.519A5.582,5.582,0,0,0,7.483,30H22.5a1.5,1.5,0,0,0,0-3H7.492a2.613,2.613,0,0,1-2.476-2.267A3.076,3.076,0,0,1,5,24.378a2.947,2.947,0,0,1,2.824-3l.164.017a1.461,1.461,0,0,0,1.2-.468A1.5,1.5,0,0,0,9.584,19.7a6.293,6.293,0,0,1,.849-4.1C11.64,13.742,13.945,13.009,16.754,13.577Z" fill="#444"/>
+          </g>
+        </g>
+      </g>
+    </symbol>
     <symbol id="pinterest44" data-name="pinterest44" viewBox="0 0 35.75 35.75">
       <g id="Illu-4-2" data-name="Illu-4">
         <path id="Path_127318" data-name="Path 127318" d="M19.91,28.08a4.81,4.81,0,0,1-4.08-2s-.89,3.39-1.1,4.22a20.18,20.18,0,0,1-2.21,4.67,17.84,17.84,0,1,0-1.22-.43,16.84,16.84,0,0,1,.06-5.11c.32-1.38,2.09-8.83,2.09-8.83a6.37,6.37,0,0,1-.54-2.64c0-2.47,1.44-4.32,3.22-4.32a2.24,2.24,0,0,1,2.27,2.2c0,.1,0,.2,0,.3,0,1.53-1,3.81-1.47,5.92a2.58,2.58,0,0,0,1.86,3.14,2.84,2.84,0,0,0,.77.08c3.16,0,5.59-3.34,5.59-8.15,0-4.25-3.06-7.23-7.43-7.23a7.7,7.7,0,0,0-8,7.36c0,.12,0,.24,0,.35A7,7,0,0,0,11,21.63a.54.54,0,0,1,.13.51l-.5,2c-.07.32-.25.39-.59.24-2.22-1-3.61-4.28-3.61-6.89,0-5.61,4.08-10.76,11.75-10.76,6.17,0,11,4.39,11,10.27C29.14,23.15,25.27,28.08,19.91,28.08Z"/>
@@ -1158,12 +1183,14 @@
     <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing-import44"/>
     <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing-motion44"/>
     <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing-stock44"/>
-    <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing--one-click44"/>
+    <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing-one-click44"/>
     <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing-collaborate44"/>
     <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing-premium-plan44"/>
     <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing-sync44"/>
     <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing-brand44"/>
     <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing-calendar44"/>
     <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing-fonts44"/>
+    <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing-libraries44"/>
+    <use width="44" height="44" transform="translate(90 1)" xlink:href="#pricing-cloud44"/>
   </g>
 </svg>

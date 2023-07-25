@@ -359,6 +359,8 @@ export function getIcon(icons, alt, size = 44) {
     'pricing-brand',
     'pricing-calendar',
     'pricing-fonts',
+    'pricing-libraries',
+    'pricing-cloud',
   ];
 
   const size22Icons = [
