@@ -166,10 +166,10 @@ async function fetchPlan(planUrl) {
       plan.country = offer.country;
       plan.vatInfo = offer.vatInfo;
       plan.language = offer.lang;
-      plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
+      plan.rawPrice = offer.unitPriceCurrencyFormatted?.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
-      plan.formatted = plan.formatted.replace(plan.rawPrice[0], `<strong>${plan.prefix}${plan.rawPrice[0]}${plan.suffix}</strong>`);
+      plan.formatted = plan.formatted.replace(plan.rawPrice?.[0], `<strong>${plan.prefix}${plan.rawPrice?.[0]}${plan.suffix}</strong>`);
     }
 
     window.pricingPlans[planUrl] = plan;
@@ -431,7 +431,7 @@ function highlightText($block) {
   });
 }
 
-function decorateFooter($block) {
+export function decorateFooter($block) {
   if ($block?.children?.[3]) {
     const $footer = createTag('div', { class: 'puf-pricing-footer' });
     $footer.append($block.children[3]);
