@@ -16,28 +16,31 @@ import { expect } from '@esm-bundle/chai';
 document.body.innerHTML = await readFile({ path: './mocks/default.html' });
 window.isTestEnv = true;
 const { default: decorate } = await import('../../../../express/blocks/marquee/marquee.js');
-const staticVersion = await readFile({ path: './mocks/dark-static.html' })
+const staticVersion = await readFile({ path: './mocks/dark-static.html' });
 const videoVersion = await readFile({ path: './mocks/dark-video.html' });
 describe('marquee', () => {
   describe('default version', () => {
     it('has a video background', async () => {
       const marquee = document.querySelector('.marquee');
       await decorate(marquee);
-      const video = marquee.querySelector('.video-background-wrapper video');
+      const video = marquee.querySelector('.video-background-wrapper > video');
       expect(video).to.exist;
     });
+
     it('has a content foreground', async () => {
       const marquee = document.querySelector('.marquee');
       await decorate(marquee);
       const content = marquee.querySelector('.marquee-foreground .content-wrapper');
       expect(content).to.exist;
     });
+
     it('has at least an H1', async () => {
       const marquee = document.querySelector('.marquee');
       await decorate(marquee);
       const h1 = marquee.querySelector('.marquee-foreground .content-wrapper h1');
       expect(h1).to.exist;
     });
+
     it('has reduce motion toggle', async () => {
       const marquee = document.querySelector('.marquee');
       await decorate(marquee);
