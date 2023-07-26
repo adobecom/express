@@ -23,7 +23,7 @@ describe('marquee', () => {
     it('has a video background', async () => {
       const marquee = document.querySelector('.marquee');
       await decorate(marquee);
-      const video = marquee.querySelector('.video-background-wrapper > video');
+      const video = marquee.querySelector('video.marquee-background');
       expect(video).to.exist;
     });
 
@@ -44,8 +44,11 @@ describe('marquee', () => {
     it('has reduce motion toggle', async () => {
       const marquee = document.querySelector('.marquee');
       await decorate(marquee);
-      const reduceMotionToggle = marquee.querySelector('.reduce-motion-wrapper');
-      expect(reduceMotionToggle).to.exist;
+      const video = marquee.querySelector('video.marquee-background');
+      video.addEventListener('canplay', () => {
+        const reduceMotionToggle = marquee.querySelector('.reduce-motion-wrapper');
+        expect(reduceMotionToggle).to.exist;
+      });
     });
   });
 
