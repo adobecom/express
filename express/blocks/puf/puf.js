@@ -379,6 +379,7 @@ function updatePUFCarousel($block) {
     $block.addEventListener('touchstart', startTouch, false);
     $block.addEventListener('touchmove', moveTouch, false);
   };
+
   const waitForCardsToLoad = setInterval(() => {
     if (!$leftCard && !$rightCard) {
       $leftCard = $block.querySelector('.puf-left');
