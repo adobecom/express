@@ -301,10 +301,6 @@ main .block.puf .puf-card .puf-card-banner {
 
 
 @media (min-width: 900px) {
-  /* main .puf.block {
-    margin-bottom: 40px;
-  } */
-
   main .puf.block .carousel-container {
     max-width: none;
     max-height: none !important;
@@ -437,6 +433,10 @@ main .block.puf .puf-card .puf-card-banner {
 }
 
 @media (max-width: 899px) {
+  main .section.puf-container {
+    padding-bottom: 0;
+  }
+
   main .block.puf .carousel-container {
     position: relative;
     overflow: hidden;
