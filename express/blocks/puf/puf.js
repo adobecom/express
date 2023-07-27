@@ -386,12 +386,13 @@ function updatePUFCarousel($block) {
   };
 
   const waitForCardsToLoad = setInterval(() => {
-    if (!$leftCard || !$rightCard || !Object.keys(window.pricingPlans).length) {
-      $leftCard = $block.querySelector('.puf-left');
-      $rightCard = $block.querySelector('.puf-right');
-    } else {
+    const priceSet = $block.querySelector('.puf-card-top h2').textContent;
+    if ($leftCard && $rightCard && priceSet) {
       clearInterval(waitForCardsToLoad);
       slideFunctionality();
+    } else {
+      $leftCard = $block.querySelector('.puf-left');
+      $rightCard = $block.querySelector('.puf-right');
     }
   }, 400);
 }

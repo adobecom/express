@@ -18,7 +18,7 @@ main .puf.block .carousel-container .carousel-fader-right {
 }
 
 main .puf.block .carousel-container a.button.carousel-arrow {
-  margin-top: 100vh;
+  margin-top: 50vh;
   position: sticky;
 }
 
@@ -470,14 +470,12 @@ main .block.puf .puf-card .puf-card-banner {
 
   main .block.puf .carousel-container.slide-1-selected .carousel-fader-right {
     right: 1rem;
+    opacity: 1;
+    pointer-events: auto;
   }
 
   main .block.puf .carousel-container.slide-2-selected .carousel-fader-left {
-    left: 0.7rem;
-  }
-
-  main .block.puf .carousel-container.slide-1-selected .carousel-fader-right,
-  main .block.puf .carousel-container.slide-2-selected .carousel-fader-left {
+    left: 0.7rem;    
     opacity: 1;
     pointer-events: auto;
   }
