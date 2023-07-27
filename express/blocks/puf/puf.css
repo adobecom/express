@@ -254,6 +254,7 @@ main .block.puf .puf-highlighted-text {
   padding: 16px;
   border-radius: 12px;
   margin-top: 0;
+  margin-bottom: 44px;
 }
 
 main .block.puf .puf-pricing-footer {
