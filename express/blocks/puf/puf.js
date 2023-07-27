@@ -330,7 +330,7 @@ function updatePUFCarousel($block) {
   $carouselContainer.classList.add('slide-1-selected');
   const slideFunctionality = () => {
     $carouselPlatform.scrollLeft = $carouselPlatform.offsetWidth;
-    $carouselContainer.style.minHeight = `${$leftCard.clientHeight + 140}px`;
+    $carouselContainer.style.minHeight = `${$leftCard.clientHeight + 40}px`;
     const $rightArrow = $carouselContainer.querySelector('.carousel-fader-right');
     const $leftArrow = $carouselContainer.querySelector('.carousel-fader-left');
     const changeSlide = (index) => {
@@ -386,7 +386,7 @@ function updatePUFCarousel($block) {
   };
 
   const waitForCardsToLoad = setInterval(() => {
-    if (!$leftCard && !$rightCard) {
+    if (!$leftCard || !$rightCard || !Object.keys(window.pricingPlans).length) {
       $leftCard = $block.querySelector('.puf-left');
       $rightCard = $block.querySelector('.puf-right');
     } else {
