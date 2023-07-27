@@ -254,7 +254,6 @@ main .block.puf .puf-highlighted-text {
   padding: 16px;
   border-radius: 12px;
   margin-top: 0;
-  margin-bottom: 24px;
 }
 
 main .block.puf .puf-pricing-footer {
@@ -302,9 +301,9 @@ main .block.puf .puf-card .puf-card-banner {
 
 
 @media (min-width: 900px) {
-  main .puf.block {
+  /* main .puf.block {
     margin-bottom: 40px;
-  }
+  } */
 
   main .puf.block .carousel-container {
     max-width: none;
@@ -333,8 +332,12 @@ main .block.puf .puf-card .puf-card-banner {
   main .block.puf .carousel-platform {
     max-height: unset;
     margin: 0 auto;
-    padding: 14px 24px 42px 24px;
+    padding: 14px 24px 0 24px;
     margin-top: -14px;
+  }
+
+  main .block.puf .carousel-container:has(+ .puf-pricing-footer) .carousel-platform {
+    padding-bottom: 24px;
   }
 
   main .block.puf .puf-card {

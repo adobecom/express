@@ -344,6 +344,7 @@ function updatePUFCarousel($block) {
         $carouselContainer.style.minHeight = `${$rightCard.clientHeight + 110}px`;
       }
     };
+
     $leftArrow.addEventListener('click', () => changeSlide(0));
     $rightArrow.addEventListener('click', () => changeSlide(1));
     $block.addEventListener('keyup', (e) => {
@@ -378,6 +379,10 @@ function updatePUFCarousel($block) {
     };
     $block.addEventListener('touchstart', startTouch, false);
     $block.addEventListener('touchmove', moveTouch, false);
+    const mediaQuery = window.matchMedia('(min-width: 900px)');
+    mediaQuery.onchange = () => {
+      $carouselContainer.style.minHeight = `${$leftCard.clientHeight + 40}px`;
+    };
   };
 
   const waitForCardsToLoad = setInterval(() => {
