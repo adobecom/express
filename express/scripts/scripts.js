@@ -1718,6 +1718,10 @@ function unwrapBlock($block) {
   if (!$postBlockSection.hasChildNodes()) {
     $postBlockSection.remove();
   }
+
+  if (!$section.hasChildNodes()) {
+    $section.remove();
+  }
 }
 
 export function normalizeHeadings(block, allowedHeadings) {
@@ -1856,11 +1860,11 @@ async function buildAutoBlocks($main) {
       const relevantRowsData = await fetchRelevantRows(window.location.pathname);
 
       if (relevantRowsData) {
-        const $relevantRowsSection = createTag('div');
-        const $fragment = buildBlock('fragment', '/express/fragments/relevant-rows-default-v2');
-        $relevantRowsSection.dataset.audience = 'mobile';
-        $relevantRowsSection.append($fragment);
-        $main.insertBefore($relevantRowsSection, $main.firstElementChild.nextSibling);
+        const relevantRowsSection = createTag('div');
+        const fragment = buildBlock('fragment', '/express/fragments/relevant-rows-default-v2');
+        relevantRowsSection.dataset.audience = 'mobile';
+        relevantRowsSection.append(fragment);
+        $main.prepend(relevantRowsSection);
         window.relevantRowsLoaded = true;
       }
     }
