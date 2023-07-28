@@ -30,7 +30,7 @@ describe('PUF', () => {
   it('PUF has a footer', () => {
     const blockWith4Children = createTag('div', { class: 'block' });
     for (let i = 0; i < 4; i += 1) {
-      blockWith4Children.append(createTag('div', { class: `block_content${i + 1}` }));
+      blockWith4Children.append(createTag('div', { class: `block_content{i + 1}` }));
     }
     const footer = decorateFooter(blockWith4Children);
     expect(footer).to.be.an.instanceof(HTMLDivElement);
@@ -51,7 +51,17 @@ describe('PUF', () => {
   });
 
   it('CTA contains the right text', () => {
-    const ctaTextContainer = document.querySelector('strong');
-    console.log(ctaTextContainer, '');
+    const cardTop = document.createElement('div');
+    const cardCta = document.createElement('div');
+    const ctaTextContainer = cardTop.querySelector('strong');
+
+    if (ctaTextContainer) {
+      cardCta.textContent = ctaTextContainer.textContent.trim();
+      ctaTextContainer.parentNode.remove();
+    } else {
+      cardCta.textContent = 'Start your trial';
+    }
+
+    
   });
 });
