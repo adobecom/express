@@ -327,6 +327,7 @@ function updatePUFCarousel($block) {
   const $carouselPlatform = $block.querySelector('.carousel-platform');
   let $leftCard = $block.querySelector('.puf-left');
   let $rightCard = $block.querySelector('.puf-right');
+  let priceSet = $block.querySelector('.puf-pricing-header').textContent;
   $carouselContainer.classList.add('slide-1-selected');
   const slideFunctionality = () => {
     $carouselPlatform.scrollLeft = $carouselPlatform.offsetWidth;
@@ -386,13 +387,13 @@ function updatePUFCarousel($block) {
   };
 
   const waitForCardsToLoad = setInterval(() => {
-    const priceSet = $block.querySelector('.puf-card-top h2').textContent;
     if ($leftCard && $rightCard && priceSet) {
       clearInterval(waitForCardsToLoad);
       slideFunctionality();
     } else {
       $leftCard = $block.querySelector('.puf-left');
       $rightCard = $block.querySelector('.puf-right');
+      priceSet = $block.querySelector('.puf-pricing-header').textContent;
     }
   }, 400);
 }
