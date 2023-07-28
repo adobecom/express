@@ -42,7 +42,7 @@ function initNotchDragAction($wrapper, data) {
   const $toolBox = $wrapper.querySelector('.toolbox');
   const $lottie = $wrapper.querySelector('.floating-button-lottie');
   let touchStart = 0;
-  const initialHeight = $toolBox.offsetHeight;
+  const initialHeight = $toolBox.clientHeight;
   $notch.addEventListener('touchstart', (e) => {
     $body.style.overflow = 'hidden';
     $toolBox.style.transition = 'none';
