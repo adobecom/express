@@ -73,7 +73,8 @@
 .feature-grid-desktop .grid-item video {
   align-self: center;
   object-fit: contain;
-  flex: 1;
+  flex-grow: 1;
+  overflow: auto;
 }
 
 .feature-grid-desktop .grid-item h2 {
