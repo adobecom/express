@@ -51,17 +51,6 @@ describe('PUF', () => {
   });
 
   it('CTA contains the right text', () => {
-    const cardTop = document.createElement('div');
-    const cardCta = document.createElement('div');
-    const ctaTextContainer = cardTop.querySelector('strong');
-
-    if (ctaTextContainer) {
-      cardCta.textContent = ctaTextContainer.textContent.trim();
-      ctaTextContainer.parentNode.remove();
-    } else {
-      cardCta.textContent = 'Start your trial';
-    }
-
-    
+   
   });
 });
