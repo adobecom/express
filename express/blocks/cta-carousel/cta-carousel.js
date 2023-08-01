@@ -166,6 +166,7 @@ export async function decorateCards(block, payload) {
         if (a.href && a.href.match('adobesparkpost.app.link')) {
           const btnUrl = new URL(a.href);
           btnUrl.searchParams.set('search', cta.text);
+          btnUrl.searchParams.set('q', cta.text);
           a.href = decodeURIComponent(btnUrl.toString());
         }
         linksWrapper.append(a);
