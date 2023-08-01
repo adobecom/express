@@ -14,11 +14,11 @@ import { expect } from '@esm-bundle/chai';
 import { createTag } from '../../../express/scripts/scripts.js';
 
 const { default: decorate, decorateFooter } = await import('../../../express/blocks/puf/puf.js');
-document.body.innerHTML = await readFile({ path: './mocks/body.html' });
 
 describe('PUF', () => {
-  before(() => {
+  beforeEach(async () => {
     window.isTestEnv = true;
+    document.body.innerHTML = await readFile({ path: './mocks/body.html' });
   });
 
   it('PUF exists', () => {
@@ -28,9 +28,12 @@ describe('PUF', () => {
   });
 
   it('PUF has a footer', () => {
+    const puf = document.querySelector('.puf');
+    decorate(puf);
+
     const blockWith4Children = createTag('div', { class: 'block' });
     for (let i = 0; i < 4; i += 1) {
-      blockWith4Children.append(createTag('div', { class: `block_content{i + 1}` }));
+      blockWith4Children.append(createTag('div', { class: `block_content${i + 1}` }));
     }
     const footer = decorateFooter(blockWith4Children);
     expect(footer).to.be.an.instanceof(HTMLDivElement);
@@ -43,6 +46,9 @@ describe('PUF', () => {
   });
 
   it('Checkbox is checked or not', () => {
+    const puf = document.querySelector('.puf');
+    decorate(puf);
+
     const checkbox = document.querySelector('.puf input[type="checkbox"]');
     checkbox.click();
     expect(checkbox.checked).to.be.true;
@@ -50,7 +56,47 @@ describe('PUF', () => {
     expect(checkbox.checked).to.be.false;
   });
 
-  it('CTA contains the right text', () => {
-   
+  it('CTA contains the right text when <strong> is not found', () => {
+    const puf = document.querySelector('.puf');
+    const cardTop = puf.children[1].children[0];
+
+    const ctaTextContainers = Array.from(cardTop.querySelectorAll('strong'));
+    ctaTextContainers.forEach((ctaTextContainer) => {
+      ctaTextContainer.parentNode.removeChild(ctaTextContainer);
+    });
+
+    decorate(puf);
+
+    const cardCta = cardTop.querySelector('.button');
+    expect(cardCta.textContent).to.equal('Start your trial');
   });
 });
+
+// describe('selectPlan', () => {
+//   beforeEach(async () => {
+//     window.isTestEnv = true;
+//     document.body.innerHTML = await readFile({ path: './mocks/body.html' });
+//   });
+
+//   const puf = document.querySelector('.puf');
+//   decorate(puf);
+
+//   const plan = fetchPlan(planUrl);
+
+//   it('should call pushPricingAnalytics if sendAnalyticEvent is true', async () => {
+//     let calledWithArgs = null;
+//     const dependencies = {
+//       fetchPlan: async () => plan,
+//       buildUrl: () => 'url',
+//       pushPricingAnalytics: () => {
+//         calledWithArgs = arguments;
+//       }
+//     };
+  
+//     await selectPlan(card, planUrl, true, dependencies);
+  
+//     expect(calledWithArgs).to.not.be.null;
+//     expect(calledWithArgs[0]).to.equal('adobe.com:express:pricing:commitmentType:selected');
+//     expect(calledWithArgs[1]).to.equal('pricing:commitmentTypeSelected');
+//     expect(calledWithArgs[2]).to.deep.equal(plan);
+//   });
