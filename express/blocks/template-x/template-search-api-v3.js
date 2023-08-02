@@ -17,7 +17,7 @@ function extractFilterTerms(input) {
     return [];
   }
   return input
-    .split(' AND ')
+    .split('AND')
     .map((t) => t
       .trim()
       .toLowerCase());
@@ -46,11 +46,11 @@ function formatFilterString(filters) {
       str += `&filters=behaviors==${b}`;
     });
   }
-  extractFilterTerms(tasks).forEach((t) => {
-    str += `&filters=pages.task.name==${t}`;
+  extractFilterTerms(tasks).forEach((task) => {
+    str += `&filters=pages.task.name==${task.split(',').map((t) => t.trim()).join(',')}`;
   });
-  extractFilterTerms(topics).forEach((t) => {
-    str += `&filters=topics==${t}`;
+  extractFilterTerms(topics).forEach((topic) => {
+    str += `&filters=topics==${topic.split(',').map((t) => t.trim()).join(',')}`;
   });
   // locale needs backward compatibility with old api
   if (locales) {
