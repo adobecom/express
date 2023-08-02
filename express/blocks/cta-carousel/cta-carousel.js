@@ -160,9 +160,16 @@ export async function decorateCards(block, payload) {
       if ((block.classList.contains('quick-action') || block.classList.contains('gen-ai')) && cta.ctaLinks.length === 1) {
         cta.ctaLinks[0].textContent = '';
         cta.ctaLinks[0].classList.add('clickable-overlay');
+        cta.ctaLinks[0].removeAttribute('title');
       }
 
       cta.ctaLinks.forEach((a) => {
+        if (a.href && a.href.match('adobesparkpost.app.link')) {
+          const btnUrl = new URL(a.href);
+          btnUrl.searchParams.set('search', cta.text);
+          a.href = decodeURIComponent(btnUrl.toString());
+          a.removeAttribute('title');
+        }
         linksWrapper.append(a);
       });
     } else {
@@ -205,7 +212,7 @@ function constructPayload(block) {
       image: row.querySelector(':scope > div:nth-of-type(1) picture'),
       videoLink: row.querySelector(':scope > div:nth-of-type(1) a'),
       icon: row.querySelector(':scope > div:nth-of-type(1) img.icon'),
-      text: row.querySelector(':scope > div:nth-of-type(2) p:not(.button-container), :scope > div:nth-of-type(2) > *:first-of-type')?.textContent.trim(),
+      text: row.querySelector(':scope > div:nth-of-type(2) p:not(.button-container), :scope > div:nth-of-type(2) > *:last-of-type')?.textContent.trim(),
       subtext: row.querySelector(':scope > div:nth-of-type(2) p:not(.button-container) em')?.textContent.trim(),
       ctaLinks: row.querySelectorAll(':scope > div:nth-of-type(2) a'),
     };
