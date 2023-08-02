@@ -167,11 +167,7 @@ export async function decorateCards(block, payload) {
       cta.ctaLinks.forEach((a) => {
         if (a.href && a.href.match('adobesparkpost.app.link')) {
           const btnUrl = new URL(a.href);
-          if (placeholders['search-branch-links']
-            && placeholders['search-branch-links']
-              .replace(/\s/g, '')
-              .split(',')
-              .includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
+          if (placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
             btnUrl.searchParams.set('search', cta.text);
             btnUrl.searchParams.set('q', cta.text);
             a.href = decodeURIComponent(btnUrl.toString());
