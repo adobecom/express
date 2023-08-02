@@ -253,6 +253,7 @@ main .block.puf .puf-highlighted-text {
   width: 100%;
   border-radius: 12px;
   margin-top: 0;
+  box-sizing: border-box;
 }
 
 main .block.puf .puf-pricing-footer {
