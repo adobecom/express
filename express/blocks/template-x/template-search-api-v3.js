@@ -19,7 +19,7 @@ function extractFilterTerms(input) {
   return input
     .split(' AND ')
     .map((t) => t
-      .replaceAll(' ', '')
+      .trim()
       .toLowerCase());
 }
 function extractLangs(locales) {
