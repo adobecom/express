@@ -59,14 +59,14 @@ async function getReplacementsFromSearch() {
 
   let translatedTasks;
   if (document.body.dataset.device === 'desktop') {
-    translatedTasks = xTasksPair && xTasksPair[1] ? xTasksPair[0].toLowerCase() : tasksx;
+    translatedTasks = xTasksPair?.[1] ? xTasksPair[0].toLowerCase() : tasksx;
   } else {
-    translatedTasks = tasksPair && xTasksPair[1] ? tasksPair[0].toLowerCase() : tasks;
+    translatedTasks = tasksPair?.[1] ? tasksPair[0].toLowerCase() : tasks;
   }
   return {
     '{{queryTasks}}': sanitizedTasks || '',
     '{{QueryTasks}}': titleCase(sanitizedTasks || ''),
-    '{{queryTasksX}}': tasksx,
+    '{{queryTasksX}}': tasksx || '',
     '{{translatedTasks}}': translatedTasks || '',
     '{{TranslatedTasks}}': titleCase(translatedTasks || ''),
     '{{placeholderRatio}}': phformat || '',
