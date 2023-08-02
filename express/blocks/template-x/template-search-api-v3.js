@@ -42,8 +42,8 @@ function formatFilterString(filters) {
     str += `&filters=behaviors==${animated.toLowerCase() === 'false' ? 'still' : 'animated'}`;
   }
   if (behaviors) {
-    extractFilterTerms(behaviors).forEach((b) => {
-      str += `&filters=behaviors==${b}`;
+    extractFilterTerms(behaviors).forEach((behavior) => {
+      str += `&filters=behaviors==${behavior.split(',').map((b) => b.trim()).join(',')}`;
     });
   }
   extractFilterTerms(tasks).forEach((task) => {
