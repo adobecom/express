@@ -20,15 +20,20 @@ document.body.innerHTML = await readFile({ path: './mocks/body.html' });
 
 describe('Feature Grid Desktop', async () => {
   const smallGrid = document.querySelector('#small-grid');
-  const fullGrid = document.querySelector('#full-grid');
   const oversizedGrid = document.querySelector('#over-sized-grid');
   const cellList = document.querySelectorAll('#full-grid .grid-item');
-  let loadMore;
+  let loadMoreButton;
+  let fullGrid;
   before(() => {
     window.isTestEnv = true;
-    decorate(fullGrid);
     decorate(smallGrid);
-    loadMore = document.querySelector('#full-grid .load-more-button');
+  });
+
+  beforeEach(async () => {
+    document.body.innerHTML = await readFile({ path: './mocks/body.html' });
+    fullGrid = document.querySelector('#full-grid');
+    decorate(fullGrid);
+    loadMoreButton = document.querySelector('#full-grid .load-more-button');
   });
 
   it('check if Feature Grid block exists', () => {
@@ -49,16 +54,14 @@ describe('Feature Grid Desktop', async () => {
   });
 
   it('adds the expanded class to the block when "Load More" is clicked', () => {
-    loadMore.click();
-    expect(document.querySelector('.feature-grid-desktop.expanded')).to.exist;
+    loadMoreButton.click();
+    expect(Object.values(fullGrid.classList)).to.include('expanded');
   });
 
   it('adds the authored color to the background gradient of the "load-more" section when clicked', async () => {
-    document.body.innerHTML = await readFile({ path: './mocks/body.html' });
-    const grid = document.querySelector('#full-grid');
-    decorate(grid);
-    const gradient = grid.querySelector('.load-more-div');
-    loadMore.click();
-    expect(gradient.style.background).to.equal('linear-gradient(rgba(255, 255, 255, 0), rgb(252, 250, 255), rgb(252, 250, 255))');
+    const loadMoreDiv = fullGrid.querySelector('.load-more-div');
+    loadMoreButton.click();
+    loadMoreButton.click();
+    expect(loadMoreDiv.style.background).to.equal('linear-gradient(rgba(255, 255, 255, 0), rgb(252, 250, 255), rgb(252, 250, 255))');
   });
 });
