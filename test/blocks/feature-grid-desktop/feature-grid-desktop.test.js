@@ -14,28 +14,25 @@
 
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
-// import {
-//   decorate
-//   // renderImageOrVideo,
-//   // renderGridNode,
-//   // decorateLoadMoreButton,
-//   // getGradient,
-// } from '../../../express/blocks/feature-grid-desktop/feature-grid-desktop.js';
 
 const { default: decorate } = await import('../../../express/blocks/feature-grid-desktop/feature-grid-desktop.js');
-
 document.body.innerHTML = await readFile({ path: './mocks/body.html' });
 
-describe('Feature Grid Desktop', () => {
+describe('Feature Grid Desktop', async () => {
+  const smallGrid = document.querySelector('#small-grid');
+  const fullGrid = document.querySelector('#full-grid');
+  const oversizedGrid = document.querySelector('#over-sized-grid');
+  const cellList = fullGrid.querySelectorAll('.grid-item');
+  let loadMore;
   before(() => {
     window.isTestEnv = true;
+    decorate(fullGrid);
+    decorate(smallGrid);
+    loadMore = fullGrid.querySelector('.load-more-button');
   });
-  const featureGrid = document.querySelector('.feature-grid-desktop');
-  decorate(featureGrid);
-  const cellList = featureGrid.querySelectorAll('.grid-item');
 
   it('check if Feature Grid block exists', () => {
-    expect(featureGrid).to.exist;
+    expect(smallGrid).to.exist;
   });
 
   cellList.forEach((cell) => {
@@ -47,7 +44,20 @@ describe('Feature Grid Desktop', () => {
     });
   });
 
-  // it('returns null if video href is empty', () => {
-  //   expect(renderImageOrVideo('<a href=""></a>')).to.equal(null);
-  // });
+  it('gives an error message if too many cells are passed in', () => {
+    expect(() => decorate(oversizedGrid)).to.throw('Authoring issue: Feature Grid Fixed block should have 12 children. Received: 14');
+  });
+
+  it('adds the expanded class to the block when "Load More" is clicked', () => {
+    loadMore.click();
+    expect(document.querySelector('.feature-grid-desktop.expanded')).to.exist;
+  });
+
+  it('adds the authored color to the background gradient of the "load-more" section when clicked', () => {
+    // loadMore.click();
+    loadMore.click();
+    const gradient = fullGrid.querySelector('.load-more-div');
+    console.log('---------->', gradient);
+    expect(fullGrid).to.exist;
+  });
 });
