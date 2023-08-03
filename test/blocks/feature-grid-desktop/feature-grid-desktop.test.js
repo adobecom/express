@@ -22,13 +22,13 @@ describe('Feature Grid Desktop', async () => {
   const smallGrid = document.querySelector('#small-grid');
   const fullGrid = document.querySelector('#full-grid');
   const oversizedGrid = document.querySelector('#over-sized-grid');
-  const cellList = fullGrid.querySelectorAll('.grid-item');
+  const cellList = document.querySelectorAll('#full-grid .grid-item');
   let loadMore;
   before(() => {
     window.isTestEnv = true;
     decorate(fullGrid);
     decorate(smallGrid);
-    loadMore = fullGrid.querySelector('.load-more-button');
+    loadMore = document.querySelector('#full-grid .load-more-button');
   });
 
   it('check if Feature Grid block exists', () => {
@@ -53,11 +53,12 @@ describe('Feature Grid Desktop', async () => {
     expect(document.querySelector('.feature-grid-desktop.expanded')).to.exist;
   });
 
-  it('adds the authored color to the background gradient of the "load-more" section when clicked', () => {
-    // loadMore.click();
+  it('adds the authored color to the background gradient of the "load-more" section when clicked', async () => {
+    document.body.innerHTML = await readFile({ path: './mocks/body.html' });
+    const grid = document.querySelector('#full-grid');
+    decorate(grid);
+    const gradient = grid.querySelector('.load-more-div');
     loadMore.click();
-    const gradient = fullGrid.querySelector('.load-more-div');
-    console.log('---------->', gradient);
-    expect(fullGrid).to.exist;
+    expect(gradient.style.background).to.equal('linear-gradient(rgba(255, 255, 255, 0), rgb(252, 250, 255), rgb(252, 250, 255))');
   });
 });
