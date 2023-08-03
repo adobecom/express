@@ -21,12 +21,15 @@ document.body.innerHTML = await readFile({ path: './mocks/body.html' });
 describe('Feature Grid Desktop', async () => {
   const smallGrid = document.querySelector('#small-grid');
   const oversizedGrid = document.querySelector('#over-sized-grid');
+  const noGradientBlock = document.querySelector('#no-gradient');
+  // console.log(noGradientBlock);
   const cellList = document.querySelectorAll('#full-grid .grid-item');
   let loadMoreButton;
   let fullGrid;
   before(() => {
     window.isTestEnv = true;
     decorate(smallGrid);
+    decorate(noGradientBlock);
   });
 
   beforeEach(async () => {
@@ -63,5 +66,18 @@ describe('Feature Grid Desktop', async () => {
     loadMoreButton.click();
     loadMoreButton.click();
     expect(loadMoreDiv.style.background).to.equal('linear-gradient(rgba(255, 255, 255, 0), rgb(252, 250, 255), rgb(252, 250, 255))');
+  });
+
+  it('leaves gradient blank if none authored', () => {
+    const loadMoreDiv = noGradientBlock.querySelector('.load-more-div');
+    loadMoreButton.click();
+    loadMoreButton.click();
+    expect(loadMoreDiv.style.background).to.equal('');
+  });
+
+  it('Allows author to control text in the "load more" button', () => {
+    expect(loadMoreButton.textContent).to.equal('Explore more Adobe Express features');
+    loadMoreButton.click();
+    expect(loadMoreButton.textContent).to.equal('View less');
   });
 });
