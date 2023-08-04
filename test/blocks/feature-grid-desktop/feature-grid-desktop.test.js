@@ -80,7 +80,7 @@ describe('Feature Grid Desktop', async () => {
 
     it('adds the expanded class to the block when "Load More" is clicked', () => {
       loadMoreButton.click();
-      expect(Object.values(fullGrid.classList)).to.include('expanded');
+      expect(fullGrid.classList.contains('expanded')).to.be.true;
     });
 
     it('adds the authored color back to the background gradient of the "load-more" section when toggled off/on again', async () => {
