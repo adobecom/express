@@ -45,14 +45,18 @@ describe('marquee', () => {
       const marquee = document.querySelector('.marquee');
       await decorate(marquee);
       const video = marquee.querySelector('video.marquee-background');
-      video.addEventListener('canplay', () => {
-        const reduceMotionToggle = marquee.querySelector('.reduce-motion-wrapper');
-        expect(reduceMotionToggle).to.exist;
-      });
+      video.dispatchEvent(new Event('canplay'));
+      const reduceMotionToggle = marquee.querySelector('.reduce-motion-wrapper');
+      expect(reduceMotionToggle).to.exist;
+    });
+
+    it('system accessibility setting affects the page live', async () => {
+      const marquee = document.querySelector('.marquee');
+      await decorate(marquee);
     });
   });
 
-  describe('dark version', () => {
+  describe('dark version with video', () => {
     before(() => {
       document.body.innerHTML = videoVersion;
     });
@@ -61,6 +65,15 @@ describe('marquee', () => {
       const marquee = document.querySelector('.marquee');
       await decorate(marquee);
       expect(marquee.classList.contains('dark')).to.be.true;
+    });
+
+    it('uses different set of SVG for reduce-motion toggle', async () => {
+      const marquee = document.querySelector('.marquee');
+      await decorate(marquee);
+      const video = marquee.querySelector('video.marquee-background');
+      video.dispatchEvent(new Event('canplay'));
+      const lightPlayIcon = marquee.querySelector('.icon-play-video-light');
+      expect(lightPlayIcon).to.exist;
     });
   });
 
@@ -72,8 +85,7 @@ describe('marquee', () => {
     it('renders an image background', async () => {
       const marquee = document.querySelector('.marquee');
       await decorate(marquee);
-
-      const video = marquee.querySelector('.background video');
+      const video = marquee.querySelector('.background-wrapper video');
       expect(video.poster !== '' && !video.querySelector('source')).to.be.true;
     });
 
