@@ -187,7 +187,7 @@ async function selectPlan($card, planUrl, sendAnalyticEvent) {
     const $pricingVat = $card.querySelector('.puf-vat-info');
 
     $pricingHeader.innerHTML = plan.formatted;
-    $pricingHeader.classList.add(plan.currency.toLowerCase());
+    $pricingHeader.classList.add(plan.currency?.toLowerCase());
     $pricingVat.textContent = plan.vatInfo;
     $pricingCta.href = buildUrl(plan.url, plan.country, plan.language);
     $pricingCta.dataset.planUrl = planUrl;

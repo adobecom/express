@@ -1200,7 +1200,7 @@ loadScript(martechURL, () => {
     // poll the dataLayer every 2 seconds
     setInterval(() => {
       // loop through each of the events in the dataLayer
-      window.dataLayer.forEach((evt) => {
+      window.dataLayer?.forEach((evt) => {
         // don't continue if it has already been processed
         if (processed[evt.assetId]) {
           return;

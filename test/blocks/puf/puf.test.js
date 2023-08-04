@@ -70,33 +70,103 @@ describe('PUF', () => {
     const cardCta = cardTop.querySelector('.button');
     expect(cardCta.textContent).to.equal('Start your trial');
   });
+
+  it('should change slide to 2 on touch move', (done) => {
+    const puf = document.querySelector('.puf');
+
+    decorate(puf);
+    const carouselContainer = puf.querySelector('.carousel-container');
+
+    setTimeout(() => {
+      const startTouch = new Touch({
+        identifier: Date.now(),
+        target: puf,
+        clientX: 100,
+        clientY: 100,
+      });
+
+      const touchStartEvent = new TouchEvent('touchstart', {
+        touches: [startTouch],
+        targetTouches: [],
+        changedTouches: [startTouch],
+      });
+      puf.dispatchEvent(touchStartEvent);
+
+      const endTouch = new Touch({
+        identifier: Date.now(),
+        target: puf,
+        clientX: 0,
+        clientY: 50,
+      });
+
+      setTimeout(() => {
+        const touchMoveEvent = new TouchEvent('touchmove', {
+          touches: [endTouch],
+          targetTouches: [],
+          changedTouches: [endTouch],
+        });
+        puf.dispatchEvent(touchMoveEvent);
+
+        if (carouselContainer.classList.contains('slide-2-selected')) {
+          done();
+        } else {
+          done(new Error('Test failed: slide was not changed'));
+        }
+      }, 200);
+    }, 500);
+  });
+
+  it('should change slide to 1 on left arrow click', (done) => {
+    const puf = document.querySelector('.puf');
+
+    decorate(puf);
+    const carouselContainer = puf.querySelector('.carousel-container');
+
+    setTimeout(() => {
+      const leftArrow = carouselContainer.querySelector('.carousel-fader-left');
+      leftArrow.click();
+
+      if (carouselContainer.classList.contains('slide-1-selected')) {
+        done();
+      } else {
+        done(new Error('Test failed: slide was not changed'));
+      }
+    }, 500);
+  });
+
+  it('should change slide to 2 on ArrowRight keyup', (done) => {
+    const puf = document.querySelector('.puf');
+
+    decorate(puf);
+    const carouselContainer = puf.querySelector('.carousel-container');
+
+    setTimeout(() => {
+      const event = new KeyboardEvent('keyup', { key: 'ArrowRight' });
+      puf.dispatchEvent(event);
+
+      if (carouselContainer.classList.contains('slide-2-selected')) {
+        done();
+      } else {
+        done(new Error('Test failed: slide was not changed'));
+      }
+    }, 500);
+  });
+
+  it('should change slide to 1 on ArrowLeft keyup', (done) => {
+    const puf = document.querySelector('.puf');
+
+    decorate(puf);
+    const carouselContainer = puf.querySelector('.carousel-container');
+
+    setTimeout(() => {
+      const event = new KeyboardEvent('keyup', { key: 'ArrowLeft' });
+      puf.dispatchEvent(event);
+
+      if (carouselContainer.classList.contains('slide-1-selected')) {
+        done();
+      } else {
+        done(new Error('Test failed: slide was not changed'));
+      }
+    }, 500);
+  });
 });
-
-// describe('selectPlan', () => {
-//   beforeEach(async () => {
-//     window.isTestEnv = true;
-//     document.body.innerHTML = await readFile({ path: './mocks/body.html' });
-//   });
-
-//   const puf = document.querySelector('.puf');
-//   decorate(puf);
-
-//   const plan = fetchPlan(planUrl);
-
-//   it('should call pushPricingAnalytics if sendAnalyticEvent is true', async () => {
-//     let calledWithArgs = null;
-//     const dependencies = {
-//       fetchPlan: async () => plan,
-//       buildUrl: () => 'url',
-//       pushPricingAnalytics: () => {
-//         calledWithArgs = arguments;
-//       }
-//     };
-  
-//     await selectPlan(card, planUrl, true, dependencies);
-  
-//     expect(calledWithArgs).to.not.be.null;
-//     expect(calledWithArgs[0]).to.equal('adobe.com:express:pricing:commitmentType:selected');
-//     expect(calledWithArgs[1]).to.equal('pricing:commitmentTypeSelected');
-//     expect(calledWithArgs[2]).to.deep.equal(plan);
-//   });
