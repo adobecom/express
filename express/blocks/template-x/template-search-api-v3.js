@@ -11,15 +11,16 @@
  */
 /* eslint-disable no-underscore-dangle */
 import { fetchPlaceholders, getLanguage } from '../../scripts/scripts.js';
+import { memoize } from '../../scripts/utils.js';
 
 function extractFilterTerms(input) {
   if (!input || typeof input !== 'string') {
     return [];
   }
   return input
-    .split(' AND ')
+    .split('AND')
     .map((t) => t
-      .replaceAll(' ', '')
+      .trim()
       .toLowerCase());
 }
 function extractLangs(locales) {
@@ -42,15 +43,15 @@ function formatFilterString(filters) {
     str += `&filters=behaviors==${animated.toLowerCase() === 'false' ? 'still' : 'animated'}`;
   }
   if (behaviors) {
-    extractFilterTerms(behaviors).forEach((b) => {
-      str += `&filters=behaviors==${b}`;
+    extractFilterTerms(behaviors).forEach((behavior) => {
+      str += `&filters=behaviors==${behavior.split(',').map((b) => b.trim()).join(',')}`;
     });
   }
-  extractFilterTerms(tasks).forEach((t) => {
-    str += `&filters=pages.task.name==${t}`;
+  extractFilterTerms(tasks).forEach((task) => {
+    str += `&filters=pages.task.name==${task.split(',').map((t) => t.trim()).join(',')}`;
   });
-  extractFilterTerms(topics).forEach((t) => {
-    str += `&filters=topics==${t}`;
+  extractFilterTerms(topics).forEach((topic) => {
+    str += `&filters=topics==${topic.split(',').map((t) => t.trim()).join(',')}`;
   });
   // locale needs backward compatibility with old api
   if (locales) {
@@ -60,6 +61,10 @@ function formatFilterString(filters) {
 
   return str;
 }
+
+const memoizedFetch = memoize(
+  (url, headers) => fetch(url, headers).then((r) => (r.ok ? r.json() : null)), { ttl: 30 * 1000 },
+);
 
 async function fetchSearchUrl({
   limit, start, filters, sort, q, collectionId,
@@ -83,13 +88,12 @@ async function fetchSearchUrl({
     `${base}?${collectionIdParam}${queryParam}${qParam}${limitParam}${startParam}${sortParam}${filterStr}`,
   );
 
-  const headers = {
-    'x-api-key': 'projectx_marketing_web',
-  };
+  const headers = {};
 
   const langs = extractLangs(filters.locales);
   if (langs.length > 0) headers['x-express-pref-lang'] = getLanguage(langs[0]);
-  const res = await fetch(url, { headers }).then((response) => response.json());
+  const res = await memoizedFetch(url, { headers });
+  if (!res) return res;
   if (langs.length > 1) {
     res.items = [
       ...res.items.filter(({ language }) => language === getLanguage(langs[0])),
@@ -132,6 +136,7 @@ async function fetchTemplatesNoToolbar(props) {
       },
     })];
   const prefLangRes = await prefLangPromise;
+  if (!prefLangRes) return { response: prefLangRes };
   if (prefLangRes.items?.length >= limit) return { response: prefLangRes };
 
   const backupLangRes = await backupLangPromise;
