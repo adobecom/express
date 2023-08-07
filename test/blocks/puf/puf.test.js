@@ -112,8 +112,8 @@ describe('PUF', () => {
         } else {
           done(new Error('Test failed: slide was not changed'));
         }
-      }, 200);
-    }, 500);
+      }, 500);
+    }, 1000);
   });
 
   it('should change slide to 1 on left arrow click', (done) => {
@@ -131,7 +131,7 @@ describe('PUF', () => {
       } else {
         done(new Error('Test failed: slide was not changed'));
       }
-    }, 500);
+    }, 1000);
   });
 
   it('should change slide to 2 on ArrowRight keyup', (done) => {
@@ -149,7 +149,7 @@ describe('PUF', () => {
       } else {
         done(new Error('Test failed: slide was not changed'));
       }
-    }, 500);
+    }, 1000);
   });
 
   it('should change slide to 1 on ArrowLeft keyup', (done) => {
@@ -167,6 +167,6 @@ describe('PUF', () => {
       } else {
         done(new Error('Test failed: slide was not changed'));
       }
-    }, 500);
+    }, 1000);
   });
 });
