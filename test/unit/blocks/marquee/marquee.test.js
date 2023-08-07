@@ -10,14 +10,16 @@
  * governing permissions and limitations under the License.
  */
 
-import { readFile } from '@web/test-runner-commands';
+import { readFile, emulateMedia, setViewport } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
 document.body.innerHTML = await readFile({ path: './mocks/default.html' });
 window.isTestEnv = true;
-const { default: decorate } = await import('../../../../express/blocks/marquee/marquee.js');
-const staticVersion = await readFile({ path: './mocks/dark-static.html' });
-const videoVersion = await readFile({ path: './mocks/dark-video.html' });
+const { default: decorate, handleMediaQuery } = await import('../../../../express/blocks/marquee/marquee.js');
+const darkStaticVersion = await readFile({ path: './mocks/dark-static.html' });
+const darkVideoVersion = await readFile({ path: './mocks/dark-video.html' });
+const shadowBackgroundVersion = await readFile({ path: './mocks/shadow-background.html' });
+const wideVersion = await readFile({ path: './mocks/wide.html' });
 describe('marquee', () => {
   describe('default version', () => {
     it('has a video background', async () => {
@@ -50,15 +52,58 @@ describe('marquee', () => {
       expect(reduceMotionToggle).to.exist;
     });
 
+    it('reduce motion toggle can control hero animation', async () => {
+      const marquee = document.querySelector('.marquee');
+      await decorate(marquee);
+      const video = marquee.querySelector('video.marquee-background');
+      video.dispatchEvent(new Event('canplay'));
+      const reduceMotionToggle = marquee.querySelector('.reduce-motion-wrapper');
+      reduceMotionToggle.click();
+      expect(marquee.classList.contains('reduce-motion')).to.be.true;
+
+      reduceMotionToggle.click();
+      expect(marquee.classList.contains('reduce-motion')).to.be.false;
+    });
+
+    it('reduce motion toggle responds to mouse hover', async () => {
+      const marquee = document.querySelector('.marquee');
+      await decorate(marquee);
+      const video = marquee.querySelector('video.marquee-background');
+      video.dispatchEvent(new Event('canplay'));
+      const reduceMotionToggle = marquee.querySelector('.reduce-motion-wrapper');
+      reduceMotionToggle.dispatchEvent(new Event('mouseenter'));
+
+      expect(reduceMotionToggle.querySelectorAll('span').length).equals(2);
+    });
+
     it('system accessibility setting affects the page live', async () => {
       const marquee = document.querySelector('.marquee');
       await decorate(marquee);
+      const mediaQuery = matchMedia('(prefers-reduced-motion: reduce)');
+      handleMediaQuery(marquee, mediaQuery);
+      await emulateMedia({ reducedMotion: 'no-preference' });
+      mediaQuery.dispatchEvent(new Event('change'));
+      expect(mediaQuery.matches).to.be.false;
+      await emulateMedia({ reducedMotion: 'reduce' });
+      mediaQuery.dispatchEvent(new Event('change'));
+      expect(mediaQuery.matches).to.be.true;
+    });
+
+    it('window resize triggers video adjustment', async () => {
+      const marquee = document.querySelector('.marquee');
+      await decorate(marquee);
+      const video = marquee.querySelector('video.marquee-background');
+      video.src = 'foo';
+      await setViewport({ width: 360, height: 640 });
+      const newVideo = marquee.querySelector('video.marquee-background');
+
+      expect(newVideo.src).to.not.equal('foo');
     });
   });
 
   describe('dark version with video', () => {
-    before(() => {
-      document.body.innerHTML = videoVersion;
+    beforeEach(() => {
+      document.body.innerHTML = darkVideoVersion;
     });
 
     it('is dark', async () => {
@@ -78,8 +123,8 @@ describe('marquee', () => {
   });
 
   describe('supports static asset', () => {
-    before(() => {
-      document.body.innerHTML = staticVersion;
+    beforeEach(() => {
+      document.body.innerHTML = darkStaticVersion;
     });
 
     it('renders an image background', async () => {
@@ -94,6 +139,36 @@ describe('marquee', () => {
       await decorate(marquee);
       const reduceMotionToggle = marquee.querySelector('.reduce-motion-wrapper');
       expect(reduceMotionToggle).to.not.exist;
+    });
+  });
+
+  describe('supports options', () => {
+    beforeEach(() => {
+      document.body.innerHTML = shadowBackgroundVersion;
+    });
+
+    it('renders an background color', async () => {
+      const marquee = document.querySelector('.marquee');
+      await decorate(marquee);
+      expect(marquee.getAttribute('style')).to.not.equal('');
+    });
+
+    it('renders a shadow', async () => {
+      const marquee = document.querySelector('.marquee');
+      await decorate(marquee);
+      const shadow = marquee.querySelector('.hero-shadow');
+      expect(shadow).to.exist;
+    });
+  });
+
+  describe('supports wide variant', () => {
+    beforeEach(() => {
+      document.body.innerHTML = wideVersion;
+    });
+
+    it('renders an wide background', async () => {
+      const marquee = document.querySelector('.marquee');
+      await decorate(marquee);
     });
   });
 });

@@ -48,6 +48,41 @@ function getBreakpoint(animations) {
   return breakpoint;
 }
 
+export function handleMediaQuery(block, mediaQuery) {
+  localStorage.setItem('reduceMotion', mediaQuery.matches ? 'on' : 'off');
+
+  mediaQuery.addEventListener('change', (e) => {
+    const browserValue = localStorage.getItem('reduceMotion') === 'on';
+    if (browserValue === e.matches) return;
+
+    if (e.matches) {
+      block.classList.add('reduce-motion');
+      block.querySelector('video')?.pause();
+    } else {
+      block.classList.remove('reduce-motion');
+      block.querySelector('video')?.play();
+    }
+
+    localStorage.setItem('reduceMotion', e.matches ? 'on' : 'off');
+  });
+}
+
+export async function decorateToggleContext(e) {
+  const reduceMotionIconWrapper = e.target;
+  const placeholders = await fetchPlaceholders();
+  const reduceMotionTextExist = reduceMotionIconWrapper.querySelector('.play-animation-text')
+    && reduceMotionIconWrapper.querySelector('.pause-animation-text');
+
+  if (!reduceMotionTextExist) {
+    const play = createTag('span', { class: 'play-animation-text' });
+    const pause = createTag('span', { class: 'pause-animation-text' });
+    play.textContent = placeholders['play-animation'] || 'play animation';
+    pause.textContent = placeholders['pause-animation'] || 'pause animation';
+
+    reduceMotionIconWrapper.prepend(play, pause);
+  }
+}
+
 function buildReduceMotionSwitch(block) {
   if (!block.querySelector('.reduce-motion-wrapper')) {
     const reduceMotionIconWrapper = createTag('div', { class: 'reduce-motion-wrapper' });
@@ -63,35 +98,20 @@ function buildReduceMotionSwitch(block) {
     videoWrapper.append(reduceMotionIconWrapper);
 
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mediaQuery.matches) {
-      localStorage.setItem('reduceMotion', 'on');
-    }
+    handleMediaQuery(block, mediaQuery);
+
     const initialValue = localStorage.getItem('reduceMotion') === 'on';
 
     if (video) {
       if (initialValue) {
         block.classList.add('reduce-motion');
-        video.currentTime = Math.floor(video.duration) / 2;
+        video.currentTime = Math.floor(video.duration) / 2 || 0;
         video.pause();
       } else {
         video.muted = true;
         video.play();
       }
     }
-
-    mediaQuery.addEventListener('change', (e) => {
-      const broswerValue = localStorage.getItem('reduceMotion') === 'on';
-      if (broswerValue === e.matches) return;
-      localStorage.setItem('reduceMotion', e.matches ? 'on' : 'off');
-
-      if (localStorage.getItem('reduceMotion') === 'on') {
-        block.classList.add('reduce-motion');
-        block.querySelector('video')?.pause();
-      } else {
-        block.classList.remove('reduce-motion');
-        block.querySelector('video')?.play();
-      }
-    });
 
     reduceMotionIconWrapper.addEventListener('click', () => {
       localStorage.setItem('reduceMotion', localStorage.getItem('reduceMotion') === 'on' ? 'off' : 'on');
@@ -105,19 +125,7 @@ function buildReduceMotionSwitch(block) {
       }
     }, { passive: true });
 
-    reduceMotionIconWrapper.addEventListener('mouseenter', async () => {
-      const placeholders = await fetchPlaceholders();
-      const reduceMotionTextExist = block.querySelector('.play-animation-text') && block.querySelector('.pause-animation-text');
-
-      if (!reduceMotionTextExist) {
-        const play = createTag('span', { class: 'play-animation-text' });
-        const pause = createTag('span', { class: 'pause-animation-text' });
-        play.textContent = placeholders['play-animation'] || 'play animation';
-        pause.textContent = placeholders['pause-animation'] || 'pause animation';
-
-        reduceMotionIconWrapper.prepend(play, pause);
-      }
-    }, { passive: true });
+    reduceMotionIconWrapper.addEventListener('mouseenter', decorateToggleContext, { passive: true });
   }
 }
 
