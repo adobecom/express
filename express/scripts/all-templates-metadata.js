@@ -36,7 +36,7 @@ export default async function fetchAllTemplatesMetadata() {
         sheet = `${urlPrefix}/express/templates/default/metadata.json?limit=100000`;
       }
 
-      let resp = await memoizedFetchUrl(sheet);
+      const resp = await memoizedFetchUrl(sheet);
       allTemplatesMetadata = resp?.data;
     } catch (err) {
       allTemplatesMetadata = [];
