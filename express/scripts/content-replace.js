@@ -14,10 +14,8 @@ import {
   fetchPlaceholders,
   getMetadata,
   titleCase,
-  createTag,
   getHelixEnv,
 } from './scripts.js';
-import fetchAllTemplatesMetadata from './all-templates-metadata.js';
 
 async function getReplacementsFromSearch() {
   // FIXME: tasks and tasksx split to be removed after mobile GA
