@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { readFile, emulateMedia, setViewport } from '@web/test-runner-commands';
+import { readFile, emulateMedia, setViewport, sendMouse } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
 document.body.innerHTML = await readFile({ path: './mocks/default.html' });
@@ -20,6 +20,21 @@ const darkStaticVersion = await readFile({ path: './mocks/dark-static.html' });
 const darkVideoVersion = await readFile({ path: './mocks/dark-video.html' });
 const shadowBackgroundVersion = await readFile({ path: './mocks/shadow-background.html' });
 const wideVersion = await readFile({ path: './mocks/wide.html' });
+
+function getMiddleOfElement(element) {
+  const {
+    x,
+    y,
+    width,
+    height,
+  } = element.getBoundingClientRect();
+
+  return {
+    x: Math.floor(x + window.scrollX + width / 2),
+    y: Math.floor(y + window.scrollY + height / 2),
+  };
+}
+
 describe('marquee', () => {
   describe('default version', () => {
     it('has a video background', async () => {
@@ -71,9 +86,10 @@ describe('marquee', () => {
       const video = marquee.querySelector('video.marquee-background');
       video.dispatchEvent(new Event('canplay'));
       const reduceMotionToggle = marquee.querySelector('.reduce-motion-wrapper');
-      reduceMotionToggle.dispatchEvent(new Event('mouseenter'));
+      const { x, y } = getMiddleOfElement(reduceMotionToggle);
+      await sendMouse({ type: 'move', position: [x, y] });
 
-      expect(reduceMotionToggle.querySelectorAll('span').length).equals(2);
+      expect(reduceMotionToggle.children.length).equals(4);
     });
 
     it('system accessibility setting affects the page live', async () => {
@@ -158,6 +174,15 @@ describe('marquee', () => {
       await decorate(marquee);
       const shadow = marquee.querySelector('.hero-shadow');
       expect(shadow).to.exist;
+    });
+
+    it('video link opens video overlay', async () => {
+      const marquee = document.querySelector('.marquee');
+      await decorate(marquee);
+      const { x, y } = getMiddleOfElement(marquee.querySelector('a.button.accent.secondary'));
+      await sendMouse({ type: 'click', position: [x, y] });
+
+      expect(document.querySelector('.video-overlay')).to.exist;
     });
   });
 

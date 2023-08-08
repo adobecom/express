@@ -68,7 +68,7 @@ export function handleMediaQuery(block, mediaQuery) {
 }
 
 export async function decorateToggleContext(e) {
-  const reduceMotionIconWrapper = e.target;
+  const reduceMotionIconWrapper = e.currentTarget;
   const placeholders = await fetchPlaceholders();
   const reduceMotionTextExist = reduceMotionIconWrapper.querySelector('.play-animation-text')
     && reduceMotionIconWrapper.querySelector('.pause-animation-text');
@@ -113,7 +113,7 @@ function buildReduceMotionSwitch(block) {
       }
     }
 
-    reduceMotionIconWrapper.addEventListener('click', () => {
+    reduceMotionIconWrapper.addEventListener('click', async () => {
       localStorage.setItem('reduceMotion', localStorage.getItem('reduceMotion') === 'on' ? 'off' : 'on');
 
       if (localStorage.getItem('reduceMotion') === 'on') {
@@ -182,9 +182,6 @@ function adjustLayout(animations, parent) {
 
 async function transformToVideoLink(cell, a) {
   const { isVideoLink, displayVideoModal } = await import('../shared/video.js');
-  a.addEventListener('click', (e) => {
-    e.preventDefault();
-  });
   a.setAttribute('rel', 'nofollow');
   const title = a.textContent.trim();
 
