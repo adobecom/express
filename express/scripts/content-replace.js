@@ -19,17 +19,6 @@ import {
 } from './scripts.js';
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
 
-async function replaceDefaultPlaceholders(template) {
-  template.innerHTML = template.innerHTML.replaceAll('https://www.adobe.com/express/templates/default-create-link', getMetadata('create-link') || '/');
-
-  if (getMetadata('tasks') === '') {
-    const placeholders = await fetchPlaceholders();
-    template.innerHTML = template.innerHTML.replaceAll('default-create-link-text', placeholders['start-from-scratch'] || '');
-  } else {
-    template.innerHTML = template.innerHTML.replaceAll('default-create-link-text', getMetadata('create-text') || '');
-  }
-}
-
 async function getReplacementsFromSearch() {
   // FIXME: tasks and tasksx split to be removed after mobile GA
   const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -208,11 +197,24 @@ async function updateNonBladeContent() {
   }
 
   if (templateList) {
-    await replaceDefaultPlaceholders(templateList);
+    templateList.innerHTML = templateList.innerHTML.replaceAll('https://www.adobe.com/express/templates/default-create-link', getMetadata('create-link') || '/');
+
+    if (getMetadata('tasks') === '') {
+      const placeholders = await fetchPlaceholders();
+      templateList.innerHTML = templateList.innerHTML.replaceAll('default-create-link-text', placeholders['start-from-scratch'] || '');
+    } else {
+      templateList.innerHTML = templateList.innerHTML.replaceAll('default-create-link-text', getMetadata('create-text') || '');
+    }
   }
 
   if (templateX) {
-    await replaceDefaultPlaceholders(templateX);
+    templateX.innerHTML = templateX.innerHTML.replaceAll('https://www.adobe.com/express/templates/default-create-link', getMetadata('create-link-x') || getMetadata('create-link') || '/');
+    if (getMetadata('tasks-x') === '') {
+      const placeholders = await fetchPlaceholders();
+      templateX.innerHTML = templateX.innerHTML.replaceAll('default-create-link-text', placeholders['start-from-scratch'] || '');
+    } else {
+      templateX.innerHTML = templateX.innerHTML.replaceAll('default-create-link-text', getMetadata('create-text') || '');
+    }
   }
 
   if (seoNav) {
