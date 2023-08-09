@@ -17,6 +17,23 @@ import {
   getHelixEnv,
 } from './scripts.js';
 
+async function replaceDefaultPlaceholders(block) {
+  const [link, tasks] = [
+    block.classList.contains('template-list') ? getMetadata('create-link') || '/' : getMetadata('create-link-x') || getMetadata('create-link') || '/',
+    block.classList.contains('template-list') ? getMetadata('tasks') : getMetadata('tasks-x'),
+  ];
+
+  // TODO: remove legacy support after mobile GA
+  block.innerHTML = block.innerHTML.replaceAll('https://www.adobe.com/express/templates/default-create-link', link);
+
+  if (tasks === '') {
+    const placeholders = await fetchPlaceholders();
+    block.innerHTML = block.innerHTML.replaceAll('default-create-link-text', placeholders['start-from-scratch'] || '');
+  } else {
+    block.innerHTML = block.innerHTML.replaceAll('default-create-link-text', getMetadata('create-text') || '');
+  }
+}
+
 async function getReplacementsFromSearch() {
   // FIXME: tasks and tasksx split to be removed after mobile GA
   const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -124,24 +141,11 @@ async function updateNonBladeContent() {
   }
 
   if (templateList) {
-    templateList.innerHTML = templateList.innerHTML.replaceAll('https://www.adobe.com/express/templates/default-create-link', getMetadata('create-link') || '/');
-
-    if (getMetadata('tasks') === '') {
-      const placeholders = await fetchPlaceholders();
-      templateList.innerHTML = templateList.innerHTML.replaceAll('default-create-link-text', placeholders['start-from-scratch'] || '');
-    } else {
-      templateList.innerHTML = templateList.innerHTML.replaceAll('default-create-link-text', getMetadata('create-text') || '');
-    }
+    await replaceDefaultPlaceholders(templateList);
   }
 
   if (templateX) {
-    templateX.innerHTML = templateX.innerHTML.replaceAll('https://www.adobe.com/express/templates/default-create-link', getMetadata('create-link-x') || getMetadata('create-link') || '/');
-    if (getMetadata('tasks-x') === '') {
-      const placeholders = await fetchPlaceholders();
-      templateX.innerHTML = templateX.innerHTML.replaceAll('default-create-link-text', placeholders['start-from-scratch'] || '');
-    } else {
-      templateX.innerHTML = templateX.innerHTML.replaceAll('default-create-link-text', getMetadata('create-text') || '');
-    }
+    await replaceDefaultPlaceholders(templateX);
   }
 
   if (seoNav) {
