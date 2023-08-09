@@ -10,7 +10,12 @@
  * governing permissions and limitations under the License.
  */
 
-import { readFile, emulateMedia, setViewport, sendMouse } from '@web/test-runner-commands';
+import {
+  readFile,
+  emulateMedia,
+  setViewport,
+  sendMouse,
+} from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
 document.body.innerHTML = await readFile({ path: './mocks/default.html' });
@@ -194,6 +199,7 @@ describe('marquee', () => {
     it('renders an wide background', async () => {
       const marquee = document.querySelector('.marquee');
       await decorate(marquee);
+      expect(marquee.classList.contains('wide')).to.be.true;
     });
   });
 });
