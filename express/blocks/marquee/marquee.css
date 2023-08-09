@@ -139,14 +139,11 @@ body.no-desktop-brand-header header {
 .marquee .button-container.button-inline.free-plan-container .free-plan-widget {
   color: var(--body-color);
   background: unset;
-  background-color: unset;
   margin: unset;
 }
 
 .marquee.dark .button-container.button-inline.free-plan-container .free-plan-widget {
   color: var(--color-white);
-  background: unset;
-  background-color: unset;
 }
 
 .marquee .button-container.button-inline.free-plan-container + .button-container.button-inline > a {
