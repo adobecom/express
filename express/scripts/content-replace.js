@@ -17,16 +17,10 @@ import {
   getHelixEnv,
 } from './scripts.js';
 
-async function replaceDefaultPlaceholders(block) {
-  const [link, tasks] = [
-    block.classList.contains('template-list') ? getMetadata('create-link') || '/' : getMetadata('create-link-x') || getMetadata('create-link') || '/',
-    block.classList.contains('template-list') ? getMetadata('tasks') : getMetadata('tasks-x'),
-  ];
+async function replaceDefaultPlaceholders(block, components) {
+  block.innerHTML = block.innerHTML.replaceAll('https://www.adobe.com/express/templates/default-create-link', components.link);
 
-  // TODO: remove legacy support after mobile GA
-  block.innerHTML = block.innerHTML.replaceAll('https://www.adobe.com/express/templates/default-create-link', link);
-
-  if (tasks === '') {
+  if (components.tasks === '') {
     const placeholders = await fetchPlaceholders();
     block.innerHTML = block.innerHTML.replaceAll('default-create-link-text', placeholders['start-from-scratch'] || '');
   } else {
@@ -141,11 +135,17 @@ async function updateNonBladeContent() {
   }
 
   if (templateList) {
-    await replaceDefaultPlaceholders(templateList);
+    await replaceDefaultPlaceholders(templateList, {
+      link: getMetadata('create-link') || '/',
+      tasks: getMetadata('tasks'),
+    });
   }
 
   if (templateX) {
-    await replaceDefaultPlaceholders(templateX);
+    await replaceDefaultPlaceholders(templateX, {
+      link: getMetadata('create-link-x') || getMetadata('create-link') || '/',
+      tasks: getMetadata('tasks-x'),
+    });
   }
 
   if (seoNav) {
