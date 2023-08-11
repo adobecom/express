@@ -130,47 +130,47 @@ sitemaps:
     origin: https://www.adobe.com
     languages:
       default:
-        source: /metadata.json?sheet=sitemap-en
+        source: /express/templates/default/metadata.json?sheet=sitemap
         destination: /express/sitemap-seo-templates.xml
         hreflang: en
         alternate: /{path}
       brasil:
-        source: /metadata.json?sheet=sitemap-br
+        source: /br/express/templates/default/metadata.json?sheet=sitemap
         destination: /express/sitemap-seo-templates.xml
         hreflang: pt
         alternate: /br/{path}
       france:
-        source: /metadata.json?sheet=sitemap-fr
+        source: /fr/express/templates/default/metadata.json?sheet=sitemap
         destination: /express/sitemap-seo-templates.xml
         hreflang: fr
         alternate: /fr/{path}
       germany:
-        source: /metadata.json?sheet=sitemap-de
+        source: /de/express/templates/default/metadata.json?sheet=sitemap
         destination: /express/sitemap-seo-templates.xml
         hreflang: de
         alternate: /de/{path}
       italy:
-        source: /metadata.json?sheet=sitemap-it
+        source: /it/express/templates/default/metadata.json?sheet=sitemap
         destination: /express/sitemap-seo-templates.xml
         hreflang: it
         alternate: /it/{path}
       japan:
-        source: /metadata.json?sheet=sitemap-jp
+        source: /jp/express/templates/default/metadata.json?sheet=sitemap
         destination: /express/sitemap-seo-templates.xml
         hreflang: ja
         alternate: /jp/{path}
       korea:
-        source: /metadata.json?sheet=sitemap-kr
+        source: /kr/express/templates/default/metadata.json?sheet=sitemap
         destination: /express/sitemap-seo-templates.xml
         hreflang: ko
         alternate: /kr/{path}
       spain:
-        source: /metadata.json?sheet=sitemap-es
+        source: /es/express/templates/default/metadata.json?sheet=sitemap
         destination: /express/sitemap-seo-templates.xml
         hreflang: es
         alternate: /es/{path}
       taiwan:
-        source: /metadata.json?sheet=sitemap-tw
+        source: /tw/express/templates/default/metadata.json?sheet=sitemap
         destination: /express/sitemap-seo-templates.xml
         hreflang: zh-Hant
         alternate: /tw/{path}
