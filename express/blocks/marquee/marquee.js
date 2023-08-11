@@ -67,23 +67,22 @@ export function handleMediaQuery(block, mediaQuery) {
   });
 }
 
-export async function decorateToggleContext(e) {
-  const reduceMotionIconWrapper = e.currentTarget;
-  const placeholders = await fetchPlaceholders();
+function decorateToggleContext(ct, placeholders) {
+  const reduceMotionIconWrapper = ct;
   const reduceMotionTextExist = reduceMotionIconWrapper.querySelector('.play-animation-text')
     && reduceMotionIconWrapper.querySelector('.pause-animation-text');
 
   if (!reduceMotionTextExist) {
     const play = createTag('span', { class: 'play-animation-text' });
     const pause = createTag('span', { class: 'pause-animation-text' });
-    play.textContent = placeholders['play-animation'] || 'play animation';
-    pause.textContent = placeholders['pause-animation'] || 'pause animation';
+    play.textContent = placeholders ? placeholders['play-animation'] : 'play animation';
+    pause.textContent = placeholders ? placeholders['pause-animation'] : 'pause animation';
 
     reduceMotionIconWrapper.prepend(play, pause);
   }
 }
 
-function buildReduceMotionSwitch(block) {
+async function buildReduceMotionSwitch(block) {
   if (!block.querySelector('.reduce-motion-wrapper')) {
     const reduceMotionIconWrapper = createTag('div', { class: 'reduce-motion-wrapper' });
     const videoWrapper = block.querySelector('.background-wrapper');
@@ -124,8 +123,10 @@ function buildReduceMotionSwitch(block) {
         block.querySelector('video')?.play();
       }
     }, { passive: true });
-
-    reduceMotionIconWrapper.addEventListener('mouseenter', decorateToggleContext, { passive: true });
+    const placeholders = await fetchPlaceholders();
+    reduceMotionIconWrapper.addEventListener('mouseenter', (e) => {
+      decorateToggleContext(e.currentTarget, placeholders);
+    }, { passive: true });
   }
 }
 
@@ -180,7 +181,7 @@ function adjustLayout(animations, parent) {
   }
 }
 
-async function transformToVideoLink(cell, a) {
+export async function transformToVideoLink(cell, a) {
   const { isVideoLink, displayVideoModal } = await import('../shared/video.js');
   a.setAttribute('rel', 'nofollow');
   const title = a.textContent.trim();
@@ -316,10 +317,10 @@ export default async function decorate(block) {
       const secondaryButton = contentButtons[1];
       buttonAsLink?.classList.remove('button');
       secondaryButton?.classList.add('secondary');
-      secondaryButton?.classList.add('xlarge');
       const buttonContainers = [...div.querySelectorAll('p.button-container')];
-      buttonContainers.forEach((button) => {
-        button.classList.add('button-inline');
+      buttonContainers.forEach((btnContainer) => {
+        btnContainer.classList.add('button-inline');
+        btnContainer.querySelector('a.button')?.classList.add('xlarge');
       });
     }
 
@@ -343,16 +344,8 @@ export default async function decorate(block) {
     }
   });
 
-  if (block.classList.contains('shadow') && !block.querySelector('.hero-shadow')) {
-    const shadowDiv = createTag('div', { class: 'hero-shadow' });
-    const shadow = createTag('img', { src: '/express/blocks/marquee/shadow.png' });
-    shadowDiv.appendChild(shadow);
-    block.appendChild(shadowDiv);
-  }
-
   const button = block.querySelector('.button');
   if (button) {
-    button.classList.add('xlarge');
     await addFreePlanWidget(button.parentElement);
   }
 
