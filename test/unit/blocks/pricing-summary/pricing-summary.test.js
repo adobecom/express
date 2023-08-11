@@ -13,7 +13,7 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
-const { default: decorate } = await import('../../../express/blocks/pricing-summary/pricing-summary.js');
+const { default: decorate } = await import('../../../../express/blocks/pricing-summary/pricing-summary.js');
 document.body.innerHTML = await readFile({ path: './mocks/body.html' });
 
 describe('Pricing Summary', () => {
