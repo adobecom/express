@@ -21,7 +21,6 @@ export default {
       '**/express/scripts/**',
     ],
     exclude: [
-      '**/express/blocks/block-legacy/**',
       '**/node_modules/**',
       '**/test/**',
     ],
