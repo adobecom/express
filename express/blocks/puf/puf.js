@@ -137,8 +137,9 @@ async function fetchPlan(planUrl) {
     plan.symbol = '$';
 
     // TODO: Remove '/sp/ once confirmed with stakeholders
-    const { host } = planUrl.includes('adobe.com') ? new URL(planUrl) : '';
-    if (host.includes('express.adobe.com') || planUrl.includes('/sp/')) {
+    const allowedHosts = ['new.express.adobe.com', 'express.adobe.com'];
+    const { host } = new URL(planUrl);
+    if (allowedHosts.includes(host) || planUrl.includes('/sp/')) {
       plan.offerId = 'FREE0';
       plan.frequency = 'monthly';
       plan.name = 'Free';
