@@ -136,7 +136,8 @@ async function fetchPlan(planUrl) {
     plan.currency = 'US';
     plan.symbol = '$';
 
-    if (planUrl.includes('/sp/')) {
+    // TODO: Remove '/sp/ once confirmed with stakeholders
+    if (new URL(planUrl).host.includes('express.adobe.com') || planUrl.includes('/sp/')) {
       plan.offerId = 'FREE0';
       plan.frequency = 'monthly';
       plan.name = 'Free';
