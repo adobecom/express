@@ -2383,5 +2383,3 @@ export function titleCase(str) {
   }
   return splitStr.join(' ');
 }
-
-import('./playground.js');
