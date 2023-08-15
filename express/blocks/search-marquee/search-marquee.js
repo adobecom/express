@@ -56,6 +56,12 @@ function wordExistsInString(word, inputString) {
   return regexPattern.test(inputString);
 }
 
+function cycleThroughSuggestions(block, targetIndex = 0) {
+  const suggestions = block.querySelectorAll('.suggestions-list li');
+  if (targetIndex >= suggestions.length || targetIndex < 0) return;
+  if (suggestions.length > 0) suggestions[targetIndex].focus();
+}
+
 function initSearchFunction(block) {
   const searchBarWrapper = block.querySelector('.search-bar-wrapper');
 
@@ -101,6 +107,13 @@ function initSearchFunction(block) {
       suggestionsContainer.classList.add('hidden');
     }
   }, { passive: true });
+
+  searchBar.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.keyCode === 40) {
+      e.preventDefault();
+      cycleThroughSuggestions(block);
+    }
+  });
 
   document.addEventListener('click', (e) => {
     const { target } = e;
@@ -199,7 +212,7 @@ function initSearchFunction(block) {
     suggestionsList.innerHTML = '';
     const searchBarVal = searchBar.value.toLowerCase();
     if (suggestions && !(suggestions.length <= 1 && suggestions[0]?.query === searchBarVal)) {
-      suggestions.forEach((item) => {
+      suggestions.forEach((item, index) => {
         const li = createTag('li', { tabindex: 0 });
         const valRegEx = new RegExp(searchBar.value, 'i');
         li.innerHTML = item.query.replace(valRegEx, `<b>${searchBarVal}</b>`);
@@ -210,6 +223,20 @@ function initSearchFunction(block) {
         li.addEventListener('keydown', async (e) => {
           if (e.key === 'Enter' || e.keyCode === 13) {
             await handleSubmitInteraction(item);
+          }
+        });
+
+        li.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowDown' || e.keyCode === 40) {
+            e.preventDefault();
+            cycleThroughSuggestions(block, index + 1);
+          }
+        });
+
+        li.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowUp' || e.keyCode === 38) {
+            e.preventDefault();
+            cycleThroughSuggestions(block, index - 1);
           }
         });
 

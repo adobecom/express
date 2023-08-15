@@ -809,12 +809,19 @@ main .template-x .search-dropdown-container .trends-container .from-scratch-link
     margin-bottom: 16px;
 }
 
-main .template-x .search-dropdown-container .trends-container ul,
+main .template-x .search-dropdown-container .trends-container ul {
+    padding-left: 0;
+    list-style: none;
+    max-height: 216px;
+    overflow: auto;
+}
+
 main .template-x .search-dropdown-container .suggestions-container ul {
     padding-left: 0;
     list-style: none;
     max-height: 216px;
     overflow: auto;
+    margin: 0 0 16px -8px;
 }
 
 main .template-x .search-dropdown-container .trends-container .trends-wrapper li,
@@ -824,10 +831,15 @@ main .template-x .search-dropdown-container .suggestions-container li {
 
 main .template-x .search-dropdown-container .suggestions-container li {
     cursor: pointer;
+    margin: 0 8px 0 0;
+    padding: 8px;
 }
 
-main .template-x .search-dropdown-container .suggestions-container li:hover {
-    color: var(--color-info-accent);
+main .template-x .search-dropdown-container .suggestions-container li:hover,
+main .template-x .search-dropdown-container .suggestions-container li:focus-visible {
+    background: var(--color-gray-200);
+    outline: none;
+    border-radius: 8px;
 }
 
 main .template-x .search-dropdown-container .trends-container .trends-wrapper li a {
