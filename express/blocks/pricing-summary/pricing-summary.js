@@ -162,7 +162,7 @@ function handlePrice(column) {
 
   fetchPlan(price?.href).then((response) => {
     priceText.innerHTML = response.formatted;
-    const planCTA = column.querySelector('button-container .button');
+    const planCTA = column.querySelector('.button-container button');
     if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
   });
 
