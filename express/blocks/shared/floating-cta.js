@@ -237,6 +237,7 @@ export async function createFloatingButton($block, audience, data) {
   }
 
   const $heroCTA = document.querySelector('a.button.same-as-floating-button-CTA');
+  console.log($heroCTA);
   if ($heroCTA) {
     const hideButtonWhenIntersecting = new IntersectionObserver((entries) => {
       const $e = entries[0];
