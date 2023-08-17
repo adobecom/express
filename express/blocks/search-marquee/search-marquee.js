@@ -35,6 +35,8 @@ function handlelize(str) {
 function logSearch(form, url = 'https://main--express-website--adobe.hlx.page/express/search-terms-log') {
   if (form) {
     const input = form.querySelector('input');
+    const currentHref = new URL(window.location.href);
+    const params = new URLSearchParams(currentHref.search);
     fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -45,6 +47,7 @@ function logSearch(form, url = 'https://main--express-website--adobe.hlx.page/ex
           timestamp: Date.now(),
           audience: document.body.dataset.device,
           sourcePath: window.location.pathname,
+          previousSearch: params.toString() || 'N/A',
         },
       }),
     });
