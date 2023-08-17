@@ -260,7 +260,7 @@ function decorateCard($block, cardClass) {
   const $cardBanner = $block.children[0].children[0];
   const $cardTop = $block.children[1].children[0];
   const $cardBottom = $block.children[2].children[0];
-  const $cardHeader = $cardTop.querySelector('h3, p:first-of-type:has(svg)');
+  const $cardHeader = $cardTop.querySelector('h3, p:first-of-type');
   const $cardHeaderSvg = $cardTop.querySelector('svg');
   const $cardPricingHeader = createTag('h2', { class: 'puf-pricing-header' });
   const $cardVat = createTag('div', { class: 'puf-vat-info' });
