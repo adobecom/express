@@ -450,16 +450,16 @@ function alignP($block) {
   const card2 = $block.querySelector(cardRightQuery);
 
   const adjustHeight = () => {
-      card1.style.height = 'auto';
-      card2.style.height = 'auto';
+    card1.style.height = 'auto';
+    card2.style.height = 'auto';
 
-      const maxHeight = Math.max(
-          card1.getBoundingClientRect().height,
-          card2.getBoundingClientRect().height,
-      );
+    const maxHeight = Math.max(
+      card1.getBoundingClientRect().height,
+      card2.getBoundingClientRect().height,
+    );
 
-      card1.style.height = `${maxHeight}px`;
-      card2.style.height = `${maxHeight}px`;
+    card1.style.height = `${maxHeight}px`;
+    card2.style.height = `${maxHeight}px`;
   };
 
   const ro = new ResizeObserver(() => adjustHeight());
@@ -472,10 +472,10 @@ function alignP($block) {
 
 function alignHighlights($block) {
   const cardLeftTitle = '.puf-card.puf-left > .puf-card-bottom > h3';
-  const cardRightTitle= '.puf-card.puf-right > .puf-card-bottom > h3';
+  const cardRightTitle = '.puf-card.puf-right > .puf-card-bottom > h3';
 
   const cardLeft = $block.querySelector(cardLeftTitle);
-  const cardRight= $block.querySelector(cardRightTitle);
+  const cardRight = $block.querySelector(cardRightTitle);
 
   const adjustHeight = () => {
     cardLeft.style.height = 'auto';
@@ -483,9 +483,8 @@ function alignHighlights($block) {
 
     const maxHeightTitle = Math.max(
       cardLeft.getBoundingClientRect().height,
-      cardRight.getBoundingClientRect().height
+      cardRight.getBoundingClientRect().height,
     );
-
 
     cardLeft.style.height = `${maxHeightTitle}px`;
     cardRight.style.height = `${maxHeightTitle}px`;
@@ -498,7 +497,6 @@ function alignHighlights($block) {
 
   adjustHeight();
 }
-
 
 function decorateFooter($block) {
   if ($block?.children?.[3]) {
@@ -525,6 +523,5 @@ export default function decorate($block) {
   alignP($block);
   highlightText($block);
   alignHighlights($block);
-  
   $block.append($footer);
 }
