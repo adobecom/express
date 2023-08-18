@@ -443,77 +443,84 @@ function highlightText($block) {
 }
 
 function alignP($block) {
-  const card1 = $block.querySelector('.puf-card.puf-left > .puf-card-top > p:last-of-type');
-  const card2 = $block.querySelector('.puf-card.puf-right > .puf-card-top > p:last-of-type');
+  const isDesktop = window.innerWidth >= 900;
 
-  const adjustHeight = () => {
-    if (card1 && card2) {
-      card1.style.height = 'auto';
-      card2.style.height = 'auto';
+  if (isDesktop) {
+    const card1 = $block.querySelector('.puf-card.puf-left > .puf-card-top > p:last-of-type');
+    const card2 = $block.querySelector('.puf-card.puf-right > .puf-card-top > p:last-of-type');
 
-      const maxHeight = Math.max(
-        card1.getBoundingClientRect().height,
-        card2.getBoundingClientRect().height
-      );
+    const adjustHeight = () => {
+      if (card1 && card2) {
+        card1.style.height = 'auto';
+        card2.style.height = 'auto';
 
-      card1.style.height = `${maxHeight}px`;
-      card2.style.height = `${maxHeight}px`;
-    } else if (card1) {
-      card1.style.height = 'auto';
-    } else if (card2) {
-      card2.style.height = 'auto';
+        const maxHeight = Math.max(
+          card1.getBoundingClientRect().height,
+          card2.getBoundingClientRect().height,
+        );
+
+        card1.style.height = `${maxHeight}px`;
+        card2.style.height = `${maxHeight}px`;
+      } else if (card1) {
+        card1.style.height = 'auto';
+      } else if (card2) {
+        card2.style.height = 'auto';
+      }
+    };
+
+    const ro = new ResizeObserver(() => adjustHeight());
+
+    if (card1) {
+      ro.observe(card1);
     }
-  };
 
-  const ro = new ResizeObserver(() => adjustHeight());
+    if (card2) {
+      ro.observe(card2);
+    }
 
-  if (card1) {
-    ro.observe(card1);
+    adjustHeight();
   }
-  
-  if (card2) {
-    ro.observe(card2);
-  }
-
-  adjustHeight();
 }
 
 function alignHighlights($block) {
-  const cardLeft = $block.querySelector('.puf-card.puf-left > .puf-card-bottom > h3');
-  const cardRight = $block.querySelector('.puf-card.puf-right > .puf-card-bottom > h3');
+  const isDesktop = window.innerWidth >= 900;
 
-  const adjustHeight = () => {
-    if (cardLeft && cardRight) {
-      cardLeft.style.height = 'auto';
-      cardRight.style.height = 'auto';
+  if (isDesktop) {
+    const cardLeft = $block.querySelector('.puf-card.puf-left > .puf-card-bottom > h3');
+    const cardRight = $block.querySelector('.puf-card.puf-right > .puf-card-bottom > h3');
 
-      const maxHeightTitle = Math.max(
-        cardLeft.getBoundingClientRect().height,
-        cardRight.getBoundingClientRect().height
-      );
+    const adjustHeight = () => {
+      if (cardLeft && cardRight) {
+        cardLeft.style.height = 'auto';
+        cardRight.style.height = 'auto';
 
-      cardLeft.style.height = `${maxHeightTitle}px`;
-      cardRight.style.height = `${maxHeightTitle}px`;
-    } else if (cardLeft) {
-      cardLeft.style.height = 'auto';
-    } else if (cardRight) {
-      cardRight.style.height = 'auto';
+        const maxHeightTitle = Math.max(
+          cardLeft.getBoundingClientRect().height,
+          cardRight.getBoundingClientRect().height,
+        );
+
+        cardLeft.style.height = `${maxHeightTitle}px`;
+        cardRight.style.height = `${maxHeightTitle}px`;
+      } else if (cardLeft) {
+        cardLeft.style.height = 'auto';
+      } else if (cardRight) {
+        cardRight.style.height = 'auto';
+      }
+    };
+
+    const ro = new ResizeObserver(() => adjustHeight());
+
+    if (cardLeft) {
+      ro.observe(cardLeft);
     }
-  };
 
-  const ro = new ResizeObserver(() => adjustHeight());
+    if (cardRight) {
+      ro.observe(cardRight);
+    }
 
-  if (cardLeft) {
-    ro.observe(cardLeft);
+    adjustHeight();
   }
-  
-  if (cardRight) {
-    ro.observe(cardRight);
-  }
-
-  adjustHeight();
 }
-
 
 function decorateFooter($block) {
   if ($block?.children?.[3]) {
