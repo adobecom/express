@@ -48,6 +48,7 @@ function logSearch(form, url = '/express/search-terms-log') {
           audience: document.body.dataset.device,
           sourcePath: window.location.pathname,
           previousSearch: params.toString() || 'N/A',
+          sessionId: sessionStorage.getItem('u_scsid'),
         },
       }),
     });
