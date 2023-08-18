@@ -1,4 +1,4 @@
-main .puf-container > div {
+main .puf-container>div {
   max-width: none;
 }
 
@@ -110,16 +110,16 @@ main .block.puf .puf-card .puf-card-top .puf-card-plans {
   margin: 0 auto;
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-plans > div {
+main .block.puf .puf-card .puf-card-top .puf-card-plans>div {
   color: var(--color-info-accent);
   text-align: right;
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-plans > div span {
+main .block.puf .puf-card .puf-card-top .puf-card-plans>div span {
   color: var(--color-gray-800);
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-plans > div.strong span {
+main .block.puf .puf-card .puf-card-top .puf-card-plans>div.strong span {
   -webkit-text-stroke-width: 0.6px;
   -webkit-text-stroke-color: var(--color-gray-800);
 }
@@ -165,33 +165,15 @@ main .block.puf .puf-card .puf-card-top .puf-card-slider::before {
   border-radius: 50%;
 }
 
-main
-  .block.puf
-  .puf-card
-  .puf-card-top
-  .puf-card-switch
-  input:checked
-  + .puf-card-slider {
+main .block.puf .puf-card .puf-card-top .puf-card-switch input:checked+.puf-card-slider {
   background-color: var(--color-info-accent);
 }
 
-main
-  .block.puf
-  .puf-card
-  .puf-card-top
-  .puf-card-switch
-  input:focus
-  + .puf-card-slider {
+main .block.puf .puf-card .puf-card-top .puf-card-switch input:focus+.puf-card-slider {
   box-shadow: 0 0 1px #2196f3;
 }
 
-main
-  .block.puf
-  .puf-card
-  .puf-card-top
-  .puf-card-switch
-  input:checked
-  + .puf-card-slider:before {
+main .block.puf .puf-card .puf-card-top .puf-card-switch input:checked+.puf-card-slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
@@ -241,11 +223,7 @@ main .block.puf .puf-card .puf-text-and-sup-wrapper {
   display: inline;
 }
 
-main
-  .block.puf
-  .puf-card-banner.recommended
-  ~ .puf-card-bottom
-  .puf-highlighted-text,
+main .block.puf .puf-card-banner.recommended~.puf-card-bottom .puf-highlighted-text,
 main .block.puf .puf-highlighted-text {
   background-color: var(--color-info-accent-light);
   width: 100%;
@@ -334,10 +312,7 @@ main .block.puf .puf-card .puf-card-banner {
     margin-top: -14px;
   }
 
-  main
-    .block.puf
-    .carousel-container:has(+ .puf-pricing-footer)
-    .carousel-platform {
+  main .block.puf .carousel-container:has(+ .puf-pricing-footer) .carousel-platform {
     padding-bottom: 24px;
   }
 
@@ -503,30 +478,18 @@ main .block.puf .puf-card .puf-card-banner {
     box-shadow: 0px 0px 20px #00000029;
   }
 
-  main
-    .block.puf
-    .puf-card-banner.recommended
-    ~ .puf-card-bottom
-    .puf-highlighted-text {
+  main .block.puf .puf-card-banner.recommended~.puf-card-bottom .puf-highlighted-text {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  main
-    .block.puf
-    .carousel-container.slide-2-selected
-    .carousel-platform
-    .puf-card-container:first-child {
+  main .block.puf .carousel-container.slide-2-selected .carousel-platform .puf-card-container:first-child {
     left: -150%;
     left: calc(-150%);
   }
 
-  main
-    .block.puf
-    .carousel-container.slide-1-selected
-    .carousel-platform
-    .puf-card-container:last-child {
+  main .block.puf .carousel-container.slide-1-selected .carousel-platform .puf-card-container:last-child {
     left: 150%;
     left: calc(150%);
   }
