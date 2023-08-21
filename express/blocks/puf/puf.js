@@ -181,13 +181,13 @@ async function fetchPlan(planUrl) {
   return plan;
 }
 
-async function selectPlan($card, planUrl, sendAnalyticEvent) {
+async function selectPlan(card, planUrl, sendAnalyticEvent) {
   const plan = await fetchPlan(planUrl);
 
   if (plan) {
-    const $pricingCta = $card.querySelector('.puf-card-top a');
-    const $pricingHeader = $card.querySelector('.puf-pricing-header');
-    const $pricingVat = $card.querySelector('.puf-vat-info');
+    const $pricingCta = card.querySelector('.puf-card-top a');
+    const $pricingHeader = card.querySelector('.puf-pricing-header');
+    const $pricingVat = card.querySelector('.puf-vat-info');
 
     $pricingHeader.innerHTML = plan.formatted;
     $pricingHeader.classList.add(plan.currency.toLowerCase());
@@ -204,8 +204,8 @@ async function selectPlan($card, planUrl, sendAnalyticEvent) {
   }
 }
 
-function displayPlans($card, plans) {
-  const $planContainer = $card.querySelector('.puf-card-plans');
+function displayPlans(card, plans) {
+  const $planContainer = card.querySelector('.puf-card-plans');
   const $switch = createTag('label', { class: 'puf-card-switch' });
   const $checkbox = createTag('input', { type: 'checkbox', class: 'puf-card-checkbox' });
   const $slider = createTag('span', { class: 'puf-card-slider' });
@@ -225,21 +225,21 @@ function displayPlans($card, plans) {
     if ($checkbox.checked) {
       $defaultPlan.classList.remove('strong');
       $secondPlan.classList.add('strong');
-      selectPlan($card, plans[1].url, true);
+      selectPlan(card, plans[1].url, true);
     } else {
       $defaultPlan.classList.add('strong');
       $secondPlan.classList.remove('strong');
-      selectPlan($card, plans[0].url, true);
+      selectPlan(card, plans[0].url, true);
     }
   });
 
   return $planContainer;
 }
 
-function buildPlans($plans) {
+function buildPlans(plansElement) {
   const plans = [];
 
-  $plans.forEach(($plan) => {
+  plansElement.forEach(($plan) => {
     const $planLink = $plan.querySelector('a');
 
     if ($planLink) {
@@ -254,67 +254,70 @@ function buildPlans($plans) {
   return plans;
 }
 
-function decorateCard($block, cardClass) {
-  const $cardContainer = createTag('div', { class: 'puf-card-container' });
-  const $card = createTag('div', { class: `puf-card ${cardClass}` });
-  const $cardBanner = $block.children[0].children[0];
-  const $cardTop = $block.children[1].children[0];
-  const $cardBottom = $block.children[2].children[0];
-  const $cardHeader = $cardTop.querySelector('h3');
-  const $cardHeaderSvg = $cardTop.querySelector('svg');
-  const $cardPricingHeader = createTag('h2', { class: 'puf-pricing-header' });
-  const $cardVat = createTag('div', { class: 'puf-vat-info' });
-  const $cardPlansContainer = createTag('div', { class: 'puf-card-plans' });
-  const $cardCta = createTag('a', { class: 'button large' });
-  const $plans = $cardTop.querySelectorAll('li');
-  const $listItems = $cardBottom.querySelectorAll('svg');
-  const plans = buildPlans($plans);
+function decorateCard(block, cardClass = '') {
+  const cardClassName = `puf-card ${cardClass}`.trim();
+  const cardContainer = createTag('div', { class: 'puf-card-container' });
+  const card = createTag('div', { class: cardClassName });
+  const cardBanner = block.children[0].children[0];
+  const cardTop = block.children[1].children[0];
+  const cardBottom = block.children[2].children[0];
+  const cardHeader = cardTop.querySelector('h3');
+  const cardHeaderSvg = cardTop.querySelector('svg');
+  const cardPricingHeader = createTag('h2', { class: 'puf-pricing-header' });
+  const cardVat = createTag('div', { class: 'puf-vat-info' });
+  const cardAdditionalContext = createTag('div', { class: 'puf-pricing-context' });
+  const cardPlansContainer = createTag('div', { class: 'puf-card-plans' });
+  const cardCta = createTag('a', { class: 'button large' });
+  const plansElement = cardTop.querySelectorAll('li');
+  const $listItems = cardBottom.querySelectorAll('svg');
+  const plans = buildPlans(plansElement);
 
   if (cardClass === 'puf-left') {
-    $cardCta.classList.add('reverse', 'accent');
+    cardCta.classList.add('reverse', 'accent');
   }
 
-  $cardBanner.classList.add('puf-card-banner');
-  $cardTop.classList.add('puf-card-top');
-  $cardBottom.classList.add('puf-card-bottom');
+  cardBanner.classList.add('puf-card-banner');
+  cardTop.classList.add('puf-card-top');
+  cardBottom.classList.add('puf-card-bottom');
 
-  $card.append($cardBanner);
-  $card.append($cardTop);
-  $card.append($cardBottom);
+  cardTop.prepend(cardHeader, cardPricingHeader, cardVat, cardAdditionalContext, cardPlansContainer, cardCta);
+  card.append(cardBanner, cardTop, cardBottom);
 
-  $cardTop.prepend($cardCta);
-  $cardTop.prepend($cardPlansContainer);
-  $cardTop.prepend($cardVat);
-  $cardTop.prepend($cardPricingHeader);
-  $cardTop.prepend($cardHeader);
-
-  if (!$cardBanner.textContent.trim()) {
-    $cardBanner.style.display = 'none';
+  if (!cardBanner.textContent.trim()) {
+    cardBanner.style.display = 'none';
   } else {
-    $cardBanner.classList.add('recommended');
+    cardBanner.classList.add('recommended');
   }
 
-  $cardHeader.prepend($cardHeaderSvg);
+  cardHeader.prepend(cardHeaderSvg);
 
   if (plans.length) {
-    selectPlan($card, plans[0].url, false);
+    selectPlan(card, plans[0].url, false);
 
     if (plans.length > 1) {
-      displayPlans($card, plans);
+      displayPlans(card, plans);
     }
   }
 
-  $cardTop.querySelector('ul').remove();
+  cardTop.querySelector('ul')?.remove();
 
-  const $ctaTextContainer = $cardTop.querySelector('strong');
-  if ($ctaTextContainer) {
-    $cardCta.textContent = $ctaTextContainer.textContent.trim();
-    $ctaTextContainer.parentNode.remove();
+  const ctaTextContainer = cardTop.querySelector('strong');
+  if (ctaTextContainer) {
+    cardCta.textContent = ctaTextContainer.textContent.trim();
+    ctaTextContainer.parentNode.remove();
   } else {
-    $cardCta.textContent = 'Start your trial';
+    cardCta.textContent = 'Start your trial';
   }
 
-  $cardContainer.append($card);
+  const pricingContextContainer = cardTop.querySelector('em');
+  if (pricingContextContainer) {
+    cardAdditionalContext.textContent = pricingContextContainer.textContent.trim();
+    pricingContextContainer.parentNode.remove();
+  } else {
+    cardAdditionalContext.remove();
+  }
+
+  cardContainer.append(card);
 
   if ($listItems) {
     $listItems.forEach(($listItem) => {
@@ -322,15 +325,15 @@ function decorateCard($block, cardClass) {
     });
   }
 
-  return $cardContainer;
+  return cardContainer;
 }
 
-function updatePUFCarousel($block) {
-  const $carouselContainer = $block.querySelector('.carousel-container');
-  const $carouselPlatform = $block.querySelector('.carousel-platform');
-  let $leftCard = $block.querySelector('.puf-left');
-  let $rightCard = $block.querySelector('.puf-right');
-  let priceSet = $block.querySelector('.puf-pricing-header').textContent;
+function updatePUFCarousel(block) {
+  const $carouselContainer = block.querySelector('.carousel-container');
+  const $carouselPlatform = block.querySelector('.carousel-platform');
+  let $leftCard = block.querySelector('.puf-left');
+  let $rightCard = block.querySelector('.puf-right');
+  let priceSet = block.querySelector('.puf-pricing-header').textContent;
   $carouselContainer.classList.add('slide-1-selected');
   const slideFunctionality = () => {
     $carouselPlatform.scrollLeft = $carouselPlatform.offsetWidth;
@@ -351,7 +354,7 @@ function updatePUFCarousel($block) {
 
     $leftArrow.addEventListener('click', () => changeSlide(0));
     $rightArrow.addEventListener('click', () => changeSlide(1));
-    $block.addEventListener('keyup', (e) => {
+    block.addEventListener('keyup', (e) => {
       if (e.key === 'ArrowLeft') {
         changeSlide(0);
       } else if (e.key === 'ArrowRight') {
@@ -381,8 +384,8 @@ function updatePUFCarousel($block) {
       initialX = null;
       initialY = null;
     };
-    $block.addEventListener('touchstart', startTouch, false);
-    $block.addEventListener('touchmove', moveTouch, false);
+    block.addEventListener('touchstart', startTouch, false);
+    block.addEventListener('touchmove', moveTouch, false);
     const mediaQuery = window.matchMedia('(min-width: 900px)');
     mediaQuery.onchange = () => {
       $carouselContainer.style.minHeight = `${$leftCard.clientHeight + 40}px`;
@@ -394,20 +397,20 @@ function updatePUFCarousel($block) {
       clearInterval(waitForCardsToLoad);
       slideFunctionality();
     } else {
-      $leftCard = $block.querySelector('.puf-left');
-      $rightCard = $block.querySelector('.puf-right');
-      priceSet = $block.querySelector('.puf-pricing-header').textContent;
+      $leftCard = block.querySelector('.puf-left');
+      $rightCard = block.querySelector('.puf-right');
+      priceSet = block.querySelector('.puf-pricing-header').textContent;
     }
   }, 400);
 }
 
-function wrapTextAndSup($block) {
-  const supTags = $block.getElementsByTagName('sup');
+function wrapTextAndSup(block) {
+  const supTags = block.getElementsByTagName('sup');
   Array.from(supTags).forEach((supTag) => {
     supTag.classList.add('puf-sup');
   });
 
-  const $listItems = $block.querySelectorAll('.puf-list-item');
+  const $listItems = block.querySelectorAll('.puf-list-item');
   $listItems.forEach(($listItem) => {
     const $childNodes = $listItem.childNodes;
 
@@ -425,46 +428,84 @@ function wrapTextAndSup($block) {
   });
 }
 
-function highlightText($block) {
+function formatTextElements(block) {
   const $highlightRegex = /^\(\(.*\)\)$/;
-  const $blockElements = Array.from($block.querySelectorAll('*'));
+  const dividerRegex = /^--.*--$/;
+  const blockElements = Array.from(block.querySelectorAll('*'));
 
-  if (!$blockElements.some(($element) => $highlightRegex.test($element.textContent))) {
+  if (!blockElements.some((element) => $highlightRegex.test(element.textContent)
+    || dividerRegex.test(element.textContent))) {
     return;
   }
 
-  const $highlightedElements = $blockElements
-    .filter(($element) => $highlightRegex.test($element.textContent));
+  const highlightedElements = blockElements
+    .filter((element) => $highlightRegex.test(element.textContent));
 
-  $highlightedElements.forEach(($element) => {
-    $element.classList.add('puf-highlighted-text');
-    $element.textContent = $element.textContent.replace(/^\(\(/, '').replace(/\)\)$/, '');
+  highlightedElements.forEach((element) => {
+    element.classList.add('puf-highlighted-text');
+    element.textContent = element.textContent.replace(/^\(\(/, '').replace(/\)\)$/, '');
+  });
+
+  const dividerElements = blockElements
+    .filter((element) => dividerRegex.test(element.textContent));
+
+  dividerElements.forEach((element) => {
+    element.classList.add('puf-divider-text');
+    element.textContent = element.textContent.replace(/^--/, '').replace(/--$/, '');
   });
 }
 
-function decorateFooter($block) {
-  if ($block?.children?.[3]) {
-    const $footer = createTag('div', { class: 'puf-pricing-footer' });
-    $footer.append($block.children[3]);
-    return $footer;
+function decorateFooter(block) {
+  if (block?.children?.[3]) {
+    const footer = createTag('div', { class: 'puf-pricing-footer' });
+    footer.append(block.children[3]);
+    return footer;
   } else {
     return '';
   }
 }
 
-export default function decorate($block) {
-  const $leftCard = decorateCard($block, 'puf-left');
-  const $rightCard = decorateCard($block, 'puf-right');
-  const $footer = decorateFooter($block);
+function build1ColDesign(block) {
+  block.classList.add('one-col');
+  const pricingCard = decorateCard(block);
+  const footer = decorateFooter(block);
 
-  $block.innerHTML = '';
-  $block.append($leftCard, $rightCard);
+  block.innerHTML = '';
+  block.append(pricingCard);
 
-  buildCarousel('.puf-card-container', $block);
-  updatePUFCarousel($block);
   addPublishDependencies('/express/system/offers-new.json');
-  wrapTextAndSup($block);
+  wrapTextAndSup(block);
+  block.append(footer);
+  formatTextElements(block);
+}
 
-  $block.append($footer);
-  highlightText($block);
+function build2ColDesign(block) {
+  block.classList.add('two-col');
+  const $leftCard = decorateCard(block, 'puf-left');
+  const $rightCard = decorateCard(block, 'puf-right');
+  const footer = decorateFooter(block);
+
+  block.innerHTML = '';
+  block.append($leftCard, $rightCard);
+
+  buildCarousel('.puf-card-container', block);
+  updatePUFCarousel(block);
+  addPublishDependencies('/express/system/offers-new.json');
+  wrapTextAndSup(block);
+  block.append(footer);
+  formatTextElements(block);
+}
+
+function getPUFDesign(block) {
+  return block.children[1].children.length === 2 ? '2-col' : '1-col';
+}
+
+export default function decorate(block) {
+  if (getPUFDesign(block) === '1-col') {
+    build1ColDesign(block);
+  }
+
+  if (getPUFDesign(block) === '2-col') {
+    build2ColDesign(block);
+  }
 }
