@@ -185,16 +185,16 @@ async function selectPlan(card, planUrl, sendAnalyticEvent) {
   const plan = await fetchPlan(planUrl);
 
   if (plan) {
-    const $pricingCta = card.querySelector('.puf-card-top a');
-    const $pricingHeader = card.querySelector('.puf-pricing-header');
-    const $pricingVat = card.querySelector('.puf-vat-info');
+    const pricingCta = card.querySelector('.puf-card-top a');
+    const pricingHeader = card.querySelector('.puf-pricing-header');
+    const pricingVat = card.querySelector('.puf-vat-info');
 
-    $pricingHeader.innerHTML = plan.formatted;
-    $pricingHeader.classList.add(plan.currency.toLowerCase());
-    $pricingVat.textContent = plan.vatInfo;
-    $pricingCta.href = buildUrl(plan.url, plan.country, plan.language);
-    $pricingCta.dataset.planUrl = planUrl;
-    $pricingCta.id = plan.stringId;
+    pricingHeader.innerHTML = plan.formatted;
+    pricingHeader.classList.add(plan.currency.toLowerCase());
+    pricingVat.textContent = plan.vatInfo;
+    pricingCta.href = buildUrl(plan.url, plan.country, plan.language);
+    pricingCta.dataset.planUrl = planUrl;
+    pricingCta.id = plan.stringId;
   }
 
   if (sendAnalyticEvent) {
@@ -205,48 +205,48 @@ async function selectPlan(card, planUrl, sendAnalyticEvent) {
 }
 
 function displayPlans(card, plans) {
-  const $planContainer = card.querySelector('.puf-card-plans');
-  const $switch = createTag('label', { class: 'puf-card-switch' });
-  const $checkbox = createTag('input', { type: 'checkbox', class: 'puf-card-checkbox' });
-  const $slider = createTag('span', { class: 'puf-card-slider' });
-  const $defaultPlan = createTag('div', { class: 'strong' });
-  const $secondPlan = createTag('div');
+  const planContainer = card.querySelector('.puf-card-plans');
+  const cardSwitch = createTag('label', { class: 'puf-card-switch' });
+  const checkbox = createTag('input', { type: 'checkbox', class: 'puf-card-checkbox' });
+  const slider = createTag('span', { class: 'puf-card-slider' });
+  const defaultPlan = createTag('div', { class: 'strong' });
+  const secondPlan = createTag('div');
 
-  $defaultPlan.innerHTML = plans[0].text.replace(plans[0].plan, `<span>${plans[0].plan}</span>`);
-  $secondPlan.innerHTML = plans[1].text.replace(plans[1].plan, `<span>${plans[1].plan}</span>`);
+  defaultPlan.innerHTML = plans[0].text.replace(plans[0].plan, `<span>${plans[0].plan}</span>`);
+  secondPlan.innerHTML = plans[1].text.replace(plans[1].plan, `<span>${plans[1].plan}</span>`);
 
-  $planContainer.append($defaultPlan);
-  $planContainer.append($switch);
-  $switch.append($checkbox);
-  $switch.append($slider);
-  $planContainer.append($secondPlan);
+  planContainer.append(defaultPlan);
+  planContainer.append(cardSwitch);
+  cardSwitch.append(checkbox);
+  cardSwitch.append(slider);
+  planContainer.append(secondPlan);
 
-  $checkbox.addEventListener('change', () => {
-    if ($checkbox.checked) {
-      $defaultPlan.classList.remove('strong');
-      $secondPlan.classList.add('strong');
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+      defaultPlan.classList.remove('strong');
+      secondPlan.classList.add('strong');
       selectPlan(card, plans[1].url, true);
     } else {
-      $defaultPlan.classList.add('strong');
-      $secondPlan.classList.remove('strong');
+      defaultPlan.classList.add('strong');
+      secondPlan.classList.remove('strong');
       selectPlan(card, plans[0].url, true);
     }
   });
 
-  return $planContainer;
+  return planContainer;
 }
 
 function buildPlans(plansElement) {
   const plans = [];
 
-  plansElement.forEach(($plan) => {
-    const $planLink = $plan.querySelector('a');
+  plansElement.forEach((plan) => {
+    const planLink = plan.querySelector('a');
 
-    if ($planLink) {
+    if (planLink) {
       plans.push({
-        url: $planLink.href,
-        plan: $planLink.textContent.trim(),
-        text: $plan.textContent.trim(),
+        url: planLink.href,
+        plan: planLink.textContent.trim(),
+        text: plan.textContent.trim(),
       });
     }
   });
@@ -269,7 +269,7 @@ function decorateCard(block, cardClass = '') {
   const cardPlansContainer = createTag('div', { class: 'puf-card-plans' });
   const cardCta = createTag('a', { class: 'button large' });
   const plansElement = cardTop.querySelectorAll('li');
-  const $listItems = cardBottom.querySelectorAll('svg');
+  const listItems = cardBottom.querySelectorAll('svg');
   const plans = buildPlans(plansElement);
 
   if (cardClass === 'puf-left') {
@@ -280,7 +280,14 @@ function decorateCard(block, cardClass = '') {
   cardTop.classList.add('puf-card-top');
   cardBottom.classList.add('puf-card-bottom');
 
-  cardTop.prepend(cardHeader, cardPricingHeader, cardVat, cardAdditionalContext, cardPlansContainer, cardCta);
+  cardTop.prepend(
+    cardHeader,
+    cardPricingHeader,
+    cardVat,
+    cardAdditionalContext,
+    cardPlansContainer,
+    cardCta,
+  );
   card.append(cardBanner, cardTop, cardBottom);
 
   if (!cardBanner.textContent.trim()) {
@@ -319,9 +326,9 @@ function decorateCard(block, cardClass = '') {
 
   cardContainer.append(card);
 
-  if ($listItems) {
-    $listItems.forEach(($listItem) => {
-      $listItem.parentNode.classList.add('puf-list-item');
+  if (listItems) {
+    listItems.forEach((listItem) => {
+      listItem.parentNode.classList.add('puf-list-item');
     });
   }
 
@@ -329,31 +336,31 @@ function decorateCard(block, cardClass = '') {
 }
 
 function updatePUFCarousel(block) {
-  const $carouselContainer = block.querySelector('.carousel-container');
-  const $carouselPlatform = block.querySelector('.carousel-platform');
-  let $leftCard = block.querySelector('.puf-left');
-  let $rightCard = block.querySelector('.puf-right');
+  const carouselContainer = block.querySelector('.carousel-container');
+  const carouselPlatform = block.querySelector('.carousel-platform');
+  let leftCard = block.querySelector('.puf-left');
+  let rightCard = block.querySelector('.puf-right');
   let priceSet = block.querySelector('.puf-pricing-header').textContent;
-  $carouselContainer.classList.add('slide-1-selected');
+  carouselContainer.classList.add('slide-1-selected');
   const slideFunctionality = () => {
-    $carouselPlatform.scrollLeft = $carouselPlatform.offsetWidth;
-    $carouselContainer.style.minHeight = `${$leftCard.clientHeight + 40}px`;
-    const $rightArrow = $carouselContainer.querySelector('.carousel-fader-right');
-    const $leftArrow = $carouselContainer.querySelector('.carousel-fader-left');
+    carouselPlatform.scrollLeft = carouselPlatform.offsetWidth;
+    carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
+    const rightArrow = carouselContainer.querySelector('.carousel-fader-right');
+    const leftArrow = carouselContainer.querySelector('.carousel-fader-left');
     const changeSlide = (index) => {
       if (index === 0) {
-        $carouselContainer.classList.add('slide-1-selected');
-        $carouselContainer.classList.remove('slide-2-selected');
-        $carouselContainer.style.minHeight = `${$leftCard.clientHeight + 40}px`;
+        carouselContainer.classList.add('slide-1-selected');
+        carouselContainer.classList.remove('slide-2-selected');
+        carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
       } else {
-        $carouselContainer.classList.remove('slide-1-selected');
-        $carouselContainer.classList.add('slide-2-selected');
-        $carouselContainer.style.minHeight = `${$rightCard.clientHeight + 110}px`;
+        carouselContainer.classList.remove('slide-1-selected');
+        carouselContainer.classList.add('slide-2-selected');
+        carouselContainer.style.minHeight = `${rightCard.clientHeight + 110}px`;
       }
     };
 
-    $leftArrow.addEventListener('click', () => changeSlide(0));
-    $rightArrow.addEventListener('click', () => changeSlide(1));
+    leftArrow.addEventListener('click', () => changeSlide(0));
+    rightArrow.addEventListener('click', () => changeSlide(1));
     block.addEventListener('keyup', (e) => {
       if (e.key === 'ArrowLeft') {
         changeSlide(0);
@@ -388,17 +395,17 @@ function updatePUFCarousel(block) {
     block.addEventListener('touchmove', moveTouch, false);
     const mediaQuery = window.matchMedia('(min-width: 900px)');
     mediaQuery.onchange = () => {
-      $carouselContainer.style.minHeight = `${$leftCard.clientHeight + 40}px`;
+      carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
     };
   };
 
   const waitForCardsToLoad = setInterval(() => {
-    if ($leftCard && $rightCard && priceSet) {
+    if (leftCard && rightCard && priceSet) {
       clearInterval(waitForCardsToLoad);
       slideFunctionality();
     } else {
-      $leftCard = block.querySelector('.puf-left');
-      $rightCard = block.querySelector('.puf-right');
+      leftCard = block.querySelector('.puf-left');
+      rightCard = block.querySelector('.puf-right');
       priceSet = block.querySelector('.puf-pricing-header').textContent;
     }
   }, 400);
@@ -410,11 +417,11 @@ function wrapTextAndSup(block) {
     supTag.classList.add('puf-sup');
   });
 
-  const $listItems = block.querySelectorAll('.puf-list-item');
-  $listItems.forEach(($listItem) => {
-    const $childNodes = $listItem.childNodes;
+  const listItems = block.querySelectorAll('.puf-list-item');
+  listItems.forEach((listItem) => {
+    const { childNodes } = listItem;
 
-    const filteredChildren = Array.from($childNodes).filter((node) => {
+    const filteredChildren = Array.from(childNodes).filter((node) => {
       const isSvg = node.tagName && node.tagName.toLowerCase() === 'svg';
       const isTextNode = node.nodeType === Node.TEXT_NODE;
       return !isSvg && (isTextNode || node.nodeType === Node.ELEMENT_NODE);
@@ -422,24 +429,24 @@ function wrapTextAndSup(block) {
 
     const filteredChildrenExceptFirstText = filteredChildren.slice(1);
 
-    const $textAndSupWrapper = createTag('div', { class: 'puf-text-and-sup-wrapper' });
-    $textAndSupWrapper.append(...filteredChildrenExceptFirstText);
-    $listItem.append($textAndSupWrapper);
+    const textAndSupWrapper = createTag('div', { class: 'puf-text-and-sup-wrapper' });
+    textAndSupWrapper.append(...filteredChildrenExceptFirstText);
+    listItem.append(textAndSupWrapper);
   });
 }
 
 function formatTextElements(block) {
-  const $highlightRegex = /^\(\(.*\)\)$/;
+  const highlightRegex = /^\(\(.*\)\)$/;
   const dividerRegex = /^--.*--$/;
   const blockElements = Array.from(block.querySelectorAll('*'));
 
-  if (!blockElements.some((element) => $highlightRegex.test(element.textContent)
+  if (!blockElements.some((element) => highlightRegex.test(element.textContent)
     || dividerRegex.test(element.textContent))) {
     return;
   }
 
   const highlightedElements = blockElements
-    .filter((element) => $highlightRegex.test(element.textContent));
+    .filter((element) => highlightRegex.test(element.textContent));
 
   highlightedElements.forEach((element) => {
     element.classList.add('puf-highlighted-text');
@@ -481,12 +488,12 @@ function build1ColDesign(block) {
 
 function build2ColDesign(block) {
   block.classList.add('two-col');
-  const $leftCard = decorateCard(block, 'puf-left');
-  const $rightCard = decorateCard(block, 'puf-right');
+  const leftCard = decorateCard(block, 'puf-left');
+  const rightCard = decorateCard(block, 'puf-right');
   const footer = decorateFooter(block);
 
   block.innerHTML = '';
-  block.append($leftCard, $rightCard);
+  block.append(leftCard, rightCard);
 
   buildCarousel('.puf-card-container', block);
   updatePUFCarousel(block);
