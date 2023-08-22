@@ -93,8 +93,8 @@ async function getVideoUrls(renditionLinkHref, componentLinkHref, page) {
   }
 }
 
-function renderShareWrapper(branchUrl) {
-  const text = 'Copied to clipboard';
+function renderShareWrapper(branchUrl, placeholders) {
+  const text = placeholders['tag-copied'] ?? 'Copied to clipboard';
   const wrapper = createTag('div', { class: 'share-icon-wrapper' });
   const shareIcon = getIconElement('share-arrow');
   const tooltip = createTag('div', {
@@ -277,7 +277,7 @@ async function renderRotatingMedias(wrapper,
   return { cleanup, hover: playMedia };
 }
 
-function renderMediaWrapper(template) {
+function renderMediaWrapper(template, placeholders) {
   const mediaWrapper = createTag('div', { class: 'media-wrapper' });
 
   // TODO: reduce memory with LRU cache or memoization with ttl
@@ -299,7 +299,7 @@ function renderMediaWrapper(template) {
     e.stopPropagation();
     if (!renderedMedia) {
       renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
-      mediaWrapper.append(renderShareWrapper(branchUrl));
+      mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
     }
     renderedMedia.hover();
   };
@@ -310,10 +310,10 @@ function renderMediaWrapper(template) {
   return { mediaWrapper, enterHandler, leaveHandler };
 }
 
-function renderHoverWrapper(template, placeholders, props) {
+function renderHoverWrapper(template, placeholders) {
   const btnContainer = createTag('div', { class: 'button-container' });
 
-  const { mediaWrapper, enterHandler, leaveHandler } = renderMediaWrapper(template, props);
+  const { mediaWrapper, enterHandler, leaveHandler } = renderMediaWrapper(template, placeholders);
 
   btnContainer.append(mediaWrapper);
   btnContainer.addEventListener('mouseenter', enterHandler);
@@ -325,7 +325,31 @@ function renderHoverWrapper(template, placeholders, props) {
   return btnContainer;
 }
 
-function renderStillWrapper(template) {
+function getStillWrapperIcons(template, placeholders) {
+  let planIcon = null;
+  if (template.licensingCategory === 'free') {
+    planIcon = createTag('span', { class: 'free-tag' });
+    planIcon.append(placeholders.free ?? 'Free');
+  } else {
+    planIcon = getIconElement('premium');
+  }
+  let videoIcon = '';
+  if (!containsVideo(template.pages) && template.pages.length > 1) {
+    videoIcon = getIconElement('multipage-static-badge');
+  }
+
+  if (containsVideo(template.pages) && template.pages.length === 1) {
+    videoIcon = getIconElement('video-badge');
+  }
+
+  if (containsVideo(template.pages) && template.pages.length > 1) {
+    videoIcon = getIconElement('multipage-video-badge');
+  }
+  if (videoIcon) videoIcon.classList.add('media-type-icon');
+  return { planIcon, videoIcon };
+}
+
+function renderStillWrapper(template, placeholders) {
   const stillWrapper = createTag('div', { class: 'still-wrapper' });
 
   const templateTitle = getTemplateTitle(template);
@@ -346,44 +370,22 @@ function renderStillWrapper(template) {
   });
   imgWrapper.append(img);
 
-  const isFree = template.licensingCategory === 'free';
-
-  const freeTag = createTag('span', { class: 'free-tag' });
-
-  if (isFree) {
-    freeTag.append('Free');
-    imgWrapper.append(freeTag);
-  } else {
-    const premiumIcon = getIconElement('premium');
-    imgWrapper.append(premiumIcon);
-  }
-
-  let videoIcon = '';
-  if (containsVideo(template.pages) && template.pages.length === 1) {
-    videoIcon = getIconElement('video-badge');
-  }
-
-  if (!containsVideo(template.pages) && template.pages.length > 1) {
-    videoIcon = getIconElement('multipage-static-badge');
-  }
-
-  if (containsVideo(template.pages) && template.pages.length > 1) {
-    videoIcon = getIconElement('multipage-video-badge');
-  }
-
-  if (videoIcon) {
-    videoIcon.classList.add('media-type-icon');
-    imgWrapper.append(videoIcon);
-  }
+  const { planIcon, videoIcon } = getStillWrapperIcons(template, placeholders);
+  img.onload = (e) => {
+    if (e.eventPhase >= Event.AT_TARGET) {
+      imgWrapper.append(planIcon);
+      imgWrapper.append(videoIcon);
+    }
+  };
 
   stillWrapper.append(imgWrapper);
   return stillWrapper;
 }
 
-export default function renderTemplate(template, placeholders, props) {
+export default function renderTemplate(template, placeholders) {
   const tmpltEl = createTag('div');
-  tmpltEl.append(renderStillWrapper(template, props));
-  tmpltEl.append(renderHoverWrapper(template, placeholders, props));
+  tmpltEl.append(renderStillWrapper(template, placeholders));
+  tmpltEl.append(renderHoverWrapper(template, placeholders));
 
   return tmpltEl;
 }

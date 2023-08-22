@@ -114,7 +114,7 @@ async function fetchAndRenderTemplates(props) {
     fallbackMsg,
     templates: response.items
       .filter((item) => isValidTemplate(item))
-      .map((template) => renderTemplate(template, placeholders, props)),
+      .map((template) => renderTemplate(template, placeholders)),
   };
 }
 
@@ -716,10 +716,15 @@ function closeDrawer(toolBar) {
   }, 500);
 }
 
-async function updateOptionsStatus(block, props, toolBar) {
+function updateOptionsStatus(block, props, toolBar) {
   const wrappers = toolBar.querySelectorAll('.function-wrapper');
-  const placeholders = await fetchPlaceholders();
-  const waysOfSort = placeholders['template-x-sort'] ? JSON.parse(placeholders['template-x-sort']) : {};
+  const waysOfSort = {
+    'Most Relevant': '',
+    'Most Viewed': '&orderBy=-remixCount',
+    'Rare & Original': '&orderBy=remixCount',
+    'Newest to Oldest': '&orderBy=-availabilityDate',
+    'Oldest to Newest': '&orderBy=availabilityDate',
+  };
 
   wrappers.forEach((wrapper) => {
     const currentOption = wrapper.querySelector('.current-option');
@@ -728,13 +733,10 @@ async function updateOptionsStatus(block, props, toolBar) {
     options.forEach((option) => {
       const paramType = wrapper.dataset.param;
       const paramValue = option.dataset.value;
-      const propValue = props[paramType] ? props[paramType] : 'remove';
       const filterValue = props.filters[paramType] ? props.filters[paramType] : 'remove';
-      const sortValue = waysOfSort[props[paramType]] || '';
+      const sortValue = waysOfSort[props[paramType]] || props[paramType];
 
-      if (propValue === paramValue
-        || filterValue === paramValue
-        || sortValue === paramValue) {
+      if (filterValue === paramValue || sortValue === paramValue) {
         if (currentOption) {
           currentOption.textContent = option.textContent;
         }
@@ -788,7 +790,7 @@ function initDrawer(block, props, toolBar) {
     el.addEventListener('click', async () => {
       props.filters = { ...currentFilters };
       closeDrawer(toolBar);
-      await updateOptionsStatus(block, props, toolBar);
+      updateOptionsStatus(block, props, toolBar);
     }, { passive: true });
   });
 
@@ -843,7 +845,8 @@ function updateQuery(functionWrapper, props, option) {
   }
 }
 
-async function redrawTemplates(block, props, toolBar) {
+async function redrawTemplates(block, existingProps, props, toolBar) {
+  if (JSON.stringify(props) === JSON.stringify(existingProps)) return;
   const heading = toolBar.querySelector('h2');
   const currentTotal = props.total.toLocaleString('en-US');
   props.templates = [props.templates[0]];
@@ -855,7 +858,7 @@ async function redrawTemplates(block, props, toolBar) {
   await decorateNewTemplates(block, props, { reDrawMasonry: true });
 
   heading.textContent = heading.textContent.replace(`${currentTotal}`, props.total.toLocaleString('en-US'));
-  await updateOptionsStatus(block, props, toolBar);
+  updateOptionsStatus(block, props, toolBar);
   if (block.querySelectorAll('.template').length <= 0) {
     const $viewButtons = toolBar.querySelectorAll('.view-toggle-button');
     $viewButtons.forEach((button) => {
@@ -870,6 +873,7 @@ async function redrawTemplates(block, props, toolBar) {
 async function initFilterSort(block, props, toolBar) {
   const buttons = toolBar.querySelectorAll('.button-wrapper');
   const applyFilterButton = toolBar.querySelector('.apply-filter-button');
+  let existingProps = { ...props, filters: { ...props.filters } };
 
   if (buttons.length > 0) {
     buttons.forEach((button) => {
@@ -879,6 +883,7 @@ async function initFilterSort(block, props, toolBar) {
       const options = optionsList.querySelectorAll('.option-button');
 
       button.addEventListener('click', () => {
+        existingProps = { ...props, filters: { ...props.filters } };
         if (!button.classList.contains('in-drawer')) {
           buttons.forEach((b) => {
             if (button !== b) {
@@ -891,7 +896,7 @@ async function initFilterSort(block, props, toolBar) {
       }, { passive: true });
 
       options.forEach((option) => {
-        const updateOptions = async () => {
+        const updateOptions = () => {
           buttons.forEach((b) => {
             b.parentElement.classList.remove('opened');
           });
@@ -906,18 +911,17 @@ async function initFilterSort(block, props, toolBar) {
             }
           });
           option.classList.add('active');
-
-          updateQuery(wrapper, props, option);
-          updateFilterIcon(block);
-
-          if (!button.classList.contains('in-drawer')) {
-            await redrawTemplates(block, props, toolBar);
-          }
         };
 
         option.addEventListener('click', async (e) => {
           e.stopPropagation();
-          await updateOptions();
+          updateOptions();
+          updateQuery(wrapper, props, option);
+          updateFilterIcon(block);
+
+          if (!button.classList.contains('in-drawer')) {
+            await redrawTemplates(block, existingProps, props, toolBar);
+          }
         }, { passive: true });
       });
 
@@ -932,13 +936,13 @@ async function initFilterSort(block, props, toolBar) {
     if (applyFilterButton) {
       applyFilterButton.addEventListener('click', async (e) => {
         e.preventDefault();
-        await redrawTemplates(block, props, toolBar);
+        await redrawTemplates(block, existingProps, props, toolBar);
         closeDrawer(toolBar);
       });
     }
 
     // sync current filter & sorting method with toolbar current options
-    await updateOptionsStatus(block, props, toolBar);
+    updateOptionsStatus(block, props, toolBar);
   }
 }
 
