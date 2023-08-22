@@ -14,23 +14,46 @@ import { createTag } from '../../scripts/scripts.js';
 
 const buildMockInputField = (block) => {
   const textSpan = createTag('span', { class: 'mock-text' });
-  textSpan.textContent = 'Crazy guy in spacesuit'
+  textSpan.textContent = 'Crazy guy in spacesuit';
   const textDiv = createTag('div', { class: 'mock-text-wrapper' });
   textDiv.append(textSpan);
   block.append(textDiv);
 };
 
-export default function decorate(block) {
+const buildPayload = (block) => {
   const inputRows = Array.from(block.querySelectorAll(':scope > div'));
-  const heading = inputRows.shift().querySelector('h2');
-  const ctaText = inputRows.pop().textContent.trim();
-  const cardDetails = inputRows.map((row) => {
-    const text = row.querySelector('div').textContent.trim();
-    const photo = row.querySelector('picture');
-    return { text, photo };
-  });
   block.innerHTML = '';
+  const payload = {
+    heading: inputRows.shift().querySelector('h3'),
+    link: inputRows.at(-1).querySelector('a').href,
+    ctaText: inputRows.pop().textContent.trim(),
+    cards: inputRows.map((row) => {
+      const text = row.querySelector('div').textContent.trim();
+      const photo = row.querySelector('picture');
+      return { text, photo };
+    }),
+  };
+  return payload;
+};
 
-  buildMockInputField(block);
-  block.append(cardDetails[0].photo);
+const buildCard = (block, payload) => {
+  const aTag = createTag('a');
+  const cta = createTag('a', { class: 'cta' });
+  const textSpan = createTag('span', { class: 'mock-text' });
+  const textDiv = createTag('div', { class: 'mock-text-wrapper' });
+
+  aTag.href = payload.link;
+  textSpan.textContent = 'Crazy guy in spacesuit';
+  textDiv.append(textSpan);
+  cta.textContent = payload.ctaText;
+  aTag.append(payload.cards[0].photo, payload.heading, textDiv, cta);
+  block.append(aTag);
+};
+
+export default function decorate(block) {
+  const payload = buildPayload(block);
+  console.log(payload);
+  buildCard(block, payload);
+  // buildMockInputField(block);
+  // block.append(payload.cards[0].photo);
 }

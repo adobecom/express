@@ -1,0 +1,46 @@
+.firefly-card {
+  height: 30vh;
+  margin: 0.5rem;
+}
+
+.firefly-card h3 {
+  display: flex;
+  position: relative;
+  z-index: 1;
+  font-size: var(--heading-font-size-xs);
+  color: var(--color-white);
+}
+
+.firefly-card a {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+  align-items: center;
+  position: relative;
+  height: 100%;
+}
+
+.firefly-card picture {
+  position: absolute;
+  height: 50%;
+  top: 0;
+  left: 0;
+}
+
+.firefly-card picture img {
+  height: 100%;
+  width: 100%;
+  border-radius: 36px 36px 0 0;
+  object-fit: cover;
+}
+
+.firefly-card .mock-text-wrapper {
+  box-sizing: border-box;
+  background: white;
+  z-index: 1;
+  position: absolute;
+  /* left: 110px; */
+  border-radius: 36px;
+  padding: 16px;
+}
