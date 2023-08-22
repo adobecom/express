@@ -260,7 +260,7 @@ function decorateCard($block, cardClass) {
   const $cardBanner = $block.children[0].children[0];
   const $cardTop = $block.children[1].children[0];
   const $cardBottom = $block.children[2].children[0];
-  const $cardHeader = $cardTop.querySelector('h3');
+  const $cardHeader = $cardTop.querySelector('h3, p:first-of-type');
   const $cardHeaderSvg = $cardTop.querySelector('svg');
   const $cardPricingHeader = createTag('h2', { class: 'puf-pricing-header' });
   const $cardVat = createTag('div', { class: 'puf-vat-info' });
@@ -272,6 +272,13 @@ function decorateCard($block, cardClass) {
 
   if (cardClass === 'puf-left') {
     $cardCta.classList.add('reverse', 'accent');
+  }
+
+  let formattedHeader = createTag('h3');
+  if ($cardHeader?.tagName === 'P') {
+    formattedHeader.textContent = $cardHeader.lastChild.data;
+  } else if ($cardHeader?.tagName === 'H3') {
+    formattedHeader = $cardHeader;
   }
 
   $cardBanner.classList.add('puf-card-banner');
@@ -286,7 +293,7 @@ function decorateCard($block, cardClass) {
   $cardTop.prepend($cardPlansContainer);
   $cardTop.prepend($cardVat);
   $cardTop.prepend($cardPricingHeader);
-  $cardTop.prepend($cardHeader);
+  $cardTop.prepend(formattedHeader);
 
   if (!$cardBanner.textContent.trim()) {
     $cardBanner.style.display = 'none';
@@ -294,7 +301,7 @@ function decorateCard($block, cardClass) {
     $cardBanner.classList.add('recommended');
   }
 
-  $cardHeader.prepend($cardHeaderSvg);
+  if ($cardHeaderSvg) formattedHeader.prepend($cardHeaderSvg);
 
   if (plans.length) {
     selectPlan($card, plans[0].url, false);
