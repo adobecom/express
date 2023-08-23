@@ -18,7 +18,7 @@ main .puf.block .carousel-container .carousel-fader-right {
 }
 
 main .puf.block .carousel-container a.button.carousel-arrow {
-  margin-top: calc(100vh / 2);
+  margin-top: 50vh;
   position: sticky;
 }
 
@@ -119,12 +119,8 @@ main .block.puf .puf-card .puf-card-top .puf-card-plans > div span {
   color: var(--color-gray-800);
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-plans > div.strong {
-  -webkit-text-stroke-width: 0.6px;
-  -webkit-text-stroke-color: var(--color-info-accent);
-}
-
 main .block.puf .puf-card .puf-card-top .puf-card-plans > div.strong span {
+  -webkit-text-stroke-width: 0.6px;
   -webkit-text-stroke-color: var(--color-gray-800);
 }
 
@@ -169,33 +165,15 @@ main .block.puf .puf-card .puf-card-top .puf-card-slider::before {
   border-radius: 50%;
 }
 
-main
-  .block.puf
-  .puf-card
-  .puf-card-top
-  .puf-card-switch
-  input:checked
-  + .puf-card-slider {
+main .block.puf .puf-card .puf-card-top .puf-card-switch input:checked + .puf-card-slider {
   background-color: var(--color-info-accent);
 }
 
-main
-  .block.puf
-  .puf-card
-  .puf-card-top
-  .puf-card-switch
-  input:focus
-  + .puf-card-slider {
+main .block.puf .puf-card .puf-card-top .puf-card-switch input:focus + .puf-card-slider {
   box-shadow: 0 0 1px #2196f3;
 }
 
-main
-  .block.puf
-  .puf-card
-  .puf-card-top
-  .puf-card-switch
-  input:checked
-  + .puf-card-slider:before {
+main .block.puf .puf-card .puf-card-top .puf-card-switch input:checked + .puf-card-slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
@@ -212,8 +190,10 @@ main .block.puf .puf-card .puf-card-bottom {
 main .block.puf .puf-card .puf-card-bottom h3 {
   font-size: var(--body-font-size-xl);
   font-weight: 600;
-  padding: 16px 0;
-  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 main .block.puf .puf-card .puf-card-bottom p {
@@ -243,23 +223,23 @@ main .block.puf .puf-card .puf-text-and-sup-wrapper {
   display: inline;
 }
 
-main
-  .block.puf
-  .puf-card-banner.recommended
-  ~ .puf-card-bottom
-  .puf-highlighted-text,
+main .block.puf .puf-card-banner.recommended~.puf-card-bottom .puf-highlighted-text,
 main .block.puf .puf-highlighted-text {
   background-color: var(--color-info-accent-light);
   width: 100%;
-  padding: 16px;
   border-radius: 12px;
   margin-top: 0;
-  margin-bottom: 24px;
+  box-sizing: border-box;
+  padding: 10px;
 }
 
 main .block.puf .puf-pricing-footer {
-  max-width: 1260px;
+  max-width: 1200px;
   width: 100%;
+}
+
+main .block.puf .puf-pricing-footer .puf-highlighted-text {
+  padding: 16px 0;
 }
 
 main .block.puf .puf-card-banner.recommended {
@@ -271,7 +251,6 @@ main .block.puf .puf-card-banner.recommended {
 main .block.puf .puf-card-container:not(:has(.recommended)) {
   flex: 1;
   align-self: stretch;
-  z-index: -1;
   border-top: 1px #e5e5e5 solid;
   border-left: 1px #e5e5e5 solid;
   border-bottom: 1px #e5e5e5 solid;
@@ -286,6 +265,7 @@ main .block.puf .puf-card-container:has(.recommended) {
   padding: 48px 8px 8px 8px;
   margin-top: 20px;
   height: auto;
+  z-index: 0;
 }
 
 main .block.puf .puf-card .puf-card-banner {
@@ -300,12 +280,7 @@ main .block.puf .puf-card .puf-card-banner {
   border-radius: 20px 20px 0 0;
 }
 
-
 @media (min-width: 900px) {
-  main .puf.block {
-    margin-bottom: 40px;
-  }
-
   main .puf.block .carousel-container {
     max-width: none;
     max-height: none !important;
@@ -333,8 +308,12 @@ main .block.puf .puf-card .puf-card-banner {
   main .block.puf .carousel-platform {
     max-height: unset;
     margin: 0 auto;
-    padding: 14px 24px 42px 24px;
+    padding: 14px 24px 0 24px;
     margin-top: -14px;
+  }
+
+  main .block.puf .carousel-container:has(+ .puf-pricing-footer) .carousel-platform {
+    padding-bottom: 24px;
   }
 
   main .block.puf .puf-card {
@@ -347,8 +326,12 @@ main .block.puf .puf-card .puf-card-banner {
   main .block.puf .puf-card.puf-left {
     border-radius: 20px;
     border-right: none;
-    margin-left: 20px;
     min-height: 1200px;
+  }
+
+  main .block.puf .puf-card-container:not(:has(.recommended)) .puf-card {
+    padding-left: 60px;
+    padding-right: 76px;
   }
 
   main .block.puf .puf-card.puf-right {
@@ -434,11 +417,15 @@ main .block.puf .puf-card .puf-card-banner {
 }
 
 @media (max-width: 899px) {
+  main .section.puf-container {
+    padding-bottom: 0;
+  }
+
   main .block.puf .carousel-container {
     position: relative;
     overflow: hidden;
     margin-bottom: 0;
-    padding: 0 12px;
+    padding: 0 12px 12px 0;
   }
 
   main .block.puf .puf-card .puf-card-top .puf-card-plans {
@@ -464,8 +451,14 @@ main .block.puf .puf-card .puf-card-banner {
     pointer-events: none;
   }
 
-  main .block.puf .carousel-container.slide-1-selected .carousel-fader-right,
+  main .block.puf .carousel-container.slide-1-selected .carousel-fader-right {
+    right: 1rem;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   main .block.puf .carousel-container.slide-2-selected .carousel-fader-left {
+    left: 0.7rem;
     opacity: 1;
     pointer-events: auto;
   }
@@ -485,24 +478,18 @@ main .block.puf .puf-card .puf-card-banner {
     box-shadow: 0px 0px 20px #00000029;
   }
 
-  main .block.puf .puf-card-banner.recommended ~ .puf-card-bottom .puf-highlighted-text {
-  margin-bottom: 40px;
-}
+  main .block.puf .puf-card-banner.recommended~.puf-card-bottom .puf-highlighted-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-  main
-    .block.puf
-    .carousel-container.slide-2-selected
-    .carousel-platform
-    .puf-card-container:first-child {
+  main .block.puf .carousel-container.slide-2-selected .carousel-platform .puf-card-container:first-child {
     left: -150%;
     left: calc(-150%);
   }
 
-  main
-    .block.puf
-    .carousel-container.slide-1-selected
-    .carousel-platform
-    .puf-card-container:last-child {
+  main .block.puf .carousel-container.slide-1-selected .carousel-platform .puf-card-container:last-child {
     left: 150%;
     left: calc(150%);
   }

@@ -27,21 +27,45 @@ import {
   toClassName,
   transformLinkToAnimation,
 } from '../../scripts/scripts.js';
-
 import { Masonry } from '../shared/masonry.js';
-
 import { buildCarousel } from '../shared/carousel.js';
-
-import { fetchTemplates, isValidTemplate } from './template-search-api-v3.js';
-import renderTemplate from './template-rendering.js';
+import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './template-search-api-v3.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
+import renderTemplate from './template-rendering.js';
 
 function wordStartsWithVowels(word) {
   return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
 }
 
+function logSearch(form, url = '/express/search-terms-log') {
+  if (form) {
+    const input = form.querySelector('input');
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data: {
+          keyword: input.value,
+          locale: getLocale(window.location),
+          timestamp: Date.now(),
+          audience: document.body.dataset.device,
+        },
+      }),
+    });
+  }
+}
+
 function camelize(str) {
   return str.replace(/^\w|[A-Z]|\b\w/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase())).replace(/\s+/g, '');
+}
+
+function handlelize(str) {
+  return str.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
+    .replace(/(\W+|\s+)/g, '-') // Replace space and other characters by hyphen
+    .replace(/--+/g, '-') // Replaces multiple hyphens by one hyphen
+    .replace(/(^-+|-+$)/g, '') // Remove extra hyphens from beginning or end of the string
+    .toLowerCase(); // To lowercase
 }
 
 function isDarkOverlayReadable(colorString) {
@@ -90,7 +114,7 @@ async function fetchAndRenderTemplates(props) {
     fallbackMsg,
     templates: response.items
       .filter((item) => isValidTemplate(item))
-      .map((template) => renderTemplate(template, placeholders, props)),
+      .map((template) => renderTemplate(template, placeholders)),
   };
 }
 
@@ -128,16 +152,17 @@ async function formatHeadingPlaceholder(props) {
   const templateCount = lang === 'es-ES' ? props.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : props.total.toLocaleString(lang);
   let toolBarHeading = getMetadata('toolbar-heading') ? props.templateStats : placeholders['template-placeholder'];
 
-  if (getMetadata('template-search-page') === 'Y') {
+  if (getMetadata('template-search-page') === 'Y'
+    && placeholders['template-search-heading-singular']
+    && placeholders['template-search-heading-plural']) {
     toolBarHeading = props.total === 1 ? placeholders['template-search-heading-singular'] : placeholders['template-search-heading-plural'];
   }
 
   if (toolBarHeading) {
     toolBarHeading = toolBarHeading
       .replace('{{quantity}}', props.fallbackMsg ? '0' : templateCount)
-      .replace('{{Type}}', titleCase(getMetadata('q') || getMetadata('short-title')))
-      .replace('{{type}}', getMetadata('q') || getMetadata('short-title'));
-
+      .replace('{{Type}}', titleCase(getMetadata('short-title') || getMetadata('q') || getMetadata('topics')))
+      .replace('{{type}}', getMetadata('short-title') || getMetadata('q') || getMetadata('topics'));
     if (locale === 'fr') {
       toolBarHeading.split(' ').forEach((word, index, words) => {
         if (index + 1 < words.length) {
@@ -349,7 +374,7 @@ async function decorateLoadMoreButton(block, props) {
   const loadMoreButton = createTag('button', { class: 'load-more-button' });
   const loadMoreText = createTag('p', { class: 'load-more-text' });
   loadMoreDiv.append(loadMoreButton, loadMoreText);
-  loadMoreText.textContent = placeholders['load-more'];
+  loadMoreText.textContent = placeholders['load-more'] ?? '';
   block.append(loadMoreDiv);
   loadMoreButton.append(getIconElement('plus-icon'));
 
@@ -405,19 +430,22 @@ async function attachFreeInAppPills(block) {
 function makeTemplateFunctions(placeholders) {
   const functions = {
     premium: {
-      placeholders: JSON.parse(placeholders['template-filter-premium']),
+      placeholders: JSON.parse(placeholders['template-filter-premium'] ?? '{}'),
       elements: {},
-      icons: placeholders['template-filter-premium-icons'].replace(/\s/g, '').split(','),
+      icons: placeholders['template-filter-premium-icons']?.replace(/\s/g, '')?.split(',')
+        || ['template-premium-and-free', 'template-free', 'template-premium'],
     },
     animated: {
-      placeholders: JSON.parse(placeholders['template-filter-animated']),
+      placeholders: JSON.parse(placeholders['template-filter-animated'] ?? '{}'),
       elements: {},
-      icons: placeholders['template-filter-animated-icons'].replace(/\s/g, '').split(','),
+      icons: placeholders['template-filter-animated-icons']?.replace(/\s/g, '')?.split(',')
+        || ['template-static-and-animated', 'template-static', 'template-animated'],
     },
     sort: {
-      placeholders: JSON.parse(placeholders['template-x-sort']),
+      placeholders: JSON.parse(placeholders['template-x-sort'] ?? '{}'),
       elements: {},
-      icons: placeholders['template-sort-icons'].replace(/\s/g, '').split(','),
+      icons: placeholders['template-x-sort-icons']?.replace(/\s/g, '')?.split(',')
+        || ['sort', 'visibility-on', 'visibility-off', 'order-dsc', 'order-asc'],
     },
   };
 
@@ -559,16 +587,6 @@ function decorateFunctionsContainer(block, functions, placeholders) {
   return { mobile: functionContainerMobile, desktop: functionsContainer };
 }
 
-function closeTaskDropdown(block) {
-  const searchBarWrappers = block.querySelectorAll('.search-bar-wrapper');
-  searchBarWrappers.forEach((wrapper) => {
-    const taskDropdown = wrapper.querySelector('.task-dropdown');
-    const taskDropdownList = taskDropdown.querySelector('.task-dropdown-list');
-    taskDropdown.classList.remove('active');
-    taskDropdownList.classList.remove('active');
-  });
-}
-
 function updateLottieStatus(block) {
   const drawer = block.querySelector('.filter-drawer-mobile');
   const inWrapper = drawer.querySelector('.filter-drawer-mobile-inner-wrapper');
@@ -589,8 +607,8 @@ async function decorateCategoryList(block, props) {
   const locale = getLocale(window.location);
   const mobileDrawerWrapper = block.querySelector('.filter-drawer-mobile');
   const drawerWrapper = block.querySelector('.filter-drawer-mobile-inner-wrapper');
-  const categories = JSON.parse(placeholders['x-task-categories']);
-  const categoryIcons = placeholders['task-category-icons'].replace(/\s/g, '').split(',');
+  const categories = placeholders['x-task-categories'] ? JSON.parse(placeholders['x-task-categories']) : {};
+  const categoryIcons = placeholders['task-category-icons']?.replace(/\s/g, '')?.split(',');
   const categoriesDesktopWrapper = createTag('div', { class: 'category-list-wrapper' });
   const categoriesToggleWrapper = createTag('div', { class: 'category-list-toggle-wrapper' });
   const categoriesToggle = getIconElement('drop-down-arrow');
@@ -605,7 +623,7 @@ async function decorateCategoryList(block, props) {
     const format = `${props.placeholderFormat[0]}:${props.placeholderFormat[1]}`;
     const targetTasks = category[1];
     const currentTasks = props.filters.tasks ? props.filters.tasks : "''";
-    const currentTopic = props.filters.topics;
+    const currentTopic = props.filters.topics || props.q;
 
     const listItem = createTag('li');
     if (category[1] === currentTasks) {
@@ -623,7 +641,7 @@ async function decorateCategoryList(block, props) {
     const urlPrefix = locale === 'us' ? '' : `/${locale}`;
     const a = createTag('a', {
       'data-tasks': targetTasks,
-      href: `${urlPrefix}/express/templates/search?tasks=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"}`,
+      href: `${urlPrefix}/express/templates/search?tasks=${targetTasks}&tasksx=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"}&q=${currentTopic || ''}`,
     });
     [a.textContent] = category;
 
@@ -634,7 +652,7 @@ async function decorateCategoryList(block, props) {
 
   const categoriesMobileWrapper = categoriesDesktopWrapper.cloneNode({ deep: true });
   const mobileCategoriesToggle = createTag('span', { class: 'category-list-toggle' });
-  mobileCategoriesToggle.textContent = placeholders['jump-to-category'];
+  mobileCategoriesToggle.textContent = placeholders['jump-to-category'] ?? '';
   categoriesMobileWrapper.querySelector('.category-list-toggle-wrapper > .icon')?.replaceWith(mobileCategoriesToggle);
   const lottieArrows = createTag('a', { class: 'lottie-wrapper' });
   mobileDrawerWrapper.append(lottieArrows);
@@ -698,10 +716,15 @@ function closeDrawer(toolBar) {
   }, 500);
 }
 
-async function updateOptionsStatus(block, props, toolBar) {
+function updateOptionsStatus(block, props, toolBar) {
   const wrappers = toolBar.querySelectorAll('.function-wrapper');
-  const placeholders = await fetchPlaceholders();
-  const waysOfSort = JSON.parse(placeholders['template-x-sort']);
+  const waysOfSort = {
+    'Most Relevant': '',
+    'Most Viewed': '&orderBy=-remixCount',
+    'Rare & Original': '&orderBy=remixCount',
+    'Newest to Oldest': '&orderBy=-availabilityDate',
+    'Oldest to Newest': '&orderBy=availabilityDate',
+  };
 
   wrappers.forEach((wrapper) => {
     const currentOption = wrapper.querySelector('.current-option');
@@ -710,12 +733,10 @@ async function updateOptionsStatus(block, props, toolBar) {
     options.forEach((option) => {
       const paramType = wrapper.dataset.param;
       const paramValue = option.dataset.value;
-      const propValue = props[paramType] ? props[paramType] : 'remove';
-      const filtervalue = props.filters[paramType] ? props[paramType] : 'remove';
+      const filterValue = props.filters[paramType] ? props.filters[paramType] : 'remove';
+      const sortValue = waysOfSort[props[paramType]] || props[paramType];
 
-      if (propValue === paramValue
-        || filtervalue === paramValue
-        || waysOfSort[props[paramType]] === paramValue) {
+      if (filterValue === paramValue || sortValue === paramValue) {
         if (currentOption) {
           currentOption.textContent = option.textContent;
         }
@@ -725,6 +746,7 @@ async function updateOptionsStatus(block, props, toolBar) {
             o.classList.remove('active');
           }
         });
+
         option.classList.add('active');
       }
     });
@@ -750,7 +772,6 @@ function initDrawer(block, props, toolBar) {
     drawerBackground.classList.remove('hidden');
     applyButton.classList.remove('hidden');
     updateLottieStatus(block);
-    closeTaskDropdown(block);
 
     setTimeout(() => {
       drawer.classList.remove('retracted');
@@ -824,7 +845,8 @@ function updateQuery(functionWrapper, props, option) {
   }
 }
 
-async function redrawTemplates(block, props, toolBar) {
+async function redrawTemplates(block, existingProps, props, toolBar) {
+  if (JSON.stringify(props) === JSON.stringify(existingProps)) return;
   const heading = toolBar.querySelector('h2');
   const currentTotal = props.total.toLocaleString('en-US');
   props.templates = [props.templates[0]];
@@ -848,9 +870,10 @@ async function redrawTemplates(block, props, toolBar) {
   }
 }
 
-function initFilterSort(block, props, toolBar) {
+async function initFilterSort(block, props, toolBar) {
   const buttons = toolBar.querySelectorAll('.button-wrapper');
   const applyFilterButton = toolBar.querySelector('.apply-filter-button');
+  let existingProps = { ...props, filters: { ...props.filters } };
 
   if (buttons.length > 0) {
     buttons.forEach((button) => {
@@ -860,6 +883,7 @@ function initFilterSort(block, props, toolBar) {
       const options = optionsList.querySelectorAll('.option-button');
 
       button.addEventListener('click', () => {
+        existingProps = { ...props, filters: { ...props.filters } };
         if (!button.classList.contains('in-drawer')) {
           buttons.forEach((b) => {
             if (button !== b) {
@@ -869,12 +893,10 @@ function initFilterSort(block, props, toolBar) {
 
           wrapper.classList.toggle('opened');
         }
-
-        closeTaskDropdown(toolBar);
       }, { passive: true });
 
       options.forEach((option) => {
-        const updateOptions = async () => {
+        const updateOptions = () => {
           buttons.forEach((b) => {
             b.parentElement.classList.remove('opened');
           });
@@ -889,18 +911,17 @@ function initFilterSort(block, props, toolBar) {
             }
           });
           option.classList.add('active');
-
-          updateQuery(wrapper, props, option);
-          updateFilterIcon(block);
-
-          if (!button.classList.contains('in-drawer')) {
-            await redrawTemplates(block, props, toolBar);
-          }
         };
 
         option.addEventListener('click', async (e) => {
           e.stopPropagation();
-          await updateOptions();
+          updateOptions();
+          updateQuery(wrapper, props, option);
+          updateFilterIcon(block);
+
+          if (!button.classList.contains('in-drawer')) {
+            await redrawTemplates(block, existingProps, props, toolBar);
+          }
         }, { passive: true });
       });
 
@@ -915,14 +936,13 @@ function initFilterSort(block, props, toolBar) {
     if (applyFilterButton) {
       applyFilterButton.addEventListener('click', async (e) => {
         e.preventDefault();
-        await redrawTemplates(block, props, toolBar);
+        await redrawTemplates(block, existingProps, props, toolBar);
         closeDrawer(toolBar);
       });
     }
 
     // sync current filter & sorting method with toolbar current options
     updateOptionsStatus(block, props, toolBar);
-    updateFilterIcon(block);
   }
 }
 
@@ -1280,94 +1300,178 @@ async function appendCategoryTemplatesCount(block, props) {
     const anchor = li.querySelector('a');
     if (anchor) {
       const countSpan = createTag('span', { class: 'category-list-template-count' });
-      tempProps.filters.tasks = anchor.dataset.tasks;
       // eslint-disable-next-line no-await-in-loop
-      const { response } = await fetchTemplates(tempProps, false);
-      if (!response?.metadata?.totalHits) {
-        countSpan.textContent = '(0)';
-      } else {
-        countSpan.textContent = `(${response.metadata.totalHits.toLocaleString(lang)})`;
-      }
+      const cnt = await fetchTemplatesCategoryCount(props, anchor.dataset.tasks);
+      countSpan.textContent = `(${cnt.toLocaleString(lang)})`;
       anchor.append(countSpan);
     }
   }
 }
 
-async function getBreadcrumbs() {
-  const { origin, pathname } = window.location;
-  const regex = /(.*?\/express\/)templates(.*)/;
-  // FIXME: remove gnav breadcrumbs!
-  const matches = pathname.match(regex);
-  if (!matches) {
-    return null;
-  }
-  const [, rootPath, children] = matches;
-  const nav = createTag('nav', { 'aria-label': 'Breadcrumb' });
-  const breadcrumbs = createTag('ol', { class: 'templates-breadcrumbs' });
-  nav.append(breadcrumbs);
-  const rootCrumb = createTag('li');
-  const rootLink = createTag('a', { href: `${origin}${rootPath}` });
-  // FIXME: localize & placeholders??
-  rootLink.textContent = 'Home';
-  rootCrumb.append(rootLink);
-  breadcrumbs.append(rootCrumb);
-
-  const templatesCrumb = createTag('li');
-  const templatesUrl = `${rootPath}templates`;
-  const templatesLink = createTag('a', { href: templatesUrl });
-  templatesLink.textContent = 'Templates';
-  templatesCrumb.append(templatesLink);
-  breadcrumbs.append(templatesCrumb);
-
-  if (!children || children === '/') {
-    return nav;
-  }
-  if (children.startsWith('/search?') || getMetadata('template-search-page') === 'Y') {
-    const params = new Proxy(new URLSearchParams(window.location.search), {
-      get: (searchParams, prop) => searchParams.get(prop),
-    });
-    const searchingTasks = titleCase(params.tasks).replace(/[$@%"]/g, '');
-    const searchingTopics = titleCase(params.topics).replace(/[$@%"]/g, '');
-    const lastCrumb = createTag('li');
-    lastCrumb.textContent = `${searchingTasks} ${searchingTopics}`;
-    breadcrumbs.append(lastCrumb);
-    return nav;
-  }
-
-  const allTemplatesMetadata = await fetchAllTemplatesMetadata();
-  const segments = children.split('/');
-  segments.reduce((acc, cur, index) => {
-    if (!cur) return acc;
-    const appended = `${acc}/${cur}`;
-    const segmentCrumb = createTag('li');
-    if (allTemplatesMetadata.some((t) => t.url === appended) && index !== segments.length - 1) {
-      const segmentLink = createTag('a', { href: `${origin}${appended}` });
-      segmentLink.textContent = titleCase(cur);
-      segmentCrumb.append(segmentLink);
-    } else {
-      segmentCrumb.textContent = titleCase(cur);
-    }
-    breadcrumbs.append(segmentCrumb);
-    return appended;
-  }, templatesUrl);
-
-  return nav;
-}
-
 async function decorateBreadcrumbs(block) {
   // breadcrumbs are desktop-only
   if (document.body.dataset.device !== 'desktop') return;
+  const { default: getBreadcrumbs } = await import('./breadcrumbs.js');
   const breadcrumbs = await getBreadcrumbs();
   if (breadcrumbs) block.prepend(breadcrumbs);
 }
 
+function importSearchBar(block, blockMediator) {
+  blockMediator.subscribe('stickySearchBar', (e) => {
+    const parent = block.querySelector('.api-templates-toolbar .wrapper-content-search');
+    if (parent) {
+      const existingStickySearchBar = parent.querySelector('.search-bar-wrapper');
+      if (e.newValue.loadSearchBar && !existingStickySearchBar) {
+        const searchWrapper = e.newValue.element;
+        parent.prepend(searchWrapper);
+        searchWrapper.classList.add('show');
+        searchWrapper.classList.add('collapsed');
+
+        const searchDropdown = searchWrapper.querySelector('.search-dropdown-container');
+        const searchForm = searchWrapper.querySelector('.search-form');
+        const searchBar = searchWrapper.querySelector('input.search-bar');
+        const clearBtn = searchWrapper.querySelector('.icon-search-clear');
+        const trendsContainer = searchWrapper.querySelector('.trends-container');
+        const suggestionsContainer = searchWrapper.querySelector('.suggestions-container');
+        const suggestionsList = searchWrapper.querySelector('.suggestions-list');
+
+        searchBar.addEventListener('click', (event) => {
+          event.stopPropagation();
+          searchWrapper.classList.remove('collapsed');
+          setTimeout(() => {
+            searchDropdown.classList.remove('hidden');
+          }, 500);
+        }, { passive: true });
+
+        searchBar.addEventListener('keyup', () => {
+          if (searchBar.value !== '') {
+            clearBtn.style.display = 'inline-block';
+            trendsContainer.classList.add('hidden');
+            suggestionsContainer.classList.remove('hidden');
+          } else {
+            clearBtn.style.display = 'none';
+            trendsContainer.classList.remove('hidden');
+            suggestionsContainer.classList.add('hidden');
+          }
+        }, { passive: true });
+
+        document.addEventListener('click', (event) => {
+          const { target } = event;
+          if (target !== searchWrapper && !searchWrapper.contains(target)) {
+            searchWrapper.classList.add('collapsed');
+            searchDropdown.classList.add('hidden');
+            searchBar.value = '';
+            suggestionsList.innerHTML = '';
+            trendsContainer.classList.remove('hidden');
+            suggestionsContainer.classList.add('hidden');
+            clearBtn.style.display = 'none';
+          }
+        }, { passive: true });
+
+        const redirectSearch = async () => {
+          const placeholders = await fetchPlaceholders();
+          const taskMap = placeholders['task-name-mapping'] ? JSON.parse(placeholders['task-name-mapping']) : {};
+
+          const format = getMetadata('placeholder-format');
+          let currentTasks = '';
+          let searchInput = searchBar.value.toLowerCase() || getMetadata('topics');
+
+          const tasksFoundInInput = Object.entries(taskMap)
+            .filter((task) => task[1].some((word) => {
+              const searchValue = searchBar.value.toLowerCase();
+              return searchValue.indexOf(word.toLowerCase()) >= 0;
+            })).sort((a, b) => b[0].length - a[0].length);
+
+          if (tasksFoundInInput.length > 0) {
+            tasksFoundInInput[0][1].sort((a, b) => b.length - a.length).forEach((word) => {
+              searchInput = searchInput.toLowerCase().replace(word.toLowerCase(), '');
+            });
+
+            searchInput = searchInput.trim();
+            [[currentTasks]] = tasksFoundInInput;
+          }
+
+          const locale = getLocale(window.location);
+          const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+          const topicUrl = searchInput ? `/${searchInput}` : '';
+          const taskUrl = `/${handlelize(currentTasks.toLowerCase())}`;
+          const targetPath = `${urlPrefix}/express/templates${taskUrl}${topicUrl}`;
+          const allTemplatesMetadata = await fetchAllTemplatesMetadata();
+          const pathMatch = (event) => event.url === targetPath;
+          if (allTemplatesMetadata.some(pathMatch)) {
+            window.location = `${window.location.origin}${targetPath}`;
+          } else {
+            const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks}&phformat=${format}&topics=${searchInput || "''"}&q=${searchInput || "''"}`;
+            window.location = `${window.location.origin}${urlPrefix}${searchUrlTemplate}`;
+          }
+        };
+
+        searchForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          searchBar.disabled = true;
+          logSearch(event.currentTarget);
+          await redirectSearch();
+        });
+
+        clearBtn.addEventListener('click', () => {
+          searchBar.value = '';
+          suggestionsList.innerHTML = '';
+          trendsContainer.classList.remove('hidden');
+          suggestionsContainer.classList.add('hidden');
+          clearBtn.style.display = 'none';
+        }, { passive: true });
+
+        const suggestionsListUIUpdateCB = (suggestions) => {
+          suggestionsList.innerHTML = '';
+          const searchBarVal = searchBar.value.toLowerCase();
+          if (suggestions && !(suggestions.length <= 1 && suggestions[0]?.query === searchBarVal)) {
+            suggestions.forEach((item) => {
+              const li = createTag('li', { tabindex: 0 });
+              const valRegEx = new RegExp(searchBar.value, 'i');
+              li.innerHTML = item.query.replace(valRegEx, `<b>${searchBarVal}</b>`);
+              li.addEventListener('click', () => {
+                if (item.query === searchBar.value) return;
+                searchBar.value = item.query;
+                searchBar.dispatchEvent(new Event('input'));
+              });
+
+              suggestionsList.append(li);
+            });
+          }
+        };
+
+        import('../../scripts/autocomplete-api-v3.js').then(({ default: useInputAutocomplete }) => {
+          const { inputHandler } = useInputAutocomplete(
+            suggestionsListUIUpdateCB, { throttleDelay: 300, debounceDelay: 500, limit: 7 },
+          );
+          searchBar.addEventListener('input', inputHandler);
+        });
+      }
+
+      if (e.newValue.loadSearchBar && existingStickySearchBar) {
+        existingStickySearchBar.classList.add('show');
+      }
+
+      if (!e.newValue.loadSearchBar && existingStickySearchBar) {
+        existingStickySearchBar.classList.remove('show');
+      }
+    }
+  });
+}
+
+function wordExistsInString(word, inputString) {
+  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regexPattern = new RegExp(`(?:^|\\s|[.,!?()'"\\-])${escapedWord}(?:$|\\s|[.,!?()'"\\-])`, 'i');
+  return regexPattern.test(inputString);
+}
+
 async function getTaskNameInMapping(text) {
   const placeholders = await fetchPlaceholders();
-  const taskMap = JSON.parse(placeholders['x-task-name-mapping']);
+  const taskMap = placeholders['x-task-name-mapping'] ? JSON.parse(placeholders['x-task-name-mapping']) : {};
   return Object.entries(taskMap)
     .filter((task) => task[1].some((word) => {
       const searchValue = text.toLowerCase();
-      return searchValue.indexOf(word.toLowerCase()) >= 0;
+      return wordExistsInString(word.toLowerCase(), searchValue);
     }))
     .sort((a, b) => b[0].length - a[0].length);
 }
@@ -1399,7 +1503,7 @@ async function buildTemplateList(block, props, type = []) {
 
   const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
 
-  if (templates) {
+  if (templates?.length > 0) {
     props.fallbackMsg = fallbackMsg;
     renderFallbackMsgWrapper(block, props);
     const blockInnerWrapper = createTag('div', { class: 'template-x-inner-wrapper' });
@@ -1431,6 +1535,7 @@ async function buildTemplateList(block, props, type = []) {
     const tasksFoundInInput = await Promise.all(promises);
     if (tasksFoundInInput.length === tabs.length) {
       tasksFoundInInput.forEach((taskObj, index) => {
+        if (taskObj.length === 0) return;
         const tabBtn = createTag('button', { class: 'template-tab-button' });
         tabBtn.textContent = tabs[index];
         tabsWrapper.append(tabBtn);
@@ -1456,18 +1561,21 @@ async function buildTemplateList(block, props, type = []) {
                 tasks: task,
               },
             });
-            props.fallbackMsg = newFallbackMsg;
-            renderFallbackMsgWrapper(block, props);
+            if (newTemplates?.length > 0) {
+              props.fallbackMsg = newFallbackMsg;
+              renderFallbackMsgWrapper(block, props);
 
-            templatesWrapper.innerHTML = '';
-            props.templates = newTemplates;
-            props.templates.forEach((template) => {
-              templatesWrapper.append(template);
-            });
+              templatesWrapper.innerHTML = '';
+              props.templates = newTemplates;
+              props.templates.forEach((template) => {
+                templatesWrapper.append(template);
+              });
 
-            await decorateTemplates(block, props);
-            buildCarousel(':scope > .template', templatesWrapper, false);
-            templatesWrapper.style.opacity = 1;
+              await decorateTemplates(block, props);
+              buildCarousel(':scope > .template', templatesWrapper, false);
+              templatesWrapper.style.opacity = 1;
+            }
+
             tabsWrapper.querySelectorAll('.template-tab-button').forEach((btn) => {
               if (btn !== tabBtn) btn.classList.remove('active');
             });
@@ -1493,6 +1601,12 @@ async function buildTemplateList(block, props, type = []) {
     await decorateToolbar(block, props);
     await decorateCategoryList(block, props);
     appendCategoryTemplatesCount(block, props);
+  }
+
+  if (props.toolBar && props.searchBar) {
+    import('../../scripts/block-mediator.js').then(({ default: blockMediator }) => {
+      importSearchBar(block, blockMediator);
+    });
   }
 
   await decorateBreadcrumbs(block);

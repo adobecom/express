@@ -10,10 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
-import {
-  createTag,
-  getOffer,
-} from '../../scripts/scripts.js';
+import { createTag } from '../../scripts/scripts.js';
+import { getOffer } from '../../scripts/utils/pricing.js';
 
 async function fetchPlan(planUrl) {
   if (!window.pricingPlans) {
@@ -134,12 +132,6 @@ export default function decorate(block) {
   const pricingContainer = block.children[1];
 
   pricingContainer.classList.add('pricing-container');
-
-  Array.from(block.children)?.forEach((child) => {
-    if (child.children[0]?.childNodes.length === 0) {
-      child.children[0]?.remove();
-    }
-  });
 
   const columnsContainer = createTag('div', { class: 'columns-container' });
 
