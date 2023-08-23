@@ -26,7 +26,7 @@ const buildPayload = (block) => {
   const payload = {
     heading: inputRows.shift().querySelector('h3'),
     link: inputRows.at(-1).querySelector('a').href,
-    ctaText: inputRows.pop().textContent.trim(),
+    cta: inputRows.pop().querySelector('a'),
     cards: inputRows.map((row) => {
       const text = row.querySelector('div').textContent.trim();
       const photo = row.querySelector('picture');
@@ -37,16 +37,14 @@ const buildPayload = (block) => {
 };
 
 const buildCard = (block, payload) => {
-  const aTag = createTag('a');
-  const cta = createTag('a', { class: 'cta' });
+  const aTag = createTag('a', { class: 'a-tag-wrapper' });
   const textSpan = createTag('span', { class: 'mock-text' });
   const textDiv = createTag('div', { class: 'mock-text-wrapper' });
 
   aTag.href = payload.link;
   textSpan.textContent = 'Crazy guy in spacesuit';
   textDiv.append(textSpan);
-  cta.textContent = payload.ctaText;
-  aTag.append(payload.cards[0].photo, payload.heading, textDiv, cta);
+  aTag.append(payload.cards[3].photo, payload.heading, textDiv, payload.cta);
   block.append(aTag);
 };
 
