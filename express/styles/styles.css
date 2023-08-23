@@ -54,6 +54,7 @@
   --body-font-size-xl: 1.25rem;
   /* 20px */
   --body-font-size-l: 1.125rem;
+  --body-font-fluid-size-l: 1.125em;
   /* 18px */
   --body-font-size-m: 1rem;
   /* 16px */
@@ -72,6 +73,7 @@
   --heading-font-size-xl: 2.8125rem;
   /* 45px */
   --heading-font-size-l: 2.25rem;
+  --heading-font-fluid-size-l: 2.25rem;
   /* 36px */
   --heading-font-size-m: 1.75rem;
   /* 28px */
@@ -875,11 +877,6 @@ main .block[data-block-status='initialized'] {
 main .block.template-list[data-block-status='loading']>div,
 main .block.template-list[data-block-status='initialized']>div {
   display: none;
-}
-
-main .template-list.sixcols,
-main .template-x.sixcols .template-x-inner-wrapper {
-  min-height: 700px;
 }
 
 main .columns.columns-marquee {

@@ -33,10 +33,7 @@ async function fetchLinkList() {
         window.linkLists.ckgData = response.queryResults[0].facets[0].buckets.map((ckgItem) => {
           let formattedTasks;
           if (getMetadata('template-search-page') === 'Y') {
-            const params = new Proxy(new URLSearchParams(window.location.search), {
-              get: (searchParams, prop) => searchParams.get(prop),
-            });
-            formattedTasks = titleCase(params.tasks).replace(/[$@%"]/g, '');
+            return {};
           } else {
             formattedTasks = titleCase(getMetadata('tasks')).replace(/[$@%"]/g, '');
           }
@@ -59,7 +56,7 @@ async function fetchLinkList() {
 }
 
 function matchCKGResult(ckgData, pageData) {
-  const ckgMatch = pageData.ckgID === ckgData.ckgID;
+  const ckgMatch = pageData.ckgid === ckgData.ckgID;
   const pageDataTasks = pageData.tasks ?? pageData.templateTasks;
   const taskMatch = ckgData.tasks?.toLowerCase() === pageDataTasks?.toLowerCase();
   const currentLocale = getLocale(window.location);
@@ -69,18 +66,22 @@ function matchCKGResult(ckgData, pageData) {
   return sameLocale && ckgMatch && taskMatch;
 }
 
+const defaultRegex = /\/express\/templates\/default/;
 function replaceLinkPill(linkPill, data) {
   const clone = linkPill.cloneNode(true);
   if (data) {
     clone.innerHTML = clone.innerHTML.replace('/express/templates/default', data.url);
     clone.innerHTML = clone.innerHTML.replaceAll('Default', data.altShortTitle || data['short-title']);
   }
+  if (defaultRegex.test(clone.innerHTML)) {
+    return null;
+  }
   return clone;
 }
 
 async function updateSEOLinkList(container, linkPill, list) {
-  const templatePages = await fetchAllTemplatesMetadata();
   container.innerHTML = '';
+  const templatePages = await fetchAllTemplatesMetadata();
 
   if (list && templatePages) {
     list.forEach((d) => {
@@ -88,7 +89,7 @@ async function updateSEOLinkList(container, linkPill, list) {
       const templatePageData = templatePages.find((p) => {
         const targetLocale = /^[a-z]{2}$/.test(p.url.split('/')[1]) ? p.url.split('/')[1] : 'us';
         const isLive = p.live === 'Y';
-        const titleMatch = p['short-title'].toLowerCase() === d.childSibling.toLowerCase();
+        const titleMatch = p['short-title']?.toLowerCase() === d.childSibling?.toLowerCase();
         const localeMatch = currentLocale === targetLocale;
 
         return isLive && titleMatch && localeMatch;
@@ -96,7 +97,7 @@ async function updateSEOLinkList(container, linkPill, list) {
 
       if (templatePageData) {
         const clone = replaceLinkPill(linkPill, templatePageData);
-        container.append(clone);
+        if (clone) container.append(clone);
       }
     });
   }
@@ -136,42 +137,27 @@ async function updateLinkList(container, linkPill, list) {
 
   if (list && templatePages) {
     list.forEach((d) => {
-      const topics = getMetadata('topics') !== '" "' ? `${getMetadata('topics').replace(/[$@%"]/g, '')}` : '';
       const templatePageData = templatePages.find((p) => p.live === 'Y' && matchCKGResult(d, p));
-      const topicsQuery = `${topics ?? topics} ${d.displayValue}`.split(' ')
-        .filter((item, i, allItems) => i === allItems.indexOf(item))
-        .join(' ').trim();
       let displayText = formatLinkPillText(d);
 
       const locale = getLocale(window.location);
       const urlPrefix = locale === 'us' ? '' : `/${locale}`;
       const localeColumnString = locale === 'us' ? 'EN' : locale.toUpperCase();
-      let hideUntranslatedPill = false;
 
       if (pillsMapping) {
         const alternateText = pillsMapping.find((row) => window.location.pathname === `${urlPrefix}${row['Express SEO URL']}` && d.ckgID === row['CKG Pill ID']);
-
-        if (alternateText && alternateText[`${localeColumnString}`]) {
+        const hasAlternateTextForLocale = alternateText && alternateText[`${localeColumnString}`];
+        if (hasAlternateTextForLocale) {
           displayText = alternateText[`${localeColumnString}`];
           if (templatePageData) {
             templatePageData.altShortTitle = displayText;
           }
         }
-
-        hideUntranslatedPill = !displayText && locale !== 'us';
       }
 
       if (templatePageData) {
         const clone = replaceLinkPill(linkPill, templatePageData);
-        pageLinks.push(clone);
-      } else if (d.ckgID && !hideUntranslatedPill) {
-        const currentTasks = getMetadata('tasks') ? getMetadata('tasks').replace(/[$@%"]/g, '') : ' ';
-        const searchParams = `tasks=${currentTasks}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&ckgid=${d.ckgID}`;
-        const clone = linkPill.cloneNode(true);
-
-        clone.innerHTML = clone.innerHTML.replace('/express/templates/default', `${urlPrefix}/express/templates/search?${searchParams}`);
-        clone.innerHTML = clone.innerHTML.replaceAll('Default', displayText);
-        searchLinks.push(clone);
+        if (clone) pageLinks.push(clone);
       }
     });
 
@@ -195,7 +181,7 @@ async function updateLinkList(container, linkPill, list) {
       linkListData.forEach((d) => {
         const templatePageData = templatePages.find((p) => p.live === 'Y' && p.shortTitle === d.childSibling);
         const clone = replaceLinkPill(linkPill, templatePageData);
-        container.append(clone);
+        if (clone) container.append(clone);
       });
     }
   }
@@ -241,7 +227,8 @@ async function lazyLoadSEOLinkList() {
       const topTemplatesData = topTemplates.split(', ').map((cs) => ({ childSibling: cs }));
 
       await updateSEOLinkList(topTemplatesContainer, topTemplatesTemplate, topTemplatesData);
-      topTemplatesContainer.style.visibility = 'visible';
+      const hiddenDiv = seoNav.querySelector('div[style="visibility: hidden;"]');
+      if (hiddenDiv) hiddenDiv.style.visibility = 'visible';
     } else {
       topTemplatesContainer.innerHTML = '';
     }
@@ -272,6 +259,7 @@ async function lazyLoadSearchMarqueeLinklist() {
       }
 
       await updateLinkList(linkListContainer, linkListTemplate, linkListData);
+      searchMarquee.dispatchEvent(new CustomEvent('carouselloaded'));
       linkListContainer.parentElement.classList.add('appear');
     }
   }
@@ -291,7 +279,7 @@ function hideAsyncBlocks() {
   }
 }
 
-(async function updateAsyncBlocks() {
+export default async function updateAsyncBlocks() {
   hideAsyncBlocks();
   // TODO: integrate memoization
   const showSearchMarqueeLinkList = getMetadata('show-search-marquee-link-list');
@@ -300,4 +288,4 @@ function hideAsyncBlocks() {
   }
   await lazyLoadLinklist();
   await lazyLoadSEOLinkList();
-}());
+}

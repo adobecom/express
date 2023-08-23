@@ -41,6 +41,16 @@ function decorateButton(block, toggle) {
   toggle.parentNode.replaceChild(button, toggle);
 }
 
+function awakeNestedCarousels(section) {
+  const carousels = section.querySelectorAll('.carousel-container');
+
+  if (carousels.length === 0) return;
+
+  Array.from(carousels).forEach((c) => {
+    c.closest('.block')?.dispatchEvent(new CustomEvent('carouselloaded'));
+  });
+}
+
 function initButton(block, sections, index, props) {
   const enclosingMain = block.closest('main');
 
@@ -60,9 +70,17 @@ function initButton(block, sections, index, props) {
           if (buttons[index].dataset.text === section.dataset.toggle.toLowerCase()) {
             section.style.display = 'block';
             props.activeSection = section;
+            awakeNestedCarousels(section);
           } else {
             section.style.display = 'none';
           }
+        });
+      }
+
+      if (!block.classList.contains('sticky')) {
+        window.scrollTo({
+          top: Math.round(window.scrollY + block.getBoundingClientRect().top) - 24,
+          behavior: 'smooth',
         });
       }
     });
@@ -85,7 +103,34 @@ function syncWithStoredIntent(block) {
   }
 }
 
-function initFloatBehavior(block, props) {
+function initGNavObserver(block) {
+  const gNav = document.querySelector('header.feds-header-wrapper');
+  if (gNav) {
+    const config = { attributes: true, childList: false, subtree: false };
+
+    const callback = (mutationList) => {
+      for (const mutation of mutationList) {
+        if (mutation.type === 'attributes') {
+          if (gNav.classList.contains('feds-header-wrapper--scrolled')
+            && !gNav.classList.contains('feds-header-wrapper--retracted')
+            && block.classList.contains('sticking')
+            && !block.classList.contains('hidden')) {
+            block.classList.add('bumped-by-gnav');
+          } else {
+            block.classList.remove('bumped-by-gnav');
+          }
+        }
+      }
+    };
+
+    const observer = new MutationObserver(callback);
+
+    // Start observing the target node for configured mutations
+    observer.observe(gNav, config);
+  }
+}
+
+function initStickyBehavior(block, props) {
   const toggleBar = block.querySelector('div:nth-of-type(2)');
   if (toggleBar) {
     document.addEventListener('scroll', () => {
@@ -103,6 +148,10 @@ function initFloatBehavior(block, props) {
       }
     }, { passive: true });
   }
+
+  window.addEventListener('feds.events.experience.loaded', () => {
+    initGNavObserver(block);
+  });
 }
 
 export default function decorate(block) {
@@ -128,7 +177,7 @@ export default function decorate(block) {
     syncWithStoredIntent(block);
 
     if (block.classList.contains('sticky')) {
-      initFloatBehavior(block, props);
+      initStickyBehavior(block, props);
     }
   }
 }

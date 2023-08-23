@@ -195,12 +195,23 @@ export function toClassName(name) {
     : '';
 }
 
-export function createTag(name, attrs) {
-  const el = document.createElement(name);
-  if (typeof attrs === 'object') {
-    for (const [key, value] of Object.entries(attrs)) {
-      el.setAttribute(key, value);
+export function createTag(tag, attributes, html) {
+  const el = document.createElement(tag);
+  if (html) {
+    if (html instanceof HTMLElement
+      || html instanceof SVGElement
+      || html instanceof DocumentFragment) {
+      el.append(html);
+    } else if (Array.isArray(html)) {
+      el.append(...html);
+    } else {
+      el.insertAdjacentHTML('beforeend', html);
     }
+  }
+  if (attributes) {
+    Object.entries(attributes).forEach(([key, val]) => {
+      el.setAttribute(key, val);
+    });
   }
   return el;
 }
@@ -348,6 +359,20 @@ export function getIcon(icons, alt, size = 44) {
     'star',
     'star-half',
     'star-empty',
+    'pricing-gen-ai',
+    'pricing-features',
+    'pricing-import',
+    'pricing-motion',
+    'pricing-stock',
+    'pricing-one-click',
+    'pricing-collaborate',
+    'pricing-premium-plan',
+    'pricing-sync',
+    'pricing-brand',
+    'pricing-calendar',
+    'pricing-fonts',
+    'pricing-libraries',
+    'pricing-cloud',
   ];
 
   const size22Icons = [
@@ -443,7 +468,7 @@ export function readBlockConfig($block) {
       if ($cols[1]) {
         const $value = $cols[1];
         const name = toClassName($cols[0].textContent.trim());
-        let value = '';
+        let value;
         if ($value.querySelector('a')) {
           const $as = [...$value.querySelectorAll('a')];
           if ($as.length === 1) {
@@ -466,11 +491,23 @@ export function readBlockConfig($block) {
   return config;
 }
 
+function removeIrrelevantSections(main) {
+  main.querySelectorAll(':scope > div').forEach((section) => {
+    const sectionMeta = section.querySelector('div.section-metadata');
+    if (sectionMeta) {
+      const meta = readBlockConfig(sectionMeta);
+      if (meta.audience && meta.audience !== document.body.dataset?.device) {
+        section.remove();
+      }
+    }
+  });
+}
+
 /**
  * Decorates all sections in a container element.
  * @param {Element} $main The container element
  */
-export function decorateSections($main) {
+function decorateSections($main) {
   let noAudienceFound = false;
   $main.querySelectorAll(':scope > div').forEach((section) => {
     const wrappers = [];
@@ -560,119 +597,6 @@ export function getCookie(cname) {
   return '';
 }
 
-function getCountry() {
-  let country = new URLSearchParams(window.location.search).get('country');
-  if (!country) {
-    country = getCookie('international');
-  }
-  if (!country) {
-    country = getLocale(window.location);
-  }
-  if (country === 'uk') country = 'gb';
-  return (country.split('_')[0]);
-}
-
-export function getCurrency(locale) {
-  const loc = locale || getCountry();
-  const currencies = {
-    ar: 'ARS',
-    at: 'EUR',
-    au: 'AUD',
-    be: 'EUR',
-    bg: 'EUR',
-    br: 'BRL',
-    ca: 'CAD',
-    ch: 'CHF',
-    cl: 'CLP',
-    co: 'COP',
-    cr: 'USD',
-    cy: 'EUR',
-    cz: 'EUR',
-    de: 'EUR',
-    dk: 'DKK',
-    ec: 'USD',
-    ee: 'EUR',
-    es: 'EUR',
-    fi: 'EUR',
-    fr: 'EUR',
-    gb: 'GBP',
-    gr: 'EUR',
-    gt: 'USD',
-    hk: 'HKD',
-    hu: 'EUR',
-    id: 'IDR',
-    ie: 'EUR',
-    il: 'ILS',
-    in: 'INR',
-    it: 'EUR',
-    jp: 'JPY',
-    kr: 'KRW',
-    lt: 'EUR',
-    lu: 'EUR',
-    lv: 'EUR',
-    mt: 'EUR',
-    mx: 'MXN',
-    my: 'MYR',
-    nl: 'EUR',
-    no: 'NOK',
-    nz: 'AUD',
-    pe: 'PEN',
-    ph: 'PHP',
-    pl: 'EUR',
-    pt: 'EUR',
-    ro: 'EUR',
-    ru: 'RUB',
-    se: 'SEK',
-    sg: 'SGD',
-    si: 'EUR',
-    sk: 'EUR',
-    th: 'THB',
-    tw: 'TWD',
-    us: 'USD',
-    ve: 'USD',
-    za: 'USD',
-    ae: 'USD',
-    bh: 'BHD',
-    eg: 'EGP',
-    jo: 'JOD',
-    kw: 'KWD',
-    om: 'OMR',
-    qa: 'USD',
-    sa: 'SAR',
-    ua: 'USD',
-    dz: 'USD',
-    lb: 'LBP',
-    ma: 'USD',
-    tn: 'USD',
-    ye: 'USD',
-    am: 'USD',
-    az: 'USD',
-    ge: 'USD',
-    md: 'USD',
-    tm: 'USD',
-    by: 'USD',
-    kz: 'USD',
-    kg: 'USD',
-    tj: 'USD',
-    uz: 'USD',
-    bo: 'USD',
-    do: 'USD',
-    hr: 'EUR',
-    ke: 'USD',
-    lk: 'USD',
-    mo: 'HKD',
-    mu: 'USD',
-    ng: 'USD',
-    pa: 'USD',
-    py: 'USD',
-    sv: 'USD',
-    tt: 'USD',
-    uy: 'USD',
-    vn: 'USD',
-  };
-  return currencies[loc];
-}
-
 export function getLanguage(locale) {
   const langs = {
     us: 'en-US',
@@ -744,16 +668,6 @@ function convertGlobToRe(glob) {
   return (new RegExp(reString));
 }
 
-function getCurrencyDisplay(currency) {
-  if (currency === 'JPY') {
-    return 'name';
-  }
-  if (['SEK', 'DKK', 'NOK'].includes(currency)) {
-    return 'code';
-  }
-  return 'symbol';
-}
-
 export async function fetchRelevantRows(path) {
   if (!window.relevantRows) {
     try {
@@ -781,60 +695,6 @@ export async function fetchRelevantRows(path) {
   return null;
 }
 
-export function formatPrice(price, currency) {
-  const locale = ['USD', 'TWD'].includes(currency)
-    ? 'en-GB' // use en-GB for intl $ symbol formatting
-    : getLanguage(getCountry());
-  const currencyDisplay = getCurrencyDisplay(currency);
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency,
-    currencyDisplay,
-  }).format(price)
-    .replace('SAR', 'SR'); // custom currency symbol for SAR
-}
-
-export async function getOffer(offerId, countryOverride) {
-  let country = getCountry();
-  if (countryOverride) country = countryOverride;
-  if (!country) country = 'us';
-  let currency = getCurrency(country);
-  if (!currency) {
-    country = 'us';
-    currency = 'USD';
-  }
-  const resp = await fetch('/express/system/offers-new.json');
-  if (!resp.ok) return {};
-  const json = await resp.json();
-  const upperCountry = country.toUpperCase();
-  let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
-  if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
-
-  if (offer) {
-    // console.log(offer);
-    const lang = getLanguage(getLocale(window.location)).split('-')[0];
-    const unitPrice = offer.p;
-    const unitPriceCurrencyFormatted = formatPrice(unitPrice, currency);
-    const commerceURL = `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${offerId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`;
-    const vatInfo = offer.vat;
-    const prefix = offer.pre;
-    const suffix = offer.suf;
-
-    return {
-      country,
-      currency,
-      unitPrice,
-      unitPriceCurrencyFormatted,
-      commerceURL,
-      lang,
-      vatInfo,
-      prefix,
-      suffix,
-    };
-  }
-  return {};
-}
-
 export function addBlockClasses($block, classNames) {
   const $rows = Array.from($block.children);
   $rows.forEach(($row) => {
@@ -852,20 +712,25 @@ export function addBlockClasses($block, classNames) {
 // }
 
 function decorateHeaderAndFooter() {
-  const $header = document.querySelector('header');
+  const header = document.querySelector('header');
 
-  $header.addEventListener('click', (event) => {
+  header.addEventListener('click', (event) => {
     if (event.target.id === 'feds-topnav') {
       const root = window.location.href.split('/express/')[0];
       window.location.href = `${root}/express/`;
     }
   });
 
-  $header.innerHTML = '<div id="feds-header"></div>';
-
-  document.querySelector('footer').innerHTML = `
-    <div id="feds-footer"></div>
-  `;
+  const headerMeta = getMeta('header');
+  if (headerMeta !== 'off') header.innerHTML = '<div id="feds-header"></div>';
+  else header.remove();
+  const footerMeta = getMeta('footer');
+  const footer = document.querySelector('footer');
+  if (footerMeta !== 'off') {
+    footer.innerHTML = `
+      <div id="feds-footer"></div>
+    `;
+  } else footer.remove();
 }
 
 /**
@@ -964,7 +829,7 @@ export function decorateBlock(block) {
  * Decorates all blocks in a container element.
  * @param {Element} main The container element
  */
-export function decorateBlocks(main) {
+function decorateBlocks(main) {
   main
     .querySelectorAll('div.section > div > div')
     .forEach((block) => decorateBlock(block));
@@ -1653,7 +1518,7 @@ export async function fixIcons(block = document) {
   });
 }
 
-export function unwrapBlock($block) {
+function unwrapBlock($block) {
   const $section = $block.parentNode;
   const $elems = [...$section.children];
   const $blockSection = createTag('div');
@@ -1677,6 +1542,9 @@ export function unwrapBlock($block) {
   if (!$postBlockSection.hasChildNodes()) {
     $postBlockSection.remove();
   }
+
+  // fixme: technically $section can become empty too after unwrapping.
+  //  This function currently leaves empty section after the generation of relevant rows
 }
 
 export function normalizeHeadings(block, allowedHeadings) {
@@ -1815,11 +1683,11 @@ async function buildAutoBlocks($main) {
       const relevantRowsData = await fetchRelevantRows(window.location.pathname);
 
       if (relevantRowsData) {
-        const $relevantRowsSection = createTag('div');
-        const $fragment = buildBlock('fragment', '/express/fragments/relevant-rows-default-v2');
-        $relevantRowsSection.dataset.audience = 'mobile';
-        $relevantRowsSection.append($fragment);
-        $main.insertBefore($relevantRowsSection, $main.firstElementChild.nextSibling);
+        const relevantRowsSection = createTag('div');
+        const fragment = buildBlock('fragment', '/express/fragments/relevant-rows-default-v2');
+        relevantRowsSection.dataset.audience = 'mobile';
+        relevantRowsSection.append(fragment);
+        $main.prepend(relevantRowsSection);
         window.relevantRowsLoaded = true;
       }
     }
@@ -1849,26 +1717,12 @@ async function buildAutoBlocks($main) {
     if (!window.floatingCtasLoaded) {
       const floatingCTAData = await fetchFloatingCta(window.location.pathname);
       const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
-      let desktopButton;
-      let mobileButton;
-
-      if (floatingCTAData) {
-        const buttonTypes = {
-          desktop: floatingCTAData.desktop,
-          mobile: floatingCTAData.mobile,
-        };
-
-        desktopButton = validButtonVersion.includes(buttonTypes.desktop) ? buildBlock(buttonTypes.desktop, 'desktop') : null;
-        mobileButton = validButtonVersion.includes(buttonTypes.mobile) ? buildBlock(buttonTypes.mobile, 'mobile') : null;
-
-        [desktopButton, mobileButton].forEach((button) => {
-          if (button) {
-            button.classList.add('spreadsheet-powered');
-            if ($lastDiv) {
-              $lastDiv.append(button);
-            }
-          }
-        });
+      const device = document.body.dataset?.device;
+      const blockName = floatingCTAData?.[device];
+      if (validButtonVersion.includes(blockName) && $lastDiv) {
+        const button = buildBlock(blockName, device);
+        button.classList.add('spreadsheet-powered');
+        $lastDiv.append(button);
       }
 
       window.floatingCtasLoaded = true;
@@ -1917,15 +1771,15 @@ function setTheme() {
     // mega nav, suppress brand header
     theme = 'no-brand-header';
   }
-  const $body = document.body;
+  const { body } = document;
   if (theme) {
     let themeClass = toClassName(theme);
     /* backwards compatibility can be removed again */
     if (themeClass === 'nobrand') themeClass = 'no-desktop-brand-header';
-    $body.classList.add(themeClass);
-    if (themeClass === 'blog') $body.classList.add('no-brand-header');
+    body.classList.add(themeClass);
+    if (themeClass === 'blog') body.classList.add('no-brand-header');
   }
-  $body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
+  body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
 
 function decorateLinkedPictures($main) {
@@ -2133,18 +1987,18 @@ function decoratePictures(main) {
   });
 }
 
-export async function decorateMain($main) {
-  await buildAutoBlocks($main);
-  splitSections($main);
-  decorateSections($main);
-  decorateButtons($main);
-  decorateBlocks($main);
-  decorateMarqueeColumns($main);
-  await fixIcons($main);
-  decoratePictures($main);
-  decorateLinkedPictures($main);
-  decorateSocialIcons($main);
-  makeRelativeLinks($main);
+export async function decorateMain(main) {
+  await buildAutoBlocks(main);
+  splitSections(main);
+  decorateSections(main);
+  decorateButtons(main);
+  decorateBlocks(main);
+  decorateMarqueeColumns(main);
+  await fixIcons(main);
+  decoratePictures(main);
+  decorateLinkedPictures(main);
+  decorateSocialIcons(main);
+  makeRelativeLinks(main);
 }
 
 const usp = new URLSearchParams(window.location.search);
@@ -2321,26 +2175,29 @@ function decorateLegalCopy(main) {
 /**
  * loads everything needed to get to LCP.
  */
-async function loadEager() {
+async function loadEager(main) {
   setTheme();
-  const main = document.querySelector('main');
   if (main) {
     const language = getLanguage(getLocale(window.location));
     const langSplits = language.split('-');
     langSplits.pop();
     const htmlLang = langSplits.join('-');
     document.documentElement.setAttribute('lang', htmlLang);
+
+    removeIrrelevantSections(main);
   }
   if (!window.hlx.lighthouse) await decorateTesting();
 
   // for backward compatibility
   // TODO: remove the href check after we tag content with sheet-powered
   if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
-    await import('./content-replace.js');
+    const { default: replaceContent } = await import('./content-replace.js');
+    await replaceContent();
   }
 
   if (getMetadata('template-search-page') === 'Y') {
-    await import('./template-redirect.js');
+    const { default: redirect } = await import('./template-redirect.js');
+    await redirect();
   }
 
   if (main) {
@@ -2354,13 +2211,10 @@ async function loadEager() {
     wordBreakJapanese();
 
     const lcpBlocks = ['columns', 'hero-animation', 'hero-3d', 'template-list', 'template-x', 'floating-button', 'fullscreen-marquee', 'fullscreen-marquee-desktop', 'collapsible-card', 'search-marquee'];
-    const blocks = document.querySelectorAll('.block');
-    const firstVisualBlock = Array.from(blocks).find((b) => {
-      const { audience } = b.closest('.section')?.dataset || {};
-      return audience === document.body.dataset.device;
-    });
-    const hasLCPBlock = (firstVisualBlock && lcpBlocks.includes(firstVisualBlock.getAttribute('data-block-name')));
-    if (hasLCPBlock) await loadBlock(firstVisualBlock, true);
+    if (getMetadata('show-relevant-rows') === 'yes') lcpBlocks.push('fragment');
+    const block = document.querySelector('.block');
+    const hasLCPBlock = (block && lcpBlocks.includes(block.getAttribute('data-block-name')));
+    if (hasLCPBlock) await loadBlock(block, true);
 
     document.querySelector('body').classList.add('appear');
 
@@ -2401,71 +2255,17 @@ function removeMetadata() {
   });
 }
 
-export async function buildStaticFreePlanWidget() {
-  const placeholders = await fetchPlaceholders();
-  const widget = createTag('div', { class: 'free-plan-widget' });
-  for (let i = 1; i < 3; i += 1) {
-    const checkMarkColor = i % 2 !== 0 ? '#c457f0' : '#f06dad';
-    const tagText = placeholders[`free-plan-check-${i}`];
-    const tagWrapper = createTag('div');
-    const checkMarkDiv = createTag('div', { style: `background-color: ${checkMarkColor}` });
-    const textDiv = createTag('div');
-    checkMarkDiv.append(getIconElement('checkmark'));
-    textDiv.textContent = tagText;
-    tagWrapper.append(checkMarkDiv, textDiv);
-    widget.append(tagWrapper);
-  }
-  return widget;
-}
-
-export async function addFreePlanWidget(elem) {
-  if (elem && ['yes', 'true'].includes(getMetadata('show-free-plan').toLowerCase())) {
-    const placeholders = await fetchPlaceholders();
-    const widget = await buildStaticFreePlanWidget();
-
-    document.addEventListener('planscomparisonloaded', () => {
-      const $learnMoreButton = createTag('a', {
-        class: 'learn-more-button',
-        href: '#plans-comparison-container',
-      });
-      const lottieWrapper = createTag('span', { class: 'lottie-wrapper' });
-
-      $learnMoreButton.textContent = placeholders['learn-more'];
-      lottieWrapper.innerHTML = getLottie('purple-arrows', '/express/icons/purple-arrows.json');
-      $learnMoreButton.append(lottieWrapper);
-      lazyLoadLottiePlayer();
-      widget.append($learnMoreButton);
-
-      $learnMoreButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        // temporarily disabling smooth scroll for accurate location
-        const $html = document.querySelector('html');
-        $html.style.scrollBehavior = 'unset';
-        const $plansComparison = document.querySelector('.plans-comparison-container');
-        $plansComparison.scrollIntoView();
-        $html.style.removeProperty('scroll-behavior');
-      });
-    });
-
-    elem.append(widget);
-    elem.classList.add('free-plan-container');
-  }
-}
-
 /**
  * loads everything that doesn't need to be delayed.
  */
-async function loadLazy() {
-  const main = document.querySelector('main');
-
+async function loadLazy(main) {
   // post LCP actions go here
   sampleRUM('lcp');
 
-  loadBlocks(main);
+  loadBlocks(main).then(() => addPromotion());
   loadCSS('/express/styles/lazy-styles.css');
   scrollToHash();
   resolveFragments();
-  addPromotion();
   removeMetadata();
   addFavIcon('/express/icons/cc-express.svg');
   if (!window.hlx.lighthouse) loadMartech();
@@ -2488,8 +2288,9 @@ async function decoratePage() {
   window.hlx.lighthouse = new URLSearchParams(window.location.search).get('lighthouse') === 'on';
   window.hlx.init = true;
 
-  await loadEager();
-  loadLazy();
+  const main = document.querySelector('main');
+  await loadEager(main);
+  loadLazy(main);
   loadGnav();
   if (window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) {
     import('../../tools/preview/preview.js');
@@ -2553,128 +2354,6 @@ function registerPerformanceLogger() {
   } catch (e) {
     // no output
   }
-}
-
-function getPlacement(btn) {
-  const parentBlock = btn.closest('.block');
-  let placement = 'outside-blocks';
-
-  if (parentBlock) {
-    const blockName = parentBlock.dataset.blockName || parentBlock.classList[0];
-    const sameBlocks = btn.closest('main')?.querySelectorAll(`.${blockName}`);
-
-    if (sameBlocks && sameBlocks.length > 1) {
-      sameBlocks.forEach((b, i) => {
-        if (b === parentBlock) {
-          placement = `${blockName}-${i + 1}`;
-        }
-      });
-    } else {
-      placement = blockName;
-    }
-
-    if (['template-list', 'template-x'].includes(blockName) && btn.classList.contains('placeholder')) {
-      placement = 'blank-template-cta';
-    }
-  }
-
-  return placement;
-}
-
-export async function trackBranchParameters($links) {
-  const placeholders = await fetchPlaceholders();
-  const rootUrl = new URL(window.location.href);
-  const rootUrlParameters = rootUrl.searchParams;
-
-  const { experiment } = window.hlx;
-  const { referrer } = window.document;
-  const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
-  const templateSearchTag = getMetadata('short-title');
-  const pageUrl = window.location.pathname;
-  const sdid = rootUrlParameters.get('sdid');
-  const mv = rootUrlParameters.get('mv');
-  const mv2 = rootUrlParameters.get('mv2');
-  const sKwcId = rootUrlParameters.get('s_kwcid');
-  const efId = rootUrlParameters.get('ef_id');
-  const promoId = rootUrlParameters.get('promoid');
-  const trackingId = rootUrlParameters.get('trackingid');
-  const cgen = rootUrlParameters.get('cgen');
-
-  $links.forEach(($a) => {
-    if ($a.href && $a.href.match('adobesparkpost.app.link')) {
-      const btnUrl = new URL($a.href);
-      const urlParams = btnUrl.searchParams;
-      const placement = getPlacement($a);
-
-      if (templateSearchTag
-        && placeholders['search-branch-links']
-        && placeholders['search-branch-links']
-          .replace(/\s/g, '')
-          .split(',')
-          .includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
-        urlParams.set('search', templateSearchTag);
-      }
-
-      if (referrer) {
-        urlParams.set('referrer', referrer);
-      }
-
-      if (pageUrl) {
-        urlParams.set('url', pageUrl);
-      }
-
-      if (sdid) {
-        urlParams.set('sdid', sdid);
-      }
-
-      if (mv) {
-        urlParams.set('mv', mv);
-      }
-
-      if (mv2) {
-        urlParams.set('mv2', mv2);
-      }
-
-      if (efId) {
-        urlParams.set('efid', efId);
-      }
-
-      if (sKwcId) {
-        const sKwcIdParameters = sKwcId.split('!');
-
-        if (typeof sKwcIdParameters[2] !== 'undefined' && sKwcIdParameters[2] === '3') {
-          urlParams.set('customer_placement', 'Google%20AdWords');
-        }
-
-        if (typeof sKwcIdParameters[8] !== 'undefined' && sKwcIdParameters[8] !== '') {
-          urlParams.set('keyword', sKwcIdParameters[8]);
-        }
-      }
-
-      if (promoId) {
-        urlParams.set('promoid', promoId);
-      }
-
-      if (trackingId) {
-        urlParams.set('trackingid', trackingId);
-      }
-
-      if (cgen) {
-        urlParams.set('cgen', cgen);
-      }
-
-      if (experimentStatus === 'active') {
-        urlParams.set('expid', `${experiment.id}-${experiment.selectedVariant}`);
-      }
-
-      if (placement) {
-        urlParams.set('ctaid', placement);
-      }
-
-      btnUrl.search = urlParams.toString();
-      $a.href = decodeURIComponent(btnUrl.toString());
-    }
-  });
 }
 
 if (window.name.includes('performance')) registerPerformanceLogger();
