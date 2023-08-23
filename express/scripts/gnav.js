@@ -176,7 +176,7 @@ async function loadFEDS() {
     const secondPathSegment = pathSegments[1].toLowerCase();
     const pagesShortNameElement = document.head.querySelector('meta[name="short-title"]');
     const pagesShortName = pagesShortNameElement?.getAttribute('content') ?? null;
-    const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`].toLowerCase();
+    const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
 
     if (!pagesShortName
       || pathSegments.length <= 2
