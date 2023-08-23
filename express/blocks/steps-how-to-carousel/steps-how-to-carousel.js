@@ -45,7 +45,8 @@ function buildSchema(block, payload) {
   rows.forEach((row, i) => {
     const cells = Array.from(row.children);
     const h3 = createTag('h3');
-    h3.innerHTML = cells[0].textContent.trim();
+    console.log(cells)
+    h3.innerHTML = cells[0]?.textContent.trim();
     const text = createTag('div', { class: 'tip-text' });
     text.append(h3);
 
