@@ -28,7 +28,7 @@ function activate(block, payload, target) {
 }
 
 function buildSchema(block, payload) {
-  const carouselDivs = block.querySelector('.content-wrapper');
+  const carouselDivs = block.querySelector('.carousel-wrapper .tips');
   const rows = Array.from(carouselDivs.children);
   const schemaObj = {
     '@context': 'http://schema.org',
@@ -45,8 +45,7 @@ function buildSchema(block, payload) {
   rows.forEach((row, i) => {
     const cells = Array.from(row.children);
     const h3 = createTag('h3');
-    console.log(cells)
-    h3.innerHTML = cells[0]?.textContent.trim();
+    h3.innerHTML = cells[0].textContent.trim();
     const text = createTag('div', { class: 'tip-text' });
     text.append(h3);
 
