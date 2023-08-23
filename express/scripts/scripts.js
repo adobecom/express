@@ -507,7 +507,6 @@ function removeIrrelevantSections(main) {
  * @param {Element} $main The container element
  */
 function decorateSections($main) {
-  let noAudienceFound = false;
   $main.querySelectorAll(':scope > div').forEach((section) => {
     const wrappers = [];
     let defaultContent = false;
@@ -541,12 +540,6 @@ function decorateSections($main) {
         }
       });
       sectionMeta.parentNode.remove();
-    }
-
-    if (section.dataset.audience && !noAudienceFound) {
-      section.style.paddingTop = '0';
-    } else {
-      noAudienceFound = true;
     }
   });
 }

@@ -130,7 +130,6 @@ async function buildBlockFromFragment($block) {
   }
 
   await fixIcons(newBlock);
-  console.log(newBlock);
   return newBlock;
 }
 
