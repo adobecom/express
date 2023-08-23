@@ -13,51 +13,9 @@
 /* eslint-disable import/named, import/extensions */
 
 import { createTag } from '../../scripts/scripts.js';
-
-function isDarkOverlayReadable(colorString) {
-  let r;
-  let g;
-  let b;
-
-  if (colorString.match(/^rgb/)) {
-    const colorValues = colorString.match(
-      /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/,
-    );
-    [r, g, b] = colorValues.slice(1);
-  } else {
-    const hexToRgb = +`0x${colorString
-      .slice(1)
-      .replace(colorString.length < 5 ? /./g : '', '$&$&')}`;
-    // eslint-disable-next-line no-bitwise
-    r = (hexToRgb >> 16) & 255;
-    // eslint-disable-next-line no-bitwise
-    g = (hexToRgb >> 8) & 255;
-    // eslint-disable-next-line no-bitwise
-    b = hexToRgb & 255;
-  }
-
-  const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
-  return hsp > 140;
-}
-
-function setPictureHeight(block, payload, override) {
-  if (!payload.fixedImageSize || override) {
-    // trick to fix the image height when vw > 900 and avoid image resize when toggling the tips
-    const container = block.parentElement.parentElement;
-    const picture = container.querySelector('picture');
-
-    if (picture) {
-      const img = picture.querySelector('img');
-      const panelHeight = block.parentElement.offsetHeight;
-      const imgHeight = img.naturalHeight;
-      picture.style.height = `${panelHeight || imgHeight}px`;
-      payload.fixedImageSize = true;
-    }
-  }
-}
+import isDarkOverlayReadable from '../../scripts/color-tools.js';
 
 function activate(block, payload, target) {
-  setPictureHeight(block, payload);
   // de-activate all
   block.querySelectorAll('.tip, .tip-number').forEach((item) => {
     item.classList.remove('active');
@@ -226,7 +184,7 @@ function getColorSVG(svgName) {
 
 export default async function decorate(block) {
   const payload = {
-    rotationInterva: null,
+    rotationInterval: null,
     fixedImageSize: false,
     howToDocument: block.ownerDocument,
     howToWindow: block.ownerDocument.defaultView,

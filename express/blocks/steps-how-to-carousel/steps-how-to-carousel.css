@@ -1,9 +1,9 @@
-/* to remove */
-main .section > .steps-how-to-carousel-wrapper {
+/* to remove after Milo migration */
+.section > .steps-how-to-carousel-wrapper {
     max-width: none;
 }
 
-main .steps-how-to-carousel {
+.steps-how-to-carousel {
     margin: 120px 0 0 0;
     gap: 24px;
     padding: 0;
@@ -12,12 +12,12 @@ main .steps-how-to-carousel {
     align-items: center;
 }
 
-main .steps-how-to-carousel > picture > img {
+.steps-how-to-carousel > picture > img {
     margin-bottom: 80px;
     width: calc(100% - 40px);
 }
 
-main .steps-how-to-carousel > .content-wrapper {
+.steps-how-to-carousel > .content-wrapper {
     background-color: var(--color-gray-100);
     text-align: left;
     border-radius: 40px;
@@ -27,28 +27,28 @@ main .steps-how-to-carousel > .content-wrapper {
     max-width: fit-content;
 }
 
-main .steps-how-to-carousel > .content-wrapper > a.button:any-link {
+.steps-how-to-carousel > .content-wrapper > a.button:any-link {
     text-align: left;
     margin: 0;
 }
 
-main .steps-how-to-carousel > .content-wrapper p.button-container {
+.steps-how-to-carousel > .content-wrapper p.button-container {
     margin: 16px 0;
 }
 
-main .steps-how-to-carousel > .content-wrapper > h2 {
+.steps-how-to-carousel > .content-wrapper > h2 {
     font-size: var(--heading-font-size-xl);
     text-align: left;
     margin-top: 0;
 }
 
-main .steps-how-to-carousel > .content-wrapper > div {
+.steps-how-to-carousel > .content-wrapper > div {
     max-width: 810px;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
 
-main .steps-how-to-carousel .tips .tip {
+.steps-how-to-carousel .tips .tip {
     display: none;
     grid-row-start: 1;
     grid-column-start: 1;
@@ -57,7 +57,7 @@ main .steps-how-to-carousel .tips .tip {
     margin-bottom: 56px;
 }
 
-main .steps-how-to-carousel .tips .tip.active {
+.steps-how-to-carousel .tips .tip.active {
     display: block;
     animation: fadeIn ease 2s;
     -webkit-animation: fadeIn ease 2s;
@@ -66,7 +66,7 @@ main .steps-how-to-carousel .tips .tip.active {
     -ms-animation: fadeIn ease 2s;
 }
 
-main .steps-how-to-carousel .tip-numbers {
+.steps-how-to-carousel .tip-numbers {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -74,7 +74,7 @@ main .steps-how-to-carousel .tip-numbers {
     margin-top: 18px;
 }
 
-main .steps-how-to-carousel .tip-number {
+.steps-how-to-carousel .tip-number {
     width: 34px;
     min-width: 34px;
     height: 34px;
@@ -92,28 +92,28 @@ main .steps-how-to-carousel .tip-number {
     cursor: pointer;
 }
 
-main .steps-how-to-carousel.dark .tip-number {
+.steps-how-to-carousel.dark .tip-number {
     background-color: var(--color-gray-400);
 }
 
-main .steps-how-to-carousel .tip-number:focus {
+.steps-how-to-carousel .tip-number:focus {
     outline: none;
     box-shadow:
             0 0 0 2px var(--color-white),
             0 0 0 4px var(--color-info-accent );
 }
 
-main .steps-how-to-carousel .tip-number.active {
+.steps-how-to-carousel .tip-number.active {
     background-color: var(--color-black);
     color: var(--color-white);
 }
 
-main .steps-how-to-carousel.dark .tip-number.active {
+.steps-how-to-carousel.dark .tip-number.active {
     background-color: var(--color-white);
     color: var(--color-black);
 }
 
-main .steps-how-to-carousel .tip-number span {
+.steps-how-to-carousel .tip-number span {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -121,35 +121,34 @@ main .steps-how-to-carousel .tip-number span {
     transform: translate(-50%, -50%);
 }
 
-main .steps-how-to-carousel .tip-text p,
-main .steps-how-to-carousel .tip-text div {
+.steps-how-to-carousel .tip-text p,
+.steps-how-to-carousel .tip-text div {
     font-size: var(--body-font-size-xl);
     margin-top: 16px;
     margin-bottom: 0;
 }
 
-main .steps-how-to-carousel .tip-text h3 {
+.steps-how-to-carousel .tip-text h3 {
     margin-bottom: 16px;
     font-size: var(--heading-font-size-m);
     text-align: left;
 }
 
-main .steps-how-to-carousel .icon {
+.steps-how-to-carousel .icon {
     width: 56px;
     height: 56px;
 }
 
-main .steps-how-to-carousel.color > .img-wrapper {
+.steps-how-to-carousel.color > .img-wrapper {
     position: relative;
     padding: 16px;
     border-radius: 20px;
     margin: 0 24px;
     height: calc((100vw - 80px) / 300 * 426);
     width: calc(100vw - 80px);
-    background-color: var(--color-gray-100);
 }
 
-main .steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay {
+.steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay {
     position: absolute;
     text-align: left;
     padding-left: 4%;
@@ -157,24 +156,24 @@ main .steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay {
     padding-top: 4%;
 }
 
-main .steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay .color-name {
+.steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay .color-name {
     font-size: calc(10vw - 10px);
     margin: unset;
     line-height: 1.3;
 }
 
-main .steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay .color-hex {
+.steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay .color-hex {
     font-size: calc(14vw - 12px);
     margin: unset;
     line-height: 1.3;
 }
 
-main .steps-how-to-carousel.color > .img-wrapper > svg {
+.steps-how-to-carousel.color > .img-wrapper > svg {
     height: inherit;
     width: inherit;
 }
 
-main .steps-how-to-carousel.color.light .content-wrapper a.button:any-link {
+.steps-how-to-carousel.color.light .content-wrapper a.button:any-link {
     padding: 12px 24px;
     border-radius: 24px;
     border: none;
@@ -182,7 +181,7 @@ main .steps-how-to-carousel.color.light .content-wrapper a.button:any-link {
     color: var(--color-black);
 }
 
-main .steps-how-to-carousel.color.dark .content-wrapper a.button:any-link {
+.steps-how-to-carousel.color.dark .content-wrapper a.button:any-link {
     padding: 12px 24px;
     border-radius: 24px;
     border: none;
@@ -191,11 +190,11 @@ main .steps-how-to-carousel.color.dark .content-wrapper a.button:any-link {
 }
 
 @media (min-width: 600px) {
-    main .steps-how-to-carousel {
+    .steps-how-to-carousel {
         gap: unset;
     }
 
-    main .steps-how-to-carousel > picture > img {
+    .steps-how-to-carousel > picture > img {
         margin: 0;
         object-position: right;
         object-fit: cover;
@@ -204,64 +203,63 @@ main .steps-how-to-carousel.color.dark .content-wrapper a.button:any-link {
         width: unset;
     }
 
-    main .steps-how-to-carousel.color > .img-wrapper {
+    .steps-how-to-carousel.color > .img-wrapper {
         padding: 24px;
         height: 570px;
         width: 412px;
     }
 
-    main .steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay .color-name {
+    .steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay .color-name {
         font-size: var(--heading-font-size-m);
     }
 
-    main .steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay .color-hex {
+    .steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay .color-hex {
         font-size: var(--heading-font-size-xxl);
     }
 
-    main .steps-how-to-carousel > .content-wrapper {
-        margin: 0 24px 0 80px;
-    }
-
-    main .steps-how-to-carousel .tips .tip {
+    .steps-how-to-carousel .tips .tip {
         margin-top: 64px;
         margin-bottom: 80px;
     }
 
-    main .steps-how-to-carousel {
-        display: flex;
+    .steps-how-to-carousel {
         justify-content: flex-end;
         flex-direction: row;
         align-items: start;
     }
 
-    main .steps-how-to-carousel.color {
+    .steps-how-to-carousel.color {
         align-items: center;
     }
 
-    main .steps-how-to-carousel > .content-wrapper {
+    .steps-how-to-carousel > .content-wrapper {
         max-width: 600px;
         flex-basis: 60%;
         padding: 80px 70px;
     }
 
-    main .steps-how-to-carousel.color .content-wrapper a.button:any-link {
+    .steps-how-to-carousel.color .content-wrapper a.button:any-link {
         font-size: var(--body-font-size-m);
         padding: 14px 24px;
     }
 }
 
 @media (min-width: 900px) {
-    main .steps-how-to-carousel > .content-wrapper p.button-container {
+    .steps-how-to-carousel > .content-wrapper {
+        margin: 0 24px 0 80px;
+    }
+
+    .steps-how-to-carousel > .content-wrapper p.button-container {
         margin: 40px 0 0;
     }
 }
 
 @media (min-width: 1200px) {
-    main .steps-how-to-carousel {
+    .steps-how-to-carousel {
         justify-content: center;
     }
 
-    main .steps-how-to-carousel.no-cover > div {
+    .steps-how-to-carousel.no-cover > div {
         margin: 0 120px 0 20px;
     }
 }
