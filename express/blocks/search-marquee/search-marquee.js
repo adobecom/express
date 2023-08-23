@@ -32,9 +32,11 @@ function handlelize(str) {
     .toLowerCase(); // To lowercase
 }
 
-function logSearch(form, url = 'https://main--express-website--adobe.hlx.page/express/search-terms-log') {
+function logSearch(form, url = '/express/search-terms-log') {
   if (form) {
     const input = form.querySelector('input');
+    const currentHref = new URL(window.location.href);
+    const params = new URLSearchParams(currentHref.search);
     fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -44,6 +46,9 @@ function logSearch(form, url = 'https://main--express-website--adobe.hlx.page/ex
           locale: getLocale(window.location),
           timestamp: Date.now(),
           audience: document.body.dataset.device,
+          sourcePath: window.location.pathname,
+          previousSearch: params.toString() || 'N/A',
+          sessionId: sessionStorage.getItem('u_scsid'),
         },
       }),
     });
