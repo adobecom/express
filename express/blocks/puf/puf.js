@@ -260,7 +260,7 @@ function decorateCard($block, cardClass) {
   const $cardBanner = $block.children[0].children[0];
   const $cardTop = $block.children[1].children[0];
   const $cardBottom = $block.children[2].children[0];
-  const $cardHeader = $cardTop.querySelector('h3');
+  const $cardHeader = $cardTop.querySelector('h3, p:first-of-type');
   const $cardHeaderSvg = $cardTop.querySelector('svg');
   const $cardPricingHeader = createTag('h2', { class: 'puf-pricing-header' });
   const $cardVat = createTag('div', { class: 'puf-vat-info' });
@@ -272,6 +272,13 @@ function decorateCard($block, cardClass) {
 
   if (cardClass === 'puf-left') {
     $cardCta.classList.add('reverse', 'accent');
+  }
+
+  let formattedHeader = createTag('h3');
+  if ($cardHeader?.tagName === 'P') {
+    formattedHeader.textContent = $cardHeader.lastChild.data;
+  } else if ($cardHeader?.tagName === 'H3') {
+    formattedHeader = $cardHeader;
   }
 
   $cardBanner.classList.add('puf-card-banner');
@@ -286,7 +293,7 @@ function decorateCard($block, cardClass) {
   $cardTop.prepend($cardPlansContainer);
   $cardTop.prepend($cardVat);
   $cardTop.prepend($cardPricingHeader);
-  $cardTop.prepend($cardHeader);
+  $cardTop.prepend(formattedHeader);
 
   if (!$cardBanner.textContent.trim()) {
     $cardBanner.style.display = 'none';
@@ -294,7 +301,7 @@ function decorateCard($block, cardClass) {
     $cardBanner.classList.add('recommended');
   }
 
-  $cardHeader.prepend($cardHeaderSvg);
+  if ($cardHeaderSvg) formattedHeader.prepend($cardHeaderSvg);
 
   if (plans.length) {
     selectPlan($card, plans[0].url, false);
@@ -442,6 +449,86 @@ function highlightText($block) {
   });
 }
 
+function alignP($block) {
+  const isDesktop = window.innerWidth >= 900;
+
+  if (isDesktop) {
+    const card1 = $block.querySelector('.puf-card.puf-left > .puf-card-top > p:last-of-type');
+    const card2 = $block.querySelector('.puf-card.puf-right > .puf-card-top > p:last-of-type');
+
+    const adjustHeight = () => {
+      if (card1 && card2) {
+        card1.style.height = 'auto';
+        card2.style.height = 'auto';
+
+        const maxHeight = Math.max(
+          card1.getBoundingClientRect().height,
+          card2.getBoundingClientRect().height,
+        );
+
+        card1.style.height = `${maxHeight}px`;
+        card2.style.height = `${maxHeight}px`;
+      } else if (card1) {
+        card1.style.height = 'auto';
+      } else if (card2) {
+        card2.style.height = 'auto';
+      }
+    };
+
+    const ro = new ResizeObserver(() => adjustHeight());
+
+    if (card1) {
+      ro.observe(card1);
+    }
+
+    if (card2) {
+      ro.observe(card2);
+    }
+
+    adjustHeight();
+  }
+}
+
+function alignHighlights($block) {
+  const isDesktop = window.innerWidth >= 900;
+
+  if (isDesktop) {
+    const cardLeft = $block.querySelector('.puf-card.puf-left > .puf-card-bottom > h3');
+    const cardRight = $block.querySelector('.puf-card.puf-right > .puf-card-bottom > h3');
+
+    const adjustHeight = () => {
+      if (cardLeft && cardRight) {
+        cardLeft.style.height = 'auto';
+        cardRight.style.height = 'auto';
+
+        const maxHeightTitle = Math.max(
+          cardLeft.getBoundingClientRect().height,
+          cardRight.getBoundingClientRect().height,
+        );
+
+        cardLeft.style.height = `${maxHeightTitle}px`;
+        cardRight.style.height = `${maxHeightTitle}px`;
+      } else if (cardLeft) {
+        cardLeft.style.height = 'auto';
+      } else if (cardRight) {
+        cardRight.style.height = 'auto';
+      }
+    };
+
+    const ro = new ResizeObserver(() => adjustHeight());
+
+    if (cardLeft) {
+      ro.observe(cardLeft);
+    }
+
+    if (cardRight) {
+      ro.observe(cardRight);
+    }
+
+    adjustHeight();
+  }
+}
+
 function decorateFooter($block) {
   if ($block?.children?.[3]) {
     const $footer = createTag('div', { class: 'puf-pricing-footer' });
@@ -464,7 +551,8 @@ export default function decorate($block) {
   updatePUFCarousel($block);
   addPublishDependencies('/express/system/offers-new.json');
   wrapTextAndSup($block);
-
   $block.append($footer);
+  alignP($block);
   highlightText($block);
+  alignHighlights($block);
 }
