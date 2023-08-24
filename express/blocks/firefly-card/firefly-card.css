@@ -6,7 +6,7 @@
 .firefly-card h3 {
   display: flex;
   position: relative;
-  z-index: 2;
+  z-index: 3;
   font-size: var(--heading-font-size-s);
   color: var(--color-white);
   font-weight: 700;
@@ -33,7 +33,14 @@
   filter: brightness(0.6);
 }
 
+.firefly-card picture {
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+  z-index: 0;
+}
+
 .firefly-card picture.show {
+  opacity: 1;
   z-index: 1;
 }
 
@@ -54,20 +61,25 @@
   font-size: var(--body-font-size-l);
   font-weight: normal;
   z-index: 1;
-  width: 294px;
   height: 44px;
+  min-width: 46px;
   border-radius: 36px;
   box-shadow: 0px 3px 6px #00000029;
-  padding: 0 1rem 1rem 1rem;
+  padding: 0 1.5rem 1.25rem 1rem;
   margin: 1.25rem 0 0.75rem 0;
 }
 
 .firefly-card .mock-text {
+  position: relative;
   height: 3px;
 }
 
 .firefly-card .mock-text.cursor-on::after {
   content: '|';
+  position: absolute;
+  top: 0;
+  right: -4px;
+  opacity: 1;
 }
 
 .firefly-card a.button {

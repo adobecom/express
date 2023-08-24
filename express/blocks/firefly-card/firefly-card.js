@@ -38,20 +38,22 @@ const eraseWord = (textSpan, speed) => new Promise((resolve) => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const initCycleCards = async (card, textSpan) => {
+const initCycleCards = async (card, textSpan, block) => {
   const typingSpeed = 100;
   const eraseSpeed = 20;
   const typingDelay = 1000;
   const eraseDelay = 2000;
-  let previousCard;
+  const photos = block.querySelectorAll('picture');
+
   await sleep(typingDelay);
   await typeWord(textSpan, card.text, typingSpeed);
-  if (previousCard) previousCard.photo.classList.remove('show');
   card.photo.classList.add('show');
-  previousCard = card;
+  photos.forEach((photo) => {
+    if (photo !== card.photo) photo.classList.remove('show');
+  });
   await sleep(eraseDelay);
   await eraseWord(textSpan, eraseSpeed);
-}
+};
 
 const initTypingAnimation = async (block, payload) => {
   const textSpan = block.querySelector('.mock-text');
@@ -61,7 +63,7 @@ const initTypingAnimation = async (block, payload) => {
   while (true) {
     for (const card of payload.cards) {
       // eslint-disable-next-line no-await-in-loop
-      await initCycleCards(card, textSpan);
+      await initCycleCards(card, textSpan, block);
     }
   }
 };
@@ -87,6 +89,8 @@ const buildCard = (block, payload) => {
   const textSpan = createTag('span', { class: 'mock-text' });
   const textDiv = createTag('div', { class: 'mock-text-wrapper' });
 
+  // console.log(payload.cards[0].photo);
+  payload.cards[4].photo.classList.add('show');
   aTag.href = payload.link;
   textDiv.append(textSpan);
   payload.cards.forEach((card) => aTag.append(card.photo));
