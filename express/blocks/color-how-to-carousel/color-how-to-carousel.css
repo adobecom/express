@@ -1,9 +1,9 @@
 /* to remove after Milo migration */
-.section > .steps-how-to-carousel-wrapper {
+.section > .color-how-to-carousel-wrapper {
     max-width: none;
 }
 
-.steps-how-to-carousel {
+.color-how-to-carousel {
     margin: 120px 0 0 0;
     gap: 24px;
     padding: 0;
@@ -12,12 +12,12 @@
     align-items: center;
 }
 
-.steps-how-to-carousel > picture > img {
+.color-how-to-carousel > picture > img {
     margin-bottom: 80px;
     width: calc(100% - 40px);
 }
 
-.steps-how-to-carousel > .content-wrapper {
+.color-how-to-carousel > .content-wrapper {
     background-color: var(--color-gray-100);
     text-align: left;
     border-radius: 40px;
@@ -27,28 +27,28 @@
     max-width: fit-content;
 }
 
-.steps-how-to-carousel > .content-wrapper > a.button:any-link {
+.color-how-to-carousel > .content-wrapper > a.button:any-link {
     text-align: left;
     margin: 0;
 }
 
-.steps-how-to-carousel > .content-wrapper p.button-container {
+.color-how-to-carousel > .content-wrapper p.button-container {
     margin: 16px 0;
 }
 
-.steps-how-to-carousel > .content-wrapper > h2 {
+.color-how-to-carousel > .content-wrapper > h2 {
     font-size: var(--heading-font-size-xl);
     text-align: left;
     margin-top: 0;
 }
 
-.steps-how-to-carousel > .content-wrapper > div {
+.color-how-to-carousel > .content-wrapper > div {
     max-width: 810px;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
 
-.steps-how-to-carousel .tips .tip {
+.color-how-to-carousel .tips .tip {
     display: none;
     grid-row-start: 1;
     grid-column-start: 1;
@@ -57,7 +57,7 @@
     margin-bottom: 56px;
 }
 
-.steps-how-to-carousel .tips .tip.active {
+.color-how-to-carousel .tips .tip.active {
     display: block;
     animation: fadeIn ease 2s;
     -webkit-animation: fadeIn ease 2s;
@@ -66,7 +66,7 @@
     -ms-animation: fadeIn ease 2s;
 }
 
-.steps-how-to-carousel .tip-numbers {
+.color-how-to-carousel .tip-numbers {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -74,7 +74,7 @@
     margin-top: 18px;
 }
 
-.steps-how-to-carousel .tip-number {
+.color-how-to-carousel .tip-number {
     width: 34px;
     min-width: 34px;
     height: 34px;
@@ -92,28 +92,28 @@
     cursor: pointer;
 }
 
-.steps-how-to-carousel.dark .tip-number {
+.color-how-to-carousel.dark .tip-number {
     background-color: var(--color-gray-400);
 }
 
-.steps-how-to-carousel .tip-number:focus {
+.color-how-to-carousel .tip-number:focus {
     outline: none;
     box-shadow:
             0 0 0 2px var(--color-white),
             0 0 0 4px var(--color-info-accent );
 }
 
-.steps-how-to-carousel .tip-number.active {
+.color-how-to-carousel .tip-number.active {
     background-color: var(--color-black);
     color: var(--color-white);
 }
 
-.steps-how-to-carousel.dark .tip-number.active {
+.color-how-to-carousel.dark .tip-number.active {
     background-color: var(--color-white);
     color: var(--color-black);
 }
 
-.steps-how-to-carousel .tip-number span {
+.color-how-to-carousel .tip-number span {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -121,25 +121,25 @@
     transform: translate(-50%, -50%);
 }
 
-.steps-how-to-carousel .tip-text p,
-.steps-how-to-carousel .tip-text div {
+.color-how-to-carousel .tip-text p,
+.color-how-to-carousel .tip-text div {
     font-size: var(--body-font-size-xl);
     margin-top: 16px;
     margin-bottom: 0;
 }
 
-.steps-how-to-carousel .tip-text h3 {
+.color-how-to-carousel .tip-text h3 {
     margin-bottom: 16px;
     font-size: var(--heading-font-size-m);
     text-align: left;
 }
 
-.steps-how-to-carousel .icon {
+.color-how-to-carousel .icon {
     width: 56px;
     height: 56px;
 }
 
-.steps-how-to-carousel.color > .img-wrapper {
+.color-how-to-carousel > .img-wrapper {
     position: relative;
     padding: 16px;
     border-radius: 20px;
@@ -148,7 +148,7 @@
     width: calc(100vw - 80px);
 }
 
-.steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay {
+.color-how-to-carousel > .img-wrapper .color-graph-text-overlay {
     position: absolute;
     text-align: left;
     padding-left: 4%;
@@ -156,24 +156,24 @@
     padding-top: 4%;
 }
 
-.steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay .color-name {
+.color-how-to-carousel > .img-wrapper .color-graph-text-overlay .color-name {
     font-size: calc(10vw - 10px);
     margin: unset;
     line-height: 1.3;
 }
 
-.steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay .color-hex {
+.color-how-to-carousel > .img-wrapper .color-graph-text-overlay .color-hex {
     font-size: calc(14vw - 12px);
     margin: unset;
     line-height: 1.3;
 }
 
-.steps-how-to-carousel.color > .img-wrapper > svg {
+.color-how-to-carousel > .img-wrapper > svg {
     height: inherit;
     width: inherit;
 }
 
-.steps-how-to-carousel.color.light .content-wrapper a.button:any-link {
+.color-how-to-carousel.light .content-wrapper a.button:any-link {
     padding: 12px 24px;
     border-radius: 24px;
     border: none;
@@ -181,7 +181,7 @@
     color: var(--color-black);
 }
 
-.steps-how-to-carousel.color.dark .content-wrapper a.button:any-link {
+.color-how-to-carousel.dark .content-wrapper a.button:any-link {
     padding: 12px 24px;
     border-radius: 24px;
     border: none;
@@ -190,11 +190,11 @@
 }
 
 @media (min-width: 600px) {
-    .steps-how-to-carousel {
+    .color-how-to-carousel {
         gap: unset;
     }
 
-    .steps-how-to-carousel > picture > img {
+    .color-how-to-carousel > picture > img {
         margin: 0;
         object-position: right;
         object-fit: cover;
@@ -203,63 +203,63 @@
         width: unset;
     }
 
-    .steps-how-to-carousel.color > .img-wrapper {
+    .color-how-to-carousel > .img-wrapper {
         padding: 24px;
         height: 570px;
         width: 412px;
     }
 
-    .steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay .color-name {
+    .color-how-to-carousel > .img-wrapper .color-graph-text-overlay .color-name {
         font-size: var(--heading-font-size-m);
     }
 
-    .steps-how-to-carousel.color > .img-wrapper .color-graph-text-overlay .color-hex {
+    .color-how-to-carousel > .img-wrapper .color-graph-text-overlay .color-hex {
         font-size: var(--heading-font-size-xxl);
     }
 
-    .steps-how-to-carousel .tips .tip {
+    .color-how-to-carousel .tips .tip {
         margin-top: 64px;
         margin-bottom: 80px;
     }
 
-    .steps-how-to-carousel {
+    .color-how-to-carousel {
         justify-content: flex-end;
         flex-direction: row;
         align-items: start;
     }
 
-    .steps-how-to-carousel.color {
+    .color-how-to-carousel {
         align-items: center;
     }
 
-    .steps-how-to-carousel > .content-wrapper {
+    .color-how-to-carousel > .content-wrapper {
         max-width: 600px;
         flex-basis: 60%;
         padding: 80px 70px;
     }
 
-    .steps-how-to-carousel.color .content-wrapper a.button:any-link {
+    .color-how-to-carousel .content-wrapper a.button:any-link {
         font-size: var(--body-font-size-m);
         padding: 14px 24px;
     }
 }
 
 @media (min-width: 900px) {
-    .steps-how-to-carousel > .content-wrapper {
+    .color-how-to-carousel > .content-wrapper {
         margin: 0 24px 0 80px;
     }
 
-    .steps-how-to-carousel > .content-wrapper p.button-container {
+    .color-how-to-carousel > .content-wrapper p.button-container {
         margin: 40px 0 0;
     }
 }
 
 @media (min-width: 1200px) {
-    .steps-how-to-carousel {
+    .color-how-to-carousel {
         justify-content: center;
     }
 
-    .steps-how-to-carousel.no-cover > div {
+    .color-how-to-carousel.no-cover > div {
         margin: 0 120px 0 20px;
     }
 }

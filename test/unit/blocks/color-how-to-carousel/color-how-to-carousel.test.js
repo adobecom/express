@@ -13,10 +13,10 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
-const { default: decorate } = await import('../../../../express/blocks/steps-how-to-carousel/steps-how-to-carousel.js');
+const { default: decorate } = await import('../../../../express/blocks/color-how-to-carousel/color-how-to-carousel.js');
 const testBody = await readFile({ path: './mocks/body.html' });
 
-describe('Steps How To Carousel', () => {
+describe('Color How To Carousel', () => {
   beforeEach(() => {
     window.isTestEnv = true;
     document.body.innerHTML = testBody;
