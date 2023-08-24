@@ -169,10 +169,11 @@ async function fetchPlan(planUrl) {
       plan.country = offer.country;
       plan.vatInfo = offer.vatInfo;
       plan.language = offer.lang;
+      plan.formatterBP = offer.basePrice;
       plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
-      plan.formatted = plan.formatted.replace(plan.rawPrice[0], `<strong>${plan.prefix}${plan.rawPrice[0]}${plan.suffix}</strong>`);
+      plan.formatted = plan.formatted.replace(plan.rawPrice[0], `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`);
     }
 
     window.pricingPlans[planUrl] = plan;
@@ -188,9 +189,11 @@ async function selectPlan(card, planUrl, sendAnalyticEvent) {
     const pricingCta = card.querySelector('.puf-card-top a');
     const pricingHeader = card.querySelector('.puf-pricing-header');
     const pricingVat = card.querySelector('.puf-vat-info');
+    const pricingBase = card.querySelector('.puf-bp-header');
 
     pricingHeader.innerHTML = plan.formatted;
     pricingHeader.classList.add(plan.currency.toLowerCase());
+    pricingBase.innerHTML = plan.basePrice;
     pricingVat.textContent = plan.vatInfo;
     pricingCta.href = buildUrl(plan.url, plan.country, plan.language);
     pricingCta.dataset.planUrl = planUrl;
@@ -263,6 +266,8 @@ function decorateCard(block, cardClass = '') {
   const cardBottom = block.children[2].children[0];
   const cardHeader = cardTop.querySelector('h3');
   const cardHeaderSvg = cardTop.querySelector('svg');
+  const cardPricingContainer = createTag('div', { class: 'puf-pricing-container' });
+  const cardBasePriceHeader = createTag('h2', { class: 'puf-bp-header' });
   const cardPricingHeader = createTag('h2', { class: 'puf-pricing-header' });
   const cardVat = createTag('div', { class: 'puf-vat-info' });
   const cardAdditionalContext = createTag('div', { class: 'puf-pricing-context' });
@@ -280,10 +285,10 @@ function decorateCard(block, cardClass = '') {
   cardTop.classList.add('puf-card-top');
   cardBottom.classList.add('puf-card-bottom');
 
+  cardPricingContainer.append(cardBasePriceHeader, cardPricingHeader, cardVat);
   cardTop.prepend(
     cardHeader,
-    cardPricingHeader,
-    cardVat,
+    cardPricingContainer,
     cardAdditionalContext,
     cardPlansContainer,
     cardCta,

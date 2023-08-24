@@ -55,6 +55,11 @@ main .block.puf .puf-card .puf-card-top {
     margin-bottom: 10px;
 }
 
+main .block.puf .puf-card .puf-card-top .puf-pricing-container {
+    display: flex;
+    align-items: flex-end;
+}
+
 main .block.puf .puf-card .puf-card-top h3 {
     display: flex;
     align-items: center;
@@ -275,7 +280,7 @@ main .block.puf.two-col .puf-card-container:not(:has(.recommended)) {
 }
 
 main .block.puf .puf-card-container:has(.recommended) {
-    background: linear-gradient(156deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
+    background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
     box-shadow: 0 0 24px #00000029;
     padding: 48px 8px 8px 8px;
     margin-top: 20px;
@@ -352,14 +357,19 @@ main .block.puf .puf-card .puf-card-banner {
         min-height: 320px;
     }
 
+    main .block.puf .puf-card .puf-card-top .puf-pricing-container {
+        margin-top: 10px;
+    }
+
     main .block.puf .puf-card .puf-card-top h2 {
-        margin: 10px 0 0 0;
+        margin: 0;
     }
 
     main .block.puf .puf-card.puf-left .puf-vat-info,
     main .block.puf .puf-card.puf-right .puf-vat-info {
+        padding: 4px;
         height: 24px;
-        line-height: 1;
+        line-height: 24px;
     }
 
     main .block.puf .puf-card .puf-pricing-context {

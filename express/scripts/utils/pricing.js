@@ -180,6 +180,8 @@ export async function getOffer(offerId, countryOverride) {
     const vatInfo = offer.vat;
     const prefix = offer.pre;
     const suffix = offer.suf;
+    const basePrice = offer.bp;
+    const basePriceCurrencyFormatted = formatPrice(basePrice, currency);
 
     return {
       country,
@@ -191,6 +193,8 @@ export async function getOffer(offerId, countryOverride) {
       vatInfo,
       prefix,
       suffix,
+      basePrice,
+      basePriceCurrencyFormatted,
     };
   }
   return {};
