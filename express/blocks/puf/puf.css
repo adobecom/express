@@ -315,6 +315,13 @@ main .block.puf .puf-card .puf-card-banner {
     border-radius: 20px 20px 0 0;
 }
 
+main .block.puf .puf-card .puf-card-banner a {
+    margin-left: 4px;
+    color: unset;
+    font-weight: unset;
+    text-decoration: underline;
+}
+
 
 @media (min-width: 900px) {
     main .puf.block .carousel-container {
