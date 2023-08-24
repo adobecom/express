@@ -1542,6 +1542,10 @@ function unwrapBlock($block) {
     $postBlockSection.remove();
   }
 
+  if (!$section.hasChildNodes()) {
+    $section.remove();
+  }
+  
   // fixme: technically $section can become empty too after unwrapping.
   //  This function currently leaves empty section after the generation of relevant rows
 }
