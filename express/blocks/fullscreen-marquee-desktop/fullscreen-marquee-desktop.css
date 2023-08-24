@@ -1,4 +1,4 @@
-main .fullscreen-marquee-desktop-container {
+.fullscreen-marquee-desktop-container {
   min-height: 460px;
   box-sizing: border-box;
   padding: 0 0 160px 0;
@@ -6,13 +6,13 @@ main .fullscreen-marquee-desktop-container {
   height: 100%;
 }
 
-main .section > div.fullscreen-marquee-desktop-wrapper {
+.section > div.fullscreen-marquee-desktop-wrapper {
   max-width: none;
 }
 
-main .fullscreen-marquee-desktop {
+.fullscreen-marquee-desktop {
   position: relative;
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -21,11 +21,11 @@ main .fullscreen-marquee-desktop {
   padding-top: 80px;
 }
 
-main .fullscreen-marquee-desktop.has-background {
+.fullscreen-marquee-desktop.has-background {
   padding-bottom: 160px;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-heading {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-heading {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -33,12 +33,12 @@ main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-heading {
   max-width: 1160px;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-heading h1 {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-heading h1 {
   font-size: 80px;
   line-height: 90px;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-heading p {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-heading p {
   justify-content: center;
   max-width: 680px;
   margin: 10px 0;
@@ -46,18 +46,18 @@ main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-heading p {
   line-height: 30px;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-heading .button-container {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-heading .button-container {
   display: flex;
   align-items: center;
 }
 
-main .fullscreen-marquee-desktop-heading h1.budoux {
+.fullscreen-marquee-desktop-heading h1.budoux {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-main .fullscreen-marquee-desktop-heading h1 em {
+.fullscreen-marquee-desktop-heading h1 em {
   font-style: normal;
   background: linear-gradient(320deg, #7C84F3, #FF4DD2, #FF993B, #FF4DD2, #7C84F3, #FF4DD2, #FF993B);
   background-size: 400% 400%;
@@ -69,7 +69,7 @@ main .fullscreen-marquee-desktop-heading h1 em {
   -webkit-text-fill-color: transparent;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-background {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-background {
   position: absolute;
   height: 100%;
   width: 100%;
@@ -81,20 +81,20 @@ main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-background {
   transform: translateX(-50%);
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-background img {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-background img {
   max-width: none;
   height: 100%;
   width: 100%;
   object-fit: cover;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frame {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frame {
   margin-top: 40px;
   position: relative;
   width: 950px;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-background {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-background {
   position: absolute;
   top: -15px;
   left: -15px;
@@ -107,17 +107,17 @@ main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-background {
   transition: transform 1s cubic-bezier(0.22, 0.78, 0.24, 0.98);
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app {
   transform-style: preserve-3d;
   transition: transform 1s cubic-bezier(0.22, 0.78, 0.24, 0.98);
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-image img {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-image img {
   width: 950px;
   border-radius: 24px;
 }
 
-main .fullscreen-marquee-desktop-app-frame-highlight {
+.fullscreen-marquee-desktop-app-frame-highlight {
   position: absolute;
   top: -2px;
   left: -2px;
@@ -133,13 +133,13 @@ main .fullscreen-marquee-desktop-app-frame-highlight {
   transition: opacity .1s ease-in-out;
 }
 
-main .fullscreen-marquee-desktop-app-frame-highlight:hover {
+.fullscreen-marquee-desktop-app-frame-highlight:hover {
   background-color: rgba(255, 255, 255, 0.3);
   opacity: 1;
   pointer-events: initial;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-content-container {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-content-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -150,13 +150,13 @@ main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-content-contain
   height: 440px;
 }
 
-main .fullscreen-marquee-desktop.video .fullscreen-marquee-desktop-app-content-container {
+.fullscreen-marquee-desktop.video .fullscreen-marquee-desktop-app-content-container {
   height: 334px;
   border-radius: 20px;
   overflow: hidden;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-content {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-content {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -164,16 +164,16 @@ main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-content {
   width: 100%;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frame .fullscreen-marquee-desktop-app {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frame .fullscreen-marquee-desktop-app {
   display: block;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frame .fullscreen-marquee-desktop-app img {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frame .fullscreen-marquee-desktop-app img {
   vertical-align: middle;
   max-height: 100%;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-editor {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-editor {
   position: absolute;
   top: 58px;
   left: 66px;
@@ -182,17 +182,17 @@ main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-editor {
   transform: translate3d(0px, 0px, 15px);
 }
 
-main .fullscreen-marquee-desktop.image .fullscreen-marquee-desktop-app-editor {
+.fullscreen-marquee-desktop.image .fullscreen-marquee-desktop-app-editor {
   top: 46px;
   left: 52px;
   width: 220px;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-editor img {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-editor img {
   border-radius: initial;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-thumbnail-container {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-thumbnail-container {
   position: absolute;
   top: 66px;
   left: 80px;
@@ -204,13 +204,13 @@ main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-thumbnail-conta
   z-index: 10;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-thumbnail-container video {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-thumbnail-container video {
   height: 100%;
   width: 100%;
   object-fit: cover;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frames-container {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frames-container {
   display: flex;
   position: absolute;
   width: 274px;
@@ -221,7 +221,7 @@ main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frames-containe
   border-radius: 5px;
 }
 
-main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frames-container video {
+.fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frames-container video {
   width: 10%;
   height: 100%;
   opacity: 0;
@@ -229,8 +229,22 @@ main .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-frames-containe
   transition: .5s opacity ease-in;
 }
 
-@media (max-width: 1200px) {
-  main .fullscreen-marquee-desktop {
-    display: none;
+.block.fullscreen-marquee-desktop .button-container.free-plan-container {
+  flex-direction: row;
+  width: auto;
+  justify-content: left;
+}
+
+.block.fullscreen-marquee-desktop .button-container.free-plan-container a.button {
+  margin-right: 24px;
+}
+
+.block.fullscreen-marquee-desktop .button-container.free-plan-container .free-plan-widget {
+  margin: 0;
+}
+
+@media (min-width: 900px) {
+  .fullscreen-marquee-desktop {
+    display: flex;
   }
 }

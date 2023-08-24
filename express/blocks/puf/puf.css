@@ -207,8 +207,10 @@ main .block.puf .puf-card .puf-card-bottom {
 main .block.puf .puf-card .puf-card-bottom h3 {
     font-size: var(--body-font-size-xl);
     font-weight: 600;
-    padding: 16px;
-    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
 main .block.puf .puf-card .puf-card-bottom p {
@@ -321,7 +323,6 @@ main .block.puf .puf-card .puf-card-banner a {
     font-weight: unset;
     text-decoration: underline;
 }
-
 
 @media (min-width: 900px) {
     main .puf.block .carousel-container {
@@ -529,7 +530,9 @@ main .block.puf .puf-card .puf-card-banner a {
     }
 
     main .block.puf .puf-card-banner.recommended ~ .puf-card-bottom .puf-highlighted-text {
-        margin-bottom: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     main .block.puf .carousel-container.slide-2-selected .carousel-platform .puf-card-container:first-child {
