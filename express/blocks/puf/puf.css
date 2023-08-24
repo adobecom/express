@@ -79,6 +79,10 @@ main .block.puf .puf-card .puf-card-top .puf-pricing-container {
     justify-content: center;
 }
 
+main .block.puf .puf-card .puf-pricing-suf-container {
+    text-align: left;
+}
+
 main .block.puf .puf-card .puf-card-top h2.puf-bp-header {
     color: var(--color-gray-600);
 }
@@ -247,6 +251,7 @@ main .block.puf .puf-highlighted-text {
     border-radius: 12px;
     margin-top: 0;
     box-sizing: border-box;
+    padding: 10px;
 }
 
 main .block.puf .puf-divider-text {
