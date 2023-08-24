@@ -165,15 +165,25 @@ async function fetchPlan(planUrl) {
     if (offer) {
       plan.currency = offer.currency;
       plan.price = offer.unitPrice;
-      plan.formatted = `${offer.unitPriceCurrencyFormatted}`;
+      plan.basePrice = offer.basePrice;
       plan.country = offer.country;
       plan.vatInfo = offer.vatInfo;
       plan.language = offer.lang;
-      plan.formatterBP = offer.basePrice;
       plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
-      plan.formatted = plan.formatted.replace(plan.rawPrice[0], `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`);
+      plan.formatted = offer.unitPriceCurrencyFormatted.replace(
+        plan.rawPrice[0],
+        `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`,
+      );
+
+      if (offer.basePriceCurrencyFormatted) {
+        plan.rawBasePrice = offer.basePriceCurrencyFormatted.match(/[\d\s,.+]+/g);
+        plan.formattedBP = offer.basePriceCurrencyFormatted.replace(
+          plan.rawBasePrice[0],
+          `<strong>${plan.prefix}${plan.rawBasePrice[0]}</strong>`,
+        );
+      }
     }
 
     window.pricingPlans[planUrl] = plan;
@@ -188,16 +198,27 @@ async function selectPlan(card, planUrl, sendAnalyticEvent) {
   if (plan) {
     const pricingCta = card.querySelector('.puf-card-top a');
     const pricingHeader = card.querySelector('.puf-pricing-header');
+    const pricingSuf = card.querySelector('.puf-pricing-suf');
     const pricingVat = card.querySelector('.puf-vat-info');
     const pricingBase = card.querySelector('.puf-bp-header');
 
-    pricingHeader.innerHTML = plan.formatted;
-    pricingHeader.classList.add(plan.currency.toLowerCase());
-    pricingBase.innerHTML = plan.basePrice;
-    pricingVat.textContent = plan.vatInfo;
-    pricingCta.href = buildUrl(plan.url, plan.country, plan.language);
-    pricingCta.dataset.planUrl = planUrl;
-    pricingCta.id = plan.stringId;
+    if (pricingHeader) {
+      pricingHeader.innerHTML = plan.formatted || '';
+      pricingHeader.classList.add(plan.currency.toLowerCase());
+    }
+
+    if (pricingBase) {
+      pricingBase.innerHTML = plan.formattedBP || '';
+    }
+
+    if (pricingSuf) pricingSuf.textContent = plan.suffix || '';
+    if (pricingVat) pricingVat.textContent = plan.vatInfo || '';
+
+    if (pricingCta) {
+      pricingCta.href = buildUrl(plan.url, plan.country, plan.language);
+      pricingCta.dataset.planUrl = planUrl;
+      pricingCta.id = plan.stringId;
+    }
   }
 
   if (sendAnalyticEvent) {
@@ -269,6 +290,8 @@ function decorateCard(block, cardClass = '') {
   const cardPricingContainer = createTag('div', { class: 'puf-pricing-container' });
   const cardBasePriceHeader = createTag('h2', { class: 'puf-bp-header' });
   const cardPricingHeader = createTag('h2', { class: 'puf-pricing-header' });
+  const cardPricingSufContainer = createTag('div', { class: 'puf-pricing-suf-container' });
+  const cardPricingSuf = createTag('div', { class: 'puf-pricing-suf' });
   const cardVat = createTag('div', { class: 'puf-vat-info' });
   const cardAdditionalContext = createTag('div', { class: 'puf-pricing-context' });
   const cardPlansContainer = createTag('div', { class: 'puf-card-plans' });
@@ -285,7 +308,8 @@ function decorateCard(block, cardClass = '') {
   cardTop.classList.add('puf-card-top');
   cardBottom.classList.add('puf-card-bottom');
 
-  cardPricingContainer.append(cardBasePriceHeader, cardPricingHeader, cardVat);
+  cardPricingContainer.append(cardBasePriceHeader, cardPricingHeader, cardPricingSufContainer);
+  cardPricingSufContainer.append(cardPricingSuf, cardVat);
   cardTop.prepend(
     cardHeader,
     cardPricingContainer,

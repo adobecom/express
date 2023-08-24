@@ -72,11 +72,26 @@ main .block.puf .puf-card h3 {
     width: 100%;
 }
 
+main .block.puf .puf-card .puf-card-top .puf-pricing-container {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+main .block.puf .puf-card .puf-card-top h2.puf-bp-header {
+    color: var(--color-gray-600);
+}
+
+main .block.puf .puf-card .puf-card-top h2.puf-bp-header strong {
+    text-decoration: line-through;
+}
+
 main .block.puf .puf-card .puf-card-top h2 {
     display: flex;
     font-size: var(--heading-font-size-m);
     font-weight: var(--heading-font-weight);
-    margin: 20px 0 0 0;
+    margin: 0;
 }
 
 main .block.puf .puf-card .puf-card-top h2 strong {
@@ -359,17 +374,17 @@ main .block.puf .puf-card .puf-card-banner {
 
     main .block.puf .puf-card .puf-card-top .puf-pricing-container {
         margin-top: 10px;
+        gap: 4px;
     }
 
     main .block.puf .puf-card .puf-card-top h2 {
         margin: 0;
     }
 
-    main .block.puf .puf-card.puf-left .puf-vat-info,
-    main .block.puf .puf-card.puf-right .puf-vat-info {
-        padding: 4px;
-        height: 24px;
+    main .block.puf .puf-card .puf-pricing-suf-container div {
+        margin: 2px 0;
         line-height: 24px;
+        font-size: var(--body-font-size-xl);
     }
 
     main .block.puf .puf-card .puf-pricing-context {

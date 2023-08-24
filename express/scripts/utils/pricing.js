@@ -34,6 +34,8 @@ function getCountry() {
 }
 
 export function formatPrice(price, currency) {
+  if (price === '') return null;
+
   const customSymbols = {
     SAR: 'SR',
     CA: 'CAD',
