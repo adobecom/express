@@ -6,7 +6,7 @@
 .firefly-card h3 {
   display: flex;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   font-size: var(--heading-font-size-s);
   color: var(--color-white);
   font-weight: 700;
@@ -16,7 +16,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* gap: 5rem; */
   align-items: center;
   position: relative;
   box-sizing: border-box;
@@ -32,6 +31,10 @@
   top: 0;
   left: 0;
   filter: brightness(0.6);
+}
+
+.firefly-card picture.show {
+  z-index: 1;
 }
 
 .firefly-card picture img {

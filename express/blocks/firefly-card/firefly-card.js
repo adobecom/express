@@ -18,48 +18,50 @@ const animateBlinkingCursor = async (textSpan) => {
   }, 600);
 };
 
-const typeWord = (textSpan, word) => new Promise((resolve) => {
+const typeWord = (textSpan, word, speed) => new Promise((resolve) => {
   for (let i = 0; i < word.length; i += 1) {
     setTimeout(() => {
       textSpan.insertAdjacentHTML('beforeEnd', word[i]);
       if (i === word.length - 1) resolve();
-    }, 100 * (i + 1));
+    }, speed * (i + 1));
   }
 });
 
-const eraseWord = (textSpan) => new Promise((resolve) => {
+const eraseWord = (textSpan, speed) => new Promise((resolve) => {
   for (let i = 0; i < textSpan.textContent.length; i += 1) {
     setTimeout(() => {
       textSpan.textContent = textSpan.textContent.slice(0, -1);
       if (textSpan.textContent.length === 0) resolve();
-    }, 100 * (i + 1));
+    }, speed * (i + 1));
   }
 });
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const initTypingAnimation = async (block, payload) => {
-  // const speed = 100;
-  // const eraseSpeed = 20;
-  // const typingDelay = 1000;
-  // const eraseDelay = 2000;
+  const typingSpeed = 100;
+  const eraseSpeed = 20;
+  const typingDelay = 1000;
+  const eraseDelay = 2000;
   const textSpan = block.querySelector('.mock-text');
+  const photos = block.querySelectorAll('picture');
+  let previousCard;
 
   animateBlinkingCursor(textSpan);
 
-  for (const card of payload.cards) {
-    console.log(card);
-    await typeWord(textSpan, card.text);
-    await eraseWord(textSpan);
-    console.log('get here?');
+  // Use intersection observer to run while card is in view
+  while (true) {
+    for (const card of payload.cards) {
+      await sleep(typingDelay);
+      await typeWord(textSpan, card.text, typingSpeed);
+      if (previousCard) previousCard.photo.classList.remove('show');
+      card.photo.classList.add('show');
+      previousCard = card
+      await sleep(eraseDelay);
+      await eraseWord(textSpan, eraseSpeed);
+    }
   }
 };
-// textSpan.textContent = '';
-// setTimeout(() => {
-//   console.log(card.text, index);
-//   textSpan.textContent = card.text;
-// }, 1000 * (index + 1));
-// });
-// on each one add one letter at a time
-// Then erase
 
 const buildPayload = (block) => {
   const inputRows = Array.from(block.querySelectorAll(':scope > div'));
@@ -83,9 +85,9 @@ const buildCard = (block, payload) => {
   const textDiv = createTag('div', { class: 'mock-text-wrapper' });
 
   aTag.href = payload.link;
-  // textSpan.textContent = '|';
   textDiv.append(textSpan);
-  aTag.append(payload.cards[3].photo, payload.heading, textDiv, payload.cta);
+  payload.cards.forEach((card) => aTag.append(card.photo));
+  aTag.append(payload.heading, textDiv, payload.cta);
   block.append(aTag);
 };
 
