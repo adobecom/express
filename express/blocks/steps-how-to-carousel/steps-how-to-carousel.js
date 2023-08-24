@@ -27,38 +27,32 @@ function activate(block, payload, target) {
   block.querySelectorAll(`.tip-${i}`).forEach((elem) => elem.classList.add('active'));
 }
 
-function buildSchema(block, payload) {
-  const carouselDivs = block.querySelector('.carousel-wrapper .tips');
-  const rows = Array.from(carouselDivs.children);
+function buildSchema(rows, payload) {
   const schemaObj = {
     '@context': 'http://schema.org',
     '@type': 'HowTo',
-    name: (payload.heading) || payload.howToDocument.title,
+    name: payload.heading?.textContent.trim() || payload.howToDocument.title,
     step: [],
   };
+
+  rows.forEach((row, i) => {
+    const cells = Array.from(row.children);
+
+    schemaObj.step.push({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: cells[0].textContent.trim(),
+      itemListElement: {
+        '@type': 'HowToDirection',
+        text: cells[1].textContent.trim(),
+      },
+    });
+  });
 
   const schema = createTag('script', { type: 'application/ld+json' });
   schema.innerHTML = JSON.stringify(schemaObj);
   const { head } = payload.howToDocument;
   head.append(schema);
-
-  rows.forEach((row, i) => {
-    const cells = Array.from(row.children);
-    const h3 = createTag('h3');
-    h3.innerHTML = cells[0].textContent.trim();
-    const text = createTag('div', { class: 'tip-text' });
-    text.append(h3);
-
-    schemaObj.step.push({
-      '@type': 'HowToStep',
-      position: i + 1,
-      name: h3.textContent.trim(),
-      itemListElement: {
-        '@type': 'HowToDirection',
-        text: text.textContent.trim(),
-      },
-    });
-  });
 }
 
 function initRotation(payload) {
@@ -91,7 +85,7 @@ function buildStepsHowToCarousel(block, payload) {
   carouselDivs.append(payload.icon, payload.heading, carousel, payload.cta);
 
   if (includeSchema) {
-    buildSchema(block, payload);
+    buildSchema(rows, payload);
   }
 
   rows.forEach((row, i) => {
