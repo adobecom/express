@@ -38,27 +38,30 @@ const eraseWord = (textSpan, speed) => new Promise((resolve) => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const initTypingAnimation = async (block, payload) => {
+const initCycleCards = async (card, textSpan) => {
   const typingSpeed = 100;
   const eraseSpeed = 20;
   const typingDelay = 1000;
   const eraseDelay = 2000;
-  const textSpan = block.querySelector('.mock-text');
-  const photos = block.querySelectorAll('picture');
   let previousCard;
+  await sleep(typingDelay);
+  await typeWord(textSpan, card.text, typingSpeed);
+  if (previousCard) previousCard.photo.classList.remove('show');
+  card.photo.classList.add('show');
+  previousCard = card;
+  await sleep(eraseDelay);
+  await eraseWord(textSpan, eraseSpeed);
+}
+
+const initTypingAnimation = async (block, payload) => {
+  const textSpan = block.querySelector('.mock-text');
 
   animateBlinkingCursor(textSpan);
-
   // Use intersection observer to run while card is in view
   while (true) {
     for (const card of payload.cards) {
-      await sleep(typingDelay);
-      await typeWord(textSpan, card.text, typingSpeed);
-      if (previousCard) previousCard.photo.classList.remove('show');
-      card.photo.classList.add('show');
-      previousCard = card
-      await sleep(eraseDelay);
-      await eraseWord(textSpan, eraseSpeed);
+      // eslint-disable-next-line no-await-in-loop
+      await initCycleCards(card, textSpan);
     }
   }
 };
