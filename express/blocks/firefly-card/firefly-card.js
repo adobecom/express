@@ -12,13 +12,54 @@
 
 import { createTag } from '../../scripts/scripts.js';
 
-const buildMockInputField = (block) => {
-  const textSpan = createTag('span', { class: 'mock-text' });
-  textSpan.textContent = 'Crazy guy in spacesuit';
-  const textDiv = createTag('div', { class: 'mock-text-wrapper' });
-  textDiv.append(textSpan);
-  block.append(textDiv);
+const animateBlinkingCursor = async (textSpan) => {
+  setInterval(() => {
+    textSpan.classList.toggle('cursor-on');
+  }, 600);
 };
+
+const typeWord = (textSpan, word) => new Promise((resolve) => {
+  for (let i = 0; i < word.length; i += 1) {
+    setTimeout(() => {
+      textSpan.insertAdjacentHTML('beforeEnd', word[i]);
+      if (i === word.length - 1) resolve();
+    }, 100 * (i + 1));
+  }
+});
+
+const eraseWord = (textSpan) => new Promise((resolve) => {
+  for (let i = 0; i < textSpan.textContent.length; i += 1) {
+    setTimeout(() => {
+      textSpan.textContent = textSpan.textContent.slice(0, -1);
+      if (textSpan.textContent.length === 0) resolve();
+    }, 100 * (i + 1));
+  }
+});
+
+const initTypingAnimation = async (block, payload) => {
+  // const speed = 100;
+  // const eraseSpeed = 20;
+  // const typingDelay = 1000;
+  // const eraseDelay = 2000;
+  const textSpan = block.querySelector('.mock-text');
+
+  animateBlinkingCursor(textSpan);
+
+  for (const card of payload.cards) {
+    console.log(card);
+    await typeWord(textSpan, card.text);
+    await eraseWord(textSpan);
+    console.log('get here?');
+  }
+};
+// textSpan.textContent = '';
+// setTimeout(() => {
+//   console.log(card.text, index);
+//   textSpan.textContent = card.text;
+// }, 1000 * (index + 1));
+// });
+// on each one add one letter at a time
+// Then erase
 
 const buildPayload = (block) => {
   const inputRows = Array.from(block.querySelectorAll(':scope > div'));
@@ -42,7 +83,7 @@ const buildCard = (block, payload) => {
   const textDiv = createTag('div', { class: 'mock-text-wrapper' });
 
   aTag.href = payload.link;
-  textSpan.textContent = 'Crazy guy in spacesuit';
+  // textSpan.textContent = '|';
   textDiv.append(textSpan);
   aTag.append(payload.cards[3].photo, payload.heading, textDiv, payload.cta);
   block.append(aTag);
@@ -50,8 +91,6 @@ const buildCard = (block, payload) => {
 
 export default function decorate(block) {
   const payload = buildPayload(block);
-  console.log(payload);
   buildCard(block, payload);
-  // buildMockInputField(block);
-  // block.append(payload.cards[0].photo);
+  initTypingAnimation(block, payload);
 }
