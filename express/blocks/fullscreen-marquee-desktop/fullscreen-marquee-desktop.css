@@ -183,9 +183,21 @@
 }
 
 .fullscreen-marquee-desktop.image .fullscreen-marquee-desktop-app-editor {
-  top: 46px;
+  top: 44px;
   left: 52px;
-  width: 220px;
+  width: 222px;
+  height: 512px;
+}
+
+.fullscreen-marquee-desktop.image .fullscreen-marquee-desktop-app-editor:after {
+  content: '';
+  position: absolute;
+  height: 24px;
+  width: 99%;
+  left: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+  z-index: 1;
 }
 
 .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-editor img {
@@ -194,8 +206,8 @@
 
 .fullscreen-marquee-desktop .fullscreen-marquee-desktop-app-thumbnail-container {
   position: absolute;
-  top: 66px;
-  left: 80px;
+  top: 62px;
+  left: 67px;
   width: 40px;
   height: 40px;
   overflow: hidden;

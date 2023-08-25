@@ -11,7 +11,7 @@
  */
 
 import { createTag } from '../../scripts/scripts.js';
-import { getOffer } from '../../scripts/utils/pricing.js';
+import { getOffer, buildUrl } from '../../scripts/utils/pricing.js';
 
 async function fetchPlan(planUrl) {
   if (!window.pricingPlans) {
@@ -114,7 +114,7 @@ function handlePrice(column) {
   priceWrapper.append(basePrice, price, priceSuffix);
   pricePlan.append(priceWrapper, plan);
 
-  fetchPlan(priceEl?.href).then((response) => {
+  fetchPlan(price?.href).then((response) => {
     price.innerHTML = response.formatted;
     basePrice.innerHTML = response.formattedBP || '';
 
@@ -123,6 +123,9 @@ function handlePrice(column) {
     } else {
       priceSuffix.textContent = response.suffix;
     }
+
+    const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
+    if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
   });
 
   priceParent?.remove();
