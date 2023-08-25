@@ -102,27 +102,39 @@ async function updateMetadataForTemplates() {
 }
 
 // metadata -> dom blades
-function autoUpdatePage() {
+function autoUpdatePage(main) {
   const wl = ['{{heading_placeholder}}', '{{type}}', '{{quantity}}'];
   // FIXME: deprecate wl
-  const main = document.querySelector('main');
   if (!main) return;
-  const regex = /\{\{([a-zA-Z_-]+)\}\}/g;
+
+  const regex = /\{\{([a-zA-Z_-]+)}}/g;
   main.innerHTML = main.innerHTML.replaceAll(regex, (match, p1) => {
     if (!wl.includes(match.toLowerCase())) {
       return getMetadata(p1);
     }
     return match;
   });
+
+  const placeholderUrl = getMetadata('placeholder-url');
+
+  if (placeholderUrl) {
+    const phLinks = main.querySelectorAll(`a[href^='${placeholderUrl}']`);
+    if (phLinks?.length > 0) {
+      phLinks.forEach((link) => {
+        const urlObj = new URL(link);
+        if (urlObj) link.href = getMetadata(urlObj.hash.replace('#', ''));
+      })
+    }
+  }
 }
 
 // cleanup remaining dom blades
-async function updateNonBladeContent() {
-  const heroAnimation = document.querySelector('.hero-animation.wide');
-  const templateList = document.querySelector('.template-list.fullwidth.apipowered');
-  const templateX = document.querySelector('.template-x');
-  const browseByCat = document.querySelector('.browse-by-category');
-  const seoNav = document.querySelector('.seo-nav');
+async function updateNonBladeContent(main) {
+  const heroAnimation = main.querySelector('.hero-animation.wide');
+  const templateList = main.querySelector('.template-list.fullwidth.apipowered');
+  const templateX = main.querySelector('.template-x');
+  const browseByCat = main.querySelector('.browse-by-category');
+  const seoNav = main.querySelector('.seo-nav');
 
   if (heroAnimation) {
     if (getMetadata('hero-title')) {
@@ -181,9 +193,9 @@ function validatePage() {
   }
 }
 
-export default async function replaceContent() {
+export default async function replaceContent(main) {
   await updateMetadataForTemplates();
-  autoUpdatePage();
-  await updateNonBladeContent();
+  autoUpdatePage(main);
+  await updateNonBladeContent(main);
   validatePage();
 }

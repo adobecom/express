@@ -2185,7 +2185,7 @@ async function loadEager(main) {
   // TODO: remove the href check after we tag content with sheet-powered
   if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
     const { default: replaceContent } = await import('./content-replace.js');
-    await replaceContent();
+    await replaceContent(main);
   }
 
   if (getMetadata('template-search-page') === 'Y') {
