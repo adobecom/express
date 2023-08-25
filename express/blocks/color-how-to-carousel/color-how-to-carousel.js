@@ -83,7 +83,7 @@ function buildColorHowToCarousel(block, payload) {
 
   const numbers = createTag('div', {
     class: 'tip-numbers',
-    'aria-role': 'tablist'
+    'aria-role': 'tablist',
   });
   carousel.prepend(numbers);
   const tips = createTag('div', { class: 'tips' });
