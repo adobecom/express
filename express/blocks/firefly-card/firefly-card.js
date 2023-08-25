@@ -12,12 +12,6 @@
 
 import { createTag } from '../../scripts/scripts.js';
 
-const animateBlinkingCursor = async (textSpan) => {
-  setInterval(() => {
-    textSpan.classList.toggle('cursor-on');
-  }, 600);
-};
-
 const typeWord = (textSpan, word, speed) => new Promise((resolve) => {
   for (let i = 0; i < word.length; i += 1) {
     setTimeout(() => {
@@ -58,7 +52,6 @@ const initCycleCards = async (card, textSpan, block) => {
 const initTypingAnimation = async (block, payload) => {
   const textSpan = block.querySelector('.mock-text');
 
-  animateBlinkingCursor(textSpan);
   // Use intersection observer to run while card is in view
   while (true) {
     for (const card of payload.cards) {
@@ -89,7 +82,6 @@ const buildCard = (block, payload) => {
   const textSpan = createTag('span', { class: 'mock-text' });
   const textDiv = createTag('div', { class: 'mock-text-wrapper' });
 
-  // console.log(payload.cards[0].photo);
   payload.cards[4].photo.classList.add('show');
   aTag.href = payload.link;
   textDiv.append(textSpan);

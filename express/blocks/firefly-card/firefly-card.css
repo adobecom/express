@@ -1,5 +1,5 @@
 .firefly-card {
-  height: 30vh;
+  height: 226px;
   margin: 0.5rem;
 }
 
@@ -10,6 +10,7 @@
   font-size: var(--heading-font-size-s);
   color: var(--color-white);
   font-weight: 700;
+  transform: translateY(-4px);
 }
 
 .firefly-card .a-tag-wrapper {
@@ -18,10 +19,11 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  gap: 0.75rem;
   box-sizing: border-box;
   height: 100%;
   border-radius: 36px;
-  padding: 1rem 1rem 0.5rem 1rem;
+  padding: 0 1rem;
   background-image: url("https://main--express--adobecom.hlx.page/media_1e14a2f24184a4a2f6d990ac3a20e3bc75cb3424a.png#width=360&height=226");
 }
 
@@ -35,7 +37,7 @@
 
 .firefly-card picture {
   opacity: 0;
-  transition: opacity 2s ease-in-out;
+  transition: opacity 0.4s ease-in-out;
   z-index: 0;
 }
 
@@ -61,25 +63,31 @@
   font-size: var(--body-font-size-l);
   font-weight: normal;
   z-index: 1;
-  height: 44px;
+  min-height: 44px;
+  height: fit-content;
   min-width: 46px;
   border-radius: 36px;
   box-shadow: 0px 3px 6px #00000029;
-  padding: 0 1.5rem 1.25rem 1rem;
-  margin: 1.25rem 0 0.75rem 0;
+  padding: 0 1.5rem 0 1rem;
 }
 
 .firefly-card .mock-text {
   position: relative;
-  height: 3px;
+  min-height: 30px;
+  margin: 0;
 }
 
-.firefly-card .mock-text.cursor-on::after {
+.firefly-card .mock-text::after {
   content: '|';
-  position: absolute;
-  top: 0;
-  right: -4px;
-  opacity: 1;
+}
+
+@keyframes blink {
+  0%, 49% { visibility: visible; }
+  50%, 100% { visibility: hidden; }
+}
+
+.firefly-card .mock-text::after {
+  animation: blink 1s infinite;
 }
 
 .firefly-card a.button {
@@ -90,9 +98,12 @@
   border: none;
   height: 60px;
   width: 200px;
+  padding-top: 0;
+  padding-bottom: 0;
   box-sizing: border-box;
   border-radius: 36px;
   margin-top: 0;
+  margin-bottom: 0;
   font-size: var(--body-font-size-l);
   box-sizing: border-box;
 }
