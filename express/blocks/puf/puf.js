@@ -9,13 +9,8 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import {
-  addPublishDependencies,
-  createTag,
-  // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
-import { getOffer, buildUrl } from '../../scripts/utils/pricing.js';
-
+import { addPublishDependencies, createTag } from '../../scripts/scripts.js';
+import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
 import { buildCarousel } from '../shared/carousel.js';
 
 function pushPricingAnalytics(adobeEventName, sparkEventName, plan) {
@@ -48,81 +43,6 @@ function pushPricingAnalytics(adobeEventName, sparkEventName, plan) {
   digitalData._delete('spark.eventData.contextualData10');
   digitalData._delete('spark.eventData.contextualData12');
   digitalData._delete('spark.eventData.contextualData14');
-}
-
-async function fetchPlan(planUrl) {
-  if (!window.pricingPlans) {
-    window.pricingPlans = {};
-  }
-
-  let plan = window.pricingPlans[planUrl];
-
-  if (!plan) {
-    plan = {};
-    const link = new URL(planUrl);
-    const params = link.searchParams;
-
-    plan.url = planUrl;
-    plan.country = 'us';
-    plan.language = 'en';
-    plan.price = '9.99';
-    plan.currency = 'US';
-    plan.symbol = '$';
-
-    // TODO: Remove '/sp/ once confirmed with stakeholders
-    const allowedHosts = ['new.express.adobe.com', 'express.adobe.com', 'adobesparkpost.app.link'];
-    const { host } = new URL(planUrl);
-    if (allowedHosts.includes(host) || planUrl.includes('/sp/')) {
-      plan.offerId = 'FREE0';
-      plan.frequency = 'monthly';
-      plan.name = 'Free';
-      plan.stringId = 'free-trial';
-    } else {
-      plan.offerId = params.get('items[0][id]');
-      plan.frequency = null;
-      plan.name = 'Premium';
-      plan.stringId = '3-month-trial';
-    }
-
-    if (plan.offerId === '70C6FDFC57461D5E449597CC8F327CF1' || plan.offerId === 'CFB1B7F391F77D02FE858C43C4A5C64F') {
-      plan.frequency = 'Monthly';
-    } else if (plan.offerId === 'E963185C442F0C5EEB3AE4F4AAB52C24' || plan.offerId === 'BADDACAB87D148A48539B303F3C5FA92') {
-      plan.frequency = 'Annual';
-    } else {
-      plan.frequency = null;
-    }
-
-    const countryOverride = new URLSearchParams(window.location.search).get('country');
-    const offer = await getOffer(plan.offerId, countryOverride);
-
-    if (offer) {
-      plan.currency = offer.currency;
-      plan.price = offer.unitPrice;
-      plan.basePrice = offer.basePrice;
-      plan.country = offer.country;
-      plan.vatInfo = offer.vatInfo;
-      plan.language = offer.lang;
-      plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
-      plan.prefix = offer.prefix ?? '';
-      plan.suffix = offer.suffix ?? '';
-      plan.formatted = offer.unitPriceCurrencyFormatted.replace(
-        plan.rawPrice[0],
-        `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`,
-      );
-
-      if (offer.basePriceCurrencyFormatted) {
-        plan.rawBasePrice = offer.basePriceCurrencyFormatted.match(/[\d\s,.+]+/g);
-        plan.formattedBP = offer.basePriceCurrencyFormatted.replace(
-          plan.rawBasePrice[0],
-          `<strong>${plan.prefix}${plan.rawBasePrice[0]}</strong>`,
-        );
-      }
-    }
-
-    window.pricingPlans[planUrl] = plan;
-  }
-
-  return plan;
 }
 
 async function selectPlan(card, planUrl, sendAnalyticEvent) {
