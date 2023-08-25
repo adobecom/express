@@ -200,7 +200,7 @@ function alignContent(block) {
         });
       }
     });
-  })
+  });
 }
 
 export default async function decorate(block) {
