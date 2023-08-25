@@ -32,7 +32,10 @@ async function fetchPlan(planUrl) {
     plan.currency = 'US';
     plan.symbol = '$';
 
-    if (planUrl.includes('/sp/')) {
+    // TODO: Remove '/sp/ once confirmed with stakeholders
+    const allowedHosts = ['new.express.adobe.com', 'express.adobe.com', 'adobesparkpost.app.link'];
+    const { host } = new URL(planUrl);
+    if (allowedHosts.includes(host) || planUrl.includes('/sp/')) {
       plan.offerId = 'FREE0';
       plan.frequency = 'monthly';
       plan.name = 'Free';
@@ -58,15 +61,28 @@ async function fetchPlan(planUrl) {
     if (offer) {
       plan.currency = offer.currency;
       plan.price = offer.unitPrice;
-      plan.formatted = `${offer.unitPriceCurrencyFormatted}`;
+      plan.basePrice = offer.basePrice;
       plan.country = offer.country;
       plan.vatInfo = offer.vatInfo;
       plan.language = offer.lang;
       plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
-      plan.formatted = plan.formatted.replace(plan.rawPrice[0], `<strong>${plan.prefix}${plan.rawPrice[0]}${plan.suffix}</strong>`);
+      plan.formatted = offer.unitPriceCurrencyFormatted.replace(
+        plan.rawPrice[0],
+        `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`,
+      );
+
+      if (offer.basePriceCurrencyFormatted) {
+        plan.rawBasePrice = offer.basePriceCurrencyFormatted.match(/[\d\s,.+]+/g);
+        plan.formattedBP = offer.basePriceCurrencyFormatted.replace(
+          plan.rawBasePrice[0],
+          `<strong>${plan.prefix}${plan.rawBasePrice[0]}</strong>`,
+        );
+      }
     }
+
+    window.pricingPlans[planUrl] = plan;
   }
 
   return plan;
@@ -85,21 +101,31 @@ function handleHeader(column) {
 }
 
 function handlePrice(column) {
-  const price = column.querySelector('[title="{{pricing}}"]');
-  const priceContainer = price?.parentNode;
-  const plan = priceContainer?.nextElementSibling;
-
-  const priceText = createTag('div', { class: 'pricing-price' });
   const pricePlan = createTag('div', { class: 'pricing-plan' });
+  const priceEl = column.querySelector('[title="{{pricing}}"]');
+  const priceParent = priceEl?.parentNode;
+  const plan = priceParent?.nextElementSibling.querySelector('a') ? '' : priceParent?.nextElementSibling;
 
-  pricePlan.append(priceText, plan);
+  const priceWrapper = createTag('div', { class: 'pricing-price-wrapper' });
+  const price = createTag('span', { class: 'pricing-price' });
+  const basePrice = createTag('span', { class: 'pricing-base-price' });
+  const priceSuffix = createTag('div', { class: 'pricing-plan-suf' });
 
-  fetchPlan(price?.href).then((response) => {
-    priceText.innerHTML = response.formatted;
+  priceWrapper.append(basePrice, price, priceSuffix);
+  pricePlan.append(priceWrapper, plan);
+
+  fetchPlan(priceEl?.href).then((response) => {
+    price.innerHTML = response.formatted;
+    basePrice.innerHTML = response.formattedBP || '';
+
+    if (priceEl.nextSibling?.nodeName === '#text') {
+      priceSuffix.textContent = priceEl.nextSibling?.textContent?.trim();
+    } else {
+      priceSuffix.textContent = response.suffix;
+    }
   });
 
-  priceContainer?.remove();
-
+  priceParent?.remove();
   return pricePlan;
 }
 
@@ -128,25 +154,79 @@ function handleDescription(column) {
   return description;
 }
 
-export default function decorate(block) {
-  const pricingContainer = block.children[1];
+function alignContent(block) {
+  const contentWrappers = block.querySelectorAll('.pricing-content-wrapper');
+  const elementsMinHeight = {
+    'pricing-header': 0,
+    'pricing-description': 0,
+    'pricing-plan': 0,
+  };
+  let attemptsLeft = 10;
 
-  pricingContainer.classList.add('pricing-container');
+  const minHeightCaptured = new Promise((resolve) => {
+    const heightCatcher = setInterval(() => {
+      if (Object.values(elementsMinHeight).every((h) => h > 0) || !attemptsLeft) {
+        clearInterval(heightCatcher);
+        resolve();
+      }
 
-  const columnsContainer = createTag('div', { class: 'columns-container' });
+      if (contentWrappers?.length > 0) {
+        contentWrappers.forEach((wrapper) => {
+          const childDivs = wrapper.querySelectorAll(':scope > div');
+          if (childDivs?.length > 0) {
+            childDivs.forEach((div) => {
+              elementsMinHeight[div.className] = Math.max(
+                elementsMinHeight[div.className],
+                div.offsetHeight,
+              );
+            });
+          }
+        });
+      }
 
-  const columns = Array.from(pricingContainer.children);
-
-  columns.forEach((column) => {
-    const header = handleHeader(column);
-    const pricePlan = handlePrice(column);
-    const cta = handleCtas(column);
-    const description = handleDescription(column);
-    const spacer = createTag('div', { class: 'spacer' });
-
-    column.append(header, description, spacer, pricePlan, cta);
-    columnsContainer.append(column);
+      attemptsLeft -= 1;
+    }, 10);
   });
 
+  minHeightCaptured.then(() => {
+    contentWrappers.forEach((wrapper) => {
+      const childDivs = wrapper.querySelectorAll(':scope > div');
+      if (childDivs?.length > 0) {
+        childDivs.forEach((div) => {
+          if (elementsMinHeight[div.className]
+            && div.offsetHeight < elementsMinHeight[div.className]) {
+            div.style.height = `${elementsMinHeight[div.className]}px`;
+          }
+        });
+      }
+    });
+  })
+}
+
+export default async function decorate(block) {
+  const pricingContainer = block.children[1];
+  pricingContainer.classList.add('pricing-container');
+  const columnsContainer = createTag('div', { class: 'columns-container' });
+  const columns = Array.from(pricingContainer.children);
   pricingContainer.append(columnsContainer);
+  const cardsLoaded = [];
+  columns.forEach((column) => {
+    const cardLoaded = new Promise((resolve) => {
+      const contentWrapper = createTag('div', { class: 'pricing-content-wrapper' });
+      const header = handleHeader(column);
+      const pricePlan = handlePrice(column);
+      const cta = handleCtas(column);
+      const description = handleDescription(column);
+
+      contentWrapper.append(header, description, pricePlan);
+      column.append(contentWrapper, cta);
+      columnsContainer.append(column);
+      resolve();
+    });
+    cardsLoaded.push(cardLoaded);
+  });
+
+  await Promise.all(cardsLoaded).then(() => {
+    alignContent(block);
+  });
 }
