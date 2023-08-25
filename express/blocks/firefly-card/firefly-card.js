@@ -12,41 +12,57 @@
 
 import { createTag } from '../../scripts/scripts.js';
 
-const typeWord = (textSpan, word, speed) => new Promise((resolve) => {
+const typeWord = (textSpan, word, textWrapper, cta) => new Promise((resolve) => {
+  const typingSpeed = 100;
+  const minTextSpanHeight = 28;
+
   for (let i = 0; i < word.length; i += 1) {
     setTimeout(() => {
       textSpan.insertAdjacentHTML('beforeEnd', word[i]);
+      if (textSpan.scrollHeight > minTextSpanHeight && !textWrapper.classList.contains('stacked')) {
+        textWrapper.append(cta);
+        textWrapper.classList.add('stacked');
+      }
       if (i === word.length - 1) resolve();
-    }, speed * (i + 1));
+    }, typingSpeed * (i + 1));
   }
 });
 
-const eraseWord = (textSpan, speed) => new Promise((resolve) => {
+const eraseWord = (textSpan, textWrapper, cta) => new Promise((resolve) => {
+  const eraseSpeed = 20;
+  const minTextSpanHeight = 31;
+  const aTag = textWrapper.closest('a');
   for (let i = 0; i < textSpan.textContent.length; i += 1) {
     setTimeout(() => {
       textSpan.textContent = textSpan.textContent.slice(0, -1);
+      console.log(textSpan.scrollHeight);
+      if (textSpan.scrollHeight < minTextSpanHeight && textWrapper.classList.contains('stacked')) {
+        console.log('I will move this thang back');
+        aTag.append(cta);
+        textWrapper.classList.remove('stacked');
+      }
       if (textSpan.textContent.length === 0) resolve();
-    }, speed * (i + 1));
+    }, eraseSpeed * (i + 1));
   }
 });
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const initCycleCards = async (card, textSpan, block) => {
-  const typingSpeed = 100;
-  const eraseSpeed = 20;
   const typingDelay = 1000;
   const eraseDelay = 2000;
+  const textWrapper = block.querySelector('.mock-text-wrapper');
+  const cta = block.querySelector('.mock-text-wrapper + a');
   const photos = block.querySelectorAll('picture');
 
   await sleep(typingDelay);
-  await typeWord(textSpan, card.text, typingSpeed);
+  await typeWord(textSpan, card.text, textWrapper, cta);
   card.photo.classList.add('show');
   photos.forEach((photo) => {
     if (photo !== card.photo) photo.classList.remove('show');
   });
   await sleep(eraseDelay);
-  await eraseWord(textSpan, eraseSpeed);
+  await eraseWord(textSpan, textWrapper, cta);
 };
 
 const initTypingAnimation = async (block, payload) => {
