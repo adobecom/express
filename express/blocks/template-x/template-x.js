@@ -1316,6 +1316,12 @@ async function decorateBreadcrumbs(block) {
   if (breadcrumbs) block.prepend(breadcrumbs);
 }
 
+function cycleThroughSuggestions(block, targetIndex = 0) {
+  const suggestions = block.querySelectorAll('.suggestions-list li');
+  if (targetIndex >= suggestions.length || targetIndex < 0) return;
+  if (suggestions.length > 0) suggestions[targetIndex].focus();
+}
+
 function importSearchBar(block, blockMediator) {
   blockMediator.subscribe('stickySearchBar', (e) => {
     const parent = block.querySelector('.api-templates-toolbar .wrapper-content-search');
@@ -1354,6 +1360,13 @@ function importSearchBar(block, blockMediator) {
             suggestionsContainer.classList.add('hidden');
           }
         }, { passive: true });
+
+        searchBar.addEventListener('keydown', (event) => {
+          if (event.key === 'ArrowDown' || event.keyCode === 40) {
+            event.preventDefault();
+            cycleThroughSuggestions(block);
+          }
+        });
 
         document.addEventListener('click', (event) => {
           const { target } = event;
@@ -1425,7 +1438,7 @@ function importSearchBar(block, blockMediator) {
           suggestionsList.innerHTML = '';
           const searchBarVal = searchBar.value.toLowerCase();
           if (suggestions && !(suggestions.length <= 1 && suggestions[0]?.query === searchBarVal)) {
-            suggestions.forEach((item) => {
+            suggestions.forEach((item, index) => {
               const li = createTag('li', { tabindex: 0 });
               const valRegEx = new RegExp(searchBar.value, 'i');
               li.innerHTML = item.query.replace(valRegEx, `<b>${searchBarVal}</b>`);
@@ -1433,6 +1446,20 @@ function importSearchBar(block, blockMediator) {
                 if (item.query === searchBar.value) return;
                 searchBar.value = item.query;
                 searchBar.dispatchEvent(new Event('input'));
+              });
+
+              li.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowDown' || event.keyCode === 40) {
+                  event.preventDefault();
+                  cycleThroughSuggestions(block, index + 1);
+                }
+              });
+
+              li.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowUp' || event.keyCode === 38) {
+                  event.preventDefault();
+                  cycleThroughSuggestions(block, index - 1);
+                }
               });
 
               suggestionsList.append(li);
