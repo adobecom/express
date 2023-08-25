@@ -23,7 +23,7 @@
   box-sizing: border-box;
   height: 100%;
   border-radius: 36px;
-  padding: 0 1rem;
+  padding: 0.5rem 1rem;
   background-image: url("https://main--express--adobecom.hlx.page/media_1e14a2f24184a4a2f6d990ac3a20e3bc75cb3424a.png#width=360&height=226");
 }
 
@@ -54,7 +54,7 @@
 }
 
 .firefly-card .mock-text-wrapper {
-  display: flex;
+  display: table;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
@@ -68,11 +68,12 @@
   min-width: 46px;
   border-radius: 36px;
   box-shadow: 0px 3px 6px #00000029;
-  padding: 0 1.5rem 0 1rem;
+  padding: 0.5rem 1.5rem;
 }
 
 .firefly-card .mock-text {
-  position: relative;
+  display: table-cell;
+  vertical-align: middle;
   min-height: 30px;
   margin: 0;
 }
