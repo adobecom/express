@@ -39,7 +39,7 @@ function handlePrice(column) {
   priceWrapper.append(basePrice, price, priceSuffix);
   pricePlan.append(priceWrapper, plan);
 
-  fetchPlan(price?.href).then((response) => {
+  fetchPlan(priceEl?.href).then((response) => {
     price.innerHTML = response.formatted;
     basePrice.innerHTML = response.formattedBP || '';
 
