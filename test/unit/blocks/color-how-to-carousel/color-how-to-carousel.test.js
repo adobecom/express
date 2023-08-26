@@ -23,13 +23,13 @@ describe('Color How To Carousel', () => {
   });
 
   it('block exists', async () => {
-    const block = document.querySelector('.steps-how-to-carousel');
+    const block = document.querySelector('.color-how-to-carousel');
     await decorate(block);
     expect(block).to.exist;
   });
 
   it('schema variant builds schema', async () => {
-    const block = document.querySelector('.steps-how-to-carousel');
+    const block = document.querySelector('.color-how-to-carousel');
     block.classList.add('schema');
     await decorate(block);
     const schema = document.querySelector('head script[type="application/ld+json"]');
