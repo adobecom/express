@@ -783,6 +783,19 @@ function resolveFragments() {
     });
 }
 
+export function getMetadata(name) {
+  const attr = name && name.includes(':') ? 'property' : 'name';
+  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
+  return ($meta && $meta.content) || '';
+}
+
+function setBlockTheme(block) {
+  const isSheetPowerdePage = getMetadata('sheet-powered') === 'Y';
+  if (isSheetPowerdePage && getMetadata(`${block.dataset.blockName}-theme`)) {
+    block.classList.add(getMetadata(`${block.dataset.blockName}-theme`));
+  }
+}
+
 /**
  * Decorates a block.
  * @param {Element} block The block element
@@ -815,6 +828,7 @@ export function decorateBlock(block) {
     block.setAttribute('data-block-status', 'initialized');
     const blockWrapper = block.parentElement;
     blockWrapper.classList.add(`${blockName}-wrapper`);
+    setBlockTheme(block);
   }
 }
 
@@ -966,12 +980,6 @@ export function loadScript(url, callback, type) {
   $head.append($script);
   $script.onload = callback;
   return $script;
-}
-
-export function getMetadata(name) {
-  const attr = name && name.includes(':') ? 'property' : 'name';
-  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
-  return ($meta && $meta.content) || '';
 }
 
 /**

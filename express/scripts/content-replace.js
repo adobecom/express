@@ -123,7 +123,7 @@ function autoUpdatePage(main) {
       phLinks.forEach((link) => {
         const urlObj = new URL(link);
         if (urlObj) link.href = getMetadata(urlObj.hash.replace('#', ''));
-      })
+      });
     }
   }
 }
