@@ -297,7 +297,7 @@ async function loadFEDS() {
   loadScript(`${prefix}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).id = 'feds-script';
 }
 
-if (!window.hlx || !window.hlx.lighthouse) {
+if (!window.hlx || !(window.hlx.lighthouse || window.hlx.nognav)) {
   loadIMS();
   loadFEDS();
   loadGoogleYOLO();
