@@ -1851,22 +1851,27 @@ function decorateSocialIcons($main) {
   });
 }
 
-function makeRelativeLinks($main) {
-  $main.querySelectorAll('a').forEach(($a) => {
-    if (!$a.href) return;
+function decorateLinks(main) {
+  main.querySelectorAll('a').forEach((a) => {
+    if (!a.href) return;
     try {
-      const {
-        protocol, hostname, pathname, search, hash,
-      } = new URL($a.href);
-      if (hostname.endsWith('.page')
-        || hostname.endsWith('.live')
-        || ['www.adobe.com', 'www.stage.adobe.com'].includes(hostname)) {
+      let url = new URL(a.href);
+
+      // handle link replacement on sheet-powered pages
+      if (getMetadata('sheet-powered') === 'Y' && getMetadata(url.hash.replace('#', ''))) {
+        a.href = getMetadata(url.hash.replace('#', ''));
+        url = new URL(a.href);
+      }
+
+      if (url.hostname.endsWith('.page')
+        || url.hostname.endsWith('.live')
+        || ['www.adobe.com', 'www.stage.adobe.com'].includes(url.hostname)) {
         // make link relative
-        $a.href = `${pathname}${search}${hash}`;
-      } else if (hostname !== 'adobesparkpost.app.link'
-        && !['tel:', 'mailto:', 'sms:'].includes(protocol)) {
+        a.href = `${url.pathname}${url.search}${url.hash}`;
+      } else if (url.hostname !== 'adobesparkpost.app.link'
+        && !['tel:', 'mailto:', 'sms:'].includes(url.protocol)) {
         // open external links in a new tab
-        $a.target = '_blank';
+        a.target = '_blank';
       }
     } catch (e) {
       // invalid url
@@ -1995,7 +2000,7 @@ export async function decorateMain(main) {
   decoratePictures(main);
   decorateLinkedPictures(main);
   decorateSocialIcons(main);
-  makeRelativeLinks(main);
+  decorateLinks(main);
 }
 
 const usp = new URLSearchParams(window.location.search);

@@ -12,9 +12,9 @@
 
 import {
   fetchPlaceholders,
+  getHelixEnv,
   getMetadata,
   titleCase,
-  getHelixEnv,
 } from './scripts.js';
 
 async function replaceDefaultPlaceholders(block, components) {
@@ -114,18 +114,6 @@ function autoUpdatePage(main) {
     }
     return match;
   });
-
-  const placeholderUrl = getMetadata('placeholder-url');
-
-  if (placeholderUrl) {
-    const phLinks = main.querySelectorAll(`a[href^='${placeholderUrl}']`);
-    if (phLinks?.length > 0) {
-      phLinks.forEach((link) => {
-        const urlObj = new URL(link);
-        if (urlObj) link.href = getMetadata(urlObj.hash.replace('#', ''));
-      });
-    }
-  }
 }
 
 // cleanup remaining dom blades
