@@ -193,6 +193,12 @@ function validatePage() {
   }
 }
 
+export function setBlockTheme(block) {
+  if (getMetadata(`${block.dataset.blockName}-theme`)) {
+    block.classList.add(getMetadata(`${block.dataset.blockName}-theme`));
+  }
+}
+
 export default async function replaceContent(main) {
   await updateMetadataForTemplates();
   autoUpdatePage(main);

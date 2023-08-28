@@ -789,18 +789,11 @@ export function getMetadata(name) {
   return ($meta && $meta.content) || '';
 }
 
-function setBlockTheme(block) {
-  const isSheetPowerdePage = getMetadata('sheet-powered') === 'Y';
-  if (isSheetPowerdePage && getMetadata(`${block.dataset.blockName}-theme`)) {
-    block.classList.add(getMetadata(`${block.dataset.blockName}-theme`));
-  }
-}
-
 /**
  * Decorates a block.
  * @param {Element} block The block element
  */
-export function decorateBlock(block) {
+export async function decorateBlock(block) {
   const blockName = block.classList[0];
   if (blockName) {
     const section = block.closest('.section');
@@ -828,7 +821,10 @@ export function decorateBlock(block) {
     block.setAttribute('data-block-status', 'initialized');
     const blockWrapper = block.parentElement;
     blockWrapper.classList.add(`${blockName}-wrapper`);
-    setBlockTheme(block);
+    if (getMetadata('sheet-powered') === 'Y') {
+      const { setBlockTheme } = await import('./content-replace.js');
+      setBlockTheme(block);
+    }
   }
 }
 
