@@ -11,7 +11,7 @@
  */
 
 import { createTag } from '../../scripts/scripts.js';
-import { getOffer } from '../../scripts/utils/pricing.js';
+import { getOffer, buildUrl } from '../../scripts/utils/pricing.js';
 
 async function fetchPlan(planUrl) {
   if (!window.pricingPlans) {
@@ -96,6 +96,8 @@ function handlePrice(column) {
 
   fetchPlan(price?.href).then((response) => {
     priceText.innerHTML = response.formatted;
+    const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
+    if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
   });
 
   priceContainer?.remove();
