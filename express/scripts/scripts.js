@@ -1520,6 +1520,9 @@ export async function fixIcons(block = document) {
 function unwrapBlock($block) {
   const $section = $block.parentNode;
   const $elems = [...$section.children];
+
+  if ($elems.length <= 1) return;
+
   const $blockSection = createTag('div');
   const $postBlockSection = createTag('div');
   const $nextSection = $section.nextElementSibling;
@@ -1541,10 +1544,10 @@ function unwrapBlock($block) {
   if (!$postBlockSection.hasChildNodes()) {
     $postBlockSection.remove();
   }
-
-  if (!$section.hasChildNodes()) {
-    $section.remove();
-  }
+  //
+  // if (!$section.hasChildNodes()) {
+  //   $section.remove();
+  // }
   // fixme: technically $section can become empty too after unwrapping.
   //  This function currently leaves empty section after the generation of relevant rows
 }
