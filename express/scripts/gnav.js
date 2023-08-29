@@ -292,6 +292,7 @@ async function loadFEDS() {
     prefix = 'https://www.adobe.com';
   }
   loadScript(`${prefix}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).id = 'feds-script';
+  // delay gdpr popup so it is not LCP for mobile
   setTimeout(() => {
     window.fedsConfig.privacy = {
       otDomainId: '7a5eb705-95ed-4cc4-a11d-0cc5760e93db',
