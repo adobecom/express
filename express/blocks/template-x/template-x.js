@@ -23,6 +23,7 @@ import {
   getLottie,
   getMetadata,
   lazyLoadLottiePlayer,
+  sampleRUM,
   titleCase,
   toClassName,
   transformLinkToAnimation,
@@ -1423,6 +1424,9 @@ function importSearchBar(block, blockMediator) {
           event.preventDefault();
           searchBar.disabled = true;
           logSearch(event.currentTarget);
+          sampleRUM('search', {
+            source: searchBar,
+          });
           await redirectSearch();
         });
 
