@@ -2164,6 +2164,30 @@ function decorateLegalCopy(main) {
   });
 }
 
+function loadLana(options = {}) {
+  if (window.lana) return;
+
+  const lanaError = (e) => {
+    window.lana.log(e.reason || e.error || e.message, {
+      errorType: 'i',
+    });
+  };
+
+  window.lana = {
+    log: async (...args) => {
+      await import('./lana.js');
+      window.removeEventListener('error', lanaError);
+      window.removeEventListener('unhandledrejection', lanaError);
+      return window.lana.log(...args);
+    },
+    debug: false,
+    options,
+  };
+
+  window.addEventListener('error', lanaError);
+  window.addEventListener('unhandledrejection', lanaError);
+}
+
 /**
  * loads everything needed to get to LCP.
  */
@@ -2193,6 +2217,7 @@ async function loadEager(main) {
   }
 
   if (main) {
+    loadLana({ clientId: 'express' });
     await decorateMain(main);
     decorateHeaderAndFooter();
     decoratePageStyle();
