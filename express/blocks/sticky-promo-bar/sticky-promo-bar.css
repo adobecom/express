@@ -5,10 +5,17 @@ main .sticky-promo-bar {
     bottom: 0;
     background-color: var(--color-info-accent);
     color: white;
-    padding: 12px;
-    padding-right: 36px;
+    padding: 12px 36px 12px 12px;
     font-weight: 900;
     z-index: 10;
+}
+
+main .sticky-promo-bar.loadinbody {
+    position: static;
+}
+
+main .sticky-promo-bar.loadinbody .spot-holder.in-action {
+    margin: 11px 24px 16px 24px;
 }
 
 body[data-device="mobile"] main .sticky-promo-bar.rounded {

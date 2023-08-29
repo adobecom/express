@@ -17,6 +17,34 @@ import {
 
 import BlockMediator from '../../scripts/block-mediator.js';
 
+function initScrollInteraction(block) {
+  const spotHolder = createTag('div', { class: 'spot-holder' });
+  block.insertAdjacentElement('afterend', spotHolder);
+
+  const intersectionCallback = (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting && spotHolder.getBoundingClientRect().top < 0) {
+        block.classList.remove('loadinbody');
+        spotHolder.classList.add('in-action');
+        spotHolder.style.height = `${block.offsetHeight}px`;
+        // make up for the page jumping
+        window.scrollBy({ top: -116 });
+      } else {
+        block.classList.add('loadinbody');
+        spotHolder.classList.remove('in-action');
+        spotHolder.style.height = '0px';
+      }
+    });
+  };
+
+  const observer = new IntersectionObserver(intersectionCallback, {
+    rootMargin: '0px',
+    threshold: 1.0,
+  });
+
+  observer.observe(spotHolder);
+}
+
 export default function decorate(block) {
   const close = createTag('button', {
     class: 'close',
@@ -36,4 +64,9 @@ export default function decorate(block) {
       rendered: false,
     });
   });
+
+  if (block.classList.contains('loadinbody')) {
+    initScrollInteraction(block);
+
+  }
 }
