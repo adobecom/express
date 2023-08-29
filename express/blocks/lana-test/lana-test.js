@@ -10,5 +10,6 @@
  * governing permissions and limitations under the License.
  */
 export default function init() {
-  window.lana.log('jingle testing lana!');
+  window.lana.log('jingle testing lana log!');
+  console.log('jingle testing console log!');
 }
