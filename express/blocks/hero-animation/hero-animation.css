@@ -41,6 +41,10 @@ main .hero-animation p {
   margin: 16px 0;
 }
 
+main .hero-animation.compact p {
+  margin: 0;
+}
+
 main .hero-animation p.button-container {
   text-align: left;
   margin: 16px 0;
@@ -78,12 +82,30 @@ main .hero-animation video.hero-animation-background {
   object-position: 100% 100%;
 }
 
+main .hero-animation.compact video.hero-animation-background {
+  min-height: 120px;
+  max-height: 170px;
+}
+
+main .hero-animation.compact h2 {
+  font-size: var(--heading-font-size-s);
+  text-align: left;
+}
+
+main .hero-animation.compact h1 {
+  font-size: var(--heading-font-size-xl);
+}
+
 main .hero-animation .hero-animation-foreground {
   padding: 32px 28px;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+main .hero-animation.compact .hero-animation-foreground {
+  padding: 12px 28px;
 }
 
 main .hero-animation.white-text,

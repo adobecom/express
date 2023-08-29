@@ -10,11 +10,15 @@ main .sticky-promo-bar {
     z-index: 10;
 }
 
-main .sticky-promo-bar.loadinbody {
+body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
     position: static;
 }
 
-main .sticky-promo-bar.loadinbody .spot-holder.in-action {
+body[data-device="mobile"] main .sticky-promo-bar.loadinbody.rounded {
+    margin: 12px;
+}
+
+body[data-device="mobile"] main .sticky-promo-bar.loadinbody .spot-holder.in-action {
     margin: 11px 24px 16px 24px;
 }
 
