@@ -67,6 +67,5 @@ export default function decorate(block) {
 
   if (block.classList.contains('loadinbody')) {
     initScrollInteraction(block);
-
   }
 }
