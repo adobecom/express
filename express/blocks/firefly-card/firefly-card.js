@@ -30,14 +30,12 @@ const typeWord = (textSpan, word, textWrapper, cta) => new Promise((resolve) => 
 
 const eraseWord = (textSpan, textWrapper, cta) => new Promise((resolve) => {
   const eraseSpeed = 20;
-  const minTextSpanHeight = 31;
+  const minTextSpanHeight = 30;
   const aTag = textWrapper.closest('a');
   for (let i = 0; i < textSpan.textContent.length; i += 1) {
     setTimeout(() => {
       textSpan.textContent = textSpan.textContent.slice(0, -1);
-      console.log(textSpan.scrollHeight);
-      if (textSpan.scrollHeight < minTextSpanHeight && textWrapper.classList.contains('stacked')) {
-        console.log('I will move this thang back');
+      if (textSpan.scrollHeight <= minTextSpanHeight && textWrapper.classList.contains('stacked')) {
         aTag.append(cta);
         textWrapper.classList.remove('stacked');
       }
@@ -48,31 +46,29 @@ const eraseWord = (textSpan, textWrapper, cta) => new Promise((resolve) => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const initCycleCards = async (card, textSpan, block) => {
+const initCycleCards = async (block, payload) => {
+  const textSpan = block.querySelector('.mock-text');
   const typingDelay = 1000;
   const eraseDelay = 2000;
   const textWrapper = block.querySelector('.mock-text-wrapper');
   const cta = block.querySelector('.mock-text-wrapper + a');
   const photos = block.querySelectorAll('picture');
 
-  await sleep(typingDelay);
-  await typeWord(textSpan, card.text, textWrapper, cta);
-  card.photo.classList.add('show');
-  photos.forEach((photo) => {
-    if (photo !== card.photo) photo.classList.remove('show');
-  });
-  await sleep(eraseDelay);
-  await eraseWord(textSpan, textWrapper, cta);
-};
+  const animateCard = async (card) => {
+    await sleep(typingDelay);
+    await typeWord(textSpan, card.text, textWrapper, cta);
+    card.photo.classList.add('show');
+    photos.forEach((photo) => {
+      if (photo !== card.photo) photo.classList.remove('show');
+    });
+    await sleep(eraseDelay);
+    await eraseWord(textSpan, textWrapper, cta);
+  };
 
-const initTypingAnimation = async (block, payload) => {
-  const textSpan = block.querySelector('.mock-text');
-
-  // Use intersection observer to run while card is in view
-  while (true) {
+  while (payload.playing) {
     for (const card of payload.cards) {
       // eslint-disable-next-line no-await-in-loop
-      await initCycleCards(card, textSpan, block);
+      await animateCard(card);
     }
   }
 };
@@ -80,7 +76,7 @@ const initTypingAnimation = async (block, payload) => {
 const buildPayload = (block) => {
   const inputRows = Array.from(block.querySelectorAll(':scope > div'));
   block.innerHTML = '';
-  const payload = {
+  return {
     heading: inputRows.shift().querySelector('h3'),
     link: inputRows.at(-1).querySelector('a').href,
     cta: inputRows.pop().querySelector('a'),
@@ -89,8 +85,8 @@ const buildPayload = (block) => {
       const photo = row.querySelector('picture');
       return { text, photo };
     }),
+    playing: true,
   };
-  return payload;
 };
 
 const buildCard = (block, payload) => {
@@ -109,5 +105,5 @@ const buildCard = (block, payload) => {
 export default function decorate(block) {
   const payload = buildPayload(block);
   buildCard(block, payload);
-  initTypingAnimation(block, payload);
+  initCycleCards(block, payload);
 }
