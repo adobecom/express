@@ -1425,7 +1425,8 @@ function importSearchBar(block, blockMediator) {
           searchBar.disabled = true;
           logSearch(event.currentTarget);
           sampleRUM('search', {
-            source: searchBar,
+            source: block.dataset.blockName,
+            target: searchBar.value,
           });
           await redirectSearch();
         });

@@ -16,6 +16,7 @@ import {
   getIconElement,
   getLocale,
   getMetadata,
+  sampleRUM,
 } from '../../scripts/scripts.js';
 import { buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
@@ -189,6 +190,10 @@ function initSearchFunction(block) {
   const onSearchSubmit = async () => {
     searchBar.disabled = true;
     logSearch(searchForm);
+    sampleRUM('search', {
+      source: block.dataset.blockName,
+      target: searchBar.value,
+    });
     await redirectSearch();
   };
 
