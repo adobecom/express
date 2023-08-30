@@ -19,16 +19,17 @@ import BlockMediator from '../../scripts/block-mediator.js';
 
 function initScrollInteraction(block) {
   const spotHolder = createTag('div', { class: 'spot-holder' });
+  block.classList.add('inbody');
   block.insertAdjacentElement('afterend', spotHolder);
 
   const intersectionCallback = (entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting && spotHolder.getBoundingClientRect().top < 0) {
         spotHolder.style.height = `${block.offsetHeight + 24}px`;
-        block.classList.remove('loadinbody');
+        block.classList.remove('inbody');
         spotHolder.classList.add('in-action');
       } else {
-        block.classList.add('loadinbody');
+        block.classList.add('inbody');
         spotHolder.classList.remove('in-action');
         spotHolder.style.height = '0px';
       }

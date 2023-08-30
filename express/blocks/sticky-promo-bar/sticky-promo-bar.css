@@ -12,19 +12,23 @@ main .sticky-promo-bar {
     margin: 16px auto;
 }
 
-body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
+body[data-device="mobile"] main .sticky-promo-bar.loadinbody.inbody {
     position: static;
 }
 
-body[data-device="mobile"] main .sticky-promo-bar.loadinbody .spot-holder.in-action {
-    margin: 11px 24px 16px 24px;
+body[data-device="mobile"] main .sticky-promo-bar.loadinbody.inbody .spot-holder.in-action {
+    margin: 16px 8px;
 }
 
 body[data-device="mobile"] main .sticky-promo-bar.rounded {
     border-radius: 10px;
-    margin: 16px 8px;
+    margin: 11px 24px 16px 24px;
     font-weight: 300;
     padding: 12px 24px 17px 24px;
+}
+
+body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
+    margin: 16px 8px;
 }
 
 main .sticky-promo-bar:not(.rounded) a:any-link {
