@@ -24,11 +24,9 @@ function initScrollInteraction(block) {
   const intersectionCallback = (entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting && spotHolder.getBoundingClientRect().top < 0) {
+        spotHolder.style.height = `${block.offsetHeight + 24}px`;
         block.classList.remove('loadinbody');
         spotHolder.classList.add('in-action');
-        spotHolder.style.height = `${block.offsetHeight}px`;
-        // make up for the page jumping
-        window.scrollBy({ top: -(block.offsetHeight) });
       } else {
         block.classList.add('loadinbody');
         spotHolder.classList.remove('in-action');
