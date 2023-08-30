@@ -926,16 +926,14 @@ export async function loadBlock(block, eager = false) {
               await mod.default(block, blockName, document, eager);
             }
           } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(`failed to load module for ${blockName}`, err);
+            window.lana.log(`failed to load module for ${blockName}: ${err}`, { s: 10, tags: 'module' });
           }
           resolve();
         })();
       });
       await Promise.all([cssLoaded, decorationComplete]);
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(`failed to load block ${blockName}`, err);
+      window.lana.log(`failed to load block ${blockName}: ${err}`, { s: 10, tags: 'block' });
     }
     block.setAttribute('data-block-status', 'loaded');
   }
