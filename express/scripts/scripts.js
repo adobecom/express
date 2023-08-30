@@ -926,16 +926,14 @@ export async function loadBlock(block, eager = false) {
               await mod.default(block, blockName, document, eager);
             }
           } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(`failed to load module for ${blockName}`, err);
+            window.lana.log(`failed to load module for ${blockName}: ${err}`, { s: 10, tags: 'module' });
           }
           resolve();
         })();
       });
       await Promise.all([cssLoaded, decorationComplete]);
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(`failed to load block ${blockName}`, err);
+      window.lana.log(`failed to load block ${blockName}: ${err}`, { s: 10, tags: 'block' });
     }
     block.setAttribute('data-block-status', 'loaded');
   }
@@ -2164,6 +2162,30 @@ function decorateLegalCopy(main) {
   });
 }
 
+function loadLana(options = {}) {
+  if (window.lana) return;
+
+  const lanaError = (e) => {
+    window.lana.log(e.reason || e.error || e.message, {
+      errorType: 'i',
+    });
+  };
+
+  window.lana = {
+    log: async (...args) => {
+      await import('./lana.js');
+      window.removeEventListener('error', lanaError);
+      window.removeEventListener('unhandledrejection', lanaError);
+      return window.lana.log(...args);
+    },
+    debug: false,
+    options,
+  };
+
+  window.addEventListener('error', lanaError);
+  window.addEventListener('unhandledrejection', lanaError);
+}
+
 /**
  * loads everything needed to get to LCP.
  */
@@ -2193,6 +2215,7 @@ async function loadEager(main) {
   }
 
   if (main) {
+    loadLana({ clientId: 'express' });
     await decorateMain(main);
     decorateHeaderAndFooter();
     decoratePageStyle();
