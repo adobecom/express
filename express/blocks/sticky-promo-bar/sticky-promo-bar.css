@@ -8,14 +8,12 @@ main .sticky-promo-bar {
     padding: 12px 36px 12px 12px;
     font-weight: 900;
     z-index: 10;
+    max-width: 500px;
+    margin: 16px auto;
 }
 
 body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
     position: static;
-}
-
-body[data-device="mobile"] main .sticky-promo-bar.loadinbody.rounded {
-    margin: 16px 8px;
 }
 
 body[data-device="mobile"] main .sticky-promo-bar.loadinbody .spot-holder.in-action {
@@ -24,7 +22,7 @@ body[data-device="mobile"] main .sticky-promo-bar.loadinbody .spot-holder.in-act
 
 body[data-device="mobile"] main .sticky-promo-bar.rounded {
     border-radius: 10px;
-    margin: 11px 24px 16px 24px;
+    margin: 16px 8px;
     font-weight: 300;
     padding: 12px 24px 17px 24px;
 }
@@ -95,4 +93,11 @@ main .sticky-promo-bar .close:after {
     background-color: currentColor;
     transform: rotate(45deg);
     left: 0;
+}
+
+@media (min-width: 600px) {
+    body[data-device="mobile"] main .sticky-promo-bar.loadinbody.rounded {
+        position: static;
+        margin: 16px auto;
+    }
 }

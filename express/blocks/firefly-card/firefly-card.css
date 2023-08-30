@@ -18,7 +18,9 @@
   gap: 0.75rem;
   box-sizing: border-box;
   min-height: 226px;
+  max-width: 360px;
   height: 100%;
+  margin: auto;
   border-radius: 24px;
   overflow: hidden;
   padding: 21px 20px 12px 20px;
