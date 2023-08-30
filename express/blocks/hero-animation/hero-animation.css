@@ -83,8 +83,8 @@ main .hero-animation video.hero-animation-background {
 }
 
 main .hero-animation.compact video.hero-animation-background {
-  min-height: 120px;
-  max-height: 170px;
+  min-height: 170px;
+  max-height: 240px;
 }
 
 main .hero-animation.compact h2 {
@@ -142,6 +142,10 @@ main .hero-animation.white-text a:any-link {
     transform: translateY(-50%);
     left: 56px;
     width: 500px;
+  }
+
+  main .hero-animation.compact .hero-animation-foreground {
+    padding: 12px 18px;
   }
 
   body.no-desktop-brand-header header, body.no-brand-header header {
