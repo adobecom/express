@@ -170,12 +170,13 @@ async function loadFEDS() {
     const validSecondPathSegments = ['create', 'feature'];
     const pathSegments = window.location.pathname
       .split('/')
+      .filter((e) => e !== '')
       .filter((e) => e !== locale);
     const localePath = locale === 'us' ? '' : `${locale}/`;
     const secondPathSegment = pathSegments[1].toLowerCase();
     const pagesShortNameElement = document.head.querySelector('meta[name="short-title"]');
     const pagesShortName = pagesShortNameElement?.getAttribute('content') ?? null;
-    const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`];
+    const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
 
     if (!pagesShortName
       || pathSegments.length <= 2

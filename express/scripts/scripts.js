@@ -507,7 +507,6 @@ function removeIrrelevantSections(main) {
  * @param {Element} $main The container element
  */
 function decorateSections($main) {
-  let noAudienceFound = false;
   $main.querySelectorAll(':scope > div').forEach((section) => {
     const wrappers = [];
     let defaultContent = false;
@@ -541,12 +540,6 @@ function decorateSections($main) {
         }
       });
       sectionMeta.parentNode.remove();
-    }
-
-    if (section.dataset.audience && !noAudienceFound) {
-      section.style.paddingTop = '0';
-    } else {
-      noAudienceFound = true;
     }
   });
 }
@@ -1743,7 +1736,7 @@ function splitSections($main) {
   const multipleColumns = $main.querySelectorAll('.columns.fullsize-center').length > 1;
   $main.querySelectorAll(':scope > div > div').forEach(($block) => {
     const hasAppStoreBlocks = ['yes', 'true', 'on'].includes(getMetadata('show-standard-app-store-blocks').toLowerCase());
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'faq', 'promotion', 'fragment', 'app-store-highlight', 'app-store-blade', 'plans-comparison'];
+    const blocksToSplit = ['template-list', 'layouts', 'banner', 'faq', 'promotion', 'app-store-highlight', 'app-store-blade', 'plans-comparison'];
     // work around for splitting columns and sixcols template list
     // add metadata condition to minimize impact on other use cases
     if (hasAppStoreBlocks && !multipleColumns) {
@@ -2171,6 +2164,30 @@ function decorateLegalCopy(main) {
   });
 }
 
+function loadLana(options = {}) {
+  if (window.lana) return;
+
+  const lanaError = (e) => {
+    window.lana.log(e.reason || e.error || e.message, {
+      errorType: 'i',
+    });
+  };
+
+  window.lana = {
+    log: async (...args) => {
+      await import('./lana.js');
+      window.removeEventListener('error', lanaError);
+      window.removeEventListener('unhandledrejection', lanaError);
+      return window.lana.log(...args);
+    },
+    debug: false,
+    options,
+  };
+
+  window.addEventListener('error', lanaError);
+  window.addEventListener('unhandledrejection', lanaError);
+}
+
 /**
  * loads everything needed to get to LCP.
  */
@@ -2200,6 +2217,7 @@ async function loadEager(main) {
   }
 
   if (main) {
+    loadLana({ clientId: 'express' });
     await decorateMain(main);
     decorateHeaderAndFooter();
     decoratePageStyle();
