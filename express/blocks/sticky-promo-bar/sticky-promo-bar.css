@@ -28,7 +28,10 @@ body[data-device="mobile"] main .sticky-promo-bar.rounded {
 }
 
 body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
-    margin: 16px 8px;
+    margin: 12px auto;
+    padding: 8px 16px;
+    box-sizing: border-box;
+    max-width: 360px;
 }
 
 main .sticky-promo-bar:not(.rounded) a:any-link {
@@ -97,11 +100,4 @@ main .sticky-promo-bar .close:after {
     background-color: currentColor;
     transform: rotate(45deg);
     left: 0;
-}
-
-@media (min-width: 600px) {
-    body[data-device="mobile"] main .sticky-promo-bar.loadinbody.rounded {
-        position: static;
-        margin: 16px auto;
-    }
 }

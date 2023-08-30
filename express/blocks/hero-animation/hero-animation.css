@@ -41,10 +41,6 @@ main .hero-animation p {
   margin: 16px 0;
 }
 
-main .hero-animation.compact p {
-  margin: 0;
-}
-
 main .hero-animation p.button-container {
   text-align: left;
   margin: 16px 0;
@@ -94,6 +90,12 @@ main .hero-animation.compact h2 {
 
 main .hero-animation.compact h1 {
   font-size: var(--heading-font-size-xl);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+main .hero-animation.compact p {
+  margin: 0;
 }
 
 main .hero-animation .hero-animation-foreground {
@@ -105,7 +107,7 @@ main .hero-animation .hero-animation-foreground {
 }
 
 main .hero-animation.compact .hero-animation-foreground {
-  padding: 12px 18px 0;
+  padding: 8px 18px 0;
 }
 
 main .hero-animation.white-text,
