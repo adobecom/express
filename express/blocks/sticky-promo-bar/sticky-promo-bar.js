@@ -25,7 +25,7 @@ function initScrollInteraction(block) {
   const intersectionCallback = (entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting && spotHolder.getBoundingClientRect().top < 0) {
-        spotHolder.style.height = `${block.offsetHeight + 24}px`;
+        spotHolder.style.height = `${block.offsetHeight + 16}px`;
         block.classList.remove('inbody');
         spotHolder.classList.add('in-action');
       } else {

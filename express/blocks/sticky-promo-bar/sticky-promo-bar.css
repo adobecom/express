@@ -16,10 +16,6 @@ body[data-device="mobile"] main .sticky-promo-bar.loadinbody.inbody {
     position: static;
 }
 
-body[data-device="mobile"] main .sticky-promo-bar.loadinbody.inbody .spot-holder.in-action {
-    margin: 16px 8px;
-}
-
 body[data-device="mobile"] main .sticky-promo-bar.rounded {
     border-radius: 10px;
     margin: 11px 24px 16px 24px;
