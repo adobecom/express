@@ -28,7 +28,7 @@ function initScrollInteraction(block) {
         spotHolder.classList.add('in-action');
         spotHolder.style.height = `${block.offsetHeight}px`;
         // make up for the page jumping
-        window.scrollBy({ top: -86 });
+        window.scrollBy({ top: -(block.offsetHeight) });
       } else {
         block.classList.add('loadinbody');
         spotHolder.classList.remove('in-action');

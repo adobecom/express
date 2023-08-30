@@ -15,7 +15,7 @@ body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
 }
 
 body[data-device="mobile"] main .sticky-promo-bar.loadinbody.rounded {
-    margin: 12px;
+    margin: 16px 8px;
 }
 
 body[data-device="mobile"] main .sticky-promo-bar.loadinbody .spot-holder.in-action {

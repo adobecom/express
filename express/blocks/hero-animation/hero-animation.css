@@ -105,7 +105,7 @@ main .hero-animation .hero-animation-foreground {
 }
 
 main .hero-animation.compact .hero-animation-foreground {
-  padding: 12px 28px;
+  padding: 12px 18px 0;
 }
 
 main .hero-animation.white-text,

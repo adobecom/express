@@ -23,6 +23,7 @@
   overflow: hidden;
   padding: 21px 20px 12px 20px;
   background-image: url("https://main--express--adobecom.hlx.page/media_1e14a2f24184a4a2f6d990ac3a20e3bc75cb3424a.png#width=360&height=226");
+  background-color: var(--color-gray-100);
   background-position: bottom;
   background-size: cover;
 }
