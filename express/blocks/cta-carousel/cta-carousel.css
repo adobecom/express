@@ -299,6 +299,11 @@
     top: 64px;
 }
 
+:lang(ja) main .cta-carousel.gen-ai .gen-ai-input,
+:lang(ja) main .cta-carousel.gen-ai .card .card-sleeve .gen-ai-input-form .gen-ai-input::placeholder {
+    font-size: var(--body-font-size-s);
+}
+
 @media (min-width: 900px) {
     .cta-carousel .cta-carousel-heading-section {
         flex-direction: row;
