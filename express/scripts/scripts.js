@@ -926,14 +926,14 @@ export async function loadBlock(block, eager = false) {
               await mod.default(block, blockName, document, eager);
             }
           } catch (err) {
-            window.lana.log(`failed to load module for ${blockName}: ${err}`, { s: 10, tags: 'module' });
+            window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, { sampleRate: 1, tags: 'module' });
           }
           resolve();
         })();
       });
       await Promise.all([cssLoaded, decorationComplete]);
     } catch (err) {
-      window.lana.log(`failed to load block ${blockName}: ${err}`, { s: 10, tags: 'block' });
+      window.lana.log(`failed to load block ${blockName}: ${err.message}\nError Stack:${err.stack}`, { sampleRate: 1, tags: 'block' });
     }
     block.setAttribute('data-block-status', 'loaded');
   }
@@ -1615,13 +1615,14 @@ export async function fetchFloatingCta(path) {
 
     if (window.floatingCta.length) {
       const candidates = window.floatingCta.filter((p) => {
-        const urlToMatch = p.path.includes('*') ? convertGlobToRe(p.path) : p.path;
+        const pathMatch = p.path.includes('*') ? path.match(convertGlobToRe(p.path)) : path === p.path;
+
         if (experiment && path !== 'default') {
-          return (path === p.path || path.match(urlToMatch))
+          return (pathMatch)
             && p.expID === experiment.run
             && p.challengerID === experiment.selectedVariant;
         } else {
-          return path === p.path || path.match(urlToMatch);
+          return pathMatch;
         }
       }).sort((a, b) => b.path.length - a.path.length);
 

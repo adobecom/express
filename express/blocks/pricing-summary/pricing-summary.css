@@ -26,8 +26,14 @@ main .pricing-summary .pricing-column {
   flex-direction: column;
   align-items: center;
   padding: 23px 0 0 0;
-  justify-items: center;
   justify-content: center;
+}
+
+main .pricing-summary .pricing-column .pricing-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
 }
 
 main .pricing-summary .pricing-header {
@@ -62,32 +68,47 @@ main .pricing-summary .pricing-plan > p {
 main .pricing-summary .pricing-plan {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   margin: 10px 0 30px 0;
   max-width: 330px;
   gap: 15px;
 }
 
+main .pricing-summary .pricing-price-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+main .pricing-summary .pricing-base-price,
 main .pricing-summary .pricing-price {
   display: flex;
   justify-content: center;
-  font-size: var(--heading-font-size-xs);
   font-weight: 900;
 }
 
-main .pricing-summary .pricing-price > strong {
+main .pricing-summary .pricing-base-price {
+  color: var(--color-gray-600);
+}
+
+main .pricing-summary .pricing-base-price strong {
+  text-decoration: line-through;
+}
+
+main .pricing-summary .pricing-price > strong,
+main .pricing-summary .pricing-base-price > strong {
   font-size: var(--heading-font-size-s);
   font-weight: 900;
+}
+
+main .pricing-summary .pricing-plan-suf {
+  font-size: var(--body-font-size-s);
 }
 
 main .pricing-summary .pricing-description > p,
 main .pricing-summary .pricing-plan > p {
   margin: 0;
   line-height: 22px;
-}
-
-main .pricing-summary .spacer {
-  flex: 1;
 }
 
 main .pricing-summary .pricing-column .button-container {
@@ -119,9 +140,13 @@ main .pricing-summary > div:first-of-type > div > p {
   margin: 0;
 }
 
-main .pricing-summary > div:last-of-type > div {
+main .pricing-summary > div:last-of-type {
+  padding: 40px 0;
+}
+
+main .pricing-summary > div:last-of-type > div p {
   font-size: var(--body-font-size-xs);
-  margin: 18px 0 0 0;
+  margin: 0 0 12px;
 }
 
 @media (min-width: 1200px) {

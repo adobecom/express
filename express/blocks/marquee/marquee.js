@@ -11,7 +11,6 @@
  */
 
 import {
-  addAnimationToggle,
   createTag,
   toClassName,
   getLocale,
@@ -163,7 +162,7 @@ function adjustLayout(animations, parent) {
     if (newVideo) {
       parent.replaceChild(newVideo, parent.querySelector('video'));
       newVideo.addEventListener('canplay', () => {
-        if (!localStorage.getItem('reduceMotion') === 'on') {
+        if (localStorage.getItem('reduceMotion') !== 'on') {
           newVideo.muted = true;
           newVideo.play();
         }
@@ -178,6 +177,7 @@ async function transformToVideoLink(cell, a) {
     e.preventDefault();
   });
   a.setAttribute('rel', 'nofollow');
+  a.classList.add('video-link');
   const title = a.textContent.trim();
 
   // gather video urls from all links in cell
@@ -220,7 +220,7 @@ export default async function decorate(block) {
   const animations = {};
   const rows = [...block.children];
 
-  rows.forEach((div, index) => {
+  rows.forEach(async (div, index) => {
     let rowType = 'animation';
     let typeHint;
     if (index + 1 === rows.length) rowType = 'content';
@@ -299,16 +299,15 @@ export default async function decorate(block) {
       });
 
       // check for video link
-      const videoLink = [...div.querySelectorAll('a')].find((a) => a.href.includes('youtu')
-        || a.href.includes('vimeo')
-        || /.*\/media_.*(mp4|webm|m3u8)$/.test(new URL(a.href).pathname));
+      const { isVideoLink } = await import('../shared/video.js');
+      const videoLink = [...div.querySelectorAll('a')].find((a) => isVideoLink(a.href));
       if (videoLink) {
         transformToVideoLink(div, videoLink);
       }
 
       const contentButtons = [...div.querySelectorAll('a.button.accent')];
-      const buttonAsLink = contentButtons[2];
       const secondaryButton = contentButtons[1];
+      const buttonAsLink = contentButtons[2];
       buttonAsLink?.classList.remove('button');
       secondaryButton?.classList.add('secondary');
       secondaryButton?.classList.add('xlarge');
@@ -349,10 +348,6 @@ export default async function decorate(block) {
   if (button) {
     button.classList.add('xlarge');
     await addFreePlanWidget(button.parentElement);
-  }
-
-  if (block.classList.contains('wide')) {
-    addAnimationToggle(block);
   }
 
   if (getLocale(window.location) === 'jp') {

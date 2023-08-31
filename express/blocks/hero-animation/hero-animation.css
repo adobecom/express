@@ -78,12 +78,36 @@ main .hero-animation video.hero-animation-background {
   object-position: 100% 100%;
 }
 
+main .hero-animation.compact video.hero-animation-background {
+  min-height: 170px;
+  max-height: 240px;
+}
+
+main .hero-animation.compact h2 {
+  font-size: var(--heading-font-size-s);
+  text-align: left;
+}
+
+main .hero-animation.compact h1 {
+  font-size: var(--heading-font-size-xl);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+main .hero-animation.compact p {
+  margin: 0;
+}
+
 main .hero-animation .hero-animation-foreground {
   padding: 32px 28px;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+main .hero-animation.compact .hero-animation-foreground {
+  padding: 8px 18px 0;
 }
 
 main .hero-animation.white-text,
@@ -120,6 +144,10 @@ main .hero-animation.white-text a:any-link {
     transform: translateY(-50%);
     left: 56px;
     width: 500px;
+  }
+
+  main .hero-animation.compact .hero-animation-foreground {
+    padding: 12px 18px;
   }
 
   body.no-desktop-brand-header header, body.no-brand-header header {
