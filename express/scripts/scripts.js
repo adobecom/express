@@ -2201,7 +2201,7 @@ const eagerLoad = (img) => {
 async function loadPostLCP() {
   // post LCP actions go here
   sampleRUM('lcp');
-  if (!window.hlx.lighthouse) loadMartech();
+  if (!window.hlx.lighthouse) setTimeout(() => loadMartech(), 3500);
   loadGnav();
   const tkID = TK_IDS[getLocale(window.location)];
   if (tkID) {
