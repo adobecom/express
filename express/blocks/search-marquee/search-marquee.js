@@ -25,7 +25,7 @@ import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import BlockMediator from '../../scripts/block-mediator.js';
 
 // FIXME: as soon as we verify the rum approach works, this should be retired
-export default function logSearch(form, formUrl = '/express/search-terms-log') {
+function logSearch(form, formUrl = '/express/search-terms-log') {
   if (form) {
     const input = form.querySelector('input');
     const currentHref = new URL(window.location.href);
