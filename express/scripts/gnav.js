@@ -301,7 +301,9 @@ async function loadFEDS() {
 if (!window.hlx || !window.hlx.lighthouse) {
   loadIMS();
   loadFEDS();
-  loadGoogleYOLO();
+  setTimeout(() => {
+    loadGoogleYOLO();
+  }, 3500);
 }
 /* Core Web Vitals RUM collection */
 
