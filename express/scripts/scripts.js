@@ -2201,7 +2201,8 @@ const eagerLoad = (img) => {
 async function loadPostLCP() {
   // post LCP actions go here
   sampleRUM('lcp');
-  if (!window.hlx.lighthouse) setTimeout(() => loadMartech(), 3500);
+  if (!window.hlx.lighthouse) loadMartech();
+  loadGnav();
   const tkID = TK_IDS[getLocale(window.location)];
   if (tkID) {
     const { default: loadFonts } = await import('./fonts.js');
@@ -2292,7 +2293,7 @@ async function loadArea(area = document) {
     delete section.el.dataset.status;
     delete section.el.dataset.idx;
   }
-  loadGnav();
+
   loadLazy(main);
 
   if (window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) {

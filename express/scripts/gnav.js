@@ -23,8 +23,6 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from './scripts.js';
 
-import loadGoogleYOLO from './google-yolo.js';
-
 const isHomepage = window.location.pathname.endsWith('/express/');
 
 async function checkRedirect(location, geoLookup) {
@@ -302,7 +300,9 @@ if (!window.hlx || !window.hlx.lighthouse) {
   loadIMS();
   loadFEDS();
   setTimeout(() => {
-    loadGoogleYOLO();
+    import('./google-yolo.js').then((mod) => {
+      mod.default();
+    });
   }, 3500);
 }
 /* Core Web Vitals RUM collection */
