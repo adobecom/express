@@ -503,26 +503,47 @@ function removeIrrelevantSections(main) {
 }
 
 /**
+ * Decorates a block.
+ * @param {Element} block The block element
+ */
+export function decorateBlock(block) {
+  const blockName = block.classList[0];
+  if (blockName) {
+    const section = block.closest('.section');
+    if (section) section.classList.add(`${[...block.classList].join('-')}-container`);
+
+    // begin CCX custom block option class handling
+    // split and add options with a dash
+    // (fullscreen-center -> fullscreen-center + fullscreen + center)
+    const extra = [];
+    block.classList.forEach((className, index) => {
+      if (index === 0) return; // block name, no split
+      const split = className.split('-');
+      if (split.length > 1) {
+        split.forEach((part) => {
+          extra.push(part);
+        });
+      }
+    });
+    block.classList.add(...extra);
+    // end CCX custom block option class handling
+
+    block.classList.add('block');
+
+    block.setAttribute('data-block-name', blockName);
+    block.setAttribute('data-block-status', 'initialized');
+    const blockWrapper = block.parentElement;
+    blockWrapper.classList.add(`${blockName}-wrapper`);
+  }
+}
+
+/**
  * Decorates all sections in a container element.
  * @param {Element} $main The container element
  */
-function decorateSections($main) {
-  $main.querySelectorAll(':scope > div').forEach((section) => {
-    const wrappers = [];
-    let defaultContent = false;
-    [...section.children].forEach((e) => {
-      if (e.tagName === 'DIV' || !defaultContent) {
-        const wrapper = document.createElement('div');
-        wrappers.push(wrapper);
-        defaultContent = e.tagName !== 'DIV';
-        if (defaultContent) wrapper.classList.add('default-content-wrapper');
-      }
-      wrappers[wrappers.length - 1].append(e);
-    });
-    wrappers.forEach((wrapper) => section.append(wrapper));
-    section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
-    section.setAttribute('data-section-status', 'initialized');
-
+function decorateSections(el, isDoc) {
+  const selector = isDoc ? 'body > main > div' : ':scope > div';
+  return [...el.querySelectorAll(selector)].map((section, idx) => {
     /* process section metadata */
     const sectionMeta = section.querySelector('div.section-metadata');
     if (sectionMeta) {
@@ -539,8 +560,27 @@ function decorateSections($main) {
           section.dataset[key] = meta[key];
         }
       });
-      sectionMeta.parentNode.remove();
+      sectionMeta.remove();
     }
+
+    const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
+
+    section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
+    section.dataset.status = 'decorated';
+    section.dataset.idx = idx;
+
+    let defaultContent = false;
+    blocks.forEach((block) => {
+      if (block.tagName === 'DIV' || !defaultContent) {
+        const wrapper = document.createElement('div');
+        defaultContent = block.tagName !== 'DIV';
+        if (defaultContent) wrapper.classList.add('default-content-wrapper');
+        wrapper.append(block);
+        section.append(wrapper);
+      }
+      decorateBlock(block);
+    });
+    return { el: section, blocks: [...blocks] };
   });
 }
 
@@ -782,51 +822,6 @@ function resolveFragments() {
     });
 }
 
-/**
- * Decorates a block.
- * @param {Element} block The block element
- */
-export function decorateBlock(block) {
-  const blockName = block.classList[0];
-  if (blockName) {
-    const section = block.closest('.section');
-    if (section) section.classList.add(`${[...block.classList].join('-')}-container`);
-
-    // begin CCX custom block option class handling
-    // split and add options with a dash
-    // (fullscreen-center -> fullscreen-center + fullscreen + center)
-    const extra = [];
-    block.classList.forEach((className, index) => {
-      if (index === 0) return; // block name, no split
-      const split = className.split('-');
-      if (split.length > 1) {
-        split.forEach((part) => {
-          extra.push(part);
-        });
-      }
-    });
-    block.classList.add(...extra);
-    // end CCX custom block option class handling
-
-    block.classList.add('block');
-
-    block.setAttribute('data-block-name', blockName);
-    block.setAttribute('data-block-status', 'initialized');
-    const blockWrapper = block.parentElement;
-    blockWrapper.classList.add(`${blockName}-wrapper`);
-  }
-}
-
-/**
- * Decorates all blocks in a container element.
- * @param {Element} main The container element
- */
-function decorateBlocks(main) {
-  main
-    .querySelectorAll('div.section > div > div')
-    .forEach((block) => decorateBlock(block));
-}
-
 function decorateMarqueeColumns($main) {
   // flag first columns block in first section block as marquee
   const $sectionSplitByHighlight = $main.querySelector('.split-by-app-store-highlight');
@@ -914,30 +909,30 @@ export async function loadBlock(block, eager = false) {
       }
     }
 
-    try {
-      const cssLoaded = new Promise((resolve) => {
-        loadCSS(cssPath, resolve);
-      });
-      const decorationComplete = new Promise((resolve) => {
-        (async () => {
-          try {
-            const mod = await import(jsPath);
-            if (mod.default) {
-              await mod.default(block, blockName, document, eager);
-            }
-          } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(`failed to load module for ${blockName}`, err);
-          }
-          resolve();
-        })();
-      });
-      await Promise.all([cssLoaded, decorationComplete]);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(`failed to load block ${blockName}`, err);
-    }
+    const cssLoaded = new Promise((resolve) => {
+      loadCSS(cssPath, resolve);
+    });
+    const scriptLoaded = new Promise((resolve) => {
+      (async () => {
+        try {
+          import(jsPath).then((mod) => {
+            mod.default(block, blockName, document, eager);
+            resolve();
+          }).catch((e) => {
+            console.log(e);
+          }).finally((e) => {
+            console.log(e);
+          });
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.log(`failed to load module for ${blockName}`, err);
+        }
+        resolve();
+      })();
+    });
+    await Promise.all([cssLoaded, scriptLoaded]);
     block.setAttribute('data-block-status', 'loaded');
+    return block;
   }
 }
 
@@ -1982,15 +1977,15 @@ function decoratePictures(main) {
 export async function decorateMain(main) {
   await buildAutoBlocks(main);
   splitSections(main);
-  decorateSections(main);
+  const sections = decorateSections(main, false);
   decorateButtons(main);
-  decorateBlocks(main);
   decorateMarqueeColumns(main);
   await fixIcons(main);
   decoratePictures(main);
   decorateLinkedPictures(main);
   decorateSocialIcons(main);
   makeRelativeLinks(main);
+  return sections;
 }
 
 const usp = new URLSearchParams(window.location.search);
@@ -2168,8 +2163,80 @@ function decorateLegalCopy(main) {
  * loads everything needed to get to LCP.
  */
 async function loadEager(main) {
+
+}
+
+function removeMetadata() {
+  document.head.querySelectorAll('meta').forEach((meta) => {
+    if (meta.content && meta.content.includes('--none--')) {
+      meta.remove();
+    }
+  });
+}
+
+/**
+ * loads everything that doesn't need to be delayed.
+ */
+async function loadLazy(main) {
+  addPromotion();
+  loadCSS('/express/styles/lazy-styles.css');
+  scrollToHash();
+  resolveFragments();
+  removeMetadata();
+  addFavIcon('/express/icons/cc-express.svg');
+  sampleRUM('lazy');
+  sampleRUM.observe(document.querySelectorAll('main picture > img'));
+  sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
+  trackViewedAssetsInDataLayer();
+}
+
+const eagerLoad = (img) => {
+  img?.setAttribute('loading', 'eager');
+  img?.setAttribute('fetchpriority', 'high');
+};
+
+(async function loadLCPImage() {
+  const firstDiv = document.querySelector('body > main > div:nth-child(1) > div');
+  if (firstDiv?.classList.contains('marquee')) {
+    firstDiv.querySelectorAll('img').forEach(eagerLoad);
+  } else {
+    eagerLoad(document.querySelector('img'));
+  }
+}());
+
+async function loadPostLCP() {
+  // post LCP actions go here
+  sampleRUM('lcp');
+  loadGnav();
+  if (!window.hlx.lighthouse) loadMartech();
+  const tkID = TK_IDS[getLocale(window.location)];
+  if (tkID) {
+    const { default: loadFonts } = await import('./fonts.js');
+    loadFonts(tkID, loadCSS);
+  }
+}
+
+/**
+ * Decorates the page.
+ */
+async function loadArea(area = document) {
+  const isDoc = area === document;
+  const main = area.querySelector('main');
+
+  if (isDoc) {
+    decorateHeaderAndFooter();
+
+    // import('./samplerum.js').then(({ addRumListeners }) => {
+    //   addRumListeners();
+    // });
+  }
+
+  window.hlx = window.hlx || {};
+  window.hlx.lighthouse = new URLSearchParams(window.location.search).get('lighthouse') === 'on';
+  window.hlx.init = true;
+
   setTheme();
-  if (main) {
+  if (isDoc) {
     const language = getLanguage(getLocale(window.location));
     const langSplits = language.split('-');
     langSplits.pop();
@@ -2180,9 +2247,7 @@ async function loadEager(main) {
   }
   if (!window.hlx.lighthouse) await decorateTesting();
 
-  // for backward compatibility
-  // TODO: remove the href check after we tag content with sheet-powered
-  if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
+  if (getMetadata('sheet-powered') === 'Y') {
     const { default: replaceContent } = await import('./content-replace.js');
     await replaceContent();
   }
@@ -2192,21 +2257,15 @@ async function loadEager(main) {
     await redirect();
   }
 
+  let sections = [];
   if (main) {
-    await decorateMain(main);
-    decorateHeaderAndFooter();
+    sections = await decorateMain(main);
     decoratePageStyle();
     decorateLegalCopy(main);
     addJapaneseSectionHeaderSizing();
     displayEnv();
     displayOldLinkWarning();
     wordBreakJapanese();
-
-    const lcpBlocks = ['columns', 'hero-animation', 'hero-3d', 'template-list', 'template-x', 'floating-button', 'fullscreen-marquee', 'fullscreen-marquee-desktop', 'collapsible-card', 'search-marquee'];
-    if (getMetadata('show-relevant-rows') === 'yes') lcpBlocks.push('fragment');
-    const block = document.querySelector('.block');
-    const hasLCPBlock = (block && lcpBlocks.includes(block.getAttribute('data-block-name')));
-    if (hasLCPBlock) await loadBlock(block, true);
 
     document.querySelector('body').classList.add('appear');
 
@@ -2223,74 +2282,38 @@ async function loadEager(main) {
         }, 3000);
       }
     }
-
-    const lcpCandidate = document.querySelector('main img');
-    await new Promise((resolve) => {
-      if (lcpCandidate && !lcpCandidate.complete) {
-        lcpCandidate.setAttribute('loading', 'eager');
-        lcpCandidate.addEventListener('load', () => {
-          resolve();
-        });
-        lcpCandidate.addEventListener('error', () => resolve());
-      } else {
-        resolve();
-      }
-    });
   }
-}
 
-function removeMetadata() {
-  document.head.querySelectorAll('meta').forEach((meta) => {
-    if (meta.content && meta.content.includes('--none--')) {
-      meta.remove();
-    }
-  });
-}
 
-/**
- * loads everything that doesn't need to be delayed.
- */
-async function loadLazy(main) {
-  // post LCP actions go here
-  sampleRUM('lcp');
+  const areaBlocks = [];
+  for (const section of sections) {
+    const loaded = section.blocks.map((block) => loadBlock(block));
+    areaBlocks.push(...section.blocks);
 
-  loadBlocks(main).then(() => addPromotion());
-  loadCSS('/express/styles/lazy-styles.css');
-  scrollToHash();
-  resolveFragments();
-  removeMetadata();
-  addFavIcon('/express/icons/cc-express.svg');
-  if (!window.hlx.lighthouse) loadMartech();
-  const tkID = TK_IDS[getLocale(window.location)];
-  if (tkID) {
-    const { default: loadFonts } = await import('./fonts.js');
-    loadFonts(tkID, loadCSS);
+    //await decorateIcons(section.el, config);
+
+    // Only move on to the next section when all blocks are loaded.
+    await Promise.all(loaded);
+
+    window.dispatchEvent(new Event('milo:LCP:loaded'));
+
+    // Post LCP operations.
+    if (isDoc && section.el.dataset.idx === '0') loadPostLCP();
+
+    // Show the section when all blocks inside are done.
+    delete section.el.dataset.status;
+    delete section.el.dataset.idx;
   }
-  sampleRUM('lazy');
-  sampleRUM.observe(document.querySelectorAll('main picture > img'));
-  sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
-  trackViewedAssetsInDataLayer();
-}
 
-/**
- * Decorates the page.
- */
-async function decoratePage() {
-  window.hlx = window.hlx || {};
-  window.hlx.lighthouse = new URLSearchParams(window.location.search).get('lighthouse') === 'on';
-  window.hlx.init = true;
-
-  const main = document.querySelector('main');
-  await loadEager(main);
   loadLazy(main);
-  loadGnav();
+
   if (window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) {
     import('../../tools/preview/preview.js');
   }
 }
 
 if (!window.hlx.init && !window.isTestEnv) {
-  decoratePage();
+  await loadArea();
 }
 
 /*
