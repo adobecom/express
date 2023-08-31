@@ -926,14 +926,14 @@ export async function loadBlock(block, eager = false) {
               await mod.default(block, blockName, document, eager);
             }
           } catch (err) {
-            window.lana.log(`failed to load module for ${blockName}: ${err}`, { s: 10, tags: 'module' });
+            window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, { sampleRate: 1, tags: 'module' });
           }
           resolve();
         })();
       });
       await Promise.all([cssLoaded, decorationComplete]);
     } catch (err) {
-      window.lana.log(`failed to load block ${blockName}: ${err}`, { s: 10, tags: 'block' });
+      window.lana.log(`failed to load block ${blockName}: ${err.message}\nError Stack:${err.stack}`, { sampleRate: 1, tags: 'block' });
     }
     block.setAttribute('data-block-status', 'loaded');
   }
