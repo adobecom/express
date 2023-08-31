@@ -23,9 +23,11 @@ function initScrollInteraction(block) {
       if (!entry.isIntersecting && spotHolder.getBoundingClientRect().top < 0) {
         spotHolder.style.height = `${block.offsetHeight + 16}px`;
         block.classList.remove('inbody');
+        // block.classList.add('not-inbody');
         spotHolder.classList.add('in-action');
       } else {
         block.classList.add('inbody');
+        // block.classList.remove('not-inbody');
         spotHolder.classList.remove('in-action');
         spotHolder.style.height = '0px';
       }

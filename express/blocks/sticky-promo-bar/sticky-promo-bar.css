@@ -2,7 +2,7 @@ main .sticky-promo-bar {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: -70px;
     background-color: var(--color-info-accent);
     color: white;
     padding: 12px 36px 12px 12px;
@@ -14,6 +14,7 @@ main .sticky-promo-bar {
 
 body[data-device="mobile"] main .sticky-promo-bar.loadinbody.inbody {
     position: static;
+    /* transform: translateY(70px); */
 }
 
 body[data-device="mobile"] main .sticky-promo-bar.rounded {
@@ -28,6 +29,11 @@ body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
     padding: 8px 16px;
     box-sizing: border-box;
     max-width: 360px;
+}
+
+body[data-device="mobile"] main .sticky-promo-bar:not(.inbody) {
+    transition: 0.4s;
+    transform: translateY(-70px);
 }
 
 main .sticky-promo-bar:not(.rounded) a:any-link {
