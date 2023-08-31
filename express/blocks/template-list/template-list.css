@@ -48,7 +48,7 @@ main .template-list-horizontal-fullwidth-collaboration-container .default-conten
 }
 
 main .template-list-horizontal-fullwidth-collaboration-container .default-content-wrapper p {
-  font-size: 16px;
+  font-size: var(--body-font-size-m);
   line-height: 24px;
 }
 
@@ -220,7 +220,7 @@ main .template-list .template:not(.placeholder) .icon-free-badge {
   top: 8px;
   right: 8px;
   color: var(--color-white);
-  font-size: 12px;
+  font-size: var(--body-font-size-xs);
   line-height: 16px;
   padding: 0 12px;
   background: #000000B3;
@@ -266,7 +266,7 @@ main .template-list.horizontal .template video {
 }
 
 main .template-list.horizontal h4 {
-  font-size: 22px;
+  font-size: var(--heading-font-size-s);
   line-height: 26px;
 }
 
@@ -295,7 +295,7 @@ main .template-list.horizontal.mini .template.placeholder > div:first-of-type {
 }
 
 main .template-list.horizontal.mini .template.placeholder .template-link {
-  font-size: 12px;
+  font-size: var(--body-font-size-xs);
 }
 
 main .template-list.horizontal.mini .template.placeholder svg,
@@ -565,7 +565,7 @@ main .template-list-fullwidth-apipowered-container .load-more-button {
   cursor: pointer;
   background-color: var(--color-black);
   color: var(--color-white);
-  font-size: 36px;
+  font-size: var(--heading-font-size-l);
   border-radius: 36px;
   border: none;
   transition: background-color 0.2s;
