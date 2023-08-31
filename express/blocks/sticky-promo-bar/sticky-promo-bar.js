@@ -10,11 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {
-  createTag,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
-
+import { createTag } from '../../scripts/scripts.js';
 import BlockMediator from '../../scripts/block-mediator.js';
 
 function initScrollInteraction(block) {
