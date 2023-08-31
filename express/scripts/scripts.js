@@ -915,14 +915,8 @@ export async function loadBlock(block, eager = false) {
     const scriptLoaded = new Promise((resolve) => {
       (async () => {
         try {
-          import(jsPath).then((mod) => {
-            mod.default(block, blockName, document, eager);
-            resolve();
-          }).catch((e) => {
-            console.log(e);
-          }).finally((e) => {
-            console.log(e);
-          });
+          const { default: init } = await import(jsPath);
+          await init(block, blockName, document, eager);
         } catch (err) {
           // eslint-disable-next-line no-console
           console.log(`failed to load module for ${blockName}`, err);
@@ -2179,7 +2173,6 @@ function removeMetadata() {
  */
 async function loadLazy(main) {
   addPromotion();
-  loadCSS('/express/styles/lazy-styles.css');
   scrollToHash();
   resolveFragments();
   removeMetadata();
@@ -2284,7 +2277,7 @@ async function loadArea(area = document) {
     }
   }
 
-
+  await loadCSS('/express/styles/lazy-styles.css');
   const areaBlocks = [];
   for (const section of sections) {
     const loaded = section.blocks.map((block) => loadBlock(block));
@@ -2294,8 +2287,6 @@ async function loadArea(area = document) {
 
     // Only move on to the next section when all blocks are loaded.
     await Promise.all(loaded);
-
-    window.dispatchEvent(new Event('milo:LCP:loaded'));
 
     // Post LCP operations.
     if (isDoc && section.el.dataset.idx === '0') loadPostLCP();
@@ -2312,9 +2303,11 @@ async function loadArea(area = document) {
   }
 }
 
-if (!window.hlx.init && !window.isTestEnv) {
-  await loadArea();
-}
+(async function loadPage() {
+  if (!window.hlx.init && !window.isTestEnv) {
+    await loadArea();
+  }
+}());
 
 /*
  * lighthouse performance instrumentation helper
