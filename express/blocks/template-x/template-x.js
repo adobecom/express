@@ -34,6 +34,10 @@ import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import renderTemplate from './template-rendering.js';
 
+function wordStartsWithVowels(word) {
+  return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
+}
+
 // FIXME: as soon as we verify the rum approach works, this should be retired
 function logSearch(form, formUrl = '/express/search-terms-log') {
   if (form) {
@@ -56,10 +60,6 @@ function logSearch(form, formUrl = '/express/search-terms-log') {
       }),
     });
   }
-}
-
-function wordStartsWithVowels(word) {
-  return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
 }
 
 function camelize(str) {
