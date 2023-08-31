@@ -2173,6 +2173,7 @@ function removeMetadata() {
  */
 async function loadLazy(main) {
   addPromotion();
+  loadCSS('/express/styles/lazy-styles.css');
   scrollToHash();
   resolveFragments();
   removeMetadata();
@@ -2200,8 +2201,8 @@ const eagerLoad = (img) => {
 async function loadPostLCP() {
   // post LCP actions go here
   sampleRUM('lcp');
-  loadGnav();
   if (!window.hlx.lighthouse) loadMartech();
+  loadGnav();
   const tkID = TK_IDS[getLocale(window.location)];
   if (tkID) {
     const { default: loadFonts } = await import('./fonts.js');
@@ -2277,13 +2278,10 @@ async function loadArea(area = document) {
     }
   }
 
-  await loadCSS('/express/styles/lazy-styles.css');
   const areaBlocks = [];
   for (const section of sections) {
     const loaded = section.blocks.map((block) => loadBlock(block));
     areaBlocks.push(...section.blocks);
-
-    //await decorateIcons(section.el, config);
 
     // Only move on to the next section when all blocks are loaded.
     await Promise.all(loaded);
