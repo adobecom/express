@@ -570,14 +570,16 @@ function decorateSections(el, isDoc) {
     section.dataset.idx = idx;
 
     let defaultContent = false;
-    blocks.forEach((block) => {
-      if (block.tagName === 'DIV' || !defaultContent) {
+    [...section.children].forEach((child) => {
+      if (child.tagName === 'DIV' || !defaultContent) {
         const wrapper = document.createElement('div');
-        defaultContent = block.tagName !== 'DIV';
+        defaultContent = child.tagName !== 'DIV';
         if (defaultContent) wrapper.classList.add('default-content-wrapper');
-        wrapper.append(block);
+        wrapper.append(child);
         section.append(wrapper);
       }
+    });
+    blocks.forEach((block) => {
       decorateBlock(block);
     });
     return { el: section, blocks: [...blocks] };
@@ -2241,7 +2243,7 @@ async function loadArea(area = document) {
   }
   if (!window.hlx.lighthouse) await decorateTesting();
 
-  if (getMetadata('sheet-powered') === 'Y') {
+  if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
     const { default: replaceContent } = await import('./content-replace.js');
     await replaceContent();
   }
