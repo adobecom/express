@@ -2,7 +2,8 @@ main .sticky-promo-bar {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: -70px;
+    bottom: 0;
+    transform: translateY(70px);
     background-color: var(--color-info-accent);
     color: white;
     padding: 12px 36px 12px 12px;
@@ -10,30 +11,29 @@ main .sticky-promo-bar {
     z-index: 10;
     max-width: 500px;
     margin: 16px auto;
+    transition: transform 0.4s;
 }
 
-body[data-device="mobile"] main .sticky-promo-bar.loadinbody.inbody {
+main .sticky-promo-bar.shown {
+    transform: translateY(0);
+}
+
+main .sticky-promo-bar.clone {
     position: static;
-    /* transform: translateY(70px); */
+    transform: translateY(0);
 }
 
 body[data-device="mobile"] main .sticky-promo-bar.rounded {
     border-radius: 10px;
     margin: 11px 24px 16px 24px;
     font-weight: 300;
-    padding: 12px 24px 17px 24px;
+    padding: 7px 16px 9px;
 }
 
 body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
     margin: 12px auto;
-    padding: 8px 16px;
     box-sizing: border-box;
     max-width: 360px;
-}
-
-body[data-device="mobile"] main .sticky-promo-bar:not(.inbody) {
-    transition: 0.4s;
-    transform: translateY(-70px);
 }
 
 main .sticky-promo-bar:not(.rounded) a:any-link {

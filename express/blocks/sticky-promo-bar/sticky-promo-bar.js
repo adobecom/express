@@ -14,22 +14,17 @@ import { createTag } from '../../scripts/scripts.js';
 import BlockMediator from '../../scripts/block-mediator.js';
 
 function initScrollInteraction(block) {
-  const spotHolder = createTag('div', { class: 'spot-holder' });
+  const spotHolder = block.cloneNode(true);
+  spotHolder.classList.add('clone');
   block.classList.add('inbody');
   block.insertAdjacentElement('afterend', spotHolder);
 
   const intersectionCallback = (entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting && spotHolder.getBoundingClientRect().top < 0) {
-        spotHolder.style.height = `${block.offsetHeight + 16}px`;
-        block.classList.remove('inbody');
-        // block.classList.add('not-inbody');
-        spotHolder.classList.add('in-action');
+        block.classList.add('shown');
       } else {
-        block.classList.add('inbody');
-        // block.classList.remove('not-inbody');
-        spotHolder.classList.remove('in-action');
-        spotHolder.style.height = '0px';
+        block.classList.remove('shown');
       }
     });
   };
@@ -63,6 +58,12 @@ export default function decorate(block) {
   });
 
   if (block.classList.contains('loadinbody')) {
-    initScrollInteraction(block);
+    setTimeout(() => {
+      initScrollInteraction(block);
+    });
+  } else {
+    setTimeout(() => {
+      block.classList.add('shown');
+    }, 10);
   }
 }
