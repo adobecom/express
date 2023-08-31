@@ -24,21 +24,13 @@ import { buildCarousel } from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import BlockMediator from '../../scripts/block-mediator.js';
 
-function handlelize(str) {
-  return str.normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove accents
-    .replace(/(\W+|\s+)/g, '-') // Replace space and other characters by hyphen
-    .replace(/--+/g, '-') // Replaces multiple hyphens by one hyphen
-    .replace(/(^-+|-+$)/g, '') // Remove extra hyphens from beginning or end of the string
-    .toLowerCase(); // To lowercase
-}
-
-function logSearch(form, url = '/express/search-terms-log') {
+// FIXME: as soon as we verify the rum approach works, this should be retired
+export default function logSearch(form, formUrl = '/express/search-terms-log') {
   if (form) {
     const input = form.querySelector('input');
     const currentHref = new URL(window.location.href);
     const params = new URLSearchParams(currentHref.search);
-    fetch(url, {
+    fetch(formUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -54,6 +46,15 @@ function logSearch(form, url = '/express/search-terms-log') {
       }),
     });
   }
+}
+
+function handlelize(str) {
+  return str.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
+    .replace(/(\W+|\s+)/g, '-') // Replace space and other characters by hyphen
+    .replace(/--+/g, '-') // Replaces multiple hyphens by one hyphen
+    .replace(/(^-+|-+$)/g, '') // Remove extra hyphens from beginning or end of the string
+    .toLowerCase(); // To lowercase
 }
 
 function wordExistsInString(word, inputString) {
@@ -193,7 +194,7 @@ function initSearchFunction(block) {
     sampleRUM('search', {
       source: block.dataset.blockName,
       target: searchBar.value,
-    });
+    }, 1);
     await redirectSearch();
   };
 

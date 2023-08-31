@@ -34,14 +34,13 @@ import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import renderTemplate from './template-rendering.js';
 
-function wordStartsWithVowels(word) {
-  return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
-}
-
-function logSearch(form, url = '/express/search-terms-log') {
+// FIXME: as soon as we verify the rum approach works, this should be retired
+function logSearch(form, formUrl = '/express/search-terms-log') {
   if (form) {
     const input = form.querySelector('input');
-    fetch(url, {
+    const currentHref = new URL(window.location.href);
+    const params = new URLSearchParams(currentHref.search);
+    fetch(formUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -50,10 +49,17 @@ function logSearch(form, url = '/express/search-terms-log') {
           locale: getLocale(window.location),
           timestamp: Date.now(),
           audience: document.body.dataset.device,
+          sourcePath: window.location.pathname,
+          previousSearch: params.toString() || 'N/A',
+          sessionId: sessionStorage.getItem('u_scsid'),
         },
       }),
     });
   }
+}
+
+function wordStartsWithVowels(word) {
+  return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
 }
 
 function camelize(str) {
@@ -1427,7 +1433,7 @@ function importSearchBar(block, blockMediator) {
           sampleRUM('search', {
             source: block.dataset.blockName,
             target: searchBar.value,
-          });
+          }, 1);
           await redirectSearch();
         });
 
