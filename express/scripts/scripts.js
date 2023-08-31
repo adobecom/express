@@ -1615,13 +1615,14 @@ export async function fetchFloatingCta(path) {
 
     if (window.floatingCta.length) {
       const candidates = window.floatingCta.filter((p) => {
-        const urlToMatch = p.path.includes('*') ? convertGlobToRe(p.path) : p.path;
+        const pathMatch = p.path.includes('*') ? path.match(convertGlobToRe(p.path)) : path === p.path;
+
         if (experiment && path !== 'default') {
-          return (path === p.path || path.match(urlToMatch))
+          return (pathMatch)
             && p.expID === experiment.run
             && p.challengerID === experiment.selectedVariant;
         } else {
-          return path === p.path || path.match(urlToMatch);
+          return pathMatch;
         }
       }).sort((a, b) => b.path.length - a.path.length);
 
