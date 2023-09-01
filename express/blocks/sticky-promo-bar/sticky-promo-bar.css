@@ -3,7 +3,7 @@ main .sticky-promo-bar {
     left: 0;
     right: 0;
     bottom: 0;
-    transform: translateY(70px);
+    transform: translateY(calc(100% + 24px));
     background-color: var(--color-info-accent);
     color: white;
     padding: 12px 36px 12px 12px;

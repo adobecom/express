@@ -31,7 +31,7 @@ function initScrollInteraction(block) {
 
   const observer = new IntersectionObserver(intersectionCallback, {
     rootMargin: '0px',
-    threshold: 1.0,
+    threshold: 0,
   });
 
   observer.observe(spotHolder);
