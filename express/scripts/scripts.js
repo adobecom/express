@@ -2185,7 +2185,7 @@ async function loadEager(main) {
 
     removeIrrelevantSections(main);
   }
-  if (!window.hlx.lighthouse && !window.hlx.notesting) await decorateTesting();
+  if (!window.hlx.lighthouse && window.hlx.testing) await decorateTesting();
 
   // for backward compatibility
   // TODO: remove the href check after we tag content with sheet-powered
@@ -2217,7 +2217,7 @@ async function loadEager(main) {
 
     document.querySelector('body').classList.add('appear');
 
-    if (!window.hlx.lighthouse && !window.hlx.notesting) {
+    if (!window.hlx.lighthouse && window.hlx.testing) {
       const target = checkTesting();
       if (useAlloy) {
         document.querySelector('body').classList.add('personalization-container');
@@ -2267,7 +2267,7 @@ async function loadLazy(main) {
   resolveFragments();
   removeMetadata();
   addFavIcon('/express/icons/cc-express.svg');
-  if (!window.hlx.lighthouse && !window.hlx.nomartech) loadMartech();
+  if (!window.hlx.lighthouse && window.hlx.martech) loadMartech();
   const tkID = TK_IDS[getLocale(window.location)];
   if (tkID) {
     const { default: loadFonts } = await import('./fonts.js');
@@ -2285,9 +2285,9 @@ async function loadLazy(main) {
 async function decoratePage() {
   window.hlx = window.hlx || {};
   const params = new URLSearchParams(window.location.search);
-  window.hlx.nomartech = params.get('martech') === 'off';
-  window.hlx.nognav = params.get('gnav') === 'off';
-  window.hlx.notesting = params.get('testing') === 'off';
+  window.hlx.martech = params.get('martech') !== 'off';
+  window.hlx.gnav = params.get('gnav') !== 'off';
+  window.hlx.testing = params.get('testing') !== 'off';
   window.hlx.lighthouse = params.get('lighthouse') === 'on';
   window.hlx.init = true;
 
