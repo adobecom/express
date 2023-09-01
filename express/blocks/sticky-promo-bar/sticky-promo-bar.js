@@ -10,12 +10,32 @@
  * governing permissions and limitations under the License.
  */
 
-import {
-  createTag,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
-
+import { createTag } from '../../scripts/scripts.js';
 import BlockMediator from '../../scripts/block-mediator.js';
+
+function initScrollInteraction(block) {
+  const spotHolder = block.cloneNode(true);
+  spotHolder.classList.add('clone');
+  block.classList.add('inbody');
+  block.insertAdjacentElement('afterend', spotHolder);
+
+  const intersectionCallback = (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting && spotHolder.getBoundingClientRect().top < 0) {
+        block.classList.add('shown');
+      } else {
+        block.classList.remove('shown');
+      }
+    });
+  };
+
+  const observer = new IntersectionObserver(intersectionCallback, {
+    rootMargin: '0px',
+    threshold: 1.0,
+  });
+
+  observer.observe(spotHolder);
+}
 
 export default function decorate(block) {
   const close = createTag('button', {
@@ -36,4 +56,14 @@ export default function decorate(block) {
       rendered: false,
     });
   });
+
+  if (block.classList.contains('loadinbody')) {
+    setTimeout(() => {
+      initScrollInteraction(block);
+    });
+  } else {
+    setTimeout(() => {
+      block.classList.add('shown');
+    }, 10);
+  }
 }

@@ -921,7 +921,7 @@ export async function loadBlock(block, eager = false) {
           await init(block, blockName, document, eager);
         } catch (err) {
           // eslint-disable-next-line no-console
-          console.log(`failed to load module for ${blockName}`, err);
+          window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, { sampleRate: 1, tags: 'module' });
         }
         resolve();
       })();
@@ -1608,13 +1608,14 @@ export async function fetchFloatingCta(path) {
 
     if (window.floatingCta.length) {
       const candidates = window.floatingCta.filter((p) => {
-        const urlToMatch = p.path.includes('*') ? convertGlobToRe(p.path) : p.path;
+        const pathMatch = p.path.includes('*') ? path.match(convertGlobToRe(p.path)) : path === p.path;
+
         if (experiment && path !== 'default') {
-          return (path === p.path || path.match(urlToMatch))
+          return (pathMatch)
             && p.expID === experiment.run
             && p.challengerID === experiment.selectedVariant;
         } else {
-          return path === p.path || path.match(urlToMatch);
+          return pathMatch;
         }
       }).sort((a, b) => b.path.length - a.path.length);
 
@@ -2155,6 +2156,30 @@ function decorateLegalCopy(main) {
   });
 }
 
+function loadLana(options = {}) {
+  if (window.lana) return;
+
+  const lanaError = (e) => {
+    window.lana.log(e.reason || e.error || e.message, {
+      errorType: 'i',
+    });
+  };
+
+  window.lana = {
+    log: async (...args) => {
+      await import('./lana.js');
+      window.removeEventListener('error', lanaError);
+      window.removeEventListener('unhandledrejection', lanaError);
+      return window.lana.log(...args);
+    },
+    debug: false,
+    options,
+  };
+
+  window.addEventListener('error', lanaError);
+  window.addEventListener('unhandledrejection', lanaError);
+}
+
 /**
  * loads everything needed to get to LCP.
  */
@@ -2255,6 +2280,7 @@ async function loadArea(area = document) {
 
   let sections = [];
   if (main) {
+    loadLana({ clientId: 'express' });
     sections = await decorateMain(main);
     decoratePageStyle();
     decorateLegalCopy(main);

@@ -3,19 +3,37 @@ main .sticky-promo-bar {
     left: 0;
     right: 0;
     bottom: 0;
+    transform: translateY(70px);
     background-color: var(--color-info-accent);
     color: white;
-    padding: 12px;
-    padding-right: 36px;
+    padding: 12px 36px 12px 12px;
     font-weight: 900;
     z-index: 10;
+    max-width: 500px;
+    margin: 16px auto;
+    transition: transform 0.4s;
+}
+
+main .sticky-promo-bar.shown {
+    transform: translateY(0);
+}
+
+main .sticky-promo-bar.clone {
+    position: static;
+    transform: translateY(0);
 }
 
 body[data-device="mobile"] main .sticky-promo-bar.rounded {
     border-radius: 10px;
     margin: 11px 24px 16px 24px;
     font-weight: 300;
-    padding: 12px 24px 17px 24px;
+    padding: 7px 16px 9px;
+}
+
+body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
+    margin: 12px auto;
+    box-sizing: border-box;
+    max-width: 360px;
 }
 
 main .sticky-promo-bar:not(.rounded) a:any-link {

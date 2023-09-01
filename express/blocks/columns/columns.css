@@ -551,6 +551,46 @@ main .collapsible-card-wrapper + .columns-wrapper .columns > div {
   text-align: center;
 }
 
+main .columns .button-container.free-plan-container.stacked .free-plan-widget {
+  margin-top: 0;
+  padding: 16px 0;
+  background-color: transparent;
+}
+
+main .columns.center.button-container.free-plan-container.stacked .free-plan-widget {
+  padding-left: 24px;
+}
+
+main .columns-fullsize-top-container .columns-wrapper {
+  max-width: 1200px;
+}
+
+main .columns.fullsize.top > div {
+  padding: 40px 0;
+}
+
+main .columns.fullsize.top .column {
+  width: auto;
+  padding: 0 20px;
+}
+
+main .columns.fullsize.top .column .columns-iconlist > div {
+  margin-top: 12px;
+}
+
+main .columns.fullsize.top .column .columns-iconlist p {
+  font-size: var(--body-font-size-s);
+  line-height: 18px;
+}
+
+main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-icon img.icon {
+  margin-right: 8px;
+}
+
+main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-description {
+  margin-left: 8px;
+}
+
 /* Japanese font sizing styles */
 :lang(ja) main .columns h2.columns-heading-long {
   font-size: var(--heading-font-size-l);
@@ -614,15 +654,15 @@ main .collapsible-card-wrapper + .columns-wrapper .columns > div {
     padding-right: 32px;
   }
 
-  main .columns .column:first-child:not(.column-picture):not(.hero-animation-overlay):not('.text') {
+  main .columns .column:first-child:not(.column-picture):not(.hero-animation-overlay):not(.text) {
     padding-right: 16px;
   }
 
-  main .columns .column:nth-child(2):not(.column-picture):not(.hero-animation-overlay):not('.text') {
+  main .columns .column:nth-child(2):not(.column-picture):not(.hero-animation-overlay):not(.text) {
     padding-left: 16px;
   }
 
-  main .columns .column:nth-child(2):not(.column-picture):not(.hero-animation-overlay):not('.text') {
+  main .columns .column:nth-child(2):not(.column-picture):not(.hero-animation-overlay):not(.text) {
     padding-left: 16px;
   }
 
@@ -792,16 +832,6 @@ main .collapsible-card-wrapper + .columns-wrapper .columns > div {
   }
 }
 
-main .columns .button-container.free-plan-container.stacked .free-plan-widget {
-  margin-top: 0;
-  padding: 16px 0;
-  background-color: transparent;
-}
-
-main .columns.center.button-container.free-plan-container.stacked .free-plan-widget {
-  padding-left: 24px;
-}
-
 @media (min-width: 1200px) {
   main .columns-container > div,
   main .columns-dark-container > div,
@@ -870,6 +900,10 @@ main .columns.center.button-container.free-plan-container.stacked .free-plan-wid
 
   main .columns.columns.custom-color > div {
     gap: 25px;
+  }
+
+  main .columns.fullsize.top > div {
+    padding: 80px 0;
   }
 
   :lang(ja) main .columns h1{
