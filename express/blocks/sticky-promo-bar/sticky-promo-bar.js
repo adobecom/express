@@ -14,14 +14,14 @@ import { createTag } from '../../scripts/scripts.js';
 import BlockMediator from '../../scripts/block-mediator.js';
 
 function initScrollInteraction(block) {
-  const spotHolder = block.cloneNode(true);
-  spotHolder.classList.add('clone');
+  const inBodyBanner = block.cloneNode(true);
+  inBodyBanner.classList.add('clone');
   block.classList.add('inbody');
-  block.insertAdjacentElement('afterend', spotHolder);
+  block.insertAdjacentElement('afterend', inBodyBanner);
 
   const intersectionCallback = (entries) => {
     entries.forEach((entry) => {
-      if (!entry.isIntersecting && spotHolder.getBoundingClientRect().top < 0) {
+      if (!entry.isIntersecting && inBodyBanner.getBoundingClientRect().top < 0) {
         block.classList.add('shown');
       } else {
         block.classList.remove('shown');
@@ -34,7 +34,7 @@ function initScrollInteraction(block) {
     threshold: 0,
   });
 
-  observer.observe(spotHolder);
+  observer.observe(inBodyBanner);
 }
 
 export default function decorate(block) {
