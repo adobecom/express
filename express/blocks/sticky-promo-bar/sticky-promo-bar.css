@@ -25,9 +25,11 @@ main .sticky-promo-bar.clone {
 
 body[data-device="mobile"] main .sticky-promo-bar.rounded {
     border-radius: 10px;
-    margin: 11px 24px 16px 24px;
     font-weight: 300;
     padding: 7px 16px 9px;
+    margin: 12px auto;
+    box-sizing: border-box;
+    max-width: 360px;
 }
 
 body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
