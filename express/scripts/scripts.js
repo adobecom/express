@@ -18,7 +18,7 @@ const TK_IDS = {
   jp: 'dvg6awq',
 };
 
-let isBlog;
+let blog;
 
 /**
  * log RUM if part of the sample.
@@ -889,6 +889,28 @@ export function buildBlock(blockName, content) {
   return (blockEl);
 }
 
+async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
+  const cssLoaded = new Promise((resolve) => {
+    loadCSS(cssPath, resolve);
+  });
+  const scriptLoaded = new Promise((resolve) => {
+    (async () => {
+      try {
+        const { default: init } = await import(jsPath);
+        await init(block, blockName, document, eager);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, {
+          sampleRate: 1,
+          tags: 'module',
+        });
+      }
+      resolve();
+    })();
+  });
+  await Promise.all([cssLoaded, scriptLoaded]);
+}
+
 /**
  * Loads JS and CSS for a block.
  * @param {Element} block The block element
@@ -914,22 +936,7 @@ export async function loadBlock(block, eager = false) {
       }
     }
 
-    const cssLoaded = new Promise((resolve) => {
-      loadCSS(cssPath, resolve);
-    });
-    const scriptLoaded = new Promise((resolve) => {
-      (async () => {
-        try {
-          const { default: init } = await import(jsPath);
-          await init(block, blockName, document, eager);
-        } catch (err) {
-          // eslint-disable-next-line no-console
-          window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, { sampleRate: 1, tags: 'module' });
-        }
-        resolve();
-      })();
-    });
-    await Promise.all([cssLoaded, scriptLoaded]);
+    await loadAndExecute(cssPath, jsPath, block, blockName, eager);
     block.setAttribute('data-block-status', 'loaded');
     return block;
   }
@@ -1038,9 +1045,7 @@ function loadGnav() {
 }
 
 function decoratePageStyle() {
-  isBlog = document.body.classList.contains('blog');
-  // eslint-disable-next-line import/no-unresolved,import/no-absolute-path
-  if (!isBlog) {
+  if (!blog) {
     const $h1 = document.querySelector('main h1');
     // check if h1 is inside a block
     // eslint-disable-next-line no-lonely-if
@@ -1063,7 +1068,7 @@ function decoratePageStyle() {
         $heroSection.removeAttribute('style');
       }
       if ($heroPicture) {
-        if (!isBlog) {
+        if (!blog) {
           $heroPicture.classList.add('hero-bg');
         }
       } else {
@@ -1754,7 +1759,10 @@ function setTheme() {
     /* backwards compatibility can be removed again */
     if (themeClass === 'nobrand') themeClass = 'no-desktop-brand-header';
     body.classList.add(themeClass);
-    if (themeClass === 'blog') body.classList.add('no-brand-header');
+    if (themeClass === 'blog') {
+      body.classList.add('no-brand-header');
+      blog = true;
+    }
   }
   body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
@@ -2296,29 +2304,13 @@ async function loadArea(area = document) {
   }
 
   const areaBlocks = [];
-  if (isBlog) {
-    const cssLoaded = new Promise((resolve) => {
-      loadCSS('/express/styles/blog.css', resolve);
-    });
-    const scriptLoaded = new Promise((resolve) => {
-      (async () => {
-        try {
-          const { default: init } = await import('/express/scripts/blog.js');
-          await init();
-        } catch (err) {
-          // eslint-disable-next-line no-console
-          window.lana.log(`failed to load blog: ${err.message}\nError Stack:${err.stack}`, { sampleRate: 1, tags: 'module' });
-        }
-        resolve();
-      })();
-    });
-    await Promise.all([cssLoaded, scriptLoaded]);
-  }
+  if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
   for (const section of sections) {
     const loaded = section.blocks.map((block) => loadBlock(block));
     areaBlocks.push(...section.blocks);
 
     // Only move on to the next section when all blocks are loaded.
+    // eslint-disable-next-line no-await-in-loop
     await Promise.all(loaded);
 
     // Post LCP operations.
