@@ -131,7 +131,7 @@ function buildPlans(plansElement) {
   return plans;
 }
 
-function decorateCard(block, cardClass = '') {
+async function decorateCard(block, cardClass = '') {
   const cardClassName = `puf-card ${cardClass}`.trim();
   const cardContainer = createTag('div', { class: 'puf-card-container' });
   const card = createTag('div', { class: cardClassName });
@@ -188,7 +188,7 @@ function decorateCard(block, cardClass = '') {
   if (cardHeaderSvg) formattedHeader.prepend(cardHeaderSvg);
 
   if (plans.length) {
-    selectPlan(card, plans[0].url, false);
+    await selectPlan(card, plans[0].url, false);
 
     if (plans.length > 1) {
       displayPlans(card, plans);
@@ -441,9 +441,9 @@ function decorateFooter(block) {
   }
 }
 
-function build1ColDesign(block) {
+async function build1ColDesign(block) {
   block.classList.add('one-col');
-  const pricingCard = decorateCard(block);
+  const pricingCard = await decorateCard(block);
   const footer = decorateFooter(block);
 
   block.innerHTML = '';
@@ -455,10 +455,10 @@ function build1ColDesign(block) {
   formatTextElements(block);
 }
 
-function build2ColDesign(block) {
+async function build2ColDesign(block) {
   block.classList.add('two-col');
-  const leftCard = decorateCard(block, 'puf-left');
-  const rightCard = decorateCard(block, 'puf-right');
+  const leftCard = await decorateCard(block, 'puf-left');
+  const rightCard = await decorateCard(block, 'puf-right');
   const footer = decorateFooter(block);
 
   block.innerHTML = '';
@@ -478,12 +478,12 @@ function getPUFDesign(block) {
   return block.children[1].children.length === 2 ? '2-col' : '1-col';
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
   if (getPUFDesign(block) === '1-col') {
-    build1ColDesign(block);
+    await build1ColDesign(block);
   }
 
   if (getPUFDesign(block) === '2-col') {
-    build2ColDesign(block);
+    await build2ColDesign(block);
   }
 }
