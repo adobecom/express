@@ -1037,9 +1037,6 @@ function loadGnav() {
 
 function decoratePageStyle() {
   const isBlog = document.body.classList.contains('blog');
-  const $h1 = document.querySelector('main h1');
-  // check if h1 is inside a block
-
   if (isBlog) {
     // eslint-disable-next-line import/no-unresolved,import/no-absolute-path
     import('/express/scripts/blog.js')
@@ -1051,6 +1048,8 @@ function decoratePageStyle() {
       .catch((err) => console.log('failed to load blog', err));
     loadCSS('/express/styles/blog.css');
   } else {
+    const $h1 = document.querySelector('main h1');
+    // check if h1 is inside a block
     // eslint-disable-next-line no-lonely-if
     if ($h1 && !$h1.closest('.section > div > div ')) {
       const $heroPicture = $h1.parentElement.querySelector('picture');
