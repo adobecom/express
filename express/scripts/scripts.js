@@ -570,14 +570,15 @@ function decorateSections(el, isDoc) {
     section.dataset.idx = idx;
 
     let defaultContent = false;
+    let wrapper;
     [...section.children].forEach((child) => {
       if (child.tagName === 'DIV' || !defaultContent) {
-        const wrapper = document.createElement('div');
+        wrapper = document.createElement('div');
         defaultContent = child.tagName !== 'DIV';
         if (defaultContent) wrapper.classList.add('default-content-wrapper');
-        wrapper.append(child);
         section.append(wrapper);
       }
+      wrapper?.append(child);
     });
     blocks.forEach((block) => {
       decorateBlock(block);
@@ -2246,10 +2247,6 @@ async function loadArea(area = document) {
 
   if (isDoc) {
     decorateHeaderAndFooter();
-
-    // import('./samplerum.js').then(({ addRumListeners }) => {
-    //   addRumListeners();
-    // });
   }
 
   window.hlx = window.hlx || {};
@@ -2257,7 +2254,7 @@ async function loadArea(area = document) {
   window.hlx.init = true;
 
   setTheme();
-  if (isDoc) {
+  if (main) {
     const language = getLanguage(getLocale(window.location));
     const langSplits = language.split('-');
     langSplits.pop();
