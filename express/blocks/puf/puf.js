@@ -187,6 +187,14 @@ async function decorateCard(block, cardClass = '') {
 
   if (cardHeaderSvg) formattedHeader.prepend(cardHeaderSvg);
 
+  const ctaTextContainer = cardTop.querySelector('strong');
+  if (ctaTextContainer) {
+    cardCta.textContent = ctaTextContainer.textContent.trim();
+    ctaTextContainer.parentNode.remove();
+  } else {
+    cardCta.textContent = 'Start your trial';
+  }
+
   if (plans.length) {
     await selectPlan(card, plans[0].url, false);
 
@@ -196,14 +204,6 @@ async function decorateCard(block, cardClass = '') {
   }
 
   cardTop.querySelector('ul')?.remove();
-
-  const ctaTextContainer = cardTop.querySelector('strong');
-  if (ctaTextContainer) {
-    cardCta.textContent = ctaTextContainer.textContent.trim();
-    ctaTextContainer.parentNode.remove();
-  } else {
-    cardCta.textContent = 'Start your trial';
-  }
 
   const pricingContextContainer = cardTop.querySelector('em');
   if (pricingContextContainer) {
