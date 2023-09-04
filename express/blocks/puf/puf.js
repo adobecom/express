@@ -227,10 +227,11 @@ async function decorateCard(block, cardClass = '') {
 function updatePUFCarousel(block) {
   const carouselContainer = block.querySelector('.carousel-container');
   const carouselPlatform = block.querySelector('.carousel-platform');
-  let leftCard = block.querySelector('.puf-left');
-  let rightCard = block.querySelector('.puf-right');
-  let priceSet = block.querySelector('.puf-pricing-header').textContent;
+  const leftCard = block.querySelector('.puf-left');
+  const rightCard = block.querySelector('.puf-right');
+  const priceSet = block.querySelector('.puf-pricing-header').textContent;
   carouselContainer.classList.add('slide-1-selected');
+
   const slideFunctionality = () => {
     carouselPlatform.scrollLeft = carouselPlatform.offsetWidth;
     carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
@@ -287,17 +288,7 @@ function updatePUFCarousel(block) {
       carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
     };
   };
-
-  const waitForCardsToLoad = setInterval(() => {
-    if (leftCard && rightCard && priceSet) {
-      clearInterval(waitForCardsToLoad);
-      slideFunctionality();
-    } else {
-      leftCard = block.querySelector('.puf-left');
-      rightCard = block.querySelector('.puf-right');
-      priceSet = block.querySelector('.puf-pricing-header').textContent;
-    }
-  }, 400);
+  setTimeout(() => { slideFunctionality(); }, 0);
 }
 
 function wrapTextAndSup(block) {
@@ -460,11 +451,10 @@ async function build2ColDesign(block) {
   const leftCard = await decorateCard(block, 'puf-left');
   const rightCard = await decorateCard(block, 'puf-right');
   const footer = decorateFooter(block);
-
   block.innerHTML = '';
   block.append(leftCard, rightCard);
 
-  buildCarousel('.puf-card-container', block);
+  await buildCarousel('.puf-card-container', block);
   updatePUFCarousel(block);
   addPublishDependencies('/express/system/offers-new.json');
   wrapTextAndSup(block);

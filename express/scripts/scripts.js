@@ -2312,7 +2312,6 @@ async function loadArea(area = document) {
     // Only move on to the next section when all blocks are loaded.
     // eslint-disable-next-line no-await-in-loop
     await Promise.all(loaded);
-
     // Post LCP operations.
     if (isDoc && section.el.dataset.idx === '0') loadPostLCP();
 

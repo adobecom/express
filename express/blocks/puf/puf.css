@@ -484,14 +484,6 @@ main .block.puf .puf-card .puf-card-banner a {
         margin-top: 16px;
     }
 
-    main .block.puf .carousel-platform {
-        display: block;
-        position: static;
-        overflow: visible;
-        height: 100%;
-        width: 100%;
-        min-height: 100%;
-    }
 
     main .block.puf .puf-card .puf-card-bottom p {
         margin-bottom: 24px;
