@@ -18,6 +18,8 @@ const TK_IDS = {
   jp: 'dvg6awq',
 };
 
+let isBlog;
+
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
@@ -1036,18 +1038,9 @@ function loadGnav() {
 }
 
 function decoratePageStyle() {
-  const isBlog = document.body.classList.contains('blog');
-  if (isBlog) {
-    // eslint-disable-next-line import/no-unresolved,import/no-absolute-path
-    import('/express/scripts/blog.js')
-      .then((mod) => {
-        if (mod.default) {
-          mod.default();
-        }
-      })
-      .catch((err) => console.log('failed to load blog', err));
-    loadCSS('/express/styles/blog.css');
-  } else {
+  isBlog = document.body.classList.contains('blog');
+  // eslint-disable-next-line import/no-unresolved,import/no-absolute-path
+  if (!isBlog) {
     const $h1 = document.querySelector('main h1');
     // check if h1 is inside a block
     // eslint-disable-next-line no-lonely-if
@@ -2303,6 +2296,24 @@ async function loadArea(area = document) {
   }
 
   const areaBlocks = [];
+  if (isBlog) {
+    const cssLoaded = new Promise((resolve) => {
+      loadCSS('/express/styles/blog.css', resolve);
+    });
+    const scriptLoaded = new Promise((resolve) => {
+      (async () => {
+        try {
+          const { default: init } = await import('/express/scripts/blog.js');
+          await init();
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          window.lana.log(`failed to load blog: ${err.message}\nError Stack:${err.stack}`, { sampleRate: 1, tags: 'module' });
+        }
+        resolve();
+      })();
+    });
+    await Promise.all([cssLoaded, scriptLoaded]);
+  }
   for (const section of sections) {
     const loaded = section.blocks.map((block) => loadBlock(block));
     areaBlocks.push(...section.blocks);
