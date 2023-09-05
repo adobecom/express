@@ -382,7 +382,6 @@ main .block.puf .puf-card .puf-card-banner a {
 
     main .block.puf .puf-card .puf-card-top {
         justify-content: flex-start;
-        min-height: 320px;
     }
 
     main .block.puf .puf-card .puf-card-top .puf-pricing-container {
@@ -406,10 +405,6 @@ main .block.puf .puf-card .puf-card-banner a {
 
     main .block.puf .puf-card .puf-card-top p {
         text-align: left;
-    }
-
-    main .block.puf .puf-card .puf-card-top p:last-child {
-        min-height: 75px;
     }
 
     main .block.puf .puf-card .puf-card-top .puf-card-plans {
