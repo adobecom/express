@@ -1,18 +1,24 @@
 main .pricing-summary {
   padding: 90px 0 20px 0;
   width: auto;
+  max-width: 1320px;
+  margin: auto;
+}
+
+main .section .pricing-summary-wrapper {
+  max-width: none;
+  padding: 0 20px;
 }
 
 main .pricing-summary .pricing-container {
   margin: 0 10px 0 10px;
 }
 
-main .pricing-summary .pricing-container .columns-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+main .pricing-summary .pricing-container .pricing-summary-columns-container .carousel-platform {
   gap: 20px;
   align-items: center;
+  width: auto;
+  max-height: none;
 }
 
 main .pricing-summary .pricing-column {
@@ -26,14 +32,15 @@ main .pricing-summary .pricing-column {
   flex-direction: column;
   align-items: center;
   padding: 23px 0 0 0;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 main .pricing-summary .pricing-column .pricing-content-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
+  max-height: 270px;
+  flex-grow: 1;
 }
 
 main .pricing-summary .pricing-header {
@@ -149,12 +156,30 @@ main .pricing-summary > div:last-of-type > div p {
   margin: 0 0 12px;
 }
 
-@media (min-width: 1200px) {
+main .pricing-summary .pricing-feature-list {
+  padding: 16px;
+}
+
+main .pricing-summary .pricing-feature-list svg,
+main .pricing-summary .pricing-feature-list img {
+  min-width: 22px;
+  min-height: 22px;
+}
+
+main .pricing-summary .pricing-feature-list p {
+  display: flex;
+  text-align: left;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: var(--body-font-size-s);
+}
+
+@media (min-width: 900px) {
   main .section .pricing-summary-wrapper {
     max-width: 100%;
   }
 
-  main .pricing-summary .pricing-container .columns-container {
+  main .pricing-summary .pricing-container .pricing-summary-columns-container .carousel-platform {
     display: flex;
     flex-direction: row;
     align-items: stretch;

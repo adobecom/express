@@ -12,6 +12,7 @@
 
 import { createTag } from '../../scripts/scripts.js';
 import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
+import { buildCarousel } from '../shared/carousel.js';
 
 function handleHeader(column) {
   column.classList.add('pricing-column');
@@ -73,13 +74,20 @@ function handleCtas(column) {
 
 function handleDescription(column) {
   const description = createTag('div', { class: 'pricing-description' });
-  const texts = [...column.children];
-
-  texts.pop();
+  const texts = [...column.children].filter((element) => !element.querySelector('svg, img'));
 
   description.append(...texts);
 
   return description;
+}
+
+function handleFeatureList(column) {
+  const featureList = createTag('div', { class: 'pricing-feature-list' });
+  const elems = [...column.children].filter((element) => element.querySelector('svg, img'));
+
+  featureList.append(...elems);
+
+  return featureList;
 }
 
 function alignContent(block) {
@@ -90,6 +98,8 @@ function alignContent(block) {
     'pricing-plan': 0,
   };
   let attemptsLeft = 10;
+  const maxWidth = Math.min(contentWrappers.length <= 1 ? 420 : contentWrappers.length * 440, 1320);
+  block.style.maxWidth = `${maxWidth}px`;
 
   const minHeightCaptured = new Promise((resolve) => {
     const heightCatcher = setInterval(() => {
@@ -134,7 +144,7 @@ function alignContent(block) {
 export default async function decorate(block) {
   const pricingContainer = block.children[1];
   pricingContainer.classList.add('pricing-container');
-  const columnsContainer = createTag('div', { class: 'columns-container' });
+  const columnsContainer = createTag('div', { class: 'pricing-summary-columns-container' });
   const columns = Array.from(pricingContainer.children);
   pricingContainer.append(columnsContainer);
   const cardsLoaded = [];
@@ -145,9 +155,10 @@ export default async function decorate(block) {
       const pricePlan = handlePrice(column);
       const cta = handleCtas(column);
       const description = handleDescription(column);
+      const featureList = handleFeatureList(column);
 
       contentWrapper.append(header, description, pricePlan);
-      column.append(contentWrapper, cta);
+      column.append(contentWrapper, cta, featureList);
       columnsContainer.append(column);
       resolve();
     });
@@ -156,5 +167,6 @@ export default async function decorate(block) {
 
   await Promise.all(cardsLoaded).then(() => {
     alignContent(block);
+    buildCarousel('.pricing-column', columnsContainer);
   });
 }
