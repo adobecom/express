@@ -234,6 +234,7 @@ function updatePUFCarousel(block) {
   const slideFunctionality = () => {
     carouselPlatform.scrollLeft = carouselPlatform.offsetWidth;
     carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
+    carouselContainer.style.width = '100%';
     const rightArrow = carouselContainer.querySelector('.carousel-fader-right');
     const leftArrow = carouselContainer.querySelector('.carousel-fader-left');
     const changeSlide = (index) => {
@@ -286,10 +287,12 @@ function updatePUFCarousel(block) {
     mediaQuery.onchange = () => {
       carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
     };
+    const cardContainers = block.querySelectorAll('.puf-card-container');
+    cardContainers.forEach((c) => {
+      c.style.transition = 'left 0.5s';
+    });
   };
-  setTimeout(() => {
-    slideFunctionality();
-  }, 0);
+  slideFunctionality();
 }
 
 function wrapTextAndSup(block) {
