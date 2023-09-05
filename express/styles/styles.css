@@ -830,13 +830,13 @@ main .section .hero {
 }
 
 main [data-audience] {
-  visibility: hidden;
+  display: none;
 }
 
 body[data-device="mobile"] main [data-audience="mobile"][data-section-status="loaded"]:not(.floating-button-wrapper),
 body[data-device="desktop"] main [data-audience="desktop"][data-section-status="loaded"]:not(.floating-button-wrapper),
 body[data-device="mobile"] main [data-audience="mobile"][data-section-status="loaded"]:not(.split-action-container) {
-  visibility: visible;
+  display: block;
 }
 
 @media (min-width:900px) {
@@ -1114,13 +1114,13 @@ main .section[data-section-status='loading'],
 main .section[data-section-status='initialized'],
 main > div,
 main .section[data-status='decorated'] {
-  visibility: hidden;
+  display: none;
 }
 
 main > .section,
 .fragment > .section,
 main > .hero {
-  visibility: visible;
+  display: block;
   position: relative;
 }
 
