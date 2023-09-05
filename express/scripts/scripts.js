@@ -2222,7 +2222,7 @@ const eagerLoad = (img) => {
 async function loadPostLCP() {
   // post LCP actions go here
   sampleRUM('lcp');
-  if (!window.hlx.lighthouse) loadMartech();
+  if (window.hlx.martech) loadMartech();
   loadGnav();
   const tkID = TK_IDS[getLocale(window.location)];
   if (tkID) {
@@ -2243,7 +2243,10 @@ async function loadArea(area = document) {
   }
 
   window.hlx = window.hlx || {};
-  window.hlx.lighthouse = new URLSearchParams(window.location.search).get('lighthouse') === 'on';
+  const params = new URLSearchParams(window.location.search);
+  ['martech', 'gnav', 'testing'].forEach((p) => {
+    window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
+  });
   window.hlx.init = true;
 
   setTheme();
@@ -2256,7 +2259,7 @@ async function loadArea(area = document) {
 
     removeIrrelevantSections(main);
   }
-  if (!window.hlx.lighthouse) await decorateTesting();
+  if (window.hlx.testing) await decorateTesting();
 
   if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
     const { default: replaceContent } = await import('./content-replace.js');
@@ -2281,7 +2284,7 @@ async function loadArea(area = document) {
 
     document.querySelector('body').classList.add('appear');
 
-    if (!window.hlx.lighthouse) {
+    if (window.hlx.testing) {
       const target = checkTesting();
       if (useAlloy) {
         document.querySelector('body').classList.add('personalization-container');

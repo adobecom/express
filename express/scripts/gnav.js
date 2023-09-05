@@ -305,7 +305,7 @@ async function loadFEDS() {
   });
 }
 
-if (!window.hlx || !window.hlx.lighthouse) {
+if (!window.hlx || window.hlx.gnav) {
   loadIMS();
   loadFEDS();
   setTimeout(() => {
