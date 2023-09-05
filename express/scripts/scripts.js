@@ -938,8 +938,8 @@ export async function loadBlock(block, eager = false) {
 
     await loadAndExecute(cssPath, jsPath, block, blockName, eager);
     block.setAttribute('data-block-status', 'loaded');
-    return block;
   }
+  return block;
 }
 
 /**
@@ -2179,13 +2179,6 @@ function loadLana(options = {}) {
 
   window.addEventListener('error', lanaError);
   window.addEventListener('unhandledrejection', lanaError);
-}
-
-/**
- * loads everything needed to get to LCP.
- */
-async function loadEager(main) {
-
 }
 
 function removeMetadata() {

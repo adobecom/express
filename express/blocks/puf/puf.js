@@ -229,7 +229,6 @@ function updatePUFCarousel(block) {
   const carouselPlatform = block.querySelector('.carousel-platform');
   const leftCard = block.querySelector('.puf-left');
   const rightCard = block.querySelector('.puf-right');
-  const priceSet = block.querySelector('.puf-pricing-header').textContent;
   carouselContainer.classList.add('slide-1-selected');
 
   const slideFunctionality = () => {
@@ -288,7 +287,9 @@ function updatePUFCarousel(block) {
       carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
     };
   };
-  setTimeout(() => { slideFunctionality(); }, 0);
+  setTimeout(() => {
+    slideFunctionality();
+  }, 0);
 }
 
 function wrapTextAndSup(block) {
