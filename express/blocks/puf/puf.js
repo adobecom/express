@@ -13,6 +13,9 @@ import { addPublishDependencies, createTag } from '../../scripts/scripts.js';
 import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
 import { buildCarousel } from '../shared/carousel.js';
 
+let invisContainer;
+let parent;
+
 function pushPricingAnalytics(adobeEventName, sparkEventName, plan) {
   const url = new URL(window.location.href);
   const sparkTouchpoint = url.searchParams.get('touchpointName');
@@ -291,6 +294,8 @@ function updatePUFCarousel(block) {
     cardContainers.forEach((c) => {
       c.style.transition = 'left 0.5s';
     });
+    parent.append(block);
+    invisContainer.remove();
   };
   slideFunctionality();
 }
@@ -451,6 +456,11 @@ async function build1ColDesign(block) {
 }
 
 async function build2ColDesign(block) {
+  invisContainer = createTag('div');
+  parent = block.parentElement;
+  invisContainer.style.visibility = 'hidden';
+  invisContainer.append(block);
+  document.body.append(invisContainer);
   block.classList.add('two-col');
   const leftCard = await decorateCard(block, 'puf-left');
   const rightCard = await decorateCard(block, 'puf-right');
