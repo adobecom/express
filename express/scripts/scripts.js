@@ -593,7 +593,7 @@ async function decorateSections(el, isDoc) {
       }
       wrapper?.append(child);
     });
-    blocks.forEach((block) => {
+    blocks.forEach(async (block) => {
       await decorateBlock(block);
     });
     return { el: section, blocks: [...blocks] };
