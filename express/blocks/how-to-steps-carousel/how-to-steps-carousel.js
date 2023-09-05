@@ -296,7 +296,7 @@ export default async function decorate(block) {
     picture = backgroundPic;
     section.prepend(picture);
 
-    loadImage(backgroundPicImg).then(() => {
+    loadImage(backgroundPicImg).then(async () => {
       backgroundPicImg.width = canvasWidth;
       const canvas = createTag('canvas', { width: canvasWidth, height: canvasHeight });
       const ctx = canvas.getContext('2d');
@@ -307,10 +307,12 @@ export default async function decorate(block) {
         layerTemplateImage(canvas, ctx, templateImg).then(() => {
           templateDiv.remove();
           const img = createTag('img');
-          img.src = canvas.toDataURL('image/png');
-          backgroundPic.append(img);
-          backgroundPicImg.remove();
-          setPictureHeight(block, true);
+          setTimeout(() => {
+            img.src = canvas.toDataURL('image/png');
+            backgroundPic.append(img);
+            backgroundPicImg.remove();
+            setPictureHeight(block, true);
+          }, 0);
         });
       });
     });
