@@ -233,8 +233,8 @@ function updatePUFCarousel(block) {
 
   const slideFunctionality = () => {
     carouselPlatform.scrollLeft = carouselPlatform.offsetWidth;
-    carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
     carouselContainer.style.width = '100%';
+    carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
     const rightArrow = carouselContainer.querySelector('.carousel-fader-right');
     const leftArrow = carouselContainer.querySelector('.carousel-fader-left');
     const changeSlide = (index) => {
