@@ -373,6 +373,11 @@ export function getIcon(icons, alt, size = 44) {
     'pricing-fonts',
     'pricing-libraries',
     'pricing-cloud',
+    'pricing-support',
+    'pricing-sharing',
+    'pricing-history',
+    'pricing-corporate',
+    'pricing-admin',
   ];
 
   const size22Icons = [
