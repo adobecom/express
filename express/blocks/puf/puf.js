@@ -292,9 +292,7 @@ function updatePUFCarousel(block) {
       c.style.transition = 'left 0.5s';
     });
   };
-  setTimeout(() => {
-    slideFunctionality();
-  }, 0);
+  slideFunctionality();
 }
 
 function wrapTextAndSup(block) {
