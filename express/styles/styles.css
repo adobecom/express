@@ -1114,13 +1114,12 @@ main .section[data-section-status='loading'],
 main .section[data-section-status='initialized'],
 main > div,
 main .section[data-status='decorated'] {
-  visibility: hidden;
+  display: none;
 }
 
 main > .section,
 .fragment > .section,
 main > .hero {
-  visibility: visible;
   display: block;
   position: relative;
 }
