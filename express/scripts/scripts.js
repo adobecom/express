@@ -1872,7 +1872,7 @@ function decorateLinks(main) {
       const urlPath = `${url.pathname}${url.search}${url.hash}`;
       a.href = relative ? urlPath : `${url.origin}${urlPath}`;
 
-      if (!relative 
+      if (!relative
         && url.hostname !== 'adobesparkpost.app.link'
         && !['tel:', 'mailto:', 'sms:'].includes(url.protocol)) {
         // open external links in a new tab
