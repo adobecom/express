@@ -29,6 +29,7 @@ function handleHeader(column) {
 function handlePrice(block, column) {
   const pricePlan = createTag('div', { class: 'pricing-plan' });
   const priceEl = column.querySelector('[title="{{pricing}}"]');
+  if (!priceEl) return null;
   const priceParent = priceEl?.parentNode;
   const plan = priceParent?.nextElementSibling.querySelector('a') ? '' : priceParent?.nextElementSibling;
 
@@ -70,7 +71,8 @@ function handleCtas(column) {
   ctas[1]?.classList.add('cta', 'xlarge');
 
   ctaContainers.forEach((container) => {
-    container.querySelector('em')?.children[0]?.classList.add('secondary', 'dark');
+    container.querySelector('em')?.children[0]?.classList.add('primary');
+    container.querySelector('strong')?.children[0]?.classList.add('secondary');
   });
 
   return ctaContainers[ctaContainers.length - 1];
@@ -112,7 +114,8 @@ function alignContent(block) {
     'pricing-plan': 0,
   };
   let attemptsLeft = 10;
-  const maxWidth = Math.min(contentWrappers.length <= 1 ? 428 : contentWrappers.length * 448, 1336);
+  const cardWidth = (430 * contentWrappers.length) + (20 * (contentWrappers.length - 1));
+  const maxWidth = Math.min(cardWidth, 1440);
   block.style.maxWidth = `${maxWidth}px`;
 
   const minHeightCaptured = new Promise((resolve) => {
@@ -166,7 +169,7 @@ export default async function decorate(block) {
   const cardsLoaded = [];
   columns.forEach((column, index) => {
     const cardLoaded = new Promise((resolve) => {
-      const columnWrapper = createTag('div', { class: 'pricing-column-wrapper '});
+      const columnWrapper = createTag('div', { class: 'pricing-column-wrapper' });
       columnWrapper.append(column);
 
       const contentWrapper = createTag('div', { class: 'pricing-content-wrapper' });
@@ -177,7 +180,12 @@ export default async function decorate(block) {
       const featureList = handleFeatureList(featureColumns, index);
       const eyeBrow = handleEyeBrows(columnWrapper, eyeBrows, index);
 
-      contentWrapper.append(header, description, pricePlan);
+      contentWrapper.append(header, description);
+      if (pricePlan) {
+        contentWrapper.append(pricePlan);
+      } else {
+        columnWrapper.classList.add('no-price-type');
+      }
       column.append(contentWrapper, cta);
       if (featureList) column.append(featureList);
       if (eyeBrow) columnWrapper.prepend(eyeBrow);

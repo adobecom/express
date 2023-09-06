@@ -16,6 +16,21 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/scripts.js';
 
+function adjustFaderGradient(parent, faders) {
+  const parentSection = parent.closest('.section');
+  let inGradient;
+  let outGradient;
+  if (parentSection?.style?.background) {
+    if (parentSection.style.background.startsWith('rgb')) {
+      inGradient = parentSection.style.background.replace(')', ', 1)');
+      outGradient = parentSection.style.background.replace(')', ', 0)');
+    }
+  }
+
+  faders.right.style.background = `linear-gradient(to right, ${outGradient}, ${inGradient})`;
+  faders.left.style.background = `linear-gradient(to left, ${outGradient}, ${inGradient})`;
+}
+
 // Wait for all media to load
 function waitForMediaToLoad($parent) {
   const media = [...$parent.querySelectorAll('img, video')];
@@ -203,4 +218,6 @@ export function buildCarousel(selector = ':scope > *', $parent, infinityScrollEn
   $platform.addEventListener('touched', () => {
     lastPos = null;
   }, { passive: true });
+
+  adjustFaderGradient($parent, { left: $faderLeft, right: $faderRight });
 }

@@ -22,15 +22,23 @@ main .pricing-summary .pricing-container .pricing-summary-columns-container .car
   padding-top: 40px;
 }
 
-main .pricing-summary .monetize-item-background {
-  background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
+main .pricing-summary .pricing-column-wrapper {
   padding: 4px;
   border-radius: 24px;
   overflow: hidden;
+  background: var(--color-white);
+}
+
+main .pricing-summary .monetize-item-background {
+  background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
 }
 
 main .pricing-summary .pricing-column-wrapper.monetize-item-background.has-pricing-eyebrow {
   margin-top: -40px;
+}
+
+main .pricing-summary .pricing-column-wrapper.no-price-type {
+  background: linear-gradient(90deg, #BFE4FF, #CECEF6);
 }
 
 main .pricing-summary .pricing-column-wrapper .pricing-eyebrow {
@@ -52,10 +60,9 @@ main .pricing-summary .pricing-column {
   position: relative;
   background-color: var(--color-white);
   border-radius: 20px;
-  min-width: 370px;
-  width: 100%;
   height: 100%;
-  max-width: 420px;
+  min-width: 412px;
+  max-width: 412px;
   min-height: 345px;
   display: flex;
   flex-direction: column;
@@ -63,6 +70,10 @@ main .pricing-summary .pricing-column {
   padding: 24px 40px;
   box-sizing: border-box;
   justify-content: flex-start;
+}
+
+main .pricing-summary.feature .pricing-column {
+  max-width: 412px;
 }
 
 main .pricing-summary .pricing-column-wrapper.monetize-item-background.has-pricing-eyebrow .pricing-column {
@@ -84,6 +95,10 @@ main .pricing-summary .pricing-header {
   justify-content: center;
   gap: 10px;
   font-size: var(--heading-font-size-l);
+}
+
+main .pricing-summary .pricing-header h2 {
+  /*white-space: nowrap;*/
 }
 
 main .pricing-summary .pricing-description {
@@ -209,13 +224,22 @@ main .pricing-summary .pricing-feature-list .icon-checkmark-no-fill {
   min-width: 22px;
 }
 
+main .pricing-summary .pricing-feature-list h2,
+main .pricing-summary .pricing-feature-list h3,
+main .pricing-summary .pricing-feature-list h4,
+main .pricing-summary .pricing-feature-list h5,
+main .pricing-summary .pricing-feature-list h6,
+main .pricing-summary .pricing-feature-list p {
+  text-align: left;
+}
+
 main .pricing-summary .pricing-feature-list ul {
   margin: 0;
+  padding-left: 16px;
 }
 
 main .pricing-summary .pricing-feature-list p {
   display: flex;
-  text-align: left;
   gap: 8px;
   margin: 8px 0;
   font-size: var(--body-font-size-s);
