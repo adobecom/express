@@ -496,12 +496,21 @@ export function readBlockConfig($block) {
   return config;
 }
 
+export function getMetadata(name) {
+  const attr = name && name.includes(':') ? 'property' : 'name';
+  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
+  return ($meta && $meta.content) || '';
+}
+
 function removeIrrelevantSections(main) {
   main.querySelectorAll(':scope > div').forEach((section) => {
     const sectionMeta = section.querySelector('div.section-metadata');
     if (sectionMeta) {
       const meta = readBlockConfig(sectionMeta);
-      if (meta.audience && meta.audience !== document.body.dataset?.device) {
+
+      // section meant for different device or section visibility steered over metadata
+      if ((meta.audience && meta.audience !== document.body.dataset?.device)
+          || (meta.showwith !== undefined && getMetadata(meta.showwith) !== 'on')) {
         section.remove();
       }
     }
@@ -786,12 +795,6 @@ function resolveFragments() {
         console.log(`fragment "${marker}" resolved`);
       }, 500);
     });
-}
-
-export function getMetadata(name) {
-  const attr = name && name.includes(':') ? 'property' : 'name';
-  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
-  return ($meta && $meta.content) || '';
 }
 
 /**
