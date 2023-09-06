@@ -296,7 +296,7 @@ export default async function decorate(block) {
     picture = backgroundPic;
     section.prepend(picture);
 
-    loadImage(backgroundPicImg).then(async () => {
+    loadImage(backgroundPicImg).then(() => {
       backgroundPicImg.width = canvasWidth;
       const canvas = createTag('canvas', { width: canvasWidth, height: canvasHeight });
       const ctx = canvas.getContext('2d');

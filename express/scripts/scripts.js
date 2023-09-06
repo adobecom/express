@@ -2293,8 +2293,6 @@ async function loadArea(area = document) {
     displayOldLinkWarning();
     wordBreakJapanese();
 
-    document.querySelector('body').classList.add('appear');
-
     if (window.hlx.testing) {
       const target = checkTesting();
       if (useAlloy) {
