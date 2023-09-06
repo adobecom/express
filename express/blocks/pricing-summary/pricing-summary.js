@@ -74,12 +74,20 @@ function handleCtas(column) {
 
 function handleDescription(column) {
   const description = createTag('div', { class: 'pricing-description' });
-  const featureList = createTag('div', { class: 'pricing-feature-list' });
-  Array.from(column.children).forEach((element) => {
-    element.querySelector('svg, img') ? featureList.append(element) : description.append(element);
-  });
+  const texts = [...column.children].filter((element) => !element.querySelector('svg, img'));
 
-  return [description, featureList];
+  description.append(...texts);
+
+  return description;
+}
+
+function handleFeatureList(column) {
+  const featureList = createTag('div', { class: 'pricing-feature-list' });
+  const elems = [...column.children].filter((element) => element.querySelector('svg, img'));
+
+  featureList.append(...elems);
+
+  return featureList;
 }
 
 function alignContent(block) {
@@ -146,7 +154,8 @@ export default async function decorate(block) {
       const header = handleHeader(column);
       const pricePlan = handlePrice(column);
       const cta = handleCtas(column);
-      const [description, featureList] = handleDescription(column);
+      const description = handleDescription(column);
+      const featureList = handleFeatureList(column);
 
       contentWrapper.append(header, description, pricePlan);
       column.append(contentWrapper, cta, featureList);
