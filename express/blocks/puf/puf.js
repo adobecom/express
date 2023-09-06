@@ -459,8 +459,10 @@ async function build2ColDesign(block) {
   invisContainer = createTag('div');
   parent = block.parentElement;
   invisContainer.style.visibility = 'hidden';
+  invisContainer.style.display = 'block';
   invisContainer.append(block);
-  document.body.append(invisContainer);
+  const main = document.body.querySelector('main');
+  main.append(invisContainer);
   block.classList.add('two-col');
   const leftCard = await decorateCard(block, 'puf-left');
   const rightCard = await decorateCard(block, 'puf-right');
