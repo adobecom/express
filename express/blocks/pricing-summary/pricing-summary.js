@@ -64,25 +64,43 @@ function handlePrice(block, column) {
 }
 
 function handleCtas(column) {
-  const ctaContainers = column.querySelectorAll('.button-container');
-
   const ctas = column.querySelectorAll('a');
-  ctas[0]?.classList.add(ctas[1] ? 'details-cta' : 'cta', 'xlarge');
-  ctas[1]?.classList.add('cta', 'xlarge');
+  const mainCTA = ctas[ctas.length - 1];
+  if (!mainCTA) return null;
 
-  ctaContainers.forEach((container) => {
-    container.querySelector('em')?.children[0]?.classList.add('primary');
-    container.querySelector('strong')?.children[0]?.classList.add('secondary');
-  });
+  mainCTA.classList.add('button', 'cta', 'xlarge');
 
-  return ctaContainers[ctaContainers.length - 1];
+  const container = mainCTA.closest('p');
+  if (container) {
+    let buttonType;
+    const button = container.querySelector('a');
+
+    if (container.querySelector('em') && container.querySelector('strong')) {
+      buttonType = 'primary';
+    }
+
+    if (container.querySelector('em') && !container.querySelector('strong')) {
+      buttonType = 'dark';
+    }
+
+    if (!container.querySelector('em') && container.querySelector('strong')) {
+      buttonType = 'secondary';
+    }
+
+    if (button && buttonType) button.classList.add(buttonType);
+  }
+
+  return mainCTA;
 }
 
 function handleDescription(column) {
   const description = createTag('div', { class: 'pricing-description' });
-  const texts = [...column.children].filter((element) => !element.querySelector('svg, img'));
-
-  description.append(...texts);
+  [...column.children].forEach((element) => {
+    if (!element.querySelector('svg, img')) {
+      description.append(element);
+      element.querySelector('a')?.classList.add('details-cta');
+    }
+  });
 
   return description;
 }
