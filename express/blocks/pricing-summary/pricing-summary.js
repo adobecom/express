@@ -11,66 +11,7 @@
  */
 
 import { createTag } from '../../scripts/scripts.js';
-import { getOffer, buildUrl } from '../../scripts/utils/pricing.js';
-
-async function fetchPlan(planUrl) {
-  if (!window.pricingPlans) {
-    window.pricingPlans = {};
-  }
-
-  let plan = window.pricingPlans[planUrl];
-
-  if (!plan) {
-    plan = {};
-    const link = new URL(planUrl);
-    const params = link.searchParams;
-
-    plan.url = planUrl;
-    plan.country = 'us';
-    plan.language = 'en';
-    plan.price = '9.99';
-    plan.currency = 'US';
-    plan.symbol = '$';
-
-    if (planUrl.includes('/sp/')) {
-      plan.offerId = 'FREE0';
-      plan.frequency = 'monthly';
-      plan.name = 'Free';
-      plan.stringId = 'free-trial';
-    } else {
-      plan.offerId = params.get('items[0][id]');
-      plan.frequency = null;
-      plan.name = 'Premium';
-      plan.stringId = '3-month-trial';
-    }
-
-    if (plan.offerId === '70C6FDFC57461D5E449597CC8F327CF1' || plan.offerId === 'CFB1B7F391F77D02FE858C43C4A5C64F') {
-      plan.frequency = 'Monthly';
-    } else if (plan.offerId === 'E963185C442F0C5EEB3AE4F4AAB52C24' || plan.offerId === 'BADDACAB87D148A48539B303F3C5FA92') {
-      plan.frequency = 'Annual';
-    } else {
-      plan.frequency = null;
-    }
-
-    const countryOverride = new URLSearchParams(window.location.search).get('country');
-    const offer = await getOffer(plan.offerId, countryOverride);
-
-    if (offer) {
-      plan.currency = offer.currency;
-      plan.price = offer.unitPrice;
-      plan.formatted = `${offer.unitPriceCurrencyFormatted}`;
-      plan.country = offer.country;
-      plan.vatInfo = offer.vatInfo;
-      plan.language = offer.lang;
-      plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
-      plan.prefix = offer.prefix ?? '';
-      plan.suffix = offer.suffix ?? '';
-      plan.formatted = plan.formatted.replace(plan.rawPrice[0], `<strong>${plan.prefix}${plan.rawPrice[0]}${plan.suffix}</strong>`);
-    }
-  }
-
-  return plan;
-}
+import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
 
 function handleHeader(column) {
   column.classList.add('pricing-column');
@@ -85,23 +26,34 @@ function handleHeader(column) {
 }
 
 function handlePrice(column) {
-  const price = column.querySelector('[title="{{pricing}}"]');
-  const priceContainer = price?.parentNode;
-  const plan = priceContainer?.nextElementSibling;
-
-  const priceText = createTag('div', { class: 'pricing-price' });
   const pricePlan = createTag('div', { class: 'pricing-plan' });
+  const priceEl = column.querySelector('[title="{{pricing}}"]');
+  const priceParent = priceEl?.parentNode;
+  const plan = priceParent?.nextElementSibling.querySelector('a') ? '' : priceParent?.nextElementSibling;
 
-  pricePlan.append(priceText, plan);
+  const priceWrapper = createTag('div', { class: 'pricing-price-wrapper' });
+  const price = createTag('span', { class: 'pricing-price' });
+  const basePrice = createTag('span', { class: 'pricing-base-price' });
+  const priceSuffix = createTag('div', { class: 'pricing-plan-suf' });
 
-  fetchPlan(price?.href).then((response) => {
-    priceText.innerHTML = response.formatted;
+  priceWrapper.append(basePrice, price, priceSuffix);
+  pricePlan.append(priceWrapper, plan);
+
+  fetchPlan(priceEl?.href).then((response) => {
+    price.innerHTML = response.formatted;
+    basePrice.innerHTML = response.formattedBP || '';
+
+    if (priceEl.nextSibling?.nodeName === '#text') {
+      priceSuffix.textContent = priceEl.nextSibling?.textContent?.trim();
+    } else {
+      priceSuffix.textContent = response.suffix;
+    }
+
     const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
     if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
   });
 
-  priceContainer?.remove();
-
+  priceParent?.remove();
   return pricePlan;
 }
 
@@ -130,25 +82,79 @@ function handleDescription(column) {
   return description;
 }
 
-export default function decorate(block) {
-  const pricingContainer = block.children[1];
+function alignContent(block) {
+  const contentWrappers = block.querySelectorAll('.pricing-content-wrapper');
+  const elementsMinHeight = {
+    'pricing-header': 0,
+    'pricing-description': 0,
+    'pricing-plan': 0,
+  };
+  let attemptsLeft = 10;
 
-  pricingContainer.classList.add('pricing-container');
+  const minHeightCaptured = new Promise((resolve) => {
+    const heightCatcher = setInterval(() => {
+      if (Object.values(elementsMinHeight).every((h) => h > 0) || !attemptsLeft) {
+        clearInterval(heightCatcher);
+        resolve();
+      }
 
-  const columnsContainer = createTag('div', { class: 'columns-container' });
+      if (contentWrappers?.length > 0) {
+        contentWrappers.forEach((wrapper) => {
+          const childDivs = wrapper.querySelectorAll(':scope > div');
+          if (childDivs?.length > 0) {
+            childDivs.forEach((div) => {
+              elementsMinHeight[div.className] = Math.max(
+                elementsMinHeight[div.className],
+                div.offsetHeight,
+              );
+            });
+          }
+        });
+      }
 
-  const columns = Array.from(pricingContainer.children);
-
-  columns.forEach((column) => {
-    const header = handleHeader(column);
-    const pricePlan = handlePrice(column);
-    const cta = handleCtas(column);
-    const description = handleDescription(column);
-    const spacer = createTag('div', { class: 'spacer' });
-
-    column.append(header, description, spacer, pricePlan, cta);
-    columnsContainer.append(column);
+      attemptsLeft -= 1;
+    }, 10);
   });
 
+  minHeightCaptured.then(() => {
+    contentWrappers.forEach((wrapper) => {
+      const childDivs = wrapper.querySelectorAll(':scope > div');
+      if (childDivs?.length > 0) {
+        childDivs.forEach((div) => {
+          if (elementsMinHeight[div.className]
+            && div.offsetHeight < elementsMinHeight[div.className]) {
+            div.style.height = `${elementsMinHeight[div.className]}px`;
+          }
+        });
+      }
+    });
+  });
+}
+
+export default async function decorate(block) {
+  const pricingContainer = block.children[1];
+  pricingContainer.classList.add('pricing-container');
+  const columnsContainer = createTag('div', { class: 'columns-container' });
+  const columns = Array.from(pricingContainer.children);
   pricingContainer.append(columnsContainer);
+  const cardsLoaded = [];
+  columns.forEach((column) => {
+    const cardLoaded = new Promise((resolve) => {
+      const contentWrapper = createTag('div', { class: 'pricing-content-wrapper' });
+      const header = handleHeader(column);
+      const pricePlan = handlePrice(column);
+      const cta = handleCtas(column);
+      const description = handleDescription(column);
+
+      contentWrapper.append(header, description, pricePlan);
+      column.append(contentWrapper, cta);
+      columnsContainer.append(column);
+      resolve();
+    });
+    cardsLoaded.push(cardLoaded);
+  });
+
+  await Promise.all(cardsLoaded).then(() => {
+    alignContent(block);
+  });
 }

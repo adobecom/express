@@ -9,13 +9,8 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import {
-  addPublishDependencies,
-  createTag,
-  // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
-import { getOffer, buildUrl } from '../../scripts/utils/pricing.js';
-
+import { addPublishDependencies, createTag } from '../../scripts/scripts.js';
+import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
 import { buildCarousel } from '../shared/carousel.js';
 
 function pushPricingAnalytics(adobeEventName, sparkEventName, plan) {
@@ -50,84 +45,33 @@ function pushPricingAnalytics(adobeEventName, sparkEventName, plan) {
   digitalData._delete('spark.eventData.contextualData14');
 }
 
-async function fetchPlan(planUrl) {
-  if (!window.pricingPlans) {
-    window.pricingPlans = {};
-  }
-
-  let plan = window.pricingPlans[planUrl];
-
-  if (!plan) {
-    plan = {};
-    const link = new URL(planUrl);
-    const params = link.searchParams;
-
-    plan.url = planUrl;
-    plan.country = 'us';
-    plan.language = 'en';
-    plan.price = '9.99';
-    plan.currency = 'US';
-    plan.symbol = '$';
-
-    // TODO: Remove '/sp/ once confirmed with stakeholders
-    const allowedHosts = ['new.express.adobe.com', 'express.adobe.com', 'adobesparkpost.app.link'];
-    const { host } = new URL(planUrl);
-    if (allowedHosts.includes(host) || planUrl.includes('/sp/')) {
-      plan.offerId = 'FREE0';
-      plan.frequency = 'monthly';
-      plan.name = 'Free';
-      plan.stringId = 'free-trial';
-    } else {
-      plan.offerId = params.get('items[0][id]');
-      plan.frequency = null;
-      plan.name = 'Premium';
-      plan.stringId = '3-month-trial';
-    }
-
-    if (plan.offerId === '70C6FDFC57461D5E449597CC8F327CF1' || plan.offerId === 'CFB1B7F391F77D02FE858C43C4A5C64F') {
-      plan.frequency = 'Monthly';
-    } else if (plan.offerId === 'E963185C442F0C5EEB3AE4F4AAB52C24' || plan.offerId === 'BADDACAB87D148A48539B303F3C5FA92') {
-      plan.frequency = 'Annual';
-    } else {
-      plan.frequency = null;
-    }
-
-    const countryOverride = new URLSearchParams(window.location.search).get('country');
-    const offer = await getOffer(plan.offerId, countryOverride);
-
-    if (offer) {
-      plan.currency = offer.currency;
-      plan.price = offer.unitPrice;
-      plan.formatted = `${offer.unitPriceCurrencyFormatted}`;
-      plan.country = offer.country;
-      plan.vatInfo = offer.vatInfo;
-      plan.language = offer.lang;
-      plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
-      plan.prefix = offer.prefix ?? '';
-      plan.suffix = offer.suffix ?? '';
-      plan.formatted = plan.formatted.replace(plan.rawPrice[0], `<strong>${plan.prefix}${plan.rawPrice[0]}${plan.suffix}</strong>`);
-    }
-
-    window.pricingPlans[planUrl] = plan;
-  }
-
-  return plan;
-}
-
-async function selectPlan($card, planUrl, sendAnalyticEvent) {
+async function selectPlan(card, planUrl, sendAnalyticEvent) {
   const plan = await fetchPlan(planUrl);
 
   if (plan) {
-    const $pricingCta = $card.querySelector('.puf-card-top a');
-    const $pricingHeader = $card.querySelector('.puf-pricing-header');
-    const $pricingVat = $card.querySelector('.puf-vat-info');
+    const pricingCta = card.querySelector('.puf-card-top a');
+    const pricingHeader = card.querySelector('.puf-pricing-header');
+    const pricingSuf = card.querySelector('.puf-pricing-suf');
+    const pricingVat = card.querySelector('.puf-vat-info');
+    const pricingBase = card.querySelector('.puf-bp-header');
 
-    $pricingHeader.innerHTML = plan.formatted;
-    $pricingHeader.classList.add(plan.currency.toLowerCase());
-    $pricingVat.textContent = plan.vatInfo;
-    $pricingCta.href = buildUrl(plan.url, plan.country, plan.language);
-    $pricingCta.dataset.planUrl = planUrl;
-    $pricingCta.id = plan.stringId;
+    if (pricingHeader) {
+      pricingHeader.innerHTML = plan.formatted || '';
+      pricingHeader.classList.add(plan.currency.toLowerCase());
+    }
+
+    if (pricingBase) {
+      pricingBase.innerHTML = plan.formattedBP || '';
+    }
+
+    if (pricingSuf) pricingSuf.textContent = plan.suffix || '';
+    if (pricingVat) pricingVat.textContent = plan.vatInfo || '';
+
+    if (pricingCta) {
+      pricingCta.href = buildUrl(plan.url, plan.country, plan.language);
+      pricingCta.dataset.planUrl = planUrl;
+      pricingCta.id = plan.stringId;
+    }
   }
 
   if (sendAnalyticEvent) {
@@ -137,49 +81,49 @@ async function selectPlan($card, planUrl, sendAnalyticEvent) {
   }
 }
 
-function displayPlans($card, plans) {
-  const $planContainer = $card.querySelector('.puf-card-plans');
-  const $switch = createTag('label', { class: 'puf-card-switch' });
-  const $checkbox = createTag('input', { type: 'checkbox', class: 'puf-card-checkbox' });
-  const $slider = createTag('span', { class: 'puf-card-slider' });
-  const $defaultPlan = createTag('div', { class: 'strong' });
-  const $secondPlan = createTag('div');
+function displayPlans(card, plans) {
+  const planContainer = card.querySelector('.puf-card-plans');
+  const cardSwitch = createTag('label', { class: 'puf-card-switch' });
+  const checkbox = createTag('input', { type: 'checkbox', class: 'puf-card-checkbox' });
+  const slider = createTag('span', { class: 'puf-card-slider' });
+  const defaultPlan = createTag('div', { class: 'strong' });
+  const secondPlan = createTag('div');
 
-  $defaultPlan.innerHTML = plans[0].text.replace(plans[0].plan, `<span>${plans[0].plan}</span>`);
-  $secondPlan.innerHTML = plans[1].text.replace(plans[1].plan, `<span>${plans[1].plan}</span>`);
+  defaultPlan.innerHTML = plans[0].text.replace(plans[0].plan, `<span>${plans[0].plan}</span>`);
+  secondPlan.innerHTML = plans[1].text.replace(plans[1].plan, `<span>${plans[1].plan}</span>`);
 
-  $planContainer.append($defaultPlan);
-  $planContainer.append($switch);
-  $switch.append($checkbox);
-  $switch.append($slider);
-  $planContainer.append($secondPlan);
+  planContainer.append(defaultPlan);
+  planContainer.append(cardSwitch);
+  cardSwitch.append(checkbox);
+  cardSwitch.append(slider);
+  planContainer.append(secondPlan);
 
-  $checkbox.addEventListener('change', () => {
-    if ($checkbox.checked) {
-      $defaultPlan.classList.remove('strong');
-      $secondPlan.classList.add('strong');
-      selectPlan($card, plans[1].url, true);
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+      defaultPlan.classList.remove('strong');
+      secondPlan.classList.add('strong');
+      selectPlan(card, plans[1].url, true);
     } else {
-      $defaultPlan.classList.add('strong');
-      $secondPlan.classList.remove('strong');
-      selectPlan($card, plans[0].url, true);
+      defaultPlan.classList.add('strong');
+      secondPlan.classList.remove('strong');
+      selectPlan(card, plans[0].url, true);
     }
   });
 
-  return $planContainer;
+  return planContainer;
 }
 
-function buildPlans($plans) {
+function buildPlans(plansElement) {
   const plans = [];
 
-  $plans.forEach(($plan) => {
-    const $planLink = $plan.querySelector('a');
+  plansElement.forEach((plan) => {
+    const planLink = plan.querySelector('a');
 
-    if ($planLink) {
+    if (planLink) {
       plans.push({
-        url: $planLink.href,
-        plan: $planLink.textContent.trim(),
-        text: $plan.textContent.trim(),
+        url: planLink.href,
+        plan: planLink.textContent.trim(),
+        text: plan.textContent.trim(),
       });
     }
   });
@@ -187,111 +131,126 @@ function buildPlans($plans) {
   return plans;
 }
 
-function decorateCard($block, cardClass) {
-  const $cardContainer = createTag('div', { class: 'puf-card-container' });
-  const $card = createTag('div', { class: `puf-card ${cardClass}` });
-  const $cardBanner = $block.children[0].children[0];
-  const $cardTop = $block.children[1].children[0];
-  const $cardBottom = $block.children[2].children[0];
-  const $cardHeader = $cardTop.querySelector('h3, p:first-of-type');
-  const $cardHeaderSvg = $cardTop.querySelector('svg');
-  const $cardPricingHeader = createTag('h2', { class: 'puf-pricing-header' });
-  const $cardVat = createTag('div', { class: 'puf-vat-info' });
-  const $cardPlansContainer = createTag('div', { class: 'puf-card-plans' });
-  const $cardCta = createTag('a', { class: 'button large' });
-  const $plans = $cardTop.querySelectorAll('li');
-  const $listItems = $cardBottom.querySelectorAll('svg');
-  const plans = buildPlans($plans);
+function decorateCard(block, cardClass = '') {
+  const cardClassName = `puf-card ${cardClass}`.trim();
+  const cardContainer = createTag('div', { class: 'puf-card-container' });
+  const card = createTag('div', { class: cardClassName });
+  const cardBanner = block.children[0].children[0];
+  const cardTop = block.children[1].children[0];
+  const cardBottom = block.children[2].children[0];
+  const cardHeader = cardTop.querySelector('h3, p:first-of-type');
+  const cardHeaderSvg = cardTop.querySelector('svg');
+  const cardPricingContainer = createTag('div', { class: 'puf-pricing-container' });
+  const cardBasePriceHeader = createTag('h2', { class: 'puf-bp-header' });
+  const cardPricingHeader = createTag('h2', { class: 'puf-pricing-header' });
+  const cardPricingSufContainer = createTag('div', { class: 'puf-pricing-suf-container' });
+  const cardPricingSuf = createTag('div', { class: 'puf-pricing-suf' });
+  const cardVat = createTag('div', { class: 'puf-vat-info' });
+  const cardAdditionalContext = createTag('div', { class: 'puf-pricing-context' });
+  const cardPlansContainer = createTag('div', { class: 'puf-card-plans' });
+  const cardCta = createTag('a', { class: 'button large' });
+  const plansElement = cardTop.querySelectorAll('li');
+  const listItems = cardBottom.querySelectorAll('svg');
+  const plans = buildPlans(plansElement);
 
   if (cardClass === 'puf-left') {
-    $cardCta.classList.add('reverse', 'accent');
+    cardCta.classList.add('reverse', 'accent');
   }
 
   let formattedHeader = createTag('h3');
-  if ($cardHeader?.tagName === 'P') {
-    formattedHeader.textContent = $cardHeader.lastChild.data;
-  } else if ($cardHeader?.tagName === 'H3') {
-    formattedHeader = $cardHeader;
+  if (cardHeader?.tagName === 'P') {
+    formattedHeader.textContent = cardHeader.lastChild.data;
+  } else if (cardHeader?.tagName === 'H3') {
+    formattedHeader = cardHeader;
   }
 
-  $cardBanner.classList.add('puf-card-banner');
-  $cardTop.classList.add('puf-card-top');
-  $cardBottom.classList.add('puf-card-bottom');
+  cardBanner.classList.add('puf-card-banner');
+  cardTop.classList.add('puf-card-top');
+  cardBottom.classList.add('puf-card-bottom');
 
-  $card.append($cardBanner);
-  $card.append($cardTop);
-  $card.append($cardBottom);
+  cardPricingContainer.append(cardBasePriceHeader, cardPricingHeader, cardPricingSufContainer);
+  cardPricingSufContainer.append(cardPricingSuf, cardVat);
+  cardTop.prepend(
+    cardHeader,
+    cardPricingContainer,
+    cardAdditionalContext,
+    cardPlansContainer,
+    cardCta,
+  );
+  card.append(cardBanner, cardTop, cardBottom);
 
-  $cardTop.prepend($cardCta);
-  $cardTop.prepend($cardPlansContainer);
-  $cardTop.prepend($cardVat);
-  $cardTop.prepend($cardPricingHeader);
-  $cardTop.prepend(formattedHeader);
-
-  if (!$cardBanner.textContent.trim()) {
-    $cardBanner.style.display = 'none';
+  if (!cardBanner.textContent.trim()) {
+    cardBanner.style.display = 'none';
   } else {
-    $cardBanner.classList.add('recommended');
+    cardBanner.classList.add('recommended');
   }
 
-  if ($cardHeaderSvg) formattedHeader.prepend($cardHeaderSvg);
+  if (cardHeaderSvg) formattedHeader.prepend(cardHeaderSvg);
 
   if (plans.length) {
-    selectPlan($card, plans[0].url, false);
+    selectPlan(card, plans[0].url, false);
 
     if (plans.length > 1) {
-      displayPlans($card, plans);
+      displayPlans(card, plans);
     }
   }
 
-  $cardTop.querySelector('ul').remove();
+  cardTop.querySelector('ul')?.remove();
 
-  const $ctaTextContainer = $cardTop.querySelector('strong');
-  if ($ctaTextContainer) {
-    $cardCta.textContent = $ctaTextContainer.textContent.trim();
-    $ctaTextContainer.parentNode.remove();
+  const ctaTextContainer = cardTop.querySelector('strong');
+  if (ctaTextContainer) {
+    cardCta.textContent = ctaTextContainer.textContent.trim();
+    ctaTextContainer.parentNode.remove();
   } else {
-    $cardCta.textContent = 'Start your trial';
+    cardCta.textContent = 'Start your trial';
   }
 
-  $cardContainer.append($card);
+  const pricingContextContainer = cardTop.querySelector('em');
+  if (pricingContextContainer) {
+    cardAdditionalContext.textContent = pricingContextContainer.textContent.trim();
+    pricingContextContainer.parentNode.remove();
+  } else {
+    cardAdditionalContext.remove();
+  }
 
-  if ($listItems) {
-    $listItems.forEach(($listItem) => {
-      $listItem.parentNode.classList.add('puf-list-item');
+  cardContainer.append(card);
+
+  if (listItems) {
+    listItems.forEach((listItem) => {
+      listItem.parentNode.classList.add('puf-list-item');
     });
   }
 
-  return $cardContainer;
+  return cardContainer;
 }
 
-function updatePUFCarousel($block) {
-  const $carouselContainer = $block.querySelector('.carousel-container');
-  const $carouselPlatform = $block.querySelector('.carousel-platform');
-  let $leftCard = $block.querySelector('.puf-left');
-  let $rightCard = $block.querySelector('.puf-right');
-  let priceSet = $block.querySelector('.puf-pricing-header').textContent;
-  $carouselContainer.classList.add('slide-1-selected');
+function updatePUFCarousel(block) {
+  const carouselContainer = block.querySelector('.carousel-container');
+  const carouselPlatform = block.querySelector('.carousel-platform');
+  let leftCard = block.querySelector('.puf-left');
+  let rightCard = block.querySelector('.puf-right');
+  let priceSet = block.querySelector('.puf-pricing-header').textContent;
+  carouselContainer.classList.add('slide-1-selected');
   const slideFunctionality = () => {
-    $carouselPlatform.scrollLeft = $carouselPlatform.offsetWidth;
-    $carouselContainer.style.minHeight = `${$leftCard.clientHeight + 40}px`;
-    const $rightArrow = $carouselContainer.querySelector('.carousel-fader-right');
-    const $leftArrow = $carouselContainer.querySelector('.carousel-fader-left');
+    carouselPlatform.scrollLeft = carouselPlatform.offsetWidth;
+    carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
+    const rightArrow = carouselContainer.querySelector('.carousel-fader-right');
+    const leftArrow = carouselContainer.querySelector('.carousel-fader-left');
     const changeSlide = (index) => {
       if (index === 0) {
-        $carouselContainer.classList.add('slide-1-selected');
-        $carouselContainer.classList.remove('slide-2-selected');
-        $carouselContainer.style.minHeight = `${$leftCard.clientHeight + 40}px`;
+        carouselContainer.classList.add('slide-1-selected');
+        carouselContainer.classList.remove('slide-2-selected');
+        carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
       } else {
-        $carouselContainer.classList.remove('slide-1-selected');
-        $carouselContainer.classList.add('slide-2-selected');
-        $carouselContainer.style.minHeight = `${$rightCard.clientHeight + 110}px`;
+        carouselContainer.classList.remove('slide-1-selected');
+        carouselContainer.classList.add('slide-2-selected');
+        carouselContainer.style.minHeight = `${rightCard.clientHeight + 110}px`;
       }
     };
 
-    $leftArrow.addEventListener('click', () => changeSlide(0));
-    $rightArrow.addEventListener('click', () => changeSlide(1));
-    $block.addEventListener('keyup', (e) => {
+    leftArrow.addEventListener('click', () => changeSlide(0));
+    rightArrow.addEventListener('click', () => changeSlide(1));
+    block.addEventListener('keyup', (e) => {
       if (e.key === 'ArrowLeft') {
         changeSlide(0);
       } else if (e.key === 'ArrowRight') {
@@ -321,37 +280,37 @@ function updatePUFCarousel($block) {
       initialX = null;
       initialY = null;
     };
-    $block.addEventListener('touchstart', startTouch, false);
-    $block.addEventListener('touchmove', moveTouch, false);
+    block.addEventListener('touchstart', startTouch, false);
+    block.addEventListener('touchmove', moveTouch, false);
     const mediaQuery = window.matchMedia('(min-width: 900px)');
     mediaQuery.onchange = () => {
-      $carouselContainer.style.minHeight = `${$leftCard.clientHeight + 40}px`;
+      carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
     };
   };
 
   const waitForCardsToLoad = setInterval(() => {
-    if ($leftCard && $rightCard && priceSet) {
+    if (leftCard && rightCard && priceSet) {
       clearInterval(waitForCardsToLoad);
       slideFunctionality();
     } else {
-      $leftCard = $block.querySelector('.puf-left');
-      $rightCard = $block.querySelector('.puf-right');
-      priceSet = $block.querySelector('.puf-pricing-header').textContent;
+      leftCard = block.querySelector('.puf-left');
+      rightCard = block.querySelector('.puf-right');
+      priceSet = block.querySelector('.puf-pricing-header').textContent;
     }
   }, 400);
 }
 
-function wrapTextAndSup($block) {
-  const supTags = $block.getElementsByTagName('sup');
+function wrapTextAndSup(block) {
+  const supTags = block.getElementsByTagName('sup');
   Array.from(supTags).forEach((supTag) => {
     supTag.classList.add('puf-sup');
   });
 
-  const $listItems = $block.querySelectorAll('.puf-list-item');
-  $listItems.forEach(($listItem) => {
-    const $childNodes = $listItem.childNodes;
+  const listItems = block.querySelectorAll('.puf-list-item');
+  listItems.forEach((listItem) => {
+    const { childNodes } = listItem;
 
-    const filteredChildren = Array.from($childNodes).filter((node) => {
+    const filteredChildren = Array.from(childNodes).filter((node) => {
       const isSvg = node.tagName && node.tagName.toLowerCase() === 'svg';
       const isTextNode = node.nodeType === Node.TEXT_NODE;
       return !isSvg && (isTextNode || node.nodeType === Node.ELEMENT_NODE);
@@ -359,26 +318,36 @@ function wrapTextAndSup($block) {
 
     const filteredChildrenExceptFirstText = filteredChildren.slice(1);
 
-    const $textAndSupWrapper = createTag('div', { class: 'puf-text-and-sup-wrapper' });
-    $textAndSupWrapper.append(...filteredChildrenExceptFirstText);
-    $listItem.append($textAndSupWrapper);
+    const textAndSupWrapper = createTag('div', { class: 'puf-text-and-sup-wrapper' });
+    textAndSupWrapper.append(...filteredChildrenExceptFirstText);
+    listItem.append(textAndSupWrapper);
   });
 }
 
-function highlightText($block) {
-  const $highlightRegex = /^\(\(.*\)\)$/;
-  const $blockElements = Array.from($block.querySelectorAll('*'));
+function formatTextElements(block) {
+  const highlightRegex = /^\(\(.*\)\)$/;
+  const dividerRegex = /^--.*--$/;
+  const blockElements = Array.from(block.querySelectorAll('*'));
 
-  if (!$blockElements.some(($element) => $highlightRegex.test($element.textContent))) {
+  if (!blockElements.some((element) => highlightRegex.test(element.textContent)
+    || dividerRegex.test(element.textContent))) {
     return;
   }
 
-  const $highlightedElements = $blockElements
-    .filter(($element) => $highlightRegex.test($element.textContent));
+  const highlightedElements = blockElements
+    .filter((element) => highlightRegex.test(element.textContent));
 
-  $highlightedElements.forEach(($element) => {
-    $element.classList.add('puf-highlighted-text');
-    $element.textContent = $element.textContent.replace(/^\(\(/, '').replace(/\)\)$/, '');
+  highlightedElements.forEach((element) => {
+    element.classList.add('puf-highlighted-text');
+    element.textContent = element.textContent.replace(/^\(\(/, '').replace(/\)\)$/, '');
+  });
+
+  const dividerElements = blockElements
+    .filter((element) => dividerRegex.test(element.textContent));
+
+  dividerElements.forEach((element) => {
+    element.classList.add('puf-divider-text');
+    element.textContent = element.textContent.replace(/^--/, '').replace(/--$/, '');
   });
 }
 
@@ -462,30 +431,59 @@ function alignHighlights($block) {
   }
 }
 
-function decorateFooter($block) {
-  if ($block?.children?.[3]) {
-    const $footer = createTag('div', { class: 'puf-pricing-footer' });
-    $footer.append($block.children[3]);
-    return $footer;
+function decorateFooter(block) {
+  if (block?.children?.[3]) {
+    const footer = createTag('div', { class: 'puf-pricing-footer' });
+    footer.append(block.children[3]);
+    return footer;
   } else {
     return '';
   }
 }
 
-export default function decorate($block) {
-  const $leftCard = decorateCard($block, 'puf-left');
-  const $rightCard = decorateCard($block, 'puf-right');
-  const $footer = decorateFooter($block);
+function build1ColDesign(block) {
+  block.classList.add('one-col');
+  const pricingCard = decorateCard(block);
+  const footer = decorateFooter(block);
 
-  $block.innerHTML = '';
-  $block.append($leftCard, $rightCard);
+  block.innerHTML = '';
+  block.append(pricingCard);
 
-  buildCarousel('.puf-card-container', $block);
-  updatePUFCarousel($block);
   addPublishDependencies('/express/system/offers-new.json');
-  wrapTextAndSup($block);
-  $block.append($footer);
-  alignP($block);
-  highlightText($block);
-  alignHighlights($block);
+  wrapTextAndSup(block);
+  block.append(footer);
+  formatTextElements(block);
+}
+
+function build2ColDesign(block) {
+  block.classList.add('two-col');
+  const leftCard = decorateCard(block, 'puf-left');
+  const rightCard = decorateCard(block, 'puf-right');
+  const footer = decorateFooter(block);
+
+  block.innerHTML = '';
+  block.append(leftCard, rightCard);
+
+  buildCarousel('.puf-card-container', block);
+  updatePUFCarousel(block);
+  addPublishDependencies('/express/system/offers-new.json');
+  wrapTextAndSup(block);
+  block.append(footer);
+  alignP(block);
+  formatTextElements(block);
+  alignHighlights(block);
+}
+
+function getPUFDesign(block) {
+  return block.children[1].children.length === 2 ? '2-col' : '1-col';
+}
+
+export default function decorate(block) {
+  if (getPUFDesign(block) === '1-col') {
+    build1ColDesign(block);
+  }
+
+  if (getPUFDesign(block) === '2-col') {
+    build2ColDesign(block);
+  }
 }

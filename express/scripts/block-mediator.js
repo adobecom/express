@@ -53,7 +53,7 @@ const BlockMediator = (() => {
    * @returns {function(): void} unsubscribe func
    * @example
    * const unsubscribe = mediator.subscribe('storeName', ({ oldValue, newValue }) => {
-   *  console.log(`storeName value from ${oldValue} to ${newValue}`);
+   *  reactToNewValue(newValue, oldValue);
    * });
    * @notes
    * 1. It doesn't filter duplicate events

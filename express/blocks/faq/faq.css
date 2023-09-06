@@ -30,7 +30,7 @@ main .faq .faq-question {
     display: block;
     padding: 0;
     text-decoration: none;
-    font-size: 20px;
+    font-size: var(--body-font-size-xl);
     line-height: 30px;
     font-weight: 700;
     -webkit-transition: all .25s ease-in-out;
@@ -59,7 +59,7 @@ main .faq .faq-answer ul li {
 }
 
 main .faq .faq-answer p {
-    font-size: 16px;
+    font-size: var(--body-font-size-m);
     line-height: 24px;
     font-weight: 400;
     margin-top: 0;
@@ -75,7 +75,7 @@ main .faq .faq-answer p {
     }
 
     main .faq .faq-question {
-        font-size: 24px;
+        font-size: var(--body-font-size-xxl);
         line-height: 36px;
     }
 }

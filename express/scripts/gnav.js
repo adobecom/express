@@ -223,10 +223,6 @@ async function loadFEDS() {
         window.location.href = sparkLoginUrl;
       },
     },
-    privacy: {
-      otDomainId: '7a5eb705-95ed-4cc4-a11d-0cc5760e93db',
-      footerLinkSelector: '[data-feds-action="open-adchoices-modal"]',
-    },
     jarvis: getMetadata('enable-chat') === 'yes'
       ? {
         surfaceName: 'AdobeExpressEducation',
@@ -296,9 +292,22 @@ async function loadFEDS() {
     prefix = 'https://www.adobe.com';
   }
   loadScript(`${prefix}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).id = 'feds-script';
+  setTimeout(() => {
+    window.fedsConfig.privacy = {
+      otDomainId: '7a5eb705-95ed-4cc4-a11d-0cc5760e93db',
+    };
+    loadScript('https://www.adobe.com/etc.clientlibs/globalnav/clientlibs/base/privacy-standalone.js');
+  }, 3500);
+  const footer = document.querySelector('footer');
+  footer?.addEventListener('click', (event) => {
+    if (event.target.closest('a[data-feds-action="open-adchoices-modal"]')) {
+      event.preventDefault();
+      window.adobePrivacy?.showPreferenceCenter();
+    }
+  });
 }
 
-if (!window.hlx || !window.hlx.lighthouse) {
+if (!window.hlx || window.hlx.gnav) {
   loadIMS();
   loadFEDS();
   loadGoogleYOLO();

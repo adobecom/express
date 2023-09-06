@@ -32,6 +32,7 @@ import { buildCarousel } from '../shared/carousel.js';
 import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './template-search-api-v3.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import renderTemplate from './template-rendering.js';
+import isDarkOverlayReadable from '../../scripts/color-tools.js';
 
 function wordStartsWithVowels(word) {
   return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
@@ -66,29 +67,6 @@ function handlelize(str) {
     .replace(/--+/g, '-') // Replaces multiple hyphens by one hyphen
     .replace(/(^-+|-+$)/g, '') // Remove extra hyphens from beginning or end of the string
     .toLowerCase(); // To lowercase
-}
-
-function isDarkOverlayReadable(colorString) {
-  let r;
-  let g;
-  let b;
-
-  if (colorString.match(/^rgb/)) {
-    const colorValues = colorString.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
-    [r, g, b] = colorValues.slice(1);
-  } else {
-    const hexToRgb = +(`0x${colorString.slice(1).replace(colorString.length < 5 ? /./g : '', '$&$&')}`);
-    // eslint-disable-next-line no-bitwise
-    r = (hexToRgb >> 16) & 255;
-    // eslint-disable-next-line no-bitwise
-    g = (hexToRgb >> 8) & 255;
-    // eslint-disable-next-line no-bitwise
-    b = hexToRgb & 255;
-  }
-
-  const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
-
-  return hsp > 127.5;
 }
 
 async function fetchAndRenderTemplates(props) {
@@ -1542,6 +1520,7 @@ async function buildTemplateList(block, props, type = []) {
 
     await decorateTemplates(block, props);
   } else {
+    window.lana.log(`failed to load templates with props: ${JSON.stringify(props)}`, { tags: 'templates-api' });
     // fixme: better error message.
     block.innerHTML = 'Oops. Our templates delivery got stolen. Please try refresh the page.';
   }

@@ -299,6 +299,7 @@ export function getIcon(icons, alt, size = 44) {
     'brandswitch',
     'calendar',
     'certified',
+    'color-how-to-icon',
     'changespeed',
     'check',
     'chevron',
@@ -372,6 +373,11 @@ export function getIcon(icons, alt, size = 44) {
     'pricing-fonts',
     'pricing-libraries',
     'pricing-cloud',
+    'pricing-support',
+    'pricing-sharing',
+    'pricing-history',
+    'pricing-corporate',
+    'pricing-admin',
   ];
 
   const size22Icons = [
@@ -782,11 +788,17 @@ function resolveFragments() {
     });
 }
 
+export function getMetadata(name) {
+  const attr = name && name.includes(':') ? 'property' : 'name';
+  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
+  return ($meta && $meta.content) || '';
+}
+
 /**
  * Decorates a block.
  * @param {Element} block The block element
  */
-export function decorateBlock(block) {
+export async function decorateBlock(block) {
   const blockName = block.classList[0];
   if (blockName) {
     const section = block.closest('.section');
@@ -814,6 +826,10 @@ export function decorateBlock(block) {
     block.setAttribute('data-block-status', 'initialized');
     const blockWrapper = block.parentElement;
     blockWrapper.classList.add(`${blockName}-wrapper`);
+    if (getMetadata('sheet-powered') === 'Y') {
+      const { setBlockTheme } = await import('./content-replace.js');
+      setBlockTheme(block);
+    }
   }
 }
 
@@ -926,16 +942,14 @@ export async function loadBlock(block, eager = false) {
               await mod.default(block, blockName, document, eager);
             }
           } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(`failed to load module for ${blockName}`, err);
+            window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, { sampleRate: 1, tags: 'module' });
           }
           resolve();
         })();
       });
       await Promise.all([cssLoaded, decorationComplete]);
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(`failed to load block ${blockName}`, err);
+      window.lana.log(`failed to load block ${blockName}: ${err.message}\nError Stack:${err.stack}`, { sampleRate: 1, tags: 'block' });
     }
     block.setAttribute('data-block-status', 'loaded');
   }
@@ -965,12 +979,6 @@ export function loadScript(url, callback, type) {
   $head.append($script);
   $script.onload = callback;
   return $script;
-}
-
-export function getMetadata(name) {
-  const attr = name && name.includes(':') ? 'property' : 'name';
-  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
-  return ($meta && $meta.content) || '';
 }
 
 /**
@@ -1617,13 +1625,14 @@ export async function fetchFloatingCta(path) {
 
     if (window.floatingCta.length) {
       const candidates = window.floatingCta.filter((p) => {
-        const urlToMatch = p.path.includes('*') ? convertGlobToRe(p.path) : p.path;
+        const pathMatch = p.path.includes('*') ? path.match(convertGlobToRe(p.path)) : path === p.path;
+
         if (experiment && path !== 'default') {
-          return (path === p.path || path.match(urlToMatch))
+          return (pathMatch)
             && p.expID === experiment.run
             && p.challengerID === experiment.selectedVariant;
         } else {
-          return path === p.path || path.match(urlToMatch);
+          return pathMatch;
         }
       }).sort((a, b) => b.path.length - a.path.length);
 
@@ -1846,22 +1855,27 @@ function decorateSocialIcons($main) {
   });
 }
 
-function makeRelativeLinks($main) {
-  $main.querySelectorAll('a').forEach(($a) => {
-    if (!$a.href) return;
+function decorateLinks(main) {
+  main.querySelectorAll('a').forEach((a) => {
+    if (!a.href) return;
     try {
-      const {
-        protocol, hostname, pathname, search, hash,
-      } = new URL($a.href);
-      if (hostname.endsWith('.page')
-        || hostname.endsWith('.live')
-        || ['www.adobe.com', 'www.stage.adobe.com'].includes(hostname)) {
+      let url = new URL(a.href);
+
+      // handle link replacement on sheet-powered pages
+      if (getMetadata('sheet-powered') === 'Y' && getMetadata(url.hash.replace('#', ''))) {
+        a.href = getMetadata(url.hash.replace('#', ''));
+        url = new URL(a.href);
+      }
+
+      if (url.hostname.endsWith('.page')
+        || url.hostname.endsWith('.live')
+        || ['www.adobe.com', 'www.stage.adobe.com'].includes(url.hostname)) {
         // make link relative
-        $a.href = `${pathname}${search}${hash}`;
-      } else if (hostname !== 'adobesparkpost.app.link'
-        && !['tel:', 'mailto:', 'sms:'].includes(protocol)) {
+        a.href = `${url.pathname}${url.search}${url.hash}`;
+      } else if (url.hostname !== 'adobesparkpost.app.link'
+        && !['tel:', 'mailto:', 'sms:'].includes(url.protocol)) {
         // open external links in a new tab
-        $a.target = '_blank';
+        a.target = '_blank';
       }
     } catch (e) {
       // invalid url
@@ -1990,7 +2004,7 @@ export async function decorateMain(main) {
   decoratePictures(main);
   decorateLinkedPictures(main);
   decorateSocialIcons(main);
-  makeRelativeLinks(main);
+  decorateLinks(main);
 }
 
 const usp = new URLSearchParams(window.location.search);
@@ -2202,13 +2216,13 @@ async function loadEager(main) {
 
     removeIrrelevantSections(main);
   }
-  if (!window.hlx.lighthouse) await decorateTesting();
+  if (window.hlx.testing) await decorateTesting();
 
   // for backward compatibility
   // TODO: remove the href check after we tag content with sheet-powered
   if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
     const { default: replaceContent } = await import('./content-replace.js');
-    await replaceContent();
+    await replaceContent(main);
   }
 
   if (getMetadata('template-search-page') === 'Y') {
@@ -2235,7 +2249,7 @@ async function loadEager(main) {
 
     document.querySelector('body').classList.add('appear');
 
-    if (!window.hlx.lighthouse) {
+    if (window.hlx.testing) {
       const target = checkTesting();
       if (useAlloy) {
         document.querySelector('body').classList.add('personalization-container');
@@ -2285,7 +2299,7 @@ async function loadLazy(main) {
   resolveFragments();
   removeMetadata();
   addFavIcon('/express/icons/cc-express.svg');
-  if (!window.hlx.lighthouse) loadMartech();
+  if (window.hlx.martech) loadMartech();
   const tkID = TK_IDS[getLocale(window.location)];
   if (tkID) {
     const { default: loadFonts } = await import('./fonts.js');
@@ -2302,7 +2316,11 @@ async function loadLazy(main) {
  */
 async function decoratePage() {
   window.hlx = window.hlx || {};
-  window.hlx.lighthouse = new URLSearchParams(window.location.search).get('lighthouse') === 'on';
+  const params = new URLSearchParams(window.location.search);
+  ['martech', 'gnav', 'testing'].forEach((p) => {
+    window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
+  });
+
   window.hlx.init = true;
 
   const main = document.querySelector('main');
