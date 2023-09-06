@@ -13,6 +13,7 @@
 
 import {
   loadScript,
+  createTag,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/scripts.js';
 
@@ -20,6 +21,10 @@ import {
 function getServer(url) {
   const l = url.hostname.lastIndexOf('.');
   return url.hostname.substring(url.hostname.lastIndexOf('.', l - 1) + 1, l);
+}
+
+function isInTextNode(node) {
+  return node.parentElement.firstChild.nodeType === Node.TEXT_NODE;
 }
 
 function getDefaultEmbed(url) {
@@ -30,15 +35,47 @@ function getDefaultEmbed(url) {
   </div>`;
 }
 
-function embedYoutube(url) {
-  const usp = new URLSearchParams(url.search);
-  const vid = usp.get('v');
-  const embed = url.pathname;
-  const embedHTML = `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">
-    <iframe src="https://www.youtube.com${vid ? `/embed/${vid}?rel=0&amp;v=${vid}` : embed}" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;" allowfullscreen="" scrolling="no" allow="encrypted-media; accelerometer; gyroscope; picture-in-picture" title="Content from Youtube" loading="lazy"></iframe>
+export function embedYoutube(a) {
+  if (isInTextNode(a)) return;
+  const title = !a.textContent.includes('http') ? a.textContent : 'Youtube Video';
+  const searchParams = new URLSearchParams(a.search);
+  const id = searchParams.get('v') || a.pathname.split('/').pop();
+  searchParams.delete('v');
+  const src = `https://www.youtube.com/embed/${id}?${searchParams.toString()}`;
+  const embedHTML = `
+  <div class="milo-video">
+    <iframe src="${src}" class="youtube"
+      webkitallowfullscreen mozallowfullscreen allowfullscreen
+      allow="encrypted-media; accelerometer; gyroscope; picture-in-picture"
+      scrolling="no"
+      title="${title}">
+    </iframe>
   </div>`;
-  return embedHTML;
-}
+  a.insertAdjacentHTML('afterend', embedHTML);
+  a.remove();
+};
+
+export function embedVimeo(a) {
+  if (isInTextNode(a)) return;
+  const url = new URL(a.href);
+  let src = url.href;
+  if (url.hostname !== 'player.vimeo.com') {
+    const video = url.pathname.split('/')[1];
+    src = `https://player.vimeo.com/video/${video}?app_id=122963`;
+  }
+  const iframe = createTag('iframe', {
+    src,
+    style: 'border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;',
+    frameborder: '0',
+    allow: 'autoplay; fullscreen; picture-in-picture',
+    allowfullscreen: 'true',
+    title: 'Content from Vimeo',
+    loading: 'lazy',
+  });
+  const wrapper = createTag('div', { class: 'embed-vimeo' }, iframe);
+
+  a.parentElement.replaceChild(wrapper, a);
+};
 
 function embedInstagram(url) {
   const location = window.location.href;
@@ -48,17 +85,6 @@ function embedInstagram(url) {
       allowtransparency="true" allowfullscreen="true" frameborder="0" height="530" style="background: white; border-radius: 3px; border: 1px solid rgb(219, 219, 219);
       box-shadow: none; display: block;">
     </iframe>
-  </div>`;
-  return embedHTML;
-}
-
-function embedVimeo(url) {
-  const linkArr = url.href.split('/');
-  const video = linkArr ? linkArr[3] : linkArr;
-  const embedHTML = `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">
-      <iframe src="${video ? url.href : `https://player.vimeo.com/video/${video}`}?byline=0&badge=0&portrait=0&title=0" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;"
-        allowfullscreen="" scrolling="no" allow="encrypted-media" title="Content from Vimeo" loading="lazy">
-      </iframe>
   </div>`;
   return embedHTML;
 }
