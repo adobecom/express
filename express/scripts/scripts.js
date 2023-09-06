@@ -1867,12 +1867,13 @@ function decorateLinks(main) {
         url = new URL(a.href);
       }
 
-      if (url.hostname.endsWith('.page')
-        || url.hostname.endsWith('.live')
-        || ['www.adobe.com', 'www.stage.adobe.com'].includes(url.hostname)) {
-        // make link relative
-        a.href = `${url.pathname}${url.search}${url.hash}`;
-      } else if (url.hostname !== 'adobesparkpost.app.link'
+      // make url relative if needed
+      const relative = url.hostname === window.location.hostname;
+      const urlPath = `${url.pathname}${url.search}${url.hash}`;
+      a.href = relative ? urlPath : `${url.origin}${urlPath}`;
+
+      if (!relative 
+        && url.hostname !== 'adobesparkpost.app.link'
         && !['tel:', 'mailto:', 'sms:'].includes(url.protocol)) {
         // open external links in a new tab
         a.target = '_blank';
