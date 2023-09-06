@@ -7,7 +7,7 @@ sitemaps:
     languages:
       default:
         source: /express/query-index.json
-        destination: /express/sitemap.index.xml
+        destination: /express/sitemap.xml
         hreflang: en
         alternate: /{path}
       unitedkingdom:
