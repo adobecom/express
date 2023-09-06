@@ -502,7 +502,7 @@ export function getMetadata(name) {
   return ($meta && $meta.content) || '';
 }
 
-function removeIrrelevantSections(main) {
+export function removeIrrelevantSections(main) {
   main.querySelectorAll(':scope > div').forEach((section) => {
     const sectionMeta = section.querySelector('div.section-metadata');
     if (sectionMeta) {
