@@ -19,20 +19,54 @@ main .pricing-summary .pricing-container .pricing-summary-columns-container .car
   align-items: center;
   width: auto;
   max-height: none;
+  padding-top: 40px;
+}
+
+main .pricing-summary .monetize-item-background {
+  background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
+  padding: 4px;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+main .pricing-summary .pricing-column-wrapper.monetize-item-background.has-pricing-eyebrow {
+  margin-top: -40px;
+}
+
+main .pricing-summary .pricing-column-wrapper .pricing-eyebrow {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white)
+}
+
+main .pricing-summary .pricing-column-wrapper .pricing-eyebrow a {
+  margin-left: 4px;
+  color: var(--color-white);
+  font-weight: 400;
+  text-decoration: underline;
 }
 
 main .pricing-summary .pricing-column {
+  position: relative;
   background-color: var(--color-white);
   border-radius: 20px;
   min-width: 370px;
   width: 100%;
+  height: 100%;
   max-width: 420px;
   min-height: 345px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 23px 0 0 0;
+  padding: 24px 40px;
+  box-sizing: border-box;
   justify-content: flex-start;
+}
+
+main .pricing-summary .pricing-column-wrapper.monetize-item-background.has-pricing-eyebrow .pricing-column {
+  height: calc(100% - 36px);
 }
 
 main .pricing-summary .pricing-column .pricing-content-wrapper {
@@ -157,13 +191,26 @@ main .pricing-summary > div:last-of-type > div p {
 }
 
 main .pricing-summary .pricing-feature-list {
-  padding: 16px;
+
 }
 
 main .pricing-summary .pricing-feature-list svg,
 main .pricing-summary .pricing-feature-list img {
+  margin-top: 12px;
   min-width: 22px;
   min-height: 22px;
+}
+
+main .pricing-summary .pricing-feature-list .icon-checkmark-green,
+main .pricing-summary .pricing-feature-list .icon-checkmark-darkgreen,
+main .pricing-summary .pricing-feature-list .icon-checkmark,
+main .pricing-summary .pricing-feature-list .icon-checkmark-no-fill {
+  min-height: 12px;
+  min-width: 22px;
+}
+
+main .pricing-summary .pricing-feature-list ul {
+  margin: 0;
 }
 
 main .pricing-summary .pricing-feature-list p {
@@ -172,6 +219,14 @@ main .pricing-summary .pricing-feature-list p {
   gap: 8px;
   margin: 8px 0;
   font-size: var(--body-font-size-s);
+  line-height: var(--body-line-height);
+}
+
+main .pricing-summary .pricing-feature-list li {
+  text-align: left;
+  margin: 8px 0;
+  font-size: var(--body-font-size-s);
+  line-height: var(--body-line-height);
 }
 
 @media (min-width: 900px) {

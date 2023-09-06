@@ -26,7 +26,7 @@ function handleHeader(column) {
   return header;
 }
 
-function handlePrice(column) {
+function handlePrice(block, column) {
   const pricePlan = createTag('div', { class: 'pricing-plan' });
   const priceEl = column.querySelector('[title="{{pricing}}"]');
   const priceParent = priceEl?.parentNode;
@@ -52,6 +52,10 @@ function handlePrice(column) {
 
     const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
     if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
+
+    if (+response.price > 0 && block.classList.contains('feature')) {
+      column.parentElement.classList.add('monetize-item-background');
+    }
   });
 
   priceParent?.remove();
@@ -81,13 +85,23 @@ function handleDescription(column) {
   return description;
 }
 
-function handleFeatureList(column) {
-  const featureList = createTag('div', { class: 'pricing-feature-list' });
-  const elems = [...column.children].filter((element) => element.querySelector('svg, img'));
-
-  featureList.append(...elems);
-
+function handleFeatureList(featureColumns, index) {
+  if (!featureColumns) return null;
+  const featureList = featureColumns[index];
+  featureList.classList.add('pricing-feature-list');
   return featureList;
+}
+
+function handleEyeBrows(columnWrapper, eyeBrowCols, index) {
+  if (!eyeBrowCols) return null;
+  if (!eyeBrowCols[index].children.length) {
+    eyeBrowCols[index].remove();
+    return null;
+  }
+
+  eyeBrowCols[index].classList.add('pricing-eyebrow');
+  columnWrapper.classList.add('has-pricing-eyebrow');
+  return eyeBrowCols[index];
 }
 
 function alignContent(block) {
@@ -98,7 +112,7 @@ function alignContent(block) {
     'pricing-plan': 0,
   };
   let attemptsLeft = 10;
-  const maxWidth = Math.min(contentWrappers.length <= 1 ? 420 : contentWrappers.length * 440, 1320);
+  const maxWidth = Math.min(contentWrappers.length <= 1 ? 428 : contentWrappers.length * 448, 1336);
   block.style.maxWidth = `${maxWidth}px`;
 
   const minHeightCaptured = new Promise((resolve) => {
@@ -142,31 +156,41 @@ function alignContent(block) {
 }
 
 export default async function decorate(block) {
-  const pricingContainer = block.children[1];
+  const pricingContainer = block.classList.contains('feature') ? block.children[2] : block.children[1];
+  const featureColumns = block.classList.contains('feature') ? Array.from(block.children[3].children) : null;
+  const eyeBrows = block.classList.contains('feature') ? Array.from(block.children[1].children) : null;
   pricingContainer.classList.add('pricing-container');
   const columnsContainer = createTag('div', { class: 'pricing-summary-columns-container' });
   const columns = Array.from(pricingContainer.children);
   pricingContainer.append(columnsContainer);
   const cardsLoaded = [];
-  columns.forEach((column) => {
+  columns.forEach((column, index) => {
     const cardLoaded = new Promise((resolve) => {
+      const columnWrapper = createTag('div', { class: 'pricing-column-wrapper '});
+      columnWrapper.append(column);
+
       const contentWrapper = createTag('div', { class: 'pricing-content-wrapper' });
       const header = handleHeader(column);
-      const pricePlan = handlePrice(column);
+      const pricePlan = handlePrice(block, column);
       const cta = handleCtas(column);
       const description = handleDescription(column);
-      const featureList = handleFeatureList(column);
+      const featureList = handleFeatureList(featureColumns, index);
+      const eyeBrow = handleEyeBrows(columnWrapper, eyeBrows, index);
 
       contentWrapper.append(header, description, pricePlan);
-      column.append(contentWrapper, cta, featureList);
-      columnsContainer.append(column);
+      column.append(contentWrapper, cta);
+      if (featureList) column.append(featureList);
+      if (eyeBrow) columnWrapper.prepend(eyeBrow);
+
+      columnsContainer.append(columnWrapper);
       resolve();
     });
+
     cardsLoaded.push(cardLoaded);
   });
 
   await Promise.all(cardsLoaded).then(() => {
     alignContent(block);
-    buildCarousel('.pricing-column', columnsContainer);
+    buildCarousel('.pricing-column-wrapper', columnsContainer);
   });
 }
