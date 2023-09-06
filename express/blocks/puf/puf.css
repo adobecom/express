@@ -513,7 +513,6 @@ main .block.puf .puf-card .puf-card-banner a {
     main .block.puf .carousel-container .carousel-platform .puf-card-container {
         position: absolute;
         max-width: fit-content;
-        transition: left 0.5s;
         transform: translateX(-50%);
         right: auto;
         top: 0;
