@@ -72,6 +72,7 @@
 .template-x.sixcols .template.placeholder {
     width: 145px;
     margin: 15px auto;
+    display: flex;
 }
 
 @media (min-width: 900px) {
