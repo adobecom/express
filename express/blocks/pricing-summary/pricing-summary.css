@@ -56,19 +56,19 @@ main .pricing-summary .pricing-column {
   background-color: var(--color-white);
   border-radius: 20px;
   height: 100%;
-  min-width: 300px;
+  min-width: 240px;
   max-width: 412px;
   min-height: 345px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24px 40px;
+  padding: 24px;
   box-sizing: border-box;
   justify-content: flex-start;
 }
 
 main .pricing-summary .pricing-column-wrapper.monetize-item-background.has-pricing-eyebrow .pricing-column {
-  height: calc(100% - 36px);
+  height: calc(100% - 40px);
 }
 
 main .pricing-summary .pricing-column .pricing-content-wrapper {
@@ -89,7 +89,7 @@ main .pricing-summary .pricing-header {
 }
 
 main .pricing-summary .pricing-header h2 {
-  /*white-space: nowrap;*/
+  white-space: nowrap;
 }
 
 main .pricing-summary .pricing-description {
@@ -122,7 +122,7 @@ main .pricing-summary .pricing-plan {
 
 main .pricing-summary .pricing-price-wrapper {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   gap: 8px;
 }
@@ -150,6 +150,7 @@ main .pricing-summary .pricing-base-price > strong {
 
 main .pricing-summary .pricing-plan-suf {
   font-size: var(--body-font-size-s);
+  line-height: var(--body-line-height);
 }
 
 main .pricing-summary .pricing-description > p,
@@ -207,6 +208,7 @@ main .pricing-summary .pricing-feature-list img {
   min-height: 22px;
 }
 
+main .pricing-summary .pricing-feature-list .icon-checkmark-purple,
 main .pricing-summary .pricing-feature-list .icon-checkmark-green,
 main .pricing-summary .pricing-feature-list .icon-checkmark-darkgreen,
 main .pricing-summary .pricing-feature-list .icon-checkmark,
@@ -260,6 +262,7 @@ main .pricing-summary .pricing-feature-list li {
 
   main .pricing-summary .pricing-column {
     min-width: 412px;
+    padding: 24px 40px;
   }
 
   main .pricing-summary .pricing-column-wrapper.monetize-item-background.has-pricing-eyebrow {
