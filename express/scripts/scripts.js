@@ -2326,7 +2326,7 @@ async function loadArea(area = document) {
     delete section.el.dataset.idx;
   }
   const footer = document.querySelector('footer');
-  delete footer.el.dataset.status;
+  delete footer.dataset.status;
 
   loadLazy(main);
 
