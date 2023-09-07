@@ -306,7 +306,7 @@ async function loadTemplates(block, topic) {
   await readRowsFromBlock(block, templatesContainer);
 
   await decorateTemplateList(block, templatesContainer);
-  buildCarousel(':scope .template', block, false);
+  buildCarousel(':scope .template', block);
 }
 
 function setDropdownSelected(firstElem, dropdownText, selectedVal) {

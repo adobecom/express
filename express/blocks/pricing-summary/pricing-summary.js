@@ -132,8 +132,7 @@ function alignContent(block) {
     'pricing-plan': 0,
   };
   let attemptsLeft = 10;
-  const cardWidth = (430 * contentWrappers.length) + (20 * (contentWrappers.length - 1));
-  const maxWidth = Math.min(cardWidth, 1440);
+  const maxWidth = (430 * contentWrappers.length) + (20 * (contentWrappers.length - 1));
   block.style.maxWidth = `${maxWidth}px`;
 
   const minHeightCaptured = new Promise((resolve) => {
