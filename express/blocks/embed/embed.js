@@ -43,8 +43,8 @@ export function embedYoutube(a) {
   searchParams.delete('v');
   const src = `https://www.youtube.com/embed/${id}?${searchParams.toString()}`;
   const embedHTML = `
-  <div class="milo-video">
-    <iframe src="${src}" class="youtube"
+  <div class="embed-youtube">
+    <iframe width="450" height="253" src="${src}" class="youtube"
       webkitallowfullscreen mozallowfullscreen allowfullscreen
       allow="encrypted-media; accelerometer; gyroscope; picture-in-picture"
       scrolling="no"
@@ -53,7 +53,7 @@ export function embedYoutube(a) {
   </div>`;
   a.insertAdjacentHTML('afterend', embedHTML);
   a.remove();
-};
+}
 
 export function embedVimeo(a) {
   if (isInTextNode(a)) return;
@@ -65,7 +65,7 @@ export function embedVimeo(a) {
   }
   const iframe = createTag('iframe', {
     src,
-    style: 'border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;',
+    style: 'width: 100%; height: 100%;',
     frameborder: '0',
     allow: 'autoplay; fullscreen; picture-in-picture',
     allowfullscreen: 'true',
@@ -75,7 +75,7 @@ export function embedVimeo(a) {
   const wrapper = createTag('div', { class: 'embed-vimeo' }, iframe);
 
   a.parentElement.replaceChild(wrapper, a);
-};
+}
 
 function embedInstagram(url) {
   const location = window.location.href;

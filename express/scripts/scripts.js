@@ -1812,7 +1812,7 @@ export function addFavIcon(href) {
 
 function decorateSocialIcons($main) {
   $main.querySelectorAll(':scope a').forEach(($a) => {
-    if ($a.href === $a.textContent.trim() || new URL($a.href).hash !== '#embed-video') {
+    if ($a.href === $a.textContent.trim() && new URL($a.href).hash !== '#embed-video') {
       let icon = '';
       if ($a.href.startsWith('https://www.instagram.com')) {
         icon = 'instagram';
