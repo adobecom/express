@@ -239,11 +239,9 @@ export async function buildCarousel(selector = ':scope > *', parent, options = {
   }, { passive: true });
 
   adjustFaderGradient(parent, { left: faderLeft, right: faderRight });
-  await Promise.all([css, media]).then(() => {
-    if (options.startPosition) {
-      setTimeout(() => {
-        setInitialPosition(platform, options.startPosition)
-      });
-    }
-  });
+  await Promise.all([css, media]);
+
+  if (options.startPosition) {
+    setInitialPosition(platform, options.startPosition);
+  }
 }
