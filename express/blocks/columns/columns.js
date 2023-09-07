@@ -149,8 +149,10 @@ export default function decorate($block) {
       if ($cell.querySelector('img.icon, svg.icon')) {
         decorateIconList($cell, rowNum, $block.classList);
       } else if (link && link.includes('youtu')) {
+        $cell.classList.add('column-picture');
         embedYoutube(aTag);
       } else if (link && link.includes('vimeo')) {
+        $cell.classList.add('column-picture');
         embedVimeo(aTag);
       }
 
