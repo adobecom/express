@@ -180,6 +180,11 @@
     background: #000000B3;
 }
 
+.template-x.horizontal.fullwidth.tabbed {
+    max-width: 1440px;
+    margin: auto;
+}
+
 .template-x.horizontal.fullwidth .template {
     width: auto;
 }
@@ -1300,6 +1305,15 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     content: '/';
     color: var(--color-black);
     padding: 0 10px 0 0;
+}
+
+.template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-title {
+    margin-bottom: 0;
+}
+
+.template-x.horizontal.tabbed .carousel-container .carousel-fader-right,
+.template-x.horizontal.tabbed .carousel-container .carousel-fader-left {
+    background: none;
 }
 
 @media (min-width: 600px) {
