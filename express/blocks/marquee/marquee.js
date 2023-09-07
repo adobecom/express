@@ -47,7 +47,41 @@ function getBreakpoint(animations) {
   return breakpoint;
 }
 
-function buildReduceMotionSwitch(block) {
+export function handleMediaQuery(block, mediaQuery) {
+  localStorage.setItem('reduceMotion', mediaQuery.matches ? 'on' : 'off');
+
+  mediaQuery.addEventListener('change', (e) => {
+    const browserValue = localStorage.getItem('reduceMotion') === 'on';
+    if (browserValue === e.matches) return;
+
+    if (e.matches) {
+      block.classList.add('reduce-motion');
+      block.querySelector('video')?.pause();
+    } else {
+      block.classList.remove('reduce-motion');
+      block.querySelector('video')?.play();
+    }
+
+    localStorage.setItem('reduceMotion', e.matches ? 'on' : 'off');
+  });
+}
+
+function decorateToggleContext(ct, placeholders) {
+  const reduceMotionIconWrapper = ct;
+  const reduceMotionTextExist = reduceMotionIconWrapper.querySelector('.play-animation-text')
+    && reduceMotionIconWrapper.querySelector('.pause-animation-text');
+
+  if (!reduceMotionTextExist) {
+    const play = createTag('span', { class: 'play-animation-text' });
+    const pause = createTag('span', { class: 'pause-animation-text' });
+    play.textContent = placeholders ? placeholders['play-animation'] : 'play animation';
+    pause.textContent = placeholders ? placeholders['pause-animation'] : 'pause animation';
+
+    reduceMotionIconWrapper.prepend(play, pause);
+  }
+}
+
+async function buildReduceMotionSwitch(block) {
   if (!block.querySelector('.reduce-motion-wrapper')) {
     const reduceMotionIconWrapper = createTag('div', { class: 'reduce-motion-wrapper' });
     const videoWrapper = block.querySelector('.background-wrapper');
@@ -62,15 +96,14 @@ function buildReduceMotionSwitch(block) {
     videoWrapper.append(reduceMotionIconWrapper);
 
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mediaQuery.matches) {
-      localStorage.setItem('reduceMotion', 'on');
-    }
+    handleMediaQuery(block, mediaQuery);
+
     const initialValue = localStorage.getItem('reduceMotion') === 'on';
 
     if (video) {
       if (initialValue) {
         block.classList.add('reduce-motion');
-        video.currentTime = Math.floor(video.duration) / 2;
+        video.currentTime = Math.floor(video.duration) / 2 || 0;
         video.pause();
       } else {
         video.muted = true;
@@ -78,21 +111,7 @@ function buildReduceMotionSwitch(block) {
       }
     }
 
-    mediaQuery.addEventListener('change', (e) => {
-      const broswerValue = localStorage.getItem('reduceMotion') === 'on';
-      if (broswerValue === e.matches) return;
-      localStorage.setItem('reduceMotion', e.matches ? 'on' : 'off');
-
-      if (localStorage.getItem('reduceMotion') === 'on') {
-        block.classList.add('reduce-motion');
-        block.querySelector('video')?.pause();
-      } else {
-        block.classList.remove('reduce-motion');
-        block.querySelector('video')?.play();
-      }
-    });
-
-    reduceMotionIconWrapper.addEventListener('click', () => {
+    reduceMotionIconWrapper.addEventListener('click', async () => {
       localStorage.setItem('reduceMotion', localStorage.getItem('reduceMotion') === 'on' ? 'off' : 'on');
 
       if (localStorage.getItem('reduceMotion') === 'on') {
@@ -103,19 +122,9 @@ function buildReduceMotionSwitch(block) {
         block.querySelector('video')?.play();
       }
     }, { passive: true });
-
-    reduceMotionIconWrapper.addEventListener('mouseenter', async () => {
-      const placeholders = await fetchPlaceholders();
-      const reduceMotionTextExist = block.querySelector('.play-animation-text') && block.querySelector('.pause-animation-text');
-
-      if (!reduceMotionTextExist) {
-        const play = createTag('span', { class: 'play-animation-text' });
-        const pause = createTag('span', { class: 'pause-animation-text' });
-        play.textContent = placeholders['play-animation'] || 'play animation';
-        pause.textContent = placeholders['pause-animation'] || 'pause animation';
-
-        reduceMotionIconWrapper.prepend(play, pause);
-      }
+    const placeholders = await fetchPlaceholders();
+    reduceMotionIconWrapper.addEventListener('mouseenter', (e) => {
+      decorateToggleContext(e.currentTarget, placeholders);
     }, { passive: true });
   }
 }
@@ -171,11 +180,8 @@ function adjustLayout(animations, parent) {
   }
 }
 
-async function transformToVideoLink(cell, a) {
+export async function transformToVideoLink(cell, a) {
   const { isVideoLink, displayVideoModal } = await import('../shared/video.js');
-  a.addEventListener('click', (e) => {
-    e.preventDefault();
-  });
   a.setAttribute('rel', 'nofollow');
   a.classList.add('video-link');
   const title = a.textContent.trim();
@@ -310,10 +316,10 @@ export default async function decorate(block) {
       const buttonAsLink = contentButtons[2];
       buttonAsLink?.classList.remove('button');
       secondaryButton?.classList.add('secondary');
-      secondaryButton?.classList.add('xlarge');
       const buttonContainers = [...div.querySelectorAll('p.button-container')];
-      buttonContainers.forEach((button) => {
-        button.classList.add('button-inline');
+      buttonContainers.forEach((btnContainer) => {
+        btnContainer.classList.add('button-inline');
+        btnContainer.querySelector('a.button')?.classList.add('xlarge');
       });
     }
 
@@ -337,16 +343,8 @@ export default async function decorate(block) {
     }
   });
 
-  if (block.classList.contains('shadow') && !block.querySelector('.hero-shadow')) {
-    const shadowDiv = createTag('div', { class: 'hero-shadow' });
-    const shadow = createTag('img', { src: '/express/blocks/marquee/shadow.png' });
-    shadowDiv.appendChild(shadow);
-    block.appendChild(shadowDiv);
-  }
-
   const button = block.querySelector('.button');
   if (button) {
-    button.classList.add('xlarge');
     await addFreePlanWidget(button.parentElement);
   }
 

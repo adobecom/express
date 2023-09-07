@@ -13,6 +13,9 @@ import { addPublishDependencies, createTag } from '../../scripts/scripts.js';
 import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
 import { buildCarousel } from '../shared/carousel.js';
 
+let invisContainer;
+let parent;
+
 function pushPricingAnalytics(adobeEventName, sparkEventName, plan) {
   const url = new URL(window.location.href);
   const sparkTouchpoint = url.searchParams.get('touchpointName');
@@ -131,7 +134,7 @@ function buildPlans(plansElement) {
   return plans;
 }
 
-function decorateCard(block, cardClass = '') {
+async function decorateCard(block, cardClass = '') {
   const cardClassName = `puf-card ${cardClass}`.trim();
   const cardContainer = createTag('div', { class: 'puf-card-container' });
   const card = createTag('div', { class: cardClassName });
@@ -187,16 +190,6 @@ function decorateCard(block, cardClass = '') {
 
   if (cardHeaderSvg) formattedHeader.prepend(cardHeaderSvg);
 
-  if (plans.length) {
-    selectPlan(card, plans[0].url, false);
-
-    if (plans.length > 1) {
-      displayPlans(card, plans);
-    }
-  }
-
-  cardTop.querySelector('ul')?.remove();
-
   const ctaTextContainer = cardTop.querySelector('strong');
   if (ctaTextContainer) {
     cardCta.textContent = ctaTextContainer.textContent.trim();
@@ -204,6 +197,16 @@ function decorateCard(block, cardClass = '') {
   } else {
     cardCta.textContent = 'Start your trial';
   }
+
+  if (plans.length) {
+    await selectPlan(card, plans[0].url, false);
+
+    if (plans.length > 1) {
+      displayPlans(card, plans);
+    }
+  }
+
+  cardTop.querySelector('ul')?.remove();
 
   const pricingContextContainer = cardTop.querySelector('em');
   if (pricingContextContainer) {
@@ -227,12 +230,13 @@ function decorateCard(block, cardClass = '') {
 function updatePUFCarousel(block) {
   const carouselContainer = block.querySelector('.carousel-container');
   const carouselPlatform = block.querySelector('.carousel-platform');
-  let leftCard = block.querySelector('.puf-left');
-  let rightCard = block.querySelector('.puf-right');
-  let priceSet = block.querySelector('.puf-pricing-header').textContent;
+  const leftCard = block.querySelector('.puf-left');
+  const rightCard = block.querySelector('.puf-right');
   carouselContainer.classList.add('slide-1-selected');
+
   const slideFunctionality = () => {
     carouselPlatform.scrollLeft = carouselPlatform.offsetWidth;
+    carouselContainer.style.width = '100%';
     carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
     const rightArrow = carouselContainer.querySelector('.carousel-fader-right');
     const leftArrow = carouselContainer.querySelector('.carousel-fader-left');
@@ -286,18 +290,14 @@ function updatePUFCarousel(block) {
     mediaQuery.onchange = () => {
       carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
     };
+    const cardContainers = block.querySelectorAll('.puf-card-container');
+    cardContainers.forEach((c) => {
+      c.style.transition = 'left 0.5s';
+    });
+    parent.append(block);
+    invisContainer.remove();
   };
-
-  const waitForCardsToLoad = setInterval(() => {
-    if (leftCard && rightCard && priceSet) {
-      clearInterval(waitForCardsToLoad);
-      slideFunctionality();
-    } else {
-      leftCard = block.querySelector('.puf-left');
-      rightCard = block.querySelector('.puf-right');
-      priceSet = block.querySelector('.puf-pricing-header').textContent;
-    }
-  }, 400);
+  slideFunctionality();
 }
 
 function wrapTextAndSup(block) {
@@ -441,9 +441,9 @@ function decorateFooter(block) {
   }
 }
 
-function build1ColDesign(block) {
+async function build1ColDesign(block) {
   block.classList.add('one-col');
-  const pricingCard = decorateCard(block);
+  const pricingCard = await decorateCard(block);
   const footer = decorateFooter(block);
 
   block.innerHTML = '';
@@ -455,16 +455,22 @@ function build1ColDesign(block) {
   formatTextElements(block);
 }
 
-function build2ColDesign(block) {
+async function build2ColDesign(block) {
+  invisContainer = createTag('div');
+  parent = block.parentElement;
+  invisContainer.style.visibility = 'hidden';
+  invisContainer.style.display = 'block';
+  invisContainer.append(block);
+  const main = document.body.querySelector('main');
+  main.append(invisContainer);
   block.classList.add('two-col');
-  const leftCard = decorateCard(block, 'puf-left');
-  const rightCard = decorateCard(block, 'puf-right');
+  const leftCard = await decorateCard(block, 'puf-left');
+  const rightCard = await decorateCard(block, 'puf-right');
   const footer = decorateFooter(block);
-
   block.innerHTML = '';
   block.append(leftCard, rightCard);
 
-  buildCarousel('.puf-card-container', block);
+  await buildCarousel('.puf-card-container', block);
   updatePUFCarousel(block);
   addPublishDependencies('/express/system/offers-new.json');
   wrapTextAndSup(block);
@@ -478,12 +484,12 @@ function getPUFDesign(block) {
   return block.children[1].children.length === 2 ? '2-col' : '1-col';
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
   if (getPUFDesign(block) === '1-col') {
-    build1ColDesign(block);
+    await build1ColDesign(block);
   }
 
   if (getPUFDesign(block) === '2-col') {
-    build2ColDesign(block);
+    await build2ColDesign(block);
   }
 }

@@ -23,8 +23,6 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from './scripts.js';
 
-import loadGoogleYOLO from './google-yolo.js';
-
 const isHomepage = window.location.pathname.endsWith('/express/');
 
 async function checkRedirect(location, geoLookup) {
@@ -297,7 +295,7 @@ async function loadFEDS() {
       otDomainId: '7a5eb705-95ed-4cc4-a11d-0cc5760e93db',
     };
     loadScript('https://www.adobe.com/etc.clientlibs/globalnav/clientlibs/base/privacy-standalone.js');
-  }, 3500);
+  }, 5200);
   const footer = document.querySelector('footer');
   footer?.addEventListener('click', (event) => {
     if (event.target.closest('a[data-feds-action="open-adchoices-modal"]')) {
@@ -307,10 +305,14 @@ async function loadFEDS() {
   });
 }
 
-if (!window.hlx || !window.hlx.lighthouse) {
+if (!window.hlx || window.hlx.gnav) {
   loadIMS();
   loadFEDS();
-  loadGoogleYOLO();
+  setTimeout(() => {
+    import('./google-yolo.js').then((mod) => {
+      mod.default();
+    });
+  }, 5200);
 }
 /* Core Web Vitals RUM collection */
 

@@ -18,6 +18,8 @@ const TK_IDS = {
   jp: 'dvg6awq',
 };
 
+let blog;
+
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
@@ -299,6 +301,7 @@ export function getIcon(icons, alt, size = 44) {
     'brandswitch',
     'calendar',
     'certified',
+    'color-how-to-icon',
     'changespeed',
     'check',
     'chevron',
@@ -372,6 +375,11 @@ export function getIcon(icons, alt, size = 44) {
     'pricing-fonts',
     'pricing-libraries',
     'pricing-cloud',
+    'pricing-support',
+    'pricing-sharing',
+    'pricing-history',
+    'pricing-corporate',
+    'pricing-admin',
   ];
 
   const size22Icons = [
@@ -502,27 +510,58 @@ function removeIrrelevantSections(main) {
   });
 }
 
+export function getMetadata(name) {
+  const attr = name && name.includes(':') ? 'property' : 'name';
+  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
+  return ($meta && $meta.content) || '';
+}
+
+/**
+ * Decorates a block.
+ * @param {Element} block The block element
+ */
+export async function decorateBlock(block) {
+  const blockName = block.classList[0];
+  if (blockName) {
+    const section = block.closest('.section');
+    if (section) section.classList.add(`${[...block.classList].join('-')}-container`);
+
+    // begin CCX custom block option class handling
+    // split and add options with a dash
+    // (fullscreen-center -> fullscreen-center + fullscreen + center)
+    const extra = [];
+    block.classList.forEach((className, index) => {
+      if (index === 0) return; // block name, no split
+      const split = className.split('-');
+      if (split.length > 1) {
+        split.forEach((part) => {
+          extra.push(part);
+        });
+      }
+    });
+    block.classList.add(...extra);
+    // end CCX custom block option class handling
+
+    block.classList.add('block');
+
+    block.setAttribute('data-block-name', blockName);
+    block.setAttribute('data-block-status', 'initialized');
+    const blockWrapper = block.parentElement;
+    blockWrapper.classList.add(`${blockName}-wrapper`);
+    if (getMetadata('sheet-powered') === 'Y') {
+      const { setBlockTheme } = await import('./content-replace.js');
+      setBlockTheme(block);
+    }
+  }
+}
+
 /**
  * Decorates all sections in a container element.
  * @param {Element} $main The container element
  */
-function decorateSections($main) {
-  $main.querySelectorAll(':scope > div').forEach((section) => {
-    const wrappers = [];
-    let defaultContent = false;
-    [...section.children].forEach((e) => {
-      if (e.tagName === 'DIV' || !defaultContent) {
-        const wrapper = document.createElement('div');
-        wrappers.push(wrapper);
-        defaultContent = e.tagName !== 'DIV';
-        if (defaultContent) wrapper.classList.add('default-content-wrapper');
-      }
-      wrappers[wrappers.length - 1].append(e);
-    });
-    wrappers.forEach((wrapper) => section.append(wrapper));
-    section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
-    section.setAttribute('data-section-status', 'initialized');
-
+async function decorateSections(el, isDoc) {
+  const selector = isDoc ? 'body > main > div' : ':scope > div';
+  return [...el.querySelectorAll(selector)].map((section, idx) => {
     /* process section metadata */
     const sectionMeta = section.querySelector('div.section-metadata');
     if (sectionMeta) {
@@ -539,8 +578,30 @@ function decorateSections($main) {
           section.dataset[key] = meta[key];
         }
       });
-      sectionMeta.parentNode.remove();
+      sectionMeta.remove();
     }
+
+    const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
+
+    section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
+    section.dataset.status = 'decorated';
+    section.dataset.idx = idx;
+
+    let defaultContent = false;
+    let wrapper;
+    [...section.children].forEach((child) => {
+      if (child.tagName === 'DIV' || !defaultContent) {
+        wrapper = document.createElement('div');
+        defaultContent = child.tagName !== 'DIV';
+        if (defaultContent) wrapper.classList.add('default-content-wrapper');
+        section.append(wrapper);
+      }
+      wrapper?.append(child);
+    });
+    blocks.forEach(async (block) => {
+      await decorateBlock(block);
+    });
+    return { el: section, blocks: [...blocks] };
   });
 }
 
@@ -782,51 +843,6 @@ function resolveFragments() {
     });
 }
 
-/**
- * Decorates a block.
- * @param {Element} block The block element
- */
-export function decorateBlock(block) {
-  const blockName = block.classList[0];
-  if (blockName) {
-    const section = block.closest('.section');
-    if (section) section.classList.add(`${[...block.classList].join('-')}-container`);
-
-    // begin CCX custom block option class handling
-    // split and add options with a dash
-    // (fullscreen-center -> fullscreen-center + fullscreen + center)
-    const extra = [];
-    block.classList.forEach((className, index) => {
-      if (index === 0) return; // block name, no split
-      const split = className.split('-');
-      if (split.length > 1) {
-        split.forEach((part) => {
-          extra.push(part);
-        });
-      }
-    });
-    block.classList.add(...extra);
-    // end CCX custom block option class handling
-
-    block.classList.add('block');
-
-    block.setAttribute('data-block-name', blockName);
-    block.setAttribute('data-block-status', 'initialized');
-    const blockWrapper = block.parentElement;
-    blockWrapper.classList.add(`${blockName}-wrapper`);
-  }
-}
-
-/**
- * Decorates all blocks in a container element.
- * @param {Element} main The container element
- */
-function decorateBlocks(main) {
-  main
-    .querySelectorAll('div.section > div > div')
-    .forEach((block) => decorateBlock(block));
-}
-
 function decorateMarqueeColumns($main) {
   // flag first columns block in first section block as marquee
   const $sectionSplitByHighlight = $main.querySelector('.split-by-app-store-highlight');
@@ -889,6 +905,28 @@ export function buildBlock(blockName, content) {
   return (blockEl);
 }
 
+async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
+  const cssLoaded = new Promise((resolve) => {
+    loadCSS(cssPath, resolve);
+  });
+  const scriptLoaded = new Promise((resolve) => {
+    (async () => {
+      try {
+        const { default: init } = await import(jsPath);
+        await init(block, blockName, document, eager);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, {
+          sampleRate: 1,
+          tags: 'module',
+        });
+      }
+      resolve();
+    })();
+  });
+  await Promise.all([cssLoaded, scriptLoaded]);
+}
+
 /**
  * Loads JS and CSS for a block.
  * @param {Element} block The block element
@@ -914,29 +952,10 @@ export async function loadBlock(block, eager = false) {
       }
     }
 
-    try {
-      const cssLoaded = new Promise((resolve) => {
-        loadCSS(cssPath, resolve);
-      });
-      const decorationComplete = new Promise((resolve) => {
-        (async () => {
-          try {
-            const mod = await import(jsPath);
-            if (mod.default) {
-              await mod.default(block, blockName, document, eager);
-            }
-          } catch (err) {
-            window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, { sampleRate: 1, tags: 'module' });
-          }
-          resolve();
-        })();
-      });
-      await Promise.all([cssLoaded, decorationComplete]);
-    } catch (err) {
-      window.lana.log(`failed to load block ${blockName}: ${err.message}\nError Stack:${err.stack}`, { sampleRate: 1, tags: 'block' });
-    }
+    await loadAndExecute(cssPath, jsPath, block, blockName, eager);
     block.setAttribute('data-block-status', 'loaded');
   }
+  return block;
 }
 
 /**
@@ -963,12 +982,6 @@ export function loadScript(url, callback, type) {
   $head.append($script);
   $script.onload = callback;
   return $script;
-}
-
-export function getMetadata(name) {
-  const attr = name && name.includes(':') ? 'property' : 'name';
-  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
-  return ($meta && $meta.content) || '';
 }
 
 /**
@@ -1042,21 +1055,9 @@ function loadGnav() {
 }
 
 function decoratePageStyle() {
-  const isBlog = document.body.classList.contains('blog');
-  const $h1 = document.querySelector('main h1');
-  // check if h1 is inside a block
-
-  if (isBlog) {
-    // eslint-disable-next-line import/no-unresolved,import/no-absolute-path
-    import('/express/scripts/blog.js')
-      .then((mod) => {
-        if (mod.default) {
-          mod.default();
-        }
-      })
-      .catch((err) => console.log('failed to load blog', err));
-    loadCSS('/express/styles/blog.css');
-  } else {
+  if (!blog) {
+    const $h1 = document.querySelector('main h1');
+    // check if h1 is inside a block
     // eslint-disable-next-line no-lonely-if
     if ($h1 && !$h1.closest('.section > div > div ')) {
       const $heroPicture = $h1.parentElement.querySelector('picture');
@@ -1077,7 +1078,7 @@ function decoratePageStyle() {
         $heroSection.removeAttribute('style');
       }
       if ($heroPicture) {
-        if (!isBlog) {
+        if (!blog) {
           $heroPicture.classList.add('hero-bg');
         }
       } else {
@@ -1511,6 +1512,9 @@ export async function fixIcons(block = document) {
 function unwrapBlock($block) {
   const $section = $block.parentNode;
   const $elems = [...$section.children];
+
+  if ($elems.length <= 1) return;
+
   const $blockSection = createTag('div');
   const $postBlockSection = createTag('div');
   const $nextSection = $section.nextElementSibling;
@@ -1532,9 +1536,6 @@ function unwrapBlock($block) {
   if (!$postBlockSection.hasChildNodes()) {
     $postBlockSection.remove();
   }
-
-  // fixme: technically $section can become empty too after unwrapping.
-  //  This function currently leaves empty section after the generation of relevant rows
 }
 
 export function normalizeHeadings(block, allowedHeadings) {
@@ -1768,7 +1769,10 @@ function setTheme() {
     /* backwards compatibility can be removed again */
     if (themeClass === 'nobrand') themeClass = 'no-desktop-brand-header';
     body.classList.add(themeClass);
-    if (themeClass === 'blog') body.classList.add('no-brand-header');
+    if (themeClass === 'blog') {
+      body.classList.add('no-brand-header');
+      blog = true;
+    }
   }
   body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
@@ -1845,22 +1849,28 @@ function decorateSocialIcons($main) {
   });
 }
 
-function makeRelativeLinks($main) {
-  $main.querySelectorAll('a').forEach(($a) => {
-    if (!$a.href) return;
+function decorateLinks(main) {
+  main.querySelectorAll('a').forEach((a) => {
+    if (!a.href) return;
     try {
-      const {
-        protocol, hostname, pathname, search, hash,
-      } = new URL($a.href);
-      if (hostname.endsWith('.page')
-        || hostname.endsWith('.live')
-        || ['www.adobe.com', 'www.stage.adobe.com'].includes(hostname)) {
-        // make link relative
-        $a.href = `${pathname}${search}${hash}`;
-      } else if (hostname !== 'adobesparkpost.app.link'
-        && !['tel:', 'mailto:', 'sms:'].includes(protocol)) {
+      let url = new URL(a.href);
+
+      // handle link replacement on sheet-powered pages
+      if (getMetadata('sheet-powered') === 'Y' && getMetadata(url.hash.replace('#', ''))) {
+        a.href = getMetadata(url.hash.replace('#', ''));
+        url = new URL(a.href);
+      }
+
+      // make url relative if needed
+      const relative = url.hostname === window.location.hostname;
+      const urlPath = `${url.pathname}${url.search}${url.hash}`;
+      a.href = relative ? urlPath : `${url.origin}${urlPath}`;
+
+      if (!relative
+        && url.hostname !== 'adobesparkpost.app.link'
+        && !['tel:', 'mailto:', 'sms:'].includes(url.protocol)) {
         // open external links in a new tab
-        $a.target = '_blank';
+        a.target = '_blank';
       }
     } catch (e) {
       // invalid url
@@ -1981,15 +1991,16 @@ function decoratePictures(main) {
 export async function decorateMain(main) {
   await buildAutoBlocks(main);
   splitSections(main);
-  decorateSections(main);
+  const sections = decorateSections(main, false);
   decorateButtons(main);
-  decorateBlocks(main);
   decorateMarqueeColumns(main);
   await fixIcons(main);
   decoratePictures(main);
   decorateLinkedPictures(main);
   decorateSocialIcons(main);
-  makeRelativeLinks(main);
+  decorateLinks(main);
+  await sections;
+  return sections;
 }
 
 const usp = new URLSearchParams(window.location.search);
@@ -2187,82 +2198,6 @@ function loadLana(options = {}) {
   window.addEventListener('unhandledrejection', lanaError);
 }
 
-/**
- * loads everything needed to get to LCP.
- */
-async function loadEager(main) {
-  setTheme();
-  if (main) {
-    const language = getLanguage(getLocale(window.location));
-    const langSplits = language.split('-');
-    langSplits.pop();
-    const htmlLang = langSplits.join('-');
-    document.documentElement.setAttribute('lang', htmlLang);
-
-    removeIrrelevantSections(main);
-  }
-  if (!window.hlx.lighthouse) await decorateTesting();
-
-  // for backward compatibility
-  // TODO: remove the href check after we tag content with sheet-powered
-  if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
-    const { default: replaceContent } = await import('./content-replace.js');
-    await replaceContent();
-  }
-
-  if (getMetadata('template-search-page') === 'Y') {
-    const { default: redirect } = await import('./template-redirect.js');
-    await redirect();
-  }
-
-  if (main) {
-    loadLana({ clientId: 'express' });
-    await decorateMain(main);
-    decorateHeaderAndFooter();
-    decoratePageStyle();
-    decorateLegalCopy(main);
-    addJapaneseSectionHeaderSizing();
-    displayEnv();
-    displayOldLinkWarning();
-    wordBreakJapanese();
-
-    const lcpBlocks = ['columns', 'hero-animation', 'hero-3d', 'template-list', 'template-x', 'floating-button', 'fullscreen-marquee', 'fullscreen-marquee-desktop', 'collapsible-card', 'search-marquee'];
-    if (getMetadata('show-relevant-rows') === 'yes') lcpBlocks.push('fragment');
-    const block = document.querySelector('.block');
-    const hasLCPBlock = (block && lcpBlocks.includes(block.getAttribute('data-block-name')));
-    if (hasLCPBlock) await loadBlock(block, true);
-
-    document.querySelector('body').classList.add('appear');
-
-    if (!window.hlx.lighthouse) {
-      const target = checkTesting();
-      if (useAlloy) {
-        document.querySelector('body').classList.add('personalization-container');
-        // target = true;
-      }
-      if (target) {
-        hideBody();
-        setTimeout(() => {
-          unhideBody();
-        }, 3000);
-      }
-    }
-
-    const lcpCandidate = document.querySelector('main img');
-    await new Promise((resolve) => {
-      if (lcpCandidate && !lcpCandidate.complete) {
-        lcpCandidate.setAttribute('loading', 'eager');
-        lcpCandidate.addEventListener('load', () => {
-          resolve();
-        });
-        lcpCandidate.addEventListener('error', () => resolve());
-      } else {
-        resolve();
-      }
-    });
-  }
-}
-
 function removeMetadata() {
   document.head.querySelectorAll('meta').forEach((meta) => {
     if (meta.content && meta.content.includes('--none--')) {
@@ -2275,47 +2210,139 @@ function removeMetadata() {
  * loads everything that doesn't need to be delayed.
  */
 async function loadLazy(main) {
-  // post LCP actions go here
-  sampleRUM('lcp');
-
-  loadBlocks(main).then(() => addPromotion());
+  addPromotion();
   loadCSS('/express/styles/lazy-styles.css');
   scrollToHash();
   resolveFragments();
   removeMetadata();
   addFavIcon('/express/icons/cc-express.svg');
-  if (!window.hlx.lighthouse) loadMartech();
-  const tkID = TK_IDS[getLocale(window.location)];
-  if (tkID) {
-    const { default: loadFonts } = await import('./fonts.js');
-    loadFonts(tkID, loadCSS);
-  }
   sampleRUM('lazy');
   sampleRUM.observe(document.querySelectorAll('main picture > img'));
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   trackViewedAssetsInDataLayer();
 }
 
+const eagerLoad = (img) => {
+  img?.setAttribute('loading', 'eager');
+  img?.setAttribute('fetchpriority', 'high');
+};
+
+(async function loadLCPImage() {
+  const firstDiv = document.querySelector('body > main > div:nth-child(1) > div');
+  if (firstDiv?.classList.contains('marquee')) {
+    firstDiv.querySelectorAll('img').forEach(eagerLoad);
+  } else {
+    eagerLoad(document.querySelector('img'));
+  }
+}());
+
+async function loadPostLCP() {
+  // post LCP actions go here
+  sampleRUM('lcp');
+  if (window.hlx.martech) loadMartech();
+  loadGnav();
+  const tkID = TK_IDS[getLocale(window.location)];
+  if (tkID) {
+    const { default: loadFonts } = await import('./fonts.js');
+    loadFonts(tkID, loadCSS);
+  }
+}
+
 /**
  * Decorates the page.
  */
-async function decoratePage() {
+async function loadArea(area = document) {
+  const isDoc = area === document;
+  const main = area.querySelector('main');
+
+  if (isDoc) {
+    decorateHeaderAndFooter();
+  }
+
   window.hlx = window.hlx || {};
-  window.hlx.lighthouse = new URLSearchParams(window.location.search).get('lighthouse') === 'on';
+  const params = new URLSearchParams(window.location.search);
+  ['martech', 'gnav', 'testing'].forEach((p) => {
+    window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
+  });
   window.hlx.init = true;
 
-  const main = document.querySelector('main');
-  await loadEager(main);
+  setTheme();
+  if (main) {
+    const language = getLanguage(getLocale(window.location));
+    const langSplits = language.split('-');
+    langSplits.pop();
+    const htmlLang = langSplits.join('-');
+    document.documentElement.setAttribute('lang', htmlLang);
+
+    removeIrrelevantSections(main);
+  }
+  if (window.hlx.testing) await decorateTesting();
+
+  if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
+    const { default: replaceContent } = await import('./content-replace.js');
+    await replaceContent(main);
+  }
+
+  if (getMetadata('template-search-page') === 'Y') {
+    const { default: redirect } = await import('./template-redirect.js');
+    await redirect();
+  }
+
+  let sections = [];
+  if (main) {
+    loadLana({ clientId: 'express' });
+    sections = await decorateMain(main);
+    decoratePageStyle();
+    decorateLegalCopy(main);
+    addJapaneseSectionHeaderSizing();
+    displayEnv();
+    displayOldLinkWarning();
+    wordBreakJapanese();
+
+    if (window.hlx.testing) {
+      const target = checkTesting();
+      if (useAlloy) {
+        document.querySelector('body').classList.add('personalization-container');
+        // target = true;
+      }
+      if (target) {
+        hideBody();
+        setTimeout(() => {
+          unhideBody();
+        }, 3000);
+      }
+    }
+  }
+
+  const areaBlocks = [];
+  if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
+  for (const section of sections) {
+    const loaded = section.blocks.map((block) => loadBlock(block));
+    areaBlocks.push(...section.blocks);
+
+    // Only move on to the next section when all blocks are loaded.
+    // eslint-disable-next-line no-await-in-loop
+    await Promise.all(loaded);
+    // Post LCP operations.
+    if (isDoc && section.el.dataset.idx === '0') loadPostLCP();
+
+    // Show the section when all blocks inside are done.
+    delete section.el.dataset.status;
+    delete section.el.dataset.idx;
+  }
+
   loadLazy(main);
-  loadGnav();
+
   if (window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) {
     import('../../tools/preview/preview.js');
   }
 }
 
-if (!window.hlx.init && !window.isTestEnv) {
-  decoratePage();
-}
+(async function loadPage() {
+  if (!window.hlx.init && !window.isTestEnv) {
+    await loadArea();
+  }
+}());
 
 /*
  * lighthouse performance instrumentation helper
