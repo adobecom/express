@@ -79,7 +79,7 @@ export default async function decorate(block) {
 
   decorateHeading(block, payload);
   decorateCategories(block, payload);
-  buildCarousel('.browse-by-category-card', block, false);
+  buildCarousel('.browse-by-category-card', block);
 
   if (block.classList.contains('fullwidth')) {
     const blockWrapper = block.parentNode;

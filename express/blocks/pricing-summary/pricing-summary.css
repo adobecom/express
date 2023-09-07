@@ -1,39 +1,82 @@
 main .pricing-summary {
   padding: 90px 0 20px 0;
   width: auto;
+  max-width: 1320px;
+  margin: auto;
+}
+
+main .section .pricing-summary-wrapper {
+  max-width: none;
+  padding: 0 20px;
 }
 
 main .pricing-summary .pricing-container {
   margin: 0 10px 0 10px;
 }
 
-main .pricing-summary .pricing-container .columns-container {
+main .pricing-summary .pricing-container .pricing-summary-columns-container .carousel-platform {
+  max-height: none;
+  display: block;
+  margin: auto;
+}
+
+main .pricing-summary .pricing-column-wrapper {
+  padding: 4px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--color-white);
+  margin-bottom: 16px;
+}
+
+main .pricing-summary .monetize-item-background {
+  background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
+}
+
+main .pricing-summary .pricing-column-wrapper.no-price-type {
+  background: linear-gradient(90deg, #BFE4FF, #CECEF6);
+}
+
+main .pricing-summary .pricing-column-wrapper .pricing-eyebrow {
+  height: 36px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 20px;
   align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+}
+
+main .pricing-summary .pricing-column-wrapper .pricing-eyebrow a {
+  margin-left: 4px;
+  color: var(--color-white);
+  font-weight: 400;
+  text-decoration: underline;
 }
 
 main .pricing-summary .pricing-column {
+  position: relative;
   background-color: var(--color-white);
   border-radius: 20px;
-  min-width: 370px;
-  width: 100%;
-  max-width: 420px;
+  height: 100%;
+  min-width: 240px;
+  max-width: 412px;
   min-height: 345px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 23px 0 0 0;
-  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  justify-content: flex-start;
+}
+
+main .pricing-summary .pricing-column-wrapper.monetize-item-background.has-pricing-eyebrow .pricing-column {
+  height: calc(100% - 36px);
 }
 
 main .pricing-summary .pricing-column .pricing-content-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
+  max-height: 270px;
+  flex-grow: 1;
 }
 
 main .pricing-summary .pricing-header {
@@ -75,9 +118,13 @@ main .pricing-summary .pricing-plan {
 
 main .pricing-summary .pricing-price-wrapper {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   gap: 8px;
+}
+
+main .pricing-summary .pricing-column .button-container a.dark {
+  border: 2px solid var(--color-black);
 }
 
 main .pricing-summary .pricing-base-price,
@@ -103,6 +150,7 @@ main .pricing-summary .pricing-base-price > strong {
 
 main .pricing-summary .pricing-plan-suf {
   font-size: var(--body-font-size-s);
+  line-height: var(--body-line-height);
 }
 
 main .pricing-summary .pricing-description > p,
@@ -149,14 +197,79 @@ main .pricing-summary > div:last-of-type > div p {
   margin: 0 0 12px;
 }
 
-@media (min-width: 1200px) {
+main .pricing-summary .pricing-feature-list {
+
+}
+
+main .pricing-summary .pricing-feature-list svg,
+main .pricing-summary .pricing-feature-list img {
+  min-width: 22px;
+  min-height: 22px;
+}
+
+main .pricing-summary .pricing-feature-list .icon-checkmark-purple,
+main .pricing-summary .pricing-feature-list .icon-checkmark-green,
+main .pricing-summary .pricing-feature-list .icon-checkmark-darkgreen,
+main .pricing-summary .pricing-feature-list .icon-checkmark,
+main .pricing-summary .pricing-feature-list .icon-checkmark-no-fill {
+  min-height: 12px;
+  min-width: 22px;
+}
+
+main .pricing-summary .pricing-feature-list h2,
+main .pricing-summary .pricing-feature-list h3,
+main .pricing-summary .pricing-feature-list h4,
+main .pricing-summary .pricing-feature-list h5,
+main .pricing-summary .pricing-feature-list h6,
+main .pricing-summary .pricing-feature-list p {
+  text-align: left;
+}
+
+main .pricing-summary .pricing-feature-list ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+main .pricing-summary .pricing-feature-list p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: var(--body-font-size-s);
+  line-height: var(--body-line-height);
+}
+
+main .pricing-summary .pricing-feature-list li {
+  text-align: left;
+  margin: 8px 0;
+  font-size: var(--body-font-size-s);
+  line-height: var(--body-line-height);
+}
+
+@media (min-width: 900px) {
   main .section .pricing-summary-wrapper {
     max-width: 100%;
   }
 
-  main .pricing-summary .pricing-container .columns-container {
+  main .pricing-summary .pricing-container .pricing-summary-columns-container .carousel-platform {
     display: flex;
     flex-direction: row;
     align-items: stretch;
+    gap: 20px;
+    width: auto;
+    padding-top: 40px;
+  }
+
+  main .pricing-summary .pricing-column {
+    min-width: 412px;
+    padding: 24px 40px;
+  }
+
+  main .pricing-summary .pricing-header h2 {
+    white-space: nowrap;
+  }
+
+  main .pricing-summary .pricing-column-wrapper.monetize-item-background.has-pricing-eyebrow {
+    margin-top: -36px;
   }
 }

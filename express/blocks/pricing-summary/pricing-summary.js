@@ -12,6 +12,7 @@
 
 import { createTag } from '../../scripts/scripts.js';
 import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
+import { buildCarousel } from '../shared/carousel.js';
 
 function handleHeader(column) {
   column.classList.add('pricing-column');
@@ -25,9 +26,10 @@ function handleHeader(column) {
   return header;
 }
 
-function handlePrice(column) {
+function handlePrice(block, column) {
   const pricePlan = createTag('div', { class: 'pricing-plan' });
   const priceEl = column.querySelector('[title="{{pricing}}"]');
+  if (!priceEl) return null;
   const priceParent = priceEl?.parentNode;
   const plan = priceParent?.nextElementSibling.querySelector('a') ? '' : priceParent?.nextElementSibling;
 
@@ -51,35 +53,74 @@ function handlePrice(column) {
 
     const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
     if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
+
+    if (+response.price > 0 && block.classList.contains('feature')) {
+      column.parentElement.classList.add('monetize-item-background');
+    }
   });
 
   priceParent?.remove();
   return pricePlan;
 }
 
-function handleCtas(column) {
-  const ctaContainers = column.querySelectorAll('.button-container');
-
+function handleCtas(block, column) {
   const ctas = column.querySelectorAll('a');
-  ctas[0]?.classList.add(ctas[1] ? 'details-cta' : 'cta', 'xlarge');
-  ctas[1]?.classList.add('cta', 'xlarge');
+  const mainCTA = ctas[ctas.length - 1];
+  if (!mainCTA) return null;
 
-  ctaContainers.forEach((container) => {
-    container.querySelector('em')?.children[0]?.classList.add('secondary', 'dark');
-  });
+  mainCTA.classList.add('button', 'cta', 'xlarge');
 
-  return ctaContainers[ctaContainers.length - 1];
+  const container = mainCTA.closest('p');
+  if (container) {
+    container.classList.add('button-container');
+    if (container.querySelector('em') && container.querySelector('strong')) {
+      mainCTA.classList.add('primary');
+    }
+
+    if (container.querySelector('em') && !container.querySelector('strong')) {
+      mainCTA.classList.add('dark');
+    }
+
+    if (!container.querySelector('em') && container.querySelector('strong')) {
+      // fixme: backward compatibility. to be removed later.
+      if (block.classList.contains('feature')) {
+        mainCTA.classList.add('secondary');
+      }
+    }
+  }
+
+  return container;
 }
 
 function handleDescription(column) {
   const description = createTag('div', { class: 'pricing-description' });
-  const texts = [...column.children];
-
-  texts.pop();
-
-  description.append(...texts);
+  [...column.children].forEach((element) => {
+    if (!element.querySelector('svg, img, a.cta')) {
+      description.append(element);
+      element.querySelector('a')?.classList.add('details-cta');
+    }
+  });
 
   return description;
+}
+
+function handleFeatureList(featureColumns, index) {
+  if (!featureColumns) return null;
+  const featureList = featureColumns[index];
+  featureList.classList.add('pricing-feature-list');
+  return featureList;
+}
+
+function handleEyeBrows(columnWrapper, eyeBrowCols, index) {
+  if (!eyeBrowCols) return null;
+  if (!eyeBrowCols[index].children.length) {
+    eyeBrowCols[index].remove();
+    return null;
+  }
+
+  eyeBrowCols[index].classList.add('pricing-eyebrow');
+  columnWrapper.classList.add('has-pricing-eyebrow');
+  return eyeBrowCols[index];
 }
 
 function alignContent(block) {
@@ -90,6 +131,8 @@ function alignContent(block) {
     'pricing-plan': 0,
   };
   let attemptsLeft = 10;
+  const maxWidth = (430 * contentWrappers.length) + (20 * (contentWrappers.length - 1));
+  block.style.maxWidth = `${maxWidth}px`;
 
   const minHeightCaptured = new Promise((resolve) => {
     const heightCatcher = setInterval(() => {
@@ -132,29 +175,46 @@ function alignContent(block) {
 }
 
 export default async function decorate(block) {
-  const pricingContainer = block.children[1];
+  const pricingContainer = block.classList.contains('feature') ? block.children[2] : block.children[1];
+  const featureColumns = block.classList.contains('feature') ? Array.from(block.children[3].children) : null;
+  const eyeBrows = block.classList.contains('feature') ? Array.from(block.children[1].children) : null;
   pricingContainer.classList.add('pricing-container');
-  const columnsContainer = createTag('div', { class: 'columns-container' });
+  const columnsContainer = createTag('div', { class: 'pricing-summary-columns-container' });
   const columns = Array.from(pricingContainer.children);
   pricingContainer.append(columnsContainer);
   const cardsLoaded = [];
-  columns.forEach((column) => {
+  columns.forEach((column, index) => {
     const cardLoaded = new Promise((resolve) => {
+      const columnWrapper = createTag('div', { class: 'pricing-column-wrapper' });
+      columnWrapper.append(column);
+
       const contentWrapper = createTag('div', { class: 'pricing-content-wrapper' });
       const header = handleHeader(column);
-      const pricePlan = handlePrice(column);
-      const cta = handleCtas(column);
+      const pricePlan = handlePrice(block, column);
+      const cta = handleCtas(block, column);
       const description = handleDescription(column);
+      const featureList = handleFeatureList(featureColumns, index);
+      const eyeBrow = handleEyeBrows(columnWrapper, eyeBrows, index);
 
-      contentWrapper.append(header, description, pricePlan);
+      contentWrapper.append(header, description);
+      if (pricePlan) {
+        contentWrapper.append(pricePlan);
+      } else {
+        columnWrapper.classList.add('no-price-type');
+      }
       column.append(contentWrapper, cta);
-      columnsContainer.append(column);
+      if (featureList) column.append(featureList);
+      if (eyeBrow) columnWrapper.prepend(eyeBrow);
+
+      columnsContainer.append(columnWrapper);
       resolve();
     });
+
     cardsLoaded.push(cardLoaded);
   });
 
   await Promise.all(cardsLoaded).then(() => {
     alignContent(block);
+    buildCarousel('.pricing-column-wrapper', columnsContainer, { startPosition: 'right' });
   });
 }
