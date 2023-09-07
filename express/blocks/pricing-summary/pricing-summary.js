@@ -216,6 +216,5 @@ export default async function decorate(block) {
   await Promise.all(cardsLoaded).then(() => {
     alignContent(block);
     buildCarousel('.pricing-column-wrapper', columnsContainer, { startPosition: 'right' });
-    block.dispatchEvent(new CustomEvent('carouselloaded'));
   });
 }
