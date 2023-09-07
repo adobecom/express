@@ -117,6 +117,10 @@ body > header {
   background-color: #FFF;
 }
 
+body > footer[data-status='loading'] {
+  visibility: hidden;
+}
+
 body.no-brand-header > header,
 body.no-desktop-brand-header > header {
   height: auto;
