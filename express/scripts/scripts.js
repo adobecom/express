@@ -510,7 +510,7 @@ export function removeIrrelevantSections(main) {
 
       // section meant for different device or section visibility steered over metadata
       if ((meta.audience && meta.audience !== document.body.dataset?.device)
-          || (meta.showwith !== undefined && getMetadata(meta.showwith) !== 'on')) {
+          || (meta.showwith !== undefined && getMetadata(meta.showwith.toLowerCase()) !== 'on')) {
         section.remove();
       }
     }
