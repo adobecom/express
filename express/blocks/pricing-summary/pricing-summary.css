@@ -203,7 +203,6 @@ main .pricing-summary .pricing-feature-list {
 
 main .pricing-summary .pricing-feature-list svg,
 main .pricing-summary .pricing-feature-list img {
-  margin-top: 12px;
   min-width: 22px;
   min-height: 22px;
 }
@@ -233,6 +232,7 @@ main .pricing-summary .pricing-feature-list ul {
 
 main .pricing-summary .pricing-feature-list p {
   display: flex;
+  align-items: center;
   gap: 8px;
   margin: 8px 0;
   font-size: var(--body-font-size-s);

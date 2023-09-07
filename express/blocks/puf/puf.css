@@ -221,13 +221,13 @@ main .block.puf .puf-card .puf-card-bottom p {
     margin-bottom: 40px;
     text-align: left;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
 }
 
 main .block.puf .puf-card .puf-card-bottom svg {
-    margin: 16px 8px 0 0;
     height: 22px;
     min-width: 22px;
+    margin-right: 8px;
 }
 
 main .block.puf .puf-card .puf-card-bottom h6 {
