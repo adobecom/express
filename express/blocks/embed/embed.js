@@ -44,7 +44,7 @@ export function embedYoutube(a) {
   const src = `https://www.youtube.com/embed/${id}?${searchParams.toString()}`;
   const embedHTML = `
   <div class="embed-youtube">
-    <iframe width="450" height="253" src="${src}" class="youtube"
+    <iframe width="100%" height="auto" src="${src}" class="youtube"
       webkitallowfullscreen mozallowfullscreen allowfullscreen
       allow="encrypted-media; accelerometer; gyroscope; picture-in-picture"
       scrolling="no"
