@@ -41,7 +41,7 @@ main .pricing-summary .pricing-column-wrapper .pricing-eyebrow {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-white)
+  color: var(--color-white);
 }
 
 main .pricing-summary .pricing-column-wrapper .pricing-eyebrow a {
@@ -68,7 +68,7 @@ main .pricing-summary .pricing-column {
 }
 
 main .pricing-summary .pricing-column-wrapper.monetize-item-background.has-pricing-eyebrow .pricing-column {
-  height: calc(100% - 40px);
+  height: calc(100% - 36px);
 }
 
 main .pricing-summary .pricing-column .pricing-content-wrapper {
@@ -86,10 +86,6 @@ main .pricing-summary .pricing-header {
   justify-content: center;
   gap: 10px;
   font-size: var(--heading-font-size-l);
-}
-
-main .pricing-summary .pricing-header h2 {
-  white-space: nowrap;
 }
 
 main .pricing-summary .pricing-description {
@@ -125,6 +121,10 @@ main .pricing-summary .pricing-price-wrapper {
   align-items: flex-end;
   justify-content: center;
   gap: 8px;
+}
+
+main .pricing-summary .pricing-column .button-container a.dark {
+  border: 2px solid var(--color-black);
 }
 
 main .pricing-summary .pricing-base-price,
@@ -265,7 +265,11 @@ main .pricing-summary .pricing-feature-list li {
     padding: 24px 40px;
   }
 
+  main .pricing-summary .pricing-header h2 {
+    white-space: nowrap;
+  }
+
   main .pricing-summary .pricing-column-wrapper.monetize-item-background.has-pricing-eyebrow {
-    margin-top: -40px;
+    margin-top: -36px;
   }
 }

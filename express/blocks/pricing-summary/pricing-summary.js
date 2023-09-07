@@ -63,7 +63,7 @@ function handlePrice(block, column) {
   return pricePlan;
 }
 
-function handleCtas(column) {
+function handleCtas(block, column) {
   const ctas = column.querySelectorAll('a');
   const mainCTA = ctas[ctas.length - 1];
   if (!mainCTA) return null;
@@ -72,31 +72,30 @@ function handleCtas(column) {
 
   const container = mainCTA.closest('p');
   if (container) {
-    let buttonType;
-    const button = container.querySelector('a');
-
+    container.classList.add('button-container');
     if (container.querySelector('em') && container.querySelector('strong')) {
-      buttonType = 'primary';
+      mainCTA.classList.add('primary');
     }
 
     if (container.querySelector('em') && !container.querySelector('strong')) {
-      buttonType = 'dark';
+      mainCTA.classList.add('dark');
     }
 
     if (!container.querySelector('em') && container.querySelector('strong')) {
-      buttonType = 'secondary';
+      // fixme: backward compatibility. to be removed later.
+      if (block.classList.contains('feature')) {
+        mainCTA.classList.add('secondary');
+      }
     }
-
-    if (button && buttonType) button.classList.add(buttonType);
   }
 
-  return mainCTA;
+  return container;
 }
 
 function handleDescription(column) {
   const description = createTag('div', { class: 'pricing-description' });
   [...column.children].forEach((element) => {
-    if (!element.querySelector('svg, img')) {
+    if (!element.querySelector('svg, img, a.cta')) {
       description.append(element);
       element.querySelector('a')?.classList.add('details-cta');
     }
@@ -192,7 +191,7 @@ export default async function decorate(block) {
       const contentWrapper = createTag('div', { class: 'pricing-content-wrapper' });
       const header = handleHeader(column);
       const pricePlan = handlePrice(block, column);
-      const cta = handleCtas(column);
+      const cta = handleCtas(block, column);
       const description = handleDescription(column);
       const featureList = handleFeatureList(featureColumns, index);
       const eyeBrow = handleEyeBrows(columnWrapper, eyeBrows, index);
@@ -217,5 +216,6 @@ export default async function decorate(block) {
   await Promise.all(cardsLoaded).then(() => {
     alignContent(block);
     buildCarousel('.pricing-column-wrapper', columnsContainer, { startPosition: 'right' });
+    block.dispatchEvent(new CustomEvent('carouselloaded'));
   });
 }
