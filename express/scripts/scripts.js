@@ -792,8 +792,9 @@ function decorateHeaderAndFooter() {
 /**
  * Loads a CSS file.
  * @param {string} href The path to the CSS file
+ * @param {function} callback The callback on CSS load / load error
  */
-export function loadCSS(href, callback) {
+export function loadCSS(href, callback = null) {
   if (!document.querySelector(`head > link[href="${href}"]`)) {
     const link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');

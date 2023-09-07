@@ -1,0 +1,96 @@
+.template-x.sixcols .template-x-inner-wrapper {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.template-x.sixcols .template {
+    position: relative;
+    display: inline-flex;
+    width: 165px;
+    margin: 5px;
+}
+
+.template-x.sixcols .template:not(.placeholder) img,
+.template-x.sixcols .template:not(.placeholder) video {
+    transition: transform .3s ease-in-out;
+    will-change: transform;
+}
+
+.template-x.sixcols .template:not(.placeholder) .button-container {
+    position: absolute;
+    width: 120%;
+    border-radius: 20px;
+    min-height: 120%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    text-align: center;
+    transition: opacity .3s ease-in-out;
+    will-change: opacity;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.template-x.sixcols .template:not(.placeholder) .template-link {
+    opacity: 0;
+    transition: opacity .4s ease-in-out .2s;
+    will-change: opacity;
+}
+
+.template-x.sixcols .template:hover:not(.placeholder) .button-container,
+.template-x.sixcols .template:hover:not(.placeholder) .template-link {
+    opacity: 1;
+    pointer-events: initial;
+    z-index: 2;
+}
+
+.template-x.sixcols .template:not(.placeholder) .template-link {
+    text-decoration: none;
+    border-radius: 18px;
+    padding: 5px 1.2em 6px 1.2em;
+    text-align: center;
+    font-size: var(--body-font-size-s);
+    font-style: normal;
+    font-weight: 600;
+    line-height: var(--body-line-height);
+    cursor: pointer;
+    color: var(--color-black);
+    background-color: var(--color-white);
+    margin: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    height: fit-content;
+}
+
+.template-x.sixcols .template:not(.placeholder) .template-link::after {
+    display: none;
+}
+
+.template-x.sixcols .template.placeholder {
+    width: 145px;
+    margin: 15px auto;
+}
+
+@media (min-width: 900px) {
+    .template-x-wrapper.sixcols {
+        max-width: 748px;
+    }
+
+    .template-x.sixcols > .template-x-inner-wrapper > .masonry-col {
+        max-width: 187px;
+    }
+
+    .template-x.sixcols .template.placeholder {
+        width: 145px;
+        margin: 21px auto;
+    }
+}
+
+@media (min-width: 1200px) {
+    .template-x-wrapper.sixcols {
+        max-width: 1122px;
+    }
+}

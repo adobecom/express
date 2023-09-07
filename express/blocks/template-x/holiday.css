@@ -1,0 +1,368 @@
+.template-x.fullwidth.holiday .template-x-inner-wrapper {
+    max-height: 0;
+    position: relative;
+    transition: max-height 0.5s, padding-top 0.5s;
+    overflow: hidden;
+    margin-right: 56px;
+    margin-left: 56px;
+}
+
+
+.template-x.fullwidth.holiday.expanded .template-x-inner-wrapper {
+    max-height: 300px;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.template-x.fullwidth.holiday.animated video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    object-fit: cover;
+    height: 100%;
+    width: 100vw;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.template-x.fullwidth.holiday.expanded.animated video {
+    opacity: 1;
+    transition: opacity 1s;
+    padding: 0;
+}
+
+.template-x-wrapper .template-title.horizontal.holiday .template-title,picture,a,h4,p {
+    z-index: 1;
+}
+
+.template-x-wrapper.holiday .toggle-button-chev {
+    content: "";
+    display: flex;
+    width: 6px;
+    height: 6px;
+    border-top-width: 0;
+    border-left-width: 0;
+    border-bottom-width: 2px;
+    border-right-width: 2px;
+    border-style: solid;
+    border-color: var(--color-info-accent);
+    transform-origin: 75% 75%;
+    transform: rotate( -45deg );
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 2.25px;
+    transition: transform 0.2s;
+}
+
+.template-x.horizontal.holiday.expanded .toggle-button .toggle-button-chev {
+    transform: rotate(-135deg);
+}
+
+.template-x.horizontal.holiday {
+    min-height: 54px;
+}
+
+.template-x.holiday.light-text svg {
+    fill: var(--color-white);
+}
+
+.template-x.holiday.dark-text svg {
+    fill: var(--color-gray-800);
+}
+
+.template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    transform: translate3d(0, 0, 0);
+    height: 232px;
+    width: 170px;
+    right: -2px;
+}
+
+.template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-left {
+    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    transform: translate3d(0, 0, 0);
+    height: 232px;
+    width: 170px;
+    left: -4px
+}
+
+.template-x.horizontal.holiday .template-x-inner-wrapper .carousel-container {
+    max-width: 1090px;
+    margin-right: 16px;
+    margin-left: 16px;
+}
+
+.template-x.horizontal.holiday.animated video ~ .template-x-inner-wrapper {
+    padding: 0;
+    margin: 0;
+}
+
+.template-x.horizontal.holiday.animated video ~ .template-x-inner-wrapper .carousel-container {
+    max-width: none;
+}
+
+.template-x.horizontal.holiday {
+    position: relative;
+    overflow-x: hidden;
+    background: var(--color-black);
+}
+
+.template-x.horizontal.holiday.animated {
+    color: var(--color-white);
+    padding-top: 0;
+}
+
+.template-x.horizontal.holiday.light-text,
+.template-x.horizontal.holiday.light-text .toggle-button a,
+.template-x.horizontal.holiday.light-text .template-link {
+    color: var(--color-white);
+}
+
+.template-x.horizontal.holiday.light-text .toggle-button .toggle-button-chev {
+    border-color: var(--color-white);
+}
+
+.template-x.horizontal.holiday.dark-text,
+.template-x.horizontal.holiday.dark-text .toggle-button a,
+.template-x.horizontal.holiday.dark-text .template-link {
+    color: var(--color-gray-800);
+}
+
+.template-x.horizontal.holiday.dark-text .toggle-button .toggle-button-chev {
+    border-color: var(--color-gray-800);
+}
+
+.template-x.horizontal.holiday p,
+.template-x.horizontal.holiday picture {
+    z-index: 1;
+}
+
+.template-x.horizontal.holiday .toggle-bar {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 14px;
+    margin: auto;
+    align-items: center;
+}
+
+.template-x.horizontal.holiday .toggle-bar p {
+    font-size: var(--body-font-size-s);
+    margin: 0;
+    display: none;
+}
+
+.template-x.horizontal.holiday .toggle-bar img {
+    display: block;
+    max-height: 32px;
+    width: 84px;
+    min-width: 84px;
+}
+
+.template-x.horizontal.holiday .toggle-button {
+    align-self: center;
+    transition: margin 0.4s;
+}
+
+.template-x.horizontal.holiday.mobile .toggle-button {
+    display: flex;
+    transform: translate(-50%);
+    margin-left: 192px;
+    padding: 0 0 16px 0;
+    width: 110px;
+}
+
+.template-x.horizontal.holiday.expanded.mobile .toggle-button {
+    margin-left: 50%;
+    transform: translate(-50%);
+}
+
+.template-x.horizontal.holiday .toggle-button a:hover {
+    text-decoration: underline;
+}
+
+.template-x.horizontal.holiday .toggle-button .toggle-button-chev {
+    display: flex;
+    width: 6px;
+    height: 6px;
+    border-top-width: 0;
+    border-left-width: 0;
+    border-bottom-width: 2px;
+    border-right-width: 2px;
+    border-style: solid;
+    transform-origin: 75% 75%;
+    transform: rotate(45deg);
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 2.25px;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.template-x.horizontal.holiday .toggle-bar-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 22px;
+    align-items: center;
+}
+
+.template-x.horizontal.holiday .toggle-bar-bottom {
+    display: flex;
+    justify-content: flex-end;
+    gap: 32px;
+    z-index: 1;
+    margin-left: 16px;
+}
+
+.template-x.horizontal.holiday .template-x-wrapper,
+.template-x.holiday,
+.template-x.holiday .carousel-container {
+    max-width: none;
+    z-index: 1;
+}
+
+.template-x.horizontal.holiday .template-x-wrapper {
+    max-height: 0;
+    position: relative;
+    transition: max-height 0.5s, padding-top 0.5s;
+    overflow: hidden;
+}
+
+.template-x.horizontal.holiday.expanded .template-x-wrapper {
+    padding-top: 16px;
+}
+
+.template-x.holiday .carousel-container .carousel-platform {
+    scroll-padding: initial;
+    max-height: 200px;
+    padding: 20px 0;
+}
+
+.template-x-container .template-x-wrapper.horizontal.holiday > .template-x.horizontal > .template-title {
+    margin: 0;
+    padding: 0 30px 0 30px;
+}
+
+.template-x-horizontal-holiday-container.expanded .animation-background {
+    opacity: 1;
+    transition: opacity 1s;
+}
+
+.template-x.horizontal.holiday .toggle-bar {
+    max-width: 925px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.template-x.holiday.mobile .carousel-container {
+    margin-bottom: 0;
+}
+
+.template-x.horizontal.holiday .toggle-bar h4 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.template-x-wrapper.holiday .template-title-link {
+    font-size: var(--body-font-size-s);
+}
+
+@media (min-width: 600px) {
+    .template-x.horizontal.holiday .template-x-inner-wrapper .carousel-container {
+        margin-right: unset;
+        margin-left: unset;
+    }
+
+    .template-x.fullwidth.holiday.expanded .template-x-inner-wrapper {
+        margin-left: 56px;
+        margin-right: 56px;
+    }
+
+    .template-x.horizontal.holiday .carousel-container .carousel-fader-left,
+    .template-x.horizontal.holiday .carousel-container .carousel-fader-right {
+        background: initial;
+    }
+}
+
+@media (min-width: 900px) {
+    .template-x.horizontal.holiday .toggle-bar p {
+        display: unset;
+    }
+
+    .template-x.horizontal.holiday .toggle-bar-bottom {
+        margin-left: unset;
+    }
+
+    .template-x.holiday.mobile .carousel-container {
+        margin-bottom: unset;
+    }
+
+    .template-x.horizontal.holiday .toggle-bar h4 {
+        margin: unset;
+    }
+
+    .template-x.horizontal.holiday .toggle-bar {
+        margin-top: unset;
+    }
+
+    .template-x.horizontal.holiday .toggle-button {
+        display: flex;
+    }
+
+    .template-x.horizontal.holiday.mobile .toggle-button {
+        margin-left: 50%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .template-x.horizontal.holiday .toggle-bar p {
+        font-size: 16px;
+    }
+
+    .template-x.horizontal.holiday .toggle-bar h4 {
+        font-size: var(--heading-font-size-s);
+    }
+
+    .template-x-wrapper.holiday .template-title-link {
+        font-size: unset;
+    }
+
+    .template-x-horizontal-holiday-container {
+        padding-bottom: 0;
+    }
+
+    .template-x-horizontal-holiday-container .toggle-bar {
+        max-width: 1024px;
+    }
+
+    .template-x-horizontal-holiday-container .mobile-only {
+        display: none;
+    }
+
+    .template-x-horizontal-holiday-container .toggle-bar-bottom {
+        display: flex;
+    }
+
+    .template-x-horizontal-holiday-container .template-x-wrapper.expanded {
+        padding-top: 0;
+    }
+
+    .template-x.horizontal.holiday .carousel-container .carousel-fader-right {
+        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+        width: 170px;
+    }
+
+    .template-x-wrapper.holiday .toggle-bar {
+        max-width: 1090px;
+    }
+
+    .template-x.holiday .template-title .toggle-bar-bottom {
+        display: flex;
+        flex-grow: 1;
+    }
+
+    .template-x.horizontal.holiday.expanded .template-x-wrapper {
+        padding-top: 0;
+    }
+}

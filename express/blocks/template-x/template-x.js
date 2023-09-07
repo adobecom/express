@@ -22,7 +22,7 @@ import {
   getLocale,
   getLottie,
   getMetadata,
-  lazyLoadLottiePlayer,
+  lazyLoadLottiePlayer, loadCSS,
   titleCase,
   toClassName,
   transformLinkToAnimation,
@@ -1636,16 +1636,34 @@ function determineTemplateXType(props) {
   const type = [];
 
   // orientation aspect
-  if (props.orientation && props.orientation.toLowerCase() === 'horizontal') type.push('horizontal');
+  if (props.orientation && props.orientation.toLowerCase() === 'horizontal') {
+    type.push('horizontal');
+    loadCSS('/express/blocks/template-x/horizontal.css');
+  }
 
   // style aspect
-  if (props.width && props.width.toLowerCase() === 'full') type.push('fullwidth');
-  if (props.width && props.width.toLowerCase() === 'sixcols') type.push('sixcols');
-  if (props.width && props.width.toLowerCase() === 'fourcols') type.push('fourcols');
-  if (props.mini) type.push('mini');
+  if (props.width && props.width.toLowerCase() === 'full') {
+    type.push('fullwidth');
+    loadCSS('/express/blocks/template-x/fullwidth.css');
+  }
+  if (props.width && props.width.toLowerCase() === 'sixcols') {
+    type.push('sixcols');
+    loadCSS('/express/blocks/template-x/sixcols.css');
+  }
+  if (props.width && props.width.toLowerCase() === 'fourcols') {
+    type.push('fourcols');
+  }
+
+  if (props.mini) {
+    type.push('mini');
+    loadCSS('/express/blocks/template-x/mini.css');
+  }
 
   // use case aspect
-  if (props.holidayBlock) type.push('holiday');
+  if (props.holidayBlock) {
+    type.push('holiday');
+    loadCSS('/express/blocks/template-x/holiday.css');
+  }
 
   return type;
 }

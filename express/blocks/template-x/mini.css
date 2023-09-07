@@ -1,0 +1,108 @@
+.template-x.mini {
+    min-height: unset;
+}
+
+.template-x.horizontal.fullwidth.mini {
+    padding: unset;
+}
+
+.template-x.horizontal.mini .template {
+    min-height: unset;
+    max-height: 100px;
+    max-width: 200px;
+    margin: 0 4px;
+}
+
+.template-x.horizontal.mini .template.placeholder {
+    height: 100px;
+    width: 60px;
+    margin: 0 4px 0 12px;
+}
+
+.template-x.horizontal.mini .template.placeholder > div:first-of-type {
+    height: unset;
+    width: unset;
+    display: block;
+    padding-top: 16px;
+}
+
+.template-x.horizontal.mini .template.placeholder svg {
+    height: 18px;
+    width: 18px;
+}
+
+.template-x.horizontal.mini .template.placeholder .template-link {
+    font-size: var(--body-font-size-xs);
+}
+
+.template-x.horizontal.mini .template img,
+.template-x.horizontal.mini .template video {
+    object-fit: cover;
+    height: 100px;
+}
+
+.template-x.horizontal.mini .template .icon-free-badge {
+    height: 14px;
+    font-size: 8px;
+    padding: 0 5px;
+    right: 4px;
+    top: 4px;
+}
+
+.template-x.horizontal.mini .template:not(.placeholder) .template-link {
+    padding: 2px 4px;
+    font-size: 8px;
+}
+
+.template-x-horizontal-fullwidth-mini-container .template-x .template-title {
+    margin-bottom: 8px;
+}
+
+.template-x-horizontal-fullwidth-mini-container.toc-container .template-x .template-title h2 {
+    -webkit-hyphens: none; /* safari */
+    hyphens: none;
+    display: inline;
+}
+
+.template-x-horizontal-fullwidth-mini-container.toc-container .template-x .template-title .toc-slot {
+    display: inline;
+    width: 116px;
+    height: 44px;
+    float: right;
+}
+
+.template-x-horizontal-fullwidth-mini-container .template-x .template-title p:last-of-type {
+    margin-top: 16px;
+    font-weight: 800;
+}
+
+.template-x-horizontal-fullwidth-mini-container .template-x .template-title p:first-of-type {
+    margin-bottom: 8px;
+}
+
+.template-x-horizontal-fullwidth-mini-container .template-x .template-title p:last-of-type {
+    margin-top: 16px;
+    font-weight: 800;
+}
+
+.template-x-horizontal-fullwidth-mini-container .template-title .icon {
+    height: unset;
+    width: 167px;
+}
+
+.template-x-horizontal-fullwidth-mini-container .template-x .carousel-fader-left,
+.template-x-horizontal-fullwidth-mini-container .template-x .carousel-fader-right {
+    display: none;
+}
+
+.template-x-horizontal-fullwidth-mini-spreadsheet-powered-container > div,
+.template-x-horizontal-fullwidth-mini-container > div {
+    max-width: unset;
+    padding: 0;
+}
+
+@media (min-width: 1200px) {
+    .template-x-horizontal-fullwidth-mini-container .template-x.mini {
+        display: none;
+    }
+}

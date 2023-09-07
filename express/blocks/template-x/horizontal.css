@@ -1,0 +1,319 @@
+.template-x-horizontal-fullwidth-mini-spreadsheet-powered-container h2 {
+    margin: 20px 12px 0 12px;
+    text-align: left;
+}
+
+.template-x-horizontal-fullwidth-mini-spreadsheet-powered-container p {
+    font-weight: 800;
+    font-size: var(--body-font-size-m);
+    margin: 16px 12px 12px 12px;
+    text-align: left;
+}
+
+.template-x-horizontal-fullwidth-collaboration-container .default-content-wrapper h2,
+.template-x-horizontal-fullwidth-collaboration-container .default-content-wrapper h3,
+.template-x-horizontal-fullwidth-collaboration-container .default-content-wrapper p {
+    text-align: left;
+    padding: 0 28px;
+    margin: 12px 0;
+}
+
+.template-x-horizontal-fullwidth-collaboration-container .default-content-wrapper p {
+    font-size: var(--body-font-size-m);
+    line-height: 24px;
+}
+
+.template-x-wrapper .template-title.horizontal h4 {
+    font-size: var(--heading-font-size-s);
+    line-height: 26px;
+}
+
+.template-x-wrapper.holiday .template-title.horizontal h4 {
+    text-align: left;
+    margin-top: 14px;
+    margin-bottom: 14px;
+    font-size: var(--body-font-size-m);
+}
+
+.template-x-wrapper .template-title.horizontal .text-wrapper * {
+    text-align: left;
+}
+
+.template-x-wrapper .template-title.horizontal .text-wrapper p {
+    margin-bottom: 0;
+}
+
+.template-x-wrapper .template-title.horizontal .text-wrapper > div {
+    width: 100%;
+}
+
+.template-x.horizontal .template-x-inner-wrapper {
+    margin-top: 0;
+    transition: opacity 0.2s;
+}
+
+.template-x-wrapper .template-title.horizontal > div > * {
+    text-align: left;
+    margin: 0;
+}
+
+.template-x-wrapper .template-title.horizontal h2 {
+    font-size: var(--heading-font-size-m);
+}
+
+.template-x-wrapper .template-title.horizontal p {
+    margin-top: 8px;
+    width: fit-content;
+    font-size: var(--body-font-size-m);
+}
+
+.template-x-horizontal > div,
+.template-x-horizontal-fullwidth-collaboration-container > div {
+    max-width: none;
+    padding: 0;
+}
+
+.template-x.horizontal {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 220px;
+}
+
+.template-x.horizontal .template {
+    min-height: 200px;
+    width: max-content;
+    margin: 24px 12px;
+}
+
+.template-x.horizontal .template .still-wrapper img,
+.template-x.horizontal .template .still-wrapper video {
+    height: 200px;
+    width: auto;
+}
+
+.template-x-wrapper .template-title.horizontal .template:not(.placeholder) .template-link {
+    display: none;
+}
+
+.template-x.horizontal .template:not(.placeholder) img,
+.template-x.horizontal .template:not(.placeholder) video {
+    transition: transform .3s ease-in-out;
+    will-change: transform;
+}
+
+.template-x.horizontal .template:not(.placeholder) .button-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    text-align: center;
+    transition: opacity .3s ease-in-out;
+    will-change: opacity;
+    border-radius: 12px;
+    min-height: unset;
+    box-sizing: border-box;
+    height: 120%;
+    width: 120%;
+}
+
+.template-x.horizontal .template:not(.placeholder) .template-link {
+    opacity: 0;
+    transition: opacity .4s ease-in-out .2s;
+    will-change: opacity;
+}
+
+.template-x.horizontal .template:hover:not(.placeholder) .button-container,
+.template-x.horizontal .template:hover:not(.placeholder) .template-link {
+    opacity: 1;
+    pointer-events: initial;
+    z-index: 2;
+}
+
+.template-x.horizontal .template:not(.placeholder) .template-link {
+    text-decoration: none;
+    border-radius: 18px;
+    padding: 5px 1.2em 6px 1.2em;
+    text-align: center;
+    font-size: var(--body-font-size-s);
+    font-style: normal;
+    font-weight: 600;
+    line-height: var(--body-line-height);
+    cursor: pointer;
+    color: var(--color-black);
+    background-color: var(--color-white);
+    margin: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    height: fit-content;
+}
+
+.template-x.horizontal .template:not(.placeholder) .template-link::after {
+    display: none;
+}
+
+.template-x.horizontal .template.placeholder {
+    margin: 0 11px;
+}
+
+.template-x.horizontal .load-more {
+    display: none;
+}
+
+.template-x.horizontal .carousel-container.controls-hidden .carousel-fader-left,
+.template-x.horizontal .carousel-container.controls-hidden .carousel-fader-right {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.template-x.horizontal .carousel-container.controls-hidden .carousel-fader-left a.button.carousel-arrow,
+.template-x.horizontal .carousel-container.controls-hidden .carousel-fader-right a.button.carousel-arrow {
+    pointer-events: none;
+}
+
+.section.template-x-horizontal-container {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.template-x-wrapper.horizontal {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.template-x-wrapper.horizontal > *:not(.template-x.horizontal),
+.template-x-wrapper.horizontal:not(.holiday) > .template-x.horizontal > *:not(.carousel-container) {
+    max-width: unset;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 24px;
+    margin-block: auto;
+}
+
+.template-x.horizontal .carousel-container {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.template-x.horizontal .carousel-platform {
+    scroll-padding: 12px;
+}
+
+.template-x.horizontal .carousel-container .carousel-fader-right {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+}
+
+.template-x.horizontal .carousel-container .carousel-fader-left {
+    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+}
+
+.template-x.horizontal .template:not(.placeholder):first-of-type .button-container {
+    margin-left: 12px;
+}
+
+.template-x.horizontal .template .button-container .media-wrapper {
+    flex-basis: 100%;
+}
+
+.template-x.horizontal .template .button-container a {
+    min-height: 16px;
+}
+
+@media (max-width: 600px) {
+    .template-x-wrapper.horizontal {
+        margin-left: 0;
+        margin-right: 0;
+        max-width: unset;
+    }
+}
+
+@media (min-width: 900px) {
+    .template-x-horizontal-container > div {
+        max-width: 900px;
+    }
+
+    .template-x .template-title.with-link.horizontal {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .template-x-wrapper .template-x:not(.holiday) .template-title.horizontal .view-all-link-wrapper {
+        margin: 0;
+    }
+
+    .template-x-wrapper .template-title.horizontal > div > * {
+        text-align: left;
+    }
+
+    .template-x.horizontal .carousel-container {
+        margin-left: 12px;
+        margin-right: 12px;
+        max-width: none;
+        display: inline-block;
+    }
+
+    .section.template-x-horizontal-container {
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+
+    .template-x.horizontal:not(.fullwidth) {
+        max-width: 800px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .template-x.horizontal .carousel-container.controls-hidden .carousel-fader-left,
+    .template-x.horizontal .carousel-container.controls-hidden .carousel-fader-right {
+        opacity: unset;
+    }
+
+    .template-x.horizontal .carousel-container.controls-hidden .carousel-fader-left a.button.carousel-arrow,
+    .template-x.horizontal .carousel-container.controls-hidden .carousel-fader-right a.button.carousel-arrow {
+        pointer-events: auto;
+    }
+
+    .template-x.horizontal .carousel-container .carousel-fader-left.arrow-hidden,
+    .template-x.horizontal .carousel-container .carousel-fader-right.arrow-hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .template-x.horizontal .carousel-container .carousel-fader-left.arrow-hidden a.button.carousel-arrow,
+    .template-x.horizontal .carousel-container .carousel-fader-right.arrow-hidden a.button.carousel-arrow {
+        pointer-events: none;
+    }
+
+    .template-x.horizontal .carousel-container.controls-hidden .carousel-platform {
+        scroll-snap-type: x mandatory;
+    }
+
+    .template-x.horizontal .carousel-container {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 470px;
+        display: block;
+    }
+
+    .template-x.horizontal .carousel-container .carousel-fader-left {
+        background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    }
+
+    .template-x.horizontal .carousel-container .carousel-fader-right {
+        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    }
+
+    .template-x-wrapper.horizontal {
+        max-width: 1024px;
+    }
+
+    .template-x.horizontal:not(.holiday) {
+        max-width: 1090px;
+    }
+}
