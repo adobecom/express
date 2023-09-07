@@ -95,7 +95,8 @@ async function fetchSearchUrl({
   if (langs.length > 0) {
     [prefLang] = langs;
     headers['x-express-pref-lang'] = getLanguage(prefLang);
-    headers['x-express-ims-region-code'] = prefLang.toUpperCase();
+    // TODO: maintaining a more thorough mapping when we add UK and IN, or update getLanguage()
+    headers['x-express-ims-region-code'] = prefLang === 'en' ? 'ZZ' : prefLang.toUpperCase();
   }
   const res = await memoizedFetch(url, { headers });
   if (!res) return res;
