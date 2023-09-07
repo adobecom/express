@@ -786,6 +786,7 @@ function decorateHeaderAndFooter() {
     footer.innerHTML = `
       <div id="feds-footer"></div>
     `;
+    footer.setAttribute('data-status', 'loading');
   } else footer.remove();
 }
 
@@ -2333,6 +2334,8 @@ async function loadArea(area = document) {
     delete section.el.dataset.status;
     delete section.el.dataset.idx;
   }
+  const footer = document.querySelector('footer');
+  delete footer.dataset.status;
 
   loadLazy(main);
 
