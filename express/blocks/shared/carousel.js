@@ -57,7 +57,7 @@ function waitForMediaToLoad($parent) {
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export async function buildCarousel(selector = ':scope > *', $parent, options) {
+export async function buildCarousel(selector = ':scope > *', $parent, options = {}) {
   // Load CSS
   const css = loadCSS('/express/blocks/shared/carousel.css');
   // Build the carousel HTML
@@ -220,5 +220,11 @@ export async function buildCarousel(selector = ':scope > *', $parent, options) {
   }, { passive: true });
 
   adjustFaderGradient($parent, { left: $faderLeft, right: $faderRight });
-  await Promise.all([css, media]);
+  await Promise.all([css, media]).then(() => {
+    if (options.startPosition === 'right') {
+      setTimeout(() => {
+        moveCarousel(-$platform.scrollWidth);
+      }, 1000);
+    }
+  });
 }
