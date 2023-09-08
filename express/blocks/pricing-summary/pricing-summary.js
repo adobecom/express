@@ -12,7 +12,7 @@
 
 import { createTag } from '../../scripts/scripts.js';
 import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 function handleHeader(column) {
   column.classList.add('pricing-column');

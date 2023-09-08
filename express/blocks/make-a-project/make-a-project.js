@@ -12,7 +12,7 @@
 
 import { createTag } from '../../scripts/scripts.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 export default function decorate($block) {
   if ($block.children.length) {

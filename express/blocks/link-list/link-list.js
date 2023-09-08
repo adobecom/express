@@ -15,7 +15,7 @@ import {
   normalizeHeadings,
 } from '../../scripts/scripts.js';
 
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 async function loadSpreadsheetData($block, relevantRowsData) {
   const $default = $block.querySelector('.button-container');
