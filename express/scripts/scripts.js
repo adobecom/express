@@ -1813,26 +1813,25 @@ function decorateSocialIcons($main) {
     const urlObject = new URL($a.href);
     if ($a.href === $a.textContent.trim() && new URL($a.href).hash !== '#embed-video') {
       let icon = '';
-      console.log(urlObject.origin);
-      if (urlObject.origin.startsWith('https://www.instagram.com')) {
+      if (urlObject.hostname === 'www.instagram.com') {
         icon = 'instagram';
       }
-      if (urlObject.origin.startsWith('https://www.twitter.com')) {
+      if (urlObject.hostname === 'www.twitter.com') {
         icon = 'twitter';
       }
-      if (urlObject.origin.startsWith('https://www.pinterest.')) {
+      if (urlObject.hostname === 'www.pinterest.') {
         icon = 'pinterest';
       }
-      if (urlObject.origin.startsWith('https://www.facebook.')) {
+      if (urlObject.hostname === 'www.facebook.') {
         icon = 'facebook';
       }
-      if (urlObject.origin.startsWith('https://www.linkedin.com')) {
+      if (urlObject.hostname === 'www.linkedin.com') {
         icon = 'linkedin';
       }
-      if (urlObject.origin.startsWith('https://www.youtube.com')) {
+      if (urlObject.hostname === 'www.youtube.com') {
         icon = 'youtube';
       }
-      if (urlObject.origin.startsWith('https://www.tiktok.com')) {
+      if (urlObject.hostname === 'www.tiktok.com') {
         icon = 'tiktok';
       }
       const $parent = $a.parentElement;

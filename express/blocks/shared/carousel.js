@@ -56,7 +56,7 @@ function waitForMediaToLoad(parent) {
   });
 }
 
-export default async function buildCarousel(selector = ':scope > *', parent, options = {}) {
+export async function buildCarousel(selector = ':scope > *', parent, options = {}) {
   // Load CSS
   const css = loadCSS('/express/blocks/shared/carousel.css');
   // Build the carousel HTML
@@ -143,7 +143,7 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
 
       attempts -= 1;
     }, 100);
-  };
+  }
 
   // Carousel loop functionality (if enabled)
   const stopScrolling = () => { // To prevent safari shakiness
