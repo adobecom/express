@@ -30,8 +30,12 @@ main .banner.compact p {
   margin: 24px;
 }
 
+main .banner.compact p.button-container {
+  margin-bottom: 0;
+}
+
 main .banner.compact p.button-container ~ p {
-  margin-top: 8px;
+  margin-top: 0;
 }
 
 main .banner h2, main .banner h3 {
