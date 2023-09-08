@@ -1819,10 +1819,10 @@ function decorateSocialIcons($main) {
       if (urlObject.hostname === 'www.twitter.com') {
         icon = 'twitter';
       }
-      if (urlObject.hostname === 'www.pinterest.') {
+      if (urlObject.hostname.split('.')[1] === 'pinterest') {
         icon = 'pinterest';
       }
-      if (urlObject.hostname === 'www.facebook.') {
+      if (urlObject.hostname.split('.')[1] === 'facebook') {
         icon = 'facebook';
       }
       if (urlObject.hostname === 'www.linkedin.com') {
