@@ -1811,8 +1811,17 @@ export function addFavIcon(href) {
 }
 
 function decorateSocialIcons($main) {
+  const allowedHosts = [
+    'https://www.instagram.com',
+    'https://twitter.com',
+    'https://www.pinterest.',
+    'https://www.facebook.',
+    'https://www.linkedin.com',
+    'https://www.youtube.com',
+    'https://www.tiktok.com',
+  ];
   $main.querySelectorAll(':scope a').forEach(($a) => {
-    if ($a.href === $a.textContent.trim() && new URL($a.href).hash !== '#embed-video') {
+    if ($a.href === $a.textContent.trim() && new URL($a.href).hash !== '#embed-video' && allowedHosts.includes($a)) {
       let icon = '';
       if ($a.href.startsWith('https://www.instagram.com')) {
         icon = 'instagram';
