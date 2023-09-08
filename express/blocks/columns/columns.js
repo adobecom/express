@@ -20,7 +20,7 @@ import {
   addHeaderSizing,
 } from '../../scripts/scripts.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
-import { embedYoutube, embedVimeo } from '../embed/embed.js';
+import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
 
 import {
   displayVideoModal,
