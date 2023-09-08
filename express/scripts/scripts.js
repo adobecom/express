@@ -1811,37 +1811,29 @@ export function addFavIcon(href) {
 }
 
 function decorateSocialIcons($main) {
-  const allowedHosts = [
-    'https://www.instagram.com',
-    'https://twitter.com',
-    'https://www.pinterest.',
-    'https://www.facebook.',
-    'https://www.linkedin.com',
-    'https://www.youtube.com',
-    'https://www.tiktok.com',
-  ];
   $main.querySelectorAll(':scope a').forEach(($a) => {
-    if ($a.href === $a.textContent.trim() && new URL($a.href).hash !== '#embed-video' && allowedHosts.includes($a)) {
+    const urlObject = new URL($a.href);
+    if ($a.href === $a.textContent.trim() && new URL($a.href).hash !== '#embed-video') {
       let icon = '';
-      if ($a.href.startsWith('https://www.instagram.com')) {
+      if (urlObject.hostname === 'www.instagram.com') {
         icon = 'instagram';
       }
-      if ($a.href.startsWith('https://twitter.com')) {
+      if (urlObject.hostname === 'www.twitter.com') {
         icon = 'twitter';
       }
-      if ($a.href.startsWith('https://www.pinterest.')) {
+      if (urlObject.hostname === 'www.pinterest.') {
         icon = 'pinterest';
       }
-      if ($a.href.startsWith('https://www.facebook.')) {
+      if (urlObject.hostname === 'www.facebook.') {
         icon = 'facebook';
       }
-      if ($a.href.startsWith('https://www.linkedin.com')) {
+      if (urlObject.hostname === 'www.linkedin.com') {
         icon = 'linkedin';
       }
-      if ($a.href.startsWith('https://www.youtube.com')) {
+      if (urlObject.hostname === 'www.youtube.com') {
         icon = 'youtube';
       }
-      if ($a.href.startsWith('https://www.tiktok.com')) {
+      if (urlObject.hostname === 'www.tiktok.com') {
         icon = 'tiktok';
       }
       const $parent = $a.parentElement;
