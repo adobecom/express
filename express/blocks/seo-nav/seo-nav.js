@@ -11,7 +11,7 @@
  */
 
 // eslint-disable-next-line import/no-unresolved
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 export default function decorate(block) {
   const links = [...block.querySelectorAll('p.button-container')];

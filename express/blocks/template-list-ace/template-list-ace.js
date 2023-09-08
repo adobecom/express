@@ -22,7 +22,7 @@ import BlockMediator from '../../scripts/block-mediator.js';
 
 import { renderModalContent, fetchResults, renderResults } from './results-modal.js';
 
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 const props = {
   templates: [],
