@@ -100,11 +100,6 @@ body {
   color: var(--body-color);
   margin: 0;
   padding: 0;
-  display: none;
-}
-
-body.appear {
-  display: block;
 }
 
 /* gnav */
@@ -120,6 +115,10 @@ body > header {
   background-position: bottom 24px center;
   position: relative;
   background-color: #FFF;
+}
+
+body>footer[data-status='loading']{
+  visibility:hidden;
 }
 
 body.no-brand-header > header,
@@ -872,11 +871,6 @@ main .block[data-block-status='initialized'] {
   visibility: hidden;
 }
 
-main .block.template-list[data-block-status='loading']>div,
-main .block.template-list[data-block-status='initialized']>div {
-  display: none;
-}
-
 main .columns.columns-marquee {
   min-height: 650px;
 }
@@ -1121,8 +1115,17 @@ wbr.wbr-off {
 
 /* progressive section appearance */
 main .section[data-section-status='loading'],
-main .section[data-section-status='initialized'] {
+main .section[data-section-status='initialized'],
+main > div,
+main .section[data-status='decorated'] {
   display: none;
+}
+
+main > .section,
+.fragment > .section,
+main > .hero {
+  display: block;
+  position: relative;
 }
 
 /* Japanese font sizing styles */

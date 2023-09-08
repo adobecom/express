@@ -1578,7 +1578,7 @@ async function buildTemplateList(block, props, type = []) {
               });
 
               await decorateTemplates(block, props);
-              buildCarousel(':scope > .template', templatesWrapper, false);
+              buildCarousel(':scope > .template', templatesWrapper);
               templatesWrapper.style.opacity = 1;
             }
 
@@ -1620,7 +1620,7 @@ async function buildTemplateList(block, props, type = []) {
   if (templates && props.orientation && props.orientation.toLowerCase() === 'horizontal') {
     const innerWrapper = block.querySelector('.template-x-inner-wrapper');
     if (innerWrapper) {
-      buildCarousel(':scope > .template', innerWrapper, false);
+      buildCarousel(':scope > .template', innerWrapper);
     } else {
       block.remove();
     }

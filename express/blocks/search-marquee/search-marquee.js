@@ -280,32 +280,32 @@ async function decorateSearchFunctions(block) {
   block.append(searchBarWrapper);
 }
 
-function decorateBackground(block) {
+async function decorateBackground(block) {
   const supportedImgFormat = ['jpeg', 'jpg', 'webp', 'png', 'svg'];
-  const supportedVideoFormat = ['mp4'];
   const mediaRow = block.querySelector('div:nth-child(2)');
+  return new Promise((resolve) => {
+    if (mediaRow) {
+      const mediaEl = mediaRow.querySelector('a, :scope > div');
+      mediaRow.remove();
+      if (mediaEl) {
+        const media = mediaEl.href || mediaEl.textContent;
+        const splitArr = media.split('.');
 
-  if (mediaRow) {
-    const mediaEl = mediaRow.querySelector('a, :scope > div');
-    if (mediaEl) {
-      const media = mediaEl.href || mediaEl.textContent;
-      const splitArr = media.split('.');
-
-      if (supportedImgFormat.includes(splitArr[splitArr.length - 1])) {
-        const dummyImg = createTag('img');
-        dummyImg.src = media;
-        dummyImg.style.display = 'none';
-        block.append(dummyImg);
-        block.style.backgroundImage = `url(${media})`;
-      }
-
-      if (supportedVideoFormat.includes(splitArr[splitArr.length - 1])) {
-        // todo: support video background too
+        if (supportedImgFormat.includes(splitArr[splitArr.length - 1])) {
+          const backgroundImg = createTag('img', { src: media, class: 'backgroundimg' });
+          const wrapper = block.parentElement;
+          if (wrapper.classList.contains('search-marquee-wrapper')) {
+            wrapper.prepend(backgroundImg);
+          } else {
+            block.prepend(backgroundImg);
+          }
+          backgroundImg.onload = () => resolve();
+        } else {
+          resolve();
+        }
       }
     }
-
-    mediaRow.remove();
-  }
+  });
 }
 
 async function buildSearchDropdown(block) {
@@ -392,7 +392,7 @@ export default async function decorate(block) {
     block.remove();
     return;
   }
-  decorateBackground(block);
+  const background = decorateBackground(block);
   await decorateSearchFunctions(block);
   await buildSearchDropdown(block);
   initSearchFunction(block);
@@ -407,4 +407,5 @@ export default async function decorate(block) {
     const { default: updateAsyncBlocks } = await import('../../scripts/ckg-link-list.js');
     updateAsyncBlocks();
   }
+  await background;
 }
