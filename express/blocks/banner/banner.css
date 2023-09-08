@@ -1,10 +1,15 @@
-main .section.banner-container {
+main .section.banner-container,
+main .section.banner-compact-container {
   background-color: var(--color-info-accent);
 }
 
 main .section.banner-container,
 main .section.banner-light-container {
   padding: 80px 15px;
+}
+
+main .section.banner-compact-container {
+  padding: 40px 15px;
 }
 
 main .section.banner-container > div {
@@ -19,6 +24,14 @@ main .banner {
 
 main .banner.light {
   color: var(--color-black);
+}
+
+main .banner.compact p {
+  margin: 24px;
+}
+
+main .banner.compact p.button-container ~ p {
+  margin-top: 8px;
 }
 
 main .banner h2, main .banner h3 {
