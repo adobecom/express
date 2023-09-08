@@ -65,6 +65,13 @@ main .columns .button-container a {
   margin: 0;
 }
 
+main .columns:not(.highlight) .button-container a,
+main .columns:not(.highlight) .button-container a:hover {
+  background-color: transparent;
+  border-color: var(--color-black);
+  color: var(--color-black);
+}
+
 main .columns .column-picture {
   margin: 15px 0;
 }
@@ -306,7 +313,7 @@ main .columns.highlight.width-2-columns .column-picture {
   order: -1
 }
 
-main .columns-video {
+main .columns.highlight .columns-video {
   cursor: pointer;
 }
 
@@ -325,7 +332,7 @@ main .columns-video .column-picture .column-video-overlay {
   height: 100%;
 }
 
-main .columns-video:hover .column-picture .column-video-overlay {
+main .columns.highlight .columns-video:hover .column-picture .column-video-overlay {
   background-image: linear-gradient(#ffffff00, #90909025, #000000a0);
 }
 
