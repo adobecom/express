@@ -151,7 +151,7 @@ function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]'])
         const details = {
           event: 'viewasset',
           assetId,
-          assetPath: assetPath.href,
+          assetPath,
         };
 
         // Add experiment details
