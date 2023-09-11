@@ -10,7 +10,6 @@
  * governing permissions and limitations under the License.
  */
 
-// eslint-disable-next-line import/no-unresolved
 import buildCarousel from '../shared/carousel.js';
 
 export default function decorate(block) {
