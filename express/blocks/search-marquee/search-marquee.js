@@ -19,7 +19,7 @@ import {
 } from '../../scripts/scripts.js';
 import { buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import BlockMediator from '../../scripts/block-mediator.js';
 

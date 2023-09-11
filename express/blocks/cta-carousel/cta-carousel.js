@@ -12,7 +12,7 @@
 
 import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../scripts/scripts.js';
 
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 function sanitizeInput(string) {
   const charMap = {

@@ -32,7 +32,7 @@ import {
 
 import { Masonry } from '../shared/masonry.js';
 
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import { memoize } from '../../scripts/utils.js';
 import getBreadcrumbs from './breadcrumbs.js';
