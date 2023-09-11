@@ -119,7 +119,7 @@ export function getAssetDetails(el) {
   let assetId;
   if (match) {
     [, assetId] = match;
-  } else if (assetUrl.origin.includes('adobeprojectm.com')) {
+  } else if (assetUrl.origin.endsWith('.adobeprojectm.com')) {
     assetId = new URLSearchParams(assetUrl.search).get('component_id');
   } else {
     assetId = `${assetUrl.pathname}`;
