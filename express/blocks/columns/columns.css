@@ -267,6 +267,10 @@ main .columns .column .columns-iconlist .columns-iconlist-icon svg.icon {
   width: 22px;
 }
 
+main .columns .column iframe{
+  aspect-ratio: 1 / 0.56;
+}
+
 main .columns .column .columns-iconlist .columns-iconlist-description {
   display: flex;
   flex: 1;

@@ -20,6 +20,7 @@ import {
   addHeaderSizing,
 } from '../../scripts/scripts.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
+import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
 
 import {
   displayVideoModal,
@@ -143,8 +144,16 @@ export default function decorate($block) {
   $rows.forEach(($row, rowNum) => {
     const $cells = Array.from($row.children);
     $cells.forEach(($cell, cellNum) => {
+      const aTag = $cell.querySelector('a');
+      const link = aTag?.href;
       if ($cell.querySelector('img.icon, svg.icon')) {
         decorateIconList($cell, rowNum, $block.classList);
+      } else if (link && link.includes('youtu')) {
+        $cell.classList.add('column-picture');
+        embedYoutube(aTag);
+      } else if (link && link.includes('vimeo')) {
+        $cell.classList.add('column-picture');
+        embedVimeo(aTag);
       }
 
       if (cellNum === 0 && isNumberedList) {
