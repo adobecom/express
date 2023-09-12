@@ -20,7 +20,6 @@ import {
   addHeaderSizing,
 } from '../../scripts/scripts.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
-import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
 
 import {
   displayVideoModal,
@@ -142,11 +141,13 @@ export default function decorate($block) {
   }
 
   // TODO: This can be moved to scripts once more widely needed
-  const embedVideo = (aTag) => {
+  const embedVideo = async (aTag) => {
     const link = aTag?.href;
     if (link?.includes('youtu')) {
+      const { embedYoutube } = await import('../../scripts/embed-videos.js');
       embedYoutube(aTag);
     } else if (link?.includes('vimeo')) {
+      const { embedVimeo } = await import('../../scripts/embed-videos.js');
       embedVimeo(aTag);
     }
   };
