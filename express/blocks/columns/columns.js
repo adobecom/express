@@ -123,7 +123,7 @@ function decorateIconList($columnCell, rowNum, blockClasses) {
   }
 }
 
-export default function decorate($block) {
+export default async function decorate($block) {
   const $rows = Array.from($block.children);
 
   let numCols = 0;
@@ -141,23 +141,23 @@ export default function decorate($block) {
     }
   }
 
-  $rows.forEach(($row, rowNum) => {
+  const yieldToMain = () => new Promise((resolve) => { setTimeout(resolve, 0); });
+
+  for await (const [rowNum, $row] of $rows.entries()) {
     const $cells = Array.from($row.children);
-    $cells.forEach(($cell, cellNum) => {
+    for await (const [cellNum, $cell] of $cells.entries()) {
       const aTag = $cell.querySelector('a');
       const link = aTag?.href;
       if ($cell.querySelector('img.icon, svg.icon')) {
         decorateIconList($cell, rowNum, $block.classList);
       } else if (link && link.includes('youtu')) {
         $cell.classList.add('column-picture');
-        setTimeout(() => {
-          embedYoutube(aTag);
-        }, 0);
+        await yieldToMain();
+        embedYoutube(aTag);
       } else if (link && link.includes('vimeo')) {
         $cell.classList.add('column-picture');
-        setTimeout(() => {
-          embedVimeo(aTag);
-        }, 0);
+        await yieldToMain();
+        embedVimeo(aTag);
       }
 
       if (cellNum === 0 && isNumberedList) {
@@ -240,7 +240,11 @@ export default function decorate($block) {
           $pars[i].classList.add('powered-by');
         }
       }
-    });
+    }
+  }
+
+  $rows.forEach(($row, rowNum) => {
+
   });
   addAnimationToggle($block);
   addHeaderSizing($block, 'columns-heading');
