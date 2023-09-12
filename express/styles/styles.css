@@ -103,10 +103,11 @@ body {
 }
 
 body.no-scroll {
-  height: 100vh;
-  width: 100vw;
-  overflow-y: scroll;
-  position: fixed;
+  overflow-y: hidden;
+}
+
+body.no-scroll[data-device="desktop"] {
+  padding-right: 15px;
 }
 
 /* gnav */
