@@ -39,6 +39,7 @@ const breakpointConfig = [
   },
 ];
 
+// FIXME: Not fulfilling requirement. Re-think of a way to allow subtext to contain link.
 function handleSubCTAText(buttonContainer) {
   const button = buttonContainer.querySelector('a');
   if (button && button.textContent.includes('§')) {
