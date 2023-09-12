@@ -181,7 +181,6 @@ export function isVideoLink(url) {
 }
 
 export function hideVideoModal(push) {
-  const body = document.querySelector('body');
   const $overlay = document.querySelector('main .video-overlay');
   if ($overlay) {
     $overlay.remove();
@@ -191,17 +190,16 @@ export function hideVideoModal(push) {
     // create new history entry
     window.history.pushState({}, docTitle, window.location.href.split('#')[0]);
   }
-  body.classList.remove('no-scroll');
+  document.body.classList.remove('no-scroll');
 }
 
 export function displayVideoModal(url = [], title, push) {
-  const body = document.querySelector('body');
   let vidUrls = typeof url === 'string' ? [url] : url;
   const [primaryUrl] = vidUrls;
   const canPlayInline = vidUrls
     .some((src) => src && isVideoLink(src));
 
-  body.classList.add('no-scroll');
+  document.body.classList.add('no-scroll');
   if (canPlayInline) {
     const $overlay = createTag('div', { class: 'video-overlay' });
     const $video = createTag('div', { class: 'video-overlay-video', id: 'video-overlay-video' });

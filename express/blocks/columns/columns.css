@@ -65,22 +65,22 @@ main .columns .button-container a {
   margin: 0;
 }
 
-main .columns:not(.highlight) .button-container a {
+main .columns:not(.highlight) .column-video .button-container a {
   border-radius: 24px;
   padding: 8px 20px;
 }
 
-main .columns:not(.highlight) .button-container a,
-main .columns:not(.highlight) .button-container a:hover,
-main .columns:not(.highlight) .button-container a:active,
-main .columns:not(.highlight) .button-container a:focus {
+main .columns:not(.highlight) .column-video .button-container a:hover,
+main .columns:not(.highlight) .column-video .button-container a:active,
+main .columns:not(.highlight) .column-video .button-container a,
+main .columns:not(.highlight) .column-video .button-container a:focus {
   background-color: transparent;
   border-color: var(--color-black);
   color: var(--color-black);
   box-shadow: none;
 }
 
-main .columns:not(.highlight) .button-container a:before {
+main .columns:not(.highlight) .column-video .button-container a:before {
   display: inline-block;
   width: 18px;
   height: 20px;
