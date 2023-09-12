@@ -28,25 +28,25 @@ import {
   isVideoLink,
 } from '../shared/video.js';
 
-function transformToVideoColumn($cell, $a, block) {
+function transformToVideoColumn($cell, aTag, block) {
   const $parent = $cell.parentElement;
-  const title = $a.textContent.trim();
+  const title = aTag.textContent.trim();
   // gather video urls from all links in cell
   const vidUrls = [];
   $cell.querySelectorAll(':scope a.button').forEach(($button) => {
     vidUrls.push($button.href);
-    if ($button !== $a) {
+    if ($button !== aTag) {
       $button.closest('.button-container').remove();
     }
   });
-  $a.setAttribute('rel', 'nofollow');
+  aTag.setAttribute('rel', 'nofollow');
 
   $cell.classList.add('column-video');
   $parent.classList.add('columns-video');
 
   setTimeout(() => {
     const $sibling = $parent.querySelector('.column-picture');
-    if ($sibling) {
+    if ($sibling && block.classList.contains('highlight')) {
       const $videoOverlay = createTag('div', { class: 'column-video-overlay' });
       const $videoOverlayIcon = getIconElement('play', 44);
       $videoOverlay.append($videoOverlayIcon);
@@ -54,7 +54,7 @@ function transformToVideoColumn($cell, $a, block) {
     }
   }, 1);
 
-  const modalActivator = block.classList.contains('highlight') ? $parent : $a;
+  const modalActivator = block.classList.contains('highlight') ? $parent : aTag;
   modalActivator.addEventListener('click', () => {
     displayVideoModal(vidUrls, title, true);
   });
@@ -141,19 +141,26 @@ export default function decorate($block) {
     }
   }
 
+  const embedVideo = (cell, aTag) => {
+    const link = aTag?.href;
+    cell.classList.add('column-picture');
+    if (link?.includes('youtu')) {
+      embedYoutube(aTag);
+    } else if (link?.includes('vimeo')) {
+      embedVimeo(aTag);
+    }
+  };
+
   $rows.forEach(($row, rowNum) => {
     const $cells = Array.from($row.children);
     $cells.forEach(($cell, cellNum) => {
       const aTag = $cell.querySelector('a');
-      const link = aTag?.href;
+      const urlObject = aTag ? new URL(aTag?.href) : '';
       if ($cell.querySelector('img.icon, svg.icon')) {
         decorateIconList($cell, rowNum, $block.classList);
-      } else if (link && link.includes('youtu')) {
-        $cell.classList.add('column-picture');
-        embedYoutube(aTag);
-      } else if (link && link.includes('vimeo')) {
-        $cell.classList.add('column-picture');
-        embedVimeo(aTag);
+      }
+      if (urlObject?.hash === '#embed-video') {
+        embedVideo($cell, aTag);
       }
 
       if (cellNum === 0 && isNumberedList) {
@@ -182,29 +189,28 @@ export default function decorate($block) {
       }
 
       // this probably needs to be tighter and possibly earlier
-      const $a = $cell.querySelector('a');
-      if ($a) {
-        if (isVideoLink($a.href)) {
-          transformToVideoColumn($cell, $a, $block);
+      if (aTag) {
+        if (isVideoLink(aTag.href)) {
+          transformToVideoColumn($cell, aTag, $block);
 
-          $a.addEventListener('click', (e) => {
+          aTag.addEventListener('click', (e) => {
             e.preventDefault();
           });
         }
-        if ($a.textContent.trim().startsWith('https://')) {
-          if ($a.href.endsWith('.mp4')) {
-            transformLinkToAnimation($a);
+        if (aTag.textContent.trim().startsWith('https://')) {
+          if (aTag.href.endsWith('.mp4')) {
+            transformLinkToAnimation(aTag);
           } else if ($pics[0]) {
             linkImage($cell);
           }
         }
       }
-      if ($a && $a.classList.contains('button')) {
+      if (aTag && aTag.classList.contains('button')) {
         if ($block.className.includes('fullsize')) {
-          $a.classList.add('xlarge');
-          $a.classList.add('primaryCTA');
-        } else if ($a.classList.contains('light')) {
-          $a.classList.replace('accent', 'primary');
+          aTag.classList.add('xlarge');
+          aTag.classList.add('primaryCTA');
+        } else if (aTag.classList.contains('light')) {
+          aTag.classList.replace('accent', 'primary');
         }
       }
 
@@ -243,7 +249,7 @@ export default function decorate($block) {
 
   // decorate offer
   if ($block.classList.contains('offer')) {
-    $block.querySelectorAll('a.button').forEach(($a) => $a.classList.add('large', 'wide'));
+    $block.querySelectorAll('a.button').forEach((aTag) => aTag.classList.add('large', 'wide'));
     if ($rows.length > 1) {
       // move all content into first row
       $rows.forEach(($row, rowNum) => {

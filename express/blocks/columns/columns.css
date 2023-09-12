@@ -65,11 +65,30 @@ main .columns .button-container a {
   margin: 0;
 }
 
+main .columns:not(.highlight) .button-container a {
+  border-radius: 24px;
+  padding: 8px 20px;
+}
+
 main .columns:not(.highlight) .button-container a,
-main .columns:not(.highlight) .button-container a:hover {
+main .columns:not(.highlight) .button-container a:hover,
+main .columns:not(.highlight) .button-container a:active,
+main .columns:not(.highlight) .button-container a:focus {
   background-color: transparent;
   border-color: var(--color-black);
   color: var(--color-black);
+  box-shadow: none;
+}
+
+main .columns:not(.highlight) .button-container a:before {
+  display: inline-block;
+  width: 18px;
+  height: 20px;
+  margin-right: 16px;
+  vertical-align: sub;
+  top: 1px;
+  position: relative;
+  content: url(/express/icons/play.svg);
 }
 
 main .columns .column-picture {
