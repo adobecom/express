@@ -1,10 +1,15 @@
-main .section.banner-container {
+main .section.banner-container,
+main .section.banner-compact-container {
   background-color: var(--color-info-accent);
 }
 
 main .section.banner-container,
 main .section.banner-light-container {
   padding: 80px 15px;
+}
+
+main .section.banner-compact-container {
+  padding: 40px 15px;
 }
 
 main .section.banner-container > div {
@@ -19,6 +24,18 @@ main .banner {
 
 main .banner.light {
   color: var(--color-black);
+}
+
+main .banner.compact p {
+  margin: 24px;
+}
+
+main .banner.compact p.button-container {
+  margin-bottom: 0;
+}
+
+main .banner.compact p.button-container ~ p {
+  margin-top: 0;
 }
 
 main .banner h2, main .banner h3 {
@@ -48,6 +65,10 @@ main .banner .icon {
 
 main .banner.multi-button .button-container {
   display: inline-block;
+}
+
+main .banner p:last-of-type {
+  margin-bottom: 0;
 }
 
 @media (min-width:900px) {
