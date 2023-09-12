@@ -104,7 +104,7 @@ body {
 
 body.no-scroll {
   overflow-y: hidden;
-  touch-action: pan-x;
+  touch-action: none;
 }
 
 body.no-scroll[data-device="desktop"] {
