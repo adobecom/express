@@ -151,19 +151,13 @@ export default function decorate($block) {
       } else if (link && link.includes('youtu')) {
         $cell.classList.add('column-picture');
         setTimeout(() => {
-          if (window.requestIdleCallback) {
-            window.requestIdleCallback(() => embedYoutube(aTag), { timeout: 10000 });
-          } else {
-            embedYoutube(aTag);
-          }
+          embedYoutube(aTag);
         }, 0);
       } else if (link && link.includes('vimeo')) {
         $cell.classList.add('column-picture');
-        if (window.requestIdleCallback) {
-          window.requestIdleCallback(() => embedVimeo(aTag), { timeout: 10000 });
-        } else {
+        setTimeout(() => {
           embedVimeo(aTag);
-        }
+        }, 0);
       }
 
       if (cellNum === 0 && isNumberedList) {
