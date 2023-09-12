@@ -22,13 +22,15 @@ import {
   getLocale,
   getLottie,
   getMetadata,
-  lazyLoadLottiePlayer, loadCSS,
+  loadCSS,
+  lazyLoadLottiePlayer,
+  sampleRUM,
   titleCase,
   toClassName,
   transformLinkToAnimation,
 } from '../../scripts/scripts.js';
 import { Masonry } from '../shared/masonry.js';
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './template-search-api-v3.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import renderTemplate from './template-rendering.js';
@@ -38,10 +40,13 @@ function wordStartsWithVowels(word) {
   return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
 }
 
-function logSearch(form, url = '/express/search-terms-log') {
+// FIXME: as soon as we verify the rum approach works, this should be retired
+function logSearch(form, formUrl = '/express/search-terms-log') {
   if (form) {
     const input = form.querySelector('input');
-    fetch(url, {
+    const currentHref = new URL(window.location.href);
+    const params = new URLSearchParams(currentHref.search);
+    fetch(formUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -50,6 +55,9 @@ function logSearch(form, url = '/express/search-terms-log') {
           locale: getLocale(window.location),
           timestamp: Date.now(),
           audience: document.body.dataset.device,
+          sourcePath: window.location.pathname,
+          previousSearch: params.toString() || 'N/A',
+          sessionId: sessionStorage.getItem('u_scsid'),
         },
       }),
     });
@@ -1401,6 +1409,10 @@ function importSearchBar(block, blockMediator) {
           event.preventDefault();
           searchBar.disabled = true;
           logSearch(event.currentTarget);
+          sampleRUM('search', {
+            source: block.dataset.blockName,
+            target: searchBar.value,
+          }, 1);
           await redirectSearch();
         });
 
@@ -1578,7 +1590,7 @@ async function buildTemplateList(block, props, type = []) {
               });
 
               await decorateTemplates(block, props);
-              buildCarousel(':scope > .template', templatesWrapper, false);
+              buildCarousel(':scope > .template', templatesWrapper);
               templatesWrapper.style.opacity = 1;
             }
 
@@ -1620,7 +1632,7 @@ async function buildTemplateList(block, props, type = []) {
   if (templates && props.orientation && props.orientation.toLowerCase() === 'horizontal') {
     const innerWrapper = block.querySelector('.template-x-inner-wrapper');
     if (innerWrapper) {
-      buildCarousel(':scope > .template', innerWrapper, false);
+      buildCarousel(':scope > .template', innerWrapper);
     } else {
       block.remove();
     }

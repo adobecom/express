@@ -10,8 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-// eslint-disable-next-line import/no-unresolved
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 export default function decorate(block) {
   const links = [...block.querySelectorAll('p.button-container')];
@@ -25,7 +24,7 @@ export default function decorate(block) {
     const div = links[0].closest('div');
     const platformEl = document.createElement('div');
     platformEl.classList.add('seo-nav-platform');
-    buildCarousel('p.button-container', div, false);
+    buildCarousel('p.button-container', div);
     div.append(platformEl);
   }
 

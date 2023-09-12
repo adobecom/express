@@ -12,7 +12,7 @@
 
 import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../scripts/scripts.js';
 
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 function sanitizeInput(string) {
   const charMap = {
@@ -234,6 +234,6 @@ export default async function decorate(block) {
 
   decorateHeading(block, payload);
   await decorateCards(block, payload);
-  buildCarousel('', block.querySelector('.cta-carousel-cards'), false);
+  buildCarousel('', block.querySelector('.cta-carousel-cards'));
   document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
 }

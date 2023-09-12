@@ -15,7 +15,7 @@ import {
   normalizeHeadings,
 } from '../../scripts/scripts.js';
 
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 async function loadSpreadsheetData($block, relevantRowsData) {
   const $default = $block.querySelector('.button-container');
@@ -68,7 +68,7 @@ export default async function decorate($block) {
     const div = links[0].closest('div');
     const platformEl = document.createElement('div');
     platformEl.classList.add('link-list-platform');
-    buildCarousel('p.button-container', div, false);
+    buildCarousel('p.button-container', div);
     div.append(platformEl);
   }
 
