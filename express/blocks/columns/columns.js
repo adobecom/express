@@ -141,9 +141,9 @@ export default function decorate($block) {
     }
   }
 
-  const embedVideo = (cell, aTag) => {
+  // TODO: This can be moved to scripts once more widely needed
+  const embedVideo = (aTag) => {
     const link = aTag?.href;
-    cell.classList.add('column-picture');
     if (link?.includes('youtu')) {
       embedYoutube(aTag);
     } else if (link?.includes('vimeo')) {
@@ -160,7 +160,7 @@ export default function decorate($block) {
         decorateIconList($cell, rowNum, $block.classList);
       }
       if (urlObject?.hash === '#embed-video') {
-        embedVideo($cell, aTag);
+        embedVideo(aTag);
       }
 
       if (cellNum === 0 && isNumberedList) {
