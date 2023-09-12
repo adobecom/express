@@ -13,7 +13,7 @@
 
 import {
   loadScript,
-  createTag,
+  createTag, loadCSS,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/scripts.js';
 
@@ -42,16 +42,22 @@ export function embedYoutube(a) {
   const id = searchParams.get('v') || a.pathname.split('/').pop();
   searchParams.delete('v');
   const src = `https://www.youtube.com/embed/${id}?${searchParams.toString()}`;
-  const embedHTML = `
-  <div class="embed-youtube">
-    <iframe width="100%" height="auto" src="${src}" class="youtube"
-      webkitallowfullscreen mozallowfullscreen allowfullscreen
-      allow="encrypted-media; accelerometer; gyroscope; picture-in-picture"
-      loading="lazy"
-      scrolling="no"
-      title="${title}">
-    </iframe>
-  </div>`;
+  loadScript('/express/scripts/libs/LiteYTEmbed-0.2.0/lite-yt-embed.js');
+  loadCSS('/express/scripts/libs/LiteYTEmbed-0.2.0/lite-yt-embed.css');
+  const embedHTML = `<lite-youtube videoid="${id}" playlabel="${title}"></lite-youtube>`;
+  // const embedHTML = `
+  // <div class="embed-youtube">
+  //   <iframe width="100%" height="auto" src="${src}" class="youtube"
+  //     webkitallowfullscreen mozallowfullscreen allowfullscreen
+  //     allow="encrypted-media; accelerometer; gyroscope; picture-in-picture"
+  //     loading="lazy"
+  //     scrolling="no"
+  //     title="${title}">
+  //   </iframe>
+  // </div>`;
+  //loadScript('../scripts/libs/LiteYTEmbed-0.2.0/lite-yt-embed.js');
+  //   loadCSS('../scripts/libs/LiteYTEmbed-0.2.0/lite-yt-embed.css');
+  //
   a.insertAdjacentHTML('afterend', embedHTML);
   a.remove();
 }
