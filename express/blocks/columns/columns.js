@@ -123,7 +123,7 @@ function decorateIconList($columnCell, rowNum, blockClasses) {
   }
 }
 
-export default async function decorate($block) {
+export default function decorate($block) {
   const $rows = Array.from($block.children);
 
   let numCols = 0;
@@ -141,22 +141,18 @@ export default async function decorate($block) {
     }
   }
 
-  const yieldToMain = () => new Promise((resolve) => { setTimeout(resolve, 0); });
-
-  for await (const [rowNum, $row] of $rows.entries()) {
+  $rows.forEach(($row, rowNum) => {
     const $cells = Array.from($row.children);
-    for await (const [cellNum, $cell] of $cells.entries()) {
+    $cells.forEach(($cell, cellNum) => {
       const aTag = $cell.querySelector('a');
       const link = aTag?.href;
       if ($cell.querySelector('img.icon, svg.icon')) {
         decorateIconList($cell, rowNum, $block.classList);
       } else if (link && link.includes('youtu')) {
         $cell.classList.add('column-picture');
-        await yieldToMain();
         embedYoutube(aTag);
       } else if (link && link.includes('vimeo')) {
         $cell.classList.add('column-picture');
-        await yieldToMain();
         embedVimeo(aTag);
       }
 
@@ -240,11 +236,7 @@ export default async function decorate($block) {
           $pars[i].classList.add('powered-by');
         }
       }
-    }
-  }
-
-  $rows.forEach(($row, rowNum) => {
-
+    });
   });
   addAnimationToggle($block);
   addHeaderSizing($block, 'columns-heading');
