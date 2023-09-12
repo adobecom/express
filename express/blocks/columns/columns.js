@@ -150,10 +150,14 @@ export default function decorate($block) {
         decorateIconList($cell, rowNum, $block.classList);
       } else if (link && link.includes('youtu')) {
         $cell.classList.add('column-picture');
-        embedYoutube(aTag);
+        setTimeout(() => {
+          embedYoutube(aTag);
+        }, 0);
       } else if (link && link.includes('vimeo')) {
         $cell.classList.add('column-picture');
-        embedVimeo(aTag);
+        setTimeout(() => {
+          embedVimeo(aTag);
+        }, 0);
       }
 
       if (cellNum === 0 && isNumberedList) {
