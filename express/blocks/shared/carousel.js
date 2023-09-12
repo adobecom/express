@@ -147,7 +147,7 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
         }
       });
     };
-    
+
     const carouselObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
     carouselObserver.observe(scrollable);
   };
