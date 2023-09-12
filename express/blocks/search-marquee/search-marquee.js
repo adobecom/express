@@ -16,6 +16,7 @@ import {
   getIconElement,
   getLocale,
   getMetadata,
+  sampleRUM,
 } from '../../scripts/scripts.js';
 import { buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
@@ -32,12 +33,13 @@ function handlelize(str) {
     .toLowerCase(); // To lowercase
 }
 
-function logSearch(form, url = '/express/search-terms-log') {
+// FIXME: as soon as we verify the rum approach works, this should be retired
+function logSearch(form, formUrl = '/express/search-terms-log') {
   if (form) {
     const input = form.querySelector('input');
     const currentHref = new URL(window.location.href);
     const params = new URLSearchParams(currentHref.search);
-    fetch(url, {
+    fetch(formUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -189,6 +191,10 @@ function initSearchFunction(block) {
   const onSearchSubmit = async () => {
     searchBar.disabled = true;
     logSearch(searchForm);
+    sampleRUM('search', {
+      source: block.dataset.blockName,
+      target: searchBar.value,
+    }, 1);
     await redirectSearch();
   };
 
