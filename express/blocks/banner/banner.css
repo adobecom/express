@@ -67,6 +67,10 @@ main .banner.multi-button .button-container {
   display: inline-block;
 }
 
+main .banner p:last-of-type {
+  margin-bottom: 0;
+}
+
 @media (min-width:900px) {
   main .section.banner-container {
     padding-left: 56px;
