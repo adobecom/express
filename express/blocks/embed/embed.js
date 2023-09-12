@@ -47,6 +47,7 @@ export function embedYoutube(a) {
     <iframe width="100%" height="auto" src="${src}" class="youtube"
       webkitallowfullscreen mozallowfullscreen allowfullscreen
       allow="encrypted-media; accelerometer; gyroscope; picture-in-picture"
+      loading="lazy"
       scrolling="no"
       title="${title}">
     </iframe>
