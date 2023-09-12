@@ -27,7 +27,7 @@ import {
   isVideoLink,
 } from '../shared/video.js';
 
-function transformToVideoColumn($cell, $a) {
+function transformToVideoColumn($cell, $a, block) {
   const $parent = $cell.parentElement;
   const title = $a.textContent.trim();
   // gather video urls from all links in cell
@@ -45,7 +45,7 @@ function transformToVideoColumn($cell, $a) {
 
   setTimeout(() => {
     const $sibling = $parent.querySelector('.column-picture');
-    if ($sibling) {
+    if ($sibling && block.classList.contains('highlight')) {
       const $videoOverlay = createTag('div', { class: 'column-video-overlay' });
       const $videoOverlayIcon = getIconElement('play', 44);
       $videoOverlay.append($videoOverlayIcon);
@@ -53,11 +53,11 @@ function transformToVideoColumn($cell, $a) {
     }
   }, 1);
 
-  $parent.addEventListener('click', () => {
+  const modalActivator = block.classList.contains('highlight') ? $parent : $a;
+  modalActivator.addEventListener('click', () => {
     displayVideoModal(vidUrls, title, true);
   });
-
-  $parent.addEventListener('keyup', ({ key }) => {
+  modalActivator.addEventListener('keyup', ({ key }) => {
     if (key === 'Enter') {
       displayVideoModal(vidUrls, title);
     }
@@ -175,8 +175,8 @@ export default function decorate($block) {
       // this probably needs to be tighter and possibly earlier
       const $a = $cell.querySelector('a');
       if ($a) {
-        if (isVideoLink($a.href) && $row.parentElement.classList.contains('highlight')) {
-          transformToVideoColumn($cell, $a);
+        if (isVideoLink($a.href)) {
+          transformToVideoColumn($cell, $a, $block);
 
           $a.addEventListener('click', (e) => {
             e.preventDefault();
