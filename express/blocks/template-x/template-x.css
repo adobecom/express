@@ -1,4 +1,6 @@
-.section.template-x-container {
+/* templates pages spacial styling */
+[class='section section-wrapper template-x-container'],
+[class='section section-wrapper browse-by-category-card-fullwidth-container template-x-container'] {
     padding-top: 0;
 }
 
