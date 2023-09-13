@@ -784,10 +784,10 @@ function decorateHeaderAndFooter() {
   const footerMeta = getMeta('footer');
   const footer = document.querySelector('footer');
   if (footerMeta !== 'off') {
-    footer.innerHTML = `
-      <div id="feds-footer"></div>
-    `;
-    footer.setAttribute('data-status', 'loading');
+    // footer.innerHTML = `
+    //   <div id="feds-footer"></div>
+    // `;
+    // footer.setAttribute('data-status', 'loading');
   } else footer.remove();
 }
 
