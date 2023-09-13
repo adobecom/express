@@ -127,6 +127,7 @@ body.no-desktop-brand-header header {
 .marquee .button-container.button-inline {
   display: inline-block;
   margin-right: 16px;
+  text-align: left;
 }
 
 .marquee .content-wrapper .button-container.free-plan-container {
@@ -287,6 +288,10 @@ body.no-desktop-brand-header header {
     display: flex;
     flex-direction: column;
     justify-content: center;
+  }
+
+  .marquee .button-container.button-inline {
+    text-align: center;
   }
 
   .marquee.short .marquee-foreground {
