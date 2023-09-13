@@ -792,7 +792,7 @@ function decorateHeaderAndFooter() {
 }
 
 /**
- * Loads a CSS file.
+ * Loads a CSS file
  * @param {string} href The path to the CSS file
  */
 export function loadCSS(href, callback) {
