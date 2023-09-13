@@ -118,7 +118,7 @@ body > header {
 }
 
 body>footer[data-status='loading']{
-  display:none;
+  visibility:hidden;
 }
 
 body.no-brand-header > header,
