@@ -41,15 +41,15 @@ const breakpointConfig = [
 
 // FIXME: Not fulfilling requirement. Re-think of a way to allow subtext to contain link.
 function handleSubCTAText(buttonContainer) {
-  const elementBelowButton = buttonContainer.nextElementSibling;
-  if (!elementBelowButton || elementBelowButton?.tagName !== 'BLOCKQUOTE') return;
+  const elAfterBtn = buttonContainer.nextElementSibling;
+  if (!elAfterBtn || elAfterBtn?.tagName !== 'BLOCKQUOTE') return;
 
-  const subText = elementBelowButton.querySelector('p');
+  const subText = elAfterBtn.querySelector('p');
   if (subText) {
     subText.classList.add('cta-sub-text');
     buttonContainer.append(subText);
   }
-  elementBelowButton.remove();
+  elAfterBtn.remove();
 }
 
 function getBreakpoint(animations) {
