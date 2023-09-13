@@ -372,7 +372,5 @@ export default async function decorate(block) {
     addHeaderSizing(block);
   }
 
-  handleSubCTAText(block);
-
   block.classList.add('appear');
 }
