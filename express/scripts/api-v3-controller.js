@@ -16,19 +16,19 @@ const endpoints = {
   dev: {
     cdn: 'https://uss-templates-dev.adobe.io/uss/v3/query',
     url: 'https://uss-templates-dev.adobe.io/uss/v3/query',
-    token: atob('Y2QxODIzZWQtMDEwNC00OTJmLWJhOTEtMjVmNDE5NWQ1ZjZj'),
+    token: window.atob('Y2QxODIzZWQtMDEwNC00OTJmLWJhOTEtMjVmNDE5NWQ1ZjZj'),
   },
   stage: {
     cdn: 'https://www.stage.adobe.com/ax-uss-api/',
     url: 'https://uss-templates-stage.adobe.io/uss/v3/query',
-    token: atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
-    key: atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
+    token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
+    key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   prod: {
     cdn: 'https://www.adobe.com/ax-uss-api/',
     url: 'https://uss-templates.adobe.io/uss/v3/query',
-    token: atob('MmUwMTk5ZjQtYzRlMi00MDI1LTgyMjktZGY0Y2E1Mzk3NjA1'),
-    key: atob('dGVtcGxhdGUtbGlzdC1saW5rbGlzdC1mYWNldA=='),
+    token: window.atob('MmUwMTk5ZjQtYzRlMi00MDI1LTgyMjktZGY0Y2E1Mzk3NjA1'),
+    key: window.atob('dGVtcGxhdGUtbGlzdC1saW5rbGlzdC1mYWNldA=='),
   },
 };
 

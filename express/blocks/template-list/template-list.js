@@ -27,12 +27,13 @@ import {
   getMetadata,
   lazyLoadLottiePlayer,
   linkImage,
+  sampleRUM,
   toClassName,
 } from '../../scripts/scripts.js';
 
 import { Masonry } from '../shared/masonry.js';
 
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import { memoize } from '../../scripts/utils.js';
 import getBreadcrumbs from './breadcrumbs.js';
@@ -48,6 +49,30 @@ function handlelize(str) {
     .replace(/--+/g, '-') // Replaces multiple hyphens by one hyphen
     .replace(/(^-+|-+$)/g, '') // Remove extra hyphens from beginning or end of the string
     .toLowerCase(); // To lowercase
+}
+
+// FIXME: as soon as we verify the rum approach works, this should be retired
+function logSearch(form, formUrl = '/express/search-terms-log') {
+  if (form) {
+    const input = form.querySelector('input');
+    const currentHref = new URL(window.location.href);
+    const params = new URLSearchParams(currentHref.search);
+    fetch(formUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data: {
+          keyword: input.value,
+          locale: getLocale(window.location),
+          timestamp: Date.now(),
+          audience: document.body.dataset.device,
+          sourcePath: window.location.pathname,
+          previousSearch: params.toString() || 'N/A',
+          sessionId: sessionStorage.getItem('u_scsid'),
+        },
+      }),
+    });
+  }
 }
 
 function trimFormattedFilterText(attr, capitalize) {
@@ -495,24 +520,6 @@ function getRedirectUrl(tasks, topics, format, allTemplatesMetadata) {
   }
 }
 
-function logSearch(form, url = 'https://main--express-website--adobe.hlx.page/express/search-terms-log') {
-  if (form) {
-    const input = form.querySelector('input');
-    fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        data: {
-          keyword: input.value,
-          locale: getLocale(window.location),
-          timestamp: Date.now(),
-          audience: document.body.dataset.device,
-        },
-      }),
-    });
-  }
-}
-
 async function redirectSearch($searchBar, props) {
   const placeholders = await fetchPlaceholders();
   const taskMap = JSON.parse(placeholders['task-name-mapping']);
@@ -775,6 +782,10 @@ function initSearchFunction($toolBar, $stickySearchBarWrapper, generatedSearchBa
     $searchForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       logSearch(e.currentTarget);
+      sampleRUM('search', {
+        source: 'template-list',
+        target: $searchBar.value,
+      }, 1);
       await redirectSearch($searchBar, props);
     });
 

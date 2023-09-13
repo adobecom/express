@@ -76,5 +76,5 @@ export default async function decorate($block) {
 
   decorateHeading($block, payload);
   decorateCollaborations($block, payload);
-  buildCarousel('.browse-by-collaboration-card', $block, false);
+  buildCarousel('.browse-by-collaboration-card', $block);
 }

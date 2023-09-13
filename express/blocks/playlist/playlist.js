@@ -12,7 +12,7 @@
 
 // eslint-disable-next-line import/no-unresolved
 import { createTag, getIconElement } from '../../scripts/scripts.js';
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 import { fetchVideoAnalytics } from '../shared/video.js';
 
 async function loadVideoAnalytic($video) {

@@ -13,7 +13,7 @@
 
 import { createTag } from '../../scripts/scripts.js';
 
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 export function decorateHeading(block, payload) {
   const headingSection = createTag('div', { class: 'browse-by-category-heading-section' });
@@ -79,7 +79,7 @@ export default async function decorate(block) {
 
   decorateHeading(block, payload);
   decorateCategories(block, payload);
-  buildCarousel('.browse-by-category-card', block, false);
+  buildCarousel('.browse-by-category-card', block);
 
   if (block.classList.contains('fullwidth')) {
     const blockWrapper = block.parentNode;

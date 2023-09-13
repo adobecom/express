@@ -24,9 +24,10 @@ let blog;
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
  * @param {Object} data additional data for RUM sample
+ * @param {integer} forceSampleRate force weight on specific RUM sampling
  */
 
-export function sampleRUM(checkpoint, data = {}) {
+export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
   sampleRUM.defer = sampleRUM.defer || [];
   const defer = (fnname) => {
     sampleRUM[fnname] = sampleRUM[fnname]
@@ -49,7 +50,7 @@ export function sampleRUM(checkpoint, data = {}) {
     window.hlx = window.hlx || {};
     if (!window.hlx.rum) {
       const usp = new URLSearchParams(window.location.search);
-      const weight = (usp.get('rum') === 'on') ? 1 : window.RUM_LOW_SAMPLE_RATE;
+      const weight = (usp.get('rum') === 'on') ? 1 : forceSampleRate || window.RUM_LOW_SAMPLE_RATE;
       // eslint-disable-next-line no-bitwise
       const hashCode = (s) => s.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0);
       const id = `${hashCode(window.location.href)}-${new Date().getTime()}-${Math.random().toString(16).substr(2, 14)}`;
@@ -498,22 +499,25 @@ export function readBlockConfig($block) {
   return config;
 }
 
-function removeIrrelevantSections(main) {
-  main.querySelectorAll(':scope > div').forEach((section) => {
-    const sectionMeta = section.querySelector('div.section-metadata');
-    if (sectionMeta) {
-      const meta = readBlockConfig(sectionMeta);
-      if (meta.audience && meta.audience !== document.body.dataset?.device) {
-        section.remove();
-      }
-    }
-  });
-}
-
 export function getMetadata(name) {
   const attr = name && name.includes(':') ? 'property' : 'name';
   const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
   return ($meta && $meta.content) || '';
+}
+
+export function removeIrrelevantSections(main) {
+  main.querySelectorAll(':scope > div').forEach((section) => {
+    const sectionMeta = section.querySelector('div.section-metadata');
+    if (sectionMeta) {
+      const meta = readBlockConfig(sectionMeta);
+
+      // section meant for different device or section visibility steered over metadata
+      if ((meta.audience && meta.audience !== document.body.dataset?.device)
+          || (meta.showwith !== undefined && getMetadata(meta.showwith.toLowerCase()) !== 'on')) {
+        section.remove();
+      }
+    }
+  });
 }
 
 /**
@@ -783,6 +787,7 @@ function decorateHeaderAndFooter() {
     footer.innerHTML = `
       <div id="feds-footer"></div>
     `;
+    footer.setAttribute('data-status', 'loading');
   } else footer.remove();
 }
 
@@ -2330,6 +2335,8 @@ async function loadArea(area = document) {
     delete section.el.dataset.status;
     delete section.el.dataset.idx;
   }
+  const footer = document.querySelector('footer');
+  delete footer.dataset.status;
 
   loadLazy(main);
 
