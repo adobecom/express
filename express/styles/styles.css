@@ -38,7 +38,7 @@
   --gradient-highlight-diagonal: linear-gradient(45deg, #7c84fc, #ff4dd2);
 
   /* header */
-  --header-height: 65px;
+  --header-height: 64px;
   --brand-header-height: 79px;
 
   /* body */
@@ -105,7 +105,16 @@ body {
 /* gnav */
 
 body > header {
-  min-height: var(--header-height) !important;
+  box-sizing: content-box;
+  border-bottom: 1px solid #EAEAEA;
+  min-height: var(--header-height);
+  padding-bottom: var(--brand-header-height);
+  background-image: url(/express/icons/cc-express-logo.svg);
+  background-repeat: no-repeat;
+  background-size: auto 32px;
+  background-position: bottom 24px center;
+  position: relative;
+  background-color: #FFF;
 }
 
 body>footer[data-status='loading']{
