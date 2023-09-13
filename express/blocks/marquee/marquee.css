@@ -223,7 +223,7 @@ body.no-desktop-brand-header header {
   }
 
   .marquee.short h2 {
-    font-size: var(--heading-font-size-m);
+    font-size: var(--heading-font-size-s);
   }
 
   .marquee.short p {
