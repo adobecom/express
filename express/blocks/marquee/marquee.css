@@ -136,6 +136,10 @@ body.no-desktop-brand-header header {
   flex-wrap: wrap;
 }
 
+.marquee .marquee-foreground .content-wrapper .button-container .cta-sub-text {
+  margin: 0;
+}
+
 .marquee .button-container.button-inline.free-plan-container .free-plan-widget {
   color: var(--body-color);
   background: unset;
@@ -303,7 +307,7 @@ body.no-desktop-brand-header header {
     max-width: 60%;
   }
 
-  .marquee.narrow .marquee-foreground .content-wrapper p {
+  .marquee.narrow .marquee-foreground .content-wrapper > p {
     max-width: 80%;
   }
 

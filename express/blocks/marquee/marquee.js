@@ -41,13 +41,19 @@ const breakpointConfig = [
 
 // FIXME: Not fulfilling requirement. Re-think of a way to allow subtext to contain link.
 function handleSubCTAText(buttonContainer) {
-  const button = buttonContainer.querySelector('a');
-  if (button && button.textContent.includes('§')) {
+  if (buttonContainer.nextElementSibling.tagName === 'BLOCKQUOTE') {
+    const subText = buttonContainer.nextElementSibling.querySelector('p');
+    if (subText) {
+      subText.classList.add('cta-sub-text');
+      buttonContainer.append(subText);
+    }
+  } else if (buttonContainer.querySelector('a')?.textContent.includes('§')) {
+    const button = buttonContainer.querySelector('a');
     const dividedText = button.textContent.split('§');
     if (dividedText.length < 2) return;
 
     button.textContent = dividedText[0].trim();
-    const subText = createTag('div', { class: 'cta-sub-text' });
+    const subText = createTag('p', { class: 'cta-sub-text' });
     subText.textContent = dividedText[1]?.trim();
     buttonContainer.append(subText);
   }
@@ -371,8 +377,6 @@ export default async function decorate(block) {
   if (getLocale(window.location) === 'jp') {
     addHeaderSizing(block);
   }
-
-  handleSubCTAText(block);
 
   block.classList.add('appear');
 }
