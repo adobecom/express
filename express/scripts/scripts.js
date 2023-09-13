@@ -780,7 +780,7 @@ function decorateHeaderAndFooter() {
 
   const headerMeta = getMeta('header');
   // if (headerMeta !== 'off') header.innerHTML = '<div id="feds-header"></div>';
-  else header.remove();
+ //  else header.remove();
   const footerMeta = getMeta('footer');
   const footer = document.querySelector('footer');
   if (footerMeta !== 'off') {
