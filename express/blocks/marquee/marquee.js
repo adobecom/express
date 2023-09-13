@@ -44,7 +44,7 @@ function handleSubCTAText(buttonContainer) {
   if (buttonContainer.nextElementSibling.tagName !== 'BLOCKQUOTE') return;
 
   const blockQuote = buttonContainer.nextElementSibling;
-  const subText = buttonContainer.nextElementSibling.querySelector('p');
+  const subText = blockQuote.querySelector('p');
   if (subText) {
     subText.classList.add('cta-sub-text');
     buttonContainer.append(subText);
