@@ -117,7 +117,7 @@ body > header {
   background-color: #FFF;
 }
 
-body>footer{
+body>footer[data-status='loading']{
   visibility:hidden;
 }
 
