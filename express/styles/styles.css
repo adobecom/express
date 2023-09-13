@@ -38,7 +38,7 @@
   --gradient-highlight-diagonal: linear-gradient(45deg, #7c84fc, #ff4dd2);
 
   /* header */
-  --header-height: 64px;
+  --header-height: 65px;
   --brand-header-height: 79px;
 
   /* body */
@@ -105,27 +105,16 @@ body {
 /* gnav */
 
 body > header {
-  box-sizing: content-box;
   border-bottom: 1px solid #EAEAEA;
-  min-height: var(--header-height);
-  padding-bottom: var(--brand-header-height);
-  background-image: url(/express/icons/cc-express-logo.svg);
-  background-repeat: no-repeat;
-  background-size: auto 32px;
-  background-position: bottom 24px center;
-  position: relative;
-  background-color: #FFF;
+}
+
+.feds-topnav-spacing,
+body > header:not(.feds-header-wrapper){
+  height: var(--header-height);
 }
 
 body>footer[data-status='loading']{
   visibility:hidden;
-}
-
-body.no-brand-header > header,
-body.no-desktop-brand-header > header {
-  height: auto;
-  padding-bottom: 0;
-  background-image: unset;
 }
 
 header #feds-topnav a.feds-navLink.feds-navLink--primaryCta {
@@ -143,8 +132,8 @@ header #feds-topnav a.feds-navLink.feds-navLink--primaryCta:focus {
   border-color: var(--color-info-accent-hover) !important;
   outline: none;
   box-shadow:
-    0 0 0 2px var(--color-white),
-    0 0 0 4px var(--color-info-accent-hover);
+          0 0 0 2px var(--color-white),
+          0 0 0 4px var(--color-info-accent-hover);
 }
 
 header #feds-header a.feds-navLink:hover .feds-navLink-text {
