@@ -227,6 +227,10 @@ body.no-desktop-brand-header header {
     font-size: var(--heading-font-size-l);
   }
 
+  .marquee.short h2 {
+    font-size: var(--heading-font-size-s);
+  }
+
   .marquee.short p {
     font-size: var(--body-font-size-m);
     position: relative;
