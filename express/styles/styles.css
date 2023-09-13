@@ -105,16 +105,7 @@ body {
 /* gnav */
 
 body > header {
-  box-sizing: content-box;
-  border-bottom: 1px solid #EAEAEA;
   height: var(--header-height) !important;
-  padding-bottom: var(--brand-header-height);
-  background-image: url(/express/icons/cc-express-logo.svg);
-  background-repeat: no-repeat;
-  background-size: auto 32px;
-  background-position: bottom 24px center;
-  position: relative;
-  background-color: #FFF;
 }
 
 body>footer[data-status='loading']{
@@ -126,10 +117,6 @@ body.no-desktop-brand-header > header {
   height: auto;
   padding-bottom: 0;
   background-image: unset;
-}
-
-body.feds-loaded>header {
-  height: auto;
 }
 
 header #feds-topnav a.feds-navLink.feds-navLink--primaryCta {
