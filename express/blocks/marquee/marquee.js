@@ -49,15 +49,6 @@ function handleSubCTAText(buttonContainer) {
       buttonContainer.append(subText);
     }
     blockQuote.remove();
-  } else if (buttonContainer.querySelector('a')?.textContent.includes('§')) {
-    const button = buttonContainer.querySelector('a');
-    const dividedText = button.textContent.split('§');
-    if (dividedText.length < 2) return;
-
-    button.textContent = dividedText[0].trim();
-    const subText = createTag('p', { class: 'cta-sub-text' });
-    subText.textContent = dividedText[1]?.trim();
-    buttonContainer.append(subText);
   }
 }
 
