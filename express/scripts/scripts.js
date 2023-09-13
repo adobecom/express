@@ -120,7 +120,7 @@ export function getAssetDetails(el) {
   if (match) {
     [, assetId] = match;
   } else if (assetUrl.origin.endsWith('.adobeprojectm.com')) {
-    assetId = new URLSearchParams(assetUrl.search).get('component_id');
+    [assetId] = assetUrl.pathname.split('/').splice(-2, 1);
   } else {
     assetId = `${assetUrl.pathname}`;
   }
