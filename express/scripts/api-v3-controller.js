@@ -73,11 +73,12 @@ export async function fetchLinkListFromCKGApi() {
   if (getMetadata('ckgid')) {
     const dataRaw = {
       experienceId: 'templates-browse-v1',
-      context: {
-        urlPath: window.location.pathname,
-        task: getMetadata('tasks-x'),
-        topic: getMetadata('topics-x'),
-      },
+      // TODO: update CKG pills query method using context in the future
+      // context: {
+      //   urlPath: window.location.pathname,
+      //   task: getMetadata('tasks-x'),
+      //   topic: getMetadata('topics-x'),
+      // },
       locale: 'en_US',
       queries: [
         {
