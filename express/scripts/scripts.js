@@ -14,6 +14,8 @@ window.RUM_GENERATION = 'ccx-gen-4-experiment-high-sample-rate';
 window.RUM_LOW_SAMPLE_RATE = 100;
 window.RUM_HIGH_SAMPLE_RATE = 50;
 
+window.dataLayer = window.dataLayer || [];
+
 const TK_IDS = {
   jp: 'dvg6awq',
 };
@@ -136,7 +138,6 @@ export function getAssetDetails(el) {
  */
 function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]']) {
   const assetsSelector = assetsSelectors.join(',');
-  window.dataLayer = window.dataLayer || [];
 
   const viewAssetObserver = new IntersectionObserver((entries) => {
     entries
