@@ -16,6 +16,7 @@ import {
 } from '../../scripts/scripts.js';
 
 const docTitle = document.title;
+const locale = getLocale(window.location);
 
 export async function fetchVideoAnalytics() {
   if (!window.videoAnalytics) {
@@ -68,7 +69,6 @@ async function fetchVideoPromotions() {
   if (!window.videoPromotions) {
     window.videoPromotions = {};
     try {
-      const locale = getLocale(window.location);
       const urlPrefix = locale === 'us' ? '' : `/${locale}`;
       const resp = await fetch(`${urlPrefix}/express/video-promotions.json`);
       const json = await resp.json();
@@ -258,7 +258,7 @@ export function displayVideoModal(url = [], title, push) {
     } else if (primaryUrl.includes('vimeo')) {
       vidType = 'vimeo';
       const vid = new URL(primaryUrl).pathname.split('/')[1];
-      vidUrls = [`https://player.vimeo.com/video/${vid}?app_id=122963&autoplay=1`];
+      vidUrls = [`https://player.vimeo.com/video/${vid}?app_id=122963&autoplay=1&texttrack=${locale}`];
     } else if (primaryUrl.includes('/media_')) {
       vidType = 'html5';
       const { hash } = new URL(vidUrls[0]);
