@@ -11,7 +11,7 @@
  */
 import { addPublishDependencies, createTag } from '../../scripts/scripts.js';
 import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 let invisContainer;
 let parent;
