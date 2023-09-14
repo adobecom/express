@@ -1,3 +1,7 @@
+.ckg-link-list.block {
+    min-height: 62px;
+}
+
 .ckg-link-list.block .carousel-container {
     margin-bottom: 0;
 }

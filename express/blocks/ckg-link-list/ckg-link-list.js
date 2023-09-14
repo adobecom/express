@@ -15,6 +15,7 @@ import { getDataWithContext } from '../../scripts/api-v3-controller.js';
 import buildCarousel from '../shared/carousel.js';
 
 export default async function decorate(block) {
+  block.style.visibility = 'hidden';
   const context = {
     urlPath: window.location.pathname,
     task: getMetadata('tasks'),
@@ -39,5 +40,6 @@ export default async function decorate(block) {
     block.append(buttonContainer);
   });
 
-  buildCarousel('.button-container', block);
+  await buildCarousel('.button-container', block);
+  block.style.visibility = 'visible';
 }
