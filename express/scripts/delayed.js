@@ -22,7 +22,7 @@ export const loadExpressProduct = async (createTag) => {
  */
 export default function loadDelayed([
   createTag,
-], DELAY = 0) {
+], DELAY = 3000) {
   return new Promise((resolve) => {
     setTimeout(() => {
       loadExpressProduct(createTag);
