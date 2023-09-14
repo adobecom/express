@@ -662,6 +662,7 @@ export function getLanguage(locale) {
     de: 'de-DE',
     it: 'it-IT',
     dk: 'da-DK',
+    gb: 'en-GB',
     es: 'es-ES',
     fi: 'fi-FI',
     jp: 'ja-JP',
@@ -792,7 +793,7 @@ function decorateHeaderAndFooter() {
 }
 
 /**
- * Loads a CSS file.
+ * Loads a CSS file
  * @param {string} href The path to the CSS file
  */
 export function loadCSS(href, callback) {
@@ -1866,16 +1867,18 @@ function decorateLinks(main) {
         url = new URL(a.href);
       }
 
-      // make url relative if needed
-      const relative = url.hostname === window.location.hostname;
-      const urlPath = `${url.pathname}${url.search}${url.hash}`;
-      a.href = relative ? urlPath : `${url.origin}${urlPath}`;
+      const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
+      const isBranchLink = url.hostname === 'adobesparkpost.app.link';
+      if (!isContactLink) {
+        // make url relative if needed
+        const relative = url.hostname === window.location.hostname;
+        const urlPath = `${url.pathname}${url.search}${url.hash}`;
+        a.href = relative ? urlPath : `${url.origin}${urlPath}`;
 
-      if (!relative
-        && url.hostname !== 'adobesparkpost.app.link'
-        && !['tel:', 'mailto:', 'sms:'].includes(url.protocol)) {
-        // open external links in a new tab
-        a.target = '_blank';
+        if (!relative && !isBranchLink) {
+          // open external links in a new tab
+          a.target = '_blank';
+        }
       }
     } catch (e) {
       // invalid url

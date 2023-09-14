@@ -13,6 +13,26 @@
 import { fetchPlaceholders, getLanguage } from '../../scripts/scripts.js';
 import { memoize } from '../../scripts/utils.js';
 
+// supported by content api
+const supportedLanguages = [
+  'en-US',
+  'fr-FR',
+  'de-DE',
+  'it-IT',
+  'da-DK',
+  'es-ES',
+  'fi-FI',
+  'ja-JP',
+  'ko-KR',
+  'nb-NO',
+  'nl-NL',
+  'pt-BR',
+  'sv-SE',
+  'th-TH',
+  'zh-Hant-TW',
+  'zh-Hans-CN',
+];
+
 function extractFilterTerms(input) {
   if (!input || typeof input !== 'string') {
     return [];
@@ -25,6 +45,9 @@ function extractFilterTerms(input) {
 }
 function extractLangs(locales) {
   return locales.toLowerCase().split(' or ').map((l) => l.trim());
+}
+function extractRegions(locales) {
+  return extractLangs(locales).map((l) => (l === 'en' ? 'ZZ' : l.toUpperCase()));
 }
 function formatFilterString(filters) {
   const {
@@ -55,8 +78,15 @@ function formatFilterString(filters) {
   });
   // locale needs backward compatibility with old api
   if (locales) {
-    const langFilter = extractLangs(locales).map((l) => getLanguage(l)).join(',');
-    str += `&filters=language==${langFilter}`;
+    const langFilter = extractLangs(locales)
+      .map((l) => getLanguage(l))
+      .filter((l) => supportedLanguages.includes(l))
+      .join(',');
+    if (langFilter) str += `&filters=language==${langFilter}`;
+
+    // No Region Filter. We still have Region Boosting
+    // const regionFilter = extractRegions(locales).join(',');
+    // if (regionFilter) str += `&filters=applicableRegions==${regionFilter}`;
   }
 
   return str;
@@ -91,19 +121,22 @@ async function fetchSearchUrl({
   const headers = {};
 
   const langs = extractLangs(filters.locales);
-  let prefLang;
-  if (langs.length > 0) {
-    [prefLang] = langs;
-    headers['x-express-pref-lang'] = getLanguage(prefLang);
-    // TODO: maintaining a more thorough mapping when we add UK and IN, or update getLanguage()
-    headers['x-express-ims-region-code'] = prefLang === 'en' ? 'ZZ' : prefLang.toUpperCase();
+  if (langs.length === 0) {
+    return memoizedFetch(url, { headers });
+  }
+  const prefLang = getLanguage(langs[0]);
+  const [prefRegion] = extractRegions(filters.locales);
+  headers['x-express-ims-region-code'] = prefRegion; // Region Boosting
+  if (supportedLanguages.includes(prefLang)) {
+    headers['x-express-pref-lang'] = prefLang; // Language Boosting
   }
   const res = await memoizedFetch(url, { headers });
   if (!res) return res;
-  if (langs.length > 1) {
+  if (langs.length > 1 && supportedLanguages.includes(prefLang)) {
+    // a template can have many regions but only 1 language, so we group by language
     res.items = [
-      ...res.items.filter(({ language }) => language === getLanguage(prefLang)),
-      ...res.items.filter(({ language }) => language !== getLanguage(prefLang))];
+      ...res.items.filter(({ language }) => language === prefLang),
+      ...res.items.filter(({ language }) => language !== prefLang)];
   }
   return res;
 }
