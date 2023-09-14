@@ -659,6 +659,7 @@ export function getLanguage(locale) {
     us: 'en-US',
     fr: 'fr-FR',
     in: 'en-IN',
+    uk: 'en-GB',
     de: 'de-DE',
     it: 'it-IT',
     dk: 'da-DK',
