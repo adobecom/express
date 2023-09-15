@@ -9,44 +9,58 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import {
-  createTag,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+import { createTag } from '../../scripts/scripts.js';
+import { fetchPlan } from '../../scripts/utils/pricing.js';
 
-function decorateList($block) {
+function decorateList(block) {
   const list = [];
 
-  const $rows = Array.from($block.children);
-  $rows.forEach(($row) => {
-    const $cells = Array.from($row.children);
-    const $title = $cells[0];
-    const $text = $cells[1];
+  const rows = Array.from(block.children);
+  rows.forEach((row) => {
+    const cells = Array.from(row.children);
+    const titleEl = cells[0];
+    const textEl = cells[1];
 
-    if ($title && $text) {
-      const title = $title.textContent.trim();
-      const text = $text.textContent.trim();
+    if (titleEl && textEl) {
+      const title = titleEl.textContent.trim();
+      const text = textEl.textContent.trim();
       list.push({
         title, text,
       });
     }
   });
   if (list.length > 0) {
-    $block.innerHTML = '';
+    block.innerHTML = '';
     list.forEach((item) => {
       const { title, text } = item;
-      const $listItem = createTag('div', { class: 'item' });
-      $block.append($listItem);
-      const $title = createTag('h3', { class: 'item-title' });
-      $title.innerHTML = title;
-      $listItem.append($title);
-      const $text = createTag('p', { class: 'item-text' });
-      $text.innerHTML = text;
-      $listItem.append($text);
+      const listItem = createTag('div', { class: 'item' });
+      block.append(listItem);
+      const titleEl = createTag('h3', { class: 'item-title' });
+      titleEl.innerHTML = title;
+      listItem.append(titleEl);
+      const textEl = createTag('p', { class: 'item-text' });
+      textEl.innerHTML = text;
+      listItem.append(textEl);
     });
   }
 }
 
-export default function decorate($block) {
-  decorateList($block);
+function decoratePricing(block) {
+  const pricingLinks = block.querySelectorAll('a[title^="{{pricing"]');
+  if (pricingLinks.length <= 0) return;
+
+  pricingLinks.forEach((priceLink) => {
+    const priceType = priceLink.textContent.replace(/\{\{|}}/g, '').split('.')[1];
+    fetchPlan(priceLink.href).then((response) => {
+      if (response[priceType]) {
+        const priceText = createTag('span', { class: 'inline-pricing' }, response[priceType]);
+        priceLink.parentElement.replaceChild(priceText, priceLink);
+      }
+    });
+  });
+}
+
+export default function decorate(block) {
+  decorateList(block);
+  decoratePricing(block);
 }
