@@ -13,7 +13,7 @@ import {
   getLocale,
   getLanguage,
   getCookie,
-  getHelixEnv,
+  getHelixEnv, createTag,
 } from '../scripts.js';
 
 function replaceUrlParam(url, paramName, paramValue) {
@@ -350,4 +350,17 @@ export async function fetchPlan(planUrl) {
   }
 
   return plan;
+}
+
+export function decoratePricing(block) {
+  const pricingLinks = block.querySelectorAll('a[title^="{{pricing"]');
+  pricingLinks.forEach((priceLink) => {
+    const priceType = priceLink.textContent.replace(/\{\{|}}/g, '').split('.')[1];
+    fetchPlan(priceLink.href).then((response) => {
+      if (response[priceType]) {
+        const priceText = createTag('span', { class: 'inline-pricing' }, response[priceType]);
+        priceLink.parentElement.replaceChild(priceText, priceLink);
+      }
+    });
+  });
 }

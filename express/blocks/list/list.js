@@ -10,7 +10,6 @@
  * governing permissions and limitations under the License.
  */
 import { createTag } from '../../scripts/scripts.js';
-import { fetchPlan } from '../../scripts/utils/pricing.js';
 
 function decorateList(block) {
   const list = [];
@@ -45,22 +44,12 @@ function decorateList(block) {
   }
 }
 
-function decoratePricing(block) {
-  const pricingLinks = block.querySelectorAll('a[title^="{{pricing"]');
-  if (pricingLinks.length <= 0) return;
-
-  pricingLinks.forEach((priceLink) => {
-    const priceType = priceLink.textContent.replace(/\{\{|}}/g, '').split('.')[1];
-    fetchPlan(priceLink.href).then((response) => {
-      if (response[priceType]) {
-        const priceText = createTag('span', { class: 'inline-pricing' }, response[priceType]);
-        priceLink.parentElement.replaceChild(priceText, priceLink);
-      }
-    });
-  });
-}
-
-export default function decorate(block) {
+export default async function decorate(block) {
   decorateList(block);
-  decoratePricing(block);
+
+  const pricingLinks = block.querySelectorAll('a[title^="{{pricing"]');
+  if (pricingLinks.length > 0) {
+    const { decoratePricing } = await import('../../scripts/utils/pricing.js');
+    decoratePricing(block);
+  }
 }
