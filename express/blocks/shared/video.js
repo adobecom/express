@@ -16,15 +16,14 @@ import {
 } from '../../scripts/scripts.js';
 
 const docTitle = document.title;
-const locale = getLocale(window.location);
 
-const getSubtitleLanguage = (location) => {
+const getAvailableVimeoSubLang = () => {
   const langs = {
     fr: 'fr',
     de: 'de',
     jp: 'ja',
   };
-  return langs[location] || 'en';
+  return langs[getLocale(window.location)] || 'en';
 };
 
 export async function fetchVideoAnalytics() {
@@ -78,6 +77,7 @@ async function fetchVideoPromotions() {
   if (!window.videoPromotions) {
     window.videoPromotions = {};
     try {
+      const locale = getLocale(window.location);
       const urlPrefix = locale === 'us' ? '' : `/${locale}`;
       const resp = await fetch(`${urlPrefix}/express/video-promotions.json`);
       const json = await resp.json();
@@ -267,7 +267,7 @@ export function displayVideoModal(url = [], title, push) {
     } else if (primaryUrl.includes('vimeo')) {
       vidType = 'vimeo';
       const vid = new URL(primaryUrl).pathname.split('/')[1];
-      const language = getSubtitleLanguage(locale);
+      const language = getAvailableVimeoSubLang();
       vidUrls = [`https://player.vimeo.com/video/${vid}?app_id=122963&autoplay=1&texttrack=${language}`];
     } else if (primaryUrl.includes('/media_')) {
       vidType = 'html5';
