@@ -507,25 +507,15 @@ export function getMetadata(name) {
 
 export function removeIrrelevantSections(main) {
   main.querySelectorAll(':scope > div').forEach((section) => {
-    const sectionMetaBlock = section.querySelector('div.section-metadata');
-    if (sectionMetaBlock) {
-      const sectionMeta = readBlockConfig(sectionMetaBlock);
+    const sectionMeta = section.querySelector('div.section-metadata');
+    if (sectionMeta) {
+      const meta = readBlockConfig(sectionMeta);
 
-      // section meant for different device
-      let sectionRemove = !!(sectionMeta.audience
-        && sectionMeta.audience !== document.body.dataset?.device);
-
-      // section visibility steered over metadata
-      if (!sectionRemove && sectionMeta.showwith !== undefined) {
-        let showWithSearchParam = null;
-        if (!['www.adobe.com'].includes(window.location.hostname)) {
-          const urlParams = new URLSearchParams(window.location.search);
-          showWithSearchParam = urlParams.get(`showwith${sectionMeta.showwith.toLowerCase()}`)
-            || urlParams.get(`showwith${sectionMeta.showwith}`);
-        }
-        sectionRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(sectionMeta.showwith.toLowerCase()) !== 'on';
+      // section meant for different device or section visibility steered over metadata
+      if ((meta.audience && meta.audience !== document.body.dataset?.device)
+        || (meta.showwith !== undefined && getMetadata(meta.showwith.toLowerCase()) !== 'on')) {
+        section.remove();
       }
-      if (sectionRemove) section.remove();
     }
   });
 }
