@@ -516,7 +516,7 @@ export function removeIrrelevantSections(main) {
         && sectionMeta.audience !== document.body.dataset?.device);
 
       // section visibility steered over metadata
-      if (!sectionRemove && sectionMeta.showwith) {
+      if (!sectionRemove && sectionMeta.showwith !== undefined) {
         let showWithSearchParam = null;
         if (!['www.adobe.com'].includes(window.location.hostname)) {
           const urlParams = new URLSearchParams(window.location.search);
