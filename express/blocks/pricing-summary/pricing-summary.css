@@ -28,7 +28,8 @@ main .pricing-summary .pricing-column-wrapper {
   margin-bottom: 16px;
 }
 
-main .pricing-summary .monetize-item-background {
+main .pricing-summary .card-gradient-background,
+main .pricing-summary .pricing-column-wrapper.has-pricing-eyebrow {
   background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
 }
 
@@ -67,7 +68,7 @@ main .pricing-summary .pricing-column {
   justify-content: flex-start;
 }
 
-main .pricing-summary .pricing-column-wrapper.monetize-item-background.has-pricing-eyebrow .pricing-column {
+main .pricing-summary .pricing-column-wrapper.has-pricing-eyebrow .pricing-column {
   height: calc(100% - 36px);
 }
 
@@ -75,8 +76,12 @@ main .pricing-summary .pricing-column .pricing-content-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-height: 270px;
   flex-grow: 1;
+}
+
+main .pricing-summary.feature .pricing-column .pricing-content-wrapper {
+  height: 270px;
+  max-height: 270px;
 }
 
 main .pricing-summary .pricing-header {
@@ -269,7 +274,7 @@ main .pricing-summary .pricing-feature-list li {
     white-space: nowrap;
   }
 
-  main .pricing-summary .pricing-column-wrapper.monetize-item-background.has-pricing-eyebrow {
+  main .pricing-summary .pricing-column-wrapper.has-pricing-eyebrow {
     margin-top: -36px;
   }
 }
