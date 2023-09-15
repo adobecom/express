@@ -26,7 +26,7 @@ export default function loadDelayed([
   return new Promise((resolve) => {
     setTimeout(() => {
       loadExpressProduct(createTag);
-      resolve(null);
+      resolve();
     }, DELAY);
   });
 }
