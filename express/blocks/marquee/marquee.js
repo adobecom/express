@@ -39,6 +39,19 @@ const breakpointConfig = [
   },
 ];
 
+// FIXME: Not fulfilling requirement. Re-think of a way to allow subtext to contain link.
+function handleSubCTAText(buttonContainer) {
+  const elAfterBtn = buttonContainer.nextElementSibling;
+  if (!elAfterBtn || elAfterBtn?.tagName !== 'BLOCKQUOTE') return;
+
+  const subText = elAfterBtn.querySelector('p');
+  if (subText) {
+    subText.classList.add('cta-sub-text');
+    buttonContainer.append(subText);
+  }
+  elAfterBtn.remove();
+}
+
 function getBreakpoint(animations) {
   let breakpoint = 'default';
   breakpointConfig.forEach((bp) => {
@@ -226,7 +239,8 @@ export default async function decorate(block) {
   const animations = {};
   const rows = [...block.children];
 
-  rows.forEach(async (div, index) => {
+  for (const div of rows) {
+    const index = rows.indexOf(div);
     let rowType = 'animation';
     let typeHint;
     if (index + 1 === rows.length) rowType = 'content';
@@ -305,6 +319,7 @@ export default async function decorate(block) {
       });
 
       // check for video link
+      // eslint-disable-next-line no-await-in-loop
       const { isVideoLink } = await import('../shared/video.js');
       const videoLink = [...div.querySelectorAll('a')].find((a) => isVideoLink(a.href));
       if (videoLink) {
@@ -317,9 +332,13 @@ export default async function decorate(block) {
       buttonAsLink?.classList.remove('button');
       secondaryButton?.classList.add('secondary');
       const buttonContainers = [...div.querySelectorAll('p.button-container')];
+      const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
+      buttonContainers[0]?.before(buttonsWrapper);
       buttonContainers.forEach((btnContainer) => {
+        handleSubCTAText(btnContainer);
         btnContainer.classList.add('button-inline');
         btnContainer.querySelector('a.button')?.classList.add('xlarge');
+        buttonsWrapper.append(btnContainer);
       });
     }
 
@@ -341,7 +360,7 @@ export default async function decorate(block) {
         div.remove();
       }
     }
-  });
+  }
 
   const button = block.querySelector('.button');
   if (button) {

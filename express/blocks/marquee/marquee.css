@@ -57,6 +57,12 @@ body.no-desktop-brand-header header {
   margin-bottom: 0;
 }
 
+.marquee .marquee-foreground .buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .marquee .content-wrapper h1 {
   font-size: clamp(var(--heading-font-size-l), 4vw, var(--heading-font-size-xxl));
   margin: 0 0 8px 0;
@@ -121,6 +127,7 @@ body.no-desktop-brand-header header {
 .marquee .button-container.button-inline {
   display: inline-block;
   margin-right: 16px;
+  text-align: left;
 }
 
 .marquee .content-wrapper .button-container.free-plan-container {
@@ -128,6 +135,10 @@ body.no-desktop-brand-header header {
   justify-content: left;
   align-items: flex-start;
   flex-wrap: wrap;
+}
+
+.marquee .marquee-foreground .content-wrapper .button-container .cta-sub-text {
+  margin: 0;
 }
 
 .marquee .button-container.button-inline.free-plan-container .free-plan-widget {
@@ -216,6 +227,10 @@ body.no-desktop-brand-header header {
     font-size: var(--heading-font-size-l);
   }
 
+  .marquee.short h2 {
+    font-size: var(--heading-font-size-s);
+  }
+
   .marquee.short p {
     font-size: var(--body-font-size-m);
     position: relative;
@@ -279,6 +294,10 @@ body.no-desktop-brand-header header {
     justify-content: center;
   }
 
+  .marquee .button-container.button-inline {
+    text-align: center;
+  }
+
   .marquee.short .marquee-foreground {
     box-sizing: border-box;
     padding: 32px 20px;
@@ -289,11 +308,15 @@ body.no-desktop-brand-header header {
     max-width: 46%;
   }
 
+  .marquee .marquee-foreground .buttons-wrapper {
+    flex-direction: row;
+  }
+
   .marquee.narrow .marquee-foreground .content-wrapper {
     max-width: 60%;
   }
 
-  .marquee.narrow .marquee-foreground .content-wrapper p {
+  .marquee.narrow .marquee-foreground .content-wrapper > p {
     max-width: 80%;
   }
 

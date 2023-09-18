@@ -102,6 +102,11 @@ body {
   padding: 0;
 }
 
+body.no-scroll {
+  overflow-y: hidden;
+  touch-action: none;
+}
+
 /* gnav */
 
 body > header {
@@ -532,6 +537,10 @@ main .section:last-of-type>.default-content-wrapper {
 
   main p {
     font-size: var(--body-font-size-l);
+  }
+
+  body.no-scroll[data-device="desktop"] {
+    padding-right: 15px;
   }
 }
 

@@ -24,9 +24,10 @@ let blog;
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
  * @param {Object} data additional data for RUM sample
+ * @param {integer} forceSampleRate force weight on specific RUM sampling
  */
 
-export function sampleRUM(checkpoint, data = {}) {
+export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
   sampleRUM.defer = sampleRUM.defer || [];
   const defer = (fnname) => {
     sampleRUM[fnname] = sampleRUM[fnname]
@@ -49,7 +50,7 @@ export function sampleRUM(checkpoint, data = {}) {
     window.hlx = window.hlx || {};
     if (!window.hlx.rum) {
       const usp = new URLSearchParams(window.location.search);
-      const weight = (usp.get('rum') === 'on') ? 1 : window.RUM_LOW_SAMPLE_RATE;
+      const weight = (usp.get('rum') === 'on') ? 1 : forceSampleRate || window.RUM_LOW_SAMPLE_RATE;
       // eslint-disable-next-line no-bitwise
       const hashCode = (s) => s.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0);
       const id = `${hashCode(window.location.href)}-${new Date().getTime()}-${Math.random().toString(16).substr(2, 14)}`;
@@ -658,9 +659,11 @@ export function getLanguage(locale) {
     us: 'en-US',
     fr: 'fr-FR',
     in: 'en-IN',
+    uk: 'en-GB',
     de: 'de-DE',
     it: 'it-IT',
     dk: 'da-DK',
+    gb: 'en-GB',
     es: 'es-ES',
     fi: 'fi-FI',
     jp: 'ja-JP',
@@ -791,7 +794,7 @@ function decorateHeaderAndFooter() {
 }
 
 /**
- * Loads a CSS file.
+ * Loads a CSS file
  * @param {string} href The path to the CSS file
  */
 export function loadCSS(href, callback) {
@@ -1867,16 +1870,18 @@ function decorateLinks(main) {
         url = new URL(a.href);
       }
 
-      // make url relative if needed
-      const relative = url.hostname === window.location.hostname;
-      const urlPath = `${url.pathname}${url.search}${url.hash}`;
-      a.href = relative ? urlPath : `${url.origin}${urlPath}`;
+      const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
+      const isBranchLink = url.hostname === 'adobesparkpost.app.link';
+      if (!isContactLink) {
+        // make url relative if needed
+        const relative = url.hostname === window.location.hostname;
+        const urlPath = `${url.pathname}${url.search}${url.hash}`;
+        a.href = relative ? urlPath : `${url.origin}${urlPath}`;
 
-      if (!relative
-        && url.hostname !== 'adobesparkpost.app.link'
-        && !['tel:', 'mailto:', 'sms:'].includes(url.protocol)) {
-        // open external links in a new tab
-        a.target = '_blank';
+        if (!relative && !isBranchLink) {
+          // open external links in a new tab
+          a.target = '_blank';
+        }
       }
     } catch (e) {
       // invalid url

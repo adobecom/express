@@ -65,6 +65,32 @@ main .columns .button-container a {
   margin: 0;
 }
 
+main .columns:not(.highlight) .column-video .button-container a {
+  border-radius: 24px;
+  padding: 8px 20px;
+}
+
+main .columns:not(.highlight) .column-video .button-container a:hover,
+main .columns:not(.highlight) .column-video .button-container a:active,
+main .columns:not(.highlight) .column-video .button-container a,
+main .columns:not(.highlight) .column-video .button-container a:focus {
+  background-color: transparent;
+  border-color: var(--color-black);
+  color: var(--color-black);
+  box-shadow: none;
+}
+
+main .columns:not(.highlight) .column-video .button-container a:before {
+  display: inline-block;
+  width: 18px;
+  height: 20px;
+  margin-right: 16px;
+  vertical-align: sub;
+  top: 1px;
+  position: relative;
+  content: url(/express/icons/play.svg);
+}
+
 main .columns .column-picture {
   margin: 15px 0;
 }
@@ -310,7 +336,7 @@ main .columns.highlight.width-2-columns .column-picture {
   order: -1
 }
 
-main .columns-video {
+main .columns.highlight .columns-video {
   cursor: pointer;
 }
 
@@ -329,7 +355,7 @@ main .columns-video .column-picture .column-video-overlay {
   height: 100%;
 }
 
-main .columns-video:hover .column-picture .column-video-overlay {
+main .columns.highlight .columns-video:hover .column-picture .column-video-overlay {
   background-image: linear-gradient(#ffffff00, #90909025, #000000a0);
 }
 
