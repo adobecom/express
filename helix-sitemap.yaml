@@ -179,16 +179,16 @@ sitemaps:
         destination: /es/express/templates/sitemap.xml
         hreflang: es
         alternate: /es/{path}
-      unitedkingdom:
-        source: /uk/express/templates/default/metadata.json?sheet=sitemap
-        destination: /uk/express/templates/sitemap.xml
-        hreflang: en-GB
-        alternate: /uk/{path}
       taiwan:
         source: /tw/express/templates/default/metadata.json?sheet=sitemap
         destination: /tw/express/templates/sitemap.xml
         hreflang: zh-Hant
         alternate: /tw/{path}
+      unitedkingdom:
+        source: /uk/express/templates/default/metadata.json?sheet=sitemap
+        destination: /uk/express/templates/sitemap.xml
+        hreflang: en-GB
+        alternate: /uk/{path}
       netherlands:
         source: /nl/express/templates/default/metadata.json?sheet=sitemap
         destination: /nl/express/templates/sitemap.xml
