@@ -22,25 +22,25 @@ import {
 
 async function fetchBlogIndex(config) {
   let prefix = `/${window.location.pathname.split('/')[1]}`;
-  let conslidatedJson;
+  let consolidatedJson = [];
   if (config.featuredOnly) {
     let linkLocales = config.featuredLinklocales;
     const linkLocs = linkLocales.filter(item => item !== prefix)
     for (let i = 0; i < linkLocs.length ; i++) {
-      let prefixedLocale = linkLocs[i];
-      const resp = await fetch(`/${prefixedLocale}/express/learn/blog/query-index.json`);
+      let prefixedLocale = linkLocs[i] === '' ? '' : "/" + linkLocs[i];
+      const resp = await fetch(`${prefixedLocale}/express/learn/blog/query-index.json`);
       if (resp.status === 200) {
         const json = await resp.json();
-        conslidatedJson = { ...json, ...conslidatedJson};
+        consolidatedJson = consolidatedJson.concat(json.data);
       }
     }
   } else {
     if (prefix === '/express' || prefix === '/drafts' || prefix === '/documentation') prefix = '';
     const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
-    conslidatedJson = await resp.json();
+    consolidatedJson = await resp.json();
   }
   const byPath = {};
-  conslidatedJson.data.forEach((post) => {
+  consolidatedJson.forEach((post) => {
     if (post.tags) {
       const tags = JSON.parse(post.tags);
       tags.push(post.category);
@@ -48,47 +48,7 @@ async function fetchBlogIndex(config) {
     }
     byPath[post.path.split('.')[0]] = post;
   });
-  const index = { data: conslidatedJson.data, byPath };
-  /** 
-  let prefix = `/${window.location.pathname.split('/')[1]}`;
-  if (prefix === '/express' || prefix === '/drafts' || prefix === '/documentation') prefix = '';
-  const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
-  const json = await resp.json();
-  const byPath = {};
-  json.data.forEach((post) => {
-    if (post.tags) {
-      const tags = JSON.parse(post.tags);
-      tags.push(post.category);
-      post.tags = JSON.stringify(tags);
-    }
-    byPath[post.path.split('.')[0]] = post;
-  });
-  let index = { data: json.data, byPath };
-  
-  
-  if (config.featuredOnly) {
-    let linkLocales = config.featuredLinklocales;
-    const linkLocs = linkLocales.filter(item => item !== prefix)
-    for (let i = 0; i < linkLocs.length ; i++) {
-      let prefixedLocale = linkLocs[i];
-      const resp = await fetch(`/${prefixedLocale}/express/learn/blog/query-index.json`);
-      if (resp.status === 200) {
-        const json = await resp.json();
-        const byPath = {};
-        json.data.forEach((post) => {
-          if (post.tags) {
-            const tags = JSON.parse(post.tags);
-            tags.push(post.category);
-            post.tags = JSON.stringify(tags);
-          }
-          byPath[post.path.split('.')[0]] = post;
-        });
-        const localeIndex = { data: json.data, byPath };
-        index = { ...index, ...localeIndex };
-      }
-    }
-  }
-  */
+  const index = { data: consolidatedJson, byPath };
   return (index);
 }
 
@@ -182,8 +142,10 @@ function getBlogPostsConfig($block) {
     let prefixLocales = [];
     for (let i = 0; i < links.length; i++) {
       let localePrefix = links[i].split('/')[3];
-      if (prefixLocales.indexOf(localePrefix) === -1 
-        && !(localePrefix === 'express' || localePrefix === 'drafts' || localePrefix === 'documentation')) {
+      if (localePrefix === 'express') {
+        localePrefix = '';
+      }
+      if (prefixLocales.indexOf(localePrefix) === -1 && !(localePrefix === 'drafts' || localePrefix === 'documentation')) {
         prefixLocales.push(localePrefix);
       }
     }
