@@ -14,8 +14,10 @@
 import {
   loadScript,
   createTag,
+  loadCSS,
 // eslint-disable-next-line import/no-unresolved
 } from './scripts.js';
+import { getAvailableVimeoSubLang } from '../blocks/shared/video.js';
 
 function isInTextNode(node) {
   return node.parentElement.firstChild.nodeType === Node.TEXT_NODE;
@@ -50,8 +52,6 @@ export function embedYoutube(a) {
 }
 
 export function embedVimeo(a) {
-  import { getAvailableVimeoSubLang } from '../blocks/shared/video.js';
-
   if (isInTextNode(a)) return;
   const url = new URL(a.href);
   let src = url.href;
@@ -60,16 +60,19 @@ export function embedVimeo(a) {
     const video = url.pathname.split('/')[1];
     src = `https://player.vimeo.com/video/${video}?app_id=122963&texttrack=${language}`;
   }
-  const iframe = createTag('iframe', {
-    src,
-    style: 'width: 100%; height: 100%;',
-    frameborder: '0',
-    allow: 'autoplay; fullscreen; picture-in-picture',
-    allowfullscreen: 'true',
-    title: 'Content from Vimeo',
-    loading: 'lazy',
-  });
-  const wrapper = createTag('div', { class: 'embed-vimeo' }, iframe);
+  loadScript('/express/scripts/libs/LiteYTEmbed-0.2.0/lite-vimeo-embed.js');
+  loadCSS('/express/scripts/libs/LiteYTEmbed-0.2.0/lite-vimeo-embed.css');
+  // const iframe = createTag('iframe', {
+  //   src,
+  //   style: 'width: 100%; height: 100%;',
+  //   frameborder: '0',
+  //   allow: 'autoplay; fullscreen; picture-in-picture',
+  //   allowfullscreen: 'true',
+  //   title: 'Content from Vimeo',
+  //   loading: 'lazy',
+  // });
+  const embedHTML = `<lite-vimeo videoid="357274789" src=${src}></lite-vimeo>`;
+  const wrapper = createTag('div', { class: 'embed-vimeo' }, embedHTML);
 
   a.parentElement.replaceChild(wrapper, a);
 }
