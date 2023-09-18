@@ -171,13 +171,16 @@
   transform: translate(-50%, 0);
 }
 
-.gen-ai-row .gen-ai-row-cards .card .links-wrapper a {
+.gen-ai-row .card .links-wrapper a {
   margin: 4px auto;
   width: max-content;
   background-color: var(--color-white);
-  color: var(--body-color);
   /* border: 0; */
   border: solid 1px var(--body-color);
+}
+
+.gen-ai-row .card .links-wrapper a:not(:hover) {
+  color: var(--body-color);
 }
 
 @media (min-width: 900px) {
