@@ -121,7 +121,7 @@ function buildGenAIForm({ ctaLinks, subtext }) {
   return genAIForm;
 }
 
-export async function decorateCards(block, payload) {
+async function decorateCards(block, payload) {
   const cards = createTag('div', { class: 'gen-ai-row-cards' });
   const placeholders = await fetchPlaceholders();
 
