@@ -22,6 +22,35 @@ import {
 
 async function fetchBlogIndex(config) {
   let prefix = `/${window.location.pathname.split('/')[1]}`;
+  let conslidatedJson;
+  if (config.featuredOnly) {
+    let linkLocales = config.featuredLinklocales;
+    const linkLocs = linkLocales.filter(item => item !== prefix)
+    for (let i = 0; i < linkLocs.length ; i++) {
+      let prefixedLocale = linkLocs[i];
+      const resp = await fetch(`/${prefixedLocale}/express/learn/blog/query-index.json`);
+      if (resp.status === 200) {
+        const json = await resp.json();
+        conslidatedJson = { ...json, ...conslidatedJson};
+      }
+    }
+  } else {
+    if (prefix === '/express' || prefix === '/drafts' || prefix === '/documentation') prefix = '';
+    const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
+    conslidatedJson = await resp.json();
+  }
+  const byPath = {};
+  conslidatedJson.data.forEach((post) => {
+    if (post.tags) {
+      const tags = JSON.parse(post.tags);
+      tags.push(post.category);
+      post.tags = JSON.stringify(tags);
+    }
+    byPath[post.path.split('.')[0]] = post;
+  });
+  const index = { data: conslidatedJson.data, byPath };
+  /** 
+  let prefix = `/${window.location.pathname.split('/')[1]}`;
   if (prefix === '/express' || prefix === '/drafts' || prefix === '/documentation') prefix = '';
   const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
   const json = await resp.json();
@@ -34,14 +63,15 @@ async function fetchBlogIndex(config) {
     }
     byPath[post.path.split('.')[0]] = post;
   });
-  const index = { data: json.data, byPath };
+  let index = { data: json.data, byPath };
+  
   
   if (config.featuredOnly) {
     let linkLocales = config.featuredLinklocales;
     const linkLocs = linkLocales.filter(item => item !== prefix)
     for (let i = 0; i < linkLocs.length ; i++) {
       let prefixedLocale = linkLocs[i];
-      const resp = await fetch(`${prefixedLocale}/express/learn/blog/query-index.json`);
+      const resp = await fetch(`/${prefixedLocale}/express/learn/blog/query-index.json`);
       if (resp.status === 200) {
         const json = await resp.json();
         const byPath = {};
@@ -58,6 +88,7 @@ async function fetchBlogIndex(config) {
       }
     }
   }
+  */
   return (index);
 }
 
