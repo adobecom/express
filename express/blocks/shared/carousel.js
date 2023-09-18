@@ -24,6 +24,10 @@ function adjustFaderGradient(parent, faders) {
     if (parentSection.style.background.startsWith('rgb')) {
       inGradient = parentSection.style.background.replace(')', ', 1)');
       outGradient = parentSection.style.background.replace(')', ', 0)');
+    } else {
+      faders.right.style.background = 'none';
+      faders.left.style.background = 'none';
+      return;
     }
   }
 
@@ -128,21 +132,24 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
 
   // set initial position based on options
   const setInitialPosition = (scrollable, position) => {
-    let attempts = 10;
-    const positionSetter = setInterval(() => {
-      if (attempts > 0 && scrollable.scrollWidth > 0) {
-        clearInterval(positionSetter);
-        if (position === 'left') {
-          moveCarousel(scrollable.scrollWidth);
-        }
+    const onIntersect = (entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (position === 'left') {
+            moveCarousel(scrollable.scrollWidth);
+          }
 
-        if (position === 'right') {
-          moveCarousel(-scrollable.scrollWidth);
-        }
-      }
+          if (position === 'right') {
+            moveCarousel(-scrollable.scrollWidth);
+          }
 
-      attempts -= 1;
-    }, 100);
+          observer.unobserve(scrollable);
+        }
+      });
+    };
+
+    const carouselObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
+    carouselObserver.observe(scrollable);
   };
 
   // Carousel loop functionality (if enabled)
