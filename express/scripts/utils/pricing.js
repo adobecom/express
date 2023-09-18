@@ -13,7 +13,8 @@ import {
   getLocale,
   getLanguage,
   getCookie,
-  getHelixEnv, createTag,
+  getHelixEnv,
+  createTag,
 } from '../scripts.js';
 
 function replaceUrlParam(url, paramName, paramValue) {
@@ -103,6 +104,26 @@ function getCountry() {
   }
   if (country === 'uk') country = 'gb';
   return (country.split('_')[0]);
+}
+
+export async function formatSalesPhoneNumber(tags) {
+  if (tags.length <= 0) return;
+
+  const numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
+
+  if (!numbersMap?.data) return;
+
+  tags.forEach((a) => {
+    const r = numbersMap.data.find((d) => d.country === getCountry());
+
+    if (!r) {
+      a.textContent = a.href.replace('tel:', '').trim();
+      return;
+    }
+
+    a.textContent = r.number.trim();
+    a.href = `tel:${r.number.trim()}`;
+  });
 }
 
 export function formatPrice(price, currency) {
