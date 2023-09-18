@@ -1,0 +1,193 @@
+.section .gen-ai-row-wrapper {
+  max-width: none;
+}
+
+.gen-ai-row {
+  padding: 0 28px;
+  max-width: 1440px;
+  margin: auto;
+}
+
+.gen-ai-row .gen-ai-row-heading-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin: auto auto 32px;
+}
+
+.gen-ai-row .gen-ai-row-heading-section h2 {
+  text-align: left;
+  max-width: 800px;
+  margin-bottom: 8px;
+  font-size: var(--heading-font-size-m);
+}
+.gen-ai-row .gen-ai-row-heading-section p {
+  text-align: left;
+  margin: 0;
+  max-width: 800px;
+}
+
+.gen-ai-row .gen-ai-row-heading-section .gen-ai-row-link {
+  font-size: var(--body-font-size-s);
+  line-height: 22px;
+}
+
+.gen-ai-row .carousel-container .carousel-platform {
+  align-items: unset;
+}
+
+.gen-ai-row .card {
+  position: relative;
+  height: 329px;
+  width: 406px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 0 8px;
+  position: relative;
+  background-color: var(--color-white);
+}
+
+.gen-ai-row .card:first-of-type {
+  margin-left: 0;
+}
+
+.gen-ai-row .card .text-wrapper {
+  text-align: left;
+  margin: 24px 24px 16px 24px;
+}
+
+.gen-ai-row .card .text-wrapper p {
+  margin: 0;
+}
+
+.gen-ai-row .card .text-wrapper p.cta-card-title {
+  font-size: var(--body-font-size-m);
+  line-height: var(--body-font-size-m);
+  font-weight: 700;
+}
+
+.gen-ai-row .card .text-wrapper p.cta-card-desc {
+  font-size: var(--body-font-size-s);
+}
+
+
+.gen-ai-row .card .media-wrapper {
+  position: relative;
+  border-radius: 16px;
+  margin: 16px;
+}
+
+.gen-ai-row .card .media-wrapper picture img {
+  position: absolute;
+  display: block;
+  height: 236px;
+  width: 374px;
+}
+
+
+.gen-ai-row .card .gen-ai-input-form {
+  position: absolute;
+  width: 352px;
+  height: 55px;
+  padding: 8px;
+  background-color: var(--color-white);
+  border-radius: 8px;
+  box-sizing: border-box;
+  border: 2px solid var(--color-info-accent);
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, calc(-100% - 30px));
+  display: flex;
+  justify-content: space-between;
+}
+
+.gen-ai-row .card .gen-ai-input-form input {
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: none;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  resize: none;
+  width: 230px;
+}
+
+.gen-ai-row .gen-ai-input:active,
+.gen-ai-row .gen-ai-input:focus-visible {
+  border: none;
+  outline: none;
+}
+
+.gen-ai-row .card .gen-ai-input-form input::placeholder {
+  font-style: italic;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+}
+
+:lang(ja) main .gen-ai-row .card .gen-ai-input-form .gen-ai-input,
+:lang(ja) main .gen-ai-row .card .gen-ai-input-form .gen-ai-input::placeholder {
+  font-size: var(--body-font-size-s);
+}
+
+.gen-ai-row .card .gen-ai-input-form button:disabled {
+  pointer-events: none;
+}
+
+.gen-ai-row .card .gen-ai-input-form .gen-ai-submit {
+  color: var(--color-white);
+  background-color: var(--color-info-accent);
+  border-style: none;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  line-height: var(--body-font-size-s);
+  font-weight: 700;
+  padding: 10px 1.5em 10px 1.5em;
+  border-radius: 22px;
+  cursor: pointer;
+  transition: background-color .2s;
+}
+
+.gen-ai-row .card.gen-ai-action .gen-ai-input-form .gen-ai-submit {
+  left: 56px;
+  bottom: 24px;
+}
+
+.gen-ai-row .gen-ai-input-form .gen-ai-submit:not(:disabled):hover {
+  background-color: var(--color-info-accent-hover);
+}
+
+.gen-ai-row .card .gen-ai-input-form .gen-ai-submit:disabled {
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-500);
+}
+
+.gen-ai-row .card .links-wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  left: 50%;
+  bottom: 40px;
+  transform: translate(-50%, 0);
+}
+
+.gen-ai-row .gen-ai-row-cards .card .links-wrapper a {
+  margin: 4px auto;
+  width: max-content;
+  background-color: var(--color-white);
+  color: var(--body-color);
+  /* border: 0; */
+  border: solid 1px var(--body-color);
+}
+
+@media (min-width: 900px) {
+  .gen-ai-row .gen-ai-row-heading-section {
+      flex-direction: row;
+      align-items: flex-end;
+  }
+
+  .gen-ai-row .carousel-container .carousel-fader-left,
+  .gen-ai-row .carousel-container .carousel-fader-right{
+      background: unset;
+  }
+}
