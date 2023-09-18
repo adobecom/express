@@ -24,10 +24,10 @@ async function fetchBlogIndex(config) {
   let prefix = `/${window.location.pathname.split('/')[1]}`;
   let consolidatedJson = [];
   if (config.featuredOnly) {
-    let linkLocales = config.featuredLinklocales;
-    const linkLocs = linkLocales.filter(item => item !== prefix)
-    for (let i = 0; i < linkLocs.length ; i++) {
-      let prefixedLocale = linkLocs[i] === '' ? '' : "/" + linkLocs[i];
+    const linkLocales = config.featuredLinklocales;
+    const linkLocs = linkLocales.filter(item => item !== prefix);
+    for (let i = 0; i < linkLocs.length; i += 1) {
+      const prefixedLocale = linkLocs[i] === '' ? '' : '/' + linkLocs[i];
       const resp = await fetch(`${prefixedLocale}/express/learn/blog/query-index.json`);
       if (resp.status === 200) {
         const json = await resp.json();
@@ -139,8 +139,8 @@ function getBlogPostsConfig($block) {
   if ($rows.length === 1 && $firstRow.length === 1) {
     /* handle links */
     const links = [...$block.querySelectorAll('a')].map(($a) => $a.href);
-    let prefixLocales = [];
-    for (let i = 0; i < links.length; i++) {
+    const prefixLocales = [];
+    for (let i = 0; i < links.length; i += 1) {
       let localePrefix = links[i].split('/')[3];
       if (localePrefix === 'express') {
         localePrefix = '';
