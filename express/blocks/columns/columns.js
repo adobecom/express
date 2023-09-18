@@ -124,7 +124,7 @@ function decorateIconList($columnCell, rowNum, blockClasses) {
 }
 
 const handleVideos = (cell, a, block) => {
-  if (new URL(a.href).hash === '#video-embed' && a.href) {
+  if (a.href && new URL(a.href).hash === '#video-embed') {
     if (a.href.includes('youtu')) {
       embedYoutube(a);
     } else if (a.href.includes('vimeo')) {
