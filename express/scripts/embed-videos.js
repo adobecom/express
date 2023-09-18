@@ -50,12 +50,15 @@ export function embedYoutube(a) {
 }
 
 export function embedVimeo(a) {
+  import { getAvailableVimeoSubLang } from '../blocks/shared/video.js';
+
   if (isInTextNode(a)) return;
   const url = new URL(a.href);
   let src = url.href;
+  const language = getAvailableVimeoSubLang();
   if (url.hostname !== 'player.vimeo.com') {
     const video = url.pathname.split('/')[1];
-    src = `https://player.vimeo.com/video/${video}?app_id=122963`;
+    src = `https://player.vimeo.com/video/${video}?app_id=122963&texttrack=${language}`;
   }
   const iframe = createTag('iframe', {
     src,

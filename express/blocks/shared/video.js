@@ -17,7 +17,7 @@ import {
 
 const docTitle = document.title;
 
-const getAvailableVimeoSubLang = () => {
+export const getAvailableVimeoSubLang = () => {
   const langs = {
     fr: 'fr',
     de: 'de',
