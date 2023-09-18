@@ -179,6 +179,11 @@ sitemaps:
         destination: /es/express/templates/sitemap.xml
         hreflang: es
         alternate: /es/{path}
+      unitedkingdom:
+        source: /uk/express/templates/default/metadata.json?sheet=sitemap
+        destination: /uk/express/templates/sitemap.xml
+        hreflang: en-GB
+        alternate: /uk/{path}
       taiwan:
         source: /tw/express/templates/default/metadata.json?sheet=sitemap
         destination: /tw/express/templates/sitemap.xml
