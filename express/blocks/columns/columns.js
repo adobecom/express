@@ -123,6 +123,26 @@ function decorateIconList($columnCell, rowNum, blockClasses) {
   }
 }
 
+const handleVideos = (cell, a, block) => {
+  if (new URL(a.href).hash === '#video-embed' && a.href) {
+    if (a.href.includes('youtu')) {
+      embedYoutube(a);
+    } else if (a.href.includes('vimeo')) {
+      embedVimeo(a);
+    }
+  } else {
+    transformToVideoColumn(cell, a, block);
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+    });
+    if (a.textContent.trim().startsWith('https://')) {
+      if (a.href.endsWith('.mp4')) {
+        transformLinkToAnimation(a);
+      }
+    }
+  }
+};
+
 export default function decorate($block) {
   const $rows = Array.from($block.children);
 
@@ -143,19 +163,17 @@ export default function decorate($block) {
 
   $rows.forEach(($row, rowNum) => {
     const $cells = Array.from($row.children);
+
     $cells.forEach(($cell, cellNum) => {
-      const aTag = $cell.querySelector('a');
-      const link = aTag?.href;
+      const $a = $cell.querySelector('a');
+      const $pics = $cell.querySelectorAll(':scope picture');
+
       if ($cell.querySelector('img.icon, svg.icon')) {
         decorateIconList($cell, rowNum, $block.classList);
-      } else if (link && link.includes('youtu')) {
-        $cell.classList.add('column-picture');
-        embedYoutube(aTag);
-      } else if (link && link.includes('vimeo')) {
-        $cell.classList.add('column-picture');
-        embedVimeo(aTag);
+      } else if ($a) {
+        if (isVideoLink($a.href)) handleVideos($cell, $a, $block);
+        else if ($pics[0]) linkImage($cell);
       }
-
       if (cellNum === 0 && isNumberedList) {
         // add number to first cell
         let num = rowNum + 1;
@@ -173,31 +191,11 @@ export default function decorate($block) {
         $cell.innerHTML = `<span class="num">${num}</span>${$cell.innerHTML}`;
       }
 
-      const $pics = $cell.querySelectorAll(':scope picture');
       if ($pics.length === 1 && $pics[0].parentElement.tagName === 'P') {
         // unwrap single picture if wrapped in p tag, see https://github.com/adobe/helix-word2md/issues/662
         const $parentDiv = $pics[0].closest('div');
         const $parentParagraph = $pics[0].parentNode;
         $parentDiv.insertBefore($pics[0], $parentParagraph);
-      }
-
-      // this probably needs to be tighter and possibly earlier
-      const $a = $cell.querySelector('a');
-      if ($a) {
-        if (isVideoLink($a.href)) {
-          transformToVideoColumn($cell, $a, $block);
-
-          $a.addEventListener('click', (e) => {
-            e.preventDefault();
-          });
-        }
-        if ($a.textContent.trim().startsWith('https://')) {
-          if ($a.href.endsWith('.mp4')) {
-            transformLinkToAnimation($a);
-          } else if ($pics[0]) {
-            linkImage($cell);
-          }
-        }
       }
       if ($a && $a.classList.contains('button')) {
         if ($block.className.includes('fullsize')) {
