@@ -31,6 +31,8 @@
 .gen-ai-row .gen-ai-row-heading-section .gen-ai-row-link {
   font-size: var(--body-font-size-s);
   line-height: 22px;
+  color: var(--body-color);
+  text-decoration: underline;
 }
 
 .gen-ai-row .carousel-container .carousel-platform {
@@ -45,7 +47,7 @@
   overflow: hidden;
   margin: 0 8px;
   position: relative;
-  background-color: var(--color-white);
+  background-color: #f4f4fd;
 }
 
 .gen-ai-row .card:first-of-type {
@@ -175,8 +177,8 @@
   margin: 4px auto;
   width: max-content;
   background-color: var(--color-white);
-  /* border: 0; */
-  border: solid 1px var(--body-color);
+  border: 0;
+  /* border: solid 1px var(--body-color); */
 }
 
 .gen-ai-row .card .links-wrapper a:not(:hover) {
