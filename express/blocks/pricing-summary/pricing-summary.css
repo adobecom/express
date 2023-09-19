@@ -153,6 +153,10 @@ main .pricing-summary .pricing-base-price > strong {
   font-weight: 900;
 }
 
+main .pricing-summary .pricing-price > sup {
+  margin-left: 4px;
+}
+
 main .pricing-summary .pricing-plan-suf {
   font-size: var(--body-font-size-s);
   line-height: var(--body-line-height);
