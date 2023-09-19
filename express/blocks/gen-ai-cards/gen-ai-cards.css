@@ -71,6 +71,7 @@
 
 .gen-ai-cards .card .text-wrapper p.cta-card-desc {
   font-size: var(--body-font-size-s);
+  line-height: var(--body-font-size-l);
 }
 
 
