@@ -77,16 +77,12 @@
 .gen-ai-cards .card .media-wrapper {
   position: absolute;
   border-radius: 16px;
-  left: 16px;
+  left: 50%;
   bottom: 16px;
-}
-
-.gen-ai-cards .card .media-wrapper picture img {
-  display: block;
-  height: 236px;
+  transform: translateX(-50%);
   width: 374px;
+  height: 246px;
 }
-
 
 .gen-ai-cards .card .gen-ai-input-form {
   position: absolute;
