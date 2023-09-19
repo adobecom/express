@@ -30,6 +30,7 @@ import {
 
 function transformToVideoColumn($cell, $a, block) {
   const $parent = $cell.parentElement;
+  console.log($parent);
   const title = $a.textContent.trim();
   // gather video urls from all links in cell
   const vidUrls = [];
@@ -123,12 +124,12 @@ function decorateIconList($columnCell, rowNum, blockClasses) {
   }
 }
 
-const handleVideos = (cell, a, block) => {
+const handleVideos = (cell, a, block, thumbnail) => {
   if (a.href && new URL(a.href).hash === '#video-embed') {
     if (a.href.includes('youtu')) {
       embedYoutube(a);
     } else if (a.href.includes('vimeo')) {
-      embedVimeo(a);
+      embedVimeo(a, thumbnail);
     }
   } else {
     transformToVideoColumn(cell, a, block);
@@ -171,7 +172,7 @@ export default function decorate($block) {
       if ($cell.querySelector('img.icon, svg.icon')) {
         decorateIconList($cell, rowNum, $block.classList);
       } else if ($a) {
-        if (isVideoLink($a.href)) handleVideos($cell, $a, $block);
+        if (isVideoLink($a.href)) handleVideos($cell, $a, $block, $pics[0]);
         else if ($pics[0]) linkImage($cell);
       }
       if (cellNum === 0 && isNumberedList) {
@@ -191,7 +192,7 @@ export default function decorate($block) {
         $cell.innerHTML = `<span class="num">${num}</span>${$cell.innerHTML}`;
       }
 
-      if ($pics.length === 1 && $pics[0].parentElement.tagName === 'P') {
+      if ($pics.length === 1 && $pics[0].parentElement?.tagName === 'P') {
         // unwrap single picture if wrapped in p tag, see https://github.com/adobe/helix-word2md/issues/662
         const $parentDiv = $pics[0].closest('div');
         const $parentParagraph = $pics[0].parentNode;

@@ -981,14 +981,15 @@ export async function loadBlocks(main) {
 }
 
 export function loadScript(url, callback, type) {
-  const $head = document.querySelector('head');
-  const $script = createTag('script', { src: url });
+  const head = document.querySelector('head');
+  if (head.querySelector(`script[src="${url}"]`)) return null;
+  const script = createTag('script', { src: url });
   if (type) {
-    $script.setAttribute('type', type);
+    script.setAttribute('type', type);
   }
-  $head.append($script);
-  $script.onload = callback;
-  return $script;
+  head.append(script);
+  script.onload = callback;
+  return script;
 }
 
 /**

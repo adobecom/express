@@ -51,30 +51,22 @@ export function embedYoutube(a) {
   a.remove();
 }
 
-export function embedVimeo(a) {
+export function embedVimeo(a, thumbnail) {
+  const thumbnailLink = thumbnail?.querySelector('img')?.src;
   if (isInTextNode(a)) return;
   const url = new URL(a.href);
   let src = url.href;
   const language = getAvailableVimeoSubLang();
   if (url.hostname !== 'player.vimeo.com') {
+    loadScript('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.js', null, 'module');
+    loadCSS('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.css');
     const video = url.pathname.split('/')[1];
     src = `https://player.vimeo.com/video/${video}?app_id=122963&texttrack=${language}`;
+    const embedHTML = `<lite-vimeo videoid="${video}" src=${src} thumbnail=${thumbnailLink}></lite-vimeo>`;
+    const wrapper = createTag('div', { class: 'embed-vimeo' }, embedHTML);
+    a.parentElement.replaceChild(wrapper, a);
   }
-  loadScript('/express/scripts/libs/LiteYTEmbed-0.2.0/lite-vimeo-embed.js');
-  loadCSS('/express/scripts/libs/LiteYTEmbed-0.2.0/lite-vimeo-embed.css');
-  // const iframe = createTag('iframe', {
-  //   src,
-  //   style: 'width: 100%; height: 100%;',
-  //   frameborder: '0',
-  //   allow: 'autoplay; fullscreen; picture-in-picture',
-  //   allowfullscreen: 'true',
-  //   title: 'Content from Vimeo',
-  //   loading: 'lazy',
-  // });
-  const embedHTML = `<lite-vimeo videoid="357274789" src=${src}></lite-vimeo>`;
-  const wrapper = createTag('div', { class: 'embed-vimeo' }, embedHTML);
-
-  a.parentElement.replaceChild(wrapper, a);
+  if (thumbnail) thumbnail.remove();
 }
 
 export function embedInstagram(url) {
