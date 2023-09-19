@@ -1,14 +1,14 @@
-.section .gen-ai-row-wrapper {
+.section .gen-ai-cards-wrapper {
   max-width: none;
 }
 
-.gen-ai-row {
+.gen-ai-cards {
   padding: 0 28px;
   max-width: 1440px;
   margin: auto;
 }
 
-.gen-ai-row .gen-ai-row-heading-section {
+.gen-ai-cards .gen-ai-cards-heading-section {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -16,30 +16,30 @@
   margin: auto auto 32px;
 }
 
-.gen-ai-row .gen-ai-row-heading-section h2 {
+.gen-ai-cards .gen-ai-cards-heading-section h2 {
   text-align: left;
   max-width: 800px;
   margin-bottom: 8px;
   font-size: var(--heading-font-size-m);
 }
-.gen-ai-row .gen-ai-row-heading-section p {
+.gen-ai-cards .gen-ai-cards-heading-section p {
   text-align: left;
   margin: 0;
   max-width: 800px;
 }
 
-.gen-ai-row .gen-ai-row-heading-section .gen-ai-row-link {
+.gen-ai-cards .gen-ai-cards-heading-section .gen-ai-cards-link {
   font-size: var(--body-font-size-s);
   line-height: 22px;
   color: var(--body-color);
   text-decoration: underline;
 }
 
-.gen-ai-row .carousel-container .carousel-platform {
+.gen-ai-cards .carousel-container .carousel-platform {
   align-items: unset;
 }
 
-.gen-ai-row .card {
+.gen-ai-cards .card {
   position: relative;
   height: 329px;
   width: 406px;
@@ -50,37 +50,37 @@
   background-color: #f4f4fd;
 }
 
-.gen-ai-row .card:first-of-type {
+.gen-ai-cards .card:first-of-type {
   margin-left: 0;
 }
 
-.gen-ai-row .card .text-wrapper {
+.gen-ai-cards .card .text-wrapper {
   text-align: left;
   margin: 24px 24px 16px 24px;
 }
 
-.gen-ai-row .card .text-wrapper p {
+.gen-ai-cards .card .text-wrapper p {
   margin: 0;
 }
 
-.gen-ai-row .card .text-wrapper p.cta-card-title {
+.gen-ai-cards .card .text-wrapper p.cta-card-title {
   font-size: var(--body-font-size-m);
   line-height: var(--body-font-size-m);
   font-weight: 700;
 }
 
-.gen-ai-row .card .text-wrapper p.cta-card-desc {
+.gen-ai-cards .card .text-wrapper p.cta-card-desc {
   font-size: var(--body-font-size-s);
 }
 
 
-.gen-ai-row .card .media-wrapper {
+.gen-ai-cards .card .media-wrapper {
   position: relative;
   border-radius: 16px;
   margin: 16px;
 }
 
-.gen-ai-row .card .media-wrapper picture img {
+.gen-ai-cards .card .media-wrapper picture img {
   position: absolute;
   display: block;
   height: 236px;
@@ -88,7 +88,7 @@
 }
 
 
-.gen-ai-row .card .gen-ai-input-form {
+.gen-ai-cards .card .gen-ai-input-form {
   position: absolute;
   width: 352px;
   height: 55px;
@@ -104,7 +104,7 @@
   justify-content: space-between;
 }
 
-.gen-ai-row .card .gen-ai-input-form input {
+.gen-ai-cards .card .gen-ai-input-form input {
   box-sizing: border-box;
   border-radius: 8px;
   border: none;
@@ -114,28 +114,28 @@
   width: 230px;
 }
 
-.gen-ai-row .gen-ai-input:active,
-.gen-ai-row .gen-ai-input:focus-visible {
+.gen-ai-cards .gen-ai-input:active,
+.gen-ai-cards .gen-ai-input:focus-visible {
   border: none;
   outline: none;
 }
 
-.gen-ai-row .card .gen-ai-input-form input::placeholder {
+.gen-ai-cards .card .gen-ai-input-form input::placeholder {
   font-style: italic;
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-s);
 }
 
-:lang(ja) main .gen-ai-row .card .gen-ai-input-form .gen-ai-input,
-:lang(ja) main .gen-ai-row .card .gen-ai-input-form .gen-ai-input::placeholder {
+:lang(ja) main .gen-ai-cards .card .gen-ai-input-form .gen-ai-input,
+:lang(ja) main .gen-ai-cards .card .gen-ai-input-form .gen-ai-input::placeholder {
   font-size: var(--body-font-size-s);
 }
 
-.gen-ai-row .card .gen-ai-input-form button:disabled {
+.gen-ai-cards .card .gen-ai-input-form button:disabled {
   pointer-events: none;
 }
 
-.gen-ai-row .card .gen-ai-input-form .gen-ai-submit {
+.gen-ai-cards .card .gen-ai-input-form .gen-ai-submit {
   color: var(--color-white);
   background-color: var(--color-info-accent);
   border-style: none;
@@ -149,21 +149,21 @@
   transition: background-color .2s;
 }
 
-.gen-ai-row .card.gen-ai-action .gen-ai-input-form .gen-ai-submit {
+.gen-ai-cards .card.gen-ai-action .gen-ai-input-form .gen-ai-submit {
   left: 56px;
   bottom: 24px;
 }
 
-.gen-ai-row .gen-ai-input-form .gen-ai-submit:not(:disabled):hover {
+.gen-ai-cards .gen-ai-input-form .gen-ai-submit:not(:disabled):hover {
   background-color: var(--color-info-accent-hover);
 }
 
-.gen-ai-row .card .gen-ai-input-form .gen-ai-submit:disabled {
+.gen-ai-cards .card .gen-ai-input-form .gen-ai-submit:disabled {
   background-color: var(--color-gray-200);
   color: var(--color-gray-500);
 }
 
-.gen-ai-row .card .links-wrapper {
+.gen-ai-cards .card .links-wrapper {
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -173,26 +173,30 @@
   transform: translate(-50%, 0);
 }
 
-.gen-ai-row .card .links-wrapper a {
+.gen-ai-cards .card .links-wrapper a {
   margin: 4px auto;
   width: max-content;
-  background-color: var(--color-white);
+  color: var(--body-color);
   border: 0;
-  /* border: solid 1px var(--body-color); */
 }
 
-.gen-ai-row .card .links-wrapper a:not(:hover) {
-  color: var(--body-color);
+.gen-ai-cards .card .links-wrapper a:hover {
+  /* 90% white to align with products */
+  background-color: #e6e6e6; 
+}
+
+.gen-ai-cards .card .links-wrapper a:not(:hover) {
+  background-color: var(--color-white);
 }
 
 @media (min-width: 900px) {
-  .gen-ai-row .gen-ai-row-heading-section {
+  .gen-ai-cards .gen-ai-cards-heading-section {
       flex-direction: row;
       align-items: flex-end;
   }
 
-  .gen-ai-row .carousel-container .carousel-fader-left,
-  .gen-ai-row .carousel-container .carousel-fader-right{
+  .gen-ai-cards .carousel-container .carousel-fader-left,
+  .gen-ai-cards .carousel-container .carousel-fader-right{
       background: unset;
   }
 }

@@ -51,9 +51,9 @@ function decorateTextWithTag(textSource) {
 }
 
 export function decorateHeading(block, payload) {
-  const headingSection = createTag('div', { class: 'gen-ai-row-heading-section' });
+  const headingSection = createTag('div', { class: 'gen-ai-cards-heading-section' });
   const headingTextWrapper = createTag('div', { class: 'text-wrapper' });
-  const heading = createTag('h2', { class: 'gen-ai-row-heading' });
+  const heading = createTag('h2', { class: 'gen-ai-cards-heading' });
 
   heading.textContent = payload.heading;
   headingSection.append(headingTextWrapper);
@@ -67,7 +67,7 @@ export function decorateHeading(block, payload) {
 
   if (payload.legalLink.href !== '') {
     const legalButton = createTag('a', {
-      class: 'gen-ai-row-link',
+      class: 'gen-ai-cards-link',
       href: payload.legalLink.href,
     });
     legalButton.textContent = payload.legalLink.text;
@@ -122,7 +122,7 @@ function buildGenAIForm({ ctaLinks, subtext }) {
 }
 
 async function decorateCards(block, payload) {
-  const cards = createTag('div', { class: 'gen-ai-row-cards' });
+  const cards = createTag('div', { class: 'gen-ai-cards-cards' });
   const placeholders = await fetchPlaceholders();
 
   payload.actions.forEach((cta) => {
@@ -213,9 +213,8 @@ function constructPayload(block) {
 
 export default async function decorate(block) {
   const payload = constructPayload(block);
-
   decorateHeading(block, payload);
   await decorateCards(block, payload);
-  buildCarousel('', block.querySelector('.gen-ai-row-cards'));
+  buildCarousel('', block.querySelector('.gen-ai-cards-cards'));
   document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
 }
