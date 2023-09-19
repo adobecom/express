@@ -331,9 +331,4 @@
         flex-direction: row;
         align-items: flex-end;
     }
-
-    .cta-carousel .carousel-container .carousel-fader-left,
-    .cta-carousel .carousel-container .carousel-fader-right{
-        background: unset;
-    }
 }
