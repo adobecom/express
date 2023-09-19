@@ -25,15 +25,16 @@ async function fetchBlogIndex(config) {
   let consolidatedJson = [];
   if (config.featuredOnly) {
     const linkLocales = config.featuredLinklocales;
-    const linkLocs = linkLocales.filter(item => item !== prefix);
+    const linkLocs = linkLocales.filter((item) => item !== prefix);
+    const urls = [];
     for (let i = 0; i < linkLocs.length; i += 1) {
-      const prefixedLocale = linkLocs[i] === '' ? '' : '/' + linkLocs[i];
-      const resp = await fetch(`${prefixedLocale}/express/learn/blog/query-index.json`);
-      if (resp.status === 200) {
-        const json = await resp.json();
-        consolidatedJson = consolidatedJson.concat(json.data);
-      }
+      const prefixedLocale = linkLocs[i] === '' ? '' : `/${linkLocs[i]}`;
+      urls.push(`${prefixedLocale}/express/learn/blog/query-index.json`);
     }
+    const resp = await Promise.all(urls.map((url) => fetch(url)
+      .then((res) => res.ok && res.json())))
+      .then((res) => res);
+    resp.forEach((item) => consolidatedJson.push(...item.data));
   } else {
     if (prefix === '/express' || prefix === '/drafts' || prefix === '/documentation') prefix = '';
     const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
