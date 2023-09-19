@@ -276,6 +276,7 @@ export async function getOffer(offerId, countryOverride) {
     const prefix = offer.pre;
     const suffix = offer.suf;
     const basePrice = offer.bp;
+    const priceSuperScript = offer.sup;
     const basePriceCurrencyFormatted = formatPrice(basePrice, currency);
 
     return {
@@ -290,6 +291,7 @@ export async function getOffer(offerId, countryOverride) {
       suffix,
       basePrice,
       basePriceCurrencyFormatted,
+      priceSuperScript,
     };
   }
   return {};
@@ -350,6 +352,7 @@ export async function fetchPlan(planUrl) {
       plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
+      plan.sup = offer.priceSuperScript ?? '';
       plan.formatted = offer.unitPriceCurrencyFormatted.replace(
         plan.rawPrice[0],
         `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`,

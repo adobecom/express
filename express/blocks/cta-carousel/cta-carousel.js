@@ -119,6 +119,23 @@ function buildGenAIForm(ctaObj) {
   return genAIForm;
 }
 
+function buildGenAIUpload(cta, card) {
+  const mediaWrapper = card.querySelector('.media-wrapper');
+  const textWrapper = card.querySelector('.text-wrapper');
+  const uploadButton = createTag('a', { class: 'gen-ai-upload', href: cta.ctaLinks[0].href });
+  const innerWrapper = createTag('div', { class: 'gen-ai-upload-inner-wrapper' });
+  const btnPill = createTag('div', { class: 'gen-ai-upload-btn' }, cta.ctaLinks[0].textContent);
+
+  innerWrapper.append(cta.icon, btnPill);
+  uploadButton.append(innerWrapper);
+
+  // Clean up empty divs && unused elements
+  if (!mediaWrapper.children.length) mediaWrapper.remove();
+  textWrapper.remove();
+
+  return uploadButton;
+}
+
 export async function decorateCards(block, payload) {
   const cards = createTag('div', { class: 'cta-carousel-cards' });
   const placeholders = await fetchPlaceholders();
@@ -146,15 +163,14 @@ export async function decorateCards(block, payload) {
       mediaWrapper.remove();
     }
 
-    // determine if Gen AI gets inserted after mediaWrapper has been concluded
-    const hasGenAIForm = (block.classList.contains('gen-ai') && block.classList.contains('quick-action') && index === 0)
-      || (block.classList.contains('gen-ai') && mediaWrapper.children.length === 0);
+    const hasGenAIEl = (block.classList.contains('gen-ai') && block.classList.contains('quick-action') && index === 0)
+      || (block.classList.contains('gen-ai') && !block.classList.contains('quick-action') && !cta.image);
 
     if (cta.ctaLinks.length > 0) {
-      if (hasGenAIForm) {
-        const genAIForm = buildGenAIForm(cta);
+      if (hasGenAIEl) {
         card.classList.add('gen-ai-action');
-        cardSleeve.append(genAIForm);
+        const el = block.classList.contains('upload') ? buildGenAIUpload(cta, card) : buildGenAIForm(cta);
+        cardSleeve.append(el);
         linksWrapper.remove();
       }
 
@@ -186,7 +202,7 @@ export async function decorateCards(block, payload) {
       textWrapper.append(decorateTextWithTag(cta.text));
     }
 
-    if (cta.subtext && !hasGenAIForm) {
+    if (cta.subtext && !hasGenAIEl) {
       const subtext = createTag('p', { class: 'subtext' });
       subtext.textContent = cta.subtext;
       textWrapper.append(subtext);
@@ -217,7 +233,7 @@ function constructPayload(block) {
     const ctaObj = {
       image: row.querySelector(':scope > div:nth-of-type(1) picture'),
       videoLink: row.querySelector(':scope > div:nth-of-type(1) a'),
-      icon: row.querySelector(':scope > div:nth-of-type(1) img.icon'),
+      icon: row.querySelector(':scope > div:nth-of-type(1) img.icon, :scope > div:nth-of-type(1) svg'),
       text: row.querySelector(':scope > div:nth-of-type(2) p:not(.button-container), :scope > div:nth-of-type(2) > *:last-of-type')?.textContent.trim(),
       subtext: row.querySelector(':scope > div:nth-of-type(2) p:not(.button-container) em')?.textContent.trim(),
       ctaLinks: row.querySelectorAll(':scope > div:nth-of-type(2) a'),
