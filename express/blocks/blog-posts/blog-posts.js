@@ -21,22 +21,28 @@ import {
 } from '../../scripts/scripts.js';
 
 async function fetchBlogIndex(config) {
-  let prefix = `/${window.location.pathname.split('/')[1]}`;
+  let prefix = getLocale(window.location);
+  if (prefix === 'express' || prefix === 'drafts' || prefix === 'documentation' || prefix === 'us') prefix = '';
   const consolidatedJsonData = [];
   if (config.featuredOnly) {
-    const linkLocales = config.featuredLinklocales;
-    const linkLocs = linkLocales.filter((item) => item !== prefix);
+    const linkLocales = [];
     const urls = [];
-    for (let i = 0; i < linkLocs.length; i += 1) {
-      const prefixedLocale = linkLocs[i] === '' ? '' : `/${linkLocs[i]}`;
-      urls.push(`${prefixedLocale}/express/learn/blog/query-index.json`);
+    const links = config.featured;
+    for (let i = 0; i < links.length; i += 1) {
+      let localePrefix = getLocale(new URL(links[i]));
+      if (localePrefix === 'us') {
+        localePrefix = '';
+      }
+      if (linkLocales.indexOf(localePrefix) === -1 && !(localePrefix === 'drafts' || localePrefix === 'documentation')) {
+        const prefixedLocale = localePrefix === '' ? '' : `/${localePrefix}`;
+        urls.push(`${prefixedLocale}/express/learn/blog/query-index.json`);
+      }
     }
     const resp = await Promise.all(urls.map((url) => fetch(url)
       .then((res) => res.ok && res.json())))
       .then((res) => res);
     resp.forEach((item) => consolidatedJsonData.push(...item.data));
   } else {
-    if (prefix === '/express' || prefix === '/drafts' || prefix === '/documentation') prefix = '';
     const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
     const res = await resp.json();
     consolidatedJsonData.push(...res.data);
@@ -141,20 +147,9 @@ function getBlogPostsConfig($block) {
   if ($rows.length === 1 && $firstRow.length === 1) {
     /* handle links */
     const links = [...$block.querySelectorAll('a')].map(($a) => $a.href);
-    const prefixLocales = [];
-    for (let i = 0; i < links.length; i += 1) {
-      let localePrefix = links[i].split('/')[3];
-      if (localePrefix === 'express') {
-        localePrefix = '';
-      }
-      if (prefixLocales.indexOf(localePrefix) === -1 && !(localePrefix === 'drafts' || localePrefix === 'documentation')) {
-        prefixLocales.push(localePrefix);
-      }
-    }
     config = {
       featured: links,
       featuredOnly: true,
-      featuredLinklocales: prefixLocales,
     };
   } else {
     config = readBlockConfig($block);
