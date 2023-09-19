@@ -270,8 +270,66 @@ export default function decorate($block) {
     });
   }
 
+  if ($block.className === 'columns fullsize top block width-3-columns') {
+    const setElementsHeight = (columns) => {
+      const elementsMinHeight = {
+        PICTURE: 0,
+        H3: 0,
+        'columns-iconlist': 0,
+      };
+
+      const onIntersect = (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && columns.length) {
+            columns.forEach((col) => {
+              const childDivs = col.querySelectorAll(':scope > *');
+              if (!childDivs.length) return;
+
+              childDivs.forEach((div) => {
+                const referrer = div.className || div.tagName;
+                const targetEl = referrer === 'PICTURE' ? div.querySelector('img') : div;
+                elementsMinHeight[referrer] = Math.max(
+                  elementsMinHeight[referrer],
+                  targetEl.offsetHeight,
+                );
+              });
+            });
+
+            columns.forEach((col) => {
+              const childDivs = col.querySelectorAll(':scope > *');
+              if (!childDivs.length) return;
+
+              childDivs.forEach((div) => {
+                const referrer = div.className || div.tagName;
+                if (!elementsMinHeight[referrer]) return;
+
+                if (div.offsetHeight < elementsMinHeight[referrer]) {
+                  if (referrer === 'PICTURE') {
+                    const img = div.querySelector('img');
+                    if (!img) return;
+                    img.style.objectFit = 'contain';
+                    img.style.minHeight = `${elementsMinHeight[referrer]}px`;
+                  } else {
+                    div.style.minHeight = `${elementsMinHeight[referrer]}px`;
+                  }
+                }
+              });
+            });
+
+            observer.unobserve($block);
+          }
+        });
+      };
+
+      const observer = new IntersectionObserver(onIntersect, { threshold: 0 });
+      observer.observe($block);
+    };
+
+    setElementsHeight($block.querySelectorAll('.column'));
+  }
+
   // variant for the colors pages
-  if ($block.classList.contains('custom-color')) {
+  if ($block.classList.contains('color')) {
     const [primaryColor, accentColor] = $rows[1].querySelector('div').textContent.trim().split(',');
     const [textCol, svgCol] = Array.from(($rows[0].querySelectorAll('div')));
     const svgId = svgCol.textContent.trim();
