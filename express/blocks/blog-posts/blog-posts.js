@@ -22,7 +22,7 @@ import {
 
 async function fetchBlogIndex(config) {
   let prefix = `/${window.location.pathname.split('/')[1]}`;
-  let consolidatedJson = [];
+  const consolidatedJsonData = [];
   if (config.featuredOnly) {
     const linkLocales = config.featuredLinklocales;
     const linkLocs = linkLocales.filter((item) => item !== prefix);
@@ -34,14 +34,15 @@ async function fetchBlogIndex(config) {
     const resp = await Promise.all(urls.map((url) => fetch(url)
       .then((res) => res.ok && res.json())))
       .then((res) => res);
-    resp.forEach((item) => consolidatedJson.push(...item.data));
+    resp.forEach((item) => consolidatedJsonData.push(...item.data));
   } else {
     if (prefix === '/express' || prefix === '/drafts' || prefix === '/documentation') prefix = '';
     const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
-    consolidatedJson = await resp.json();
+    const res = await resp.json();
+    consolidatedJsonData.push(...res.data);
   }
   const byPath = {};
-  consolidatedJson.forEach((post) => {
+  consolidatedJsonData.forEach((post) => {
     if (post.tags) {
       const tags = JSON.parse(post.tags);
       tags.push(post.category);
@@ -49,7 +50,7 @@ async function fetchBlogIndex(config) {
     }
     byPath[post.path.split('.')[0]] = post;
   });
-  const index = { data: consolidatedJson, byPath };
+  const index = { data: consolidatedJsonData, byPath };
   return (index);
 }
 
