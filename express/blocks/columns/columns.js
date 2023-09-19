@@ -273,43 +273,42 @@ export default function decorate($block) {
 
       const onIntersect = (entries, observer) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            if (columns?.length > 0) {
-              columns.forEach((col) => {
-                const childDivs = col.querySelectorAll(':scope > *');
-                if (childDivs?.length > 0) {
-                  childDivs.forEach((div) => {
-                    const referrer = div.className || div.tagName;
-                    const targetEl = referrer === 'PICTURE' ? div.querySelector('img') : div;
-                    elementsMinHeight[referrer] = Math.max(
-                      elementsMinHeight[referrer],
-                      targetEl.offsetHeight,
-                    );
-                  });
-                }
-              });
+          if (entry.isIntersecting && columns.length) {
+            columns.forEach((col) => {
+              const childDivs = col.querySelectorAll(':scope > *');
+              if (!childDivs.length) return;
 
-              columns.forEach((col) => {
-                const childDivs = col.querySelectorAll(':scope > *');
-                if (childDivs?.length > 0) {
-                  childDivs.forEach((div) => {
-                    const referrer = div.className || div.tagName;
-                    if (elementsMinHeight[referrer]
-                      && div.offsetHeight < elementsMinHeight[referrer]) {
-                      if (referrer === 'PICTURE') {
-                        const img = div.querySelector('img');
-                        if (img) {
-                          img.style.objectFit = 'contain';
-                          img.style.minHeight = `${elementsMinHeight[referrer]}px`;
-                        }
-                      } else {
-                        div.style.minHeight = `${elementsMinHeight[referrer]}px`;
-                      }
-                    }
-                  });
+              childDivs.forEach((div) => {
+                const referrer = div.className || div.tagName;
+                const targetEl = referrer === 'PICTURE' ? div.querySelector('img') : div;
+                elementsMinHeight[referrer] = Math.max(
+                  elementsMinHeight[referrer],
+                  targetEl.offsetHeight,
+                );
+              });
+            });
+
+            columns.forEach((col) => {
+              const childDivs = col.querySelectorAll(':scope > *');
+              if (!childDivs.length) return;
+
+              childDivs.forEach((div) => {
+                const referrer = div.className || div.tagName;
+                if (!elementsMinHeight[referrer]) return;
+
+                if (div.offsetHeight < elementsMinHeight[referrer]) {
+                  if (referrer === 'PICTURE') {
+                    const img = div.querySelector('img');
+                    if (!img) return;
+                    img.style.objectFit = 'contain';
+                    img.style.minHeight = `${elementsMinHeight[referrer]}px`;
+                  } else {
+                    div.style.minHeight = `${elementsMinHeight[referrer]}px`;
+                  }
                 }
               });
-            }
+            });
+
             observer.unobserve($block);
           }
         });

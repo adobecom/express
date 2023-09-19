@@ -133,31 +133,32 @@ function alignContent(block) {
 
     const onIntersect = (entries, observer) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          if (contentWrappers?.length > 0) {
-            contentWrappers.forEach((wrapper) => {
-              const childDivs = wrapper.querySelectorAll(':scope > div');
-              if (childDivs?.length > 0) {
-                childDivs.forEach((div) => {
-                  elementsMinHeight[div.className] = Math.max(
-                    elementsMinHeight[div.className],
-                    div.clientHeight,
-                  );
-                });
-              }
+        if (entry.isIntersecting && contentWrappers.length) {
+          contentWrappers.forEach((wrapper) => {
+            const childDivs = wrapper.querySelectorAll(':scope > div');
+            if (!childDivs.length) return;
+
+            childDivs.forEach((div) => {
+              if (elementsMinHeight[div.className]) return;
+
+              elementsMinHeight[div.className] = Math.max(
+                elementsMinHeight[div.className],
+                div.offsetHeight,
+              );
             });
-          }
+          });
 
           contentWrappers.forEach((wrapper) => {
             const childDivs = wrapper.querySelectorAll(':scope > div');
-            if (childDivs?.length > 0) {
-              childDivs.forEach((div) => {
-                if (elementsMinHeight[div.className]
-                  && div.offsetHeight < elementsMinHeight[div.className]) {
-                  div.style.minHeight = `${elementsMinHeight[div.className]}px`;
-                }
-              });
-            }
+            if (!childDivs.length) return;
+
+            childDivs.forEach((div) => {
+              if (elementsMinHeight[div.className]) return;
+
+              if (div.offsetHeight < elementsMinHeight[div.className]) {
+                div.style.minHeight = `${elementsMinHeight[div.className]}px`;
+              }
+            });
           });
 
           observer.unobserve(block);
