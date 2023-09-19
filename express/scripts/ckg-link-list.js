@@ -106,20 +106,21 @@ async function updateSEOLinkList(container, linkPill, list) {
 }
 
 function formatLinkPillText(linkPillData) {
-  const unHyphenedDV = titleCase(linkPillData.displayValue.replace(/-/g, ' '));
-  const unHyphenedTaskName = titleCase(linkPillData.tasks.replace(/-/g, ' '));
-  const topics = getMetadata('topics') !== '" "' ? `${getMetadata('topics').replace(/[$@%"]/g, '').replace(/-/g, ' ')}` : '';
+  const dv = titleCase(linkPillData.displayValue.replace(/-/g, ' '));
+  const tn = titleCase(linkPillData.tasks.replace(/-/g, ' '));
+  const topicsMeta = getMetadata('topics');
+  const topics = topicsMeta !== '" "' ? `${topicsMeta?.replace(/[$@%"]/g, '').replace(/-/g, ' ')}` : '';
 
   const displayTopics = topics && linkPillData.displayValue.indexOf(titleCase(topics)) < 0 ? titleCase(topics) : '';
   let displayText;
 
   if (getMetadata('tasks')) {
-    displayText = `${displayTopics} ${unHyphenedDV} ${unHyphenedTaskName}`
+    displayText = `${displayTopics} ${dv} ${tn}`
       .split(' ')
       .filter((item, i, allItems) => i === allItems.indexOf(item))
       .join(' ').trim();
   } else {
-    displayText = `${unHyphenedDV} ${unHyphenedTaskName} ${displayTopics}`
+    displayText = `${dv} ${tn} ${displayTopics}`
       .split(' ')
       .filter((item, i, allItems) => i === allItems.indexOf(item))
       .join(' ').trim();
@@ -139,9 +140,9 @@ async function updateLinkList(container, linkPill, list) {
 
   if (list && templatePages) {
     list.forEach((d) => {
-      const topics = getMetadata('topics') !== '" "' ? `${getMetadata('topics').replace(/[$@%"]/g, '')}` : '';
+      const topics = getMetadata('topics') !== '" "' ? `${getMetadata('topics')?.replace(/[$@%"]/g, '')}` : '';
       const templatePageData = templatePages.find((p) => p.live === 'Y' && matchCKGResult(d, p));
-      const topicsQuery = `${topics ?? topics} ${d.displayValue}`.split(' ')
+      const topicsQuery = `${topics} ${d.displayValue}`.split(' ')
         .filter((item, i, allItems) => i === allItems.indexOf(item))
         .join(' ').trim();
       let displayText = formatLinkPillText(d);
@@ -149,7 +150,7 @@ async function updateLinkList(container, linkPill, list) {
       const locale = getLocale(window.location);
       const urlPrefix = locale === 'us' ? '' : `/${locale}`;
       const localeColumnString = locale === 'us' ? 'EN' : locale.toUpperCase();
-      let hideUntranslatedPill = false;
+      let useSearchPill = true;
 
       if (pillsMapping) {
         const alternateText = pillsMapping.find((row) => window.location.pathname === `${urlPrefix}${row['Express SEO URL']}` && d.ckgID === row['CKG Pill ID']);
@@ -161,14 +162,15 @@ async function updateLinkList(container, linkPill, list) {
           }
         }
 
-        hideUntranslatedPill = !hasAlternateTextForLocale && locale !== 'us';
+        useSearchPill = (hasAlternateTextForLocale || locale === 'us') && d.ckgID;
       }
 
       if (templatePageData) {
         const clone = replaceLinkPill(linkPill, templatePageData);
         if (clone) pageLinks.push(clone);
-      } else if (d.ckgID && !hideUntranslatedPill) {
-        const currentTasks = getMetadata('tasks') ? getMetadata('tasks').replace(/[$@%"]/g, '') : ' ';
+      } else if (useSearchPill) {
+        const taskMeta = getMetadata('tasks');
+        const currentTasks = taskMeta ? taskMeta.replace(/[$@%"]/g, '') : ' ';
         const currentTasksX = getMetadata('tasks-x') || '';
         const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}`;
         const clone = linkPill.cloneNode(true);
@@ -219,7 +221,7 @@ async function lazyLoadLinklist() {
         linkListData.push({
           ckgID: row.ckgID,
           shortTitle: getMetadata('short-title'),
-          parentTasks: row.parent,
+          tasks: row.parent,
           displayValue: row.displayValue,
         });
       });
