@@ -124,6 +124,7 @@ function decorateIconList($columnCell, rowNum, blockClasses) {
 }
 
 const handleVideos = (cell, a, block, thumbnail) => {
+  console.log('handle videos:----->', cell);
   if (a.href && new URL(a.href).hash === '#video-embed') {
     if (a.href.includes('youtu')) {
       embedYoutube(a);
@@ -168,12 +169,6 @@ export default function decorate($block) {
       const $a = $cell.querySelector('a');
       const $pics = $cell.querySelectorAll(':scope picture');
 
-      if ($cell.querySelector('img.icon, svg.icon')) {
-        decorateIconList($cell, rowNum, $block.classList);
-      } else if ($a) {
-        if (isVideoLink($a.href)) handleVideos($cell, $a, $block, $pics[0]);
-        else if ($pics[0]) linkImage($cell);
-      }
       if (cellNum === 0 && isNumberedList) {
         // add number to first cell
         let num = rowNum + 1;
@@ -197,6 +192,22 @@ export default function decorate($block) {
         const $parentParagraph = $pics[0].parentNode;
         $parentDiv.insertBefore($pics[0], $parentParagraph);
       }
+      console.log($a?.href);
+      console.log(isVideoLink($a?.href));
+
+      if ($cell.querySelector('img.icon, svg.icon')) {
+        console.log('It is an img.icon or svg  -------------');
+        decorateIconList($cell, rowNum, $block.classList);
+      }
+      if (isVideoLink($a?.href)) {
+        console.log('I handle videos -------------');
+        handleVideos($cell, $a, $block, $pics[0]);
+      }
+      if ($pics[0]) {
+        console.log('LInk image');
+        linkImage($cell);
+      }
+
       if ($a && $a.classList.contains('button')) {
         if ($block.className.includes('fullsize')) {
           $a.classList.add('xlarge');
