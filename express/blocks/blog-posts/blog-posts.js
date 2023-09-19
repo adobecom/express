@@ -34,6 +34,7 @@ async function fetchBlogIndex(config) {
         localePrefix = '';
       }
       if (linkLocales.indexOf(localePrefix) === -1 && !(localePrefix === 'drafts' || localePrefix === 'documentation')) {
+        linkLocales.push(localePrefix);
         const prefixedLocale = localePrefix === '' ? '' : `/${localePrefix}`;
         urls.push(`${prefixedLocale}/express/learn/blog/query-index.json`);
       }
