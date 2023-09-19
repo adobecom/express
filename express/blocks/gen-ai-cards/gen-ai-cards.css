@@ -41,7 +41,7 @@
 
 .gen-ai-cards .card {
   position: relative;
-  height: 329px;
+  height: 347px;
   width: 406px;
   border-radius: 8px;
   overflow: hidden;
@@ -75,13 +75,13 @@
 
 
 .gen-ai-cards .card .media-wrapper {
-  position: relative;
+  position: absolute;
   border-radius: 16px;
-  margin: 16px;
+  left: 16px;
+  bottom: 16px;
 }
 
 .gen-ai-cards .card .media-wrapper picture img {
-  position: absolute;
   display: block;
   height: 236px;
   width: 374px;
