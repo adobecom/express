@@ -30,7 +30,6 @@ import {
 
 function transformToVideoColumn($cell, $a, block) {
   const $parent = $cell.parentElement;
-  console.log($parent);
   const title = $a.textContent.trim();
   // gather video urls from all links in cell
   const vidUrls = [];

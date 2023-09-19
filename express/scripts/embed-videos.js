@@ -55,14 +55,13 @@ export function embedVimeo(a, thumbnail) {
   const thumbnailLink = thumbnail?.querySelector('img')?.src;
   if (isInTextNode(a)) return;
   const url = new URL(a.href);
-  let src = url.href;
+  const src = url.href;
   const language = getAvailableVimeoSubLang();
   if (url.hostname !== 'player.vimeo.com') {
     loadScript('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.js', null, 'module');
     loadCSS('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.css');
     const video = url.pathname.split('/')[1];
-    src = `https://player.vimeo.com/video/${video}?app_id=122963&texttrack=${language}`;
-    const embedHTML = `<lite-vimeo videoid="${video}" src=${src} thumbnail=${thumbnailLink}></lite-vimeo>`;
+    const embedHTML = `<lite-vimeo videoid="${video}" src=${src} thumbnail=${thumbnailLink} language=${language}></lite-vimeo>`;
     const wrapper = createTag('div', { class: 'embed-vimeo' }, embedHTML);
     a.parentElement.replaceChild(wrapper, a);
   }

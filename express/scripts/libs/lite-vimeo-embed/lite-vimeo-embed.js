@@ -16,6 +16,7 @@ class LiteVimeo extends HTMLElement {
   connectedCallback() {
     this.videoId = encodeURIComponent(this.getAttribute('videoid'));
     this.thumbnail = this.getAttribute('thumbnail');
+    this.language = this.getAttribute('language');
     let { width, height } = getThumbnailDimensions(this.getBoundingClientRect());
     const devicePixelRatio = window.devicePixelRatio || 1;
     width *= devicePixelRatio;
@@ -26,7 +27,6 @@ class LiteVimeo extends HTMLElement {
     thumbnailUrl += `?mw=${width}&mh=${height}&q=${devicePixelRatio > 1 ? 70 : 85}`;
 
     this.style.backgroundImage = `url("${this.thumbnail || thumbnailUrl}")`;
-
     const playBtn = document.createElement('button');
     playBtn.type = 'button';
     playBtn.classList.add('ltv-playbtn');
@@ -56,7 +56,7 @@ class LiteVimeo extends HTMLElement {
     const iframeHTML = `
 <iframe width="640" height="360" frameborder="0"
 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-src="https://player.vimeo.com/video/${this.videoId}?autoplay=1"
+src="https://player.vimeo.com/video/${this.videoId}?autoplay=1&texttrack=${this.language}"
 ></iframe>`;
     this.insertAdjacentHTML('beforeend', iframeHTML);
     this.classList.add('ltv-activated');
