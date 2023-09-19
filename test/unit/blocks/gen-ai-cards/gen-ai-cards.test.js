@@ -13,7 +13,7 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
-const { default: decorate } = await import('../../../../express/blocks/gen-ai-row/gen-ai-row.js');
+const { default: decorate } = await import('../../../../express/blocks/gen-ai-cards/gen-ai-cards.js');
 const testBody = await readFile({ path: './mocks/body.html' });
 
 describe('Color How To Carousel', () => {
@@ -23,10 +23,10 @@ describe('Color How To Carousel', () => {
   });
 
   it('should have all things', async () => {
-    const block = document.querySelector('.gen-ai-row');
+    const block = document.querySelector('.gen-ai-cards');
     await decorate(block);
     expect(block).to.exist;
-    expect(block.querySelector('.gen-ai-row-heading-section')).to.exist;
+    expect(block.querySelector('.gen-ai-cards-heading-section')).to.exist;
     const cards = block.querySelector('.carousel-container .carousel-platform');
     expect(cards).to.exist;
     expect(cards.querySelectorAll('.card').length).to.equal(4);
@@ -37,7 +37,7 @@ describe('Color How To Carousel', () => {
   });
 
   it('should have all cards with proper children', async () => {
-    const block = document.querySelector('.gen-ai-row');
+    const block = document.querySelector('.gen-ai-cards');
     await decorate(block);
     const cards = block.querySelector('.carousel-container .carousel-platform');
     for (const card of cards.querySelectorAll('.card')) {

@@ -41,6 +41,7 @@
 
 .gen-ai-cards .card {
   position: relative;
+  /* height: 347px; */
   height: 329px;
   width: 406px;
   border-radius: 8px;
@@ -126,9 +127,8 @@
   font-size: var(--body-font-size-s);
 }
 
-:lang(ja) main .gen-ai-cards .card .gen-ai-input-form .gen-ai-input,
-:lang(ja) main .gen-ai-cards .card .gen-ai-input-form .gen-ai-input::placeholder {
-  font-size: var(--body-font-size-s);
+.gen-ai-cards .card .gen-ai-input-form input:placeholder-shown {
+  text-overflow: ellipsis;
 }
 
 .gen-ai-cards .card .gen-ai-input-form button:disabled {
