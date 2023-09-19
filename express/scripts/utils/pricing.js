@@ -14,6 +14,7 @@ import {
   getLanguage,
   getCookie,
   getHelixEnv,
+  createTag,
 } from '../scripts.js';
 
 function replaceUrlParam(url, paramName, paramValue) {
@@ -103,6 +104,26 @@ function getCountry() {
   }
   if (country === 'uk') country = 'gb';
   return (country.split('_')[0]);
+}
+
+export async function formatSalesPhoneNumber(tags) {
+  if (tags.length <= 0) return;
+
+  const numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
+
+  if (!numbersMap?.data) return;
+
+  tags.forEach((a) => {
+    const r = numbersMap.data.find((d) => d.country === getCountry());
+
+    if (!r) {
+      a.textContent = a.href.replace('tel:', '').trim();
+      return;
+    }
+
+    a.textContent = r.number.trim();
+    a.href = `tel:${r.number.trim()}`;
+  });
 }
 
 export function formatPrice(price, currency) {
@@ -255,6 +276,7 @@ export async function getOffer(offerId, countryOverride) {
     const prefix = offer.pre;
     const suffix = offer.suf;
     const basePrice = offer.bp;
+    const priceSuperScript = offer.sup;
     const basePriceCurrencyFormatted = formatPrice(basePrice, currency);
 
     return {
@@ -269,6 +291,7 @@ export async function getOffer(offerId, countryOverride) {
       suffix,
       basePrice,
       basePriceCurrencyFormatted,
+      priceSuperScript,
     };
   }
   return {};
@@ -329,6 +352,7 @@ export async function fetchPlan(planUrl) {
       plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
+      plan.sup = offer.priceSuperScript ?? '';
       plan.formatted = offer.unitPriceCurrencyFormatted.replace(
         plan.rawPrice[0],
         `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`,
@@ -347,4 +371,17 @@ export async function fetchPlan(planUrl) {
   }
 
   return plan;
+}
+
+export function decoratePricing(block) {
+  const pricingLinks = block.querySelectorAll('a[title^="{{pricing"]');
+  pricingLinks.forEach((priceLink) => {
+    const priceType = priceLink.textContent.replace(/\{\{|}}/g, '').split('.')[1];
+    fetchPlan(priceLink.href).then((response) => {
+      if (response[priceType]) {
+        const priceText = createTag('span', { class: 'inline-pricing' }, response[priceType]);
+        priceLink.parentElement.replaceChild(priceText, priceLink);
+      }
+    });
+  });
 }
