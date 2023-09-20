@@ -125,7 +125,7 @@ main .pricing-summary .pricing-price-wrapper {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 main .pricing-summary .pricing-column .button-container a.dark {
