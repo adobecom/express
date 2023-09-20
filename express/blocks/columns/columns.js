@@ -135,13 +135,6 @@ const handleVideos = (cell, a, block, thumbnail) => {
     a.addEventListener('click', (e) => {
       e.preventDefault();
     });
-    if (a.textContent.trim().startsWith('https://')) {
-      if (a.href.endsWith('.mp4')) {
-        transformLinkToAnimation(a);
-      } else if (thumbnail) {
-        linkImage(cell);
-      }
-    }
   }
 };
 
@@ -199,6 +192,14 @@ export default function decorate($block) {
       }
       if (isVideoLink($a?.href)) {
         handleVideos($cell, $a, $block, $pics[0]);
+      }
+
+      if ($a?.textContent.trim().startsWith('https://')) {
+        if ($a.href.endsWith('.mp4')) {
+          transformLinkToAnimation($a);
+        } else if ($pics[0]) {
+          linkImage($cell);
+        }
       }
 
       if ($a && $a.classList.contains('button')) {

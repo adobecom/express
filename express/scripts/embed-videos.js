@@ -63,7 +63,7 @@ export function embedVimeo(a, thumbnail) {
     const wrapper = createTag('div', { class: 'embed-vimeo' }, embedHTML);
     a.parentElement.replaceChild(wrapper, a);
   }
-  // if (thumbnail) thumbnail.remove();
+  if (thumbnail) thumbnail.remove();
 }
 
 export function embedInstagram(url) {
