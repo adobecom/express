@@ -183,7 +183,7 @@ function initSearchFunction(block) {
     } else if (allTemplatesMetadata.some(pathMatch) && document.body.dataset.device !== 'desktop') {
       window.location = `${window.location.origin}${targetPath}`;
     } else {
-      const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks.xCore}&tasksx=${currentTasks.content}&phformat=${format}&topics=${searchInput || "''"}&q=${searchInput || "''"}`;
+      const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks.xCore}&tasksx=${currentTasks.content}&phformat=${format}&topics=${searchInput || "''"}&q=${searchBar.value || "''"}`;
       window.location = `${window.location.origin}${urlPrefix}${searchUrlTemplate}`;
     }
   };

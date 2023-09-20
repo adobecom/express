@@ -33,14 +33,16 @@ async function fetchLinkList() {
         window.linkLists.ckgData = response.queryResults[0].facets[0].buckets.map((ckgItem) => {
           let formattedTasks;
           if (getMetadata('template-search-page') === 'Y') {
-            return {};
+            const params = new Proxy(new URLSearchParams(window.location.search), {
+              get: (searchParams, prop) => searchParams.get(prop),
+            });
+            formattedTasks = titleCase(params.tasks).replace(/[$@%"]/g, '');
           } else {
             formattedTasks = titleCase(getMetadata('tasks')).replace(/[$@%"]/g, '');
           }
 
           return {
             parent: formattedTasks,
-            'child-siblings': `${titleCase(ckgItem.displayValue)} ${formattedTasks}`,
             ckgID: ckgItem.canonicalName,
             displayValue: ckgItem.displayValue,
           };
@@ -104,20 +106,21 @@ async function updateSEOLinkList(container, linkPill, list) {
 }
 
 function formatLinkPillText(linkPillData) {
-  const digestedDisplayValue = titleCase(linkPillData.displayValue.replace(/-/g, ' '));
-  const digestedChildSibling = titleCase(linkPillData.childSibling.replace(/-/g, ' '));
-  const topics = getMetadata('topics') !== '" "' ? `${getMetadata('topics').replace(/[$@%"]/g, '').replace(/-/g, ' ')}` : '';
+  const displayValue = titleCase(linkPillData.displayValue.replace(/-/g, ' '));
+  const titleName = titleCase(linkPillData.tasks.replace(/-/g, ' '));
+  const topicsMeta = getMetadata('topics');
+  const topics = topicsMeta !== '" "' ? `${topicsMeta?.replace(/[$@%"]/g, '').replace(/-/g, ' ')}` : '';
 
-  const displayTopics = topics && linkPillData.childSibling.indexOf(titleCase(topics)) < 0 ? titleCase(topics) : '';
+  const displayTopics = topics && linkPillData.displayValue.indexOf(titleCase(topics)) < 0 ? titleCase(topics) : '';
   let displayText;
 
   if (getMetadata('tasks')) {
-    displayText = `${displayTopics} ${digestedDisplayValue} ${digestedChildSibling}`
+    displayText = `${displayTopics} ${displayValue} ${titleName}`
       .split(' ')
       .filter((item, i, allItems) => i === allItems.indexOf(item))
       .join(' ').trim();
   } else {
-    displayText = `${digestedDisplayValue} ${digestedChildSibling} ${displayTopics}`
+    displayText = `${displayValue} ${titleName} ${displayTopics}`
       .split(' ')
       .filter((item, i, allItems) => i === allItems.indexOf(item))
       .join(' ').trim();
@@ -137,12 +140,17 @@ async function updateLinkList(container, linkPill, list) {
 
   if (list && templatePages) {
     list.forEach((d) => {
+      const topics = getMetadata('topics') !== '" "' ? `${getMetadata('topics')?.replace(/[$@%"]/g, '')}` : '';
       const templatePageData = templatePages.find((p) => p.live === 'Y' && matchCKGResult(d, p));
+      const topicsQuery = `${topics} ${d.displayValue}`.split(' ')
+        .filter((item, i, allItems) => i === allItems.indexOf(item))
+        .join(' ').trim();
       let displayText = formatLinkPillText(d);
 
       const locale = getLocale(window.location);
       const urlPrefix = locale === 'us' ? '' : `/${locale}`;
       const localeColumnString = locale === 'us' ? 'EN' : locale.toUpperCase();
+      let useSearchPill = true;
 
       if (pillsMapping) {
         const alternateText = pillsMapping.find((row) => window.location.pathname === `${urlPrefix}${row['Express SEO URL']}` && d.ckgID === row['CKG Pill ID']);
@@ -153,11 +161,23 @@ async function updateLinkList(container, linkPill, list) {
             templatePageData.altShortTitle = displayText;
           }
         }
+
+        useSearchPill = (hasAlternateTextForLocale || locale === 'us') && d.ckgID;
       }
 
       if (templatePageData) {
         const clone = replaceLinkPill(linkPill, templatePageData);
         if (clone) pageLinks.push(clone);
+      } else if (useSearchPill) {
+        const taskMeta = getMetadata('tasks');
+        const currentTasks = taskMeta ? taskMeta.replace(/[$@%"]/g, '') : ' ';
+        const currentTasksX = getMetadata('tasks-x') || '';
+        const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}`;
+        const clone = linkPill.cloneNode(true);
+
+        clone.innerHTML = clone.innerHTML.replace('/express/templates/default', `${urlPrefix}/express/templates/search?${searchParams}`);
+        clone.innerHTML = clone.innerHTML.replaceAll('Default', displayText);
+        searchLinks.push(clone);
       }
     });
 
@@ -199,7 +219,6 @@ async function lazyLoadLinklist() {
     if (window.linkLists && window.linkLists.ckgData && getMetadata('short-title')) {
       window.linkLists.ckgData.forEach((row) => {
         linkListData.push({
-          childSibling: row['child-siblings'],
           ckgID: row.ckgID,
           shortTitle: getMetadata('short-title'),
           tasks: row.parent,
@@ -249,10 +268,9 @@ async function lazyLoadSearchMarqueeLinklist() {
       if (window.linkLists && window.linkLists.ckgData && getMetadata('short-title')) {
         window.linkLists.ckgData.forEach((row) => {
           linkListData.push({
-            childSibling: row['child-siblings'],
             ckgID: row.ckgID,
             shortTitle: getMetadata('short-title'),
-            tasks: row.parent, // task on the page
+            tasks: row.parent, // parent tasks
             displayValue: row.displayValue,
           });
         });
