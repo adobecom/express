@@ -138,6 +138,8 @@ const handleVideos = (cell, a, block, thumbnail) => {
     if (a.textContent.trim().startsWith('https://')) {
       if (a.href.endsWith('.mp4')) {
         transformLinkToAnimation(a);
+      } else if (thumbnail) {
+        linkImage(cell);
       }
     }
   }
@@ -185,7 +187,7 @@ export default function decorate($block) {
         $cell.innerHTML = `<span class="num">${num}</span>${$cell.innerHTML}`;
       }
 
-      if ($pics.length === 1 && $pics[0].parentElement?.tagName === 'P') {
+      if ($pics.length === 1 && $pics[0].parentElement.tagName === 'P') {
         // unwrap single picture if wrapped in p tag, see https://github.com/adobe/helix-word2md/issues/662
         const $parentDiv = $pics[0].closest('div');
         const $parentParagraph = $pics[0].parentNode;
@@ -197,9 +199,6 @@ export default function decorate($block) {
       }
       if (isVideoLink($a?.href)) {
         handleVideos($cell, $a, $block, $pics[0]);
-      }
-      if ($pics[0]) {
-        linkImage($cell);
       }
 
       if ($a && $a.classList.contains('button')) {
