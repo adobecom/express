@@ -42,11 +42,19 @@ function handlePrice(block, column) {
   pricePlan.append(priceWrapper, plan);
 
   fetchPlan(priceEl?.href).then((response) => {
-    price.innerHTML = response.sup ? `${response.formatted}<sup>${response.sup}</sup>` : response.formatted;
+    const parentP = priceEl.parentElement;
+    price.innerHTML = response.formatted;
     basePrice.innerHTML = response.formattedBP || '';
 
-    if (priceEl.nextSibling?.nodeName === '#text') {
-      priceSuffix.textContent = priceEl.nextSibling?.textContent?.trim();
+    if (parentP.children.length > 1) {
+      Array.from(parentP.childNodes).forEach((node) => {
+        if (node === priceEl) return;
+        if (node.nodeName === '#text') {
+          priceSuffix.append(node);
+        } else {
+          priceSuffix.before(node);
+        }
+      });
     } else {
       priceSuffix.textContent = response.suffix;
     }

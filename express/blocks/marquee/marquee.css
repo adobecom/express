@@ -298,6 +298,11 @@ body.no-desktop-brand-header header {
     margin-top: 16px;
   }
 
+  .marquee p.button-container a.button:any-link {
+    width: auto;
+    box-sizing: initial;
+  }
+
   .marquee.dark,
   .marquee.dark a:any-link {
     color: var(--color-white);

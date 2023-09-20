@@ -125,7 +125,14 @@ main .pricing-summary .pricing-price-wrapper {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 8px;
+}
+
+main .pricing-summary .pricing-price-wrapper .pricing-base-price {
+  margin-right: 8px;
+}
+
+main .pricing-summary .pricing-price-wrapper .pricing-plan-suf {
+  margin-left: 8px;
 }
 
 main .pricing-summary .pricing-column .button-container a.dark {
@@ -151,6 +158,10 @@ main .pricing-summary .pricing-price > strong,
 main .pricing-summary .pricing-base-price > strong {
   font-size: var(--heading-font-size-s);
   font-weight: 900;
+}
+
+main .pricing-summary .pricing-price > sup {
+  margin-left: 4px;
 }
 
 main .pricing-summary .pricing-plan-suf {
