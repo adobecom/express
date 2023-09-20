@@ -17,7 +17,7 @@ import {
 
 const docTitle = document.title;
 
-const getAvailableVimeoSubLang = () => {
+export const getAvailableVimeoSubLang = () => {
   const langs = {
     fr: 'fr',
     de: 'de',
@@ -184,6 +184,7 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
 }
 
 export function isVideoLink(url) {
+  if (!url) return null;
   return url.includes('youtu')
     || url.includes('vimeo')
     || /.*\/media_.*(mp4|webm|m3u8)$/.test(new URL(url).pathname);
