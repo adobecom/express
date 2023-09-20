@@ -195,6 +195,16 @@ async function getFilteredResults(config) {
   return (matchingResult);
 }
 
+const loadImage = (img) => new Promise((resolve) => {
+  if (img.complete && img.naturalHeight !== 0) resolve();
+  else {
+    img.onload = () => {
+      console.log('resolving');
+      resolve();
+    };
+  }
+});
+
 async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const posts = await getFilteredResults(config);
 
@@ -211,6 +221,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
 
   const pageEnd = offset + limit;
   let count = 0;
+  let images = [];
   for (let i = offset; i < posts.length && count < limit; i += 1) {
     const post = posts[i];
     const path = post.path.split('.')[0];
@@ -266,6 +277,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
         <p class="blog-card-date">${dateString}</p>`;
       $cards.append($card);
     }
+    images.push($card.querySelector('img'));
     count += 1;
   }
   if (posts.length > pageEnd && config['load-more']) {
@@ -277,6 +289,14 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
       $loadMore.remove();
       decorateBlogPosts($blogPosts, config, pageEnd);
     });
+  }
+
+  if (images.length) {
+    const section = $blogPosts.closest('.section');
+    section.style.display = 'block';
+    const imagePromises = images.map((img) => loadImage(img));
+    await Promise.all(imagePromises);
+    delete section.style.display;
   }
 }
 
