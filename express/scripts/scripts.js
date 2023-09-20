@@ -507,15 +507,25 @@ export function getMetadata(name) {
 
 export function removeIrrelevantSections(main) {
   main.querySelectorAll(':scope > div').forEach((section) => {
-    const sectionMeta = section.querySelector('div.section-metadata');
-    if (sectionMeta) {
-      const meta = readBlockConfig(sectionMeta);
+    const sectionMetaBlock = section.querySelector('div.section-metadata');
+    if (sectionMetaBlock) {
+      const sectionMeta = readBlockConfig(sectionMetaBlock);
 
-      // section meant for different device or section visibility steered over metadata
-      if ((meta.audience && meta.audience !== document.body.dataset?.device)
-          || (meta.showwith !== undefined && getMetadata(meta.showwith.toLowerCase()) !== 'on')) {
-        section.remove();
+      // section meant for different device
+      let sectionRemove = !!(sectionMeta.audience
+        && sectionMeta.audience !== document.body.dataset?.device);
+
+      // section visibility steered over metadata
+      if (!sectionRemove && sectionMeta.showwith !== undefined) {
+        let showWithSearchParam = null;
+        if (!['www.adobe.com'].includes(window.location.hostname)) {
+          const urlParams = new URLSearchParams(window.location.search);
+          showWithSearchParam = urlParams.get(`showwith${sectionMeta.showwith.toLowerCase()}`)
+            || urlParams.get(`showwith${sectionMeta.showwith}`);
+        }
+        sectionRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(sectionMeta.showwith.toLowerCase()) !== 'on';
       }
+      if (sectionRemove) section.remove();
     }
   });
 }
@@ -659,9 +669,11 @@ export function getLanguage(locale) {
     us: 'en-US',
     fr: 'fr-FR',
     in: 'en-IN',
+    uk: 'en-GB',
     de: 'de-DE',
     it: 'it-IT',
     dk: 'da-DK',
+    gb: 'en-GB',
     es: 'es-ES',
     fi: 'fi-FI',
     jp: 'ja-JP',
@@ -792,7 +804,7 @@ function decorateHeaderAndFooter() {
 }
 
 /**
- * Loads a CSS file.
+ * Loads a CSS file
  * @param {string} href The path to the CSS file
  */
 export function loadCSS(href, callback) {
@@ -1866,16 +1878,18 @@ function decorateLinks(main) {
         url = new URL(a.href);
       }
 
-      // make url relative if needed
-      const relative = url.hostname === window.location.hostname;
-      const urlPath = `${url.pathname}${url.search}${url.hash}`;
-      a.href = relative ? urlPath : `${url.origin}${urlPath}`;
+      const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
+      const isBranchLink = url.hostname === 'adobesparkpost.app.link';
+      if (!isContactLink) {
+        // make url relative if needed
+        const relative = url.hostname === window.location.hostname;
+        const urlPath = `${url.pathname}${url.search}${url.hash}`;
+        a.href = relative ? urlPath : `${url.origin}${urlPath}`;
 
-      if (!relative
-        && url.hostname !== 'adobesparkpost.app.link'
-        && !['tel:', 'mailto:', 'sms:'].includes(url.protocol)) {
-        // open external links in a new tab
-        a.target = '_blank';
+        if (!relative && !isBranchLink) {
+          // open external links in a new tab
+          a.target = '_blank';
+        }
       }
     } catch (e) {
       // invalid url

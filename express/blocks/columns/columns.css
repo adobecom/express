@@ -65,6 +65,32 @@ main .columns .button-container a {
   margin: 0;
 }
 
+main .columns:not(.highlight) .column-video .button-container a {
+  border-radius: 24px;
+  padding: 8px 20px;
+}
+
+main .columns:not(.highlight) .column-video .button-container a:hover,
+main .columns:not(.highlight) .column-video .button-container a:active,
+main .columns:not(.highlight) .column-video .button-container a,
+main .columns:not(.highlight) .column-video .button-container a:focus {
+  background-color: transparent;
+  border-color: var(--color-black);
+  color: var(--color-black);
+  box-shadow: none;
+}
+
+main .columns:not(.highlight) .column-video .button-container a:before {
+  display: inline-block;
+  width: 18px;
+  height: 20px;
+  margin-right: 16px;
+  vertical-align: sub;
+  top: 1px;
+  position: relative;
+  content: url(/express/icons/play.svg);
+}
+
 main .columns .column-picture {
   margin: 15px 0;
 }
@@ -306,7 +332,7 @@ main .columns.highlight.width-2-columns .column-picture {
   order: -1
 }
 
-main .columns-video {
+main .columns.highlight .columns-video {
   cursor: pointer;
 }
 
@@ -325,7 +351,7 @@ main .columns-video .column-picture .column-video-overlay {
   height: 100%;
 }
 
-main .columns-video:hover .column-picture .column-video-overlay {
+main .columns.highlight .columns-video:hover .column-picture .column-video-overlay {
   background-image: linear-gradient(#ffffff00, #90909025, #000000a0);
 }
 
@@ -506,40 +532,40 @@ main .columns.highlight .column.column-picture {
 
 /* Custom color variant */
 
-main .columns.custom-color .img-wrapper {
+main .columns.color .img-wrapper {
   height: 345px;
   width: 345px;
 }
 
-main .columns.custom-color .color-svg-img {
+main .columns.color .color-svg-img {
   height: 63%;
   width: 46%;
 }
 
-main .columns.custom-color .img-wrapper {
+main .columns.color .img-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 20px;
 }
 
-main .columns.columns.custom-color > div {
+main .columns.columns.color > div {
   padding: 80px 0 0 0;
   gap: 15px;
 }
 
-main .columns.custom-color .column.text {
+main .columns.color .column.text {
   padding: 0;
   max-width: 345px;
 }
 
-main .columns.custom-color h2,
-main .columns.custom-color p {
+main .columns.color h2,
+main .columns.color p {
   hyphens: manual;
   text-align: center;
 }
 
-main .columns.custom-color h2 {
+main .columns.color h2 {
   font-size: 36px;
 }
 
@@ -670,7 +696,7 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     padding-left: 32px;
   }
 
-  main .columns.custom-color .column {
+  main .columns.color .column {
     padding-right: 15px;
     min-width: 388px;
   }
@@ -721,16 +747,16 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     flex-direction: unset;
   }
 
-  main .columns.custom-color .img-wrapper {
+  main .columns.color .img-wrapper {
     height: 418px;
     width: 418px;
   }
 
-  main .columns.custom-color h2 {
+  main .columns.color h2 {
     font-size: 45px;
   }
 
-  main .columns.custom-color h2, main .columns.custom-color p {
+  main .columns.color h2, main .columns.color p {
     text-align: left;
   }
 
@@ -793,11 +819,9 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     margin: 0;
   }
 
-  main .columns.width-2-columns .column-picture {
-    order: 0;
-  }
-
-  main .columns.highlight.width-2-columns .column-picture {
+  main .columns.width-2-columns .column-picture, 
+  main .columns.width-2-columns .hero-animation-overlay,
+  main .columns.highlight.width-2-columns .column-picture  {
     order: 0;
   }
 
@@ -889,16 +913,16 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     padding-top: 0;
   }
 
-  main .columns.custom-color .column.text {
+  main .columns.color .column.text {
     max-width: unset;
   }
 
-  main .columns.custom-color .img-wrapper {
+  main .columns.color .img-wrapper {
     height: 500px;
     width: 500px;
   }
 
-  main .columns.columns.custom-color > div {
+  main .columns.columns.color > div {
     gap: 25px;
   }
 

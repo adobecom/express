@@ -64,17 +64,16 @@
     display: flex;
 }
 
-.cta-carousel.gen-ai .card .card-sleeve .gen-ai-input-form {
+.cta-carousel.gen-ai .card .card-sleeve .gen-ai-input-form,
+.cta-carousel.gen-ai .card .card-sleeve .gen-ai-upload {
+    display: block;
     background-color: var(--color-info-accent-light);
     border-radius: 8px;
     box-sizing: border-box;
     margin: auto;
-}
-
-.cta-carousel.gen-ai .gen-ai-input-form {
     width: 305px;
     height: 200px;
-    padding: 24px;
+    padding: 20px;
 }
 
 .cta-carousel.quick-action .card.gen-ai-action .card-sleeve .gen-ai-input-form {
@@ -106,6 +105,29 @@
     resize: none;
     height: 100%;
     width: 100%;
+}
+
+.cta-carousel.gen-ai .gen-ai-upload-inner-wrapper {
+    border: dashed 2px var(--color-info-accent);
+    height: 100%;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.cta-carousel.gen-ai .gen-ai-upload-inner-wrapper .icon {
+    height: 44px;
+    width: 44px;
+}
+
+.cta-carousel.gen-ai .gen-ai-upload-inner-wrapper .gen-ai-upload-btn {
+    font-size: var(--body-font-size-s);
+    font-weight: var(--body-font-weight);
+    color: var(--color-black);
 }
 
 .cta-carousel.gen-ai .gen-ai-input:active,
@@ -308,10 +330,5 @@
     .cta-carousel .cta-carousel-heading-section {
         flex-direction: row;
         align-items: flex-end;
-    }
-
-    .cta-carousel .carousel-container .carousel-fader-left,
-    .cta-carousel .carousel-container .carousel-fader-right{
-        background: unset;
     }
 }

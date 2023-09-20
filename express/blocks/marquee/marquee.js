@@ -18,7 +18,6 @@ import {
   getIconElement,
   fetchPlaceholders,
 } from '../../scripts/scripts.js';
-import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 const breakpointConfig = [
   {
@@ -41,16 +40,15 @@ const breakpointConfig = [
 
 // FIXME: Not fulfilling requirement. Re-think of a way to allow subtext to contain link.
 function handleSubCTAText(buttonContainer) {
-  const button = buttonContainer.querySelector('a');
-  if (button && button.textContent.includes('§')) {
-    const dividedText = button.textContent.split('§');
-    if (dividedText.length < 2) return;
+  const elAfterBtn = buttonContainer.nextElementSibling;
+  if (!elAfterBtn || elAfterBtn?.tagName !== 'BLOCKQUOTE') return;
 
-    button.textContent = dividedText[0].trim();
-    const subText = createTag('div', { class: 'cta-sub-text' });
-    subText.textContent = dividedText[1]?.trim();
+  const subText = elAfterBtn.querySelector('p');
+  if (subText) {
+    subText.classList.add('cta-sub-text');
     buttonContainer.append(subText);
   }
+  elAfterBtn.remove();
 }
 
 function getBreakpoint(animations) {
@@ -365,14 +363,19 @@ export default async function decorate(block) {
 
   const button = block.querySelector('.button');
   if (button) {
+    const { addFreePlanWidget } = await import('../../scripts/utils/free-plan.js');
     await addFreePlanWidget(button.parentElement);
+  }
+
+  const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
+  if (phoneNumberTags.length > 0) {
+    const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');
+    await formatSalesPhoneNumber(phoneNumberTags);
   }
 
   if (getLocale(window.location) === 'jp') {
     addHeaderSizing(block);
   }
-
-  handleSubCTAText(block);
 
   block.classList.add('appear');
 }

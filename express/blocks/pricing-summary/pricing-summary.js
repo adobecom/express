@@ -42,21 +42,20 @@ function handlePrice(block, column) {
   pricePlan.append(priceWrapper, plan);
 
   fetchPlan(priceEl?.href).then((response) => {
+    const parentP = priceEl.parentElement;
     price.innerHTML = response.formatted;
     basePrice.innerHTML = response.formattedBP || '';
 
-    if (priceEl.nextSibling?.nodeName === '#text') {
-      priceSuffix.textContent = priceEl.nextSibling?.textContent?.trim();
+    if (parentP.children.length > 1) {
+      Array.from(parentP.childNodes).forEach((el) => {
+        if (el !== priceEl) priceSuffix.append(el);
+      });
     } else {
       priceSuffix.textContent = response.suffix;
     }
 
     const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
     if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
-
-    if (+response.price > 0 && block.classList.contains('feature')) {
-      column.parentElement.classList.add('monetize-item-background');
-    }
   });
 
   priceParent?.remove();
@@ -118,60 +117,67 @@ function handleEyeBrows(columnWrapper, eyeBrowCols, index) {
     return null;
   }
 
+  if (eyeBrowCols[index].textContent === '(gradient-border-only)') {
+    columnWrapper.classList.add('card-gradient-background');
+  }
+
   eyeBrowCols[index].classList.add('pricing-eyebrow');
   columnWrapper.classList.add('has-pricing-eyebrow');
   return eyeBrowCols[index];
 }
 
 function alignContent(block) {
-  const contentWrappers = block.querySelectorAll('.pricing-content-wrapper');
-  const elementsMinHeight = {
-    'pricing-header': 0,
-    'pricing-description': 0,
-    'pricing-plan': 0,
-  };
-  let attemptsLeft = 10;
-  const maxWidth = (430 * contentWrappers.length) + (20 * (contentWrappers.length - 1));
-  block.style.maxWidth = `${maxWidth}px`;
+  const setElementsHeight = (contentWrappers) => {
+    const elementsMinHeight = {
+      'pricing-header': 0,
+      'pricing-description': 0,
+      'pricing-plan': 0,
+    };
 
-  const minHeightCaptured = new Promise((resolve) => {
-    const heightCatcher = setInterval(() => {
-      if (Object.values(elementsMinHeight).every((h) => h > 0) || !attemptsLeft) {
-        clearInterval(heightCatcher);
-        resolve();
-      }
+    const onIntersect = (entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && contentWrappers.length) {
+          contentWrappers.forEach((wrapper) => {
+            const childDivs = wrapper.querySelectorAll(':scope > div');
+            if (!childDivs.length) return;
 
-      if (contentWrappers?.length > 0) {
-        contentWrappers.forEach((wrapper) => {
-          const childDivs = wrapper.querySelectorAll(':scope > div');
-          if (childDivs?.length > 0) {
             childDivs.forEach((div) => {
+              if (elementsMinHeight[div.className]) return;
+
               elementsMinHeight[div.className] = Math.max(
                 elementsMinHeight[div.className],
                 div.offsetHeight,
               );
             });
-          }
-        });
-      }
+          });
 
-      attemptsLeft -= 1;
-    }, 10);
-  });
+          contentWrappers.forEach((wrapper) => {
+            const childDivs = wrapper.querySelectorAll(':scope > div');
+            if (!childDivs.length) return;
 
-  minHeightCaptured.then(() => {
-    contentWrappers.forEach((wrapper) => {
-      const childDivs = wrapper.querySelectorAll(':scope > div');
-      if (childDivs?.length > 0) {
-        childDivs.forEach((div) => {
-          if (elementsMinHeight[div.className]
-            && div.offsetHeight < elementsMinHeight[div.className]) {
-            div.style.height = `${elementsMinHeight[div.className]}px`;
-          }
-        });
-      }
-    });
-  });
+            childDivs.forEach((div) => {
+              if (elementsMinHeight[div.className]) return;
+
+              if (div.offsetHeight < elementsMinHeight[div.className]) {
+                div.style.minHeight = `${elementsMinHeight[div.className]}px`;
+              }
+            });
+          });
+
+          observer.unobserve(block);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(onIntersect, { threshold: 0 });
+    observer.observe(block);
+  };
+
+  const contentWrappers = block.querySelectorAll('.pricing-content-wrapper');
+  const maxWidth = (430 * contentWrappers.length) + (20 * (contentWrappers.length - 1));
+  block.style.maxWidth = `${maxWidth}px`;
+
+  setElementsHeight(contentWrappers);
 }
 
 export default async function decorate(block) {
@@ -214,7 +220,7 @@ export default async function decorate(block) {
   });
 
   await Promise.all(cardsLoaded).then(() => {
-    alignContent(block);
     buildCarousel('.pricing-column-wrapper', columnsContainer, { startPosition: 'right' });
+    alignContent(block);
   });
 }

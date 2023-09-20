@@ -27,7 +27,7 @@ import {
   isVideoLink,
 } from '../shared/video.js';
 
-function transformToVideoColumn($cell, $a) {
+function transformToVideoColumn($cell, $a, block) {
   const $parent = $cell.parentElement;
   const title = $a.textContent.trim();
   // gather video urls from all links in cell
@@ -45,7 +45,7 @@ function transformToVideoColumn($cell, $a) {
 
   setTimeout(() => {
     const $sibling = $parent.querySelector('.column-picture');
-    if ($sibling) {
+    if ($sibling && block.classList.contains('highlight')) {
       const $videoOverlay = createTag('div', { class: 'column-video-overlay' });
       const $videoOverlayIcon = getIconElement('play', 44);
       $videoOverlay.append($videoOverlayIcon);
@@ -53,11 +53,11 @@ function transformToVideoColumn($cell, $a) {
     }
   }, 1);
 
-  $parent.addEventListener('click', () => {
+  const modalActivator = block.classList.contains('highlight') ? $parent : $a;
+  modalActivator.addEventListener('click', () => {
     displayVideoModal(vidUrls, title, true);
   });
-
-  $parent.addEventListener('keyup', ({ key }) => {
+  modalActivator.addEventListener('keyup', ({ key }) => {
     if (key === 'Enter') {
       displayVideoModal(vidUrls, title);
     }
@@ -175,8 +175,8 @@ export default function decorate($block) {
       // this probably needs to be tighter and possibly earlier
       const $a = $cell.querySelector('a');
       if ($a) {
-        if (isVideoLink($a.href) && $row.parentElement.classList.contains('highlight')) {
-          transformToVideoColumn($cell, $a);
+        if (isVideoLink($a.href)) {
+          transformToVideoColumn($cell, $a, $block);
 
           $a.addEventListener('click', (e) => {
             e.preventDefault();
@@ -263,8 +263,66 @@ export default function decorate($block) {
     });
   }
 
+  if ($block.className === 'columns fullsize top block width-3-columns') {
+    const setElementsHeight = (columns) => {
+      const elementsMinHeight = {
+        PICTURE: 0,
+        H3: 0,
+        'columns-iconlist': 0,
+      };
+
+      const onIntersect = (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && columns.length) {
+            columns.forEach((col) => {
+              const childDivs = col.querySelectorAll(':scope > *');
+              if (!childDivs.length) return;
+
+              childDivs.forEach((div) => {
+                const referrer = div.className || div.tagName;
+                const targetEl = referrer === 'PICTURE' ? div.querySelector('img') : div;
+                elementsMinHeight[referrer] = Math.max(
+                  elementsMinHeight[referrer],
+                  targetEl.offsetHeight,
+                );
+              });
+            });
+
+            columns.forEach((col) => {
+              const childDivs = col.querySelectorAll(':scope > *');
+              if (!childDivs.length) return;
+
+              childDivs.forEach((div) => {
+                const referrer = div.className || div.tagName;
+                if (!elementsMinHeight[referrer]) return;
+
+                if (div.offsetHeight < elementsMinHeight[referrer]) {
+                  if (referrer === 'PICTURE') {
+                    const img = div.querySelector('img');
+                    if (!img) return;
+                    img.style.objectFit = 'contain';
+                    img.style.minHeight = `${elementsMinHeight[referrer]}px`;
+                  } else {
+                    div.style.minHeight = `${elementsMinHeight[referrer]}px`;
+                  }
+                }
+              });
+            });
+
+            observer.unobserve($block);
+          }
+        });
+      };
+
+      const observer = new IntersectionObserver(onIntersect, { threshold: 0 });
+      observer.observe($block);
+    };
+
+    setElementsHeight($block.querySelectorAll('.column'));
+  }
+
   // variant for the colors pages
-  if ($block.classList.contains('custom-color')) {
+  if ($block.classList.contains('color')) {
     const [primaryColor, accentColor] = $rows[1].querySelector('div').textContent.trim().split(',');
     const [textCol, svgCol] = Array.from(($rows[0].querySelectorAll('div')));
     const svgId = svgCol.textContent.trim();

@@ -71,10 +71,9 @@ body.no-desktop-brand-header header {
 .marquee .content-wrapper h2 {
   font-size: clamp(var(--heading-font-size-s), 3vw, var(--heading-font-size-l));
   margin: 0 0 8px 0;
-  text-align: left;
 }
 
-.marquee p {
+.marquee .content-wrapper p {
   font-size: var(--body-font-size-m);
   margin: 16px 0;
 }
@@ -89,8 +88,15 @@ body.no-desktop-brand-header header {
   margin: 16px 0;
 }
 
+.marquee p.button-container a.secondary {
+  border-color: var(--color-black);
+  background-color: var(--color-white);
+}
+
 .marquee p.button-container a.button:any-link {
   margin: 0;
+  width: 100%;
+  box-sizing: border-box;
   white-space: nowrap;
 }
 
@@ -126,7 +132,12 @@ body.no-desktop-brand-header header {
 
 .marquee .button-container.button-inline {
   display: inline-block;
-  margin-right: 16px;
+  width: 100%;
+  margin: 0;
+}
+
+.marquee .content-wrapper {
+  text-align: center;
 }
 
 .marquee .content-wrapper .button-container.free-plan-container {
@@ -134,6 +145,10 @@ body.no-desktop-brand-header header {
   justify-content: left;
   align-items: flex-start;
   flex-wrap: wrap;
+}
+
+.marquee .marquee-foreground .content-wrapper .button-container .cta-sub-text {
+  margin: 0;
 }
 
 .marquee .button-container.button-inline.free-plan-container .free-plan-widget {
@@ -222,6 +237,10 @@ body.no-desktop-brand-header header {
     font-size: var(--heading-font-size-l);
   }
 
+  .marquee.short h2 {
+    font-size: var(--heading-font-size-s);
+  }
+
   .marquee.short p {
     font-size: var(--body-font-size-m);
     position: relative;
@@ -242,6 +261,11 @@ body.no-desktop-brand-header header {
 }
 
 @media (min-width: 900px) {
+  .marquee .content-wrapper,
+  .marquee .content-wrapper h2{
+    text-align: left;
+  }
+
   .marquee .background-wrapper {
     position: unset;
   }
@@ -266,6 +290,17 @@ body.no-desktop-brand-header header {
     max-height: unset;
     min-height: 250px;
     object-position: center;
+  }
+
+  .marquee .button-container.button-inline {
+    width: auto;
+    margin-right: 16px;
+    margin-top: 16px;
+  }
+
+  .marquee p.button-container a.button:any-link {
+    width: auto;
+    box-sizing: initial;
   }
 
   .marquee.dark,
@@ -303,7 +338,7 @@ body.no-desktop-brand-header header {
     max-width: 60%;
   }
 
-  .marquee.narrow .marquee-foreground .content-wrapper p {
+  .marquee.narrow .marquee-foreground .content-wrapper > p {
     max-width: 80%;
   }
 

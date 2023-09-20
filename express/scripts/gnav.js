@@ -149,6 +149,7 @@ async function loadFEDS() {
 
   const isMegaNav = window.location.pathname.startsWith('/express')
     || window.location.pathname.startsWith('/in/express')
+    || window.location.pathname.startsWith('/uk/express')
     || window.location.pathname.startsWith('/education')
     || window.location.pathname.startsWith('/drafts');
   const fedsExp = isMegaNav
