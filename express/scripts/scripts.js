@@ -2352,11 +2352,14 @@ async function loadArea(area = document) {
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
 
-  loadLazy(main);
+  const lazy = loadLazy(main);
 
   if (window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) {
     import('../../tools/preview/preview.js');
   }
+  await lazy;
+  const { default: delayed } = await import('./delayed.js');
+  delayed([createTag]);
 }
 
 (async function loadPage() {
