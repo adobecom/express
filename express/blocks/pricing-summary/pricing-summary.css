@@ -123,16 +123,8 @@ main .pricing-summary .pricing-plan {
 
 main .pricing-summary .pricing-price-wrapper {
   display: flex;
-  align-items: flex-end;
   justify-content: center;
-}
-
-main .pricing-summary .pricing-price-wrapper .pricing-base-price {
-  margin-right: 8px;
-}
-
-main .pricing-summary .pricing-price-wrapper .pricing-plan-suf {
-  margin-left: 8px;
+  gap: 4px;
 }
 
 main .pricing-summary .pricing-column .button-container a.dark {
@@ -167,6 +159,7 @@ main .pricing-summary .pricing-price > sup {
 main .pricing-summary .pricing-plan-suf {
   font-size: var(--body-font-size-s);
   line-height: var(--body-line-height);
+  align-self: flex-end;
 }
 
 main .pricing-summary .pricing-description > p,
