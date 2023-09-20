@@ -199,7 +199,6 @@ const loadImage = (img) => new Promise((resolve) => {
   if (img.complete && img.naturalHeight !== 0) resolve();
   else {
     img.onload = () => {
-      console.log('resolving');
       resolve();
     };
   }
@@ -210,8 +209,8 @@ function isInViewport(element) {
   return (
     rect.top >= 0
     && rect.left >= 0
-    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+    && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
 
