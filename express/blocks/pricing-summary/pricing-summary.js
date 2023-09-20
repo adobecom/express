@@ -47,8 +47,13 @@ function handlePrice(block, column) {
     basePrice.innerHTML = response.formattedBP || '';
 
     if (parentP.children.length > 1) {
-      Array.from(parentP.childNodes).forEach((el) => {
-        if (el !== priceEl) priceSuffix.append(el);
+      Array.from(parentP.childNodes).forEach((node) => {
+        if (node === priceEl) return;
+        if (node.nodeName === '#text') {
+          priceSuffix.append(node);
+        } else {
+          priceSuffix.before(node);
+        }
       });
     } else {
       priceSuffix.textContent = response.suffix;
