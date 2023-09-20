@@ -507,15 +507,25 @@ export function getMetadata(name) {
 
 export function removeIrrelevantSections(main) {
   main.querySelectorAll(':scope > div').forEach((section) => {
-    const sectionMeta = section.querySelector('div.section-metadata');
-    if (sectionMeta) {
-      const meta = readBlockConfig(sectionMeta);
+    const sectionMetaBlock = section.querySelector('div.section-metadata');
+    if (sectionMetaBlock) {
+      const sectionMeta = readBlockConfig(sectionMetaBlock);
 
-      // section meant for different device or section visibility steered over metadata
-      if ((meta.audience && meta.audience !== document.body.dataset?.device)
-        || (meta.showwith !== undefined && getMetadata(meta.showwith.toLowerCase()) !== 'on')) {
-        section.remove();
+      // section meant for different device
+      let sectionRemove = !!(sectionMeta.audience
+        && sectionMeta.audience !== document.body.dataset?.device);
+
+      // section visibility steered over metadata
+      if (!sectionRemove && sectionMeta.showwith !== undefined) {
+        let showWithSearchParam = null;
+        if (!['www.adobe.com'].includes(window.location.hostname)) {
+          const urlParams = new URLSearchParams(window.location.search);
+          showWithSearchParam = urlParams.get(`showwith${sectionMeta.showwith.toLowerCase()}`)
+            || urlParams.get(`showwith${sectionMeta.showwith}`);
+        }
+        sectionRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(sectionMeta.showwith.toLowerCase()) !== 'on';
       }
+      if (sectionRemove) section.remove();
     }
   });
 }
@@ -659,6 +669,7 @@ export function getLanguage(locale) {
     us: 'en-US',
     fr: 'fr-FR',
     in: 'en-IN',
+    uk: 'en-GB',
     de: 'de-DE',
     it: 'it-IT',
     dk: 'da-DK',

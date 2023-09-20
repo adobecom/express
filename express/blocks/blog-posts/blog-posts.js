@@ -20,14 +20,36 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/scripts.js';
 
-async function fetchBlogIndex() {
-  let prefix = `/${window.location.pathname.split('/')[1]}`;
-  if (prefix === '/express' || prefix === '/drafts' || prefix === '/documentation') prefix = '';
-
-  const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
-  const json = await resp.json();
+async function fetchBlogIndex(config) {
+  let prefix = getLocale(window.location);
+  if (prefix === 'express' || prefix === 'drafts' || prefix === 'documentation' || prefix === 'us') prefix = '';
+  const consolidatedJsonData = [];
+  if (config.featuredOnly) {
+    const linkLocales = [];
+    const urls = [];
+    const links = config.featured;
+    for (let i = 0; i < links.length; i += 1) {
+      let localePrefix = getLocale(new URL(links[i]));
+      if (localePrefix === 'us') {
+        localePrefix = '';
+      }
+      if (linkLocales.indexOf(localePrefix) === -1 && !(localePrefix === 'drafts' || localePrefix === 'documentation')) {
+        linkLocales.push(localePrefix);
+        const prefixedLocale = localePrefix === '' ? '' : `/${localePrefix}`;
+        urls.push(`${prefixedLocale}/express/learn/blog/query-index.json`);
+      }
+    }
+    const resp = await Promise.all(urls.map((url) => fetch(url)
+      .then((res) => res.ok && res.json())))
+      .then((res) => res);
+    resp.forEach((item) => consolidatedJsonData.push(...item.data));
+  } else {
+    const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
+    const res = await resp.json();
+    consolidatedJsonData.push(...res.data);
+  }
   const byPath = {};
-  json.data.forEach((post) => {
+  consolidatedJsonData.forEach((post) => {
     if (post.tags) {
       const tags = JSON.parse(post.tags);
       tags.push(post.category);
@@ -35,7 +57,7 @@ async function fetchBlogIndex() {
     }
     byPath[post.path.split('.')[0]] = post;
   });
-  const index = { data: json.data, byPath };
+  const index = { data: consolidatedJsonData, byPath };
   return (index);
 }
 
@@ -62,7 +84,7 @@ function isDuplicate(path) {
 
 async function filterBlogPosts(config) {
   if (!window.blogIndex) {
-    window.blogIndex = await fetchBlogIndex();
+    window.blogIndex = await fetchBlogIndex(config);
   }
   const result = [];
   const index = window.blogIndex;
@@ -125,10 +147,7 @@ function getBlogPostsConfig($block) {
 
   if ($rows.length === 1 && $firstRow.length === 1) {
     /* handle links */
-
     const links = [...$block.querySelectorAll('a')].map(($a) => $a.href);
-
-    /* needs fixing to work with links */
     config = {
       featured: links,
       featuredOnly: true,
