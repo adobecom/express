@@ -124,7 +124,6 @@ function decorateIconList($columnCell, rowNum, blockClasses) {
 }
 
 const handleVideos = (cell, a, block, thumbnail) => {
-  console.log('handle videos:----->', cell);
   if (a.href && new URL(a.href).hash === '#video-embed') {
     if (a.href.includes('youtu')) {
       embedYoutube(a);
@@ -192,19 +191,14 @@ export default function decorate($block) {
         const $parentParagraph = $pics[0].parentNode;
         $parentDiv.insertBefore($pics[0], $parentParagraph);
       }
-      console.log($a?.href);
-      console.log(isVideoLink($a?.href));
 
       if ($cell.querySelector('img.icon, svg.icon')) {
-        console.log('It is an img.icon or svg  -------------');
         decorateIconList($cell, rowNum, $block.classList);
       }
       if (isVideoLink($a?.href)) {
-        console.log('I handle videos -------------');
         handleVideos($cell, $a, $block, $pics[0]);
       }
       if ($pics[0]) {
-        console.log('LInk image');
         linkImage($cell);
       }
 
