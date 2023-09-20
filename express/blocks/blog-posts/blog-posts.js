@@ -205,6 +205,16 @@ const loadImage = (img) => new Promise((resolve) => {
   }
 });
 
+function isInViewport(element) {
+  const rect = element.getBoundingClientRect();
+  return (
+    rect.top >= 0
+    && rect.left >= 0
+    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
 async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const posts = await getFilteredResults(config);
 
@@ -221,7 +231,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
 
   const pageEnd = offset + limit;
   let count = 0;
-  let images = [];
+  const images = [];
   for (let i = offset; i < posts.length && count < limit; i += 1) {
     const post = posts[i];
     const path = post.path.split('.')[0];
@@ -294,7 +304,8 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   if (images.length) {
     const section = $blogPosts.closest('.section');
     section.style.display = 'block';
-    const imagePromises = images.map((img) => loadImage(img));
+    const filteredImages = images.filter((i) => isInViewport(i));
+    const imagePromises = filteredImages.map((img) => loadImage(img));
     await Promise.all(imagePromises);
     delete section.style.display;
   }
