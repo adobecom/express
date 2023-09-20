@@ -71,10 +71,9 @@ body.no-desktop-brand-header header {
 .marquee .content-wrapper h2 {
   font-size: clamp(var(--heading-font-size-s), 3vw, var(--heading-font-size-l));
   margin: 0 0 8px 0;
-  text-align: left;
 }
 
-.marquee p {
+.marquee .content-wrapper p {
   font-size: var(--body-font-size-m);
   margin: 16px 0;
 }
@@ -89,8 +88,15 @@ body.no-desktop-brand-header header {
   margin: 16px 0;
 }
 
+.marquee p.button-container a.secondary {
+  border-color: var(--color-black);
+  background-color: var(--color-white);
+}
+
 .marquee p.button-container a.button:any-link {
   margin: 0;
+  width: 100%;
+  box-sizing: border-box;
   white-space: nowrap;
 }
 
@@ -126,8 +132,12 @@ body.no-desktop-brand-header header {
 
 .marquee .button-container.button-inline {
   display: inline-block;
-  margin-right: 16px;
-  text-align: left;
+  width: 100%;
+  margin: 0;
+}
+
+.marquee .content-wrapper {
+  text-align: center;
 }
 
 .marquee .content-wrapper .button-container.free-plan-container {
@@ -251,6 +261,11 @@ body.no-desktop-brand-header header {
 }
 
 @media (min-width: 900px) {
+  .marquee .content-wrapper,
+  .marquee .content-wrapper h2{
+    text-align: left;
+  }
+
   .marquee .background-wrapper {
     position: unset;
   }
@@ -277,6 +292,17 @@ body.no-desktop-brand-header header {
     object-position: center;
   }
 
+  .marquee .button-container.button-inline {
+    width: auto;
+    margin-right: 16px;
+    margin-top: 16px;
+  }
+
+  .marquee p.button-container a.button:any-link {
+    width: auto;
+    box-sizing: initial;
+  }
+
   .marquee.dark,
   .marquee.dark a:any-link {
     color: var(--color-white);
@@ -292,10 +318,6 @@ body.no-desktop-brand-header header {
     display: flex;
     flex-direction: column;
     justify-content: center;
-  }
-
-  .marquee .button-container.button-inline {
-    text-align: center;
   }
 
   .marquee.short .marquee-foreground {

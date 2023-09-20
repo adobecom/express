@@ -48,6 +48,7 @@ main .carousel-container .carousel-fader-left {
   transition: opacity 0.2s, display 0.2s;
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
+  z-index: 1;
 }
 
 main .carousel-container .carousel-fader-right {
@@ -63,6 +64,7 @@ main .carousel-container .carousel-fader-right {
   transition: opacity 0.2s;
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
+  z-index: 1;
 }
 
 main .carousel-container a.button.carousel-arrow {
@@ -123,7 +125,7 @@ main .carousel-container.controls-hidden .carousel-platform {
   scroll-snap-type: none;
 }
 
-@media (min-width: 900px) {  
+@media (min-width: 900px) {
   main .carousel-container .carousel-platform::-webkit-scrollbar {
     display: none;
   }
