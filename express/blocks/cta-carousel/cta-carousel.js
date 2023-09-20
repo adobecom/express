@@ -14,7 +14,7 @@ import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../sc
 
 import buildCarousel from '../shared/carousel.js';
 
-function sanitizeInput(string) {
+export function sanitizeInput(string) {
   const charMap = {
     '&': '&amp;',
     '<': '&lt;',
