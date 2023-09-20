@@ -104,7 +104,6 @@ export default async function decorateBlogPage() {
   const $h1 = document.querySelector('main h1');
   const author = getMeta('author');
   const date = getMeta('publication-date');
-  let imgProm;
   if ($h1 && author && date) {
     const $heroPicture = $h1.parentElement.querySelector('picture');
     const heroSection = createTag('div', { class: 'hero' });
@@ -194,7 +193,7 @@ export default async function decorateBlogPage() {
     decorateBlogLinkedImages();
     if ($heroPicture) {
       const img = $heroPicture.querySelector('img');
-      imgProm = loadImage(img).then(() => {
+      await loadImage(img).then(() => {
         delete heroSection.dataset.status;
       });
     } else {
@@ -220,6 +219,5 @@ export default async function decorateBlogPage() {
   block.setAttribute('data-block-name', 'tags');
   section.appendChild(block);
   $main.appendChild(section);
-  await loadBlock(block);
-  if (imgProm) await imgProm;
+  loadBlock(block);
 }

@@ -288,7 +288,7 @@ function checkStructure(element, querySelectors) {
   return matched;
 }
 
-export default function decorate($block) {
+export default async function decorate($block) {
   const config = getBlogPostsConfig($block);
 
   // wrap p in parent section
@@ -301,5 +301,5 @@ export default function decorate($block) {
     });
   }
 
-  decorateBlogPosts($block, config);
+  await decorateBlogPosts($block, config);
 }
