@@ -106,8 +106,8 @@ async function updateSEOLinkList(container, linkPill, list) {
 }
 
 function formatLinkPillText(linkPillData) {
-  const dv = titleCase(linkPillData.displayValue.replace(/-/g, ' '));
-  const tn = titleCase(linkPillData.tasks.replace(/-/g, ' '));
+  const displayValue = titleCase(linkPillData.displayValue.replace(/-/g, ' '));
+  const titleName = titleCase(linkPillData.tasks.replace(/-/g, ' '));
   const topicsMeta = getMetadata('topics');
   const topics = topicsMeta !== '" "' ? `${topicsMeta?.replace(/[$@%"]/g, '').replace(/-/g, ' ')}` : '';
 
@@ -115,12 +115,12 @@ function formatLinkPillText(linkPillData) {
   let displayText;
 
   if (getMetadata('tasks')) {
-    displayText = `${displayTopics} ${dv} ${tn}`
+    displayText = `${displayTopics} ${displayValue} ${titleName}`
       .split(' ')
       .filter((item, i, allItems) => i === allItems.indexOf(item))
       .join(' ').trim();
   } else {
-    displayText = `${dv} ${tn} ${displayTopics}`
+    displayText = `${displayValue} ${titleName} ${displayTopics}`
       .split(' ')
       .filter((item, i, allItems) => i === allItems.indexOf(item))
       .join(' ').trim();
