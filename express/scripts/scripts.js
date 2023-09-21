@@ -991,14 +991,15 @@ export async function loadBlocks(main) {
 }
 
 export function loadScript(url, callback, type) {
-  const $head = document.querySelector('head');
-  const $script = createTag('script', { src: url });
+  const head = document.querySelector('head');
+  if (head.querySelector(`script[src="${url}"]`)) return null;
+  const script = createTag('script', { src: url });
   if (type) {
-    $script.setAttribute('type', type);
+    script.setAttribute('type', type);
   }
-  $head.append($script);
-  $script.onload = callback;
-  return $script;
+  head.append(script);
+  script.onload = callback;
+  return script;
 }
 
 /**
@@ -1148,6 +1149,7 @@ export function decorateButtons(block = document) {
       && !(linkText.startsWith('https') && linkText.includes('/media_'))
       && !linkText.includes('hlx.blob.core.windows.net')
       && !linkText.endsWith(' >')
+      && !(new URL($a.href).hash === '#video-embed')
       && !linkText.endsWith(' ›')) {
       const $up = $a.parentElement;
       const $twoup = $a.parentElement.parentElement;
@@ -1822,27 +1824,28 @@ export function addFavIcon(href) {
 
 function decorateSocialIcons($main) {
   $main.querySelectorAll(':scope a').forEach(($a) => {
-    if ($a.href === $a.textContent.trim()) {
+    const urlObject = new URL($a.href);
+    if ($a.href === $a.textContent.trim() && new URL($a.href).hash !== '#embed-video') {
       let icon = '';
-      if ($a.href.startsWith('https://www.instagram.com')) {
+      if (urlObject.hostname === 'www.instagram.com') {
         icon = 'instagram';
       }
-      if ($a.href.startsWith('https://twitter.com')) {
+      if (urlObject.hostname === 'www.twitter.com') {
         icon = 'twitter';
       }
-      if ($a.href.startsWith('https://www.pinterest.')) {
+      if (urlObject.hostname.split('.')[1] === 'pinterest') {
         icon = 'pinterest';
       }
-      if ($a.href.startsWith('https://www.facebook.')) {
+      if (urlObject.hostname.split('.')[1] === 'facebook') {
         icon = 'facebook';
       }
-      if ($a.href.startsWith('https://www.linkedin.com')) {
+      if (urlObject.hostname === 'www.linkedin.com') {
         icon = 'linkedin';
       }
-      if ($a.href.startsWith('https://www.youtube.com')) {
+      if (urlObject.hostname === 'www.youtube.com') {
         icon = 'youtube';
       }
-      if ($a.href.startsWith('https://www.tiktok.com')) {
+      if (urlObject.hostname === 'www.tiktok.com') {
         icon = 'tiktok';
       }
       const $parent = $a.parentElement;

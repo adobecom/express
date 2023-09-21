@@ -309,7 +309,6 @@ body.no-desktop-brand-header header {
   }
 
   body.no-desktop-brand-header header, body.no-brand-header header {
-    height: auto;
     background-image: unset;
   }
 
