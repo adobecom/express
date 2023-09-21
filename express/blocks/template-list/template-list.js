@@ -255,6 +255,7 @@ async function processResponse(props) {
         href: template.branchURL,
         title: placeholders['edit-this-template'] ?? 'Edit this template',
         class: 'button accent',
+        target: '_blank',
       });
 
       $button.textContent = placeholders['edit-this-template'] ?? 'Edit this template';
