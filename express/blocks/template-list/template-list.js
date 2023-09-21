@@ -394,7 +394,13 @@ function populateTemplates($block, templates, props) {
           $imgLink.remove();
           $video.addEventListener('canplay', () => {
             $video.muted = true;
-            $video.play();
+            $video.play().catch((e) => {
+              if (e instanceof DOMException && e.name === 'AbortError') {
+                // ignore
+              } else {
+                throw e;
+              }
+            });
           });
         }
       }

@@ -152,7 +152,13 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
         document.dispatchEvent(videoLoaded);
       }
 
-      $video.play();
+      $video.play().catch((e) => {
+        if (e instanceof DOMException && e.name === 'AbortError') {
+          // ignore
+        } else {
+          throw e;
+        }
+      });
     });
     $video.addEventListener('ended', async () => {
       // hide player and show promotion

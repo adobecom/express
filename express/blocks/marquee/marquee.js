@@ -119,7 +119,13 @@ async function buildReduceMotionSwitch(block) {
         video.pause();
       } else {
         video.muted = true;
-        video.play();
+        video.play().catch((e) => {
+          if (e instanceof DOMException && e.name === 'AbortError') {
+            // ignore
+          } else {
+            throw e;
+          }
+        });
       }
     }
 
@@ -185,7 +191,13 @@ function adjustLayout(animations, parent) {
       newVideo.addEventListener('canplay', () => {
         if (localStorage.getItem('reduceMotion') !== 'on') {
           newVideo.muted = true;
-          newVideo.play();
+          newVideo.play().catch((e) => {
+            if (e instanceof DOMException && e.name === 'AbortError') {
+              // ignore
+            } else {
+              throw e;
+            }
+          });
         }
       });
     }
