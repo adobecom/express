@@ -409,6 +409,7 @@ function populateTemplates($block, templates, props) {
 
     if (isPlaceholder) {
       $tmplt.classList.add('placeholder');
+      $tmplt.target = '_blank';
     }
   }
 }
