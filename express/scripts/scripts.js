@@ -439,7 +439,13 @@ export function transformLinkToAnimation($a, $videoLooping = true) {
   // autoplay animation
   $video.addEventListener('canplay', () => {
     $video.muted = true;
-    $video.play();
+    $video.play().catch((e) => {
+      if (e instanceof DOMException && e.name === 'AbortError') {
+        // ignore
+      } else {
+        throw e;
+      }
+    });
   });
   return $video;
 }
@@ -2081,8 +2087,15 @@ export function addAnimationToggle(target) {
     const videos = target.querySelectorAll('video');
     const paused = videos[0] ? videos[0].paused : false;
     videos.forEach((video) => {
-      if (paused) video.play();
-      else video.pause();
+      if (paused) {
+        video.play().catch((e) => {
+          if (e instanceof DOMException && e.name === 'AbortError') {
+            // ignore
+          } else {
+            throw e;
+          }
+        });
+      } else video.pause();
     });
   }, true);
 }
