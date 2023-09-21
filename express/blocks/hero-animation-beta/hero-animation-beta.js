@@ -98,7 +98,13 @@ function adjustLayout(animations, $parent) {
       $parent.replaceChild($newVideo, $parent.querySelector('video'));
       $newVideo.addEventListener('canplay', () => {
         $newVideo.muted = true;
-        $newVideo.play();
+        $newVideo.play().catch((e) => {
+          if (e instanceof DOMException && e.name === 'AbortError') {
+            // ignore
+          } else {
+            throw e;
+          }
+        });
       });
     }
   }
@@ -211,7 +217,13 @@ export default async function decorate($block) {
         $div.prepend($video);
         $video.addEventListener('canplay', () => {
           $video.muted = true;
-          $video.play();
+          $video.play().catch((e) => {
+            if (e instanceof DOMException && e.name === 'AbortError') {
+              // ignore
+            } else {
+              throw e;
+            }
+          });
         });
         window.addEventListener('resize', () => {
           adjustLayout(animations, $div);

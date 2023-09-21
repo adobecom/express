@@ -164,8 +164,8 @@ main .video-overlay .video-overlay-video {
 main .video-overlay .video-overlay-video.vimeo {
   width: 90vh;
   max-width: 90vw;
-  height: 90vw;
-  max-height: 90vh;
+  height: 50vw;
+  max-height: 50vh;
 }
 
 main .video-overlay .video-overlay-video iframe,

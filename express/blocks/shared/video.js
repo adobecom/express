@@ -17,7 +17,7 @@ import {
 
 const docTitle = document.title;
 
-const getAvailableVimeoSubLang = () => {
+export const getAvailableVimeoSubLang = () => {
   const langs = {
     fr: 'fr',
     de: 'de',
@@ -152,7 +152,13 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
         document.dispatchEvent(videoLoaded);
       }
 
-      $video.play();
+      $video.play().catch((e) => {
+        if (e instanceof DOMException && e.name === 'AbortError') {
+          // ignore
+        } else {
+          throw e;
+        }
+      });
     });
     $video.addEventListener('ended', async () => {
       // hide player and show promotion
@@ -184,6 +190,7 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
 }
 
 export function isVideoLink(url) {
+  if (!url) return null;
   return url.includes('youtu')
     || url.includes('vimeo')
     || /.*\/media_.*(mp4|webm|m3u8)$/.test(new URL(url).pathname);

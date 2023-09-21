@@ -195,6 +195,25 @@ async function getFilteredResults(config) {
   return (matchingResult);
 }
 
+const loadImage = (img) => new Promise((resolve) => {
+  if (img.complete && img.naturalHeight !== 0) resolve();
+  else {
+    img.onload = () => {
+      resolve();
+    };
+  }
+});
+
+function isInViewport(element) {
+  const rect = element.getBoundingClientRect();
+  return (
+    rect.top >= 0
+    && rect.left >= 0
+    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+    && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
 async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const posts = await getFilteredResults(config);
 
@@ -211,6 +230,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
 
   const pageEnd = offset + limit;
   let count = 0;
+  const images = [];
   for (let i = offset; i < posts.length && count < limit; i += 1) {
     const post = posts[i];
     const path = post.path.split('.')[0];
@@ -266,6 +286,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
         <p class="blog-card-date">${dateString}</p>`;
       $cards.append($card);
     }
+    images.push($card.querySelector('img'));
     count += 1;
   }
   if (posts.length > pageEnd && config['load-more']) {
@@ -278,6 +299,15 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
       decorateBlogPosts($blogPosts, config, pageEnd);
     });
   }
+
+  if (images.length) {
+    const section = $blogPosts.closest('.section');
+    section.style.display = 'block';
+    const filteredImages = images.filter((i) => isInViewport(i));
+    const imagePromises = filteredImages.map((img) => loadImage(img));
+    await Promise.all(imagePromises);
+    delete section.style.display;
+  }
 }
 
 function checkStructure(element, querySelectors) {
@@ -288,7 +318,7 @@ function checkStructure(element, querySelectors) {
   return matched;
 }
 
-export default function decorate($block) {
+export default async function decorate($block) {
   const config = getBlogPostsConfig($block);
 
   // wrap p in parent section
@@ -301,5 +331,5 @@ export default function decorate($block) {
     });
   }
 
-  decorateBlogPosts($block, config);
+  await decorateBlogPosts($block, config);
 }

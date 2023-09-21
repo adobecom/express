@@ -90,19 +90,28 @@ function copyToClipboard(copyButton) {
   });
 }
 
+const loadImage = (img) => new Promise((resolve) => {
+  if (img.complete && img.naturalHeight !== 0) resolve();
+  else {
+    img.onload = () => {
+      resolve();
+    };
+  }
+});
+
 export default async function decorateBlogPage() {
   const $main = document.querySelector('main');
   const $h1 = document.querySelector('main h1');
   const author = getMeta('author');
   const date = getMeta('publication-date');
-
   if ($h1 && author && date) {
     const $heroPicture = $h1.parentElement.querySelector('picture');
-    const $heroSection = createTag('div', { class: 'hero' });
+    const heroSection = createTag('div', { class: 'hero' });
+    heroSection.setAttribute('data-status', 'loading');
     const $div = createTag('div');
-    $heroSection.append($div);
+    heroSection.append($div);
     $div.append($h1);
-    $main.prepend($heroSection);
+    $main.prepend(heroSection);
 
     document.body.classList.add('blog-article');
     const $blogHeader = createTag('div', { class: 'blog-header' });
@@ -182,6 +191,14 @@ export default async function decorateBlogPage() {
       $div.append($heroPicture);
     }
     decorateBlogLinkedImages();
+    if ($heroPicture) {
+      const img = $heroPicture.querySelector('img');
+      await loadImage(img).then(() => {
+        delete heroSection.dataset.status;
+      });
+    } else {
+      delete heroSection.dataset.status;
+    }
   }
 
   const pictures = document.querySelectorAll('main div.section > div > picture');
