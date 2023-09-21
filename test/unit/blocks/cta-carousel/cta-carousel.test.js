@@ -27,6 +27,9 @@ describe('CTA Carousel - Create Variant', () => {
   beforeEach(() => {
     window.isTestEnv = true;
     document.body.innerHTML = create;
+    window.placeholders = {
+      'search-branch-links': 'https://adobesparkpost.app.link/c4bWARQhWAb',
+    };
   });
 
   it('has a heading', async () => {
@@ -104,7 +107,6 @@ describe('CTA Carousel - Quick Action Variant', () => {
       ctaCounts = Math.max(ctas.length, ctaCounts);
     });
 
-    console.log(qaVariant);
     expect(ctaCounts).to.be.lessThan(2);
   });
 });
@@ -151,6 +153,22 @@ describe('CTA Carousel - Gen AI variant', async () => {
     await sendKeys({
       press: 'Enter',
     });
+
+    expect(button.disabled).to.be.true;
+  });
+
+  it('form responds to submit event', async () => {
+    const gaVariant = document.getElementById('ga-variant');
+    await decorate(gaVariant);
+    const form = gaVariant.querySelector('form.gen-ai-input-form');
+    const input = form.querySelector('textarea.gen-ai-input');
+    const button = form.querySelector('button.gen-ai-submit');
+
+    input.focus();
+    await sendKeys({
+      press: 'A',
+    });
+    form.dispatchEvent(new Event('submit'));
 
     expect(button.disabled).to.be.true;
   });
