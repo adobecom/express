@@ -1149,7 +1149,7 @@ export function decorateButtons(block = document) {
       && !(linkText.startsWith('https') && linkText.includes('/media_'))
       && !linkText.includes('hlx.blob.core.windows.net')
       && !linkText.endsWith(' >')
-      && !(new URL($a.href).hash === '#video-embed')
+      && !(new URL($a.href).hash === '#embed-video')
       && !linkText.endsWith(' ›')) {
       const $up = $a.parentElement;
       const $twoup = $a.parentElement.parentElement;

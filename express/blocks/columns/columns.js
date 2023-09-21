@@ -66,7 +66,9 @@ function transformToVideoColumn(cell, aTag, block) {
   });
 
   // auto-play if hash matches title
-  if (toClassName(title) === window.location.hash.substring(1)) {
+  const hash = window.location.hash.substring(1);
+  const titleName = toClassName(title);
+  if ((hash && titleName) && titleName === hash && hash !== '#embed-video') {
     displayVideoModal(vidUrls, title);
   }
 }
@@ -125,7 +127,7 @@ function decorateIconList(columnCell, rowNum, blockClasses) {
 }
 
 const handleVideos = (cell, a, block, thumbnail) => {
-  if (a.href && new URL(a.href).hash === '#video-embed') {
+  if (a.href && new URL(a.href).hash === '#embed-video') {
     if (a.href.includes('youtu')) {
       embedYoutube(a);
     } else if (a.href.includes('vimeo')) {
