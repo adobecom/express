@@ -49,7 +49,12 @@ export default function decorate($block, name, doc) {
       if (isAnimation) {
         $video.addEventListener('canplay', () => {
           $video.muted = true;
-          $video.play();
+          const playPromise = $video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              // ignore
+            });
+          }
         });
       }
     }
