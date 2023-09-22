@@ -31,7 +31,7 @@ function sanitizeInput(string) {
   return string.replace(/[&<>"'`=/]/g, (s) => charMap[s]);
 }
 
-export function decorateTextWithTag(textSource) {
+function decorateTextWithTag(textSource) {
   const text = createTag('p', { class: 'cta-card-title' });
   const tagText = textSource.match(/\[(.*?)]/);
 
