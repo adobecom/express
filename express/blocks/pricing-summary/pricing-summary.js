@@ -161,7 +161,7 @@ function alignContent(block) {
             if (!childDivs.length) return;
 
             childDivs.forEach((div) => {
-              if (elementsMinHeight[div.className]) return;
+              if (!elementsMinHeight[div.className]) return;
 
               if (div.offsetHeight < elementsMinHeight[div.className]) {
                 div.style.minHeight = `${elementsMinHeight[div.className]}px`;
