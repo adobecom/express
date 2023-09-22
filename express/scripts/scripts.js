@@ -439,7 +439,12 @@ export function transformLinkToAnimation($a, $videoLooping = true) {
   // autoplay animation
   $video.addEventListener('canplay', () => {
     $video.muted = true;
-    $video.play();
+    const playPromise = $video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // ignore
+      });
+    }
   });
   return $video;
 }
@@ -1149,7 +1154,7 @@ export function decorateButtons(block = document) {
       && !(linkText.startsWith('https') && linkText.includes('/media_'))
       && !linkText.includes('hlx.blob.core.windows.net')
       && !linkText.endsWith(' >')
-      && !(new URL($a.href).hash === '#video-embed')
+      && !(new URL($a.href).hash === '#embed-video')
       && !linkText.endsWith(' ›')) {
       const $up = $a.parentElement;
       const $twoup = $a.parentElement.parentElement;
@@ -2081,8 +2086,14 @@ export function addAnimationToggle(target) {
     const videos = target.querySelectorAll('video');
     const paused = videos[0] ? videos[0].paused : false;
     videos.forEach((video) => {
-      if (paused) video.play();
-      else video.pause();
+      if (paused) {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // ignore
+          });
+        }
+      } else video.pause();
     });
   }, true);
 }

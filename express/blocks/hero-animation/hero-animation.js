@@ -99,7 +99,12 @@ function adjustLayout(animations, $parent) {
       $parent.replaceChild($newVideo, $parent.querySelector('video'));
       $newVideo.addEventListener('canplay', () => {
         $newVideo.muted = true;
-        $newVideo.play();
+        const playPromise = $newVideo.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // ignore
+          });
+        }
       });
     }
   }
@@ -210,7 +215,12 @@ export default async function decorate($block) {
         $div.prepend($video);
         $video.addEventListener('canplay', () => {
           $video.muted = true;
-          $video.play();
+          const playPromise = $video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              // ignore
+            });
+          }
         });
         window.addEventListener('resize', () => {
           adjustLayout(animations, $div);

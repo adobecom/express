@@ -1235,3 +1235,7 @@ main .block .app-store-aTag .app-store-wrapper {
 :root:lang(ja) {
   --body-font-family: adobe-clean-han-japanese, 'Adobe Clean', adobe-clean, 'Trebuchet MS', sans-serif;
 }
+
+#feds-topnav .feds-login {
+  border: none
+}
