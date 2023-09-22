@@ -15,23 +15,12 @@ class LiteYTEmbed extends HTMLElement {
     this.videoId = this.getAttribute('videoid');
 
     let playBtnEl = this.querySelector('.lty-playbtn');
-    // A label for the button takes priority over a [playlabel] attribute on the custom-element
     this.playLabel = (playBtnEl && playBtnEl.textContent.trim()) || this.getAttribute('playlabel') || 'Play';
 
-    /**
-       * Lo, the youtube placeholder image!  (aka the thumbnail, poster image, etc)
-       *
-       * See https://github.com/paulirish/lite-youtube-embed/blob/master/youtube-thumbnail-urls.md
-       *
-       * TODO: Do the sddefault->hqdefault fallback
-       *       - When doing this, apply referrerpolicy (https://github.com/ampproject/amphtml/pull/3940)
-       * TODO: Consider using webp if supported, falling back to jpg
-       */
     if (!this.style.backgroundImage) {
       this.style.backgroundImage = `url("https://i.ytimg.com/vi/${this.videoId}/hqdefault.jpg")`;
     }
 
-    // Set up play button, and its visually hidden label
     if (!playBtnEl) {
       playBtnEl = document.createElement('button');
       playBtnEl.type = 'button';
@@ -92,16 +81,16 @@ class LiteYTEmbed extends HTMLElement {
     this.append(videoPlaceholderEl);
 
     const paramsObj = Object.fromEntries(params.entries());
-
+    /* eslint-disable no-new */
     new YT.Player(videoPlaceholderEl, {
       width: '100%',
       videoId: this.videoId,
       playerVars: paramsObj,
       events: {
-        'onReady': event => {
+        onReady: (event) => {
           event.target.playVideo();
-        }
-      }
+        },
+      },
     });
   }
 
