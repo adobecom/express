@@ -14,7 +14,7 @@ import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../sc
 
 import buildCarousel from '../shared/carousel.js';
 
-function sanitizeInput(string) {
+export function sanitizeInput(string) {
   const charMap = {
     '&': '&amp;',
     '<': '&lt;',
@@ -29,7 +29,7 @@ function sanitizeInput(string) {
   return string.replace(/[&<>"'`=/]/g, (s) => charMap[s]);
 }
 
-function decorateTextWithTag(textSource) {
+export function decorateTextWithTag(textSource) {
   const text = createTag('p', { class: 'cta-card-text' });
   const tagText = textSource.match(/\[(.*?)]/);
 
@@ -136,7 +136,7 @@ function buildGenAIUpload(cta, card) {
   return uploadButton;
 }
 
-export async function decorateCards(block, payload) {
+async function decorateCards(block, payload) {
   const cards = createTag('div', { class: 'cta-carousel-cards' });
   const placeholders = await fetchPlaceholders();
 
@@ -183,7 +183,7 @@ export async function decorateCards(block, payload) {
       cta.ctaLinks.forEach((a) => {
         if (a.href && a.href.match('adobesparkpost.app.link')) {
           const btnUrl = new URL(a.href);
-          if (placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
+          if (placeholders?.['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
             btnUrl.searchParams.set('search', cta.text);
             btnUrl.searchParams.set('q', cta.text);
             btnUrl.searchParams.set('category', 'templates');
