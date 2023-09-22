@@ -22,13 +22,8 @@ import {
 
 async function fetchBlogIndex(config) {
   const prefix = getLocale(window.location);
-  let currentLocalePrefix;
   let currentLocaleProcessed = false;
-  if (prefix === 'express' || prefix === 'drafts' || prefix === 'documentation' || prefix === 'us') {
-    currentLocalePrefix = '';
-  } else {
-    currentLocalePrefix = `/${prefix}`;
-  }
+  const currentLocalePrefix = (prefix === 'us') ? '' : `/${prefix}`;
   const consolidatedJsonData = [];
   if (config.featuredOnly) {
     const linkLocales = [];
@@ -42,7 +37,7 @@ async function fetchBlogIndex(config) {
       if (localePrefix === 'us') {
         localePrefix = '';
       }
-      if (linkLocales.indexOf(localePrefix) === -1 && !(localePrefix === 'drafts' || localePrefix === 'documentation')) {
+      if (linkLocales.indexOf(localePrefix) === -1) {
         linkLocales.push(localePrefix);
         const prefixedLocale = localePrefix === '' ? '' : `/${localePrefix}`;
         urls.push(`${prefixedLocale}/express/learn/blog/query-index.json`);
