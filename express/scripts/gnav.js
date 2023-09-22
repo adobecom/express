@@ -166,7 +166,6 @@ async function loadFEDS() {
     );
 
     const placeholders = await fetchPlaceholders();
-    const validSecondPathSegments = ['create', 'feature'];
     const pathSegments = window.location.pathname
       .split('/')
       .filter((e) => e !== '')
@@ -180,7 +179,6 @@ async function loadFEDS() {
     if (!pagesShortName
       || pathSegments.length <= 2
       || !replacedCategory
-      || !validSecondPathSegments.includes(replacedCategory)
       || locale !== 'us') { // Remove this line once locale translations are complete
       return null;
     }
