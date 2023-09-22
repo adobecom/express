@@ -21,8 +21,14 @@ import {
 } from '../../scripts/scripts.js';
 
 async function fetchBlogIndex(config) {
-  let prefix = getLocale(window.location);
-  if (prefix === 'express' || prefix === 'drafts' || prefix === 'documentation' || prefix === 'us') prefix = '';
+  const prefix = getLocale(window.location);
+  let currentLocalePrefix;
+  let currentLocaleProcessed;
+  if (prefix === 'express' || prefix === 'drafts' || prefix === 'documentation' || prefix === 'us') {
+    currentLocalePrefix = '';
+  } else {
+    currentLocalePrefix = `/${prefix}`;
+  }
   const consolidatedJsonData = [];
   if (config.featuredOnly) {
     const linkLocales = [];
@@ -30,6 +36,9 @@ async function fetchBlogIndex(config) {
     const links = config.featured;
     for (let i = 0; i < links.length; i += 1) {
       let localePrefix = getLocale(new URL(links[i]));
+      if (localePrefix === prefix) {
+        currentLocaleProcessed = true;
+      }
       if (localePrefix === 'us') {
         localePrefix = '';
       }
@@ -43,8 +52,9 @@ async function fetchBlogIndex(config) {
       .then((res) => res.ok && res.json())))
       .then((res) => res);
     resp.forEach((item) => consolidatedJsonData.push(...item.data));
-  } else {
-    const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
+  }
+  if (!currentLocaleProcessed) {
+    const resp = await fetch(`${currentLocalePrefix}/express/learn/blog/query-index.json`);
     const res = await resp.json();
     consolidatedJsonData.push(...res.data);
   }
