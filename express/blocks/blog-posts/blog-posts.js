@@ -23,7 +23,7 @@ import {
 async function fetchBlogIndex(config) {
   const prefix = getLocale(window.location);
   let currentLocalePrefix;
-  let currentLocaleProcessed;
+  let currentLocaleProcessed = false;
   if (prefix === 'express' || prefix === 'drafts' || prefix === 'documentation' || prefix === 'us') {
     currentLocalePrefix = '';
   } else {
