@@ -124,10 +124,10 @@ function loadVideo(block, payload) {
 }
 
 function loadList(block, payload) {
-  const $list = block.querySelector('.video-player-video-list');
+  const list = block.querySelector('.video-player-video-list');
 
-  if ($list) {
-    $list.innerHTML = '';
+  if (list) {
+    list.innerHTML = '';
     const videoArr = payload.sessions[payload.sessionIndex].videos;
 
     videoArr.forEach((video, index) => {
@@ -141,7 +141,7 @@ function loadList(block, payload) {
       videoButtonDuration.textContent = video.duration;
       videoHeadingWrapper.append(playIcon, videoButtonTitle);
       videoButton.append(videoHeadingWrapper, videoButtonDuration);
-      $list.append(videoButton);
+      list.append(videoButton);
 
       if (index === 0) {
         videoButton.classList.add('active');
@@ -210,8 +210,8 @@ function loadNextVideo(block, payload) {
 }
 
 function decorateSessionsCarousel(block, payload) {
-  const $thumbnailsContainer = createTag('div', { class: 'thumbnails-container' });
-  block.append($thumbnailsContainer);
+  const thumbnailsContainer = createTag('div', { class: 'thumbnails-container' });
+  block.append(thumbnailsContainer);
 
   payload.sessions.forEach((session, index) => {
     const sessionEl = createTag('a', { class: 'session' });
@@ -219,7 +219,7 @@ function decorateSessionsCarousel(block, payload) {
     const sessionTitle = createTag('h5', { class: 'session-title' });
     const sessionDescription = createTag('h4', { class: 'session-description' });
 
-    $thumbnailsContainer.append(sessionEl);
+    thumbnailsContainer.append(sessionEl);
     sessionTitle.textContent = session.title;
     sessionDescription.textContent = session.description;
     sessionEl.append(sessionThumbnail, sessionTitle, sessionDescription);
@@ -230,7 +230,7 @@ function decorateSessionsCarousel(block, payload) {
     });
   });
 
-  buildCarousel('.session', $thumbnailsContainer);
+  buildCarousel('.session', thumbnailsContainer);
   block.querySelectorAll('.session')[payload.sessionIndex].classList.add('active');
 }
 
