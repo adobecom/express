@@ -614,10 +614,10 @@ loadScript(martechURL, () => {
     let alt;
     let newEventName;
 
-    if ($a.textContent.trim()) {
+    if ($a?.textContent?.trim()) {
       newEventName = eventName + textToName($a.textContent.trim());
     } else {
-      $img = $a.querySelector('img');
+      $img = $a?.querySelector('img');
       alt = $img && $img.getAttribute('alt');
       if (alt) {
         newEventName = eventName + textToName(alt);
@@ -1321,7 +1321,7 @@ loadScript(martechURL, () => {
     // poll the dataLayer every 2 seconds
     setInterval(() => {
       // loop through each of the events in the dataLayer
-      window.dataLayer.forEach((evt) => {
+      window?.dataLayer?.forEach((evt) => {
         // don't continue if it has already been processed
         if (processed[evt.assetId]) {
           return;

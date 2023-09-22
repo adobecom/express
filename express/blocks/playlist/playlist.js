@@ -51,7 +51,12 @@ async function loadVideoAnalytic($video) {
 
 function startVideo(player, overlay) {
   overlay.style.zIndex = 0;
-  player.play();
+  const playPromise = player.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {
+      // ignore
+    });
+  }
 }
 
 function toggleSessionState($block, $session) {

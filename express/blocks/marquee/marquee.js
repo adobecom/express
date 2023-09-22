@@ -71,7 +71,12 @@ export function handleMediaQuery(block, mediaQuery) {
       block.querySelector('video')?.pause();
     } else {
       block.classList.remove('reduce-motion');
-      block.querySelector('video')?.play();
+      const playPromise = block.querySelector('video')?.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // ignore
+        });
+      }
     }
 
     localStorage.setItem('reduceMotion', e.matches ? 'on' : 'off');
@@ -119,13 +124,12 @@ async function buildReduceMotionSwitch(block) {
         video.pause();
       } else {
         video.muted = true;
-        video.play().catch((e) => {
-          if (e instanceof DOMException && e.name === 'AbortError') {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
             // ignore
-          } else {
-            throw e;
-          }
-        });
+          });
+        }
       }
     }
 
@@ -137,7 +141,12 @@ async function buildReduceMotionSwitch(block) {
         block.querySelector('video')?.pause();
       } else {
         block.classList.remove('reduce-motion');
-        block.querySelector('video')?.play();
+        const playPromise = block.querySelector('video')?.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // ignore
+          });
+        }
       }
     }, { passive: true });
     const placeholders = await fetchPlaceholders();
@@ -191,13 +200,12 @@ function adjustLayout(animations, parent) {
       newVideo.addEventListener('canplay', () => {
         if (localStorage.getItem('reduceMotion') !== 'on') {
           newVideo.muted = true;
-          newVideo.play().catch((e) => {
-            if (e instanceof DOMException && e.name === 'AbortError') {
+          const playPromise = newVideo.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
               // ignore
-            } else {
-              throw e;
-            }
-          });
+            });
+          }
         }
       });
     }

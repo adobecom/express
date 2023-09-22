@@ -151,14 +151,12 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
         const videoLoaded = new CustomEvent('videoloaded', { detail: videoAnalytic });
         document.dispatchEvent(videoLoaded);
       }
-
-      $video.play().catch((e) => {
-        if (e instanceof DOMException && e.name === 'AbortError') {
+      const playPromise = $video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
           // ignore
-        } else {
-          throw e;
-        }
-      });
+        });
+      }
     });
     $video.addEventListener('ended', async () => {
       // hide player and show promotion
