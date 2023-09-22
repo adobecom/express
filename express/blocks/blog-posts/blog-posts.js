@@ -37,7 +37,7 @@ async function fetchBlogIndex(config) {
       if (localePrefix === 'us') {
         localePrefix = '';
       }
-      if (linkLocales.indexOf(localePrefix) === -1) {
+      if (!linkLocales.includes(localePrefix)) {
         linkLocales.push(localePrefix);
         const prefixedLocale = localePrefix === '' ? '' : `/${localePrefix}`;
         urls.push(`${prefixedLocale}/express/learn/blog/query-index.json`);
