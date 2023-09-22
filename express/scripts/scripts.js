@@ -20,6 +20,10 @@ const TK_IDS = {
 
 let blog;
 
+const AUTO_BLOCKS = [
+  { faas: '/tools/faas' },
+];
+
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
@@ -574,6 +578,72 @@ export async function decorateBlock(block) {
   }
 }
 
+export function decorateAutoBlock(a) {
+  const { hostname } = window.location;
+  let url;
+  try {
+    url = new URL(a.href);
+  } catch (e) {
+    window.lana?.log(`Cannot make URL from decorateAutoBlock - ${a?.href}: ${e.toString()}`);
+    return false;
+  }
+
+  const href = hostname === url.hostname
+    ? `${url.pathname}${url.search}${url.hash}`
+    : a.href;
+
+  return AUTO_BLOCKS.find((candidate) => {
+    const key = Object.keys(candidate)[0];
+    const match = href.includes(candidate[key]);
+    if (!match) return false;
+
+    a.className = `${key} link-block`;
+    a.setAttribute('data-block-name', key);
+    return true;
+  });
+}
+
+function decorateLinks(main) {
+  const anchors = main.querySelectorAll('a');
+  return [...anchors].reduce((rdx, a) => {
+    if (!a.href) return rdx;
+    try {
+      let url = new URL(a.href);
+
+      // handle link replacement on sheet-powered pages
+      if (getMetadata('sheet-powered') === 'Y' && getMetadata(url.hash.replace('#', ''))) {
+        a.href = getMetadata(url.hash.replace('#', ''));
+        url = new URL(a.href);
+      }
+
+      const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
+      const isBranchLink = url.hostname === 'adobesparkpost.app.link';
+      if (!isContactLink) {
+        // make url relative if needed
+        const relative = url.hostname === window.location.hostname;
+        const urlPath = `${url.pathname}${url.search}${url.hash}`;
+        a.href = relative ? urlPath : `${url.origin}${urlPath}`;
+
+        if (!relative && !isBranchLink) {
+          // open external links in a new tab
+          a.target = '_blank';
+        }
+      }
+      if (a.href.includes('#_dnb')) {
+        a.href = a.href.replace('#_dnb', '');
+      } else {
+        const autoBlock = decorateAutoBlock(a);
+        if (autoBlock) {
+          rdx.push(a);
+        }
+      }
+    } catch (e) {
+      // invalid url
+    }
+    return rdx;
+  }, []);
+}
+
 /**
  * Decorates all sections in a container element.
  * @param {Element} $main The container element
@@ -600,6 +670,8 @@ async function decorateSections(el, isDoc) {
       sectionMeta.remove();
     }
 
+    const links = decorateLinks(section);
+
     const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
 
     section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
@@ -620,7 +692,21 @@ async function decorateSections(el, isDoc) {
     blocks.forEach(async (block) => {
       await decorateBlock(block);
     });
-    return { el: section, blocks: [...blocks] };
+    const blockLinks = [...blocks].reduce((blkLinks, block) => {
+      links.filter((link) => block.contains(link))
+        .forEach((link) => {
+          if (link.classList.contains('link-block')) {
+            blkLinks.autoBlocks.push(link);
+          }
+        });
+      return blkLinks;
+    }, { autoBlocks: [] });
+
+    return {
+      el: section,
+      blocks: [...blocks],
+      preloadLinks: blockLinks.autoBlocks,
+    };
   });
 }
 
@@ -995,17 +1081,38 @@ export async function loadBlocks(main) {
   return blocks;
 }
 
-export function loadScript(url, callback, type) {
-  const head = document.querySelector('head');
-  if (head.querySelector(`script[src="${url}"]`)) return null;
-  const script = createTag('script', { src: url });
-  if (type) {
-    script.setAttribute('type', type);
+export const loadScript = (url, type) => new Promise((resolve, reject) => {
+  let script = document.querySelector(`head > script[src="${url}"]`);
+  if (!script) {
+    const { head } = document;
+    script = document.createElement('script');
+    script.setAttribute('src', url);
+    if (type) {
+      script.setAttribute('type', type);
+    }
+    head.append(script);
   }
-  head.append(script);
-  script.onload = callback;
-  return script;
-}
+
+  if (script.dataset.loaded) {
+    resolve(script);
+    return;
+  }
+
+  const onScript = (event) => {
+    script.removeEventListener('load', onScript);
+    script.removeEventListener('error', onScript);
+
+    if (event.type === 'error') {
+      reject(new Error(`error loading script: ${script.src}`));
+    } else if (event.type === 'load') {
+      script.dataset.loaded = true;
+      resolve(script);
+    }
+  };
+
+  script.addEventListener('load', onScript);
+  script.addEventListener('error', onScript);
+});
 
 /**
  * fetches the string variables.
@@ -1063,7 +1170,7 @@ function loadMartech() {
 
   const analyticsUrl = '/express/scripts/instrument.js';
   if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
-    loadScript(analyticsUrl, null, 'module');
+    loadScript(analyticsUrl, 'module');
   }
 }
 
@@ -1073,7 +1180,7 @@ function loadGnav() {
 
   const gnavUrl = '/express/scripts/gnav.js';
   if (!(gnav === 'off' || document.querySelector(`head script[src="${gnavUrl}"]`))) {
-    loadScript(gnavUrl, null, 'module');
+    loadScript(gnavUrl, 'module');
   }
 }
 
@@ -1480,7 +1587,7 @@ async function decorateTesting() {
     if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
       // eslint-disable-next-line no-console
       console.log('rushing martech');
-      loadScript('/express/scripts/instrument.js', null, 'module');
+      loadScript('/express/scripts/instrument.js', 'module');
     }
   } catch (e) {
     console.log('error testing', e);
@@ -1874,37 +1981,6 @@ function decorateSocialIcons($main) {
   });
 }
 
-function decorateLinks(main) {
-  main.querySelectorAll('a').forEach((a) => {
-    if (!a.href) return;
-    try {
-      let url = new URL(a.href);
-
-      // handle link replacement on sheet-powered pages
-      if (getMetadata('sheet-powered') === 'Y' && getMetadata(url.hash.replace('#', ''))) {
-        a.href = getMetadata(url.hash.replace('#', ''));
-        url = new URL(a.href);
-      }
-
-      const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
-      const isBranchLink = url.hostname === 'adobesparkpost.app.link';
-      if (!isContactLink) {
-        // make url relative if needed
-        const relative = url.hostname === window.location.hostname;
-        const urlPath = `${url.pathname}${url.search}${url.hash}`;
-        a.href = relative ? urlPath : `${url.origin}${urlPath}`;
-
-        if (!relative && !isBranchLink) {
-          // open external links in a new tab
-          a.target = '_blank';
-        }
-      }
-    } catch (e) {
-      // invalid url
-    }
-  });
-}
-
 function displayOldLinkWarning() {
   if (window.location.hostname.includes('localhost') || window.location.hostname.includes('.hlx.page')) {
     document.querySelectorAll('main a[href^="https://spark.adobe.com/"]').forEach(($a) => {
@@ -2025,7 +2101,7 @@ export async function decorateMain(main) {
   decoratePictures(main);
   decorateLinkedPictures(main);
   decorateSocialIcons(main);
-  decorateLinks(main);
+
   await sections;
   return sections;
 }
@@ -2350,6 +2426,11 @@ async function loadArea(area = document) {
   const areaBlocks = [];
   if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
   for (const section of sections) {
+    if (section.preloadLinks.length) {
+      const preloads = section.preloadLinks.map((block) => loadBlock(block));
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.all(preloads);
+    }
     const loaded = section.blocks.map((block) => loadBlock(block));
     areaBlocks.push(...section.blocks);
 
@@ -2464,4 +2545,29 @@ export function titleCase(str) {
     splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
   }
   return splitStr.join(' ');
+}
+
+export function createIntersectionObserver({
+  el, callback, once = true, options = {},
+}) {
+  const io = new IntersectionObserver((entries, observer) => {
+    entries.forEach(async (entry) => {
+      if (entry.isIntersecting) {
+        if (once) observer.unobserve(entry.target);
+        callback(entry.target, entry);
+      }
+    });
+  }, options);
+  io.observe(el);
+  return io;
+}
+export const b64ToUtf8 = (str) => decodeURIComponent(escape(window.atob(str)));
+
+export function parseEncodedConfig(encodedConfig) {
+  try {
+    return JSON.parse(b64ToUtf8(decodeURIComponent(encodedConfig)));
+  } catch (e) {
+    console.log(e);
+  }
+  return null;
 }

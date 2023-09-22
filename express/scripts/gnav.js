@@ -290,7 +290,9 @@ async function loadFEDS() {
   if (!['www.adobe.com', 'www.stage.adobe.com'].includes(window.location.hostname)) {
     prefix = 'https://www.adobe.com';
   }
-  loadScript(`${prefix}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).id = 'feds-script';
+  loadScript(`${prefix}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).then((script) => {
+    script.id = 'feds-script';
+  });
   setTimeout(() => {
     window.fedsConfig.privacy = {
       otDomainId: '7a5eb705-95ed-4cc4-a11d-0cc5760e93db',
