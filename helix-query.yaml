@@ -73,6 +73,12 @@ indices:
       - '/it/express/learn/blog/*'
     target: /it/express/learn/blog/query-index.xlsx
 
+  blog-uk:
+    <<: *blog
+    include:
+      - '/uk/express/learn/blog/*'
+    target: /uk/express/learn/blog/query-index.xlsx
+
   blog-br:
     <<: *blog
     include:
@@ -212,10 +218,19 @@ indices:
       - '/se/express/**'
       - '/se/education/express/**'
     target: /se/express/query-index.xlsx
-    
+
   india:
     <<: *website
     include:
       - '/in/express/**'
       - '/in/education/express/**'
     target: /in/express/query-index.xlsx
+
+  unitedkingdom:
+    <<: *website
+    include:
+      - '/uk/express/**'
+      - '/uk/education/express/**'
+    exclude:
+      - '/uk/express/learn/blog/*'
+    target: /uk/express/query-index.xlsx
