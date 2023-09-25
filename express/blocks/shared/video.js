@@ -189,7 +189,8 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
 
 export function isVideoLink(url) {
   if (!url) return null;
-  return url.includes('youtu')
+  return url.includes('youtube.com/watch')
+    || url.includes('youtu.be/')
     || url.includes('vimeo')
     || /.*\/media_.*(mp4|webm|m3u8)$/.test(new URL(url).pathname);
 }
