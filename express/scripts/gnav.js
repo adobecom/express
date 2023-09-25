@@ -151,6 +151,7 @@ async function loadFEDS() {
     || window.location.pathname.startsWith('/in/express')
     || window.location.pathname.startsWith('/uk/express')
     || window.location.pathname.startsWith('/education')
+    || window.location.pathname.startsWith('/uk/education')
     || window.location.pathname.startsWith('/drafts');
   const fedsExp = isMegaNav
     ? 'adobe-express/ax-gnav-x'
