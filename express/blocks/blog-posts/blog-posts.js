@@ -237,10 +237,8 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const pageEnd = offset + limit;
   let count = 0;
   const images = [];
-  let readMoreString;
-  await fetchPlaceholders().then((placeholders) => {
-    readMoreString = placeholders['read-more'];
-  });
+  const placeholders = await fetchPlaceholders();
+  let readMoreString = placeholders['read-more'];
   if (readMoreString === undefined || readMoreString === '') {
     const locale = getLocale(window.location);
     const readMore = {
