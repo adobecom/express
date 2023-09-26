@@ -1,10 +1,9 @@
 /* to remove after Milo migration */
 .section > .color-how-to-carousel-wrapper {
-    max-width: none;
+    max-width: 1200px;
 }
 
 .color-how-to-carousel {
-    margin: 120px 0 0 0;
     gap: 24px;
     padding: 0;
     display: flex;

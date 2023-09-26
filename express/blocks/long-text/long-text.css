@@ -17,7 +17,6 @@ main .long-text {
 
 main .long-text.plain {
     margin: unset;
-    padding: unset;
     background-color: initial;
     border-radius: unset;
 }
@@ -26,22 +25,26 @@ main .long-text * {
     text-align: left;
 }
 
+main .long-text.center * {
+    text-align: center;
+}
+
 main .long-text h2 {
     font-size: var(--heading-font-size-l);
 }
 
 main .long-text.plain h1 {
-    font-size: var(--heading-font-size-xl);
+    font-size: var(--heading-font-size-l);
     margin-bottom: 40px;
 }
 
 main .long-text.plain h2 {
-    font-size: var(--heading-font-size-l);
+    font-size: var(--heading-font-size-m);
     margin-bottom: 24px;
 }
 
 main .long-text.plain h3 {
-    font-size: var(--heading-font-size-m);
+    font-size: var(--heading-font-size-s);
     margin-bottom: 16px;
 }
 
@@ -59,5 +62,20 @@ main .long-text.plain p {
     main .long-text:not(.plain) {
         margin: 0 60px;
         padding: 28px;
+    }
+
+    main .long-text.plain h1 {
+        font-size: var(--heading-font-size-xl);
+        margin-bottom: 40px;
+    }
+
+    main .long-text.plain h2 {
+        font-size: var(--heading-font-size-l);
+        margin-bottom: 24px;
+    }
+
+    main .long-text.plain h3 {
+        font-size: var(--heading-font-size-m);
+        margin-bottom: 16px;
     }
 }
