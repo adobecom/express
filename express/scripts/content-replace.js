@@ -107,13 +107,15 @@ function autoUpdatePage(main) {
   // FIXME: deprecate wl
   if (!main) return;
 
+  const sanitizer = new Sanitizer();
   const regex = /\{\{([a-zA-Z_-]+)}}/g;
-  main.innerHTML = main.innerHTML.replaceAll(regex, (match, p1) => {
+
+  main.setHTML(main.innerHTML.replaceAll(regex, (match, p1) => {
     if (!wl.includes(match.toLowerCase())) {
       return getMetadata(p1);
     }
     return match;
-  });
+  }), { sanitizer });
 }
 
 // cleanup remaining dom blades
