@@ -29,8 +29,8 @@ export function sanitizeInput(string) {
   return string.replace(/[&<>"'`=/]/g, (s) => charMap[s]);
 }
 
-export function decorateTextWithTag(textSource) {
-  const text = createTag('p', { class: 'cta-card-text' });
+export function decorateTextWithTag(textSource, baseTag, className) {
+  const text = createTag(baseTag, { class: className });
   const tagText = textSource.match(/\[(.*?)]/);
 
   if (tagText) {
@@ -50,9 +50,8 @@ export function decorateTextWithTag(textSource) {
 export function decorateHeading(block, payload) {
   const headingSection = createTag('div', { class: 'cta-carousel-heading-section' });
   const headingTextWrapper = createTag('div', { class: 'text-wrapper' });
-  const heading = createTag('h2', { class: 'cta-carousel-heading' });
+  const heading = decorateTextWithTag(payload.heading, 'h2', 'cta-carousel-heading');
 
-  heading.textContent = payload.heading;
   headingSection.append(headingTextWrapper);
   headingTextWrapper.append(heading);
 
@@ -199,7 +198,7 @@ async function decorateCards(block, payload) {
     }
 
     if (cta.text) {
-      textWrapper.append(decorateTextWithTag(cta.text));
+      textWrapper.append(decorateTextWithTag(cta.text, 'p', 'cta-card-text'));
     }
 
     if (cta.subtext && !hasGenAIEl) {
