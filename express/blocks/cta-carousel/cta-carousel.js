@@ -29,13 +29,19 @@ export function sanitizeInput(string) {
   return string.replace(/[&<>"'`=/]/g, (s) => charMap[s]);
 }
 
-export function decorateTextWithTag(textSource, baseTag, className) {
-  const text = createTag(baseTag, { class: className });
+export function decorateTextWithTag(textSource, options = {}) {
+  const {
+    baseT,
+    tagT,
+    baseClass,
+    tagClass,
+  } = options;
+  const text = createTag(baseT || 'p', { class: baseClass || '' });
   const tagText = textSource.match(/\[(.*?)]/);
 
   if (tagText) {
     const [fullText, tagTextContent] = tagText;
-    const $tag = createTag('span', { class: 'tag' });
+    const $tag = createTag(tagT || 'span', { class: tagClass || 'tag' });
     text.textContent = textSource.replace(fullText, '').trim();
     text.dataset.text = text.textContent.toLowerCase();
     $tag.textContent = tagTextContent;
@@ -50,7 +56,7 @@ export function decorateTextWithTag(textSource, baseTag, className) {
 export function decorateHeading(block, payload) {
   const headingSection = createTag('div', { class: 'cta-carousel-heading-section' });
   const headingTextWrapper = createTag('div', { class: 'text-wrapper' });
-  const heading = decorateTextWithTag(payload.heading, 'h2', 'cta-carousel-heading');
+  const heading = decorateTextWithTag(payload.heading, { baseT: 'h2', tagT: 'sup', baseClass: 'cta-carousel-heading' });
 
   headingSection.append(headingTextWrapper);
   headingTextWrapper.append(heading);
@@ -198,7 +204,7 @@ async function decorateCards(block, payload) {
     }
 
     if (cta.text) {
-      textWrapper.append(decorateTextWithTag(cta.text, 'p', 'cta-card-text'));
+      textWrapper.append(decorateTextWithTag(cta.text, { baseClass: 'cta-card-text' }));
     }
 
     if (cta.subtext && !hasGenAIEl) {

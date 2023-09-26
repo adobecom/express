@@ -24,7 +24,7 @@
 }
 
 .cta-carousel h2.cta-carousel-heading .tag {
-    font-size: var(--heading-font-size-s);
+    font-size: 10px;
     padding: 0 4px;
     margin-left: 6px;
     font-weight: 700;
@@ -315,7 +315,7 @@
 }
 
 .cta-carousel .card .text-wrapper .tag {
-    font-size: 12px;
+    font-size: 10px;
     padding: 0 4px;
     margin-left: 6px;
     font-weight: 700;
