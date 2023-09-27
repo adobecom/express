@@ -101,6 +101,7 @@ const HtmlSanitizer = new (function () {
   const uriAttributes = {
     href: true,
     action: true,
+    src: true,
   };
 
   function startsWithAny(str, substrings) {
@@ -144,7 +145,7 @@ const HtmlSanitizer = new (function () {
 
         for (let i = 0; i < node.attributes.length; i += 1) {
           const attr = node.attributes[i];
-          if (attributeWL[attr.name]) {
+          if (attributeWL[attr.name.toLowerCase()]) {
             if (attr.name === 'style') {
               for (let s = 0; s < node.style.length; s += 1) {
                 const styleName = node.style[s];
