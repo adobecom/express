@@ -10,13 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
-import {
-  fetchPlaceholders,
-  getHelixEnv,
-  getMetadata,
-  titleCase,
-} from './scripts.js';
-// import HtmlSanitizer from './html-sanitizer.js';
+import { fetchPlaceholders, getHelixEnv, getMetadata, titleCase, } from './scripts.js';
+import HtmlSanitizer from './html-sanitizer.js';
 
 async function replaceDefaultPlaceholders(block, components) {
   block.innerHTML = block.innerHTML.replaceAll('https://www.adobe.com/express/templates/default-create-link', components.link);
@@ -118,7 +113,6 @@ function autoUpdatePage(main) {
   });
 
   main.innerHTML = HtmlSanitizer.SanitizeHtml(html);
-  // main.innerHTML = html;
 }
 
 // cleanup remaining dom blades
