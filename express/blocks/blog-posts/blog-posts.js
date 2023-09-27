@@ -16,6 +16,7 @@ import {
   createTag,
   readBlockConfig,
   getLanguage,
+  fetchPlaceholders,
   getLocale,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/scripts.js';
@@ -236,6 +237,19 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const pageEnd = offset + limit;
   let count = 0;
   const images = [];
+  const placeholders = await fetchPlaceholders();
+  let readMoreString = placeholders['read-more'];
+  if (readMoreString === undefined || readMoreString === '') {
+    const locale = getLocale(window.location);
+    const readMore = {
+      us: 'Read More',
+      uk: 'Read More',
+      jp: 'もっと見る',
+      fr: 'En savoir plus',
+      de: 'Mehr dazu',
+    };
+    readMoreString = readMore[locale] || '&nbsp;&nbsp;&nbsp;&rightarrow;&nbsp;&nbsp;&nbsp;';
+  }
   for (let i = offset; i < posts.length && count < limit; i += 1) {
     const post = posts[i];
     const path = post.path.split('.')[0];
@@ -254,14 +268,6 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
     const imagePath = image.split('?')[0].split('_')[1];
     const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
     const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
-    const readMore = {
-      us: 'Read More',
-      jp: 'もっと見る',
-      fr: 'En savoir plus',
-      de: 'Mehr dazu',
-    };
-    const locale = getLocale(window.location);
-    const readMoreString = readMore[locale] || '&nbsp;&nbsp;&nbsp;&rightarrow;&nbsp;&nbsp;&nbsp;';
     let pictureTag = cardPicture.outerHTML;
     if (isHero) {
       pictureTag = heroPicture.outerHTML;

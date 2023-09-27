@@ -31,10 +31,27 @@ function sanitizeInput(string) {
   return string.replace(/[&<>"'`=/]/g, (s) => charMap[s]);
 }
 
-function decorateTextWithTag(textSource) {
-  const text = createTag('p', { class: 'cta-card-title' });
-  text.textContent = textSource;
-  text.dataset.text = text.textContent.toLowerCase();
+export function decorateTextWithTag(textSource, options = {}) {
+  const {
+    baseT,
+    tagT,
+    baseClass,
+    tagClass,
+  } = options;
+  const text = createTag(baseT || 'p', { class: baseClass || '' });
+  const tagText = textSource.match(/\[(.*?)]/);
+
+  if (tagText) {
+    const [fullText, tagTextContent] = tagText;
+    const $tag = createTag(tagT || 'span', { class: tagClass || 'tag' });
+    text.textContent = textSource.replace(fullText, '').trim();
+    text.dataset.text = text.textContent.toLowerCase();
+    $tag.textContent = tagTextContent;
+    text.append($tag);
+  } else {
+    text.textContent = textSource;
+    text.dataset.text = text.textContent.toLowerCase();
+  }
   return text;
 }
 
@@ -161,7 +178,7 @@ async function decorateCards(block, payload) {
       }
     }
 
-    const titleText = decorateTextWithTag(title);
+    const titleText = decorateTextWithTag(title, { tagT: 'sup', baseClass: 'cta-card-title' });
     textWrapper.append(titleText);
     const desc = createTag('p', { class: 'cta-card-desc' });
     desc.textContent = text;
