@@ -11,7 +11,7 @@
  */
 
 export const loadExpressProduct = async (createTag) => {
-  if (!window.hlx.martech) return;
+  if (!window.hlx.preload_product) return;
   const path = ['www.adobe.com'].includes(window.location.hostname)
     ? 'https://new.express.adobe.com/static/preload.html' : 'https://stage.projectx.corp.adobe.com/static/preload.html';
   const iframe = createTag('iframe', { src: path, style: 'display:none' });
