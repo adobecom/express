@@ -16,6 +16,7 @@ import {
   getMetadata,
   titleCase,
 } from './scripts.js';
+// import HtmlSanitizer from './html-sanitizer.js';
 
 async function replaceDefaultPlaceholders(block, components) {
   block.innerHTML = block.innerHTML.replaceAll('https://www.adobe.com/express/templates/default-create-link', components.link);
@@ -107,15 +108,17 @@ function autoUpdatePage(main) {
   // FIXME: deprecate wl
   if (!main) return;
 
-  const sanitizer = new Sanitizer();
   const regex = /\{\{([a-zA-Z_-]+)}}/g;
 
-  main.setHTML(main.innerHTML.replaceAll(regex, (match, p1) => {
+  const html = main.innerHTML.replaceAll(regex, (match, p1) => {
     if (!wl.includes(match.toLowerCase())) {
       return getMetadata(p1);
     }
     return match;
-  }), { sanitizer });
+  });
+
+  main.innerHTML = HtmlSanitizer.SanitizeHtml(html);
+  // main.innerHTML = html;
 }
 
 // cleanup remaining dom blades
