@@ -2373,7 +2373,7 @@ async function loadArea(area = document) {
   }
   await lazy;
   const { default: delayed } = await import('./delayed.js');
-  delayed([createTag]);
+  delayed([createTag], 8000);
 }
 
 (async function loadPage() {
