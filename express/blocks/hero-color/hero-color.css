@@ -39,10 +39,17 @@ main .hero-color .text-container .text {
   color: var(--color-black);
 }
 
+main .hero-color .content-container h1,
+main .hero-color .text-container h1 {
+  margin: 0;
+  font-size: var(--heading-font-size-xl);
+  text-align: left;
+}
+
 main .hero-color .content-container h2,
 main .hero-color .text-container h2 {
   margin: 0;
-  font-size: var(--heading-font-size-xl);
+  font-size: var(--heading-font-size-l);
   text-align: left;
 }
 
