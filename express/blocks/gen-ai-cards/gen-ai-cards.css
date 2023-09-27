@@ -69,6 +69,16 @@
   font-weight: 700;
 }
 
+.gen-ai-cards .card .text-wrapper .tag {
+  font-size: 10px;
+  padding: 0 4px;
+  margin-left: 6px;
+  font-weight: 700;
+  background-color: #DEDEF9;
+  color: var(--color-info-accent);
+  border-radius: 4px;
+}
+
 .gen-ai-cards .card .text-wrapper p.cta-card-desc {
   font-size: var(--body-font-size-s);
   line-height: var(--body-font-size-l);
@@ -178,7 +188,7 @@
 
 .gen-ai-cards .card .links-wrapper a:hover {
   /* 90% white to align with products */
-  background-color: #e6e6e6; 
+  background-color: #e6e6e6;
 }
 
 .gen-ai-cards .card .links-wrapper a:not(:hover) {
