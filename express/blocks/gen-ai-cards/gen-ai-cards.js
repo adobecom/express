@@ -83,11 +83,8 @@ export function decorateHeading(block, payload) {
 }
 
 function handleGenAISubmit(form, link) {
-  const btn = form.querySelector('.gen-ai-submit');
   const input = form.querySelector('input');
   if (input.value.trim() === '') return;
-
-  btn.disabled = true;
   const genAILink = link.replace(genAIPlaceholder, sanitizeInput(input.value).replaceAll(' ', '+'));
   window.open(genAILink);
 }
