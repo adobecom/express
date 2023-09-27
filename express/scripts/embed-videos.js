@@ -35,7 +35,6 @@ export function embedYoutube(a) {
   const searchParams = new URLSearchParams(a.search);
   const id = searchParams.get('v') || a.pathname.split('/').pop();
   searchParams.delete('v');
-  const src = `https://www.youtube.com/embed/${id}?${searchParams.toString()}`;
   loadScript('/express/scripts/libs/lite-yt-embed/lite-yt-embed.js', null, 'module');
   loadCSS('/express/scripts/libs/lite-yt-embed/lite-yt-embed.css');
   const embedHTML = `<lite-youtube videoid="${id}" playlabel="${title}"></lite-youtube>`;

@@ -9,6 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+/* global YT */
 
 class LiteYTEmbed extends HTMLElement {
   connectedCallback() {
@@ -65,7 +66,7 @@ class LiteYTEmbed extends HTMLElement {
       const el = document.createElement('script');
       el.src = 'https://www.youtube.com/iframe_api';
       el.async = true;
-      el.onload = _ => {
+      el.onload = (_) => {
         YT.ready(res);
       };
       el.onerror = rej;
@@ -77,7 +78,7 @@ class LiteYTEmbed extends HTMLElement {
     this.fetchYTPlayerApi();
     await this.ytApiPromise;
 
-    const videoPlaceholderEl = document.createElement('div')
+    const videoPlaceholderEl = document.createElement('div');
     this.append(videoPlaceholderEl);
 
     const paramsObj = Object.fromEntries(params.entries());
@@ -103,7 +104,7 @@ class LiteYTEmbed extends HTMLElement {
     params.append('playsinline', '1');
 
     if (this.needsYTApiForAutoplay) {
-      return this.addYTPlayerIframe(params);
+      return;
     }
 
     const iframeEl = document.createElement('iframe');
