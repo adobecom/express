@@ -14,7 +14,7 @@ import { readFile } from '@web/test-runner-commands';
 import sinon from 'sinon';
 import { expect } from '@esm-bundle/chai';
 
-const { default: decorate, customLocation } = await import(
+const { default: decorate } = await import(
   '../../../../express/blocks/gen-ai-cards/gen-ai-cards.js'
 );
 const testBody = await readFile({ path: './mocks/body.html' });
@@ -36,7 +36,7 @@ describe('Gen AI Cards', () => {
     expect(block.querySelector('.gen-ai-cards-heading-section')).to.exist;
     const cards = block.querySelector('.carousel-container .carousel-platform');
     expect(cards).to.exist;
-    expect(cards.querySelectorAll('.card').length).to.equal(4);
+    expect(cards.querySelectorAll('.card').length).to.equal(5);
     expect(cards.querySelector('.card').classList.contains('gen-ai-action')).to.be.true;
     expect(cards.querySelectorAll('.card')[1].classList.contains('gen-ai-action')).to.be.false;
     expect(cards.querySelectorAll('.card')[2].classList.contains('gen-ai-action')).to.be.true;
@@ -85,7 +85,7 @@ describe('Gen AI Cards', () => {
     const form = card.querySelector('.gen-ai-input-form');
     const input = form.querySelector('input');
     const button = form.querySelector('button');
-    const stub = sinon.stub(customLocation, 'assign');
+    const stub = sinon.stub(window, 'open');
     expect(button.disabled).to.be.true;
     const enterEvent = new KeyboardEvent('keyup', {
       key: 'Enter',
@@ -114,5 +114,7 @@ describe('Gen AI Cards', () => {
     expect(decodeHTMLEntities(stub.firstCall.args[0])).to.equal(
       decodeHTMLEntities('https://new.express.adobe.com/new?category=media&#x26;prompt=fakeInput&#x26;action=text+to+image&#x26;width=1080&#x26;height=1080'),
     );
+
+    stub.restore();
   });
 });

@@ -82,12 +82,6 @@ export function decorateHeading(block, payload) {
   block.append(headingSection);
 }
 
-export const customLocation = {
-  assign: (url) => {
-    window.location.assign(url);
-  },
-};
-
 function handleGenAISubmit(form, link) {
   const btn = form.querySelector('.gen-ai-submit');
   const input = form.querySelector('input');
@@ -95,7 +89,7 @@ function handleGenAISubmit(form, link) {
 
   btn.disabled = true;
   const genAILink = link.replace(genAIPlaceholder, sanitizeInput(input.value).replaceAll(' ', '+'));
-  customLocation.assign(genAILink);
+  window.open(genAILink);
 }
 
 function buildGenAIForm({ ctaLinks, subtext }) {
