@@ -10,7 +10,12 @@
  * governing permissions and limitations under the License.
  */
 
-import { fetchPlaceholders, getHelixEnv, getMetadata, titleCase, } from './scripts.js';
+import {
+  fetchPlaceholders,
+  getHelixEnv,
+  getMetadata,
+  titleCase,
+} from './scripts.js';
 import HtmlSanitizer from './html-sanitizer.js';
 
 async function replaceDefaultPlaceholders(block, components) {
