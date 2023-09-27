@@ -1,10 +1,14 @@
 /*
- * JavaScript HTML Sanitizer v2.0.2, (c) Alexander Yumashev, Jitbit Software.
- * homepage https://github.com/jitbit/HtmlSanitizer
- * License: MIT https://github.com/jitbit/HtmlSanitizer/blob/master/LICENSE
+ * Copyright 2023 Adobe. All rights reserved.
+ * This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy
+ * of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ * OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
-
-'use strict';
 
 const HtmlSanitizer = new (function () {
   const tagWL = {
@@ -36,6 +40,7 @@ const HtmlSanitizer = new (function () {
     OL: true,
     P: true,
     PRE: true,
+    PICTURE: true,
     SMALL: true,
     SOURCE: true,
     SPAN: true,
@@ -60,17 +65,24 @@ const HtmlSanitizer = new (function () {
 
   const attributeWL = {
     align: true,
+    alt: true,
     color: true,
     controls: true,
     height: true,
     href: true,
     id: true,
     src: true,
+    srcset: true,
     style: true,
     target: true,
     title: true,
     type: true,
     width: true,
+    class: true,
+    loading: true,
+    media: true,
+    'data-align': true,
+    'data-valign': true,
   };
 
   const cssWL = {
@@ -80,6 +92,7 @@ const HtmlSanitizer = new (function () {
     'font-weight': true,
     'text-align': true,
     'text-decoration': true,
+    display: true,
     width: true,
   };
 
