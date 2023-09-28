@@ -563,6 +563,19 @@ export async function decorateBlock(block) {
     const section = block.closest('.section');
     if (section) section.classList.add(`${[...block.classList].join('-')}-container`);
 
+    const showWith = [...block.classList].filter((c) => c.toLowerCase().startsWith('showwith'));
+    // block visibility steered over metadata
+    if (showWith.length) {
+      let showWithSearchParam = null;
+      if (!['www.adobe.com'].includes(window.location.hostname)) {
+        const urlParams = new URLSearchParams(window.location.search);
+        showWithSearchParam = urlParams.get(`${showWith[0].toLowerCase()}`)
+          || urlParams.get(`${showWith[0]}`);
+      }
+      const blockRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(showWith[0].slice(8).toLowerCase()) !== 'on';
+      if (blockRemove) block.remove();
+    }
+
     // begin CCX custom block option class handling
     // split and add options with a dash
     // (fullscreen-center -> fullscreen-center + fullscreen + center)
