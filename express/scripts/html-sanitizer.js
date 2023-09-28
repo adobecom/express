@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-const HtmlSanitizer = new (function () {
+const HtmlSanitizer = new (() => {
   const tagWL = {
     A: true,
     ABBR: true,
@@ -115,7 +115,7 @@ const HtmlSanitizer = new (function () {
 
   const parser = new DOMParser();
 
-  this.SanitizeHtml = function (inputValue, extraSelector) {
+  this.SanitizeHtml = (inputValue, extraSelector) => {
     let input = inputValue.trim();
     if (input === '') return ''; // to save performance
 
