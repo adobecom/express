@@ -107,7 +107,7 @@ function autoUpdatePage(main) {
   // FIXME: deprecate wl
   if (!main) return;
 
-  const regex = /\{\{([a-zA-Z_-]+)}}/g;
+  const regex = /\{\{([a-zA-Z0-9_-]+)}}/g;
   main.innerHTML = main.innerHTML.replaceAll(regex, (match, p1) => {
     if (!wl.includes(match.toLowerCase())) {
       return getMetadata(p1);
