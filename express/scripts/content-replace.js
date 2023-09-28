@@ -15,7 +15,6 @@ import {
   getHelixEnv,
   getMetadata,
   titleCase,
-  createTag,
 } from './scripts.js';
 import HtmlSanitizer from './html-sanitizer.js';
 
@@ -117,7 +116,7 @@ function autoUpdatePage(main) {
     'theme',
     'show-free-plan',
     'sheet-powered',
-    'viewport'
+    'viewport',
   ];
 
   const metaTags = document.head.querySelectorAll('meta');
