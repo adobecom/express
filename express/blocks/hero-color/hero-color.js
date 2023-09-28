@@ -17,7 +17,7 @@ function changeTextColorAccordingToBg(
   primaryColor,
   block,
 ) {
-  block.classList.add(isDarkOverlayReadable(primaryColor) ? 'light-bg' : 'dark-bg');
+  block.classList.add(isDarkOverlayReadable(primaryColor) ? 'light' : 'dark');
 }
 
 function loadSvgInsideWrapper(svgId, svgWrapper, secondaryColor) {

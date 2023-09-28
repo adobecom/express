@@ -78,11 +78,11 @@ main .hero-color .content-container .color-svg-img {
   margin: 0 0 0 15px;
 }
 
-main .hero-color.light-bg {
+main .hero-color.light {
   color: var(--color-black);
 }
 
-main .hero-color.dark-bg {
+main .hero-color.dark {
   color: var(--color-white);
 }
 
@@ -131,15 +131,15 @@ main .hero-color .hidden-svg {
     max-width: 486px;
   }
 
-  main .hero-color.dark-bg .button,
-  main .hero-color.dark-bg .button:hover {
+  main .hero-color.dark .button,
+  main .hero-color.dark .button:hover {
     background-color: var(--color-white);
     color: var(--color-black);
     border-color: var(--color-white);
   }
 
-  main .hero-color.light-bg .button,
-  main .hero-color.light-bg .button:hover {
+  main .hero-color.light .button,
+  main .hero-color.light .button:hover {
     background-color: var(--color-black);
     color: var(--color-white);
     border-color: var(--color-black);
