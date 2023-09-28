@@ -18,11 +18,132 @@ import {
   getLanguage,
   getMetadata,
   checkTesting,
-  trackBranchParameters,
+  fetchPlaceholders,
 // eslint-disable-next-line import/no-unresolved
 } from './scripts.js';
 
 import BlockMediator from './block-mediator.js';
+
+function getPlacement(btn) {
+  const parentBlock = btn.closest('.block');
+  let placement = 'outside-blocks';
+
+  if (parentBlock) {
+    const blockName = parentBlock.dataset.blockName || parentBlock.classList[0];
+    const sameBlocks = btn.closest('main')?.querySelectorAll(`.${blockName}`);
+
+    if (sameBlocks && sameBlocks.length > 1) {
+      sameBlocks.forEach((b, i) => {
+        if (b === parentBlock) {
+          placement = `${blockName}-${i + 1}`;
+        }
+      });
+    } else {
+      placement = blockName;
+    }
+
+    if (['template-list', 'template-x'].includes(blockName) && btn.classList.contains('placeholder')) {
+      placement = 'blank-template-cta';
+    }
+  }
+
+  return placement;
+}
+
+async function trackBranchParameters($links) {
+  const placeholders = await fetchPlaceholders();
+  const rootUrl = new URL(window.location.href);
+  const rootUrlParameters = rootUrl.searchParams;
+
+  const { experiment } = window.hlx;
+  const { referrer } = window.document;
+  const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
+  const templateSearchTag = getMetadata('short-title');
+  const pageUrl = window.location.pathname;
+  const sdid = rootUrlParameters.get('sdid');
+  const mv = rootUrlParameters.get('mv');
+  const mv2 = rootUrlParameters.get('mv2');
+  const sKwcId = rootUrlParameters.get('s_kwcid');
+  const efId = rootUrlParameters.get('ef_id');
+  const promoId = rootUrlParameters.get('promoid');
+  const trackingId = rootUrlParameters.get('trackingid');
+  const cgen = rootUrlParameters.get('cgen');
+
+  $links.forEach(($a) => {
+    if ($a.href && $a.href.match('adobesparkpost.app.link')) {
+      const btnUrl = new URL($a.href);
+      const urlParams = btnUrl.searchParams;
+      const placement = getPlacement($a);
+
+      if (templateSearchTag
+        && placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
+        urlParams.set('search', templateSearchTag);
+        urlParams.set('q', templateSearchTag);
+        urlParams.set('category', 'templates');
+        urlParams.set('searchCategory', 'templates');
+      }
+
+      if (referrer) {
+        urlParams.set('referrer', referrer);
+      }
+
+      if (pageUrl) {
+        urlParams.set('url', pageUrl);
+      }
+
+      if (sdid) {
+        urlParams.set('sdid', sdid);
+      }
+
+      if (mv) {
+        urlParams.set('mv', mv);
+      }
+
+      if (mv2) {
+        urlParams.set('mv2', mv2);
+      }
+
+      if (efId) {
+        urlParams.set('efid', efId);
+      }
+
+      if (sKwcId) {
+        const sKwcIdParameters = sKwcId.split('!');
+
+        if (typeof sKwcIdParameters[2] !== 'undefined' && sKwcIdParameters[2] === '3') {
+          urlParams.set('customer_placement', 'Google%20AdWords');
+        }
+
+        if (typeof sKwcIdParameters[8] !== 'undefined' && sKwcIdParameters[8] !== '') {
+          urlParams.set('keyword', sKwcIdParameters[8]);
+        }
+      }
+
+      if (promoId) {
+        urlParams.set('promoid', promoId);
+      }
+
+      if (trackingId) {
+        urlParams.set('trackingid', trackingId);
+      }
+
+      if (cgen) {
+        urlParams.set('cgen', cgen);
+      }
+
+      if (experimentStatus === 'active') {
+        urlParams.set('expid', `${experiment.id}-${experiment.selectedVariant}`);
+      }
+
+      if (placement) {
+        urlParams.set('ctaid', placement);
+      }
+
+      btnUrl.search = urlParams.toString();
+      $a.href = decodeURIComponent(btnUrl.toString());
+    }
+  });
+}
 
 // this saves on file size when this file gets minified...
 const w = window;
@@ -73,8 +194,8 @@ if (useAlloy) {
             (window.spark && window.spark.hostname === 'www.stage.adobe.com')
             || martech === 'alloy-qa'
           )
-            ? '0f6221fd-db23-4376-8ad7-8dc7c799032f'
-            : 'b2e000b1-98ab-4ade-8c4f-5823d84cf015'
+            ? '8d2805dd-85bf-4748-82eb-f99fdad117a6'
+            : '2cba807b-7430-41ae-9aac-db2b0da742d5'
         ),
       },
       target: checkTesting(),
@@ -493,10 +614,10 @@ loadScript(martechURL, () => {
     let alt;
     let newEventName;
 
-    if ($a.textContent.trim()) {
+    if ($a?.textContent?.trim()) {
       newEventName = eventName + textToName($a.textContent.trim());
     } else {
-      $img = $a.querySelector('img');
+      $img = $a?.querySelector('img');
       alt = $img && $img.getAttribute('alt');
       if (alt) {
         newEventName = eventName + textToName(alt);
@@ -615,6 +736,9 @@ loadScript(martechURL, () => {
         sparkEventName = 'landing:ctaPressed';
       }
     // quick actions clicks
+    } else if ($a.closest('ccl-quick-action') && $a.classList.contains('upload-your-photo')) {
+      // this event is handled at mock-file-input level
+      return;
     } else if ($a.href && ($a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || $a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?tools/g))) {
       adobeEventName = appendLinkText(adobeEventName, $a);
       sparkEventName = 'quickAction:ctaPressed';
@@ -781,11 +905,11 @@ loadScript(martechURL, () => {
       });
     }
   }
-  const cclQuickAction = d.getElementsByTagName('ccl-quick-action');
-  if (cclQuickAction.length) {
+
+  function handleQuickActionEvents(el) {
     let frictionLessQuctionActionsTrackingEnabled = false;
     sendEventToAdobeAnaltics('quickAction:uploadPageViewed');
-    cclQuickAction[0].addEventListener('ccl-quick-action-complete', () => {
+    el[0].addEventListener('ccl-quick-action-complete', () => {
       if (frictionLessQuctionActionsTrackingEnabled) {
         return;
       }
@@ -801,6 +925,18 @@ loadScript(martechURL, () => {
       frictionLessQuctionActionsTrackingEnabled = true;
     });
   }
+
+  const cclQuickAction = d.getElementsByTagName('ccl-quick-action');
+  if (cclQuickAction.length) {
+    handleQuickActionEvents(cclQuickAction);
+  } else {
+    d.addEventListener('ccl-quick-action-rendered', (e) => {
+      if (e.target.tagName === 'CCL-QUICK-ACTION') {
+        handleQuickActionEvents(d.getElementsByTagName('ccl-quick-action'));
+      }
+    });
+  }
+
   d.addEventListener('click', (e) => {
     if (e.target.id === 'mock-file-input') {
       sendEventToAdobeAnaltics('adobe.com:express:cta:uploadYourPhoto');
@@ -1185,7 +1321,7 @@ loadScript(martechURL, () => {
     // poll the dataLayer every 2 seconds
     setInterval(() => {
       // loop through each of the events in the dataLayer
-      window.dataLayer.forEach((evt) => {
+      window?.dataLayer?.forEach((evt) => {
         // don't continue if it has already been processed
         if (processed[evt.assetId]) {
           return;

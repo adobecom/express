@@ -3,15 +3,42 @@ main .sticky-promo-bar {
     left: 0;
     right: 0;
     bottom: 0;
+    transform: translateY(calc(100% + 24px));
     background-color: var(--color-info-accent);
     color: white;
-    padding: 12px;
-    padding-right: 36px;
+    padding: 12px 36px 12px 12px;
     font-weight: 900;
     z-index: 10;
+    max-width: 500px;
+    margin: 16px auto;
+    transition: transform 0.4s;
 }
 
-main .sticky-promo-bar a:any-link {
+main .sticky-promo-bar.shown {
+    transform: translateY(0);
+}
+
+main .sticky-promo-bar.clone {
+    position: static;
+    transform: translateY(0);
+}
+
+body[data-device="mobile"] main .sticky-promo-bar.rounded {
+    border-radius: 10px;
+    font-weight: 300;
+    padding: 7px 16px 9px;
+    margin: 12px auto;
+    box-sizing: border-box;
+    max-width: 360px;
+}
+
+body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
+    margin: 12px auto;
+    box-sizing: border-box;
+    max-width: 360px;
+}
+
+main .sticky-promo-bar:not(.rounded) a:any-link {
     color: white;
     border: 2px solid white;
     border-radius: 20px;
@@ -23,6 +50,20 @@ main .sticky-promo-bar a:any-link {
     white-space: nowrap;
     display: inline-block;
     margin-top: 5px;
+}
+
+main .sticky-promo-bar.rounded a:any-link {
+    color: white;
+    text-decoration: underline;
+    white-space: nowrap;
+    font-style: initial;
+}
+
+main .sticky-promo-bar.rounded p {
+    display: inline;
+    font-size: var(--body-font-size-m);
+    margin: 0;
+    line-height: normal;
 }
 
 main .sticky-promo-bar .close {
@@ -37,6 +78,10 @@ main .sticky-promo-bar .close {
     cursor: pointer;
     background: none;
     border: none;
+}
+
+main .sticky-promo-bar.rounded .close {
+    display: none;
 }
 
 main .sticky-promo-bar .close:before {

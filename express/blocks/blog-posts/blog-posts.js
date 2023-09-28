@@ -16,18 +16,46 @@ import {
   createTag,
   readBlockConfig,
   getLanguage,
+  fetchPlaceholders,
   getLocale,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/scripts.js';
 
-async function fetchBlogIndex() {
-  let prefix = `/${window.location.pathname.split('/')[1]}`;
-  if (prefix === '/express' || prefix === '/drafts' || prefix === '/documentation') prefix = '';
-
-  const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
-  const json = await resp.json();
+async function fetchBlogIndex(config) {
+  const prefix = getLocale(window.location);
+  let currentLocaleProcessed = false;
+  const currentLocalePrefix = (prefix === 'us') ? '' : `/${prefix}`;
+  const consolidatedJsonData = [];
+  if (config.featuredOnly) {
+    const linkLocales = [];
+    const urls = [];
+    const links = config.featured;
+    for (let i = 0; i < links.length; i += 1) {
+      let localePrefix = getLocale(new URL(links[i]));
+      if (localePrefix === prefix) {
+        currentLocaleProcessed = true;
+      }
+      if (localePrefix === 'us') {
+        localePrefix = '';
+      }
+      if (!linkLocales.includes(localePrefix)) {
+        linkLocales.push(localePrefix);
+        const prefixedLocale = localePrefix === '' ? '' : `/${localePrefix}`;
+        urls.push(`${prefixedLocale}/express/learn/blog/query-index.json`);
+      }
+    }
+    const resp = await Promise.all(urls.map((url) => fetch(url)
+      .then((res) => res.ok && res.json())))
+      .then((res) => res);
+    resp.forEach((item) => consolidatedJsonData.push(...item.data));
+  }
+  if (!currentLocaleProcessed) {
+    const resp = await fetch(`${currentLocalePrefix}/express/learn/blog/query-index.json`);
+    const res = await resp.json();
+    consolidatedJsonData.push(...res.data);
+  }
   const byPath = {};
-  json.data.forEach((post) => {
+  consolidatedJsonData.forEach((post) => {
     if (post.tags) {
       const tags = JSON.parse(post.tags);
       tags.push(post.category);
@@ -35,7 +63,7 @@ async function fetchBlogIndex() {
     }
     byPath[post.path.split('.')[0]] = post;
   });
-  const index = { data: json.data, byPath };
+  const index = { data: consolidatedJsonData, byPath };
   return (index);
 }
 
@@ -62,7 +90,7 @@ function isDuplicate(path) {
 
 async function filterBlogPosts(config) {
   if (!window.blogIndex) {
-    window.blogIndex = await fetchBlogIndex();
+    window.blogIndex = await fetchBlogIndex(config);
   }
   const result = [];
   const index = window.blogIndex;
@@ -125,10 +153,7 @@ function getBlogPostsConfig($block) {
 
   if ($rows.length === 1 && $firstRow.length === 1) {
     /* handle links */
-
     const links = [...$block.querySelectorAll('a')].map(($a) => $a.href);
-
-    /* needs fixing to work with links */
     config = {
       featured: links,
       featuredOnly: true,
@@ -176,6 +201,25 @@ async function getFilteredResults(config) {
   return (matchingResult);
 }
 
+const loadImage = (img) => new Promise((resolve) => {
+  if (img.complete && img.naturalHeight !== 0) resolve();
+  else {
+    img.onload = () => {
+      resolve();
+    };
+  }
+});
+
+function isInViewport(element) {
+  const rect = element.getBoundingClientRect();
+  return (
+    rect.top >= 0
+    && rect.left >= 0
+    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+    && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
 async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const posts = await getFilteredResults(config);
 
@@ -192,6 +236,20 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
 
   const pageEnd = offset + limit;
   let count = 0;
+  const images = [];
+  const placeholders = await fetchPlaceholders();
+  let readMoreString = placeholders['read-more'];
+  if (readMoreString === undefined || readMoreString === '') {
+    const locale = getLocale(window.location);
+    const readMore = {
+      us: 'Read More',
+      uk: 'Read More',
+      jp: 'もっと見る',
+      fr: 'En savoir plus',
+      de: 'Mehr dazu',
+    };
+    readMoreString = readMore[locale] || '&nbsp;&nbsp;&nbsp;&rightarrow;&nbsp;&nbsp;&nbsp;';
+  }
   for (let i = offset; i < posts.length && count < limit; i += 1) {
     const post = posts[i];
     const path = post.path.split('.')[0];
@@ -210,14 +268,6 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
     const imagePath = image.split('?')[0].split('_')[1];
     const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
     const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
-    const readMore = {
-      us: 'Read More',
-      jp: 'もっと見る',
-      fr: 'En savoir plus',
-      de: 'Mehr dazu',
-    };
-    const locale = getLocale(window.location);
-    const readMoreString = readMore[locale] || '&nbsp;&nbsp;&nbsp;&rightarrow;&nbsp;&nbsp;&nbsp;';
     let pictureTag = cardPicture.outerHTML;
     if (isHero) {
       pictureTag = heroPicture.outerHTML;
@@ -247,6 +297,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
         <p class="blog-card-date">${dateString}</p>`;
       $cards.append($card);
     }
+    images.push($card.querySelector('img'));
     count += 1;
   }
   if (posts.length > pageEnd && config['load-more']) {
@@ -259,6 +310,15 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
       decorateBlogPosts($blogPosts, config, pageEnd);
     });
   }
+
+  if (images.length) {
+    const section = $blogPosts.closest('.section');
+    section.style.display = 'block';
+    const filteredImages = images.filter((i) => isInViewport(i));
+    const imagePromises = filteredImages.map((img) => loadImage(img));
+    await Promise.all(imagePromises);
+    delete section.style.display;
+  }
 }
 
 function checkStructure(element, querySelectors) {
@@ -269,7 +329,7 @@ function checkStructure(element, querySelectors) {
   return matched;
 }
 
-export default function decorate($block) {
+export default async function decorate($block) {
   const config = getBlogPostsConfig($block);
 
   // wrap p in parent section
@@ -282,5 +342,5 @@ export default function decorate($block) {
     });
   }
 
-  decorateBlogPosts($block, config);
+  await decorateBlogPosts($block, config);
 }

@@ -307,10 +307,13 @@ export default async function decorate(block) {
         layerTemplateImage(canvas, ctx, templateImg).then(() => {
           templateDiv.remove();
           const img = createTag('img');
-          img.src = canvas.toDataURL('image/png');
-          backgroundPic.append(img);
-          backgroundPicImg.remove();
-          setPictureHeight(block, true);
+          canvas.toBlob((blob) => {
+            const blobUrl = URL.createObjectURL(blob);
+            img.src = blobUrl;
+            backgroundPic.append(img);
+            backgroundPicImg.remove();
+            setPictureHeight(block, true);
+          });
         });
       });
     });

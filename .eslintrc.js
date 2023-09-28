@@ -15,6 +15,7 @@ module.exports = {
   extends: '@adobe/helix',
   env: {
     browser: true,
+    mocha: true,
   },
   rules: {
     // allow reassigning param
@@ -23,6 +24,14 @@ module.exports = {
     'import/extensions': ['error', {
       js: 'always',
     }],
+    'no-unused-expressions': 0,
+  },
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
   },
   parser: '@babel/eslint-parser',
   parserOptions: {

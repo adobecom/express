@@ -10,12 +10,9 @@
  * governing permissions and limitations under the License.
  */
 
-import {
-  createTag,
-  addFreePlanWidget,
-} from '../../scripts/scripts.js';
-
-import { buildCarousel } from '../shared/carousel.js';
+import { createTag } from '../../scripts/scripts.js';
+import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
+import buildCarousel from '../shared/carousel.js';
 
 export default function decorate($block) {
   if ($block.children.length) {
@@ -46,6 +43,8 @@ export default function decorate($block) {
           $link.classList.remove('button');
         });
         const $pictureContainer = $cells[0];
+        const img = $pictureContainer.querySelector('img');
+        if (img) img.removeAttribute('loading');
         const $linkContainer = $cells[1];
         const $iconSvgContainer = $cells[2];
         const icon = $iconSvgContainer.querySelector('img, svg');

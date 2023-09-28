@@ -15,9 +15,7 @@ import {
   createTag,
 } from '../../scripts/scripts.js';
 
-import {
-  buildCarousel,
-} from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 export function decorateHeading($block, payload) {
   const $headingSection = createTag('div', { class: 'browse-by-collaboration-heading-section' });
@@ -76,5 +74,5 @@ export default async function decorate($block) {
 
   decorateHeading($block, payload);
   decorateCollaborations($block, payload);
-  buildCarousel('.browse-by-collaboration-card', $block, false);
+  buildCarousel('.browse-by-collaboration-card', $block);
 }

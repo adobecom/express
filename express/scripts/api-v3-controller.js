@@ -10,25 +10,25 @@
  * governing permissions and limitations under the License.
  */
 
-import { getHelixEnv, getLocale } from './scripts.js';
+import { getHelixEnv, getLocale, getMetadata } from './scripts.js';
 
 const endpoints = {
   dev: {
-    cdn: '',
+    cdn: 'https://uss-templates-dev.adobe.io/uss/v3/query',
     url: 'https://uss-templates-dev.adobe.io/uss/v3/query',
-    token: 'cd1823ed-0104-492f-ba91-25f4195d5f6c',
+    token: window.atob('Y2QxODIzZWQtMDEwNC00OTJmLWJhOTEtMjVmNDE5NWQ1ZjZj'),
   },
   stage: {
     cdn: 'https://www.stage.adobe.com/ax-uss-api/',
     url: 'https://uss-templates-stage.adobe.io/uss/v3/query',
-    token: 'db7a3d14-5aaa-4a3d-99c3-52a0f0dbb459',
-    key: 'express-ckg-stage',
+    token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
+    key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   prod: {
     cdn: 'https://www.adobe.com/ax-uss-api/',
     url: 'https://uss-templates.adobe.io/uss/v3/query',
-    token: '2e0199f4-c4e2-4025-8229-df4ca5397605',
-    key: 'template-list-linklist-facet',
+    token: window.atob('MmUwMTk5ZjQtYzRlMi00MDI1LTgyMjktZGY0Y2E1Mzk3NjA1'),
+    key: window.atob('dGVtcGxhdGUtbGlzdC1saW5rbGlzdC1mYWNldA=='),
   },
 };
 
@@ -52,7 +52,7 @@ export async function getPillWordsMapping() {
 
 export default async function getData(env = '', data = {}) {
   const endpoint = endpoints[env];
-  const response = await fetch(endpoint.url, {
+  const response = await fetch(endpoint.cdn, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/vnd.adobe.search-request+json',
@@ -69,8 +69,8 @@ export default async function getData(env = '', data = {}) {
   }
 }
 
-export async function fetchLinkListFromCKGApi(pageData) {
-  if (pageData.ckgID) {
+export async function fetchLinkListFromCKGApi() {
+  if (getMetadata('ckgid')) {
     const dataRaw = {
       experienceId: 'templates-browse-v1',
       locale: 'en_US',
@@ -87,7 +87,7 @@ export async function fetchLinkListFromCKGApi(pageData) {
           filters: [
             {
               categories: [
-                pageData.ckgID,
+                getMetadata('ckgid'),
               ],
             },
           ],
@@ -102,7 +102,7 @@ export async function fetchLinkListFromCKGApi(pageData) {
     };
 
     const env = getHelixEnv();
-    const result = await getData(env.name, dataRaw).then((data) => data);
+    const result = await getData(env.name, dataRaw);
     if (result.status.httpCode === 200) {
       return result;
     }

@@ -12,13 +12,13 @@
 
 import {
   addAnimationToggle,
-  addFreePlanWidget,
   createTag,
   toClassName,
   getLocale,
   addHeaderSizing,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/scripts.js';
+import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 import {
   isVideoLink,
@@ -99,7 +99,12 @@ function adjustLayout(animations, $parent) {
       $parent.replaceChild($newVideo, $parent.querySelector('video'));
       $newVideo.addEventListener('canplay', () => {
         $newVideo.muted = true;
-        $newVideo.play();
+        const playPromise = $newVideo.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // ignore
+          });
+        }
       });
     }
   }
@@ -188,7 +193,7 @@ export default async function decorate($block) {
         const srcURL = new URL($poster.src);
         const srcUSP = new URLSearchParams(srcURL.search);
         srcUSP.set('format', 'webply');
-        srcUSP.set('width', typeHint === 'mobile' ? 750 : 2000);
+        srcUSP.set('width', typeHint === 'mobile' ? 750 : 4080);
         optimizedPosterSrc = `${srcURL.pathname}?${srcUSP.toString()}`;
       }
 
@@ -210,7 +215,12 @@ export default async function decorate($block) {
         $div.prepend($video);
         $video.addEventListener('canplay', () => {
           $video.muted = true;
-          $video.play();
+          const playPromise = $video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              // ignore
+            });
+          }
         });
         window.addEventListener('resize', () => {
           adjustLayout(animations, $div);

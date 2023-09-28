@@ -7,79 +7,89 @@ sitemaps:
     languages:
       default:
         source: /express/query-index.json
-        destination: /express/sitemap-us.xml
+        destination: /express/sitemap.xml
         hreflang: en
         alternate: /{path}
+      unitedkingdom:
+        source: /uk/express/query-index.json
+        destination: /uk/express/sitemap.xml
+        hreflang: en-GB
+        alternate: /uk/{path}
       germany:
         source: /de/express/query-index.json
-        destination: /express/sitemap-de.xml
+        destination: /de/express/sitemap.xml
         hreflang: de
         alternate: /de/{path}
       spain:
         source: /es/express/query-index.json
-        destination: /express/sitemap-es.xml
+        destination: /es/express/sitemap.xml
         hreflang: es
         alternate: /es/{path}
       france:
         source: /fr/express/query-index.json
-        destination: /express/sitemap-fr.xml
+        destination: /fr/express/sitemap.xml
         hreflang: fr
         alternate: /fr/{path}
       italy:
         source: /it/express/query-index.json
-        destination: /express/sitemap-it.xml
+        destination: /it/express/sitemap.xml
         hreflang: it
         alternate: /it/{path}
       japan:
         source: /jp/express/query-index.json
-        destination: /express/sitemap-jp.xml
+        destination: /jp/express/sitemap.xml
         hreflang: ja
         alternate: /jp/{path}
       korea:
         source: /kr/express/query-index.json
-        destination: /express/sitemap-kr.xml
+        destination: /kr/express/sitemap.xml
         hreflang: ko
         alternate: /kr/{path}
       netherlands:
         source: /nl/express/query-index.json
-        destination: /express/sitemap-nl.xml
+        destination: /nl/express/sitemap.xml
         hreflang: nl
         alternate: /nl/{path}
       brasil:
         source: /br/express/query-index.json
-        destination: /express/sitemap-br.xml
+        destination: /br/express/sitemap.xml
         hreflang: pt
         alternate: /br/{path}
       taiwan:
         source: /tw/express/query-index.json
-        destination: /express/sitemap-tw.xml
+        destination: /tw/express/sitemap.xml
         hreflang: zh-Hant
         alternate: /tw/{path}
       china:
         source: /cn/express/query-index.json
-        destination: /express/sitemap-other.xml
+        destination: /cn/express/sitemap.xml
         hreflang: zh-Hans
         alternate: /cn/{path}
       denmark:
         source: /dk/express/query-index.json
-        destination: /express/sitemap-other.xml
+        destination: /dk/express/sitemap.xml
         hreflang: da
         alternate: /dk/{path}
       finland:
         source: /fi/express/query-index.json
-        destination: /express/sitemap-other.xml
+        destination: /fi/express/sitemap.xml
         hreflang: fi
         alternate: /fi/{path}
       norway:
         source: /no/express/query-index.json
-        destination: /express/sitemap-other.xml
+        destination: /no/express/sitemap.xml
         hreflang: nb
         alternate: /no/{path}
       sweden:
         source: /se/express/query-index.json
-        destination: /express/sitemap-other.xml
+        destination: /se/express/sitemap.xml
         hreflang: sv
         alternate: /se/{path}
+      india:
+        source: /in/express/query-index.json
+        destination: /in/express/sitemap.xml
+        hreflang: en-IN
+        alternate: /in/{path}
 
   blogs:
     origin: https://www.adobe.com
@@ -87,37 +97,42 @@ sitemaps:
     languages:
       default:
         source: /express/learn/blog/query-index.json
-        destination: /express/sitemap-blog.xml
+        destination: /express/blog/sitemap.xml
         hreflang: en
         alternate: /{path}
       japan:
         source: /jp/express/learn/blog/query-index.json
-        destination: /express/sitemap-blog.xml
+        destination: /jp/express/blog/sitemap.xml
         hreflang: ja
         alternate: /jp/{path}
+      unitedkingdom:
+        source: /uk/express/learn/blog/query-index.json
+        destination: /uk/express/blog/sitemap.xml
+        hreflang: en-GB
+        alternate: /uk/{path}
       germany:
         source: /de/express/learn/blog/query-index.json
-        destination: /express/sitemap-blog.xml
+        destination: /de/express/blog/sitemap.xml
         hreflang: de
         alternate: /de/{path}
       france:
         source: /fr/express/learn/blog/query-index.json
-        destination: /express/sitemap-blog.xml
+        destination: /fr/express/blog/sitemap.xml
         hreflang: fr
         alternate: /fr/{path}
       spain:
         source: /es/express/learn/blog/query-index.json
-        destination: /express/sitemap-blog.xml
+        destination: /es/express/blog/sitemap.xml
         hreflang: es
         alternate: /es/{path}
       brazil:
         source: /br/express/learn/blog/query-index.json
-        destination: /express/sitemap-blog.xml
+        destination: /br/express/blog/sitemap.xml
         hreflang: pt
         alternate: /br/{path}
       it:
         source: /it/express/learn/blog/query-index.json
-        destination: /express/sitemap-blog.xml
+        destination: /it/express/blog/sitemap.xml
         hreflang: it
         alternate: /it/{path}
 
@@ -125,47 +140,52 @@ sitemaps:
     origin: https://www.adobe.com
     languages:
       default:
-        source: /metadata.json?sheet=sitemap-en
-        destination: /express/sitemap-seo-templates.xml
+        source: /express/templates/default/metadata.json?sheet=sitemap
+        destination: /express/templates/sitemap.xml
         hreflang: en
         alternate: /{path}
       brasil:
-        source: /metadata.json?sheet=sitemap-br
-        destination: /express/sitemap-seo-templates.xml
+        source: /br/express/templates/default/metadata.json?sheet=sitemap
+        destination: /br/express/templates/sitemap.xml
         hreflang: pt
         alternate: /br/{path}
       france:
-        source: /metadata.json?sheet=sitemap-fr
-        destination: /express/sitemap-seo-templates.xml
+        source: /fr/express/templates/default/metadata.json?sheet=sitemap
+        destination: /fr/express/templates/sitemap.xml
         hreflang: fr
         alternate: /fr/{path}
       germany:
-        source: /metadata.json?sheet=sitemap-de
-        destination: /express/sitemap-seo-templates.xml
+        source: /de/express/templates/default/metadata.json?sheet=sitemap
+        destination: /de/express/templates/sitemap.xml
         hreflang: de
         alternate: /de/{path}
       italy:
-        source: /metadata.json?sheet=sitemap-it
-        destination: /express/sitemap-seo-templates.xml
+        source: /it/express/templates/default/metadata.json?sheet=sitemap
+        destination: /it/express/templates/sitemap.xml
         hreflang: it
         alternate: /it/{path}
       japan:
-        source: /metadata.json?sheet=sitemap-jp
-        destination: /express/sitemap-seo-templates.xml
+        source: /jp/express/templates/default/metadata.json?sheet=sitemap
+        destination: /jp/express/templates/sitemap.xml
         hreflang: ja
         alternate: /jp/{path}
       korea:
-        source: /metadata.json?sheet=sitemap-kr
-        destination: /express/sitemap-seo-templates.xml
+        source: /kr/express/templates/default/metadata.json?sheet=sitemap
+        destination: /kr/express/templates/sitemap.xml
         hreflang: ko
         alternate: /kr/{path}
       spain:
-        source: /metadata.json?sheet=sitemap-es
-        destination: /express/sitemap-seo-templates.xml
+        source: /es/express/templates/default/metadata.json?sheet=sitemap
+        destination: /es/express/templates/sitemap.xml
         hreflang: es
         alternate: /es/{path}
       taiwan:
-        source: /metadata.json?sheet=sitemap-tw
-        destination: /express/sitemap-seo-templates.xml
+        source: /tw/express/templates/default/metadata.json?sheet=sitemap
+        destination: /tw/express/templates/sitemap.xml
         hreflang: zh-Hant
         alternate: /tw/{path}
+      netherlands:
+        source: /nl/express/templates/default/metadata.json?sheet=sitemap
+        destination: /nl/express/templates/sitemap.xml
+        hreflang: nl
+        alternate: /nl/{path}

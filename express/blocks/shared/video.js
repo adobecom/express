@@ -17,6 +17,15 @@ import {
 
 const docTitle = document.title;
 
+export const getAvailableVimeoSubLang = () => {
+  const langs = {
+    fr: 'fr',
+    de: 'de',
+    jp: 'ja',
+  };
+  return langs[getLocale(window.location)] || 'en';
+};
+
 export async function fetchVideoAnalytics() {
   if (!window.videoAnalytics) {
     window.videoAnalytics = [];
@@ -107,7 +116,7 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
   if (!primaryUrl) return;
   if (playerType === 'html5') {
     const sources = vidUrls.map((src) => `<source src="${src}" type="${getMimeType(src)}"></source>`).join('');
-    const videoHTML = `<video controls playsinline>${sources}</video>`;
+    const videoHTML = `<video controls playsinline autoplay>${sources}</video>`;
     $element.innerHTML = videoHTML;
     const $video = $element.querySelector('video');
     $video.addEventListener('loadeddata', async () => {
@@ -142,8 +151,12 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
         const videoLoaded = new CustomEvent('videoloaded', { detail: videoAnalytic });
         document.dispatchEvent(videoLoaded);
       }
-
-      $video.play();
+      const playPromise = $video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // ignore
+        });
+      }
     });
     $video.addEventListener('ended', async () => {
       // hide player and show promotion
@@ -175,7 +188,9 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
 }
 
 export function isVideoLink(url) {
-  return url.includes('youtu')
+  if (!url) return null;
+  return url.includes('youtube.com/watch')
+    || url.includes('youtu.be/')
     || url.includes('vimeo')
     || /.*\/media_.*(mp4|webm|m3u8)$/.test(new URL(url).pathname);
 }
@@ -190,6 +205,7 @@ export function hideVideoModal(push) {
     // create new history entry
     window.history.pushState({}, docTitle, window.location.href.split('#')[0]);
   }
+  document.body.classList.remove('no-scroll');
 }
 
 export function displayVideoModal(url = [], title, push) {
@@ -197,6 +213,8 @@ export function displayVideoModal(url = [], title, push) {
   const [primaryUrl] = vidUrls;
   const canPlayInline = vidUrls
     .some((src) => src && isVideoLink(src));
+
+  document.body.classList.add('no-scroll');
   if (canPlayInline) {
     const $overlay = createTag('div', { class: 'video-overlay' });
     const $video = createTag('div', { class: 'video-overlay-video', id: 'video-overlay-video' });
@@ -255,7 +273,8 @@ export function displayVideoModal(url = [], title, push) {
     } else if (primaryUrl.includes('vimeo')) {
       vidType = 'vimeo';
       const vid = new URL(primaryUrl).pathname.split('/')[1];
-      vidUrls = [`https://player.vimeo.com/video/${vid}?app_id=122963&autoplay=1`];
+      const language = getAvailableVimeoSubLang();
+      vidUrls = [`https://player.vimeo.com/video/${vid}?app_id=122963&autoplay=1&texttrack=${language}`];
     } else if (primaryUrl.includes('/media_')) {
       vidType = 'html5';
       const { hash } = new URL(vidUrls[0]);

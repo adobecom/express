@@ -18,13 +18,16 @@ const TK_IDS = {
   jp: 'dvg6awq',
 };
 
+let blog;
+
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
  * @param {Object} data additional data for RUM sample
+ * @param {integer} forceSampleRate force weight on specific RUM sampling
  */
 
-export function sampleRUM(checkpoint, data = {}) {
+export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
   sampleRUM.defer = sampleRUM.defer || [];
   const defer = (fnname) => {
     sampleRUM[fnname] = sampleRUM[fnname]
@@ -47,7 +50,7 @@ export function sampleRUM(checkpoint, data = {}) {
     window.hlx = window.hlx || {};
     if (!window.hlx.rum) {
       const usp = new URLSearchParams(window.location.search);
-      const weight = (usp.get('rum') === 'on') ? 1 : window.RUM_LOW_SAMPLE_RATE;
+      const weight = (usp.get('rum') === 'on') ? 1 : forceSampleRate || window.RUM_LOW_SAMPLE_RATE;
       // eslint-disable-next-line no-bitwise
       const hashCode = (s) => s.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0);
       const id = `${hashCode(window.location.href)}-${new Date().getTime()}-${Math.random().toString(16).substr(2, 14)}`;
@@ -195,12 +198,23 @@ export function toClassName(name) {
     : '';
 }
 
-export function createTag(name, attrs) {
-  const el = document.createElement(name);
-  if (typeof attrs === 'object') {
-    for (const [key, value] of Object.entries(attrs)) {
-      el.setAttribute(key, value);
+export function createTag(tag, attributes, html) {
+  const el = document.createElement(tag);
+  if (html) {
+    if (html instanceof HTMLElement
+      || html instanceof SVGElement
+      || html instanceof DocumentFragment) {
+      el.append(html);
+    } else if (Array.isArray(html)) {
+      el.append(...html);
+    } else {
+      el.insertAdjacentHTML('beforeend', html);
     }
+  }
+  if (attributes) {
+    Object.entries(attributes).forEach(([key, val]) => {
+      el.setAttribute(key, val);
+    });
   }
   return el;
 }
@@ -288,6 +302,7 @@ export function getIcon(icons, alt, size = 44) {
     'brandswitch',
     'calendar',
     'certified',
+    'color-how-to-icon',
     'changespeed',
     'check',
     'chevron',
@@ -347,6 +362,25 @@ export function getIcon(icons, alt, size = 44) {
     'star',
     'star-half',
     'star-empty',
+    'pricing-gen-ai',
+    'pricing-features',
+    'pricing-import',
+    'pricing-motion',
+    'pricing-stock',
+    'pricing-one-click',
+    'pricing-collaborate',
+    'pricing-premium-plan',
+    'pricing-sync',
+    'pricing-brand',
+    'pricing-calendar',
+    'pricing-fonts',
+    'pricing-libraries',
+    'pricing-cloud',
+    'pricing-support',
+    'pricing-sharing',
+    'pricing-history',
+    'pricing-corporate',
+    'pricing-admin',
   ];
 
   const size22Icons = [
@@ -376,13 +410,13 @@ export function getIconElement(icons, size, alt, additionalClassName) {
   return ($div.firstElementChild);
 }
 
-export function transformLinkToAnimation($a, $videoLooping = 'yes') {
+export function transformLinkToAnimation($a, $videoLooping = true) {
   if (!$a || !$a.href.endsWith('.mp4')) {
     return null;
   }
   const params = new URL($a.href).searchParams;
   const attribs = {};
-  let dataAttr = ($videoLooping && $videoLooping === 'yes') ? ['playsinline', 'autoplay', 'loop', 'muted'] : ['playsinline', 'autoplay', 'muted'];
+  const dataAttr = $videoLooping ? ['playsinline', 'autoplay', 'loop', 'muted'] : ['playsinline', 'autoplay', 'muted'];
   dataAttr.forEach((p) => {
     if (params.get(p) !== 'false') attribs[p] = '';
   });
@@ -405,7 +439,12 @@ export function transformLinkToAnimation($a, $videoLooping = 'yes') {
   // autoplay animation
   $video.addEventListener('canplay', () => {
     $video.muted = true;
-    $video.play();
+    const playPromise = $video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // ignore
+      });
+    }
   });
   return $video;
 }
@@ -442,7 +481,7 @@ export function readBlockConfig($block) {
       if ($cols[1]) {
         const $value = $cols[1];
         const name = toClassName($cols[0].textContent.trim());
-        let value = '';
+        let value;
         if ($value.querySelector('a')) {
           const $as = [...$value.querySelectorAll('a')];
           if ($as.length === 1) {
@@ -465,28 +504,83 @@ export function readBlockConfig($block) {
   return config;
 }
 
+export function getMetadata(name) {
+  const attr = name && name.includes(':') ? 'property' : 'name';
+  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
+  return ($meta && $meta.content) || '';
+}
+
+export function removeIrrelevantSections(main) {
+  main.querySelectorAll(':scope > div').forEach((section) => {
+    const sectionMetaBlock = section.querySelector('div.section-metadata');
+    if (sectionMetaBlock) {
+      const sectionMeta = readBlockConfig(sectionMetaBlock);
+
+      // section meant for different device
+      let sectionRemove = !!(sectionMeta.audience
+        && sectionMeta.audience !== document.body.dataset?.device);
+
+      // section visibility steered over metadata
+      if (!sectionRemove && sectionMeta.showwith !== undefined) {
+        let showWithSearchParam = null;
+        if (!['www.adobe.com'].includes(window.location.hostname)) {
+          const urlParams = new URLSearchParams(window.location.search);
+          showWithSearchParam = urlParams.get(`showwith${sectionMeta.showwith.toLowerCase()}`)
+            || urlParams.get(`showwith${sectionMeta.showwith}`);
+        }
+        sectionRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(sectionMeta.showwith.toLowerCase()) !== 'on';
+      }
+      if (sectionRemove) section.remove();
+    }
+  });
+}
+
+/**
+ * Decorates a block.
+ * @param {Element} block The block element
+ */
+export async function decorateBlock(block) {
+  const blockName = block.classList[0];
+  if (blockName) {
+    const section = block.closest('.section');
+    if (section) section.classList.add(`${[...block.classList].join('-')}-container`);
+
+    // begin CCX custom block option class handling
+    // split and add options with a dash
+    // (fullscreen-center -> fullscreen-center + fullscreen + center)
+    const extra = [];
+    block.classList.forEach((className, index) => {
+      if (index === 0) return; // block name, no split
+      const split = className.split('-');
+      if (split.length > 1) {
+        split.forEach((part) => {
+          extra.push(part);
+        });
+      }
+    });
+    block.classList.add(...extra);
+    // end CCX custom block option class handling
+
+    block.classList.add('block');
+
+    block.setAttribute('data-block-name', blockName);
+    block.setAttribute('data-block-status', 'initialized');
+    const blockWrapper = block.parentElement;
+    blockWrapper.classList.add(`${blockName}-wrapper`);
+    if (getMetadata('sheet-powered') === 'Y') {
+      const { setBlockTheme } = await import('./content-replace.js');
+      setBlockTheme(block);
+    }
+  }
+}
+
 /**
  * Decorates all sections in a container element.
  * @param {Element} $main The container element
  */
-export function decorateSections($main) {
-  let noAudienceFound = false;
-  $main.querySelectorAll(':scope > div').forEach((section) => {
-    const wrappers = [];
-    let defaultContent = false;
-    [...section.children].forEach((e) => {
-      if (e.tagName === 'DIV' || !defaultContent) {
-        const wrapper = document.createElement('div');
-        wrappers.push(wrapper);
-        defaultContent = e.tagName !== 'DIV';
-        if (defaultContent) wrapper.classList.add('default-content-wrapper');
-      }
-      wrappers[wrappers.length - 1].append(e);
-    });
-    wrappers.forEach((wrapper) => section.append(wrapper));
-    section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
-    section.setAttribute('data-section-status', 'initialized');
-
+async function decorateSections(el, isDoc) {
+  const selector = isDoc ? 'body > main > div' : ':scope > div';
+  return [...el.querySelectorAll(selector)].map((section, idx) => {
     /* process section metadata */
     const sectionMeta = section.querySelector('div.section-metadata');
     if (sectionMeta) {
@@ -497,18 +591,36 @@ export function decorateSections($main) {
           section.classList.add(...meta.style.split(', ').map(toClassName));
         } else if (key === 'anchor') {
           section.id = toClassName(meta.anchor);
+        } else if (key === 'background') {
+          section.style.background = meta.background;
         } else {
           section.dataset[key] = meta[key];
         }
       });
-      sectionMeta.parentNode.remove();
+      sectionMeta.remove();
     }
 
-    if (section.dataset.audience && !noAudienceFound) {
-      section.style.paddingTop = '0';
-    } else {
-      noAudienceFound = true;
-    }
+    const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
+
+    section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
+    section.dataset.status = 'decorated';
+    section.dataset.idx = idx;
+
+    let defaultContent = false;
+    let wrapper;
+    [...section.children].forEach((child) => {
+      if (child.tagName === 'DIV' || !defaultContent) {
+        wrapper = document.createElement('div');
+        defaultContent = child.tagName !== 'DIV';
+        if (defaultContent) wrapper.classList.add('default-content-wrapper');
+        section.append(wrapper);
+      }
+      wrapper?.append(child);
+    });
+    blocks.forEach(async (block) => {
+      await decorateBlock(block);
+    });
+    return { el: section, blocks: [...blocks] };
   });
 }
 
@@ -557,126 +669,16 @@ export function getCookie(cname) {
   return '';
 }
 
-function getCountry() {
-  let country = new URLSearchParams(window.location.search).get('country');
-  if (!country) {
-    country = getCookie('international');
-  }
-  if (!country) {
-    country = getLocale(window.location);
-  }
-  if (country === 'uk') country = 'gb';
-  return (country.split('_')[0]);
-}
-
-export function getCurrency(locale) {
-  const loc = locale || getCountry();
-  const currencies = {
-    ar: 'ARS',
-    at: 'EUR',
-    au: 'AUD',
-    be: 'EUR',
-    bg: 'EUR',
-    br: 'BRL',
-    ca: 'CAD',
-    ch: 'CHF',
-    cl: 'CLP',
-    co: 'COP',
-    cr: 'USD',
-    cy: 'EUR',
-    cz: 'EUR',
-    de: 'EUR',
-    dk: 'DKK',
-    ec: 'USD',
-    ee: 'EUR',
-    es: 'EUR',
-    fi: 'EUR',
-    fr: 'EUR',
-    gb: 'GBP',
-    gr: 'EUR',
-    gt: 'USD',
-    hk: 'HKD',
-    hu: 'EUR',
-    id: 'IDR',
-    ie: 'EUR',
-    il: 'ILS',
-    in: 'INR',
-    it: 'EUR',
-    jp: 'JPY',
-    kr: 'KRW',
-    lt: 'EUR',
-    lu: 'EUR',
-    lv: 'EUR',
-    mt: 'EUR',
-    mx: 'MXN',
-    my: 'MYR',
-    nl: 'EUR',
-    no: 'NOK',
-    nz: 'AUD',
-    pe: 'PEN',
-    ph: 'PHP',
-    pl: 'EUR',
-    pt: 'EUR',
-    ro: 'EUR',
-    ru: 'RUB',
-    se: 'SEK',
-    sg: 'SGD',
-    si: 'EUR',
-    sk: 'EUR',
-    th: 'THB',
-    tw: 'TWD',
-    us: 'USD',
-    ve: 'USD',
-    za: 'USD',
-    ae: 'USD',
-    bh: 'BHD',
-    eg: 'EGP',
-    jo: 'JOD',
-    kw: 'KWD',
-    om: 'OMR',
-    qa: 'USD',
-    sa: 'SAR',
-    ua: 'USD',
-    dz: 'USD',
-    lb: 'LBP',
-    ma: 'USD',
-    tn: 'USD',
-    ye: 'USD',
-    am: 'USD',
-    az: 'USD',
-    ge: 'USD',
-    md: 'USD',
-    tm: 'USD',
-    by: 'USD',
-    kz: 'USD',
-    kg: 'USD',
-    tj: 'USD',
-    uz: 'USD',
-    bo: 'USD',
-    do: 'USD',
-    hr: 'EUR',
-    ke: 'USD',
-    lk: 'USD',
-    mo: 'HKD',
-    mu: 'USD',
-    ng: 'USD',
-    pa: 'USD',
-    py: 'USD',
-    sv: 'USD',
-    tt: 'USD',
-    uy: 'USD',
-    vn: 'USD',
-  };
-  return currencies[loc];
-}
-
 export function getLanguage(locale) {
   const langs = {
     us: 'en-US',
     fr: 'fr-FR',
+    in: 'en-IN',
+    uk: 'en-GB',
     de: 'de-DE',
     it: 'it-IT',
     dk: 'da-DK',
+    gb: 'en-GB',
     es: 'es-ES',
     fi: 'fi-FI',
     jp: 'ja-JP',
@@ -740,16 +742,6 @@ function convertGlobToRe(glob) {
   return (new RegExp(reString));
 }
 
-function getCurrencyDisplay(currency) {
-  if (currency === 'JPY') {
-    return 'name';
-  }
-  if (['SEK', 'DKK', 'NOK'].includes(currency)) {
-    return 'code';
-  }
-  return 'symbol';
-}
-
 export async function fetchRelevantRows(path) {
   if (!window.relevantRows) {
     try {
@@ -777,59 +769,6 @@ export async function fetchRelevantRows(path) {
   return null;
 }
 
-export function formatPrice(price, currency) {
-  const locale = ['USD', 'TWD'].includes(currency)
-    ? 'en-GB' // use en-GB for intl $ symbol formatting
-    : getLanguage(getCountry());
-  const currencyDisplay = getCurrencyDisplay(currency);
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency,
-    currencyDisplay,
-  }).format(price)
-    .replace('SAR', 'SR'); // custom currency symbol for SAR
-}
-
-export async function getOffer(offerId, countryOverride) {
-  let country = getCountry();
-  if (countryOverride) country = countryOverride;
-  if (!country) country = 'us';
-  let currency = getCurrency(country);
-  if (!currency) {
-    country = 'us';
-    currency = 'USD';
-  }
-  const resp = await fetch('/express/system/offers-new.json');
-  const json = await resp.json();
-  const upperCountry = country.toUpperCase();
-  let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
-  if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
-
-  if (offer) {
-    // console.log(offer);
-    const lang = getLanguage(getLocale(window.location)).split('-')[0];
-    const unitPrice = offer.p;
-    const unitPriceCurrencyFormatted = formatPrice(unitPrice, currency);
-    const commerceURL = `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${offerId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`;
-    const vatInfo = offer.vat;
-    const prefix = offer.pre;
-    const suffix = offer.suf;
-
-    return {
-      country,
-      currency,
-      unitPrice,
-      unitPriceCurrencyFormatted,
-      commerceURL,
-      lang,
-      vatInfo,
-      prefix,
-      suffix,
-    };
-  }
-  return {};
-}
-
 export function addBlockClasses($block, classNames) {
   const $rows = Array.from($block.children);
   $rows.forEach(($row) => {
@@ -847,24 +786,30 @@ export function addBlockClasses($block, classNames) {
 // }
 
 function decorateHeaderAndFooter() {
-  const $header = document.querySelector('header');
+  const header = document.querySelector('header');
 
-  $header.addEventListener('click', (event) => {
+  header.addEventListener('click', (event) => {
     if (event.target.id === 'feds-topnav') {
       const root = window.location.href.split('/express/')[0];
       window.location.href = `${root}/express/`;
     }
   });
 
-  $header.innerHTML = '<div id="feds-header"></div>';
-
-  document.querySelector('footer').innerHTML = `
-    <div id="feds-footer"></div>
-  `;
+  const headerMeta = getMeta('header');
+  if (headerMeta !== 'off') header.innerHTML = '<div id="feds-header"></div>';
+  else header.remove();
+  const footerMeta = getMeta('footer');
+  const footer = document.querySelector('footer');
+  if (footerMeta !== 'off') {
+    footer.innerHTML = `
+      <div id="feds-footer"></div>
+    `;
+    footer.setAttribute('data-status', 'loading');
+  } else footer.remove();
 }
 
 /**
- * Loads a CSS file.
+ * Loads a CSS file
  * @param {string} href The path to the CSS file
  */
 export function loadCSS(href, callback) {
@@ -918,51 +863,6 @@ function resolveFragments() {
         console.log(`fragment "${marker}" resolved`);
       }, 500);
     });
-}
-
-/**
- * Decorates a block.
- * @param {Element} block The block element
- */
-export function decorateBlock(block) {
-  const blockName = block.classList[0];
-  if (blockName) {
-    const section = block.closest('.section');
-    if (section) section.classList.add(`${[...block.classList].join('-')}-container`);
-
-    // begin CCX custom block option class handling
-    // split and add options with a dash
-    // (fullscreen-center -> fullscreen-center + fullscreen + center)
-    const extra = [];
-    block.classList.forEach((className, index) => {
-      if (index === 0) return; // block name, no split
-      const split = className.split('-');
-      if (split.length > 1) {
-        split.forEach((part) => {
-          extra.push(part);
-        });
-      }
-    });
-    block.classList.add(...extra);
-    // end CCX custom block option class handling
-
-    block.classList.add('block');
-
-    block.setAttribute('data-block-name', blockName);
-    block.setAttribute('data-block-status', 'initialized');
-    const blockWrapper = block.parentElement;
-    blockWrapper.classList.add(`${blockName}-wrapper`);
-  }
-}
-
-/**
- * Decorates all blocks in a container element.
- * @param {Element} main The container element
- */
-export function decorateBlocks(main) {
-  main
-    .querySelectorAll('div.section > div > div')
-    .forEach((block) => decorateBlock(block));
 }
 
 function decorateMarqueeColumns($main) {
@@ -1027,6 +927,28 @@ export function buildBlock(blockName, content) {
   return (blockEl);
 }
 
+async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
+  const cssLoaded = new Promise((resolve) => {
+    loadCSS(cssPath, resolve);
+  });
+  const scriptLoaded = new Promise((resolve) => {
+    (async () => {
+      try {
+        const { default: init } = await import(jsPath);
+        await init(block, blockName, document, eager);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, {
+          sampleRate: 1,
+          tags: 'module',
+        });
+      }
+      resolve();
+    })();
+  });
+  await Promise.all([cssLoaded, scriptLoaded]);
+}
+
 /**
  * Loads JS and CSS for a block.
  * @param {Element} block The block element
@@ -1052,31 +974,10 @@ export async function loadBlock(block, eager = false) {
       }
     }
 
-    try {
-      const cssLoaded = new Promise((resolve) => {
-        loadCSS(cssPath, resolve);
-      });
-      const decorationComplete = new Promise((resolve) => {
-        (async () => {
-          try {
-            const mod = await import(jsPath);
-            if (mod.default) {
-              await mod.default(block, blockName, document, eager);
-            }
-          } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(`failed to load module for ${blockName}`, err);
-          }
-          resolve();
-        })();
-      });
-      await Promise.all([cssLoaded, decorationComplete]);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(`failed to load block ${blockName}`, err);
-    }
+    await loadAndExecute(cssPath, jsPath, block, blockName, eager);
     block.setAttribute('data-block-status', 'loaded');
   }
+  return block;
 }
 
 /**
@@ -1095,20 +996,15 @@ export async function loadBlocks(main) {
 }
 
 export function loadScript(url, callback, type) {
-  const $head = document.querySelector('head');
-  const $script = createTag('script', { src: url });
+  const head = document.querySelector('head');
+  if (head.querySelector(`script[src="${url}"]`)) return null;
+  const script = createTag('script', { src: url });
   if (type) {
-    $script.setAttribute('type', type);
+    script.setAttribute('type', type);
   }
-  $head.append($script);
-  $script.onload = callback;
-  return $script;
-}
-
-export function getMetadata(name) {
-  const attr = name && name.includes(':') ? 'property' : 'name';
-  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
-  return ($meta && $meta.content) || '';
+  head.append(script);
+  script.onload = callback;
+  return script;
 }
 
 /**
@@ -1117,23 +1013,23 @@ export function getMetadata(name) {
  */
 
 export async function fetchPlaceholders() {
+  const requestPlaceholders = async (url) => {
+    const resp = await fetch(url);
+    if (resp.ok) {
+      const json = await resp.json();
+      window.placeholders = {};
+      json.data.forEach((placeholder) => {
+        window.placeholders[toClassName(placeholder.Key)] = placeholder.Text;
+      });
+    }
+  };
   if (!window.placeholders) {
     try {
       const locale = getLocale(window.location);
       const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-      const resp = await fetch(`${urlPrefix}/express/placeholders.json`);
-      const json = await resp.json();
-      window.placeholders = {};
-      json.data.forEach((placeholder) => {
-        window.placeholders[toClassName(placeholder.Key)] = placeholder.Text;
-      });
+      await requestPlaceholders(`${urlPrefix}/express/placeholders.json`);
     } catch {
-      const resp = await fetch('/express/placeholders.json');
-      const json = await resp.json();
-      window.placeholders = {};
-      json.data.forEach((placeholder) => {
-        window.placeholders[toClassName(placeholder.Key)] = placeholder.Text;
-      });
+      await requestPlaceholders('/express/placeholders.json');
     }
   }
   return window.placeholders;
@@ -1182,21 +1078,9 @@ function loadGnav() {
 }
 
 function decoratePageStyle() {
-  const isBlog = document.body.classList.contains('blog');
-  const $h1 = document.querySelector('main h1');
-  // check if h1 is inside a block
-
-  if (isBlog) {
-    // eslint-disable-next-line import/no-unresolved,import/no-absolute-path
-    import('/express/scripts/blog.js')
-      .then((mod) => {
-        if (mod.default) {
-          mod.default();
-        }
-      })
-      .catch((err) => console.log('failed to load blog', err));
-    loadCSS('/express/styles/blog.css');
-  } else {
+  if (!blog) {
+    const $h1 = document.querySelector('main h1');
+    // check if h1 is inside a block
     // eslint-disable-next-line no-lonely-if
     if ($h1 && !$h1.closest('.section > div > div ')) {
       const $heroPicture = $h1.parentElement.querySelector('picture');
@@ -1217,7 +1101,7 @@ function decoratePageStyle() {
         $heroSection.removeAttribute('style');
       }
       if ($heroPicture) {
-        if (!isBlog) {
+        if (!blog) {
           $heroPicture.classList.add('hero-bg');
         }
       } else {
@@ -1270,6 +1154,7 @@ export function decorateButtons(block = document) {
       && !(linkText.startsWith('https') && linkText.includes('/media_'))
       && !linkText.includes('hlx.blob.core.windows.net')
       && !linkText.endsWith(' >')
+      && !(new URL($a.href).hash === '#embed-video')
       && !linkText.endsWith(' ›')) {
       const $up = $a.parentElement;
       const $twoup = $a.parentElement.parentElement;
@@ -1545,8 +1430,8 @@ async function decorateTesting() {
         console.log('run', config.run, config.audience);
 
         window.hlx = window.hlx || {};
-        window.hlx.experiment = config;
         if (config.run) {
+          window.hlx.experiment = config;
           if (forcedVariant && config.variantNames.includes(forcedVariant)) {
             config.selectedVariant = forcedVariant;
           } else {
@@ -1648,9 +1533,12 @@ export async function fixIcons(block = document) {
   });
 }
 
-export function unwrapBlock($block) {
+function unwrapBlock($block) {
   const $section = $block.parentNode;
   const $elems = [...$section.children];
+
+  if ($elems.length <= 1) return;
+
   const $blockSection = createTag('div');
   const $postBlockSection = createTag('div');
   const $nextSection = $section.nextElementSibling;
@@ -1752,13 +1640,14 @@ export async function fetchFloatingCta(path) {
 
     if (window.floatingCta.length) {
       const candidates = window.floatingCta.filter((p) => {
-        const urlToMatch = p.path.includes('*') ? convertGlobToRe(p.path) : p.path;
+        const pathMatch = p.path.includes('*') ? path.match(convertGlobToRe(p.path)) : path === p.path;
+
         if (experiment && path !== 'default') {
-          return (path === p.path || path.match(urlToMatch))
+          return (pathMatch)
             && p.expID === experiment.run
             && p.challengerID === experiment.selectedVariant;
         } else {
-          return path === p.path || path.match(urlToMatch);
+          return pathMatch;
         }
       }).sort((a, b) => b.path.length - a.path.length);
 
@@ -1772,13 +1661,13 @@ export async function fetchFloatingCta(path) {
   }
 
   if (['yes', 'true', 'on'].includes(dev) && env && env.name === 'stage') {
-    spreadsheet = '/express/floating-cta-dev.json?limit=10000';
+    spreadsheet = '/express/floating-cta-dev.json?limit=100000';
   } else {
-    spreadsheet = '/express/floating-cta.json?limit=10000';
+    spreadsheet = '/express/floating-cta.json?limit=100000';
   }
 
   if (experimentStatus === 'active') {
-    const expSheet = '/express/experiments/floating-cta-experiments.json?limit=10000';
+    const expSheet = '/express/experiments/floating-cta-experiments.json?limit=100000';
     floatingBtnData = await fetchFloatingBtnData(expSheet);
   }
 
@@ -1810,11 +1699,11 @@ async function buildAutoBlocks($main) {
       const relevantRowsData = await fetchRelevantRows(window.location.pathname);
 
       if (relevantRowsData) {
-        const $relevantRowsSection = createTag('div');
-        const $fragment = buildBlock('fragment', '/express/fragments/relevant-rows-default-v2');
-        $relevantRowsSection.dataset.audience = 'mobile';
-        $relevantRowsSection.append($fragment);
-        $main.insertBefore($relevantRowsSection, $main.firstElementChild.nextSibling);
+        const relevantRowsSection = createTag('div');
+        const fragment = buildBlock('fragment', '/express/fragments/relevant-rows-default-v2');
+        relevantRowsSection.dataset.audience = 'mobile';
+        relevantRowsSection.append(fragment);
+        $main.prepend(relevantRowsSection);
         window.relevantRowsLoaded = true;
       }
     }
@@ -1843,24 +1732,13 @@ async function buildAutoBlocks($main) {
   if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) || ['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
     if (!window.floatingCtasLoaded) {
       const floatingCTAData = await fetchFloatingCta(window.location.pathname);
-      let desktopButton;
-      let mobileButton;
-
-      if (floatingCTAData) {
-        const buttonTypes = {
-          desktop: floatingCTAData.desktop,
-          mobile: floatingCTAData.mobile,
-        };
-
-        desktopButton = buildBlock(buttonTypes.desktop, 'desktop');
-        mobileButton = buildBlock(buttonTypes.mobile, 'mobile');
-
-        [desktopButton, mobileButton].forEach((button) => {
-          button.classList.add('spreadsheet-powered');
-          if ($lastDiv) {
-            $lastDiv.append(button);
-          }
-        });
+      const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+      const device = document.body.dataset?.device;
+      const blockName = floatingCTAData?.[device];
+      if (validButtonVersion.includes(blockName) && $lastDiv) {
+        const button = buildBlock(blockName, device);
+        button.classList.add('spreadsheet-powered');
+        $lastDiv.append(button);
       }
 
       window.floatingCtasLoaded = true;
@@ -1882,7 +1760,7 @@ function splitSections($main) {
   const multipleColumns = $main.querySelectorAll('.columns.fullsize-center').length > 1;
   $main.querySelectorAll(':scope > div > div').forEach(($block) => {
     const hasAppStoreBlocks = ['yes', 'true', 'on'].includes(getMetadata('show-standard-app-store-blocks').toLowerCase());
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'faq', 'promotion', 'fragment', 'app-store-highlight', 'app-store-blade', 'plans-comparison'];
+    const blocksToSplit = ['template-list', 'layouts', 'banner', 'faq', 'promotion', 'app-store-highlight', 'app-store-blade', 'plans-comparison'];
     // work around for splitting columns and sixcols template list
     // add metadata condition to minimize impact on other use cases
     if (hasAppStoreBlocks && !multipleColumns) {
@@ -1909,15 +1787,18 @@ function setTheme() {
     // mega nav, suppress brand header
     theme = 'no-brand-header';
   }
-  const $body = document.body;
+  const { body } = document;
   if (theme) {
     let themeClass = toClassName(theme);
     /* backwards compatibility can be removed again */
     if (themeClass === 'nobrand') themeClass = 'no-desktop-brand-header';
-    $body.classList.add(themeClass);
-    if (themeClass === 'blog') $body.classList.add('no-brand-header');
+    body.classList.add(themeClass);
+    if (themeClass === 'blog') {
+      body.classList.add('no-brand-header');
+      blog = true;
+    }
   }
-  $body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
+  body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
 
 function decorateLinkedPictures($main) {
@@ -1948,27 +1829,28 @@ export function addFavIcon(href) {
 
 function decorateSocialIcons($main) {
   $main.querySelectorAll(':scope a').forEach(($a) => {
-    if ($a.href === $a.textContent.trim()) {
+    const urlObject = new URL($a.href);
+    if ($a.href === $a.textContent.trim() && new URL($a.href).hash !== '#embed-video') {
       let icon = '';
-      if ($a.href.startsWith('https://www.instagram.com')) {
+      if (urlObject.hostname === 'www.instagram.com') {
         icon = 'instagram';
       }
-      if ($a.href.startsWith('https://twitter.com')) {
+      if (urlObject.hostname === 'www.twitter.com') {
         icon = 'twitter';
       }
-      if ($a.href.startsWith('https://www.pinterest.')) {
+      if (urlObject.hostname.split('.')[1] === 'pinterest') {
         icon = 'pinterest';
       }
-      if ($a.href.startsWith('https://www.facebook.')) {
+      if (urlObject.hostname.split('.')[1] === 'facebook') {
         icon = 'facebook';
       }
-      if ($a.href.startsWith('https://www.linkedin.com')) {
+      if (urlObject.hostname === 'www.linkedin.com') {
         icon = 'linkedin';
       }
-      if ($a.href.startsWith('https://www.youtube.com')) {
+      if (urlObject.hostname === 'www.youtube.com') {
         icon = 'youtube';
       }
-      if ($a.href.startsWith('https://www.tiktok.com')) {
+      if (urlObject.hostname === 'www.tiktok.com') {
         icon = 'tiktok';
       }
       const $parent = $a.parentElement;
@@ -1992,22 +1874,30 @@ function decorateSocialIcons($main) {
   });
 }
 
-function makeRelativeLinks($main) {
-  $main.querySelectorAll('a').forEach(($a) => {
-    if (!$a.href) return;
+function decorateLinks(main) {
+  main.querySelectorAll('a').forEach((a) => {
+    if (!a.href) return;
     try {
-      const {
-        protocol, hostname, pathname, search, hash,
-      } = new URL($a.href);
-      if (hostname.endsWith('.page')
-        || hostname.endsWith('.live')
-        || ['www.adobe.com', 'www.stage.adobe.com'].includes(hostname)) {
-        // make link relative
-        $a.href = `${pathname}${search}${hash}`;
-      } else if (hostname !== 'adobesparkpost.app.link'
-        && !['tel:', 'mailto:', 'sms:'].includes(protocol)) {
-        // open external links in a new tab
-        $a.target = '_blank';
+      let url = new URL(a.href);
+
+      // handle link replacement on sheet-powered pages
+      if (getMetadata('sheet-powered') === 'Y' && getMetadata(url.hash.replace('#', ''))) {
+        a.href = getMetadata(url.hash.replace('#', ''));
+        url = new URL(a.href);
+      }
+
+      const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
+      const isBranchLink = url.hostname === 'adobesparkpost.app.link';
+      if (!isContactLink) {
+        // make url relative if needed
+        const relative = url.hostname === window.location.hostname;
+        const urlPath = `${url.pathname}${url.search}${url.hash}`;
+        a.href = relative ? urlPath : `${url.origin}${urlPath}`;
+
+        if (!relative && !isBranchLink) {
+          // open external links in a new tab
+          a.target = '_blank';
+        }
       }
     } catch (e) {
       // invalid url
@@ -2125,18 +2015,19 @@ function decoratePictures(main) {
   });
 }
 
-export async function decorateMain($main) {
-  await buildAutoBlocks($main);
-  splitSections($main);
-  decorateSections($main);
-  decorateButtons($main);
-  decorateBlocks($main);
-  decorateMarqueeColumns($main);
-  await fixIcons($main);
-  decoratePictures($main);
-  decorateLinkedPictures($main);
-  decorateSocialIcons($main);
-  makeRelativeLinks($main);
+export async function decorateMain(main) {
+  await buildAutoBlocks(main);
+  splitSections(main);
+  const sections = decorateSections(main, false);
+  decorateButtons(main);
+  decorateMarqueeColumns(main);
+  await fixIcons(main);
+  decoratePictures(main);
+  decorateLinkedPictures(main);
+  decorateSocialIcons(main);
+  decorateLinks(main);
+  await sections;
+  return sections;
 }
 
 const usp = new URLSearchParams(window.location.search);
@@ -2195,8 +2086,14 @@ export function addAnimationToggle(target) {
     const videos = target.querySelectorAll('video');
     const paused = videos[0] ? videos[0].paused : false;
     videos.forEach((video) => {
-      if (paused) video.play();
-      else video.pause();
+      if (paused) {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // ignore
+          });
+        }
+      } else video.pause();
     });
   }, true);
 }
@@ -2310,33 +2207,124 @@ function decorateLegalCopy(main) {
   });
 }
 
+function loadLana(options = {}) {
+  if (window.lana) return;
+
+  const lanaError = (e) => {
+    window.lana.log(e.reason || e.error || e.message, {
+      errorType: 'i',
+    });
+  };
+
+  window.lana = {
+    log: async (...args) => {
+      await import('./lana.js');
+      window.removeEventListener('error', lanaError);
+      window.removeEventListener('unhandledrejection', lanaError);
+      return window.lana.log(...args);
+    },
+    debug: false,
+    options,
+  };
+
+  window.addEventListener('error', lanaError);
+  window.addEventListener('unhandledrejection', lanaError);
+}
+
+function removeMetadata() {
+  document.head.querySelectorAll('meta').forEach((meta) => {
+    if (meta.content && meta.content.includes('--none--')) {
+      meta.remove();
+    }
+  });
+}
+
 /**
- * loads everything needed to get to LCP.
+ * loads everything that doesn't need to be delayed.
  */
-async function loadEager() {
+async function loadLazy(main) {
+  addPromotion();
+  loadCSS('/express/styles/lazy-styles.css');
+  scrollToHash();
+  resolveFragments();
+  removeMetadata();
+  addFavIcon('/express/icons/cc-express.svg');
+  sampleRUM('lazy');
+  sampleRUM.observe(document.querySelectorAll('main picture > img'));
+  sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
+  trackViewedAssetsInDataLayer();
+}
+
+const eagerLoad = (img) => {
+  img?.setAttribute('loading', 'eager');
+  img?.setAttribute('fetchpriority', 'high');
+};
+
+(async function loadLCPImage() {
+  const firstDiv = document.querySelector('body > main > div:nth-child(1) > div');
+  if (firstDiv?.classList.contains('marquee')) {
+    firstDiv.querySelectorAll('img').forEach(eagerLoad);
+  } else {
+    eagerLoad(document.querySelector('img'));
+  }
+}());
+
+async function loadPostLCP() {
+  // post LCP actions go here
+  sampleRUM('lcp');
+  if (window.hlx.martech) loadMartech();
+  loadGnav();
+  const tkID = TK_IDS[getLocale(window.location)];
+  if (tkID) {
+    const { default: loadFonts } = await import('./fonts.js');
+    loadFonts(tkID, loadCSS);
+  }
+}
+
+/**
+ * Decorates the page.
+ */
+async function loadArea(area = document) {
+  const isDoc = area === document;
+  const main = area.querySelector('main');
+
+  if (isDoc) {
+    decorateHeaderAndFooter();
+  }
+
+  window.hlx = window.hlx || {};
+  const params = new URLSearchParams(window.location.search);
+  ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
+    window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
+  });
+  window.hlx.init = true;
+
   setTheme();
-  const main = document.querySelector('main');
   if (main) {
     const language = getLanguage(getLocale(window.location));
     const langSplits = language.split('-');
     langSplits.pop();
     const htmlLang = langSplits.join('-');
     document.documentElement.setAttribute('lang', htmlLang);
-  }
-  if (!window.hlx.lighthouse) await decorateTesting();
 
-  if (window.location.href.includes('/express/templates/')) {
-    await import('./templates.js');
+    removeIrrelevantSections(main);
   }
+  if (window.hlx.testing) await decorateTesting();
 
-  if (window.location.href.includes('/express/colors/')) {
-    console.log('got here');
-    await import('./colors.js');
+  if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
+    const { default: replaceContent } = await import('./content-replace.js');
+    await replaceContent(main);
   }
 
+  if (getMetadata('template-search-page') === 'Y') {
+    const { default: redirect } = await import('./template-redirect.js');
+    await redirect();
+  }
+
+  let sections = [];
   if (main) {
-    await decorateMain(main);
-    decorateHeaderAndFooter();
+    loadLana({ clientId: 'express' });
+    sections = await decorateMain(main);
     decoratePageStyle();
     decorateLegalCopy(main);
     addJapaneseSectionHeaderSizing();
@@ -2344,14 +2332,7 @@ async function loadEager() {
     displayOldLinkWarning();
     wordBreakJapanese();
 
-    const lcpBlocks = ['columns', 'hero-animation', 'hero-3d', 'template-list', 'template-x', 'floating-button', 'fullscreen-marquee', 'collapsible-card'];
-    const block = document.querySelector('.block');
-    const hasLCPBlock = (block && lcpBlocks.includes(block.getAttribute('data-block-name')));
-    if (hasLCPBlock) await loadBlock(block, true);
-
-    document.querySelector('body').classList.add('appear');
-
-    if (!window.hlx.lighthouse) {
+    if (window.hlx.testing) {
       const target = checkTesting();
       if (useAlloy) {
         document.querySelector('body').classList.add('personalization-container');
@@ -2364,163 +2345,42 @@ async function loadEager() {
         }, 3000);
       }
     }
-
-    const lcpCandidate = document.querySelector('main img');
-    await new Promise((resolve) => {
-      if (lcpCandidate && !lcpCandidate.complete) {
-        lcpCandidate.setAttribute('loading', 'eager');
-        lcpCandidate.addEventListener('load', () => resolve());
-        lcpCandidate.addEventListener('error', () => resolve());
-      } else {
-        resolve();
-      }
-    });
-  }
-}
-
-function removeMetadata() {
-  document.head.querySelectorAll('meta').forEach((meta) => {
-    if (meta.content && meta.content.includes('--none--')) {
-      meta.remove();
-    }
-  });
-}
-
-export async function buildStaticFreePlanWidget() {
-  const placeholders = await fetchPlaceholders();
-  const widget = createTag('div', { class: 'free-plan-widget' });
-  for (let i = 1; i < 3; i += 1) {
-    const checkMarkColor = i % 2 !== 0 ? '#c457f0' : '#f06dad';
-    const tagText = placeholders[`free-plan-check-${i}`];
-    const tagWrapper = createTag('div');
-    const checkMarkDiv = createTag('div', { style: `background-color: ${checkMarkColor}` });
-    const textDiv = createTag('div');
-    checkMarkDiv.append(getIconElement('checkmark'));
-    textDiv.textContent = tagText;
-    tagWrapper.append(checkMarkDiv, textDiv);
-    widget.append(tagWrapper);
   }
 
-  return widget;
-}
+  const areaBlocks = [];
+  if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
+  for (const section of sections) {
+    const loaded = section.blocks.map((block) => loadBlock(block));
+    areaBlocks.push(...section.blocks);
 
-export async function buildFreePlanHighlight(elem) {
-  const placeholders = await fetchPlaceholders();
-  const bullet = createTag('div', { class: 'free-plan-bullet' });
+    // Only move on to the next section when all blocks are loaded.
+    // eslint-disable-next-line no-await-in-loop
+    await Promise.all(loaded);
+    // Post LCP operations.
+    if (isDoc && section.el.dataset.idx === '0') loadPostLCP();
 
-  if (sessionStorage.getItem('highlight-optout')) {
-    elem.classList.add('highlight-optout');
+    // Show the section when all blocks inside are done.
+    delete section.el.dataset.status;
+    delete section.el.dataset.idx;
   }
-  const freePlanBulletContainer = createTag('div', { class: 'free-plan-bullet-container' });
-  const freePlanBulletTray = createTag('div', { class: 'free-plan-bullet-tray' });
-  const optoutButton = createTag('button', { class: 'free-plan-optout' });
+  const footer = document.querySelector('footer');
+  delete footer.dataset.status;
 
-  optoutButton.append(getIconElement('close-black'));
+  const lazy = loadLazy(main);
 
-  for (let i = 0; i < 40; i += 1) {
-    const checkMarkColor = i % 2 === 0 ? '#c457f0' : '#f06dad';
-    const placeholder = i % 2 === 0 ? placeholders['free-plan-check-1'] : placeholders['free-plan-check-2'];
-    const tag = createTag('div', { class: 'free-plan-tag' });
-    const innerDiv = createTag('div', { style: `background-color: ${checkMarkColor}` });
-    tag.innerText = placeholder;
-    innerDiv.append(getIconElement('checkmark'));
-
-    tag.prepend(innerDiv);
-    freePlanBulletTray.append(tag);
-  }
-
-  freePlanBulletContainer.append(freePlanBulletTray);
-  bullet.append(freePlanBulletContainer);
-  elem.append(bullet, optoutButton);
-}
-
-export async function addFreePlanWidget(elem) {
-  if (elem && ['yes', 'true'].includes(getMetadata('show-free-plan').toLowerCase())) {
-    const placeholders = await fetchPlaceholders();
-    const widget = await buildStaticFreePlanWidget();
-
-    document.addEventListener('planscomparisonloaded', () => {
-      const $learnMoreButton = createTag('a', {
-        class: 'learn-more-button',
-        href: '#plans-comparison-container',
-      });
-      const lottieWrapper = createTag('span', { class: 'lottie-wrapper' });
-
-      $learnMoreButton.textContent = placeholders['learn-more'];
-      lottieWrapper.innerHTML = getLottie('purple-arrows', '/express/icons/purple-arrows.json');
-      $learnMoreButton.append(lottieWrapper);
-      lazyLoadLottiePlayer();
-      widget.append($learnMoreButton);
-
-      $learnMoreButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        // temporarily disabling smooth scroll for accurate location
-        const $html = document.querySelector('html');
-        $html.style.scrollBehavior = 'unset';
-        const $plansComparison = document.querySelector('.plans-comparison-container');
-        $plansComparison.scrollIntoView();
-        $html.style.removeProperty('scroll-behavior');
-      });
-    });
-
-    elem.append(widget);
-
-    // add the free plan bullet if there's a CTA to attach to
-    if (elem.classList.contains('button-container')) {
-      await buildFreePlanHighlight(elem);
-    }
-
-    elem.classList.add('free-plan-container');
-  }
-}
-
-/**
- * loads everything that doesn't need to be delayed.
- */
-async function loadLazy() {
-  const main = document.querySelector('main');
-
-  // post LCP actions go here
-  sampleRUM('lcp');
-
-  loadBlocks(main);
-  loadCSS('/express/styles/lazy-styles.css');
-  scrollToHash();
-  resolveFragments();
-  addPromotion();
-  removeMetadata();
-  addFavIcon('/express/icons/cc-express.svg');
-  if (!window.hlx.lighthouse) loadMartech();
-  const tkID = TK_IDS[getLocale(window.location)];
-  if (tkID) {
-    const { default: loadFonts } = await import('./fonts.js');
-    loadFonts(tkID, loadCSS);
-  }
-  sampleRUM('lazy');
-  sampleRUM.observe(document.querySelectorAll('main picture > img'));
-  sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
-  trackViewedAssetsInDataLayer();
-}
-
-/**
- * Decorates the page.
- */
-async function decoratePage() {
-  window.hlx = window.hlx || {};
-  window.hlx.lighthouse = new URLSearchParams(window.location.search).get('lighthouse') === 'on';
-  window.hlx.init = true;
-
-  await loadEager();
-  loadLazy();
-  loadGnav();
   if (window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) {
     import('../../tools/preview/preview.js');
   }
+  await lazy;
+  const { default: delayed } = await import('./delayed.js');
+  delayed([createTag], 8000);
 }
 
-if (!window.hlx.init && !window.isTestEnv) {
-  decoratePage();
-}
+(async function loadPage() {
+  if (!window.hlx.init && !window.isTestEnv) {
+    await loadArea();
+  }
+}());
 
 /*
  * lighthouse performance instrumentation helper
@@ -2577,123 +2437,6 @@ function registerPerformanceLogger() {
   }
 }
 
-function getPlacement(btn) {
-  const parentBlock = btn.closest('.block');
-  let placement = 'outside-blocks';
-
-  if (parentBlock) {
-    const blockName = parentBlock.dataset.blockName || parentBlock.classList[0];
-    const sameBlocks = btn.closest('main')?.querySelectorAll(`.${blockName}`);
-
-    if (sameBlocks && sameBlocks.length > 1) {
-      sameBlocks.forEach((b, i) => {
-        if (b === parentBlock) {
-          placement = `${blockName}-${i + 1}`;
-        }
-      });
-    } else {
-      placement = blockName;
-    }
-
-    if (['template-list', 'template-x'].includes(blockName) && btn.classList.contains('placeholder')) {
-      placement = 'blank-template-cta';
-    }
-  }
-
-  return placement;
-}
-
-export async function trackBranchParameters($links) {
-  const placeholders = await fetchPlaceholders();
-  const rootUrl = new URL(window.location.href);
-  const rootUrlParameters = rootUrl.searchParams;
-
-  const { experiment } = window.hlx;
-  const { referrer } = window.document;
-  const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
-  const templateSearchTag = getMetadata('short-title');
-  const pageUrl = window.location.pathname;
-  const sdid = rootUrlParameters.get('sdid');
-  const mv = rootUrlParameters.get('mv');
-  const sKwcId = rootUrlParameters.get('s_kwcid');
-  const efId = rootUrlParameters.get('ef_id');
-  const promoId = rootUrlParameters.get('promoid');
-  const trackingId = rootUrlParameters.get('trackingid');
-  const cgen = rootUrlParameters.get('cgen');
-
-  $links.forEach(($a) => {
-    if ($a.href && $a.href.match('adobesparkpost.app.link')) {
-      const btnUrl = new URL($a.href);
-      const urlParams = btnUrl.searchParams;
-      const placement = getPlacement($a);
-
-      if (templateSearchTag
-        && placeholders['search-branch-links']
-        && placeholders['search-branch-links']
-          .replace(/\s/g, '')
-          .split(',')
-          .includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
-        urlParams.set('search', templateSearchTag);
-      }
-
-      if (referrer) {
-        urlParams.set('referrer', referrer);
-      }
-
-      if (pageUrl) {
-        urlParams.set('url', pageUrl);
-      }
-
-      if (sdid) {
-        urlParams.set('sdid', sdid);
-      }
-
-      if (mv) {
-        urlParams.set('mv', mv);
-      }
-
-      if (efId) {
-        urlParams.set('efid', efId);
-      }
-
-      if (sKwcId) {
-        const sKwcIdParameters = sKwcId.split('!');
-
-        if (typeof sKwcIdParameters[2] !== 'undefined' && sKwcIdParameters[2] === '3') {
-          urlParams.set('customer_placement', 'Google%20AdWords');
-        }
-
-        if (typeof sKwcIdParameters[8] !== 'undefined' && sKwcIdParameters[8] !== '') {
-          urlParams.set('keyword', sKwcIdParameters[8]);
-        }
-      }
-
-      if (promoId) {
-        urlParams.set('promoid', promoId);
-      }
-
-      if (trackingId) {
-        urlParams.set('keywordid', trackingId);
-      }
-
-      if (cgen) {
-        urlParams.set('cgen', cgen);
-      }
-
-      if (experimentStatus === 'active') {
-        urlParams.set('expid', `${experiment.id}-${experiment.selectedVariant}`);
-      }
-
-      if (placement) {
-        urlParams.set('ctaid', placement);
-      }
-
-      btnUrl.search = urlParams.toString();
-      $a.href = btnUrl.toString();
-    }
-  });
-}
-
 if (window.name.includes('performance')) registerPerformanceLogger();
 
 export function getMobileOperatingSystem() {
@@ -2721,17 +2464,4 @@ export function titleCase(str) {
     splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
   }
   return splitStr.join(' ');
-}
-
-export function arrayToObject(arr) {
-  return arr.reduce(
-    (acc, curr) => {
-      const key = curr[0];
-      [, acc[key]] = curr;
-
-      return acc;
-    },
-
-    {},
-  );
 }

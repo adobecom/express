@@ -15,7 +15,7 @@ import {
   // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/scripts.js';
 
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 export default function decorate($block) {
   if ($block.children.length) {

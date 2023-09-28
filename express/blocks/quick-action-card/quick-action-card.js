@@ -20,7 +20,7 @@ import {
   toClassName,
 } from '../../scripts/scripts.js';
 
-import { buildCarousel } from '../shared/carousel.js';
+import buildCarousel from '../shared/carousel.js';
 
 function updatePayload(block, payload) {
   Array.from(block.children).forEach(($row) => {
@@ -130,7 +130,6 @@ async function buildBlockFromFragment($block) {
   }
 
   await fixIcons(newBlock);
-
   return newBlock;
 }
 

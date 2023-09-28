@@ -12,10 +12,6 @@
 /* eslint-disable no-underscore-dangle */
 import { createTag, getIconElement } from '../../scripts/scripts.js';
 
-function shortenTitle(title) {
-  return title.length > 19 ? `${title.slice(0, 19)}...` : title;
-}
-
 function containsVideo(pages) {
   return pages.some((page) => !!page?.rendition?.video?.thumbnail?.componentId);
 }
@@ -25,7 +21,7 @@ function isVideo(iterator) {
 }
 
 function getTemplateTitle(template) {
-  return template.title['i-default'];
+  return template['dc:title']['i-default'];
 }
 
 function extractRenditionLinkHref(template) {
@@ -36,52 +32,69 @@ function extractComponentLinkHref(template) {
   return template._links?.['http://ns.adobe.com/adobecloud/rel/component']?.href;
 }
 
-function extractVideoThumbnailId(page) {
-  return page.rendition?.video?.thumbnail?.componentId;
-}
-
 function extractImageThumbnail(page) {
   return page.rendition.image?.thumbnail;
 }
 
-function getWidthHeightRatio(page) {
-  const preview = page.rendition.image?.preview;
-  return preview.width / preview.height;
-}
-
-// API takes size param as the longest side
-function widthToSize(widthHeightRatio, targetWidth) {
-  if (widthHeightRatio >= 1) {
-    return targetWidth;
-  }
-  return Math.round(targetWidth / widthHeightRatio);
-}
-
-function getImageThumbnailSrc(renditionLinkHref, page) {
+function getImageThumbnailSrc(renditionLinkHref, componentLinkHref, page) {
   const thumbnail = extractImageThumbnail(page);
+  const {
+    mediaType,
+    componentId,
+    width,
+    height,
+    hzRevision,
+  } = thumbnail;
+  if (mediaType === 'image/webp') {
+    // webp only supported by componentLink
+    return componentLinkHref.replace(
+      '{&revision,component_id}',
+      `&revision=${hzRevision || 0}&component_id=${componentId}`,
+    );
+  }
+
   return renditionLinkHref.replace(
     '{&page,size,type,fragment}',
-    `&size=${widthToSize(getWidthHeightRatio(page), thumbnail.width)}&type=image/jpg&fragment=id=${thumbnail.componentId}`,
+    `&size=${Math.max(width, height)}&type=${mediaType}&fragment=id=${componentId}`,
   );
 }
 
-function getImageCustomWidthSrc(renditionLinkHref, page, image) {
-  return renditionLinkHref.replace(
+const videoMetadataType = 'application/vnd.adobe.ccv.videometadata';
+
+async function getVideoUrls(renditionLinkHref, componentLinkHref, page) {
+  const videoThumbnail = page.rendition?.video?.thumbnail;
+  const { componentId } = videoThumbnail;
+  const preLink = renditionLinkHref.replace(
     '{&page,size,type,fragment}',
-    `&size=${widthToSize(getWidthHeightRatio(page), 151)}&type=image/jpg&fragment=id=${image.componentId}`,
+    `&type=${videoMetadataType}&fragment=id=${componentId}`,
   );
+  const backupPosterSrc = getImageThumbnailSrc(renditionLinkHref, componentLinkHref, page);
+  try {
+    const response = await fetch(preLink);
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    const { renditionsStatus: { state }, posterframe, renditions } = await response.json();
+    if (state !== 'COMPLETED') throw new Error('Video not ready');
+
+    const mp4Rendition = renditions.find((r) => r.videoContainer === 'MP4');
+    if (!mp4Rendition?.url) throw new Error('No MP4 rendition found');
+
+    return { src: mp4Rendition.url, poster: posterframe?.url || backupPosterSrc };
+  } catch (err) {
+    // use componentLink as backup
+    return {
+      src: componentLinkHref.replace(
+        '{&revision,component_id}',
+        `&revision=0&component_id=${componentId}`,
+      ),
+      poster: backupPosterSrc,
+    };
+  }
 }
 
-function getVideoSrc(componentLinkHref, page) {
-  const videoThumbnailId = extractVideoThumbnailId(page);
-  return componentLinkHref.replace(
-    '{&revision,component_id}',
-    `&revision=0&component_id=${videoThumbnailId}`,
-  );
-}
-
-function renderShareWrapper(branchUrl) {
-  const text = 'Copied to clipboard';
+function renderShareWrapper(branchUrl, placeholders) {
+  const text = placeholders['tag-copied'] ?? 'Copied to clipboard';
   const wrapper = createTag('div', { class: 'share-icon-wrapper' });
   const shareIcon = getIconElement('share-arrow');
   const tooltip = createTag('div', {
@@ -122,6 +135,7 @@ function renderCTA(placeholders, branchUrl) {
     href: branchUrl,
     title: btnTitle,
     class: 'button accent small',
+    target: '_blank',
   });
   btnEl.textContent = btnTitle;
   return btnEl;
@@ -144,34 +158,34 @@ function getPageIterator(pages) {
     },
   };
 }
-function renderRotatingMedias(wrapper,
+async function renderRotatingMedias(wrapper,
   pages,
   { templateTitle, renditionLinkHref, componentLinkHref }) {
   const pageIterator = getPageIterator(pages);
   let imgTimeoutId;
 
-  const constructVideo = () => {
-    let src = '';
-    if (containsVideo(pages)) {
-      src = getVideoSrc(componentLinkHref, pageIterator.current());
-      const video = createTag('video', {
-        muted: true,
-        playsinline: '',
-        title: templateTitle,
-        poster: getImageThumbnailSrc(renditionLinkHref, pageIterator.current()),
-        class: 'unloaded hidden',
-      });
-      const videoSource = createTag('source', {
-        src,
-        type: 'video/mp4',
-      });
+  const constructVideo = async () => {
+    if (!containsVideo(pages)) return null;
+    const { src, poster } = await getVideoUrls(
+      renditionLinkHref,
+      componentLinkHref,
+      pageIterator.current(),
+    );
+    const video = createTag('video', {
+      muted: true,
+      playsinline: '',
+      title: templateTitle,
+      poster,
+      class: 'unloaded hidden',
+    });
+    const videoSource = createTag('source', {
+      src,
+      type: 'video/mp4',
+    });
 
-      video.append(videoSource);
+    video.append(videoSource);
 
-      return video;
-    }
-
-    return undefined;
+    return video;
   };
 
   const constructImg = () => createTag('img', {
@@ -183,7 +197,7 @@ function renderRotatingMedias(wrapper,
   const img = constructImg();
   if (img) wrapper.prepend(img);
 
-  const video = constructVideo();
+  const video = await constructVideo();
   if (video) wrapper.prepend(video);
 
   const dispatchImgEndEvent = () => {
@@ -192,26 +206,30 @@ function renderRotatingMedias(wrapper,
 
   const playImage = () => {
     img.classList.remove('hidden');
-    img.src = getImageThumbnailSrc(renditionLinkHref, pageIterator.current());
+    img.src = getImageThumbnailSrc(renditionLinkHref, componentLinkHref, pageIterator.current());
 
     imgTimeoutId = setTimeout(dispatchImgEndEvent, 2000);
   };
 
-  const playVideo = () => {
+  const playVideo = async () => {
     if (video) {
       const videoSource = video.querySelector('source');
       video.classList.remove('hidden');
-      video.poster = getImageThumbnailSrc(renditionLinkHref, pageIterator.current());
-      videoSource.src = getVideoSrc(componentLinkHref, pageIterator.current());
+      const { src, poster } = await getVideoUrls(
+        renditionLinkHref,
+        componentLinkHref,
+        pageIterator.current(),
+      );
+      video.poster = poster;
+      videoSource.src = src;
       video.load();
       video.muted = true;
-      video.play().catch((e) => {
-        if (e instanceof DOMException && e.name === 'AbortError') {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
           // ignore
-        } else {
-          throw e;
-        }
-      });
+        });
+      }
     }
   };
 
@@ -259,7 +277,7 @@ function renderRotatingMedias(wrapper,
   return { cleanup, hover: playMedia };
 }
 
-function renderMediaWrapper(template) {
+function renderMediaWrapper(template, placeholders) {
   const mediaWrapper = createTag('div', { class: 'media-wrapper' });
 
   // TODO: reduce memory with LRU cache or memoization with ttl
@@ -276,12 +294,12 @@ function renderMediaWrapper(template) {
     componentLinkHref,
   };
 
-  const enterHandler = (e) => {
+  const enterHandler = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     if (!renderedMedia) {
-      renderedMedia = renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
-      mediaWrapper.append(renderShareWrapper(branchUrl));
+      renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
+      mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
     }
     renderedMedia.hover();
   };
@@ -292,41 +310,10 @@ function renderMediaWrapper(template) {
   return { mediaWrapper, enterHandler, leaveHandler };
 }
 
-function updateURLParameter(url, param, paramVal) {
-  let newAdditionalURL = '';
-  let tempArray = url.split('?');
-  const baseURL = tempArray[0];
-  const additionalURL = tempArray[1];
-  let temp = '';
-  if (additionalURL) {
-    tempArray = additionalURL.split('&');
-    for (let i = 0; i < tempArray.length; i += 1) {
-      if (tempArray[i].split('=')[0] !== param) {
-        newAdditionalURL += temp + tempArray[i];
-        temp = '&';
-      }
-    }
-  }
-
-  const rowText = `${temp}${param}=${paramVal}`;
-  return `${baseURL}?${newAdditionalURL}${rowText}`;
-}
-
-function loadBetterAssetInBackground(img, page) {
-  const size = widthToSize(getWidthHeightRatio(page), 400);
-
-  const updateImgRes = () => {
-    img.src = updateURLParameter(img.src, 'size', size);
-    img.removeEventListener('load', updateImgRes);
-  };
-
-  img.addEventListener('load', updateImgRes);
-}
-
-function renderHoverWrapper(template, placeholders, props) {
+function renderHoverWrapper(template, placeholders) {
   const btnContainer = createTag('div', { class: 'button-container' });
 
-  const { mediaWrapper, enterHandler, leaveHandler } = renderMediaWrapper(template, props);
+  const { mediaWrapper, enterHandler, leaveHandler } = renderMediaWrapper(template, placeholders);
 
   btnContainer.append(mediaWrapper);
   btnContainer.addEventListener('mouseenter', enterHandler);
@@ -338,15 +325,42 @@ function renderHoverWrapper(template, placeholders, props) {
   return btnContainer;
 }
 
-function renderStillWrapper(template) {
+function getStillWrapperIcons(template, placeholders) {
+  let planIcon = null;
+  if (template.licensingCategory === 'free') {
+    planIcon = createTag('span', { class: 'free-tag' });
+    planIcon.append(placeholders.free ?? 'Free');
+  } else {
+    planIcon = getIconElement('premium');
+  }
+  let videoIcon = '';
+  if (!containsVideo(template.pages) && template.pages.length > 1) {
+    videoIcon = getIconElement('multipage-static-badge');
+  }
+
+  if (containsVideo(template.pages) && template.pages.length === 1) {
+    videoIcon = getIconElement('video-badge');
+  }
+
+  if (containsVideo(template.pages) && template.pages.length > 1) {
+    videoIcon = getIconElement('multipage-video-badge');
+  }
+  if (videoIcon) videoIcon.classList.add('media-type-icon');
+  return { planIcon, videoIcon };
+}
+
+function renderStillWrapper(template, placeholders) {
   const stillWrapper = createTag('div', { class: 'still-wrapper' });
-  const firstPage = template.pages[0];
 
   const templateTitle = getTemplateTitle(template);
-  const renditionLinkHref = template._links['http://ns.adobe.com/adobecloud/rel/rendition'].href;
+  const renditionLinkHref = extractRenditionLinkHref(template);
+  const componentLinkHref = extractComponentLinkHref(template);
 
-  const thumbnailImageHref = getImageCustomWidthSrc(renditionLinkHref,
-    template.pages[0], firstPage.rendition.image?.thumbnail);
+  const thumbnailImageHref = getImageThumbnailSrc(
+    renditionLinkHref,
+    componentLinkHref,
+    template.pages[0],
+  );
 
   const imgWrapper = createTag('div', { class: 'image-wrapper' });
 
@@ -356,51 +370,22 @@ function renderStillWrapper(template) {
   });
   imgWrapper.append(img);
 
-  const isFree = template.licensingCategory === 'free';
-  const creator = template.attribution?.creators?.filter((c) => c.name && c.name !== 'Adobe Express')?.[0]?.name || null;
-
-  const freeTag = createTag('span', { class: 'free-tag' });
-  const creatorDiv = createTag('div', { class: 'creator-span' });
-  creatorDiv.append(creator || shortenTitle(templateTitle));
-
-  if (isFree) {
-    freeTag.append('Free');
-    imgWrapper.append(freeTag);
-  } else {
-    const premiumIcon = getIconElement('premium');
-    imgWrapper.append(premiumIcon);
-  }
-
-  let videoIcon = '';
-  if (containsVideo(template.pages) && template.pages.length === 1) {
-    videoIcon = getIconElement('video-badge');
-  }
-
-  if (!containsVideo(template.pages) && template.pages.length > 1) {
-    videoIcon = getIconElement('multipage-static-badge');
-  }
-
-  if (containsVideo(template.pages) && template.pages.length > 1) {
-    videoIcon = getIconElement('multipage-video-badge');
-  }
-
-  if (videoIcon) {
-    videoIcon.classList.add('media-type-icon');
-    imgWrapper.append(videoIcon);
-  }
-
-  loadBetterAssetInBackground(img, firstPage);
+  const { planIcon, videoIcon } = getStillWrapperIcons(template, placeholders);
+  img.onload = (e) => {
+    if (e.eventPhase >= Event.AT_TARGET) {
+      imgWrapper.append(planIcon);
+      imgWrapper.append(videoIcon);
+    }
+  };
 
   stillWrapper.append(imgWrapper);
-  // TODO: API not ready for creator yet
-  // stillWrapper.append(creatorDiv);
   return stillWrapper;
 }
 
-export default function renderTemplate(template, placeholders, props) {
+export default function renderTemplate(template, placeholders) {
   const tmpltEl = createTag('div');
-  tmpltEl.append(renderStillWrapper(template, props));
-  tmpltEl.append(renderHoverWrapper(template, placeholders, props));
+  tmpltEl.append(renderStillWrapper(template, placeholders));
+  tmpltEl.append(renderHoverWrapper(template, placeholders));
 
   return tmpltEl;
 }
