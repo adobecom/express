@@ -2294,7 +2294,7 @@ async function loadArea(area = document) {
 
   window.hlx = window.hlx || {};
   const params = new URLSearchParams(window.location.search);
-  ['martech', 'gnav', 'testing'].forEach((p) => {
+  ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
     window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
   });
   window.hlx.init = true;
@@ -2373,7 +2373,7 @@ async function loadArea(area = document) {
   }
   await lazy;
   const { default: delayed } = await import('./delayed.js');
-  delayed([createTag]);
+  delayed([createTag], 8000);
 }
 
 (async function loadPage() {
