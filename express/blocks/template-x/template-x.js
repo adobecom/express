@@ -122,6 +122,10 @@ async function processContentRow(block, props) {
         p.className = 'view-all-link-wrapper';
       }
     });
+
+    if (textWrapper.children.length === 1 && textWrapper.firstElementChild.className === 'button-container') {
+      templateTitle.classList.add('link-only');
+    }
   }
 
   block.prepend(templateTitle);
