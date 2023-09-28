@@ -6,7 +6,7 @@ main .split-action-container.transparent {
     opacity: 0;
 }
 
-body.branch-banner-is-active main .split-action-container {
+body.branch-banner-is-active .split-action-container {
     z-index: 100000;
 }
 
