@@ -704,7 +704,7 @@ async function decorateSections(el, isDoc) {
 
     return {
       el: section,
-      blocks: [...blocks],
+      blocks: [...links, ...blocks],
       preloadLinks: blockLinks.autoBlocks,
     };
   });
@@ -1241,7 +1241,7 @@ export function addSearchQueryToHref(href) {
 
 export function decorateButtons(block = document) {
   const noButtonBlocks = ['template-list', 'icon-list'];
-  block.querySelectorAll(':scope a').forEach(($a) => {
+  block.querySelectorAll(':scope a:not(.link-block)').forEach(($a) => {
     const originalHref = $a.href;
     const linkText = $a.textContent.trim();
     if ($a.children.length > 0) {
