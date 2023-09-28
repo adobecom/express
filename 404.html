@@ -136,20 +136,24 @@
 		if (pathname.includes(eduWithExpressPrefix) && search) {
 			[_, userLocale] =   search.split('=');
 			valueInMap = redirectMap.get(userLocale);
-			redirectMapping =  valueInMap ? `${valueInMap}${eduRedirectPath}` : `/${eduRedirectPath}`;
+			if (valueInMap === '') {
+				redirectMapping =  valueInMap ? `${valueInMap}${eduRedirectPath}` : `/${eduRedirectPath}`;
+			} else {
+				redirectMapping = valueInMap;
+			}
 			redirectURL = `${protocol}${adobeDomain}${redirectMapping}`;
 			doc.cookie = `international = ${userLocale}; Path = /; domain = .adobe.com`;
 			win.location.replace(redirectURL);	
 		}
 	 	else if (pathname.includes(eduWithoutPrefix) && search ) {
-	
 			[_, userLocale] =   search.split('=');
 			valueInMap = redirectMap.get(userLocale); 
 			if (hostname !== adobeDomain){
 				redirectMapping =  valueInMap ? `${valueInMap}${eduRedirectPath}` : `/${eduRedirectPath}`;	
-			}
-			else {
+			} else if (valueInMap === '') {
 				redirectMapping =  valueInMap ? `${valueInMap}${educationSuffix}` : `/${educationSuffix}`;	
+			} else {
+				redirectMapping = valueInMap;
 			}
 			redirectURL = `${protocol}${adobeDomain}${redirectMapping}`;
 			doc.cookie = `international = ${userLocale}; Path = /; domain = .adobe.com`;
@@ -159,7 +163,12 @@
 			[_, userLocale] = pathname.split('/');
 			valueInMap = redirectMap.get(userLocale); 
 			doc.cookie = `international = ${userLocale}; Path = /; domain = .adobe.com`; 
-			valueInMap ? win.location.replace( href.replace(`/${userLocale}/`, valueInMap)) : noop;
+			if (valueInMap === '') {
+				redirectURL =  href.replace(`/${userLocale}/`, valueInMap);
+			} else {
+				redirectURL = `${protocol}${adobeDomain}${valueInMap}`;
+			}
+			valueInMap ? win.location.replace(redirectURL) : noop;
 		}
 	}(window, document));
 
