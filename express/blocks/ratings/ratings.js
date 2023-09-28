@@ -343,6 +343,7 @@ export default async function decorate($block) {
       $stars.innerHTML = `${star.repeat(filledStars)}${starHalf.repeat(halfStars)}${starEmpty.repeat(emptyStars)}`;
       const $votes = createTag('span', { class: 'rating-votes' });
       $votes.innerHTML = `<strong>${rating} / 5</strong> - ${ratingAmount} ${votesText}`;
+      if (getLocale(window.location) === 'kr') $votes.innerHTML = `<strong>${rating} / 5</strong> - ${ratingAmount}${votesText}`;
       $stars.appendChild($votes);
       if (rating > 4.2) {
         buildSchema(actionTitle);
