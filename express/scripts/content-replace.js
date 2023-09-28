@@ -15,6 +15,7 @@ import {
   getHelixEnv,
   getMetadata,
   titleCase,
+  createTag,
 } from './scripts.js';
 import HtmlSanitizer from './html-sanitizer.js';
 
@@ -108,16 +109,30 @@ function autoUpdatePage(main) {
   // FIXME: deprecate wl
   if (!main) return;
 
-  const regex = /\{\{([a-zA-Z_-]+)}}/g;
+  const regex = /\{\{([a-zA-Z0-9_-]+)}}/g;
+  const ignoredMeta = [
+    'serp-content-type',
+    'description',
+    'primaryproductname',
+    'theme',
+    'show-free-plan',
+    'sheet-powered',
+    'viewport'
+  ];
 
-  const html = main.innerHTML.replaceAll(regex, (match, p1) => {
+  const metaTags = document.head.querySelectorAll('meta');
+
+  metaTags.forEach((meta) => {
+    if (meta.property || meta.name.includes(':') || ignoredMeta.includes(meta.name)) return;
+    meta.content = HtmlSanitizer.SanitizeHtml(meta.content);
+  });
+
+  main.innerHTML = main.innerHTML.replaceAll(regex, (match, p1) => {
     if (!wl.includes(match.toLowerCase())) {
       return getMetadata(p1);
     }
     return match;
   });
-
-  main.innerHTML = HtmlSanitizer.SanitizeHtml(html);
 }
 
 // cleanup remaining dom blades
