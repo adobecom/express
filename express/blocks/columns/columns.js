@@ -141,7 +141,7 @@ const handleVideos = (cell, a, block, thumbnail) => {
   }
 };
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const rows = Array.from(block.children);
 
   let numCols = 0;
@@ -350,5 +350,11 @@ export default function decorate(block) {
     svg.style.backgroundColor = primaryColor;
     svg.style.fill = accentColor;
     rows[0].append(svg);
+  }
+
+  const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
+  if (phoneNumberTags.length > 0) {
+    const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');
+    await formatSalesPhoneNumber(phoneNumberTags);
   }
 }
