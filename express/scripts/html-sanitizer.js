@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-const HtmlSanitizer = new (() => {
+const HtmlSanitizer = new (function handSanitizer() {
   const tagWL = {
     A: true,
     ABBR: true,
@@ -115,7 +115,7 @@ const HtmlSanitizer = new (() => {
 
   const parser = new DOMParser();
 
-  this.SanitizeHtml = (inputValue, extraSelector) => {
+  this.SanitizeHtml = function sanitize(inputValue, extraSelector) {
     let input = inputValue.trim();
     if (input === '') return ''; // to save performance
 
@@ -164,7 +164,7 @@ const HtmlSanitizer = new (() => {
         }
         for (let i = 0; i < node.childNodes.length; i += 1) {
           const subCopy = makeSanitizedCopy(node.childNodes[i]);
-          newNode.appendChild(subCopy, false);
+          newNode.appendChild(subCopy);
         }
 
         // remove useless empty spans (lots of those when pasting from MS Outlook)
