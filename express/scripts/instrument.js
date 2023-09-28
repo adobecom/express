@@ -14,6 +14,7 @@
 
 import {
   loadScript,
+  getAssetDetails,
   getLocale,
   getLanguage,
   getMetadata,
@@ -633,6 +634,20 @@ loadScript(martechURL, () => {
     let adobeEventName = 'adobe.com:express:cta:';
     let sparkEventName;
     let sparkButtonId;
+    let hemingwayAssetId;
+    let hemingwayAssetPath;
+    let hemingwayAssetPosition;
+
+    const hemingwayAsset = $a.querySelector('picture,video,audio,img')
+      || $a.closest('[class*="-container"],[class*="-wrapper"]')?.querySelector('picture,video,audio,img');
+    if (hemingwayAsset) {
+      const { assetId, assetPath } = getAssetDetails(hemingwayAsset);
+      hemingwayAssetPath = assetPath;
+      hemingwayAssetId = assetId;
+      const siblings = [...$a.closest('.block')
+        .querySelectorAll(`.${$a.className.split(' ').join('.')}`)];
+      hemingwayAssetPosition = siblings.indexOf($a);
+    }
 
     const $templateContainer = $a.closest('.template-list');
     const $tutorialContainer = $a.closest('.tutorial-card');
@@ -771,6 +786,9 @@ loadScript(martechURL, () => {
         sparkEventName = 'landing:tocLinkPressed';
       }
     // Default clicks
+    } else if ($a.closest('.template')) {
+      adobeEventName = appendLinkText(adobeEventName, $a);
+      sparkEventName = 'landing:ctaPressed';
     } else {
       adobeEventName = appendLinkText(adobeEventName, $a);
       sparkEventName = 'landing:ctaPressed';
@@ -848,6 +866,15 @@ loadScript(martechURL, () => {
                   sendTimestamp: new Date().getTime(),
                 },
               },
+              ...(hemingwayAsset
+                ? {
+                  hemingway: {
+                    assetId: hemingwayAssetId,
+                    assetPath: hemingwayAssetPath,
+                    assetPosition: hemingwayAssetPosition,
+                  },
+                }
+                : {}),
             },
           },
         },

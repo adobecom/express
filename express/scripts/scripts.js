@@ -14,6 +14,8 @@ window.RUM_GENERATION = 'ccx-gen-4-experiment-high-sample-rate';
 window.RUM_LOW_SAMPLE_RATE = 100;
 window.RUM_HIGH_SAMPLE_RATE = 50;
 
+window.dataLayer = window.dataLayer || [];
+
 const TK_IDS = {
   jp: 'dvg6awq',
 };
@@ -109,12 +111,33 @@ sampleRUM('top');
 window.addEventListener('load', () => sampleRUM('load'));
 document.addEventListener('click', () => sampleRUM('click'));
 
+export function getAssetDetails(el) {
+  // Get asset details
+  const assetUrl = new URL(
+    el.href // the reference for an a/svg tag
+    || el.currentSrc // the active source in a picture/video/audio element
+    || el.src,
+  ); // the source for an image/video/iframe
+  const match = assetUrl.href.match(/media_([a-f0-9]+)\.\w+/);
+  let assetId;
+  if (match) {
+    [, assetId] = match;
+  } else if (assetUrl.origin.endsWith('.adobeprojectm.com')) {
+    [assetId] = assetUrl.pathname.split('/').splice(-2, 1);
+  } else {
+    assetId = `${assetUrl.pathname}`;
+  }
+  return {
+    assetId,
+    assetPath: assetUrl.href,
+  };
+}
 /**
  * Track assets in that appear in the viewport and add populate
  * `viewasset` events to the data layer.
  */
-function trackViewedAssetsInDataLayer(assetsSelector = 'img[src*="/media_"]') {
-  window.dataLayer = window.dataLayer || [];
+function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]']) {
+  const assetsSelector = assetsSelectors.join(',');
 
   const viewAssetObserver = new IntersectionObserver((entries) => {
     entries
@@ -126,15 +149,10 @@ function trackViewedAssetsInDataLayer(assetsSelector = 'img[src*="/media_"]') {
         viewAssetObserver.unobserve(el);
 
         // Get asset details
-        let assetPath = el.href // the reference for an a/svg tag
-          || el.currentSrc // the active source in a picture/video/audio element
-          || el.src; // the source for an image/video/iframe
-        assetPath = new URL(assetPath).pathname;
-        const match = assetPath.match(/media_([a-f0-9]+)\.\w+/);
-        const assetFilename = match ? match[0] : assetPath;
+        const { assetId, assetPath } = getAssetDetails(el);
         const details = {
           event: 'viewasset',
-          assetId: assetFilename,
+          assetId,
           assetPath,
         };
 
@@ -2252,7 +2270,10 @@ async function loadLazy(main) {
   sampleRUM('lazy');
   sampleRUM.observe(document.querySelectorAll('main picture > img'));
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
-  trackViewedAssetsInDataLayer();
+  trackViewedAssetsInDataLayer([
+    'img[src*="/media_"]',
+    'img[src*="https://design-assets.adobeprojectm.com/"]',
+  ]);
 }
 
 const eagerLoad = (img) => {
@@ -2294,7 +2315,7 @@ async function loadArea(area = document) {
 
   window.hlx = window.hlx || {};
   const params = new URLSearchParams(window.location.search);
-  ['martech', 'gnav', 'testing'].forEach((p) => {
+  ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
     window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
   });
   window.hlx.init = true;
@@ -2373,7 +2394,7 @@ async function loadArea(area = document) {
   }
   await lazy;
   const { default: delayed } = await import('./delayed.js');
-  delayed([createTag]);
+  delayed([createTag], 8000);
 }
 
 (async function loadPage() {
