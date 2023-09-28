@@ -83,12 +83,10 @@ export function decorateHeading(block, payload) {
 }
 
 function handleGenAISubmit(form, link) {
-  const btn = form.querySelector('.gen-ai-submit');
   const input = form.querySelector('input');
-
-  btn.disabled = true;
+  if (input.value.trim() === '') return;
   const genAILink = link.replace(genAIPlaceholder, sanitizeInput(input.value).replaceAll(' ', '+'));
-  if (genAILink !== '') window.location.assign(genAILink);
+  window.open(genAILink);
 }
 
 function buildGenAIForm({ ctaLinks, subtext }) {
@@ -109,14 +107,16 @@ function buildGenAIForm({ ctaLinks, subtext }) {
   genAISubmit.textContent = ctaLinks[0].textContent;
   genAISubmit.disabled = genAIInput.value === '';
 
+  genAIInput.addEventListener('input', () => {
+    genAISubmit.disabled = genAIInput.value.trim() === '';
+  });
+
   genAIInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleGenAISubmit(genAIForm, ctaLinks[0].href);
-    } else {
-      genAISubmit.disabled = genAIInput.value === '';
     }
-  }, { passive: true });
+  });
 
   genAIForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -145,10 +145,6 @@ async function decorateCards(block, payload) {
     card.append(textWrapper, mediaWrapper, linksWrapper);
 
     if (image) mediaWrapper.append(image);
-
-    if (mediaWrapper.children.length === 0) {
-      mediaWrapper.remove();
-    }
 
     const hasGenAIForm = (new RegExp(genAIPlaceholder).test(ctaLinks?.[0]?.href));
 
