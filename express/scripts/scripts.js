@@ -1906,13 +1906,16 @@ function decorateLinks(main) {
 
       const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
       const isBranchLink = url.hostname === 'adobesparkpost.app.link';
+      const isProductLink = ['new.express.adobe.com', 'express.adobe.com'].includes(url.hostname);
+      const isAdotcomLink = url.hostname === 'www.adobe.com';
+
       if (!isContactLink) {
         // make url relative if needed
         const relative = url.hostname === window.location.hostname;
         const urlPath = `${url.pathname}${url.search}${url.hash}`;
         a.href = relative ? urlPath : `${url.origin}${urlPath}`;
 
-        if (!relative && !isBranchLink) {
+        if (!(relative || isBranchLink || isProductLink || isAdotcomLink)) {
           // open external links in a new tab
           a.target = '_blank';
         }
