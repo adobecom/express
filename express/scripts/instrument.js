@@ -9,8 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* eslint-disable no-console */
-/* global digitalData _satellite __satelliteLoadedCallback alloy */
+/* global _satellite __satelliteLoadedCallback alloy */
 
 import {
   loadScript,
@@ -155,98 +154,64 @@ const usp = new URLSearchParams(window.location.search);
 const martech = usp.get('martech');
 
 // alloy feature flag
-let useAlloy;
 let martechURL;
-if (martech === 'legacy') {
-  useAlloy = false;
-  if (window.spark && window.spark.hostname === 'www.stage.adobe.com') {
-    martechURL = 'https://www.adobe.com/marketingtech/main.stage.min.js';
-  } else {
-    martechURL = 'https://www.adobe.com/marketingtech/main.min.js';
-  }
+if (
+  (window.spark && window.spark.hostname === 'www.stage.adobe.com')
+  || martech === 'alloy-qa'
+) {
+  martechURL = 'https://www.adobe.com/marketingtech/main.standard.qa.js';
 } else {
-  useAlloy = true;
-  if (
-    (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-    || martech === 'alloy-qa'
-  ) {
-    martechURL = 'https://www.adobe.com/marketingtech/main.standard.qa.js';
-  } else {
-    martechURL = 'https://www.adobe.com/marketingtech/main.standard.min.js';
-  }
+  martechURL = 'https://www.adobe.com/marketingtech/main.standard.min.js';
 }
 
-if (useAlloy) {
-  w.marketingtech = {
-    adobe: {
-      launch: {
-        url: (
-          (
-            (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-            || martech === 'alloy-qa'
-          )
-            ? 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-2c94beadc94f-development.js'
-            : 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-5dd5dd2177e6.min.js'
-        ),
-      },
-      alloy: {
-        edgeConfigId: (
-          (
-            (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-            || martech === 'alloy-qa'
-          )
-            ? '8d2805dd-85bf-4748-82eb-f99fdad117a6'
-            : '2cba807b-7430-41ae-9aac-db2b0da742d5'
-        ),
-      },
-      target: checkTesting(),
-      audienceManager: true,
+w.marketingtech = {
+  adobe: {
+    launch: {
+      url: (
+        (
+          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
+          || martech === 'alloy-qa'
+        )
+          ? 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-2c94beadc94f-development.js'
+          : 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-5dd5dd2177e6.min.js'
+      ),
     },
-  };
-  // w.targetGlobalSettings = w.targetGlobalSettings || {};
-  // w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
-} else {
-  w.marketingtech = {
-    adobe: {
-      launch: {
-        property: 'global',
-        environment: 'production',
-      },
-      analytics: {
-        additionalAccounts: 'adbemmarvelweb.prod, adbadobesparkprod',
-      },
-      target: checkTesting(),
-      audienceManager: true,
+    alloy: {
+      edgeConfigId: (
+        (
+          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
+          || martech === 'alloy-qa'
+        )
+          ? '8d2805dd-85bf-4748-82eb-f99fdad117a6'
+          : '2cba807b-7430-41ae-9aac-db2b0da742d5'
+      ),
     },
-  };
-  w.targetGlobalSettings = w.targetGlobalSettings || {};
-  w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
-}
+    target: checkTesting(),
+    audienceManager: true,
+  },
+};
+// w.targetGlobalSettings = w.targetGlobalSettings || {};
+// w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
 
-loadScript(martechURL, () => {
+const martechLoadedCB = () => {
   /* eslint-disable no-underscore-dangle */
-
   const set = (path, value) => {
-    if (useAlloy) {
-      const obj = w.alloy_all;
-      const newPath = `data._adobe_corpnew.digitalData.${path}`;
-      const segs = newPath.split('.');
-      let temp = obj;
-      let i = 0;
-      const il = segs.length - 1;
-      // get to the path
-      // eslint-disable-next-line no-plusplus
-      for (; i < il; i++) {
-        const seg = segs[i];
-        temp[seg] = temp[seg] || {};
-        temp = temp[seg];
-      }
-      // set the value
-      temp[segs[i]] = value;
-      return obj;
-    } else {
-      return digitalData._set(path, value);
+    const obj = w.alloy_all;
+    const newPath = `data._adobe_corpnew.digitalData.${path}`;
+    const segs = newPath.split('.');
+    let temp = obj;
+    let i = 0;
+    const il = segs.length - 1;
+    // get to the path
+    // eslint-disable-next-line no-plusplus
+    for (; i < il; i++) {
+      const seg = segs[i];
+      temp[seg] = temp[seg] || {};
+      temp = temp[seg];
     }
+    // set the value
+    temp[segs[i]] = value;
+    return obj;
   };
 
   function urlPathToName(text) {
@@ -459,149 +424,86 @@ loadScript(martechURL, () => {
   //------------------------------------------------------------------------------------
 
   // Fire the viewedPage event
-  if (useAlloy) {
-    _satellite.track('event', {
-      xdm: {},
-      data: {
-        eventType: 'web.webinteraction.linkClicks',
-        web: {
-          webInteraction: {
-            name: 'viewedPage',
-            linkClicks: {
-              value: 1,
-            },
-            type: 'other',
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: 'viewedPage',
+          linkClicks: {
+            value: 1,
           },
+          type: 'other',
         },
-        _adobe_corpnew: {
-          digitalData: {
-            primaryEvent: {
-              eventInfo: {
-                eventName: 'viewedPage',
-              },
-            },
-            spark: {
-              eventData: {
-                eventName: 'viewedPage',
-                sendTimestamp: new Date().getTime(),
-              },
+      },
+      _adobe_corpnew: {
+        digitalData: {
+          primaryEvent: {
+            eventInfo: {
+              eventName: 'viewedPage',
             },
           },
         },
       },
-    });
-  } else {
-    digitalData._set('primaryEvent.eventInfo.eventName', 'viewedPage');
-    digitalData._set('spark.eventData.eventName', 'viewedPage');
-    digitalData._set('spark.eventData.sendTimestamp', new Date().getTime());
-
-    _satellite.track('event', {
-      digitalData: digitalData._snapshot(),
-    });
-
-    digitalData._delete('primaryEvent.eventInfo.eventName');
-    digitalData._delete('spark.eventData.eventName');
-    digitalData._delete('spark.eventData.sendTimestamp');
-  }
+    },
+  });
 
   // Fire the landing:viewedPage event
-  if (useAlloy) {
-    _satellite.track('event', {
-      xdm: {},
-      data: {
-        eventType: 'web.webinteraction.linkClicks',
-        web: {
-          webInteraction: {
-            name: 'landing:viewedPage',
-            linkClicks: {
-              value: 1,
-            },
-            type: 'other',
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: 'landing:viewedPage',
+          linkClicks: {
+            value: 1,
           },
+          type: 'other',
         },
-        _adobe_corpnew: {
-          digitalData: {
-            primaryEvent: {
-              eventInfo: {
-                eventName: 'landing:viewedPage',
-              },
-            },
-            spark: {
-              eventData: {
-                eventName: 'landing:viewedPage',
-                sendTimestamp: new Date().getTime(),
-              },
+      },
+      _adobe_corpnew: {
+        digitalData: {
+          primaryEvent: {
+            eventInfo: {
+              eventName: 'landing:viewedPage',
             },
           },
         },
       },
-    });
-  } else {
-    digitalData._set('primaryEvent.eventInfo.eventName', 'landing:viewedPage');
-    digitalData._set('spark.eventData.eventName', 'landing:viewedPage');
-    digitalData._set('spark.eventData.sendTimestamp', new Date().getTime());
-
-    _satellite.track('event', {
-      digitalData: digitalData._snapshot(),
-    });
-
-    digitalData._delete('primaryEvent.eventInfo.eventName');
-    digitalData._delete('spark.eventData.eventName');
-    digitalData._delete('spark.eventData.sendTimestamp');
-  }
+    },
+  });
 
   // Fire the displayPurchasePanel event if it is the pricing site
   if (
     sparkLandingPageType === 'pricing'
       && sparkTouchpoint
   ) {
-    if (useAlloy) {
-      _satellite.track('event', {
-        xdm: {},
-        data: {
-          eventType: 'web.webinteraction.linkClicks',
-          web: {
-            webInteraction: {
-              name: 'displayPurchasePanel',
-              linkClicks: {
-                value: 1,
-              },
-              type: 'other',
+    _satellite.track('event', {
+      xdm: {},
+      data: {
+        eventType: 'web.webinteraction.linkClicks',
+        web: {
+          webInteraction: {
+            name: 'displayPurchasePanel',
+            linkClicks: {
+              value: 1,
             },
+            type: 'other',
           },
-          _adobe_corpnew: {
-            digitalData: {
-              primaryEvent: {
-                eventInfo: {
-                  eventName: 'displayPurchasePanel',
-                },
-              },
-              spark: {
-                eventData: {
-                  eventName: 'displayPurchasePanel',
-                  trigger: sparkTouchpoint,
-                  sendTimestamp: new Date().getTime(),
-                },
+        },
+        _adobe_corpnew: {
+          digitalData: {
+            primaryEvent: {
+              eventInfo: {
+                eventName: 'displayPurchasePanel',
               },
             },
           },
         },
-      });
-    } else {
-      digitalData._set('primaryEvent.eventInfo.eventName', 'displayPurchasePanel');
-      digitalData._set('spark.eventData.eventName', 'displayPurchasePanel');
-      digitalData._set('spark.eventData.sendTimestamp', new Date().getTime());
-      digitalData._set('spark.eventData.trigger', sparkTouchpoint);
-
-      _satellite.track('event', {
-        digitalData: digitalData._snapshot(),
-      });
-
-      digitalData._delete('primaryEvent.eventInfo.eventName');
-      digitalData._delete('spark.eventData.eventName');
-      digitalData._delete('spark.eventData.sendTimestamp');
-      digitalData._delete('spark.eventData.trigger');
-    }
+      },
+    });
   }
 
   function textToName(text) {
@@ -632,8 +534,6 @@ loadScript(martechURL, () => {
 
   function trackButtonClick($a) {
     let adobeEventName = 'adobe.com:express:cta:';
-    let sparkEventName;
-    let sparkButtonId;
     let hemingwayAssetId;
     let hemingwayAssetPath;
     let hemingwayAssetPosition;
@@ -657,14 +557,12 @@ loadScript(martechURL, () => {
     // Template button click
     if ($templateContainer) {
       adobeEventName += 'template:';
-      sparkEventName = 'landing:templatePressed';
 
       const $img = $a.querySelector('img');
 
       // try to get the image alternate text
       if ($a.classList.contains('template-title-link')) {
         adobeEventName += 'viewAll';
-        sparkEventName = 'landing:templateViewAllPressed';
       } else if ($a.classList.contains('placeholder')) {
         adobeEventName += 'createFromScratch';
       } else if ($img && $img.alt) {
@@ -672,83 +570,57 @@ loadScript(martechURL, () => {
       } else {
         adobeEventName += 'Click';
       }
-
-      if (w.location.href.includes('/express-your-fandom')) {
-        const $templates = document.querySelectorAll('a.template');
-        const templateIndex = Array.from($templates).indexOf($a) + 1;
-        sparkEventName += `:${templateIndex}`;
-      }
       // Button in the FAQ
     } else if ($tutorialContainer) {
       const videoName = textToName($a.querySelector('h3').textContent.trim());
       adobeEventName = `${adobeEventName}tutorials:${videoName}:tutorialPressed`;
-      sparkEventName = 'landing:tutorialPressed';
     } else if ($chooseYourPathContainer) {
       const $slideTitle = $a.querySelector('.choose-your-path-slide-title');
       const slideName = $slideTitle ? textToName($slideTitle.textContent.trim()) : 'slide';
 
       adobeEventName = `${adobeEventName}chooseYourPath:${slideName}:slidePressed`;
-      sparkEventName = 'landing:chooseYourPathSlidePressed';
     } else if ($contentToggleContainer) {
       const toggleName = textToName($a.textContent.trim());
       adobeEventName = `${adobeEventName}contentToggle:${toggleName}:buttonPressed`;
-      sparkEventName = 'landing:contentToggleButtonPressed';
     } else if ($a.classList.contains('floating-button-lottie')) {
       adobeEventName = `${adobeEventName}floatingButton:scrollPressed`;
-      sparkEventName = 'landing:floatingButtonScrollPressed';
     } else if ($a.classList.contains('video-player-inline-player-overlay')) {
       const sessionName = $a.parentNode.parentNode.parentNode.querySelector('.video-player-session-number').textContent.trim();
       const videoName = $a.parentNode.parentNode.parentNode.querySelector('.video-player-video-title').textContent.trim();
       adobeEventName = `${adobeEventName}playing:${sessionName}-${videoName}`;
-      sparkEventName = `playing:${sessionName}-${videoName}`;
     } else if ($a.classList.contains('notch')) {
       adobeEventName = `${adobeEventName}splitAction:notch`;
-      sparkEventName = 'landing:splitActionNotch';
     } else if ($a.classList.contains('underlay')) {
       adobeEventName = `${adobeEventName}splitAction:background`;
-      sparkEventName = 'landing:splitActionBackground';
     } else if ($a.parentElement.classList.contains('floating-button')) {
       adobeEventName = `${adobeEventName}floatingButton:ctaPressed`;
-      sparkEventName = 'landing:floatingButtonPressed';
     } else if ($a.closest('.faq')) {
       adobeEventName = appendLinkText(`${adobeEventName}faq:`, $a);
-      sparkEventName = 'landing:faqPressed';
       // CTA in the hero
     } else if ($a.closest('.hero')) {
       adobeEventName = appendLinkText(`${adobeEventName}hero:`, $a);
-      sparkEventName = 'landing:ctaPressed';
       // Click in the pricing block
     } else if (sparkLandingPageType === 'express-your-fandom') {
       adobeEventName = appendLinkText(`${adobeEventName}${sparkLandingPageType}:`, $a);
-      sparkEventName = 'landing:ctaPressed';
     } else if (sparkLandingPageType === 'express-your-brand') {
       adobeEventName = appendLinkText(`${adobeEventName}learn:${sparkLandingPageType}:`, $a);
-      sparkEventName = 'landing:ctaPressed';
     } else if (sparkLandingPageType === 'pricing') {
       // edu link
       if ($a.pathname.includes('/edu')) {
         adobeEventName += 'pricing:education:Click';
-        sparkEventName = 'landing:eduSeoPagePressed';
         // business enterprise link
       } else if ($a.pathname.includes('business/enterprise')) {
         adobeEventName += 'pricing:enterprise:Click';
-        sparkEventName = 'landing:businessSeoPagePressed';
         // Creative cloud learn more
       } else if ($a.parentElement.id === 'adobe-spark-is-a-part-of-most-creative-cloud-paid-plans-learn-more') {
         adobeEventName += 'pricing:creativeCloud:learnMore';
-        sparkEventName = 'landing:creativeCloudLearnMorePressed';
       } else if ($a.id === 'free-trial') {
         adobeEventName += 'pricing:cta:StartForFree';
-        sparkEventName = 'landing:ctaPressed';
-        sparkButtonId = 'puf:startFreeTrial';
       } else if ($a.id === '3-month-trial') {
         adobeEventName += 'pricing:cta:StartYour3MonthTrial';
-        sparkEventName = 'landing:ctaPressed';
-        sparkButtonId = 'puf:start3MonthTrial';
         // View plans
       } else {
         adobeEventName = 'adobe.com:express:CTA:pricing:viewPlans:Click';
-        sparkEventName = 'landing:ctaPressed';
       }
     // quick actions clicks
     } else if ($a.closest('ccl-quick-action') && $a.classList.contains('upload-your-photo')) {
@@ -756,181 +628,95 @@ loadScript(martechURL, () => {
       return;
     } else if ($a.href && ($a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || $a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?tools/g))) {
       adobeEventName = appendLinkText(adobeEventName, $a);
-      sparkEventName = 'quickAction:ctaPressed';
     } else if ($a.href && ($a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || $a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?express-apps\/animate-from-audio/g))) {
       adobeEventName = appendLinkText(adobeEventName, $a);
-      sparkEventName = 'quickAction:ctaPressed';
       // Frictionless Quick Actions clicks
     } else if ($a.closest('ccl-quick-action') && ($a.getAttribute('data-action') === 'Download')) {
       adobeEventName = 'quickAction:downloadPressed';
-      sparkEventName = 'quickAction:downloadPressed';
     } else if ($a.closest('ccl-quick-action') && ($a.getAttribute('data-action') === 'Editor')) {
       adobeEventName = 'quickAction:openInEditorPressed';
-      sparkEventName = 'quickAction:openInEditorPressed';
     // ToC clicks
     } else if ($a.closest('.toc-container')) {
       if ($a.classList.contains('toc-toggle')) {
         adobeEventName += 'toc:toggle:Click';
-        sparkEventName = 'landing:tocTogglePressed';
       } else if ($a.classList.contains('toc-close')) {
         adobeEventName += 'toc:close:Click';
-        sparkEventName = 'landing:tocClosePressed';
       } else if ($a.classList.contains('toc-handle')) {
         adobeEventName += 'toc:close:Click:handle';
-        sparkEventName = 'landing:tocCloseHandlePressed';
       } else if ($a.classList.contains('toc-wrapper')) {
         adobeEventName += 'toc:close:Click:background';
-        sparkEventName = 'landing:tocCloseBackgroundPressed';
       } else {
         adobeEventName = appendLinkText(`${adobeEventName}toc:link:Click:`, $a);
-        sparkEventName = 'landing:tocLinkPressed';
       }
     // Default clicks
     } else if ($a.closest('.template')) {
       adobeEventName = appendLinkText(adobeEventName, $a);
-      sparkEventName = 'landing:ctaPressed';
     } else {
       adobeEventName = appendLinkText(adobeEventName, $a);
-      sparkEventName = 'landing:ctaPressed';
     }
 
-    if (w.location.pathname === '/express/') {
-      if ($a.closest('.hero-animation')) {
-        sparkButtonId = 'getExpressMain';
-      } else if ($a.closest('.make-a-project-item')) {
-        sparkButtonId = 'useCase';
-      } else if ($a.closest('.floating-button')) {
-        sparkButtonId = 'getExpressFloating';
-      } else if ($a.closest('.banner')) {
-        sparkButtonId = 'startForFree';
-      } else if ($a.closest('.columns')) {
-        sparkButtonId = 'browseAllTemplates';
-      } else if ($a.closest('.card-free')) {
-        sparkButtonId = 'getExpressFreePlan';
-      } else if ($a.closest('.card-premium')) {
-        if ($a.classList.contains('primary')) {
-          sparkButtonId = 'getExpressPremiumPlan';
-        } else {
-          sparkButtonId = 'seePlansAndPricing';
-        }
-      }
-    }
-
-    // Button ID script.
-    if (!sparkButtonId) {
-      let index;
-
-      const $buttonBlock = $a.closest('[data-block-name]');
-
-      if ($buttonBlock && $buttonBlock.dataset.blockName) {
-        const $blockSiblings = d.querySelectorAll(`[data-block-name="${$buttonBlock.dataset.blockName}"]`);
-        const blockIndex = Array.prototype.indexOf.call($blockSiblings, $buttonBlock) + 1;
-        const $siblings = $buttonBlock.querySelectorAll(`${$a.tagName}`);
-
-        sparkButtonId = `${$buttonBlock.dataset.blockName} ${blockIndex} | `;
-        index = `| ${Array.prototype.indexOf.call($siblings, $a) + 1}`;
-      } else {
-        sparkButtonId = 'main | ';
-        index = '';
-      }
-
-      sparkButtonId = `${sparkButtonId}${textToName($a.innerText.trim())} ${index}`;
-    }
-
-    if (useAlloy) {
-      _satellite.track('event', {
-        xdm: {},
-        data: {
-          eventType: 'web.webinteraction.linkClicks',
-          web: {
-            webInteraction: {
-              name: adobeEventName,
-              linkClicks: {
-                value: 1,
-              },
-              type: 'other',
+    _satellite.track('event', {
+      xdm: {},
+      data: {
+        eventType: 'web.webinteraction.linkClicks',
+        web: {
+          webInteraction: {
+            name: adobeEventName,
+            linkClicks: {
+              value: 1,
             },
-          },
-          _adobe_corpnew: {
-            digitalData: {
-              primaryEvent: {
-                eventInfo: {
-                  eventName: adobeEventName,
-                },
-              },
-              spark: {
-                eventData: {
-                  eventName: sparkEventName,
-                  trigger: sparkTouchpoint,
-                  buttonId: sparkButtonId || '',
-                  sendTimestamp: new Date().getTime(),
-                },
-              },
-              ...(hemingwayAsset
-                ? {
-                  hemingway: {
-                    assetId: hemingwayAssetId,
-                    assetPath: hemingwayAssetPath,
-                    assetPosition: hemingwayAssetPosition,
-                  },
-                }
-                : {}),
-            },
+            type: 'other',
           },
         },
-      });
-    } else {
-      digitalData._set('primaryEvent.eventInfo.eventName', adobeEventName);
-      digitalData._set('spark.eventData.eventName', sparkEventName);
-
-      if (sparkButtonId) {
-        digitalData._set('spark.eventData.buttonId', sparkButtonId);
-      }
-
-      _satellite.track('event', {
-        digitalData: digitalData._snapshot(),
-      });
-
-      digitalData._delete('primaryEvent.eventInfo.eventName');
-      digitalData._delete('spark.eventData.eventName');
-    }
+        _adobe_corpnew: {
+          digitalData: {
+            primaryEvent: {
+              eventInfo: {
+                eventName: adobeEventName,
+              },
+            },
+            ...(hemingwayAsset
+              ? {
+                hemingway: {
+                  assetId: hemingwayAssetId,
+                  assetPath: hemingwayAssetPath,
+                  assetPosition: hemingwayAssetPosition,
+                },
+              }
+              : {}),
+          },
+        },
+      },
+    });
   }
 
   // Frictionless Quick Actions tracking events
 
   function sendEventToAdobeAnaltics(eventName) {
-    if (useAlloy) {
-      _satellite.track('event', {
-        xdm: {},
-        data: {
-          eventType: 'web.webinteraction.linkClicks',
-          web: {
-            webInteraction: {
-              name: eventName,
-              linkClicks: {
-                value: 1,
-              },
-              type: 'other',
+    _satellite.track('event', {
+      xdm: {},
+      data: {
+        eventType: 'web.webinteraction.linkClicks',
+        web: {
+          webInteraction: {
+            name: eventName,
+            linkClicks: {
+              value: 1,
             },
+            type: 'other',
           },
-          _adobe_corpnew: {
-            digitalData: {
-              primaryEvent: {
-                eventInfo: {
-                  eventName,
-                },
-              },
-              spark: {
-                eventData: {
-                  eventName,
-                  sendTimestamp: new Date().getTime(),
-                },
+        },
+        _adobe_corpnew: {
+          digitalData: {
+            primaryEvent: {
+              eventInfo: {
+                eventName,
               },
             },
           },
         },
-      });
-    }
+      },
+    });
   }
 
   function handleQuickActionEvents(el) {
@@ -1049,50 +835,31 @@ loadScript(martechURL, () => {
     if ($button) {
       $button.addEventListener('click', () => {
         const adobeEventName = 'adobe.com:express:cta:startYourFreeTrial:close';
-        const sparkEventName = adobeEventName;
 
-        if (useAlloy) {
-          _satellite.track('event', {
-            xdm: {},
-            data: {
-              eventType: 'web.webinteraction.linkClicks',
-              web: {
-                webInteraction: {
-                  name: adobeEventName,
-                  linkClicks: {
-                    value: 1,
-                  },
-                  type: 'other',
+        _satellite.track('event', {
+          xdm: {},
+          data: {
+            eventType: 'web.webinteraction.linkClicks',
+            web: {
+              webInteraction: {
+                name: adobeEventName,
+                linkClicks: {
+                  value: 1,
                 },
+                type: 'other',
               },
-              _adobe_corpnew: {
-                digitalData: {
-                  primaryEvent: {
-                    eventInfo: {
-                      eventName: adobeEventName,
-                    },
-                  },
-                  spark: {
-                    eventData: {
-                      eventName: sparkEventName,
-                      sendTimestamp: new Date().getTime(),
-                    },
+            },
+            _adobe_corpnew: {
+              digitalData: {
+                primaryEvent: {
+                  eventInfo: {
+                    eventName: adobeEventName,
                   },
                 },
               },
             },
-          });
-        } else {
-          digitalData._set('primaryEvent.eventInfo.eventName', adobeEventName);
-          digitalData._set('spark.eventData.eventName', sparkEventName);
-
-          _satellite.track('event', {
-            digitalData: digitalData._snapshot(),
-          });
-
-          digitalData._delete('primaryEvent.eventInfo.eventName');
-          digitalData._delete('spark.eventData.eventName');
-        }
+          },
+        });
       });
     }
 
@@ -1101,50 +868,31 @@ loadScript(martechURL, () => {
     if ($pricingDropdown) {
       $pricingDropdown.addEventListener('change', () => {
         const adobeEventName = 'adobe.com:express:pricing:commitmentType:selected';
-        const sparkEventName = 'pricing:commitmentTypeSelected';
 
-        if (useAlloy) {
-          _satellite.track('event', {
-            xdm: {},
-            data: {
-              eventType: 'web.webinteraction.linkClicks',
-              web: {
-                webInteraction: {
-                  name: adobeEventName,
-                  linkClicks: {
-                    value: 1,
-                  },
-                  type: 'other',
+        _satellite.track('event', {
+          xdm: {},
+          data: {
+            eventType: 'web.webinteraction.linkClicks',
+            web: {
+              webInteraction: {
+                name: adobeEventName,
+                linkClicks: {
+                  value: 1,
                 },
+                type: 'other',
               },
-              _adobe_corpnew: {
-                digitalData: {
-                  primaryEvent: {
-                    eventInfo: {
-                      eventName: adobeEventName,
-                    },
-                  },
-                  spark: {
-                    eventData: {
-                      eventName: sparkEventName,
-                      sendTimestamp: new Date().getTime(),
-                    },
+            },
+            _adobe_corpnew: {
+              digitalData: {
+                primaryEvent: {
+                  eventInfo: {
+                    eventName: adobeEventName,
                   },
                 },
               },
             },
-          });
-        } else {
-          digitalData._set('primaryEvent.eventInfo.eventName', adobeEventName);
-          digitalData._set('spark.eventData.eventName', sparkEventName);
-
-          _satellite.track('event', {
-            digitalData: digitalData._snapshot(),
-          });
-
-          digitalData._delete('primaryEvent.eventInfo.eventName');
-          digitalData._delete('spark.eventData.eventName');
-        }
+          },
+        });
       });
     }
 
@@ -1156,53 +904,34 @@ loadScript(martechURL, () => {
         const $a = $columnVideo.querySelector('a');
 
         const adobeEventName = appendLinkText(`adobe.com:express:cta:learn:columns:${sparkLandingPageType}:`, $a);
-        const sparkEventName = 'landing:columnsPressed';
 
         $parent.addEventListener('click', (e) => {
           e.stopPropagation();
 
-          if (useAlloy) {
-            _satellite.track('event', {
-              xdm: {},
-              data: {
-                eventType: 'web.webinteraction.linkClicks',
-                web: {
-                  webInteraction: {
-                    name: adobeEventName,
-                    linkClicks: {
-                      value: 1,
-                    },
-                    type: 'other',
+          _satellite.track('event', {
+            xdm: {},
+            data: {
+              eventType: 'web.webinteraction.linkClicks',
+              web: {
+                webInteraction: {
+                  name: adobeEventName,
+                  linkClicks: {
+                    value: 1,
                   },
+                  type: 'other',
                 },
-                _adobe_corpnew: {
-                  digitalData: {
-                    primaryEvent: {
-                      eventInfo: {
-                        eventName: adobeEventName,
-                      },
-                    },
-                    spark: {
-                      eventData: {
-                        eventName: sparkEventName,
-                        sendTimestamp: new Date().getTime(),
-                      },
+              },
+              _adobe_corpnew: {
+                digitalData: {
+                  primaryEvent: {
+                    eventInfo: {
+                      eventName: adobeEventName,
                     },
                   },
                 },
               },
-            });
-          } else {
-            digitalData._set('primaryEvent.eventInfo.eventName', adobeEventName);
-            digitalData._set('spark.eventData.eventName', sparkEventName);
-
-            _satellite.track('event', {
-              digitalData: digitalData._snapshot(),
-            });
-
-            digitalData._delete('primaryEvent.eventInfo.eventName');
-            digitalData._delete('spark.eventData.eventName');
-          }
+            },
+          });
         });
       });
     }
@@ -1217,75 +946,33 @@ loadScript(martechURL, () => {
       });
     });
 
-    document.addEventListener('pricingdropdown', (e) => {
-      const plan = e.detail;
-
+    document.addEventListener('pricingdropdown', () => {
       const adobeEventName = 'adobe.com:express:pricing:bundleType:selected';
-      const sparkEventName = 'pricing:bundleTypeSelected';
 
-      if (useAlloy) {
-        _satellite.track('event', {
-          xdm: {},
-          data: {
-            eventType: 'web.webinteraction.linkClicks',
-            web: {
-              webInteraction: {
-                name: adobeEventName,
-                linkClicks: {
-                  value: 1,
-                },
-                type: 'other',
+      _satellite.track('event', {
+        xdm: {},
+        data: {
+          eventType: 'web.webinteraction.linkClicks',
+          web: {
+            webInteraction: {
+              name: adobeEventName,
+              linkClicks: {
+                value: 1,
               },
+              type: 'other',
             },
-            _adobe_corpnew: {
-              digitalData: {
-                primaryEvent: {
-                  eventInfo: {
-                    eventName: adobeEventName,
-                  },
-                },
-                spark: {
-                  eventData: {
-                    eventName: sparkEventName,
-                    contextualData6: `bundleType:${plan.bundleType}`,
-                    contextualData7: `currencyCode:${plan.currency}`,
-                    contextualData9: `offerId:${plan.offerId}`,
-                    contextualData10: `price:${plan.price}`,
-                    contextualData12: `productName:${plan.name} - ${plan.frequency}`,
-                    contextualData14: 'quantity:1',
-                    trigger: sparkTouchpoint,
-                    sendTimestamp: new Date().getTime(),
-                  },
+          },
+          _adobe_corpnew: {
+            digitalData: {
+              primaryEvent: {
+                eventInfo: {
+                  eventName: adobeEventName,
                 },
               },
             },
           },
-        });
-      } else {
-        /* eslint-disable no-underscore-dangle */
-        digitalData._set('primaryEvent.eventInfo.eventName', adobeEventName);
-        digitalData._set('spark.eventData.eventName', sparkEventName);
-        digitalData._set('spark.eventData.contextualData6', `bundleType:${plan.bundleType}`);
-        digitalData._set('spark.eventData.contextualData7', `currencyCode:${plan.currency}`);
-        digitalData._set('spark.eventData.contextualData9', `offerId:${plan.offerId}`);
-        digitalData._set('spark.eventData.contextualData10', `price:${plan.price}`);
-        digitalData._set('spark.eventData.contextualData12', `productName:${plan.name} - ${plan.frequency}`);
-        digitalData._set('spark.eventData.contextualData14', 'quantity:1');
-        digitalData._set('spark.eventData.trigger', sparkTouchpoint);
-
-        _satellite.track('event', {
-          digitalData: digitalData._snapshot(),
-        });
-
-        digitalData._delete('primaryEvent.eventInfo.eventName');
-        digitalData._delete('spark.eventData.eventName');
-        digitalData._delete('spark.eventData.contextualData6');
-        digitalData._delete('spark.eventData.contextualData7');
-        digitalData._delete('spark.eventData.contextualData9');
-        digitalData._delete('spark.eventData.contextualData10');
-        digitalData._delete('spark.eventData.contextualData12');
-        digitalData._delete('spark.eventData.contextualData14');
-      }
+        },
+      });
     });
 
     // tracking videos loaded asynchronously.
@@ -1296,50 +983,31 @@ loadScript(martechURL, () => {
 
     document.addEventListener('videoclosed', (e) => {
       const adobeEventName = `adobe.com:express:cta:learn:columns:${e.detail.parameters.videoId}:videoClosed`;
-      const sparkEventName = 'landing:videoClosed';
 
-      if (useAlloy) {
-        _satellite.track('event', {
-          xdm: {},
-          data: {
-            eventType: 'web.webinteraction.linkClicks',
-            web: {
-              webInteraction: {
-                name: adobeEventName,
-                linkClicks: {
-                  value: 1,
-                },
-                type: 'other',
+      _satellite.track('event', {
+        xdm: {},
+        data: {
+          eventType: 'web.webinteraction.linkClicks',
+          web: {
+            webInteraction: {
+              name: adobeEventName,
+              linkClicks: {
+                value: 1,
               },
+              type: 'other',
             },
-            _adobe_corpnew: {
-              digitalData: {
-                primaryEvent: {
-                  eventInfo: {
-                    eventName: adobeEventName,
-                  },
-                },
-                spark: {
-                  eventData: {
-                    eventName: sparkEventName,
-                    sendTimestamp: new Date().getTime(),
-                  },
+          },
+          _adobe_corpnew: {
+            digitalData: {
+              primaryEvent: {
+                eventInfo: {
+                  eventName: adobeEventName,
                 },
               },
             },
           },
-        });
-      } else {
-        digitalData._set('primaryEvent.eventInfo.eventName', adobeEventName);
-        digitalData._set('spark.eventData.eventName', sparkEventName);
-
-        _satellite.track('event', {
-          digitalData: digitalData._snapshot(),
-        });
-
-        digitalData._delete('primaryEvent.eventInfo.eventName');
-        digitalData._delete('spark.eventData.eventName');
-      }
+        },
+      });
     });
   }
 
@@ -1356,41 +1024,33 @@ loadScript(martechURL, () => {
         // mark as processed
         processed[evt.assetId] = 1;
         // track a new event
-        if (useAlloy) {
-          _satellite.track('event', {
-            data: {
-              eventType: 'web.webinteraction.linkClicks',
-              web: {
-                webInteraction: {
-                  name: 'assetView',
-                  linkClicks: {
-                    value: 1,
-                  },
-                  type: 'other',
+        _satellite.track('event', {
+          data: {
+            eventType: 'web.webinteraction.linkClicks',
+            web: {
+              webInteraction: {
+                name: 'assetView',
+                linkClicks: {
+                  value: 1,
                 },
+                type: 'other',
               },
-              _adobe_corpnew: {
-                digitalData: {
-                  primaryEvent: {
-                    eventInfo: {
-                      eventName: 'assetView',
-                    },
+            },
+            _adobe_corpnew: {
+              digitalData: {
+                primaryEvent: {
+                  eventInfo: {
+                    eventName: 'assetView',
                   },
-                  spark: {
-                    eventData: {
-                      eventName: 'assetView',
-                      sendTimestamp: Date.now(),
-                    },
-                  },
-                  hemingway: {
-                    assetId: evt.assetId,
-                    assetPath: evt.assetPath,
-                  },
+                },
+                hemingway: {
+                  assetId: evt.assetId,
+                  assetPath: evt.assetPath,
                 },
               },
             },
-          });
-        }
+          },
+        });
       });
     }, 2000);
   }
@@ -1433,48 +1093,30 @@ loadScript(martechURL, () => {
             audiences.push(ENABLE_PRICING_MODAL_AUDIENCE);
             segments.push(RETURNING_VISITOR_SEGMENT_ID);
 
-            if (useAlloy) {
-              _satellite.track('event', {
-                xdm: {},
-                data: {
-                  eventType: 'web.webinteraction.linkClicks',
-                  web: {
-                    webInteraction: {
-                      name: 'pricingModalUserInSegment',
-                      linkClicks: {
-                        value: 1,
-                      },
-                      type: 'other',
+            _satellite.track('event', {
+              xdm: {},
+              data: {
+                eventType: 'web.webinteraction.linkClicks',
+                web: {
+                  webInteraction: {
+                    name: 'pricingModalUserInSegment',
+                    linkClicks: {
+                      value: 1,
                     },
+                    type: 'other',
                   },
-                  _adobe_corpnew: {
-                    digitalData: {
-                      primaryEvent: {
-                        eventInfo: {
-                          eventName: 'pricingModalUserInSegment',
-                        },
-                      },
-                      spark: {
-                        eventData: {
-                          eventName: 'pricingModalUserInSegment',
-                          sendTimestamp: new Date().getTime(),
-                        },
+                },
+                _adobe_corpnew: {
+                  digitalData: {
+                    primaryEvent: {
+                      eventInfo: {
+                        eventName: 'pricingModalUserInSegment',
                       },
                     },
                   },
                 },
-              });
-            } else {
-              digitalData._set('primaryEvent.eventInfo.eventName', 'pricingModalUserInSegment');
-              digitalData._set('spark.eventData.eventName', 'pricingModalUserInSegment');
-
-              _satellite.track('event', {
-                digitalData: digitalData._snapshot(),
-              });
-
-              digitalData._delete('primaryEvent.eventInfo.eventName');
-              digitalData._delete('spark.eventData.eventName');
-            }
+              },
+            });
           }
 
           QUICK_ACTION_SEGMENTS.forEach((QUICK_ACTION_SEGMENT) => {
@@ -1493,16 +1135,11 @@ loadScript(martechURL, () => {
       }
     };
 
-    if (useAlloy) {
-      alloy('getIdentity')
-        .then((data) => getSegments(data && data.identity ? data.identity.ECID : null));
-    } else {
-      const visitorId = _satellite.getVisitorId ? _satellite.getVisitorId() : null;
-      getSegments(
-        visitorId ? visitorId.getMarketingCloudVisitorID() : null,
-      );
-    }
+    alloy('getIdentity')
+      .then((data) => getSegments(data && data.identity ? data.identity.ECID : null));
   }
 
   __satelliteLoadedCallback(getAudiences);
-});
+};
+
+loadScript(martechURL, martechLoadedCB);
