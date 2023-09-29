@@ -255,7 +255,6 @@ async function processResponse(props) {
         href: template.branchURL,
         title: placeholders['edit-this-template'] ?? 'Edit this template',
         class: 'button accent',
-        target: '_blank',
       });
 
       $button.textContent = placeholders['edit-this-template'] ?? 'Edit this template';
@@ -408,7 +407,6 @@ function populateTemplates($block, templates, props) {
 
     if (isPlaceholder) {
       $tmplt.classList.add('placeholder');
-      $tmplt.target = '_blank';
     }
   }
 }

@@ -256,7 +256,6 @@ function populateTemplates(block, props, templates) {
         if (isPlaceholder) {
           const aTag = createTag('a', {
             href: link.href ? addSearchQueryToHref(link.href) : '#',
-            target: '_blank',
           });
 
           aTag.append(...tmplt.children);
