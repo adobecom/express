@@ -566,14 +566,24 @@ export async function decorateBlock(block) {
     const showWith = [...block.classList].filter((c) => c.toLowerCase().startsWith('showwith'));
     // block visibility steered over metadata
     if (showWith.length) {
-      let showWithSearchParam = null;
+      let blockRemove = true;
       if (!['www.adobe.com'].includes(window.location.hostname)) {
-        const urlParams = new URLSearchParams(window.location.search);
-        showWithSearchParam = urlParams.get(`${showWith[0].toLowerCase()}`)
-          || urlParams.get(`${showWith[0]}`);
+        let showWithSearchParam = null;
+        showWith.forEach((showWithClass) => {
+          if (!blockRemove) return;
+          const featureFlag = showWithClass.replace('showwith', '');
+          const caseInsensitiveParams = {};
+          for (const [name, value] of new URLSearchParams(window.location.search)) {
+            caseInsensitiveParams[name.toLowerCase()] = value.toLowerCase();
+          }
+          showWithSearchParam = caseInsensitiveParams[featureFlag];
+          blockRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(featureFlag.toLowerCase()) !== 'on';
+        });
       }
-      const blockRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(showWith[0].slice(8).toLowerCase()) !== 'on';
-      if (blockRemove) block.remove();
+      if (blockRemove) {
+        block.remove();
+        return;
+      }
     }
 
     // begin CCX custom block option class handling
