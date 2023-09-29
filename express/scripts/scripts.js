@@ -543,8 +543,8 @@ export function removeIrrelevantSections(main) {
         let showWithSearchParam = null;
         if (!['www.adobe.com'].includes(window.location.hostname)) {
           const urlParams = new URLSearchParams(window.location.search);
-          showWithSearchParam = urlParams.get(`showwith${sectionMeta.showwith.toLowerCase()}`)
-            || urlParams.get(`showwith${sectionMeta.showwith}`);
+          showWithSearchParam = urlParams.get(`${sectionMeta.showwith.toLowerCase()}`)
+            || urlParams.get(`${sectionMeta.showwith}`);
         }
         sectionRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(sectionMeta.showwith.toLowerCase()) !== 'on';
       }
