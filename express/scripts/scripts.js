@@ -1907,7 +1907,7 @@ function decorateLinks(main) {
       const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
       const isBranchLink = url.hostname === 'adobesparkpost.app.link';
       const isProductLink = ['new.express.adobe.com', 'express.adobe.com'].includes(url.hostname);
-      const isAdotcomLink = url.hostname === 'www.adobe.com';
+      const isAdotcomLink = ['www.adobe.com', 'www.stage.adobe.com'].includes(url.hostname);
 
       if (!isContactLink) {
         // make url relative if needed
