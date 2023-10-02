@@ -80,9 +80,9 @@ async function loadFEDS() {
 
   async function showRegionPicker() {
     const $body = document.body;
-    const regionpath = locale === 'us' ? '/' : `/${locale}/`;
+    const regionpath = locale === 'us' ? '/uk/' : `/${locale}/`;
     const host = window.location.hostname === 'localhost' ? 'https://www.adobe.com' : '';
-    const url = locale === 'us' ? `${host}${regionpath}legal/terms.html` : `${host}${regionpath}`;
+    const url = locale === 'us' ? `${host}${regionpath}` : `${host}${regionpath}`;
     const resp = await fetch(url);
     const html = await resp.text();
     const $div = createTag('div');
