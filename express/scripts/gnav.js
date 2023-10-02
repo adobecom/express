@@ -80,7 +80,7 @@ async function loadFEDS() {
 
   async function showRegionPicker() {
     const $body = document.body;
-    const regionpath = locale === 'us' ? '/' : `/${locale}/`;
+    const regionpath = locale === 'us' ? '/uk/' : `/${locale}/`;
     const host = window.location.hostname === 'localhost' ? 'https://www.adobe.com' : '';
     const url = `${host}${regionpath}`;
     const resp = await fetch(url);
