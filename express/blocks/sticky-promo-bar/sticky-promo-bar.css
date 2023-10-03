@@ -10,7 +10,7 @@ main .sticky-promo-bar {
     font-weight: 900;
     z-index: 10;
     max-width: 500px;
-    margin: 16px auto;
+    margin: auto;
     transition: transform 0.4s;
 }
 
@@ -23,7 +23,7 @@ main .sticky-promo-bar.clone {
     transform: translateY(0);
 }
 
-body[data-device="mobile"] main .sticky-promo-bar.rounded {
+main .sticky-promo-bar.rounded {
     border-radius: 10px;
     font-weight: 300;
     padding: 7px 16px 9px;
@@ -32,7 +32,7 @@ body[data-device="mobile"] main .sticky-promo-bar.rounded {
     max-width: 360px;
 }
 
-body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
+main .sticky-promo-bar.loadinbody {
     margin: 12px auto;
     box-sizing: border-box;
     max-width: 360px;
