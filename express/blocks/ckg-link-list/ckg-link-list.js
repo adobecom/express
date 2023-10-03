@@ -33,7 +33,7 @@ export default async function decorate(block) {
     const aTag = createTag('a', {
       class: 'button',
       title: colorName,
-      href: window.location.pathname.replace(/\/[^\/]*$/, `/${colorPath}`),
+      href: window.location.pathname.replace(/\/[^/]*$/, `/${colorPath}`),
     }, titleCase(colorName));
 
     buttonContainer.append(aTag);

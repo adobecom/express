@@ -35,7 +35,9 @@ const endpoints = {
   },
 };
 
-const memoizedFetchUrl = memoize((url, payload) => fetch(url, payload).then((r) => (r.ok ? r.json() : null)), {
+const memoizedFetchUrl = memoize((url, payload) => {
+  fetch(url, payload).then((r) => (r.ok ? r.json() : null));
+}, {
   key: (q) => q,
   ttl: 1000 * 60 * 60 * 24,
 });
