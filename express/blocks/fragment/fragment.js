@@ -22,10 +22,6 @@ import {
   loadBlocks,
 } from '../../scripts/scripts.js';
 
-const FRAG_AUTO_BLOCKS = [
-  { faas: '/tools/faas' },
-];
-
 /**
  * Loads a fragment.
  * @param {string} path The path to the fragment
@@ -52,7 +48,7 @@ export default async function decorate(block) {
 
   if (fragment) {
     const fragmentSection = fragment.querySelector(':scope .section');
-    const fassLink = fragment.querySelector('a[data-block-name=faas]');
+    const faasLink = fragment.querySelector('a[data-block-name=faas]');
 
     if (fragmentSection) {
       const audience = fragmentSection.dataset?.audience;
@@ -72,10 +68,10 @@ export default async function decorate(block) {
       }
     }
 
-    if (fassLink) {
-      fassLink.style.visibility = 'invisible';
+    if (faasLink) {
+      faasLink.style.visibility = 'invisible';
       const { default: initFaas } = await import('../faas/faas.js');
-      initFaas(fassLink);
+      initFaas(faasLink);
     }
   }
 }
