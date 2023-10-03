@@ -121,7 +121,7 @@ export default function decorate(block) {
     });
   });
 
-  if (window.innerWidth < 900) {
+  if (document.body.dataset.device === 'mobile') {
     initNotchDragAction(block);
     initCTAListener(block, hrefHolder);
 
@@ -130,5 +130,6 @@ export default function decorate(block) {
     });
 
     document.dispatchEvent(new Event('splitactionloaded'));
+    console.log('splitactionloaded');
   }
 }
