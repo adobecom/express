@@ -1905,9 +1905,15 @@ function decorateLinks(main) {
       }
 
       const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
-      const isBranchLink = url.hostname === 'adobesparkpost.app.link';
-      const isProductLink = ['new.express.adobe.com', 'express.adobe.com'].includes(url.hostname);
-      const isAdotcomLink = ['www.adobe.com', 'www.stage.adobe.com'].includes(url.hostname);
+      const isAdobeOwnedLinks = [
+        'adobesparkpost.app.link',
+        'new.express.adobe.com',
+        'express.adobe.com',
+        'www.adobe.com',
+        'www.stage.adobe.com',
+        'commerce.adobe.com',
+        'commerce-stg.adobe.com',
+      ].includes(url.hostname);
 
       if (!isContactLink) {
         // make url relative if needed
@@ -1915,7 +1921,7 @@ function decorateLinks(main) {
         const urlPath = `${url.pathname}${url.search}${url.hash}`;
         a.href = relative ? urlPath : `${url.origin}${urlPath}`;
 
-        if (!(relative || isBranchLink || isProductLink || isAdotcomLink)) {
+        if (!isAdobeOwnedLinks) {
           // open external links in a new tab
           a.target = '_blank';
         }
