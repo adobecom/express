@@ -80,9 +80,9 @@ async function loadFEDS() {
 
   async function showRegionPicker() {
     const $body = document.body;
-    const regionpath = locale === 'us' ? '/' : `/${locale}/`;
+    const regionpath = locale === 'us' ? '/uk/' : `/${locale}/`;
     const host = window.location.hostname === 'localhost' ? 'https://www.adobe.com' : '';
-    const url = `${host}${regionpath}`;
+    const url = locale === 'us' ? `${host}${regionpath}` : `${host}${regionpath}`;
     const resp = await fetch(url);
     const html = await resp.text();
     const $div = createTag('div');
@@ -151,6 +151,7 @@ async function loadFEDS() {
     || window.location.pathname.startsWith('/in/express')
     || window.location.pathname.startsWith('/uk/express')
     || window.location.pathname.startsWith('/education')
+    || window.location.pathname.startsWith('/uk/education')
     || window.location.pathname.startsWith('/drafts');
   const fedsExp = isMegaNav
     ? 'adobe-express/ax-gnav-x'
@@ -216,7 +217,7 @@ async function loadFEDS() {
         if (env && env.spark) {
           sparkLoginUrl = sparkLoginUrl.replace('express.adobe.com', env.spark);
         }
-        if (isHomepage) {
+        if (isHomepage || sparkPrefix.includes('en-GB')) {
           sparkLoginUrl = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
         }
         window.location.href = sparkLoginUrl;

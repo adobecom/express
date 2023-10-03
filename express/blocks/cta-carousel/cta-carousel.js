@@ -14,7 +14,7 @@ import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../sc
 
 import buildCarousel from '../shared/carousel.js';
 
-function sanitizeInput(string) {
+export function sanitizeInput(string) {
   const charMap = {
     '&': '&amp;',
     '<': '&lt;',
@@ -29,13 +29,19 @@ function sanitizeInput(string) {
   return string.replace(/[&<>"'`=/]/g, (s) => charMap[s]);
 }
 
-function decorateTextWithTag(textSource) {
-  const text = createTag('p', { class: 'cta-card-text' });
+export function decorateTextWithTag(textSource, options = {}) {
+  const {
+    baseT,
+    tagT,
+    baseClass,
+    tagClass,
+  } = options;
+  const text = createTag(baseT || 'p', { class: baseClass || '' });
   const tagText = textSource.match(/\[(.*?)]/);
 
   if (tagText) {
     const [fullText, tagTextContent] = tagText;
-    const $tag = createTag('span', { class: 'tag' });
+    const $tag = createTag(tagT || 'span', { class: tagClass || 'tag' });
     text.textContent = textSource.replace(fullText, '').trim();
     text.dataset.text = text.textContent.toLowerCase();
     $tag.textContent = tagTextContent;
@@ -50,9 +56,8 @@ function decorateTextWithTag(textSource) {
 export function decorateHeading(block, payload) {
   const headingSection = createTag('div', { class: 'cta-carousel-heading-section' });
   const headingTextWrapper = createTag('div', { class: 'text-wrapper' });
-  const heading = createTag('h2', { class: 'cta-carousel-heading' });
+  const heading = decorateTextWithTag(payload.heading, { baseT: 'h2', tagT: 'sup', baseClass: 'cta-carousel-heading' });
 
-  heading.textContent = payload.heading;
   headingSection.append(headingTextWrapper);
   headingTextWrapper.append(heading);
 
@@ -136,7 +141,7 @@ function buildGenAIUpload(cta, card) {
   return uploadButton;
 }
 
-export async function decorateCards(block, payload) {
+async function decorateCards(block, payload) {
   const cards = createTag('div', { class: 'cta-carousel-cards' });
   const placeholders = await fetchPlaceholders();
 
@@ -183,7 +188,7 @@ export async function decorateCards(block, payload) {
       cta.ctaLinks.forEach((a) => {
         if (a.href && a.href.match('adobesparkpost.app.link')) {
           const btnUrl = new URL(a.href);
-          if (placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
+          if (placeholders?.['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
             btnUrl.searchParams.set('search', cta.text);
             btnUrl.searchParams.set('q', cta.text);
             btnUrl.searchParams.set('category', 'templates');
@@ -199,7 +204,7 @@ export async function decorateCards(block, payload) {
     }
 
     if (cta.text) {
-      textWrapper.append(decorateTextWithTag(cta.text));
+      textWrapper.append(decorateTextWithTag(cta.text, { baseClass: 'cta-card-text' }));
     }
 
     if (cta.subtext && !hasGenAIEl) {
