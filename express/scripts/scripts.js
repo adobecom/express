@@ -22,6 +22,7 @@ let blog;
 
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
+  { fragment: '/express/fragments/' },
 ];
 
 /**
@@ -597,8 +598,28 @@ export function decorateAutoBlock(a) {
     const match = href.includes(candidate[key]);
     if (!match) return false;
 
+    if (key === 'fragment') {
+      if (a.href === window.location.href) {
+        return false;
+      }
+
+      const isInlineFrag = url.hash.includes('#_inline');
+      const videoTag = url.hash.includes('#embed-video');
+
+      // Modals
+      if (url.hash !== '' && !isInlineFrag && !videoTag) {
+        a.dataset.modalPath = url.pathname;
+        a.dataset.modalHash = url.hash;
+        a.href = url.hash;
+        a.className = 'modal link-block';
+        a.setAttribute('data-block-name', 'modal');
+        return true;
+      }
+    }
+
     a.className = `${key} link-block`;
     a.setAttribute('data-block-name', key);
+
     return true;
   });
 }
