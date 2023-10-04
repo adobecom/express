@@ -2030,46 +2030,6 @@ function decorateSocialIcons($main) {
   });
 }
 
-function decorateLinks(main) {
-  main.querySelectorAll('a').forEach((a) => {
-    if (!a.href) return;
-    try {
-      let url = new URL(a.href);
-
-      // handle link replacement on sheet-powered pages
-      if (getMetadata('sheet-powered') === 'Y' && getMetadata(url.hash.replace('#', ''))) {
-        a.href = getMetadata(url.hash.replace('#', ''));
-        url = new URL(a.href);
-      }
-
-      const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
-      const isAdobeOwnedLinks = [
-        'adobesparkpost.app.link',
-        'new.express.adobe.com',
-        'express.adobe.com',
-        'www.adobe.com',
-        'www.stage.adobe.com',
-        'commerce.adobe.com',
-        'commerce-stg.adobe.com',
-      ].includes(url.hostname);
-
-      if (!isContactLink) {
-        // make url relative if needed
-        const relative = url.hostname === window.location.hostname;
-        const urlPath = `${url.pathname}${url.search}${url.hash}`;
-        a.href = relative ? urlPath : `${url.origin}${urlPath}`;
-
-        if (!isAdobeOwnedLinks) {
-          // open external links in a new tab
-          a.target = '_blank';
-        }
-      }
-    } catch (e) {
-      // invalid url
-    }
-  });
-}
-
 function displayOldLinkWarning() {
   if (window.location.hostname.includes('localhost') || window.location.hostname.includes('.hlx.page')) {
     document.querySelectorAll('main a[href^="https://spark.adobe.com/"]').forEach(($a) => {
