@@ -135,7 +135,6 @@ function renderCTA(placeholders, branchUrl) {
     href: branchUrl,
     title: btnTitle,
     class: 'button accent small',
-    target: '_blank',
   });
   btnEl.textContent = btnTitle;
   return btnEl;

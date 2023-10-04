@@ -21,7 +21,7 @@ function isInTextNode(node) {
   return node.parentElement.firstChild.nodeType === Node.TEXT_NODE;
 }
 
-function getDefaultEmbed(url) {
+export function getDefaultEmbed(url) {
   return `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">
     <iframe src="${url.href}" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;" allowfullscreen=""
       scrolling="no" allow="encrypted-media" title="Content from ${url.hostname}" loading="lazy">
@@ -35,16 +35,9 @@ export function embedYoutube(a) {
   const searchParams = new URLSearchParams(a.search);
   const id = searchParams.get('v') || a.pathname.split('/').pop();
   searchParams.delete('v');
-  const src = `https://www.youtube.com/embed/${id}?${searchParams.toString()}`;
-  const embedHTML = `
-  <div class="embed-youtube">
-    <iframe width="100%" height="auto" src="${src}" class="youtube"
-      webkitallowfullscreen mozallowfullscreen allowfullscreen
-      allow="encrypted-media; accelerometer; gyroscope; picture-in-picture"
-      scrolling="no"
-      title="${title}">
-    </iframe>
-  </div>`;
+  loadScript('/express/scripts/libs/lite-yt-embed/lite-yt-embed.js', null, 'module');
+  loadCSS('/express/scripts/libs/lite-yt-embed/lite-yt-embed.css');
+  const embedHTML = `<lite-youtube videoid="${id}" playlabel="${title}"></lite-youtube>`;
   a.insertAdjacentHTML('afterend', embedHTML);
   a.remove();
 }
