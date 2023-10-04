@@ -130,6 +130,5 @@ export default function decorate(block) {
     });
 
     document.dispatchEvent(new Event('splitactionloaded'));
-    console.log('splitactionloaded');
   }
 }
