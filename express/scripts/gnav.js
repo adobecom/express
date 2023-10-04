@@ -82,7 +82,7 @@ async function loadFEDS() {
     const $body = document.body;
     const regionpath = locale === 'us' ? '/uk/' : `/${locale}/`;
     const host = window.location.hostname === 'localhost' ? 'https://www.adobe.com' : '';
-    const url = locale === 'us' ? `${host}${regionpath}` : `${host}${regionpath}`;
+    const url = `${host}${regionpath}`;
     const resp = await fetch(url);
     const html = await resp.text();
     const $div = createTag('div');

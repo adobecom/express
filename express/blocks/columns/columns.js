@@ -130,6 +130,7 @@ const handleVideos = (cell, a, block, thumbnail) => {
   if (a.href && new URL(a.href).hash === '#embed-video') {
     if (a.href.includes('youtu')) {
       embedYoutube(a);
+      if (thumbnail) thumbnail.remove();
     } else if (a.href.includes('vimeo')) {
       embedVimeo(a, thumbnail);
     }
