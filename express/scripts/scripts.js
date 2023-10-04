@@ -2149,7 +2149,7 @@ export async function decorateMain(main) {
   decoratePictures(main);
   decorateLinkedPictures(main);
   decorateSocialIcons(main);
-  decorateLinks(main);
+
   await sections;
   return sections;
 }
