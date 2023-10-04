@@ -122,6 +122,7 @@ export async function formatSalesPhoneNumber(tags) {
     }
 
     a.textContent = r.number.trim();
+    a.setAttribute('title', r.number.trim());
     a.href = `tel:${r.number.trim()}`;
   });
 }
