@@ -45,7 +45,7 @@ function decorateLink(block) {
       if (link.nextSibling?.nodeName === '#text' && link.previousSibling?.nodeName === '#text') {
         link.classList.add('inline-link');
       }
-    })
+    });
   }
 }
 
