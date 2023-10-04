@@ -31,14 +31,19 @@ function sanitizeInput(string) {
   return string.replace(/[&<>"'`=/]/g, (s) => charMap[s]);
 }
 
-function decorateTextWithTag(textSource) {
-  const text = createTag('p', { class: 'cta-card-title' });
+export function decorateTextWithTag(textSource, options = {}) {
+  const {
+    baseT,
+    tagT,
+    baseClass,
+    tagClass,
+  } = options;
+  const text = createTag(baseT || 'p', { class: baseClass || '' });
   const tagText = textSource.match(/\[(.*?)]/);
 
-  // is this for analytics?
   if (tagText) {
     const [fullText, tagTextContent] = tagText;
-    const $tag = createTag('span', { class: 'tag' });
+    const $tag = createTag(tagT || 'span', { class: tagClass || 'tag' });
     text.textContent = textSource.replace(fullText, '').trim();
     text.dataset.text = text.textContent.toLowerCase();
     $tag.textContent = tagTextContent;
@@ -78,12 +83,10 @@ export function decorateHeading(block, payload) {
 }
 
 function handleGenAISubmit(form, link) {
-  const btn = form.querySelector('.gen-ai-submit');
   const input = form.querySelector('input');
-
-  btn.disabled = true;
+  if (input.value.trim() === '') return;
   const genAILink = link.replace(genAIPlaceholder, sanitizeInput(input.value).replaceAll(' ', '+'));
-  if (genAILink !== '') window.location.assign(genAILink);
+  window.open(genAILink);
 }
 
 function buildGenAIForm({ ctaLinks, subtext }) {
@@ -104,14 +107,16 @@ function buildGenAIForm({ ctaLinks, subtext }) {
   genAISubmit.textContent = ctaLinks[0].textContent;
   genAISubmit.disabled = genAIInput.value === '';
 
+  genAIInput.addEventListener('input', () => {
+    genAISubmit.disabled = genAIInput.value.trim() === '';
+  });
+
   genAIInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleGenAISubmit(genAIForm, ctaLinks[0].href);
-    } else {
-      genAISubmit.disabled = genAIInput.value === '';
     }
-  }, { passive: true });
+  });
 
   genAIForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -141,10 +146,6 @@ async function decorateCards(block, payload) {
 
     if (image) mediaWrapper.append(image);
 
-    if (mediaWrapper.children.length === 0) {
-      mediaWrapper.remove();
-    }
-
     const hasGenAIForm = (new RegExp(genAIPlaceholder).test(ctaLinks?.[0]?.href));
 
     if (ctaLinks.length > 0) {
@@ -168,7 +169,7 @@ async function decorateCards(block, payload) {
       }
     }
 
-    const titleText = decorateTextWithTag(title);
+    const titleText = decorateTextWithTag(title, { tagT: 'sup', baseClass: 'cta-card-title' });
     textWrapper.append(titleText);
     const desc = createTag('p', { class: 'cta-card-desc' });
     desc.textContent = text;

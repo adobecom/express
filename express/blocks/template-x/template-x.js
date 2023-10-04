@@ -122,6 +122,10 @@ async function processContentRow(block, props) {
         p.className = 'view-all-link-wrapper';
       }
     });
+
+    if (textWrapper.children.length === 1 && textWrapper.firstElementChild.className === 'button-container') {
+      templateTitle.classList.add('link-only');
+    }
   }
 
   block.prepend(templateTitle);
@@ -252,7 +256,6 @@ function populateTemplates(block, props, templates) {
         if (isPlaceholder) {
           const aTag = createTag('a', {
             href: link.href ? addSearchQueryToHref(link.href) : '#',
-            target: '_blank',
           });
 
           aTag.append(...tmplt.children);
@@ -1622,7 +1625,7 @@ async function buildTemplateList(block, props, type = []) {
   }
 
   if (props.toolBar && props.searchBar) {
-    import('../../scripts/block-mediator.js').then(({ default: blockMediator }) => {
+    import('../../scripts/block-mediator.min.js').then(({ default: blockMediator }) => {
       importSearchBar(block, blockMediator);
     });
   }

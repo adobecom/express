@@ -80,7 +80,7 @@ async function loadFEDS() {
 
   async function showRegionPicker() {
     const $body = document.body;
-    const regionpath = locale === 'us' ? '/' : `/${locale}/`;
+    const regionpath = locale === 'us' ? '/uk/' : `/${locale}/`;
     const host = window.location.hostname === 'localhost' ? 'https://www.adobe.com' : '';
     const url = `${host}${regionpath}`;
     const resp = await fetch(url);
@@ -217,7 +217,7 @@ async function loadFEDS() {
         if (env && env.spark) {
           sparkLoginUrl = sparkLoginUrl.replace('express.adobe.com', env.spark);
         }
-        if (isHomepage) {
+        if (isHomepage || sparkPrefix.includes('en-GB')) {
           sparkLoginUrl = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
         }
         window.location.href = sparkLoginUrl;

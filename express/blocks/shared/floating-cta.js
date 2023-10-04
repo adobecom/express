@@ -21,7 +21,7 @@ import {
   loadCSS,
 } from '../../scripts/scripts.js';
 
-import BlockMediator from '../../scripts/block-mediator.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 export const hideScrollArrow = ($floatButtonWrapper, $lottieScrollButton) => {
   $floatButtonWrapper.classList.add('floating-button--scrolled');

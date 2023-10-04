@@ -18,7 +18,7 @@ import {
   getIconElement,
   toClassName,
 } from '../../scripts/scripts.js';
-import BlockMediator from '../../scripts/block-mediator.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 import { renderModalContent, fetchResults, renderResults } from './results-modal.js';
 

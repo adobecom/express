@@ -68,7 +68,8 @@
   }
 
   function sendUnhandledError(e) {
-    log(e.reason || e.error || e.message, { errorType: 'i' });
+    log(`${e.reason || e.error || e.message} stack: ${e.stack} lineno: ${e.lineno} filename: ${e.filename}`,
+      { errorType: 'i' });
   }
 
   function log(msg, options) {

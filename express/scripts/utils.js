@@ -74,27 +74,21 @@ export function memoize(cb, { key = (...args) => args.join(','), ttl } = {}) {
       }
       return cache.get(k);
     }
-    try {
-      const result = cb.apply(this, args);
-      if (result && typeof result.then === 'function') {
-        result.catch(() => {
-          invalidate(k);
-        });
-      }
-      cache.set(k, result);
-      if (ttl) {
-        timers.set(
-          k,
-          setTimeout(() => {
-            invalidate(k);
-          }, ttl),
-        );
-      }
-      return result;
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('Memoized Callback Error: ', e);
-      throw e;
+    const result = cb.apply(this, args);
+    if (result && typeof result.then === 'function') {
+      result.catch(() => {
+        invalidate(k);
+      });
     }
+    cache.set(k, result);
+    if (ttl) {
+      timers.set(
+        k,
+        setTimeout(() => {
+          invalidate(k);
+        }, ttl),
+      );
+    }
+    return result;
   };
 }
