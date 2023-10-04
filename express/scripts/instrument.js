@@ -22,7 +22,7 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from './scripts.js';
 
-import BlockMediator from './block-mediator.js';
+import BlockMediator from './block-mediator.min.js';
 
 function getPlacement(btn) {
   const parentBlock = btn.closest('.block');

@@ -12,7 +12,7 @@
 
 import { createTag } from '../../scripts/scripts.js';
 import { postFeedback, FEEDBACK_CATEGORIES } from './ace-api.js';
-import BlockMediator from '../../scripts/block-mediator.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 // TODO: use placeholders
 const feedBackModalConfig = {

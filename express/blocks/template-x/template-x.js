@@ -1625,7 +1625,7 @@ async function buildTemplateList(block, props, type = []) {
   }
 
   if (props.toolBar && props.searchBar) {
-    import('../../scripts/block-mediator.js').then(({ default: blockMediator }) => {
+    import('../../scripts/block-mediator.min.js').then(({ default: blockMediator }) => {
       importSearchBar(block, blockMediator);
     });
   }
