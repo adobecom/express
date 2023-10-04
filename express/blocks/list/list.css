@@ -1,6 +1,7 @@
 main .list {
     max-width: 375px;
     margin: 40px auto;
+    padding: 0 24px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;

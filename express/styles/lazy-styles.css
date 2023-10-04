@@ -100,11 +100,9 @@
 
 /* below the fold */
 
-
 main .list {
   list-style: none;
   text-align: left;
-  margin-left: 4em;
   box-sizing: border-box;
 }
 
