@@ -1913,6 +1913,7 @@ function decorateLinks(main) {
         'www.stage.adobe.com',
         'commerce.adobe.com',
         'commerce-stg.adobe.com',
+        'helpx.adobe.com',
       ].includes(url.hostname);
 
       if (!isContactLink) {
@@ -1921,7 +1922,7 @@ function decorateLinks(main) {
         const urlPath = `${url.pathname}${url.search}${url.hash}`;
         a.href = relative ? urlPath : `${url.origin}${urlPath}`;
 
-        if (!isAdobeOwnedLinks) {
+        if (!relative && !isAdobeOwnedLinks) {
           // open external links in a new tab
           a.target = '_blank';
         }
