@@ -125,7 +125,7 @@ function autoUpdatePage(main) {
     if (meta.property || meta.name.includes(':') || ignoredMeta.includes(meta.name)) return;
     meta.content = HtmlSanitizer.SanitizeHtml(meta.content);
   });
-  
+
   main.innerHTML = main.innerHTML.replaceAll(regex, (match, p1) => {
     if (!wl.includes(match.toLowerCase())) {
       return getMetadata(p1);

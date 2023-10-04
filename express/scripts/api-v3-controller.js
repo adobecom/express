@@ -23,8 +23,7 @@ const endpoints = {
   stage: {
     cdn: 'https://uss-templates-stage.adobe.io/uss/v3/query',
     url: 'https://uss-templates-stage.adobe.io/uss/v3/query',
-    // token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
-    token: 'cd1823ed-0104-492f-ba91-25f4195d5f6c',
+    token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   prod: {
