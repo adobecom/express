@@ -122,6 +122,9 @@ main .seo-nav .carousel-container {
   margin-bottom: 0;
 }
 
+main .seo-nav div:nth-of-type(2) > div {
+  min-height: 64px;
+}
 
 @media (min-width: 900px) {
   main .seo-nav .carousel-platform {
