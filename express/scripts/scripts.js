@@ -543,8 +543,8 @@ export function removeIrrelevantSections(main) {
         let showWithSearchParam = null;
         if (!['www.adobe.com'].includes(window.location.hostname)) {
           const urlParams = new URLSearchParams(window.location.search);
-          showWithSearchParam = urlParams.get(`showwith${sectionMeta.showwith.toLowerCase()}`)
-            || urlParams.get(`showwith${sectionMeta.showwith}`);
+          showWithSearchParam = urlParams.get(`${sectionMeta.showwith.toLowerCase()}`)
+            || urlParams.get(`${sectionMeta.showwith}`);
         }
         sectionRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(sectionMeta.showwith.toLowerCase()) !== 'on';
       }
@@ -562,6 +562,29 @@ export async function decorateBlock(block) {
   if (blockName) {
     const section = block.closest('.section');
     if (section) section.classList.add(`${[...block.classList].join('-')}-container`);
+
+    const showWith = [...block.classList].filter((c) => c.toLowerCase().startsWith('showwith'));
+    // block visibility steered over metadata
+    if (showWith.length) {
+      let blockRemove = true;
+      if (!['www.adobe.com'].includes(window.location.hostname)) {
+        let showWithSearchParam = null;
+        showWith.forEach((showWithClass) => {
+          if (!blockRemove) return;
+          const featureFlag = showWithClass.replace('showwith', '');
+          const caseInsensitiveParams = {};
+          for (const [name, value] of new URLSearchParams(window.location.search)) {
+            caseInsensitiveParams[name.toLowerCase()] = value.toLowerCase();
+          }
+          showWithSearchParam = caseInsensitiveParams[featureFlag];
+          blockRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(featureFlag.toLowerCase()) !== 'on';
+        });
+      }
+      if (blockRemove) {
+        block.remove();
+        return;
+      }
+    }
 
     // begin CCX custom block option class handling
     // split and add options with a dash
