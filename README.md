@@ -1,10 +1,10 @@
 # Adobe CC Express Website
 
 Inner CDN:
-- https://main--express--adobe.hlx3.page/
+- https://main--express--adobecom.hlx3.page/
 
 Outer CDN:
-- https://main--express--adobe.hlx.live/
+- https://main--express--adobecom.hlx.live/
 
 ## How to develop and test locally
 
