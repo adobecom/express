@@ -17,7 +17,7 @@ function changeTextColorAccordingToBg(
   primaryColor,
   block,
 ) {
-  block.classList.add(isDarkOverlayReadable(primaryColor) ? 'light-bg' : 'dark-bg');
+  block.classList.add(isDarkOverlayReadable(primaryColor) ? 'light' : 'dark');
 }
 
 function loadSvgInsideWrapper(svgId, svgWrapper, secondaryColor) {
@@ -53,7 +53,7 @@ function displaySvgWithObject(block, secondaryColor) {
 }
 
 function copyTextBlock(block, text) {
-  const title = block.querySelector('h2');
+  const title = block.querySelector('h1, h2'); // should only really use h1 here.
   const cta = block.querySelector('.button-container');
   const descriptions = block.querySelectorAll('p:not(:last-of-type)');
   const descriptionContainer = createTag('div', { class: 'description-container' });
