@@ -16,21 +16,6 @@ import buildCarousel from '../shared/carousel.js';
 
 const genAIPlaceholder = '%7B%7Bprompt-text%7D%7D';
 
-function sanitizeInput(string) {
-  const charMap = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-    '/': '&#x2F;',
-    '`': '&#x60;',
-    '=': '&#x3D;',
-  };
-
-  return string.replace(/[&<>"'`=/]/g, (s) => charMap[s]);
-}
-
 export function decorateTextWithTag(textSource, options = {}) {
   const {
     baseT,
@@ -85,7 +70,7 @@ export function decorateHeading(block, payload) {
 function handleGenAISubmit(form, link) {
   const input = form.querySelector('input');
   if (input.value.trim() === '') return;
-  const genAILink = link.replace(genAIPlaceholder, sanitizeInput(input.value).replaceAll(' ', '+'));
+  const genAILink = link.replace(genAIPlaceholder, encodeURI(input.value).replaceAll(' ', '+'));
   window.open(genAILink);
 }
 

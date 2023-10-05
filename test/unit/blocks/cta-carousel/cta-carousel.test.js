@@ -15,7 +15,7 @@
 import { readFile, sendKeys } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
-const { default: decorate, sanitizeInput, decorateTextWithTag } = await import('../../../../express/blocks/cta-carousel/cta-carousel.js');
+const { default: decorate, decorateTextWithTag } = await import('../../../../express/blocks/cta-carousel/cta-carousel.js');
 
 const create = await readFile({ path: './mocks/create.html' });
 const quickAction = await readFile({ path: './mocks/quick-action.html' });
@@ -74,14 +74,6 @@ describe('CTA Carousel - Create Variant', () => {
 
     expect(linkLessCard).to.exist;
     expect(linkLessCard.classList.contains('coming-soon')).to.be.true;
-  });
-
-  it('character mapping helper works', async () => {
-    const createVariant = document.getElementById('create-variant');
-    await decorate(createVariant);
-    const input = '&<>"\'/`=';
-    const output = '&amp;&lt;&gt;&quot;&#39;&#x2F;&#x60;&#x3D;';
-    expect(sanitizeInput(input) === output).to.be.true;
   });
 
   it('tag generate helper works', async () => {

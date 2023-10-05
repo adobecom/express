@@ -14,21 +14,6 @@ import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../sc
 
 import buildCarousel from '../shared/carousel.js';
 
-export function sanitizeInput(string) {
-  const charMap = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-    '/': '&#x2F;',
-    '`': '&#x60;',
-    '=': '&#x3D;',
-  };
-
-  return string.replace(/[&<>"'`=/]/g, (s) => charMap[s]);
-}
-
 export function decorateTextWithTag(textSource, options = {}) {
   const {
     baseT,
@@ -84,7 +69,7 @@ function handleGenAISubmit(form, link) {
   const input = form.querySelector('.gen-ai-input');
 
   btn.disabled = true;
-  const genAILink = link.replace('%7B%7Bprompt-text%7D%7D', sanitizeInput(input.value).replaceAll(' ', '+'));
+  const genAILink = link.replace('%7B%7Bprompt-text%7D%7D', encodeURI(input.value).replaceAll(' ', '+'));
   if (genAILink !== '') window.location.assign(genAILink);
 }
 

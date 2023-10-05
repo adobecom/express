@@ -100,37 +100,6 @@
 
 /* below the fold */
 
-
-main .list {
-  list-style: none;
-  text-align: left;
-  margin-left: 4em;
-  box-sizing: border-box;
-}
-
-main .list ol li {
-  margin: 2em 0;
-  display: block;
-  position: relative;
-  counter-increment: licount;
-}
-
-main .list ol li::before {
-  background-color: #fcce00;
-  border-radius: 50%;
-  color: #fff;
-  content: counter(licount);
-  font-size: 1.25rem;
-  font-weight: bold;
-  height: 2.25rem;
-  line-height: 2rem;
-  width: 2.25rem;
-  left: -4em;
-  display: inline-block;
-  position: absolute;
-  text-align: center;
-}
-
 main ol {
   text-align: left;
 }
@@ -248,7 +217,6 @@ main .video-overlay .close::after {
 }
 
 @media (min-width: 600px) {
-
   main .video-overlay .promotion {
     max-width: 720px;
   }
@@ -264,36 +232,6 @@ main .video-overlay .close::after {
   main .video-overlay .promotion .promotion-wrapper .promotion-content h3 {
     font-size: var(--heading-font-size-l);
   }
-}
-
-main .blog-posts .card {
-  display: flex;
-  flex-direction: column;
-  width: 290px;
-  margin: 10px;
-  text-align: left;
-  cursor: pointer;
-}
-main .blog-posts .card .card-image {
-  line-height: 0;
-}
-
-main .blog-posts .card .card-image img {
-  height: 200px;
-  object-fit: cover;
-  width: 100%;
-}
-
-main .blog-posts .card .card-body {
-  padding: 20px;
-  border: 1px solid lightgrey;
-  border-radius: 0 0 5px 5px;
-  border-top: none;
-  height: 300px;
-}
-
-main .blog-posts .card .card-body p {
-  font-size: 1rem;
 }
 
 #region-picker {

@@ -11,12 +11,14 @@
  */
 
 import { getHelixEnv, getLocale, getMetadata } from './scripts.js';
+import { memoize } from './utils.js';
 
 const endpoints = {
   dev: {
     cdn: 'https://uss-templates-dev.adobe.io/uss/v3/query',
     url: 'https://uss-templates-dev.adobe.io/uss/v3/query',
     token: window.atob('Y2QxODIzZWQtMDEwNC00OTJmLWJhOTEtMjVmNDE5NWQ1ZjZj'),
+    key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   stage: {
     cdn: 'https://www.stage.adobe.com/ax-uss-api/',
@@ -31,6 +33,10 @@ const endpoints = {
     key: window.atob('dGVtcGxhdGUtbGlzdC1saW5rbGlzdC1mYWNldA=='),
   },
 };
+
+const mFetch = memoize((url, data) => fetch(url, data).then((r) => (r.ok ? r.json() : null)), {
+  ttl: 1000 * 60 * 60 * 24,
+});
 
 export async function getPillWordsMapping() {
   const locale = getLocale(window.location);
@@ -52,7 +58,7 @@ export async function getPillWordsMapping() {
 
 export default async function getData(env = '', data = {}) {
   const endpoint = endpoints[env];
-  const response = await fetch(endpoint.cdn, {
+  return mFetch(endpoint.cdn, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/vnd.adobe.search-request+json',
@@ -61,15 +67,38 @@ export default async function getData(env = '', data = {}) {
     },
     body: JSON.stringify(data),
   });
-
-  if (response.ok) {
-    return response.json();
-  } else {
-    return response;
-  }
 }
 
-export async function fetchLinkListFromCKGApi() {
+export async function getDataWithContext({ urlPath, task, topic }) {
+  const data = {
+    experienceId: 'templates-browse-v1',
+    context: {
+      application: {
+        urlPath,
+        task,
+        topic,
+      },
+    },
+    locale: 'en-US',
+    queries: [{
+      id: 'ccx-search-1',
+      start: 0,
+      limit: 40,
+      scope: { entities: ['HzTemplate'] },
+      facets: [{ facet: 'categories', limit: 10 }],
+    }],
+  };
+
+  const env = getHelixEnv();
+  const result = await getData(env.name, data);
+  if (result.status.httpCode === 200) {
+    return result;
+  }
+
+  return false;
+}
+
+export async function getDataWithId() {
   if (getMetadata('ckgid')) {
     const dataRaw = {
       experienceId: 'templates-browse-v1',

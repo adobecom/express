@@ -23,7 +23,7 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/scripts.js';
 
-import BlockMediator from '../../scripts/block-mediator.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 export default async function decorate($block) {
   let submitButtonText;

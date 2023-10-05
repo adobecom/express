@@ -13,15 +13,15 @@ main .hero-color .content-container .text {
 
 main .hero-color .content-container {
   min-height: 200px;
-  max-width: 1440px;
+  max-width: 1200px;
   margin: auto;
 }
 
 main .hero-color .description-container {
-margin: 16px 0 32px 0;
-display: flex;
-flex-direction: column;
-gap: 10px;
+  margin: 16px 0 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 main .hero-color .text-container {
@@ -39,10 +39,17 @@ main .hero-color .text-container .text {
   color: var(--color-black);
 }
 
+main .hero-color .content-container h1,
+main .hero-color .text-container h1 {
+  margin: 0;
+  font-size: var(--heading-font-size-xl);
+  text-align: left;
+}
+
 main .hero-color .content-container h2,
 main .hero-color .text-container h2 {
   margin: 0;
-  font-size: var(--heading-font-size-xl);
+  font-size: var(--heading-font-size-l);
   text-align: left;
 }
 
@@ -71,11 +78,11 @@ main .hero-color .content-container .color-svg-img {
   margin: 0 0 0 15px;
 }
 
-main .hero-color.light-bg {
+main .hero-color.light {
   color: var(--color-black);
 }
 
-main .hero-color.dark-bg {
+main .hero-color.dark {
   color: var(--color-white);
 }
 
@@ -124,15 +131,15 @@ main .hero-color .hidden-svg {
     max-width: 486px;
   }
 
-  main .hero-color.dark-bg .button,
-  main .hero-color.dark-bg .button:hover {
+  main .hero-color.dark .button,
+  main .hero-color.dark .button:hover {
     background-color: var(--color-white);
     color: var(--color-black);
     border-color: var(--color-white);
   }
 
-  main .hero-color.light-bg .button,
-  main .hero-color.light-bg .button:hover {
+  main .hero-color.light .button,
+  main .hero-color.light .button:hover {
     background-color: var(--color-black);
     color: var(--color-white);
     border-color: var(--color-black);
