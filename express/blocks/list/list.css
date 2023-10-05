@@ -1,6 +1,7 @@
 main .list {
     max-width: 375px;
     margin: 40px auto;
+    padding: 0 24px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
@@ -58,4 +59,33 @@ main .list > div > div > :first-child {
 
 main .list > div > div > :last-child {
   margin-bottom: 0;
+}
+
+main .list {
+    list-style: none;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+main .list ol li {
+    margin: 2em 0;
+    display: block;
+    position: relative;
+    counter-increment: licount;
+}
+
+main .list ol li::before {
+    background-color: #fcce00;
+    border-radius: 50%;
+    color: #fff;
+    content: counter(licount);
+    font-size: 1.25rem;
+    font-weight: bold;
+    height: 2.25rem;
+    line-height: 2rem;
+    width: 2.25rem;
+    left: -4em;
+    display: inline-block;
+    position: absolute;
+    text-align: center;
 }
