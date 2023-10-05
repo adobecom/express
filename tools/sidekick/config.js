@@ -13,7 +13,7 @@
 // This file contains the project-specific configuration for the sidekick.
 (() => {
   window.hlx.initSidekick({
-    project: 'CCX',
+    project: 'AX',
     outerHost: 'express--adobecom.hlx.live',
     host: 'www.adobe.com',
     byocdn: true,
