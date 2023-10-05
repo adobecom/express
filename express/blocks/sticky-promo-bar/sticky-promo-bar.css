@@ -10,7 +10,7 @@ main .sticky-promo-bar {
     font-weight: 900;
     z-index: 10;
     max-width: 500px;
-    margin: 16px auto;
+    margin: auto;
     transition: transform 0.4s;
 }
 
@@ -23,7 +23,7 @@ main .sticky-promo-bar.clone {
     transform: translateY(0);
 }
 
-body[data-device="mobile"] main .sticky-promo-bar.rounded {
+main .sticky-promo-bar.rounded {
     border-radius: 10px;
     font-weight: 300;
     padding: 7px 16px 9px;
@@ -38,7 +38,7 @@ body[data-device="mobile"] main .sticky-promo-bar.loadinbody {
     max-width: 360px;
 }
 
-main .sticky-promo-bar:not(.rounded) a:any-link {
+main .sticky-promo-bar a:any-link:not(.inline-link) {
     color: white;
     border: 2px solid white;
     border-radius: 20px;
@@ -52,11 +52,15 @@ main .sticky-promo-bar:not(.rounded) a:any-link {
     margin-top: 5px;
 }
 
-main .sticky-promo-bar.rounded a:any-link {
+main .sticky-promo-bar a.inline-link:any-link {
     color: white;
     text-decoration: underline;
     white-space: nowrap;
     font-style: initial;
+}
+
+main .sticky-promo-bar:not(.rounded) a.inline-link:any-link {
+    font-weight: 900;
 }
 
 main .sticky-promo-bar.rounded p {
