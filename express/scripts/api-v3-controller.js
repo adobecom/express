@@ -21,7 +21,7 @@ const endpoints = {
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   stage: {
-    cdn: 'https://uss-templates-stage.adobe.io/uss/v3/query',
+    cdn: 'https://www.stage.adobe.com/ax-uss-api/',
     url: 'https://uss-templates-stage.adobe.io/uss/v3/query',
     token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
@@ -34,10 +34,7 @@ const endpoints = {
   },
 };
 
-const memoizedFetchUrl = memoize((url, payload) => {
-  fetch(url, payload).then((r) => (r.ok ? r.json() : null));
-}, {
-  key: (q) => q,
+const mFetch = memoize((url, data) => fetch(url, data).then((r) => (r.ok ? r.json() : null)), {
   ttl: 1000 * 60 * 60 * 24,
 });
 
@@ -61,7 +58,7 @@ export async function getPillWordsMapping() {
 
 export default async function getData(env = '', data = {}) {
   const endpoint = endpoints[env];
-  const response = await memoizedFetchUrl(endpoint.cdn, {
+  return mFetch(endpoint.cdn, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/vnd.adobe.search-request+json',
@@ -70,12 +67,6 @@ export default async function getData(env = '', data = {}) {
     },
     body: JSON.stringify(data),
   });
-
-  if (response.ok) {
-    return response.json();
-  } else {
-    return response;
-  }
 }
 
 export async function getDataWithContext({ urlPath, task, topic }) {
