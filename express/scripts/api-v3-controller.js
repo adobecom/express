@@ -34,9 +34,8 @@ const endpoints = {
   },
 };
 
-const memoizedFetchUrl = memoize((url, payload) => {
-  fetch(url, payload).then((r) => (r.ok ? r.json() : null));
-}, {
+// eslint-disable-next-line max-len
+const memoizedFetchUrl = memoize((url, payload) => fetch(url, payload).then((r) => (r.ok ? r.json() : null)), {
   ttl: 1000 * 60 * 60 * 24,
 });
 
@@ -70,11 +69,7 @@ export default async function getData(env = '', data = {}) {
     body: JSON.stringify(data),
   });
 
-  if (response.ok) {
-    return response.json();
-  } else {
-    return response;
-  }
+  return response;
 }
 
 export async function getDataWithContext({ urlPath, task, topic }) {
