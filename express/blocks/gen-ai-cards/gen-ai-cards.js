@@ -133,10 +133,8 @@ async function decorateCards(block, payload) {
       if (index > 0) {
         const lastPicture = payload.actions[index - 1].image;
         lastPicture.querySelector('img').onload = (e) => {
-          if (e.eventPhase >= Event.AT_TARGET) {
-            console.log('last loaded!', index, text, title);
-            image.querySelector('img').removeAttribute('loading');
-          }
+          console.log('last loaded!', index, text, title);
+          image.querySelector('img').removeAttribute('loading');
         };
       }
     }
