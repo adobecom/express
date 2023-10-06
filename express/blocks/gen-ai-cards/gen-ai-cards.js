@@ -115,7 +115,7 @@ async function decorateCards(block, payload) {
   const cards = createTag('div', { class: 'gen-ai-cards-cards' });
   const placeholders = await fetchPlaceholders();
 
-  payload.actions.forEach((cta) => {
+  payload.actions.forEach((cta, index) => {
     const {
       image,
       ctaLinks,
@@ -128,8 +128,18 @@ async function decorateCards(block, payload) {
     const textWrapper = createTag('div', { class: 'text-wrapper' });
 
     card.append(textWrapper, mediaWrapper, linksWrapper);
-
-    if (image) mediaWrapper.append(image);
+    if (image) {
+      mediaWrapper.append(image);
+      if (index > 0) {
+        const lastPicture = payload.actions[index - 1].image;
+        lastPicture.querySelector('img').onload = (e) => {
+          if (e.eventPhase >= Event.AT_TARGET) {
+            console.log('last loaded!', index, text, title);
+            image.querySelector('img').removeAttribute('loading');
+          }
+        };
+      }
+    }
 
     const hasGenAIForm = (new RegExp(genAIPlaceholder).test(ctaLinks?.[0]?.href));
 
