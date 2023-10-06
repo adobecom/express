@@ -55,7 +55,7 @@ main .sticky-promo-bar a:any-link:not(.inline-link) {
 main .sticky-promo-bar a.inline-link:any-link {
     color: white;
     text-decoration: underline;
-    white-space: nowrap;
+    /* white-space: nowrap; */
     font-style: initial;
 }
 
