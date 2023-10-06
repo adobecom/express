@@ -110,6 +110,6 @@ main .sticky-promo-bar .close:after {
     left: 0;
 }
 
-:lang(ja) .sticky-promo-bar a.inline-link:any-link {
+:lang(ja) body[data-device="mobile"] .sticky-promo-bar {
     font-size: var(--body-font-size-s);
 }
