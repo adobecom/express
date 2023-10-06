@@ -19,6 +19,7 @@ import {
   getMetadata,
   checkTesting,
   fetchPlaceholders,
+// eslint-disable-next-line import/no-unresolved
 } from './scripts.js';
 
 import BlockMediator from './block-mediator.min.js';
@@ -226,7 +227,7 @@ const martechLoadedCB = () => {
 
   let category = getMetadata('category');
   if (!category && (pathname.includes('/create/')
-    || pathname.includes('/feature/'))) {
+      || pathname.includes('/feature/'))) {
     category = 'design';
     if (pathname.includes('/image')) category = 'photo';
     if (pathname.includes('/video')) category = 'video';
@@ -236,19 +237,19 @@ const martechLoadedCB = () => {
   // home
   if (
     pathname === '/express'
-    || pathname === '/express/'
+      || pathname === '/express/'
   ) {
     sparkLandingPageType = 'home';
     // seo
   } else if (
     pathname === '/express/create'
-    || pathname.includes('/create/')
-    || pathname === '/express/make'
-    || pathname.includes('/make/')
-    || pathname === '/express/feature'
-    || pathname.includes('/feature/')
-    || pathname === '/express/discover'
-    || pathname.includes('/discover/')
+      || pathname.includes('/create/')
+      || pathname === '/express/make'
+      || pathname.includes('/make/')
+      || pathname === '/express/feature'
+      || pathname.includes('/feature/')
+      || pathname === '/express/discover'
+      || pathname.includes('/discover/')
   ) {
     sparkLandingPageType = 'seo';
     // learn
@@ -259,10 +260,10 @@ const martechLoadedCB = () => {
     sparkLandingPageType = 'quickAction';
   } else if (
     pathname === '/express/learn'
-    || (
-      pathname.includes('/learn/')
-      && !pathname.includes('/blog/')
-    )
+      || (
+        pathname.includes('/learn/')
+        && !pathname.includes('/blog/')
+      )
   ) {
     if (pathname.includes('/express-your-brand')) {
       sparkLandingPageType = 'express-your-brand';
@@ -272,7 +273,7 @@ const martechLoadedCB = () => {
     // blog
   } else if (
     pathname === '/express/learn/blog'
-    || pathname.includes('/learn/blog/')
+      || pathname.includes('/learn/blog/')
   ) {
     sparkLandingPageType = 'blog';
     // pricing
@@ -376,7 +377,7 @@ const martechLoadedCB = () => {
   // Fire the displayPurchasePanel event if it is the pricing site
   if (
     sparkLandingPageType === 'pricing'
-    && sparkTouchpoint
+      && sparkTouchpoint
   ) {
     _satellite.track('event', {
       xdm: {},
@@ -520,7 +521,7 @@ const martechLoadedCB = () => {
       } else {
         adobeEventName = 'adobe.com:express:CTA:pricing:viewPlans:Click';
       }
-      // quick actions clicks
+    // quick actions clicks
     } else if ($a.closest('ccl-quick-action') && $a.classList.contains('upload-your-photo')) {
       // this event is handled at mock-file-input level
       return;

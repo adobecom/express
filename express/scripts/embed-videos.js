@@ -49,7 +49,7 @@ export function embedVimeo(a, thumbnail) {
   const src = url.href;
   const language = getAvailableVimeoSubLang();
   if (url.hostname !== 'player.vimeo.com') {
-    loadScript('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.js', 'module');
+    loadScript('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.js', null, 'module');
     loadCSS('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.css');
     const video = url.pathname.split('/')[1];
     const embedHTML = `<lite-vimeo videoid="${video}" src=${src} thumbnail=${thumbnailLink} language=${language}></lite-vimeo>`;
