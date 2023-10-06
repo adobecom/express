@@ -116,14 +116,11 @@ export async function formatSalesPhoneNumber(tags) {
   tags.forEach((a) => {
     const r = numbersMap.data.find((d) => d.country === getCountry());
 
-    if (!r) {
-      a.textContent = a.href.replace('tel:', '').trim();
-      return;
-    }
+    const decodedNumber = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
 
-    a.textContent = r.number.trim();
-    a.setAttribute('title', r.number.trim());
-    a.href = `tel:${r.number.trim()}`;
+    a.textContent = decodedNumber;
+    a.setAttribute('title', decodedNumber);
+    a.href = `tel:${decodedNumber}`;
   });
 }
 

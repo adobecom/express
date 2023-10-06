@@ -77,7 +77,6 @@ main .pricing-summary .pricing-column .pricing-content-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-grow: 1;
 }
 
 main .pricing-summary .pricing-header {
@@ -266,14 +265,13 @@ main .pricing-summary .pricing-feature-list li {
     padding-top: 40px;
   }
 
+  main .pricing-summary .pricing-eyebrow .eyebrow-text {
+    max-width: 396px;
+  }
+
   main .pricing-summary .pricing-column {
     min-width: 412px;
     padding: 24px 40px;
-  }
-
-  main .pricing-summary.feature .pricing-column .pricing-content-wrapper {
-    height: 270px;
-    max-height: 270px;
   }
 
   main .pricing-summary .pricing-header h2 {
