@@ -111,11 +111,20 @@ function buildGenAIForm({ ctaLinks, subtext }) {
   return genAIForm;
 }
 
-async function decorateCards(block, payload) {
+function removeLazyAfterNeighborLoaded(image, lastImage) {
+  if (!image || !lastImage) return;
+  lastImage.onload = (e) => {
+    if (e.eventPhase >= Event.AT_TARGET) {
+      image.querySelector('img').removeAttribute('loading');
+    }
+  };
+}
+
+async function decorateCards(block, { actions }) {
   const cards = createTag('div', { class: 'gen-ai-cards-cards' });
   const placeholders = await fetchPlaceholders();
 
-  payload.actions.forEach((cta, index) => {
+  actions.forEach((cta, i) => {
     const {
       image,
       ctaLinks,
@@ -130,12 +139,9 @@ async function decorateCards(block, payload) {
     card.append(textWrapper, mediaWrapper, linksWrapper);
     if (image) {
       mediaWrapper.append(image);
-      if (index > 0) {
-        const lastPicture = payload.actions[index - 1].image;
-        lastPicture.querySelector('img').onload = (e) => {
-          console.log('last loaded!', index, text, title);
-          image.querySelector('img').removeAttribute('loading');
-        };
+      if (i > 0) {
+        const lastImage = actions[i - 1].image?.querySelector('img');
+        removeLazyAfterNeighborLoaded(image, lastImage);
       }
     }
 
