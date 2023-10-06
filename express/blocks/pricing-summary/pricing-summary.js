@@ -127,7 +127,7 @@ function handleEyeBrows(columnWrapper, eyeBrowCols, index) {
   }
 
   const eyebrow = createTag('div', { class: 'pricing-eyebrow' }, eyeBrowCols[index]);
-  eyeBrowCols[index].classList.add('pricing-text');
+  eyeBrowCols[index].classList.add('eyebrow-text');
   columnWrapper.classList.add('has-pricing-eyebrow');
   return eyebrow;
 }
