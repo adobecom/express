@@ -109,3 +109,7 @@ main .sticky-promo-bar .close:after {
     transform: rotate(45deg);
     left: 0;
 }
+
+:lang(ja) body[data-device="mobile"] .sticky-promo-bar {
+    font-size: var(--body-font-size-s);
+}

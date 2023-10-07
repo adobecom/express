@@ -66,7 +66,7 @@ function getCustomModal(custom, dialog) {
 }
 
 async function getPathModal(path, dialog) {
-  const block = createTag('a', { href: path });
+  const block = createTag('a', { href: path }, path);
   dialog.append(block);
 
   const { default: getFragment } = await import('../fragment/fragment.js');
@@ -159,13 +159,13 @@ export default function init(el) {
 }
 
 // Click-based modal
-window.addEventListener('hashchange', (e) => {
+window.addEventListener('hashchange', async (e) => {
   if (!window.location.hash) {
     const url = new URL(e.oldURL);
     const dialog = document.querySelector(`.dialog-modal${url.hash}`);
     if (dialog) closeModal(dialog);
   } else {
     const details = findDetails(window.location.hash, null);
-    if (details) getModal(details);
+    if (details) await getModal(details);
   }
 });
