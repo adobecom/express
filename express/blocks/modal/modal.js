@@ -170,4 +170,4 @@ async function onHashChange(e) {
 }
 
 // Click-based modal
-window.addEventListener('hashchange', await onHashChange);
+window.addEventListener('hashchange', onHashChange);
