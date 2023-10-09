@@ -135,7 +135,6 @@ main .block.puf .puf-card .puf-card-top .puf-card-plans {
 
 main .block.puf .puf-card .puf-card-top .puf-card-plans > div {
     color: var(--color-info-accent);
-    text-align: right;
 }
 
 main .block.puf .puf-card .puf-card-top .puf-card-plans > div span {
@@ -280,13 +279,17 @@ main .block.puf .puf-pricing-footer {
 }
 
 main .block.puf .puf-pricing-footer .puf-highlighted-text {
-    padding: 16px 0;
+    padding: 16px;
     margin-top: 24px;
 }
 
 main .block.puf .puf-card-banner.recommended {
     color: white;
-    font-size: var(--body-font-size-xl);
+    font-size: var(--body-font-size-l);
+}
+
+main .block.puf .puf-card-banner.recommended .banner-text {
+    margin: 0 8px;
 }
 
 main .block.puf.one-col .puf-card-container:not(:has(.recommended)) {
@@ -331,6 +334,12 @@ main .block.puf .puf-card .puf-card-banner a {
     color: unset;
     font-weight: unset;
     text-decoration: underline;
+}
+
+@media (min-width: 600px) {
+    main .block.puf .puf-card-banner.recommended {
+        font-size: var(--body-font-size-xl);
+    }
 }
 
 @media (min-width: 900px) {
