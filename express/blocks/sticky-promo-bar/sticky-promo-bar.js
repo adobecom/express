@@ -37,25 +37,12 @@ function initScrollInteraction(block) {
   observer.observe(inBodyBanner);
 }
 
-function decorateLink(block) {
-  const links = block.querySelectorAll('a:any-link');
-
-  if (links.length) {
-    links.forEach((link) => {
-      if (link.nextSibling?.nodeName === '#text' && link.previousSibling?.nodeName === '#text') {
-        link.classList.add('inline-link');
-      }
-    });
-  }
-}
-
 export default function decorate(block) {
   const close = createTag('button', {
     class: 'close',
     'aria-label': 'close',
   });
   block.appendChild(close);
-  decorateLink(block);
 
   BlockMediator.set('promobar', {
     block,
