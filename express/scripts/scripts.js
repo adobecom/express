@@ -652,7 +652,7 @@ export function decorateAutoBlock(a) {
         a.dataset.modalPath = url.pathname;
         a.dataset.modalHash = url.hash;
         a.href = url.hash;
-        a.className = 'modal link-block';
+        a.className = 'modal';
         a.setAttribute('data-block-name', 'modal');
         return true;
       }
@@ -1324,16 +1324,18 @@ export function decorateButtons(block = document) {
     $a.href = addSearchQueryToHref($a.href);
     $a.title = $a.title || linkText;
     const $block = $a.closest('div.section > div > div');
+    const { hash } = new URL($a.href);
     let blockName;
     if ($block) {
       blockName = $block.className;
     }
+
     if (!noButtonBlocks.includes(blockName)
       && originalHref !== linkText
       && !(linkText.startsWith('https') && linkText.includes('/media_'))
       && !linkText.includes('hlx.blob.core.windows.net')
       && !linkText.endsWith(' >')
-      && !(new URL($a.href).hash === '#embed-video')
+      && !(hash === '#embed-video')
       && !linkText.endsWith(' ›')) {
       const $up = $a.parentElement;
       const $twoup = $a.parentElement.parentElement;
