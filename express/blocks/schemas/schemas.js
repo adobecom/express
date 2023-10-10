@@ -57,7 +57,7 @@ function decorateSchemasBlocks(block) {
       url: webApplicationUrl,
       '@id': `${webApplicationUrl}#webapplication`,
       browserRequirements: ['requires HTML5 support', 'requires JavaScript'],
-      sameAs: `${homePageLocaleUrl}/express/`,
+      sameAs: `${homePageLocaleUrl}express/`,
       applicationCategory: 'DesignApplication',
       applicationSuite: 'Adobe Creative Cloud',
       permissions: 'may run only with an active internet connection',
