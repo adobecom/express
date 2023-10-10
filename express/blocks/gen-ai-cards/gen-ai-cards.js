@@ -67,11 +67,17 @@ export function decorateHeading(block, payload) {
   block.append(headingSection);
 }
 
+export const windowHelper = {
+  redirect: (url) => {
+    window.location.assign(url);
+  },
+};
+
 function handleGenAISubmit(form, link) {
   const input = form.querySelector('input');
   if (input.value.trim() === '') return;
   const genAILink = link.replace(genAIPlaceholder, encodeURI(input.value).replaceAll(' ', '+'));
-  if (genAILink) window.location.assign(genAILink);
+  if (genAILink) windowHelper.redirect(genAILink);
 }
 
 function buildGenAIForm({ ctaLinks, subtext }) {
