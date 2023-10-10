@@ -1040,4 +1040,4 @@ const martechLoadedCB = () => {
   __satelliteLoadedCallback(getAudiences);
 };
 
-loadScript(martechURL, martechLoadedCB);
+loadScript(martechURL).then(martechLoadedCB);
