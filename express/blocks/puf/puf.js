@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 import { addPublishDependencies, createTag } from '../../scripts/scripts.js';
-import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
+import { buildUrl, fetchPlan } from '../../scripts/utils/pricing.js';
 import buildCarousel from '../shared/carousel.js';
 
 let invisContainer;
@@ -185,6 +185,7 @@ async function decorateCard(block, cardClass = '') {
   if (!cardBanner.textContent.trim()) {
     cardBanner.style.display = 'none';
   } else {
+    cardBanner.innerHTML = createTag('span', { class: 'banner-text' }, cardBanner.innerHTML).outerHTML;
     cardBanner.classList.add('recommended');
   }
 

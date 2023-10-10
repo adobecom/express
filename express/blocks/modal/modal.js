@@ -158,8 +158,7 @@ export default function init(el) {
   return null;
 }
 
-// Click-based modal
-window.addEventListener('hashchange', async (e) => {
+async function onHashChange(e) {
   if (!window.location.hash) {
     const url = new URL(e.oldURL);
     const dialog = document.querySelector(`.dialog-modal${url.hash}`);
@@ -168,4 +167,7 @@ window.addEventListener('hashchange', async (e) => {
     const details = findDetails(window.location.hash, null);
     if (details) await getModal(details);
   }
-});
+}
+
+// Click-based modal
+window.addEventListener('hashchange', onHashChange);
