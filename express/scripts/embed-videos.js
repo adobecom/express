@@ -14,7 +14,7 @@ import {
   loadScript,
   createTag,
   loadCSS,
-} from './scripts.js';
+} from './utils.js';
 import { getAvailableVimeoSubLang } from '../blocks/shared/video.js';
 
 function isInTextNode(node) {

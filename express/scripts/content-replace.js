@@ -15,7 +15,7 @@ import {
   getHelixEnv,
   getMetadata,
   titleCase,
-} from './scripts.js';
+} from './utils.js';
 import HtmlSanitizer from './html-sanitizer.js';
 
 async function replaceDefaultPlaceholders(block, components) {

@@ -15,7 +15,7 @@ import {
   getIcon,
   fetchPlaceholders,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 export default function decorate($block) {
   const $cards = Array.from($block.querySelectorAll(':scope>div'));

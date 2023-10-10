@@ -10,8 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
-import { getHelixEnv, getLocale, getMetadata } from './scripts.js';
-import { memoize } from './utils.js';
+import { getHelixEnv, getLocale, getMetadata } from './utils.js';
+import { memoize } from './hofs.js';
 
 const endpoints = {
   dev: {

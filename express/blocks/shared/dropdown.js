@@ -14,7 +14,7 @@ import {
   createTag, getIconElement,
   loadCSS,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 function buildButton($button, $options, option) {
   $button.innerHTML = '';

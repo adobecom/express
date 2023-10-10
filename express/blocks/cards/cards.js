@@ -11,7 +11,7 @@
  */
 
 // eslint-disable-next-line import/no-unresolved
-import { createTag } from '../../scripts/scripts.js';
+import { createTag } from '../../scripts/utils.js';
 
 /**
  * @param {HTMLDivElement} $block

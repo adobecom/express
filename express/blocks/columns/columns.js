@@ -18,7 +18,7 @@ import {
   toClassName,
   getIconElement,
   addHeaderSizing,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
 

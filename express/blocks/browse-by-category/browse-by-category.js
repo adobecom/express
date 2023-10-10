@@ -11,7 +11,7 @@
  */
 /* eslint-disable import/named, import/extensions */
 
-import { createTag } from '../../scripts/scripts.js';
+import { createTag } from '../../scripts/utils.js';
 
 import buildCarousel from '../shared/carousel.js';
 

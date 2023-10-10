@@ -16,7 +16,7 @@ import {
   loadScript,
   getHelixEnv,
   createTag,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 let state = {};
 

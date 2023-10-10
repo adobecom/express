@@ -13,7 +13,7 @@
 import {
   createTag, getLocale, loadBlock, toClassName,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 const docTitle = document.title;
 

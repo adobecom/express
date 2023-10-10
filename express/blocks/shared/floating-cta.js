@@ -19,7 +19,7 @@ import {
   getMobileOperatingSystem,
   lazyLoadLottiePlayer,
   loadCSS,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 import BlockMediator from '../../scripts/block-mediator.min.js';
 

@@ -13,7 +13,7 @@
 import {
   createTag,
   getIcon,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import {
   Masonry,
 } from '../shared/masonry.js';

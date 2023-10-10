@@ -14,7 +14,7 @@ import {
   createTag,
   addPublishDependencies,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import {
   buildUrl,
   buildPlans,
