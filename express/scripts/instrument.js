@@ -575,8 +575,16 @@ const martechLoadedCB = () => {
             },
             ...(hemingwayAsset
               ? {
+                asset: {
+                  assetInfo: {
+                    assetId: hemingwayAssetId,
+                  },
+                },
+              }
+              : {}),
+            ...(hemingwayAsset
+              ? {
                 hemingway: {
-                  assetId: hemingwayAssetId,
                   assetPath: hemingwayAssetPath,
                   assetPosition: hemingwayAssetPosition,
                 },
@@ -941,8 +949,12 @@ const martechLoadedCB = () => {
                     eventName: 'assetView',
                   },
                 },
+                asset: {
+                  assetInfo: {
+                    assetId: evt.assetId,
+                  },
+                },
                 hemingway: {
-                  assetId: evt.assetId,
                   assetPath: evt.assetPath,
                 },
               },
