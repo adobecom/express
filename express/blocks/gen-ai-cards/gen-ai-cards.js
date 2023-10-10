@@ -71,7 +71,7 @@ function handleGenAISubmit(form, link) {
   const input = form.querySelector('input');
   if (input.value.trim() === '') return;
   const genAILink = link.replace(genAIPlaceholder, encodeURI(input.value).replaceAll(' ', '+'));
-  window.open(genAILink);
+  if (genAILink) window.location.assign(genAILink);
 }
 
 function buildGenAIForm({ ctaLinks, subtext }) {
