@@ -678,6 +678,7 @@ function decorateLinks(main) {
         url = new URL(a.href);
       }
 
+      const idLegacyVideoLink = a.textContent.includes('hlx.blob.core.windows.net') && a.textContent.includes('#image');
       const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
       const isAdobeOwnedLinks = [
         'adobesparkpost.app.link',
@@ -703,6 +704,8 @@ function decorateLinks(main) {
       }
       if (a.href.includes('#_dnb')) {
         a.href = a.href.replace('#_dnb', '');
+      } else if (idLegacyVideoLink) {
+        a.href = a.textContent;
       } else {
         const autoBlock = decorateAutoBlock(a);
         if (autoBlock) {
@@ -2011,7 +2014,11 @@ export function addFavIcon(href) {
 function decorateSocialIcons($main) {
   $main.querySelectorAll(':scope a').forEach(($a) => {
     const urlObject = new URL($a.href);
-    if ($a.href === $a.textContent.trim() && new URL($a.href).hash !== '#embed-video') {
+
+    if (urlObject.hash === '#embed-video') return;
+    if ($a.closest('.block')?.dataset.blockName === 'embed') return;
+
+    if ($a.href === $a.textContent.trim()) {
       let icon = '';
       if (urlObject.hostname === 'www.instagram.com') {
         icon = 'instagram';
