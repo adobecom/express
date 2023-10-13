@@ -979,7 +979,7 @@ export function loadCSS(href, callback) {
 function resolveFragments() {
   Array.from(document.querySelectorAll('main > div div'))
     .filter(($cell) => $cell.childElementCount === 0)
-    .filter(($cell) => /^\[[A-Za-z0-9 -_—]+\]$/mg.test($cell.textContent.trim()))
+    .filter(($cell) => /^\[[A-Za-z\d\s\-_—]+\]$/mg.test($cell.textContent.trim()))
     .forEach(($cell) => {
       const marker = $cell.textContent.trim()
         .substring(1, $cell.textContent.trim().length - 1)
@@ -1324,7 +1324,7 @@ export function decorateButtons(block = document) {
     if (!noButtonBlocks.includes(blockName)
       && originalHref !== linkText
       && !(linkText.startsWith('https') && linkText.includes('/media_'))
-      && !linkText.includes('hlx.blob.core.windows.net')
+      && !/hlx\.blob\.core\.windows\.net/.test(linkText)
       && !linkText.endsWith(' >')
       && !(hash === '#embed-video')
       && !linkText.endsWith(' ›')) {
@@ -1398,7 +1398,7 @@ export function toCamelCase(name) {
 export function getExperiment() {
   let experiment = toClassName(getMeta('experiment'));
 
-  if (!window.location.host.includes('adobe.com') && !window.location.host.includes('.hlx.live')) {
+  if (!/adobe\.com/.test(window.location.hostname) && !/\.hlx\.live/.test(window.location.hostname)) {
     experiment = '';
     // reason = 'not prod host';
   }
