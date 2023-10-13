@@ -498,7 +498,7 @@ function initState() {
 }
 
 export default async function decorate(block) {
-  if (!(window.location.host !== 'localhost:3000' || window.location.hostname === 'stage.adobe.com')) {
+  if (!(/localhost:3000/.test(window.location.host) || /stage\.adobe\.com/.test(window.location.hostname))) {
     block.style.display = 'none';
     return;
   }

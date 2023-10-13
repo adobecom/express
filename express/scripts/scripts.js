@@ -1407,7 +1407,7 @@ export function toCamelCase(name) {
 export function getExperiment() {
   let experiment = toClassName(getMeta('experiment'));
 
-  if (window.location.hostname !== 'adobe.com' && window.location.hostname !== '.hlx.live') {
+  if (!/adobe\.com/.test(window.location.hostname) && !/\.hlx\.live/.test(window.location.hostname)) {
     experiment = '';
     // reason = 'not prod host';
   }
