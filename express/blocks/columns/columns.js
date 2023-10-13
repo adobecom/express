@@ -127,19 +127,25 @@ function decorateIconList(columnCell, rowNum, blockClasses) {
 }
 
 const handleVideos = (cell, a, block, thumbnail) => {
-  if (a.href && new URL(a.href).hash === '#embed-video') {
+  if (!a.href) return;
+
+  const url = new URL(a.href);
+
+  if (url.hash === '#embed-video') {
     if (a.href.includes('youtu')) {
-      embedYoutube(a);
-      if (thumbnail) thumbnail.remove();
+      a.parentElement.replaceChild(embedYoutube(url), a);
     } else if (a.href.includes('vimeo')) {
-      embedVimeo(a, thumbnail);
+      a.parentElement.replaceChild(embedVimeo(url, thumbnail), a);
     }
-  } else {
-    transformToVideoColumn(cell, a, block);
-    a.addEventListener('click', (e) => {
-      e.preventDefault();
-    });
+    if (thumbnail) thumbnail.remove();
+
+    return;
   }
+
+  transformToVideoColumn(cell, a, block);
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+  });
 };
 
 export default async function decorate(block) {

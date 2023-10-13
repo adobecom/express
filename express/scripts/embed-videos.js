@@ -10,16 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
-import {
-  loadScript,
-  createTag,
-  loadCSS,
-} from './utils.js';
+import { createTag, loadCSS, loadScript } from './utils.js';
 import { getAvailableVimeoSubLang } from '../blocks/shared/video.js';
-
-function isInTextNode(node) {
-  return node.parentElement.firstChild.nodeType === Node.TEXT_NODE;
-}
 
 export function getDefaultEmbed(url) {
   return `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">
@@ -29,34 +21,38 @@ export function getDefaultEmbed(url) {
   </div>`;
 }
 
-export function embedYoutube(a) {
-  if (isInTextNode(a)) return;
-  const title = !a.textContent.includes('http') ? a.textContent : 'Youtube Video';
-  const searchParams = new URLSearchParams(a.search);
-  const id = searchParams.get('v') || a.pathname.split('/').pop();
+export function embedYoutube(url) {
+  const title = !url.href.includes('http') ? url : 'Youtube Video';
+  const searchParams = new URLSearchParams(url.search);
+  const id = searchParams.get('v') || url.pathname.split('/').pop();
   searchParams.delete('v');
   loadScript('/express/scripts/libs/lite-yt-embed/lite-yt-embed.js', 'module');
   loadCSS('/express/scripts/libs/lite-yt-embed/lite-yt-embed.css');
-  const embedHTML = `<lite-youtube videoid="${id}" playlabel="${title}"></lite-youtube>`;
-  a.insertAdjacentHTML('afterend', embedHTML);
-  a.remove();
+
+  return createTag('lite-youtube', {
+    videoid: id,
+    playlabel: title,
+  });
 }
 
-export function embedVimeo(a, thumbnail) {
+export function embedVimeo(url, thumbnail) {
+  const wrapper = createTag('div', { class: 'embed-vimeo' });
   const thumbnailLink = thumbnail?.querySelector('img')?.src;
-  if (isInTextNode(a)) return;
-  const url = new URL(a.href);
   const src = url.href;
   const language = getAvailableVimeoSubLang();
   if (url.hostname !== 'player.vimeo.com') {
     loadScript('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.js', 'module');
     loadCSS('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.css');
     const video = url.pathname.split('/')[1];
-    const embedHTML = `<lite-vimeo videoid="${video}" src=${src} thumbnail=${thumbnailLink} language=${language}></lite-vimeo>`;
-    const wrapper = createTag('div', { class: 'embed-vimeo' }, embedHTML);
-    a.parentElement.replaceChild(wrapper, a);
+    const embed = createTag('lite-vimeo', {
+      videoid: video,
+      src,
+      thumbnail: thumbnailLink,
+      language,
+    });
+    wrapper.append(embed);
   }
-  if (thumbnail) thumbnail.remove();
+  return wrapper;
 }
 
 export function embedInstagram(url) {
