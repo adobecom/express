@@ -20,7 +20,7 @@ export default function init(el) {
     const { href } = a;
     const url = new URL(href);
     const suffix = url.pathname.split('/media_')[1];
-    const $parent = a.parentNode;
+    const parent = a.parentNode;
 
     if (href.endsWith('.mp4')) {
       const isAnimation = a.closest('.animation');
@@ -31,25 +31,25 @@ export default function init(el) {
           playsinline: '', autoplay: '', loop: '', muted: '',
         };
       }
-      const $poster = a.closest('div').querySelector('img');
-      if ($poster) {
-        attribs.poster = $poster.src;
-        $poster.remove();
+      const poster = a.closest('div').querySelector('img');
+      if (poster) {
+        attribs.poster = poster.src;
+        poster.remove();
       }
 
-      const $video = createTag('video', attribs);
+      const video = createTag('video', attribs);
 
       if (href.startsWith('https://hlx.blob.core.windows.net/external/')) {
-        $video.innerHTML = `<source src=${href} type="video/mp4">`;
+        video.innerHTML = `<source src=${href} type="video/mp4">`;
       } else {
-        $video.innerHTML = `<source src="./media_${suffix}" type="video/mp4">`;
+        video.innerHTML = `<source src="./media_${suffix}" type="video/mp4">`;
       }
 
-      a.parentNode.replaceChild($video, a);
+      a.parentNode.replaceChild(video, a);
       if (isAnimation) {
-        $video.addEventListener('canplay', () => {
-          $video.muted = true;
-          const playPromise = $video.play();
+        video.addEventListener('canplay', () => {
+          video.muted = true;
+          const playPromise = video.play();
           if (playPromise !== undefined) {
             playPromise.catch(() => {
               // ignore
@@ -59,9 +59,9 @@ export default function init(el) {
       }
     }
 
-    const $next = $parent.nextElementSibling;
-    if ($next && $next.tagName === 'P' && $next.innerHTML.trim().startsWith('<em>')) {
-      $next.classList.add('legend');
+    const next = parent.nextElementSibling;
+    if (next && next.tagName === 'P' && next.innerHTML.trim().startsWith('<em>')) {
+      next.classList.add('legend');
     }
   });
 }

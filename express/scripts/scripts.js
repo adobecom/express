@@ -678,7 +678,7 @@ function decorateLinks(main) {
         url = new URL(a.href);
       }
 
-      const idLegacyVideoLink = a.textContent.includes('hlx.blob.core.windows.net') && a.textContent.includes('#image');
+      const isLegacyVideoLink = a.textContent.startsWith('https://hlx.blob.core.windows.net/external/') && a.textContent.includes('#image');
       const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
       const isAdobeOwnedLinks = [
         'adobesparkpost.app.link',
@@ -704,7 +704,7 @@ function decorateLinks(main) {
       }
       if (a.href.includes('#_dnb')) {
         a.href = a.href.replace('#_dnb', '');
-      } else if (idLegacyVideoLink) {
+      } else if (isLegacyVideoLink) {
         a.href = a.textContent;
       } else {
         const autoBlock = decorateAutoBlock(a);
