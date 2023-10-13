@@ -1514,7 +1514,7 @@ export async function getExperimentConfig(experimentId) {
       console.log(config);
       return config;
     } catch (e) {
-      console.log(`error loading experiment manifest: ${path}`, e);
+      console.log('error loading experiment manifest: %s', path, e);
     }
     return null;
   }
