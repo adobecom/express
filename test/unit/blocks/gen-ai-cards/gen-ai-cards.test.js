@@ -14,7 +14,7 @@ import { readFile } from '@web/test-runner-commands';
 import sinon from 'sinon';
 import { expect } from '@esm-bundle/chai';
 
-const { default: decorate } = await import(
+const { default: decorate, windowHelper } = await import(
   '../../../../express/blocks/gen-ai-cards/gen-ai-cards.js'
 );
 const testBody = await readFile({ path: './mocks/body.html' });
@@ -85,7 +85,7 @@ describe('Gen AI Cards', () => {
     const form = card.querySelector('.gen-ai-input-form');
     const input = form.querySelector('input');
     const button = form.querySelector('button');
-    const stub = sinon.stub(window, 'open');
+    const stub = sinon.stub(windowHelper, 'redirect');
     expect(button.disabled).to.be.true;
     const enterEvent = new KeyboardEvent('keyup', {
       key: 'Enter',
