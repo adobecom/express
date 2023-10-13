@@ -10,10 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import {
-  createTag,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+import { createTag } from '../../scripts/scripts.js';
 
 export default function init(el) {
   el.querySelectorAll('a:any-link').forEach((a) => {
