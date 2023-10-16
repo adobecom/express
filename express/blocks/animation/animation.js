@@ -36,11 +36,11 @@ export default function init(el) {
 
       const video = createTag('video', attribs);
 
-      if (href.startsWith('https://hlx.blob.core.windows.net/external/')) {
-        video.innerHTML = `<source src=${href} type="video/mp4">`;
-      } else {
-        video.innerHTML = `<source src="./media_${suffix}" type="video/mp4">`;
-      }
+      // if (href.startsWith('https://hlx.blob.core.windows.net/external/')) {
+      //   video.innerHTML = `<source src=${href} type="video/mp4">`;
+      // } else {
+      //   video.innerHTML = `<source src="./media_${suffix}" type="video/mp4">`;
+      // }
 
       a.parentNode.replaceChild(video, a);
       if (isAnimation) {
