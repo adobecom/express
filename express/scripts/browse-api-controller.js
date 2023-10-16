@@ -26,9 +26,12 @@ const endpoints = {
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   stage: {
-    cdn: 'https://www.stage.adobe.com/ax-uss-api/',
+    // todo: use stage when browse API syncs up environments properly
+    cdn: 'https://uss-templates-dev.adobe.io/uss/v3/query',
+    // cdn: 'https://www.stage.adobe.com/ax-uss-api/',
     url: 'https://uss-templates-stage.adobe.io/uss/v3/query',
-    token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
+    token: window.atob('Y2QxODIzZWQtMDEwNC00OTJmLWJhOTEtMjVmNDE5NWQ1ZjZj'),
+    // token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   prod: {
@@ -61,7 +64,7 @@ export async function getPillWordsMapping() {
   }
 }
 
-export default async function getData(env = '', data = {}) {
+export default async function getData(env = 'dev', data = {}) {
   const endpoint = endpoints[env];
   return mFetch(endpoint.cdn, {
     method: 'POST',
@@ -80,7 +83,7 @@ export async function getDataWithContext({ urlPath }) {
     context: {
       application: { urlPath },
     },
-    locale: getLanguage(getLocale(window.location)),
+    locale: getLanguage(getLocale(window.location)) || 'en_US',
     queries: [{
       id: 'ccx-search-1',
       start: 0,
@@ -89,10 +92,10 @@ export async function getDataWithContext({ urlPath }) {
       facets: [{ facet: 'categories', limit: 10 }],
     }],
   };
-
-  const env = window.location.host === 'localhost:3000' ? { name: 'dev' } : getHelixEnv();
+  const useDev = window.location.host === 'localhost:3000' || window.isTestEnv;
+  const env = useDev ? { name: 'dev' } : getHelixEnv();
   const result = await getData(env.name, data);
-  if (result.status.httpCode !== 200) return null;
+  if (result?.status?.httpCode !== 200) return null;
 
   return result;
 }

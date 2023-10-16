@@ -18,11 +18,10 @@ import isDarkOverlayReadable from '../../scripts/color-tools.js';
 export default async function decorate(block) {
   block.style.visibility = 'hidden';
 
-  const payloadContext = { urlPath: window.location.pathname };
+  const payloadContext = { urlPath: block.textContent.trim() || window.location.pathname };
 
   const ckgResult = await getDataWithContext(payloadContext);
   if (!ckgResult) return;
-
   const { buckets } = ckgResult?.queryResults?.[0].facets?.[0];
   const hexCodes = ckgResult?.queryResults?.[0].context?.application?.['metadata.color.hexCodes'];
 
