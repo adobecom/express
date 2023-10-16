@@ -10,34 +10,45 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, getMetadata, titleCase } from '../../scripts/scripts.js';
-import { getDataWithContext } from '../../scripts/api-v3-controller.js';
+import { createTag, titleCase } from '../../scripts/scripts.js';
+import { getDataWithContext } from '../../scripts/browse-api-controller.js';
 import buildCarousel from '../shared/carousel.js';
+import isDarkOverlayReadable from '../../scripts/color-tools.js';
 
 export default async function decorate(block) {
   block.style.visibility = 'hidden';
-  const context = {
-    urlPath: window.location.pathname,
-    task: getMetadata('tasks'),
-    topic: getMetadata('topics'),
-  };
 
-  const ckgResult = await getDataWithContext(context);
-  const { buckets } = ckgResult.queryResults[0].facets[0];
+  const payloadContext = { urlPath: window.location.pathname };
+
+  const ckgResult = await getDataWithContext(payloadContext);
+  if (!ckgResult) return;
+
+  const { buckets } = ckgResult?.queryResults?.[0].facets?.[0];
+  const hexCodes = ckgResult?.queryResults?.[0].context?.application?.['metadata.color.hexCodes'];
 
   buckets.forEach((color) => {
-    const colorPath = color.canonicalName.split(':')[3].replaceAll('_', '-');
-    const colorName = color.displayValue.split(':')[3].replaceAll('_', ' ');
-
+    const colorPath = color.value;
+    const colorName = color.displayValue;
     const buttonContainer = createTag('p', { class: 'button-container' });
     const aTag = createTag('a', {
       class: 'button',
       title: colorName,
-      href: window.location.pathname.replace(/\/[^/]*$/, `/${colorPath}`),
+      href: colorPath,
     }, titleCase(colorName));
 
     buttonContainer.append(aTag);
     block.append(buttonContainer);
+
+    if (hexCodes) {
+      const colorHex = hexCodes[color.canonicalName];
+
+      if (!colorHex) return;
+
+      const dark = isDarkOverlayReadable(colorHex);
+      aTag.style.backgroundColor = colorHex;
+
+      if (!dark) aTag.style.color = '#FFFFFF';
+    }
   });
 
   await buildCarousel('.button-container', block);

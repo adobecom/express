@@ -18,10 +18,12 @@ import {
 import {
   getDataWithId,
   getPillWordsMapping,
-} from './api-v3-controller.js';
+} from './browse-api-controller.js';
 
 import { memoize } from './utils.js';
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
+
+const defaultRegex = /\/express\/templates\/default/;
 
 async function fetchLinkList() {
   if (!window.linkLists) {
@@ -68,7 +70,6 @@ function matchCKGResult(ckgData, pageData) {
   return sameLocale && ckgMatch && taskMatch;
 }
 
-const defaultRegex = /\/express\/templates\/default/;
 function replaceLinkPill(linkPill, data) {
   const clone = linkPill.cloneNode(true);
   if (data) {

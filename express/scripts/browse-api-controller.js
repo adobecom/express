@@ -10,7 +10,12 @@
  * governing permissions and limitations under the License.
  */
 
-import { getHelixEnv, getLocale, getMetadata } from './scripts.js';
+import {
+  getHelixEnv,
+  getLanguage,
+  getLocale,
+  getMetadata,
+} from './scripts.js';
 import { memoize } from './utils.js';
 
 const endpoints = {
@@ -69,17 +74,13 @@ export default async function getData(env = '', data = {}) {
   });
 }
 
-export async function getDataWithContext({ urlPath, task, topic }) {
+export async function getDataWithContext({ urlPath }) {
   const data = {
     experienceId: 'templates-browse-v1',
     context: {
-      application: {
-        urlPath,
-        task,
-        topic,
-      },
+      application: { urlPath },
     },
-    locale: 'en-US',
+    locale: getLanguage(getLocale(window.location)),
     queries: [{
       id: 'ccx-search-1',
       start: 0,
@@ -89,53 +90,50 @@ export async function getDataWithContext({ urlPath, task, topic }) {
     }],
   };
 
-  const env = getHelixEnv();
+  const env = window.location.host === 'localhost:3000' ? { name: 'dev' } : getHelixEnv();
   const result = await getData(env.name, data);
-  if (result.status.httpCode === 200) {
-    return result;
-  }
+  if (result.status.httpCode !== 200) return null;
 
-  return false;
+  return result;
 }
 
 export async function getDataWithId() {
-  if (getMetadata('ckgid')) {
-    const dataRaw = {
-      experienceId: 'templates-browse-v1',
-      locale: 'en_US',
-      queries: [
-        {
-          id: 'ccx-search-1',
-          start: 0,
-          limit: 40,
-          scope: {
-            entities: [
-              'HzTemplate',
-            ],
-          },
-          filters: [
-            {
-              categories: [
-                getMetadata('ckgid'),
-              ],
-            },
-          ],
-          facets: [
-            {
-              facet: 'categories',
-              limit: 10,
-            },
+  if (!getMetadata('ckgid')) return null;
+
+  const dataRaw = {
+    experienceId: 'templates-browse-v1',
+    locale: 'en_US',
+    queries: [
+      {
+        id: 'ccx-search-1',
+        start: 0,
+        limit: 40,
+        scope: {
+          entities: [
+            'HzTemplate',
           ],
         },
-      ],
-    };
+        filters: [
+          {
+            categories: [
+              getMetadata('ckgid'),
+            ],
+          },
+        ],
+        facets: [
+          {
+            facet: 'categories',
+            limit: 10,
+          },
+        ],
+      },
+    ],
+  };
 
-    const env = getHelixEnv();
-    const result = await getData(env.name, dataRaw);
-    if (result.status.httpCode === 200) {
-      return result;
-    }
-  }
+  const env = getHelixEnv();
+  const result = await getData(env.name, dataRaw);
 
-  return false;
+  if (result.status.httpCode !== 200) return null;
+
+  return result;
 }
