@@ -291,10 +291,9 @@ async function decorateBackground(block) {
   const mediaRow = block.querySelector('div:nth-child(2)');
   return new Promise((resolve) => {
     if (mediaRow) {
-      const mediaEl = mediaRow.querySelector('a, :scope > div');
+      const media = mediaRow.querySelector('a')?.href || mediaRow.querySelector(':scope > div')?.textContent;
       mediaRow.remove();
-      if (mediaEl) {
-        const media = mediaEl.href || mediaEl.textContent;
+      if (media) {
         const splitArr = media.split('.');
 
         if (supportedImgFormat.includes(splitArr[splitArr.length - 1])) {
