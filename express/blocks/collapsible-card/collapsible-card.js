@@ -15,7 +15,7 @@ import {
   fetchRelevantRows,
   getIconElement,
   getMobileOperatingSystem,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 function toggleCollapsibleCard($block) {
   $block.classList.toggle('expanded');

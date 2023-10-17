@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, loadCSS, loadScript } from './scripts.js';
+import { createTag, loadCSS, loadScript } from './utils.js';
 import { getAvailableVimeoSubLang } from '../blocks/shared/video.js';
 
 export function getDefaultEmbed(url) {

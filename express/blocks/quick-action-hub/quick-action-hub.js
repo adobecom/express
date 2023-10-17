@@ -14,7 +14,7 @@ import {
   createTag,
   transformLinkToAnimation,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 export default function decorate($block) {
   const $rows = Array.from($block.children);

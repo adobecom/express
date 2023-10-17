@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, readBlockConfig } from '../../scripts/scripts.js';
+import { createTag, readBlockConfig } from '../../scripts/utils.js';
 
 const CARD_WIDTH = 157;
 const CARD_HEIGHT = 313;

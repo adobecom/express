@@ -10,8 +10,8 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-disable no-underscore-dangle */
-import { fetchPlaceholders, getLanguage } from '../../scripts/scripts.js';
-import { memoize } from '../../scripts/utils.js';
+import { fetchPlaceholders, getLanguage } from '../../scripts/utils.js';
+import { memoize } from '../../scripts/hofs.js';
 
 // supported by content api
 const supportedLanguages = [

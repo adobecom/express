@@ -10,8 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
-import { getLocale, getLanguage } from './scripts.js';
-import { memoize, throttle, debounce } from './utils.js';
+import { getLocale, getLanguage } from './utils.js';
+import { memoize, throttle, debounce } from './hofs.js';
 
 const url = 'https://adobesearch-atc.adobe.io/uss/v3/autocomplete';
 const experienceId = 'default-templates-autocomplete-v1';

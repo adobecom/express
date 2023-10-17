@@ -16,7 +16,7 @@ import {
   getMobileOperatingSystem,
   fetchPlaceholders,
   getIconElement,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 async function buildPayload() {
   const payload = {

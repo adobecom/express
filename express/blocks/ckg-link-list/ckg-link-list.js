@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, titleCase } from '../../scripts/scripts.js';
+import { createTag, titleCase } from '../../scripts/utils.js';
 import { getDataWithContext } from '../../scripts/browse-api-controller.js';
 import buildCarousel from '../shared/carousel.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';

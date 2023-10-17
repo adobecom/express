@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { getLocale } from './scripts.js';
+import { getLocale } from './utils.js';
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
 
 async function existsTemplatePage(url) {

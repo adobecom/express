@@ -13,7 +13,7 @@
 import {
   createTag,
   loadCSS,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 function buildPagination(wrapper, payload) {
   const paginationContainer = createTag('div', { class: 'pagination-container' });

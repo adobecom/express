@@ -15,7 +15,7 @@ import {
   fixIcons,
   getIconElement,
   fetchPlainBlockFromFragment,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
 
 async function fetchPlan(planUrl) {

@@ -20,7 +20,7 @@
 import {
   decorateMain,
   loadBlocks,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 /**
  * Loads a fragment.

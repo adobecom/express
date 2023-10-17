@@ -21,7 +21,7 @@ import {
   getMetadata,
   fetchPlaceholders,
 // eslint-disable-next-line import/no-unresolved
-} from './scripts.js';
+} from './utils.js';
 
 const isHomepage = window.location.pathname.endsWith('/express/');
 

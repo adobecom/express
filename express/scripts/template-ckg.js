@@ -13,14 +13,14 @@ import {
   titleCase,
   getLocale,
   getMetadata,
-} from './scripts.js';
+} from './utils.js';
 
 import {
   getDataWithId,
   getPillWordsMapping,
 } from './browse-api-controller.js';
 
-import { memoize } from './utils.js';
+import { memoize } from './hofs.js';
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
 
 const defaultRegex = /\/express\/templates\/default/;

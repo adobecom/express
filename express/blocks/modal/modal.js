@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-disable max-len */
-import { loadCSS, createTag, getIconElement } from '../../scripts/scripts.js';
+import { loadCSS, createTag, getIconElement } from '../../scripts/utils.js';
 
 const FOCUSABLES = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"]';
 

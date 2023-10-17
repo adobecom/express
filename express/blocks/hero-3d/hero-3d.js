@@ -17,7 +17,7 @@ import {
   lazyLoadLottiePlayer,
   readBlockConfig,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 const DEFAULT_DELAY = 1000;
 const MAX_NONCONFIG_ROWS = 4;
