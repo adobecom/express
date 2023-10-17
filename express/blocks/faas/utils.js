@@ -269,10 +269,7 @@ const afterSubmitCallback = (e) => {
   if (!e.success) return;
   const faas = document.querySelector('.faas-form');
   if (!faas) return;
-  faas.reset();
-
   const dialogModal = faas.closest('.dialog-modal');
-
   if (dialogModal) {
     const closeBtn = dialogModal.querySelector('.dialog-close');
     const faasFormWrapper = dialogModal.querySelector('.faas-form-wrapper');
@@ -284,6 +281,7 @@ const afterSubmitCallback = (e) => {
       faasFormWrapper.append(overlay);
 
       checkIcon.addEventListener('animationend', () => {
+        faas.reset();
         if (closeBtn) closeBtn.click();
       }, { passive: true });
     }
