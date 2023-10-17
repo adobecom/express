@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag } from '../../scripts/scripts.js';
+import { createTag } from '../../scripts/utils.js';
 
 const typeWord = (textSpan, word, textWrapper, cta) => new Promise((resolve) => {
   const typingSpeed = 100;

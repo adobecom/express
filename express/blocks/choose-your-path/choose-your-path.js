@@ -15,7 +15,7 @@ import {
   createTag,
   fetchPlaceholders,
   getLottie,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 function getWidth() {
   return Math.max(

@@ -12,7 +12,7 @@
 
 import {
   createTag,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 const LIBRARY_PATH = '/docs/library/library.json';
 

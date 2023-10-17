@@ -25,7 +25,7 @@ main .fullscreen-marquee-container .marquee-background {
   top: 0;
   min-width: 100%;
   height: 100%;
-  background-image: url('https://www.adobe.com/express/media_1aa259dd9ac4c29168d486d36c6c737074d24d756.jpeg#width=1600&height=901');
+  background-image: url('/express/media_1aa259dd9ac4c29168d486d36c6c737074d24d756.jpeg#width=1600&height=901');
   background-repeat: no-repeat;
   background-size: cover;
   opacity: 0.1;
@@ -63,7 +63,7 @@ main .fullscreen-marquee-container .fullscreen-marquee h1 > span.colorful {
 main .section.fullscreen-marquee-container div.fullscreen-marquee > div > div.picture-frame {
   position: relative;
   box-sizing: border-box;
-  background-image: url('https://www.adobe.com/express/media_13c6a255a99e9ab7a39bdc21ca9b86652c3e59f27.png#width=1600&height=1077');
+  background-image: url('/express/media_13c6a255a99e9ab7a39bdc21ca9b86652c3e59f27.png#width=1600&height=1077');
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;

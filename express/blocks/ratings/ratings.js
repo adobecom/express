@@ -21,7 +21,7 @@ import {
   toClassName,
   getMetadata,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 import BlockMediator from '../../scripts/block-mediator.min.js';
 

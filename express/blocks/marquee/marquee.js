@@ -17,7 +17,7 @@ import {
   addHeaderSizing,
   getIconElement,
   fetchPlaceholders,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 const breakpointConfig = [
   {

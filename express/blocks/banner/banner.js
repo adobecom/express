@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { normalizeHeadings } from '../../scripts/scripts.js';
+import { normalizeHeadings } from '../../scripts/utils.js';
 
 export default async function decorate(block) {
   normalizeHeadings(block, ['h2', 'h3']);

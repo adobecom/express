@@ -13,14 +13,14 @@ import {
   titleCase,
   getLocale,
   getMetadata,
-} from './scripts.js';
+} from './utils.js';
 
 import {
   getDataWithId,
   getPillWordsMapping,
 } from './api-v3-controller.js';
 
-import { memoize } from './utils.js';
+import { memoize } from './hofs.js';
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
 
 async function fetchLinkList() {

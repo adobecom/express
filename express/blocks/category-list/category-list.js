@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { normalizeHeadings } from '../../scripts/scripts.js';
+import { normalizeHeadings } from '../../scripts/utils.js';
 import buildCarousel from '../shared/carousel.js';
 
 export default function decorate(block) {
