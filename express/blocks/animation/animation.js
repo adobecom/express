@@ -12,15 +12,16 @@
 
 import { createTag } from '../../scripts/utils.js';
 
-export default function init(el) {
-  el.querySelectorAll('a:any-link').forEach((a) => {
+export default function decorate(block, name, doc) {
+  doc.querySelectorAll('.animation a[href], .video a[href]').forEach((a) => {
     const { href } = a;
     const url = new URL(href);
     const suffix = url.pathname.split('/media_')[1];
     const parent = a.parentNode;
 
     if (href.endsWith('.mp4')) {
-      const isAnimation = a.closest('.animation');
+      const isAnimation = !!a.closest('.animation');
+      // const isAnimation = true;
 
       let attribs = { controls: '' };
       if (isAnimation) {
@@ -35,13 +36,12 @@ export default function init(el) {
       }
 
       const video = createTag('video', attribs);
-
+      /*
       if (href.startsWith('https://hlx.blob.core.windows.net/external/')) {
-        video.innerHTML = `<source src=${href} type="video/mp4">`;
-      } else {
-        video.innerHTML = `<source src="./media_${suffix}" type="video/mp4">`;
+        href='/hlx_'+href.split('/')[4].replace('#image','');
       }
-
+      */
+      video.innerHTML = `<source src="./media_${suffix}" type="video/mp4">`;
       a.parentNode.replaceChild(video, a);
       if (isAnimation) {
         video.addEventListener('canplay', () => {
