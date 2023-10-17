@@ -10,8 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
-import { getHelixEnv, getLocale } from './scripts.js';
-import { memoize } from './utils.js';
+import { getHelixEnv, getLocale } from './utils.js';
+import { memoize } from './hofs.js';
 
 const memoizedFetchUrl = memoize((url) => fetch(url).then((r) => (r.ok ? r.json() : null)), {
   key: (q) => q,

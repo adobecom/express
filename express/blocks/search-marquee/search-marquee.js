@@ -17,7 +17,7 @@ import {
   getLocale,
   getMetadata,
   sampleRUM,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import { buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 import buildCarousel from '../shared/carousel.js';

@@ -42,6 +42,7 @@ const fragmentToString = (fragment) => {
   return trim(html);
 };
 window.placeholders = {};
+window.spark = {};
 const offers = {
   total: 1,
   offset: 0,

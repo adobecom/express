@@ -14,7 +14,7 @@
 import { expect } from '@esm-bundle/chai';
 import {
   createTag,
-} from '../../express/scripts/scripts.js';
+} from '../../express/scripts/utils.js';
 import BalancedWordWrapper from '../../express/scripts/bw2.js';
 
 describe('Japanese balanced word wrap', () => {

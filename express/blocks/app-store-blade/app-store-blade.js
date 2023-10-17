@@ -17,7 +17,7 @@ import {
   getIcon,
   getIconElement,
   getMetadata,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 /**
  * Determine the mobile operating system.

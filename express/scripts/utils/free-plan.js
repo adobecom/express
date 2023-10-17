@@ -15,7 +15,7 @@ import {
   getMetadata,
   getLottie,
   lazyLoadLottiePlayer,
-} from '../scripts.js';
+} from '../utils.js';
 
 export async function buildStaticFreePlanWidget() {
   const placeholders = await fetchPlaceholders();

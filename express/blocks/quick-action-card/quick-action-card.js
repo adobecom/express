@@ -18,7 +18,7 @@ import {
   fixIcons,
   readBlockConfig,
   toClassName,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 import buildCarousel from '../shared/carousel.js';
 

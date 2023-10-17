@@ -17,7 +17,7 @@ import {
   createTag,
   normalizeHeadings,
   decorateButtons,
-} from '../../express/scripts/scripts.js';
+} from '../../express/scripts/utils.js';
 
 describe('scripts#normalizeHeadings', () => {
   const runTest = (blockContent, allowedHeadings, expected) => {

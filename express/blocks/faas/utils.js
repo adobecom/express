@@ -15,8 +15,9 @@ import {
   loadCSS,
   loadScript,
   getHelixEnv,
-  createTag, getIconElement,
-} from '../../scripts/scripts.js';
+  createTag,
+  getIconElement,
+} from '../../scripts/utils.js';
 
 let state = {};
 

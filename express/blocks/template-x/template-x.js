@@ -27,7 +27,7 @@ import {
   titleCase,
   toClassName,
   transformLinkToAnimation,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import { Masonry } from '../shared/masonry.js';
 import buildCarousel from '../shared/carousel.js';
 import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './template-search-api-v3.js';

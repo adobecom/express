@@ -11,7 +11,7 @@
  */
 import {
   getLocale,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 function decorateSchemasBlocks(block) {
   const rows = Array.from(block.children);

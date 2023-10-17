@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { loadScript } from '../../../../scripts/scripts.js';
+import { loadScript } from '../../../../scripts/utils.js';
 
 export default function decorate(block) {
   window.qtId = 'remove-background';

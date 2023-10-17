@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, getIconElement } from '../../scripts/scripts.js';
+import { createTag, getIconElement } from '../../scripts/utils.js';
 
 function show(block) {
   const body = block.closest('body');

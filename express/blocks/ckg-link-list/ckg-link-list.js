@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, getMetadata, titleCase } from '../../scripts/scripts.js';
+import { createTag, getMetadata, titleCase } from '../../scripts/utils.js';
 import { getDataWithContext } from '../../scripts/api-v3-controller.js';
 import buildCarousel from '../shared/carousel.js';
 

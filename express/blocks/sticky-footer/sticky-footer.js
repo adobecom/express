@@ -12,7 +12,7 @@
 
 import {
   createTag, fetchPlaceholders, getIcon, readBlockConfig,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 /**
  * @param {number} [rating=5]

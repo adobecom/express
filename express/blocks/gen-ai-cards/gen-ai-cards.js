@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, fetchPlaceholders } from '../../scripts/scripts.js';
+import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
 import buildCarousel from '../shared/carousel.js';
 

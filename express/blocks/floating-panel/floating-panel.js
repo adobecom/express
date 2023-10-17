@@ -16,7 +16,7 @@ import {
   fetchPlainBlockFromFragment,
   getLottie,
   lazyLoadLottiePlayer,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 import { collectFloatingButtonData } from '../shared/floating-cta.js';
 
