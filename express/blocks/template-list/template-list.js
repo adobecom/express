@@ -718,7 +718,6 @@ function decorateFunctionsContainer($block, $section, functions, placeholders, p
   }
 
   $mobileFilterButton.addEventListener('click', () => {
-    console.log('clicked');
     appendCategoryTemplatesCount($section, props);
   }, { once: true });
 
