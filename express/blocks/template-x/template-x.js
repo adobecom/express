@@ -192,6 +192,7 @@ function constructProps(block) {
     backgroundColor: '#000B1D',
     backgroundAnimation: null,
     textColor: '#FFFFFF',
+    loadedOtherCategoryCounts: false,
   };
 
   Array.from(block.children).forEach((row) => {
@@ -592,6 +593,9 @@ function updateLottieStatus(block) {
 }
 
 async function appendCategoryTemplatesCount(block, props) {
+  if (props.loadedOtherCategoryCounts) {
+    return;
+  }
   const categories = block.querySelectorAll('ul.category-list > li');
   // FIXME: props already contain start: 70 at this time
   const tempProps = JSON.parse(JSON.stringify(props));
@@ -608,6 +612,7 @@ async function appendCategoryTemplatesCount(block, props) {
       anchor.append(countSpan);
     }
   }
+  props.loadedOtherCategoryCounts = true;
 }
 
 async function decorateCategoryList(block, props) {
