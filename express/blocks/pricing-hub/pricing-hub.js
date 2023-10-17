@@ -17,7 +17,7 @@ import {
   getLottie,
   lazyLoadLottiePlayer,
   getIconElement, fetchPlaceholders,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
 
 /* eslint-disable import/named, import/extensions */

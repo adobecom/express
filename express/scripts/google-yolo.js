@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { getMetadata } from './scripts.js';
+import { getMetadata } from './utils.js';
 
 function getRedirectUri() {
   const primaryCta = document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA');

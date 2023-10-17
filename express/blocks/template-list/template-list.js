@@ -29,13 +29,13 @@ import {
   linkImage,
   sampleRUM,
   toClassName,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 import { Masonry } from '../shared/masonry.js';
 
 import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
-import { memoize } from '../../scripts/utils.js';
+import { memoize } from '../../scripts/hofs.js';
 import getBreadcrumbs from './breadcrumbs.js';
 
 function wordStartsWithVowels(word) {

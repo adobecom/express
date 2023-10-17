@@ -18,7 +18,7 @@ import {
   getIconElement,
   getMetadata,
   getMobileOperatingSystem,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 const imageSrcs = [
   '/express/media_1e71d9d4a13e8a8422dd1b8dbdad9a0bf4d2565f8.jpeg?width=380&format=jpeg&optimize=medium',

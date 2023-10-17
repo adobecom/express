@@ -11,7 +11,7 @@
  */
 
 // eslint-disable-next-line import/no-unresolved
-import { createTag } from '../../scripts/scripts.js';
+import { createTag } from '../../scripts/utils.js';
 
 export default function decorate($block) {
   $block.querySelectorAll(':scope>div').forEach(($card) => {

@@ -14,7 +14,7 @@ import {
   createTag,
   transformLinkToAnimation,
   createOptimizedPicture,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 function styleBackgroundWithScroll($section) {

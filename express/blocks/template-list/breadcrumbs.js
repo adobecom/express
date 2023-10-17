@@ -14,7 +14,7 @@ import {
   getMetadata,
   titleCase,
   createTag,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 
 function sanitize(str) {
