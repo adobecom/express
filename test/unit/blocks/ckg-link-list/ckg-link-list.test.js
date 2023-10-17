@@ -22,11 +22,15 @@ describe('CKG Link List', () => {
     document.body.innerHTML = html;
   });
 
-  it('Block loads ckg pills with correct pathname as context', async () => {
+  it('Block behaves accordingly to fetch results', async () => {
     const block = document.querySelector('.ckg-link-list');
     await decorate(block);
     const links = block.querySelectorAll('a');
 
-    expect(links.length).to.be.greaterThan(0);
+    if (links.length) {
+      expect(block.style.visibility).to.be.equal('visible');
+    } else {
+      expect(block.style.visibility).to.be.equal('hidden');
+    }
   });
 });

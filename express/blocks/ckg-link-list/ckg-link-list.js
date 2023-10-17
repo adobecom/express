@@ -22,12 +22,14 @@ export default async function decorate(block) {
 
   const ckgResult = await getDataWithContext(payloadContext);
   if (!ckgResult) return;
-  const { buckets } = ckgResult?.queryResults?.[0].facets?.[0];
+  const pills = ckgResult?.queryResults?.[0]?.facets?.[0]?.buckets;
   const hexCodes = ckgResult?.queryResults?.[0].context?.application?.['metadata.color.hexCodes'];
 
-  buckets.forEach((color) => {
-    const colorPath = color.value;
-    const colorName = color.displayValue;
+  if (!pills || !pills.length) return;
+
+  pills.forEach((pill) => {
+    const colorPath = pill.value;
+    const colorName = pill.displayValue;
     const buttonContainer = createTag('p', { class: 'button-container' });
     const aTag = createTag('a', {
       class: 'button',
@@ -39,7 +41,7 @@ export default async function decorate(block) {
     block.append(buttonContainer);
 
     if (hexCodes) {
-      const colorHex = hexCodes[color.canonicalName];
+      const colorHex = hexCodes[pill.canonicalName];
 
       if (!colorHex) return;
 
