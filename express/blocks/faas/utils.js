@@ -15,7 +15,7 @@ import {
   loadCSS,
   loadScript,
   getHelixEnv,
-  createTag,
+  createTag, getIconElement,
 } from '../../scripts/scripts.js';
 
 let state = {};
@@ -27,7 +27,8 @@ export const getFaasHostSubDomain = (environment) => {
   if (env.name === 'prod' || faasEnv === 'prod') {
     return '';
   }
-  if (faasEnv === 'stage') {
+  // fixme: temporary fix because FaaS returns 403 on other staging domains.
+  if (window.location.hostname === 'www.stage.adobe.com' || faasEnv === 'stage') {
     return 'staging.';
   }
   if (faasEnv === 'dev') {
@@ -264,7 +265,28 @@ const beforeSubmitCallback = () => {
 /* c8 ignore stop */
 
 const afterSubmitCallback = (e) => {
-  console.log(e)
+  if (!e.success) return;
+  const faas = document.querySelector('.faas-form');
+  if (!faas) return;
+  faas.reset();
+
+  const dialogModal = faas.closest('.dialog-modal');
+
+  if (dialogModal) {
+    const closeBtn = dialogModal.querySelector('.dialog-close');
+    const faasFormWrapper = dialogModal.querySelector('.faas-form-wrapper');
+
+    if (faasFormWrapper) {
+      const overlay = createTag('div', { class: 'faas-form-confirm-overlay' });
+      const checkIcon = getIconElement('checkmark-green');
+      overlay.append(checkIcon);
+      faasFormWrapper.append(overlay);
+
+      checkIcon.addEventListener('animationend', () => {
+        if (closeBtn) closeBtn.click();
+      }, { passive: true });
+    }
+  }
 };
 
 export const makeFaasConfig = (targetState) => {
