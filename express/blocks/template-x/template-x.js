@@ -591,6 +591,25 @@ function updateLottieStatus(block) {
   }
 }
 
+async function appendCategoryTemplatesCount(block, props) {
+  const categories = block.querySelectorAll('ul.category-list > li');
+  // FIXME: props already contain start: 70 at this time
+  const tempProps = JSON.parse(JSON.stringify(props));
+  tempProps.limit = 0;
+  const lang = getLanguage(getLocale(window.location));
+
+  for (const li of categories) {
+    const anchor = li.querySelector('a');
+    if (anchor) {
+      const countSpan = createTag('span', { class: 'category-list-template-count' });
+      // eslint-disable-next-line no-await-in-loop
+      const cnt = await fetchTemplatesCategoryCount(props, anchor.dataset.tasks);
+      countSpan.textContent = `(${cnt.toLocaleString(lang)})`;
+      anchor.append(countSpan);
+    }
+  }
+}
+
 async function decorateCategoryList(block, props) {
   const placeholders = await fetchPlaceholders();
   const locale = getLocale(window.location);
@@ -638,6 +657,10 @@ async function decorateCategoryList(block, props) {
     listItem.append(a);
     categoriesList.append(listItem);
   });
+
+  categoriesDesktopWrapper.addEventListener('mouseover', () => {
+    appendCategoryTemplatesCount(block, props);
+  }, { once: true });
 
   const categoriesMobileWrapper = categoriesDesktopWrapper.cloneNode({ deep: true });
   const mobileCategoriesToggle = createTag('span', { class: 'category-list-toggle' });
@@ -754,7 +777,9 @@ function initDrawer(block, props, toolBar) {
   const functionWrappers = drawer.querySelectorAll('.function-wrapper');
 
   let currentFilters;
-
+  filterButton.addEventListener('click', () => {
+    appendCategoryTemplatesCount(block, props);
+  }, { once: true });
   filterButton.addEventListener('click', () => {
     currentFilters = { ...props.filters };
     drawer.classList.remove('hidden');
@@ -1278,25 +1303,6 @@ async function decorateTemplates(block, props) {
   document.dispatchEvent(linksPopulated);
 }
 
-async function appendCategoryTemplatesCount(block, props) {
-  const categories = block.querySelectorAll('ul.category-list > li');
-  // FIXME: props already contain start: 70 at this time
-  const tempProps = JSON.parse(JSON.stringify(props));
-  tempProps.limit = 0;
-  const lang = getLanguage(getLocale(window.location));
-
-  for (const li of categories) {
-    const anchor = li.querySelector('a');
-    if (anchor) {
-      const countSpan = createTag('span', { class: 'category-list-template-count' });
-      // eslint-disable-next-line no-await-in-loop
-      const cnt = await fetchTemplatesCategoryCount(props, anchor.dataset.tasks);
-      countSpan.textContent = `(${cnt.toLocaleString(lang)})`;
-      anchor.append(countSpan);
-    }
-  }
-}
-
 async function decorateBreadcrumbs(block) {
   // breadcrumbs are desktop-only
   if (document.body.dataset.device !== 'desktop') return;
@@ -1621,7 +1627,6 @@ async function buildTemplateList(block, props, type = []) {
   if (templates && props.toolBar) {
     await decorateToolbar(block, props);
     await decorateCategoryList(block, props);
-    appendCategoryTemplatesCount(block, props);
   }
 
   if (props.toolBar && props.searchBar) {
