@@ -33,8 +33,8 @@ async function loadFragment(path) {
     if (resp.ok) {
       const main = document.createElement('main');
       main.innerHTML = await resp.text();
-      await decorateMain(main);
-      await loadBlocks(main);
+      const sections = await decorateMain(main);
+      await loadBlocks(sections);
       return main;
     }
   }
@@ -48,7 +48,6 @@ export default async function decorate(block) {
 
   if (fragment) {
     const fragmentSection = fragment.querySelector(':scope .section');
-    const faasLink = fragment.querySelector('a[data-block-name=faas]');
 
     if (fragmentSection) {
       const audience = fragmentSection.dataset?.audience;
@@ -66,12 +65,6 @@ export default async function decorate(block) {
       } else {
         block.replaceWith(...fragmentSection.childNodes);
       }
-    }
-
-    if (faasLink) {
-      faasLink.style.visibility = 'invisible';
-      const { default: initFaas } = await import('../faas/faas.js');
-      initFaas(faasLink);
     }
   }
 }

@@ -27,7 +27,7 @@ export const getFaasHostSubDomain = (environment) => {
   if (env.name === 'prod' || faasEnv === 'prod') {
     return '';
   }
-  if (env.name === 'stage' || faasEnv === 'stage') {
+  if (faasEnv === 'stage') {
     return 'staging.';
   }
   if (faasEnv === 'dev') {
@@ -263,6 +263,10 @@ const beforeSubmitCallback = () => {
 };
 /* c8 ignore stop */
 
+const afterSubmitCallback = (e) => {
+  console.log(e)
+};
+
 export const makeFaasConfig = (targetState) => {
   if (!targetState) {
     state = defaultState;
@@ -314,6 +318,7 @@ export const makeFaasConfig = (targetState) => {
     e: {
       afterYiiLoadedCallback,
       beforeSubmitCallback,
+      afterSubmitCallback,
     },
     style_backgroundTheme: targetState.style_backgroundTheme || 'white',
     style_layout: targetState.style_layout || 'column1',

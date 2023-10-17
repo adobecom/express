@@ -1141,21 +1141,6 @@ export async function loadBlock(block, eager = false) {
   return block;
 }
 
-/**
- * Loads JS and CSS for all blocks in a container element.
- * @param {Element} main The container element
- */
-export async function loadBlocks(main) {
-  updateSectionsStatus(main);
-  const blocks = [...main.querySelectorAll('div.block')];
-  for (let i = 0; i < blocks.length; i += 1) {
-    // eslint-disable-next-line no-await-in-loop
-    await loadBlock(blocks[i]);
-    updateSectionsStatus(main);
-  }
-  return blocks;
-}
-
 export const loadScript = (url, type) => new Promise((resolve, reject) => {
   let script = document.querySelector(`head > script[src="${url}"]`);
   if (!script) {
@@ -2172,10 +2157,10 @@ function decoratePictures(main) {
   });
 }
 
-export async function decorateMain(main) {
+export async function decorateMain(main, isDoc) {
   await buildAutoBlocks(main);
   splitSections(main);
-  const sections = decorateSections(main, false);
+  const sections = decorateSections(main, isDoc);
   decorateButtons(main);
   decorateMarqueeColumns(main);
   await fixIcons(main);
@@ -2442,6 +2427,34 @@ async function loadPostLCP() {
 }
 
 /**
+ * Loads JS and CSS for all blocks in a container element.
+ * @param {Sections} sections The sections loaded in main
+ * @param {Boolean} isDoc if is the document served
+ */
+export async function loadBlocks(sections, isDoc) {
+  const areaBlocks = [];
+  for (const section of sections) {
+    if (section.preloadLinks.length) {
+      const preloads = section.preloadLinks.map((block) => loadBlock(block));
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.all(preloads);
+    }
+    const loaded = section.blocks.map((block) => loadBlock(block));
+    areaBlocks.push(...section.blocks);
+
+    // Only move on to the next section when all blocks are loaded.
+    // eslint-disable-next-line no-await-in-loop
+    await Promise.all(loaded);
+    // Post LCP operations.
+    if (isDoc && section.el.dataset.idx === '0') loadPostLCP();
+
+    // Show the section when all blocks inside are done.
+    delete section.el.dataset.status;
+    delete section.el.dataset.idx;
+  }
+}
+
+/**
  * Decorates the page.
  */
 async function loadArea(area = document) {
@@ -2484,7 +2497,7 @@ async function loadArea(area = document) {
   let sections = [];
   if (main) {
     loadLana({ clientId: 'express' });
-    sections = await decorateMain(main);
+    sections = await decorateMain(main, isDoc);
     decoratePageStyle();
     decorateLegalCopy(main);
     addJapaneseSectionHeaderSizing();
@@ -2507,27 +2520,9 @@ async function loadArea(area = document) {
     }
   }
 
-  const areaBlocks = [];
   if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
-  for (const section of sections) {
-    if (section.preloadLinks.length) {
-      const preloads = section.preloadLinks.map((block) => loadBlock(block));
-      // eslint-disable-next-line no-await-in-loop
-      await Promise.all(preloads);
-    }
-    const loaded = section.blocks.map((block) => loadBlock(block));
-    areaBlocks.push(...section.blocks);
 
-    // Only move on to the next section when all blocks are loaded.
-    // eslint-disable-next-line no-await-in-loop
-    await Promise.all(loaded);
-    // Post LCP operations.
-    if (isDoc && section.el.dataset.idx === '0') loadPostLCP();
-
-    // Show the section when all blocks inside are done.
-    delete section.el.dataset.status;
-    delete section.el.dataset.idx;
-  }
+  loadBlocks(sections, isDoc)
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
 
