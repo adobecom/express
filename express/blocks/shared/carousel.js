@@ -20,17 +20,21 @@ function adjustFaderGradient(parent, faders) {
   const parentSection = parent.closest('.section');
   let inGradient;
   let outGradient;
+
+  // fixme: early exit on negative condition
   if (parentSection?.style?.background) {
     if (parentSection.style.background.startsWith('rgb')) {
       inGradient = parentSection.style.background.replace(')', ', 1)');
       outGradient = parentSection.style.background.replace(')', ', 0)');
     } else {
+      // todo: see if we can find a way to accommodate gradient background
       faders.right.style.background = 'none';
       faders.left.style.background = 'none';
       return;
     }
   }
 
+  // fixme: these shouldn't run if the section doesn't have background set
   faders.right.style.background = `linear-gradient(to right, ${outGradient}, ${inGradient})`;
   faders.left.style.background = `linear-gradient(to left, ${outGradient}, ${inGradient})`;
 }
@@ -103,6 +107,8 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
       $container.classList.add('controls-hidden');
     }
   };
+
+  // fixme: replace L112 - L122 with intersectionObserver
   let x = 0;
   const refreshArrows = setInterval(() => {
     toggleControls();

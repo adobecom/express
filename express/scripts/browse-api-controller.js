@@ -10,7 +10,12 @@
  * governing permissions and limitations under the License.
  */
 
-import { getHelixEnv, getLocale, getMetadata } from './utils.js';
+import {
+  getHelixEnv,
+  getLanguage,
+  getLocale,
+  getMetadata,
+} from './utils.js';
 import { memoize } from './hofs.js';
 
 const endpoints = {
@@ -21,9 +26,12 @@ const endpoints = {
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   stage: {
-    cdn: 'https://www.stage.adobe.com/ax-uss-api/',
+    // todo: use stage when browse API syncs up environments properly
+    cdn: 'https://uss-templates-dev.adobe.io/uss/v3/query',
+    // cdn: 'https://www.stage.adobe.com/ax-uss-api/',
     url: 'https://uss-templates-stage.adobe.io/uss/v3/query',
-    token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
+    token: window.atob('Y2QxODIzZWQtMDEwNC00OTJmLWJhOTEtMjVmNDE5NWQ1ZjZj'),
+    // token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   prod: {
@@ -56,7 +64,7 @@ export async function getPillWordsMapping() {
   }
 }
 
-export default async function getData(env = '', data = {}) {
+export default async function getData(env = 'dev', data = {}) {
   const endpoint = endpoints[env];
   return mFetch(endpoint.cdn, {
     method: 'POST',
@@ -69,17 +77,13 @@ export default async function getData(env = '', data = {}) {
   });
 }
 
-export async function getDataWithContext({ urlPath, task, topic }) {
+export async function getDataWithContext({ urlPath }) {
   const data = {
     experienceId: 'templates-browse-v1',
     context: {
-      application: {
-        urlPath,
-        task,
-        topic,
-      },
+      application: { urlPath },
     },
-    locale: 'en-US',
+    locale: getLanguage(getLocale(window.location)) || 'en_US',
     queries: [{
       id: 'ccx-search-1',
       start: 0,
@@ -88,54 +92,51 @@ export async function getDataWithContext({ urlPath, task, topic }) {
       facets: [{ facet: 'categories', limit: 10 }],
     }],
   };
-
-  const env = getHelixEnv();
+  const useDev = window.location.host === 'localhost:3000' || window.isTestEnv;
+  const env = useDev ? { name: 'dev' } : getHelixEnv();
   const result = await getData(env.name, data);
-  if (result.status.httpCode === 200) {
-    return result;
-  }
+  if (result?.status?.httpCode !== 200) return null;
 
-  return false;
+  return result;
 }
 
 export async function getDataWithId() {
-  if (getMetadata('ckgid')) {
-    const dataRaw = {
-      experienceId: 'templates-browse-v1',
-      locale: 'en_US',
-      queries: [
-        {
-          id: 'ccx-search-1',
-          start: 0,
-          limit: 40,
-          scope: {
-            entities: [
-              'HzTemplate',
-            ],
-          },
-          filters: [
-            {
-              categories: [
-                getMetadata('ckgid'),
-              ],
-            },
-          ],
-          facets: [
-            {
-              facet: 'categories',
-              limit: 10,
-            },
+  if (!getMetadata('ckgid')) return null;
+
+  const dataRaw = {
+    experienceId: 'templates-browse-v1',
+    locale: 'en_US',
+    queries: [
+      {
+        id: 'ccx-search-1',
+        start: 0,
+        limit: 40,
+        scope: {
+          entities: [
+            'HzTemplate',
           ],
         },
-      ],
-    };
+        filters: [
+          {
+            categories: [
+              getMetadata('ckgid'),
+            ],
+          },
+        ],
+        facets: [
+          {
+            facet: 'categories',
+            limit: 10,
+          },
+        ],
+      },
+    ],
+  };
 
-    const env = getHelixEnv();
-    const result = await getData(env.name, dataRaw);
-    if (result.status.httpCode === 200) {
-      return result;
-    }
-  }
+  const env = getHelixEnv();
+  const result = await getData(env.name, dataRaw);
 
-  return false;
+  if (result.status.httpCode !== 200) return null;
+
+  return result;
 }
