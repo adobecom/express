@@ -203,6 +203,9 @@ function fetchTemplatesByTasks(tasks, props) {
 }
 
 async function appendCategoryTemplatesCount($section, props) {
+  if (props.loadedOtherCategoryCounts) {
+    return;
+  }
   const categories = $section.querySelectorAll('ul.category-list > li');
   const lang = getLanguage(getLocale(window.location));
 
@@ -216,6 +219,7 @@ async function appendCategoryTemplatesCount($section, props) {
       anchor.append(countSpan);
     }
   }
+  props.loadedOtherCategoryCounts = true;
 }
 
 async function processResponse(props) {
@@ -628,7 +632,7 @@ function updateFilterIcon(block) {
   });
 }
 
-function decorateFunctionsContainer($block, $section, functions, placeholders) {
+function decorateFunctionsContainer($block, $section, functions, placeholders, props) {
   const $functionsContainer = createTag('div', { class: 'functions-container' });
   const $functionContainerMobile = createTag('div', { class: 'functions-drawer' });
 
@@ -712,6 +716,10 @@ function decorateFunctionsContainer($block, $section, functions, placeholders) {
     $sortButton.textContent = placeholders.sort;
     $sortButton.className = 'filter-mobile-option-heading';
   }
+
+  $mobileFilterButton.addEventListener('click', () => {
+    appendCategoryTemplatesCount($section, props);
+  }, { once: true });
 
   return { mobile: $functionContainerMobile, desktop: $functionsContainer };
 }
@@ -927,6 +935,10 @@ async function decorateCategoryList(block, section, placeholders, props) {
     $listItem.append($a);
     $categories.append($listItem);
   });
+
+  $categoriesDesktopWrapper.addEventListener('mouseover', () => {
+    appendCategoryTemplatesCount(section, props);
+  }, { once: true });
 
   $categoriesToggleWrapper.append($categoriesToggle);
   $categoriesDesktopWrapper.append($categories);
@@ -1477,7 +1489,13 @@ function decorateToolbar($block, $section, placeholders, props) {
     lgView.append(getIconElement('large_grid'));
 
     const functionsObj = makeTemplateFunctions(placeholders);
-    const $functions = decorateFunctionsContainer($block, $section, functionsObj, placeholders);
+    const $functions = decorateFunctionsContainer(
+      $block,
+      $section,
+      functionsObj,
+      placeholders,
+      props,
+    );
 
     $viewsWrapper.append(smView, mdView, lgView);
     functionsWrapper.append($viewsWrapper, $functions.desktop);
@@ -1603,7 +1621,6 @@ export async function decorateTemplateList($block, props) {
           if ($parent.contains(e.detail[0])) {
             decorateToolbar($block, $parent, placeholders, props);
             await decorateCategoryList($block, $parent, placeholders, props);
-            appendCategoryTemplatesCount($parent, props);
           }
         });
       }
@@ -1952,6 +1969,7 @@ function constructProps() {
       dimension: 'width',
       size: 151,
     },
+    loadedOtherCategoryCounts: false,
   };
 }
 
