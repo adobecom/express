@@ -11,9 +11,15 @@
  */
 import { expect } from '@esm-bundle/chai';
 import { readFile } from '@web/test-runner-commands';
-import { removeIrrelevantSections, createTag } from '../../../express/scripts/utils.js';
+import { stub } from 'sinon';
+import {
+  removeIrrelevantSections,
+  createTag,
+  getLottie,
+  lazyLoadLottiePlayer,
+} from '../../../express/scripts/utils.js';
 
-describe('Scripts', () => {
+describe('Feature Flag Showwith', () => {
   it('removes sections from main component if section metadata showwith set to validcode0 and not active in metadata', async () => {
     // prepare
     document.body.innerHTML = await readFile({ path: './mocks/showwith-sections.html' });
@@ -55,5 +61,36 @@ describe('Scripts', () => {
 
     // cleanup
     meta.remove();
+  });
+});
+
+describe('Lottie', () => {
+  it('gets lottie', async () => {
+    const lottie = getLottie('name123', 'src123');
+    expect(/lottie-player/.test(lottie)).to.be.true;
+    expect(/src="src123"/.test(lottie)).to.be.true;
+    expect(/lottie-name123/.test(lottie)).to.be.true;
+  });
+
+  describe('Lazy load lottie player', () => {
+    let appendStub;
+    const oldAppendChild = document.head.appendChild;
+
+    beforeEach(() => {
+      appendStub = stub();
+      document.head.appendChild = appendStub;
+      window['lottie-player'] = undefined;
+    });
+    after(() => {
+      document.head.appendChild = oldAppendChild;
+    });
+
+    it('loads lottie player ', async () => {
+      expect(appendStub.called).to.be.false;
+      lazyLoadLottiePlayer();
+      expect(appendStub.called).to.be.true;
+    });
+
+    // TODO: use createIntersectionObserver() to mock and to cover other branches
   });
 });
