@@ -16,7 +16,7 @@ import {
   readBlockConfig,
   getLocale,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 async function fetchIndex(indexURL) {
   try {

@@ -43,6 +43,10 @@ main .embed.embed-twitter {
   max-height: unset;
 }
 
+main .embed lite-youtube {
+  max-width: unset;
+}
+
 main .embed-soundcloud>iframe {
   height: 200px ! important;
 }

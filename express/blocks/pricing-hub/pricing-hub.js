@@ -17,7 +17,7 @@ import {
   getLottie,
   lazyLoadLottiePlayer,
   getIconElement, fetchPlaceholders,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
 
 /* eslint-disable import/named, import/extensions */
@@ -47,10 +47,10 @@ function buildUrl(optionUrl, country, language) {
     if (hostParam === 'express.adobe.com') {
       planUrl.hostname = 'commerce.adobe.com';
       if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
-    } else if (hostParam.includes('qa.adobeprojectm.com')) {
+    } else if (/qa\.adobeprojectm\.com/.test(hostParam)) {
       planUrl.hostname = 'commerce.adobe.com';
       if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
-    } else if (hostParam.includes('.adobeprojectm.com')) {
+    } else if (/\.adobeprojectm\.com/.test(hostParam)) {
       planUrl.hostname = 'commerce-stg.adobe.com';
       if (rUrl) rUrl = rUrl.replace('adminconsole.adobe.com', 'stage.adminconsole.adobe.com');
       if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);

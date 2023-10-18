@@ -14,7 +14,7 @@ import {
   createTag,
   fetchPlaceholders,
   transformLinkToAnimation,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 function buildContent(content) {

@@ -13,7 +13,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-env mocha */
 import { expect } from '@esm-bundle/chai';
-import { loadCSS } from '../../../express/scripts/scripts.js';
+import { loadCSS } from '../../../express/scripts/utils.js';
 
 describe('Fonts', () => {
   it('Loads CSS fonts', async () => {

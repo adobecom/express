@@ -13,7 +13,7 @@
 import {
   fetchRelevantRows,
   normalizeHeadings,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -73,7 +73,7 @@ export default async function decorate($block) {
   }
 
   if (window.location.href.includes('/express/templates/')) {
-    const { default: updateAsyncBlocks } = await import('../../scripts/ckg-link-list.js');
+    const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
     await updateAsyncBlocks();
   }
 }

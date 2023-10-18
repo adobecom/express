@@ -17,7 +17,7 @@ import {
   getLocale,
   getMetadata,
   sampleRUM,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import { buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 import buildCarousel from '../shared/carousel.js';
@@ -291,10 +291,9 @@ async function decorateBackground(block) {
   const mediaRow = block.querySelector('div:nth-child(2)');
   return new Promise((resolve) => {
     if (mediaRow) {
-      const mediaEl = mediaRow.querySelector('a, :scope > div');
+      const media = mediaRow.querySelector('a')?.href || mediaRow.querySelector(':scope > div')?.textContent;
       mediaRow.remove();
-      if (mediaEl) {
-        const media = mediaEl.href || mediaEl.textContent;
+      if (media) {
         const splitArr = media.split('.');
 
         if (supportedImgFormat.includes(splitArr[splitArr.length - 1])) {
@@ -410,7 +409,7 @@ export default async function decorate(block) {
     document.dispatchEvent(linksPopulated);
   }
   if (window.location.href.includes('/express/templates/')) {
-    const { default: updateAsyncBlocks } = await import('../../scripts/ckg-link-list.js');
+    const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
     updateAsyncBlocks();
   }
   await background;

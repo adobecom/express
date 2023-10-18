@@ -11,7 +11,7 @@
  */
 
 // eslint-disable-next-line import/no-unresolved
-import { toClassName } from '../../scripts/scripts.js';
+import { toClassName } from '../../scripts/utils.js';
 
 export default function decorate($block) {
   const $rows = Array.from($block.children);

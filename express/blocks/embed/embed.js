@@ -12,11 +12,11 @@
 /* eslint-disable import/named, import/extensions */
 
 import {
-  embedYoutube,
   embedInstagram,
+  embedSpark,
   embedTwitter,
   embedVimeo,
-  embedSpark,
+  embedYoutube,
   getDefaultEmbed,
 } from '../../scripts/embed-videos.js';
 
@@ -57,21 +57,23 @@ const EMBEDS_CONFIG = {
   },
 };
 
-function decorateBlockEmbeds($block) {
-  $block.querySelectorAll('.embed.block a[href]').forEach(($a) => {
-    const url = new URL($a.href.replace(/\/$/, ''));
+function decorateBlockEmbeds(block) {
+  block.querySelectorAll('.embed.block a[href]').forEach((a) => {
+    const url = new URL(a.href.replace(/\/$/, ''));
     const config = EMBEDS_CONFIG[url.hostname];
+
+    block.innerHTML = '';
+
     if (config) {
-      const html = config.embed(url);
-      $block.innerHTML = html;
-      $block.classList = `block embed embed-${config.type}`;
+      block.append(config.embed(url));
+      block.className = `block embed embed-${config.type}`;
     } else {
-      $block.innerHTML = getDefaultEmbed(url);
-      $block.classList = `block embed embed-${getServer(url)}`;
+      block.append(getDefaultEmbed(url));
+      block.className = `block embed embed-${getServer(url)}`;
     }
   });
 }
 
-export default function decorate($block) {
-  decorateBlockEmbeds($block);
+export default function decorate(block) {
+  decorateBlockEmbeds(block);
 }

@@ -12,7 +12,7 @@
 import {
   createTag,
   getMetadata,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 function decorateFAQBlocks(block) {
   const showSchema = getMetadata('show-faq-schema');

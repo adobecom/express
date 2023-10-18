@@ -15,7 +15,7 @@ import {
   getCookie,
   getHelixEnv,
   createTag,
-} from '../scripts.js';
+} from '../utils.js';
 
 function replaceUrlParam(url, paramName, paramValue) {
   const params = url.searchParams;

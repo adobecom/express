@@ -24,7 +24,7 @@
   border-radius: 24px;
   overflow: hidden;
   padding: 21px 20px 12px 20px;
-  background-image: url("https://main--express--adobecom.hlx.page/media_1e14a2f24184a4a2f6d990ac3a20e3bc75cb3424a.png#width=360&height=226");
+  background-image: url("/express/media_1e14a2f24184a4a2f6d990ac3a20e3bc75cb3424a.png#width=360&height=226");
   background-color: var(--color-gray-100);
   background-position: bottom;
   background-size: cover;
@@ -109,7 +109,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url("https://main--express--adobecom.hlx.page/media_1c4759e080eba5ac9f87fe2c61a1efa5670681f24.png#width=248&height=74");
+  background-image: url("/express/media_1c4759e080eba5ac9f87fe2c61a1efa5670681f24.png#width=248&height=74");
   border: none;
   height: 60px;
   width: 200px;

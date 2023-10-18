@@ -18,7 +18,7 @@ import {
   fixIcons,
   toClassName,
   createOptimizedPicture,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 const PROMOTION_FOLDER = 'express/promotions';
 

@@ -12,7 +12,7 @@
 
 import {
   createTag,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 import {
   createFloatingButton,
