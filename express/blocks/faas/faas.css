@@ -394,6 +394,28 @@ input[type="checkbox"] + label {
   line-height: 1.375em;
 }
 
+.dialog-modal .faas-form-confirm-overlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: #FBFBFB;
+  opacity: 0.5;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-animation: fadeIn .5s ease-in;
+  -moz-animation: fadeIn .5s ease-in;
+  animation: fadeIn .5s ease-in;
+}
+
+.dialog-modal .faas-form-confirm-overlay .icon.icon-checkmark-green {
+  height: 44px;
+  -webkit-animation: pulse 2s ease;
+  -moz-animation: pulse 2s ease;
+  animation: pulse 2s ease;
+}
+
 /* for mobile */
 @media (max-width:799.99px) {
   .faas-form label,
@@ -421,5 +443,77 @@ input[type="checkbox"] + label {
   .faas.column2 .faas-form textarea + div,
   .faas.column2 .faas-form input:not([type=checkbox]):not([type=radio]):not([type=submit]):not([type=hidden]) + div {
     position: static;
+  }
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    transform: scale(0.7);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0.7);
+  }
+}
+
+@-moz-keyframes pulse {
+  0% {
+    transform: scale(0.7);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0.7);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.7);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0.7);
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0.5;
   }
 }

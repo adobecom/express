@@ -16,6 +16,7 @@ import {
   loadScript,
   getHelixEnv,
   createTag,
+  getIconElement,
 } from '../../scripts/utils.js';
 
 let state = {};
@@ -27,7 +28,8 @@ export const getFaasHostSubDomain = (environment) => {
   if (env.name === 'prod' || faasEnv === 'prod') {
     return '';
   }
-  if (env.name === 'stage' || faasEnv === 'stage') {
+  // fixme: temporary fix because FaaS returns 403 on other staging domains.
+  if (window.location.hostname === 'www.stage.adobe.com' || faasEnv === 'stage') {
     return 'staging.';
   }
   if (faasEnv === 'dev') {
@@ -263,6 +265,29 @@ const beforeSubmitCallback = () => {
 };
 /* c8 ignore stop */
 
+const afterSubmitCallback = (e) => {
+  if (!e.success) return;
+  const faas = document.querySelector('.faas-form');
+  if (!faas) return;
+  const dialogModal = faas.closest('.dialog-modal');
+  if (dialogModal) {
+    const closeBtn = dialogModal.querySelector('.dialog-close');
+    const faasFormWrapper = dialogModal.querySelector('.faas-form-wrapper');
+
+    if (faasFormWrapper) {
+      const overlay = createTag('div', { class: 'faas-form-confirm-overlay' });
+      const checkIcon = getIconElement('checkmark-green');
+      overlay.append(checkIcon);
+      faasFormWrapper.append(overlay);
+
+      checkIcon.addEventListener('animationend', () => {
+        faas.reset();
+        if (closeBtn) closeBtn.click();
+      }, { passive: true });
+    }
+  }
+};
+
 export const makeFaasConfig = (targetState) => {
   if (!targetState) {
     state = defaultState;
@@ -314,6 +339,7 @@ export const makeFaasConfig = (targetState) => {
     e: {
       afterYiiLoadedCallback,
       beforeSubmitCallback,
+      afterSubmitCallback,
     },
     style_backgroundTheme: targetState.style_backgroundTheme || 'white',
     style_layout: targetState.style_layout || 'column1',
