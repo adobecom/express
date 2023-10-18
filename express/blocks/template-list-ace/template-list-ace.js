@@ -17,8 +17,8 @@ import {
   fetchPlaceholders,
   getIconElement,
   toClassName,
-} from '../../scripts/scripts.js';
-import BlockMediator from '../../scripts/block-mediator.js';
+} from '../../scripts/utils.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 import { renderModalContent, fetchResults, renderResults } from './results-modal.js';
 
@@ -498,7 +498,7 @@ function initState() {
 }
 
 export default async function decorate(block) {
-  if (!(window.location.host.includes('localhost:3000') || window.location.host.includes('stage.adobe.com'))) {
+  if (!(/localhost:3000/.test(window.location.host) || /stage\.adobe\.com/.test(window.location.hostname))) {
     block.style.display = 'none';
     return;
   }

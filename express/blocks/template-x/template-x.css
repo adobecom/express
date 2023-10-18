@@ -1,4 +1,6 @@
-.template-x-horizontal {
+/* templates pages spacial styling */
+div[class='section section-wrapper template-x-container'],
+div[class='section section-wrapper browse-by-category-card-fullwidth-container template-x-container'] {
     padding-top: 0;
 }
 
@@ -164,10 +166,6 @@
     margin: 0 12px 20px 12px;
 }
 
-.template-x-container .template-x-wrapper:not(:has(.toolbar-wrapper)) {
-    padding-top: 60px;
-}
-
 .template-x-wrapper .template-title.with-link > div {
     display: flex;
     flex-direction: column;
@@ -185,7 +183,6 @@
 }
 
 .template-x-wrapper .template-title.horizontal.holiday .template-title,picture,a,h4,p {
-
     z-index: 1;
 }
 
@@ -459,6 +456,7 @@
     will-change: transform;
 }
 
+.template-x .template:not(.placeholder) .button-container,
 .template-x.sixcols .template:not(.placeholder) .button-container,
 .template-x.fullwidth .template:not(.placeholder) .button-container {
     position: absolute;
@@ -488,8 +486,8 @@
     border-radius: 12px;
     min-height: unset;
     box-sizing: border-box;
-    height: 120%;
-    width: 120%;
+    height: calc(100% + 40px);
+    width: calc(100% + 24px);
 }
 
 .template-x.horizontal .template:not(.placeholder) .template-link,
@@ -500,6 +498,7 @@
     will-change: opacity;
 }
 
+.template-x .template:hover:not(.placeholder) .button-container,
 .template-x.horizontal .template:hover:not(.placeholder) .button-container,
 .template-x.horizontal .template:hover:not(.placeholder) .template-link,
 .template-x.sixcols .template:hover:not(.placeholder) .button-container,
@@ -2309,6 +2308,10 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         justify-content: space-between;
     }
 
+    .template-x-wrapper .template-title.with-link.link-only {
+        justify-content: flex-end;
+    }
+
     .template-x-wrapper .template-x:not(.holiday) .template-title.horizontal .view-all-link-wrapper {
         margin: 0;
     }
@@ -2550,7 +2553,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     .template-x.horizontal .carousel-container {
         margin-left: auto;
         margin-right: auto;
-        max-width: 470px;
         display: block;
     }
 

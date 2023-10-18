@@ -12,7 +12,7 @@
 import {
   createTag,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 function decoratePricingPlan($block) {
   const blockContent = $block.firstElementChild.innerHTML;

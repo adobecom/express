@@ -16,7 +16,7 @@ import {
   createOptimizedPicture,
   createTag,
   fetchPlaceholders,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 let rotationInterval;
 let fixedImageSize = false;

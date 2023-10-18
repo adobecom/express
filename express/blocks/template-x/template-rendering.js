@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-disable no-underscore-dangle */
-import { createTag, getIconElement } from '../../scripts/scripts.js';
+import { createTag, getIconElement } from '../../scripts/utils.js';
 
 function containsVideo(pages) {
   return pages.some((page) => !!page?.rendition?.video?.thumbnail?.componentId);
@@ -135,7 +135,6 @@ function renderCTA(placeholders, branchUrl) {
     href: branchUrl,
     title: btnTitle,
     class: 'button accent small',
-    target: '_blank',
   });
   btnEl.textContent = btnTitle;
   return btnEl;

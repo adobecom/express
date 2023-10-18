@@ -16,7 +16,7 @@ import {
   readBlockConfig,
   addPublishDependencies,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 function filterMigratedPages(filter) {
   const $results = document.getElementById('page-filter-results');

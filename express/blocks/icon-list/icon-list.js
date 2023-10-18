@@ -16,7 +16,7 @@ import {
   addBlockClasses,
   createTag,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 export default function decorate($block) {
   let numCols = 0;

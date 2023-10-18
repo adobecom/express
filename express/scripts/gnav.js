@@ -21,7 +21,7 @@ import {
   getMetadata,
   fetchPlaceholders,
 // eslint-disable-next-line import/no-unresolved
-} from './scripts.js';
+} from './utils.js';
 
 const isHomepage = window.location.pathname.endsWith('/express/');
 
@@ -80,7 +80,7 @@ async function loadFEDS() {
 
   async function showRegionPicker() {
     const $body = document.body;
-    const regionpath = locale === 'us' ? '/' : `/${locale}/`;
+    const regionpath = locale === 'us' ? '/uk/' : `/${locale}/`;
     const host = window.location.hostname === 'localhost' ? 'https://www.adobe.com' : '';
     const url = `${host}${regionpath}`;
     const resp = await fetch(url);
@@ -291,7 +291,9 @@ async function loadFEDS() {
   if (!['www.adobe.com', 'www.stage.adobe.com'].includes(window.location.hostname)) {
     prefix = 'https://www.adobe.com';
   }
-  loadScript(`${prefix}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).id = 'feds-script';
+  loadScript(`${prefix}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).then((script) => {
+    script.id = 'feds-script';
+  });
   setTimeout(() => {
     window.fedsConfig.privacy = {
       otDomainId: '7a5eb705-95ed-4cc4-a11d-0cc5760e93db',

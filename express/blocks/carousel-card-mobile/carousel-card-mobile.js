@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, fetchRelevantRows } from '../../scripts/scripts.js';
+import { createTag, fetchRelevantRows } from '../../scripts/utils.js';
 import { buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import buildPaginatedCarousel from '../shared/paginated-carousel.js';
 import { buildAppStoreBadge } from '../shared/app-store-badge.js';

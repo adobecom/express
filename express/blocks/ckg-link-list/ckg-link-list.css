@@ -1,0 +1,28 @@
+.ckg-link-list.block {
+    min-height: 62px;
+}
+
+.ckg-link-list.block .carousel-container {
+    margin-bottom: 0;
+}
+
+.ckg-link-list.block .button-container {
+    margin-top: 0;
+    display: block;
+    line-height: 0.5; /* fix carousel fader alignment issue */
+}
+
+.ckg-link-list.block .button-container a.button {
+    margin: 0 4px;
+    background-color: var(--color-gray-200);
+    border-radius: 40px;
+    padding: 14px 24px;
+    font-size: var(--body-font-size-m);
+    color: var(--color-black);
+    border: transparent;
+    transition: background-color 0.2s;
+}
+
+.ckg-link-list.block .button-container a.button:hover {
+    background-color: var(--color-gray-300);
+}

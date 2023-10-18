@@ -10,24 +10,9 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../scripts/scripts.js';
+import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../scripts/utils.js';
 
 import buildCarousel from '../shared/carousel.js';
-
-export function sanitizeInput(string) {
-  const charMap = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-    '/': '&#x2F;',
-    '`': '&#x60;',
-    '=': '&#x3D;',
-  };
-
-  return string.replace(/[&<>"'`=/]/g, (s) => charMap[s]);
-}
 
 export function decorateTextWithTag(textSource, options = {}) {
   const {
@@ -84,7 +69,7 @@ function handleGenAISubmit(form, link) {
   const input = form.querySelector('.gen-ai-input');
 
   btn.disabled = true;
-  const genAILink = link.replace('%7B%7Bprompt-text%7D%7D', sanitizeInput(input.value).replaceAll(' ', '+'));
+  const genAILink = link.replace('%7B%7Bprompt-text%7D%7D', encodeURI(input.value).replaceAll(' ', '+'));
   if (genAILink !== '') window.location.assign(genAILink);
 }
 

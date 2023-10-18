@@ -10,9 +10,9 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag } from '../../scripts/scripts.js';
+import { createTag } from '../../scripts/utils.js';
 import { postFeedback, FEEDBACK_CATEGORIES } from './ace-api.js';
-import BlockMediator from '../../scripts/block-mediator.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 // TODO: use placeholders
 const feedBackModalConfig = {

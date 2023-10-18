@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import { createTag } from '../../scripts/scripts.js';
+import { createTag } from '../../scripts/utils.js';
 
 function decorateList(block) {
   const list = [];

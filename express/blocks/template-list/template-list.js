@@ -29,13 +29,13 @@ import {
   linkImage,
   sampleRUM,
   toClassName,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 import { Masonry } from '../shared/masonry.js';
 
 import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
-import { memoize } from '../../scripts/utils.js';
+import { memoize } from '../../scripts/hofs.js';
 import getBreadcrumbs from './breadcrumbs.js';
 
 function wordStartsWithVowels(word) {
@@ -255,7 +255,6 @@ async function processResponse(props) {
         href: template.branchURL,
         title: placeholders['edit-this-template'] ?? 'Edit this template',
         class: 'button accent',
-        target: '_blank',
       });
 
       $button.textContent = placeholders['edit-this-template'] ?? 'Edit this template';
@@ -408,7 +407,6 @@ function populateTemplates($block, templates, props) {
 
     if (isPlaceholder) {
       $tmplt.classList.add('placeholder');
-      $tmplt.target = '_blank';
     }
   }
 }

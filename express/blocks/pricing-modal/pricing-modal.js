@@ -14,9 +14,9 @@
 import {
   createTag,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
-import BlockMediator from '../../scripts/block-mediator.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const ENABLE_PRICING_MODAL_AUDIENCE = 'enablePricingModal';
 

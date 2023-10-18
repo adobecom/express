@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, readBlockConfig } from '../../scripts/scripts.js';
+import { createTag, readBlockConfig } from '../../scripts/utils.js';
 import { prependDownloadIcon } from '../hero-3d/hero-3d.js';
 
 /**

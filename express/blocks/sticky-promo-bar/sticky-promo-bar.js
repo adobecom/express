@@ -10,8 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag } from '../../scripts/scripts.js';
-import BlockMediator from '../../scripts/block-mediator.js';
+import { createTag } from '../../scripts/utils.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function initScrollInteraction(block) {
   const inBodyBanner = block.cloneNode(true);

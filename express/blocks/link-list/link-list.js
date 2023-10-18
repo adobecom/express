@@ -13,7 +13,7 @@
 import {
   fetchRelevantRows,
   normalizeHeadings,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 
 import buildCarousel from '../shared/carousel.js';
 

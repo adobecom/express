@@ -18,7 +18,7 @@ import {
   toClassName,
   getIconElement,
   addHeaderSizing,
-} from '../../scripts/scripts.js';
+} from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
 
@@ -127,21 +127,28 @@ function decorateIconList(columnCell, rowNum, blockClasses) {
 }
 
 const handleVideos = (cell, a, block, thumbnail) => {
-  if (a.href && new URL(a.href).hash === '#embed-video') {
+  if (!a.href) return;
+
+  const url = new URL(a.href);
+
+  if (url.hash === '#embed-video') {
     if (a.href.includes('youtu')) {
-      embedYoutube(a);
+      a.parentElement.replaceChild(embedYoutube(url), a);
     } else if (a.href.includes('vimeo')) {
-      embedVimeo(a, thumbnail);
+      a.parentElement.replaceChild(embedVimeo(url, thumbnail), a);
     }
-  } else {
-    transformToVideoColumn(cell, a, block);
-    a.addEventListener('click', (e) => {
-      e.preventDefault();
-    });
+    if (thumbnail) thumbnail.remove();
+
+    return;
   }
+
+  transformToVideoColumn(cell, a, block);
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+  });
 };
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const rows = Array.from(block.children);
 
   let numCols = 0;
@@ -350,5 +357,11 @@ export default function decorate(block) {
     svg.style.backgroundColor = primaryColor;
     svg.style.fill = accentColor;
     rows[0].append(svg);
+  }
+
+  const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
+  if (phoneNumberTags.length > 0) {
+    const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');
+    await formatSalesPhoneNumber(phoneNumberTags);
   }
 }

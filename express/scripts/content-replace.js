@@ -15,7 +15,8 @@ import {
   getHelixEnv,
   getMetadata,
   titleCase,
-} from './scripts.js';
+} from './utils.js';
+import HtmlSanitizer from './html-sanitizer.js';
 
 async function replaceDefaultPlaceholders(block, components) {
   block.innerHTML = block.innerHTML.replaceAll('https://www.adobe.com/express/templates/default-create-link', components.link);
@@ -107,7 +108,24 @@ function autoUpdatePage(main) {
   // FIXME: deprecate wl
   if (!main) return;
 
-  const regex = /\{\{([a-zA-Z_-]+)}}/g;
+  const regex = /\{\{([a-zA-Z0-9_-]+)}}/g;
+  const ignoredMeta = [
+    'serp-content-type',
+    'description',
+    'primaryproductname',
+    'theme',
+    'show-free-plan',
+    'sheet-powered',
+    'viewport',
+  ];
+
+  const metaTags = document.head.querySelectorAll('meta');
+
+  metaTags.forEach((meta) => {
+    if (meta.property || meta.name.includes(':') || ignoredMeta.includes(meta.name)) return;
+    meta.content = HtmlSanitizer.SanitizeHtml(meta.content);
+  });
+
   main.innerHTML = main.innerHTML.replaceAll(regex, (match, p1) => {
     if (!wl.includes(match.toLowerCase())) {
       return getMetadata(p1);

@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-disable max-len */
-import { loadCSS, createTag, getIconElement } from '../../scripts/scripts.js';
+import { loadCSS, createTag, getIconElement } from '../../scripts/utils.js';
 
 const FOCUSABLES = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"]';
 
@@ -66,7 +66,7 @@ function getCustomModal(custom, dialog) {
 }
 
 async function getPathModal(path, dialog) {
-  const block = createTag('a', { href: path });
+  const block = createTag('a', { href: path }, path);
   dialog.append(block);
 
   const { default: getFragment } = await import('../fragment/fragment.js');
@@ -158,14 +158,16 @@ export default function init(el) {
   return null;
 }
 
-// Click-based modal
-window.addEventListener('hashchange', (e) => {
+async function onHashChange(e) {
   if (!window.location.hash) {
     const url = new URL(e.oldURL);
     const dialog = document.querySelector(`.dialog-modal${url.hash}`);
     if (dialog) closeModal(dialog);
   } else {
     const details = findDetails(window.location.hash, null);
-    if (details) getModal(details);
+    if (details) await getModal(details);
   }
-});
+}
+
+// Click-based modal
+window.addEventListener('hashchange', onHashChange);

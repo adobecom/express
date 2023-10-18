@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, getIconElement } from '../../scripts/scripts.js';
+import { createTag, getIconElement } from '../../scripts/utils.js';
 
 function show(block) {
   const body = block.closest('body');
@@ -121,7 +121,7 @@ export default function decorate(block) {
     });
   });
 
-  if (window.innerWidth < 900) {
+  if (document.body.dataset.device === 'mobile') {
     initNotchDragAction(block);
     initCTAListener(block, hrefHolder);
 

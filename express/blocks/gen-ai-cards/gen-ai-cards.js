@@ -10,26 +10,11 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, fetchPlaceholders } from '../../scripts/scripts.js';
+import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
 import buildCarousel from '../shared/carousel.js';
 
 const genAIPlaceholder = '%7B%7Bprompt-text%7D%7D';
-
-function sanitizeInput(string) {
-  const charMap = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-    '/': '&#x2F;',
-    '`': '&#x60;',
-    '=': '&#x3D;',
-  };
-
-  return string.replace(/[&<>"'`=/]/g, (s) => charMap[s]);
-}
 
 export function decorateTextWithTag(textSource, options = {}) {
   const {
@@ -82,13 +67,17 @@ export function decorateHeading(block, payload) {
   block.append(headingSection);
 }
 
-function handleGenAISubmit(form, link) {
-  const btn = form.querySelector('.gen-ai-submit');
-  const input = form.querySelector('input');
+export const windowHelper = {
+  redirect: (url) => {
+    window.location.assign(url);
+  },
+};
 
-  btn.disabled = true;
-  const genAILink = link.replace(genAIPlaceholder, sanitizeInput(input.value).replaceAll(' ', '+'));
-  if (genAILink !== '') window.location.assign(genAILink);
+function handleGenAISubmit(form, link) {
+  const input = form.querySelector('input');
+  if (input.value.trim() === '') return;
+  const genAILink = link.replace(genAIPlaceholder, encodeURI(input.value).replaceAll(' ', '+'));
+  if (genAILink) windowHelper.redirect(genAILink);
 }
 
 function buildGenAIForm({ ctaLinks, subtext }) {
@@ -109,14 +98,16 @@ function buildGenAIForm({ ctaLinks, subtext }) {
   genAISubmit.textContent = ctaLinks[0].textContent;
   genAISubmit.disabled = genAIInput.value === '';
 
+  genAIInput.addEventListener('input', () => {
+    genAISubmit.disabled = genAIInput.value.trim() === '';
+  });
+
   genAIInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleGenAISubmit(genAIForm, ctaLinks[0].href);
-    } else {
-      genAISubmit.disabled = genAIInput.value === '';
     }
-  }, { passive: true });
+  });
 
   genAIForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -126,11 +117,20 @@ function buildGenAIForm({ ctaLinks, subtext }) {
   return genAIForm;
 }
 
-async function decorateCards(block, payload) {
+function removeLazyAfterNeighborLoaded(image, lastImage) {
+  if (!image || !lastImage) return;
+  lastImage.onload = (e) => {
+    if (e.eventPhase >= Event.AT_TARGET) {
+      image.querySelector('img').removeAttribute('loading');
+    }
+  };
+}
+
+async function decorateCards(block, { actions }) {
   const cards = createTag('div', { class: 'gen-ai-cards-cards' });
   const placeholders = await fetchPlaceholders();
 
-  payload.actions.forEach((cta) => {
+  actions.forEach((cta, i) => {
     const {
       image,
       ctaLinks,
@@ -143,11 +143,12 @@ async function decorateCards(block, payload) {
     const textWrapper = createTag('div', { class: 'text-wrapper' });
 
     card.append(textWrapper, mediaWrapper, linksWrapper);
-
-    if (image) mediaWrapper.append(image);
-
-    if (mediaWrapper.children.length === 0) {
-      mediaWrapper.remove();
+    if (image) {
+      mediaWrapper.append(image);
+      if (i > 0) {
+        const lastImage = actions[i - 1].image?.querySelector('img');
+        removeLazyAfterNeighborLoaded(image, lastImage);
+      }
     }
 
     const hasGenAIForm = (new RegExp(genAIPlaceholder).test(ctaLinks?.[0]?.href));

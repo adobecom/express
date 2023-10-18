@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, getIconElement } from '../../scripts/scripts.js';
+import { createTag, getIconElement } from '../../scripts/utils.js';
 import {
   requestGeneration,
   postFeedback,
@@ -20,7 +20,7 @@ import {
 } from './ace-api.js';
 import useProgressManager from './progress-manager.js';
 import { openFeedbackModal } from './feedback-modal.js';
-import BlockMediator from '../../scripts/block-mediator.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 import { createDropdown } from './template-list-ace.js';
 
 const NUM_RESULTS = 4;

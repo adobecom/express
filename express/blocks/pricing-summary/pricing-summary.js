@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag } from '../../scripts/scripts.js';
+import { createTag } from '../../scripts/utils.js';
 import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
 import buildCarousel from '../shared/carousel.js';
 
@@ -126,9 +126,10 @@ function handleEyeBrows(columnWrapper, eyeBrowCols, index) {
     columnWrapper.classList.add('card-gradient-background');
   }
 
-  eyeBrowCols[index].classList.add('pricing-eyebrow');
+  const eyebrow = createTag('div', { class: 'pricing-eyebrow' }, eyeBrowCols[index]);
+  eyeBrowCols[index].classList.add('eyebrow-text');
   columnWrapper.classList.add('has-pricing-eyebrow');
-  return eyeBrowCols[index];
+  return eyebrow;
 }
 
 function alignContent(block) {
@@ -147,8 +148,6 @@ function alignContent(block) {
             if (!childDivs.length) return;
 
             childDivs.forEach((div) => {
-              if (elementsMinHeight[div.className]) return;
-
               elementsMinHeight[div.className] = Math.max(
                 elementsMinHeight[div.className],
                 div.offsetHeight,
