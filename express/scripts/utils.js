@@ -1776,7 +1776,9 @@ export async function fetchPlainBlockFromFragment(url, blockName) {
 
 export async function fetchFloatingCta(path) {
   const env = getHelixEnv();
-  const dev = new URLSearchParams(window.location.search).get('dev');
+  const url = new URLSearchParams(window.location.search);
+  const dev = url.get('dev');
+  const experimentParams = url.get('experiment');
   const { experiment } = window.hlx;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
   let spreadsheet;
@@ -1823,7 +1825,7 @@ export async function fetchFloatingCta(path) {
     spreadsheet = '/express/floating-cta.json?limit=100000';
   }
 
-  if (experimentStatus === 'active') {
+  if (experimentStatus === 'active' || experimentParams) {
     const expSheet = '/express/experiments/floating-cta-experiments.json?limit=100000';
     floatingBtnData = await fetchFloatingBtnData(expSheet);
   }
@@ -2474,7 +2476,8 @@ export async function loadArea(area = document) {
 
   const lazy = loadLazy(main);
 
-  if (window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) {
+  const buttonOff = new URLSearchParams(window.location.search).get('button') === 'off';
+  if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
     import('../../tools/preview/preview.js');
   }
   await lazy;
