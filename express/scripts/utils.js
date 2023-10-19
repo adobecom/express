@@ -700,7 +700,7 @@ function decorateLinks(main) {
  */
 async function decorateSections(el) {
   const mainInDoc = document.querySelector('main');
-  const selector = (mainInDoc && mainInDoc === el) ? 'body > main > div' : ':scope > div';
+  const selector = (mainInDoc && mainInDoc === el) ? ':scope > div' : 'body > main > div';
   return [...el.querySelectorAll(selector)].map((section, idx) => {
     /* process section metadata */
     const sectionMeta = section.querySelector('div.section-metadata');
@@ -2495,9 +2495,9 @@ export async function loadArea(area = document) {
 
   if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
   if (isDoc) {
-    loadSectionsWithPostLCP(sections);
+    await loadSectionsWithPostLCP(sections);
   } else {
-    loadSections(sections);
+    await loadSections(sections);
   }
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
