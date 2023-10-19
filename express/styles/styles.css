@@ -120,7 +120,10 @@ body > header {
   background-color: #FFF;
 }
 
-body.blog > header {
+/* consider removing header branding altogether */
+body.blog > header,
+body.no-brand-header > header,
+body.no-desktop-brand-header > header {
   padding-bottom: 0;
   background-image: unset;
 }

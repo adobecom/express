@@ -1149,9 +1149,9 @@ export const loadScript = (url, type) => new Promise((resolve, reject) => {
 });
 
 export async function loadTemplate() {
-  // todo: remove theme after metadata sheet no longer refers to it
+  // todo: remove theme after we move blog to template column in metadata sheet
   const template = getMetadata('template') || getMetadata('theme');
-  if (!template) return;
+  if (!template || template?.toLowerCase() === 'no brand header') return;
   const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
   document.body.classList.add(name);
   const styleLoaded = new Promise((resolve) => {
