@@ -700,6 +700,8 @@ function decorateLinks(main) {
  */
 async function decorateSections(el) {
   const mainInDoc = document.querySelector('main');
+  // fixme: what was the intention of the 2 specific selectors?
+  //  One presumes el is main and the other presume the container is at parent level of body.
   const selector = (mainInDoc && mainInDoc === el) ? ':scope > div' : 'body > main > div';
   return [...el.querySelectorAll(selector)].map((section, idx) => {
     /* process section metadata */
