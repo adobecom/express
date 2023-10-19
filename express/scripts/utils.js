@@ -2468,7 +2468,7 @@ export async function loadArea(area = document) {
   }
 
   if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
-  loadBlocks(sections);
+  loadBlocks(sections, true);
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
 
