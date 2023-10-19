@@ -2397,8 +2397,9 @@ export async function loadSections(sections) {
     // Show the section when all blocks inside are done.
     delete section.el.dataset.status;
     delete section.el.dataset.idx;
-    return areaBlocks;
   }
+
+  return areaBlocks;
 }
 
 /**
@@ -2425,8 +2426,9 @@ export async function loadSectionsWithLCP(sections) {
     // Show the section when all blocks inside are done.
     delete section.el.dataset.status;
     delete section.el.dataset.idx;
-    return areaBlocks;
   }
+
+  return areaBlocks;
 }
 
 /**
@@ -2495,9 +2497,9 @@ export async function loadArea(area = document) {
 
   if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
   if (isDoc) {
-    await loadSectionsWithLCP(sections);
+    loadSectionsWithLCP(sections);
   } else {
-    await loadSections(sections);
+    loadSections(sections);
   }
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
