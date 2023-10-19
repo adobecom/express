@@ -592,27 +592,33 @@ function updateLottieStatus(block) {
   }
 }
 
+async function fetchCntSpan(props, anchor, lang) {
+  const cntSpan = createTag('span', { class: 'category-list-template-count' });
+  const cnt = await fetchTemplatesCategoryCount(props, anchor.dataset.tasks);
+  cntSpan.textContent = `(${cnt.toLocaleString(lang)})`;
+  return { cntSpan, anchor };
+}
+
 async function appendCategoryTemplatesCount(block, props) {
   if (props.loadedOtherCategoryCounts) {
     return;
   }
+  props.loadedOtherCategoryCounts = true;
   const categories = block.querySelectorAll('ul.category-list > li');
-  // FIXME: props already contain start: 70 at this time
-  const tempProps = JSON.parse(JSON.stringify(props));
-  tempProps.limit = 0;
   const lang = getLanguage(getLocale(window.location));
 
-  for (const li of categories) {
-    const anchor = li.querySelector('a');
-    if (anchor) {
-      const countSpan = createTag('span', { class: 'category-list-template-count' });
-      // eslint-disable-next-line no-await-in-loop
-      const cnt = await fetchTemplatesCategoryCount(props, anchor.dataset.tasks);
-      countSpan.textContent = `(${cnt.toLocaleString(lang)})`;
-      anchor.append(countSpan);
-    }
+  const fetchCntSpanPromises = [...categories]
+    .map((li) => li.querySelector('a'))
+    .filter((a) => a?.dataset?.tasks)
+    .map((a) => fetchCntSpan(props, a, lang));
+  const res = await Promise.all(fetchCntSpanPromises);
+
+  // append one by one to gain attention
+  for (const { cntSpan, anchor } of res) {
+    anchor.append(cntSpan);
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise((resolve) => setTimeout(resolve, 150));
   }
-  props.loadedOtherCategoryCounts = true;
 }
 
 async function decorateCategoryList(block, props) {
