@@ -404,9 +404,9 @@ input[type="checkbox"] + label {
   display: flex;
   align-items: center;
   justify-content: center;
-  -webkit-animation: fadeIn .5s ease-in;
-  -moz-animation: fadeIn .5s ease-in;
-  animation: fadeIn .5s ease-in;
+  -webkit-animation: fadeInToOpaque .5s ease-in;
+  -moz-animation: fadeInToOpaque .5s ease-in;
+  animation: fadeInToOpaque .5s ease-in;
 }
 
 .dialog-modal .faas-form-confirm-overlay .icon.icon-checkmark-green {
@@ -488,7 +488,7 @@ input[type="checkbox"] + label {
   }
 }
 
-@-webkit-keyframes fadeIn {
+@-webkit-keyframes fadeInToOpaque {
   0% {
     opacity: 0;
   }
@@ -498,7 +498,7 @@ input[type="checkbox"] + label {
   }
 }
 
-@-moz-keyframes fadeIn {
+@-moz-keyframes fadeInToOpaque {
   0% {
     opacity: 0;
   }
@@ -508,7 +508,7 @@ input[type="checkbox"] + label {
   }
 }
 
-@keyframes fadeIn {
+@keyframes fadeInToOpaque {
   0% {
     opacity: 0;
   }
