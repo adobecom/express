@@ -233,19 +233,6 @@ export function createTag(tag, attributes, html) {
   return el;
 }
 
-export function getMeta(name) {
-  let value = '';
-  const nameLower = name.toLowerCase();
-  const $metas = [...document.querySelectorAll('meta')].filter(($m) => {
-    const nameAttr = $m.getAttribute('name');
-    const propertyAttr = $m.getAttribute('property');
-    return ((nameAttr && nameLower === nameAttr.toLowerCase())
-      || (propertyAttr && nameLower === propertyAttr.toLowerCase()));
-  });
-  if ($metas[0]) value = $metas[0].getAttribute('content');
-  return value;
-}
-
 // Get lottie animation HTML - remember to lazyLoadLottiePlayer() to see it.
 export function getLottie(name, src, loop = true, autoplay = true, control = false, hover = false) {
   return (`<lottie-player class="lottie lottie-${name}" src="${src}" background="transparent" speed="1" ${(loop) ? 'loop ' : ''}${(autoplay) ? 'autoplay ' : ''}${(control) ? 'controls ' : ''}${(hover) ? 'hover ' : ''}></lottie-player>`);
@@ -945,10 +932,10 @@ function decorateHeaderAndFooter() {
     }
   });
 
-  const headerMeta = getMeta('header');
+  const headerMeta = getMetadata('header');
   if (headerMeta !== 'off') header.innerHTML = '<div id="feds-header"></div>';
   else header.remove();
-  const footerMeta = getMeta('footer');
+  const footerMeta = getMetadata('footer');
   const footer = document.querySelector('footer');
   if (footerMeta !== 'off') {
     footer.innerHTML = `
@@ -1369,7 +1356,7 @@ export function decorateButtons(el = document) {
 // }
 
 export function checkTesting() {
-  return (getMeta('testing').toLowerCase() === 'on');
+  return (getMetadata('testing').toLowerCase() === 'on');
 }
 
 /**
@@ -1386,7 +1373,7 @@ export function toCamelCase(name) {
  * @returns {string} experimentid
  */
 export function getExperiment() {
-  let experiment = toClassName(getMeta('experiment'));
+  let experiment = toClassName(getMetadata('experiment'));
 
   if (!/adobe\.com/.test(window.location.hostname) && !/\.hlx\.live/.test(window.location.hostname)) {
     experiment = '';
@@ -1426,7 +1413,7 @@ export function getExperiment() {
  * @returns {object} containing the experiment manifest
  */
 export async function getExperimentConfig(experimentId) {
-  const instantExperiment = getMeta('instant-experiment');
+  const instantExperiment = getMetadata('instant-experiment');
   if (instantExperiment) {
     const config = {
       experimentName: `Instant Experiment: ${experimentId}`,
@@ -1947,7 +1934,7 @@ function splitSections($main) {
 }
 
 function setTheme() {
-  let theme = getMeta('theme');
+  let theme = getMetadata('theme');
   if (!theme && (window.location.pathname.startsWith('/express')
     || window.location.pathname.startsWith('/education')
     || window.location.pathname.startsWith('/drafts'))) {

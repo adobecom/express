@@ -14,7 +14,7 @@
 import {
   createTag,
   toClassName,
-  getMeta,
+  getMetadata,
   loadBlock,
   createOptimizedPicture,
   getLocale,
@@ -102,8 +102,8 @@ const loadImage = (img) => new Promise((resolve) => {
 export default async function decorateBlogPage() {
   const $main = document.querySelector('main');
   const $h1 = document.querySelector('main h1');
-  const author = getMeta('author');
-  const date = getMeta('publication-date');
+  const author = getMetadata('author');
+  const date = getMetadata('publication-date');
   if ($h1 && author && date) {
     const $heroPicture = $h1.parentElement.querySelector('picture');
     const heroSection = createTag('div', { class: 'hero' });
@@ -117,12 +117,12 @@ export default async function decorateBlogPage() {
     const $blogHeader = createTag('div', { class: 'blog-header' });
     $div.append($blogHeader);
     const $eyebrow = createTag('div', { class: 'eyebrow' });
-    const tagString = getMeta('article:tag');
+    const tagString = getMetadata('article:tag');
     // eslint-disable-next-line no-unused-vars
     const tags = tagString.split(',');
     const locale = getLocale(window.location);
     const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-    $eyebrow.innerHTML = `<a href="${urlPrefix}/express/learn/blog/tags/${toClassName(getMeta('category'))}">${getMeta('category')}</a>`;
+    $eyebrow.innerHTML = `<a href="${urlPrefix}/express/learn/blog/tags/${toClassName(getMetadata('category'))}">${getMetadata('category')}</a>`;
     // $eyebrow.innerHTML = tags[0];
     $blogHeader.append($eyebrow);
     $blogHeader.append($h1);
@@ -135,7 +135,7 @@ export default async function decorateBlogPage() {
       timeZone: 'UTC',
     });
 
-    const subheading = getMeta('subheading');
+    const subheading = getMetadata('subheading');
     if (subheading) {
       const $subheading = createTag('p', { class: 'subheading' });
       $subheading.innerHTML = subheading;
