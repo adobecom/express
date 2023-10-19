@@ -2391,8 +2391,6 @@ export async function loadSections(sections) {
     // Only move on to the next section when all blocks are loaded.
     // eslint-disable-next-line no-await-in-loop
     await Promise.all(loaded);
-    // Post LCP operations.
-    if (section.el.dataset.idx === '0') loadPostLCP();
 
     // Show the section when all blocks inside are done.
     delete section.el.dataset.status;
@@ -2406,7 +2404,7 @@ export async function loadSections(sections) {
  * Loads JS and CSS for all blocks in a container element.
  * @param {Array} sections The sections loaded in main
  */
-export async function loadSectionsWithLCP(sections) {
+export async function loadSectionsWithPostLCP(sections) {
   const areaBlocks = [];
   for (const section of sections) {
     if (section.preloadLinks.length) {
@@ -2497,7 +2495,7 @@ export async function loadArea(area = document) {
 
   if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
   if (isDoc) {
-    loadSectionsWithLCP(sections);
+    loadSectionsWithPostLCP(sections);
   } else {
     loadSections(sections);
   }
