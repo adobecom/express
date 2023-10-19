@@ -947,6 +947,7 @@ function decorateHeaderAndFooter() {
 /**
  * Loads a CSS file
  * @param {string} href The path to the CSS file
+ * @param {function} callback a function to run upon successful style loading
  */
 export function loadCSS(href, callback) {
   if (!document.querySelector(`head > link[href="${href}"]`)) {
@@ -1149,6 +1150,28 @@ export const loadScript = (url, type) => new Promise((resolve, reject) => {
   script.addEventListener('error', onScript);
 });
 
+export async function loadTemplate() {
+  // todo: remove theme after metadata sheet no longer refers to it
+  const template = getMetadata('template') || getMetadata('theme');
+  if (!template) return;
+  const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
+  document.body.classList.add(name);
+  const styleLoaded = new Promise((resolve) => {
+    loadCSS(`/express/templates/${name}/${name}.css`, resolve);
+  });
+  const scriptLoaded = new Promise((resolve) => {
+    (async () => {
+      try {
+        await loadScript(`/express/templates/${name}/${name}.js`);
+      } catch (err) {
+        window.lana.log(`failed to load template module for ${name}`, err);
+      }
+      resolve();
+    })();
+  });
+  await Promise.all([styleLoaded, scriptLoaded]);
+}
+
 /**
  * fetches the string variables.
  * @returns {object} localized variables
@@ -1330,25 +1353,6 @@ export function decorateButtons(block = document) {
     }
   });
 }
-
-// function decorateTemplate() {
-//   if (window.location.pathname.includes('/make/')) {
-//     document.body.classList.add('make-page');
-//   }
-//   const year = window.location.pathname.match(/\/20\d\d\//);
-//   if (year) {
-//     document.body.classList.add('blog-page');
-//   }
-// }
-
-// function decorateLegacyLinks() {
-//   const legacy = 'https://blog.adobespark.com/';
-//   document.querySelectorAll(`a[href^="${legacy}"]`).forEach(($a) => {
-//     // eslint-disable-next-line no-console
-//     console.log($a);
-//     $a.href = $a.href.substring(0, $a.href.length - 1).substring(legacy.length - 1);
-//   });
-// }
 
 export function checkTesting() {
   return (getMetadata('testing').toLowerCase() === 'on');
@@ -1936,13 +1940,10 @@ function setTheme() {
     let themeClass = toClassName(theme);
     /* backwards compatibility can be removed again */
     if (themeClass === 'nobrand') themeClass = 'no-desktop-brand-header';
-    body.classList.add(themeClass);
     if (themeClass === 'blog') {
       body.classList.add('no-brand-header');
-      blog = true;
     }
   }
-  body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
 
 function decorateLinkedPictures($main) {
@@ -2354,6 +2355,7 @@ async function loadPostLCP() {
   // post LCP actions go here
   sampleRUM('lcp');
   if (window.hlx.martech) loadMartech();
+  loadTemplate();
   loadGnav();
   const tkID = TK_IDS[getLocale(window.location)];
   if (tkID) {
@@ -2407,7 +2409,7 @@ export async function loadArea(area = document) {
     window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
   });
   window.hlx.init = true;
-
+  document.body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
   setTheme();
   if (main) {
     const language = getLanguage(getLocale(window.location));
