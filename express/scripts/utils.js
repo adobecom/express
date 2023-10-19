@@ -709,10 +709,11 @@ function decorateLinks(main) {
 
 /**
  * Decorates all sections in a container element.
- * @param {Element} $main The container element
+ * @param {Element} el The container element
  */
-async function decorateSections(el, isDoc) {
-  const selector = isDoc ? 'body > main > div' : ':scope > div';
+async function decorateSections(el) {
+  const mainInDoc = document.querySelector('main');
+  const selector = (mainInDoc && mainInDoc === el) ? 'body > main > div' : ':scope > div';
   return [...el.querySelectorAll(selector)].map((section, idx) => {
     /* process section metadata */
     const sectionMeta = section.querySelector('div.section-metadata');
@@ -1287,9 +1288,14 @@ export function addSearchQueryToHref(href) {
   return url.toString();
 }
 
-export function decorateButtons(block = document) {
+/**
+ * Button style applicator function
+ * @param {Object} el the container of the buttons to be decorated
+ */
+
+export function decorateButtons(el = document) {
   const noButtonBlocks = ['template-list', 'icon-list'];
-  block.querySelectorAll(':scope a:not(.link-block)').forEach(($a) => {
+  el.querySelectorAll(':scope a:not(.link-block)').forEach(($a) => {
     const originalHref = $a.href;
     const linkText = $a.textContent.trim();
     if ($a.children.length > 0) {
@@ -1334,8 +1340,7 @@ export function decorateButtons(block = document) {
       if (linkText.startsWith('{{icon-') && linkText.endsWith('}}')) {
         const $iconName = /{{icon-([\w-]+)}}/g.exec(linkText)[1];
         if ($iconName) {
-          const $icon = getIcon($iconName, `${$iconName} icon`);
-          $a.innerHTML = $icon;
+          $a.innerHTML = getIcon($iconName, `${$iconName} icon`);
           $a.classList.remove('button', 'primary', 'secondary', 'accent');
           $a.title = $iconName;
         }
@@ -1644,14 +1649,19 @@ async function decorateTesting() {
   }
 }
 
-export async function fixIcons(block = document) {
+/**
+ * Icon loader using altText
+ * @param {Object} el the container of the buttons to be decorated
+ */
+
+export async function fixIcons(el = document) {
   /* backwards compatible icon handling, deprecated */
-  block.querySelectorAll('svg use[href^="./_icons_"]').forEach(($use) => {
+  el.querySelectorAll('svg use[href^="./_icons_"]').forEach(($use) => {
     $use.setAttribute('href', `/express/icons.svg#${$use.getAttribute('href').split('#')[1]}`);
   });
   const placeholders = await fetchPlaceholders();
   /* new icons handling */
-  block.querySelectorAll('img').forEach(($img) => {
+  el.querySelectorAll('img').forEach(($img) => {
     const alt = $img.getAttribute('alt');
     if (alt) {
       const lowerAlt = alt.toLowerCase();
@@ -2133,10 +2143,6 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
   return picture;
 }
 
-/**
- * Decorates the main element.
- * @param {Element} main The main element
- */
 function decoratePictures(main) {
   main.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
     const newPicture = createOptimizedPicture(img.src, img.alt, !i);
@@ -2145,10 +2151,14 @@ function decoratePictures(main) {
   });
 }
 
+/**
+ * Decorates the main element.
+ * @param {Element} main The main element
+ */
 export async function decorateMain(main) {
   await buildAutoBlocks(main);
   splitSections(main);
-  const sections = decorateSections(main, false);
+  const sections = decorateSections(main);
   decorateButtons(main);
   decorateMarqueeColumns(main);
   await fixIcons(main);
@@ -2380,7 +2390,7 @@ async function loadPostLCP() {
  * @param {Array} sections The sections loaded in main
  * @param {Boolean} isDoc if is the document served
  */
-export async function loadBlocks(sections, isDoc) {
+export async function loadSections(sections) {
   const areaBlocks = [];
   for (const section of sections) {
     if (section.preloadLinks.length) {
@@ -2395,11 +2405,40 @@ export async function loadBlocks(sections, isDoc) {
     // eslint-disable-next-line no-await-in-loop
     await Promise.all(loaded);
     // Post LCP operations.
-    if (isDoc && section.el.dataset.idx === '0') loadPostLCP();
+    if (section.el.dataset.idx === '0') loadPostLCP();
 
     // Show the section when all blocks inside are done.
     delete section.el.dataset.status;
     delete section.el.dataset.idx;
+    return areaBlocks;
+  }
+}
+
+/**
+ * Loads JS and CSS for all blocks in a container element.
+ * @param {Array} sections The sections loaded in main
+ */
+export async function loadSectionsWithLCP(sections) {
+  const areaBlocks = [];
+  for (const section of sections) {
+    if (section.preloadLinks.length) {
+      const preloads = section.preloadLinks.map((block) => loadBlock(block));
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.all(preloads);
+    }
+    const loaded = section.blocks.map((block) => loadBlock(block));
+    areaBlocks.push(...section.blocks);
+
+    // Only move on to the next section when all blocks are loaded.
+    // eslint-disable-next-line no-await-in-loop
+    await Promise.all(loaded);
+    // Post LCP operations.
+    if (section.el.dataset.idx === '0') loadPostLCP();
+
+    // Show the section when all blocks inside are done.
+    delete section.el.dataset.status;
+    delete section.el.dataset.idx;
+    return areaBlocks;
   }
 }
 
@@ -2468,7 +2507,11 @@ export async function loadArea(area = document) {
   }
 
   if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
-  loadBlocks(sections, isDoc);
+  if (isDoc) {
+    await loadSectionsWithLCP(sections);
+  } else {
+    await loadSections(sections);
+  }
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
 

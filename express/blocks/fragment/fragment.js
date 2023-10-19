@@ -19,7 +19,7 @@
 
 import {
   decorateMain,
-  loadBlocks,
+  loadSections,
 } from '../../scripts/utils.js';
 
 /**
@@ -34,7 +34,7 @@ async function loadFragment(path) {
       const main = document.createElement('main');
       main.innerHTML = await resp.text();
       const sections = await decorateMain(main);
-      await loadBlocks(sections);
+      await loadSections(sections);
       return main;
     }
   }
