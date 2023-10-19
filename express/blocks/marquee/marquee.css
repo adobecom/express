@@ -308,7 +308,7 @@ body.no-desktop-brand-header header {
     color: var(--color-white);
   }
 
-  body.no-desktop-brand-header header, body.no-brand-header header {
+  body.blog header {
     background-image: unset;
   }
 

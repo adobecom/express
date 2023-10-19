@@ -120,8 +120,7 @@ body > header {
   background-color: #FFF;
 }
 
-body.no-brand-header > header,
-body.no-desktop-brand-header > header {
+body.blog > header {
   padding-bottom: 0;
   background-image: unset;
 }

@@ -130,7 +130,7 @@ main .hero-animation-beta.white-text a:any-link {
     width: 380px;
   }
 
-  body.no-desktop-brand-header header, body.no-brand-header header {
+  body.blog header {
     height: auto;
     background-image: unset;
   }

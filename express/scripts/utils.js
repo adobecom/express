@@ -19,8 +19,6 @@ const TK_IDS = {
   jp: 'dvg6awq',
 };
 
-let blog;
-
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
@@ -1162,7 +1160,7 @@ export async function loadTemplate() {
   const scriptLoaded = new Promise((resolve) => {
     (async () => {
       try {
-        await loadScript(`/express/templates/${name}/${name}.js`);
+        await import(`/express/templates/${name}/${name}.js`);
       } catch (err) {
         window.lana.log(`failed to load template module for ${name}`, err);
       }
@@ -1243,7 +1241,8 @@ function loadGnav() {
 }
 
 function decoratePageStyle() {
-  if (!blog) {
+  const isBlog = getMetadata('theme') === 'blog';
+  if (!isBlog) {
     const $h1 = document.querySelector('main h1');
     // check if h1 is inside a block
     // eslint-disable-next-line no-lonely-if
@@ -1266,9 +1265,7 @@ function decoratePageStyle() {
         $heroSection.removeAttribute('style');
       }
       if ($heroPicture) {
-        if (!blog) {
-          $heroPicture.classList.add('hero-bg');
-        }
+        $heroPicture.classList.add('hero-bg');
       } else {
         $heroSection.classList.add('hero-noimage');
       }
@@ -1927,25 +1924,6 @@ function splitSections($main) {
   });
 }
 
-function setTheme() {
-  let theme = getMetadata('theme');
-  if (!theme && (window.location.pathname.startsWith('/express')
-    || window.location.pathname.startsWith('/education')
-    || window.location.pathname.startsWith('/drafts'))) {
-    // mega nav, suppress brand header
-    theme = 'no-brand-header';
-  }
-  const { body } = document;
-  if (theme) {
-    let themeClass = toClassName(theme);
-    /* backwards compatibility can be removed again */
-    if (themeClass === 'nobrand') themeClass = 'no-desktop-brand-header';
-    if (themeClass === 'blog') {
-      body.classList.add('no-brand-header');
-    }
-  }
-}
-
 function decorateLinkedPictures($main) {
   /* thanks to word online */
   $main.querySelectorAll(':scope > picture').forEach(($picture) => {
@@ -2288,7 +2266,7 @@ function addJapaneseSectionHeaderSizing() {
 
 /**
  * Detects legal copy based on a * or † prefix and applies a smaller font size.
- * @param {HTMLMainElement} main The main element
+ * @param {Element} main The main element
  */
 function decorateLegalCopy(main) {
   const legalCopyPrefixes = ['*', '†'];
@@ -2354,8 +2332,8 @@ async function loadLazy(main) {
 async function loadPostLCP() {
   // post LCP actions go here
   sampleRUM('lcp');
-  if (window.hlx.martech) loadMartech();
   loadTemplate();
+  if (window.hlx.martech) loadMartech();
   loadGnav();
   const tkID = TK_IDS[getLocale(window.location)];
   if (tkID) {
@@ -2410,7 +2388,7 @@ export async function loadArea(area = document) {
   });
   window.hlx.init = true;
   document.body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
-  setTheme();
+
   if (main) {
     const language = getLanguage(getLocale(window.location));
     const langSplits = language.split('-');
@@ -2456,7 +2434,6 @@ export async function loadArea(area = document) {
     }
   }
 
-  if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
   loadBlocks(sections, isDoc);
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
