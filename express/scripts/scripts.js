@@ -14,6 +14,7 @@ import {
   sampleRUM,
   getDevice,
   removeIrrelevantSections,
+  yieldToMain,
   loadArea,
   stamp,
   registerPerformanceLogger,
@@ -39,7 +40,7 @@ const eagerLoad = (img) => {
   img?.setAttribute('fetchpriority', 'high');
 };
 
-(async function loadLCPImage() {
+(function loadLCPImage() {
   const body = document.querySelector('body');
   body.dataset.device = getDevice();
   const main = body.querySelector('main');
@@ -53,9 +54,9 @@ const eagerLoad = (img) => {
 }());
 
 (async function loadPage() {
-  if (!window.hlx.init && !window.isTestEnv) {
-    await loadArea();
-  }
+  if (window.hlx.init || window.isTestEnv) return;
+  await yieldToMain();
+  await loadArea();
 }());
 
 stamp('start');

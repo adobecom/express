@@ -511,6 +511,12 @@ export function getMetadata(name) {
   return ($meta && $meta.content) || '';
 }
 
+export function yieldToMain() {
+  return new Promise((r) => {
+    setTimeout(r, 0);
+  });
+}
+
 export function removeIrrelevantSections(main) {
   if (!main) return;
   main.querySelectorAll(':scope > div').forEach((section) => {

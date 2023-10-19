@@ -15,14 +15,9 @@ import {
   getHelixEnv,
   getMetadata,
   titleCase,
+  yieldToMain,
 } from './utils.js';
 import HtmlSanitizer from './html-sanitizer.js';
-
-function yieldToMain() {
-  return new Promise((r) => {
-    setTimeout(r, 0);
-  });
-}
 
 async function replaceDefaultPlaceholders(block, components) {
   block.innerHTML = block.innerHTML.replaceAll('https://www.adobe.com/express/templates/default-create-link', components.link);
