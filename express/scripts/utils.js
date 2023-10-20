@@ -1119,7 +1119,7 @@ export async function loadBlock(block, eager = false) {
             await loadAndExecute(cssPath, jsPath, block, blockName, eager);
             fragmentWatcher.unobserve(block);
           }
-        }, { rootMargin: '0px', threshold: 1 });
+        });
 
         fragmentWatcher.observe(block);
       } else {
