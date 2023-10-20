@@ -1110,8 +1110,14 @@ export async function loadBlock(block, eager = false) {
       }
     }
 
-    await loadAndExecute(cssPath, jsPath, block, blockName, eager);
-    block.setAttribute('data-block-status', 'loaded');
+    if (blockName === 'fragment') {
+      loadAndExecute(cssPath, jsPath, block, blockName, eager).then(() => {
+        block.setAttribute('data-block-status', 'loaded');
+      });
+    } else {
+      await loadAndExecute(cssPath, jsPath, block, blockName, eager);
+      block.setAttribute('data-block-status', 'loaded');
+    }
   }
   return block;
 }
