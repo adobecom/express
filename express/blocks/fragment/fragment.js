@@ -72,7 +72,7 @@ export default async function decorate(block) {
     blockSection.style.transition = 'opacity 5s';
     setTimeout(() => {
       blockSection.style.opacity = '1';
-    }, 10);
+    }, 100);
   }
 
   const fragment = await loadFragment(path);
