@@ -1113,9 +1113,7 @@ export async function loadBlock(block, eager = false) {
 
     if (blockName === 'fragment') {
       const parentSection = block.closest('.section');
-      if (!parentSection) {
-        loadAndExecute(cssPath, jsPath, block, blockName, eager);
-      } else {
+      if (parentSection && parentSection.dataset.audience) {
         const fragmentWatcher = new IntersectionObserver(async (entries) => {
           if (entries[0].isIntersecting) {
             await loadAndExecute(cssPath, jsPath, block, blockName, eager);
@@ -1124,6 +1122,8 @@ export async function loadBlock(block, eager = false) {
         }, { rootMargin: '0px', threshold: 1 });
 
         fragmentWatcher.observe(block);
+      } else {
+        loadAndExecute(cssPath, jsPath, block, blockName, eager);
       }
     } else {
       await loadAndExecute(cssPath, jsPath, block, blockName, eager);
