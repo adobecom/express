@@ -43,8 +43,7 @@ async function loadFragment(path) {
 
 function injectFragmentOnPage(block, fragment) {
   const fragmentSection = fragment.querySelector(':scope .section');
-  const blockSection = block.closest('.section');
-
+  
   if (fragmentSection) {
     const audience = fragmentSection.dataset?.audience;
     if (audience) {
@@ -61,20 +60,21 @@ function injectFragmentOnPage(block, fragment) {
     } else {
       block.replaceWith(...fragmentSection.childNodes);
     }
-
-    if (blockSection && blockSection.dataset.toggle) {
-      block.style.opacity = '0';
-      block.style.transition = 'opacity 0.5s';
-      setTimeout(() => {
-        block.style.opacity = '1';
-      });
-    }
   }
 }
 
 export default async function decorate(block) {
   const link = block.querySelector('a');
   const path = link ? link.getAttribute('href') : block.textContent.trim();
+  const blockSection = block.closest('.section');
+  if (blockSection && blockSection.dataset.toggle) {
+    blockSection.style.opacity = '0';
+    blockSection.style.transition = 'opacity 0.5s';
+    setTimeout(() => {
+      blockSection.style.opacity = '1';
+    }, 10);
+  }
+
   const fragment = await loadFragment(path);
 
   if (fragment) {
