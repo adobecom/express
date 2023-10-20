@@ -2332,7 +2332,6 @@ async function loadLazy(main) {
 async function loadPostLCP() {
   // post LCP actions go here
   sampleRUM('lcp');
-  loadTemplate();
   if (window.hlx.martech) loadMartech();
   loadGnav();
   const tkID = TK_IDS[getLocale(window.location)];
@@ -2388,7 +2387,7 @@ export async function loadArea(area = document) {
   });
   window.hlx.init = true;
   document.body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
-
+  await loadTemplate();
   if (main) {
     const language = getLanguage(getLocale(window.location));
     const langSplits = language.split('-');
