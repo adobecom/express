@@ -1112,13 +1112,23 @@ export async function loadBlock(block, eager = false) {
     }
 
     if (blockName === 'fragment') {
-      loadAndExecute(cssPath, jsPath, block, blockName, eager).then(() => {
-        block.setAttribute('data-block-status', 'loaded');
-      });
+      const parentSection = block.closest('.section');
+      if (!parentSection) {
+        loadAndExecute(cssPath, jsPath, block, blockName, eager);
+      } else {
+        const fragmentWatcher = new IntersectionObserver(async (entries) => {
+          if (entries[0].isIntersecting) {
+            await loadAndExecute(cssPath, jsPath, block, blockName, eager);
+            fragmentWatcher.unobserve(block);
+          }
+        }, { rootMargin: '0px', threshold: 1 });
+
+        fragmentWatcher.observe(block);
+      }
     } else {
       await loadAndExecute(cssPath, jsPath, block, blockName, eager);
-      block.setAttribute('data-block-status', 'loaded');
     }
+    block.setAttribute('data-block-status', 'loaded');
   }
   return block;
 }
