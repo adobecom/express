@@ -1113,7 +1113,7 @@ export async function loadBlock(block, eager = false) {
 
     if (blockName === 'fragment') {
       const parentSection = block.closest('.section');
-      if (parentSection && parentSection.dataset.audience) {
+      if (parentSection && parentSection.dataset.toggle) {
         const fragmentWatcher = new IntersectionObserver(async (entries) => {
           if (entries[0].isIntersecting) {
             await loadAndExecute(cssPath, jsPath, block, blockName, eager);
