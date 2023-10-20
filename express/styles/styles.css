@@ -110,7 +110,7 @@ body.no-scroll {
 /* gnav */
 body > header {
   box-sizing: content-box;
-  padding-bottom: var(--brand-header-height);
+  padding-bottom: 0;
   background-repeat: no-repeat;
   background-size: auto 32px;
   background-position: bottom 24px center;
