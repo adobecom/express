@@ -1148,16 +1148,23 @@ export const loadScript = (url, type) => new Promise((resolve, reject) => {
   script.addEventListener('error', onScript);
 });
 
-export async function loadTemplate() {
+export async function setTemplateTheme() {
   // todo: remove theme after we move blog to template column in metadata sheet
   const template = getMetadata('template') || getMetadata('theme');
   if (!template || template?.toLowerCase() === 'no brand header') return;
   const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
   document.body.classList.add(name);
-  const styleLoaded = new Promise((resolve) => {
+  await new Promise((resolve) => {
     loadCSS(`/express/templates/${name}/${name}.css`, resolve);
   });
-  const scriptLoaded = new Promise((resolve) => {
+}
+
+export async function loadTemplateScript() {
+  // todo: remove theme after we move blog to template column in metadata sheet
+  const template = getMetadata('template') || getMetadata('theme');
+  if (!template || template?.toLowerCase() === 'no brand header') return;
+  const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
+  await new Promise((resolve) => {
     (async () => {
       try {
         await import(`/express/templates/${name}/${name}.js`);
@@ -1167,7 +1174,6 @@ export async function loadTemplate() {
       resolve();
     })();
   });
-  await Promise.all([styleLoaded, scriptLoaded]);
 }
 
 /**
@@ -2387,7 +2393,7 @@ export async function loadArea(area = document) {
   });
   window.hlx.init = true;
   document.body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
-  await loadTemplate();
+  setTemplateTheme();
   if (main) {
     const language = getLanguage(getLocale(window.location));
     const langSplits = language.split('-');
@@ -2432,7 +2438,7 @@ export async function loadArea(area = document) {
       }
     }
   }
-
+  await loadTemplateScript();
   loadBlocks(sections, isDoc);
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
