@@ -66,14 +66,6 @@ function injectFragmentOnPage(block, fragment) {
 export default async function decorate(block) {
   const link = block.querySelector('a');
   const path = link ? link.getAttribute('href') : block.textContent.trim();
-  const blockSection = block.closest('.section');
-  if (blockSection && blockSection.dataset.toggle) {
-    blockSection.style.opacity = '0';
-    blockSection.style.transition = 'opacity 5s';
-    setTimeout(() => {
-      blockSection.style.opacity = '1';
-    }, 100);
-  }
 
   const fragment = await loadFragment(path);
 
