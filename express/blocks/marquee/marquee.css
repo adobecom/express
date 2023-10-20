@@ -308,10 +308,6 @@ body.no-desktop-brand-header header {
     color: var(--color-white);
   }
 
-  body.blog header {
-    background-image: unset;
-  }
-
   .marquee .marquee-foreground {
     min-height: max-content;
     display: flex;
