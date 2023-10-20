@@ -43,7 +43,7 @@ async function loadFragment(path) {
 
 function injectFragmentOnPage(block, fragment) {
   const fragmentSection = fragment.querySelector(':scope .section');
-  
+
   if (fragmentSection) {
     const audience = fragmentSection.dataset?.audience;
     if (audience) {
@@ -69,7 +69,7 @@ export default async function decorate(block) {
   const blockSection = block.closest('.section');
   if (blockSection && blockSection.dataset.toggle) {
     blockSection.style.opacity = '0';
-    blockSection.style.transition = 'opacity 0.5s';
+    blockSection.style.transition = 'opacity 5s';
     setTimeout(() => {
       blockSection.style.opacity = '1';
     }, 10);
