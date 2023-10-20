@@ -217,6 +217,6 @@ export default async function decorateBlogPage() {
   loadBlock(block);
 }
 
-(async () => {
-  await decorateBlogPage();
-})();
+document.body.style.visibility = 'hidden';
+await decorateBlogPage();
+document.body.style.removeProperty('visibility');
