@@ -68,10 +68,6 @@ function initButton(block, sections, index, props) {
 
         sections.forEach((section) => {
           if (buttons[index].dataset.text === section.dataset.toggle.toLowerCase()) {
-            section.classList.remove('hidden');
-            setTimeout(() => {
-              section.classList.remove('transparent');
-            }, 10);
             props.activeSection = section;
             awakenNestedCarousels(section);
           } else {
@@ -178,6 +174,11 @@ export default function decorate(block) {
         section.addEventListener('transitionend', () => {
           if (section.classList.contains('transparent')) {
             section.classList.add('hidden');
+          } else {
+            props.activeSection.classList.remove('hidden');
+            setTimeout(() => {
+              props.activeSection.classList.remove('transparent');
+            });
           }
         });
       });
