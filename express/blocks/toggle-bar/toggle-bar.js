@@ -71,7 +71,7 @@ function initButton(block, sections, index, props) {
             section.classList.remove('hidden');
             setTimeout(() => {
               section.classList.remove('transparent');
-            }, 10);
+            });
             props.activeSection = section;
             awakenNestedCarousels(section);
           } else {
