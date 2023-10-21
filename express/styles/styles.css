@@ -513,8 +513,7 @@ main .section[data-toggle] {
 }
 
 main .section[data-toggle].hidden {
-  position: absolute;
-  z-index: -1;
+  display: none;
 }
 
 main .section[data-toggle].transparent {
