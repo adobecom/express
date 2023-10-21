@@ -1083,7 +1083,6 @@ async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
     })();
   });
   const allLoaded = await Promise.all([cssLoaded, scriptLoaded]);
-  console.log(allLoaded);
 }
 
 /**
