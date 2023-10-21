@@ -41,7 +41,7 @@ function decorateButton(block, toggle) {
   toggle.parentNode.replaceChild(button, toggle);
 }
 
-function awakeNestedCarousels(section) {
+function awakenNestedCarousels(section) {
   const carousels = section.querySelectorAll('.carousel-container');
 
   if (carousels.length === 0) return;
@@ -73,12 +73,9 @@ function initButton(block, sections, index, props) {
               section.classList.remove('transparent');
             }, 10);
             props.activeSection = section;
-            awakeNestedCarousels(section);
+            awakenNestedCarousels(section);
           } else {
             section.classList.add('transparent');
-            setTimeout(() => {
-              section.classList.add('hidden');
-            }, 500);
           }
         });
       }
@@ -176,6 +173,11 @@ export default function decorate(block) {
       sections.forEach((section, index) => {
         if (index > 0) {
           section.classList.add('hidden', 'transparent');
+          section.addEventListener('transitionend', () => {
+            if (section.classList.contains('transparent')) {
+              section.classList.add('hidden');
+            }
+          });
         }
       });
     }
