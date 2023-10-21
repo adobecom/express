@@ -508,7 +508,7 @@ main .section:last-of-type>.default-content-wrapper {
   padding-bottom: 40px;
 }
 
-main .section[data-toggle] {
+main .section[data-toggle] > div {
   transition: opacity 0.5s;
 }
 
