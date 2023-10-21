@@ -174,7 +174,7 @@ export default function decorate(block) {
         if (index > 0) {
           section.classList.add('hidden', 'transparent');
           section.addEventListener('transitionend', () => {
-            if (section.classList.contains('transparent')) {
+            if (!section.classList.contains('transparent')) {
               section.classList.add('hidden');
             }
           });
