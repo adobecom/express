@@ -68,10 +68,15 @@ function initButton(block, sections, index, props) {
 
         sections.forEach((section) => {
           if (buttons[index].dataset.text === section.dataset.toggle.toLowerCase()) {
+            props.activeSection.classList.remove('hidden');
+            setTimeout(() => {
+              props.activeSection.classList.remove('transparent');
+            }, 10);
+
             props.activeSection = section;
             awakenNestedCarousels(section);
           } else {
-            section.classList.add('transparent');
+            section.classList.add('transparent', 'hidden');
           }
         });
       }
@@ -170,17 +175,18 @@ export default function decorate(block) {
         if (index > 0) {
           section.classList.add('hidden', 'transparent');
         }
-
-        section.addEventListener('transitionend', () => {
-          if (section.classList.contains('transparent')) {
-            section.classList.add('hidden');
-          } else {
-            props.activeSection.classList.remove('hidden');
-            setTimeout(() => {
-              props.activeSection.classList.remove('transparent');
-            });
+        const onDisplay = (mutationList) => {
+          for (const mutation of mutationList) {
+            if (mutation.type === 'childList') {
+            } else if (mutation.type === 'attributes') {
+              console.log(`The ${mutation.attributeName} attribute was modified.`);
+            }
           }
-        });
+        };
+
+        const displayWatcher = new MutationObserver(onDisplay);
+
+        displayWatcher.observe(section, { attributes: true, childList: false, subtree: false });
       });
     }
 
