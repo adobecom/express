@@ -69,10 +69,19 @@ function initButton(block, sections, index, props) {
         sections.forEach((section) => {
           if (buttons[index].dataset.text === section.dataset.toggle.toLowerCase()) {
             section.style.display = 'block';
+            section.style.opacity = '0';
+            section.style.transition = 'opacity 0.5s';
+            setTimeout(() => {
+              section.style.opacity = '1';
+            }, 10);
             props.activeSection = section;
             awakeNestedCarousels(section);
           } else {
-            section.style.display = 'none';
+            section.style.opacity = '0';
+            setTimeout(() => {
+              section.style.removeProperty('transition');
+              section.style.display = 'none';
+            }, 500);
           }
         });
       }
