@@ -1082,7 +1082,7 @@ async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
       resolve();
     })();
   });
-  const allLoaded = await Promise.all([cssLoaded, scriptLoaded]);
+  await Promise.all([cssLoaded, scriptLoaded]);
 }
 
 /**
