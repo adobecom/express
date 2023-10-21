@@ -516,7 +516,7 @@ main .section[data-toggle].hidden {
   display: none;
 }
 
-main .section[data-toggle].transparent {
+main .section[data-toggle].transparent > div {
   opacity: 0;
 }
 
