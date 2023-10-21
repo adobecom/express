@@ -173,12 +173,13 @@ export default function decorate(block) {
       sections.forEach((section, index) => {
         if (index > 0) {
           section.classList.add('hidden', 'transparent');
-          section.addEventListener('transitionend', () => {
-            if (section.classList.contains('transparent')) {
-              section.classList.add('hidden');
-            }
-          });
         }
+
+        section.addEventListener('transitionend', () => {
+          if (section.classList.contains('transparent')) {
+            section.classList.add('hidden');
+          }
+        });
       });
     }
 
