@@ -68,19 +68,16 @@ function initButton(block, sections, index, props) {
 
         sections.forEach((section) => {
           if (buttons[index].dataset.text === section.dataset.toggle.toLowerCase()) {
-            section.style.display = 'block';
-            section.style.opacity = '0';
-            section.style.transition = 'opacity 0.5s';
+            section.classList.remove('hidden');
             setTimeout(() => {
-              section.style.opacity = '1';
+              section.classList.remove('transparent');
             }, 10);
             props.activeSection = section;
             awakeNestedCarousels(section);
           } else {
-            section.style.opacity = '0';
+            section.classList.add('transparent');
             setTimeout(() => {
-              section.style.removeProperty('transition');
-              section.style.display = 'none';
+              section.classList.add('hidden');
             }, 500);
           }
         });
@@ -178,7 +175,7 @@ export default function decorate(block) {
     if (sections) {
       sections.forEach((section, index) => {
         if (index > 0) {
-          section.style.display = 'none';
+          section.classList.add('hidden', 'transparent');
         }
       });
     }
