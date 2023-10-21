@@ -68,7 +68,10 @@ function initButton(block, sections, index, props) {
 
         sections.forEach((section) => {
           if (buttons[index].dataset.text === section.dataset.toggle.toLowerCase()) {
-            section.classList.remove('hidden', 'transparent');
+            section.classList.remove('hidden');
+            setTimeout(() => {
+              section.classList.remove('transparent');
+            }, 10);
             props.activeSection = section;
             awakenNestedCarousels(section);
           } else {
