@@ -68,9 +68,9 @@ function initButton(block, sections, index, props) {
 
         sections.forEach((section) => {
           if (buttons[index].dataset.text === section.dataset.toggle.toLowerCase()) {
-            props.activeSection.classList.remove('hidden');
+            section.classList.remove('hidden');
             setTimeout(() => {
-              props.activeSection.classList.remove('transparent');
+              section.classList.remove('transparent');
             }, 10);
 
             props.activeSection = section;
@@ -175,17 +175,6 @@ export default function decorate(block) {
         if (index > 0) {
           section.classList.add('hidden', 'transparent');
         }
-        const onDisplay = (mutationList) => {
-          for (const mutation of mutationList) {
-            if (mutation.type === 'attributes') {
-              console.log(`The ${mutation.attributeName} attribute was modified.`);
-            }
-          }
-        };
-
-        const displayWatcher = new MutationObserver(onDisplay);
-
-        displayWatcher.observe(section, { attributes: true, childList: false, subtree: false });
       });
     }
 
