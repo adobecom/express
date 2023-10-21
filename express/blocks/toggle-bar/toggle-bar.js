@@ -177,8 +177,7 @@ export default function decorate(block) {
         }
         const onDisplay = (mutationList) => {
           for (const mutation of mutationList) {
-            if (mutation.type === 'childList') {
-            } else if (mutation.type === 'attributes') {
+            if (mutation.type === 'attributes') {
               console.log(`The ${mutation.attributeName} attribute was modified.`);
             }
           }
