@@ -18,7 +18,7 @@
     host: 'www.adobe.com',
     byocdn: true,
     hlx3: true,
-    pushDownSelector: '#feds-header',
+    pushDownSelector: '.feds-header-wrapper',
     plugins: [
       // METADATA ---------------------------------------------------------------------
       {
@@ -42,6 +42,18 @@
           action: (_, s) => {
             const { config } = s;
             window.open(`https://${config.innerHost}/tools/templates/picker.html`, 'hlx-sidekick-spark-templates');
+          },
+        },
+      },
+      // TEMPLATES --------------------------------------------------------------------
+      {
+        id: 'qa',
+        condition: (s) => !s.isEditor(),
+        button: {
+          text: 'QA Guide',
+          action: (_, s) => {
+            const { config } = s;
+            console.log(s, config);
           },
         },
       },
