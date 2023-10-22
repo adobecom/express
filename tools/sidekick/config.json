@@ -36,6 +36,13 @@
       "environments": [ "edit" ],
       "excludePaths": [ "/**" ],
       "includePaths": [ "**.docx**" ]
+    },
+    {
+      "id": "qa-guide",
+      "title": "QA Guide",
+      "url": "https://main--express--adobecom.hlx.page/tools/templates/picker.html",
+      "excludePaths": [ "/**" ],
+      "includePaths": [ "**.docx**" ]
     }
   ]
 }

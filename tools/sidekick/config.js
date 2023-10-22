@@ -45,15 +45,15 @@
           },
         },
       },
-      // TEMPLATES --------------------------------------------------------------------
+      // QA GUIDE --------------------------------------------------------------------
       {
-        id: 'qa',
-        condition: (s) => !s.isEditor(),
+        id: 'qa-guide',
+        condition: (s) => s.isEditor(),
         button: {
           text: 'QA Guide',
           action: (_, s) => {
             const { config } = s;
-            console.log(s, config);
+            window.console.log(s, config);
           },
         },
       },
