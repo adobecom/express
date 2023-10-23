@@ -21,7 +21,7 @@ function initQAGuide(el, utils) {
     return parseInt(usp.get('qaprogress'), 10) - 1;
   };
 
-  const setQAIndex = (index, url) => {
+  const setNextQAIndexToUrl = (index, url) => {
     const usp = new URLSearchParams(url.search);
     usp.set('qaprogress', index + 1);
     url.search = usp.toString();
@@ -57,7 +57,7 @@ function initQAGuide(el, utils) {
       qaWidgetForm.append(nextBtn);
       qaWidgetForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        window.location.assign(payload[index + 1].link);
+        window.location.assign(setNextQAIndexToUrl(index, payload[index + 1].link));
       });
     } else {
       const completeBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Done');
