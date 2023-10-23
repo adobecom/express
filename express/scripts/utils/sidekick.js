@@ -10,9 +10,9 @@
  * governing permissions and limitations under the License.
  */
 
-function initQAGuide(el, helpers) {
+function initQAGuide(el, utils) {
   const buildPayload = (pages) => pages.map((p) => ({
-    link: p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type') || null,
+    link: p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type').textContent || null,
     items: Array.from(p.querySelectorAll('li')).map((li) => li.textContent),
   }));
 
@@ -41,23 +41,26 @@ function initQAGuide(el, helpers) {
   };
 
   const buildQAWidget = (index, payload) => {
-    const qaWidget = helpers.createTag('div', { class: 'qa-widget' });
-    const qaWidgetForm = helpers.createTag('form', { class: 'qa-widget-form' });
+    const qaWidget = utils.createTag('div', { class: 'qa-widget' });
+    const qaWidgetForm = utils.createTag('form', { class: 'qa-widget-form' });
 
     payload[index].items.forEach((i) => {
-      const checkBox = helpers.createTag('input', { type: 'checkbox', required: true }, i);
-      qaWidgetForm.append(checkBox);
+      const checkBox = utils.createTag('input', { type: 'checkbox', name: `checkbox-${i + 1}`, required: true });
+      const checkLabel = utils.createTag('label', { for: `checkbox-${i + 1}` }, i);
+      const checkBoxWrapper = utils.createTag('div');
+      checkBoxWrapper.append(checkLabel, checkBox);
+      qaWidgetForm.append(checkBoxWrapper);
     });
 
     if (payload[index + 1]) {
-      const nextBtn = helpers.createTag('button', { class: 'button', type: 'submit' }, 'Next');
+      const nextBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Next');
       qaWidgetForm.append(nextBtn);
       qaWidgetForm.addEventListener('submit', (e) => {
         e.preventDefault();
         window.location.assign(payload[index + 1].link);
       });
     } else {
-      const completeBtn = helpers.createTag('button', { class: 'button', type: 'submit' }, 'Done');
+      const completeBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Done');
       qaWidgetForm.append(completeBtn);
       qaWidgetForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -96,7 +99,7 @@ function initQAGuide(el, helpers) {
 export default function init({
   createTag,
 }) {
-  const helpers = { createTag };
+  const utils = { createTag };
   const sk = document.querySelector('helix-sidekick');
 
   const qaGuideListener = async () => {
@@ -107,7 +110,7 @@ export default function init({
     main.innerHTML = await resp.text();
     const qaGuideEl = main.querySelector('.qa-guide');
 
-    initQAGuide(qaGuideEl, helpers);
+    initQAGuide(qaGuideEl, utils);
   };
 
   // Add plugin listeners here
