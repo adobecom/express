@@ -771,18 +771,9 @@ function initSearchFunction($toolBar, $stickySearchBarWrapper, generatedSearchBa
     $searchForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       $searchBar.disabled = true;
-      const params = new URLSearchParams(window.location.search);
       sampleRUM('search', {
         source: 'template-list',
-        target: JSON.stringify({
-          data: {
-            keyword: $searchBar.value,
-            locale: getLocale(window.location),
-            timestamp: Date.now(),
-            previousSearch: params.toString() || 'N/A',
-            sessionId: sessionStorage.getItem('u_scsid'),
-          },
-        }),
+        target: $searchBar.value,
       }, 1);
       await redirectSearch($searchBar, props);
     });

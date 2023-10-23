@@ -1398,18 +1398,9 @@ function importSearchBar(block, blockMediator) {
         searchForm.addEventListener('submit', async (event) => {
           event.preventDefault();
           searchBar.disabled = true;
-          const params = new URLSearchParams(window.location.search);
           sampleRUM('search', {
             source: block.dataset.blockName,
-            target: JSON.stringify({
-              data: {
-                keyword: searchBar.value,
-                locale: getLocale(window.location),
-                timestamp: Date.now(),
-                previousSearch: params.toString() || 'N/A',
-                sessionId: sessionStorage.getItem('u_scsid'),
-              },
-            }),
+            target: searchBar.value,
           }, 1);
           await redirectSearch();
         });
