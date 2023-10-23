@@ -2390,6 +2390,26 @@ export async function loadBlocks(sections, isDoc) {
   }
 }
 
+function initSidekick() {
+  const initPlugins = async () => {
+    const { default: init } = await import('./utils/sidekick.js');
+    init({
+      createTag,
+      loadBlock,
+      loadScript,
+      loadCSS,
+    });
+  };
+
+  if (document.querySelector('helix-sidekick')) {
+    initPlugins();
+  } else {
+    document.addEventListener('sidekick-ready', () => {
+      initPlugins();
+    });
+  }
+}
+
 /**
  * Decorates the page.
  */
@@ -2458,6 +2478,8 @@ export async function loadArea(area = document) {
   loadBlocks(sections, isDoc);
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
+
+  initSidekick();
 
   const lazy = loadLazy(main);
 
