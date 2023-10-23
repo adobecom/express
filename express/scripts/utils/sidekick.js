@@ -44,9 +44,9 @@ function initQAGuide(el, utils) {
     const qaWidget = utils.createTag('div', { class: 'qa-widget' });
     const qaWidgetForm = utils.createTag('form', { class: 'qa-widget-form' });
 
-    payload[index].items.forEach((i) => {
+    payload[index].items.forEach((item, i) => {
       const checkBox = utils.createTag('input', { type: 'checkbox', name: `checkbox-${i + 1}`, required: true });
-      const checkLabel = utils.createTag('label', { for: `checkbox-${i + 1}` }, i);
+      const checkLabel = utils.createTag('label', { for: `checkbox-${i + 1}` }, item);
       const checkBoxWrapper = utils.createTag('div');
       checkBoxWrapper.append(checkLabel, checkBox);
       qaWidgetForm.append(checkBoxWrapper);
