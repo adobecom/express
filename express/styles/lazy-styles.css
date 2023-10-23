@@ -360,6 +360,7 @@ main .video-overlay .close::after {
   background: var(--body-background-color);
   padding: 16px;
   border-radius: 8px;
+  max-width: 360px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(0, 0, 0, 0.3);
 }
 
@@ -386,8 +387,21 @@ main .video-overlay .close::after {
   padding: 0 14px;
   transition: background-color .13s ease-out, border-color .13s ease-out;
   white-space: nowrap;
-  margin-top: 8px;
   width: auto;
+}
+
+.qa-widget .qa-progress {
+  margin-bottom: 8px;
+}
+
+.qa-widget .qa-widget-form > div {
+  display: flex;
+  align-items: baseline;
+  margin: 4px 0;
+}
+
+.qa-widget .qa-widget-form > div input[type='checkbox'] {
+  margin: 0 4px 0 0;
 }
 
 @media screen and (min-width: 37.5rem) {

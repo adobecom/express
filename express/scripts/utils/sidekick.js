@@ -45,7 +45,7 @@ function initQAGuide(el, utils) {
   };
 
   const buildQAWidget = (index, payload) => {
-    const progress = utils.createTag('div', { class: 'qa-progress' }, `${index + 1} / ${payload.length}`);
+    const progress = utils.createTag('div', { class: 'qa-progress' }, `Page ${index + 1} / ${payload.length}`);
     const qaWidget = utils.createTag('div', { class: 'qa-widget' });
     const qaWidgetForm = utils.createTag('form', { class: 'qa-widget-form' });
     const br = utils.createTag('br');
