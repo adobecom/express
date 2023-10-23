@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-function initQAGuide(sk, el, helpers) {
+function initQAGuide(el, helpers) {
   const buildPayload = (pages) => pages.map((p) => ({
     link: p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type') || null,
     items: Array.from(p.querySelectorAll('li')).map((li) => li.textContent),
@@ -67,7 +67,7 @@ function initQAGuide(sk, el, helpers) {
     }
 
     qaWidget.append(qaWidgetForm);
-    sk.append(qaWidget);
+    document.body.append(qaWidget);
   };
 
   const pages = Array.from(el.children);
@@ -107,7 +107,7 @@ export default function init({
     main.innerHTML = await resp.text();
     const qaGuideEl = main.querySelector('.qa-guide');
 
-    initQAGuide(sk, qaGuideEl, helpers);
+    initQAGuide(qaGuideEl, helpers);
   };
 
   // Add plugin listeners here
