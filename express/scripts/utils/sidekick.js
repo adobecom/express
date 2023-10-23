@@ -45,8 +45,11 @@ function initQAGuide(el, utils) {
   };
 
   const buildQAWidget = (index, payload) => {
+    const progress = utils.createTag('div', { class: 'qa-progress' }, `${index + 1} / ${payload.length}`);
     const qaWidget = utils.createTag('div', { class: 'qa-widget' });
     const qaWidgetForm = utils.createTag('form', { class: 'qa-widget-form' });
+    const br = utils.createTag('br');
+
 
     payload[index].items.forEach((item, i) => {
       const checkBox = utils.createTag('input', {
@@ -60,6 +63,8 @@ function initQAGuide(el, utils) {
       checkBoxWrapper.append(checkBox, checkLabel);
       qaWidgetForm.append(checkBoxWrapper);
     });
+
+    qaWidgetForm.append(br);
 
     if (payload[index + 1]) {
       const nextBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Next');
@@ -82,7 +87,7 @@ function initQAGuide(el, utils) {
       });
     }
 
-    qaWidget.append(qaWidgetForm);
+    qaWidget.append(progress, qaWidgetForm);
     document.body.append(qaWidget);
   };
 
