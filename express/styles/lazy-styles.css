@@ -419,6 +419,7 @@ main .video-overlay .close::after {
 
 .qa-widget .qa-widget-form > textarea {
   margin: 8px 0;
+  padding: 8px;
 }
 
 @media screen and (min-width: 37.5rem) {
