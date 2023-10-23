@@ -91,7 +91,7 @@ function initQAGuide(el, utils) {
     const url = new URL(testPage.href || testPage.textContent);
     const targetUrl = setQAIndex(0, url);
     window.open(targetUrl);
-  } else {
+  } else if (!document.querySelector('.qa-widget')) {
     buildQAWidget(index, payload);
   }
 }
