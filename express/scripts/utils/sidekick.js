@@ -11,6 +11,13 @@
  */
 
 function initQAGuide(el, utils) {
+  const resetQAProgress = (widget) => {
+    widget.remove();
+    const usp = new URLSearchParams(window.location.search);
+    usp.delete('qaprogress');
+    window.location.search = usp.toString();
+  };
+
   const buildPayload = (pages) => pages.map((p) => ({
     link: p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type').textContent || null,
     items: Array.from(p.querySelectorAll('li')).map((li) => li.textContent),
@@ -80,12 +87,12 @@ function initQAGuide(el, utils) {
       qaWidgetForm.addEventListener('submit', (e) => {
         e.preventDefault();
         logQARecord(qaWidgetForm);
-        qaWidget.remove();
+        resetQAProgress(qaWidget);
       });
     }
 
     closeBtn.addEventListener('click', () => {
-      qaWidget.remove();
+      resetQAProgress(qaWidget);
     }, { passive: true });
 
     qaWidget.append(closeBtn, progress, qaWidgetForm);
