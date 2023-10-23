@@ -2,6 +2,7 @@
   "project": "Express",
   "host": "www.adobe.com",
   "byocdn": true,
+  "devMode": true,
   "plugins": [
     {
       "id": "metadata",
@@ -40,9 +41,10 @@
     {
       "id": "qa-guide",
       "title": "QA Guide",
-      "url": "https://main--express--adobecom.hlx.page/tools/templates/picker.html",
-      "excludePaths": [ "/**" ],
-      "includePaths": [ "**.docx**" ]
+      "event": "qaguide",
+      "isPalette": true,
+      "paletteRect": "top: auto; bottom: 25px; left: auto; right: 25px; height: 388px; width: 360px;",
+      "url": "https://main--express--adobecom.hlx.live/docs/qa-guide"
     }
   ]
 }
