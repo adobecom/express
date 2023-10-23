@@ -398,7 +398,7 @@ main .video-overlay .close::after {
   transition: transform 0.2s;
 }
 
-.qa-widget .qa-widget-close {
+.qa-widget .qa-widget-close:hover {
   transform: scale(1.05);
 }
 
