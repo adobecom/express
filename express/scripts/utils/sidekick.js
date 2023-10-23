@@ -89,7 +89,7 @@ function initQAGuide(sk, el, helpers) {
     const targetUrl = setQAIndex(0, url);
     window.open(targetUrl);
   } else {
-    buildQAWidget(sk, index, payload);
+    buildQAWidget(index, payload);
   }
 }
 
