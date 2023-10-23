@@ -44,6 +44,7 @@ function initQAGuide(el, utils) {
     const qaWidget = utils.createTag('div', { class: 'qa-widget' });
     const qaWidgetForm = utils.createTag('form', { class: 'qa-widget-form' });
 
+    console.log(payload, index)
     payload[index].items.forEach((item, i) => {
       const checkBox = utils.createTag('input', {
         id: `checkbox-${i + 1}`,
@@ -86,14 +87,14 @@ function initQAGuide(el, utils) {
 
   const index = getQAIndex();
 
-  if (index === null) {
+  if (!index && index !== 0) {
     const testPage = payload[0].link;
     if (!testPage) {
       el.textContent = 'Missing QA url(s)';
       return;
     }
 
-    const url = new URL(testPage.textContent);
+    const url = new URL(testPage);
     const targetUrl = setNextQAIndexToUrl(0, url);
     window.open(targetUrl);
   } else if (!document.querySelector('.qa-widget')) {
@@ -103,9 +104,9 @@ function initQAGuide(el, utils) {
 
 function continueQAGuide(callback) {
   const usp = new URLSearchParams(window.location.search);
-  const qaIndex = parseInt(usp.get('qaprogress'), 10) - 1;
+  const qaIndex = parseInt(usp.get('qaprogress'), 10);
 
-  if (qaIndex !== null) {
+  if (qaIndex) {
     callback();
   }
 }
