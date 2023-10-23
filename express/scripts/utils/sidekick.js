@@ -11,13 +11,10 @@
  */
 
 function initQAGuide(el, utils) {
-  const buildPayload = (pages) => pages.map((p) => {
-    const targetLink = p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type');
-    return {
-      link: targetLink.href || targetLink.textContent,
-      items: Array.from(p.querySelectorAll('li')).map((li) => li.textContent),
-    };
-  });
+  const buildPayload = (pages) => pages.map((p) => ({
+    link: p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type').textContent || null,
+    items: Array.from(p.querySelectorAll('li')).map((li) => li.textContent),
+  }));
 
   const getQAIndex = () => {
     const usp = new URLSearchParams(window.location.search);
@@ -96,7 +93,7 @@ function initQAGuide(el, utils) {
       return;
     }
 
-    const url = new URL(testPage.href || testPage.textContent);
+    const url = new URL(testPage.textContent);
     const targetUrl = setNextQAIndexToUrl(0, url);
     window.open(targetUrl);
   } else if (!document.querySelector('.qa-widget')) {
