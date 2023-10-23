@@ -387,6 +387,7 @@ main .video-overlay .close::after {
   padding: 0 14px;
   transition: background-color .13s ease-out, border-color .13s ease-out;
   white-space: nowrap;
+  margin-top: 8px;
   width: auto;
 }
 
