@@ -29,12 +29,15 @@ function initQAGuide(el, utils) {
   };
 
   const logQARecord = (form) => {
+    const now = new Date(Date.now()).toLocaleString('en-US', {
+      timeZone: 'America/Los_Angeles',
+    });
     fetch('/express/qa-log', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         data: {
-          timestamp: new Date().toLocaleString(),
+          timestamp: `${now} (US West)`,
           note: form.querySelector('textarea').value,
         },
       }),
