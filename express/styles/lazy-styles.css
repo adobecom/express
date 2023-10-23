@@ -392,8 +392,14 @@ main .video-overlay .close::after {
 
 .qa-widget .qa-widget-close {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.qa-widget .qa-widget-close {
+  transform: scale(1.05);
 }
 
 .qa-widget .qa-progress {
