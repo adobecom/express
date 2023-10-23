@@ -67,7 +67,10 @@ function initQAGuide(el, utils) {
       });
     } else {
       const completeBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Done');
-      const noteArea = utils.createTag('textarea');
+      const noteArea = utils.createTag('textarea', {
+        style: 'height: 88px; width: 200px;',
+        placeholder: 'Leave your notes here',
+      });
       qaWidgetForm.append(noteArea, completeBtn);
       qaWidgetForm.addEventListener('submit', (e) => {
         e.preventDefault();
