@@ -57,7 +57,7 @@ function initQAGuide(el, utils) {
       qaWidgetForm.append(nextBtn);
       qaWidgetForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        window.location.assign(setNextQAIndexToUrl(index, payload[index + 1].link));
+        window.location.assign(setNextQAIndexToUrl(index, new URL(payload[index + 1].link)));
       });
     } else {
       const completeBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Done');
