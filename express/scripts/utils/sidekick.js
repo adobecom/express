@@ -34,7 +34,7 @@ function initQAGuide(el, utils) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         data: {
-          timestamp: Date.now().toLocaleString('en-US', { timeZone: 'UTC' }),
+          timestamp: new Date().toLocaleString(),
           note: form.querySelector('textarea').value,
         },
       }),
