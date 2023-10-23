@@ -16,14 +16,14 @@ import {
 
 function setQAIndex(index, url) {
   const usp = new URLSearchParams(url.search);
-  usp.set('qaprogress', index);
+  usp.set('qaprogress', index + 1);
   url.search = usp.toString();
   return decodeURIComponent(url.toString());
 }
 
 function getQAIndex() {
   const usp = new URLSearchParams(window.location.search);
-  return usp.get('qaprogress');
+  return Math.parseInt(usp.get('qaprogress')) - 1;
 }
 
 export default async function init(el) {
@@ -33,7 +33,16 @@ export default async function init(el) {
 
   const index = getQAIndex();
 
-  pages.forEach((p, i) => {
+  console.log(index);
+  if (!index) {
+    const testPage = pages[0].querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type');
+    if (!testPage) {
+      el.textContent = 'Missing QA url(s)';
+      return;
+    }
 
-  });
+    const url = new URL(testPage.href || testPage.textContent);
+    const targetUrl = setQAIndex(0, url);
+    window.open(targetUrl);
+  }
 }
