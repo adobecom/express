@@ -127,9 +127,9 @@ export default function init({
     initQAGuide(qaGuideEl, utils);
   };
 
+  // Auto plugins
+  continueQAGuide(launchQAGuide);
+
   // Add plugin listeners here
   sk.addEventListener('custom:qa-guide', launchQAGuide);
-
-  // Resume-able plugins
-  continueQAGuide(launchQAGuide);
 }
