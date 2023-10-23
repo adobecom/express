@@ -390,6 +390,12 @@ main .video-overlay .close::after {
   width: auto;
 }
 
+.qa-widget .qa-widget-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 .qa-widget .qa-progress {
   margin-bottom: 8px;
 }
