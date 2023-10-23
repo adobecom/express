@@ -354,6 +354,7 @@ main .video-overlay .close::after {
   top: auto;
   bottom: 24px;
   right: 24px;
+  z-index: 99;
 }
 
 @media screen and (min-width: 37.5rem) {
