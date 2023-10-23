@@ -416,6 +416,10 @@ main .video-overlay .close::after {
   margin: 0 4px 0 0;
 }
 
+.qa-widget .qa-widget-form > div textarea {
+  margin: 4px 0;
+}
+
 @media screen and (min-width: 37.5rem) {
   #region-picker nav .language-Navigation_region-List {
     -webkit-column-count: 3;

@@ -49,7 +49,6 @@ function initQAGuide(el, utils) {
     const closeBtn = utils.createTag('a', { class: 'qa-widget-close' }, '✕');
     const qaWidget = utils.createTag('div', { class: 'qa-widget' });
     const qaWidgetForm = utils.createTag('form', { class: 'qa-widget-form' });
-    const br = utils.createTag('br');
 
     payload[index].items.forEach((item, i) => {
       const checkBox = utils.createTag('input', {
@@ -63,8 +62,6 @@ function initQAGuide(el, utils) {
       checkBoxWrapper.append(checkBox, checkLabel);
       qaWidgetForm.append(checkBoxWrapper);
     });
-
-    qaWidgetForm.append(br);
 
     if (payload[index + 1]) {
       const nextBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Next');
