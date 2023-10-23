@@ -28,13 +28,14 @@ function initQAGuide(el, utils) {
     return decodeURIComponent(url.toString());
   };
 
-  const logQARecord = () => {
+  const logQARecord = (form) => {
     fetch('/express/qa-log', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         data: {
-          timestamp: Date.now().toLocaleString('en-GB', { timeZone: 'UTC' }),
+          timestamp: Date.now().toLocaleString('en-US', { timeZone: 'UTC' }),
+          note: form.querySelector('textarea').value,
         },
       }),
     });
@@ -44,7 +45,6 @@ function initQAGuide(el, utils) {
     const qaWidget = utils.createTag('div', { class: 'qa-widget' });
     const qaWidgetForm = utils.createTag('form', { class: 'qa-widget-form' });
 
-    console.log(payload, index)
     payload[index].items.forEach((item, i) => {
       const checkBox = utils.createTag('input', {
         id: `checkbox-${i + 1}`,
@@ -67,10 +67,11 @@ function initQAGuide(el, utils) {
       });
     } else {
       const completeBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Done');
-      qaWidgetForm.append(completeBtn);
+      const noteArea = utils.createTag('textarea');
+      qaWidgetForm.append(noteArea, completeBtn);
       qaWidgetForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        logQARecord();
+        logQARecord(qaWidgetForm);
         qaWidget.remove();
       });
     }
