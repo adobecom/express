@@ -78,7 +78,7 @@ function initQAGuide(sk, el, helpers) {
 
   const index = getQAIndex();
 
-  if (!index) {
+  if (index === null) {
     const testPage = payload[0].link;
     if (!testPage) {
       el.textContent = 'Missing QA url(s)';
