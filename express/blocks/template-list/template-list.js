@@ -227,7 +227,7 @@ async function appendCategoryTemplatesCount($section, props) {
   for (const { cntSpan, anchor } of res) {
     anchor.append(cntSpan);
     // eslint-disable-next-line no-await-in-loop
-    await new Promise((resolve) => setTimeout(resolve, 150));
+    await new Promise((resolve) => setTimeout(resolve, 25));
   }
 }
 
