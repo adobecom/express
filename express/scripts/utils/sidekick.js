@@ -46,7 +46,7 @@ function initQAGuide(el, utils) {
         data: {
           timestamp: `${now} (US West)`,
           note: form.querySelector('textarea').value,
-          audience: document.body.dataset.device || 'N/A',
+          audience: document.body.dataset?.device || 'N/A',
         },
       }),
     });
@@ -174,7 +174,7 @@ export default function init({
 
     const main = createTag('main');
     main.innerHTML = await resp.text();
-    const audience = document.body.dataset.device;
+    const audience = document.body.dataset?.device;
     let qaGuideEl = main.querySelector('.qa-guide.desktop');
     if (audience) qaGuideEl = main.querySelector(`.qa-guide.${audience}`);
 
