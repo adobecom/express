@@ -2149,9 +2149,7 @@ export async function decorateMain(main) {
   decorateButtons(main);
   decorateMarqueeColumns(main);
   await fixIcons(main);
-  await yieldToMain();
   decoratePictures(main);
-  await yieldToMain();
   decorateLinkedPictures(main);
   decorateSocialIcons(main);
 

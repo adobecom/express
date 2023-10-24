@@ -14,7 +14,6 @@ import {
   sampleRUM,
   getDevice,
   removeIrrelevantSections,
-  yieldToMain,
   loadArea,
   stamp,
   registerPerformanceLogger,
@@ -55,7 +54,6 @@ const eagerLoad = (img) => {
 
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
-  await yieldToMain();
   await loadArea();
 }());
 
