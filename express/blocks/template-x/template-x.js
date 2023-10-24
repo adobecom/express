@@ -608,16 +608,14 @@ async function appendCategoryTemplatesCount(block, props) {
   const lang = getLanguage(getLocale(window.location));
 
   const fetchCntSpanPromises = [...categories]
-    .map((li) => li.querySelector('a'))
-    .filter((a) => a?.dataset?.tasks)
-    .map((a) => fetchCntSpan(props, a, lang));
+    .map((li) => fetchCntSpan(props, li.querySelector('a'), lang));
   const res = await Promise.all(fetchCntSpanPromises);
 
   // append one by one to gain attention
   for (const { cntSpan, anchor } of res) {
     anchor.append(cntSpan);
     // eslint-disable-next-line no-await-in-loop
-    await new Promise((resolve) => setTimeout(resolve, 150));
+    await new Promise((resolve) => setTimeout(resolve, 25));
   }
 }
 
