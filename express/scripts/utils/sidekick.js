@@ -173,7 +173,9 @@ export default function init({
 
     const main = createTag('main');
     main.innerHTML = await resp.text();
-    const qaGuideEl = main.querySelector('.qa-guide');
+    const audience = document.body.dataset.device;
+    let qaGuideEl = main.querySelector('.qa-guide.desktop');
+    if (audience) qaGuideEl = main.querySelector(`.qa-guide.${audience}`);
 
     initQAGuide(qaGuideEl, utils);
   };

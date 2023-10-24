@@ -360,6 +360,7 @@ main .video-overlay .close::after {
   background: var(--body-background-color);
   padding: 16px;
   border-radius: 8px;
+  min-width: 320px;
   max-width: 360px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(0, 0, 0, 0.3);
 }
