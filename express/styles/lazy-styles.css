@@ -406,14 +406,18 @@ main .video-overlay .close::after {
 .qa-widget .qa-progress {
   margin-bottom: 8px;
 }
+.qa-widget .qa-widget-form .checkboxes-container {
+  max-height: 180px;
+  overflow: auto;
+}
 
-.qa-widget .qa-widget-form > div {
+.qa-widget .qa-widget-form .checkboxes-container > div {
   display: flex;
   align-items: baseline;
   margin: 4px 0;
 }
 
-.qa-widget .qa-widget-form > div input[type='checkbox'] {
+.qa-widget .qa-widget-form .checkboxes-container > div input[type='checkbox'] {
   margin: 0 4px 0 0;
 }
 
