@@ -46,7 +46,7 @@ function initQAGuide(el, utils) {
         data: {
           timestamp: `${now} (US West)`,
           note: form.querySelector('textarea').value,
-          audience: document.body.dataset.device || 'N/A';
+          audience: document.body.dataset.device || 'N/A',
         },
       }),
     });
