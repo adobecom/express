@@ -56,7 +56,8 @@ function initQAGuide(el, utils) {
     const closeBtn = utils.createTag('a', { class: 'qa-widget-close' }, '✕');
     const qaWidget = utils.createTag('div', { class: 'qa-widget' });
     const qaWidgetForm = utils.createTag('form', { class: 'qa-widget-form' });
-    const checkboxesContainer = utils.createTag('div', { class: 'checkboxes-container' })
+    const checkboxesContainer = utils.createTag('div', { class: 'checkboxes-container' });
+    const checkboxes = [];
 
     payload[index].items.forEach((item, i) => {
       const checkbox = utils.createTag('input', {
@@ -69,7 +70,18 @@ function initQAGuide(el, utils) {
       const checkboxWrapper = utils.createTag('div');
       checkboxWrapper.append(checkbox, checkLabel);
       checkboxesContainer.append(checkboxWrapper);
+      checkboxes.push(checkbox);
     });
+
+    const checkboxAll = utils.createTag('input', {
+      id: 'checkbox-all',
+      type: 'checkbox',
+      name: 'checkbox-all',
+    });
+    const checkLabel = utils.createTag('label', { for: 'checkbox-all' }, 'Check all');
+    const checkboxWrapper = utils.createTag('div', { class: 'checkbox-all' });
+    checkboxWrapper.append(checkboxAll, checkLabel);
+    checkboxesContainer.append(checkboxWrapper);
 
     qaWidgetForm.append(checkboxesContainer);
 
@@ -100,6 +112,12 @@ function initQAGuide(el, utils) {
 
     qaWidget.append(closeBtn, progress, qaWidgetForm);
     document.body.append(qaWidget);
+
+    checkboxAll.addEventListener('change', () => {
+      checkboxes.forEach((cb) => {
+        cb.checked = checkboxAll.checked;
+      });
+    });
   };
 
   const pages = Array.from(el.children);
