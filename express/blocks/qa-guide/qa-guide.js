@@ -20,7 +20,7 @@ export default async function init(el) {
   }
 
   if (el.classList.contains('mobile')) {
-    audienceIcon = createTag('div', { class: 'audience-icon' }, getIconElement('mobile'));
+    audienceIcon = createTag('div', { class: 'audience-icon' }, getIconElement('ios'));
   }
 
   el.prepend(audienceIcon);
