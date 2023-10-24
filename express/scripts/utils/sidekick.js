@@ -85,8 +85,12 @@ function initQAGuide(el, utils) {
       });
     });
 
-    checkboxAllWrapper.append(checkboxAll, checkboxAllLabel);
-    qaWidgetForm.append(checkboxesContainer, checkboxAllWrapper);
+    if (checkboxes.length) {
+      checkboxAllWrapper.append(checkboxAll, checkboxAllLabel);
+      qaWidgetForm.append(checkboxesContainer, checkboxAllWrapper);
+    } else {
+      qaWidgetForm.append(checkboxesContainer);
+    }
 
     if (payload[index + 1]) {
       const nextBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Next');
@@ -116,11 +120,13 @@ function initQAGuide(el, utils) {
     qaWidget.append(closeBtn, progress, qaWidgetForm);
     document.body.append(qaWidget);
 
-    checkboxAll.addEventListener('change', () => {
-      checkboxes.forEach((cb) => {
-        cb.checked = checkboxAll.checked;
+    if (checkboxes.length) {
+      checkboxAll.addEventListener('change', () => {
+        checkboxes.forEach((cb) => {
+          cb.checked = checkboxAll.checked;
+        });
       });
-    });
+    }
   };
 
   const pages = Array.from(el.children);

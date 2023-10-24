@@ -10,8 +10,18 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag } from '../../scripts/utils.js';
-
+import { createTag, getIconElement } from '../../scripts/utils.js';
 
 export default async function init(el) {
+  let audienceIcon;
+
+  if (el.classList.contains('desktop')) {
+    audienceIcon = createTag('div', { class: 'audience-icon' }, getIconElement('desktop'));
+  }
+
+  if (el.classList.contains('mobile')) {
+    audienceIcon = createTag('div', { class: 'audience-icon' }, getIconElement('mobile'));
+  }
+
+  el.prepend(audienceIcon);
 }
