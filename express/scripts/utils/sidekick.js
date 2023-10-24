@@ -19,8 +19,8 @@ function initQAGuide(el, utils) {
   };
 
   const buildPayload = (pages) => pages.map((p) => ({
-    link: p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type').textContent || null,
-    items: Array.from(p.querySelectorAll('li')).map((li) => li.textContent),
+    link: p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type').textContent.trim() || null,
+    items: Array.from(p.querySelectorAll('li')).map((li) => li.textContent.trim()),
   }));
 
   const getQAIndex = () => {
@@ -56,19 +56,22 @@ function initQAGuide(el, utils) {
     const closeBtn = utils.createTag('a', { class: 'qa-widget-close' }, '✕');
     const qaWidget = utils.createTag('div', { class: 'qa-widget' });
     const qaWidgetForm = utils.createTag('form', { class: 'qa-widget-form' });
+    const checkboxesContainer = utils.createTag('div', { class: 'checkboxes-container' })
 
     payload[index].items.forEach((item, i) => {
-      const checkBox = utils.createTag('input', {
+      const checkbox = utils.createTag('input', {
         id: `checkbox-${i + 1}`,
         type: 'checkbox',
         name: `checkbox-${i + 1}`,
         required: true,
       });
       const checkLabel = utils.createTag('label', { for: `checkbox-${i + 1}` }, item);
-      const checkBoxWrapper = utils.createTag('div');
-      checkBoxWrapper.append(checkBox, checkLabel);
-      qaWidgetForm.append(checkBoxWrapper);
+      const checkboxWrapper = utils.createTag('div');
+      checkboxWrapper.append(checkbox, checkLabel);
+      checkboxesContainer.append(checkboxWrapper);
     });
+
+    qaWidgetForm.append(checkboxesContainer);
 
     if (payload[index + 1]) {
       const nextBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Next');
