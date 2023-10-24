@@ -15,6 +15,7 @@ import {
   getHelixEnv,
   getMetadata,
   titleCase,
+  yieldToMain,
 } from './utils.js';
 import HtmlSanitizer from './html-sanitizer.js';
 
@@ -102,29 +103,33 @@ async function updateMetadataForTemplates() {
   }
 }
 
+const ignoredMeta = [
+  'serp-content-type',
+  'description',
+  'primaryproductname',
+  'theme',
+  'show-free-plan',
+  'sheet-powered',
+  'viewport',
+];
+
+async function sanitizeMeta(meta) {
+  if (meta.property || meta.name.includes(':') || ignoredMeta.includes(meta.name)) return;
+  await yieldToMain();
+  meta.content = HtmlSanitizer.SanitizeHtml(meta.content);
+}
+
 // metadata -> dom blades
-function autoUpdatePage(main) {
+async function autoUpdatePage(main) {
   const wl = ['{{heading_placeholder}}', '{{type}}', '{{quantity}}'];
   // FIXME: deprecate wl
   if (!main) return;
 
   const regex = /\{\{([a-zA-Z0-9_-]+)}}/g;
-  const ignoredMeta = [
-    'serp-content-type',
-    'description',
-    'primaryproductname',
-    'theme',
-    'show-free-plan',
-    'sheet-powered',
-    'viewport',
-  ];
 
   const metaTags = document.head.querySelectorAll('meta');
 
-  metaTags.forEach((meta) => {
-    if (meta.property || meta.name.includes(':') || ignoredMeta.includes(meta.name)) return;
-    meta.content = HtmlSanitizer.SanitizeHtml(meta.content);
-  });
+  await Promise.all(Array.from(metaTags).map((meta) => sanitizeMeta(meta)));
 
   main.innerHTML = main.innerHTML.replaceAll(regex, (match, p1) => {
     if (!wl.includes(match.toLowerCase())) {
@@ -207,7 +212,7 @@ export function setBlockTheme(block) {
 
 export default async function replaceContent(main) {
   await updateMetadataForTemplates();
-  autoUpdatePage(main);
+  await autoUpdatePage(main);
   await updateNonBladeContent(main);
   validatePage();
 }
