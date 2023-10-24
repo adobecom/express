@@ -369,7 +369,7 @@ main .video-overlay .close::after {
 
 .qa-widget:hover {
   opacity: 1;
-  max-height: 220px;
+  max-height: 273px;
 }
 
 .qa-widget button {
