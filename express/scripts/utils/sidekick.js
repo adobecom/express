@@ -59,6 +59,14 @@ function initQAGuide(el, utils) {
     const checkboxesContainer = utils.createTag('div', { class: 'checkboxes-container' });
     const checkboxes = [];
 
+    const checkboxAll = utils.createTag('input', {
+      id: 'checkbox-all',
+      type: 'checkbox',
+      name: 'checkbox-all',
+    });
+    const checkboxAllLabel = utils.createTag('label', { for: 'checkbox-all' }, 'Check all');
+    const checkboxAllWrapper = utils.createTag('div', { class: 'checkbox-all' });
+
     payload[index].items.forEach((item, i) => {
       const checkbox = utils.createTag('input', {
         id: `checkbox-${i + 1}`,
@@ -71,19 +79,14 @@ function initQAGuide(el, utils) {
       checkboxWrapper.append(checkbox, checkLabel);
       checkboxesContainer.append(checkboxWrapper);
       checkboxes.push(checkbox);
+
+      checkbox.addEventListener('change', () => {
+        checkboxAll.checked = checkboxes.every((cb) => cb.checked);
+      });
     });
 
-    const checkboxAll = utils.createTag('input', {
-      id: 'checkbox-all',
-      type: 'checkbox',
-      name: 'checkbox-all',
-    });
-    const checkLabel = utils.createTag('label', { for: 'checkbox-all' }, 'Check all');
-    const checkboxWrapper = utils.createTag('div', { class: 'checkbox-all' });
-    checkboxWrapper.append(checkboxAll, checkLabel);
-    checkboxesContainer.append(checkboxWrapper);
-
-    qaWidgetForm.append(checkboxesContainer);
+    checkboxAllWrapper.append(checkboxAll, checkboxAllLabel);
+    qaWidgetForm.append(checkboxesContainer, checkboxAllWrapper);
 
     if (payload[index + 1]) {
       const nextBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Next');
