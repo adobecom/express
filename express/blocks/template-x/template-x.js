@@ -608,9 +608,7 @@ async function appendCategoryTemplatesCount(block, props) {
   const lang = getLanguage(getLocale(window.location));
 
   const fetchCntSpanPromises = [...categories]
-    .map((li) => li.querySelector('a'))
-    .filter((a) => a?.dataset?.tasks)
-    .map((a) => fetchCntSpan(props, a, lang));
+    .map((li) => fetchCntSpan(props, li.querySelector('a'), lang));
   const res = await Promise.all(fetchCntSpanPromises);
 
   // append one by one to gain attention
