@@ -351,8 +351,10 @@ main .video-overlay .close::after {
 
 .qa-widget {
   position: fixed;
+  max-height: 80px;
+  overflow: hidden;
   opacity: 0.7;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, max-height 0.2s;
   top: auto;
   bottom: 24px;
   right: 24px;
@@ -360,13 +362,14 @@ main .video-overlay .close::after {
   background: var(--body-background-color);
   padding: 16px;
   border-radius: 8px;
-  min-width: 320px;
+  min-width: 280px;
   max-width: 360px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(0, 0, 0, 0.3);
 }
 
 .qa-widget:hover {
   opacity: 1;
+  max-height: 220px;
 }
 
 .qa-widget button {
@@ -434,6 +437,13 @@ main .video-overlay .close::after {
 .qa-widget .qa-widget-form > textarea {
   margin: 8px 0;
   padding: 8px;
+}
+
+@media screen and (min-width: 900px) {
+  .qa-widget,
+  .qa-widget:hover {
+    max-height: unset;
+  }
 }
 
 @media screen and (min-width: 37.5rem) {
