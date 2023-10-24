@@ -511,7 +511,14 @@ export function getMetadata(name) {
   return ($meta && $meta.content) || '';
 }
 
+export function yieldToMain() {
+  return new Promise((r) => {
+    setTimeout(r, 0);
+  });
+}
+
 export function removeIrrelevantSections(main) {
+  if (!main) return;
   main.querySelectorAll(':scope > div').forEach((section) => {
     const sectionMetaBlock = section.querySelector('div.section-metadata');
     if (sectionMetaBlock) {
@@ -1935,6 +1942,10 @@ function splitSections($main) {
   });
 }
 
+export function getDevice() {
+  return navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
+}
+
 function setTheme() {
   let theme = getMetadata('theme');
   if (!theme && (window.location.pathname.startsWith('/express')
@@ -1954,7 +1965,6 @@ function setTheme() {
       blog = true;
     }
   }
-  body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
 
 function decorateLinkedPictures($main) {
@@ -2456,8 +2466,6 @@ export async function loadArea(area = document) {
     langSplits.pop();
     const htmlLang = langSplits.join('-');
     document.documentElement.setAttribute('lang', htmlLang);
-
-    removeIrrelevantSections(main);
   }
   if (window.hlx.testing) await decorateTesting();
 
