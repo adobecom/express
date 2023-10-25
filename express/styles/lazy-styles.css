@@ -398,39 +398,36 @@ main .video-overlay .close::after {
   padding: 16px;
 }
 
-.bmtp-container .profile-wrapper .profile-background {
-  height: 30px;
-  width: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 12px;
-  padding: 2px;
-  border-radius: 32px;
-  background-color: var(--color-gray-200);
+.bmtp-container .profile-wrapper .profile-img-container {
+  position: relative;
+  margin-right: 14px;
 }
 
-.bmtp-container .profile-wrapper .profile-background img {
-  display: block;
-  height: 28px;
-  width: 28px;
-  border-radius: 28px;
-}
-
-.bmtp-container .profile-wrapper .profile-background img::before {
+.bmtp-container .profile-wrapper .profile-img-container::before {
   animation: rotateCircle 1.5s linear infinite;
   animation-play-state: inherit;
   border: solid 2px var(--color-gray-200);
   border-bottom-color: #33AB84;
   border-radius: 50%;
   content: "";
-  height: 40px;
-  width: 40px;
+  height: 30px;
+  width: 30px;
   position: absolute;
-  top: 10%;
-  left: 10%;
+  top: 50%;
+  left: 50%;
   transform: translate3d(-50%, -50%, 0);
   will-change: transform;
+}
+
+.bmtp-container.done .profile-wrapper .profile-img-container::before {
+
+}
+
+.bmtp-container .profile-wrapper img {
+  display: block;
+  height: 30px;
+  width: 30px;
+  border-radius: 28px;
 }
 
 .bmtp-container .profile-text-wrapper {

@@ -37,7 +37,7 @@ async function loadLoginUserAutoRedirect(createTag, getIconElement) {
     const profileWrapper = createTag('div', {
       class: 'profile-wrapper',
     });
-    const profilePhotoBG = createTag('div', { class: 'profile-background' });
+    const profilePhotoCont = createTag('div', { class: 'profile-img-container' });
     const profilePhoto = createTag('img', { src: 'https://a5.behance.net/da4a198db4e0fae89fe4c1adaab3972c89aef95d/img/profile/avatars/selection-138.png?cb=264615658' });
     const profileTextWrapper = createTag('div', { class: 'profile-text-wrapper' });
     const profileName = createTag('strong', { class: 'profile-name' }, profile.displayName);
@@ -50,8 +50,8 @@ async function loadLoginUserAutoRedirect(createTag, getIconElement) {
 
     headerWrapper.append(headerIcon, headerText);
     progressBg.append(progressBar);
-    profilePhotoBG.append(profilePhoto);
-    profileWrapper.append(profilePhotoBG, profileTextWrapper);
+    profilePhotoCont.append(profilePhoto);
+    profileWrapper.append(profilePhotoCont, profileTextWrapper);
     profileTextWrapper.append(profileName, profileEmail);
     noticeWrapper.append(noticeText, noticeBtn);
     container.append(headerWrapper, progressBg, profileWrapper, noticeWrapper);
