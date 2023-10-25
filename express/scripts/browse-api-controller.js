@@ -11,7 +11,6 @@
  */
 
 import {
-  getHelixEnv,
   getLanguage,
   getLocale,
   getMetadata,
