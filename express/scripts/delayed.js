@@ -33,6 +33,7 @@ export default function loadDelayed([
   return new Promise((resolve) => {
     setTimeout(() => {
       loadExpressProduct(createTag);
+      loadLoginUserAutoRedirect();
       resolve();
     }, DELAY);
   });
