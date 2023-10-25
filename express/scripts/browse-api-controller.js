@@ -25,15 +25,6 @@ const endpoints = {
     token: window.atob('Y2QxODIzZWQtMDEwNC00OTJmLWJhOTEtMjVmNDE5NWQ1ZjZj'),
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
-  stage: {
-    // todo: use stage when browse API syncs up environments properly
-    cdn: 'https://uss-templates-dev.adobe.io/uss/v3/query',
-    // cdn: 'https://www.stage.adobe.com/ax-uss-api/',
-    url: 'https://uss-templates-stage.adobe.io/uss/v3/query',
-    token: window.atob('Y2QxODIzZWQtMDEwNC00OTJmLWJhOTEtMjVmNDE5NWQ1ZjZj'),
-    // token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
-    key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
-  },
   prod: {
     cdn: 'https://www.adobe.com/ax-uss-api/',
     url: 'https://uss-templates.adobe.io/uss/v3/query',
@@ -92,9 +83,8 @@ export async function getDataWithContext({ urlPath }) {
       facets: [{ facet: 'categories', limit: 10 }],
     }],
   };
-  const useDev = window.location.host === 'localhost:3000' || window.isTestEnv;
-  const env = useDev ? { name: 'dev' } : getHelixEnv();
-  const result = await getData(env.name, data);
+  const env = window.location.host === 'localhost:3000' ? 'dev' : 'prod';
+  const result = await getData(env, data);
   if (result?.status?.httpCode !== 200) return null;
 
   return result;
@@ -133,8 +123,8 @@ export async function getDataWithId() {
     ],
   };
 
-  const env = getHelixEnv();
-  const result = await getData(env.name, dataRaw);
+  const env = window.location.host === 'localhost:3000' ? 'dev' : 'prod';
+  const result = await getData(env, dataRaw);
 
   if (result.status.httpCode !== 200) return null;
 
