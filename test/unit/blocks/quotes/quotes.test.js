@@ -12,4 +12,62 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-vars */
 
-const { default: decorate } = await import('../../../../express/blocks/quotes/quotes.js');
+import { readFile } from "@web/test-runner-commands";
+import { expect } from "@esm-bundle/chai";
+
+const { default: decorate } = await import(
+  "../../../../express/blocks/quotes/quotes.js"
+);
+document.body.innerHTML = await readFile({ path: "./mocks/body.html" });
+
+it("Quotes exists", () => {
+  const quotes = document.querySelector(".quotes");
+  expect(quotes).to.exist;
+  decorate(quotes);
+});
+
+it('All direct div children get "quote" class', () => {
+  const quotes = document.querySelector(".quotes");
+  decorate(quotes);
+  quotes.querySelectorAll(":scope>div").forEach(($card) => {
+    expect($card.classList.contains("quote")).to.be.true;
+  });
+});
+
+it("Author and summary are well constructed", () => {
+  const quotes = document.querySelector(".quotes");
+  decorate(quotes);
+  quotes.querySelectorAll(":scope>div").forEach(($card) => {
+    if ($card.children.length > 1) {
+      const $author = $card.children[1];
+      expect($author.classList.contains("author")).to.be.true;
+      expect($author.querySelector(".summary")).to.exist;
+    }
+  });
+});
+
+it('First child of each card has "content" class', () => {
+  const quotes = document.querySelector(".quotes");
+  decorate(quotes);
+  quotes.querySelectorAll(":scope>div").forEach(($card) => {
+    expect($card.firstElementChild.classList.contains("content")).to.be.true;
+  });
+});
+
+it('Picture is wrapped in div with class "image"', () => {
+  const firstQuoteAuthor = document.querySelector(
+    ".quotes > div > div:nth-child(2)"
+  );
+  const pictureElement = document.createElement("picture");
+  pictureElement.innerHTML = '<img src="mock-img.jpg" alt="Mock Img">';
+  firstQuoteAuthor.appendChild(pictureElement);
+
+  const quotes = document.querySelector(".quotes");
+  decorate(quotes);
+
+  const $author = quotes.querySelector(".author");
+  const $pictureWrapper = $author.querySelector(".image");
+
+  expect($pictureWrapper).to.exist;
+  expect($pictureWrapper.querySelector("picture")).to.exist;
+});
