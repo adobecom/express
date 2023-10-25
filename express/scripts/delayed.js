@@ -18,6 +18,12 @@ export const loadExpressProduct = async (createTag) => {
   document.body.append(iframe);
 };
 
+function loadLoginUserAutoRedirect() {
+  if (window.feds.utilities.imslib.isSignedInUser()) {
+    console.log(window.feds.utilities.imslib);
+  }
+}
+
 /**
  * Executes everything that happens a lot later, without impacting the user experience.
  */
