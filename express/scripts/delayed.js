@@ -18,9 +18,35 @@ export const loadExpressProduct = async (createTag) => {
   document.body.append(iframe);
 };
 
-function loadLoginUserAutoRedirect() {
+async function loadLoginUserAutoRedirect(createTag, getIconElement) {
+  const buildRedirectAlert = (profile) => {
+    const container = createTag('div', { class: 'bmtp-container' });
+    const headerWrapper = createTag('div', { class: 'bmtp-header' });
+    const headerIcon = createTag('div', { class: 'bmtp-header-icon' }, getIconElement('cc-express'));
+    const headerText = createTag('span', { class: 'bmtp-header-text' }, 'Taking you to Adobe Express');
+    const progressBg = createTag('div', { class: 'bmtp-progress-bg' });
+    const progressBar = createTag('div', { class: 'bmtp-progress-bar' });
+    const profileWrapper = createTag('div', { class: 'profile-wrapper' });
+    const profilePhoto = createTag('img', { src: 'https://a5.behance.net/da4a198db4e0fae89fe4c1adaab3972c89aef95d/img/profile/avatars/selection-138.png?cb=264615658' });
+    const profileTextWrapper = createTag('div', { class: 'profile-tex-wrapper' });
+    const profileName = createTag('strong', { class: 'profile-name' }, profile.displayName);
+    const profileEmail = createTag('span', { class: 'profile-email' }, profile.email);
+    const noticeWrapper = createTag('div', { class: 'notice-wrapper' });
+    const noticeText = createTag('span', { class: 'notice-text' }, 'Cancel to stay on the page');
+    const noticeBtn = createTag('a', { class: 'notice-btn' });
+
+    headerWrapper.append(headerIcon, headerText);
+    progressBg.append(progressBar);
+    profileWrapper.append(profilePhoto, profileTextWrapper);
+    profileTextWrapper.append(profileName, profileEmail);
+    noticeWrapper.append(noticeText, noticeBtn);
+    container.append(headerWrapper, progressBg, profileWrapper, noticeWrapper);
+    document.body.append(container);
+  };
+
   if (window.feds.utilities.imslib.isSignedInUser()) {
-    console.log(window.feds.utilities.imslib);
+    const profile = await window.feds.utilities.imslib.getProfile();
+    buildRedirectAlert(profile);
   }
 }
 
@@ -29,11 +55,12 @@ function loadLoginUserAutoRedirect() {
  */
 export default function loadDelayed([
   createTag,
+  getIconElement,
 ], DELAY = 3000) {
   return new Promise((resolve) => {
     setTimeout(() => {
       loadExpressProduct(createTag);
-      loadLoginUserAutoRedirect();
+      loadLoginUserAutoRedirect(createTag, getIconElement);
       resolve();
     }, DELAY);
   });

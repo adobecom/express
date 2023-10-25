@@ -2466,7 +2466,10 @@ export async function loadArea(area = document) {
   }
   await lazy;
   const { default: delayed } = await import('./delayed.js');
-  delayed([createTag], 8000);
+  delayed([
+    createTag,
+    getIconElement,
+  ], 8000);
 }
 
 export function getMobileOperatingSystem() {
