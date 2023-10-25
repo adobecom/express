@@ -16,6 +16,7 @@ import {
   createOptimizedPicture,
 } from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
+import BlockMediator from '../../scripts/block-mediator.js';
 
 function styleBackgroundWithScroll($section) {
   const $background = createTag('div', { class: 'marquee-background' });
@@ -169,6 +170,7 @@ export default function decorate($block) {
           }
         }
 
+        BlockMediator.set('primaryCtaUrl', $a.href);
         $a.classList.add('primaryCTA');
         styleBackgroundWithScroll($section);
         addFreePlanWidget($block.querySelector('.button-container'));

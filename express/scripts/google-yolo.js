@@ -11,11 +11,13 @@
  */
 
 import { getMetadata } from './utils.js';
+import BlockMediator from './block-mediator.js';
 
 function getRedirectUri() {
-  const primaryCta = document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA');
-  if (primaryCta) {
-    return primaryCta.href;
+  const primaryCtaUrl = BlockMediator.get('primaryCtaUrl')
+    || document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA')?.href;
+  if (primaryCtaUrl) {
+    return primaryCtaUrl;
   }
   return false;
 }

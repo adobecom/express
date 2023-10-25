@@ -351,7 +351,7 @@ main .video-overlay .close::after {
 
 .bmtp-container {
   position: absolute;
-  right: 16px;
+  right: 8px;
   top: 72px;
   background-color: var(--color-white);
   width: 376px;
@@ -404,12 +404,12 @@ main .video-overlay .close::after {
 }
 
 .bmtp-container .profile-wrapper .profile-img-container::before {
+  content: "";
   animation: rotateCircle 1.5s linear infinite;
   animation-play-state: inherit;
   border: solid 2px var(--color-gray-200);
   border-bottom-color: #33AB84;
   border-radius: 50%;
-  content: "";
   height: 30px;
   width: 30px;
   position: absolute;
@@ -420,10 +420,25 @@ main .video-overlay .close::after {
 }
 
 .bmtp-container.done .profile-wrapper .profile-img-container::before {
-
+  border: none;
+  height: 32px;
+  width: 32px;
+  animation: unset;
 }
 
-.bmtp-container .profile-wrapper img {
+.bmtp-container.done .profile-wrapper .profile-img-container::after {
+  background-image: url('/express/icons/success-check.svg');
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+}
+
+.bmtp-container .profile-wrapper .profile-img-container img {
   display: block;
   height: 30px;
   width: 30px;
@@ -521,6 +536,24 @@ main .video-overlay .close::after {
 
   100% {
     width: 100%
+  }
+}
+
+@-webkit-keyframes rotateCircle {
+  0% {
+    transform: translate3d(-50%, -50%, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+}
+
+@-moz-keyframes rotateCircle {
+  0% {
+    transform: translate3d(-50%, -50%, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
   }
 }
 
