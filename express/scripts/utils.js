@@ -704,12 +704,14 @@ function decorateLinks(main) {
 /**
  * Decorates all sections in a container element.
  * @param {Element} el The container element
+ * @param {Boolean} isDoc Is document or fragment
  */
-async function decorateSections(el) {
-  const mainInDoc = document.querySelector('main');
-  // fixme: what was the intention of the 2 specific selectors?
-  //  One presumes el is main and the other presume the container is at parent level of body.
-  const selector = (mainInDoc && mainInDoc === el) ? ':scope > div' : 'body > main > div';
+async function decorateSections(el, isDoc) {
+  // fixme: our decorateSections gets main while in Milo it gets area.
+  //  For us, the selector never changes. That's why isDoc always needs to be false.
+  // eslint-disable-next-line no-param-reassign
+  isDoc = false;
+  const selector = isDoc ? 'body > main > div' : ':scope > div';
   return [...el.querySelectorAll(selector)].map((section, idx) => {
     /* process section metadata */
     const sectionMeta = section.querySelector('div.section-metadata');
@@ -2153,11 +2155,12 @@ function decoratePictures(main) {
 /**
  * Decorates the main element.
  * @param {Element} main The main element
+ * @param {Boolean} isDoc Is document or fragment
  */
-export async function decorateMain(main) {
+export async function decorateMain(main, isDoc) {
   await buildAutoBlocks(main);
   splitSections(main);
-  const sections = decorateSections(main);
+  const sections = decorateSections(main, isDoc);
   decorateButtons(main);
   decorateMarqueeColumns(main);
   await fixIcons(main);
@@ -2387,36 +2390,9 @@ async function loadPostLCP() {
 /**
  * Loads JS and CSS for all blocks in a container element.
  * @param {Array} sections The sections loaded in main
- * @param {Boolean} isDoc if is the document served
+ * @param {Boolean} isDoc if is the document or fragment
  */
-export async function loadSections(sections) {
-  const areaBlocks = [];
-  for (const section of sections) {
-    if (section.preloadLinks.length) {
-      const preloads = section.preloadLinks.map((block) => loadBlock(block));
-      // eslint-disable-next-line no-await-in-loop
-      await Promise.all(preloads);
-    }
-    const loaded = section.blocks.map((block) => loadBlock(block));
-    areaBlocks.push(...section.blocks);
-
-    // Only move on to the next section when all blocks are loaded.
-    // eslint-disable-next-line no-await-in-loop
-    await Promise.all(loaded);
-
-    // Show the section when all blocks inside are done.
-    delete section.el.dataset.status;
-    delete section.el.dataset.idx;
-  }
-
-  return areaBlocks;
-}
-
-/**
- * Loads JS and CSS for all blocks in a container element.
- * @param {Array} sections The sections loaded in main
- */
-export async function loadSectionsWithPostLCP(sections) {
+export async function loadSections(sections, isDoc) {
   const areaBlocks = [];
   for (const section of sections) {
     if (section.preloadLinks.length) {
@@ -2431,7 +2407,7 @@ export async function loadSectionsWithPostLCP(sections) {
     // eslint-disable-next-line no-await-in-loop
     await Promise.all(loaded);
     // Post LCP operations.
-    if (section.el.dataset.idx === '0') loadPostLCP();
+    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP();
 
     // Show the section when all blocks inside are done.
     delete section.el.dataset.status;
@@ -2482,7 +2458,7 @@ export async function loadArea(area = document) {
   let sections = [];
   if (main) {
     loadLana({ clientId: 'express' });
-    sections = await decorateMain(main);
+    sections = await decorateMain(main, isDoc);
     decoratePageStyle();
     decorateLegalCopy(main);
     addJapaneseSectionHeaderSizing();
@@ -2504,11 +2480,8 @@ export async function loadArea(area = document) {
   }
 
   if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
-  if (isDoc) {
-    await loadSectionsWithPostLCP(sections);
-  } else {
-    await loadSections(sections);
-  }
+  await loadSections(sections, isDoc);
+
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
 
