@@ -1247,7 +1247,7 @@ function loadGnav() {
 }
 
 function decoratePageStyle() {
-  const isBlog = getMetadata('theme') === 'blog';
+  const isBlog = getMetadata('theme') === 'blog' || getMetadata('template') === 'blog';
   if (!isBlog) {
     const $h1 = document.querySelector('main h1');
     // check if h1 is inside a block
