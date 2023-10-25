@@ -48,49 +48,14 @@ function displaySvgWithObject(block, secondaryColor) {
 
   svg.remove();
   loadSvgInsideWrapper(svgId, svgWrapper, secondaryColor);
-  const heroColorContentContainer = block.querySelector('.content-container');
-  heroColorContentContainer.append(svgWrapper);
-}
-
-function copyTextBlock(block, text) {
-  const title = block.querySelector('h1, h2'); // should only really use h1 here.
-  const cta = block.querySelector('.button-container');
-  const descriptions = block.querySelectorAll('p:not(:last-of-type)');
-  const descriptionContainer = createTag('div', { class: 'description-container' });
-
-  Array.from(descriptions).forEach((textDescription) => {
-    descriptionContainer.append(textDescription);
-  });
-
-  text.classList.add('text');
-  text.append(title, descriptionContainer, cta);
-}
-
-function cloneTextForSmallerMediaQueries(text) {
-  const clonedTextBlock = text.cloneNode(true);
-  clonedTextBlock.classList.add('text-container');
-  const textContent = clonedTextBlock.children[0];
-
-  copyTextBlock(clonedTextBlock, textContent);
-
-  return clonedTextBlock;
-}
-
-function groupTextElements(text, block) {
-  const button = block.querySelector('.button');
-
-  copyTextBlock(block, text);
-  button.style.border = 'none';
+  const svgContainer = block.querySelector('.svg-container');
+  svgContainer.append(svgWrapper);
 }
 
 function decorateText(block) {
   const text = block.firstElementChild;
-  const heroColorContentContainer = block.querySelector('.content-container');
-  const smallMediaQueryBlock = cloneTextForSmallerMediaQueries(text);
-
-  groupTextElements(text, block);
-  heroColorContentContainer.append(text);
-  block.append(smallMediaQueryBlock);
+  text.classList.add('text-container');
+  block.append(text);
 }
 
 function extractColorElements(colors) {
@@ -103,9 +68,10 @@ function extractColorElements(colors) {
 
 function decorateColors(block) {
   const colors = block.firstElementChild;
+  const svgContainer = block.querySelector('.svg-container');
   const { primaryColor, secondaryColor } = extractColorElements(colors);
 
-  block.style.backgroundColor = primaryColor;
+  if (svgContainer) svgContainer.style.backgroundColor = primaryColor;
 
   changeTextColorAccordingToBg(primaryColor, block);
 
@@ -113,7 +79,7 @@ function decorateColors(block) {
 }
 
 function getContentContainerHeight() {
-  const contentContainer = document.querySelector('.content-container');
+  const contentContainer = document.querySelector('.svg-container');
 
   return contentContainer?.clientHeight;
 }
@@ -146,11 +112,8 @@ function resizeSvgOnMediaQueryChange() {
 }
 
 export default function decorate(block) {
-  const heroColorContentContainer = createTag('div', {
-    class: 'content-container',
-  });
-
-  block.append(heroColorContentContainer);
+  const svgContainer = createTag('div', { class: 'svg-container' });
+  block.append(svgContainer);
 
   // text
   decorateText(block);
