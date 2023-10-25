@@ -12,6 +12,8 @@
 
 import {
   sampleRUM,
+  getDevice,
+  removeIrrelevantSections,
   loadArea,
   stamp,
   registerPerformanceLogger,
@@ -37,8 +39,12 @@ const eagerLoad = (img) => {
   img?.setAttribute('fetchpriority', 'high');
 };
 
-(async function loadLCPImage() {
-  const firstDiv = document.querySelector('body > main > div:nth-child(1) > div');
+(function loadLCPImage() {
+  const body = document.querySelector('body');
+  body.dataset.device = getDevice();
+  const main = body.querySelector('main');
+  removeIrrelevantSections(main);
+  const firstDiv = main.querySelector('div:nth-child(1) > div');
   if (firstDiv?.classList.contains('marquee')) {
     firstDiv.querySelectorAll('img').forEach(eagerLoad);
   } else {
@@ -47,9 +53,8 @@ const eagerLoad = (img) => {
 }());
 
 (async function loadPage() {
-  if (!window.hlx.init && !window.isTestEnv) {
-    await loadArea();
-  }
+  if (window.hlx.init || window.isTestEnv) return;
+  await loadArea();
 }());
 
 stamp('start');
