@@ -350,30 +350,100 @@ main .video-overlay .close::after {
 }
 
 .bmtp-container {
-  position: fixed;
+  position: absolute;
   right: 16px;
   top: 72px;
   background-color: var(--color-white);
   width: 376px;
   border: 1px solid #e8e8e8;
   border-radius: 10px;
+  z-index: 99;
+  overflow: hidden;
 }
 
-.bmtp-header {
+.bmtp-container .bmtp-header {
   display: flex;
   align-items: center;
   font-weight: 700;
   padding: 16px;
 }
 
-.bmtp-header-icon {
+.bmtp-container .bmtp-header-icon {
   margin-right: 12px;
 }
 
-.bmtp-header-icon .icon {
+.bmtp-container .bmtp-header-icon .icon {
   height: 32px;
   width: 32px;
   display: block;
+}
+
+.bmtp-container .bmtp-progress-bg {
+  height: 4px;
+  background-color: #d6d6d6;
+}
+
+.bmtp-container .bmtp-progress-bg .bmtp-progress-bar {
+  background-color: var(--color-info-accent);
+  width: 100%;
+  height: 100%;
+  max-width: 0;
+  transition: max-width 3s;
+}
+
+.bmtp-container.initiated .bmtp-progress-bg .bmtp-progress-bar {
+  max-width: 376px;
+}
+
+.bmtp-container .profile-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+}
+
+.bmtp-container .profile-wrapper .profile-background {
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  padding: 2px;
+  border-radius: 32px;
+  background-color: var(--color-gray-200);
+}
+
+.bmtp-container .profile-wrapper .profile-background img {
+  display: block;
+  height: 28px;
+  width: 28px;
+  border-radius: 28px;
+}
+
+.bmtp-container .profile-text-wrapper {
+  font-size: var(--body-font-size-s);
+}
+
+.bmtp-container .profile-text-wrapper .profile-name,
+.bmtp-container .profile-text-wrapper .profile-email {
+  display: block;
+}
+
+.bmtp-container .notice-wrapper {
+  padding: 16px;
+  font-size: var(--body-font-size-s);
+  background-color: var(--color-gray-100);
+  display: flex;
+  justify-content: space-between;
+}
+
+.bmtp-container .notice-btn {
+  font-weight: 700;
+  color: var(--color-info-accent);
+}
+
+.bmtp-container .notice-btn:hover {
+  color: var(--color-info-accent-hover);
 }
 
 @media screen and (min-width: 37.5rem) {

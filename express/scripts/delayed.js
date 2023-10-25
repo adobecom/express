@@ -20,34 +20,74 @@ export const loadExpressProduct = async (createTag) => {
 
 async function loadLoginUserAutoRedirect(createTag, getIconElement) {
   const buildRedirectAlert = (profile) => {
-    const container = createTag('div', { class: 'bmtp-container' });
-    const headerWrapper = createTag('div', { class: 'bmtp-header' });
-    const headerIcon = createTag('div', { class: 'bmtp-header-icon' }, getIconElement('cc-express'));
+    const container = createTag('div', {
+      class: 'bmtp-container',
+    });
+    const headerWrapper = createTag('div', {
+      class: 'bmtp-header',
+    });
+    const headerIcon = createTag('div', {
+      class: 'bmtp-header-icon',
+    }, getIconElement('cc-express'));
     const headerText = createTag('span', { class: 'bmtp-header-text' }, 'Taking you to Adobe Express');
     const progressBg = createTag('div', { class: 'bmtp-progress-bg' });
-    const progressBar = createTag('div', { class: 'bmtp-progress-bar' });
-    const profileWrapper = createTag('div', { class: 'profile-wrapper' });
+    const progressBar = createTag('div', {
+      class: 'bmtp-progress-bar',
+    });
+    const profileWrapper = createTag('div', {
+      class: 'profile-wrapper',
+    });
+    const profilePhotoBG = createTag('div', { class: 'profile-background' });
     const profilePhoto = createTag('img', { src: 'https://a5.behance.net/da4a198db4e0fae89fe4c1adaab3972c89aef95d/img/profile/avatars/selection-138.png?cb=264615658' });
-    const profileTextWrapper = createTag('div', { class: 'profile-tex-wrapper' });
+    const profileTextWrapper = createTag('div', { class: 'profile-text-wrapper' });
     const profileName = createTag('strong', { class: 'profile-name' }, profile.displayName);
     const profileEmail = createTag('span', { class: 'profile-email' }, profile.email);
     const noticeWrapper = createTag('div', { class: 'notice-wrapper' });
     const noticeText = createTag('span', { class: 'notice-text' }, 'Cancel to stay on the page');
     const noticeBtn = createTag('a', { class: 'notice-btn' });
 
+    noticeBtn.textContent = 'Cancel';
+
     headerWrapper.append(headerIcon, headerText);
     progressBg.append(progressBar);
-    profileWrapper.append(profilePhoto, profileTextWrapper);
+    profilePhotoBG.append(profilePhoto);
+    profileWrapper.append(profilePhotoBG, profileTextWrapper);
     profileTextWrapper.append(profileName, profileEmail);
     noticeWrapper.append(noticeText, noticeBtn);
     container.append(headerWrapper, progressBg, profileWrapper, noticeWrapper);
-    document.body.append(container);
+
+    const header = document.querySelector('header');
+    header.append(container);
   };
 
-  if (window.feds.utilities.imslib.isSignedInUser()) {
-    const profile = await window.feds.utilities.imslib.getProfile();
-    buildRedirectAlert(profile);
-  }
+  const profile = {
+    account_type: 'type3',
+    utcOffset: 'null',
+    preferred_languages: null,
+    displayName: 'Qiyun Dai',
+    last_name: 'Dai',
+    userId: 'F8B907856306C4BB0A495E20@adobe.com',
+    authId: 'F8B907856306C4BB0A495E20@adobe.com',
+    tags: [
+      'agegroup_unknown',
+      'edu',
+    ],
+    emailVerified: 'true',
+    phoneNumber: null,
+    countryCode: 'US',
+    name: 'Qiyun Dai',
+    mrktPerm: '',
+    mrktPermEmail: null,
+    first_name: 'Qiyun',
+    email: 'web87753@adobe.com',
+  };
+
+  buildRedirectAlert(profile);
+
+  // if (window.feds.utilities.imslib.isSignedInUser()) {
+  //   // const profile = await window.feds.utilities.imslib.getProfile();
+
+  // }
 }
 
 /**
