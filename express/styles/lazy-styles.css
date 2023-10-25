@@ -410,18 +410,6 @@ main .video-overlay .close::after {
   background-color: var(--color-gray-200);
 }
 
-.bmtp-container .profile-wrapper .profile-background {
-  background-image: linear-gradient(var(--color-white), var(--color-white), var(--color-white), var(--color-gray-200));
-  height: 30px;
-  width: 30px;
-  border-style: solid;
-  border-color: transparent;
-  border-radius: 50%;
-  border-width: 0;
-  animation: rotateCircle 2s linear infinite;
-  padding: 2px;
-}
-
 .bmtp-container .profile-wrapper .profile-background img {
   display: block;
   height: 28px;
@@ -430,10 +418,10 @@ main .video-overlay .close::after {
 }
 
 .bmtp-container .profile-wrapper .profile-background img::before {
-  animation: 1.5s linear infinite spinner;
+  animation: rotateCircle 1.5s linear infinite;
   animation-play-state: inherit;
-  border: solid 5px #cfd0d1;
-  border-bottom-color: #1c87c9;
+  border: solid 2px var(--color-gray-200);
+  border-bottom-color: #33AB84;
   border-radius: 50%;
   content: "";
   height: 40px;
@@ -536,5 +524,14 @@ main .video-overlay .close::after {
 
   100% {
     width: 100%
+  }
+}
+
+@keyframes rotateCircle {
+  0% {
+    transform: translate3d(-50%, -50%, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
   }
 }
