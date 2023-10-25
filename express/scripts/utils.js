@@ -2420,7 +2420,7 @@ export async function loadArea(area = document) {
     window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
   });
   window.hlx.init = true;
-  document.body.dataset.device = getDevice();
+
   setTemplateTheme();
   if (main) {
     const language = getLanguage(getLocale(window.location));
