@@ -387,12 +387,9 @@ main .video-overlay .close::after {
   background-color: var(--color-info-accent);
   width: 100%;
   height: 100%;
-  max-width: 0;
-  transition: max-width 3s;
-}
-
-.bmtp-container.initiated .bmtp-progress-bg .bmtp-progress-bar {
-  max-width: 376px;
+  -webkit-animation: loginRedirectProgress 2s ease;
+  -moz-animation: loginRedirectProgress 2s ease;
+  animation: loginRedirectProgress 2s ease;
 }
 
 .bmtp-container .profile-wrapper {
@@ -413,11 +410,39 @@ main .video-overlay .close::after {
   background-color: var(--color-gray-200);
 }
 
+.bmtp-container .profile-wrapper .profile-background {
+  background-image: linear-gradient(var(--color-white), var(--color-white), var(--color-white), var(--color-gray-200));
+  height: 30px;
+  width: 30px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 50%;
+  border-width: 0;
+  animation: rotateCircle 2s linear infinite;
+  padding: 2px;
+}
+
 .bmtp-container .profile-wrapper .profile-background img {
   display: block;
   height: 28px;
   width: 28px;
   border-radius: 28px;
+}
+
+.bmtp-container .profile-wrapper .profile-background img::before {
+  animation: 1.5s linear infinite spinner;
+  animation-play-state: inherit;
+  border: solid 5px #cfd0d1;
+  border-bottom-color: #1c87c9;
+  border-radius: 50%;
+  content: "";
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform;
 }
 
 .bmtp-container .profile-text-wrapper {
@@ -440,6 +465,7 @@ main .video-overlay .close::after {
 .bmtp-container .notice-btn {
   font-weight: 700;
   color: var(--color-info-accent);
+  cursor: pointer;
 }
 
 .bmtp-container .notice-btn:hover {
@@ -481,4 +507,34 @@ main .video-overlay .close::after {
 .helix-link-warning {
   border-color: red !important;
   border-width: 3px;
+}
+
+@-webkit-keyframes loginRedirectProgress {
+  0% {
+    width: 0;
+  }
+
+  100% {
+    width: 100%
+  }
+}
+
+@-moz-keyframes loginRedirectProgress {
+  0% {
+    width: 0;
+  }
+
+  100% {
+    width: 100%
+  }
+}
+
+@keyframes loginRedirectProgress {
+  0% {
+    width: 0;
+  }
+
+  100% {
+    width: 100%
+  }
 }

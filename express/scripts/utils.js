@@ -2469,7 +2469,7 @@ export async function loadArea(area = document) {
   delayed([
     createTag,
     getIconElement,
-  ], 8000);
+  ], 3000);
 }
 
 export function getMobileOperatingSystem() {
