@@ -61,8 +61,6 @@
     animation: fadeIn ease 2s;
     -webkit-animation: fadeIn ease 2s;
     -moz-animation: fadeIn ease 2s;
-    -o-animation: fadeIn ease 2s;
-    -ms-animation: fadeIn ease 2s;
 }
 
 .color-how-to-carousel .tip-numbers {
@@ -86,7 +84,6 @@
     color: var(--color-black);
     font-size: var(--body-font-size-s);
     font-weight: 600;
-    -ms-flex-item-align: start;
     align-self: flex-start;
     cursor: pointer;
 }
@@ -116,7 +113,6 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
 }
 
@@ -176,19 +172,19 @@
     padding: 12px 24px;
     border-radius: 24px;
     border: none;
-    background-color: var(--color-white);
-    color: var(--color-black);
+    background-color: var(--color-black);
+    color: var(--color-white);
 }
 
 .color-how-to-carousel.dark .content-wrapper a.button:any-link {
     padding: 12px 24px;
     border-radius: 24px;
     border: none;
-    background-color: var(--color-black);
-    color: var(--color-white);
+    background-color: var(--color-white);
+    color: var(--color-black);
 }
 
-@media (min-width: 600px) {
+@media (min-width: 900px) {
     .color-how-to-carousel {
         gap: unset;
     }
@@ -206,6 +202,7 @@
         padding: 24px;
         height: 570px;
         width: 412px;
+        margin-top: 24px;
     }
 
     .color-how-to-carousel > .img-wrapper .color-graph-text-overlay .color-name {
@@ -227,10 +224,6 @@
         align-items: start;
     }
 
-    .color-how-to-carousel {
-        align-items: center;
-    }
-
     .color-how-to-carousel > .content-wrapper {
         max-width: 600px;
         flex-basis: 60%;
@@ -241,9 +234,7 @@
         font-size: var(--body-font-size-m);
         padding: 14px 24px;
     }
-}
 
-@media (min-width: 900px) {
     .color-how-to-carousel > .content-wrapper {
         margin: 0 24px 0 80px;
     }

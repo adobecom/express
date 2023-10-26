@@ -233,19 +233,6 @@ export function createTag(tag, attributes, html) {
   return el;
 }
 
-export function getMeta(name) {
-  let value = '';
-  const nameLower = name.toLowerCase();
-  const $metas = [...document.querySelectorAll('meta')].filter(($m) => {
-    const nameAttr = $m.getAttribute('name');
-    const propertyAttr = $m.getAttribute('property');
-    return ((nameAttr && nameLower === nameAttr.toLowerCase())
-      || (propertyAttr && nameLower === propertyAttr.toLowerCase()));
-  });
-  if ($metas[0]) value = $metas[0].getAttribute('content');
-  return value;
-}
-
 // Get lottie animation HTML - remember to lazyLoadLottiePlayer() to see it.
 export function getLottie(name, src, loop = true, autoplay = true, control = false, hover = false) {
   return (`<lottie-player class="lottie lottie-${name}" src="${src}" background="transparent" speed="1" ${(loop) ? 'loop ' : ''}${(autoplay) ? 'autoplay ' : ''}${(control) ? 'controls ' : ''}${(hover) ? 'hover ' : ''}></lottie-player>`);
@@ -524,7 +511,14 @@ export function getMetadata(name) {
   return ($meta && $meta.content) || '';
 }
 
+export function yieldToMain() {
+  return new Promise((r) => {
+    setTimeout(r, 0);
+  });
+}
+
 export function removeIrrelevantSections(main) {
+  if (!main) return;
   main.querySelectorAll(':scope > div').forEach((section) => {
     const sectionMetaBlock = section.querySelector('div.section-metadata');
     if (sectionMetaBlock) {
@@ -709,9 +703,14 @@ function decorateLinks(main) {
 
 /**
  * Decorates all sections in a container element.
- * @param {Element} $main The container element
+ * @param {Element} el The container element
+ * @param {Boolean} isDoc Is document or fragment
  */
 async function decorateSections(el, isDoc) {
+  // fixme: our decorateSections gets main while in Milo it gets area.
+  //  For us, the selector never changes. That's why isDoc always needs to be false.
+  // eslint-disable-next-line no-param-reassign
+  isDoc = false;
   const selector = isDoc ? 'body > main > div' : ':scope > div';
   return [...el.querySelectorAll(selector)].map((section, idx) => {
     /* process section metadata */
@@ -944,10 +943,10 @@ function decorateHeaderAndFooter() {
     }
   });
 
-  const headerMeta = getMeta('header');
+  const headerMeta = getMetadata('header');
   if (headerMeta !== 'off') header.innerHTML = '<div id="feds-header"></div>';
   else header.remove();
-  const footerMeta = getMeta('footer');
+  const footerMeta = getMetadata('footer');
   const footer = document.querySelector('footer');
   if (footerMeta !== 'off') {
     footer.innerHTML = `
@@ -1287,9 +1286,14 @@ export function addSearchQueryToHref(href) {
   return url.toString();
 }
 
-export function decorateButtons(block = document) {
+/**
+ * Button style applicator function
+ * @param {Object} el the container of the buttons to be decorated
+ */
+
+export function decorateButtons(el = document) {
   const noButtonBlocks = ['template-list', 'icon-list'];
-  block.querySelectorAll(':scope a:not(.link-block)').forEach(($a) => {
+  el.querySelectorAll(':scope a:not(.link-block)').forEach(($a) => {
     const originalHref = $a.href;
     const linkText = $a.textContent.trim();
     if ($a.children.length > 0) {
@@ -1334,8 +1338,7 @@ export function decorateButtons(block = document) {
       if (linkText.startsWith('{{icon-') && linkText.endsWith('}}')) {
         const $iconName = /{{icon-([\w-]+)}}/g.exec(linkText)[1];
         if ($iconName) {
-          const $icon = getIcon($iconName, `${$iconName} icon`);
-          $a.innerHTML = $icon;
+          $a.innerHTML = getIcon($iconName, `${$iconName} icon`);
           $a.classList.remove('button', 'primary', 'secondary', 'accent');
           $a.title = $iconName;
         }
@@ -1364,7 +1367,7 @@ export function decorateButtons(block = document) {
 // }
 
 export function checkTesting() {
-  return (getMeta('testing').toLowerCase() === 'on');
+  return (getMetadata('testing').toLowerCase() === 'on');
 }
 
 /**
@@ -1381,7 +1384,7 @@ export function toCamelCase(name) {
  * @returns {string} experimentid
  */
 export function getExperiment() {
-  let experiment = toClassName(getMeta('experiment'));
+  let experiment = toClassName(getMetadata('experiment'));
 
   if (!/adobe\.com/.test(window.location.hostname) && !/\.hlx\.live/.test(window.location.hostname)) {
     experiment = '';
@@ -1421,7 +1424,7 @@ export function getExperiment() {
  * @returns {object} containing the experiment manifest
  */
 export async function getExperimentConfig(experimentId) {
-  const instantExperiment = getMeta('instant-experiment');
+  const instantExperiment = getMetadata('instant-experiment');
   if (instantExperiment) {
     const config = {
       experimentName: `Instant Experiment: ${experimentId}`,
@@ -1644,14 +1647,19 @@ async function decorateTesting() {
   }
 }
 
-export async function fixIcons(block = document) {
+/**
+ * Icon loader using altText
+ * @param {Object} el the container of the buttons to be decorated
+ */
+
+export async function fixIcons(el = document) {
   /* backwards compatible icon handling, deprecated */
-  block.querySelectorAll('svg use[href^="./_icons_"]').forEach(($use) => {
+  el.querySelectorAll('svg use[href^="./_icons_"]').forEach(($use) => {
     $use.setAttribute('href', `/express/icons.svg#${$use.getAttribute('href').split('#')[1]}`);
   });
   const placeholders = await fetchPlaceholders();
   /* new icons handling */
-  block.querySelectorAll('img').forEach(($img) => {
+  el.querySelectorAll('img').forEach(($img) => {
     const alt = $img.getAttribute('alt');
     if (alt) {
       const lowerAlt = alt.toLowerCase();
@@ -1938,8 +1946,12 @@ function splitSections($main) {
   });
 }
 
+export function getDevice() {
+  return navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
+}
+
 function setTheme() {
-  let theme = getMeta('theme');
+  let theme = getMetadata('theme');
   if (!theme && (window.location.pathname.startsWith('/express')
     || window.location.pathname.startsWith('/education')
     || window.location.pathname.startsWith('/drafts'))) {
@@ -1957,7 +1969,6 @@ function setTheme() {
       blog = true;
     }
   }
-  body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
 
 function decorateLinkedPictures($main) {
@@ -2135,10 +2146,6 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
   return picture;
 }
 
-/**
- * Decorates the main element.
- * @param {Element} main The main element
- */
 function decoratePictures(main) {
   main.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
     const newPicture = createOptimizedPicture(img.src, img.alt, !i);
@@ -2147,10 +2154,15 @@ function decoratePictures(main) {
   });
 }
 
-export async function decorateMain(main) {
+/**
+ * Decorates the main element.
+ * @param {Element} main The main element
+ * @param {Boolean} isDoc Is document or fragment
+ */
+export async function decorateMain(main, isDoc) {
   await buildAutoBlocks(main);
   splitSections(main);
-  const sections = decorateSections(main, false);
+  const sections = decorateSections(main, isDoc);
   decorateButtons(main);
   decorateMarqueeColumns(main);
   await fixIcons(main);
@@ -2380,9 +2392,9 @@ async function loadPostLCP() {
 /**
  * Loads JS and CSS for all blocks in a container element.
  * @param {Array} sections The sections loaded in main
- * @param {Boolean} isDoc if is the document served
+ * @param {Boolean} isDoc if is the document or fragment
  */
-export async function loadBlocks(sections, isDoc) {
+export async function loadSections(sections, isDoc) {
   const areaBlocks = [];
   for (const section of sections) {
     if (section.preloadLinks.length) {
@@ -2397,12 +2409,14 @@ export async function loadBlocks(sections, isDoc) {
     // eslint-disable-next-line no-await-in-loop
     await Promise.all(loaded);
     // Post LCP operations.
-    if (isDoc && section.el.dataset.idx === '0') loadPostLCP();
+    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP();
 
     // Show the section when all blocks inside are done.
     delete section.el.dataset.status;
     delete section.el.dataset.idx;
   }
+
+  return areaBlocks;
 }
 
 /**
@@ -2430,8 +2444,6 @@ export async function loadArea(area = document) {
     langSplits.pop();
     const htmlLang = langSplits.join('-');
     document.documentElement.setAttribute('lang', htmlLang);
-
-    removeIrrelevantSections(main);
   }
   if (window.hlx.testing) await decorateTesting();
 
@@ -2448,7 +2460,7 @@ export async function loadArea(area = document) {
   let sections = [];
   if (main) {
     loadLana({ clientId: 'express' });
-    sections = await decorateMain(main);
+    sections = await decorateMain(main, isDoc);
     decoratePageStyle();
     decorateLegalCopy(main);
     addJapaneseSectionHeaderSizing();
@@ -2470,7 +2482,8 @@ export async function loadArea(area = document) {
   }
 
   if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
-  loadBlocks(sections);
+  await loadSections(sections, isDoc);
+
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
 
