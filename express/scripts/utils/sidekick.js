@@ -169,7 +169,6 @@ function continueQAGuide(callback) {
 export default function init({
   createTag,
 }) {
-  const utils = { createTag };
   const sk = document.querySelector('helix-sidekick');
 
   const launchQAGuide = async () => {
@@ -182,7 +181,7 @@ export default function init({
     let qaGuideEl = main.querySelector('.qa-guide.desktop');
     if (audience) qaGuideEl = main.querySelector(`.qa-guide.${audience}`);
 
-    initQAGuide(qaGuideEl, utils);
+    initQAGuide(qaGuideEl, { createTag });
   };
 
   // Auto plugins
