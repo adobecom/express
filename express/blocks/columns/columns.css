@@ -570,7 +570,7 @@ main .columns.color p {
 }
 
 main .columns.color h2 {
-  font-size: 36px;
+  font-size: var(--heading-font-size-l);
 }
 
 main .collapsible-card-wrapper + .columns-wrapper .columns > div {
@@ -756,10 +756,6 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     width: 418px;
   }
 
-  main .columns.color h2 {
-    font-size: 45px;
-  }
-
   main .columns.color h2, main .columns.color p {
     text-align: left;
   }
@@ -823,7 +819,7 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     margin: 0;
   }
 
-  main .columns.width-2-columns .column-picture, 
+  main .columns.width-2-columns .column-picture,
   main .columns.width-2-columns .hero-animation-overlay,
   main .columns.highlight.width-2-columns .column-picture  {
     order: 0;

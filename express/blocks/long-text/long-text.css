@@ -75,7 +75,7 @@ main .long-text.plain p {
     }
 
     main .long-text.plain h3 {
-        font-size: var(--heading-font-size-m);
+        font-size: var(--heading-font-size-s);
         margin-bottom: 16px;
     }
 }

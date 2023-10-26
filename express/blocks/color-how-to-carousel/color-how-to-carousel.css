@@ -36,7 +36,7 @@
 }
 
 .color-how-to-carousel > .content-wrapper > h2 {
-    font-size: var(--heading-font-size-xl);
+    font-size: var(--heading-font-size-l);
     text-align: left;
     margin-top: 0;
 }
@@ -214,8 +214,7 @@
     }
 
     .color-how-to-carousel .tips .tip {
-        margin-top: 64px;
-        margin-bottom: 80px;
+        margin: 64px 0;
     }
 
     .color-how-to-carousel {
