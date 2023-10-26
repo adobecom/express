@@ -11,6 +11,10 @@
  */
 
 function initQAGuide(el, utils) {
+  const {
+    createTag,
+  } = utils;
+
   const resetQAProgress = (widget) => {
     widget.remove();
     const usp = new URLSearchParams(window.location.search);
@@ -53,30 +57,30 @@ function initQAGuide(el, utils) {
   };
 
   const buildQAWidget = (index, payload) => {
-    const progress = utils.createTag('div', { class: 'qa-progress' }, `Page ${index + 1} / ${payload.length}`);
-    const closeBtn = utils.createTag('a', { class: 'qa-widget-close' }, '✕');
-    const qaWidget = utils.createTag('div', { class: 'qa-widget' });
-    const qaWidgetForm = utils.createTag('form', { class: 'qa-widget-form' });
-    const checkboxesContainer = utils.createTag('div', { class: 'checkboxes-container' });
+    const progress = createTag('div', { class: 'qa-progress' }, `Page ${index + 1} / ${payload.length}`);
+    const closeBtn = createTag('a', { class: 'qa-widget-close' }, '✕');
+    const qaWidget = createTag('div', { class: 'qa-widget' });
+    const qaWidgetForm = createTag('form', { class: 'qa-widget-form' });
+    const checkboxesContainer = createTag('div', { class: 'checkboxes-container' });
     const checkboxes = [];
 
-    const checkboxAll = utils.createTag('input', {
+    const checkboxAll = createTag('input', {
       id: 'checkbox-all',
       type: 'checkbox',
       name: 'checkbox-all',
     });
-    const checkboxAllLabel = utils.createTag('label', { for: 'checkbox-all' }, 'Check all');
-    const checkboxAllWrapper = utils.createTag('div', { class: 'checkbox-all' });
+    const checkboxAllLabel = createTag('label', { for: 'checkbox-all' }, 'Check all');
+    const checkboxAllWrapper = createTag('div', { class: 'checkbox-all' });
 
     payload[index].items.forEach((item, i) => {
-      const checkbox = utils.createTag('input', {
+      const checkbox = createTag('input', {
         id: `checkbox-${i + 1}`,
         type: 'checkbox',
         name: `checkbox-${i + 1}`,
         required: true,
       });
-      const checkLabel = utils.createTag('label', { for: `checkbox-${i + 1}` }, item);
-      const checkboxWrapper = utils.createTag('div');
+      const checkLabel = createTag('label', { for: `checkbox-${i + 1}` }, item);
+      const checkboxWrapper = createTag('div');
       checkboxWrapper.append(checkbox, checkLabel);
       checkboxesContainer.append(checkboxWrapper);
       checkboxes.push(checkbox);
@@ -94,15 +98,15 @@ function initQAGuide(el, utils) {
     }
 
     if (payload[index + 1]) {
-      const nextBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Next');
+      const nextBtn = createTag('button', { class: 'button', type: 'submit' }, 'Next');
       qaWidgetForm.append(nextBtn);
       qaWidgetForm.addEventListener('submit', (e) => {
         e.preventDefault();
         window.location.assign(setNextQAIndexToUrl(index + 1, new URL(payload[index + 1].link)));
       });
     } else {
-      const completeBtn = utils.createTag('button', { class: 'button', type: 'submit' }, 'Done');
-      const noteArea = utils.createTag('textarea', {
+      const completeBtn = createTag('button', { class: 'button', type: 'submit' }, 'Done');
+      const noteArea = createTag('textarea', {
         style: 'height: 88px; width: 200px;',
         placeholder: 'Leave your notes here',
       });
