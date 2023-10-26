@@ -2491,23 +2491,23 @@ export async function loadArea(area = document) {
     import('../../tools/preview/preview.js');
   }
   await lazy;
-  const { default: loadDelayed, loadDelayedLoggedIn } = await import('./delayed.js');
-  // const isLoggedIn = window.feds.utilities.imslib.isSignedInUser();
-  // if (isLoggedIn) {
-  //   loadDelayedLoggedIn([
-  //     createTag,
-  //     getIconElement,
-  //   ]);
-  // } else {
-  //   loadDelayed([
-  //     createTag,
-  //   ], 8000);
-  // }
 
-  loadDelayedLoggedIn([
+  const { default: loadDelayed, loadDelayedLoggedIn } = await import('./delayed.js');
+  const userProfile = window.adobeProfile?.getUserProfile();
+  const placeholders = await fetchPlaceholders();
+  const delayUtils = {
     createTag,
     getIconElement,
-  ]);
+    placeholders,
+  };
+
+  const autoRedirectLanguageFound = placeholders.cancel || placeholders['bmtp-header'] || placeholders['bmtp-cancel-text'];
+
+  if (userProfile && autoRedirectLanguageFound) {
+    loadDelayedLoggedIn(delayUtils);
+  } else {
+    loadDelayed(delayUtils, 8000);
+  }
 }
 
 export function getMobileOperatingSystem() {

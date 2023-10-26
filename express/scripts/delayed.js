@@ -12,7 +12,8 @@
 
 import BlockMediator from './block-mediator.js';
 
-export const loadExpressProduct = async (createTag) => {
+export const loadExpressProduct = async (delayUtils) => {
+  const { createTag } = delayUtils;
   if (!window.hlx.preload_product) return;
   const path = ['www.adobe.com'].includes(window.location.hostname)
     ? 'https://new.express.adobe.com/static/preload.html' : 'https://stage.projectx.corp.adobe.com/static/preload.html';
@@ -20,28 +21,31 @@ export const loadExpressProduct = async (createTag) => {
   document.body.append(iframe);
 };
 
-async function loadLoginUserAutoRedirect(createTag, getIconElement) {
+async function loadLoginUserAutoRedirect(delayUtils) {
+  const {
+    createTag,
+    getIconElement,
+    placeholders,
+  } = delayUtils;
   let followThrough = true;
 
   const buildRedirectAlert = async (profile) => {
     const container = createTag('div', { class: 'bmtp-container' });
     const headerWrapper = createTag('div', { class: 'bmtp-header' });
     const headerIcon = createTag('div', { class: 'bmtp-header-icon' }, getIconElement('cc-express'));
-    const headerText = createTag('span', { class: 'bmtp-header-text' }, 'Taking you to Adobe Express');
+    const headerText = createTag('span', { class: 'bmtp-header-text' }, placeholders['bmtp-header']);
     const progressBg = createTag('div', { class: 'bmtp-progress-bg' });
     const progressBar = createTag('div', { class: 'bmtp-progress-bar' });
     const profileWrapper = createTag('div', { class: 'profile-wrapper' });
     const profilePhotoCont = createTag('div', { class: 'profile-img-container' });
-    // fixme: to remove after finding out how to get thumbnail
-    const profilePhoto = createTag('img', { src: 'https://a5.behance.net/da4a198db4e0fae89fe4c1adaab3972c89aef95d/img/profile/avatars/selection-138.png?cb=264615658' });
+    const profilePhoto = createTag('img', { src: profile.avatar });
     const profileTextWrapper = createTag('div', { class: 'profile-text-wrapper' });
-    const profileName = createTag('strong', { class: 'profile-name' }, profile.displayName);
+    const profileName = createTag('strong', { class: 'profile-name' }, profile.display_name);
     const profileEmail = createTag('span', { class: 'profile-email' }, profile.email);
     const noticeWrapper = createTag('div', { class: 'notice-wrapper' });
-    const noticeText = createTag('span', { class: 'notice-text' }, 'Cancel to stay on the page');
-    const noticeBtn = createTag('a', { class: 'notice-btn' });
+    const noticeText = createTag('span', { class: 'notice-text' }, placeholders['bmtp-cancel-text']);
+    const noticeBtn = createTag('a', { class: 'notice-btn' }, placeholders.cancel);
 
-    noticeBtn.textContent = 'Cancel';
     const photoInGNav = document.querySelector('header .Profile-thumbnail');
     if (photoInGNav) {
       [, profilePhoto.src] = photoInGNav.style.backgroundImage.match('url\\("([^"]+)"\\)');
@@ -82,30 +86,7 @@ async function loadLoginUserAutoRedirect(createTag, getIconElement) {
     }
   };
 
-  // const profile = await window.feds.utilities.imslib.getProfile();
-
-  // todo: mock. remove before deploy
-  const profile = {
-    account_type: 'type3',
-    utcOffset: 'null',
-    preferred_languages: null,
-    displayName: 'Qiyun Dai',
-    last_name: 'Dai',
-    userId: 'F8B907856306C4BB0A495E20@adobe.com',
-    authId: 'F8B907856306C4BB0A495E20@adobe.com',
-    tags: [
-      'agegroup_unknown',
-      'edu',
-    ],
-    emailVerified: 'true',
-    phoneNumber: null,
-    countryCode: 'US',
-    name: 'Qiyun Dai',
-    mrktPerm: '',
-    mrktPermEmail: null,
-    first_name: 'Qiyun',
-    email: 'web87753@adobe.com',
-  };
+  const profile = window.adobeProfile.getUserProfile();
 
   const optOutCounter = localStorage.getItem('no-bmtp');
   if (!optOutCounter || optOutCounter === '0') {
@@ -121,14 +102,11 @@ async function loadLoginUserAutoRedirect(createTag, getIconElement) {
   }
 }
 
-export function loadDelayedLoggedIn([
-  createTag,
-  getIconElement,
-], DELAY = 3000) {
+export function loadDelayedLoggedIn(delayUtils, DELAY = 3000) {
   return new Promise((resolve) => {
-    loadExpressProduct(createTag);
+    loadExpressProduct(delayUtils);
     setTimeout(() => {
-      loadLoginUserAutoRedirect(createTag, getIconElement);
+      loadLoginUserAutoRedirect(delayUtils);
       resolve();
     }, DELAY);
   });
@@ -137,12 +115,10 @@ export function loadDelayedLoggedIn([
 /**
  * Executes everything that happens a lot later, without impacting the user experience.
  */
-export default function loadDelayed([
-  createTag,
-], DELAY = 3000) {
+export default function loadDelayed(delayUtils, DELAY = 3000) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      loadExpressProduct(createTag);
+      loadExpressProduct(delayUtils);
       resolve();
     }, DELAY);
   });
