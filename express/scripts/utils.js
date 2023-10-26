@@ -2421,7 +2421,7 @@ export async function loadArea(area = document) {
   });
   window.hlx.init = true;
 
-  setTemplateTheme();
+  await setTemplateTheme();
   if (main) {
     const language = getLanguage(getLocale(window.location));
     const langSplits = language.split('-');
