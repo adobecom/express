@@ -26,7 +26,8 @@ const endpoints = {
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   stage: {
-    cdn: 'https://www.stage.adobe.com/ax-uss-api/',
+    // cdn: 'https://www.stage.adobe.com/ax-uss-api/',
+    cdn: 'https://uss-templates-stage.adobe.io/uss/v3/query',
     url: 'https://uss-templates-stage.adobe.io/uss/v3/query',
     token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
