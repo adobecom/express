@@ -41,7 +41,8 @@
     {
       "id": "qa-guide",
       "title": "QA Guide",
-      "event": "qa-guide"
+      "event": "qa-guide",
+      "excludePaths": [ "**.docx**", "**/:x:**" ]
     }
   ]
 }
