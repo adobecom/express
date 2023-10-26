@@ -11,6 +11,7 @@
  */
 
 import {
+  getHelixEnv,
   getLanguage,
   getLocale,
   getMetadata,
@@ -88,8 +89,9 @@ export async function getDataWithContext({ urlPath }) {
       facets: [{ facet: 'categories', limit: 10 }],
     }],
   };
-  const env = window.location.host === 'localhost:3000' ? 'dev' : 'prod';
-  const result = await getData(env, data);
+
+  const env = window.location.host === 'localhost:3000' ? { name: 'dev' } : getHelixEnv();
+  const result = await getData(env.name, data);
   if (result?.status?.httpCode !== 200) return null;
 
   return result;
@@ -128,9 +130,8 @@ export async function getDataWithId() {
     ],
   };
 
-  const env = window.location.host === 'localhost:3000' ? 'dev' : 'prod';
-  const result = await getData(env, dataRaw);
-
+  const env = window.location.host === 'localhost:3000' ? { name: 'dev' } : getHelixEnv();
+  const result = await getData(env.name, dataRaw);
   if (result.status.httpCode !== 200) return null;
 
   return result;
