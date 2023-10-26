@@ -16,29 +16,6 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
-function adjustFaderGradient(parent, faders) {
-  const parentSection = parent.closest('.section');
-  let inGradient;
-  let outGradient;
-
-  // fixme: early exit on negative condition
-  if (parentSection?.style?.background) {
-    if (parentSection.style.background.startsWith('rgb')) {
-      inGradient = parentSection.style.background.replace(')', ', 1)');
-      outGradient = parentSection.style.background.replace(')', ', 0)');
-    } else {
-      // todo: see if we can find a way to accommodate gradient background
-      faders.right.style.background = 'none';
-      faders.left.style.background = 'none';
-      return;
-    }
-  }
-
-  // fixme: these shouldn't run if the section doesn't have background set
-  faders.right.style.background = `linear-gradient(to right, ${outGradient}, ${inGradient})`;
-  faders.left.style.background = `linear-gradient(to left, ${outGradient}, ${inGradient})`;
-}
-
 // Wait for all media to load
 function waitForMediaToLoad(parent) {
   const medias = [...parent.querySelectorAll('img, video')];
@@ -94,14 +71,19 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
   };
   const toggleControls = () => {
     if (platform.classList.contains('infinity-scroll-loaded')) {
+      platform.classList.add('left-fader', 'right-fader');
       faderRight.classList.remove('arrow-hidden');
       faderLeft.classList.remove('arrow-hidden');
     } else {
       const platformScrollLeft = platform.scrollLeft;
       const left = (platformScrollLeft > 33);
       toggleArrow(faderLeft, left);
+      if(left) platform.classList.add('left-fader');
+      else platform.classList.remove('left-fader');
       const right = !(platform.offsetWidth + platformScrollLeft >= (platform.scrollWidth - 31));
       toggleArrow(faderRight, right);
+      if(right) platform.classList.add('right-fader');
+      else platform.classList.remove('right-fader');
     }
     if (hideControls) {
       $container.classList.add('controls-hidden');
@@ -251,7 +233,6 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
     lastPos = null;
   }, { passive: true });
 
-  adjustFaderGradient(parent, { left: faderLeft, right: faderRight });
   await Promise.all([css, media]);
 
   if (options.startPosition) {

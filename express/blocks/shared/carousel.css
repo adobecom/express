@@ -134,15 +134,25 @@ main .carousel-container.controls-hidden .carousel-platform {
     margin: 0 10px;
   }
 
-  main .carousel-container .carousel-fader-left {
-    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-  }
-
-  main .carousel-container .carousel-fader-right {
-    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-  }
-
   main .carousel-container.controls-hidden .carousel-platform {
     scroll-snap-type: x mandatory;
-  }
+  }  
+ 
 }
+
+:root {
+  --fader-gradient-width: 60px;
+}
+div.left-fader:not(.right-fader){
+  -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) var(--fader-gradient-width), rgba(0,0,0,1) calc(100% - var(--fader-gradient-width)));
+  mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) var(--fader-gradient-width), rgba(0,0,0,1) calc(100% - var(--fader-gradient-width)));
+}
+div.right-fader:not(.left-fade){
+  -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) var(--fader-gradient-width), rgba(0,0,0,1) calc(100% - var(--fader-gradient-width)), transparent);
+  mask-image: linear-gradient(to right, rgba(0,0,0,1) var(--fader-gradient-width), rgba(0,0,0,1) calc(100% - var(--fader-gradient-width)), transparent);
+}
+div.left-fader.right-fader{
+  -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) var(--fader-gradient-width), rgba(0,0,0,1) calc(100% - var(--fader-gradient-width)), transparent);
+  mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) var(--fader-gradient-width), rgba(0,0,0,1) calc(100% - var(--fader-gradient-width)), transparent);
+}
+
