@@ -26,8 +26,7 @@ const endpoints = {
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   stage: {
-    // cdn: 'https://www.stage.adobe.com/ax-uss-api/',
-    cdn: 'https://uss-templates-stage.adobe.io/uss/v3/query',
+    cdn: 'https://www.stage.adobe.com/ax-uss-api/',
     url: 'https://uss-templates-stage.adobe.io/uss/v3/query',
     token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
@@ -64,7 +63,13 @@ export async function getPillWordsMapping() {
 
 export default async function getData(env = 'dev', data = {}) {
   const endpoint = endpoints[env];
-  return mFetch(endpoint.cdn, {
+  let targetURl = endpoint.url;
+
+  if (['www.adobe.com', 'www.stage.adobe.com'].includes(window.location.hostname)) {
+    targetURl = endpoint.cdn;
+  }
+
+  return mFetch(targetURl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/vnd.adobe.search-request+json',
