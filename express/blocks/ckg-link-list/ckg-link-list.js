@@ -56,6 +56,8 @@ export default async function decorate(block) {
     }
   });
 
+  if (!block.children) return;
+
   await buildCarousel('.button-container', block);
   block.style.visibility = 'visible';
 }
