@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, titleCase } from '../../scripts/utils.js';
+import { createTag, getLocale, titleCase } from '../../scripts/utils.js';
 import { getDataWithContext } from '../../scripts/browse-api-controller.js';
 import buildCarousel from '../shared/carousel.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
@@ -28,7 +28,9 @@ export default async function decorate(block) {
   if (!pills || !pills.length) return;
 
   pills.forEach((pill) => {
-    if (pill.value.startsWith('/express/colors/search')) {
+    const locale = getLocale(window.location);
+    const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+    if (pill.value.startsWith(`${urlPrefix}/express/colors/search`)) {
       return;
     }
 
