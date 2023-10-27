@@ -11,9 +11,9 @@
  */
 
 import BlockMediator from './block-mediator.js';
+import { fetchPlaceholders, getIconElement, createTag } from './utils.js';
 
-export const loadExpressProduct = async (delayUtils) => {
-  const { createTag } = delayUtils;
+export const loadExpressProduct = async () => {
   if (!window.hlx.preload_product) return;
   const path = ['www.adobe.com'].includes(window.location.hostname)
     ? 'https://new.express.adobe.com/static/preload.html' : 'https://stage.projectx.corp.adobe.com/static/preload.html';
@@ -21,14 +21,9 @@ export const loadExpressProduct = async (delayUtils) => {
   document.body.append(iframe);
 };
 
-async function loadLoginUserAutoRedirect(delayUtils) {
-  const {
-    createTag,
-    getIconElement,
-    placeholders,
-  } = delayUtils;
+async function loadLoginUserAutoRedirect() {
   let followThrough = true;
-
+  const placeholders = await fetchPlaceholders();
   const buildRedirectAlert = async (profile) => {
     const container = createTag('div', { class: 'bmtp-container' });
     const headerWrapper = createTag('div', { class: 'bmtp-header' });
@@ -102,11 +97,11 @@ async function loadLoginUserAutoRedirect(delayUtils) {
   }
 }
 
-export function loadDelayedLoggedIn(delayUtils, DELAY = 3000) {
+export function loadDelayedLoggedIn(DELAY = 3000) {
   return new Promise((resolve) => {
-    loadExpressProduct(delayUtils);
+    loadExpressProduct();
     setTimeout(() => {
-      loadLoginUserAutoRedirect(delayUtils);
+      loadLoginUserAutoRedirect();
       resolve();
     }, DELAY);
   });
@@ -115,10 +110,10 @@ export function loadDelayedLoggedIn(delayUtils, DELAY = 3000) {
 /**
  * Executes everything that happens a lot later, without impacting the user experience.
  */
-export default function loadDelayed(delayUtils, DELAY = 3000) {
+export default function loadDelayed(DELAY = 3000) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      loadExpressProduct(delayUtils);
+      loadExpressProduct();
       resolve();
     }, DELAY);
   });
