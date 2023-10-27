@@ -78,11 +78,11 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
       const platformScrollLeft = platform.scrollLeft;
       const left = (platformScrollLeft > 33);
       toggleArrow(faderLeft, left);
-      if(left) platform.classList.add('left-fader');
+      if (left) platform.classList.add('left-fader');
       else platform.classList.remove('left-fader');
       const right = !(platform.offsetWidth + platformScrollLeft >= (platform.scrollWidth - 31));
       toggleArrow(faderRight, right);
-      if(right) platform.classList.add('right-fader');
+      if (right) platform.classList.add('right-fader');
       else platform.classList.remove('right-fader');
     }
     if (hideControls) {
