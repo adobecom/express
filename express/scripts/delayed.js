@@ -11,10 +11,16 @@
  */
 
 import BlockMediator from './block-mediator.js';
-import { fetchPlaceholders, getIconElement, createTag } from './utils.js';
+import {
+  fetchPlaceholders,
+  getIconElement,
+  createTag,
+  getDevice,
+} from './utils.js';
 
 export const loadExpressProduct = async () => {
   if (!window.hlx.preload_product) return;
+  if (getDevice() !== 'desktop') return;
   const path = ['www.adobe.com'].includes(window.location.hostname)
     ? 'https://new.express.adobe.com/static/preload.html' : 'https://stage.projectx.corp.adobe.com/static/preload.html';
   const iframe = createTag('iframe', { src: path, style: 'display:none' });

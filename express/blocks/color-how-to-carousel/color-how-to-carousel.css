@@ -36,7 +36,7 @@
 }
 
 .color-how-to-carousel > .content-wrapper > h2 {
-    font-size: var(--heading-font-size-xl);
+    font-size: var(--heading-font-size-l);
     text-align: left;
     margin-top: 0;
 }
@@ -184,6 +184,11 @@
     color: var(--color-black);
 }
 
+.color-how-to-carousel.shadow .img-wrapper,
+.color-how-to-carousel.shadow .content-wrapper {
+    box-shadow: 0 3px 6px #00000029;
+}
+
 @media (min-width: 900px) {
     .color-how-to-carousel {
         gap: unset;
@@ -214,8 +219,7 @@
     }
 
     .color-how-to-carousel .tips .tip {
-        margin-top: 64px;
-        margin-bottom: 80px;
+        margin: 64px 0;
     }
 
     .color-how-to-carousel {
