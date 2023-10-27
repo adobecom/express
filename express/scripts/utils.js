@@ -850,7 +850,7 @@ export function getHelixEnv() {
   let envName = sessionStorage.getItem('helix-env');
   if (!envName) {
     envName = 'stage';
-    if (window.spark.hostname === 'www.adobe.com') envName = 'prod';
+    if (window.spark?.hostname === 'www.adobe.com') envName = 'prod';
   }
   const envs = {
     stage: {

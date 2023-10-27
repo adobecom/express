@@ -163,10 +163,11 @@ function colorizeSVG(block, payload) {
     });
 
   if (!(block.classList.contains('dark') || block.classList.contains('light'))) {
-    if (!isDarkOverlayReadable(payload.primaryHex)) {
-      block.classList.add('dark');
-    } else {
+    if (isDarkOverlayReadable(payload.primaryHex)) {
       block.classList.add('light');
+      block.classList.add('shadow');
+    } else {
+      block.classList.add('dark');
     }
   }
 }
