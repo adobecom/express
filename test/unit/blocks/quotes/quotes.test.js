@@ -20,12 +20,19 @@ const { default: decorate } = await import(
 );
 document.body.innerHTML = await readFile({ path: './mocks/body.html' });
 
-describe('Quotes exists', () => {
-  const quotes = document.querySelector('.quotes');
-  expect(quotes).to.exist;
-  decorate(quotes);
+describe('Quotes', () => {
+  before(() => {
+    window.isTestEnv = true;
+  });
+
+  it('Quotes exists', () => {
+    const quotes = document.querySelector('.quotes');
+    expect(quotes).to.exist;
+    decorate(quotes);
+  });
 
   it('All direct div children get "quote" class', () => {
+    const quotes = document.querySelector('.quotes');
     decorate(quotes);
     quotes.querySelectorAll(':scope>div').forEach(($card) => {
       expect($card.classList.contains('quote')).to.be.true;
@@ -33,6 +40,7 @@ describe('Quotes exists', () => {
   });
 
   it('Author and summary are well constructed', () => {
+    const quotes = document.querySelector('.quotes');
     decorate(quotes);
     quotes.querySelectorAll(':scope>div').forEach(($card) => {
       if ($card.children.length > 1) {
@@ -44,6 +52,7 @@ describe('Quotes exists', () => {
   });
 
   it('First child of each card has "content" class', () => {
+    const quotes = document.querySelector('.quotes');
     decorate(quotes);
     quotes.querySelectorAll(':scope>div').forEach(($card) => {
       expect($card.firstElementChild.classList.contains('content')).to.be.true;
@@ -58,6 +67,7 @@ describe('Quotes exists', () => {
     pictureElement.innerHTML = '<img src="mock-img.jpg" alt="Mock Img">';
     firstQuoteAuthor.appendChild(pictureElement);
 
+    const quotes = document.querySelector('.quotes');
     decorate(quotes);
 
     const $author = quotes.querySelector('.author');
