@@ -184,6 +184,11 @@
     color: var(--color-black);
 }
 
+.color-how-to-carousel.shadow .img-wrapper,
+.color-how-to-carousel.shadow .content-wrapper {
+    box-shadow: 0 3px 6px #00000029;
+}
+
 @media (min-width: 900px) {
     .color-how-to-carousel {
         gap: unset;

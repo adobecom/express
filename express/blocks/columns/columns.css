@@ -563,6 +563,10 @@ main .columns.color .column.text {
   max-width: 345px;
 }
 
+main .columns.color.shadow .img-wrapper {
+  box-shadow: 0 3px 6px #00000029;
+}
+
 main .columns.color h2,
 main .columns.color p {
   hyphens: manual;
