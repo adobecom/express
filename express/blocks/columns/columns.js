@@ -357,6 +357,12 @@ export default async function decorate(block) {
     svg.style.backgroundColor = primaryColor;
     svg.style.fill = accentColor;
     rows[0].append(svg);
+
+    const { default: isDarkOverlayReadable } = await import('../../scripts/color-tools.js');
+
+    if (isDarkOverlayReadable(primaryColor)) {
+      block.classList.add('shadow');
+    }
   }
 
   const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
