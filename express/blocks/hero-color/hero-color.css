@@ -118,7 +118,7 @@ main .hero-color .hidden-svg {
   }
 
   main .hero-color .text-container > div {
-    max-width: 600px;
+    max-width: 50%;
   }
 
   main .hero-color.dark .button,
