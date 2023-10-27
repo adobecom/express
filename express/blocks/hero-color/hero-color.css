@@ -35,13 +35,13 @@ main .hero-color .text-container {
 
 main .hero-color .text-container h1 {
   margin: 0 0 16px;
-  font-size: var(--heading-font-size-xl);
+  font-size: var(--heading-font-size-l);
   text-align: left;
 }
 
 main .hero-color .text-container h2 {
   margin: 0;
-  font-size: var(--heading-font-size-l);
+  font-size: var(--heading-font-size-m);
   text-align: left;
 }
 
@@ -118,7 +118,7 @@ main .hero-color .hidden-svg {
   }
 
   main .hero-color .text-container > div {
-    max-width: 600px;
+    max-width: calc(50% - 24px);
   }
 
   main .hero-color.dark .button,

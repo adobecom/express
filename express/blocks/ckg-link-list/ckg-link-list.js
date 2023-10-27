@@ -28,6 +28,10 @@ export default async function decorate(block) {
   if (!pills || !pills.length) return;
 
   pills.forEach((pill) => {
+    if (pill.value.startsWith('/express/colors/search')) {
+      return;
+    }
+
     const colorPath = pill.value;
     const colorName = pill.displayValue;
     const buttonContainer = createTag('p', { class: 'button-container' });
@@ -51,6 +55,8 @@ export default async function decorate(block) {
       if (!dark) aTag.style.color = '#FFFFFF';
     }
   });
+
+  if (!block.children) return;
 
   await buildCarousel('.button-container', block);
   block.style.visibility = 'visible';
