@@ -359,3 +359,9 @@ body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"]
 body[data-device="mobile"].mobile-drawer-opened main .floating-button-wrapper[data-audience="mobile"][data-section-status="loaded"] {
   display: none;
 }
+
+@media screen and (min-width: 600px) {
+  .mobile-drawer-wrapper {
+    display: none !important;
+  }
+}
