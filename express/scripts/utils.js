@@ -2495,10 +2495,11 @@ export async function loadArea(area = document) {
   const { default: loadDelayed, loadDelayedLoggedIn } = await import('./delayed.js');
   const userProfile = window.adobeProfile?.getUserProfile();
   const placeholders = await fetchPlaceholders();
+  const autoRedirect = ['yes', 'true', 'Y', 'on'].includes(getMetadata('direct-path-to-product'));
 
   const autoRedirectLanguageFound = placeholders.cancel || placeholders['bmtp-header'] || placeholders['bmtp-cancel-text'];
 
-  if (userProfile && autoRedirectLanguageFound) {
+  if (userProfile && autoRedirectLanguageFound && autoRedirect) {
     loadDelayedLoggedIn();
   } else {
     loadDelayed(8000);

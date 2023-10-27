@@ -16,7 +16,7 @@ import {
   createOptimizedPicture,
 } from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
-import BlockMediator from '../../scripts/block-mediator.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function styleBackgroundWithScroll($section) {
   const $background = createTag('div', { class: 'marquee-background' });

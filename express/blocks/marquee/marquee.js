@@ -18,7 +18,7 @@ import {
   getIconElement,
   fetchPlaceholders,
 } from '../../scripts/utils.js';
-import BlockMediator from '../../scripts/block-mediator.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const breakpointConfig = [
   {

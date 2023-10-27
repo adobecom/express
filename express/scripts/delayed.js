@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import BlockMediator from './block-mediator.js';
+import BlockMediator from './block-mediator.min.js';
 import {
   fetchPlaceholders,
   getIconElement,

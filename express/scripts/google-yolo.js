@@ -11,7 +11,7 @@
  */
 
 import { getMetadata } from './utils.js';
-import BlockMediator from './block-mediator.js';
+import BlockMediator from './block-mediator.min.js';
 
 function getRedirectUri() {
   const primaryCtaUrl = BlockMediator.get('primaryCtaUrl')

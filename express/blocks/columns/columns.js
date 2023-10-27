@@ -27,7 +27,7 @@ import {
   hideVideoModal,
   isVideoLink,
 } from '../shared/video.js';
-import BlockMediator from '../../scripts/block-mediator.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function transformToVideoColumn(cell, aTag, block) {
   const parent = cell.parentElement;
