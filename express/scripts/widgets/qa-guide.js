@@ -10,6 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
+const QA_LOG_FILE_LOCATION = '/express/qa-log';
+
 export default function initQAGuide(el, utils) {
   const {
     createTag,
@@ -43,7 +45,7 @@ export default function initQAGuide(el, utils) {
     const now = new Date(Date.now()).toLocaleString('en-US', {
       timeZone: 'America/Los_Angeles',
     });
-    fetch('/express/qa-log', {
+    fetch(QA_LOG_FILE_LOCATION, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
