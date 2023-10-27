@@ -352,7 +352,7 @@ export default async function decorate(block) {
       const buttonAsLink = contentButtons[2];
       buttonAsLink?.classList.remove('button');
       primaryBtn?.classList.add('primaryCTA');
-      BlockMediator.set('primaryCtaUrl', primaryBtn.href);
+      BlockMediator.set('primaryCtaUrl', primaryBtn?.href);
       secondaryButton?.classList.add('secondary');
       const buttonContainers = [...div.querySelectorAll('p.button-container')];
       const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
