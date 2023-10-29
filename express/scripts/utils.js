@@ -1784,10 +1784,8 @@ export async function fetchPlainBlockFromFragment(url, blockName) {
 
 export async function fetchFloatingCta(path) {
   const env = getHelixEnv();
-  const url = new URLSearchParams(window.location.search);
-  const dev = url.get('dev');
-  const experimentParams = url.get('experiment');
-  const { experiment } = window.hlx;
+  const dev = new URLSearchParams(window.location.search).get('dev');
+  const { experiment, experimentParams } = window.hlx;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
   let spreadsheet;
   let floatingBtnData;
@@ -2432,9 +2430,11 @@ export async function loadArea(area = document) {
 
   window.hlx = window.hlx || {};
   const params = new URLSearchParams(window.location.search);
+  const experimentParams = params.get('experiment');
   ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
     window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
   });
+  window.hlx.experimentParams = experimentParams;
   window.hlx.init = true;
 
   setTheme();
@@ -2489,7 +2489,7 @@ export async function loadArea(area = document) {
 
   const lazy = loadLazy(main);
 
-  const buttonOff = new URLSearchParams(window.location.search).get('button') === 'off';
+  const buttonOff = params.get('button') === 'off';
   if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
     import('../../tools/preview/preview.js');
   }
