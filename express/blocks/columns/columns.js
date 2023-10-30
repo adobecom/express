@@ -76,6 +76,7 @@ function transformToVideoColumn(cell, aTag, block) {
 function decorateIconList(columnCell, rowNum, blockClasses) {
   const icons = [...columnCell.querySelectorAll('img.icon, svg.icon')]
     .filter((icon) => !icon.closest('p').classList.contains('social-links'));
+
   // decorate offer icons
   if (rowNum === 0 && blockClasses.contains('offer')) {
     const titleIcon = columnCell.querySelector('img.icon, svg.icon');
@@ -87,6 +88,11 @@ function decorateIconList(columnCell, rowNum, blockClasses) {
     }
     return;
   }
+
+  console.log(rowNum === 0);
+  console.log(icons.length === 1);
+  console.log(icons[0].closest('p').innerText.trim() === '');
+  console.log(!icons[0].closest('p').previousElementSibling);
 
   if (rowNum === 0
     && icons.length === 1

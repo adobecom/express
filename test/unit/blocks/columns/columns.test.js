@@ -21,12 +21,17 @@ const { default: decorate } = await import(
 );
 
 const body = await readFile({ path: './mocks/body.html' });
+const color = await readFile({ path: './mocks/color.html' });
 const center = await readFile({ path: './mocks/center.html' });
 const centered = await readFile({ path: './mocks/centered.html' });
 const dark = await readFile({ path: './mocks/dark.html' });
 const light = await readFile({ path: './mocks/light.html' });
 const fullsizeCenter = await readFile({ path: './mocks/fullsize-center.html' });
 const fullsize = await readFile({ path: './mocks/fullsize.html' });
+const offer = await readFile({ path: './mocks/offer.html' });
+const offerIcon = await readFile({ path: './mocks/offer-icon.html' });
+const icon = await readFile({ path: './mocks/icon.html' });
+const iconWithSibling = await readFile({ path: './mocks/icon-with-sibling.html' });
 const topCenter = await readFile({ path: './mocks/top-center.html' });
 const highlight = await readFile({ path: './mocks/highlight.html' });
 const numbered30 = await readFile({ path: './mocks/numbered-30.html' });
@@ -53,17 +58,49 @@ describe('Columns', () => {
     });
   });
 
-  it('should process the color block', () => {
-    document.body.innerHTML = body;
+  it('should render a numbered column', () => {
+    document.body.innerHTML = numbered30;
     const block = document.querySelector('.columns');
     decorate(block);
 
-    const svgCol = block.querySelector('.color-svg-img');
-    expect(svgCol).to.exist;
-    expect(svgCol.parentElement.style.backgroundColor).to.equal('Red');
-    expect(svgCol.parentElement.style.fill).to.equal('Blue');
+    const columnNumber = block.querySelector('.num');
+    expect(columnNumber.textContent).to.be.equal('01/30 —');
+  });
 
-    const svgUseHref = svgCol.querySelector('use').getAttribute('href');
-    expect(svgUseHref).to.equal('/express/icons/color-sprite.svg#mySvgId');
+  it('should render an offer column & have only 1 row', () => {
+    document.body.innerHTML = offer;
+    const block = document.querySelector('.columns');
+    decorate(block);
+
+    const rows = Array.from(block.children);
+    expect(rows.length).to.be.equal(1);
+  });
+
+  it('Should transform primary color to bg color and secondary color to fill', () => {
+    document.body.innerHTML = color;
+    const block = document.querySelector('.columns');
+    decorate(block);
+
+    const imgWrapper = block.querySelector('.img-wrapper');
+    expect(imgWrapper.style.backgroundColor).to.be.equal('rgb(255, 87, 51)');
+    expect(imgWrapper.style.fill).to.be.equal('rgb(52, 210, 228)');
+  });
+
+  it('should render an offer column and decorate icons', () => {
+    document.body.innerHTML = offerIcon;
+    const block = document.querySelector('.columns');
+    decorate(block);
+  });
+
+  it('should render a column and decorate icons', () => {
+    document.body.innerHTML = icon;
+    const block = document.querySelector('.columns');
+    decorate(block);
+  });
+
+  it('should render a column and decorate icons with sibling', () => {
+    document.body.innerHTML = iconWithSibling;
+    const block = document.querySelector('.columns');
+    decorate(block);
   });
 });
