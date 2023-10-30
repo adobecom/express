@@ -16,6 +16,11 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
+function correctCenterAlignment(cont, plat) {
+  console.log(cont.offsetWidth, plat.offsetWidth)
+  if (cont.offsetWidth > plat.offsetWidth) cont.style.maxWidth = `${plat.offsetWidth}px`;
+}
+
 function adjustFaderGradient(parent, faders) {
   const parentSection = parent.closest('.section');
   let inGradient;
@@ -69,15 +74,15 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
   const css = loadCSS('/express/blocks/shared/carousel.css');
   // Build the carousel HTML
   const $carouselContent = selector ? parent.querySelectorAll(selector) : parent.children;
-  const $container = createTag('div', { class: 'carousel-container' });
+  const container = createTag('div', { class: 'carousel-container' });
   const platform = createTag('div', { class: 'carousel-platform' });
   platform.append(...$carouselContent);
-  $container.appendChild(platform);
-  parent.appendChild($container);
+  container.appendChild(platform);
+  parent.appendChild(container);
   const faderLeft = createTag('div', { class: 'carousel-fader-left' });
   const faderRight = createTag('div', { class: 'carousel-fader-right' });
-  $container.appendChild(faderLeft);
-  $container.appendChild(faderRight);
+  container.appendChild(faderLeft);
+  container.appendChild(faderRight);
   const $arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
   const $arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
   faderLeft.appendChild($arrowLeft);
@@ -104,7 +109,7 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
       toggleArrow(faderRight, right);
     }
     if (hideControls) {
-      $container.classList.add('controls-hidden');
+      container.classList.add('controls-hidden');
     }
   };
 
@@ -257,4 +262,15 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
   if (options.startPosition) {
     setInitialPosition(platform, options.startPosition);
   }
+
+  const onIntersect = (entries, observer) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      correctCenterAlignment(container, platform);
+      observer.unobserve(container);
+    });
+  };
+
+  const observer = new IntersectionObserver(onIntersect, { threshold: 0 });
+  observer.observe(container);
 }

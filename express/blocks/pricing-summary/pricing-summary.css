@@ -261,7 +261,6 @@ main .pricing-summary .pricing-feature-list li {
     flex-direction: row;
     align-items: stretch;
     gap: 20px;
-    width: auto;
     padding-top: 40px;
   }
 

@@ -178,8 +178,6 @@ function alignContent(block) {
   };
 
   const contentWrappers = block.querySelectorAll('.pricing-content-wrapper');
-  const maxWidth = (430 * contentWrappers.length) + (20 * (contentWrappers.length - 1));
-  block.style.maxWidth = `${maxWidth}px`;
 
   setElementsHeight(contentWrappers);
 }
