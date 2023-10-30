@@ -109,21 +109,13 @@ body.no-scroll {
 
 /* gnav */
 body > header {
-  border-bottom: 1px solid #EAEAEA;
   box-sizing: content-box;
-  padding-bottom: var(--brand-header-height);
-  background-image: url(/express/icons/cc-express-logo.svg);
+  padding-bottom: 0;
   background-repeat: no-repeat;
   background-size: auto 32px;
   background-position: bottom 24px center;
   position: relative;
   background-color: #FFF;
-}
-
-body.no-brand-header > header,
-body.no-desktop-brand-header > header {
-  padding-bottom: 0;
-  background-image: unset;
 }
 
 .feds-topnav-spacing,

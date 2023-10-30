@@ -225,7 +225,7 @@ main .columns.columns-marquee .brand.icon {
   display: none;
 }
 
-body.no-brand-header main .columns.columns-marquee .brand.icon {
+main .columns.columns-marquee .brand.icon {
   display: unset;
   height: 32px;
   width: auto;
@@ -244,7 +244,7 @@ main .split-by-app-store-highlight .columns-wrapper {
   padding: 0;
 }
 
-body.no-brand-header main .columns .has-brand {
+main .columns .has-brand {
   padding-top: 72px;
   position: relative;
 }
@@ -514,7 +514,7 @@ main .columns .column.column-picture {
   padding-right: 8px;
 }
 
-body.no-brand-header main .columns.columns-marquee:not(.center):not(.fullsize) .brand.icon {
+main .columns.columns-marquee:not(.center):not(.fullsize) .brand.icon {
   transform: none;
   left: 0;
   padding-left: 32px;
@@ -675,7 +675,7 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
 }
 
 @media (min-width: 900px) {
-  body.no-brand-header main .columns.columns-marquee:not(.center):not(.fullsize) .brand.icon {
+  body main .columns.columns-marquee:not(.center):not(.fullsize) .brand.icon {
     padding-left: 0;
   }
 
@@ -764,18 +764,18 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     text-align: left;
   }
 
-  body.no-brand-header main .columns.columns-marquee .brand.icon {
+  main .columns.columns-marquee .brand.icon {
     position: unset;
     top: unset;
     left: unset;
     transform: unset;
   }
 
-  body.no-brand-header main .columns.columns-marquee:not(.center):not(.fullsize) .brand.icon {
+  main .columns.columns-marquee:not(.center):not(.fullsize) .brand.icon {
     padding-left: 0;
   }
 
-  body.no-brand-header main .columns .has-brand {
+  main .columns .has-brand {
     padding-top: 0;
   }
 
