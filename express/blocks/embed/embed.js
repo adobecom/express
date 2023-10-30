@@ -62,14 +62,12 @@ function decorateBlockEmbeds(block) {
     const url = new URL(a.href.replace(/\/$/, ''));
     const config = EMBEDS_CONFIG[url.hostname];
 
-    block.innerHTML = '';
-
     if (config) {
-      block.append(config.embed(url));
-      block.className = `block embed embed-${config.type}`;
+      block.innerHTML = config.embed(url);
+      block.classList = `block embed embed-${config.type}`;
     } else {
-      block.append(getDefaultEmbed(url));
-      block.className = `block embed embed-${getServer(url)}`;
+      block.innerHTML = getDefaultEmbed(url);
+      block.classList = `block embed embed-${getServer(url)}`;
     }
   });
 }

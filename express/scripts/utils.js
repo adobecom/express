@@ -19,8 +19,6 @@ const TK_IDS = {
   jp: 'dvg6awq',
 };
 
-let blog;
-
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
@@ -511,7 +509,14 @@ export function getMetadata(name) {
   return ($meta && $meta.content) || '';
 }
 
+export function yieldToMain() {
+  return new Promise((r) => {
+    setTimeout(r, 0);
+  });
+}
+
 export function removeIrrelevantSections(main) {
+  if (!main) return;
   main.querySelectorAll(':scope > div').forEach((section) => {
     const sectionMetaBlock = section.querySelector('div.section-metadata');
     if (sectionMetaBlock) {
@@ -696,9 +701,14 @@ function decorateLinks(main) {
 
 /**
  * Decorates all sections in a container element.
- * @param {Element} $main The container element
+ * @param {Element} el The container element
+ * @param {Boolean} isDoc Is document or fragment
  */
 async function decorateSections(el, isDoc) {
+  // fixme: our decorateSections gets main while in Milo it gets area.
+  //  For us, the selector never changes. That's why isDoc always needs to be false.
+  // eslint-disable-next-line no-param-reassign
+  isDoc = false;
   const selector = isDoc ? 'body > main > div' : ':scope > div';
   return [...el.querySelectorAll(selector)].map((section, idx) => {
     /* process section metadata */
@@ -838,7 +848,7 @@ export function getHelixEnv() {
   let envName = sessionStorage.getItem('helix-env');
   if (!envName) {
     envName = 'stage';
-    if (window.spark.hostname === 'www.adobe.com') envName = 'prod';
+    if (window.spark?.hostname === 'www.adobe.com') envName = 'prod';
   }
   const envs = {
     stage: {
@@ -947,6 +957,7 @@ function decorateHeaderAndFooter() {
 /**
  * Loads a CSS file
  * @param {string} href The path to the CSS file
+ * @param {function} callback a function to run upon successful style loading
  */
 export function loadCSS(href, callback) {
   if (!document.querySelector(`head > link[href="${href}"]`)) {
@@ -1149,6 +1160,34 @@ export const loadScript = (url, type) => new Promise((resolve, reject) => {
   script.addEventListener('error', onScript);
 });
 
+export async function setTemplateTheme() {
+  // todo: remove theme after we move blog to template column in metadata sheet
+  const template = getMetadata('template') || getMetadata('theme');
+  if (!template || template?.toLowerCase() === 'no brand header') return;
+  const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
+  document.body.classList.add(name);
+  await new Promise((resolve) => {
+    loadCSS(`/express/templates/${name}/${name}.css`, resolve);
+  });
+}
+
+export async function loadTemplateScript() {
+  // todo: remove theme after we move blog to template column in metadata sheet
+  const template = getMetadata('template') || getMetadata('theme');
+  if (!template || template?.toLowerCase() === 'no brand header') return;
+  const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
+  await new Promise((resolve) => {
+    (async () => {
+      try {
+        await import(`/express/templates/${name}/${name}.js`);
+      } catch (err) {
+        window.lana.log(`failed to load template module for ${name}`, err);
+      }
+      resolve();
+    })();
+  });
+}
+
 /**
  * fetches the string variables.
  * @returns {object} localized variables
@@ -1220,7 +1259,8 @@ function loadGnav() {
 }
 
 function decoratePageStyle() {
-  if (!blog) {
+  const isBlog = getMetadata('theme') === 'blog' || getMetadata('template') === 'blog';
+  if (!isBlog) {
     const $h1 = document.querySelector('main h1');
     // check if h1 is inside a block
     // eslint-disable-next-line no-lonely-if
@@ -1243,9 +1283,7 @@ function decoratePageStyle() {
         $heroSection.removeAttribute('style');
       }
       if ($heroPicture) {
-        if (!blog) {
-          $heroPicture.classList.add('hero-bg');
-        }
+        $heroPicture.classList.add('hero-bg');
       } else {
         $heroSection.classList.add('hero-noimage');
       }
@@ -1274,9 +1312,14 @@ export function addSearchQueryToHref(href) {
   return url.toString();
 }
 
-export function decorateButtons(block = document) {
+/**
+ * Button style applicator function
+ * @param {Object} el the container of the buttons to be decorated
+ */
+
+export function decorateButtons(el = document) {
   const noButtonBlocks = ['template-list', 'icon-list'];
-  block.querySelectorAll(':scope a:not(.link-block)').forEach(($a) => {
+  el.querySelectorAll(':scope a:not(.link-block)').forEach(($a) => {
     const originalHref = $a.href;
     const linkText = $a.textContent.trim();
     if ($a.children.length > 0) {
@@ -1321,8 +1364,7 @@ export function decorateButtons(block = document) {
       if (linkText.startsWith('{{icon-') && linkText.endsWith('}}')) {
         const $iconName = /{{icon-([\w-]+)}}/g.exec(linkText)[1];
         if ($iconName) {
-          const $icon = getIcon($iconName, `${$iconName} icon`);
-          $a.innerHTML = $icon;
+          $a.innerHTML = getIcon($iconName, `${$iconName} icon`);
           $a.classList.remove('button', 'primary', 'secondary', 'accent');
           $a.title = $iconName;
         }
@@ -1330,25 +1372,6 @@ export function decorateButtons(block = document) {
     }
   });
 }
-
-// function decorateTemplate() {
-//   if (window.location.pathname.includes('/make/')) {
-//     document.body.classList.add('make-page');
-//   }
-//   const year = window.location.pathname.match(/\/20\d\d\//);
-//   if (year) {
-//     document.body.classList.add('blog-page');
-//   }
-// }
-
-// function decorateLegacyLinks() {
-//   const legacy = 'https://blog.adobespark.com/';
-//   document.querySelectorAll(`a[href^="${legacy}"]`).forEach(($a) => {
-//     // eslint-disable-next-line no-console
-//     console.log($a);
-//     $a.href = $a.href.substring(0, $a.href.length - 1).substring(legacy.length - 1);
-//   });
-// }
 
 export function checkTesting() {
   return (getMetadata('testing').toLowerCase() === 'on');
@@ -1631,14 +1654,19 @@ async function decorateTesting() {
   }
 }
 
-export async function fixIcons(block = document) {
+/**
+ * Icon loader using altText
+ * @param {Object} el the container of the buttons to be decorated
+ */
+
+export async function fixIcons(el = document) {
   /* backwards compatible icon handling, deprecated */
-  block.querySelectorAll('svg use[href^="./_icons_"]').forEach(($use) => {
+  el.querySelectorAll('svg use[href^="./_icons_"]').forEach(($use) => {
     $use.setAttribute('href', `/express/icons.svg#${$use.getAttribute('href').split('#')[1]}`);
   });
   const placeholders = await fetchPlaceholders();
   /* new icons handling */
-  block.querySelectorAll('img').forEach(($img) => {
+  el.querySelectorAll('img').forEach(($img) => {
     const alt = $img.getAttribute('alt');
     if (alt) {
       const lowerAlt = alt.toLowerCase();
@@ -1923,26 +1951,8 @@ function splitSections($main) {
   });
 }
 
-function setTheme() {
-  let theme = getMetadata('theme');
-  if (!theme && (window.location.pathname.startsWith('/express')
-    || window.location.pathname.startsWith('/education')
-    || window.location.pathname.startsWith('/drafts'))) {
-    // mega nav, suppress brand header
-    theme = 'no-brand-header';
-  }
-  const { body } = document;
-  if (theme) {
-    let themeClass = toClassName(theme);
-    /* backwards compatibility can be removed again */
-    if (themeClass === 'nobrand') themeClass = 'no-desktop-brand-header';
-    body.classList.add(themeClass);
-    if (themeClass === 'blog') {
-      body.classList.add('no-brand-header');
-      blog = true;
-    }
-  }
-  body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
+export function getDevice() {
+  return navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
 
 function decorateLinkedPictures($main) {
@@ -2120,10 +2130,6 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
   return picture;
 }
 
-/**
- * Decorates the main element.
- * @param {Element} main The main element
- */
 function decoratePictures(main) {
   main.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
     const newPicture = createOptimizedPicture(img.src, img.alt, !i);
@@ -2132,10 +2138,15 @@ function decoratePictures(main) {
   });
 }
 
-export async function decorateMain(main) {
+/**
+ * Decorates the main element.
+ * @param {Element} main The main element
+ * @param {Boolean} isDoc Is document or fragment
+ */
+export async function decorateMain(main, isDoc) {
   await buildAutoBlocks(main);
   splitSections(main);
-  const sections = decorateSections(main, false);
+  const sections = decorateSections(main, isDoc);
   decorateButtons(main);
   decorateMarqueeColumns(main);
   await fixIcons(main);
@@ -2287,7 +2298,7 @@ function addJapaneseSectionHeaderSizing() {
 
 /**
  * Detects legal copy based on a * or † prefix and applies a smaller font size.
- * @param {HTMLMainElement} main The main element
+ * @param {Element} main The main element
  */
 function decorateLegalCopy(main) {
   const legalCopyPrefixes = ['*', '†'];
@@ -2365,9 +2376,9 @@ async function loadPostLCP() {
 /**
  * Loads JS and CSS for all blocks in a container element.
  * @param {Array} sections The sections loaded in main
- * @param {Boolean} isDoc if is the document served
+ * @param {Boolean} isDoc if is the document or fragment
  */
-export async function loadBlocks(sections, isDoc) {
+export async function loadSections(sections, isDoc) {
   const areaBlocks = [];
   for (const section of sections) {
     if (section.preloadLinks.length) {
@@ -2382,12 +2393,14 @@ export async function loadBlocks(sections, isDoc) {
     // eslint-disable-next-line no-await-in-loop
     await Promise.all(loaded);
     // Post LCP operations.
-    if (isDoc && section.el.dataset.idx === '0') loadPostLCP();
+    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP();
 
     // Show the section when all blocks inside are done.
     delete section.el.dataset.status;
     delete section.el.dataset.idx;
   }
+
+  return areaBlocks;
 }
 
 /**
@@ -2408,15 +2421,13 @@ export async function loadArea(area = document) {
   });
   window.hlx.init = true;
 
-  setTheme();
+  await setTemplateTheme();
   if (main) {
     const language = getLanguage(getLocale(window.location));
     const langSplits = language.split('-');
     langSplits.pop();
     const htmlLang = langSplits.join('-');
     document.documentElement.setAttribute('lang', htmlLang);
-
-    removeIrrelevantSections(main);
   }
   if (window.hlx.testing) await decorateTesting();
 
@@ -2433,7 +2444,7 @@ export async function loadArea(area = document) {
   let sections = [];
   if (main) {
     loadLana({ clientId: 'express' });
-    sections = await decorateMain(main);
+    sections = await decorateMain(main, isDoc);
     decoratePageStyle();
     decorateLegalCopy(main);
     addJapaneseSectionHeaderSizing();
@@ -2453,9 +2464,8 @@ export async function loadArea(area = document) {
       }
     }
   }
-
-  if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
-  loadBlocks(sections, isDoc);
+  await loadTemplateScript();
+  await loadSections(sections, isDoc);
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
 
@@ -2466,7 +2476,7 @@ export async function loadArea(area = document) {
   }
   await lazy;
   const { default: delayed } = await import('./delayed.js');
-  delayed([createTag], 8000);
+  delayed([createTag, getDevice], 8000);
 }
 
 export function getMobileOperatingSystem() {
