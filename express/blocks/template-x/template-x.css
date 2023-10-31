@@ -2058,6 +2058,11 @@ main .template-x.horizontal.tabbed .carousel-container .carousel-fader-left {
     font-size: var(--body-font-size-s);
 }
 
+.template-x.horizontal .template:last-of-type .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
+    left: unset;
+    right: calc(100% + 12px);
+}
+
 .template-x .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip .icon-checkmark-green {
     width: 10px;
     height: 10px;
@@ -2084,6 +2089,12 @@ main .template-x.horizontal.tabbed .carousel-container .carousel-fader-left {
     border-width: 5px;
     border-style: solid;
     border-color: transparent #33AB84 transparent transparent;
+}
+
+.template-x.horizontal .template:last-of-type .button-container .media-wrapper .share-icon-wrapper .shared-tooltip::after {
+    right: unset;
+    left: 100%;
+    border-color: transparent transparent transparent #33AB84;
 }
 
 .template-x .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip.flipped::after {
@@ -2554,191 +2565,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         margin-left: auto;
         margin-right: auto;
         display: block;
-    }
-
-    .template-x.horizontal.fullwidth .carousel-container {
-        margin-bottom: 20px;
-        max-width: none;
-        display: block;
-    }
-
-    .template-x.horizontal .carousel-container .carousel-fader-left {
-        background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-    }
-
-    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left {
-        width: 150px;
-        background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-    }
-
-    .template-x.horizontal .carousel-container .carousel-fader-right {
-        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-    }
-
-    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left {
-        background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-        width: 150px;
-    }
-
-    .template-x .api-templates-toolbar {
-        border-radius: 12px;
-    }
-
-    .template-x .api-templates-toolbar .wrapper-functions .functions-container {
-        display: flex;
-    }
-
-    .template-x .api-templates-toolbar .functions-drawer {
-        display: none;
-    }
-
-    .template-x .api-templates-toolbar .wrapper-content-search {
-        flex-basis: unset;
-        padding-right: 16px;
-    }
-
-    .template-x .api-templates-toolbar .functions-drawer .function-sort:hover .options-wrapper {
-        display: flex;
-    }
-
-    .template-x .api-templates-toolbar .functions-drawer .function-sort:hover .button-wrapper .icon.icon-drop-down-arrow {
-        transform: rotate(180deg);
-    }
-
-    .template-x-horizontal-holiday-container {
-        padding-bottom: 0;
-    }
-
-    .template-x-horizontal-holiday-container .toggle-bar {
-        max-width: 1024px;
-    }
-
-    .template-x-horizontal-holiday-container .mobile-only {
-        display: none;
-    }
-
-    .template-x-horizontal-holiday-container .toggle-bar-bottom {
-        display: flex;
-    }
-
-    .template-x-horizontal-holiday-container .template-x-wrapper.expanded {
-        padding-top: 0;
-    }
-
-    .template-x .template-x-fallback-msg-wrapper {
-        padding-left: 60px;
-        text-align: left;
-    }
-
-    .template-x-wrapper.fourcols {
-        max-width: 1200px;
-    }
-
-    .template-x-wrapper.sixcols {
-        max-width: 1122px;
-    }
-
-    .template-x-wrapper.fullwidth {
-        max-width: none;
-    }
-
-    /* template-x inside columns */
-
-    .columns .template-x-inner-wrapper {
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-    }
-
-    .columns .template-x .template {
-        justify-content: flex-start;
-        min-width: 132px;
-    }
-
-    .columns .template-x .template-link {
-        font-size: 0.875rem;
-        font-weight: 400;
-    }
-
-    .template-x.fullwidth.with-categories-list .template-x-inner-wrapper {
-        padding-left: 40px;
-        padding-right: 0;
-    }
-
-    .template-x.with-categories-list .category-list-wrapper ul {
-        position: relative;
-        list-style: none;
-        max-height: 800px;
-        overflow: hidden;
-        transition: max-height 0.2s;
-        padding-left: 0;
-    }
-
-    .template-x.with-categories-list .category-list-wrapper ul > li {
-        margin-bottom: 4px;
-        border-radius: 8px;
-        transition: background-color .2s, color .2s;
-    }
-
-    .template-x.with-categories-list .category-list-wrapper ul > li {
-        padding: 4px 8px;
-    }
-
-    .template-x.with-categories-list .category-list-wrapper ul > li.active > a {
-        color: var(--color-info-accent);
-        font-weight: 600;
-    }
-
-    .template-x.with-categories-list .category-list-wrapper ul > li .icon {
-        height: 18px;
-        width: 18px;
-        min-width: 18px;
-        display: block;
-        padding-right: 6px;
-    }
-
-    .template-x.with-categories-list .category-list-wrapper ul > li > a {
-        font-family: var(--body-font-family);
-        color: var(--color-black);
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 24px;
-        cursor: pointer;
-        user-select: none;
-        display: flex;
-        align-items: center;
-        white-space: nowrap;
-    }
-
-    .template-x.with-categories-list .category-list-wrapper ul > li > a > .category-list-template-count {
-        font-family: var(--body-font-family);
-        margin-left: 2px;
-        font-size: 14px;
-    }
-
-    .template-x.horizontal .carousel-container.controls-hidden .carousel-fader-left,
-    .template-x.horizontal .carousel-container.controls-hidden .carousel-fader-right {
-        opacity: unset;
-    }
-
-    .template-x.horizontal .carousel-container.controls-hidden .carousel-fader-left a.button.carousel-arrow,
-    .template-x.horizontal .carousel-container.controls-hidden .carousel-fader-right a.button.carousel-arrow {
-        pointer-events: auto;
-    }
-
-    .template-x.horizontal .carousel-container .carousel-fader-left.arrow-hidden,
-    .template-x.horizontal .carousel-container .carousel-fader-right.arrow-hidden {
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    .template-x.horizontal .carousel-container .carousel-fader-left.arrow-hidden a.button.carousel-arrow,
-    .template-x.horizontal .carousel-container .carousel-fader-right.arrow-hidden a.button.carousel-arrow {
-        pointer-events: none;
-    }
-
-    .template-x.horizontal .carousel-container.controls-hidden .carousel-platform {
-        scroll-snap-type: x mandatory;
     }
 
     .template-x.horizontal.fullwidth .carousel-container {
