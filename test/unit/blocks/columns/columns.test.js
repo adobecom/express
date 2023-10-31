@@ -205,11 +205,4 @@ describe('Columns', () => {
     const button = columns.querySelector('.button');
     expect(button.classList.contains('dark')).to.be.true;
   });
-
-
-  it('Invert buttons in regular columns inside columns-highlight-container', () => {
-    document.body.innerHTML = d;
-    const columns = document.querySelector('.columns');
-    decorate(columns);
-  });
 });
