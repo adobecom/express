@@ -2469,6 +2469,9 @@ export async function loadArea(area = document) {
 
   const { default: loadDelayed } = await import('./delayed.js');
   loadDelayed(8000);
+  import('./analytics.js').then(({ decorateSectionAnalytics }) => {
+    document.querySelectorAll('main > div').forEach((section, idx) => decorateSectionAnalytics(section, idx));
+  });
 }
 
 export function getMobileOperatingSystem() {
