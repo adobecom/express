@@ -10,7 +10,12 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, fetchPlaceholders, getIconElement, loadCSS } from '../../scripts/utils.js';
+import {
+  createTag,
+  fetchPlaceholders,
+  getIconElement,
+  loadCSS,
+} from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.js';
 
 export default async function loadLoginUserAutoRedirect() {
