@@ -116,8 +116,8 @@ describe('Columns', () => {
     const columns = document.querySelector('.columns');
     decorate(columns);
 
-    const icon = columns.querySelector('.columns-iconlist');
-    expect(icon).to.exist;
+    const columnsIcon = columns.querySelector('.columns-iconlist');
+    expect(columnsIcon).to.exist;
   });
 
   it('Should contain right classes if column video has highlight', () => {
@@ -130,9 +130,9 @@ describe('Columns', () => {
     highlightRow.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter' }));
 
     const sibling = columns.querySelector('.column-picture');
-    const video = columns.querySelector('.column-video');
+    const columnVideo = columns.querySelector('.column-video');
     expect(sibling).to.exist;
-    expect(video).to.exist;
+    expect(columnVideo).to.exist;
   });
 
   it('Icon list should be wrapped in a column-iconlist div', () => {
@@ -143,7 +143,7 @@ describe('Columns', () => {
     const childrenLength = columns.children.length;
     const iconListDiv = columns.querySelector('.columns-iconlist');
     expect(childrenLength).to.not.equal(0);
-    expect(iconListDiv).to.exist; 
+    expect(iconListDiv).to.exist;
   });
 
   it('Embed vidoes if href includes youtu or vimeo', () => {
@@ -166,7 +166,6 @@ describe('Columns', () => {
     const picDiv = columns.querySelector('picture');
     const parent = picDiv.parentElement;
     expect(parent.tagName).to.equal('DIV');
-
   });
 
   it('Should replace accent to primary if button contains classList light', () => {
@@ -174,7 +173,7 @@ describe('Columns', () => {
     const columns = document.querySelector('.columns');
     decorate(columns);
 
-    const button = columns.querySelector('.button')
+    const button = columns.querySelector('.button');
     expect(button.classList.contains('light')).to.be.true;
     expect(button.classList.contains('primary')).to.be.true;
   });

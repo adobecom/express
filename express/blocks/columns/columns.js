@@ -76,7 +76,6 @@ function transformToVideoColumn(cell, aTag, block) {
 function decorateIconList(columnCell, rowNum, blockClasses) {
   const icons = [...columnCell.querySelectorAll('img.icon, svg.icon')]
     .filter((icon) => !icon.closest('p').classList.contains('social-links'));
-
   // decorate offer icons
   if (rowNum === 0 && blockClasses.contains('offer')) {
     const titleIcon = columnCell.querySelector('img.icon, svg.icon');
