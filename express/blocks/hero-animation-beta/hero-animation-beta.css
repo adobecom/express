@@ -129,11 +129,6 @@ main .hero-animation-beta.white-text a:any-link {
     left: 56px;
     width: 380px;
   }
-
-  body.no-desktop-brand-header header, body.no-brand-header header {
-    height: auto;
-    background-image: unset;
-  }
 }
 
 @media (min-width: 1400px) {
