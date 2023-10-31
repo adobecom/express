@@ -89,11 +89,6 @@ function decorateIconList(columnCell, rowNum, blockClasses) {
     return;
   }
 
-  console.log(rowNum === 0);
-  console.log(icons.length === 1);
-  console.log(icons[0].closest('p').innerText.trim() === '');
-  console.log(!icons[0].closest('p').previousElementSibling);
-
   if (rowNum === 0
     && icons.length === 1
     && icons[0].closest('p').innerText.trim() === ''
@@ -310,7 +305,7 @@ export default async function decorate(block) {
                 const referrer = div.className || div.tagName;
                 const targetEl = referrer === 'PICTURE' ? div.querySelector('img') : div;
                 elementsMinHeight[referrer] = Math.max(
-                  elementsMinHeight[referrer],
+                  elementsMinHeight[referrer] || 0,
                   targetEl.offsetHeight,
                 );
               });
