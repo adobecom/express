@@ -959,8 +959,9 @@ function decorateHeaderAndFooter() {
 /**
  * Loads a CSS file
  * @param {string} href The path to the CSS file
+ * @param {function} callback callback fn attached to style.onload
  */
-export function loadCSS(href, callback) {
+export function loadCSS(href, callback = null) {
   if (!document.querySelector(`head > link[href="${href}"]`)) {
     const link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');
@@ -2492,18 +2493,8 @@ export async function loadArea(area = document) {
   }
   await lazy;
 
-  const { default: loadDelayed, loadDelayedLoggedIn } = await import('./delayed.js');
-  const userProfile = window.adobeProfile?.getUserProfile();
-  const placeholders = await fetchPlaceholders();
-  const autoRedirect = ['yes', 'true', 'Y', 'on'].includes(getMetadata('direct-path-to-product'));
-
-  const autoRedirectLanguageFound = placeholders.cancel || placeholders['bmtp-header'] || placeholders['bmtp-cancel-text'];
-
-  if (userProfile && autoRedirectLanguageFound && autoRedirect) {
-    loadDelayedLoggedIn();
-  } else {
-    loadDelayed(8000);
-  }
+  const { default: loadDelayed } = await import('./delayed.js');
+  loadDelayed(8000);
 }
 
 export function getMobileOperatingSystem() {
