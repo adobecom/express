@@ -222,7 +222,11 @@ export default async function decorate(block) {
   });
 
   await Promise.all(cardsLoaded).then(() => {
-    buildCarousel('.pricing-column-wrapper', columnsContainer, { startPosition: 'right' });
+    const options = {
+      startPosition: 'right',
+      centerAlign: true,
+    };
+    buildCarousel('.pricing-column-wrapper', columnsContainer, options);
     alignContent(block);
   });
 }

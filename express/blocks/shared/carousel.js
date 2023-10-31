@@ -68,11 +68,11 @@ function waitForMediaToLoad(parent) {
   });
 }
 
-export default async function buildCarousel(selector = ':scope > *', parent, options = {}) {
+export default async function buildCarousel(selector, parent, options = {}) {
   // Load CSS
-  const css = loadCSS('/express/blocks/shared/carousel.css');
+  loadCSS('/express/blocks/shared/carousel.css');
   // Build the carousel HTML
-  const $carouselContent = selector ? parent.querySelectorAll(selector) : parent.children;
+  const $carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
   const container = createTag('div', { class: 'carousel-container' });
   const platform = createTag('div', { class: 'carousel-platform' });
   platform.append(...$carouselContent);
@@ -112,14 +112,6 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
     }
   };
 
-  // fixme: replace L112 - L122 with intersectionObserver
-  let x = 0;
-  const refreshArrows = setInterval(() => {
-    toggleControls();
-    x += 1;
-    if (x > 15) clearInterval(refreshArrows);
-  }, 200);
-
   parent.closest('.block')?.addEventListener('carouselloaded', () => {
     toggleControls();
   }, { passive: true });
@@ -140,22 +132,6 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
   });
   window.addEventListener('resize', toggleControls);
 
-  // set initial position based on options
-  const setInitialPosition = (scrollable, position) => {
-    const onIntersect = (entries, observer) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        correctCenterAlignment(scrollable);
-        if (position === 'left') moveCarousel(scrollable.scrollWidth);
-        if (position === 'right') moveCarousel(-scrollable.scrollWidth);
-        observer.unobserve(scrollable);
-      });
-    };
-
-    const carouselObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
-    carouselObserver.observe(scrollable);
-  };
-
   // Carousel loop functionality (if enabled)
   const stopScrolling = () => { // To prevent safari shakiness
     platform.style.overflowX = 'hidden';
@@ -163,6 +139,7 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
       platform.style.removeProperty('overflow-x');
     }, 20);
   };
+
   const moveToCenterIfNearTheEdge = (e = null) => {
     // Start at the center and snap back to center if the user scrolls to the edges
     const scrollPos = platform.scrollLeft;
@@ -195,10 +172,12 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
         }
       });
     };
+
     // Duplicate children to simulate smooth scrolling
     for (let i = 0; i < 4; i += 1) {
       duplicateContent();
     }
+
     platform.addEventListener('scroll', (e) => {
       moveToCenterIfNearTheEdge(e);
     }, { passive: false });
@@ -210,16 +189,25 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
     });
   };
 
-  const initialState = () => {
-    if (options.infinityScrollEnabled) {
-      infinityScroll([...$carouselContent]);
-    }
-    toggleControls();
+  // set initial states
+  const setInitialState = (scrollable, opts) => {
+    if (opts.infinityScrollEnabled) infinityScroll([...$carouselContent]);
+
+    const onIntersect = (entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        if (opts.centerAlign) correctCenterAlignment(scrollable);
+        if (opts.startPosition === 'right') moveCarousel(-scrollable.scrollWidth);
+        observer.unobserve(scrollable);
+      });
+    };
+
+    const carouselObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
+    carouselObserver.observe(scrollable);
   };
 
-  const media = waitForMediaToLoad(platform).then(() => {
-    initialState();
-  });
+  adjustFaderGradient(parent, { left: faderLeft, right: faderRight });
+  setInitialState(platform, options);
 
   // Hide controls if the user swipes through the carousel
   let isScrolling = false;
@@ -248,11 +236,4 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
   platform.addEventListener('touched', () => {
     lastPos = null;
   }, { passive: true });
-
-  adjustFaderGradient(parent, { left: faderLeft, right: faderRight });
-  await Promise.all([css, media]);
-
-  if (options.startPosition) {
-    setInitialPosition(platform, options.startPosition);
-  }
 }

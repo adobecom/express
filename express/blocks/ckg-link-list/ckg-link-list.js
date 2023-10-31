@@ -60,6 +60,9 @@ export default async function decorate(block) {
 
   if (!block.children) return;
 
-  await buildCarousel('.button-container', block);
+  const options = {
+    centerAlign: true,
+  };
+  await buildCarousel('.button-container', block, options);
   block.style.visibility = 'visible';
 }
