@@ -16,9 +16,8 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
-function correctCenterAlignment(cont, plat) {
-  console.log(cont.offsetWidth, plat.offsetWidth)
-  if (cont.offsetWidth > plat.offsetWidth) cont.style.maxWidth = `${plat.offsetWidth}px`;
+function correctCenterAlignment(plat) {
+  if (plat.parentElement.offsetWidth > plat.offsetWidth) plat.parentElement.style.maxWidth = `${plat.offsetWidth}px`;
 }
 
 function adjustFaderGradient(parent, faders) {
@@ -145,17 +144,11 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
   const setInitialPosition = (scrollable, position) => {
     const onIntersect = (entries, observer) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          if (position === 'left') {
-            moveCarousel(scrollable.scrollWidth);
-          }
-
-          if (position === 'right') {
-            moveCarousel(-scrollable.scrollWidth);
-          }
-
-          observer.unobserve(scrollable);
-        }
+        if (!entry.isIntersecting) return;
+        correctCenterAlignment(scrollable);
+        if (position === 'left') moveCarousel(scrollable.scrollWidth);
+        if (position === 'right') moveCarousel(-scrollable.scrollWidth);
+        observer.unobserve(scrollable);
       });
     };
 
@@ -262,15 +255,4 @@ export default async function buildCarousel(selector = ':scope > *', parent, opt
   if (options.startPosition) {
     setInitialPosition(platform, options.startPosition);
   }
-
-  const onIntersect = (entries, observer) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      correctCenterAlignment(container, platform);
-      observer.unobserve(container);
-    });
-  };
-
-  const observer = new IntersectionObserver(onIntersect, { threshold: 0 });
-  observer.observe(container);
 }
