@@ -15,7 +15,7 @@ import {
   getLottie,
   lazyLoadLottiePlayer,
   // eslint-disable-next-line import/no-unresolved
-} from '../../../../scripts/utils.js';
+} from '../../../../scripts/scripts.js';
 
 function getMaxButtonWidth() {
   return 540;
@@ -27,7 +27,7 @@ function getDynamicButtonWidth(clientWidth) {
 
 function updateActiveDrawer(clickedButton, isLeftButton, isRightButton, oldActiveButtons) {
   const mobileDrawer = clickedButton.closest('.mobile-drawer');
-  const oldActiveDrawerItem = mobileDrawer?.querySelector(`[data-drawer="${oldActiveButtons[0]?.textContent}"]`);
+  const oldActiveDrawerItem = mobileDrawer?.querySelector(`[data-drawer="${oldActiveButtons[0].textContent}"]`);
   const newActiveDrawerItem = mobileDrawer?.querySelector(`[data-drawer="${clickedButton.textContent}"]`);
   const drawerClasses = ['drawer-item-container-shift-right', 'drawer-item-container-shift-left', 'indicators-transition'];
   if (oldActiveDrawerItem) {
@@ -91,8 +91,6 @@ function updateActiveTab(clickedButton) {
   setActiveClassAndAccessibility(allButtons, clickedButton.textContent);
 }
 function handleNavScroll(hasInstant, isLeftButton, isRightButton, leftValue, $platform) {
-  $platform.style.overflowX = 'scroll';
-  $platform.classList.add('mobile-drawer-nav-scrolling');
   if (hasInstant) {
     $platform.scrollTo({
       left: leftValue,
@@ -104,10 +102,6 @@ function handleNavScroll(hasInstant, isLeftButton, isRightButton, leftValue, $pl
   } else if (isRightButton) {
     $platform.scrollLeft += getDynamicButtonWidth($platform.clientWidth);
   }
-  setTimeout(() => {
-    $platform.style.overflowX = 'hidden';
-    $platform.classList.remove('mobile-drawer-nav-scrolling');
-  }, 300);
 }
 function updateActiveCTAContainers(activeButton) {
   const newActiveCTAContainer = document.getElementById(activeButton?.id?.replace('tab', 'ctas'));
@@ -546,7 +540,6 @@ export default async function decorate($block) {
     const $button = createTag('button');
     const $span = createTag('span');
     $span.textContent = $toggle.textContent.trim();
-    $button.setAttribute('data-ll', `press${$toggle?.textContent?.trim()?.replace(' ', '')}`);
     $button.append($span);
     $block.append($button);
   });
