@@ -20,106 +20,82 @@ function correctCenterAlignment(plat) {
   if (plat.parentElement.offsetWidth > plat.offsetWidth) plat.parentElement.style.maxWidth = `${plat.offsetWidth}px`;
 }
 
-function adjustFaderGradient(parent, faders) {
-  const parentSection = parent.closest('.section');
-  let inGradient;
-  let outGradient;
+export function initToggleTriggers(parent) {
+  if (!parent) return;
 
-  // fixme: early exit on negative condition
-  if (parentSection?.style?.background) {
-    if (parentSection.style.background.startsWith('rgb')) {
-      inGradient = parentSection.style.background.replace(')', ', 1)');
-      outGradient = parentSection.style.background.replace(')', ', 0)');
-    } else {
-      // todo: see if we can find a way to accommodate gradient background
-      faders.right.style.background = 'none';
-      faders.left.style.background = 'none';
-      return;
-    }
+  const platform = parent.querySelector('.carousel-platform');
+  const leftControl = parent.querySelector('.carousel-fader-left');
+  const rightControl = parent.querySelector('.carousel-fader-right');
+
+  const leftTrigger = createTag('div', { class: 'carousel-left-trigger' });
+  const rightTrigger = createTag('div', { class: 'carousel-right-trigger' });
+
+  // If flex container has a gap, add negative margins to compensate
+  const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
+  if (gap) {
+    leftTrigger.style.marginRight = `-${gap}`;
+    rightTrigger.style.marginLeft = `-${gap}`;
   }
+  platform.prepend(leftTrigger);
+  platform.append(rightTrigger);
 
-  // fixme: these shouldn't run if the section doesn't have background set
-  faders.right.style.background = `linear-gradient(to right, ${outGradient}, ${inGradient})`;
-  faders.left.style.background = `linear-gradient(to left, ${outGradient}, ${inGradient})`;
-}
-
-// Wait for all media to load
-function waitForMediaToLoad(parent) {
-  const medias = [...parent.querySelectorAll('img, video')];
-  return new Promise((resolve) => {
-    if (!medias.length) resolve();
-    let mediaLoaded = 0;
-    const mediaLoadedIncrement = () => {
-      mediaLoaded += 1;
-      if (medias.length === mediaLoaded) {
-        resolve();
-      }
-    };
-    medias.forEach((media) => {
-      if (media.tagName.toUpperCase() === 'VIDEO' && media.readyState < 3) {
-        media.addEventListener('loadeddata', mediaLoadedIncrement, false);
-      } else if (media.tagName.toUpperCase() === 'IMG' && !(media.complete && media.naturalHeight !== 0)) {
-        media.addEventListener('load', mediaLoadedIncrement);
+  // Left intersection observers to toggle left arrow and gradient
+  const onFirstSlideIntersect = (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        leftControl.classList.add('arrow-hidden');
+        platform.classList.remove('left-fader');
       } else {
-        // this media has already loaded
-        mediaLoadedIncrement();
+        leftControl.classList.remove('arrow-hidden');
+        platform.classList.add('left-fader');
       }
     });
-  });
+  };
+  // Right intersection observers to toggle right arrow and gradient
+  const onLastSlideIntersect = (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        rightControl.classList.add('arrow-hidden');
+        platform.classList.remove('right-fader');
+      } else {
+        rightControl.classList.remove('arrow-hidden');
+        platform.classList.add('right-fader');
+      }
+    });
+  };
+  const firstSlideObserver = new IntersectionObserver(onFirstSlideIntersect, { threshold: 0 });
+  const lastSlideObserver = new IntersectionObserver(onLastSlideIntersect, { threshold: 0 });
+  firstSlideObserver.observe(leftTrigger);
+  lastSlideObserver.observe(rightTrigger);
+  // should unobserve triggers where/when appropriate...
 }
 
 export default async function buildCarousel(selector, parent, options = {}) {
   // Load CSS
   loadCSS('/express/blocks/shared/carousel.css');
   // Build the carousel HTML
-  const $carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
+  const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
+
   const container = createTag('div', { class: 'carousel-container' });
   const platform = createTag('div', { class: 'carousel-platform' });
-  platform.append(...$carouselContent);
+  platform.append(...carouselContent);
   container.appendChild(platform);
-  parent.appendChild(container);
-  const faderLeft = createTag('div', { class: 'carousel-fader-left' });
-  const faderRight = createTag('div', { class: 'carousel-fader-right' });
+
+  const faderLeft = createTag('div', { class: 'carousel-fader-left arrow-hidden' });
+  const faderRight = createTag('div', { class: 'carousel-fader-right arrow-hidden' });
   container.appendChild(faderLeft);
   container.appendChild(faderRight);
-  const $arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
-  const $arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
-  faderLeft.appendChild($arrowLeft);
-  faderRight.appendChild($arrowRight);
 
-  // Hide controls if reaches the end of carousel, or if not using buttons to scroll.
-  let hideControls = false;
-  const toggleArrow = ($fader, shown = true) => {
-    if (shown) {
-      $fader.classList.remove('arrow-hidden');
-    } else {
-      $fader.classList.add('arrow-hidden');
-    }
-  };
-  const toggleControls = () => {
-    if (platform.classList.contains('infinity-scroll-loaded')) {
-      faderRight.classList.remove('arrow-hidden');
-      faderLeft.classList.remove('arrow-hidden');
-    } else {
-      const platformScrollLeft = platform.scrollLeft;
-      const left = (platformScrollLeft > 33);
-      toggleArrow(faderLeft, left);
-      const right = !(platform.offsetWidth + platformScrollLeft >= (platform.scrollWidth - 31));
-      toggleArrow(faderRight, right);
-    }
-    if (hideControls) {
-      container.classList.add('controls-hidden');
-    }
-  };
+  const arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
+  const arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
+  faderLeft.append(arrowLeft);
+  faderRight.append(arrowRight);
 
-  parent.closest('.block')?.addEventListener('carouselloaded', () => {
-    toggleControls();
-  }, { passive: true });
+  parent.appendChild(container);
 
   // Scroll the carousel by clicking on the controls
   const moveCarousel = (increment) => {
     platform.scrollLeft -= increment;
-    toggleControls();
   };
 
   faderLeft.addEventListener('click', () => {
@@ -130,7 +106,6 @@ export default async function buildCarousel(selector, parent, options = {}) {
     const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
     moveCarousel(-increment);
   });
-  window.addEventListener('resize', toggleControls);
 
   // Carousel loop functionality (if enabled)
   const stopScrolling = () => { // To prevent safari shakiness
@@ -160,12 +135,10 @@ export default async function buildCarousel(selector, parent, options = {}) {
         const duplicate = child.cloneNode(true);
         const duplicateLinks = duplicate.querySelectorAll('a');
         platform.append(duplicate);
-
         if (duplicate.tagName.toLowerCase() === 'a') {
           const linksPopulated = new CustomEvent('linkspopulated', { detail: [duplicate] });
           document.dispatchEvent(linksPopulated);
         }
-
         if (duplicateLinks) {
           const linksPopulated = new CustomEvent('linkspopulated', { detail: duplicateLinks });
           document.dispatchEvent(linksPopulated);
@@ -181,17 +154,18 @@ export default async function buildCarousel(selector, parent, options = {}) {
     platform.addEventListener('scroll', (e) => {
       moveToCenterIfNearTheEdge(e);
     }, { passive: false });
-
-    waitForMediaToLoad(platform).then(() => {
-      moveToCenterIfNearTheEdge();
-      platform.classList.add('infinity-scroll-loaded');
-      toggleControls();
-    });
   };
 
   // set initial states
   const setInitialState = (scrollable, opts) => {
-    if (opts.infinityScrollEnabled) infinityScroll([...$carouselContent]);
+    if (opts.infinityScrollEnabled) {
+      infinityScroll([...carouselContent]);
+      faderLeft.classList.remove('arrow-hidden');
+      faderRight.classList.remove('arrow-hidden');
+      platform.classList.add('left-fader', 'right-fader');
+    } else {
+      initToggleTriggers(container);
+    }
 
     const onIntersect = (entries, observer) => {
       entries.forEach((entry) => {
@@ -206,34 +180,5 @@ export default async function buildCarousel(selector, parent, options = {}) {
     carouselObserver.observe(scrollable);
   };
 
-  adjustFaderGradient(parent, { left: faderLeft, right: faderRight });
   setInitialState(platform, options);
-
-  // Hide controls if the user swipes through the carousel
-  let isScrolling = false;
-  let scrollTimer = -1;
-  platform.addEventListener('scroll', () => {
-    toggleControls();
-    if (scrollTimer !== -1) clearTimeout(scrollTimer);
-    isScrolling = true;
-    scrollTimer = window.setTimeout(() => {
-      isScrolling = false;
-    }, 400);
-  }, { passive: true });
-
-  let lastPos = null;
-  platform.addEventListener('touchstart', (e) => {
-    lastPos = e;
-  }, { passive: true });
-  platform.addEventListener('touchmove', (e) => {
-    if (lastPos && !e.target.classList.contains('carousel-arrow')) {
-      const relativePosX = e.touches[0].pageX - lastPos.touches[0].pageX;
-      if ((relativePosX > 30 || relativePosX < -30) && isScrolling) {
-        hideControls = true;
-      }
-    }
-  }, { passive: true });
-  platform.addEventListener('touched', () => {
-    lastPos = null;
-  }, { passive: true });
 }
