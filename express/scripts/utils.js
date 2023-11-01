@@ -662,27 +662,16 @@ function decorateLinks(main) {
       }
 
       const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
-      const isAdobeOwnedLinks = [
-        'adobesparkpost.app.link',
-        'new.express.adobe.com',
-        'express.adobe.com',
-        'www.adobe.com',
-        'www.stage.adobe.com',
-        'commerce.adobe.com',
-        'commerce-stg.adobe.com',
-        'helpx.adobe.com',
-      ].includes(url.hostname);
 
       if (!isContactLink) {
         // make url relative if needed
         const relative = url.hostname === window.location.hostname;
         const urlPath = `${url.pathname}${url.search}${url.hash}`;
         a.href = relative ? urlPath : `${url.origin}${urlPath}`;
-
-        if (!relative && !isAdobeOwnedLinks) {
-          // open external links in a new tab
-          a.target = '_blank';
-        }
+      }
+      if (a.href.includes('#_blank')) {
+        a.setAttribute('target', '_blank');
+        a.href = a.href.replace('#_blank', '');
       }
       if (a.href.includes('#_dnb')) {
         a.href = a.href.replace('#_dnb', '');
@@ -2478,6 +2467,8 @@ export async function loadArea(area = document) {
     import('../../tools/preview/preview.js');
   }
   await lazy;
+  const linkExclusionPath = '/express/seo/links.json';
+  import('../features/links.js').then((mod) => mod.default(linkExclusionPath, area));
   const { default: delayed } = await import('./delayed.js');
   delayed([createTag, getDevice], 8000);
 }
