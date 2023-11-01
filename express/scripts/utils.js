@@ -579,7 +579,7 @@ export async function decorateBlock(block) {
     // end CCX custom block option class handling
 
     block.classList.add('block');
-
+    block.dataset.block = '';
     block.setAttribute('data-block-name', blockName);
     block.setAttribute('data-block-status', 'initialized');
     const blockWrapper = block.parentElement;
