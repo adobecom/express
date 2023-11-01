@@ -136,17 +136,14 @@ main .carousel-container.controls-hidden .carousel-platform {
 
   main .carousel-container.controls-hidden .carousel-platform {
     scroll-snap-type: x mandatory;
-  }  
- 
+  }
 }
 
-main .carousel-container .carousel-platform .carousel-right-trigger{
-  margin-left: -1px;
-}
 main .carousel-container .carousel-platform .carousel-left-trigger,
 main .carousel-container .carousel-platform .carousel-right-trigger{
   justify-self: stretch;
   align-self:stretch;
+  width: 1px;
 }
 
 main .carousel-container .carousel-platform.left-fader:not(.right-fader){

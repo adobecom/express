@@ -2058,7 +2058,7 @@ main .template-x.horizontal.tabbed .carousel-container .carousel-fader-left {
     font-size: var(--body-font-size-s);
 }
 
-.template-x.horizontal .template:last-of-type .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
+.template-x.horizontal .template:nth-last-of-type(2) .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
     left: unset;
     right: calc(100% + 12px);
 }
