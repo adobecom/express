@@ -280,7 +280,6 @@ async function lazyLoadSearchMarqueeLinklist() {
       }
 
       await updateLinkList(linkListContainer, linkListTemplate, linkListData);
-      searchMarquee.dispatchEvent(new CustomEvent('carouselloaded'));
       linkListContainer.parentElement.classList.add('appear');
       initToggleTriggers(searchMarquee.querySelector('.carousel-container'));
     }
