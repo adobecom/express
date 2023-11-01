@@ -15,7 +15,7 @@ import {
   getLottie,
   lazyLoadLottiePlayer,
   // eslint-disable-next-line import/no-unresolved
-} from '../../../../scripts/scripts.js';
+} from '../../../../scripts/utils.js';
 
 function getMaxButtonWidth() {
   return 540;
