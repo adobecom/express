@@ -22,7 +22,7 @@ const getLinks = async (path) => {
       linkData = json.data;
     }
     fetched = true;
-}
+  }
   return linkData;
 };
 
