@@ -27,7 +27,7 @@ function getDynamicButtonWidth(clientWidth) {
 
 function updateActiveDrawer(clickedButton, isLeftButton, isRightButton, oldActiveButtons) {
   const mobileDrawer = clickedButton.closest('.mobile-drawer');
-  const oldActiveDrawerItem = mobileDrawer?.querySelector(`[data-drawer="${oldActiveButtons[0].textContent}"]`);
+  const oldActiveDrawerItem = mobileDrawer?.querySelector(`[data-drawer="${oldActiveButtons[0]?.textContent}"]`);
   const newActiveDrawerItem = mobileDrawer?.querySelector(`[data-drawer="${clickedButton.textContent}"]`);
   const drawerClasses = ['drawer-item-container-shift-right', 'drawer-item-container-shift-left', 'indicators-transition'];
   if (oldActiveDrawerItem) {
@@ -544,6 +544,7 @@ export default async function decorate($block) {
     const $button = createTag('button');
     const $span = createTag('span');
     $span.textContent = $toggle.textContent.trim();
+    $button.setAttribute('data-ll', `press${$toggle?.textContent?.trim()?.replace(' ', '')}`);
     $button.append($span);
     $block.append($button);
   });
