@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, titleCase } from '../../scripts/utils.js';
+import { createTag, getLocale, titleCase } from '../../scripts/utils.js';
 import { getDataWithContext } from '../../scripts/browse-api-controller.js';
 import buildCarousel from '../shared/carousel.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
@@ -28,6 +28,12 @@ export default async function decorate(block) {
   if (!pills || !pills.length) return;
 
   pills.forEach((pill) => {
+    const locale = getLocale(window.location);
+    const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+    if (pill.value.startsWith(`${urlPrefix}/express/colors/search`)) {
+      return;
+    }
+
     const colorPath = pill.value;
     const colorName = pill.displayValue;
     const buttonContainer = createTag('p', { class: 'button-container' });
@@ -52,6 +58,11 @@ export default async function decorate(block) {
     }
   });
 
-  await buildCarousel('.button-container', block);
+  if (!block.children) return;
+
+  const options = {
+    centerAlign: true,
+  };
+  await buildCarousel('.button-container', block, options);
   block.style.visibility = 'visible';
 }

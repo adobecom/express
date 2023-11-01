@@ -4,16 +4,16 @@ main .section .hero-color-wrapper {
 }
 
 main .hero-color {
+  position: relative;
   max-width: unset;
 }
 
-main .hero-color .content-container .text {
+main .hero-color .svg-container .text {
   display: none;
 }
 
-main .hero-color .content-container {
+main .hero-color .svg-container {
   min-height: 200px;
-  max-width: 1200px;
   margin: auto;
 }
 
@@ -26,12 +26,6 @@ main .hero-color .description-container {
 
 main .hero-color .text-container {
   display: flex;
-  justify-content: center;
-  background-color: white;
-}
-
-main .hero-color .text-container .text {
-  display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin: 15px;
@@ -39,32 +33,28 @@ main .hero-color .text-container .text {
   color: var(--color-black);
 }
 
-main .hero-color .content-container h1,
 main .hero-color .text-container h1 {
-  margin: 0;
-  font-size: var(--heading-font-size-xl);
-  text-align: left;
-}
-
-main .hero-color .content-container h2,
-main .hero-color .text-container h2 {
-  margin: 0;
+  margin: 0 0 16px;
   font-size: var(--heading-font-size-l);
   text-align: left;
 }
 
-main .hero-color .content-container p,
-main .hero-color .text-container p {
+main .hero-color .text-container h2 {
   margin: 0;
+  font-size: var(--heading-font-size-m);
+  text-align: left;
+}
+
+main .hero-color .text-container p {
+  margin: 0 0 32px;
   font-size: var(--body-font-size-l);
 }
 
-main .hero-color .content-container .text .button-container,
-main .hero-color .text-container .text .button-container {
+main .hero-color .text-container .button-container {
   margin: 0;
+  text-align: left;
 }
 
-main .hero-color .content-container .text .button-container .button,
 main .hero-color .text-container .button-container .button {
   margin: 0;
   padding: 12px 23px 14px 23px;
@@ -72,7 +62,7 @@ main .hero-color .text-container .button-container .button {
   font-size: var(--body-font-size-m);
 }
 
-main .hero-color .content-container .color-svg-img {
+main .hero-color .svg-container .color-svg-img {
   height: 100%;
   width: 200%;
   margin: 0 0 0 15px;
@@ -97,21 +87,16 @@ main .hero-color .hidden-svg {
 }
 
 @media screen and (min-width: 900px) {
-  main .hero-color .text-container {
-    display: none;
-  }
-
-  main .hero-color .content-container {
+  main .hero-color .svg-container {
     min-height: 336px;
-    display: flex;
-    gap: 60px;
+    padding-left: 50%;
   }
 
-  main .hero-color .content-container .color-svg {
+  main .hero-color .svg-container .color-svg {
     position: relative;
   }
 
-  main .hero-color .content-container .color-svg-img {
+  main .hero-color .svg-container .color-svg-img {
     margin: 0;
     width: 1424px;
     height: 336px;
@@ -120,15 +105,20 @@ main .hero-color .hidden-svg {
     left: 0;
   }
 
-  main .hero-color .content-container .text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    margin: 20px;
-    text-align: left;
-    min-width: 486px;
-    max-width: 486px;
+  main .hero-color .text-container {
+    position: absolute;
+    max-width: 1200px;
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: unset;
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  main .hero-color .text-container > div {
+    max-width: calc(50% - 24px);
   }
 
   main .hero-color.dark .button,

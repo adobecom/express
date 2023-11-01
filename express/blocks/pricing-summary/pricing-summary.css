@@ -277,7 +277,6 @@ main .pricing-summary .pricing-container .pricing-summary-columns-container .car
     flex-direction: row;
     align-items: stretch;
     gap: 20px;
-    width: auto;
     padding-top: 40px;
   }
 

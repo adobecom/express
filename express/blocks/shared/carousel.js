@@ -16,7 +16,13 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
-export function addIntersectionObservers(parent) {
+function correctCenterAlignment(plat) {
+  if (plat.parentElement.offsetWidth > plat.offsetWidth) plat.parentElement.style.maxWidth = `${plat.offsetWidth}px`;
+}
+
+export function initToggleTriggers(parent) {
+  if (!parent) return;
+
   const platform = parent.querySelector('.carousel-platform');
   const leftControl = parent.querySelector('.carousel-fader-left');
   const rightControl = parent.querySelector('.carousel-fader-right');
@@ -68,22 +74,24 @@ export default async function buildCarousel(selector, parent, options = {}) {
   // Load CSS
   loadCSS('/express/blocks/shared/carousel.css');
   // Build the carousel HTML
-  const $carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
-  const $container = createTag('div', { class: 'carousel-container' });
+  const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
+
+  const container = createTag('div', { class: 'carousel-container' });
   const platform = createTag('div', { class: 'carousel-platform' });
-  platform.append(...$carouselContent);
-  $container.appendChild(platform);
+  platform.append(...carouselContent);
+  container.appendChild(platform);
 
   const faderLeft = createTag('div', { class: 'carousel-fader-left arrow-hidden' });
   const faderRight = createTag('div', { class: 'carousel-fader-right arrow-hidden' });
-  $container.appendChild(faderLeft);
-  $container.appendChild(faderRight);
-  const $arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
-  const $arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
-  faderLeft.append($arrowLeft);
-  faderRight.append($arrowRight);
+  container.appendChild(faderLeft);
+  container.appendChild(faderRight);
 
-  parent.appendChild($container);
+  const arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
+  const arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
+  faderLeft.append(arrowLeft);
+  faderRight.append(arrowRight);
+
+  parent.appendChild(container);
 
   // Scroll the carousel by clicking on the controls
   const moveCarousel = (increment) => {
@@ -99,25 +107,6 @@ export default async function buildCarousel(selector, parent, options = {}) {
     moveCarousel(-increment);
   });
 
-  // set initial position based on options
-  const setInitialPosition = (scrollable, position) => {
-    const onIntersect = (entries, observer) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          if (position === 'left') {
-            moveCarousel(scrollable.scrollWidth);
-          }
-          if (position === 'right') {
-            moveCarousel(-scrollable.scrollWidth);
-          }
-          observer.unobserve(scrollable);
-        }
-      });
-    };
-    const carouselObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
-    carouselObserver.observe(scrollable);
-  };
-
   // Carousel loop functionality (if enabled)
   const stopScrolling = () => { // To prevent safari shakiness
     platform.style.overflowX = 'hidden';
@@ -125,6 +114,7 @@ export default async function buildCarousel(selector, parent, options = {}) {
       platform.style.removeProperty('overflow-x');
     }, 20);
   };
+
   const moveToCenterIfNearTheEdge = (e = null) => {
     // Start at the center and snap back to center if the user scrolls to the edges
     const scrollPos = platform.scrollLeft;
@@ -155,28 +145,40 @@ export default async function buildCarousel(selector, parent, options = {}) {
         }
       });
     };
+
     // Duplicate children to simulate smooth scrolling
     for (let i = 0; i < 4; i += 1) {
       duplicateContent();
     }
+
     platform.addEventListener('scroll', (e) => {
       moveToCenterIfNearTheEdge(e);
     }, { passive: false });
   };
 
-  const initialState = () => {
-    if (options.infinityScrollEnabled) {
-      infinityScroll([...$carouselContent]);
+  // set initial states
+  const setInitialState = (scrollable, opts) => {
+    if (opts.infinityScrollEnabled) {
+      infinityScroll([...carouselContent]);
       faderLeft.classList.remove('arrow-hidden');
       faderRight.classList.remove('arrow-hidden');
       platform.classList.add('left-fader', 'right-fader');
     } else {
-      addIntersectionObservers($container);
+      initToggleTriggers(container);
     }
+
+    const onIntersect = (entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        if (opts.centerAlign) correctCenterAlignment(scrollable);
+        if (opts.startPosition === 'right') moveCarousel(-scrollable.scrollWidth);
+        observer.unobserve(scrollable);
+      });
+    };
+
+    const carouselObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
+    carouselObserver.observe(scrollable);
   };
 
-  initialState();
-  if (options.startPosition) {
-    setInitialPosition(platform, options.startPosition);
-  }
+  setInitialState(platform, options);
 }
