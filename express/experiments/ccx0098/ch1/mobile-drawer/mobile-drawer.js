@@ -91,8 +91,8 @@ function updateActiveTab(clickedButton) {
   setActiveClassAndAccessibility(allButtons, clickedButton.textContent);
 }
 function handleNavScroll(hasInstant, isLeftButton, isRightButton, leftValue, $platform) {
-  // $platform.style.overflowX = 'scroll';
-  // $platform.classList.add('mobile-drawer-nav-scrolling');
+  $platform.style.overflowX = 'scroll';
+  $platform.classList.add('mobile-drawer-nav-scrolling');
   if (hasInstant) {
     $platform.scrollTo({
       left: leftValue,
@@ -104,10 +104,10 @@ function handleNavScroll(hasInstant, isLeftButton, isRightButton, leftValue, $pl
   } else if (isRightButton) {
     $platform.scrollLeft += getDynamicButtonWidth($platform.clientWidth);
   }
-  // setTimeout(() => {
-  //   $platform.style.overflowX = 'hidden';
-  //   $platform.classList.remove('mobile-drawer-nav-scrolling');
-  // }, 300);
+  setTimeout(() => {
+    $platform.style.overflowX = 'hidden';
+    $platform.classList.remove('mobile-drawer-nav-scrolling');
+  }, 300);
 }
 function updateActiveCTAContainers(activeButton) {
   const newActiveCTAContainer = document.getElementById(activeButton?.id?.replace('tab', 'ctas'));
