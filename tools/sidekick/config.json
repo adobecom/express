@@ -38,6 +38,12 @@
       "includePaths": [ "**.docx**" ]
     },
     {
+      "id": "tools",
+      "title": "Tools",
+      "isContainer": true
+    },
+    {
+      "containerId": "tools",
       "id": "qa-guide",
       "title": "QA Guide",
       "event": "qa-guide",
