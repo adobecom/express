@@ -36,7 +36,7 @@ export default function init({
     let qaGuideEl = main.querySelector('.qa-guide.desktop');
     if (audience) qaGuideEl = main.querySelector(`.qa-guide.${audience}`);
 
-    const { default: initQAGuide } = await import('../widgets/qa-guide.js');
+    const { default: initQAGuide } = await import('../features/qa-guide.js');
 
     initQAGuide(qaGuideEl, { createTag });
   };
