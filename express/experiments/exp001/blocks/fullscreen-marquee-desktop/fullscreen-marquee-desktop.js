@@ -37,7 +37,8 @@ function buildContent(content) {
 }
 
 function buildHeading(block, heading) {
-  heading.classList.add('fullscreen-marquee-desktop-heading exp001');
+  heading.classList.add('fullscreen-marquee-desktop-heading');
+  heading.classList.add('exp001');
   return heading;
 }
 
