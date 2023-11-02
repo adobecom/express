@@ -186,7 +186,6 @@ w.marketingtech = {
       ),
     },
     target: checkTesting(),
-    audienceManager: true,
   },
 };
 // w.targetGlobalSettings = w.targetGlobalSettings || {};
