@@ -99,20 +99,21 @@ function resizeSvgOnLoad() {
 }
 
 function resizeSvgOnMediaQueryChange() {
-  const mediaQuery = window.matchMedia('(min-width: 900px)');
-  mediaQuery.addEventListener('change', (event) => {
-    const height = getContentContainerHeight();
-    const svg = document.querySelector('.color-svg-img');
-    if (event.matches) {
-      svg.style.height = `${height}px`;
-    } else {
-      svg.style.height = '200px';
-    }
-  });
+  const mediaQuery = window.matchMedia("(min-width: 900px)");
+  mediaQuery.addEventListener("change", (event) => resizeSvg(event));
+}
+
+export function resizeSvg(event) {
+  const height = getContentContainerHeight();
+  const svg = document.querySelector(".color-svg-img");
+  if (event.matches) {
+    svg.style.height = `${height}px`;
+  } else {
+    svg.style.height = "200px";
+  }
 }
 
 export default function decorate(block) {
-
   const svgContainer = createTag('div', { class: 'svg-container' });
   block.append(svgContainer);
 
