@@ -12,4 +12,35 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-vars */
 
-const { default: decorate } = await import('../../../../express/blocks/list/list.js');
+import sinon from 'sinon';
+import { readFile } from '@web/test-runner-commands';
+import { expect } from '@esm-bundle/chai';
+import { decoratePricing } from '../../../../express/scripts/utils/pricing.js';
+
+const { default: decorate } = await import(
+  '../../../../express/blocks/list/list.js'
+);
+document.body.innerHTML = await readFile({ path: './mocks/body.html' });
+
+describe('List', () => {
+  before(() => {
+    window.isTestEnv = true;
+  });
+
+  it('List exists', () => {
+    const list = document.querySelector('.list');
+    decorate(list);
+    expect(list).to.exist;
+  });
+
+  it('Should have the right elements', () => {
+    expect(document.querySelector('.item')).to.exist;
+    expect(document.querySelector('.item')).to.exist;
+    expect(document.querySelector('.item-text')).to.exist;
+  });
+
+  // it('should handle async code', async function() {
+  //     await decoratePricing();
+  //     expect(document.querySelector('a[title^='{{pricing']')).to.exist;
+  // });
+});
