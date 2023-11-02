@@ -51,30 +51,6 @@ function handlelize(str) {
     .toLowerCase(); // To lowercase
 }
 
-// FIXME: as soon as we verify the rum approach works, this should be retired
-function logSearch(form, formUrl = '/express/search-terms-log') {
-  if (form) {
-    const input = form.querySelector('input');
-    const currentHref = new URL(window.location.href);
-    const params = new URLSearchParams(currentHref.search);
-    fetch(formUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        data: {
-          keyword: input.value,
-          locale: getLocale(window.location),
-          timestamp: Date.now(),
-          audience: document.body.dataset.device,
-          sourcePath: window.location.pathname,
-          previousSearch: params.toString() || 'N/A',
-          sessionId: sessionStorage.getItem('u_scsid'),
-        },
-      }),
-    });
-  }
-}
-
 function trimFormattedFilterText(attr, capitalize) {
   const resultString = attr.substring(1, attr.length - 1).replaceAll('"', '');
 
@@ -801,7 +777,7 @@ function initSearchFunction($toolBar, $stickySearchBarWrapper, generatedSearchBa
 
     $searchForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      logSearch(e.currentTarget);
+      $searchBar.disabled = true;
       sampleRUM('search', {
         source: 'template-list',
         target: $searchBar.value,

@@ -19,8 +19,7 @@ import {
   createOptimizedPicture,
   getLocale,
   getLanguage,
-// eslint-disable-next-line import/no-unresolved
-} from './utils.js';
+} from '../../scripts/utils.js';
 
 /**
  * Builds a block DOM Element from a two dimensional array
@@ -117,13 +116,9 @@ export default async function decorateBlogPage() {
     const $blogHeader = createTag('div', { class: 'blog-header' });
     $div.append($blogHeader);
     const $eyebrow = createTag('div', { class: 'eyebrow' });
-    const tagString = getMetadata('article:tag');
-    // eslint-disable-next-line no-unused-vars
-    const tags = tagString.split(',');
     const locale = getLocale(window.location);
     const urlPrefix = locale === 'us' ? '' : `/${locale}`;
     $eyebrow.innerHTML = `<a href="${urlPrefix}/express/learn/blog/tags/${toClassName(getMetadata('category'))}">${getMetadata('category')}</a>`;
-    // $eyebrow.innerHTML = tags[0];
     $blogHeader.append($eyebrow);
     $blogHeader.append($h1);
     const publicationDate = new Date(date);
@@ -221,3 +216,5 @@ export default async function decorateBlogPage() {
   $main.appendChild(section);
   loadBlock(block);
 }
+
+await decorateBlogPage();

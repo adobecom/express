@@ -19,13 +19,11 @@ const TK_IDS = {
   jp: 'dvg6awq',
 };
 
-let blog;
-
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
  * @param {Object} data additional data for RUM sample
- * @param {integer} forceSampleRate force weight on specific RUM sampling
+ * @param {Number} forceSampleRate force weight on specific RUM sampling
  */
 
 export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
@@ -959,6 +957,7 @@ function decorateHeaderAndFooter() {
 /**
  * Loads a CSS file
  * @param {string} href The path to the CSS file
+ * @param {function} callback a function to run upon successful style loading
  */
 export function loadCSS(href, callback) {
   if (!document.querySelector(`head > link[href="${href}"]`)) {
@@ -1161,6 +1160,34 @@ export const loadScript = (url, type) => new Promise((resolve, reject) => {
   script.addEventListener('error', onScript);
 });
 
+export async function setTemplateTheme() {
+  // todo: remove theme after we move blog to template column in metadata sheet
+  const template = getMetadata('template') || getMetadata('theme');
+  if (!template || template?.toLowerCase() === 'no brand header') return;
+  const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
+  document.body.classList.add(name);
+  await new Promise((resolve) => {
+    loadCSS(`/express/templates/${name}/${name}.css`, resolve);
+  });
+}
+
+export async function loadTemplateScript() {
+  // todo: remove theme after we move blog to template column in metadata sheet
+  const template = getMetadata('template') || getMetadata('theme');
+  if (!template || template?.toLowerCase() === 'no brand header') return;
+  const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
+  await new Promise((resolve) => {
+    (async () => {
+      try {
+        await import(`/express/templates/${name}/${name}.js`);
+      } catch (err) {
+        window.lana.log(`failed to load template module for ${name}`, err);
+      }
+      resolve();
+    })();
+  });
+}
+
 /**
  * fetches the string variables.
  * @returns {object} localized variables
@@ -1232,7 +1259,8 @@ function loadGnav() {
 }
 
 function decoratePageStyle() {
-  if (!blog) {
+  const isBlog = getMetadata('theme') === 'blog' || getMetadata('template') === 'blog';
+  if (!isBlog) {
     const $h1 = document.querySelector('main h1');
     // check if h1 is inside a block
     // eslint-disable-next-line no-lonely-if
@@ -1255,9 +1283,7 @@ function decoratePageStyle() {
         $heroSection.removeAttribute('style');
       }
       if ($heroPicture) {
-        if (!blog) {
-          $heroPicture.classList.add('hero-bg');
-        }
+        $heroPicture.classList.add('hero-bg');
       } else {
         $heroSection.classList.add('hero-noimage');
       }
@@ -1346,25 +1372,6 @@ export function decorateButtons(el = document) {
     }
   });
 }
-
-// function decorateTemplate() {
-//   if (window.location.pathname.includes('/make/')) {
-//     document.body.classList.add('make-page');
-//   }
-//   const year = window.location.pathname.match(/\/20\d\d\//);
-//   if (year) {
-//     document.body.classList.add('blog-page');
-//   }
-// }
-
-// function decorateLegacyLinks() {
-//   const legacy = 'https://blog.adobespark.com/';
-//   document.querySelectorAll(`a[href^="${legacy}"]`).forEach(($a) => {
-//     // eslint-disable-next-line no-console
-//     console.log($a);
-//     $a.href = $a.href.substring(0, $a.href.length - 1).substring(legacy.length - 1);
-//   });
-// }
 
 export function checkTesting() {
   return (getMetadata('testing').toLowerCase() === 'on');
@@ -1785,7 +1792,7 @@ export async function fetchPlainBlockFromFragment(url, blockName) {
 export async function fetchFloatingCta(path) {
   const env = getHelixEnv();
   const dev = new URLSearchParams(window.location.search).get('dev');
-  const { experiment } = window.hlx;
+  const { experiment, experimentParams } = window.hlx;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
   let spreadsheet;
   let floatingBtnData;
@@ -1831,7 +1838,7 @@ export async function fetchFloatingCta(path) {
     spreadsheet = '/express/floating-cta.json?limit=100000';
   }
 
-  if (experimentStatus === 'active') {
+  if (experimentStatus === 'active' || experimentParams) {
     const expSheet = '/express/experiments/floating-cta-experiments.json?limit=100000';
     floatingBtnData = await fetchFloatingBtnData(expSheet);
   }
@@ -1946,27 +1953,6 @@ function splitSections($main) {
 
 export function getDevice() {
   return navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
-}
-
-function setTheme() {
-  let theme = getMetadata('theme');
-  if (!theme && (window.location.pathname.startsWith('/express')
-    || window.location.pathname.startsWith('/education')
-    || window.location.pathname.startsWith('/drafts'))) {
-    // mega nav, suppress brand header
-    theme = 'no-brand-header';
-  }
-  const { body } = document;
-  if (theme) {
-    let themeClass = toClassName(theme);
-    /* backwards compatibility can be removed again */
-    if (themeClass === 'nobrand') themeClass = 'no-desktop-brand-header';
-    body.classList.add(themeClass);
-    if (themeClass === 'blog') {
-      body.classList.add('no-brand-header');
-      blog = true;
-    }
-  }
 }
 
 function decorateLinkedPictures($main) {
@@ -2312,7 +2298,7 @@ function addJapaneseSectionHeaderSizing() {
 
 /**
  * Detects legal copy based on a * or † prefix and applies a smaller font size.
- * @param {HTMLMainElement} main The main element
+ * @param {Element} main The main element
  */
 function decorateLegalCopy(main) {
   const legalCopyPrefixes = ['*', '†'];
@@ -2430,12 +2416,14 @@ export async function loadArea(area = document) {
 
   window.hlx = window.hlx || {};
   const params = new URLSearchParams(window.location.search);
+  const experimentParams = params.get('experiment');
   ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
     window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
   });
+  window.hlx.experimentParams = experimentParams;
   window.hlx.init = true;
 
-  setTheme();
+  await setTemplateTheme();
   if (main) {
     const language = getLanguage(getLocale(window.location));
     const langSplits = language.split('-');
@@ -2478,16 +2466,15 @@ export async function loadArea(area = document) {
       }
     }
   }
-
-  if (blog) await loadAndExecute('/express/styles/blog.css', '/express/scripts/blog.js');
+  await loadTemplateScript();
   await loadSections(sections, isDoc);
-
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
 
   const lazy = loadLazy(main);
 
-  if (window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) {
+  const buttonOff = params.get('button') === 'off';
+  if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
     import('../../tools/preview/preview.js');
   }
   await lazy;

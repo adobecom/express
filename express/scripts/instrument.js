@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* global _satellite __satelliteLoadedCallback alloy */
+/* global _satellite */
 
 import {
   loadScript,
@@ -186,7 +186,6 @@ w.marketingtech = {
       ),
     },
     target: checkTesting(),
-    audienceManager: true,
   },
 };
 // w.targetGlobalSettings = w.targetGlobalSettings || {};
@@ -555,6 +554,33 @@ const martechLoadedCB = () => {
       adobeEventName = appendLinkText(adobeEventName, a);
     }
 
+    // clicks using [data-lh and data-ll]
+    let trackingHeader = a.closest('[data-lh]');
+    if (trackingHeader || a.dataset.lh) {
+      adobeEventName = 'adobe.com:express';
+      let headerString = '';
+      while (trackingHeader) {
+        headerString = `:${textToName(trackingHeader.dataset.lh.trim())}${headerString}`;
+        trackingHeader = trackingHeader.parentNode.closest('[data-lh]');
+      }
+      adobeEventName += headerString;
+      if (a.dataset.ll) {
+        adobeEventName += `:${textToName(a.dataset.ll.trim())}`;
+      } else {
+        adobeEventName += `:${textToName(a.innerText.trim())}`;
+      }
+    }
+    if (window.hlx?.experiment) {
+      let prefix = '';
+      if (window.hlx.experiment?.id) prefix = `${window.hlx.experiment.id}:`;
+      if (window.hlx.experiment?.selectedVariant) {
+        let variant = window.hlx.experiment.selectedVariant;
+        if (variant.includes('-')) [, variant] = variant.split('-');
+        prefix += `${variant}:`;
+      }
+      adobeEventName = prefix + adobeEventName;
+    }
+
     _satellite.track('event', {
       xdm: {},
       data: {
@@ -577,10 +603,12 @@ const martechLoadedCB = () => {
             },
             ...(hemingwayAsset
               ? {
-                hemingway: {
-                  assetId: hemingwayAssetId,
-                  assetPath: hemingwayAssetPath,
-                  assetPosition: hemingwayAssetPosition,
+                asset: {
+                  assetInfo: {
+                    assetId: hemingwayAssetId,
+                    assetPath: hemingwayAssetPath,
+                    assetPosition: hemingwayAssetPosition,
+                  },
                 },
               }
               : {}),
@@ -686,7 +714,7 @@ const martechLoadedCB = () => {
 
     // for tracking all of the links
     d.addEventListener('click', (event) => {
-      if (event.target.tagName === 'A') {
+      if (event.target.tagName === 'A' || event.target.dataset.ll?.length) {
         trackButtonClick(event.target);
       }
     });
@@ -943,9 +971,11 @@ const martechLoadedCB = () => {
                     eventName: 'assetView',
                   },
                 },
-                hemingway: {
-                  assetId: evt.assetId,
-                  assetPath: evt.assetPath,
+                asset: {
+                  assetInfo: {
+                    assetId: evt.assetId,
+                    assetPath: evt.assetPath,
+                  },
                 },
               },
             },
@@ -958,88 +988,10 @@ const martechLoadedCB = () => {
   decorateAnalyticsEvents();
   initHemingway();
 
-  const ENABLE_PRICING_MODAL_AUDIENCE = 'enablePricingModal';
-  const RETURNING_VISITOR_SEGMENT_ID = 23153796;
-
-  const QUICK_ACTION_SEGMENTS = [
-    [24241150, 'enableRemoveBackgroundRating'],
-    [24793469, 'enableConvertToGifRating'],
-    [24793470, 'enableConvertToJpgRating'],
-    [24793471, 'enableConvertToMp4Rating'],
-    [24793472, 'enableConvertToPngRating'],
-    [24793473, 'enableConvertToSvgRating'],
-    [24793474, 'enableCropImageRating'],
-    [24793475, 'enableCropVideoRating'],
-    [24793476, 'enableLogoMakerRating'],
-    [24793477, 'enableMergeVideoRating'],
-    [24793478, 'enableQrGeneratorRating'],
-    [24793479, 'enableResizeImageRating'],
-    [24793480, 'enableChangeSpeedRating'],
-    [24793481, 'enableTrimVideoRating'],
-    [24793483, 'enableResizeVideoRating'],
-    [24793488, 'enableReverseVideoRating'],
-  ];
-
+  // TODO: remove after deprecating blocks that still rely on it (pricing-modal)
   BlockMediator.set('audiences', []);
+  // TODO: remove after refactoring blocks that still rely on it (rating)
   BlockMediator.set('segments', []);
-
-  function getAudiences() {
-    const getSegments = (ecid) => {
-      if (ecid) {
-        w.setAudienceManagerSegments = (json) => {
-          if (json && json.segments && json.segments.includes(RETURNING_VISITOR_SEGMENT_ID)) {
-            const audiences = BlockMediator.get('audiences');
-            const segments = BlockMediator.get('segments');
-            audiences.push(ENABLE_PRICING_MODAL_AUDIENCE);
-            segments.push(RETURNING_VISITOR_SEGMENT_ID);
-
-            _satellite.track('event', {
-              xdm: {},
-              data: {
-                eventType: 'web.webinteraction.linkClicks',
-                web: {
-                  webInteraction: {
-                    name: 'pricingModalUserInSegment',
-                    linkClicks: {
-                      value: 1,
-                    },
-                    type: 'other',
-                  },
-                },
-                _adobe_corpnew: {
-                  digitalData: {
-                    primaryEvent: {
-                      eventInfo: {
-                        eventName: 'pricingModalUserInSegment',
-                      },
-                    },
-                  },
-                },
-              },
-            });
-          }
-
-          QUICK_ACTION_SEGMENTS.forEach((QUICK_ACTION_SEGMENT) => {
-            if (json && json.segments && json.segments.includes(QUICK_ACTION_SEGMENT[0])) {
-              const audiences = BlockMediator.get('audiences');
-              const segments = BlockMediator.get('segments');
-              audiences.push(QUICK_ACTION_SEGMENT[1]);
-              segments.push(QUICK_ACTION_SEGMENT[0]);
-            }
-          });
-
-          document.dispatchEvent(new Event('context_loaded'));
-        };
-        // TODO: What the heck is this?  This needs to be behind one trust and cmp
-        loadScript(`https://adobe.demdex.net/event?d_dst=1&d_rtbd=json&d_cb=setAudienceManagerSegments&d_cts=2&d_mid=${ecid}`);
-      }
-    };
-
-    alloy('getIdentity')
-      .then((data) => getSegments(data && data.identity ? data.identity.ECID : null));
-  }
-
-  __satelliteLoadedCallback(getAudiences);
 };
 
 loadScript(martechURL).then(martechLoadedCB);
