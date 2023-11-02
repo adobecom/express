@@ -12,6 +12,7 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-vars */
 
+import sinon from 'sinon';
 import { readFile, setViewport } from "@web/test-runner-commands";
 import { expect } from "@esm-bundle/chai";
 
@@ -45,15 +46,35 @@ describe("Hero Color", () => {
     expect(secondaryColor).to.exist;
   });
 
-  it("Should resize svg on load", (done) => {
-    const svg = document.querySelector(".color-svg-img");
-    // setTimeout is needed because the method has a setInterval of 50ms
-    setTimeout(() => {
-      expect(Array.from(svg.classList)).to.not.contain("hidden-svg");
-      expect(svg.style.height).to.equal("154px");
-      done();
-    }, 50);
-  });
+//   it("Should resize svg on load", (done) => {
+//     const svg = document.querySelector(".color-svg-img");
+//     // setTimeout is needed because the method has a setInterval of 50ms
+//     setTimeout(() => {
+//       expect(Array.from(svg.classList)).to.not.contain("hidden-svg");
+//       expect(svg.style.height).to.equal("154px");
+//       done();
+//     }, 50);
+//   });
+
+
+it("Should resize svg on load", async () => {
+      const clock = sinon.useFakeTimers({
+        toFake: ['setInterval', 'clearInterval'],
+        shouldAdvanceTime: true,
+    });
+
+    const svgMock = document.createElement('div');
+    svgMock.classList.add('hidden-svg');
+    svgMock.classList.add('color-svg-img');
+    document.body.appendChild(svgMock);
+      const svg = document.querySelector(".color-svg-img");
+
+        expect(Array.from(svg.classList)).to.not.contain("hidden-svg");
+        expect(svg.style.height).to.equal("154px");
+      clock.tick(50);
+  
+      clock.restore();
+});
 
   it("Svg height should be changed after screen is resized", () => {
     const svg = document.querySelector(".color-svg-img");
