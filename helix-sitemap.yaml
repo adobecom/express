@@ -242,3 +242,4 @@ colors:
         destination: /nl/express/colors/sitemap.xml
         hreflang: nl
         alternate: /nl/{path}
+        
