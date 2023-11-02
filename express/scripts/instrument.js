@@ -76,9 +76,8 @@ async function trackBranchParameters($links) {
 
       if (templateSearchTag
         && placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
-        urlParams.set('q', 'templates');
         urlParams.set('category', 'templates');
-        urlParams.set('searchCategory', templateSearchTag);
+        urlParams.set('searchCategory', `templates,${templateSearchTag}`);
       }
 
       if (referrer) {
