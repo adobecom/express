@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { loadCSS } from '../../utils';
+import { loadCSS } from '../../utils.js';
 
 const QA_LOG_FILE_LOCATION = '/express/qa-log';
 
