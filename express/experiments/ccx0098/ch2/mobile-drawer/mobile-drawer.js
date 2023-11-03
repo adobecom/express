@@ -437,7 +437,10 @@ function toggleDrawer($wrapper, $lottie, open = true, $body) {
   }
   $wrapper.style = '';
   if ($wrapper.classList.contains('initial-open')) {
-    $wrapper.querySelectorAll('.mobile-drawer-wrapper a[href*=".mp4"]').forEach((link) => transformLinkToAnimation(link));
+    $wrapper.querySelectorAll('.mobile-drawer-wrapper a[href*=".mp4"]').forEach((link) => {
+      console.log('link', link);
+      transformLinkToAnimation(link);
+    });
     $wrapper.classList.remove('initial-open');
   }
 }
