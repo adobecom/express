@@ -14,6 +14,7 @@ import {
   createTag,
   getLottie,
   lazyLoadLottiePlayer,
+  transformLinkToAnimation,
   // eslint-disable-next-line import/no-unresolved
 } from '../../../../scripts/utils.js';
 
