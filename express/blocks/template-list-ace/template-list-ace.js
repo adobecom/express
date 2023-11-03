@@ -11,7 +11,6 @@
  */
 
 import {
-  addSearchQueryToHref,
   createOptimizedPicture,
   createTag,
   fetchPlaceholders,
@@ -150,7 +149,7 @@ function populateTemplates($block, templates) {
       const $link = $linkContainer.querySelector(':scope a');
       if ($link) {
         const $a = createTag('a', {
-          href: $link.href ? addSearchQueryToHref($link.href) : '#',
+          href: $link.href || '#',
           target: '_blank',
         });
 

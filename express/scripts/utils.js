@@ -1291,27 +1291,6 @@ function decoratePageStyle() {
   }
 }
 
-export function addSearchQueryToHref(href) {
-  const isCreateSeoPage = window.location.pathname.includes('/express/create/');
-  const isDiscoverSeoPage = window.location.pathname.includes('/express/discover/');
-  const isPostEditorLink = postEditorLinksAllowList.some((editorLink) => href.includes(editorLink));
-
-  if (!(isPostEditorLink && (isCreateSeoPage || isDiscoverSeoPage))) {
-    return href;
-  }
-
-  const templateSearchTag = getMetadata('short-title');
-  const url = new URL(href);
-  const params = url.searchParams;
-
-  if (templateSearchTag) {
-    params.set('search', templateSearchTag);
-  }
-  url.search = params.toString();
-
-  return url.toString();
-}
-
 /**
  * Button style applicator function
  * @param {Object} el the container of the buttons to be decorated
@@ -1327,7 +1306,6 @@ export function decorateButtons(el = document) {
       // propagates to buttons.
       $a.innerHTML = $a.innerHTML.replaceAll('<u>', '').replaceAll('</u>', '');
     }
-    $a.href = addSearchQueryToHref($a.href);
     $a.title = $a.title || linkText;
     const $block = $a.closest('div.section > div > div');
     const { hash } = new URL($a.href);
