@@ -98,19 +98,19 @@ function resizeSvgOnLoad() {
   }, 50);
 }
 
+function resizeSvgOnMediaQueryChange() {
+  const mediaQuery = window.matchMedia("(min-width: 900px)");
+  mediaQuery.addEventListener("change", (event) => resizeSvg(event));
+}
+
 export function resizeSvg(event) {
   const height = getContentContainerHeight();
-  const svg = document.querySelector('.color-svg-img');
+  const svg = document.querySelector(".color-svg-img");
   if (event.matches) {
     svg.style.height = `${height}px`;
   } else {
-    svg.style.height = '200px';
+    svg.style.height = "200px";
   }
-}
-
-function resizeSvgOnMediaQueryChange() {
-  const mediaQuery = window.matchMedia('(min-width: 900px)');
-  mediaQuery.addEventListener('change', (event) => resizeSvg(event));
 }
 
 export default function decorate(block) {
