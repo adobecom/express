@@ -13,13 +13,13 @@
 import {
   loadScript,
   getLocale,
-  createTag,
   getLanguage,
   getHelixEnv,
   sampleRUM,
   getCookie,
   getMetadata,
   fetchPlaceholders,
+  loadCSS,
 // eslint-disable-next-line import/no-unresolved
 } from './utils.js';
 
@@ -79,50 +79,13 @@ async function loadFEDS() {
   const locale = getLocale(window.location);
 
   async function showRegionPicker() {
-    const $body = document.body;
-    const regionpath = locale === 'us' ? '/uk/' : `/${locale}/`;
-    const host = window.location.hostname === 'localhost' ? 'https://www.adobe.com' : '';
-    const url = `${host}${regionpath}`;
-    const resp = await fetch(url);
-    const html = await resp.text();
-    const $div = createTag('div');
-    $div.innerHTML = html;
-    const $regionNav = $div.querySelector('nav.language-Navigation');
-    if (!$regionNav) {
-      return;
-    }
-    const $regionPicker = createTag('div', { id: 'region-picker' });
-    $body.appendChild($regionPicker);
-    $regionPicker.appendChild($regionNav);
-    $regionNav.appendChild(createTag('div', { class: 'close' }));
-    $regionPicker.addEventListener('click', (event) => {
-      if (event.target === $regionPicker || event.target === $regionNav) {
-        $regionPicker.remove();
-      }
-    });
-    $regionPicker.querySelectorAll('li a').forEach(($a) => {
-      $a.addEventListener('click', async (event) => {
-        const pathSplits = new URL($a.href).pathname.split('/');
-        const prefix = pathSplits[1] ? `/${pathSplits[1]}` : '';
-        const destLocale = pathSplits[1] ? `${pathSplits[1]}` : 'us';
-        const off = locale !== 'us' ? locale.length + 1 : 0;
-        const gPath = window.location.pathname.substr(off);
-        let domain = '';
-        if (window.location.hostname.endsWith('.adobe.com')) domain = ' domain=adobe.com;';
-        const cookieValue = `international=${destLocale};${domain} path=/`;
-        // eslint-disable-next-line no-console
-        console.log(`setting international based on language switch to: ${cookieValue}`);
-        document.cookie = cookieValue;
-        event.preventDefault();
-        window.location.href = `${prefix}${gPath}`;
-      });
-    });
-    // focus link of current region
-    const lang = getLanguage(getLocale(new URL(window.location.href))).toLowerCase();
-    const currentRegion = $regionPicker.querySelector(`li a[lang="${lang}"]`);
-    if (currentRegion) {
-      currentRegion.focus();
-    }
+    const { getModal } = await import('../blocks/modal/modal.js');
+    const details = {
+      path: '/express/fragments/regions',
+      id: 'langnav',
+    };
+    loadCSS('/express/blocks/modal/modal.css');
+    return getModal(details);
   }
 
   function handleConsentSettings() {
