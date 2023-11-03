@@ -18,7 +18,6 @@ import {
   getLottie,
   getMobileOperatingSystem,
   createTag,
-  // transformLinkToAnimation,
 } from '../../../../scripts/utils.js';
 
 function createIndicators(payload, carousel) {
