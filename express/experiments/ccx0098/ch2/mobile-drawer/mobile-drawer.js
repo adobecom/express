@@ -534,7 +534,7 @@ function initSwipeAction($mobileDrawer) {
   });
 }
 export default async function decorate($block) {
-  const listViewClass = $block.classList.contains('list-view') ? ' has-list list-view initial-load' : '';
+  const listViewClass = $block.classList.contains('list-view') ? ' has-list list-view initial-load initial-open' : '';
   const $main = document.querySelector('main');
   const $sections = $main.querySelectorAll('[data-drawer]');
   const $toggles = $block.querySelector('ul');
