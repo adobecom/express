@@ -14,6 +14,7 @@ import {
   createTag,
   getLottie,
   lazyLoadLottiePlayer,
+  transformLinkToAnimation,
   // eslint-disable-next-line import/no-unresolved
 } from '../../../../scripts/utils.js';
 
@@ -319,8 +320,8 @@ function createMobileDrawerViewToggleContainer($mobileDrawer, hasListView) {
 }
 
 function createMobileDrawer($block, $sections, $topTab, listViewClass) {
-  const $mobileDrawerWrapper = createTag('div', { class: `mobile-drawer-wrapper${listViewClass}` });
-  const $mobileDrawer = createTag('div', { class: `mobile-drawer${listViewClass}` });
+  const $mobileDrawerWrapper = createTag('div', { class: `mobile-drawer-wrapper${listViewClass} initial-open`});
+  const $mobileDrawer = createTag('div', { class: `mobile-drawer${listViewClass}`});
   $mobileDrawer.setAttribute('data-block-name', 'mobile-drawer');
   $mobileDrawer.setAttribute('data-block-status', 'loaded');
   const $mobileDrawerNotch = createTag('a', { class: 'mobile-drawer-notch' });
@@ -436,6 +437,10 @@ function toggleDrawer($wrapper, $lottie, open = true, $body) {
     $wrapper.querySelector('.mobile-drawer-items-container')?.setAttribute('aria-hidden', true);
   }
   $wrapper.style = '';
+  if ($wrapper.classList.contains('initial-open')) {
+    $wrapper.querySelectorAll('a[href*=".mp4"]').forEach((link) => transformLinkToAnimation(link));
+    $wrapper.classList.remove('initial-open');
+  }
 }
 function handleDraggableEvents(e, $wrapper, $lottie, $body) {
   e.preventDefault();
