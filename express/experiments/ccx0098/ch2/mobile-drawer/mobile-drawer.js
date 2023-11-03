@@ -436,6 +436,10 @@ function toggleDrawer($wrapper, $lottie, open = true, $body) {
     $wrapper.querySelector('.mobile-drawer-items-container')?.setAttribute('aria-hidden', true);
   }
   $wrapper.style = '';
+  if ($wrapper.classList.contains('initial-open')) {
+    $wrapper.querySelectorAll('.mobile-drawer-wrapper a[href*=".mp4"]').forEach((link) => transformLinkToAnimation(link));
+    $wrapper.classList.remove('initial-open');
+  }
 }
 function handleDraggableEvents(e, $wrapper, $lottie, $body) {
   e.preventDefault();

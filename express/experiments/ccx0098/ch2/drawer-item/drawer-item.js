@@ -18,7 +18,6 @@ import {
   getLottie,
   getMobileOperatingSystem,
   createTag,
-  transformLinkToAnimation,
 } from '../../../../scripts/utils.js';
 
 function createIndicators(payload, carousel) {
@@ -286,7 +285,6 @@ function decorateAnimationsViewMedia(payload) {
     const animationLinks = payload.drawerItemContainer.querySelectorAll('a');
     animationLinks.forEach((link, index) => {
       if (link?.href?.includes('.mp4')) {
-        transformLinkToAnimation(link);
         if (index === 0) link.classList.add('drawer-swipeable-right');
         if (index === animationLinks.length - 1) link.classList.add('drawer-swipeable-left');
       }
