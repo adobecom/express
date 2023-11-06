@@ -16,12 +16,21 @@ import { getLocale } from '../../scripts/utils.js';
 function handleEvent(prefix, link) {
   document.cookie = `international=${prefix};path=/`;
   sessionStorage.setItem('international', prefix);
-  fetch(link.href, { method: 'HEAD' }).then((resp) => {
-    if (!resp.ok) throw new Error('request failed');
-    window.location.assign(link.href);
-  }).catch(() => {
-    const prefixUrl = prefix ? `/${prefix}` : '';
-    window.location.assign(`${prefixUrl}/`);
+  const fetchUrl = (url) => fetch(url, { method: 'HEAD' })
+    .then((response) => {
+      if (!response.ok) throw new Error('request failed');
+      window.location.assign(url);
+    });
+
+  fetchUrl(link.href, { method: 'HEAD' }).catch(() => {
+    if (prefix === 'uk' || prefix === 'in') {
+      fetchUrl(link.href.replace(`/${prefix}/`, '/')).catch(() => {
+        window.location.assign('/');
+      });
+    } else {
+      const prefixUrl = prefix ? `/${prefix}` : '';
+      window.location.assign(`${prefixUrl}/`);
+    }
   });
 }
 
