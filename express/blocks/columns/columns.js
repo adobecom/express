@@ -304,7 +304,7 @@ export default async function decorate(block) {
                 const referrer = div.className || div.tagName;
                 const targetEl = referrer === 'PICTURE' ? div.querySelector('img') : div;
                 elementsMinHeight[referrer] = Math.max(
-                  elementsMinHeight[referrer] || 0,
+                  elementsMinHeight[referrer],
                   targetEl.offsetHeight,
                 );
               });
