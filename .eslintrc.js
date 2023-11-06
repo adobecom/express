@@ -25,6 +25,7 @@ module.exports = {
       js: 'always',
     }],
     'no-unused-expressions': 0,
+    'header/header': 0,
   },
   settings: {
     'import/resolver': {
