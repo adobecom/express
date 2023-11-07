@@ -384,3 +384,9 @@ main .video-overlay .close::after {
   border-color: red !important;
   border-width: 3px;
 }
+
+/* temp solution until feds gnav support localized logo text */
+#feds-header li.feds-breadcrumbs-element.feds-hideOnMobile::before {
+  content: '';
+  padding: unset;
+}

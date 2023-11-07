@@ -175,14 +175,18 @@ async function loadFEDS() {
     const secondPathSegment = pathSegments[1].toLowerCase();
     const pagesShortName = getMetadata('short-title');
     const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
+    // eslint-disable-next-line dot-notation
+    const homeText = placeholders['express'];
 
-    if (!pagesShortName || pathSegments.length <= 2 || !replacedCategory) return null;
+    if (!pagesShortName || pathSegments.length <= 2 || !replacedCategory || !homeText) return null;
 
+    const firstBreadCrumb = buildBreadCrumb('express/', homeText, localePath);
+    const breadCrumbList = [firstBreadCrumb];
     const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
-    const breadCrumbList = [secondBreadCrumb];
+    breadCrumbList.push(secondBreadCrumb);
 
     if (pathSegments.length >= 3) {
-      const thirdBreadCrumb = buildBreadCrumb(pagesShortName, pagesShortName, secondBreadCrumb.url);
+      const thirdBreadCrumb = buildBreadCrumb('', pagesShortName, secondBreadCrumb.url);
       breadCrumbList.push(thirdBreadCrumb);
     }
     return breadCrumbList;
@@ -222,7 +226,7 @@ async function loadFEDS() {
       }
       : {},
     breadcrumbs: {
-      showLogo: true,
+      showLogo: false,
       links: await buildBreadCrumbArray(),
     },
   };
