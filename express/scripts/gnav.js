@@ -173,16 +173,10 @@ async function loadFEDS() {
       .filter((e) => e !== locale);
     const localePath = locale === 'us' ? '' : `/${locale}`;
     const secondPathSegment = pathSegments[1].toLowerCase();
-    const pagesShortNameElement = document.head.querySelector('meta[name="short-title"]');
-    const pagesShortName = pagesShortNameElement?.getAttribute('content') ?? null;
+    const pagesShortName = getMetadata('short-title');
     const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
 
-    if (!pagesShortName
-      || pathSegments.length <= 2
-      || !replacedCategory
-      || locale !== 'us') { // Remove this line once locale translations are complete
-      return null;
-    }
+    if (!pagesShortName || pathSegments.length <= 2 || !replacedCategory) return null;
 
     const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
     const breadCrumbList = [secondBreadCrumb];
