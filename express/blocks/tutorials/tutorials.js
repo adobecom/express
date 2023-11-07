@@ -14,20 +14,19 @@ import {
   createTag,
   toClassName,
   getIconElement,
-// eslint-disable-next-line import/no-unresolved
+  // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
-import {
-  displayVideoModal,
-  hideVideoModal,
-} from '../shared/video.js';
+import { displayVideoModal, hideVideoModal } from '../shared/video.js';
 
 function createTutorialCard(title, url, time, $picture) {
   const $card = createTag('a', { class: 'tutorial-card', title, tabindex: 0 });
   const $cardTop = createTag('div', { class: 'tutorial-card-top' });
   $cardTop.innerHTML = `<div class="tutorial-card-overlay"><div class="tutorial-card-play"></div>
   <div class="tutorial-card-duration">${time}</div></div>`;
-  $cardTop.querySelector(':scope .tutorial-card-play').appendChild(getIconElement('play', 44));
+  $cardTop
+    .querySelector(':scope .tutorial-card-play')
+    .appendChild(getIconElement('play', 44));
   $cardTop.prepend($picture);
   const $cardBottom = createTag('div', { class: 'tutorial-card-text' });
   $cardBottom.innerHTML = `<h3>${title}</h3>`;
@@ -43,7 +42,15 @@ function createTutorialCard(title, url, time, $picture) {
   $card.appendChild($cardBottom);
   const linksPopulated = new CustomEvent('linkspopulated', { detail: [$card] });
   document.dispatchEvent(linksPopulated);
-  return ($card);
+  return $card;
+}
+
+export function handlePopstate(state) {
+  hideVideoModal();
+  const { url, title } = state || {};
+  if (url) {
+    displayVideoModal(url, title);
+  }
 }
 
 function decorateTutorials($block) {
@@ -63,13 +70,7 @@ function decorateTutorials($block) {
     }
   });
   // handle history events
-  window.addEventListener('popstate', ({ state }) => {
-    hideVideoModal();
-    const { url, title } = state || {};
-    if (url) {
-      displayVideoModal(url, title);
-    }
-  });
+  window.addEventListener('popstate', ({ state }) => handlePopstate(state));
 }
 
 export default function decorate($block) {
