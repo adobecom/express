@@ -137,6 +137,7 @@ function buildPlans(plansElement) {
 async function decorateCard(block, cardClass = '') {
   const cardClassName = `puf-card ${cardClass}`.trim();
   const cardContainer = createTag('div', { class: 'puf-card-container' });
+  const cardBorder = createTag('div', { class: 'puf-card-border' });
   const card = createTag('div', { class: cardClassName });
   const cardBanner = block.children[0].children[0];
   const cardTop = block.children[1].children[0];
@@ -217,7 +218,9 @@ async function decorateCard(block, cardClass = '') {
     cardAdditionalContext.remove();
   }
 
-  cardContainer.append(card);
+  // cardContainer.append(card);
+  cardContainer.append(cardBorder);
+  cardBorder.append(card);
 
   if (listItems) {
     listItems.forEach((listItem) => {
@@ -245,11 +248,11 @@ function updatePUFCarousel(block) {
       if (index === 0) {
         carouselContainer.classList.add('slide-1-selected');
         carouselContainer.classList.remove('slide-2-selected');
-        carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
+        // carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
       } else {
         carouselContainer.classList.remove('slide-1-selected');
         carouselContainer.classList.add('slide-2-selected');
-        carouselContainer.style.minHeight = `${rightCard.clientHeight + 110}px`;
+        // carouselContainer.style.minHeight = `${rightCard.clientHeight + 110}px`;
       }
     };
 

@@ -1,25 +1,11 @@
-main .puf-container > div {
+main .puf-container>div {
     max-width: none;
 }
 
-main .puf.block .carousel-platform {
-    align-items: flex-start;
-}
-
-main .puf.block .carousel-container {
+main .block.puf .carousel-container {
     overflow: visible;
     transition: max-height 0.3s, min-height 0.3s;
     max-width: 600px;
-}
-
-main .puf.block .carousel-container .carousel-fader-left,
-main .puf.block .carousel-container .carousel-fader-right {
-    align-items: flex-start;
-}
-
-main .puf.block .carousel-container a.button.carousel-arrow {
-    margin-top: 50vh;
-    position: sticky;
 }
 
 main .block.puf {
@@ -133,15 +119,15 @@ main .block.puf .puf-card .puf-card-top .puf-card-plans {
     margin: 0 auto;
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-plans > div {
+main .block.puf .puf-card .puf-card-top .puf-card-plans>div {
     color: var(--color-info-accent);
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-plans > div span {
+main .block.puf .puf-card .puf-card-top .puf-card-plans>div span {
     color: var(--color-gray-800);
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-plans > div.strong span {
+main .block.puf .puf-card .puf-card-top .puf-card-plans>div.strong span {
     -webkit-text-stroke-width: 0.6px;
     -webkit-text-stroke-color: var(--color-gray-800);
 }
@@ -187,15 +173,15 @@ main .block.puf .puf-card .puf-card-top .puf-card-slider::before {
     border-radius: 50%;
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-switch input:checked + .puf-card-slider {
+main .block.puf .puf-card .puf-card-top .puf-card-switch input:checked+.puf-card-slider {
     background-color: var(--color-info-accent);
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-switch input:focus + .puf-card-slider {
+main .block.puf .puf-card .puf-card-top .puf-card-switch input:focus+.puf-card-slider {
     box-shadow: 0 0 1px #2196f3;
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-switch input:checked + .puf-card-slider:before {
+main .block.puf .puf-card .puf-card-top .puf-card-switch input:checked+.puf-card-slider:before {
     transform: translateX(26px);
 }
 
@@ -235,10 +221,6 @@ main .block.puf .puf-card .puf-card-bottom h6 {
     margin: 0;
 }
 
-main .puf .puf-right {
-    width: 375px;
-}
-
 main .block.puf .puf-card .puf-sup {
     font-size: 0.5em;
 }
@@ -247,7 +229,7 @@ main .block.puf .puf-card .puf-text-and-sup-wrapper {
     display: inline;
 }
 
-main .block.puf .puf-card-banner.recommended ~ .puf-card-bottom .puf-highlighted-text,
+main .block.puf .puf-card-banner.recommended~.puf-card-bottom .puf-highlighted-text,
 main .block.puf .puf-highlighted-text {
     background-color: var(--color-info-accent-light);
     width: 100%;
@@ -292,29 +274,22 @@ main .block.puf .puf-card-banner.recommended .banner-text {
     margin: 0 8px;
 }
 
-main .block.puf.one-col .puf-card-container:not(:has(.recommended)) {
-    border: 1px #e5e5e5 solid;
+main .block.puf .puf-card-container .puf-card-border {
     border-radius: 20px;
-}
-
-main .block.puf.two-col .puf-card-container:not(:has(.recommended)) {
-    flex: 1;
-    align-self: stretch;
-    border-top: 1px #e5e5e5 solid;
-    border-left: 1px #e5e5e5 solid;
-    border-bottom: 1px #e5e5e5 solid;
-    margin: 70px -16px 0 0;
-    padding: 0 0 8px 0;
-    border-radius: 20px 0 0 20px;
-}
-
-main .block.puf .puf-card-container:has(.recommended) {
-    background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
-    box-shadow: 0 0 24px #00000029;
     padding: 48px 8px 8px 8px;
     margin-top: 20px;
     height: auto;
     z-index: 0;
+}
+
+main .block.puf .puf-card-container .puf-card-border:has(.recommended) {
+    background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
+    box-shadow: 0 0 24px #00000029;
+}
+
+main .block.puf.two-col .puf-card-container .puf-card {
+    border: 1px #e5e5e5 solid;
+    border-radius: 20px;
 }
 
 main .block.puf .puf-card .puf-card-banner {
@@ -336,30 +311,142 @@ main .block.puf .puf-card .puf-card-banner a {
     text-decoration: underline;
 }
 
+main .carousel-container .carousel-platform {
+    position: relative;
+}
+
+main .carousel-container .carousel-platform .carousel-left-trigger,
+main .carousel-container .carousel-platform .carousel-right-trigger {
+    align-self: stretch;
+    width: 1px;
+}
+
+main .carousel-container .carousel-platform .carousel-left-trigger {
+    left: 0;
+}
+
+main .carousel-container .carousel-platform .carousel-right-trigger {
+    right: 0;
+}
+
+main .section.puf-container {
+    padding-bottom: 0;
+}
+
+main .block.puf .carousel-container {
+    position: relative;
+}
+
+main .block.puf .puf-card .puf-card-top .puf-card-plans {
+    margin-top: 16px;
+}
+
+main .block.puf .carousel-platform {
+    gap: 0px;
+    max-height: unset;
+    height: 100%;
+    min-height: 100%;
+}
+
+main .block.puf .puf-card .puf-card-bottom p {
+    margin-bottom: 24px;
+}
+
+main .block.puf .carousel-container .carousel-platform .puf-card-container {
+    width: calc(100% - 2px);
+}
+
+main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card {
+    max-width: 325px;
+}
+
+main .block.puf .puf-card-banner.recommended~.puf-card-bottom .puf-highlighted-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+main .block.puf.two-col .puf-card-container {
+    align-self: start;
+}
+
+main .carousel-container .carousel-fader-left,
+main .carousel-container .carousel-fader-right {
+    margin-top: 25%;
+    max-height: 1400px;
+}
+
+main .carousel-container .carousel-fader-left a.button.carousel-arrow,
+main .carousel-container .carousel-fader-right a.button.carousel-arrow {
+    position: sticky;
+    top: calc(50% - 16px);
+    bottom: calc(50% - 16px);
+}
+
 @media (min-width: 600px) {
     main .block.puf .puf-card-banner.recommended {
         font-size: var(--body-font-size-xl);
     }
 }
 
+main .block.puf .carousel-container.slide-1-selected {
+    max-height: 1600px;
+}
+
+main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card-border .puf-card {
+    box-shadow: 0 0 20px #00000029;
+}
+
 @media (min-width: 900px) {
+
+    main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card {
+        max-width: none;
+    }
+
+    main .block.puf .carousel-container.slide-1-selected {
+        max-height: none;
+    }
+
+    main .block.puf .puf-card-container .puf-card-border:has(.recommended),
+    main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card-border .puf-card {
+        box-shadow: none;
+    }
+
+    main .block.puf .puf-card-container .puf-card-border .puf-card.puf-left {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    main .block.puf .puf-card-container .puf-card-border:has(.puf-left) {
+        padding-right: 0;
+    }
+
+    main .block.puf .carousel-container .carousel-platform .puf-card-container {
+        align-self: stretch;
+        max-width: 100%;
+        width: auto;
+    }
+
+    main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card {
+        height: 100%;
+        width: 610px;
+        margin: 0;
+        padding: 40px 60px;
+    }
+
+    main .carousel-container .carousel-platform .carousel-left-trigger,
+    main .carousel-container .carousel-platform .carousel-right-trigger {
+        align-self: stretch;
+        position: relative;
+        height: auto;
+        right: auto;
+        left: auto;
+        top: auto;
+    }
+
     main .puf.block .carousel-container {
         max-width: none;
         max-height: none !important;
-    }
-
-    main .block.puf .puf-card-container {
-        width: auto;
-        margin-top: 70px;
-        padding-top: 0;
-    }
-
-    main .puf.block .carousel-container .carousel-fader-right {
-        right: -3rem;
-    }
-
-    main .puf .puf-card-container:has(.recommended) {
-        padding: 48px 8px 8px 8px;
     }
 
     main .block.puf .carousel-container {
@@ -367,21 +454,12 @@ main .block.puf .puf-card .puf-card-banner a {
     }
 
     main .block.puf .carousel-platform {
+        align-items: stretch;
         max-height: unset;
-      padding: 14px 24px 0 24px;
-      margin: -14px auto 0;
-    }
-
-    main .block.puf .puf-card {
-        width: 610px;
-        margin: 0;
-        padding: 40px 60px;
-    }
-
-    main .block.puf .puf-card.puf-left {
-        border-radius: 20px;
-        border-right: none;
-        min-height: 1200px;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        overflow: auto;
     }
 
     main .block.puf .puf-card-container:not(:has(.recommended)) .puf-card {
@@ -389,21 +467,9 @@ main .block.puf .puf-card .puf-card-banner a {
         padding-right: 76px;
     }
 
-    main .block.puf .puf-card.puf-right {
-        min-height: 1260px;
-    }
-
-    main .block.puf .puf-card .puf-card-top {
-        justify-content: flex-start;
-    }
-
     main .block.puf .puf-card .puf-card-top .puf-pricing-container {
         margin-top: 10px;
         gap: 4px;
-    }
-
-    main .block.puf .puf-card .puf-card-top h2 {
-        margin: 0;
     }
 
     main .block.puf .puf-card .puf-pricing-suf-container div {
@@ -412,30 +478,14 @@ main .block.puf .puf-card .puf-card-banner a {
         font-size: var(--body-font-size-xl);
     }
 
-    main .block.puf .puf-card .puf-pricing-context {
-        margin-bottom: 8px;
-    }
-
-    main .block.puf .puf-card .puf-card-top p {
-        text-align: left;
-    }
-
     main .block.puf .puf-card .puf-card-top .puf-card-plans {
         min-height: 40px;
-    }
-
-    main .block.puf .puf-card .puf-card-bottom {
-        align-items: flex-start;
     }
 
     main .block.puf .puf-card .puf-card-bottom p {
         display: flex;
         align-items: center;
         margin-bottom: 24px;
-        text-align: left;
-    }
-
-    main .block.puf .puf-card .puf-card-bottom h6 {
         text-align: left;
     }
 
@@ -471,87 +521,10 @@ main .block.puf .puf-card .puf-card-banner a {
         mask-size: contain;
     }
 
-    main .block.puf.one-col .puf-pricing-footer {
-        width: 628px;
-    }
 }
 
-@media (max-width: 899px) {
-    main .section.puf-container {
-        padding-bottom: 0;
-    }
-
-    main .block.puf .carousel-container {
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 0;
-        padding: 0 12px 12px 0;
-    }
-
-    main .block.puf .puf-card .puf-card-top .puf-card-plans {
-        margin-top: 16px;
-    }
-
-    main .block.puf .carousel-platform {
-        display: block;
-        position: static;
-        overflow: visible;
-        height: 100%;
-        width: 100%;
-        min-height: 100%;
-    }
-
-    main .block.puf .puf-card .puf-card-bottom p {
-        margin-bottom: 24px;
-    }
-
-    main .block.puf .carousel-container.slide-2-selected .carousel-fader-right,
-    main .block.puf .carousel-container.slide-1-selected .carousel-fader-left {
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    main .block.puf .carousel-container.slide-1-selected .carousel-fader-right {
-        right: 1rem;
-        opacity: 1;
-        pointer-events: auto;
-    }
-
-    main .block.puf .carousel-container.slide-2-selected .carousel-fader-left {
-        left: 0.7rem;
-        opacity: 1;
-        pointer-events: auto;
-    }
-
-    main .block.puf .carousel-container .carousel-platform .puf-card-container {
-        position: absolute;
-        max-width: fit-content;
-        transform: translateX(-50%);
-        right: auto;
-        top: 0;
-        left: 50%;
-        width: 100%;
-        border-right: 1px #e5e5e5 solid;
-        border-radius: 20px;
-        margin: 20px 0 0 0;
-        box-shadow: 0 0 20px #00000029;
-    }
-
-    main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card {
-        width: 325px;
-    }
-
-    main .block.puf .puf-card-banner.recommended ~ .puf-card-bottom .puf-highlighted-text {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    main .block.puf .carousel-container.slide-2-selected .carousel-platform .puf-card-container:first-child {
-        left: -150%;
-    }
-
-    main .block.puf .carousel-container.slide-1-selected .carousel-platform .puf-card-container:last-child {
-        left: 150%;
+@media (min-width:1200px) {
+    main .section h1 {
+        font-size: var(--heading-font-size-l);
     }
 }
