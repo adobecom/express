@@ -174,7 +174,7 @@ async function loadFEDS() {
     const localePath = locale === 'us' ? '' : `/${locale}`;
     const secondPathSegment = pathSegments[1].toLowerCase();
     const pagesShortName = getMetadata('short-title');
-    const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
+    const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`];
     // eslint-disable-next-line dot-notation
     const homeText = placeholders['express'];
 
@@ -182,7 +182,7 @@ async function loadFEDS() {
 
     const firstBreadCrumb = buildBreadCrumb('express/', homeText, localePath);
     const breadCrumbList = [firstBreadCrumb];
-    const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
+    const secondBreadCrumb = buildBreadCrumb(secondPathSegment, replacedCategory, `${localePath}/express`);
     breadCrumbList.push(secondBreadCrumb);
 
     if (pathSegments.length >= 3) {
