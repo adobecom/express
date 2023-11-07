@@ -167,12 +167,11 @@ async function loadFEDS() {
     );
 
     const placeholders = await fetchPlaceholders();
-    const validSecondPathSegments = ['create', 'feature'];
     const pathSegments = window.location.pathname
       .split('/')
       .filter((e) => e !== '')
       .filter((e) => e !== locale);
-    const localePath = locale === 'us' ? '' : `${locale}/`;
+    const localePath = locale === 'us' ? '' : `/${locale}`;
     const secondPathSegment = pathSegments[1].toLowerCase();
     const pagesShortNameElement = document.head.querySelector('meta[name="short-title"]');
     const pagesShortName = pagesShortNameElement?.getAttribute('content') ?? null;
@@ -181,7 +180,6 @@ async function loadFEDS() {
     if (!pagesShortName
       || pathSegments.length <= 2
       || !replacedCategory
-      || !validSecondPathSegments.includes(replacedCategory)
       || locale !== 'us') { // Remove this line once locale translations are complete
       return null;
     }
