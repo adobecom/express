@@ -105,7 +105,7 @@ function handleNavScroll(hasInstant, isLeftButton, isRightButton, leftValue, $pl
   }
   setTimeout(() => {
     $platform.classList.remove('mobile-drawer-nav-scrolling');
-  }, 300);
+  }, 350);
 }
 function updateActiveCTAContainers(activeButton) {
   const newActiveCTAContainer = document.getElementById(activeButton?.id?.replace('tab', 'ctas'));
@@ -239,6 +239,7 @@ function decorateToggleCarousel(selector, $parent) {
 
       setTimeout(() => {
         // For Firefox, inital scrollTo is handled by fireFoxToggleFix below
+        $platform.classList.add('mobile-drawer-nav-scrolling');
         $platform.scrollTo({
           left: 5 * getDynamicButtonWidth($platform.clientWidth),
           behavior: 'instant',
@@ -249,7 +250,8 @@ function decorateToggleCarousel(selector, $parent) {
         addArrowNavigation($platform);
         mobileDrawer.parentElement.classList.remove('initial-load');
         mobileDrawer.classList.remove('initial-load');
-        $platform.style.overflowX = 'hidden';
+        $platform.classList.remove('mobile-drawer-nav-scrolling');
+        // $platform.style.overflowX = 'hidden';
       }, 300);
     }
   };
