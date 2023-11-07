@@ -128,7 +128,7 @@ export default function decorate(block) {
   decorateText(block);
 
   // CTA
-  decorateCTA();
+  decorateCTA(block);
 
   // colors
   const { secondaryColor } = decorateColors(block);
