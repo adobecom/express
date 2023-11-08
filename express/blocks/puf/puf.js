@@ -441,8 +441,20 @@ async function build2ColDesign(block) {
   block.append(footer);
   formatTextElements(block);
 }
+async function buildPUF(block) {
+  const colCount = block?.children[1]?.children?.length;
+  switch (colCount) {
+    case 1:
+      await build1ColDesign(block);
+      break;
+    case 2:
+      await build2ColDesign(block);
+      break;
+    default:
+      break;
+  }
+}
 
 export default async function decorate(block) {
-  if (block.children[1].children.length > 1) await build2ColDesign(block);
-  else await build1ColDesign(block);
+  await buildPUF(block);
 }
