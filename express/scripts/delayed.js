@@ -1,4 +1,9 @@
-export const loadExpressProduct = async (createTag, getDevice) => {
+import {
+  createTag,
+  getDevice,
+} from './utils.js';
+
+export const loadExpressProduct = async () => {
   if (!window.hlx.preload_product) return;
   if (getDevice() !== 'desktop') return;
   const path = ['www.adobe.com'].includes(window.location.hostname)
@@ -10,13 +15,10 @@ export const loadExpressProduct = async (createTag, getDevice) => {
 /**
  * Executes everything that happens a lot later, without impacting the user experience.
  */
-export default function loadDelayed([
-  createTag,
-  getDevice,
-], DELAY = 3000) {
+export default function loadDelayed(DELAY = 3000) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      loadExpressProduct(createTag, getDevice);
+      loadExpressProduct();
       resolve();
     }, DELAY);
   });

@@ -166,8 +166,6 @@ function alignContent(block) {
   };
 
   const contentWrappers = block.querySelectorAll('.pricing-content-wrapper');
-  const maxWidth = (430 * contentWrappers.length) + (20 * (contentWrappers.length - 1));
-  block.style.maxWidth = `${maxWidth}px`;
 
   setElementsHeight(contentWrappers);
 }
@@ -212,7 +210,11 @@ export default async function decorate(block) {
   });
 
   await Promise.all(cardsLoaded).then(() => {
-    buildCarousel('.pricing-column-wrapper', columnsContainer, { startPosition: 'right' });
+    const options = {
+      startPosition: 'right',
+      centerAlign: true,
+    };
+    buildCarousel('.pricing-column-wrapper', columnsContainer, options);
     alignContent(block);
   });
 }

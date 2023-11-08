@@ -344,6 +344,7 @@ main .video-overlay .close::after {
   left: 4px;
   color: white;
 }
+
 #region-picker .close::after {
   transform: rotate(-45deg);
 }

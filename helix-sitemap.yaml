@@ -197,4 +197,3 @@ sitemaps:
         destination: /express/colors/sitemap.xml
         hreflang: en
         alternate: /{path}
-        

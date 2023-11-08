@@ -1,5 +1,6 @@
 import { createTag } from '../../scripts/utils.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function changeTextColorAccordingToBg(
   primaryColor,
@@ -86,17 +87,27 @@ function resizeSvgOnLoad() {
   }, 50);
 }
 
+export function resizeSvg(event) {
+  const height = getContentContainerHeight();
+  const svg = document.querySelector('.color-svg-img');
+  if (event.matches) {
+    svg.style.height = `${height}px`;
+  } else {
+    svg.style.height = '200px';
+  }
+}
+
 function resizeSvgOnMediaQueryChange() {
   const mediaQuery = window.matchMedia('(min-width: 900px)');
-  mediaQuery.addEventListener('change', (event) => {
-    const height = getContentContainerHeight();
-    const svg = document.querySelector('.color-svg-img');
-    if (event.matches) {
-      svg.style.height = `${height}px`;
-    } else {
-      svg.style.height = '200px';
-    }
-  });
+  mediaQuery.addEventListener('change', resizeSvg);
+}
+
+function decorateCTA(block) {
+  const primaryCta = block.querySelector('.text-container a.button');
+  if (!primaryCta) return;
+
+  primaryCta.classList.add('primaryCta');
+  BlockMediator.set('primaryCtaUrl', primaryCta.href);
 }
 
 export default function decorate(block) {
@@ -105,6 +116,9 @@ export default function decorate(block) {
 
   // text
   decorateText(block);
+
+  // CTA
+  decorateCTA(block);
 
   // colors
   const { secondaryColor } = decorateColors(block);
