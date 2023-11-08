@@ -33,30 +33,6 @@ function handlelize(str) {
     .toLowerCase(); // To lowercase
 }
 
-// FIXME: as soon as we verify the rum approach works, this should be retired
-function logSearch(form, formUrl = '/express/search-terms-log') {
-  if (form) {
-    const input = form.querySelector('input');
-    const currentHref = new URL(window.location.href);
-    const params = new URLSearchParams(currentHref.search);
-    fetch(formUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        data: {
-          keyword: input.value,
-          locale: getLocale(window.location),
-          timestamp: Date.now(),
-          audience: document.body.dataset.device,
-          sourcePath: window.location.pathname,
-          previousSearch: params.toString() || 'N/A',
-          sessionId: sessionStorage.getItem('u_scsid'),
-        },
-      }),
-    });
-  }
-}
-
 function wordExistsInString(word, inputString) {
   const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const regexPattern = new RegExp(`(?:^|\\s|[.,!?()'"\\-])${escapedWord}(?:$|\\s|[.,!?()'"\\-])`, 'i');
@@ -190,7 +166,6 @@ function initSearchFunction(block) {
 
   const onSearchSubmit = async () => {
     searchBar.disabled = true;
-    logSearch(searchForm);
     sampleRUM('search', {
       source: block.dataset.blockName,
       target: searchBar.value,

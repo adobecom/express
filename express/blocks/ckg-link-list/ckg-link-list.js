@@ -13,7 +13,19 @@
 import { createTag, getLocale, titleCase } from '../../scripts/utils.js';
 import { getDataWithContext } from '../../scripts/browse-api-controller.js';
 import buildCarousel from '../shared/carousel.js';
-import isDarkOverlayReadable from '../../scripts/color-tools.js';
+
+function addColorSampler(pill, colorHex, btn) {
+  const colorDot = createTag('div', {
+    class: 'color-dot',
+    style: `background-color: ${colorHex}`,
+  });
+
+  const aTag = btn.querySelector('a');
+  btn.style.backgroundColor = colorHex;
+  aTag.classList.add('colorful');
+
+  aTag.prepend(colorDot);
+}
 
 export default async function decorate(block) {
   block.style.visibility = 'hidden';
@@ -28,6 +40,7 @@ export default async function decorate(block) {
   if (!pills || !pills.length) return;
 
   pills.forEach((pill) => {
+    const colorHex = hexCodes[pill.canonicalName];
     const locale = getLocale(window.location);
     const urlPrefix = locale === 'us' ? '' : `/${locale}`;
     if (pill.value.startsWith(`${urlPrefix}/express/colors/search`)) {
@@ -46,15 +59,8 @@ export default async function decorate(block) {
     buttonContainer.append(aTag);
     block.append(buttonContainer);
 
-    if (hexCodes) {
-      const colorHex = hexCodes[pill.canonicalName];
-
-      if (!colorHex) return;
-
-      const dark = isDarkOverlayReadable(colorHex);
-      aTag.style.backgroundColor = colorHex;
-
-      if (!dark) aTag.style.color = '#FFFFFF';
+    if (colorHex) {
+      addColorSampler(pill, colorHex, buttonContainer);
     }
   });
 

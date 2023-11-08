@@ -1014,7 +1014,7 @@ const martechLoadedCB = () => {
   BlockMediator.set('audiences', []);
   BlockMediator.set('segments', []);
 
-  function getAudiences() {
+  async function getAudiences() {
     const getSegments = (ecid) => {
       if (ecid) {
         w.setAudienceManagerSegments = (json) => {
@@ -1066,8 +1066,9 @@ const martechLoadedCB = () => {
       }
     };
 
-    alloy('getIdentity')
-      .then((data) => getSegments(data && data.identity ? data.identity.ECID : null));
+    await _satellite.alloyConfigurePromise;
+    const data = await alloy('getIdentity');
+    getSegments(data && data.identity ? data.identity.ECID : null);
   }
 
   __satelliteLoadedCallback(getAudiences);

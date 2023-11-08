@@ -23,7 +23,7 @@ const TK_IDS = {
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
  * @param {Object} data additional data for RUM sample
- * @param {integer} forceSampleRate force weight on specific RUM sampling
+ * @param {Number} forceSampleRate force weight on specific RUM sampling
  */
 
 export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
