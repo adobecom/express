@@ -26,24 +26,24 @@ function pushPricingAnalytics(adobeEventName, sparkEventName, plan) {
   digitalData._set('spark.eventData.eventName', sparkEventName);
   digitalData._set(
     'spark.eventData.contextualData4',
-    `billingFrequency:${plan.frequency}`
+    `billingFrequency:${plan.frequency}`,
   );
   digitalData._set(
     'spark.eventData.contextualData6',
-    `commitmentType:${plan.frequency}`
+    `commitmentType:${plan.frequency}`,
   );
   digitalData._set(
     'spark.eventData.contextualData7',
-    `currencyCode:${plan.currency}`
+    `currencyCode:${plan.currency}`,
   );
   digitalData._set(
     'spark.eventData.contextualData9',
-    `offerId:${plan.offerId}`
+    `offerId:${plan.offerId}`,
   );
   digitalData._set('spark.eventData.contextualData10', `price:${plan.price}`);
   digitalData._set(
     'spark.eventData.contextualData12',
-    `productName:${plan.name} - ${plan.frequency}`
+    `productName:${plan.name} - ${plan.frequency}`,
   );
   digitalData._set('spark.eventData.contextualData14', 'quantity:1');
   digitalData._set('spark.eventData.trigger', sparkTouchpoint);
@@ -112,11 +112,11 @@ function displayPlans(card, plans) {
 
   defaultPlan.innerHTML = plans[0].text.replace(
     plans[0].plan,
-    `<span>${plans[0].plan}</span>`
+    `<span>${plans[0].plan}</span>`,
   );
   secondPlan.innerHTML = plans[1].text.replace(
     plans[1].plan,
-    `<span>${plans[1].plan}</span>`
+    `<span>${plans[1].plan}</span>`,
   );
 
   planContainer.append(defaultPlan);
@@ -205,7 +205,7 @@ async function decorateCard(block, cardClass = '') {
   cardPricingContainer.append(
     cardBasePriceHeader,
     cardPricingHeader,
-    cardPricingSufContainer
+    cardPricingSufContainer,
   );
   cardPricingSufContainer.append(cardPricingSuf, cardVat);
   cardTop.prepend(
@@ -213,7 +213,7 @@ async function decorateCard(block, cardClass = '') {
     cardPricingContainer,
     cardAdditionalContext,
     cardPlansContainer,
-    cardCta
+    cardCta,
   );
   card.append(cardBanner, cardTop, cardBottom);
 
@@ -223,7 +223,7 @@ async function decorateCard(block, cardClass = '') {
     cardBanner.innerHTML = createTag(
       'span',
       { class: 'banner-text' },
-      cardBanner.innerHTML
+      cardBanner.innerHTML,
     ).outerHTML;
     cardBanner.classList.add('recommended');
   }
@@ -246,12 +246,12 @@ async function decorateCard(block, cardClass = '') {
     }
   }
 
-  cardTop.querySelector('ul')?.remove();
+  cardTop.querySelector('ul')
+    ?.remove();
 
   const pricingContextContainer = cardTop.querySelector('em');
   if (pricingContextContainer) {
-    cardAdditionalContext.textContent =
-      pricingContextContainer.textContent.trim();
+    cardAdditionalContext.textContent = pricingContextContainer.textContent.trim();
     pricingContextContainer.parentNode.remove();
   } else {
     cardAdditionalContext.remove();
@@ -272,19 +272,21 @@ async function decorateCard(block, cardClass = '') {
 
 function wrapTextAndSup(block) {
   const supTags = block.getElementsByTagName('sup');
-  Array.from(supTags).forEach((supTag) => {
-    supTag.classList.add('puf-sup');
-  });
+  Array.from(supTags)
+    .forEach((supTag) => {
+      supTag.classList.add('puf-sup');
+    });
 
   const listItems = block.querySelectorAll('.puf-list-item');
   listItems.forEach((listItem) => {
     const { childNodes } = listItem;
 
-    const filteredChildren = Array.from(childNodes).filter((node) => {
-      const isSvg = node.tagName && node.tagName.toLowerCase() === 'svg';
-      const isTextNode = node.nodeType === Node.TEXT_NODE;
-      return !isSvg && (isTextNode || node.nodeType === Node.ELEMENT_NODE);
-    });
+    const filteredChildren = Array.from(childNodes)
+      .filter((node) => {
+        const isSvg = node.tagName && node.tagName.toLowerCase() === 'svg';
+        const isTextNode = node.nodeType === Node.TEXT_NODE;
+        return !isSvg && (isTextNode || node.nodeType === Node.ELEMENT_NODE);
+      });
 
     const filteredChildrenExceptFirstText = filteredChildren.slice(1);
 
@@ -303,32 +305,27 @@ function formatTextElements(block) {
 
   if (
     !blockElements.some(
-      (element) =>
-        highlightRegex.test(element.textContent) ||
-        dividerRegex.test(element.textContent)
+      (el) => highlightRegex.test(el.textContent)
+        || dividerRegex.test(el.textContent),
     )
   ) {
     return;
   }
 
-  const highlightedElements = blockElements.filter((element) =>
-    highlightRegex.test(element.textContent)
-  );
+  const highlightedEls = blockElements.filter((el) => highlightRegex.test(el.textContent));
 
-  highlightedElements.forEach((element) => {
-    element.classList.add('puf-highlighted-text');
-    element.textContent = element.textContent
+  highlightedEls.forEach((el) => {
+    el.classList.add('puf-highlighted-text');
+    el.textContent = el.textContent
       .replace(/^\(\(/, '')
       .replace(/\)\)$/, '');
   });
 
-  const dividerElements = blockElements.filter((element) =>
-    dividerRegex.test(element.textContent)
-  );
+  const dividerElements = blockElements.filter((el) => dividerRegex.test(el.textContent));
 
-  dividerElements.forEach((element) => {
-    element.classList.add('puf-divider-text');
-    element.textContent = element.textContent
+  dividerElements.forEach((el) => {
+    el.classList.add('puf-divider-text');
+    el.textContent = el.textContent
       .replace(/^--/, '')
       .replace(/--$/, '');
   });
@@ -349,7 +346,7 @@ function matchTwoElementsHeight(el1, el2) {
   if (el1 && el2) {
     const maxHeight = Math.max(
       el1.getBoundingClientRect().height,
-      el2.getBoundingClientRect().height
+      el2.getBoundingClientRect().height,
     );
     el1.style.height = `${maxHeight}px`;
     el2.style.height = `${maxHeight}px`;
@@ -359,16 +356,16 @@ function matchTwoElementsHeight(el1, el2) {
 function alignContent() {
   const block = document.querySelector('.puf');
   const rightDescription = block.querySelector(
-    '.puf-card.puf-right > .puf-card-top > p:last-of-type'
+    '.puf-card.puf-right > .puf-card-top > p:last-of-type',
   );
   const leftDescription = block.querySelector(
-    '.puf-card.puf-left > .puf-card-top > p:last-of-type'
+    '.puf-card.puf-left > .puf-card-top > p:last-of-type',
   );
   const rightHeading = block.querySelector(
-    '.puf-card.puf-right > .puf-card-bottom > h3'
+    '.puf-card.puf-right > .puf-card-bottom > h3',
   );
   const leftHeading = block.querySelector(
-    '.puf-card.puf-left > .puf-card-bottom > h3'
+    '.puf-card.puf-left > .puf-card-bottom > h3',
   );
 
   if (rightDescription) rightDescription.style.height = 'auto';
@@ -388,7 +385,20 @@ const resizeObserver = new ResizeObserver((entries) => {
   });
 });
 
-export default async function decorate(block) {
+async function build1ColDesign(block) {
+  const pricingCard = await decorateCard(block);
+  const footer = decorateFooter(block);
+
+  block.innerHTML = '';
+  block.append(pricingCard);
+
+  addPublishDependencies('/express/system/offers-new.json');
+  wrapTextAndSup(block);
+  block.append(footer);
+  formatTextElements(block);
+}
+
+async function build2ColDesign(block) {
   invisContainer = createTag('div');
   parent = block.parentElement;
   invisContainer.style.visibility = 'hidden';
@@ -401,48 +411,48 @@ export default async function decorate(block) {
   const footer = decorateFooter(block);
   block.innerHTML = '';
   block.append(leftCard, rightCard);
-
   await buildCarousel('.puf-card-container', block);
   parent.append(block);
   invisContainer.remove();
-
   resizeObserver.observe(rightCard);
-
   const options = {
     root: document.querySelector('.carousel-platform'),
     rootMargin: '0px',
-    threshold: 1.0,
+    threshold: 0.3,
   };
   const carouselContainer = block.querySelector('.carousel-container');
   const carouselLeftControlContainer = carouselContainer.querySelector(
-    '.carousel-fader-left'
+    '.carousel-fader-left',
   );
   const carouselRightControlContainer = carouselContainer.querySelector(
-    '.carousel-fader-right'
+    '.carousel-fader-right',
   );
   const callback = (entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        if (window.innerWidth >= 900) {
-          carouselContainer.style.maxHeight = 'none';
-        } else {
-          carouselContainer.style.maxHeight = `${entry.target.clientHeight}px`;
-        }
-        carouselLeftControlContainer.style.maxHeight = `${
-          entry.target.clientHeight - 125
-        }px`;
-        carouselRightControlContainer.style.maxHeight = `${
-          entry.target.clientHeight - 125
-        }px`;
+      if (!entry.isIntersecting) return;
+      if (window.innerWidth >= 900) {
+        carouselContainer.style.maxHeight = 'none';
+      } else {
+        carouselContainer.style.maxHeight = `${entry.target.clientHeight}px`;
       }
+      carouselLeftControlContainer.style.maxHeight = `${
+        entry.target.clientHeight - 125
+      }px`;
+      carouselRightControlContainer.style.maxHeight = `${
+        entry.target.clientHeight - 125
+      }px`;
     });
   };
   const intersectionObserver = new IntersectionObserver(callback, options);
   intersectionObserver.observe(leftCard);
   intersectionObserver.observe(rightCard);
-
   addPublishDependencies('/express/system/offers-new.json');
   wrapTextAndSup(block);
   block.append(footer);
   formatTextElements(block);
+}
+
+export default async function decorate(block) {
+  if (block.children[1].children.length > 1) await build2ColDesign(block);
+  else await build1ColDesign(block);
 }
