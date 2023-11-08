@@ -33,8 +33,8 @@ export function initToggleTriggers(parent) {
   // If flex container has a gap, add negative margins to compensate
   const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
   if (gap) {
-    leftTrigger.style.marginRight = `-${gap}`;
-    rightTrigger.style.marginLeft = `-${gap}`;
+    leftTrigger.style.marginRight = `-${gap + 1}`;
+    rightTrigger.style.marginLeft = `-${gap + 1}`;
   }
   platform.prepend(leftTrigger);
   platform.append(rightTrigger);
