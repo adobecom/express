@@ -189,8 +189,6 @@ function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]'])
   }).observe(document.body, { childList: true, subtree: true });
 }
 
-const postEditorLinksAllowList = ['adobesparkpost.app.link', 'spark.adobe.com/sp/design', 'express.adobe.com/sp/design'];
-
 export function addPublishDependencies(url) {
   if (!Array.isArray(url)) {
     // eslint-disable-next-line no-param-reassign
