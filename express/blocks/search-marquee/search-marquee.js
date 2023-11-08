@@ -12,9 +12,8 @@
 
 import {
   createTag,
-  fetchPlaceholders,
+  fetchPlaceholders, getConfig,
   getIconElement,
-  getLocale,
   getMetadata,
   sampleRUM,
 } from '../../scripts/utils.js';
@@ -143,14 +142,12 @@ function initSearchFunction(block) {
       searchInput = trimInput(tasksXFoundInInput, searchInput);
       [[currentTasks.content]] = tasksXFoundInInput;
     }
-
-    const locale = getLocale(window.location);
-    const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+    const { prefix } = getConfig().locale;
     const topicUrl = searchInput ? `/${searchInput}` : '';
     const taskUrl = `/${handlelize(currentTasks.xCore.toLowerCase())}`;
     const taskXUrl = `/${handlelize(currentTasks.content.toLowerCase())}`;
-    const targetPath = `${urlPrefix}/express/templates${taskUrl}${topicUrl}`;
-    const targetPathX = `${urlPrefix}/express/templates${taskXUrl}${topicUrl}`;
+    const targetPath = `${prefix}/express/templates${taskUrl}${topicUrl}`;
+    const targetPathX = `${prefix}/express/templates${taskXUrl}${topicUrl}`;
     const allTemplatesMetadata = await fetchAllTemplatesMetadata();
     const pathMatch = (e) => e.url === targetPath;
     const pathMatchX = (e) => e.url === targetPathX;
@@ -160,7 +157,7 @@ function initSearchFunction(block) {
       window.location = `${window.location.origin}${targetPath}`;
     } else {
       const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks.xCore}&tasksx=${currentTasks.content}&phformat=${format}&topics=${searchInput || "''"}&q=${searchBar.value || "''"}`;
-      window.location = `${window.location.origin}${urlPrefix}${searchUrlTemplate}`;
+      window.location = `${window.location.origin}${prefix}${searchUrlTemplate}`;
     }
   };
 

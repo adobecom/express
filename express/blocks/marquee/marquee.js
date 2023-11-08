@@ -13,10 +13,9 @@
 import {
   createTag,
   toClassName,
-  getLocale,
   addHeaderSizing,
   getIconElement,
-  fetchPlaceholders,
+  fetchPlaceholders, getConfig,
 } from '../../scripts/utils.js';
 
 const breakpointConfig = [
@@ -393,7 +392,7 @@ export default async function decorate(block) {
     await formatSalesPhoneNumber(phoneNumberTags);
   }
 
-  if (getLocale(window.location) === 'jp') {
+  if (getConfig().locale.region === 'jp') {
     addHeaderSizing(block);
   }
 

@@ -12,19 +12,18 @@
 
 import {
   createTag,
-  getLocale,
   normalizeHeadings,
   decorateButtons,
   fixIcons,
   toClassName,
-  createOptimizedPicture,
+  createOptimizedPicture, getConfig,
 } from '../../scripts/utils.js';
 
 const PROMOTION_FOLDER = 'express/promotions';
 
 async function fetchPromotion(name) {
-  const locale = getLocale(window.location);
-  const promoURL = `${locale === 'us' ? '' : `/${locale}`}/${PROMOTION_FOLDER}/${toClassName(name)}.plain.html`;
+  const { prefix } = getConfig().locale;
+  const promoURL = `${prefix}/${PROMOTION_FOLDER}/${toClassName(name)}.plain.html`;
   const resp = await fetch(promoURL);
   if (resp.ok) {
     const html = await resp.text();

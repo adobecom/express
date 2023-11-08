@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { getLocale } from '../../scripts/utils.js';
+import { getConfig } from '../../scripts/utils.js';
 
 /* c8 ignore next 11 */
 function handleEvent(prefix, link) {
@@ -54,8 +54,7 @@ function decorateLink(link, path) {
 }
 
 export default function init(block) {
-  const locale = getLocale(window.location);
-  const prefix = locale === 'us' ? '' : `/${locale}`;
+  const { prefix } = getConfig().locale;
   const divs = block.querySelectorAll(':scope > div');
   if (divs.length < 2) return;
   const links = divs[1].querySelectorAll('a');

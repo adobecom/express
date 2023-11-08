@@ -19,10 +19,8 @@ import {
   decorateMain,
   fetchPlaceholders,
   fetchPlainBlockFromFragment,
-  fetchRelevantRows, fixIcons,
+  fetchRelevantRows, fixIcons, getConfig,
   getIconElement,
-  getLanguage,
-  getLocale,
   getLottie,
   getMetadata,
   lazyLoadLottiePlayer,
@@ -71,7 +69,7 @@ async function populateHeadingPlaceholder(locale, props) {
   // special treatment for express/ root url
   const lowerCaseHeading = heading === 'Adobe Express' ? heading : heading.toLowerCase();
   const placeholders = await fetchPlaceholders();
-  const lang = getLanguage(getLocale(window.location));
+  const lang = getConfig().locale.ietf;
   const templateCount = lang === 'es-ES' ? props.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : props.total.toLocaleString(lang);
   let grammarTemplate;
 
@@ -86,8 +84,7 @@ async function populateHeadingPlaceholder(locale, props) {
       .replace('{{quantity}}', props.fallbackMsg ? '0' : templateCount)
       .replace('{{Type}}', heading)
       .replace('{{type}}', lowerCaseHeading);
-
-    if (locale === 'fr') {
+    if (locale.replace('/', '') === 'fr') {
       grammarTemplate.split(' ').forEach((word, index, words) => {
         if (index + 1 < words.length) {
           if (word === 'de' && wordStartsWithVowels(words[index + 1])) {
@@ -191,7 +188,7 @@ async function appendCategoryTemplatesCount($section, props) {
   }
   props.loadedOtherCategoryCounts = true;
   const categories = $section.querySelectorAll('ul.category-list > li');
-  const lang = getLanguage(getLocale(window.location));
+  const lang = getConfig().locale.ietf;
 
   const fetchCntSpanPromises = [...categories]
     .map((li) => fetchCntSpan(props, li.querySelector('a'), lang));
@@ -497,17 +494,16 @@ async function readRowsFromBlock($block, props) {
 }
 
 function getRedirectUrl(tasks, topics, format, allTemplatesMetadata) {
-  const locale = getLocale(window.location);
-  const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+  const { prefix } = getConfig().locale;
   const topicUrl = topics ? `/${topics}` : '';
   const taskUrl = `/${handlelize(tasks.toLowerCase())}`;
-  const targetPath = `${urlPrefix}/express/templates${taskUrl}${topicUrl}`;
+  const targetPath = `${prefix}/express/templates${taskUrl}${topicUrl}`;
   const pathMatch = (e) => e.path === targetPath;
   if (allTemplatesMetadata.some(pathMatch)) {
     return `${window.location.origin}${targetPath}`;
   } else {
     const searchUrlTemplate = `/express/templates/search?tasks=${tasks}&phformat=${format}&topics=${topics || "''"}`;
-    const searchUrl = `${window.location.origin}${urlPrefix}${searchUrlTemplate}`;
+    const searchUrl = `${window.location.origin}${prefix}${searchUrlTemplate}`;
     return searchUrl;
   }
 }
@@ -1224,7 +1220,7 @@ async function decorateNewTemplates($block, props, options = { reDrawMasonry: fa
 
 async function redrawTemplates($block, $toolBar, props) {
   const $heading = $toolBar.querySelector('h2');
-  const lang = getLanguage(getLocale(window.location));
+  const lang = getConfig().locale.ietf;
   const currentTotal = props.total.toLocaleString(lang);
   props.templates = [props.templates[0]];
   props.start = '';
@@ -1494,7 +1490,7 @@ function decorateToolbar($block, $section, placeholders, props) {
 }
 
 export async function decorateTemplateList($block, props) {
-  const locale = getLocale(window.location);
+  const { prefix } = getConfig().locale;
   const placeholders = await fetchPlaceholders();
   if ($block.classList.contains('apipowered')) {
     await readRowsFromBlock($block, props);
@@ -1575,7 +1571,7 @@ export async function decorateTemplateList($block, props) {
           } else if (props.authoringError) {
             $sectionHeading.textContent = props.heading;
           } else {
-            $sectionHeading.textContent = await populateHeadingPlaceholder(locale, props) || '';
+            $sectionHeading.textContent = await populateHeadingPlaceholder(prefix, props) || '';
           }
         }
 
@@ -1611,7 +1607,7 @@ export async function decorateTemplateList($block, props) {
   }
 
   let rows = $block.children.length;
-  if ((rows === 0 || $block.querySelectorAll('img').length === 0) && locale !== 'us') {
+  if ((rows === 0 || $block.querySelectorAll('img').length === 0) && prefix !== '') {
     const i18nTexts = $block.firstElementChild
       // author defined localized edit text(s)
       && ($block.firstElementChild.querySelector('p')

@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-disable no-underscore-dangle */
-import { fetchPlaceholders, getLanguage } from '../../scripts/utils.js';
+import { fetchPlaceholders, getConfig } from '../../scripts/utils.js';
 import { memoize } from '../../scripts/hofs.js';
 
 // supported by content api
@@ -77,9 +77,10 @@ function formatFilterString(filters) {
     str += `&filters=topics==${topic.split(',').map((t) => t.trim()).join(',')}`;
   });
   // locale needs backward compatibility with old api
+  const confLocales = getConfig().locales;
   if (locales) {
     const langFilter = extractLangs(locales)
-      .map((l) => getLanguage(l))
+      .map((l) => confLocales[l === 'en' ? '' : l]?.ietf)
       .filter((l) => supportedLanguages.includes(l))
       .join(',');
     if (langFilter) str += `&filters=language==${langFilter}`;
@@ -124,7 +125,7 @@ async function fetchSearchUrl({
   if (langs.length === 0) {
     return memoizedFetch(url, { headers });
   }
-  const prefLang = getLanguage(langs[0]);
+  const prefLang = getConfig().locales[langs[0] === 'en' ? '' : langs[0]].ietf;
   const [prefRegion] = extractRegions(filters.locales);
   headers['x-express-ims-region-code'] = prefRegion; // Region Boosting
   if (supportedLanguages.includes(prefLang)) {

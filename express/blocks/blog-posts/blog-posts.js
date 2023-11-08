@@ -15,33 +15,27 @@ import {
   createOptimizedPicture,
   createTag,
   readBlockConfig,
-  getLanguage,
   fetchPlaceholders,
-  getLocale,
+  getConfig, getLocale,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
 async function fetchBlogIndex(config) {
-  const prefix = getLocale(window.location);
+  const { prefix } = getConfig().locale;
   let currentLocaleProcessed = false;
-  const currentLocalePrefix = (prefix === 'us') ? '' : `/${prefix}`;
   const consolidatedJsonData = [];
   if (config.featuredOnly) {
     const linkLocales = [];
     const urls = [];
     const links = config.featured;
     for (let i = 0; i < links.length; i += 1) {
-      let localePrefix = getLocale(new URL(links[i]));
+      const localePrefix = getLocale(getConfig().locales, new URL(links[i]).pathname).prefix;
       if (localePrefix === prefix) {
         currentLocaleProcessed = true;
       }
-      if (localePrefix === 'us') {
-        localePrefix = '';
-      }
       if (!linkLocales.includes(localePrefix)) {
         linkLocales.push(localePrefix);
-        const prefixedLocale = localePrefix === '' ? '' : `/${localePrefix}`;
-        urls.push(`${prefixedLocale}/express/learn/blog/query-index.json`);
+        urls.push(`${localePrefix}/express/learn/blog/query-index.json`);
       }
     }
     const resp = await Promise.all(urls.map((url) => fetch(url)
@@ -50,7 +44,7 @@ async function fetchBlogIndex(config) {
     resp.forEach((item) => consolidatedJsonData.push(...item.data));
   }
   if (!currentLocaleProcessed) {
-    const resp = await fetch(`${currentLocalePrefix}/express/learn/blog/query-index.json`);
+    const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
     const res = await resp.json();
     consolidatedJsonData.push(...res.data);
   }
@@ -240,7 +234,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const placeholders = await fetchPlaceholders();
   let readMoreString = placeholders['read-more'];
   if (readMoreString === undefined || readMoreString === '') {
-    const locale = getLocale(window.location);
+    const locale = getConfig().locale.region;
     const readMore = {
       us: 'Read More',
       uk: 'Read More',
@@ -257,7 +251,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
       title, teaser, image,
     } = post;
     const publicationDate = new Date(post.date * 1000);
-    const language = getLanguage(getLocale(window.location));
+    const language = getConfig().locale.ietf;
     const dateString = publicationDate.toLocaleDateString(language, {
       day: '2-digit',
       month: '2-digit',

@@ -11,9 +11,8 @@
  */
 
 import {
-  createTag,
+  createTag, getConfig,
   getIconElement,
-  getLocale,
 } from '../../scripts/utils.js';
 
 import {
@@ -291,9 +290,8 @@ async function decorateBubbleUI($boxBottom, data) {
   bubbleViewportContainer.append(bubbleViewport);
   bubbleViewport.append(bubbleRowContainer);
 
-  const locale = getLocale(window.location);
-  const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-  const resp = await fetch(`${urlPrefix}/express/bubbles/${data.bubbleSheet}.json`).then((result) => result.json());
+  const { prefix } = getConfig().locale;
+  const resp = await fetch(`${prefix}/express/bubbles/${data.bubbleSheet}.json`).then((result) => result.json());
   const bubblesArray = resp.data;
   const hexTemplate = buildHexagon(bubblesArray);
   let bubbleIdCounter = 0;

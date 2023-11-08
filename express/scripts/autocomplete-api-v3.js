@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { getLocale, getLanguage } from './utils.js';
+import { getConfig } from './utils.js';
 import { memoize, throttle, debounce } from './hofs.js';
 
 const url = 'https://adobesearch-atc.adobe.io/uss/v3/autocomplete';
@@ -72,13 +72,12 @@ export default function useInputAutocomplete(
     const suggestions = await memoizedFetchAPI({
       textQuery: currentSearch,
       limit,
-      locale: getLanguage(getLocale(window.location)),
+      locale: getConfig().locale.ietf,
     });
     if (state.waitingFor === currentSearch) {
       updateUIWithSuggestions(suggestions);
     }
   };
-
   const throttledFetchAndUpdateUI = throttle(fetchAndUpdateUI, throttleDelay, { trailing: true });
   const debouncedFetchAndUpdateUI = debounce(fetchAndUpdateUI, debounceDelay);
 

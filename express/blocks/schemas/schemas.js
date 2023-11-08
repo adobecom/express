@@ -10,14 +10,13 @@
  * governing permissions and limitations under the License.
  */
 import {
-  getLocale,
+  getConfig,
 } from '../../scripts/utils.js';
 
 function decorateSchemasBlocks(block) {
   const rows = Array.from(block.children);
-  const locale = getLocale(window.location);
-  const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-  const homePageLocaleUrl = `https://www.adobe.com${urlPrefix}/`;
+  const { prefix } = getConfig().locale;
+  const homePageLocaleUrl = `https://www.adobe.com${prefix}/`;
   let webApplicationUrl = document.querySelector('p.button-container')?.querySelector('a')?.href;
   rows.forEach(($row) => {
     const cells = Array.from($row.children);

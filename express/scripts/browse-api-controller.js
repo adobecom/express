@@ -11,9 +11,8 @@
  */
 
 import {
+  getConfig,
   getHelixEnv,
-  getLanguage,
-  getLocale,
   getMetadata,
 } from './utils.js';
 import { memoize } from './hofs.js';
@@ -44,8 +43,8 @@ const mFetch = memoize((url, data) => fetch(url, data).then((r) => (r.ok ? r.jso
 });
 
 export async function getPillWordsMapping() {
-  const locale = getLocale(window.location);
-  const localeColumnString = locale === 'us' ? 'EN' : locale.toUpperCase();
+  const locale = getConfig().locale.prefix.replace('/', '');
+  const localeColumnString = locale === '' ? 'EN' : locale.toUpperCase();
   try {
     const resp = await fetch('/express/linklist-qa-mapping.json?limit=100000');
     const filteredArray = await resp.json();
@@ -86,7 +85,7 @@ export async function getDataWithContext({ urlPath }) {
     context: {
       application: { urlPath },
     },
-    locale: getLanguage(getLocale(window.location)) || 'en_US',
+    locale: getConfig().locale.ietf.replace('-', '_') || 'en_US',
     queries: [{
       id: 'ccx-search-1',
       start: 0,

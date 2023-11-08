@@ -11,7 +11,7 @@
  */
 
 import {
-  createTag, getLocale, loadBlock, toClassName,
+  createTag, getConfig, loadBlock, toClassName,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
@@ -23,7 +23,7 @@ export const getAvailableVimeoSubLang = () => {
     de: 'de',
     jp: 'ja',
   };
-  return langs[getLocale(window.location)] || 'en';
+  return langs[getConfig().locale.prefix.replace('/', '')] || 'en';
 };
 
 export async function fetchVideoAnalytics() {
@@ -77,9 +77,8 @@ async function fetchVideoPromotions() {
   if (!window.videoPromotions) {
     window.videoPromotions = {};
     try {
-      const locale = getLocale(window.location);
-      const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-      const resp = await fetch(`${urlPrefix}/express/video-promotions.json`);
+      const { prefix } = getConfig().locale;
+      const resp = await fetch(`${prefix}/express/video-promotions.json`);
       const json = await resp.json();
       json.data.forEach((entry) => {
         const video = entry.Video;

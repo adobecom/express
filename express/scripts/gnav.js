@@ -12,14 +12,13 @@
 
 import {
   loadScript,
-  getLocale,
-  getLanguage,
   getHelixEnv,
   sampleRUM,
   getCookie,
   getMetadata,
   fetchPlaceholders,
   loadCSS,
+  getConfig,
 // eslint-disable-next-line import/no-unresolved
 } from './utils.js';
 
@@ -64,7 +63,7 @@ function loadIMS() {
   window.adobeid = {
     client_id: 'MarvelWeb3',
     scope: 'AdobeID,openid',
-    locale: getLocale(window.location),
+    locale: getConfig().locale.region,
     environment: 'prod',
   };
   if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
@@ -76,7 +75,8 @@ function loadIMS() {
 }
 
 async function loadFEDS() {
-  const locale = getLocale(window.location);
+  const config = getConfig();
+  const { prefix } = config.locale;
 
   async function showRegionPicker() {
     const { getModal } = await import('../blocks/modal/modal.js');
@@ -134,8 +134,8 @@ async function loadFEDS() {
     const pathSegments = window.location.pathname
       .split('/')
       .filter((e) => e !== '')
-      .filter((e) => e !== locale);
-    const localePath = locale === 'us' ? '' : `${locale}/`;
+      .filter((e) => e !== prefix);
+    const localePath = prefix === '' ? '' : `${prefix}/`;
     const secondPathSegment = pathSegments[1].toLowerCase();
     const pagesShortNameElement = document.head.querySelector('meta[name="short-title"]');
     const pagesShortName = pagesShortNameElement?.getAttribute('content') ?? null;
@@ -145,7 +145,7 @@ async function loadFEDS() {
       || pathSegments.length <= 2
       || !replacedCategory
       || !validSecondPathSegments.includes(replacedCategory)
-      || locale !== 'us') { // Remove this line once locale translations are complete
+      || prefix !== '') { // Remove this line once locale translations are complete
       return null;
     }
 
@@ -167,13 +167,13 @@ async function loadFEDS() {
         showRegionPicker();
       },
     },
-    locale: (locale === 'us' ? 'en' : locale),
+    locale: (prefix === '' ? 'en' : prefix),
     content: {
       experience: getMetadata('gnav') || fedsExp,
     },
     profile: {
       customSignIn: () => {
-        const sparkLang = getLanguage(locale);
+        const sparkLang = config.locale.ietf;
         const sparkPrefix = sparkLang === 'en-US' ? '' : `/${sparkLang}`;
         let sparkLoginUrl = `https://express.adobe.com${sparkPrefix}/sp/`;
         const env = getHelixEnv();
@@ -246,15 +246,15 @@ async function loadFEDS() {
     }
     /* region based redirect to homepage */
     if (window.feds && window.feds.data && window.feds.data.location && window.feds.data.location.country === 'CN') {
-      const regionpath = locale === 'us' ? '/' : `/${locale}/`;
+      const regionpath = prefix === '' ? '/' : `/${prefix}/`;
       window.location.href = regionpath;
     }
   });
-  let prefix = '';
+  let domain = '';
   if (!['www.adobe.com', 'www.stage.adobe.com'].includes(window.location.hostname)) {
-    prefix = 'https://www.adobe.com';
+    domain = 'https://www.adobe.com';
   }
-  loadScript(`${prefix}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).then((script) => {
+  loadScript(`${domain}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).then((script) => {
     script.id = 'feds-script';
   });
   setTimeout(() => {
