@@ -24,12 +24,27 @@ function pushPricingAnalytics(adobeEventName, sparkEventName, plan) {
   /* global digitalData _satellite */
   digitalData._set('primaryEvent.eventInfo.eventName', adobeEventName);
   digitalData._set('spark.eventData.eventName', sparkEventName);
-  digitalData._set('spark.eventData.contextualData4', `billingFrequency:${plan.frequency}`);
-  digitalData._set('spark.eventData.contextualData6', `commitmentType:${plan.frequency}`);
-  digitalData._set('spark.eventData.contextualData7', `currencyCode:${plan.currency}`);
-  digitalData._set('spark.eventData.contextualData9', `offerId:${plan.offerId}`);
+  digitalData._set(
+    'spark.eventData.contextualData4',
+    `billingFrequency:${plan.frequency}`
+  );
+  digitalData._set(
+    'spark.eventData.contextualData6',
+    `commitmentType:${plan.frequency}`
+  );
+  digitalData._set(
+    'spark.eventData.contextualData7',
+    `currencyCode:${plan.currency}`
+  );
+  digitalData._set(
+    'spark.eventData.contextualData9',
+    `offerId:${plan.offerId}`
+  );
   digitalData._set('spark.eventData.contextualData10', `price:${plan.price}`);
-  digitalData._set('spark.eventData.contextualData12', `productName:${plan.name} - ${plan.frequency}`);
+  digitalData._set(
+    'spark.eventData.contextualData12',
+    `productName:${plan.name} - ${plan.frequency}`
+  );
   digitalData._set('spark.eventData.contextualData14', 'quantity:1');
   digitalData._set('spark.eventData.trigger', sparkTouchpoint);
 
@@ -87,13 +102,22 @@ async function selectPlan(card, planUrl, sendAnalyticEvent) {
 function displayPlans(card, plans) {
   const planContainer = card.querySelector('.puf-card-plans');
   const cardSwitch = createTag('label', { class: 'puf-card-switch' });
-  const checkbox = createTag('input', { type: 'checkbox', class: 'puf-card-checkbox' });
+  const checkbox = createTag('input', {
+    type: 'checkbox',
+    class: 'puf-card-checkbox',
+  });
   const slider = createTag('span', { class: 'puf-card-slider' });
   const defaultPlan = createTag('div', { class: 'strong' });
   const secondPlan = createTag('div');
 
-  defaultPlan.innerHTML = plans[0].text.replace(plans[0].plan, `<span>${plans[0].plan}</span>`);
-  secondPlan.innerHTML = plans[1].text.replace(plans[1].plan, `<span>${plans[1].plan}</span>`);
+  defaultPlan.innerHTML = plans[0].text.replace(
+    plans[0].plan,
+    `<span>${plans[0].plan}</span>`
+  );
+  secondPlan.innerHTML = plans[1].text.replace(
+    plans[1].plan,
+    `<span>${plans[1].plan}</span>`
+  );
 
   planContainer.append(defaultPlan);
   planContainer.append(cardSwitch);
@@ -137,19 +161,26 @@ function buildPlans(plansElement) {
 async function decorateCard(block, cardClass = '') {
   const cardClassName = `puf-card ${cardClass}`.trim();
   const cardContainer = createTag('div', { class: 'puf-card-container' });
+  const cardBorder = createTag('div', { class: 'puf-card-border' });
   const card = createTag('div', { class: cardClassName });
   const cardBanner = block.children[0].children[0];
   const cardTop = block.children[1].children[0];
   const cardBottom = block.children[2].children[0];
   const cardHeader = cardTop.querySelector('h3, p:first-of-type');
   const cardHeaderSvg = cardTop.querySelector('svg');
-  const cardPricingContainer = createTag('div', { class: 'puf-pricing-container' });
+  const cardPricingContainer = createTag('div', {
+    class: 'puf-pricing-container',
+  });
   const cardBasePriceHeader = createTag('h2', { class: 'puf-bp-header' });
   const cardPricingHeader = createTag('h2', { class: 'puf-pricing-header' });
-  const cardPricingSufContainer = createTag('div', { class: 'puf-pricing-suf-container' });
+  const cardPricingSufContainer = createTag('div', {
+    class: 'puf-pricing-suf-container',
+  });
   const cardPricingSuf = createTag('div', { class: 'puf-pricing-suf' });
   const cardVat = createTag('div', { class: 'puf-vat-info' });
-  const cardAdditionalContext = createTag('div', { class: 'puf-pricing-context' });
+  const cardAdditionalContext = createTag('div', {
+    class: 'puf-pricing-context',
+  });
   const cardPlansContainer = createTag('div', { class: 'puf-card-plans' });
   const cardCta = createTag('a', { class: 'button large' });
   const plansElement = cardTop.querySelectorAll('li');
@@ -171,21 +202,29 @@ async function decorateCard(block, cardClass = '') {
   cardTop.classList.add('puf-card-top');
   cardBottom.classList.add('puf-card-bottom');
 
-  cardPricingContainer.append(cardBasePriceHeader, cardPricingHeader, cardPricingSufContainer);
+  cardPricingContainer.append(
+    cardBasePriceHeader,
+    cardPricingHeader,
+    cardPricingSufContainer
+  );
   cardPricingSufContainer.append(cardPricingSuf, cardVat);
   cardTop.prepend(
     cardHeader,
     cardPricingContainer,
     cardAdditionalContext,
     cardPlansContainer,
-    cardCta,
+    cardCta
   );
   card.append(cardBanner, cardTop, cardBottom);
 
   if (!cardBanner.textContent.trim()) {
     cardBanner.style.display = 'none';
   } else {
-    cardBanner.innerHTML = createTag('span', { class: 'banner-text' }, cardBanner.innerHTML).outerHTML;
+    cardBanner.innerHTML = createTag(
+      'span',
+      { class: 'banner-text' },
+      cardBanner.innerHTML
+    ).outerHTML;
     cardBanner.classList.add('recommended');
   }
 
@@ -211,13 +250,16 @@ async function decorateCard(block, cardClass = '') {
 
   const pricingContextContainer = cardTop.querySelector('em');
   if (pricingContextContainer) {
-    cardAdditionalContext.textContent = pricingContextContainer.textContent.trim();
+    cardAdditionalContext.textContent =
+      pricingContextContainer.textContent.trim();
     pricingContextContainer.parentNode.remove();
   } else {
     cardAdditionalContext.remove();
   }
 
-  cardContainer.append(card);
+  // cardContainer.append(card);
+  cardContainer.append(cardBorder);
+  cardBorder.append(card);
 
   if (listItems) {
     listItems.forEach((listItem) => {
@@ -226,79 +268,6 @@ async function decorateCard(block, cardClass = '') {
   }
 
   return cardContainer;
-}
-
-function updatePUFCarousel(block) {
-  const carouselContainer = block.querySelector('.carousel-container');
-  const carouselPlatform = block.querySelector('.carousel-platform');
-  const leftCard = block.querySelector('.puf-left');
-  const rightCard = block.querySelector('.puf-right');
-  carouselContainer.classList.add('slide-1-selected');
-
-  const slideFunctionality = () => {
-    carouselPlatform.scrollLeft = carouselPlatform.offsetWidth;
-    carouselContainer.style.width = '100%';
-    carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
-    const rightArrow = carouselContainer.querySelector('.carousel-fader-right');
-    const leftArrow = carouselContainer.querySelector('.carousel-fader-left');
-    const changeSlide = (index) => {
-      if (index === 0) {
-        carouselContainer.classList.add('slide-1-selected');
-        carouselContainer.classList.remove('slide-2-selected');
-        carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
-      } else {
-        carouselContainer.classList.remove('slide-1-selected');
-        carouselContainer.classList.add('slide-2-selected');
-        carouselContainer.style.minHeight = `${rightCard.clientHeight + 110}px`;
-      }
-    };
-
-    leftArrow.addEventListener('click', () => changeSlide(0));
-    rightArrow.addEventListener('click', () => changeSlide(1));
-    block.addEventListener('keyup', (e) => {
-      if (e.key === 'ArrowLeft') {
-        changeSlide(0);
-      } else if (e.key === 'ArrowRight') {
-        changeSlide(1);
-      }
-    });
-    let initialX = null;
-    let initialY = null;
-    const startTouch = (e) => {
-      initialX = e.touches[0].clientX;
-      initialY = e.touches[0].clientY;
-    };
-    const moveTouch = (e) => {
-      if (initialX === null || initialY === null) return;
-      const currentX = e.touches[0].clientX;
-      const currentY = e.touches[0].clientY;
-      const diffX = initialX - currentX;
-      const diffY = initialY - currentY;
-      if (Math.abs(diffX) > Math.abs(diffY)) {
-        if (diffX > 0) {
-          changeSlide(1);
-        } else {
-          changeSlide(0);
-        }
-        e.preventDefault();
-      }
-      initialX = null;
-      initialY = null;
-    };
-    block.addEventListener('touchstart', startTouch, false);
-    block.addEventListener('touchmove', moveTouch, false);
-    const mediaQuery = window.matchMedia('(min-width: 900px)');
-    mediaQuery.onchange = () => {
-      carouselContainer.style.minHeight = `${leftCard.clientHeight + 40}px`;
-    };
-    const cardContainers = block.querySelectorAll('.puf-card-container');
-    cardContainers.forEach((c) => {
-      c.style.transition = 'left 0.5s';
-    });
-    parent.append(block);
-    invisContainer.remove();
-  };
-  slideFunctionality();
 }
 
 function wrapTextAndSup(block) {
@@ -319,7 +288,9 @@ function wrapTextAndSup(block) {
 
     const filteredChildrenExceptFirstText = filteredChildren.slice(1);
 
-    const textAndSupWrapper = createTag('div', { class: 'puf-text-and-sup-wrapper' });
+    const textAndSupWrapper = createTag('div', {
+      class: 'puf-text-and-sup-wrapper',
+    });
     textAndSupWrapper.append(...filteredChildrenExceptFirstText);
     listItem.append(textAndSupWrapper);
   });
@@ -330,106 +301,37 @@ function formatTextElements(block) {
   const dividerRegex = /^--.*--$/;
   const blockElements = Array.from(block.querySelectorAll('*'));
 
-  if (!blockElements.some((element) => highlightRegex.test(element.textContent)
-    || dividerRegex.test(element.textContent))) {
+  if (
+    !blockElements.some(
+      (element) =>
+        highlightRegex.test(element.textContent) ||
+        dividerRegex.test(element.textContent)
+    )
+  ) {
     return;
   }
 
-  const highlightedElements = blockElements
-    .filter((element) => highlightRegex.test(element.textContent));
+  const highlightedElements = blockElements.filter((element) =>
+    highlightRegex.test(element.textContent)
+  );
 
   highlightedElements.forEach((element) => {
     element.classList.add('puf-highlighted-text');
-    element.textContent = element.textContent.replace(/^\(\(/, '').replace(/\)\)$/, '');
+    element.textContent = element.textContent
+      .replace(/^\(\(/, '')
+      .replace(/\)\)$/, '');
   });
 
-  const dividerElements = blockElements
-    .filter((element) => dividerRegex.test(element.textContent));
+  const dividerElements = blockElements.filter((element) =>
+    dividerRegex.test(element.textContent)
+  );
 
   dividerElements.forEach((element) => {
     element.classList.add('puf-divider-text');
-    element.textContent = element.textContent.replace(/^--/, '').replace(/--$/, '');
+    element.textContent = element.textContent
+      .replace(/^--/, '')
+      .replace(/--$/, '');
   });
-}
-
-function alignP($block) {
-  const isDesktop = window.innerWidth >= 900;
-
-  if (isDesktop) {
-    const card1 = $block.querySelector('.puf-card.puf-left > .puf-card-top > p:last-of-type');
-    const card2 = $block.querySelector('.puf-card.puf-right > .puf-card-top > p:last-of-type');
-
-    const adjustHeight = () => {
-      if (card1 && card2) {
-        card1.style.height = 'auto';
-        card2.style.height = 'auto';
-
-        const maxHeight = Math.max(
-          card1.getBoundingClientRect().height,
-          card2.getBoundingClientRect().height,
-        );
-
-        card1.style.height = `${maxHeight}px`;
-        card2.style.height = `${maxHeight}px`;
-      } else if (card1) {
-        card1.style.height = 'auto';
-      } else if (card2) {
-        card2.style.height = 'auto';
-      }
-    };
-
-    const ro = new ResizeObserver(() => adjustHeight());
-
-    if (card1) {
-      ro.observe(card1);
-    }
-
-    if (card2) {
-      ro.observe(card2);
-    }
-
-    adjustHeight();
-  }
-}
-
-function alignHighlights($block) {
-  const isDesktop = window.innerWidth >= 900;
-
-  if (isDesktop) {
-    const cardLeft = $block.querySelector('.puf-card.puf-left > .puf-card-bottom > h3');
-    const cardRight = $block.querySelector('.puf-card.puf-right > .puf-card-bottom > h3');
-
-    const adjustHeight = () => {
-      if (cardLeft && cardRight) {
-        cardLeft.style.height = 'auto';
-        cardRight.style.height = 'auto';
-
-        const maxHeightTitle = Math.max(
-          cardLeft.getBoundingClientRect().height,
-          cardRight.getBoundingClientRect().height,
-        );
-
-        cardLeft.style.height = `${maxHeightTitle}px`;
-        cardRight.style.height = `${maxHeightTitle}px`;
-      } else if (cardLeft) {
-        cardLeft.style.height = 'auto';
-      } else if (cardRight) {
-        cardRight.style.height = 'auto';
-      }
-    };
-
-    const ro = new ResizeObserver(() => adjustHeight());
-
-    if (cardLeft) {
-      ro.observe(cardLeft);
-    }
-
-    if (cardRight) {
-      ro.observe(cardRight);
-    }
-
-    adjustHeight();
-  }
 }
 
 function decorateFooter(block) {
@@ -442,21 +344,51 @@ function decorateFooter(block) {
   }
 }
 
-async function build1ColDesign(block) {
-  block.classList.add('one-col');
-  const pricingCard = await decorateCard(block);
-  const footer = decorateFooter(block);
-
-  block.innerHTML = '';
-  block.append(pricingCard);
-
-  addPublishDependencies('/express/system/offers-new.json');
-  wrapTextAndSup(block);
-  block.append(footer);
-  formatTextElements(block);
+function matchTwoElementsHeight(el1, el2) {
+  // ^ not the clearest name (sets the shortest of two elements to the tallest element's height)
+  if (el1 && el2) {
+    const maxHeight = Math.max(
+      el1.getBoundingClientRect().height,
+      el2.getBoundingClientRect().height
+    );
+    el1.style.height = `${maxHeight}px`;
+    el2.style.height = `${maxHeight}px`;
+  }
 }
 
-async function build2ColDesign(block) {
+function alignContent() {
+  const block = document.querySelector('.puf');
+  const rightDescription = block.querySelector(
+    '.puf-card.puf-right > .puf-card-top > p:last-of-type'
+  );
+  const leftDescription = block.querySelector(
+    '.puf-card.puf-left > .puf-card-top > p:last-of-type'
+  );
+  const rightHeading = block.querySelector(
+    '.puf-card.puf-right > .puf-card-bottom > h3'
+  );
+  const leftHeading = block.querySelector(
+    '.puf-card.puf-left > .puf-card-bottom > h3'
+  );
+
+  if (rightDescription) rightDescription.style.height = 'auto';
+  if (leftDescription) leftDescription.style.height = 'auto';
+  if (rightHeading) rightHeading.style.height = 'auto';
+  if (leftHeading) leftHeading.style.height = 'auto';
+
+  if (window.innerWidth >= 900) {
+    matchTwoElementsHeight(rightDescription, leftDescription);
+    matchTwoElementsHeight(rightHeading, leftHeading);
+  }
+}
+
+const resizeObserver = new ResizeObserver((entries) => {
+  entries.forEach(() => {
+    alignContent();
+  });
+});
+
+export default async function decorate(block) {
   invisContainer = createTag('div');
   parent = block.parentElement;
   invisContainer.style.visibility = 'hidden';
@@ -464,7 +396,6 @@ async function build2ColDesign(block) {
   invisContainer.append(block);
   const main = document.body.querySelector('main');
   main.append(invisContainer);
-  block.classList.add('two-col');
   const leftCard = await decorateCard(block, 'puf-left');
   const rightCard = await decorateCard(block, 'puf-right');
   const footer = decorateFooter(block);
@@ -472,25 +403,46 @@ async function build2ColDesign(block) {
   block.append(leftCard, rightCard);
 
   await buildCarousel('.puf-card-container', block);
-  updatePUFCarousel(block);
+  parent.append(block);
+  invisContainer.remove();
+
+  resizeObserver.observe(rightCard);
+
+  const options = {
+    root: document.querySelector('.carousel-platform'),
+    rootMargin: '0px',
+    threshold: 1.0,
+  };
+  const carouselContainer = block.querySelector('.carousel-container');
+  const carouselLeftControlContainer = carouselContainer.querySelector(
+    '.carousel-fader-left'
+  );
+  const carouselRightControlContainer = carouselContainer.querySelector(
+    '.carousel-fader-right'
+  );
+  const callback = (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        if (window.innerWidth >= 900) {
+          carouselContainer.style.maxHeight = 'none';
+        } else {
+          carouselContainer.style.maxHeight = `${entry.target.clientHeight}px`;
+        }
+        carouselLeftControlContainer.style.maxHeight = `${
+          entry.target.clientHeight - 125
+        }px`;
+        carouselRightControlContainer.style.maxHeight = `${
+          entry.target.clientHeight - 125
+        }px`;
+      }
+    });
+  };
+  const intersectionObserver = new IntersectionObserver(callback, options);
+  intersectionObserver.observe(leftCard);
+  intersectionObserver.observe(rightCard);
+
   addPublishDependencies('/express/system/offers-new.json');
   wrapTextAndSup(block);
   block.append(footer);
-  alignP(block);
   formatTextElements(block);
-  alignHighlights(block);
-}
-
-function getPUFDesign(block) {
-  return block.children[1].children.length === 2 ? '2-col' : '1-col';
-}
-
-export default async function decorate(block) {
-  if (getPUFDesign(block) === '1-col') {
-    await build1ColDesign(block);
-  }
-
-  if (getPUFDesign(block) === '2-col') {
-    await build2ColDesign(block);
-  }
 }

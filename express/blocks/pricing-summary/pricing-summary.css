@@ -202,10 +202,6 @@ main .pricing-summary > div:last-of-type > div p {
   margin: 0 0 12px;
 }
 
-main .pricing-summary .pricing-feature-list {
-
-}
-
 main .pricing-summary .pricing-feature-list svg,
 main .pricing-summary .pricing-feature-list img {
   min-width: 22px;
