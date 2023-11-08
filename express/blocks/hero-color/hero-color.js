@@ -110,7 +110,7 @@ export function resizeSvg(event) {
 
 function resizeSvgOnMediaQueryChange() {
   const mediaQuery = window.matchMedia('(min-width: 900px)');
-  mediaQuery.addEventListener('change', (event) => resizeSvg(event));
+  mediaQuery.addEventListener('change', resizeSvg);
 }
 
 export default function decorate(block) {
