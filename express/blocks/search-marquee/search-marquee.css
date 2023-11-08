@@ -216,11 +216,6 @@ main .search-marquee .hidden {
     display: none;
 }
 
-main .search-marquee .carousel-container .carousel-fader-right,
-main .search-marquee .carousel-container .carousel-fader-left {
-    background: unset;
-}
-
 @media (min-width: 600px) {
     main .search-marquee .search-dropdown-container .free-plans-container .free-plan-widget {
         flex-direction: row;

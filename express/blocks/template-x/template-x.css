@@ -1599,7 +1599,6 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
-    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
     transform: translate3d(0, 0, 0);
     height: 232px;
     width: 170px;
@@ -1607,24 +1606,10 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-left {
-    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
     transform: translate3d(0, 0, 0);
     height: 232px;
     width: 170px;
     left: -4px
-}
-
-.template-x.horizontal .carousel-container .carousel-fader-right {
-    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-}
-
-.template-x.horizontal .carousel-container .carousel-fader-left {
-    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-}
-
-main .template-x.horizontal.tabbed .carousel-container .carousel-fader-right,
-main .template-x.horizontal.tabbed .carousel-container .carousel-fader-left {
-    background: none;
 }
 
 
@@ -2208,11 +2193,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         transform: rotate(180deg);
     }
 
-    .template-x.horizontal.holiday .carousel-container .carousel-fader-left,
-    .template-x.horizontal.holiday .carousel-container .carousel-fader-right {
-        background: initial;
-    }
-
     .template-x.with-categories-list .template-x.fullwidth {
         width: calc(100% - 172px);
     }
@@ -2573,23 +2553,9 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         display: block;
     }
 
-    .template-x.horizontal .carousel-container .carousel-fader-left {
-        background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-    }
-
-    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left {
-        width: 150px;
-        background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-    }
-
+    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left,
     .template-x.horizontal.holiday .carousel-container .carousel-fader-right {
-        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-        width: 170px;
-    }
-
-    .template-x.horizontal.fullwidth.tabbed .carousel-container .carousel-fader-left,
-    .template-x.horizontal.fullwidth.tabbed .carousel-container .carousel-fader-right {
-        background: none;
+        width: 150px;
     }
 
     .template-x .api-templates-toolbar {
