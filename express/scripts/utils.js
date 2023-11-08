@@ -1,15 +1,3 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
   { fragment: '/express/fragments/' },
@@ -23,7 +11,7 @@ const TK_IDS = {
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
  * @param {Object} data additional data for RUM sample
- * @param {integer} forceSampleRate force weight on specific RUM sampling
+ * @param {Number} forceSampleRate force weight on specific RUM sampling
  */
 
 export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
@@ -1792,7 +1780,7 @@ export async function fetchPlainBlockFromFragment(url, blockName) {
 export async function fetchFloatingCta(path) {
   const env = getHelixEnv();
   const dev = new URLSearchParams(window.location.search).get('dev');
-  const { experiment } = window.hlx;
+  const { experiment, experimentParams } = window.hlx;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
   let spreadsheet;
   let floatingBtnData;
@@ -1838,7 +1826,7 @@ export async function fetchFloatingCta(path) {
     spreadsheet = '/express/floating-cta.json?limit=100000';
   }
 
-  if (experimentStatus === 'active') {
+  if (experimentStatus === 'active' || experimentParams) {
     const expSheet = '/express/experiments/floating-cta-experiments.json?limit=100000';
     floatingBtnData = await fetchFloatingBtnData(expSheet);
   }
@@ -2416,9 +2404,11 @@ export async function loadArea(area = document) {
 
   window.hlx = window.hlx || {};
   const params = new URLSearchParams(window.location.search);
+  const experimentParams = params.get('experiment');
   ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
     window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
   });
+  window.hlx.experimentParams = experimentParams;
   window.hlx.init = true;
 
   await setTemplateTheme();
@@ -2471,7 +2461,8 @@ export async function loadArea(area = document) {
 
   const lazy = loadLazy(main);
 
-  if (window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) {
+  const buttonOff = params.get('button') === 'off';
+  if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
     import('../../tools/preview/preview.js');
   }
   await lazy;

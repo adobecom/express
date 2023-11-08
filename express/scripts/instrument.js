@@ -1,14 +1,3 @@
-/*
- * Copyright 2021 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 /* global _satellite __satelliteLoadedCallback alloy */
 
 import {
@@ -555,6 +544,33 @@ const martechLoadedCB = () => {
       adobeEventName = appendLinkText(adobeEventName, a);
     }
 
+    // clicks using [data-lh and data-ll]
+    let trackingHeader = a.closest('[data-lh]');
+    if (trackingHeader || a.dataset.lh) {
+      adobeEventName = 'adobe.com:express';
+      let headerString = '';
+      while (trackingHeader) {
+        headerString = `:${textToName(trackingHeader.dataset.lh.trim())}${headerString}`;
+        trackingHeader = trackingHeader.parentNode.closest('[data-lh]');
+      }
+      adobeEventName += headerString;
+      if (a.dataset.ll) {
+        adobeEventName += `:${textToName(a.dataset.ll.trim())}`;
+      } else {
+        adobeEventName += `:${textToName(a.innerText.trim())}`;
+      }
+    }
+    if (window.hlx?.experiment) {
+      let prefix = '';
+      if (window.hlx.experiment?.id) prefix = `${window.hlx.experiment.id}:`;
+      if (window.hlx.experiment?.selectedVariant) {
+        let variant = window.hlx.experiment.selectedVariant;
+        if (variant.includes('-')) [, variant] = variant.split('-');
+        prefix += `${variant}:`;
+      }
+      adobeEventName = prefix + adobeEventName;
+    }
+
     _satellite.track('event', {
       xdm: {},
       data: {
@@ -688,7 +704,7 @@ const martechLoadedCB = () => {
 
     // for tracking all of the links
     d.addEventListener('click', (event) => {
-      if (event.target.tagName === 'A') {
+      if (event.target.tagName === 'A' || event.target.dataset.ll?.length) {
         trackButtonClick(event.target);
       }
     });
@@ -987,7 +1003,7 @@ const martechLoadedCB = () => {
   BlockMediator.set('audiences', []);
   BlockMediator.set('segments', []);
 
-  function getAudiences() {
+  async function getAudiences() {
     const getSegments = (ecid) => {
       if (ecid) {
         w.setAudienceManagerSegments = (json) => {
@@ -1039,8 +1055,9 @@ const martechLoadedCB = () => {
       }
     };
 
-    alloy('getIdentity')
-      .then((data) => getSegments(data && data.identity ? data.identity.ECID : null));
+    await _satellite.alloyConfigurePromise;
+    const data = await alloy('getIdentity');
+    getSegments(data && data.identity ? data.identity.ECID : null);
   }
 
   __satelliteLoadedCallback(getAudiences);
