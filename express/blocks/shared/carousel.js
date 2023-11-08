@@ -17,7 +17,8 @@ import {
 } from '../../scripts/utils.js';
 
 function correctCenterAlignment(plat) {
-  if (plat.parentElement.offsetWidth > plat.offsetWidth) plat.parentElement.style.maxWidth = `${plat.offsetWidth}px`;
+  if (plat.parentElement.offsetWidth <= plat.offsetWidth) return;
+  plat.parentElement.style.maxWidth = `${plat.offsetWidth}px`;
 }
 
 export function initToggleTriggers(parent) {
@@ -32,10 +33,12 @@ export function initToggleTriggers(parent) {
 
   // If flex container has a gap, add negative margins to compensate
   const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
-  if (gap) {
-    leftTrigger.style.marginRight = `-${gap + 1}`;
-    rightTrigger.style.marginLeft = `-${gap + 1}`;
+  if (gap !== 'normal') {
+    const gapInt = parseInt(gap.replace('px', ''), 10);
+    leftTrigger.style.marginRight = `-${gapInt + 1}px`;
+    rightTrigger.style.marginLeft = `-${gapInt + 1}px`;
   }
+
   platform.prepend(leftTrigger);
   platform.append(rightTrigger);
 
@@ -75,7 +78,7 @@ export default async function buildCarousel(selector, parent, options = {}) {
   loadCSS('/express/blocks/shared/carousel.css');
   // Build the carousel HTML
   const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
-
+  carouselContent.forEach((el) => el.classList.add('carousel-element'));
   const container = createTag('div', { class: 'carousel-container' });
   const platform = createTag('div', { class: 'carousel-platform' });
   platform.append(...carouselContent);
