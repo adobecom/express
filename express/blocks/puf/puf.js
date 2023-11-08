@@ -374,7 +374,20 @@ const resizeObserver = new ResizeObserver((entries) => {
   });
 });
 
-export default async function decorate(block) {
+async function build1ColDesign(block) {
+  const pricingCard = await decorateCard(block);
+  const footer = decorateFooter(block);
+
+  block.innerHTML = '';
+  block.append(pricingCard);
+
+  addPublishDependencies('/express/system/offers-new.json');
+  wrapTextAndSup(block);
+  block.append(footer);
+  formatTextElements(block);
+}
+
+async function build2ColDesign(block) {
   invisContainer = createTag('div');
   parent = block.parentElement;
   invisContainer.style.visibility = 'hidden';
@@ -387,17 +400,14 @@ export default async function decorate(block) {
   const footer = decorateFooter(block);
   block.innerHTML = '';
   block.append(leftCard, rightCard);
-
   await buildCarousel('.puf-card-container', block);
   parent.append(block);
   invisContainer.remove();
-
   resizeObserver.observe(rightCard);
-
   const options = {
     root: document.querySelector('.carousel-platform'),
     rootMargin: '0px',
-    threshold: 0.3,
+    threshold: 1,
   };
   const carouselContainer = block.querySelector('.carousel-container');
   const carouselLeftControlContainer = carouselContainer.querySelector(
@@ -409,7 +419,6 @@ export default async function decorate(block) {
   const callback = (entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
-
       if (window.innerWidth >= 900) {
         carouselContainer.style.maxHeight = 'none';
       } else {
@@ -427,9 +436,25 @@ export default async function decorate(block) {
   const intersectionObserver = new IntersectionObserver(callback, options);
   intersectionObserver.observe(rightCard);
   intersectionObserver.observe(leftCard);
-
   addPublishDependencies('/express/system/offers-new.json');
   wrapTextAndSup(block);
   block.append(footer);
   formatTextElements(block);
+}
+async function buildPUF(block) {
+  const colCount = block?.children[1]?.children?.length;
+  switch (colCount) {
+    case 1:
+      await build1ColDesign(block);
+      break;
+    case 2:
+      await build2ColDesign(block);
+      break;
+    default:
+      break;
+  }
+}
+
+export default async function decorate(block) {
+  await buildPUF(block);
 }

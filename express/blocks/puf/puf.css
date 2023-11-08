@@ -337,7 +337,8 @@ main .block.puf .carousel-container {
     position: relative;
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-plans {
+main .block.puf .puf-card .puf-card-top .puf-card-plans,
+main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card .puf-card-top .puf-card-plans {
     margin-top: 16px;
 }
 
@@ -394,13 +395,29 @@ main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-
 }
 
 @media (min-width: 900px) {
+    main .block.puf .puf-card .puf-card-top .puf-card-plans {
+        margin-top: 8px;
+    }
+
+    main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card .puf-card-top .puf-card-plans {
+        margin-top: 0;
+    }
+
+    main .block.puf .puf-card-container {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    main .block.puf .puf-card {
+        max-width: 610px;
+        padding: 40px 60px;
+    }
 
     main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card {
         max-width: none;
     }
 
-
-    main .block.puf .puf-card-container .puf-card-border:has(.recommended),
+    main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card-border:has(.recommended),
     main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card-border .puf-card {
         box-shadow: none;
     }
