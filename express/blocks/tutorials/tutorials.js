@@ -34,6 +34,15 @@ function createTutorialCard(title, url, time, $picture) {
   return ($card);
 }
 
+export function handlePopstate(event) {
+  const { state } = event;
+  hideVideoModal();
+  const { url, title } = state || {};
+  if (url) {
+    displayVideoModal(url, title);
+  }
+}
+
 function decorateTutorials($block) {
   const $tutorials = [...$block.children];
   $tutorials.forEach(($tutorial) => {
@@ -51,13 +60,7 @@ function decorateTutorials($block) {
     }
   });
   // handle history events
-  window.addEventListener('popstate', ({ state }) => {
-    hideVideoModal();
-    const { url, title } = state || {};
-    if (url) {
-      displayVideoModal(url, title);
-    }
-  });
+  window.addEventListener('popstate', handlePopstate);
 }
 
 export default function decorate($block) {
