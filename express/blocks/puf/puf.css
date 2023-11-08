@@ -1,4 +1,4 @@
-main .puf-container > div {
+main .puf-container>div {
     max-width: none;
 }
 
@@ -119,15 +119,15 @@ main .block.puf .puf-card .puf-card-top .puf-card-plans {
     margin: 0 auto;
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-plans > div {
+main .block.puf .puf-card .puf-card-top .puf-card-plans>div {
     color: var(--color-info-accent);
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-plans > div span {
+main .block.puf .puf-card .puf-card-top .puf-card-plans>div span {
     color: var(--color-gray-800);
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-plans > div.strong span {
+main .block.puf .puf-card .puf-card-top .puf-card-plans>div.strong span {
     -webkit-text-stroke-width: 0.6px;
     -webkit-text-stroke-color: var(--color-gray-800);
 }
@@ -173,15 +173,15 @@ main .block.puf .puf-card .puf-card-top .puf-card-slider::before {
     border-radius: 50%;
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-switch input:checked + .puf-card-slider {
+main .block.puf .puf-card .puf-card-top .puf-card-switch input:checked+.puf-card-slider {
     background-color: var(--color-info-accent);
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-switch input:focus + .puf-card-slider {
+main .block.puf .puf-card .puf-card-top .puf-card-switch input:focus+.puf-card-slider {
     box-shadow: 0 0 1px #2196f3;
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-switch input:checked + .puf-card-slider:before {
+main .block.puf .puf-card .puf-card-top .puf-card-switch input:checked+.puf-card-slider:before {
     transform: translateX(26px);
 }
 
@@ -229,7 +229,7 @@ main .block.puf .puf-card .puf-text-and-sup-wrapper {
     display: inline;
 }
 
-main .block.puf .puf-card-banner.recommended ~ .puf-card-bottom .puf-highlighted-text,
+main .block.puf .puf-card-banner.recommended~.puf-card-bottom .puf-highlighted-text,
 main .block.puf .puf-highlighted-text {
     background-color: var(--color-info-accent-light);
     width: 100%;
@@ -337,7 +337,8 @@ main .block.puf .carousel-container {
     position: relative;
 }
 
-main .block.puf .puf-card .puf-card-top .puf-card-plans {
+main .block.puf .puf-card .puf-card-top .puf-card-plans,
+main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card .puf-card-top .puf-card-plans {
     margin-top: 16px;
 }
 
@@ -360,7 +361,7 @@ main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-
     max-width: 325px;
 }
 
-main .block.puf .puf-card-banner.recommended ~ .puf-card-bottom .puf-highlighted-text {
+main .block.puf .puf-card-banner.recommended~.puf-card-bottom .puf-highlighted-text {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -394,13 +395,29 @@ main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-
 }
 
 @media (min-width: 900px) {
+    main .block.puf .puf-card .puf-card-top .puf-card-plans {
+        margin-top: 8px;
+    }
+
+    main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card .puf-card-top .puf-card-plans {
+        margin-top: 0;
+    }
+
+    main .block.puf .puf-card-container {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    main .block.puf .puf-card {
+        max-width: 610px;
+        padding: 40px 60px;
+    }
 
     main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card {
         max-width: none;
     }
 
-
-    main .block.puf .puf-card-container .puf-card-border:has(.recommended),
+    main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card-border:has(.recommended),
     main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card-border .puf-card {
         box-shadow: none;
     }

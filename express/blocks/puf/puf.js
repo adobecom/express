@@ -374,7 +374,20 @@ const resizeObserver = new ResizeObserver((entries) => {
   });
 });
 
-export default async function decorate(block) {
+async function build1ColDesign(block) {
+  const pricingCard = await decorateCard(block);
+  const footer = decorateFooter(block);
+
+  block.innerHTML = '';
+  block.append(pricingCard);
+
+  addPublishDependencies('/express/system/offers-new.json');
+  wrapTextAndSup(block);
+  block.append(footer);
+  formatTextElements(block);
+}
+
+async function build2ColDesign(block) {
   invisContainer = createTag('div');
   parent = block.parentElement;
   invisContainer.style.visibility = 'hidden';
@@ -387,13 +400,10 @@ export default async function decorate(block) {
   const footer = decorateFooter(block);
   block.innerHTML = '';
   block.append(leftCard, rightCard);
-
   await buildCarousel('.puf-card-container', block);
   parent.append(block);
   invisContainer.remove();
-
   resizeObserver.observe(rightCard);
-
   const options = {
     root: document.querySelector('.carousel-platform'),
     rootMargin: '0px',
@@ -409,7 +419,6 @@ export default async function decorate(block) {
   const callback = (entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
-
       if (window.innerWidth >= 900) {
         carouselContainer.style.maxHeight = 'none';
       } else {
@@ -427,9 +436,13 @@ export default async function decorate(block) {
   const intersectionObserver = new IntersectionObserver(callback, options);
   intersectionObserver.observe(rightCard);
   intersectionObserver.observe(leftCard);
-
   addPublishDependencies('/express/system/offers-new.json');
   wrapTextAndSup(block);
   block.append(footer);
   formatTextElements(block);
+}
+
+export default async function decorate(block) {
+  if (block.children[1].children.length > 1) await build2ColDesign(block);
+  else await build1ColDesign(block);
 }
