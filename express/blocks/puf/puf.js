@@ -407,7 +407,7 @@ async function build2ColDesign(block) {
   const options = {
     root: document.querySelector('.carousel-platform'),
     rootMargin: '0px',
-    threshold: 0.3,
+    threshold: 1,
   };
   const carouselContainer = block.querySelector('.carousel-container');
   const carouselLeftControlContainer = carouselContainer.querySelector(
