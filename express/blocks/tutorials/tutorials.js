@@ -46,7 +46,8 @@ function createTutorialCard(title, url, time, $picture) {
   return ($card);
 }
 
-export function handlePopstate(state) {
+export function handlePopstate(event) {
+  const { state } = event;
   hideVideoModal();
   const { url, title } = state || {};
   if (url) {
@@ -71,7 +72,7 @@ function decorateTutorials($block) {
     }
   });
   // handle history events
-  window.addEventListener('popstate', ({ state }) => handlePopstate(state));
+  window.addEventListener('popstate', handlePopstate);
 }
 
 export default function decorate($block) {

@@ -50,6 +50,10 @@ describe('Tutorials', () => {
     const keyupEvent = new KeyboardEvent('keyup', { key: 'Enter' });
     card.dispatchEvent(keyupEvent);
 
-    handlePopstate({ url: 'https://example.com/tutorial' });
+    const url = {
+      url: 'https://example.com/tutorial',
+      title: 'Tutorial',
+    };
+    handlePopstate({ state: url });
   });
 });
