@@ -197,49 +197,49 @@ colors:
         destination: /express/colors/sitemap.xml
         hreflang: en
         alternate: /{path}
-      brasil:
-        source: /br/express/colors/default/metadata.json?sheet=sitemap
-        destination: /br/express/colors/sitemap.xml
-        hreflang: pt
-        alternate: /br/{path}
-      france:
-        source: /fr/express/colors/default/metadata.json?sheet=sitemap
-        destination: /fr/express/colors/sitemap.xml
-        hreflang: fr
-        alternate: /fr/{path}
-      germany:
-        source: /de/express/colors/default/metadata.json?sheet=sitemap
-        destination: /de/express/colors/sitemap.xml
-        hreflang: de
-        alternate: /de/{path}
-      italy:
-        source: /it/express/colors/default/metadata.json?sheet=sitemap
-        destination: /it/express/colors/sitemap.xml
-        hreflang: it
-        alternate: /it/{path}
-      japan:
-        source: /jp/express/colors/default/metadata.json?sheet=sitemap
-        destination: /jp/express/colors/sitemap.xml
-        hreflang: ja
-        alternate: /jp/{path}
-      korea:
-        source: /kr/express/colors/default/metadata.json?sheet=sitemap
-        destination: /kr/express/colors/sitemap.xml
-        hreflang: ko
-        alternate: /kr/{path}
-      spain:
-        source: /es/express/colors/default/metadata.json?sheet=sitemap
-        destination: /es/express/colors/sitemap.xml
-        hreflang: es
-        alternate: /es/{path}
-      taiwan:
-        source: /tw/express/colors/default/metadata.json?sheet=sitemap
-        destination: /tw/express/colors/sitemap.xml
-        hreflang: zh-Hant
-        alternate: /tw/{path}
-      netherlands:
-        source: /nl/express/colors/default/metadata.json?sheet=sitemap
-        destination: /nl/express/colors/sitemap.xml
-        hreflang: nl
-        alternate: /nl/{path}
+      # brasil:
+      #   source: /br/express/colors/default/metadata.json?sheet=sitemap
+      #   destination: /br/express/colors/sitemap.xml
+      #   hreflang: pt
+      #   alternate: /br/{path}
+      # france:
+      #   source: /fr/express/colors/default/metadata.json?sheet=sitemap
+      #   destination: /fr/express/colors/sitemap.xml
+      #   hreflang: fr
+      #   alternate: /fr/{path}
+      # germany:
+      #   source: /de/express/colors/default/metadata.json?sheet=sitemap
+      #   destination: /de/express/colors/sitemap.xml
+      #   hreflang: de
+      #   alternate: /de/{path}
+      # italy:
+      #   source: /it/express/colors/default/metadata.json?sheet=sitemap
+      #   destination: /it/express/colors/sitemap.xml
+      #   hreflang: it
+      #   alternate: /it/{path}
+      # japan:
+      #   source: /jp/express/colors/default/metadata.json?sheet=sitemap
+      #   destination: /jp/express/colors/sitemap.xml
+      #   hreflang: ja
+      #   alternate: /jp/{path}
+      # korea:
+      #   source: /kr/express/colors/default/metadata.json?sheet=sitemap
+      #   destination: /kr/express/colors/sitemap.xml
+      #   hreflang: ko
+      #   alternate: /kr/{path}
+      # spain:
+      #   source: /es/express/colors/default/metadata.json?sheet=sitemap
+      #   destination: /es/express/colors/sitemap.xml
+      #   hreflang: es
+      #   alternate: /es/{path}
+      # taiwan:
+      #   source: /tw/express/colors/default/metadata.json?sheet=sitemap
+      #   destination: /tw/express/colors/sitemap.xml
+      #   hreflang: zh-Hant
+      #   alternate: /tw/{path}
+      # netherlands:
+      #   source: /nl/express/colors/default/metadata.json?sheet=sitemap
+      #   destination: /nl/express/colors/sitemap.xml
+      #   hreflang: nl
+      #   alternate: /nl/{path}
         
