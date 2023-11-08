@@ -287,7 +287,7 @@ main .block.puf .puf-card-container .puf-card-border:has(.recommended) {
     box-shadow: 0 0 24px #00000029;
 }
 
-main .block.puf.two-col .puf-card-container .puf-card {
+main .block.puf .puf-card-container .puf-card {
     border: 1px #e5e5e5 solid;
     border-radius: 20px;
 }
@@ -366,14 +366,13 @@ main .block.puf .puf-card-banner.recommended~.puf-card-bottom .puf-highlighted-t
     justify-content: center;
 }
 
-main .block.puf.two-col .puf-card-container {
+main .block.puf .puf-card-container {
     align-self: start;
 }
 
 main .carousel-container .carousel-fader-left,
 main .carousel-container .carousel-fader-right {
-    margin-top: 25%;
-    max-height: 1400px;
+    margin-top: 100px;
 }
 
 main .carousel-container .carousel-fader-left a.button.carousel-arrow,
@@ -389,9 +388,6 @@ main .carousel-container .carousel-fader-right a.button.carousel-arrow {
     }
 }
 
-main .block.puf .carousel-container.slide-1-selected {
-    max-height: 1600px;
-}
 
 main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card-border .puf-card {
     box-shadow: 0 0 20px #00000029;
@@ -403,9 +399,6 @@ main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-
         max-width: none;
     }
 
-    main .block.puf .carousel-container.slide-1-selected {
-        max-height: none;
-    }
 
     main .block.puf .puf-card-container .puf-card-border:has(.recommended),
     main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card-border .puf-card {
@@ -444,7 +437,7 @@ main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-
         top: auto;
     }
 
-    main .puf.block .carousel-container {
+    main .block.puf .carousel-container {
         max-width: none;
         max-height: none !important;
     }
@@ -453,8 +446,12 @@ main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-
         margin-bottom: 0;
     }
 
+    main .block.puf .carousel-container .carousel-platform {
+        align-items: start;
+    }
+
     main .block.puf .carousel-platform {
-        align-items: stretch;
+        align-items: start;
         max-height: unset;
         max-width: 100%;
         margin-left: auto;
@@ -521,10 +518,4 @@ main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-
         mask-size: contain;
     }
 
-}
-
-@media (min-width:1200px) {
-    main .section h1 {
-        font-size: var(--heading-font-size-l);
-    }
 }
