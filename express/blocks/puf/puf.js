@@ -434,9 +434,10 @@ export default async function decorate(block) {
       }px`;
     });
   };
+  
   const intersectionObserver = new IntersectionObserver(callback, options);
-  intersectionObserver.observe(leftCard);
   intersectionObserver.observe(rightCard);
+  intersectionObserver.observe(leftCard);
 
   addPublishDependencies('/express/system/offers-new.json');
   wrapTextAndSup(block);
