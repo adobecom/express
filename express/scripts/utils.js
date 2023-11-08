@@ -947,7 +947,7 @@ function decorateHeaderAndFooter() {
  * @param {string} href The path to the CSS file
  * @param {function} callback a function to run upon successful style loading
  */
-export function loadCSS(href, callback) {
+export function loadCSS(href, callback = null) {
   if (!document.querySelector(`head > link[href="${href}"]`)) {
     const link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');
@@ -2466,8 +2466,9 @@ export async function loadArea(area = document) {
     import('../../tools/preview/preview.js');
   }
   await lazy;
-  const { default: delayed } = await import('./delayed.js');
-  delayed([createTag, getDevice], 8000);
+
+  const { default: loadDelayed } = await import('./delayed.js');
+  loadDelayed(8000);
 }
 
 export function getMobileOperatingSystem() {
