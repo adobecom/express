@@ -408,7 +408,7 @@ export default async function decorate(block) {
   const options = {
     root: document.querySelector('.carousel-platform'),
     rootMargin: '0px',
-    threshold: 1.0,
+    threshold: 0.3,
   };
   const carouselContainer = block.querySelector('.carousel-container');
   const carouselLeftControlContainer = carouselContainer.querySelector(
@@ -419,19 +419,19 @@ export default async function decorate(block) {
   );
   const callback = (entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        if (window.innerWidth >= 900) {
-          carouselContainer.style.maxHeight = 'none';
-        } else {
-          carouselContainer.style.maxHeight = `${entry.target.clientHeight}px`;
-        }
-        carouselLeftControlContainer.style.maxHeight = `${
-          entry.target.clientHeight - 125
-        }px`;
-        carouselRightControlContainer.style.maxHeight = `${
-          entry.target.clientHeight - 125
-        }px`;
+      if (!entry.isIntersecting) return;
+
+      if (window.innerWidth >= 900) {
+        carouselContainer.style.maxHeight = 'none';
+      } else {
+        carouselContainer.style.maxHeight = `${entry.target.clientHeight}px`;
       }
+      carouselLeftControlContainer.style.maxHeight = `${
+        entry.target.clientHeight - 125
+      }px`;
+      carouselRightControlContainer.style.maxHeight = `${
+        entry.target.clientHeight - 125
+      }px`;
     });
   };
   const intersectionObserver = new IntersectionObserver(callback, options);
