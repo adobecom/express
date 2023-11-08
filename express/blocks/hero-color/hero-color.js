@@ -87,17 +87,19 @@ function resizeSvgOnLoad() {
   }, 50);
 }
 
+export function resizeSvg(event) {
+  const height = getContentContainerHeight();
+  const svg = document.querySelector('.color-svg-img');
+  if (event.matches) {
+    svg.style.height = `${height}px`;
+  } else {
+    svg.style.height = '200px';
+  }
+}
+
 function resizeSvgOnMediaQueryChange() {
   const mediaQuery = window.matchMedia('(min-width: 900px)');
-  mediaQuery.addEventListener('change', (event) => {
-    const height = getContentContainerHeight();
-    const svg = document.querySelector('.color-svg-img');
-    if (event.matches) {
-      svg.style.height = `${height}px`;
-    } else {
-      svg.style.height = '200px';
-    }
-  });
+  mediaQuery.addEventListener('change', resizeSvg);
 }
 
 function decorateCTA(block) {
