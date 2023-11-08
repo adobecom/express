@@ -220,6 +220,7 @@ function decorateToggleCarousel(selector, $parent) {
         $platform.style.marginLeft = `-${centeringValue}px`;
         $platform.style.paddingRight = `${centeringValue}px`;
       }
+      $platform.style.overflowX = 'hidden';
       const buttons = [...document.querySelectorAll('.mobile-drawer-toggle button')];
 
       let activeButton;

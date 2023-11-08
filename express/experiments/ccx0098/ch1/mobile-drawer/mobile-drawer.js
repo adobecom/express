@@ -220,6 +220,7 @@ function decorateToggleCarousel(selector, $parent) {
         $platform.style.marginLeft = `-${centeringValue}px`;
         $platform.style.paddingRight = `${centeringValue}px`;
       }
+      $platform.style.overflowX = 'hidden';
       const buttons = [...document.querySelectorAll('.mobile-drawer-toggle button')];
 
       let activeButton;
@@ -251,7 +252,6 @@ function decorateToggleCarousel(selector, $parent) {
         mobileDrawer.parentElement.classList.remove('initial-load');
         mobileDrawer.classList.remove('initial-load');
         $platform.classList.remove('mobile-drawer-nav-scrolling');
-        // $platform.style.overflowX = 'hidden';
       }, 300);
     }
   };
