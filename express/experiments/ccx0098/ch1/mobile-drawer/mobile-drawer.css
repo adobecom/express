@@ -301,7 +301,7 @@ main .mobile-drawer-wrapper .mobile-drawer-toggle button.active {
   color: #242424;
   opacity: 1;
 }
-
+main .mobile-drawer-wrapper .mobile-drawer-toggle button.active,
 main .mobile-drawer-wrapper .toggle-carousel-platform.mobile-drawer-nav-scrolling *,
 main .mobile-drawer-wrapper:not(.drawer-opened) .mobile-drawer-toggle button {
   pointer-events: none;
