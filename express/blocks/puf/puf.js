@@ -434,7 +434,7 @@ export default async function decorate(block) {
       }px`;
     });
   };
-  
+
   const intersectionObserver = new IntersectionObserver(callback, options);
   intersectionObserver.observe(rightCard);
   intersectionObserver.observe(leftCard);
