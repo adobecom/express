@@ -512,7 +512,7 @@ export function removeIrrelevantSections(main) {
 
       // section meant for different device
       let sectionRemove = !!(sectionMeta.audience
-        && sectionMeta.audience !== document.body.dataset?.device);
+        && sectionMeta.audience.toLowerCase() !== document.body.dataset?.device);
 
       // section visibility steered over metadata
       if (!sectionRemove && sectionMeta.showwith !== undefined) {
