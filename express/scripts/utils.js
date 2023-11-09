@@ -1869,26 +1869,6 @@ async function buildAutoBlocks($main) {
     }
   }
 
-  // Load the app store autoblocks...
-  if (['yes', 'true', 'on'].includes(getMetadata('show-standard-app-store-blocks').toLowerCase())) {
-    const $highlight = buildBlock('app-store-highlight', '');
-    if ($lastDiv) {
-      $lastDiv.append($highlight);
-    }
-
-    const $blade = buildBlock('app-store-blade', '');
-    if ($lastDiv) {
-      $lastDiv.append($blade);
-    }
-  }
-
-  if (['yes', 'true', 'on'].includes(getMetadata('show-plans-comparison').toLowerCase())) {
-    const $plansComparison = buildBlock('plans-comparison', '');
-    if ($lastDiv) {
-      $lastDiv.append($plansComparison);
-    }
-  }
-
   if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) || ['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
     if (!window.floatingCtasLoaded) {
       const floatingCTAData = await fetchFloatingCta(window.location.pathname);
@@ -1902,15 +1882,6 @@ async function buildAutoBlocks($main) {
       }
 
       window.floatingCtasLoaded = true;
-    }
-  }
-
-  if (getMetadata('show-quick-action-card') && !['no', 'false', 'off'].includes(getMetadata('show-quick-action-card').toLowerCase())) {
-    const fragmentName = getMetadata('show-quick-action-card').toLowerCase();
-    const quickActionCardBlock = buildBlock('quick-action-card', fragmentName);
-    quickActionCardBlock.classList.add('spreadsheet-powered');
-    if ($lastDiv) {
-      $lastDiv.append(quickActionCardBlock);
     }
   }
 }
