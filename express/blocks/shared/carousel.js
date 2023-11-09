@@ -16,7 +16,7 @@ export function initToggleTriggers(parent) {
     const parentSection = parent.closest('.section');
     if (!parentSection) return false;
 
-    return parent.dataset.toggle && parent.style.display === 'none';
+    return parentSection.dataset.toggle && parentSection.style.display === 'none';
   };
 
   const leftControl = parent.querySelector('.carousel-fader-left');
