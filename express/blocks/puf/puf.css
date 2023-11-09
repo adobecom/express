@@ -1,3 +1,7 @@
+main .section.puf-container {
+    padding-bottom: 0;
+}
+
 main .puf-container > div {
     max-width: none;
 }
@@ -327,10 +331,6 @@ main .block.puf .carousel-container .carousel-platform .carousel-left-trigger {
 
 main .block.puf .carousel-container .carousel-platform .carousel-right-trigger {
     right: 0;
-}
-
-main .block.puf .section.puf-container {
-    padding-bottom: 0;
 }
 
 main .block.puf .carousel-container {
