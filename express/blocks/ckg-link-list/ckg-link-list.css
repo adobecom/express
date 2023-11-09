@@ -39,8 +39,9 @@
 
 .ckg-link-list.block .button-container a.button.colorful {
     color: var(--color-white);
+    -webkit-backdrop-filter: brightness(0.7);
     backdrop-filter: brightness(0.7);
-    transition: backdrop-filter 0.2s;
+    transition: backdrop-filter 0.2s, -webkit-backdrop-filter 0.2s;
 }
 
 .ckg-link-list.block .button-container a.button:hover {
@@ -49,10 +50,12 @@
 
 .ckg-link-list.block .button-container a.button.colorful:hover {
     background-color: unset;
+    -webkit-backdrop-filter: brightness(0.6);
     backdrop-filter: brightness(0.6);
 }
 
 .ckg-link-list.block .button-container a.button.colorful:active {
     background-color: unset;
+    -webkit-backdrop-filter: brightness(0.4);
     backdrop-filter: brightness(0.4);
 }
