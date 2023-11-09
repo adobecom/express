@@ -30,7 +30,6 @@ function decorateSchemasBlocks(block) {
         '@type': 'Corporation',
         name: 'Adobe',
         legalName: 'Adobe Inc.',
-        alternateName: 'Adobe Systems Incorporated',
         '@id': 'https://www.adobe.com#organization',
         tickerSymbol: 'ADBE',
         sameAs: [
@@ -56,11 +55,6 @@ function decorateSchemasBlocks(block) {
       creator: { '@id': 'https://www.adobe.com#organization' },
       publisher: { '@id': 'https://www.adobe.com#organization' },
       maintainer: { '@id': 'https://www.adobe.com#organization' },
-      offers: {
-        '@type': 'offer',
-        price: '0.00',
-        priceCurrency: 'INR',
-      },
     },
   };
   webPageSchemaScript.textContent = JSON.stringify(webSchemaJson);
