@@ -12,6 +12,13 @@ function correctCenterAlignment(plat) {
 export function initToggleTriggers(parent) {
   if (!parent) return;
 
+  const isInHiddenSection = () => {
+    const parentSection = parent.closest('.section');
+    if (!parentSection) return false;
+
+    return parent.dataset.toggle && parent.style.display === 'none';
+  };
+
   const leftControl = parent.querySelector('.carousel-fader-left');
   const rightControl = parent.querySelector('.carousel-fader-right');
   const leftTrigger = parent.querySelector('.carousel-left-trigger');
@@ -20,6 +27,7 @@ export function initToggleTriggers(parent) {
 
   // Left intersection observers to toggle left arrow and gradient
   const onFirstSlideIntersect = ([entry]) => {
+    if (isInHiddenSection()) return;
     if (entry.isIntersecting) {
       leftControl.classList.add('arrow-hidden');
       platform.classList.remove('left-fader');
@@ -30,6 +38,7 @@ export function initToggleTriggers(parent) {
   };
   // Right intersection observers to toggle right arrow and gradient
   const onLastSlideIntersect = ([entry]) => {
+    if (isInHiddenSection()) return;
     if (entry.isIntersecting) {
       rightControl.classList.add('arrow-hidden');
       platform.classList.remove('right-fader');
