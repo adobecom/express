@@ -80,7 +80,7 @@ export default async function buildCarousel(selector, parent, options = {}) {
   container.append(platform, faderLeft, faderRight);
   faderLeft.append(arrowLeft);
   faderRight.append(arrowRight);
-  parent.appendChild(container);
+  parent.append(container);
 
   // If flex container has a gap, add negative margins to compensate
   const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
