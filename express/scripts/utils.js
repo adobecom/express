@@ -2120,9 +2120,10 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
 
 function decoratePictures(main) {
   main.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
-    const newPicture = createOptimizedPicture(img.src, img.alt, !i);
     const picture = img.closest('picture');
-    if (picture) picture.parentElement.replaceChild(newPicture, picture);
+    if (!picture) return;
+    const newPicture = createOptimizedPicture(img.src, img.alt, !i);
+    picture.parentElement.replaceChild(newPicture, picture);
   });
 }
 
