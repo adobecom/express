@@ -183,7 +183,7 @@ w.marketingtech = {
 
 const martechLoadedCB = () => {
   /* eslint-disable no-underscore-dangle */
-  const set = (path, value) => {
+  const setDeep = (path, value) => {
     const obj = w.alloy_all;
     const newPath = `data._adobe_corpnew.digitalData.${path}`;
     const segs = newPath.split('.');
@@ -285,25 +285,27 @@ const martechLoadedCB = () => {
   const url = new URL(loc.href);
   const sparkTouchpoint = url.searchParams.get('touchpointName');
 
+  // TODO: some of these setDeep are no longer needed
+
   //----------------------------------------------------------------------------
   // set some global and persistent data layer properties
   //----------------------------------------------------------------------------
-  set('page.pageInfo.pageName', pageName);
-  set('page.pageInfo.language', language);
-  set('page.pageInfo.siteSection', 'adobe.com:express');
-  set('page.pageInfo.category', category);
+  setDeep('page.pageInfo.pageName', pageName);
+  setDeep('page.pageInfo.language', language);
+  setDeep('page.pageInfo.siteSection', 'adobe.com:express');
+  setDeep('page.pageInfo.category', category);
 
   //----------------------------------------------------------------------------
   // spark specific global and persistent data layer properties
   //----------------------------------------------------------------------------
-  set('page.pageInfo.pageurl', loc.href);
-  set('page.pageInfo.namespace', 'express');
+  setDeep('page.pageInfo.pageurl', loc.href);
+  setDeep('page.pageInfo.namespace', 'express');
 
   /* set experiment and variant information */
   if (window.hlx.experiment) {
     const { experiment } = window.hlx;
-    set('adobe.experienceCloud.target.info.primarytest.testinfo.campaignid', experiment.id);
-    set('adobe.experienceCloud.target.info.primarytest.testinfo.offerid', experiment.selectedVariant);
+    setDeep('adobe.experienceCloud.target.info.primarytest.testinfo.campaignid', experiment.id);
+    setDeep('adobe.experienceCloud.target.info.primarytest.testinfo.offerid', experiment.selectedVariant);
   }
 
   //------------------------------------------------------------------------------------
@@ -686,14 +688,14 @@ const martechLoadedCB = () => {
       videoMediaType,
     } = parameters;
 
-    set('video.videoInfo.videoName', videoName);
-    set('video.videoInfo.videoId', videoId);
-    set('video.videoInfo.videoLength', videoLength);
-    set('video.videoInfo.product', product);
-    set('video.videoInfo.videoCategory', videoCategory);
-    set('video.videoInfo.videoDescription', videoDescription);
-    set('video.videoInfo.videoPlayer', videoPlayer);
-    set('video.videoInfo.videoMediaType', videoMediaType);
+    setDeep('video.videoInfo.videoName', videoName);
+    setDeep('video.videoInfo.videoId', videoId);
+    setDeep('video.videoInfo.videoLength', videoLength);
+    setDeep('video.videoInfo.product', product);
+    setDeep('video.videoInfo.videoCategory', videoCategory);
+    setDeep('video.videoInfo.videoDescription', videoDescription);
+    setDeep('video.videoInfo.videoPlayer', videoPlayer);
+    setDeep('video.videoInfo.videoMediaType', videoMediaType);
   }
 
   function decorateAnalyticsEvents() {
