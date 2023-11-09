@@ -25,34 +25,37 @@ export function initToggleTriggers(parent) {
   const rightTrigger = parent.querySelector('.carousel-right-trigger');
   const platform = parent.querySelector('.carousel-platform');
 
-  // Left intersection observers to toggle left arrow and gradient
-  const onFirstSlideIntersect = ([entry]) => {
+  // intersection observer to toggle right arrow and gradient
+  const onSlideIntersect = (entries) => {
     if (isInHiddenSection()) return;
-    if (entry.isIntersecting) {
-      leftControl.classList.add('arrow-hidden');
-      platform.classList.remove('left-fader');
-    } else {
-      leftControl.classList.remove('arrow-hidden');
-      platform.classList.add('left-fader');
-    }
-  };
-  // Right intersection observers to toggle right arrow and gradient
-  const onLastSlideIntersect = ([entry]) => {
-    if (isInHiddenSection()) return;
-    if (entry.isIntersecting) {
-      rightControl.classList.add('arrow-hidden');
-      platform.classList.remove('right-fader');
-    } else {
-      rightControl.classList.remove('arrow-hidden');
-      platform.classList.add('right-fader');
-    }
+
+    entries.forEach((entry) => {
+      if (entry.target === leftTrigger) {
+        if (entry.isIntersecting) {
+          leftControl.classList.add('arrow-hidden');
+          platform.classList.remove('left-fader');
+        } else {
+          leftControl.classList.remove('arrow-hidden');
+          platform.classList.add('left-fader');
+        }
+      }
+
+      if (entry.target === rightTrigger) {
+        if (entry.isIntersecting) {
+          rightControl.classList.add('arrow-hidden');
+          platform.classList.remove('right-fader');
+        } else {
+          rightControl.classList.remove('arrow-hidden');
+          platform.classList.add('right-fader');
+        }
+      }
+    });
   };
 
   const options = { threshold: 0, root: parent };
-  const firstSlideObserver = new IntersectionObserver(onFirstSlideIntersect, options);
-  const lastSlideObserver = new IntersectionObserver(onLastSlideIntersect, options);
-  firstSlideObserver.observe(leftTrigger);
-  lastSlideObserver.observe(rightTrigger);
+  const slideObserver = new IntersectionObserver(onSlideIntersect, options);
+  slideObserver.observe(leftTrigger);
+  slideObserver.observe(rightTrigger);
   // todo: should unobserve triggers where/when appropriate...
 }
 
