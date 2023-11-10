@@ -1587,7 +1587,7 @@ export async function decorateTemplateList($block, props) {
         }
       }
 
-      if (placeholders['template-filter-premium'] && !$block.classList.contains('mini')) {
+      if (placeholders['template-filter-premium'] && !$block.classList.contains('horizontal')) {
         document.addEventListener('linkspopulated', async (e) => {
           // desktop/mobile fires the same event
           if ($parent.contains(e.detail[0])) {
