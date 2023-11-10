@@ -9,23 +9,8 @@ function decorateCarousel(links, container) {
   buildCarousel('p.button-container', container);
 }
 
-export default function decorate(block) {
-  const links = [...block.querySelectorAll('p.button-container')];
-  const seoCopy = block.querySelectorAll('div')[block.querySelectorAll('div').length - 1];
-  const carouselDiv = block.querySelector('div:nth-of-type(2) > div');
-
-  if (links.length) {
-    decorateCarousel(links, carouselDiv);
-  }
-
-  if (seoCopy) {
-    const $paragraphs = seoCopy.querySelectorAll('p');
-    for (let i = 0; i < $paragraphs.length; i += 1) {
-      $paragraphs[i].classList.add('seo-paragraph');
-    }
-  }
-
-  const pillsUpdatedByCKG = (mutationList, observer) => {
+export function updatePillsByCKG(block, carouselDiv) {
+  return (mutationList, observer) => {
     for (const mutation of mutationList) {
       if (mutation.type === 'childList') {
         if (carouselDiv.querySelector('.carousel-container')) {
@@ -43,7 +28,24 @@ export default function decorate(block) {
       }
     }
   };
+}
 
-  const observer = new MutationObserver(pillsUpdatedByCKG);
+export default function decorate(block) {
+  const links = [...block.querySelectorAll('p.button-container')];
+  const seoCopy = block.querySelectorAll('div')[block.querySelectorAll('div').length - 1];
+  const carouselDiv = block.querySelector('div:nth-of-type(2) > div');
+
+  if (links.length) {
+    decorateCarousel(links, carouselDiv);
+  }
+
+  if (seoCopy) {
+    const $paragraphs = seoCopy.querySelectorAll('p');
+    for (let i = 0; i < $paragraphs.length; i += 1) {
+      $paragraphs[i].classList.add('seo-paragraph');
+    }
+  }
+
+  const observer = new MutationObserver(updatePillsByCKG(block, carouselDiv));
   observer.observe(carouselDiv, { childList: true });
 }
