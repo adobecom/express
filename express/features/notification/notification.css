@@ -6,12 +6,12 @@
     color: #fff;
     text-align: center;
     padding: 8px 0px 8px 16px;
-    position: fixed;
-    z-index: 1;
+    position: absolute;
+    z-index: 10;
     right: 30px;
-    top: 80px;
     font-size: 17px;
     border-radius: 5px;
+    margin-top: 20px;
 }
 
 .toast span {
@@ -54,21 +54,21 @@
 }
 
 @-webkit-keyframes fadein {
-    from {top: 0; opacity: 0;}
-    to {top: 80px; opacity: 1;}
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
 
 @keyframes fadein {
-    from {top: 0; opacity: 0;}
-    to {top: 80px; opacity: 1;}
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
 
 @-webkit-keyframes fadeout {
-    from {top: 80px; opacity: 1;}
-    to {top: 0; opacity: 0;}
+    from {opacity: 1;}
+    to {opacity: 0;}
 }
 
 @keyframes fadeout {
-    from {top: 80px; opacity: 1;}
-    to {top: 0; opacity: 0;}
+    from {opacity: 1;}
+    to {opacity: 0;}
 }

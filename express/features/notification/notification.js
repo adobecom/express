@@ -7,7 +7,7 @@ function showToast(text) {
   const toastBtns = createTag('div', { class: 'toast-buttons' }, closeBtn);
   const toast = createTag('div', { class: 'toast show' }, span);
   toast.appendChild(toastBtns);
-  document.body.append(toast);
+  document.querySelector('header')?.append(toast);
   closeBtn.addEventListener('click', () => {
     toast.remove();
   });
