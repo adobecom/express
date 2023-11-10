@@ -2429,6 +2429,7 @@ async function loadLazy(main) {
 async function loadPostLCP() {
   // post LCP actions go here
   sampleRUM('lcp');
+  window.dispatchEvent(new Event('milo:LCP:loaded'));
   if (window.hlx.martech) loadMartech();
   loadGnav();
   const tkID = TK_IDS[getConfig().locale.prefix.replace('/', '')];

@@ -16,7 +16,7 @@ import {
   removeIrrelevantSections,
   loadArea,
   stamp,
-  registerPerformanceLogger, setConfig,
+  registerPerformanceLogger, setConfig, loadCSS,
 } from './utils.js';
 
 const locales = {
@@ -77,9 +77,25 @@ const eagerLoad = (img) => {
   }
 }());
 
+const showNotifications = () => {
+  const url = new URL(window.location.href);
+  const notification = url.searchParams.get('notification');
+  if (notification) {
+    const handler = () => {
+      loadCSS('/express/features/notification/notification.css');
+      import('../features/notification/notification.js').then((mod) => {
+        mod.default(notification);
+        window.removeEventListener('milo:LCP:loaded', handler);
+      });
+    };
+    window.addEventListener('milo:LCP:loaded', handler);
+  }
+};
+
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
+  showNotifications();
   await loadArea();
 }());
 
