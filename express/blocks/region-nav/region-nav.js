@@ -126,10 +126,9 @@ const redirectMap = new Map(
 );
 
 /* c8 ignore next 11 */
-function handleEvent(prefix, link) {
-  const prefixNoSlash = prefix.replace('/', '');
-  document.cookie = `international=${prefixNoSlash};path=/`;
-  sessionStorage.setItem('international', prefixNoSlash);
+function handleEvent(prefix, link, valueInMap) {
+  document.cookie = `international=${prefix};path=/`;
+  sessionStorage.setItem('international', prefix);
   const fetchUrl = (url) => fetch(url, { method: 'HEAD' })
     .then((response) => {
       if (!response.ok) throw new Error('request failed');
@@ -142,7 +141,7 @@ function handleEvent(prefix, link) {
         window.location.assign('/express/?notification=pageDidNotExist');
       });
     } else {
-      window.location.assign(`${prefix}/express/?notification=pageDidNotExist`);
+      window.location.assign(`/${valueInMap ?? prefix}/express/?notification=pageDidNotExist`);
     }
   });
 }
@@ -160,15 +159,14 @@ function decorateLink(link, path) {
   if (href.endsWith('/')) href = href.slice(0, -1);
   const { locales } = getConfig();
   const locale = locales[prefix === 'us' ? '' : prefix];
-  let redirect = false;
+  let valueInMap;
   if (!locale) {
-    const valueInMap = redirectMap.get(prefix)?.replaceAll('/', '') ?? '';
+    valueInMap = redirectMap.get(prefix)?.replaceAll('/', '') ?? '';
     href = href.replace(prefix, valueInMap);
     if (href.endsWith('/')) href = href.slice(0, -1);
-    redirect = true;
   }
   link.href = `${href}${path}`;
-  if (redirect) {
+  if (valueInMap) {
     const url = new URL(link.href);
     url.searchParams.append('notification', 'pageDidNotExist');
     link.href = url.href;
@@ -176,7 +174,7 @@ function decorateLink(link, path) {
   link.addEventListener('click', (e) => {
     /* c8 ignore next 2 */
     e.preventDefault();
-    handleEvent(prefix, link);
+    handleEvent(prefix, link, valueInMap);
   });
 }
 
