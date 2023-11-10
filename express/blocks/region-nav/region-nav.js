@@ -154,7 +154,7 @@ function decorateLink(link, path) {
     if (href.endsWith('/')) href = href.slice(0, -1);
   }
   link.href = `${href}${path}`;
-  if (valueInMap) {
+  if (valueInMap || valueInMap === '') {
     const url = new URL(link.href);
     url.searchParams.append('notification', 'pageDidNotExist');
     link.href = url.href;
