@@ -1,5 +1,8 @@
 import { fetchPlaceholders, getConfig } from '../../scripts/utils.js';
 
+const domain = window.location.host === 'adobe.com'
+  || window.location.host.endsWith('.adobe.com') ? 'domain=adobe.com' : '';
+
 const redirectMap = new Map(
   [
     ['ae_ar', '/'],
@@ -115,7 +118,7 @@ const redirectMap = new Map(
 
 /* c8 ignore next 11 */
 function handleEvent(prefix, link, valueInMap) {
-  document.cookie = `international=${prefix};path=/`;
+  document.cookie = `international=${prefix};path=/;${domain}`;
   sessionStorage.setItem('international', prefix);
   const fetchUrl = (url) => fetch(url, { method: 'HEAD' })
     .then((response) => {
