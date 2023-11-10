@@ -189,3 +189,11 @@ sitemaps:
         destination: /nl/express/templates/sitemap.xml
         hreflang: nl
         alternate: /nl/{path}
+  colors:
+    origin: https://www.adobe.com
+    languages:
+      default:
+        source: /express/colors/default/metadata.json?sheet=sitemap
+        destination: /express/colors/sitemap.xml
+        hreflang: en
+        alternate: /{path}
