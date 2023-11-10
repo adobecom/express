@@ -1,7 +1,9 @@
 import { expect } from '@esm-bundle/chai';
 import { readFile } from '@web/test-runner-commands';
 import sinon from 'sinon';
+import { setConfig } from '../../../../express/scripts/utils.js';
 
+setConfig({});
 const { default: decorate } = await import('../../../../express/blocks/ckg-link-list/ckg-link-list.js');
 const html = await readFile({ path: './mocks/default.html' });
 
