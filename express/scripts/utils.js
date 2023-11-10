@@ -2118,13 +2118,23 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
   return picture;
 }
 
-function decoratePictures(main) {
-  main.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
+async function decoratePictures(main) {
+  const imgs = [...main.querySelectorAll('img[src*="/media_"]')];
+  function decorate(img, i) {
     const picture = img.closest('picture');
     if (!picture) return;
     const newPicture = createOptimizedPicture(img.src, img.alt, !i);
     picture.parentElement.replaceChild(newPicture, picture);
-  });
+  }
+  if (imgs.length < 10) {
+    imgs.forEach(decorate);
+  } else {
+    for (let i = 0; i < imgs.length; i += 1) {
+      decorate(imgs[i], i);
+      // eslint-disable-next-line no-await-in-loop
+      if ((i + 1) % 3 === 0 && i < imgs.length - 1) await yieldToMain();
+    }
+  }
 }
 
 /**
@@ -2139,7 +2149,7 @@ export async function decorateMain(main, isDoc) {
   decorateButtons(main);
   decorateMarqueeColumns(main);
   await fixIcons(main);
-  decoratePictures(main);
+  await decoratePictures(main);
   decorateLinkedPictures(main);
   decorateSocialIcons(main);
 
