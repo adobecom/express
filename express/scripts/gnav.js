@@ -287,7 +287,7 @@ async function loadFEDS() {
       otDomainId: '7a5eb705-95ed-4cc4-a11d-0cc5760e93db',
     };
     loadScript('https://www.adobe.com/etc.clientlibs/globalnav/clientlibs/base/privacy-standalone.js');
-  }, 0);
+  }, 4000);
   const footer = document.querySelector('footer');
   footer?.addEventListener('click', (event) => {
     if (event.target.closest('a[data-feds-action="open-adchoices-modal"]')) {
