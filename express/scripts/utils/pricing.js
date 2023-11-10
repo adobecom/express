@@ -120,7 +120,7 @@ export function formatPrice(price, currency) {
   };
   const locale = ['USD', 'TWD'].includes(currency)
     ? 'en-GB' // use en-GB for intl $ symbol formatting
-    : getConfig().locales[getCountry() || ''].ietf;
+    : (getConfig().locales[getCountry() || '']?.ietf ?? 'en-US');
   const currencyDisplay = getCurrencyDisplay(currency);
   let formattedPrice = new Intl.NumberFormat(locale, {
     style: 'currency',
