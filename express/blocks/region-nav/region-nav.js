@@ -1,4 +1,4 @@
-import { getConfig } from '../../scripts/utils.js';
+import { fetchPlaceholders, getConfig } from '../../scripts/utils.js';
 
 const redirectMap = new Map(
   [
@@ -167,6 +167,12 @@ function decorateLink(link, path) {
 }
 
 export default function init(block) {
+  fetchPlaceholders().then((placeholders) => {
+    block.innerHTML
+      .replaceAll('{{change-region}}', placeholders['change-region'] ?? 'Choose your region')
+      .replaceAll('{{change-region-description}}', placeholders['change-region-description'] ?? 'Selecting a region changes the language and/or content on Adobe.com');
+  });
+
   const { prefix } = getConfig().locale;
   const divs = block.querySelectorAll(':scope > div');
   if (divs.length < 2) return;
