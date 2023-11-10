@@ -168,9 +168,9 @@ function decorateLink(link, path) {
 
 export default function init(block) {
   fetchPlaceholders().then((placeholders) => {
-    block.innerHTML
-      .replaceAll('{{change-region}}', placeholders['change-region'] ?? 'Choose your region')
-      .replaceAll('{{change-region-description}}', placeholders['change-region-description'] ?? 'Selecting a region changes the language and/or content on Adobe.com');
+    const pTags = block.querySelectorAll('p');
+    pTags[0].textContent = pTags[0].textContent.replaceAll('{{change-region}}', placeholders['change-region'] ?? 'Choose your region');
+    pTags[1].textContent = pTags[1].textContent.replaceAll('{{change-region-description}}', placeholders['change-region-description'] ?? 'Selecting a region changes the language and/or content on Adobe.com');
   });
 
   const { prefix } = getConfig().locale;
