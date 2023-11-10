@@ -2074,7 +2074,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     border-color: transparent #33AB84 transparent transparent;
 }
 
-.template-x.horizontal .template:last-of-type .button-container .media-wrapper .share-icon-wrapper .shared-tooltip::after {
+.template-x.horizontal .template:nth-last-of-type(2) .button-container .media-wrapper .share-icon-wrapper .shared-tooltip::after {
     right: unset;
     left: 100%;
     border-color: transparent transparent transparent #33AB84;
