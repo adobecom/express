@@ -231,44 +231,6 @@ export async function createFloatingButton(block, audience, data) {
     }
   }
 
-  const heroCTA = document.querySelector('a.button.same-as-floating-button-CTA');
-  if (heroCTA) {
-    const hideButtonWhenIntersecting = new IntersectionObserver((entries) => {
-      const e = entries[0];
-      if (e.boundingClientRect.top > window.innerHeight - 40 || e.boundingClientRect.top === 0) {
-        floatButtonWrapper.classList.remove('floating-button--below-the-fold');
-        floatButtonWrapper.classList.add('floating-button--above-the-fold');
-      } else {
-        floatButtonWrapper.classList.add('floating-button--below-the-fold');
-        floatButtonWrapper.classList.remove('floating-button--above-the-fold');
-      }
-      if (e.intersectionRatio > 0 || e.isIntersecting) {
-        floatButtonWrapper.classList.add('floating-button--intersecting');
-        floatButton.style.bottom = '0px';
-      } else {
-        floatButtonWrapper.classList.remove('floating-button--intersecting');
-        if (promoBar && promoBar.block) {
-          floatButton.style.bottom = currentBottom ? `${currentBottom + promoBarHeight}px` : `${promoBarHeight}px`;
-        } else if (currentBottom) {
-          floatButton.style.bottom = currentBottom;
-        }
-      }
-    }, {
-      root: null,
-      rootMargin: '-40px 0px',
-      threshold: 0,
-    });
-    if (document.readyState === 'complete') {
-      hideButtonWhenIntersecting.observe(heroCTA);
-    } else {
-      window.addEventListener('load', () => {
-        hideButtonWhenIntersecting.observe(heroCTA);
-      });
-    }
-  } else {
-    floatButtonWrapper.classList.add('floating-button--above-the-fold');
-  }
-
   document.dispatchEvent(new CustomEvent('floatingbuttonloaded', {
     detail: {
       block: floatButtonWrapper,
@@ -276,9 +238,47 @@ export async function createFloatingButton(block, audience, data) {
   }));
 
   if (data.useLottieArrow !== 'no') {
+    const heroCTA = document.querySelector('a.button.same-as-floating-button-CTA');
+    if (heroCTA) {
+      const hideButtonWhenIntersecting = new IntersectionObserver(([e]) => {
+        if (e.boundingClientRect.top > window.innerHeight - 40 || e.boundingClientRect.top === 0) {
+          floatButtonWrapper.classList.remove('floating-button--below-the-fold');
+          floatButtonWrapper.classList.add('floating-button--above-the-fold');
+        } else {
+          floatButtonWrapper.classList.add('floating-button--below-the-fold');
+          floatButtonWrapper.classList.remove('floating-button--above-the-fold');
+        }
+        if (e.intersectionRatio > 0 || e.isIntersecting) {
+          floatButtonWrapper.classList.add('floating-button--intersecting');
+          floatButton.style.bottom = '0px';
+        } else {
+          floatButtonWrapper.classList.remove('floating-button--intersecting');
+          if (promoBar && promoBar.block) {
+            floatButton.style.bottom = currentBottom ? `${currentBottom + promoBarHeight}px` : `${promoBarHeight}px`;
+          } else if (currentBottom) {
+            floatButton.style.bottom = currentBottom;
+          }
+        }
+      }, {
+        root: null,
+        rootMargin: '-40px 0px',
+        threshold: 0,
+      });
+      if (document.readyState === 'complete') {
+        hideButtonWhenIntersecting.observe(heroCTA);
+      } else {
+        window.addEventListener('load', () => {
+          hideButtonWhenIntersecting.observe(heroCTA);
+        });
+      }
+    } else {
+      floatButtonWrapper.classList.add('floating-button--above-the-fold');
+    }
+
     const lottieScrollButton = buildLottieArrow(floatButtonWrapper, floatButton, data);
     document.dispatchEvent(new CustomEvent('linkspopulated', { detail: [floatButtonLink, lottieScrollButton] }));
   } else {
+    data.scrollState = 'withoutLottie';
     document.dispatchEvent(new CustomEvent('linkspopulated', { detail: [floatButtonLink] }));
   }
 
@@ -348,6 +348,10 @@ export async function collectFloatingButtonData() {
 
     if (key === 'bubble sheet') {
       data.bubbleSheet = value;
+    }
+
+    if (key === 'use lottie arrow') {
+      data.useLottieArrow = value;
     }
 
     for (let i = 1; i < 7; i += 1) {
