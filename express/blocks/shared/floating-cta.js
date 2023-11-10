@@ -237,7 +237,7 @@ export async function createFloatingButton(block, audience, data) {
     },
   }));
 
-  if (data.useLottieArrow !== 'no') {
+  if (data.useLottieArrow) {
     const heroCTA = document.querySelector('a.button.same-as-floating-button-CTA');
     if (heroCTA) {
       const hideButtonWhenIntersecting = new IntersectionObserver(([e]) => {
@@ -279,6 +279,7 @@ export async function createFloatingButton(block, audience, data) {
     document.dispatchEvent(new CustomEvent('linkspopulated', { detail: [floatButtonLink, lottieScrollButton] }));
   } else {
     data.scrollState = 'withoutLottie';
+    floatButtonWrapper.classList.add('floating-button--scrolled');
     document.dispatchEvent(new CustomEvent('linkspopulated', { detail: [floatButtonLink] }));
   }
 
@@ -308,6 +309,7 @@ export async function collectFloatingButtonData() {
 
   const data = {
     scrollState: 'withLottie',
+    useLottieArrow: true,
     delay: 3,
     tools: [],
     appStore: {},
@@ -351,7 +353,7 @@ export async function collectFloatingButtonData() {
     }
 
     if (key === 'use lottie arrow') {
-      data.useLottieArrow = value;
+      data.useLottieArrow = !['no', 'N', 'false', 'off'].includes(value);
     }
 
     for (let i = 1; i < 7; i += 1) {
