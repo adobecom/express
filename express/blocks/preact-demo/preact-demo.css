@@ -1,10 +1,66 @@
-main .section .preact-demo-wrapper {
+main div.preact-demo.block {
   max-width: 1500px;
   margin-top: 50px;
+  display: flex;
+  justify-content:space-evenly;
   height: 400px;
 }
 
-.demo-container {
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 34px;
+}
+
+.board-row:after {
+  clear: both;
+  content: '';
+  display: table;
+}
+
+.status {
+  margin-bottom: 10px;
+}
+.game {
+  margin: 20px;
   display: flex;
-  justify-content:space-evenly;
+  flex-direction: row;
+  justify-content: center;
+  height: 300px;
+}
+
+.game-info {
+  margin-left: 20px;
+}
+
+#focusedInputed{
+  border-radius: 20px;
+  font-size: 1.3rem;
+ font-weight: 300;
+ text-align:center;
+ width:400px;
+ 
+}
+.temperature {
+ height: 260px;
+}
+.hot{
+ color:#e60000;
+}
+
+.cold{
+ color:#3399ff;
+}
+
+.normal{
+ color:#ff9933;
 }
