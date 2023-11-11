@@ -4,6 +4,9 @@ import Game from './ttt/ttt.js';
 import Temperature from './temperature/temperature.js';
 
 export default async function init(el) {
+  const img = el.querySelector('img');
+  img.width = 600;
+  img.height = 300;
   const demoContainer = createTag('div', { class: 'demo-container' });
   const ttt = html`
     <${Game} />
