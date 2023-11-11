@@ -1,6 +1,7 @@
 main .section .preact-demo-wrapper {
   max-width: 1500px;
   margin-top: 50px;
+  height: 400px;
 }
 
 .demo-container {
