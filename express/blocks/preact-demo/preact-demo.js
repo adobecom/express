@@ -1,19 +1,21 @@
+import { createTag } from '../../scripts/utils.js';
 import { html, render } from '../../scripts/libs/htm-preact.js';
 import Game from './ttt/ttt.js';
 import Temperature from './temperature/temperature.js';
 
 export default async function init(el) {
-  el.querySelector('div').remove();
+  const demoContainer = createTag('div', { class: 'demo-container' });
   const ttt = html`
     <${Game} />
   `;
   const temperature = html`
     <${Temperature} />
   `;
-  const tttDiv = document.createElement('div');
-  const temperatureDiv = document.createElement('div');
+  const tttDiv = createTag('div');
+  const temperatureDiv = createTag('div');
   render(ttt, tttDiv);
   render(temperature, temperatureDiv);
-  el.append(tttDiv);
-  el.append(temperatureDiv);
+  demoContainer.append(tttDiv);
+  demoContainer.append(temperatureDiv);
+  el.append(demoContainer);
 }

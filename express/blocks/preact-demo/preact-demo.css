@@ -1,9 +1,19 @@
 main div.preact-demo.block {
   max-width: 1500px;
-  margin-top: 50px;
+  border: solid;
+}
+
+main div.preact-demo.block img {
+  width: 600px;
+  height: 300px;
+  margin: 30px;
+}
+
+.demo-container {
+  margin-top: 30px;
   display: flex;
   justify-content:space-evenly;
-  height: 400px;
+  height: 260px;
 }
 
 .square {
@@ -35,7 +45,6 @@ main div.preact-demo.block {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  height: 300px;
 }
 
 .game-info {
@@ -49,9 +58,6 @@ main div.preact-demo.block {
  text-align:center;
  width:400px;
  
-}
-.temperature {
- height: 260px;
 }
 .hot{
  color:#e60000;
