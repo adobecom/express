@@ -1,0 +1,28 @@
+* {
+  margin: 5px;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#focusedInputed{
+   border-radius: 20px;
+   font-size: 1.3rem;
+  font-weight: 300;
+  text-align:center;
+  width:400px;
+  
+}
+.temperature {
+  height: 260px;
+}
+.hot{
+  color:#e60000;
+}
+
+.cold{
+  color:#3399ff;
+}
+
+.normal{
+  color:#ff9933;
+}
