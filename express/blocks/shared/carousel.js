@@ -54,8 +54,8 @@ export function initToggleTriggers(parent) {
 
   const options = { threshold: 0, root: parent };
   const slideObserver = new IntersectionObserver(onSlideIntersect, options);
-  slideObserver.observe(leftTrigger);
-  slideObserver.observe(rightTrigger);
+  if (leftTrigger) slideObserver.observe(leftTrigger);
+  if (rightTrigger) slideObserver.observe(rightTrigger);
   // todo: should unobserve triggers where/when appropriate...
 }
 
