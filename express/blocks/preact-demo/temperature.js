@@ -2,10 +2,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable no-use-before-define */
-import { html, Component } from '../../../scripts/libs/htm-preact.js';
-// import { loadCSS } from '../../../scripts/utils.js';
-
-// loadCSS('/express/blocks/preact-demo/temperature/temperature.css');
+import { html, Component } from '../../scripts/libs/htm-preact.js';
 
 const scaleNames = {
   c: 'Celsius',

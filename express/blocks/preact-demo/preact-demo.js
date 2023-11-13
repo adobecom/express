@@ -1,7 +1,7 @@
 import { createTag } from '../../scripts/utils.js';
 import { html, render } from '../../scripts/libs/htm-preact.js';
-import Game from './ttt/ttt.js';
-import Temperature from './temperature/temperature.js';
+import Game from './ttt.js';
+import Temperature from './temperature.js';
 
 export default async function init(el) {
   const img = el.querySelector('img');
