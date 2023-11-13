@@ -64,7 +64,7 @@ function loadIMS() {
 
 async function loadFEDS() {
   const config = getConfig();
-  const { prefix } = config.locale;
+  const prefix = config.locale.prefix.replaceAll('/', '');
 
   async function showRegionPicker() {
     const { getModal } = await import('../blocks/modal/modal.js');
