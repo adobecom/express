@@ -2358,6 +2358,8 @@ async function loadPostLCP() {
   if (tkID) {
     const { default: loadFonts } = await import('./fonts.js');
     loadFonts(tkID, loadCSS);
+  } else {
+    loadCSS('/express/styles/legacy-fonts.css');
   }
 }
 
