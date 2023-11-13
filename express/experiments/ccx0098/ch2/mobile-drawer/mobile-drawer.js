@@ -240,7 +240,6 @@ function decorateToggleCarousel(selector, $parent) {
         mobileDrawer.parentElement.classList.remove('initial-load');
         mobileDrawer.classList.remove('initial-load');
         $platform.classList.remove('mobile-drawer-nav-scrolling');
-        // $platform.style.overflowX = 'hidden';
       }, 300);
     }
   };
