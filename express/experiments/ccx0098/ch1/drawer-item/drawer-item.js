@@ -335,7 +335,6 @@ function decorateCarouselViews(payload) {
     const indicators = createIndicators(payload, carousel);
     payload.drawerItemContainer.append(indicators);
     payload.drawerItemContainer.dataset.lh = payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('');
-    console.log('here',  payload.drawerItemContainer);
   }
 }
 function decorateCTA(payload) {
