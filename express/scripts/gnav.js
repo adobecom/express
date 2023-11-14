@@ -149,9 +149,9 @@ async function loadFEDS() {
     if (isHomepage || getMetadata('hide-breadcrumbs') === 'true') {
       return null;
     }
-    const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+
     const buildBreadCrumb = (path, name, parentPath = '') => (
-      { title: capitalize(name), url: `${parentPath}/${path}` }
+      { title: name, url: `${parentPath}/${path}` }
     );
 
     const placeholders = await fetchPlaceholders();
@@ -162,11 +162,11 @@ async function loadFEDS() {
     const localePath = locale === 'us' ? '' : `/${locale}`;
     const secondPathSegment = pathSegments[1].toLowerCase();
     const shortTitle = getMetadata('short-title');
-    const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
-    
-    if (pathSegments.length < 2 || !replacedCategory) return null;
+    const secondBreadCrumbText = placeholders[`breadcrumbs-${secondPathSegment}`];
 
-    const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
+    if (pathSegments.length < 2 || !secondBreadCrumbText) return null;
+
+    const secondBreadCrumb = buildBreadCrumb(secondPathSegment, secondBreadCrumbText, `${localePath}/express`);
     const breadCrumbList = [secondBreadCrumb];
 
     if (pathSegments.length >= 3 && shortTitle) {
