@@ -1,15 +1,51 @@
-/*
- * Copyright 2021 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 /* eslint-env mocha */
 /* eslint-disable no-unused-vars */
 
+import { readFile } from '@web/test-runner-commands';
+import { expect } from '@esm-bundle/chai';
+
 const { default: decorate } = await import('../../../../express/blocks/floating-button/floating-button.js');
+
+describe('Floating Button', () => {
+  before(() => {
+    window.isTestEnv = true;
+    window.hlx = {};
+    window.floatingCta = [
+      {
+        path: 'default',
+        live: 'Y',
+      },
+    ];
+    window.placeholders = { 'see-more': 'See More' };
+  });
+
+  it('Floating Button exists', async () => {
+    document.body.innerHTML = await readFile({ path: './mocks/body.html' });
+    const floatingButton = document.querySelector('.floating-button');
+    decorate(floatingButton);
+    expect(floatingButton).to.exist;
+  });
+
+  it('Floating Button has the right elements and if mobile, .section should be removed', async () => {
+    document.body.innerHTML = await readFile({ path: './mocks/body.html' });
+    const floatingButton = document.querySelector('.floating-button');
+    decorate(floatingButton);
+
+    const closestSection = floatingButton.closest('.section');
+    const blockLinks = floatingButton.querySelectorAll('a');
+    expect(closestSection).to.exist;
+    expect(document.contains(closestSection)).to.be.false;
+    expect(blockLinks).to.exist;
+  });
+
+  it('Parent element should be removed if there is no link', async () => {
+    document.body.innerHTML = await readFile({ path: './mocks/no-link.html' });
+    const floatingButton = document.querySelector('.floating-button');
+    decorate(floatingButton);
+
+    const { parentElement } = floatingButton;
+    const blockLinks = floatingButton.querySelectorAll('a');
+    expect(document.contains(parentElement)).to.be.false;
+    expect(blockLinks).to.be.empty;
+  });
+});

@@ -3,7 +3,8 @@ version: 1
 indices:
   blog: &blog
     include:
-      - '/express/learn/blog/*'
+      - '/express/learn/blog'
+      - '/express/learn/blog/**'
     target: /express/learn/blog/query-index.xlsx
     properties:
       author:
@@ -46,43 +47,49 @@ indices:
   blog-jp:
     <<: *blog
     include:
-      - '/jp/express/learn/blog/*'
+      - '/jp/express/learn/blog'
+      - '/jp/express/learn/blog/**'
     target: /jp/express/learn/blog/query-index.xlsx
 
   blog-de:
     <<: *blog
     include:
-      - '/de/express/learn/blog/*'
+      - '/de/express/learn/blog'
+      - '/de/express/learn/blog/**'
     target: /de/express/learn/blog/query-index.xlsx
 
   blog-fr:
     <<: *blog
     include:
-      - '/fr/express/learn/blog/*'
+      - '/fr/express/learn/blog'
+      - '/fr/express/learn/blog/**'
     target: /fr/express/learn/blog/query-index.xlsx
 
   blog-es:
     <<: *blog
     include:
-      - '/es/express/learn/blog/*'
+      - '/es/express/learn/blog'
+      - '/es/express/learn/blog/**'
     target: /es/express/learn/blog/query-index.xlsx
 
   blog-it:
     <<: *blog
     include:
-      - '/it/express/learn/blog/*'
+      - '/it/express/learn/blog'
+      - '/it/express/learn/blog/**'
     target: /it/express/learn/blog/query-index.xlsx
 
   blog-uk:
     <<: *blog
     include:
-      - '/uk/express/learn/blog/*'
+      - '/uk/express/learn/blog'
+      - '/uk/express/learn/blog/**'
     target: /uk/express/learn/blog/query-index.xlsx
 
   blog-br:
     <<: *blog
     include:
-      - '/br/express/learn/blog/*'
+      - '/br/express/learn/blog/**'
     target: /br/express/learn/blog/query-index.xlsx
 
   website: &website
@@ -90,7 +97,8 @@ indices:
       - '/express/**'
       - '/education/express/**'
     exclude:
-      - '/express/learn/blog/*'
+      - '/express/learn/blog'
+      - '/express/learn/blog/**'
     target: /express/query-index.xlsx
     properties:
       title:
@@ -119,9 +127,9 @@ indices:
     include:
       - '/de/express/**'
       - '/de/education/express/**'
-
     exclude:
-      - '/de/express/learn/blog/*'
+      - '/de/express/learn/blog'
+      - '/de/express/learn/blog/**'
     target: /de/express/query-index.xlsx
 
   spain:
@@ -129,6 +137,9 @@ indices:
     include:
       - '/es/express/**'
       - '/es/education/express/**'
+    exclude:
+      - '/es/express/learn/blog'
+      - '/es/express/learn/blog/**'
     target: /es/express/query-index.xlsx
 
   france:
@@ -137,7 +148,8 @@ indices:
       - '/fr/express/**'
       - '/fr/education/express/**'
     exclude:
-      - '/fr/express/learn/blog/*'
+      - '/fr/express/learn/blog'
+      - '/fr/express/learn/blog/**'
     target: /fr/express/query-index.xlsx
 
   italy:
@@ -145,6 +157,9 @@ indices:
     include:
       - '/it/express/**'
       - '/it/education/express/**'
+    exclude:
+      - '/it/express/learn/blog'
+      - '/it/express/learn/blog/**'
     target: /it/express/query-index.xlsx
 
   japan:
@@ -153,7 +168,8 @@ indices:
       - '/jp/express/**'
       - '/jp/education/express/**'
     exclude:
-      - '/jp/express/learn/blog/*'
+      - '/jp/express/learn/blog'
+      - '/jp/express/learn/blog/**'
     target: /jp/express/query-index.xlsx
 
   korea:
@@ -161,6 +177,9 @@ indices:
     include:
       - '/kr/express/**'
       - '/kr/education/express/**'
+    exclude:
+      - '/kr/express/learn/blog'
+      - '/kr/express/learn/blog/**'
     target: /kr/express/query-index.xlsx
 
   netherlands:
@@ -168,6 +187,9 @@ indices:
     include:
       - '/nl/express/**'
       - '/nl/education/express/**'
+    exclude:
+      - '/nl/express/learn/blog'
+      - '/nl/express/learn/blog/**'
     target: /nl/express/query-index.xlsx
 
   brasil:
@@ -175,6 +197,9 @@ indices:
     include:
       - '/br/express/**'
       - '/br/education/express/**'
+    exclude:
+      - '/br/express/learn/blog'
+      - '/br/express/learn/blog/**'
     target: /br/express/query-index.xlsx
 
   taiwan:
@@ -182,6 +207,9 @@ indices:
     include:
       - '/tw/express/**'
       - '/tw/education/express/**'
+    exclude:
+      - '/tw/express/learn/blog'
+      - '/tw/express/learn/blog/**'
     target: /tw/express/query-index.xlsx
 
   china:
@@ -189,6 +217,9 @@ indices:
     include:
       - '/cn/express/**'
       - '/cn/education/express/**'
+    exclude:
+      - '/cn/express/learn/blog'
+      - '/cn/express/learn/blog/**'
     target: /cn/express/query-index.xlsx
 
   denmark:
@@ -196,6 +227,9 @@ indices:
     include:
       - '/dk/express/**'
       - '/dk/education/express/**'
+    exclude:
+      - '/dk/express/learn/blog'
+      - '/dk/express/learn/blog/**'
     target: /dk/express/query-index.xlsx
 
   finland:
@@ -203,6 +237,9 @@ indices:
     include:
       - '/fi/express/**'
       - '/fi/education/express/**'
+    exclude:
+      - '/fi/express/learn/blog'
+      - '/fi/express/learn/blog/**'
     target: /fi/express/query-index.xlsx
 
   norway:
@@ -210,6 +247,9 @@ indices:
     include:
       - '/no/express/**'
       - '/no/education/express/**'
+    exclude:
+      - '/no/express/learn/blog'
+      - '/no/express/learn/blog/**'
     target: /no/express/query-index.xlsx
 
   sweden:
@@ -217,6 +257,9 @@ indices:
     include:
       - '/se/express/**'
       - '/se/education/express/**'
+    exclude:
+      - '/se/express/learn/blog'
+      - '/se/express/learn/blog/**'
     target: /se/express/query-index.xlsx
 
   india:
@@ -224,6 +267,9 @@ indices:
     include:
       - '/in/express/**'
       - '/in/education/express/**'
+    exclude:
+      - '/in/express/learn/blog'
+      - '/in/express/learn/blog/**'
     target: /in/express/query-index.xlsx
 
   unitedkingdom:
@@ -232,5 +278,6 @@ indices:
       - '/uk/express/**'
       - '/uk/education/express/**'
     exclude:
-      - '/uk/express/learn/blog/*'
+      - '/uk/express/learn/blog'
+      - '/uk/express/learn/blog/**'
     target: /uk/express/query-index.xlsx

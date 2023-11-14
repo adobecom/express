@@ -1,15 +1,3 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
   { fragment: '/express/fragments/' },
@@ -524,7 +512,7 @@ export function removeIrrelevantSections(main) {
 
       // section meant for different device
       let sectionRemove = !!(sectionMeta.audience
-        && sectionMeta.audience !== document.body.dataset?.device);
+        && sectionMeta.audience.toLowerCase() !== document.body.dataset?.device);
 
       // section visibility steered over metadata
       if (!sectionRemove && sectionMeta.showwith !== undefined) {
@@ -959,7 +947,7 @@ function decorateHeaderAndFooter() {
  * @param {string} href The path to the CSS file
  * @param {function} callback a function to run upon successful style loading
  */
-export function loadCSS(href, callback) {
+export function loadCSS(href, callback = null) {
   if (!document.querySelector(`head > link[href="${href}"]`)) {
     const link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');
@@ -2478,8 +2466,9 @@ export async function loadArea(area = document) {
     import('../../tools/preview/preview.js');
   }
   await lazy;
-  const { default: delayed } = await import('./delayed.js');
-  delayed([createTag, getDevice], 8000);
+
+  const { default: loadDelayed } = await import('./delayed.js');
+  loadDelayed(8000);
 }
 
 export function getMobileOperatingSystem() {

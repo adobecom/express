@@ -1,0 +1,72 @@
+main div.preact-demo.block {
+  max-width: 1500px;
+  border: solid;
+}
+
+main div.preact-demo.block img {
+  /* width: 600px;
+  height: 300px; */
+  margin: 30px;
+}
+
+.demo-container {
+  margin-top: 30px;
+  display: flex;
+  justify-content:space-evenly;
+  height: 260px;
+}
+
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 34px;
+}
+
+.board-row:after {
+  clear: both;
+  content: '';
+  display: table;
+}
+
+.status {
+  margin-bottom: 10px;
+}
+.game {
+  margin: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.game-info {
+  margin-left: 20px;
+}
+
+#focusedInputed{
+  border-radius: 20px;
+  font-size: 1.3rem;
+ font-weight: 300;
+ text-align:center;
+ width:400px;
+ 
+}
+.hot{
+ color:#e60000;
+}
+
+.cold{
+ color:#3399ff;
+}
+
+.normal{
+ color:#ff9933;
+}
