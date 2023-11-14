@@ -163,8 +163,8 @@ async function loadFEDS() {
     const secondPathSegment = pathSegments[1].toLowerCase();
     const shortTitle = getMetadata('short-title');
     const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
-
-    if (pathSegments.length <= 2 || !replacedCategory) return null;
+    
+    if (pathSegments.length < 2 || !replacedCategory) return null;
 
     const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
     const breadCrumbList = [secondBreadCrumb];
