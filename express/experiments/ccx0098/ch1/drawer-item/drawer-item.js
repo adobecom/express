@@ -263,6 +263,8 @@ function decorateMedia(payload) {
     drawerItem.append(payload.mediaLink);
     if (isNotBubbleItem) {
       drawerItem.dataset.order = payload.drawerItemContainer.dataset.itemLoadedCount;
+      console.log('here', drawerItem.dataset.order);
+      console.log('here', drawerItem);
       drawerItem.append(payload.itemName);
       drawerItem.append(payload.mediaText);
     }
