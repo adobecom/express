@@ -255,10 +255,14 @@ function decorateMedia(payload) {
     payload.mediaLink.title = payload.itemName.textContent;
     const isNotBubbleItem = !!payload.mediaText.textContent;
     const drawerItem = createTag('div', { class: 'drawer-item' });
+    drawerItem.dataset.order =  parseInt(
+      payload.drawerItemContainer.dataset.itemLoadedCount, 10,
+    ) + 1;
     payload.mediaLink.textContent = '';
     payload.mediaLink.append(payload.media);
     drawerItem.append(payload.mediaLink);
     if (isNotBubbleItem) {
+      drawerItem.dataset.order = payload.drawerItemContainer.dataset.itemLoadedCount;
       drawerItem.append(payload.itemName);
       drawerItem.append(payload.mediaText);
     }
