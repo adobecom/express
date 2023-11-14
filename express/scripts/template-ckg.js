@@ -5,7 +5,7 @@ import {
 } from './utils.js';
 
 import {
-  getDataWithId,
+  getDataWithContext,
   getPillWordsMapping,
 } from './browse-api-controller.js';
 
@@ -19,7 +19,7 @@ async function fetchLinkList() {
   if (!window.linkLists) {
     window.linkLists = {};
     if (!window.linkLists.ckgData) {
-      const response = await getDataWithId();
+      const response = await getDataWithContext({ urlPath: window.location.pathname });
       // catch data from CKG API, if empty, use top priority categories sheet
       if (response && response.queryResults[0].facets) {
         window.linkLists.ckgData = response.queryResults[0].facets[0].buckets.map((ckgItem) => {
