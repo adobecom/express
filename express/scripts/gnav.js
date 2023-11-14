@@ -161,16 +161,16 @@ async function loadFEDS() {
       .filter((e) => e !== locale);
     const localePath = locale === 'us' ? '' : `/${locale}`;
     const secondPathSegment = pathSegments[1].toLowerCase();
-    const pagesShortName = getMetadata('short-title');
+    const shortTitle = getMetadata('short-title');
     const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
 
-    if (!pagesShortName || pathSegments.length <= 2 || !replacedCategory) return null;
+    if (pathSegments.length <= 2 || !replacedCategory) return null;
 
     const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
     const breadCrumbList = [secondBreadCrumb];
 
-    if (pathSegments.length >= 3) {
-      const thirdBreadCrumb = buildBreadCrumb(pagesShortName, pagesShortName, secondBreadCrumb.url);
+    if (pathSegments.length >= 3 && shortTitle) {
+      const thirdBreadCrumb = buildBreadCrumb(shortTitle, shortTitle, secondBreadCrumb.url);
       breadCrumbList.push(thirdBreadCrumb);
     }
     return breadCrumbList;
