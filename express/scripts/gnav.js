@@ -174,19 +174,15 @@ async function loadFEDS() {
     const localePath = locale === 'us' ? '' : `/${locale}`;
     const secondPathSegment = pathSegments[1].toLowerCase();
     const pagesShortName = getMetadata('short-title');
-    const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`];
-    // eslint-disable-next-line dot-notation
-    const homeText = placeholders['express'];
+    const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
 
-    if (!pagesShortName || pathSegments.length <= 2 || !replacedCategory || !homeText) return null;
+    if (!pagesShortName || pathSegments.length <= 2 || !replacedCategory) return null;
 
-    const firstBreadCrumb = buildBreadCrumb('express/', homeText, localePath);
-    const breadCrumbList = [firstBreadCrumb];
-    const secondBreadCrumb = buildBreadCrumb(secondPathSegment, replacedCategory, `${localePath}/express`);
-    breadCrumbList.push(secondBreadCrumb);
+    const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
+    const breadCrumbList = [secondBreadCrumb];
 
     if (pathSegments.length >= 3) {
-      const thirdBreadCrumb = buildBreadCrumb('', pagesShortName, secondBreadCrumb.url);
+      const thirdBreadCrumb = buildBreadCrumb(pagesShortName, pagesShortName, secondBreadCrumb.url);
       breadCrumbList.push(thirdBreadCrumb);
     }
     return breadCrumbList;
@@ -226,7 +222,7 @@ async function loadFEDS() {
       }
       : {},
     breadcrumbs: {
-      showLogo: false,
+      showLogo: true,
       links: await buildBreadCrumbArray(),
     },
   };

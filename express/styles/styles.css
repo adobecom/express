@@ -1231,9 +1231,3 @@ main .block .app-store-aTag .app-store-wrapper {
 #feds-topnav .feds-login {
   border: none
 }
-
-/* temp solution until feds gnav support localized logo text */
-#feds-header li.feds-breadcrumbs-element.feds-hideOnMobile::before {
-  content: '';
-  padding: unset;
-}
