@@ -314,7 +314,7 @@ function decorateBubblesView(payload) {
       payload.drawerItemContainer.children[payload.drawerItemContainer.children.length - 1],
     );
     tempWorkAroundForBubbleOrder(payload.drawerItemContainer);
-    removeCarouselGeneratedArrows(payload.$mobileDrawer);
+    // removeCarouselGeneratedArrows(payload.$mobileDrawer);
     bubbleContainer.append(...payload.drawerItemContainer.children);
     addDecorativeBubbles(bubbleContainer);
     payload.drawerItemContainer.append(bubbleContainer);
