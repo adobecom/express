@@ -2399,11 +2399,12 @@ export async function loadArea(area = document) {
   const main = area.querySelector('main');
 
   if (isDoc) {
+    decorateHeaderAndFooter();
     if (window.Worker) {
       const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
       benchmarkWorker.postMessage(10000000);
       benchmarkWorker.onmessage = (e) => {
-        const benchmarkResultHeading = createTag('h1', { style: 'text-align: center;' });
+        const benchmarkResultHeading = createTag('h3', { style: 'text-align: center;' });
         const deviceEligible = e.data <= 400;
         if (deviceEligible) {
           benchmarkResultHeading.textContent = `Benchmark finished. Time elapsed: ${e.data}ms. Device Eligible for Mobile Beta 🎉.`;
@@ -2413,10 +2414,9 @@ export async function loadArea(area = document) {
         main.prepend(benchmarkResultHeading);
       };
     } else {
-      const benchmarkResultHeading = createTag('h1', { style: 'text-align: center;' }, 'Browser doesn\'t support web workers. Benchmark was not performed');
+      const benchmarkResultHeading = createTag('h3', { style: 'text-align: center;' }, 'Browser doesn\'t support web workers. Benchmark was not performed');
       main.prepend(benchmarkResultHeading);
     }
-    decorateHeaderAndFooter();
   }
 
   window.hlx = window.hlx || {};
