@@ -329,6 +329,9 @@ function decorateCarouselSwipeableItems(carouselItems) {
 }
 function decorateCarouselViews(payload) {
   if (!payload.isBubbleView) {
+    const sortedChildren = [...payload.drawerItemContainer.children].sort((a,b) =>  a.dataset.order - b.dataset.order); 
+    payload.drawerItemContainer.innerHTML = '';
+    sortedChildren.forEach((child) => payload.drawerItemContainer.append(child));
     payload.drawerItemContainer.innerHTML = [...payload.drawerItemContainer.children].sort((a,b) =>  a.dataset.order - b.dataset.order).join(''); //try this!!!
   }
   if (payload.isDefaultView) {
