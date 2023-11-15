@@ -447,13 +447,13 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateBubblesView(payload);
     if (payload.hasList) {
       decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
-      const [heading, sortedIcons] =  [[...payload.iconContainer.children][0],[...payload.drawerItemContainer].slice(1).sort((a,b) =>  a.dataset.order - b.dataset.order)];
-      console.log('heading',heading);
-      console.log('sortedIcons',sortedIcons);
-      console.log('payload.iconContainer',payload.iconContainer);
+      // const [heading, sortedIcons] =  [[...payload.iconContainer.children][0],[...payload.drawerItemContainer].slice(1).sort((a,b) =>  a.dataset.order - b.dataset.order)];
+      // console.log('heading',heading);
+      // console.log('sortedIcons',sortedIcons);
+      // console.log('payload.iconContainer',payload.iconContainer);
 
-      payload.iconContainer = '';
-      sortedChildren.forEach((el) => payload.iconContainer.appendChild(el));
+      // payload.iconContainer = '';
+      // sortedChildren.forEach((el) => payload.iconContainer.appendChild(el));
     }
     decorateCarouselViews(payload);
     decorateCarouselCTAList(payload);
