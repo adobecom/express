@@ -448,9 +448,9 @@ function initAfterDrawerFullyLoaded(payload) {
     if (payload.hasList) {
       decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
       const [heading, sortedIcons] =  [[...payload.iconContainer.children][0],[...payload.drawerItemContainer].slice(1).sort((a,b) =>  a.dataset.order - b.dataset.order)];
-      console.log(heading);
-      console.log(sortedIcons);
-      console.log(payload.iconContainer);
+      console.log('heading',heading);
+      console.log('sortedIcons',sortedIcons);
+      console.log('payload.iconContainer',payload.iconContainer);
 
       payload.iconContainer = '';
       sortedChildren.forEach((el) => payload.iconContainer.appendChild(el));
