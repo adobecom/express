@@ -2486,7 +2486,7 @@ export async function loadArea(area = document) {
   const { default: loadDelayed } = await import('./delayed.js');
   loadDelayed(8000);
   benchmarkDevice().then((r) => {
-    console.log(r);
+    main.prepend(`the benchmark took ${r}ms to finish.`);
   });
 }
 
