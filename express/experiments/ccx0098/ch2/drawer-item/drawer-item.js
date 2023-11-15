@@ -450,9 +450,6 @@ function initAfterDrawerFullyLoaded(payload) {
 
       const iconsSection = payload.iconContainer?.closest('.drawer-item-icons');
       const [heading, sortedIcons] =  [[...iconsSection.children][0],[...iconsSection.children].slice(1).sort((a,b) =>  a.dataset.order - b.dataset.order)];
-      console.log('heading',heading);
-      console.log('sortedIcons',sortedIcons);
-      console.log('payload.iconContainer',payload.iconContainer);
 
       iconsSection.innerHTML = '';
       iconsSection.appendChild(heading);
