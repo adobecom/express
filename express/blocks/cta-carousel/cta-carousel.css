@@ -53,7 +53,7 @@
     pointer-events: none;
 }
 
-.cta-carousel .card:first-of-type {
+.cta-carousel .carousel-left-trigger ~ .card {
     margin-left: 0;
 }
 
