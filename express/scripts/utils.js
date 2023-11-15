@@ -2472,13 +2472,22 @@ export async function loadArea(area = document) {
   const { default: loadDelayed } = await import('./delayed.js');
   loadDelayed(8000);
   if (window.Worker) {
+
     const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
     benchmarkWorker.postMessage(10000000);
     benchmarkWorker.onmessage = (e) => {
-      main.prepend(`benchmark finished. time took: ${e.data}ms`);
+      const benchmarkResultHeading = createTag('h1', { style: 'text-align: center;' });
+      const deviceEligible = e.data <= 400;
+      if (deviceEligible) {
+        benchmarkResultHeading.textContent = `Benchmark finished. Time elapsed: ${e.data}ms. Device Eligible for Mobile Beta 🎉.`;
+      } else {
+        benchmarkResultHeading.textContent = `Benchmark finished. Time elapsed: ${e.data}ms. Device ineligible for Mobile Beta. 🥺`;
+      }
+      main.prepend(benchmarkResultHeading);
     };
   } else {
-    main.prepend('Browser doesn\'t support web workers. Benchmark was not performed');
+    const benchmarkResultHeading = createTag('h1', { style: 'text-align: center;' }, 'Browser doesn\'t support web workers. Benchmark was not performed');
+    main.prepend(benchmarkResultHeading);
   }
 }
 

@@ -1,6 +1,6 @@
 onmessage = (e) => {
   const startTime = performance.now();
-  const iterations = e.data; // Adjust the number for different execution time
+  const iterations = e.data;
   let result = 0;
   for (let i = 0; i < iterations; i += 1) {
     // eslint-disable-next-line no-unused-vars
