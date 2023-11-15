@@ -265,6 +265,7 @@ function decorateMedia(payload) {
     payload.mediaLink.append(payload.media);
     drawerItem.append(payload.mediaLink);
     if (isNotBubbleItem) {
+      drawerItem.dataset.order = payload.order;
       drawerItem.append(payload.itemName);
       drawerItem.append(payload.mediaText);
     }
