@@ -2391,21 +2391,7 @@ export async function loadSections(sections, isDoc) {
   return areaBlocks;
 }
 
-async function benchmarkDevice() {
-  return new Promise((resolve) => {
-    const startTime = performance.now();
-    const iterations = 10000000; // Adjust the number for different execution time
-    let result = 0;
-    for (let i = 0; i < iterations; i += 1) {
-      // eslint-disable-next-line no-unused-vars
-      result += Math.random() * Math.random();
-    }
 
-    const endTime = performance.now();
-    const exectime = endTime - startTime;
-    resolve(exectime);
-  });
-}
 
 /**
  * Decorates the page.
@@ -2485,9 +2471,15 @@ export async function loadArea(area = document) {
 
   const { default: loadDelayed } = await import('./delayed.js');
   loadDelayed(8000);
-  benchmarkDevice().then((r) => {
-    main.prepend(`the benchmark took ${r}ms to finish.`);
-  });
+  if (window.Worker) {
+    const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
+    benchmarkWorker.postMessage(10000000);
+    benchmarkWorker.onmessage = (e) => {
+      main.prepend(`benchmark finished. time took: ${e.data}ms`);
+    };
+  } else {
+    main.prepend('Browser doesn\'t support web workers. Benchmark was not performed');
+  }
 }
 
 export function getMobileOperatingSystem() {
