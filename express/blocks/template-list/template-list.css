@@ -2102,11 +2102,6 @@ main .template-list-fullwidth-apipowered-container nav ol.templates-breadcrumbs 
   main .template-list-fullwidth-apipowered-container .category-list-wrapper.desktop-only:hover .category-list-toggle-wrapper .icon {
     transform: rotate(180deg);
   }
-
-  main .template-list.horizontal.holiday .carousel-container .carousel-fader-left,
-  main .template-list.horizontal.holiday .carousel-container .carousel-fader-right {
-    background: initial;
-  }
 }
 
 @media (min-width: 900px) {
@@ -2339,21 +2334,8 @@ main .template-list-fullwidth-apipowered-container nav ol.templates-breadcrumbs 
     padding-left: 56px;
   }
 
-  main .template-list.horizontal .carousel-container .carousel-fader-left {
-    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-  }
-
-  main .template-list.horizontal.fullwidth .carousel-container .carousel-fader-left {
-    width: 150px;
-    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-  }
-
-  main .template-list.horizontal .carousel-container .carousel-fader-right {
-    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-  }
-
-  main .template-list.horizontal.fullwidth .carousel-container .carousel-fader-left {
-    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+  main .template-list.horizontal.fullwidth .carousel-container .carousel-fader-left,
+  main .template-list.horizontal.fullwidth .carousel-container .carousel-fader-right {
     width: 150px;
   }
 

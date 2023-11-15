@@ -1,17 +1,6 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import { createTag } from '../../scripts/utils.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function changeTextColorAccordingToBg(
   primaryColor,
@@ -48,49 +37,14 @@ function displaySvgWithObject(block, secondaryColor) {
 
   svg.remove();
   loadSvgInsideWrapper(svgId, svgWrapper, secondaryColor);
-  const heroColorContentContainer = block.querySelector('.content-container');
-  heroColorContentContainer.append(svgWrapper);
-}
-
-function copyTextBlock(block, text) {
-  const title = block.querySelector('h1, h2'); // should only really use h1 here.
-  const cta = block.querySelector('.button-container');
-  const descriptions = block.querySelectorAll('p:not(:last-of-type)');
-  const descriptionContainer = createTag('div', { class: 'description-container' });
-
-  Array.from(descriptions).forEach((textDescription) => {
-    descriptionContainer.append(textDescription);
-  });
-
-  text.classList.add('text');
-  text.append(title, descriptionContainer, cta);
-}
-
-function cloneTextForSmallerMediaQueries(text) {
-  const clonedTextBlock = text.cloneNode(true);
-  clonedTextBlock.classList.add('text-container');
-  const textContent = clonedTextBlock.children[0];
-
-  copyTextBlock(clonedTextBlock, textContent);
-
-  return clonedTextBlock;
-}
-
-function groupTextElements(text, block) {
-  const button = block.querySelector('.button');
-
-  copyTextBlock(block, text);
-  button.style.border = 'none';
+  const svgContainer = block.querySelector('.svg-container');
+  svgContainer.append(svgWrapper);
 }
 
 function decorateText(block) {
   const text = block.firstElementChild;
-  const heroColorContentContainer = block.querySelector('.content-container');
-  const smallMediaQueryBlock = cloneTextForSmallerMediaQueries(text);
-
-  groupTextElements(text, block);
-  heroColorContentContainer.append(text);
-  block.append(smallMediaQueryBlock);
+  text.classList.add('text-container');
+  block.append(text);
 }
 
 function extractColorElements(colors) {
@@ -103,9 +57,10 @@ function extractColorElements(colors) {
 
 function decorateColors(block) {
   const colors = block.firstElementChild;
+  const svgContainer = block.querySelector('.svg-container');
   const { primaryColor, secondaryColor } = extractColorElements(colors);
 
-  block.style.backgroundColor = primaryColor;
+  if (svgContainer) svgContainer.style.backgroundColor = primaryColor;
 
   changeTextColorAccordingToBg(primaryColor, block);
 
@@ -113,7 +68,7 @@ function decorateColors(block) {
 }
 
 function getContentContainerHeight() {
-  const contentContainer = document.querySelector('.content-container');
+  const contentContainer = document.querySelector('.svg-container');
 
   return contentContainer?.clientHeight;
 }
@@ -132,28 +87,38 @@ function resizeSvgOnLoad() {
   }, 50);
 }
 
+export function resizeSvg(event) {
+  const height = getContentContainerHeight();
+  const svg = document.querySelector('.color-svg-img');
+  if (event.matches) {
+    svg.style.height = `${height}px`;
+  } else {
+    svg.style.height = '200px';
+  }
+}
+
 function resizeSvgOnMediaQueryChange() {
   const mediaQuery = window.matchMedia('(min-width: 900px)');
-  mediaQuery.addEventListener('change', (event) => {
-    const height = getContentContainerHeight();
-    const svg = document.querySelector('.color-svg-img');
-    if (event.matches) {
-      svg.style.height = `${height}px`;
-    } else {
-      svg.style.height = '200px';
-    }
-  });
+  mediaQuery.addEventListener('change', resizeSvg);
+}
+
+function decorateCTA(block) {
+  const primaryCta = block.querySelector('.text-container a.button');
+  if (!primaryCta) return;
+
+  primaryCta.classList.add('primaryCta');
+  BlockMediator.set('primaryCtaUrl', primaryCta.href);
 }
 
 export default function decorate(block) {
-  const heroColorContentContainer = createTag('div', {
-    class: 'content-container',
-  });
-
-  block.append(heroColorContentContainer);
+  const svgContainer = createTag('div', { class: 'svg-container' });
+  block.append(svgContainer);
 
   // text
   decorateText(block);
+
+  // CTA
+  decorateCTA(block);
 
   // colors
   const { secondaryColor } = decorateColors(block);

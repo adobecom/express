@@ -378,14 +378,6 @@
         position: unset;
         top: unset;
     }
-
-    .playlist .carousel-container .carousel-fader-left {
-        background: linear-gradient(to left, rgba(255, 255, 255, 0), var(--body-alt-background-color));
-    }
-
-    .playlist .carousel-container .carousel-fader-right {
-        background: linear-gradient(to left, var(--body-alt-background-color), rgba(255, 255, 255, 0));
-    }
 }
 
 @media (min-width: 1200px) {

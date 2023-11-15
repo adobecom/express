@@ -1,14 +1,3 @@
-/*
- * Copyright 2022 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 import {
   titleCase,
   getLocale,
@@ -22,6 +11,7 @@ import {
 
 import { memoize } from './hofs.js';
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
+import { initToggleTriggers } from '../blocks/shared/carousel.js';
 
 const defaultRegex = /\/express\/templates\/default/;
 
@@ -83,10 +73,16 @@ function replaceLinkPill(linkPill, data) {
 }
 
 async function updateSEOLinkList(container, linkPill, list) {
+  const leftTrigger = container.querySelector('.carousel-left-trigger');
+  const rightTrigger = container.querySelector('.carousel-right-trigger');
+
   container.innerHTML = '';
+
   const templatePages = await fetchAllTemplatesMetadata();
 
   if (list && templatePages) {
+    if (leftTrigger) container.append(leftTrigger);
+
     list.forEach((d) => {
       const currentLocale = getLocale(window.location);
       const templatePageData = templatePages.find((p) => {
@@ -98,11 +94,13 @@ async function updateSEOLinkList(container, linkPill, list) {
         return isLive && titleMatch && localeMatch;
       });
 
-      if (templatePageData) {
-        const clone = replaceLinkPill(linkPill, templatePageData);
-        if (clone) container.append(clone);
-      }
+      if (!templatePageData) return;
+
+      const clone = replaceLinkPill(linkPill, templatePageData);
+      if (clone) container.append(clone);
     });
+
+    if (rightTrigger) container.append(rightTrigger);
   }
 }
 
@@ -137,6 +135,8 @@ async function updateLinkList(container, linkPill, list) {
   const pillsMapping = await memoizedGetPillWordsMapping();
   const pageLinks = [];
   const searchLinks = [];
+  const leftTrigger = container.querySelector('.carousel-left-trigger');
+  const rightTrigger = container.querySelector('.carousel-right-trigger');
   container.innerHTML = '';
 
   if (list && templatePages) {
@@ -182,11 +182,13 @@ async function updateLinkList(container, linkPill, list) {
       }
     });
 
+    if (leftTrigger) container.append(leftTrigger);
     pageLinks.concat(searchLinks).forEach((clone) => {
       container.append(clone);
     });
+    if (rightTrigger) container.append(rightTrigger);
 
-    if (container.children.length === 0) {
+    if (container.children.length === 2) {
       const linkListData = [];
 
       window.linkLists.sheetData.forEach((row) => {
@@ -249,6 +251,7 @@ async function lazyLoadSEOLinkList() {
       await updateSEOLinkList(topTemplatesContainer, topTemplatesTemplate, topTemplatesData);
       const hiddenDiv = seoNav.querySelector('div[style="visibility: hidden;"]');
       if (hiddenDiv) hiddenDiv.style.visibility = 'visible';
+      initToggleTriggers(seoNav.querySelector('.carousel-container'));
     } else {
       topTemplatesContainer.innerHTML = '';
     }
@@ -278,8 +281,8 @@ async function lazyLoadSearchMarqueeLinklist() {
       }
 
       await updateLinkList(linkListContainer, linkListTemplate, linkListData);
-      searchMarquee.dispatchEvent(new CustomEvent('carouselloaded'));
       linkListContainer.parentElement.classList.add('appear');
+      initToggleTriggers(searchMarquee.querySelector('.carousel-container'));
     }
   }
 }

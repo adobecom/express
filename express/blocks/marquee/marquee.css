@@ -308,10 +308,6 @@ body.no-desktop-brand-header header {
     color: var(--color-white);
   }
 
-  body.no-desktop-brand-header header, body.no-brand-header header {
-    background-image: unset;
-  }
-
   .marquee .marquee-foreground {
     min-height: max-content;
     display: flex;

@@ -1,14 +1,3 @@
-/*
- * Copyright 2021 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 /* eslint-disable import/named, import/extensions */
 
 import {
@@ -19,8 +8,7 @@ import {
   createOptimizedPicture,
   getLocale,
   getLanguage,
-// eslint-disable-next-line import/no-unresolved
-} from './utils.js';
+} from '../../scripts/utils.js';
 
 /**
  * Builds a block DOM Element from a two dimensional array
@@ -117,13 +105,9 @@ export default async function decorateBlogPage() {
     const $blogHeader = createTag('div', { class: 'blog-header' });
     $div.append($blogHeader);
     const $eyebrow = createTag('div', { class: 'eyebrow' });
-    const tagString = getMetadata('article:tag');
-    // eslint-disable-next-line no-unused-vars
-    const tags = tagString.split(',');
     const locale = getLocale(window.location);
     const urlPrefix = locale === 'us' ? '' : `/${locale}`;
     $eyebrow.innerHTML = `<a href="${urlPrefix}/express/learn/blog/tags/${toClassName(getMetadata('category'))}">${getMetadata('category')}</a>`;
-    // $eyebrow.innerHTML = tags[0];
     $blogHeader.append($eyebrow);
     $blogHeader.append($h1);
     const publicationDate = new Date(date);
@@ -221,3 +205,5 @@ export default async function decorateBlogPage() {
   $main.appendChild(section);
   loadBlock(block);
 }
+
+await decorateBlogPage();

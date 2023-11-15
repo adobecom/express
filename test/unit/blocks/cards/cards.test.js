@@ -1,15 +1,33 @@
-/*
- * Copyright 2021 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 /* eslint-env mocha */
 /* eslint-disable no-unused-vars */
 
+import { readFile } from '@web/test-runner-commands';
+import { expect } from '@esm-bundle/chai';
+
 const { default: decorate } = await import('../../../../express/blocks/cards/cards.js');
+document.body.innerHTML = await readFile({ path: './mocks/body.html' });
+
+describe('Cards', () => {
+  before(() => {
+    window.isTestEnv = true;
+  });
+
+  it('Cards exists', () => {
+    const cards = document.querySelector('.cards');
+    decorate(cards);
+    expect(cards).to.exist;
+  });
+
+  it('Cards has the correct elements', () => {
+    expect(document.querySelector('.card')).to.exist;
+    // If img
+    expect(document.querySelector('.card-image')).to.exist;
+    // If not img
+    expect(document.querySelector('.card-content')).to.exist;
+  });
+
+  it('If text content starts with https://, create a card wrapper', () => {
+    expect(document.querySelector('a')).to.exist;
+    expect(document.querySelector('a.card')).to.exist;
+  });
+});

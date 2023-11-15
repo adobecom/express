@@ -149,11 +149,6 @@ main .hero-animation.white-text a:any-link {
   main .hero-animation.compact .hero-animation-foreground {
     padding: 12px 18px;
   }
-
-  body.no-desktop-brand-header header, body.no-brand-header header {
-    height: auto;
-    background-image: unset;
-  }
 }
 
 @media (min-width: 1400px) {

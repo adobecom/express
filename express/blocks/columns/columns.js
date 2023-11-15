@@ -1,15 +1,3 @@
-/*
- * Copyright 2021 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import {
   linkImage,
   createTag,
@@ -27,6 +15,7 @@ import {
   hideVideoModal,
   isVideoLink,
 } from '../shared/video.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function transformToVideoColumn(cell, aTag, block) {
   const parent = cell.parentElement;
@@ -215,6 +204,7 @@ export default async function decorate(block) {
       if (aTag && aTag.classList.contains('button')) {
         if (block.className.includes('fullsize')) {
           aTag.classList.add('xlarge');
+          BlockMediator.set('primaryCtaUrl', aTag.href);
           aTag.classList.add('primaryCTA');
         } else if (aTag.classList.contains('light')) {
           aTag.classList.replace('accent', 'primary');
@@ -357,6 +347,12 @@ export default async function decorate(block) {
     svg.style.backgroundColor = primaryColor;
     svg.style.fill = accentColor;
     rows[0].append(svg);
+
+    const { default: isDarkOverlayReadable } = await import('../../scripts/color-tools.js');
+
+    if (isDarkOverlayReadable(primaryColor)) {
+      block.classList.add('shadow');
+    }
   }
 
   const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
