@@ -10,6 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
+import { createTag, loadBlock } from '../utils.js';
+
 const QA_GUIDE_FILE_LOCATION = '/docs/qa-guide.plain.html';
 
 export function autoWidgetByUSP(name, callback) {
@@ -21,10 +23,14 @@ export function autoWidgetByUSP(name, callback) {
   }
 }
 
-export default function init({
-  createTag,
-}) {
-  const sk = document.querySelector('helix-sidekick');
+export default function init() {
+  const preflightListener = async () => {
+    const preflight = createTag('div', { class: 'preflight' });
+    const content = await loadBlock(preflight);
+
+    const { getModal } = await import('../../blocks/modal/modal.js');
+    getModal(null, { id: 'preflight', content, closeEvent: 'closeModal' });
+  };
 
   const launchQAGuide = async () => {
     const resp = await fetch(QA_GUIDE_FILE_LOCATION);
@@ -38,12 +44,18 @@ export default function init({
 
     const { default: initQAGuide } = await import('../features/qa-guide/qa-guide.js');
 
-    initQAGuide(qaGuideEl, { createTag });
+    initQAGuide(qaGuideEl);
   };
 
+  const sk = document.querySelector('helix-sidekick');
+
   // Auto plugins
-  autoWidgetByUSP('qaprogress', launchQAGuide);
+  autoWidgetByUSP('qaprogress', () => {
+    launchQAGuide();
+    sk.dispatchEvent('custom:preflight');
+  });
 
   // Add plugin listeners here
   sk.addEventListener('custom:qa-guide', launchQAGuide);
+  sk.addEventListener('custom:preflight', preflightListener);
 }
