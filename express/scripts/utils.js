@@ -1766,7 +1766,6 @@ export async function fetchPlainBlockFromFragment(url, blockName) {
     section.className = `section section-wrapper ${blockName}-container`;
     const block = section.querySelector(`.${blockName}`);
     block.dataset.blockName = blockName;
-    block.dataset.blockStatus = 'loaded';
     block.parentElement.className = `${blockName}-wrapper`;
     block.classList.add('block');
     const img = section.querySelector('img');
@@ -1837,14 +1836,34 @@ export async function fetchFloatingCta(path) {
   return floatingBtnData;
 }
 
+export function getDevice() {
+  return navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
+}
+
 async function buildAutoBlocks($main) {
-  const $lastDiv = $main.querySelector(':scope > div:last-of-type');
+  const initFloatingCTABuild = async (entryPoint) => {
+    const floatingCTAData = await fetchFloatingCta(window.location.pathname);
+    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+    const device = document.body.dataset?.device;
+    const blockName = floatingCTAData?.[device];
+
+    if (validButtonVersion.includes(blockName) && entryPoint) {
+      const button = buildBlock(blockName, device);
+      button.classList.add('spreadsheet-powered');
+      entryPoint.append(button);
+      return button;
+    }
+
+    return null;
+  };
+
+  const lastDiv = $main.querySelector(':scope > div:last-of-type');
 
   // Load the branch.io banner autoblock...
   if (['yes', 'true', 'on'].includes(getMetadata('show-banner').toLowerCase())) {
     const branchio = buildBlock('branch-io', '');
-    if ($lastDiv) {
-      $lastDiv.append(branchio);
+    if (lastDiv) {
+      lastDiv.append(branchio);
     }
   }
 
@@ -1872,36 +1891,57 @@ async function buildAutoBlocks($main) {
   // Load the app store autoblocks...
   if (['yes', 'true', 'on'].includes(getMetadata('show-standard-app-store-blocks').toLowerCase())) {
     const $highlight = buildBlock('app-store-highlight', '');
-    if ($lastDiv) {
-      $lastDiv.append($highlight);
+    if (lastDiv) {
+      lastDiv.append($highlight);
     }
 
     const $blade = buildBlock('app-store-blade', '');
-    if ($lastDiv) {
-      $lastDiv.append($blade);
+    if (lastDiv) {
+      lastDiv.append($blade);
     }
   }
 
   if (['yes', 'true', 'on'].includes(getMetadata('show-plans-comparison').toLowerCase())) {
     const $plansComparison = buildBlock('plans-comparison', '');
-    if ($lastDiv) {
-      $lastDiv.append($plansComparison);
+    if (lastDiv) {
+      lastDiv.append($plansComparison);
+    }
+  }
+
+  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')) && getDevice() === 'mobile') {
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
+    if (!BlockMediator.get('floatingCtasLoaded')) {
+      const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
+        if (e.newValue.result === 'passed') {
+          const buttonBlock = await initFloatingCTABuild(lastDiv);
+          await decorateBlock(buttonBlock);
+          await loadBlock(buttonBlock);
+          BlockMediator.set('floatingCtasLoaded', true);
+          unsubscribe();
+        }
+
+        if (e.newValue.result === 'rejected') {
+          const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
+          if (!fragment) return;
+
+          $main.append(fragment);
+          const block = fragment.querySelector('.sticky-promo-bar.block');
+          if (!block) return;
+
+          await loadBlock(block);
+
+          unsubscribe();
+        }
+      });
     }
   }
 
   if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) || ['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
-    if (!window.floatingCtasLoaded) {
-      const floatingCTAData = await fetchFloatingCta(window.location.pathname);
-      const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
-      const device = document.body.dataset?.device;
-      const blockName = floatingCTAData?.[device];
-      if (validButtonVersion.includes(blockName) && $lastDiv) {
-        const button = buildBlock(blockName, device);
-        button.classList.add('spreadsheet-powered');
-        $lastDiv.append(button);
-      }
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
 
-      window.floatingCtasLoaded = true;
+    if (!BlockMediator.get('floatingCtasLoaded')) {
+      await initFloatingCTABuild(lastDiv);
+      BlockMediator.set('floatingCtasLoaded', true);
     }
   }
 
@@ -1909,8 +1949,8 @@ async function buildAutoBlocks($main) {
     const fragmentName = getMetadata('show-quick-action-card').toLowerCase();
     const quickActionCardBlock = buildBlock('quick-action-card', fragmentName);
     quickActionCardBlock.classList.add('spreadsheet-powered');
-    if ($lastDiv) {
-      $lastDiv.append(quickActionCardBlock);
+    if (lastDiv) {
+      lastDiv.append(quickActionCardBlock);
     }
   }
 }
@@ -1937,10 +1977,6 @@ function splitSections($main) {
       }
     }
   });
-}
-
-export function getDevice() {
-  return navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
 
 function decorateLinkedPictures($main) {
@@ -2391,6 +2427,34 @@ export async function loadSections(sections, isDoc) {
   return areaBlocks;
 }
 
+async function checkMobileBetaEligibility(main) {
+  const { default: BlockMediator } = await import('./block-mediator.min.js');
+  if (window.Worker) {
+    const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
+    benchmarkWorker.postMessage(10000000);
+    benchmarkWorker.onmessage = (e) => {
+      const benchmarkResultHeading = createTag('h3', { style: 'text-align: center;' });
+      const criterion = {
+        cpuSpeedPass: e.data <= 400,
+        memoryPass: navigator.deviceMemory && navigator.deviceMemory >= 4,
+        cpuCoreCountPass: navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 4,
+      };
+      const deviceEligible = Object.values(criterion).every((criteria) => criteria);
+      BlockMediator.set('mobileBetaEligibility', {
+        result: deviceEligible ? 'passed' : 'rejected',
+        data: criterion,
+      });
+
+      benchmarkResultHeading.textContent = JSON.stringify(BlockMediator.get('mobileBetaEligibility'));
+      main.prepend(benchmarkResultHeading);
+      benchmarkWorker.terminate();
+    };
+  } else {
+    const benchmarkResultHeading = createTag('h3', { style: 'text-align: center;' }, 'Browser doesn\'t support web workers. Benchmark was not performed');
+    main.prepend(benchmarkResultHeading);
+  }
+}
+
 /**
  * Decorates the page.
  */
@@ -2400,23 +2464,10 @@ export async function loadArea(area = document) {
 
   if (isDoc) {
     decorateHeaderAndFooter();
-    if (window.Worker) {
-      const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
-      benchmarkWorker.postMessage(10000000);
-      benchmarkWorker.onmessage = (e) => {
-        const benchmarkResultHeading = createTag('h3', { style: 'text-align: center;' });
-        const deviceEligible = e.data <= 400;
-        if (deviceEligible) {
-          benchmarkResultHeading.textContent = `Benchmark finished. Time elapsed: ${e.data}ms. Device Eligible for Mobile Beta 🎉.`;
-        } else {
-          benchmarkResultHeading.textContent = `Benchmark finished. Time elapsed: ${e.data}ms. Device ineligible for Mobile Beta. 🥺`;
-        }
-        main.prepend(benchmarkResultHeading);
-      };
-    } else {
-      const benchmarkResultHeading = createTag('h3', { style: 'text-align: center;' }, 'Browser doesn\'t support web workers. Benchmark was not performed');
-      main.prepend(benchmarkResultHeading);
-    }
+  }
+
+  if (getMetadata('mobile-benchmark')) {
+    checkMobileBetaEligibility(main);
   }
 
   window.hlx = window.hlx || {};

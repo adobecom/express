@@ -3,19 +3,19 @@ import {
   collectFloatingButtonData,
 } from '../shared/floating-cta.js';
 
-export default async function decorate($block) {
-  if ($block.classList.contains('spreadsheet-powered')) {
-    const audience = $block.querySelector(':scope > div').textContent.trim();
+export default async function decorate(block) {
+  if (block.classList.contains('spreadsheet-powered')) {
+    const audience = block.querySelector(':scope > div').textContent.trim();
     if (audience === 'mobile') {
-      $block.closest('.section').remove();
+      block.closest('.section').remove();
     }
 
-    const $parentSection = $block.closest('.section');
-    const data = await collectFloatingButtonData($block);
+    const parentSection = block.closest('.section');
+    const data = await collectFloatingButtonData(block);
 
     const blockWrapper = await createFloatingButton(
-      $block,
-      $parentSection ? audience : null,
+      block,
+      parentSection ? audience : null,
       data,
     );
 
@@ -25,6 +25,6 @@ export default async function decorate($block) {
       document.dispatchEvent(linksPopulated);
     }
   } else {
-    $block.parentElement.remove();
+    block.parentElement.remove();
   }
 }
