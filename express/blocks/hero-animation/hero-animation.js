@@ -2,8 +2,7 @@ import {
   addAnimationToggle,
   createTag,
   toClassName,
-  getLocale,
-  addHeaderSizing,
+  addHeaderSizing, getConfig,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
@@ -267,7 +266,7 @@ export default async function decorate($block) {
   if ($block.classList.contains('wide')) {
     addAnimationToggle($block);
   }
-  if (getLocale(window.location) === 'jp') {
+  if (getConfig().locale.region === 'jp') {
     addHeaderSizing($block);
   }
   $block.classList.add('appear');

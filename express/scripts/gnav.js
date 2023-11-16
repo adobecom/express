@@ -1,13 +1,12 @@
 import {
   loadScript,
-  getLocale,
-  createTag,
-  getLanguage,
   getHelixEnv,
   sampleRUM,
   getCookie,
   getMetadata,
   fetchPlaceholders,
+  loadCSS,
+  getConfig,
 // eslint-disable-next-line import/no-unresolved
 } from './utils.js';
 
@@ -52,7 +51,7 @@ function loadIMS() {
   window.adobeid = {
     client_id: 'MarvelWeb3',
     scope: 'AdobeID,openid',
-    locale: getLocale(window.location),
+    locale: getConfig().locale.region,
     environment: 'prod',
   };
   if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
@@ -64,53 +63,17 @@ function loadIMS() {
 }
 
 async function loadFEDS() {
-  const locale = getLocale(window.location);
+  const config = getConfig();
+  const prefix = config.locale.prefix.replaceAll('/', '');
 
   async function showRegionPicker() {
-    const $body = document.body;
-    const regionpath = locale === 'us' ? '/uk/' : `/${locale}/`;
-    const host = window.location.hostname === 'localhost' ? 'https://www.adobe.com' : '';
-    const url = `${host}${regionpath}`;
-    const resp = await fetch(url);
-    const html = await resp.text();
-    const $div = createTag('div');
-    $div.innerHTML = html;
-    const $regionNav = $div.querySelector('nav.language-Navigation');
-    if (!$regionNav) {
-      return;
-    }
-    const $regionPicker = createTag('div', { id: 'region-picker' });
-    $body.appendChild($regionPicker);
-    $regionPicker.appendChild($regionNav);
-    $regionNav.appendChild(createTag('div', { class: 'close' }));
-    $regionPicker.addEventListener('click', (event) => {
-      if (event.target === $regionPicker || event.target === $regionNav) {
-        $regionPicker.remove();
-      }
-    });
-    $regionPicker.querySelectorAll('li a').forEach(($a) => {
-      $a.addEventListener('click', async (event) => {
-        const pathSplits = new URL($a.href).pathname.split('/');
-        const prefix = pathSplits[1] ? `/${pathSplits[1]}` : '';
-        const destLocale = pathSplits[1] ? `${pathSplits[1]}` : 'us';
-        const off = locale !== 'us' ? locale.length + 1 : 0;
-        const gPath = window.location.pathname.substr(off);
-        let domain = '';
-        if (window.location.hostname.endsWith('.adobe.com')) domain = ' domain=adobe.com;';
-        const cookieValue = `international=${destLocale};${domain} path=/`;
-        // eslint-disable-next-line no-console
-        console.log(`setting international based on language switch to: ${cookieValue}`);
-        document.cookie = cookieValue;
-        event.preventDefault();
-        window.location.href = `${prefix}${gPath}`;
-      });
-    });
-    // focus link of current region
-    const lang = getLanguage(getLocale(new URL(window.location.href))).toLowerCase();
-    const currentRegion = $regionPicker.querySelector(`li a[lang="${lang}"]`);
-    if (currentRegion) {
-      currentRegion.focus();
-    }
+    const { getModal } = await import('../blocks/modal/modal.js');
+    const details = {
+      path: '/express/fragments/regions',
+      id: 'langnav',
+    };
+    loadCSS('/express/blocks/modal/modal.css');
+    return getModal(details);
   }
 
   function handleConsentSettings() {
@@ -159,8 +122,8 @@ async function loadFEDS() {
     const pathSegments = window.location.pathname
       .split('/')
       .filter((e) => e !== '')
-      .filter((e) => e !== locale);
-    const localePath = locale === 'us' ? '' : `${locale}/`;
+      .filter((e) => e !== prefix);
+    const localePath = prefix === '' ? '' : `${prefix}/`;
     const secondPathSegment = pathSegments[1].toLowerCase();
     const pagesShortNameElement = document.head.querySelector('meta[name="short-title"]');
     const pagesShortName = pagesShortNameElement?.getAttribute('content') ?? null;
@@ -170,7 +133,7 @@ async function loadFEDS() {
       || pathSegments.length <= 2
       || !replacedCategory
       || !validSecondPathSegments.includes(replacedCategory)
-      || locale !== 'us') { // Remove this line once locale translations are complete
+      || prefix !== '') { // Remove this line once locale translations are complete
       return null;
     }
 
@@ -192,13 +155,13 @@ async function loadFEDS() {
         showRegionPicker();
       },
     },
-    locale: (locale === 'us' ? 'en' : locale),
+    locale: (prefix === '' ? 'en' : prefix),
     content: {
       experience: getMetadata('gnav') || fedsExp,
     },
     profile: {
       customSignIn: () => {
-        const sparkLang = getLanguage(locale);
+        const sparkLang = config.locale.ietf;
         const sparkPrefix = sparkLang === 'en-US' ? '' : `/${sparkLang}`;
         let sparkLoginUrl = `https://express.adobe.com${sparkPrefix}/sp/`;
         const env = getHelixEnv();
@@ -271,23 +234,30 @@ async function loadFEDS() {
     }
     /* region based redirect to homepage */
     if (window.feds && window.feds.data && window.feds.data.location && window.feds.data.location.country === 'CN') {
-      const regionpath = locale === 'us' ? '/' : `/${locale}/`;
+      const regionpath = prefix === '' ? '/' : `/${prefix}/`;
       window.location.href = regionpath;
     }
   });
-  let prefix = '';
+  let domain = '';
   if (!['www.adobe.com', 'www.stage.adobe.com'].includes(window.location.hostname)) {
-    prefix = 'https://www.adobe.com';
+    domain = 'https://www.adobe.com';
   }
-  loadScript(`${prefix}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).then((script) => {
+  loadScript(`${domain}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).then((script) => {
     script.id = 'feds-script';
   });
   setTimeout(() => {
+    const acom = '7a5eb705-95ed-4cc4-a11d-0cc5760e93db';
+    const ids = {
+      'hlx.page': '3a6a37fe-9e07-4aa9-8640-8f358a623271-test',
+      'hlx.live': '926b16ce-cc88-4c6a-af45-21749f3167f3-test',
+    };
+    // eslint-disable-next-line max-len
+    const otDomainId = ids?.[Object.keys(ids).find((domainId) => window.location.host.includes(domainId))] ?? acom;
     window.fedsConfig.privacy = {
-      otDomainId: '7a5eb705-95ed-4cc4-a11d-0cc5760e93db',
+      otDomainId,
     };
     loadScript('https://www.adobe.com/etc.clientlibs/globalnav/clientlibs/base/privacy-standalone.js');
-  }, 0);
+  }, 4000);
   const footer = document.querySelector('footer');
   footer?.addEventListener('click', (event) => {
     if (event.target.closest('a[data-feds-action="open-adchoices-modal"]')) {

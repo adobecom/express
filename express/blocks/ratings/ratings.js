@@ -5,9 +5,8 @@ import {
   getIconElement,
   getLottie,
   lazyLoadLottiePlayer,
-  getLocale,
   toClassName,
-  getMetadata,
+  getMetadata, getConfig,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
@@ -117,7 +116,7 @@ export default async function decorate($block) {
         },
         {
           name: 'Locale',
-          value: getLocale(window.location),
+          value: getConfig().locale.region,
         },
         {
           name: 'Rating',
@@ -331,7 +330,7 @@ export default async function decorate($block) {
       $stars.innerHTML = `${star.repeat(filledStars)}${starHalf.repeat(halfStars)}${starEmpty.repeat(emptyStars)}`;
       const $votes = createTag('span', { class: 'rating-votes' });
       $votes.innerHTML = `<strong>${rating} / 5</strong> - ${ratingAmount} ${votesText}`;
-      if (getLocale(window.location) === 'kr') $votes.innerHTML = `<strong>${rating} / 5</strong> - ${ratingAmount}${votesText}`;
+      if (getConfig().locale.region === 'kr') $votes.innerHTML = `<strong>${rating} / 5</strong> - ${ratingAmount}${votesText}`;
       $stars.appendChild($votes);
       if (rating > 4.2) {
         buildSchema(actionTitle);

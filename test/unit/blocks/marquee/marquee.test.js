@@ -6,6 +6,7 @@ import {
   sendKeys,
 } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
+import { setConfig } from '../../../../express/scripts/utils.js';
 
 window.isTestEnv = true;
 const {
@@ -13,6 +14,7 @@ const {
   handleMediaQuery,
   transformToVideoLink,
 } = await import('../../../../express/blocks/marquee/marquee.js');
+setConfig({});
 
 function getMiddleOfElement(element) {
   const {
