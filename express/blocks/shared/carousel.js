@@ -32,21 +32,21 @@ export function initToggleTriggers(parent) {
     entries.forEach((entry) => {
       if (entry.target === leftTrigger) {
         if (entry.isIntersecting) {
-          leftControl?.classList.add('arrow-hidden');
-          platform?.classList.remove('left-fader');
+          leftControl.classList.add('arrow-hidden');
+          platform.classList.remove('left-fader');
         } else {
-          leftControl?.classList.remove('arrow-hidden');
-          platform?.classList.add('left-fader');
+          leftControl.classList.remove('arrow-hidden');
+          platform.classList.add('left-fader');
         }
       }
 
       if (entry.target === rightTrigger) {
         if (entry.isIntersecting) {
-          rightControl?.classList.add('arrow-hidden');
-          platform?.classList.remove('right-fader');
+          rightControl.classList.add('arrow-hidden');
+          platform.classList.remove('right-fader');
         } else {
-          rightControl?.classList.remove('arrow-hidden');
-          platform?.classList.add('right-fader');
+          rightControl.classList.remove('arrow-hidden');
+          platform.classList.add('right-fader');
         }
       }
     });
@@ -54,8 +54,8 @@ export function initToggleTriggers(parent) {
 
   const options = { threshold: 0, root: parent };
   const slideObserver = new IntersectionObserver(onSlideIntersect, options);
-  if (leftTrigger) slideObserver.observe(leftTrigger);
-  if (rightTrigger) slideObserver.observe(rightTrigger);
+  slideObserver.observe(leftTrigger);
+  slideObserver.observe(rightTrigger);
   // todo: should unobserve triggers where/when appropriate...
 }
 
