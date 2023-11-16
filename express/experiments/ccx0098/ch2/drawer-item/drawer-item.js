@@ -297,6 +297,13 @@ function decorateBubbleCTAContainer(payload, selector) {
   container.style.display = 'none';
   appendSingleCTA(payload, container);
 }
+function decorateIconCTAContainer(payload, selector) {
+  const container = document.querySelector(selector);
+  if (container) {
+    container.dataset.lh = 'iconView';
+    appendSingleCTA(payload, container);
+  }
+}
 function decorateBubblesView(payload) {
   if (payload.$mobileDrawer && payload.drawerItemContainer?.classList.contains('drawer-item-bubbles-view-container')) {
     const bubbleContainer = createTag(
@@ -327,7 +334,8 @@ function decorateCarouselSwipeableItems(carouselItems) {
 }
 function decorateCarouselViews(payload) {
   if (!payload.isBubbleView) {
-    const sortedChildren = [...payload.drawerItemContainer.children].sort((a,b) =>  a.dataset.order - b.dataset.order); 
+    const sortedChildren = [...payload.drawerItemContainer.children]
+      .sort((a, b) => a.dataset.order - b.dataset.order);
     payload.drawerItemContainer.innerHTML = '';
     sortedChildren.forEach((el) => payload.drawerItemContainer.appendChild(el));
   }
@@ -361,14 +369,6 @@ function decorateCTA(payload) {
     container.append(cta);
   }
   container.dataset.lh = `maincta:${payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('')}`;
-}
-
-function decorateIconCTAContainer(payload, selector) {
-  const container = document.querySelector(selector);
-  if (container) {
-    container.dataset.lh = 'iconView';
-    appendSingleCTA(payload, container);
-  }
 }
 
 function showFirstCTAInContainer(wrapper, selector) {
