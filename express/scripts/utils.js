@@ -2452,7 +2452,6 @@ async function checkMobileBetaEligibility(main) {
     const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
     benchmarkWorker.postMessage(10000000);
     benchmarkWorker.onmessage = (e) => {
-      const benchmarkResultHeading = createTag('h3', { style: 'text-align: center;' });
       const criterion = {
         cpuSpeedPass: e.data <= 400,
         cpuCoreCountPass: (navigator.hardwareConcurrency
