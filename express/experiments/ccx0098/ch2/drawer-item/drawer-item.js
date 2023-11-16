@@ -177,7 +177,7 @@ function updatePayloadFromBlock($block, payload) {
   $block.querySelectorAll(':scope>div').forEach((item) => {
     const row = Array.from(item.children);
     const keyValue = row[0]?.textContent.trim().toLowerCase();
-    if (/^[0-9]*$/.tes(keyValue)) {
+    if (/^[0-9]*$/.test(keyValue)) {
       payload.order = keyValue;
     } else {
       switch (keyValue) {
