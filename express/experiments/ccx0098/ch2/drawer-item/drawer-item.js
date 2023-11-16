@@ -498,7 +498,7 @@ export default function decorate($block) {
 
   updatePayloadFromBlock($block, payload);
   decorateIcon(payload);
-  decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
+  // decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
   decorateMedia(payload);
   decorateCTA(payload);
   trackTotalItemsLoaded(payload);
