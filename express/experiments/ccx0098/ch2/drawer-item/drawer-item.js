@@ -448,7 +448,6 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateAnimationsViewMedia(payload);
     decorateBubblesView(payload);
     if (payload.hasList) {
-      // decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
 
       const iconsSection = payload.iconContainer?.closest('.drawer-item-icons');
       const [heading, sortedIcons] =  [[...iconsSection.children][0],[...iconsSection.children].slice(1).sort((a,b) =>  a.dataset.order - b.dataset.order)];
@@ -498,7 +497,6 @@ export default function decorate($block) {
 
   updatePayloadFromBlock($block, payload);
   decorateIcon(payload);
-  // decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
   decorateMedia(payload);
   decorateCTA(payload);
   trackTotalItemsLoaded(payload);

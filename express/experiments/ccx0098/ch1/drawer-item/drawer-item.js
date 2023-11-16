@@ -314,11 +314,13 @@ function decorateBubblesView(payload) {
       payload.drawerItemContainer.children[payload.drawerItemContainer.children.length - 1],
     );
     tempWorkAroundForBubbleOrder(payload.drawerItemContainer);
-    removeCarouselGeneratedArrows(payload.$mobileDrawer);
+    // removeCarouselGeneratedArrows(payload.$mobileDrawer);
     bubbleContainer.append(...payload.drawerItemContainer.children);
     addDecorativeBubbles(bubbleContainer);
     payload.drawerItemContainer.append(bubbleContainer);
     decorateBubbleCTAContainer(payload, 'drawer-item-bubbles-cta-container');
+    decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container'); //uses the same href as bubbleCTA
+
     payload.drawerItemContainer.dataset.lh = payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('');
   }
 }
@@ -446,7 +448,6 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateAnimationsViewMedia(payload);
     decorateBubblesView(payload);
     if (payload.hasList) {
-      decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
 
       const iconsSection = payload.iconContainer?.closest('.drawer-item-icons');
       const [heading, sortedIcons] =  [[...iconsSection.children][0],[...iconsSection.children].slice(1).sort((a,b) =>  a.dataset.order - b.dataset.order)];
