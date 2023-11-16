@@ -2473,13 +2473,8 @@ async function checkMobileBetaEligibility(main) {
         data: criterion,
       });
 
-      benchmarkResultHeading.textContent = JSON.stringify(BlockMediator.get('mobileBetaEligibility'));
-      main.prepend(benchmarkResultHeading);
       benchmarkWorker.terminate();
     };
-  } else {
-    const benchmarkResultHeading = createTag('h3', { style: 'text-align: center;' }, 'Browser doesn\'t support web workers. Benchmark was not performed');
-    main.prepend(benchmarkResultHeading);
   }
 }
 
