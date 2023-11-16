@@ -340,8 +340,6 @@ function decorateCarouselViews(payload) {
   if (!payload.isBubbleView) {
     buildCarousel('.drawer-item', payload.drawerItemContainer);
     const carousel = payload.drawerItemContainer.querySelector('.carousel-platform');
-    carousel.querySelectorAll('.carousel-left-trigger, .carousel-right-trigger, .carousel-arrow').forEach((trigger) => trigger.style.display = 'none');
-    // carousel.querySelectorAll('.carousel-left-trigger, .carousel-right-trigger').forEach((trigger) => trigger.remove());
     const indicators = createIndicators(payload, carousel);
     payload.drawerItemContainer.append(indicators);
     payload.drawerItemContainer.dataset.lh = payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('');
@@ -455,6 +453,7 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateCarouselViews(payload);
     decorateCarouselCTAList(payload);
     addScratchLottie(payload);
+    // payload.$mobileDrawer.querySelectorAll('.carousel-left-trigger, .carousel-right-trigger, .carousel-arrow').forEach((trigger) => trigger.style.display = 'none');
   }
 }
 function trackTotalItemsLoaded(payload) {
@@ -490,7 +489,6 @@ export default function decorate($block) {
   payload.isBubbleView = payload.drawerItemContainer?.classList.contains('drawer-item-bubbles-view-container');
   payload.isAnimationsView = payload.drawerItemContainer?.classList.contains('drawer-item-animations-view-container');
   payload.isDefaultView = payload.drawerItemContainer?.classList.contains('drawer-item-default-view-container');
-  
 
   updatePayloadFromBlock($block, payload);
   decorateIcon(payload);
