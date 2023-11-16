@@ -57,9 +57,7 @@ main .mobile-drawer .carousel-container .carousel-platform {
   scroll-snap-type: x mandatory;
   overscroll-behavior-x: none;
 }
-main .mobile-drawer .carousel-container .carousel-platform.left-fader.right-fader {
-  display: none;
-}
+
 main .mobile-drawer .drawer-item-icon-container a {
   display: flex;
   position: relative;
