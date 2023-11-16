@@ -1473,6 +1473,7 @@ export function getExperiment() {
 
   return experiment;
 }
+
 /**
  * Gets experiment config from the manifest or the instant experiement
  * metdata and transforms it to more easily consumable structure.
@@ -1589,22 +1590,6 @@ async function replaceInner(path, element) {
 }
 
 /**
- * this is an extensible stub to take on audience mappings
- * @param {string} audience
- * @return {boolean} is member of this audience
- */
-
-function checkExperimentAudience(audience) {
-  if (audience === 'mobile') {
-    return window.innerWidth < 600;
-  }
-  if (audience === 'desktop') {
-    return window.innerWidth > 600;
-  }
-  return true;
-}
-
-/**
  * Generates a decision policy object which is understood by UED from an
  * experiment configuration.
  * @param {*} config Experiment configuration
@@ -1652,7 +1637,15 @@ async function decorateTesting() {
       const config = await getExperimentConfig(experiment);
       console.log('config -->', config);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
-        config.run = forcedExperiment || checkExperimentAudience(toClassName(config.audience));
+        const { DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences } = await import('./experiment.js');
+        const experimentOptions = {
+          ...DEFAULT_EXPERIMENT_OPTIONS,
+          ...{ audiences: AUDIENCES },
+        };
+        config.resolvedAudiences = await getResolvedAudiences(config.audience.split(',').map((a) => a.trim()), experimentOptions);
+        config.run = forcedExperiment
+          || !config.resolvedAudiences
+          || config.resolvedAudiences.length;
         console.log('run', config.run, config.audience);
 
         window.hlx = window.hlx || {};
