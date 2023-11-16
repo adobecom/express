@@ -341,6 +341,7 @@ function decorateCarouselViews(payload) {
     buildCarousel('.drawer-item', payload.drawerItemContainer);
     const carousel = payload.drawerItemContainer.querySelector('.carousel-platform');
     // carousel.querySelectorAll('.carousel-left-trigger, .carousel-right-trigger').forEach((trigger) => trigger.remove());
+    carousel.querySelectorAll('.carousel-left-trigger, .carousel-right-trigger').forEach((trigger) => trigger.style.display = 'none');
     const indicators = createIndicators(payload, carousel);
     payload.drawerItemContainer.append(indicators);
     payload.drawerItemContainer.dataset.lh = payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('');
