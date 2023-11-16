@@ -1890,18 +1890,20 @@ async function buildAutoBlocks($main) {
   }
 
   if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) || ['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
-    if (!window.floatingCtasLoaded) {
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
+    if (!BlockMediator.get('floatingCtasLoaded')) {
       const floatingCTAData = await fetchFloatingCta(window.location.pathname);
       const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
       const device = document.body.dataset?.device;
       const blockName = floatingCTAData?.[device];
+
       if (validButtonVersion.includes(blockName) && $lastDiv) {
         const button = buildBlock(blockName, device);
         button.classList.add('spreadsheet-powered');
         $lastDiv.append(button);
       }
 
-      window.floatingCtasLoaded = true;
+      BlockMediator.set('floatingCtasLoaded', true);
     }
   }
 
