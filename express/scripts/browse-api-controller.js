@@ -73,7 +73,7 @@ export async function getDataWithContext({ urlPath }) {
     context: {
       application: { urlPath },
     },
-    locale: getConfig().locale.ietf.replace('-', '_') || 'en_US',
+    locale: getConfig().locale.ietf || 'en-US',
     queries: [{
       id: 'ccx-search-1',
       start: 0,
