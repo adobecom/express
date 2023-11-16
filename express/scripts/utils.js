@@ -2455,15 +2455,19 @@ async function checkMobileBetaEligibility(main) {
       const benchmarkResultHeading = createTag('h3', { style: 'text-align: center;' });
       const criterion = {
         cpuSpeedPass: e.data <= 400,
-        memoryPass: (navigator.deviceMemory
-          && navigator.deviceMemory >= 4
-          && getMobileOperatingSystem() !== 'iOS')
-          || false,
         cpuCoreCountPass: (navigator.hardwareConcurrency
-          && navigator.hardwareConcurrency >= 4)
+            && navigator.hardwareConcurrency >= 4)
           || false,
       };
+
+      if (getMobileOperatingSystem() === 'iOS') {
+        criterion.cpuCoreCountPass = (navigator.hardwareConcurrency
+          && navigator.hardwareConcurrency >= 4)
+          || false;
+      }
+
       const deviceEligible = Object.values(criterion).every((criteria) => criteria);
+
       BlockMediator.set('mobileBetaEligibility', {
         result: deviceEligible ? 'passed' : 'rejected',
         data: criterion,
