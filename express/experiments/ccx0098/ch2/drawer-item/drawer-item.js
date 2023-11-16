@@ -63,11 +63,7 @@ function tempWorkAroundForBubbleOrder(drawerItemContainer) {
   drawerItemContainer.prepend(drawerItemContainer.querySelector('.drawer-item:nth-of-type(7)'));
   drawerItemContainer.prepend(drawerItemContainer.querySelector('.drawer-item:nth-of-type(7)'));
 }
-function removeCarouselGeneratedArrows($mobileDrawer) {
-  $mobileDrawer.querySelectorAll('.carousel-fader-left,.carousel-fader-right').forEach((arrow) => {
-    arrow.remove();
-  });
-}
+
 function getMissingIcon(iconName) {
   const icons = {
     scratch: 'blank',
@@ -314,7 +310,6 @@ function decorateBubblesView(payload) {
       payload.drawerItemContainer.children[payload.drawerItemContainer.children.length - 1],
     );
     tempWorkAroundForBubbleOrder(payload.drawerItemContainer);
-    // removeCarouselGeneratedArrows(payload.$mobileDrawer);
     bubbleContainer.append(...payload.drawerItemContainer.children);
     addDecorativeBubbles(bubbleContainer);
     payload.drawerItemContainer.append(bubbleContainer);
