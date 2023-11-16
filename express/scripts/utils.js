@@ -2436,8 +2436,8 @@ async function checkMobileBetaEligibility(main) {
       const benchmarkResultHeading = createTag('h3', { style: 'text-align: center;' });
       const criterion = {
         cpuSpeedPass: e.data <= 400,
-        memoryPass: navigator.deviceMemory && navigator.deviceMemory >= 4,
-        cpuCoreCountPass: navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 4,
+        memoryPass: (navigator.deviceMemory && navigator.deviceMemory >= 4) || false,
+        cpuCorePass: (navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 4) || false,
       };
       const deviceEligible = Object.values(criterion).every((criteria) => criteria);
       BlockMediator.set('mobileBetaEligibility', {
