@@ -177,8 +177,8 @@ function updatePayloadFromBlock($block, payload) {
   $block.querySelectorAll(':scope>div').forEach((item) => {
     const row = Array.from(item.children);
     const keyValue = row[0]?.textContent.trim().toLowerCase();
-    if (!isNaN(keyValue)) {
-      payload.order = keyValue
+    if (/^[0-9]*$/.tes(keyValue)) {
+      payload.order = keyValue;
     } else {
       switch (keyValue) {
         case 'item name':
@@ -321,7 +321,7 @@ function decorateBubblesView(payload) {
     addDecorativeBubbles(bubbleContainer);
     payload.drawerItemContainer.append(bubbleContainer);
     decorateBubbleCTAContainer(payload, 'drawer-item-bubbles-cta-container');
-    decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container'); //uses the same href as bubbleCTA
+    decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
 
     payload.drawerItemContainer.dataset.lh = payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('');
   }
@@ -443,9 +443,9 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateAnimationsViewMedia(payload);
     decorateBubblesView(payload);
     if (payload.hasList) {
-
       const iconsSection = payload.iconContainer?.closest('.drawer-item-icons');
-      const [heading, sortedIcons] =  [[...iconsSection.children][0],[...iconsSection.children].slice(1).sort((a,b) =>  a.dataset.order - b.dataset.order)];
+      const [heading, sortedIcons] = [[...iconsSection.children][0],
+        [...iconsSection.children].slice(1).sort((a, b) => a.dataset.order - b.dataset.order)];
 
       iconsSection.innerHTML = '';
       iconsSection.appendChild(heading);
