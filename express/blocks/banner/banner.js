@@ -1,6 +1,7 @@
 import { normalizeHeadings } from '../../scripts/utils.js';
 
 export default async function decorate(block) {
+  console.log(block.outerHTML)
   normalizeHeadings(block, ['h2', 'h3']);
   const buttons = block.querySelectorAll('a.button');
   if (buttons.length > 1) {
