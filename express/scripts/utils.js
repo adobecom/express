@@ -23,8 +23,6 @@ const DEFAULT_EXPERIMENT_OPTIONS = {
   experimentsQueryParameter: 'experiment',
 };
 
-const KEY_ECID = 'ecid';
-
 const CC_ENTITLED_USERS_SEGMENT_ID = 'bf632803-4412-463d-83c5-757dda3224ee';
 
 function getSegmentsFromAlloyResponse(response) {
@@ -38,7 +36,6 @@ function getSegmentsFromAlloyResponse(response) {
       }
     });
   }
-  console.log('segments', segments);
   return segments;
 }
 
@@ -59,6 +56,7 @@ async function getSegmentsFromAlloy() {
     window.renderDecisionsResult = alloy('sendEvent', {
       renderDecisions: true,
     }).catch((error) => {
+      // eslint-disable-next-line no-console
       console.error('Error sending event to alloy:', error);
       return [];
     });
@@ -1454,10 +1452,10 @@ export function toCamelCase(name) {
 export function getExperiment() {
   let experiment = toClassName(getMetadata('experiment'));
 
-  // if (!/adobe\.com/.test(window.location.hostname) && !/\.hlx\.live/.test(window.location.hostname)) {
-  //   experiment = '';
-  //   // reason = 'not prod host';
-  // }
+  if (!/adobe\.com/.test(window.location.hostname) && !/\.hlx\.live/.test(window.location.hostname)) {
+    experiment = '';
+    // reason = 'not prod host';
+  }
   if (window.location.hash) {
     experiment = '';
     // reason = 'suppressed by #';
@@ -1625,22 +1623,6 @@ async function replaceInner(path, element) {
 }
 
 /**
- * this is an extensible stub to take on audience mappings
- * @param {string} audience
- * @return {boolean} is member of this audience
- */
-
-function checkExperimentAudience(audience) {
-  if (audience === 'mobile') {
-    return window.innerWidth < 600;
-  }
-  if (audience === 'desktop') {
-    return window.innerWidth > 600;
-  }
-  return true;
-}
-
-/**
  * Generates a decision policy object which is understood by UED from an
  * experiment configuration.
  * @param {*} config Experiment configuration
@@ -1734,7 +1716,8 @@ function createInlineScript(document, element, innerHTML, type) {
 
 async function loadAlloy() {
   createInlineScript(document, document.body, getAlloyInitScript(), 'text/javascript');
-  await import('/express/scripts/analytics/alloy.min.js');
+  await import('./libs/alloy.min.js');
+  // eslint-disable-next-line no-undef
   await alloy('configure', getAlloyConfiguration(document));
 }
 
@@ -1756,11 +1739,13 @@ async function decorateTesting() {
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
         const experimentOptions = {
           ...DEFAULT_EXPERIMENT_OPTIONS,
-          ... { audiences: AUDIENCES },
+          ...{ audiences: AUDIENCES },
         };
         await loadAlloy();
         config.resolvedAudiences = await getResolvedAudiences(config.audience.split(',').map((a) => a.trim()), experimentOptions);
-        config.run = forcedExperiment || !config.resolvedAudiences || config.resolvedAudiences.length;
+        config.run = forcedExperiment
+          || !config.resolvedAudiences
+          || config.resolvedAudiences.length;
         console.log('run', config.run, config.audience);
 
         window.hlx = window.hlx || {};
