@@ -319,6 +319,8 @@ function decorateBubblesView(payload) {
     addDecorativeBubbles(bubbleContainer);
     payload.drawerItemContainer.append(bubbleContainer);
     decorateBubbleCTAContainer(payload, 'drawer-item-bubbles-cta-container');
+    decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container'); //uses the same href as bubbleCTA
+
     payload.drawerItemContainer.dataset.lh = payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('');
   }
 }
@@ -446,8 +448,7 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateAnimationsViewMedia(payload);
     decorateBubblesView(payload);
     if (payload.hasList) {
-      console.log('payload',payload);
-      decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
+      // decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
 
       const iconsSection = payload.iconContainer?.closest('.drawer-item-icons');
       const [heading, sortedIcons] =  [[...iconsSection.children][0],[...iconsSection.children].slice(1).sort((a,b) =>  a.dataset.order - b.dataset.order)];
@@ -497,6 +498,7 @@ export default function decorate($block) {
 
   updatePayloadFromBlock($block, payload);
   decorateIcon(payload);
+  decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
   decorateMedia(payload);
   decorateCTA(payload);
   trackTotalItemsLoaded(payload);
