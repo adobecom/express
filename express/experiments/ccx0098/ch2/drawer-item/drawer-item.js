@@ -446,6 +446,7 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateAnimationsViewMedia(payload);
     decorateBubblesView(payload);
     if (payload.hasList) {
+      console.log('payload',payload);
       decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
 
       const iconsSection = payload.iconContainer?.closest('.drawer-item-icons');
