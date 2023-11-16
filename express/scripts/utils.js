@@ -2427,6 +2427,25 @@ export async function loadSections(sections, isDoc) {
   return areaBlocks;
 }
 
+export function getMobileOperatingSystem() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+  // Windows Phone must come first because its UA also contains "Android"
+  if (/windows phone/i.test(userAgent)) {
+    return 'Windows Phone';
+  }
+
+  if (/android/i.test(userAgent)) {
+    return 'Android';
+  }
+
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+    return 'iOS';
+  }
+
+  return 'unknown';
+}
+
 async function checkMobileBetaEligibility(main) {
   const { default: BlockMediator } = await import('./block-mediator.min.js');
   if (window.Worker) {
@@ -2436,8 +2455,13 @@ async function checkMobileBetaEligibility(main) {
       const benchmarkResultHeading = createTag('h3', { style: 'text-align: center;' });
       const criterion = {
         cpuSpeedPass: e.data <= 400,
-        memoryPass: (navigator.deviceMemory && navigator.deviceMemory >= 4) || false,
-        cpuCorePass: (navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 4) || false,
+        memoryPass: (navigator.deviceMemory
+          && navigator.deviceMemory >= 4
+          && getMobileOperatingSystem() !== 'iOS')
+          || false,
+        cpuCoreCountPass: (navigator.hardwareConcurrency
+          && navigator.hardwareConcurrency >= 4)
+          || false,
       };
       const deviceEligible = Object.values(criterion).every((criteria) => criteria);
       BlockMediator.set('mobileBetaEligibility', {
@@ -2537,25 +2561,6 @@ export async function loadArea(area = document) {
 
   const { default: loadDelayed } = await import('./delayed.js');
   loadDelayed(8000);
-}
-
-export function getMobileOperatingSystem() {
-  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-
-  // Windows Phone must come first because its UA also contains "Android"
-  if (/windows phone/i.test(userAgent)) {
-    return 'Windows Phone';
-  }
-
-  if (/android/i.test(userAgent)) {
-    return 'Android';
-  }
-
-  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-    return 'iOS';
-  }
-
-  return 'unknown';
 }
 
 export function titleCase(str) {
