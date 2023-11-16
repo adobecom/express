@@ -168,7 +168,7 @@ async function loadFEDS() {
         if (env && env.spark) {
           sparkLoginUrl = sparkLoginUrl.replace('express.adobe.com', env.spark);
         }
-        if (isHomepage || sparkPrefix.includes('en-GB')) {
+        if (isHomepage) {
           sparkLoginUrl = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
         }
         window.location.href = sparkLoginUrl;
