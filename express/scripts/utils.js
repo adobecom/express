@@ -2452,7 +2452,6 @@ async function checkMobileBetaEligibility(main) {
     const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
     benchmarkWorker.postMessage(10000000);
     benchmarkWorker.onmessage = (e) => {
-      const benchmarkResult = createTag('div', { class: 'section', style: 'text-align: center;' });
       const criterion = {
         cpuSpeedPass: e.data <= 400,
         cpuCoreCountPass: (navigator.hardwareConcurrency
@@ -2472,20 +2471,22 @@ async function checkMobileBetaEligibility(main) {
         result: deviceEligible ? 'passed' : 'rejected',
         data: criterion,
       });
-
-      Object.entries(BlockMediator.get('mobileBetaEligibility')).forEach((entry) => {
-        if (entry[0] === 'result') {
-          benchmarkResult.append(createTag('p', {}, `${entry[0]}: ${entry[1]}`));
-        }
-
-        if (entry[0] === 'data') {
-          Object.entries(entry[1]).forEach((en) => {
-            benchmarkResult.append(createTag('p', {}, `${en[0]}: ${en[1]}`));
-          });
-        }
-      });
-
-      main.prepend(benchmarkResult);
+      // const benchmarkResult = createTag('div', {
+      //   class: 'section',
+      //   style: 'text-align: center;',
+      // });
+      // Object.entries(BlockMediator.get('mobileBetaEligibility')).forEach((entry) => {
+      //   if (entry[0] === 'result') {
+      //     benchmarkResult.append(createTag('p', {}, `${entry[0]}: ${entry[1]}`));
+      //   }
+      //
+      //   if (entry[0] === 'data') {
+      //     Object.entries(entry[1]).forEach((en) => {
+      //       benchmarkResult.append(createTag('p', {}, `${en[0]}: ${en[1]}`));
+      //     });
+      //   }
+      // });
+      // main.prepend(benchmarkResult);
       benchmarkWorker.terminate();
     };
   }
