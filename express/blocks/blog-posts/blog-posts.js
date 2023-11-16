@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable import/named, import/extensions */
 
 import {
@@ -43,6 +44,7 @@ async function fetchBlogIndex(config) {
     const res = await resp.json();
     consolidatedJsonData.push(...res.data);
   }
+
   const byPath = {};
   consolidatedJsonData.forEach((post) => {
     if (post.tags) {
@@ -86,8 +88,14 @@ async function filterBlogPosts(config) {
   if (config.featured) {
     if (!Array.isArray(config.featured)) config.featured = [config.featured];
     const featured = getFeatured(index, config.featured);
-    result.push(...featured);
-    featured.forEach((post) => isDuplicate(post.path));
+
+    featured.forEach((post) => {
+      if (!isDuplicate(post.path)) {
+        result.push(post);
+      }
+    });
+    // result.push(...featured);
+    // featured.forEach((post) => isDuplicate(post.path));
   }
 
   if (!config.featuredOnly) {
