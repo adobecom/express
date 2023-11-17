@@ -1,8 +1,4 @@
-import {
-  createTag,
-  loadStyle,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
+import { createTag, loadStyle } from '../../scripts/utils.js';
 
 function correctCenterAlignment(plat) {
   if (plat.parentElement.offsetWidth <= plat.offsetWidth) return;

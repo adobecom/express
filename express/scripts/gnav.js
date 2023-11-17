@@ -7,7 +7,6 @@ import {
   fetchPlaceholders,
   loadStyle,
   getConfig,
-// eslint-disable-next-line import/no-unresolved
 } from './utils.js';
 
 const isHomepage = window.location.pathname.endsWith('/express/');
