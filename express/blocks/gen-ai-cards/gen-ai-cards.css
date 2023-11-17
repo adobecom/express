@@ -46,11 +46,10 @@
   border-radius: 8px;
   overflow: hidden;
   margin: 0 8px;
-  position: relative;
   background-color: #f4f4fd;
 }
 
-.gen-ai-cards .card:first-of-type {
+.gen-ai-cards .carousel-left-trigger ~ .card {
   margin-left: 0;
 }
 
@@ -84,7 +83,6 @@
   line-height: var(--body-font-size-l);
 }
 
-
 .gen-ai-cards .card .media-wrapper {
   position: absolute;
   border-radius: 16px;
@@ -93,6 +91,13 @@
   transform: translateX(-50%);
   width: 374px;
   height: 246px;
+  overflow: hidden;
+}
+
+.gen-ai-cards .card .media-wrapper picture img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
 }
 
 .gen-ai-cards .card .gen-ai-input-form {
