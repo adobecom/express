@@ -3,10 +3,6 @@ const AUTO_BLOCKS = [
   { fragment: '/express/fragments/' },
 ];
 
-const TK_IDS = {
-  jp: 'dvg6awq',
-};
-
 const DO_NOT_INLINE = [
   'accordion',
   'columns',
