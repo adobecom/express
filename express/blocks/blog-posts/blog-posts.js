@@ -88,14 +88,7 @@ async function filterBlogPosts(config) {
   if (config.featured) {
     if (!Array.isArray(config.featured)) config.featured = [config.featured];
     const featured = getFeatured(index, config.featured);
-
-    featured.forEach((post) => {
-      if (!isDuplicate(post.path)) {
-        result.push(post);
-      }
-    });
-    // result.push(...featured);
-    // featured.forEach((post) => isDuplicate(post.path));
+    result.push(...featured);
   }
 
   if (!config.featuredOnly) {
@@ -133,13 +126,14 @@ async function filterBlogPosts(config) {
       if (matchedAll && numMatched < 12) {
         matchedAll = !isDuplicate(post.path);
       }
+
       if (matchedAll) numMatched += 1;
       return (matchedAll);
     });
-
     result.push(...feed);
   }
-  return (result);
+
+  return (result.filter((post) => !isDuplicate(post.path)));
 }
 
 function getBlogPostsConfig($block) {
