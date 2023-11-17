@@ -5,7 +5,7 @@ import {
   getCookie,
   getMetadata,
   fetchPlaceholders,
-  loadCSS,
+  loadStyle,
   getConfig,
 // eslint-disable-next-line import/no-unresolved
 } from './utils.js';
@@ -72,7 +72,7 @@ async function loadFEDS() {
       path: '/express/fragments/regions',
       id: 'langnav',
     };
-    loadCSS('/express/blocks/modal/modal.css');
+    loadStyle('/express/blocks/modal/modal.css');
     return getModal(details);
   }
 

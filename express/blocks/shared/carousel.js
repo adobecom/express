@@ -1,6 +1,6 @@
 import {
   createTag,
-  loadCSS,
+  loadStyle,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
@@ -61,7 +61,7 @@ export function initToggleTriggers(parent) {
 
 export default async function buildCarousel(selector, parent, options = {}) {
   // Load CSS
-  loadCSS('/express/blocks/shared/carousel.css');
+  loadStyle('/express/blocks/shared/carousel.css');
   // Build the carousel HTML
   const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
 
