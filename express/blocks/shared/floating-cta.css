@@ -219,7 +219,7 @@ main .floating-button-wrapper.multifunction .toolbox {
     text-align: left;
     bottom: 0;
     z-index: 1;
-    transition: max-height 0.5s, transform 0.5s ease-in, padding 0.5s;
+
 }
 
 main .floating-button-wrapper.multifunction .toolbox:after {
@@ -231,10 +231,15 @@ main .floating-button-wrapper.multifunction .toolbox:after {
     height: 64px;
     width: 100%;
     background-color: white;
+
+}
+
+main .floating-button-wrapper.multifunction.with-transition .toolbox,
+main .floating-button-wrapper.multifunction.with-transition .toolbox:after {
     transition: 0.5s;
 }
 
-main .floating-button-wrapper.multifunction.initial-load .toolbox {
+main .floating-button-wrapper.multifunction.with-transition.initial-load .toolbox {
     transition: max-height 2s ease, padding 0.5s ease-in;
 }
 
@@ -280,7 +285,7 @@ main .floating-button-wrapper.multifunction.toolbox-opened .toolbox {
     z-index: 1;
 }
 
-main .floating-button-wrapper.multifunction .floating-button {
+main .floating-button-wrapper.multifunction.with-transition .floating-button {
     transition: all .2s;
 }
 
@@ -365,7 +370,7 @@ main .floating-button-wrapper.multifunction.toolbox-opened .toolbox-background {
     opacity: 0.75;
 }
 
-main .floating-button-wrapper.multifunction.initial-load .toolbox-background {
+main .floating-button-wrapper.multifunction.with-transition.initial-load .toolbox-background {
     transition: all 2s;
 }
 
