@@ -432,14 +432,12 @@ export function initToolBox(wrapper, data, toggleFunction) {
   const background = wrapper.querySelector('.toolbox-background');
 
   setTimeout(() => {
-    wrapper.classList.add('with-transition');
     if (wrapper.classList.contains('initial-load')) {
       toggleFunction(wrapper, lottie, data, false);
     }
   }, data.delay * 1000);
 
   cta.addEventListener('click', (e) => {
-    wrapper.classList.add('with-transition');
     if (!wrapper.classList.contains('toolbox-opened')) {
       e.preventDefault();
       e.stopPropagation();
