@@ -565,14 +565,21 @@ export function linkPicture($picture) {
 
 export function linkImage($elem) {
   const $a = $elem.querySelector('a');
-  if ($a) {
-    const $parent = $a.closest('div');
-    $a.remove();
-    $a.className = '';
-    $a.innerHTML = '';
-    $a.append(...$parent.children);
-    $parent.append($a);
-  }
+  if (!$a) return Promise.resolve();
+
+  const img = $elem.querySelector('img');
+  const $parent = $a.closest('div');
+  $a.remove();
+  $a.className = '';
+  $a.innerHTML = '';
+  $a.append(...$parent.children);
+  $parent.append($a);
+
+  return new Promise((resolve) => {
+    img.addEventListener('load', () => {
+      resolve();
+    }, { passive: true });
+  });
 }
 
 export function readBlockConfig($block) {
@@ -1907,13 +1914,14 @@ async function buildAutoBlocks($main) {
   }
 
   if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase())) {
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
     const authoredRRFound = [
       '.template-list.horizontal.fullwidth.mini',
       '.link-list.noarrows',
       '.collapsible-card',
     ].every((block) => $main.querySelector(block));
 
-    if (!authoredRRFound && !window.relevantRowsLoaded) {
+    if (!authoredRRFound && !BlockMediator.get('relevantRowsLoaded')) {
       const relevantRowsData = await fetchRelevantRows(window.location.pathname);
 
       if (relevantRowsData) {
@@ -1922,7 +1930,7 @@ async function buildAutoBlocks($main) {
         relevantRowsSection.dataset.audience = 'mobile';
         relevantRowsSection.append(fragment);
         $main.prepend(relevantRowsSection);
-        window.relevantRowsLoaded = true;
+        BlockMediator.set('relevantRowsLoaded', true);
       }
     }
   }

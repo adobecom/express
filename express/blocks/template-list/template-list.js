@@ -8,7 +8,9 @@ import {
   decorateMain,
   fetchPlaceholders,
   fetchPlainBlockFromFragment,
-  fetchRelevantRows, fixIcons, getConfig,
+  fetchRelevantRows,
+  fixIcons,
+  getConfig,
   getIconElement,
   getLottie,
   getMetadata,
@@ -260,10 +262,13 @@ async function fetchBlueprint(pathname) {
 }
 
 function populateTemplates($block, templates, props) {
+  $block.classList.add('loading-templates');
+  const imgPromises = [];
   for (let $tmplt of templates) {
     const isPlaceholder = $tmplt.querySelector(':scope > div:first-of-type > img[src*=".svg"], :scope > div:first-of-type > svg');
     const $linkContainer = $tmplt.querySelector(':scope > div:nth-of-type(2)');
     const $rowWithLinkInFirstCol = $tmplt.querySelector(':scope > div:first-of-type > a');
+    const img = $tmplt.querySelector('picture img');
 
     if ($linkContainer) {
       const $link = $linkContainer.querySelector(':scope a');
@@ -283,6 +288,14 @@ function populateTemplates($block, templates, props) {
 
         $linkContainer.innerHTML = '';
         $linkContainer.append($newLink);
+
+        if (img) {
+          imgPromises.push(new Promise((resolve) => {
+            img.addEventListener('load', () => {
+              resolve();
+            }, { passive: true });
+          }));
+        }
       }
     }
 
@@ -341,7 +354,7 @@ function populateTemplates($block, templates, props) {
     if ($imgLink) {
       const $parent = $imgLink.closest('div');
       if (!$imgLink.href.includes('.mp4')) {
-        linkImage($parent);
+        imgPromises.push(linkImage($parent));
       } else {
         let videoLink = $imgLink.href;
         if (videoLink.includes('/media_')) {
@@ -382,6 +395,10 @@ function populateTemplates($block, templates, props) {
       $tmplt.classList.add('placeholder');
     }
   }
+
+  Promise.all(imgPromises).then(() => {
+    $block.classList.remove('loading-templates');
+  });
 }
 
 function initToggle($section) {
@@ -490,11 +507,10 @@ function getRedirectUrl(tasks, topics, format, allTemplatesMetadata) {
   const pathMatch = (e) => e.path === targetPath;
   if (allTemplatesMetadata.some(pathMatch)) {
     return `${window.location.origin}${targetPath}`;
-  } else {
-    const searchUrlTemplate = `/express/templates/search?tasks=${tasks}&phformat=${format}&topics=${topics || "''"}`;
-    const searchUrl = `${window.location.origin}${prefix}${searchUrlTemplate}`;
-    return searchUrl;
   }
+
+  const searchUrlTemplate = `/express/templates/search?tasks=${tasks}&phformat=${format}&topics=${topics || "''"}`;
+  return `${window.location.origin}${prefix}${searchUrlTemplate}`;
 }
 
 async function redirectSearch($searchBar, props) {
@@ -1957,7 +1973,7 @@ export default async function decorate($block) {
 
   if ($block.classList.contains('horizontal')) {
     const requireInfiniteScroll = !$block.classList.contains('mini') && !$block.classList.contains('collaboration');
-    buildCarousel(':scope > .template', $block, requireInfiniteScroll);
+    await buildCarousel(':scope > .template', $block, requireInfiniteScroll);
   } else {
     addAnimationToggle($block);
   }
