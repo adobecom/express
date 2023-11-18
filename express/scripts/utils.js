@@ -567,19 +567,12 @@ export function linkImage($elem) {
   const $a = $elem.querySelector('a');
   if (!$a) return Promise.resolve();
 
-  const img = $elem.querySelector('img');
   const $parent = $a.closest('div');
   $a.remove();
   $a.className = '';
   $a.innerHTML = '';
   $a.append(...$parent.children);
   $parent.append($a);
-
-  return new Promise((resolve) => {
-    img.addEventListener('load', () => {
-      resolve();
-    }, { passive: true });
-  });
 }
 
 export function readBlockConfig($block) {

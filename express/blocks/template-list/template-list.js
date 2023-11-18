@@ -354,7 +354,7 @@ function populateTemplates($block, templates, props) {
     if ($imgLink) {
       const $parent = $imgLink.closest('div');
       if (!$imgLink.href.includes('.mp4')) {
-        imgPromises.push(linkImage($parent));
+        linkImage($parent);
       } else {
         let videoLink = $imgLink.href;
         if (videoLink.includes('/media_')) {
