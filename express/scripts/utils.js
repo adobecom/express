@@ -565,7 +565,7 @@ export function linkPicture($picture) {
 
 export function linkImage($elem) {
   const $a = $elem.querySelector('a');
-  if (!$a) return Promise.resolve();
+  if (!$a) return;
 
   const $parent = $a.closest('div');
   $a.remove();
