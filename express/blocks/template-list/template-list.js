@@ -8,9 +8,7 @@ import {
   decorateMain,
   fetchPlaceholders,
   fetchPlainBlockFromFragment,
-  fetchRelevantRows,
-  fixIcons,
-  getConfig,
+  fetchRelevantRows, fixIcons, getConfig,
   getIconElement,
   getLottie,
   getMetadata,
@@ -262,13 +260,10 @@ async function fetchBlueprint(pathname) {
 }
 
 function populateTemplates($block, templates, props) {
-  $block.classList.add('loading-templates');
-  const imgPromises = [];
   for (let $tmplt of templates) {
     const isPlaceholder = $tmplt.querySelector(':scope > div:first-of-type > img[src*=".svg"], :scope > div:first-of-type > svg');
     const $linkContainer = $tmplt.querySelector(':scope > div:nth-of-type(2)');
     const $rowWithLinkInFirstCol = $tmplt.querySelector(':scope > div:first-of-type > a');
-    const img = $tmplt.querySelector('picture img');
 
     if ($linkContainer) {
       const $link = $linkContainer.querySelector(':scope a');
@@ -288,14 +283,6 @@ function populateTemplates($block, templates, props) {
 
         $linkContainer.innerHTML = '';
         $linkContainer.append($newLink);
-
-        if (img) {
-          imgPromises.push(new Promise((resolve) => {
-            img.addEventListener('load', () => {
-              resolve();
-            }, { passive: true });
-          }));
-        }
       }
     }
 
@@ -395,10 +382,6 @@ function populateTemplates($block, templates, props) {
       $tmplt.classList.add('placeholder');
     }
   }
-
-  Promise.all(imgPromises).then(() => {
-    $block.classList.remove('loading-templates');
-  });
 }
 
 function initToggle($section) {

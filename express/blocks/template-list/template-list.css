@@ -1658,8 +1658,6 @@ main .section.template-list-horizontal-container > div > .template-list.horizont
 main .template-list.horizontal .carousel-container {
   margin-left: 0;
   margin-right: 0;
-  transition: opacity .2s;
-  opacity: unset;
 }
 
 main .template-list.horizontal .carousel-platform {
@@ -1999,10 +1997,6 @@ main .template-list-fullwidth-apipowered-container nav ol.templates-breadcrumbs 
   content: '/';
   color: var(--color-black);
   padding: 0 10px 0 0;
-}
-
-main .template-list.horizontal.loading-templates .carousel-container {
-  opacity: 0;
 }
 
 @media (min-width: 600px) {

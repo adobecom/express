@@ -1907,14 +1907,13 @@ async function buildAutoBlocks($main) {
   }
 
   if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase())) {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
     const authoredRRFound = [
       '.template-list.horizontal.fullwidth.mini',
       '.link-list.noarrows',
       '.collapsible-card',
     ].every((block) => $main.querySelector(block));
 
-    if (!authoredRRFound && !BlockMediator.get('relevantRowsLoaded')) {
+    if (!authoredRRFound && !window.relevantRowsLoaded) {
       const relevantRowsData = await fetchRelevantRows(window.location.pathname);
 
       if (relevantRowsData) {
@@ -1923,7 +1922,7 @@ async function buildAutoBlocks($main) {
         relevantRowsSection.dataset.audience = 'mobile';
         relevantRowsSection.append(fragment);
         $main.prepend(relevantRowsSection);
-        BlockMediator.set('relevantRowsLoaded', true);
+        window.relevantRowsLoaded = true;
       }
     }
   }
