@@ -1688,6 +1688,7 @@ async function decorateTesting() {
                 const experimentPath = new URL(page, window.location.href).pathname.split('.')[0];
                 if (experimentPath && experimentPath !== currentPath) {
                   await replaceInner(experimentPath, document.querySelector('main'));
+                  removeIrrelevantSections(document.querySelector('main'));
                 }
               }
             }
