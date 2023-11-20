@@ -56,7 +56,7 @@ export default async function decorate($block) {
     const div = links[0].closest('div');
     const platformEl = document.createElement('div');
     platformEl.classList.add('link-list-platform');
-    await buildCarousel('p.button-container', div);
+    buildCarousel('p.button-container', div);
     div.append(platformEl);
   }
 

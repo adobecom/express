@@ -1,7 +1,6 @@
 import {
   createTag,
   loadCSS,
-// eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
 function correctCenterAlignment(plat) {
