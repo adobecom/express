@@ -24,6 +24,14 @@ function initToggleTriggers(parent) {
   const rightTrigger = parent.querySelector('.carousel-right-trigger');
   const platform = parent.querySelector('.carousel-platform');
 
+  // If flex container has a gap, add negative margins to compensate
+  const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
+  if (gap !== 'normal') {
+    const gapInt = parseInt(gap.replace('px', ''), 10);
+    leftTrigger.style.marginRight = `-${gapInt + 1}px`;
+    rightTrigger.style.marginLeft = `-${gapInt + 1}px`;
+  }
+
   // intersection observer to toggle right arrow and gradient
   const onSlideIntersect = (entries) => {
     if (isInHiddenSection()) return;
@@ -80,14 +88,6 @@ export function onCarouselCSSLoad(selector, parent, options) {
 
     platform.prepend(leftTrigger);
     platform.append(rightTrigger);
-
-    // If flex container has a gap, add negative margins to compensate
-    const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
-    if (gap !== 'normal') {
-      const gapInt = parseInt(gap.replace('px', ''), 10);
-      leftTrigger.style.marginRight = `-${gapInt + 1}px`;
-      rightTrigger.style.marginLeft = `-${gapInt + 1}px`;
-    }
   }
 
   container.append(platform, faderLeft, faderRight);
