@@ -178,7 +178,7 @@ export function onCarouselCSSLoad(selector, parent, options) {
   setInitialState(platform, options);
 
   parent.style.removeProperty('visibility');
-};
+}
 
 export default async function buildCarousel(selector, parent, options = {}) {
   // Load CSS then build carousel
