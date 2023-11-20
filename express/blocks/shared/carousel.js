@@ -66,28 +66,34 @@ export function onCarouselCSSLoad(selector, parent, options) {
   const container = createTag('div', { class: 'carousel-container' });
   const platform = createTag('div', { class: 'carousel-platform' });
 
-  const leftTrigger = createTag('div', { class: 'carousel-left-trigger' });
-  const rightTrigger = createTag('div', { class: 'carousel-right-trigger' });
-
   const faderLeft = createTag('div', { class: 'carousel-fader-left arrow-hidden' });
   const faderRight = createTag('div', { class: 'carousel-fader-right arrow-hidden' });
 
   const arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
   const arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
 
-  platform.append(leftTrigger, ...carouselContent, rightTrigger);
+  platform.append(...carouselContent);
+
+  if (!options.infinityScrollEnabled) {
+    const leftTrigger = createTag('div', { class: 'carousel-left-trigger' });
+    const rightTrigger = createTag('div', { class: 'carousel-right-trigger' });
+
+    platform.prepend(leftTrigger);
+    platform.append(rightTrigger);
+
+    // If flex container has a gap, add negative margins to compensate
+    const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
+    if (gap !== 'normal') {
+      const gapInt = parseInt(gap.replace('px', ''), 10);
+      leftTrigger.style.marginRight = `-${gapInt + 1}px`;
+      rightTrigger.style.marginLeft = `-${gapInt + 1}px`;
+    }
+  }
+
   container.append(platform, faderLeft, faderRight);
   faderLeft.append(arrowLeft);
   faderRight.append(arrowRight);
   parent.append(container);
-
-  // If flex container has a gap, add negative margins to compensate
-  const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
-  if (gap !== 'normal') {
-    const gapInt = parseInt(gap.replace('px', ''), 10);
-    leftTrigger.style.marginRight = `-${gapInt + 1}px`;
-    rightTrigger.style.marginLeft = `-${gapInt + 1}px`;
-  }
 
   // Scroll the carousel by clicking on the controls
   const moveCarousel = (increment) => {
@@ -182,14 +188,16 @@ export function onCarouselCSSLoad(selector, parent, options) {
 export default async function buildCarousel(selector, parent, options = {}) {
   // Load CSS then build carousel
   parent.style.visibility = 'hidden';
+  return new Promise((resolve) => {
+    if (window.isTestEnv) {
+      loadCSS('/express/blocks/shared/carousel.css');
+      onCarouselCSSLoad(selector, parent, options);
+      resolve();
+    }
 
-  if (window.isTestEnv) {
-    loadCSS('/express/blocks/shared/carousel.css');
-    onCarouselCSSLoad(selector, parent, options);
-    return;
-  }
-
-  loadCSS('/express/blocks/shared/carousel.css', () => {
-    onCarouselCSSLoad(selector, parent, options);
+    loadCSS('/express/blocks/shared/carousel.css', () => {
+      onCarouselCSSLoad(selector, parent, options);
+      resolve();
+    });
   });
 }

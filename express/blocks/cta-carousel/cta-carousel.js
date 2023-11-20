@@ -26,6 +26,12 @@ export function decorateTextWithTag(textSource, options = {}) {
   return text;
 }
 
+export const windowHelper = {
+  redirect: (url) => {
+    window.location.assign(url);
+  },
+};
+
 export function decorateHeading(block, payload) {
   const headingSection = createTag('div', { class: 'cta-carousel-heading-section' });
   const headingTextWrapper = createTag('div', { class: 'text-wrapper' });
@@ -58,7 +64,7 @@ function handleGenAISubmit(form, link) {
 
   btn.disabled = true;
   const genAILink = link.replace('%7B%7Bprompt-text%7D%7D', encodeURI(input.value).replaceAll(' ', '+'));
-  if (genAILink !== '') window.location.assign(genAILink);
+  if (genAILink !== '') windowHelper.redirect(genAILink);
 }
 
 function buildGenAIForm(ctaObj) {
@@ -80,14 +86,16 @@ function buildGenAIForm(ctaObj) {
   genAISubmit.textContent = ctaObj.ctaLinks[0].textContent;
   genAISubmit.disabled = genAIInput.value === '';
 
+  genAIInput.addEventListener('input', () => {
+    genAISubmit.disabled = genAIInput.value.trim() === '';
+  }, { passive: true });
+
   genAIInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleGenAISubmit(genAIForm, ctaObj.ctaLinks[0].href);
-    } else {
-      genAISubmit.disabled = genAIInput.value === '';
     }
-  }, { passive: true });
+  });
 
   genAIForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -228,6 +236,6 @@ export default async function decorate(block) {
 
   decorateHeading(block, payload);
   await decorateCards(block, payload);
-  buildCarousel('', block.querySelector('.cta-carousel-cards'));
+  await buildCarousel('', block.querySelector('.cta-carousel-cards'));
   document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
 }

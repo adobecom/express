@@ -249,7 +249,6 @@ async function lazyLoadSEOLinkList() {
       await updateSEOLinkList(topTemplatesContainer, topTemplatesTemplate, topTemplatesData);
       const hiddenDiv = seoNav.querySelector('div[style="visibility: hidden;"]');
       if (hiddenDiv) hiddenDiv.style.visibility = 'visible';
-      initToggleTriggers(seoNav.querySelector('.carousel-container'));
     } else {
       topTemplatesContainer.innerHTML = '';
     }
@@ -280,7 +279,6 @@ async function lazyLoadSearchMarqueeLinklist() {
 
       await updateLinkList(linkListContainer, linkListTemplate, linkListData);
       linkListContainer.parentElement.classList.add('appear');
-      initToggleTriggers(searchMarquee.querySelector('.carousel-container'));
     }
   }
 }
