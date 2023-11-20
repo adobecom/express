@@ -60,7 +60,6 @@ export function initToggleTriggers(parent) {
 }
 
 export default async function buildCarousel(selector, parent, options = {}) {
-  parent.style.visibility = 'hidden';
   // Load CSS
   loadCSS('/express/blocks/shared/carousel.css');
   // Build the carousel HTML
@@ -181,5 +180,4 @@ export default async function buildCarousel(selector, parent, options = {}) {
   };
 
   setInitialState(platform, options);
-  parent.style.removeProperty('visibility');
 }
