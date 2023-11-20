@@ -169,6 +169,7 @@ export function onCarouselCSSLoad(selector, parent, options) {
       if (!opts.infinityScrollEnabled) initToggleTriggers(container);
 
       observer.unobserve(scrollable);
+      parent.style.removeProperty('visibility');
     };
 
     const carouselObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
@@ -176,8 +177,6 @@ export function onCarouselCSSLoad(selector, parent, options) {
   };
 
   setInitialState(platform, options);
-
-  parent.style.removeProperty('visibility');
 }
 
 export default async function buildCarousel(selector, parent, options = {}) {
