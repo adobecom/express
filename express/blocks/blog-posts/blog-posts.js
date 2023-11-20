@@ -66,7 +66,7 @@ function getFeatured(index, urls) {
 function isDuplicate(path) {
   const displayed = window.blogPosts || [];
   const alreadyDisplayed = displayed.includes(path);
-  displayed.push(path);
+  if (!alreadyDisplayed) displayed.push(path);
   window.blogPosts = displayed;
   return (alreadyDisplayed);
 }
@@ -99,8 +99,6 @@ async function filterBlogPosts(config) {
       }
     }
 
-    let numMatched = 0;
-
     /* filter and ignore if already in result */
     const feed = index.data.filter((post) => {
       let matchedAll = true;
@@ -116,10 +114,9 @@ async function filterBlogPosts(config) {
           break;
         }
       }
-      if (matchedAll && numMatched < 12) {
+      if (matchedAll) {
         matchedAll = !isDuplicate(post.path);
       }
-      if (matchedAll) numMatched += 1;
       return (matchedAll);
     });
 
