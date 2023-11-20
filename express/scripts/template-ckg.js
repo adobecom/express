@@ -10,7 +10,6 @@ import {
 
 import { memoize } from './hofs.js';
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
-import { initToggleTriggers } from '../blocks/shared/carousel.js';
 
 const defaultRegex = /\/express\/templates\/default/;
 

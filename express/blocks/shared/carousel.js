@@ -8,7 +8,7 @@ function correctCenterAlignment(plat) {
   plat.parentElement.style.maxWidth = `${plat.offsetWidth}px`;
 }
 
-export function initToggleTriggers(parent) {
+function initToggleTriggers(parent) {
   if (!parent) return;
 
   const isInHiddenSection = () => {
