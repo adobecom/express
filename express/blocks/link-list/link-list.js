@@ -27,6 +27,7 @@ async function loadSpreadsheetData($block, relevantRowsData) {
 }
 
 export default async function decorate($block) {
+  $block.style.visibility = 'hidden';
   if ($block.classList.contains('spreadsheet-powered')) {
     const relevantRowsData = await fetchRelevantRows(window.location.pathname);
 
@@ -64,4 +65,6 @@ export default async function decorate($block) {
     const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
     await updateAsyncBlocks();
   }
+
+  $block.style.removeProperty('visibility');
 }
