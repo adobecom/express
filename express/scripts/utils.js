@@ -915,7 +915,7 @@ export function getHelixEnv() {
     stage: {
       commerce: 'commerce-stg.adobe.com',
       adminconsole: 'stage.adminconsole.adobe.com',
-      spark: 'express-stage.adobeprojectm.com',
+      spark: 'stage.projectx.corp.adobe.com',
     },
     prod: {
       commerce: 'commerce.adobe.com',
