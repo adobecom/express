@@ -1,3 +1,5 @@
+import { getHelixEnv } from './utils.js';
+
 export const DEFAULT_EXPERIMENT_OPTIONS = {
   // Generic properties
   rumSamplingRate: 10, // 1 in 10 requests
@@ -14,7 +16,13 @@ export const DEFAULT_EXPERIMENT_OPTIONS = {
   experimentsQueryParameter: 'experiment',
 };
 
-const CC_ENTITLED_USERS_SEGMENT_ID = 'bf632803-4412-463d-83c5-757dda3224ee';
+function getCCEntitledUsersSegmentId() {
+  const { name } = getHelixEnv();
+  if (name === 'prod') {
+    return 'bf632803-4412-463d-83c5-757dda3224ee';
+  }
+  return '2a537e84-b35f-4158-8935-170c22b8ae87';
+}
 
 function getSegmentsFromAlloyResponse(response) {
   const segments = [];
@@ -76,10 +84,14 @@ function getAlloyInitScript() {
  * @returns {{edgeConfigId: string, orgId: string}}
  */
 function getDatastreamConfiguration() {
-  // adobecomWeb_QA
+  const orgId = '9E1005A551ED61CA0A490D45@AdobeOrg';
+  const edgeConfigIds = {
+    prod: '913eac4d-900b-45e8-9ee7-306216765cd2',
+    stage: '72b074a6-76d2-43de-a210-124acc734f1c',
+  };
   return {
-    edgeConfigId: '72b074a6-76d2-43de-a210-124acc734f1c',
-    orgId: '9E1005A551ED61CA0A490D45@AdobeOrg',
+    edgeConfigId: edgeConfigIds[getHelixEnv.name],
+    orgId,
   };
 }
 
@@ -149,7 +161,7 @@ export const AUDIENCES = {
   ccentitled: async () => {
     await loadAlloy();
     const segments = await getSegmentsFromAlloy();
-    return segments.includes(CC_ENTITLED_USERS_SEGMENT_ID);
+    return segments.includes(getCCEntitledUsersSegmentId());
   },
 };
 
