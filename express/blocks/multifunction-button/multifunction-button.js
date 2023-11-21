@@ -94,12 +94,14 @@ export default async function decorate(block) {
       block.closest('.section').remove();
     }
 
-    const data = await collectFloatingButtonData();
-    const blockWrapper = await createMultiFunctionButton(block, data, audience);
-    const blockLinks = blockWrapper.querySelectorAll('a');
-    if (blockLinks && blockLinks.length > 0) {
-      const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
-      document.dispatchEvent(linksPopulated);
-    }
+    collectFloatingButtonData().then((data) => {
+      createMultiFunctionButton(block, data, audience).then((blockWrapper) => {
+        const blockLinks = blockWrapper.querySelectorAll('a');
+        if (blockLinks && blockLinks.length > 0) {
+          const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
+          document.dispatchEvent(linksPopulated);
+        }
+      })
+    })
   }
 }
