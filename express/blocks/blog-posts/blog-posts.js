@@ -48,7 +48,7 @@ async function fetchBlogIndex(config) {
   });
   return {
     data: consolidatedJsonData,
-    byPath
+    byPath,
   };
 }
 
@@ -81,7 +81,7 @@ async function filterBlogPosts(config) {
     const featured = getFeatured(index, config.featured);
     result.push(...featured);
     featured.forEach((post) => {
-      window.blogPosts.push(post.path);
+      if (!isDuplicate(post.path)) window.blogPosts.push(post.path);
     });
   }
 
@@ -117,7 +117,11 @@ async function filterBlogPosts(config) {
         }
       }
       if (matchedAll && numMatched < limit) {
-        matchedAll = !isDuplicate(post.path);
+        if (!isDuplicate(post.path)) {
+          window.blogPosts.push(post.path);
+        } else {
+          matchedAll = false;
+        }
       }
       if (matchedAll) numMatched += 1;
       return (matchedAll);
