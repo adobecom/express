@@ -98,7 +98,8 @@ async function filterBlogPosts(config) {
         f[name] = v.map((e) => e.toLowerCase().trim());
       }
     }
-
+    const limit = config['page-size'] || 12;
+    let numMatched = 0;
     /* filter and ignore if already in result */
     const feed = index.data.filter((post) => {
       let matchedAll = true;
@@ -114,9 +115,10 @@ async function filterBlogPosts(config) {
           break;
         }
       }
-      if (matchedAll) {
+      if (matchedAll && numMatched < limit) {
         matchedAll = !isDuplicate(post.path);
       }
+      if (matchedAll) numMatched += 1;
       return (matchedAll);
     });
 
