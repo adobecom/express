@@ -1633,9 +1633,7 @@ async function decorateTesting() {
     const [forcedExperiment, forcedVariant] = usp.get('experiment') ? usp.get('experiment').split('/') : [];
 
     if (experiment) {
-      console.log('experiment', experiment);
       const config = await getExperimentConfig(experiment);
-      console.log('config -->', config);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
         const { DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences } = await import('./experiment.js');
         const experimentOptions = {
@@ -1646,7 +1644,6 @@ async function decorateTesting() {
         config.run = forcedExperiment
           || !config.resolvedAudiences
           || config.resolvedAudiences.length;
-        console.log('run', config.run, config.audience);
 
         window.hlx = window.hlx || {};
         if (config.run) {
@@ -1659,7 +1656,6 @@ async function decorateTesting() {
             config.selectedVariant = decision.items[0].id;
           }
           sampleRUM('experiment', { source: config.id, target: config.selectedVariant });
-          console.log(`running experiment (${window.hlx.experiment.id}) -> ${window.hlx.experiment.selectedVariant}`);
           // populate ttMETA with hlx experimentation details
           window.ttMETA = window.ttMETA || [];
           const experimentDetails = {
@@ -1681,13 +1677,13 @@ async function decorateTesting() {
           if (config.selectedVariant !== 'control') {
             const currentPath = window.location.pathname;
             const pageIndex = config.variants.control.pages.indexOf(currentPath);
-            console.log(pageIndex, config.variants.control.pages, currentPath);
             if (pageIndex >= 0) {
               const page = config.variants[config.selectedVariant].pages[pageIndex];
               if (page) {
                 const experimentPath = new URL(page, window.location.href).pathname.split('.')[0];
                 if (experimentPath && experimentPath !== currentPath) {
                   await replaceInner(experimentPath, document.querySelector('main'));
+                  removeIrrelevantSections(document.querySelector('main'));
                 }
               }
             }
@@ -2083,8 +2079,6 @@ function decorateSocialIcons($main) {
 function displayOldLinkWarning() {
   if (window.location.hostname.includes('localhost') || window.location.hostname.includes('.hlx.page')) {
     document.querySelectorAll('main a[href^="https://spark.adobe.com/"]').forEach(($a) => {
-      const url = new URL($a.href);
-      console.log(`old link: ${url}`);
       $a.style.border = '10px solid red';
     });
   }
