@@ -3,10 +3,10 @@
 import {
   createOptimizedPicture,
   createTag,
-  readBlockConfig,
   fetchPlaceholders,
-  getConfig, getLocale,
-// eslint-disable-next-line import/no-unresolved
+  getConfig,
+  getLocale,
+  readBlockConfig,
 } from '../../scripts/utils.js';
 
 async function fetchBlogIndex(config) {
@@ -46,8 +46,10 @@ async function fetchBlogIndex(config) {
     }
     byPath[post.path.split('.')[0]] = post;
   });
-  const index = { data: consolidatedJsonData, byPath };
-  return (index);
+  return {
+    data: consolidatedJsonData,
+    byPath
+  };
 }
 
 function getFeatured(index, urls) {
@@ -60,28 +62,27 @@ function getFeatured(index, urls) {
     }
   });
 
-  return (results);
+  return results;
 }
 
 function isDuplicate(path) {
-  const displayed = window.blogPosts || [];
-  const alreadyDisplayed = displayed.includes(path);
-  if (!alreadyDisplayed) displayed.push(path);
-  window.blogPosts = displayed;
-  return (alreadyDisplayed);
+  return window.blogPosts.includes(path);
 }
 
 async function filterBlogPosts(config) {
   if (!window.blogIndex) {
     window.blogIndex = await fetchBlogIndex(config);
   }
+
   const result = [];
   const index = window.blogIndex;
   if (config.featured) {
     if (!Array.isArray(config.featured)) config.featured = [config.featured];
     const featured = getFeatured(index, config.featured);
     result.push(...featured);
-    featured.forEach((post) => isDuplicate(post.path));
+    featured.forEach((post) => {
+      window.blogPosts.push(post.path);
+    });
   }
 
   if (!config.featuredOnly) {
