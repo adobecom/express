@@ -291,21 +291,11 @@ export async function collectFloatingButtonData() {
   const pageButton = await fetchFloatingCta(window.location.pathname);
   const dataArray = [];
 
-  if (pageButton) {
-    const objectKeys = Object.keys(defaultButton);
-    // eslint-disable-next-line consistent-return
-    objectKeys.forEach((key) => {
-      if (['path', 'live'].includes(key)) return false;
-      dataArray.push([key, pageButton[key] || defaultButton[key]]);
-    });
-  } else {
-    const objectKeys = Object.keys(defaultButton);
-    // eslint-disable-next-line consistent-return
-    objectKeys.forEach((key) => {
-      if (['path', 'live'].includes(key)) return false;
-      dataArray.push([key, defaultButton[key]]);
-    });
-  }
+  const objectKeys = Object.keys(defaultButton);
+  objectKeys.forEach((key) => {
+    if (['path', 'live'].includes(key)) return;
+    dataArray.push([key, pageButton?.[key] || defaultButton[key]]);
+  });
 
   const data = {
     scrollState: 'withLottie',
