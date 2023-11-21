@@ -101,7 +101,7 @@ export default async function decorate(block) {
           const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
           document.dispatchEvent(linksPopulated);
         }
-      })
-    })
+      });
+    });
   }
 }
