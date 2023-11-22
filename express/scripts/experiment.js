@@ -19,9 +19,9 @@ export const DEFAULT_EXPERIMENT_OPTIONS = {
 function getCCEntitledUsersSegmentId() {
   const { name } = getHelixEnv();
   if (name === 'prod') {
-    return 'bf632803-4412-463d-83c5-757dda3224ee';
+    return '2a537e84-b35f-4158-8935-170c22b8ae87';
   }
-  return '2a537e84-b35f-4158-8935-170c22b8ae87';
+  return 'bf632803-4412-463d-83c5-757dda3224ee';
 }
 
 function getSegmentsFromAlloyResponse(response) {
