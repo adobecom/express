@@ -5,7 +5,6 @@ import {
   createTag,
   getHelixEnv,
   getIcon,
-// eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
 
@@ -170,6 +169,7 @@ export function buildPlans($contents) {
       }
     });
   });
+
   return plans;
 }
 
@@ -286,33 +286,37 @@ function decoratePricing($block) {
       buildOtherPlan(otherPlans, $row);
     }
   });
+  if (plans?.length > 0) {
+    $block.innerHTML = '';
+    const $planSection = createTag('div', { class: 'pricing-plan' });
+    const $planSectionTitle = createTag('h2', { class: 'pricing-plan-title' });
+    $planSectionTitle.dataset.id = '0';
+    const $planSectionPrice = createTag('p', { class: 'pricing-plan-price' });
+    const $planSectionDropdown = createTag('select', { class: 'pricing-plan-dropdown' });
+    $planSectionDropdown.addEventListener('change', async () => {
+      const planId = $planSectionTitle.dataset.id;
+      const planOptionId = $planSectionDropdown.value;
+      const plan = plans[planId];
+      const planOption = plan.options[planOptionId];
+      selectPlanOption($block, plan, planOption);
+    });
+    $planSection.append($planSectionTitle);
+    $planSection.append($planSectionPrice);
+    $planSection.append($planSectionDropdown);
+    $left.prepend($planSection);
+    $block.append($left);
+    $block.append($right);
+    const $ctaButton = $block.querySelector('a.button.accent');
+    if ($ctaButton) {
+      $ctaButton.classList.add('cta');
+      $ctaButton.classList.add('large');
+    }
 
-  $block.innerHTML = '';
-  const $planSection = createTag('div', { class: 'pricing-plan' });
-  const $planSectionTitle = createTag('h2', { class: 'pricing-plan-title' });
-  $planSectionTitle.dataset.id = '0';
-  const $planSectionPrice = createTag('p', { class: 'pricing-plan-price' });
-  const $planSectionDropdown = createTag('select', { class: 'pricing-plan-dropdown' });
-  $planSectionDropdown.addEventListener('change', () => {
-    const planId = $planSectionTitle.dataset.id;
-    const planOptionId = $planSectionDropdown.value;
-    const plan = plans[planId];
-    const planOption = plan.options[planOptionId];
-    selectPlanOption($block, plan, planOption);
-  });
-  $planSection.append($planSectionTitle);
-  $planSection.append($planSectionPrice);
-  $planSection.append($planSectionDropdown);
-  $left.prepend($planSection);
-  $block.append($left);
-  $block.append($right);
-  const $ctaButton = $block.querySelector('a.button.accent');
-  $ctaButton.classList.add('cta');
-  $ctaButton.classList.add('large');
-  selectPlan($block, plans[0]);
-  selectPlanOption($block, plans[0], plans[0].options[0]);
-  decorateOtherPlans($block, otherPlans);
-  addPublishDependencies('/express/system/offers.json');
+    selectPlan($block, plans[0]);
+    selectPlanOption($block, plans[0], plans[0].options[0]);
+    decorateOtherPlans($block, otherPlans);
+    addPublishDependencies('/express/system/offers.json');
+  }
 }
 
 export default function decorate($block) {
