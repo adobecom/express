@@ -99,9 +99,9 @@ function decorateIconList($pricingRight) {
   if ($iconList.children.length > 0) $pricingRight.appendChild($iconList);
 }
 
-function selectPlan($block, plan) {
-  const $title = $block.querySelector('.pricing-plan-title');
-  const $dropdown = $block.querySelector('.pricing-plan-dropdown');
+function selectPlan(block, plan) {
+  const $title = block.querySelector('.pricing-plan-title');
+  const $dropdown = block.querySelector('.pricing-plan-dropdown');
   $title.innerText = plan.title;
   $dropdown.innerHTML = '';
   plan.options.forEach((option) => {
@@ -112,9 +112,9 @@ function selectPlan($block, plan) {
   });
 }
 
-async function selectPlanOption($block, plan, planOption) {
-  const $priceLine = $block.querySelector('.pricing-plan-price');
-  const $cta = $block.querySelector('.cta');
+async function selectPlanOption(block, plan, planOption) {
+  const priceLine = block.querySelector('.pricing-plan-price');
+  const cta = block.querySelector('.cta');
   const countryOverride = new URLSearchParams(window.location.search).get('country');
   const offer = await getOffer(planOption.offerId, countryOverride);
 
@@ -127,19 +127,19 @@ async function selectPlanOption($block, plan, planOption) {
     plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d|,|.|e|E|+]+/g);
     plan.formatted = plan.formatted.replace(plan.rawPrice, `<span class="price">${plan.rawPrice}</span>`);
   }
-  $priceLine.innerHTML = plan.formatted;
-  $cta.href = buildUrl(planOption.link, plan.country, plan.language);
+  priceLine.innerHTML = plan.formatted;
+  cta.href = buildUrl(planOption.link, plan.country, plan.language);
 }
 
-export function buildPlans($contents) {
+export function buildPlans(contentEls) {
   const plans = [];
-  const $planDivs = Array.from($contents.children);
+  const planDivs = Array.from(contentEls.children);
   let plan;
   let planId = 0;
   let planOptionId = 0;
-  $planDivs.forEach(($rowContent) => {
-    const $rowContents = Array.from($rowContent.children);
-    $rowContents.forEach(($content) => {
+  planDivs.forEach((rowContent) => {
+    const rowContents = Array.from(rowContent.children);
+    rowContents.forEach(($content) => {
       if ($content.nodeName === 'H3') {
         plan = {
           id: planId,
@@ -173,12 +173,12 @@ export function buildPlans($contents) {
   return plans;
 }
 
-function populateOtherPlans($contents) {
+function populateOtherPlans(contentEls) {
   const otherPlans = [];
-  const $children = Array.from($contents.children);
-  const $otherPlans = Array.from($children[0].children);
+  const childrenEls = Array.from(contentEls.children);
+  const otherPlanEls = Array.from(childrenEls[0].children);
   let id = 0;
-  $otherPlans.forEach((plan) => {
+  otherPlanEls.forEach((plan) => {
     if (plan.nodeName === 'P') {
       otherPlans.push({
         id,
@@ -191,65 +191,65 @@ function populateOtherPlans($contents) {
   return otherPlans;
 }
 
-function closeActivePopups($block, $except) {
-  $block.querySelectorAll(':scope .active').forEach(($activePopup) => {
-    if ($activePopup !== $except) {
-      $activePopup.classList.remove('active');
+function closeActivePopups(block, $except) {
+  block.querySelectorAll(':scope .active').forEach((activePopup) => {
+    if (activePopup !== $except) {
+      activePopup.classList.remove('active');
     }
   });
-  $block.querySelectorAll(':scope .other-plan-button').forEach(($planButton) => {
-    $planButton.classList.remove('pressed');
+  block.querySelectorAll(':scope .other-plan-button').forEach((planButton) => {
+    planButton.classList.remove('pressed');
   });
 }
 
-function decorateOtherPlans($block, otherPlans) {
-  const $otherPlansContainer = $block.querySelector('.other-plans-container');
+function decorateOtherPlans(block, otherPlans) {
+  const otherPlansContainer = block.querySelector('.other-plans-container');
 
   otherPlans.forEach((plan) => {
-    const $plan = createTag('div', { class: 'other-plan' });
-    const $planButton = createTag('div', { class: 'other-plan-button' });
+    const planEl = createTag('div', { class: 'other-plan' });
+    const planButton = createTag('div', { class: 'other-plan-button' });
     const planIcon = getIcon('chevron');
-    $planButton.innerHTML = `${plan.title} ${planIcon}`;
-    $planButton.dataset.id = plan.id;
-    $plan.append($planButton);
-    const $popup = createTag('div', { class: 'other-plan' });
-    $popup.append(plan.contents);
-    $popup.classList.add('other-plan-popup');
+    planButton.innerHTML = `${plan.title} ${planIcon}`;
+    planButton.dataset.id = plan.id;
+    planEl.append(planButton);
+    const popup = createTag('div', { class: 'other-plan' });
+    popup.append(plan.contents);
+    popup.classList.add('other-plan-popup');
     // don't close popup if user clicks inside
-    $popup.addEventListener('click', (e) => e.stopPropagation());
-    $plan.append($popup);
-    $otherPlansContainer.append($plan);
-    $planButton.addEventListener('click', (e) => {
+    popup.addEventListener('click', (e) => e.stopPropagation());
+    planEl.append(popup);
+    otherPlansContainer.append(planEl);
+    planButton.addEventListener('click', (e) => {
       e.stopPropagation();
       // close all other popups
-      closeActivePopups($block, $popup);
+      closeActivePopups(block, popup);
       // toggle pressed button state
-      $planButton.classList.toggle('pressed');
+      planButton.classList.toggle('pressed');
       // toggle this popup
-      if ($popup.classList.contains('active')) {
-        $popup.classList.remove('active');
+      if (popup.classList.contains('active')) {
+        popup.classList.remove('active');
       } else {
         if (window.innerWidth > 600) {
-          const index = Array.from($otherPlansContainer.children).indexOf($plan);
+          const index = Array.from(otherPlansContainer.children).indexOf(planEl);
           if (index % 2) {
-            const offset = $planButton.offsetWidth + 20;
-            $popup.style.left = `-${offset}px`;
+            const offset = planButton.offsetWidth + 20;
+            popup.style.left = `-${offset}px`;
           }
         } else {
-          $popup.style.left = '0';
+          popup.style.left = '0';
         }
-        $popup.classList.add('active');
+        popup.classList.add('active');
       }
     });
   });
   // close all popups if user clicks anywhere on the page
-  document.body.addEventListener('click', () => closeActivePopups($block));
+  document.body.addEventListener('click', () => closeActivePopups(block));
 }
 
-function buildOtherPlan(otherPlans, $row) {
-  const $contents = Array.from($row.children);
-  const title = $contents[0].innerText;
-  const contents = $contents[1];
+function buildOtherPlan(otherPlans, row) {
+  const contentEls = Array.from(row.children);
+  const title = contentEls[0].innerText;
+  const contents = contentEls[1];
   otherPlans.forEach((plan) => {
     if (plan.title === title) {
       plan.contents = contents;
@@ -257,68 +257,68 @@ function buildOtherPlan(otherPlans, $row) {
   });
 }
 
-function decoratePricing($block) {
-  const $rows = Array.from($block.children);
-  let $left = '';
-  let $right = '';
+function decoratePricing(block) {
+  const rows = Array.from(block.children);
+  let left = '';
+  let right = '';
   let plans = [];
   let otherPlans = [];
-  $rows.forEach(($row, index) => {
+  rows.forEach((row, index) => {
     if (index === 0) {
-      $left = $row;
-      $left.classList.add('pricing-left');
+      left = row;
+      left.classList.add('pricing-left');
     } else if (index === 1) {
-      $right = $row;
-      $right.classList.add('pricing-right');
-      decorateIconList($right);
+      right = row;
+      right.classList.add('pricing-right');
+      decorateIconList(right);
     } else if (index === 2) {
-      plans = buildPlans($row);
+      plans = buildPlans(row);
     } else if (index === 3) {
-      otherPlans = populateOtherPlans($row);
-      const $otherPlansSection = createTag('div', { class: 'other-plans' });
-      const $otherPlansTitle = createTag('span', { class: 'other-plans-title' });
-      const $otherPlansContainer = createTag('div', { class: 'other-plans-container' });
-      $otherPlansTitle.innerText = $row.querySelector('h3').innerText;
-      $otherPlansSection.append($otherPlansTitle);
-      $otherPlansSection.append($otherPlansContainer);
-      $right.append($otherPlansSection);
+      otherPlans = populateOtherPlans(row);
+      const otherPlansSection = createTag('div', { class: 'other-plans' });
+      const otherPlansTitle = createTag('span', { class: 'other-plans-title' });
+      const otherPlansContainer = createTag('div', { class: 'other-plans-container' });
+      otherPlansTitle.innerText = row.querySelector('h3').innerText;
+      otherPlansSection.append(otherPlansTitle);
+      otherPlansSection.append(otherPlansContainer);
+      right.append(otherPlansSection);
     } else {
-      buildOtherPlan(otherPlans, $row);
+      buildOtherPlan(otherPlans, row);
     }
   });
   if (plans?.length > 0) {
-    $block.innerHTML = '';
-    const $planSection = createTag('div', { class: 'pricing-plan' });
-    const $planSectionTitle = createTag('h2', { class: 'pricing-plan-title' });
-    $planSectionTitle.dataset.id = '0';
-    const $planSectionPrice = createTag('p', { class: 'pricing-plan-price' });
-    const $planSectionDropdown = createTag('select', { class: 'pricing-plan-dropdown' });
-    $planSectionDropdown.addEventListener('change', async () => {
-      const planId = $planSectionTitle.dataset.id;
-      const planOptionId = $planSectionDropdown.value;
+    block.innerHTML = '';
+    const planSection = createTag('div', { class: 'pricing-plan' });
+    const planSectionTitle = createTag('h2', { class: 'pricing-plan-title' });
+    planSectionTitle.dataset.id = '0';
+    const planSectionPrice = createTag('p', { class: 'pricing-plan-price' });
+    const planSectionDropdown = createTag('select', { class: 'pricing-plan-dropdown' });
+    planSectionDropdown.addEventListener('change', async () => {
+      const planId = planSectionTitle.dataset.id;
+      const planOptionId = planSectionDropdown.value;
       const plan = plans[planId];
       const planOption = plan.options[planOptionId];
-      selectPlanOption($block, plan, planOption);
+      selectPlanOption(block, plan, planOption);
     });
-    $planSection.append($planSectionTitle);
-    $planSection.append($planSectionPrice);
-    $planSection.append($planSectionDropdown);
-    $left.prepend($planSection);
-    $block.append($left);
-    $block.append($right);
-    const $ctaButton = $block.querySelector('a.button.accent');
-    if ($ctaButton) {
-      $ctaButton.classList.add('cta');
-      $ctaButton.classList.add('large');
+    planSection.append(planSectionTitle);
+    planSection.append(planSectionPrice);
+    planSection.append(planSectionDropdown);
+    left.prepend(planSection);
+    block.append(left);
+    block.append(right);
+    const ctaButton = block.querySelector('a.button.accent');
+    if (ctaButton) {
+      ctaButton.classList.add('cta');
+      ctaButton.classList.add('large');
     }
 
-    selectPlan($block, plans[0]);
-    selectPlanOption($block, plans[0], plans[0].options[0]);
-    decorateOtherPlans($block, otherPlans);
+    selectPlan(block, plans[0]);
+    selectPlanOption(block, plans[0], plans[0].options[0]);
+    decorateOtherPlans(block, otherPlans);
     addPublishDependencies('/express/system/offers.json');
   }
 }
 
-export default function decorate($block) {
-  decoratePricing($block);
+export default function decorate(block) {
+  decoratePricing(block);
 }
