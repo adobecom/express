@@ -90,7 +90,7 @@ function getDatastreamConfiguration() {
     stage: '72b074a6-76d2-43de-a210-124acc734f1c',
   };
   return {
-    edgeConfigId: edgeConfigIds[getHelixEnv.name],
+    edgeConfigId: edgeConfigIds[getHelixEnv().name],
     orgId,
   };
 }
