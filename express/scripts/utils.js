@@ -700,7 +700,140 @@ export async function decorateBlock(block) {
   }
 }
 
+export function decorateSVG(a) {
+  const { textContent, href } = a;
+  if (!(textContent.includes('.svg') || href.includes('.svg'))) return a;
+  try {
+    // Mine for URL and alt text
+    const splitText = textContent.split('|');
+    const textUrl = new URL(splitText.shift().trim());
+    const altText = splitText.join('|').trim();
+
+    // Relative link checking
+    const hrefUrl = a.href.startsWith('/')
+      ? new URL(`${window.location.origin}${a.href}`)
+      : new URL(a.href);
+
+    const src = textUrl.hostname.includes('.hlx.') ? textUrl.pathname : textUrl;
+
+    const img = createTag('img', { loading: 'lazy', src });
+    if (altText) img.alt = altText;
+    const pic = createTag('picture', null, img);
+
+    if (textUrl.pathname === hrefUrl.pathname) {
+      a.parentElement.replaceChild(pic, a);
+      return pic;
+    }
+    a.textContent = '';
+    a.append(pic);
+    return a;
+  } catch (e) {
+    console.log('Failed to create SVG.', e.message);
+    return a;
+  }
+}
+
+function getExtension(path) {
+  const pageName = path.split('/').pop();
+  return pageName.includes('.') ? pageName.split('.').pop() : '';
+}
+
+export function localizeLink(
+  href,
+  originHostName = window.location.hostname,
+  overrideDomain = false,
+) {
+  try {
+    const url = new URL(href);
+    const relative = url.hostname === originHostName;
+    const processedHref = relative ? href.replace(url.origin, '') : href;
+    const { hash } = url;
+    if (hash.includes('#_dnt')) return processedHref.replace('#_dnt', '');
+    const path = url.pathname;
+    const extension = getExtension(path);
+    const allowedExts = ['', 'html', 'json'];
+    if (!allowedExts.includes(extension)) return processedHref;
+    const { locale, locales, prodDomains } = getConfig();
+    if (!locale || !locales) return processedHref;
+    const isLocalizable = relative || (prodDomains && prodDomains.includes(url.hostname))
+      || overrideDomain;
+    if (!isLocalizable) return processedHref;
+    const isLocalizedLink = path.startsWith(`/${LANGSTORE}`) || Object.keys(locales)
+      .some((loc) => loc !== '' && (path.startsWith(`/${loc}/`) || path.endsWith(`/${loc}`)));
+    if (isLocalizedLink) return processedHref;
+    const urlPath = `${locale.prefix}${path}${url.search}${hash}`;
+    return relative ? urlPath : `${url.origin}${urlPath}`;
+  } catch (error) {
+    return href;
+  }
+}
+
+function appendHtmlToLink(link) {
+  const { useDotHtml } = getConfig();
+  if (!useDotHtml) return;
+  const href = link.getAttribute('href');
+  if (!href?.length) return;
+
+  const { autoBlocks = [], htmlExclude = [] } = getConfig();
+
+  const HAS_EXTENSION = /\..*$/;
+  let url = { pathname: href };
+
+  try { url = new URL(href, PAGE_URL); } catch (e) { /* do nothing */ }
+
+  if (!(href.startsWith('/') || href.startsWith(PAGE_URL.origin))
+    || url.pathname?.endsWith('/')
+    || href === PAGE_URL.origin
+    || HAS_EXTENSION.test(href.split('/').pop())
+    || htmlExclude?.some((excludeRe) => excludeRe.test(href))) {
+    return;
+  }
+
+  const relativeAutoBlocks = autoBlocks
+    .map((b) => Object.values(b)[0])
+    .filter((b) => b.startsWith('/'));
+  const isAutoblockLink = relativeAutoBlocks.some((block) => href.includes(block));
+  if (isAutoblockLink) return;
+
+  try {
+    const linkUrl = new URL(href.startsWith('http') ? href : `${PAGE_URL.origin}${href}`);
+    if (linkUrl.pathname && !linkUrl.pathname.endsWith('.html')) {
+      linkUrl.pathname = `${linkUrl.pathname}.html`;
+      link.setAttribute('href', href.startsWith('/')
+        ? `${linkUrl.pathname}${linkUrl.search}${linkUrl.hash}`
+        : linkUrl.href);
+    }
+  } catch (e) {
+    window.lana?.log(`Error while attempting to append '.html' to ${link}: ${e}`);
+  }
+}
+
+function decorateImageLinks(el) {
+  const images = el.querySelectorAll('img[alt*="|"]');
+  if (!images.length) return;
+  [...images].forEach((img) => {
+    const [source, alt, icon] = img.alt.split('|');
+    try {
+      const url = new URL(source.trim());
+      const href = url.hostname.includes('.hlx.') ? `${url.pathname}${url.hash}` : url.href;
+      if (alt?.trim().length) img.alt = alt.trim();
+      const pic = img.closest('picture');
+      const picParent = pic.parentElement;
+      const aTag = createTag('a', { href, class: 'image-link' });
+      picParent.insertBefore(aTag, pic);
+      if (icon) {
+        import('./image-video-link.js').then((mod) => mod.default(picParent, aTag, icon));
+      } else {
+        aTag.append(pic);
+      }
+    } catch (e) {
+      console.log('Error:', `${e.message} '${source.trim()}'`);
+    }
+  });
+}
+
 export function decorateAutoBlock(a) {
+  const config = getConfig();
   const { hostname } = window.location;
   let url;
   try {
@@ -714,10 +847,15 @@ export function decorateAutoBlock(a) {
     ? `${url.pathname}${url.search}${url.hash}`
     : a.href;
 
-  return AUTO_BLOCKS.find((candidate) => {
+  return config.autoBlocks.find((candidate) => {
     const key = Object.keys(candidate)[0];
     const match = href.includes(candidate[key]);
     if (!match) return false;
+
+    if (key === 'pdf-viewer' && !a.textContent.includes('.pdf')) {
+      a.target = '_blank';
+      return false;
+    }
 
     if (key === 'fragment') {
       if (a.href === window.location.href) {
@@ -725,72 +863,60 @@ export function decorateAutoBlock(a) {
       }
 
       const isInlineFrag = url.hash.includes('#_inline');
-      const videoTag = url.hash.includes('#embed-video');
+      if (url.hash === '' || isInlineFrag) {
+        const { parentElement } = a;
+        const { nodeName, innerHTML } = parentElement;
+        const noText = innerHTML === a.outerHTML;
+        if (noText && nodeName === 'P') {
+          const div = createTag('div', null, a);
+          parentElement.parentElement.replaceChild(div, parentElement);
+        }
+      }
+
+      // previewing a fragment page with mp4 video
+      if (a.textContent.match('media_.*.mp4')) {
+        a.className = 'video link-block';
+        return false;
+      }
 
       // Modals
-      if (url.hash !== '' && !isInlineFrag && !videoTag) {
+      if (url.hash !== '' && !isInlineFrag) {
         a.dataset.modalPath = url.pathname;
         a.dataset.modalHash = url.hash;
         a.href = url.hash;
-        a.className = 'modal';
-        a.setAttribute('data-block-name', 'modal');
+        a.className = `modal link-block ${[...a.classList].join(' ')}`;
         return true;
       }
     }
 
-    a.className = `${key} link-block`;
-    a.setAttribute('data-block-name', key);
+    // slack uploaded mp4s
+    if (key === 'video' && !a.textContent.match('media_.*.mp4')) {
+      return false;
+    }
 
+    a.className = `${key} link-block`;
     return true;
   });
 }
 
-function decorateLinks(main) {
-  const anchors = main.querySelectorAll('a');
+export function decorateLinks(el) {
+  decorateImageLinks(el);
+  const anchors = el.getElementsByTagName('a');
   return [...anchors].reduce((rdx, a) => {
-    if (!a.href) return rdx;
-    try {
-      let url = new URL(a.href);
-
-      // handle link replacement on sheet-powered pages
-      if (getMetadata('sheet-powered') === 'Y' && getMetadata(url.hash.replace('#', ''))) {
-        a.href = getMetadata(url.hash.replace('#', ''));
-        url = new URL(a.href);
+    appendHtmlToLink(a);
+    a.href = localizeLink(a.href);
+    decorateSVG(a);
+    if (a.href.includes('#_blank')) {
+      a.setAttribute('target', '_blank');
+      a.href = a.href.replace('#_blank', '');
+    }
+    if (a.href.includes('#_dnb')) {
+      a.href = a.href.replace('#_dnb', '');
+    } else {
+      const autoBlock = decorateAutoBlock(a);
+      if (autoBlock) {
+        rdx.push(a);
       }
-
-      const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
-      const isAdobeOwnedLinks = [
-        'adobesparkpost.app.link',
-        'new.express.adobe.com',
-        'express.adobe.com',
-        'www.adobe.com',
-        'www.stage.adobe.com',
-        'commerce.adobe.com',
-        'commerce-stg.adobe.com',
-        'helpx.adobe.com',
-      ].includes(url.hostname);
-
-      if (!isContactLink) {
-        // make url relative if needed
-        const relative = url.hostname === window.location.hostname;
-        const urlPath = `${url.pathname}${url.search}${url.hash}`;
-        a.href = relative ? urlPath : `${url.origin}${urlPath}`;
-
-        if (!relative && !isAdobeOwnedLinks) {
-          // open external links in a new tab
-          a.target = '_blank';
-        }
-      }
-      if (a.href.includes('#_dnb')) {
-        a.href = a.href.replace('#_dnb', '');
-      } else {
-        const autoBlock = decorateAutoBlock(a);
-        if (autoBlock) {
-          rdx.push(a);
-        }
-      }
-    } catch (e) {
-      // invalid url
     }
     return rdx;
   }, []);
