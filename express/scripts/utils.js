@@ -779,7 +779,11 @@ function appendHtmlToLink(link) {
   const HAS_EXTENSION = /\..*$/;
   let url = { pathname: href };
 
-  try { url = new URL(href, PAGE_URL); } catch (e) { /* do nothing */ }
+  try {
+    url = new URL(href, PAGE_URL);
+  } catch (e) {
+    /* do nothing */
+  }
 
   if (!(href.startsWith('/') || href.startsWith(PAGE_URL.origin))
     || url.pathname?.endsWith('/')
