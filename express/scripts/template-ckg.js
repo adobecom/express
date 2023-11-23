@@ -11,7 +11,6 @@ import {
 
 import { memoize } from './hofs.js';
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
-import { initToggleTriggers } from '../blocks/shared/carousel.js';
 
 const defaultRegex = /\/express\/templates\/default/;
 
@@ -251,7 +250,6 @@ async function lazyLoadSEOLinkList() {
       await updateSEOLinkList(topTemplatesContainer, topTemplatesTemplate, topTemplatesData);
       const hiddenDiv = seoNav.querySelector('div[style="visibility: hidden;"]');
       if (hiddenDiv) hiddenDiv.style.visibility = 'visible';
-      initToggleTriggers(seoNav.querySelector('.carousel-container'));
     } else {
       topTemplatesContainer.innerHTML = '';
     }
@@ -282,7 +280,6 @@ async function lazyLoadSearchMarqueeLinklist() {
 
       await updateLinkList(linkListContainer, linkListTemplate, linkListData);
       linkListContainer.parentElement.classList.add('appear');
-      initToggleTriggers(searchMarquee.querySelector('.carousel-container'));
     }
   }
 }
