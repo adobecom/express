@@ -2670,6 +2670,13 @@ export async function loadArea(area = document) {
 
   const { default: loadDelayed } = await import('./delayed.js');
   loadDelayed(8000);
+
+  // milo's links featurecc
+  const config = getConfig();
+  if (config.links === 'on') {
+    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
+    import('../features/links.js').then((mod) => mod.default(path, area));
+  }
 }
 
 export function getMobileOperatingSystem() {
