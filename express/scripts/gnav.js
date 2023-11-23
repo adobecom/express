@@ -64,7 +64,7 @@ function loadIMS() {
 
 async function loadFEDS() {
   const config = getConfig();
-  const { prefix } = config.locale;
+  const prefix = config.locale.prefix.replaceAll('/', '');
 
   async function showRegionPicker() {
     const { getModal } = await import('../blocks/modal/modal.js');
@@ -168,7 +168,7 @@ async function loadFEDS() {
         if (env && env.spark) {
           sparkLoginUrl = sparkLoginUrl.replace('express.adobe.com', env.spark);
         }
-        if (isHomepage || sparkPrefix.includes('en-GB')) {
+        if (isHomepage) {
           sparkLoginUrl = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
         }
         window.location.href = sparkLoginUrl;
@@ -246,8 +246,15 @@ async function loadFEDS() {
     script.id = 'feds-script';
   });
   setTimeout(() => {
+    const acom = '7a5eb705-95ed-4cc4-a11d-0cc5760e93db';
+    const ids = {
+      'hlx.page': '3a6a37fe-9e07-4aa9-8640-8f358a623271-test',
+      'hlx.live': '926b16ce-cc88-4c6a-af45-21749f3167f3-test',
+    };
+    // eslint-disable-next-line max-len
+    const otDomainId = ids?.[Object.keys(ids).find((domainId) => window.location.host.includes(domainId))] ?? acom;
     window.fedsConfig.privacy = {
-      otDomainId: '7a5eb705-95ed-4cc4-a11d-0cc5760e93db',
+      otDomainId,
     };
     loadScript('https://www.adobe.com/etc.clientlibs/globalnav/clientlibs/base/privacy-standalone.js');
   }, 0);

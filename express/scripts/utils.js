@@ -1600,6 +1600,7 @@ export function getExperiment() {
 
   return experiment;
 }
+
 /**
  * Gets experiment config from the manifest or the instant experiement
  * metdata and transforms it to more easily consumable structure.
@@ -1716,22 +1717,6 @@ async function replaceInner(path, element) {
 }
 
 /**
- * this is an extensible stub to take on audience mappings
- * @param {string} audience
- * @return {boolean} is member of this audience
- */
-
-function checkExperimentAudience(audience) {
-  if (audience === 'mobile') {
-    return window.innerWidth < 600;
-  }
-  if (audience === 'desktop') {
-    return window.innerWidth > 600;
-  }
-  return true;
-}
-
-/**
  * Generates a decision policy object which is understood by UED from an
  * experiment configuration.
  * @param {*} config Experiment configuration
@@ -1775,12 +1760,17 @@ async function decorateTesting() {
     const [forcedExperiment, forcedVariant] = usp.get('experiment') ? usp.get('experiment').split('/') : [];
 
     if (experiment) {
-      console.log('experiment', experiment);
       const config = await getExperimentConfig(experiment);
-      console.log('config -->', config);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
-        config.run = forcedExperiment || checkExperimentAudience(toClassName(config.audience));
-        console.log('run', config.run, config.audience);
+        const { DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences } = await import('./experiment.js');
+        const experimentOptions = {
+          ...DEFAULT_EXPERIMENT_OPTIONS,
+          ...{ audiences: AUDIENCES },
+        };
+        config.resolvedAudiences = await getResolvedAudiences(config.audience.split(',').map((a) => a.trim()), experimentOptions);
+        config.run = forcedExperiment
+          || !config.resolvedAudiences
+          || config.resolvedAudiences.length;
 
         window.hlx = window.hlx || {};
         if (config.run) {
@@ -1793,7 +1783,6 @@ async function decorateTesting() {
             config.selectedVariant = decision.items[0].id;
           }
           sampleRUM('experiment', { source: config.id, target: config.selectedVariant });
-          console.log(`running experiment (${window.hlx.experiment.id}) -> ${window.hlx.experiment.selectedVariant}`);
           // populate ttMETA with hlx experimentation details
           window.ttMETA = window.ttMETA || [];
           const experimentDetails = {
@@ -1815,13 +1804,13 @@ async function decorateTesting() {
           if (config.selectedVariant !== 'control') {
             const currentPath = window.location.pathname;
             const pageIndex = config.variants.control.pages.indexOf(currentPath);
-            console.log(pageIndex, config.variants.control.pages, currentPath);
             if (pageIndex >= 0) {
               const page = config.variants[config.selectedVariant].pages[pageIndex];
               if (page) {
                 const experimentPath = new URL(page, window.location.href).pathname.split('.')[0];
                 if (experimentPath && experimentPath !== currentPath) {
                   await replaceInner(experimentPath, document.querySelector('main'));
+                  removeIrrelevantSections(document.querySelector('main'));
                 }
               }
             }
@@ -2082,18 +2071,20 @@ async function buildAutoBlocks($main) {
   }
 
   if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) || ['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
-    if (!window.floatingCtasLoaded) {
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
+    if (!BlockMediator.get('floatingCtasLoaded')) {
       const floatingCTAData = await fetchFloatingCta(window.location.pathname);
       const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
       const device = document.body.dataset?.device;
       const blockName = floatingCTAData?.[device];
+
       if (validButtonVersion.includes(blockName) && $lastDiv) {
         const button = buildBlock(blockName, device);
         button.classList.add('spreadsheet-powered');
         $lastDiv.append(button);
       }
 
-      window.floatingCtasLoaded = true;
+      BlockMediator.set('floatingCtasLoaded', true);
     }
   }
 
@@ -2215,8 +2206,6 @@ function decorateSocialIcons($main) {
 function displayOldLinkWarning() {
   if (window.location.hostname.includes('localhost') || window.location.hostname.includes('.hlx.page')) {
     document.querySelectorAll('main a[href^="https://spark.adobe.com/"]').forEach(($a) => {
-      const url = new URL($a.href);
-      console.log(`old link: ${url}`);
       $a.style.border = '10px solid red';
     });
   }
@@ -2584,6 +2573,26 @@ export async function loadSections(sections, isDoc) {
   return areaBlocks;
 }
 
+function initSidekick() {
+  const initPlugins = async () => {
+    const { default: init } = await import('./utils/sidekick.js');
+    init({
+      createTag,
+      loadBlock,
+      loadScript,
+      loadCSS,
+    });
+  };
+
+  if (document.querySelector('helix-sidekick')) {
+    initPlugins();
+  } else {
+    document.addEventListener('sidekick-ready', () => {
+      initPlugins();
+    });
+  }
+}
+
 /**
  * Decorates the page.
  */
@@ -2645,6 +2654,8 @@ export async function loadArea(area = document) {
   await loadSections(sections, isDoc);
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
+
+  initSidekick();
 
   const lazy = loadLazy(main);
 
