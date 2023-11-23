@@ -701,10 +701,6 @@ export async function decorateBlock(block) {
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-// >>> BEGIN MILO decorateLinks
 export function decorateSVG(a) {
   const { textContent, href } = a;
   if (!(textContent.includes('.svg') || href.includes('.svg'))) return a;
@@ -926,104 +922,6 @@ export function decorateLinks(el) {
     return rdx;
   }, []);
 }
-// <<< END MILO decorateLinks
-///////////////////////////////////////////////////////////////////////////////
-// export function decorateAutoBlock(a) {
-//   const { hostname } = window.location;
-//   let url;
-//   try {
-//     url = new URL(a.href);
-//   } catch (e) {
-//     window.lana?.log(`Cannot make URL from decorateAutoBlock - ${a?.href}: ${e.toString()}`);
-//     return false;
-//   }
-
-//   const href = hostname === url.hostname
-//     ? `${url.pathname}${url.search}${url.hash}`
-//     : a.href;
-
-//   return AUTO_BLOCKS.find((candidate) => {
-//     const key = Object.keys(candidate)[0];
-//     const match = href.includes(candidate[key]);
-//     if (!match) return false;
-
-//     if (key === 'fragment') {
-//       if (a.href === window.location.href) {
-//         return false;
-//       }
-
-//       const isInlineFrag = url.hash.includes('#_inline');
-//       const videoTag = url.hash.includes('#embed-video');
-
-//       // Modals
-//       if (url.hash !== '' && !isInlineFrag && !videoTag) {
-//         a.dataset.modalPath = url.pathname;
-//         a.dataset.modalHash = url.hash;
-//         a.href = url.hash;
-//         a.className = 'modal';
-//         a.setAttribute('data-block-name', 'modal');
-//         return true;
-//       }
-//     }
-
-//     a.className = `${key} link-block`;
-//     a.setAttribute('data-block-name', key);
-
-//     return true;
-//   });
-// }
-
-// function decorateLinks(main) {
-//   const anchors = main.querySelectorAll('a');
-//   return [...anchors].reduce((rdx, a) => {
-//     if (!a.href) return rdx;
-//     try {
-//       let url = new URL(a.href);
-
-//       // handle link replacement on sheet-powered pages
-//       if (getMetadata('sheet-powered') === 'Y' && getMetadata(url.hash.replace('#', ''))) {
-//         a.href = getMetadata(url.hash.replace('#', ''));
-//         url = new URL(a.href);
-//       }
-
-//       const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
-//       const isAdobeOwnedLinks = [
-//         'adobesparkpost.app.link',
-//         'new.express.adobe.com',
-//         'express.adobe.com',
-//         'www.adobe.com',
-//         'www.stage.adobe.com',
-//         'commerce.adobe.com',
-//         'commerce-stg.adobe.com',
-//         'helpx.adobe.com',
-//       ].includes(url.hostname);
-
-//       if (!isContactLink) {
-//         // make url relative if needed
-//         const relative = url.hostname === window.location.hostname;
-//         const urlPath = `${url.pathname}${url.search}${url.hash}`;
-//         a.href = relative ? urlPath : `${url.origin}${urlPath}`;
-
-//         if (!relative && !isAdobeOwnedLinks) {
-//           // open external links in a new tab
-//           a.target = '_blank';
-//         }
-//       }
-//       if (a.href.includes('#_dnb')) {
-//         a.href = a.href.replace('#_dnb', '');
-//       } else {
-//         const autoBlock = decorateAutoBlock(a);
-//         if (autoBlock) {
-//           rdx.push(a);
-//         }
-//       }
-//     } catch (e) {
-//       // invalid url
-//     }
-//     return rdx;
-//   }, []);
-// }
-///////////////////////////////////////////////////////////////////////////////
 
 /**
  * Decorates all sections in a container element.
