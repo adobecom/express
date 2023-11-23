@@ -322,7 +322,7 @@ export default async function decorate(block) {
             backgroundPic.append(img);
             backgroundPicImg.remove();
             setPictureHeight(block, true);
-          }).catch(error => console.error('Error converting canvas to blob:', error));
+          }).catch((error) => console.error('Error converting canvas to blob:', error));
         });
       });
     });
