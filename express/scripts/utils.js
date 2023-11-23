@@ -773,7 +773,7 @@ export function localizeLink(
   }
 }
 
-export function appendHtmlToLink(link) {
+function appendHtmlToLink(link) {
   const { useDotHtml } = getConfig();
   if (!useDotHtml) return;
   const href = link.getAttribute('href');
@@ -813,7 +813,7 @@ export function appendHtmlToLink(link) {
   }
 }
 
-export function decorateImageLinks(el) {
+function decorateImageLinks(el) {
   const images = el.querySelectorAll('img[alt*="|"]');
   if (!images.length) return;
   [...images].forEach((img) => {
