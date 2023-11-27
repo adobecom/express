@@ -125,6 +125,19 @@ async function autoUpdatePage(main) {
     }
     return match;
   });
+
+  // handle link replacement on sheet-powered pages
+  main.querySelectorAll('a[href*="#"]').forEach((a) => {
+    try {
+      let url = new URL(a.href);
+      if (getMetadata(url.hash.replace('#', ''))) {
+        a.href = getMetadata(url.hash.replace('#', ''));
+        url = new URL(a.href);
+      }
+    } catch (e) {
+      // invalid url
+    }
+  });
 }
 
 // cleanup remaining dom blades
