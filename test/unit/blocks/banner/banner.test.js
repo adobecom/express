@@ -8,6 +8,7 @@ const { default: decorate } = await import('../../../../express/blocks/banner/ba
 
 const body = await readFile({ path: './mocks/body.html' });
 const light = await readFile({ path: './mocks/light.html' });
+const multiButton = await readFile({ path: './mocks/multi-button.html' });
 
 describe('Banner', () => {
   before(() => {
@@ -42,7 +43,33 @@ describe('Banner', () => {
     decorate(banner);
 
     const button = banner.querySelector('a.button');
-    // console.log(button)
-    // expect(button).to.include('.multi-button');
+    expect(button.classList.contains('large', 'primary', 'reverse')).to.be.true;
+  });
+
+  it('Banner dark variant has correct elements', () => {
+    document.body.innerHTML = body;
+    const banner = document.querySelector('.banner');
+    decorate(banner);
+
+    const button = banner.querySelector('a.button');
+    expect(button.classList.contains('dark', 'accent')).to.be.true;
+  });
+
+  it('Banner multi-button has correct elements', () => {
+    document.body.innerHTML = multiButton;
+    const banner = document.querySelector('.banner');
+    decorate(banner);
+
+    const button = banner.querySelector('a.button');
+    expect(button.classList.contains('reverse')).to.be.true;
+  });
+
+  it('If phone number exists', () => {
+    document.body.innerHTML = body;
+    const banner = document.querySelector('.banner');
+    decorate(banner);
+
+    const phoneNumber = banner.querySelector('a[title="{{business-sales-numbers}}"]');
+    expect(phoneNumber).to.exist;
   });
 });
