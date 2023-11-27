@@ -30,6 +30,7 @@ const locales = {
 
 const config = {
   locales,
+  codeRoot: '/express/',
 };
 
 window.RUM_GENERATION = 'ccx-gen-4-experiment-high-sample-rate';

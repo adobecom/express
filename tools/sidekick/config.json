@@ -49,6 +49,13 @@
       "title": "QA Guide",
       "event": "qa-guide",
       "excludePaths": [ "**.docx**", "**/:x:**" ]
+    },
+    {
+      "containerId": "tools",
+      "title": "Preflight",
+      "id": "preflight",
+      "environments": ["dev", "preview", "live"],
+      "event": "preflight"
     }
   ]
 }

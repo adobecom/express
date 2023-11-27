@@ -181,7 +181,11 @@ div[class='section section-wrapper browse-by-category-card-fullwidth-container t
     font-size: var(--heading-font-size-m);
 }
 
-.template-x-wrapper .template-title.horizontal.holiday .template-title,picture,a,h4,p {
+.template-x-wrapper .template-title.horizontal.holiday .template-title,
+.template-x-wrapper .template-title.horizontal.holiday picture,
+.template-x-wrapper .template-title.horizontal.holiday a,
+.template-x-wrapper .template-title.horizontal.holiday h4,
+.template-x-wrapper .template-title.horizontal.holiday p {
     z-index: 1;
 }
 

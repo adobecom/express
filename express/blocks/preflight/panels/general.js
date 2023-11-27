@@ -1,4 +1,4 @@
-import { html, signal, useEffect } from '../../../deps/htm-preact.js';
+import { html, signal, useEffect } from '../../../scripts/libs/htm-preact.js';
 
 const NOT_FOUND = { preview: { lastModified: 'Not found' }, live: { lastModified: 'Not found' } };
 
@@ -19,7 +19,12 @@ async function getStatus(url) {
   const preview = json.preview.lastModified || 'Never';
   const live = json.live.lastModified || 'Never';
   const edit = json.edit.url;
-  return { url, edit, preview, live };
+  return {
+    url,
+    edit,
+    preview,
+    live,
+  };
 }
 
 function getStatuses() {

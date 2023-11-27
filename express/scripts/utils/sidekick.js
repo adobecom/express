@@ -25,7 +25,7 @@ export function autoWidgetByUSP(name, callback) {
 
 export default function init() {
   const preflightListener = async () => {
-    const preflight = createTag('div', { class: 'preflight' });
+    const preflight = createTag('div', { class: 'preflight', 'data-block-name': 'preflight' });
     const content = await loadBlock(preflight);
 
     const { getModal } = await import('../../blocks/modal/modal.js');
