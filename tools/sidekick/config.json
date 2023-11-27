@@ -2,7 +2,6 @@
   "project": "Express",
   "host": "www.adobe.com",
   "byocdn": true,
-  "devMode": true,
   "plugins": [
     {
       "id": "metadata",
