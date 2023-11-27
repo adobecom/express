@@ -1293,7 +1293,7 @@ async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
 export async function loadBlock(block, eager = false) {
   if (!(block.getAttribute('data-block-status') === 'loading' || block.getAttribute('data-block-status') === 'loaded')) {
     block.setAttribute('data-block-status', 'loading');
-    const blockName = block.getAttribute('data-block-name');
+    const blockName = block.getAttribute('data-block-name') || block.classList[0];
     let cssPath = `/express/blocks/${blockName}/${blockName}.css`;
     let jsPath = `/express/blocks/${blockName}/${blockName}.js`;
 
