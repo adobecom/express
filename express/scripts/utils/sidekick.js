@@ -52,7 +52,7 @@ export default function init() {
   // Auto plugins
   autoWidgetByUSP('qaprogress', () => {
     launchQAGuide();
-    sk.dispatchEvent('custom:preflight');
+    preflightListener();
   });
 
   // Add plugin listeners here
