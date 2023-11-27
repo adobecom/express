@@ -3,7 +3,7 @@
 import {
   createTag,
   readBlockConfig,
-  getLocale,
+  getConfig,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
@@ -53,8 +53,8 @@ function addPages(pages, config, $block) {
 async function decoratePageList($block) {
   const config = readBlockConfig($block);
 
-  const locale = getLocale(window.location);
-  const indexURL = locale === 'us' ? '/express/query-index.json' : `/${locale}/express/query-index.json`;
+  const { prefix } = getConfig().locale;
+  const indexURL = `${prefix}/express/query-index.json`;
   const index = await fetchIndex(indexURL);
   const shortIndex = index.filter((e) => (e.shortTitle
     && e.path && e.path.includes(config.filter)));

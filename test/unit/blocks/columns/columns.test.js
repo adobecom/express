@@ -3,7 +3,9 @@
 
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
+import { setConfig } from '../../../../express/scripts/utils.js';
 
+setConfig({});
 const { default: decorate } = await import(
   '../../../../express/blocks/columns/columns.js'
 );
