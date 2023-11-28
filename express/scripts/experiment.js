@@ -81,10 +81,19 @@ async function loadAlloy() {
   });
   // listen on event from instrument.js to know when alloy is loaded from launch
   document.addEventListener('alloyReady', () => {
-    window.allloyLoaded = true;
+    window.alloyLoaded = true;
     // resolve the window.alloyLoading promise
     alloyLoadingResolver();
   });
+  // show the control in case if there're any errors in launch,
+  // which will prevent alloy from loading
+  setTimeout(() => {
+    if (!window.alloyLoaded) {
+      // eslint-disable-next-line no-console
+      console.error('Alloy failed to load');
+      alloyLoadingResolver();
+    }
+  }, 5000);
   await window.alloyLoader;
 }
 
