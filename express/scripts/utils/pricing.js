@@ -1,20 +1,7 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 import {
-  getLocale,
-  getLanguage,
   getCookie,
   getHelixEnv,
-  createTag,
+  createTag, getConfig,
 } from '../utils.js';
 
 function replaceUrlParam(url, paramName, paramValue) {
@@ -100,7 +87,7 @@ function getCountry() {
     country = getCookie('international');
   }
   if (!country) {
-    country = getLocale(window.location);
+    country = getConfig().locale.prefix.replace('/', '');
   }
   if (country === 'uk') country = 'gb';
   return (country.split('_')[0]);
@@ -133,7 +120,7 @@ export function formatPrice(price, currency) {
   };
   const locale = ['USD', 'TWD'].includes(currency)
     ? 'en-GB' // use en-GB for intl $ symbol formatting
-    : getLanguage(getCountry());
+    : (getConfig().locales[getCountry() || '']?.ietf ?? 'en-US');
   const currencyDisplay = getCurrencyDisplay(currency);
   let formattedPrice = new Intl.NumberFormat(locale, {
     style: 'currency',
@@ -266,7 +253,7 @@ export async function getOffer(offerId, countryOverride) {
   if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
 
   if (offer) {
-    const lang = getLanguage(getLocale(window.location)).split('-')[0];
+    const lang = getConfig().locale.ietf.split('-')[0];
     const unitPrice = offer.p;
     const unitPriceCurrencyFormatted = formatPrice(unitPrice, currency);
     const commerceURL = `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${offerId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`;

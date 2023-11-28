@@ -202,10 +202,6 @@ main .pricing-summary > div:last-of-type > div p {
   margin: 0 0 12px;
 }
 
-main .pricing-summary .pricing-feature-list {
-
-}
-
 main .pricing-summary .pricing-feature-list svg,
 main .pricing-summary .pricing-feature-list img {
   min-width: 22px;
@@ -251,6 +247,22 @@ main .pricing-summary .pricing-feature-list li {
   line-height: var(--body-line-height);
 }
 
+main .pricing-summary .pricing-container .pricing-summary-columns-container .carousel-container .carousel-platform{
+  position:relative;
+}
+main .pricing-summary .pricing-container .pricing-summary-columns-container .carousel-container .carousel-platform .carousel-left-trigger,
+main .pricing-summary .pricing-container .pricing-summary-columns-container .carousel-container .carousel-platform .carousel-right-trigger{
+  position: absolute;
+  height:100%;
+  top:0;
+}
+main .pricing-summary .pricing-container .pricing-summary-columns-container .carousel-container .carousel-platform .carousel-left-trigger{
+  left:0;
+}
+main .pricing-summary .pricing-container .pricing-summary-columns-container .carousel-container .carousel-platform .carousel-right-trigger{
+  right:0;
+}
+
 @media (min-width: 900px) {
   main .section .pricing-summary-wrapper {
     max-width: 100%;
@@ -261,7 +273,6 @@ main .pricing-summary .pricing-feature-list li {
     flex-direction: row;
     align-items: stretch;
     gap: 20px;
-    width: auto;
     padding-top: 40px;
   }
 
@@ -280,5 +291,14 @@ main .pricing-summary .pricing-feature-list li {
 
   main .pricing-summary .pricing-column-wrapper.has-pricing-eyebrow {
     margin-top: -40px;
+  }
+
+  main .pricing-summary .pricing-container .pricing-summary-columns-container .carousel-container .carousel-platform .carousel-left-trigger,
+  main .pricing-summary .pricing-container .pricing-summary-columns-container .carousel-container .carousel-platform .carousel-right-trigger{
+      position: relative;
+      height:auto;
+      right:auto;
+      left:auto;
+      top:auto;
   }
 }

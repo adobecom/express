@@ -1,19 +1,6 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import {
+  getConfig,
   getHelixEnv,
-  getLanguage,
-  getLocale,
   getMetadata,
 } from './utils.js';
 import { memoize } from './hofs.js';
@@ -44,8 +31,8 @@ const mFetch = memoize((url, data) => fetch(url, data).then((r) => (r.ok ? r.jso
 });
 
 export async function getPillWordsMapping() {
-  const locale = getLocale(window.location);
-  const localeColumnString = locale === 'us' ? 'EN' : locale.toUpperCase();
+  const locale = getConfig().locale.prefix.replace('/', '');
+  const localeColumnString = locale === '' ? 'EN' : locale.toUpperCase();
   try {
     const resp = await fetch('/express/linklist-qa-mapping.json?limit=100000');
     const filteredArray = await resp.json();
@@ -86,7 +73,7 @@ export async function getDataWithContext({ urlPath }) {
     context: {
       application: { urlPath },
     },
-    locale: getLanguage(getLocale(window.location)) || 'en_US',
+    locale: getConfig().locale.ietf || 'en-US',
     queries: [{
       id: 'ccx-search-1',
       start: 0,

@@ -1,14 +1,3 @@
-/*
- * Copyright 2021 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 /* eslint-disable import/named, import/extensions, no-underscore-dangle */
 
 import {
@@ -19,10 +8,8 @@ import {
   decorateMain,
   fetchPlaceholders,
   fetchPlainBlockFromFragment,
-  fetchRelevantRows, fixIcons,
+  fetchRelevantRows, fixIcons, getConfig,
   getIconElement,
-  getLanguage,
-  getLocale,
   getLottie,
   getMetadata,
   lazyLoadLottiePlayer,
@@ -51,30 +38,6 @@ function handlelize(str) {
     .toLowerCase(); // To lowercase
 }
 
-// FIXME: as soon as we verify the rum approach works, this should be retired
-function logSearch(form, formUrl = '/express/search-terms-log') {
-  if (form) {
-    const input = form.querySelector('input');
-    const currentHref = new URL(window.location.href);
-    const params = new URLSearchParams(currentHref.search);
-    fetch(formUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        data: {
-          keyword: input.value,
-          locale: getLocale(window.location),
-          timestamp: Date.now(),
-          audience: document.body.dataset.device,
-          sourcePath: window.location.pathname,
-          previousSearch: params.toString() || 'N/A',
-          sessionId: sessionStorage.getItem('u_scsid'),
-        },
-      }),
-    });
-  }
-}
-
 function trimFormattedFilterText(attr, capitalize) {
   const resultString = attr.substring(1, attr.length - 1).replaceAll('"', '');
 
@@ -95,7 +58,7 @@ async function populateHeadingPlaceholder(locale, props) {
   // special treatment for express/ root url
   const lowerCaseHeading = heading === 'Adobe Express' ? heading : heading.toLowerCase();
   const placeholders = await fetchPlaceholders();
-  const lang = getLanguage(getLocale(window.location));
+  const lang = getConfig().locale.ietf;
   const templateCount = lang === 'es-ES' ? props.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : props.total.toLocaleString(lang);
   let grammarTemplate;
 
@@ -110,8 +73,7 @@ async function populateHeadingPlaceholder(locale, props) {
       .replace('{{quantity}}', props.fallbackMsg ? '0' : templateCount)
       .replace('{{Type}}', heading)
       .replace('{{type}}', lowerCaseHeading);
-
-    if (locale === 'fr') {
+    if (locale.replace('/', '') === 'fr') {
       grammarTemplate.split(' ').forEach((word, index, words) => {
         if (index + 1 < words.length) {
           if (word === 'de' && wordStartsWithVowels(words[index + 1])) {
@@ -215,7 +177,7 @@ async function appendCategoryTemplatesCount($section, props) {
   }
   props.loadedOtherCategoryCounts = true;
   const categories = $section.querySelectorAll('ul.category-list > li');
-  const lang = getLanguage(getLocale(window.location));
+  const lang = getConfig().locale.ietf;
 
   const fetchCntSpanPromises = [...categories]
     .map((li) => fetchCntSpan(props, li.querySelector('a'), lang));
@@ -521,17 +483,16 @@ async function readRowsFromBlock($block, props) {
 }
 
 function getRedirectUrl(tasks, topics, format, allTemplatesMetadata) {
-  const locale = getLocale(window.location);
-  const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+  const { prefix } = getConfig().locale;
   const topicUrl = topics ? `/${topics}` : '';
   const taskUrl = `/${handlelize(tasks.toLowerCase())}`;
-  const targetPath = `${urlPrefix}/express/templates${taskUrl}${topicUrl}`;
+  const targetPath = `${prefix}/express/templates${taskUrl}${topicUrl}`;
   const pathMatch = (e) => e.path === targetPath;
   if (allTemplatesMetadata.some(pathMatch)) {
     return `${window.location.origin}${targetPath}`;
   } else {
     const searchUrlTemplate = `/express/templates/search?tasks=${tasks}&phformat=${format}&topics=${topics || "''"}`;
-    const searchUrl = `${window.location.origin}${urlPrefix}${searchUrlTemplate}`;
+    const searchUrl = `${window.location.origin}${prefix}${searchUrlTemplate}`;
     return searchUrl;
   }
 }
@@ -801,7 +762,7 @@ function initSearchFunction($toolBar, $stickySearchBarWrapper, generatedSearchBa
 
     $searchForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      logSearch(e.currentTarget);
+      $searchBar.disabled = true;
       sampleRUM('search', {
         source: 'template-list',
         target: $searchBar.value,
@@ -1248,7 +1209,7 @@ async function decorateNewTemplates($block, props, options = { reDrawMasonry: fa
 
 async function redrawTemplates($block, $toolBar, props) {
   const $heading = $toolBar.querySelector('h2');
-  const lang = getLanguage(getLocale(window.location));
+  const lang = getConfig().locale.ietf;
   const currentTotal = props.total.toLocaleString(lang);
   props.templates = [props.templates[0]];
   props.start = '';
@@ -1518,7 +1479,7 @@ function decorateToolbar($block, $section, placeholders, props) {
 }
 
 export async function decorateTemplateList($block, props) {
-  const locale = getLocale(window.location);
+  const { prefix } = getConfig().locale;
   const placeholders = await fetchPlaceholders();
   if ($block.classList.contains('apipowered')) {
     await readRowsFromBlock($block, props);
@@ -1599,7 +1560,7 @@ export async function decorateTemplateList($block, props) {
           } else if (props.authoringError) {
             $sectionHeading.textContent = props.heading;
           } else {
-            $sectionHeading.textContent = await populateHeadingPlaceholder(locale, props) || '';
+            $sectionHeading.textContent = await populateHeadingPlaceholder(prefix, props) || '';
           }
         }
 
@@ -1622,7 +1583,7 @@ export async function decorateTemplateList($block, props) {
         }
       }
 
-      if (placeholders['template-filter-premium'] && !$block.classList.contains('mini')) {
+      if (placeholders['template-filter-premium'] && !$block.classList.contains('horizontal')) {
         document.addEventListener('linkspopulated', async (e) => {
           // desktop/mobile fires the same event
           if ($parent.contains(e.detail[0])) {
@@ -1635,7 +1596,7 @@ export async function decorateTemplateList($block, props) {
   }
 
   let rows = $block.children.length;
-  if ((rows === 0 || $block.querySelectorAll('img').length === 0) && locale !== 'us') {
+  if ((rows === 0 || $block.querySelectorAll('img').length === 0) && prefix !== '') {
     const i18nTexts = $block.firstElementChild
       // author defined localized edit text(s)
       && ($block.firstElementChild.querySelector('p')

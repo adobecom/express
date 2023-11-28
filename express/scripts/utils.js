@@ -1,15 +1,3 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
   { fragment: '/express/fragments/' },
@@ -19,11 +7,126 @@ const TK_IDS = {
   jp: 'dvg6awq',
 };
 
+const DO_NOT_INLINE = [
+  'accordion',
+  'columns',
+  'z-pattern',
+];
+
+const ENVS = {
+  stage: {
+    name: 'stage',
+    ims: 'stg1',
+    adobeIO: 'cc-collab-stage.adobe.io',
+    adminconsole: 'stage.adminconsole.adobe.com',
+    account: 'stage.account.adobe.com',
+    edgeConfigId: '8d2805dd-85bf-4748-82eb-f99fdad117a6',
+    pdfViewerClientId: '600a4521c23d4c7eb9c7b039bee534a0',
+  },
+  prod: {
+    name: 'prod',
+    ims: 'prod',
+    adobeIO: 'cc-collab.adobe.io',
+    adminconsole: 'adminconsole.adobe.com',
+    account: 'account.adobe.com',
+    edgeConfigId: '2cba807b-7430-41ae-9aac-db2b0da742d5',
+    pdfViewerClientId: '3c0a5ddf2cc04d3198d9e48efc390fa9',
+  },
+};
+ENVS.local = {
+  ...ENVS.stage,
+  name: 'local',
+};
+
+const LANGSTORE = 'langstore';
+
+const PAGE_URL = new URL(window.location.href);
+
+export function getMetadata(name) {
+  const attr = name && name.includes(':') ? 'property' : 'name';
+  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
+  return ($meta && $meta.content) || '';
+}
+
+function getEnv(conf) {
+  const { host } = window.location;
+  const query = PAGE_URL.searchParams.get('env');
+
+  if (query) return { ...ENVS[query], consumer: conf[query] };
+  if (host.includes('localhost')) return { ...ENVS.local, consumer: conf.local };
+  /* c8 ignore start */
+  if (host.includes('hlx.page')
+    || host.includes('hlx.live')
+    || host.includes('stage.adobe')
+    || host.includes('corp.adobe')) {
+    return { ...ENVS.stage, consumer: conf.stage };
+  }
+  return { ...ENVS.prod, consumer: conf.prod };
+  /* c8 ignore stop */
+}
+
+export function getLocale(locales, pathname = window.location.pathname) {
+  if (!locales) {
+    return { ietf: 'en-US', tk: 'hah7vzn.css', prefix: '' };
+  }
+  const split = pathname.split('/');
+  const localeString = split[1];
+  const locale = locales[localeString] || locales[''];
+  if (localeString === LANGSTORE) {
+    locale.prefix = `/${localeString}/${split[2]}`;
+    if (
+      Object.values(locales)
+        .find((loc) => loc.ietf?.startsWith(split[2]))?.dir === 'rtl'
+    ) locale.dir = 'rtl';
+    return locale;
+  }
+  const isUS = locale.ietf === 'en-US';
+  locale.prefix = isUS ? '' : `/${localeString}`;
+  locale.region = isUS ? 'us' : localeString.split('_')[0];
+  return locale;
+}
+
+export const [setConfig, updateConfig, getConfig] = (() => {
+  let config = {};
+  return [
+    (conf) => {
+      const origin = conf.origin || window.location.origin;
+      const pathname = conf.pathname || window.location.pathname;
+      config = { env: getEnv(conf), ...conf };
+      config.codeRoot = conf.codeRoot ? `${origin}${conf.codeRoot}` : origin;
+      config.base = config.miloLibs || config.codeRoot;
+      config.locale = pathname ? getLocale(conf.locales, pathname) : getLocale(conf.locales);
+      config.autoBlocks = conf.autoBlocks ? [...AUTO_BLOCKS, ...conf.autoBlocks] : AUTO_BLOCKS;
+      config.doNotInline = conf.doNotInline
+        ? [...DO_NOT_INLINE, ...conf.doNotInline]
+        : DO_NOT_INLINE;
+      const lang = getMetadata('content-language') || config.locale.ietf;
+      document.documentElement.setAttribute('lang', lang);
+      try {
+        const dir = getMetadata('content-direction')
+          || config.locale.dir
+          || (config.locale.ietf && (new Intl.Locale(config.locale.ietf)?.textInfo?.direction))
+          || 'ltr';
+        document.documentElement.setAttribute('dir', dir);
+      } catch (e) {
+        console.log('Invalid or missing locale:', e);
+      }
+      config.locale.contentRoot = `${origin}${config.locale.prefix}${config.contentRoot ?? ''}`;
+      config.useDotHtml = !PAGE_URL.origin.includes('.hlx.')
+        && (conf.useDotHtml ?? PAGE_URL.pathname.endsWith('.html'));
+      return config;
+    },
+    // eslint-disable-next-line no-return-assign
+    (conf) => (config = conf),
+    () => config,
+  ];
+})();
+
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
  * @param {Object} data additional data for RUM sample
- * @param {integer} forceSampleRate force weight on specific RUM sampling
+ * @param {Number} forceSampleRate force weight on specific RUM sampling
  */
 
 export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
@@ -503,12 +606,6 @@ export function readBlockConfig($block) {
   return config;
 }
 
-export function getMetadata(name) {
-  const attr = name && name.includes(':') ? 'property' : 'name';
-  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
-  return ($meta && $meta.content) || '';
-}
-
 export function yieldToMain() {
   return new Promise((r) => {
     setTimeout(r, 0);
@@ -524,7 +621,7 @@ export function removeIrrelevantSections(main) {
 
       // section meant for different device
       let sectionRemove = !!(sectionMeta.audience
-        && sectionMeta.audience !== document.body.dataset?.device);
+        && sectionMeta.audience.toLowerCase() !== document.body.dataset?.device);
 
       // section visibility steered over metadata
       if (!sectionRemove && sectionMeta.showwith !== undefined) {
@@ -791,14 +888,6 @@ export function updateSectionsStatus(main) {
   }
 }
 
-export function getLocale(url) {
-  const locale = url.pathname.split('/')[1];
-  if (/^[a-z]{2}$/.test(locale)) {
-    return locale;
-  }
-  return 'us';
-}
-
 export function getCookie(cname) {
   const name = `${cname}=`;
   const decodedCookie = decodeURIComponent(document.cookie);
@@ -815,35 +904,7 @@ export function getCookie(cname) {
   return '';
 }
 
-export function getLanguage(locale) {
-  const langs = {
-    us: 'en-US',
-    fr: 'fr-FR',
-    in: 'en-IN',
-    uk: 'en-GB',
-    de: 'de-DE',
-    it: 'it-IT',
-    dk: 'da-DK',
-    gb: 'en-GB',
-    es: 'es-ES',
-    fi: 'fi-FI',
-    jp: 'ja-JP',
-    kr: 'ko-KR',
-    no: 'nb-NO',
-    nl: 'nl-NL',
-    br: 'pt-BR',
-    se: 'sv-SE',
-    th: 'th-TH',
-    tw: 'zh-Hant-TW',
-    cn: 'zh-Hans-CN',
-  };
-
-  let language = langs[locale];
-  if (!language) language = 'en-US';
-
-  return language;
-}
-
+// TODO probably want to replace / merge this with new getEnv method
 export function getHelixEnv() {
   let envName = sessionStorage.getItem('helix-env');
   if (!envName) {
@@ -854,7 +915,7 @@ export function getHelixEnv() {
     stage: {
       commerce: 'commerce-stg.adobe.com',
       adminconsole: 'stage.adminconsole.adobe.com',
-      spark: 'express-stage.adobeprojectm.com',
+      spark: 'stage.projectx.corp.adobe.com',
     },
     prod: {
       commerce: 'commerce.adobe.com',
@@ -891,9 +952,8 @@ function convertGlobToRe(glob) {
 export async function fetchRelevantRows(path) {
   if (!window.relevantRows) {
     try {
-      const locale = getLocale(window.location);
-      const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-      const resp = await fetch(`${urlPrefix}/express/relevant-rows.json`);
+      const { prefix } = getConfig().locale;
+      const resp = await fetch(`${prefix}/express/relevant-rows.json`);
       window.relevantRows = resp.ok ? (await resp.json()).data : [];
     } catch {
       const resp = await fetch('/express/relevant-rows.json');
@@ -1206,9 +1266,8 @@ export async function fetchPlaceholders() {
   };
   if (!window.placeholders) {
     try {
-      const locale = getLocale(window.location);
-      const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-      await requestPlaceholders(`${urlPrefix}/express/placeholders.json`);
+      const { prefix } = getConfig().locale;
+      await requestPlaceholders(`${prefix}/express/placeholders.json`);
     } catch {
       await requestPlaceholders('/express/placeholders.json');
     }
@@ -1414,6 +1473,7 @@ export function getExperiment() {
 
   return experiment;
 }
+
 /**
  * Gets experiment config from the manifest or the instant experiement
  * metdata and transforms it to more easily consumable structure.
@@ -1530,22 +1590,6 @@ async function replaceInner(path, element) {
 }
 
 /**
- * this is an extensible stub to take on audience mappings
- * @param {string} audience
- * @return {boolean} is member of this audience
- */
-
-function checkExperimentAudience(audience) {
-  if (audience === 'mobile') {
-    return window.innerWidth < 600;
-  }
-  if (audience === 'desktop') {
-    return window.innerWidth > 600;
-  }
-  return true;
-}
-
-/**
  * Generates a decision policy object which is understood by UED from an
  * experiment configuration.
  * @param {*} config Experiment configuration
@@ -1589,12 +1633,17 @@ async function decorateTesting() {
     const [forcedExperiment, forcedVariant] = usp.get('experiment') ? usp.get('experiment').split('/') : [];
 
     if (experiment) {
-      console.log('experiment', experiment);
       const config = await getExperimentConfig(experiment);
-      console.log('config -->', config);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
-        config.run = forcedExperiment || checkExperimentAudience(toClassName(config.audience));
-        console.log('run', config.run, config.audience);
+        const { DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences } = await import('./experiment.js');
+        const experimentOptions = {
+          ...DEFAULT_EXPERIMENT_OPTIONS,
+          ...{ audiences: AUDIENCES },
+        };
+        config.resolvedAudiences = await getResolvedAudiences(config.audience.split(',').map((a) => a.trim()), experimentOptions);
+        config.run = forcedExperiment
+          || !config.resolvedAudiences
+          || config.resolvedAudiences.length;
 
         window.hlx = window.hlx || {};
         if (config.run) {
@@ -1607,7 +1656,6 @@ async function decorateTesting() {
             config.selectedVariant = decision.items[0].id;
           }
           sampleRUM('experiment', { source: config.id, target: config.selectedVariant });
-          console.log(`running experiment (${window.hlx.experiment.id}) -> ${window.hlx.experiment.selectedVariant}`);
           // populate ttMETA with hlx experimentation details
           window.ttMETA = window.ttMETA || [];
           const experimentDetails = {
@@ -1629,13 +1677,13 @@ async function decorateTesting() {
           if (config.selectedVariant !== 'control') {
             const currentPath = window.location.pathname;
             const pageIndex = config.variants.control.pages.indexOf(currentPath);
-            console.log(pageIndex, config.variants.control.pages, currentPath);
             if (pageIndex >= 0) {
               const page = config.variants[config.selectedVariant].pages[pageIndex];
               if (page) {
                 const experimentPath = new URL(page, window.location.href).pathname.split('.')[0];
                 if (experimentPath && experimentPath !== currentPath) {
                   await replaceInner(experimentPath, document.querySelector('main'));
+                  removeIrrelevantSections(document.querySelector('main'));
                 }
               }
             }
@@ -1759,13 +1807,8 @@ export function normalizeHeadings(block, allowedHeadings) {
 
 export async function fetchPlainBlockFromFragment(url, blockName) {
   const location = new URL(window.location);
-  const locale = getLocale(location);
-  let fragmentUrl;
-  if (locale === 'us') {
-    fragmentUrl = `${location.origin}${url}`;
-  } else {
-    fragmentUrl = `${location.origin}/${locale}${url}`;
-  }
+  const { prefix } = getConfig().locale;
+  const fragmentUrl = `${location.origin}${prefix}${url}`;
 
   const path = new URL(fragmentUrl).pathname.split('.')[0];
   const resp = await fetch(`${path}.plain.html`);
@@ -1800,9 +1843,8 @@ export async function fetchFloatingCta(path) {
   async function fetchFloatingBtnData(sheet) {
     if (!window.floatingCta) {
       try {
-        const locale = getLocale(window.location);
-        const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-        const resp = await fetch(`${urlPrefix}${sheet}`);
+        const { prefix } = getConfig().locale;
+        const resp = await fetch(`${prefix}${sheet}`);
         window.floatingCta = resp.ok ? (await resp.json()).data : [];
       } catch {
         const resp = await fetch(sheet);
@@ -1902,18 +1944,20 @@ async function buildAutoBlocks($main) {
   }
 
   if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) || ['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
-    if (!window.floatingCtasLoaded) {
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
+    if (!BlockMediator.get('floatingCtasLoaded')) {
       const floatingCTAData = await fetchFloatingCta(window.location.pathname);
       const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
       const device = document.body.dataset?.device;
       const blockName = floatingCTAData?.[device];
+
       if (validButtonVersion.includes(blockName) && $lastDiv) {
         const button = buildBlock(blockName, device);
         button.classList.add('spreadsheet-powered');
         $lastDiv.append(button);
       }
 
-      window.floatingCtasLoaded = true;
+      BlockMediator.set('floatingCtasLoaded', true);
     }
   }
 
@@ -2035,8 +2079,6 @@ function decorateSocialIcons($main) {
 function displayOldLinkWarning() {
   if (window.location.hostname.includes('localhost') || window.location.hostname.includes('.hlx.page')) {
     document.querySelectorAll('main a[href^="https://spark.adobe.com/"]').forEach(($a) => {
-      const url = new URL($a.href);
-      console.log(`old link: ${url}`);
       $a.style.border = '10px solid red';
     });
   }
@@ -2206,7 +2248,7 @@ export function addAnimationToggle(target) {
  * semantic blocks with spans. This allows browsers to break japanese sentences correctly.
  */
 async function wordBreakJapanese() {
-  if (getLocale(window.location) !== 'jp') {
+  if (getConfig().locale.region !== 'jp') {
     return;
   }
   const { loadDefaultJapaneseParser } = await import('./budoux-index-ja.min.js');
@@ -2263,7 +2305,7 @@ export function addHeaderSizing($block, classPrefix = 'heading', selector = 'h1,
   const headings = $block.querySelectorAll(selector);
   // Each threshold of JP should be smaller than other languages
   // because JP characters are larger and JP sentences are longer
-  const sizes = getLocale(window.location) === 'jp'
+  const sizes = getConfig().locale.region === 'jp'
     ? [
       { name: 'long', threshold: 8 },
       { name: 'very-long', threshold: 11 },
@@ -2275,7 +2317,7 @@ export function addHeaderSizing($block, classPrefix = 'heading', selector = 'h1,
       { name: 'x-long', threshold: 50 },
     ];
   headings.forEach((h) => {
-    const length = getLocale(window.location) === 'jp'
+    const length = getConfig().locale.region === 'jp'
       ? getJapaneseTextCharacterCount(h.textContent.trim())
       : h.textContent.trim().length;
     sizes.forEach((size) => {
@@ -2289,7 +2331,7 @@ export function addHeaderSizing($block, classPrefix = 'heading', selector = 'h1,
  * in all Japanese pages except blog pages.
  */
 function addJapaneseSectionHeaderSizing() {
-  if (getLocale(window.location) === 'jp') {
+  if (getConfig().locale.region === 'jp') {
     document.querySelectorAll('body:not(.blog) .section .default-content-wrapper').forEach((el) => {
       addHeaderSizing(el);
     });
@@ -2364,9 +2406,10 @@ async function loadLazy(main) {
 async function loadPostLCP() {
   // post LCP actions go here
   sampleRUM('lcp');
+  window.dispatchEvent(new Event('milo:LCP:loaded'));
   if (window.hlx.martech) loadMartech();
   loadGnav();
-  const tkID = TK_IDS[getLocale(window.location)];
+  const tkID = TK_IDS[getConfig().locale.prefix.replace('/', '')];
   if (tkID) {
     const { default: loadFonts } = await import('./fonts.js');
     loadFonts(tkID, loadCSS);
@@ -2403,6 +2446,26 @@ export async function loadSections(sections, isDoc) {
   return areaBlocks;
 }
 
+function initSidekick() {
+  const initPlugins = async () => {
+    const { default: init } = await import('./utils/sidekick.js');
+    init({
+      createTag,
+      loadBlock,
+      loadScript,
+      loadCSS,
+    });
+  };
+
+  if (document.querySelector('helix-sidekick')) {
+    initPlugins();
+  } else {
+    document.addEventListener('sidekick-ready', () => {
+      initPlugins();
+    });
+  }
+}
+
 /**
  * Decorates the page.
  */
@@ -2424,13 +2487,7 @@ export async function loadArea(area = document) {
   window.hlx.init = true;
 
   await setTemplateTheme();
-  if (main) {
-    const language = getLanguage(getLocale(window.location));
-    const langSplits = language.split('-');
-    langSplits.pop();
-    const htmlLang = langSplits.join('-');
-    document.documentElement.setAttribute('lang', htmlLang);
-  }
+
   if (window.hlx.testing) await decorateTesting();
 
   if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
@@ -2470,6 +2527,8 @@ export async function loadArea(area = document) {
   await loadSections(sections, isDoc);
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
+
+  initSidekick();
 
   const lazy = loadLazy(main);
 

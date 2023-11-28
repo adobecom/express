@@ -9,7 +9,6 @@ div[class='section section-wrapper browse-by-category-card-fullwidth-container t
     padding: 0;
 }
 
-.template-x > .default-content-wrapper,
 .template-x > .default-content-wrapper {
     padding: 0 15px;
 }
@@ -1599,7 +1598,6 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
-    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
     transform: translate3d(0, 0, 0);
     height: 232px;
     width: 170px;
@@ -1607,26 +1605,11 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-left {
-    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
     transform: translate3d(0, 0, 0);
     height: 232px;
     width: 170px;
     left: -4px
 }
-
-.template-x.horizontal .carousel-container .carousel-fader-right {
-    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-}
-
-.template-x.horizontal .carousel-container .carousel-fader-left {
-    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-}
-
-main .template-x.horizontal.tabbed .carousel-container .carousel-fader-right,
-main .template-x.horizontal.tabbed .carousel-container .carousel-fader-left {
-    background: none;
-}
-
 
 .template-x.horizontal.holiday .template-x-inner-wrapper .carousel-container {
     max-width: 1090px;
@@ -2058,6 +2041,11 @@ main .template-x.horizontal.tabbed .carousel-container .carousel-fader-left {
     font-size: var(--body-font-size-s);
 }
 
+.template-x.horizontal .template:nth-last-of-type(2) .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
+    left: unset;
+    right: calc(100% + 12px);
+}
+
 .template-x .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip .icon-checkmark-green {
     width: 10px;
     height: 10px;
@@ -2084,6 +2072,12 @@ main .template-x.horizontal.tabbed .carousel-container .carousel-fader-left {
     border-width: 5px;
     border-style: solid;
     border-color: transparent #33AB84 transparent transparent;
+}
+
+.template-x.horizontal .template:nth-last-of-type(2) .button-container .media-wrapper .share-icon-wrapper .shared-tooltip::after {
+    right: unset;
+    left: 100%;
+    border-color: transparent transparent transparent #33AB84;
 }
 
 .template-x .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip.flipped::after {
@@ -2195,11 +2189,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
 
     .template-x.with-categories-list .category-list-wrapper:hover .category-list-toggle-wrapper .icon {
         transform: rotate(180deg);
-    }
-
-    .template-x.horizontal.holiday .carousel-container .carousel-fader-left,
-    .template-x.horizontal.holiday .carousel-container .carousel-fader-right {
-        background: initial;
     }
 
     .template-x.with-categories-list .template-x.fullwidth {
@@ -2467,25 +2456,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         padding-right: 6px;
     }
 
-    .template-x.with-categories-list .category-list-wrapper ul > li > a {
-        font-family: var(--body-font-family);
-        color: var(--color-black);
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 24px;
-        cursor: pointer;
-        user-select: none;
-        display: flex;
-        align-items: center;
-        white-space: nowrap;
-    }
-
-    .template-x.with-categories-list .category-list-wrapper ul > li > a > .category-list-template-count {
-        font-family: var(--body-font-family);
-        margin-left: 2px;
-        font-size: 14px;
-    }
-
     .template-x.with-categories-list .category-list::before {
         content: '';
         z-index: 0;
@@ -2525,31 +2495,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         padding-left: 56px;
     }
 
-    .template-x.horizontal .carousel-container.controls-hidden .carousel-fader-left,
-    .template-x.horizontal .carousel-container.controls-hidden .carousel-fader-right {
-        opacity: unset;
-    }
-
-    .template-x.horizontal .carousel-container.controls-hidden .carousel-fader-left a.button.carousel-arrow,
-    .template-x.horizontal .carousel-container.controls-hidden .carousel-fader-right a.button.carousel-arrow {
-        pointer-events: auto;
-    }
-
-    .template-x.horizontal .carousel-container .carousel-fader-left.arrow-hidden,
-    .template-x.horizontal .carousel-container .carousel-fader-right.arrow-hidden {
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    .template-x.horizontal .carousel-container .carousel-fader-left.arrow-hidden a.button.carousel-arrow,
-    .template-x.horizontal .carousel-container .carousel-fader-right.arrow-hidden a.button.carousel-arrow {
-        pointer-events: none;
-    }
-
-    .template-x.horizontal .carousel-container.controls-hidden .carousel-platform {
-        scroll-snap-type: x mandatory;
-    }
-
     .template-x.horizontal .carousel-container {
         margin-left: auto;
         margin-right: auto;
@@ -2562,21 +2507,8 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         display: block;
     }
 
-    .template-x.horizontal .carousel-container .carousel-fader-left {
-        background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-    }
-
-    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left {
-        width: 150px;
-        background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-    }
-
-    .template-x.horizontal .carousel-container .carousel-fader-right {
-        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-    }
-
-    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left {
-        background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left,
+    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-right {
         width: 150px;
     }
 
@@ -2747,23 +2679,9 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         display: block;
     }
 
-    .template-x.horizontal .carousel-container .carousel-fader-left {
-        background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-    }
-
-    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left {
-        width: 150px;
-        background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-    }
-
+    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left,
     .template-x.horizontal.holiday .carousel-container .carousel-fader-right {
-        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-        width: 170px;
-    }
-
-    .template-x.horizontal.fullwidth.tabbed .carousel-container .carousel-fader-left,
-    .template-x.horizontal.fullwidth.tabbed .carousel-container .carousel-fader-right {
-        background: none;
+        width: 150px;
     }
 
     .template-x .api-templates-toolbar {

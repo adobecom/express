@@ -1,14 +1,3 @@
-/*
- * Copyright 2021 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 /* eslint-disable import/named, import/extensions */
 
 import {
@@ -18,8 +7,7 @@ import {
   decorateMain,
   fetchPlaceholders,
   getIconElement,
-  getLanguage,
-  getLocale,
+  getConfig,
   getLottie,
   getMetadata,
   lazyLoadLottiePlayer,
@@ -37,30 +25,6 @@ import isDarkOverlayReadable from '../../scripts/color-tools.js';
 
 function wordStartsWithVowels(word) {
   return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
-}
-
-// FIXME: as soon as we verify the rum approach works, this should be retired
-function logSearch(form, formUrl = '/express/search-terms-log') {
-  if (form) {
-    const input = form.querySelector('input');
-    const currentHref = new URL(window.location.href);
-    const params = new URLSearchParams(currentHref.search);
-    fetch(formUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        data: {
-          keyword: input.value,
-          locale: getLocale(window.location),
-          timestamp: Date.now(),
-          audience: document.body.dataset.device,
-          sourcePath: window.location.pathname,
-          previousSearch: params.toString() || 'N/A',
-          sessionId: sessionStorage.getItem('u_scsid'),
-        },
-      }),
-    });
-  }
 }
 
 function camelize(str) {
@@ -136,8 +100,9 @@ async function processContentRow(block, props) {
 async function formatHeadingPlaceholder(props) {
   // special treatment for express/ root url
   const placeholders = await fetchPlaceholders();
-  const locale = getLocale(window.location);
-  const lang = getLanguage(locale);
+  const config = getConfig();
+  const { region } = config.locale;
+  const lang = config.locale.ietf;
   const templateCount = lang === 'es-ES' ? props.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : props.total.toLocaleString(lang);
   let toolBarHeading = getMetadata('toolbar-heading') ? props.templateStats : placeholders['template-placeholder'];
 
@@ -152,7 +117,7 @@ async function formatHeadingPlaceholder(props) {
       .replace('{{quantity}}', props.fallbackMsg ? '0' : templateCount)
       .replace('{{Type}}', titleCase(getMetadata('short-title') || getMetadata('q') || getMetadata('topics')))
       .replace('{{type}}', getMetadata('short-title') || getMetadata('q') || getMetadata('topics'));
-    if (locale === 'fr') {
+    if (region === 'fr') {
       toolBarHeading.split(' ').forEach((word, index, words) => {
         if (index + 1 < words.length) {
           if (word === 'de' && wordStartsWithVowels(words[index + 1])) {
@@ -605,7 +570,7 @@ async function appendCategoryTemplatesCount(block, props) {
   }
   props.loadedOtherCategoryCounts = true;
   const categories = block.querySelectorAll('ul.category-list > li');
-  const lang = getLanguage(getLocale(window.location));
+  const lang = getConfig().locale.ietf;
 
   const fetchCntSpanPromises = [...categories]
     .map((li) => fetchCntSpan(props, li.querySelector('a'), lang));
@@ -621,7 +586,7 @@ async function appendCategoryTemplatesCount(block, props) {
 
 async function decorateCategoryList(block, props) {
   const placeholders = await fetchPlaceholders();
-  const locale = getLocale(window.location);
+  const { prefix } = getConfig().locale;
   const mobileDrawerWrapper = block.querySelector('.filter-drawer-mobile');
   const drawerWrapper = block.querySelector('.filter-drawer-mobile-inner-wrapper');
   const categories = placeholders['x-task-categories'] ? JSON.parse(placeholders['x-task-categories']) : {};
@@ -655,10 +620,9 @@ async function decorateCategoryList(block, props) {
     }
 
     const iconElement = getIconElement(icon);
-    const urlPrefix = locale === 'us' ? '' : `/${locale}`;
     const a = createTag('a', {
       'data-tasks': targetTasks,
-      href: `${urlPrefix}/express/templates/search?tasks=${targetTasks}&tasksx=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"}&q=${currentTopic || ''}`,
+      href: `${prefix}/express/templates/search?tasks=${targetTasks}&tasksx=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"}&q=${currentTopic || ''}`,
     });
     [a.textContent] = category;
 
@@ -1185,11 +1149,11 @@ function decorateHoliday(block, props) {
 }
 
 async function decorateTemplates(block, props) {
-  const locale = getLocale(window.location);
+  const { prefix } = getConfig().locale;
   const innerWrapper = block.querySelector('.template-x-inner-wrapper');
 
   let rows = block.children.length;
-  if ((rows === 0 || block.querySelectorAll('img').length === 0) && locale !== 'us') {
+  if ((rows === 0 || block.querySelectorAll('img').length === 0) && prefix !== '') {
     const i18nTexts = block.firstElementChild
       // author defined localized edit text(s)
       && (block.firstElementChild.querySelector('p')
@@ -1408,25 +1372,23 @@ function importSearchBar(block, blockMediator) {
             [[currentTasks]] = tasksFoundInInput;
           }
 
-          const locale = getLocale(window.location);
-          const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+          const { prefix } = getConfig().locale;
           const topicUrl = searchInput ? `/${searchInput}` : '';
           const taskUrl = `/${handlelize(currentTasks.toLowerCase())}`;
-          const targetPath = `${urlPrefix}/express/templates${taskUrl}${topicUrl}`;
+          const targetPath = `${prefix}/express/templates${taskUrl}${topicUrl}`;
           const allTemplatesMetadata = await fetchAllTemplatesMetadata();
           const pathMatch = (event) => event.url === targetPath;
           if (allTemplatesMetadata.some(pathMatch)) {
             window.location = `${window.location.origin}${targetPath}`;
           } else {
             const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks}&phformat=${format}&topics=${searchInput || "''"}&q=${searchInput || "''"}`;
-            window.location = `${window.location.origin}${urlPrefix}${searchUrlTemplate}`;
+            window.location = `${window.location.origin}${prefix}${searchUrlTemplate}`;
           }
         };
 
         searchForm.addEventListener('submit', async (event) => {
           event.preventDefault();
           searchBar.disabled = true;
-          logSearch(event.currentTarget);
           sampleRUM('search', {
             source: block.dataset.blockName,
             target: searchBar.value,
