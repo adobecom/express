@@ -1,9 +1,4 @@
 import {
-  createTag,
-  getDevice,
-} from './utils.js';
-
-import {
   fetchPlaceholders,
   createTag,
   getDevice,
