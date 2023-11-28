@@ -1,15 +1,3 @@
-/*
- * Copyright 2021 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import {
   createTag,
   fetchPlaceholders,
@@ -17,9 +5,8 @@ import {
   getIconElement,
   getLottie,
   lazyLoadLottiePlayer,
-  getLocale,
   toClassName,
-  getMetadata,
+  getMetadata, getConfig,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
@@ -129,7 +116,7 @@ export default async function decorate($block) {
         },
         {
           name: 'Locale',
-          value: getLocale(window.location),
+          value: getConfig().locale.region,
         },
         {
           name: 'Rating',
@@ -343,7 +330,7 @@ export default async function decorate($block) {
       $stars.innerHTML = `${star.repeat(filledStars)}${starHalf.repeat(halfStars)}${starEmpty.repeat(emptyStars)}`;
       const $votes = createTag('span', { class: 'rating-votes' });
       $votes.innerHTML = `<strong>${rating} / 5</strong> - ${ratingAmount} ${votesText}`;
-      if (getLocale(window.location) === 'kr') $votes.innerHTML = `<strong>${rating} / 5</strong> - ${ratingAmount}${votesText}`;
+      if (getConfig().locale.region === 'kr') $votes.innerHTML = `<strong>${rating} / 5</strong> - ${ratingAmount}${votesText}`;
       $stars.appendChild($votes);
       if (rating > 4.2) {
         buildSchema(actionTitle);

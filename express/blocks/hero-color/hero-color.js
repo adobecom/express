@@ -1,17 +1,6 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import { createTag } from '../../scripts/utils.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function changeTextColorAccordingToBg(
   primaryColor,
@@ -98,17 +87,27 @@ function resizeSvgOnLoad() {
   }, 50);
 }
 
+export function resizeSvg(event) {
+  const height = getContentContainerHeight();
+  const svg = document.querySelector('.color-svg-img');
+  if (event.matches) {
+    svg.style.height = `${height}px`;
+  } else {
+    svg.style.height = '200px';
+  }
+}
+
 function resizeSvgOnMediaQueryChange() {
   const mediaQuery = window.matchMedia('(min-width: 900px)');
-  mediaQuery.addEventListener('change', (event) => {
-    const height = getContentContainerHeight();
-    const svg = document.querySelector('.color-svg-img');
-    if (event.matches) {
-      svg.style.height = `${height}px`;
-    } else {
-      svg.style.height = '200px';
-    }
-  });
+  mediaQuery.addEventListener('change', resizeSvg);
+}
+
+function decorateCTA(block) {
+  const primaryCta = block.querySelector('.text-container a.button');
+  if (!primaryCta) return;
+
+  primaryCta.classList.add('primaryCta');
+  BlockMediator.set('primaryCtaUrl', primaryCta.href);
 }
 
 export default function decorate(block) {
@@ -117,6 +116,9 @@ export default function decorate(block) {
 
   // text
   decorateText(block);
+
+  // CTA
+  decorateCTA(block);
 
   // colors
   const { secondaryColor } = decorateColors(block);

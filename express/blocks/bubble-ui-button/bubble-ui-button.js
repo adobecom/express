@@ -1,19 +1,6 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import {
-  createTag,
+  createTag, getConfig,
   getIconElement,
-  getLocale,
 } from '../../scripts/utils.js';
 
 import {
@@ -291,9 +278,8 @@ async function decorateBubbleUI($boxBottom, data) {
   bubbleViewportContainer.append(bubbleViewport);
   bubbleViewport.append(bubbleRowContainer);
 
-  const locale = getLocale(window.location);
-  const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-  const resp = await fetch(`${urlPrefix}/express/bubbles/${data.bubbleSheet}.json`).then((result) => result.json());
+  const { prefix } = getConfig().locale;
+  const resp = await fetch(`${prefix}/express/bubbles/${data.bubbleSheet}.json`).then((result) => result.json());
   const bubblesArray = resp.data;
   const hexTemplate = buildHexagon(bubblesArray);
   let bubbleIdCounter = 0;

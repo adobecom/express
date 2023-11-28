@@ -1,24 +1,11 @@
-/*
- * Copyright 2021 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 /* global _satellite __satelliteLoadedCallback alloy */
 
 import {
   loadScript,
   getAssetDetails,
-  getLocale,
-  getLanguage,
   getMetadata,
   checkTesting,
-  fetchPlaceholders,
+  fetchPlaceholders, getConfig,
 } from './utils.js';
 
 import BlockMediator from './block-mediator.min.js';
@@ -217,12 +204,12 @@ const martechLoadedCB = () => {
   // gathering the data
   //------------------------------------------------------------------------------------
 
-  const locale = getLocale(w.location);
+  const locale = getConfig().locale.prefix;
   const pathSegments = pathname.substr(1).split('/');
-  if (locale !== 'us') pathSegments.shift();
+  if (locale !== '') pathSegments.shift();
   const pageName = `adobe.com:${pathSegments.join(':')}`;
 
-  const language = getLanguage(getLocale(window.location));
+  const language = document.documentElement.getAttribute('lang');
 
   let category = getMetadata('category');
   if (!category && (pathname.includes('/create/')
@@ -1014,7 +1001,7 @@ const martechLoadedCB = () => {
   BlockMediator.set('audiences', []);
   BlockMediator.set('segments', []);
 
-  function getAudiences() {
+  async function getAudiences() {
     const getSegments = (ecid) => {
       if (ecid) {
         w.setAudienceManagerSegments = (json) => {
@@ -1066,8 +1053,9 @@ const martechLoadedCB = () => {
       }
     };
 
-    alloy('getIdentity')
-      .then((data) => getSegments(data && data.identity ? data.identity.ECID : null));
+    await _satellite.alloyConfigurePromise;
+    const data = await alloy('getIdentity');
+    getSegments(data && data.identity ? data.identity.ECID : null);
   }
 
   __satelliteLoadedCallback(getAudiences);

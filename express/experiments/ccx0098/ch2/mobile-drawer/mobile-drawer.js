@@ -1,15 +1,3 @@
-/*
- * Copyright 2021 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import {
   createTag,
   getLottie,
@@ -91,7 +79,6 @@ function updateActiveTab(clickedButton) {
   setActiveClassAndAccessibility(allButtons, clickedButton.textContent);
 }
 function handleNavScroll(hasInstant, isLeftButton, isRightButton, leftValue, $platform) {
-  $platform.style.overflowX = 'scroll';
   $platform.classList.add('mobile-drawer-nav-scrolling');
   if (hasInstant) {
     $platform.scrollTo({
@@ -105,9 +92,8 @@ function handleNavScroll(hasInstant, isLeftButton, isRightButton, leftValue, $pl
     $platform.scrollLeft += getDynamicButtonWidth($platform.clientWidth);
   }
   setTimeout(() => {
-    $platform.style.overflowX = 'hidden';
     $platform.classList.remove('mobile-drawer-nav-scrolling');
-  }, 300);
+  }, 350);
 }
 function updateActiveCTAContainers(activeButton) {
   const newActiveCTAContainer = document.getElementById(activeButton?.id?.replace('tab', 'ctas'));
@@ -222,6 +208,7 @@ function decorateToggleCarousel(selector, $parent) {
         $platform.style.marginLeft = `-${centeringValue}px`;
         $platform.style.paddingRight = `${centeringValue}px`;
       }
+      $platform.style.overflowX = 'hidden';
       const buttons = [...document.querySelectorAll('.mobile-drawer-toggle button')];
 
       let activeButton;
@@ -241,6 +228,7 @@ function decorateToggleCarousel(selector, $parent) {
 
       setTimeout(() => {
         // For Firefox, inital scrollTo is handled by fireFoxToggleFix below
+        $platform.classList.add('mobile-drawer-nav-scrolling');
         $platform.scrollTo({
           left: 5 * getDynamicButtonWidth($platform.clientWidth),
           behavior: 'instant',
@@ -251,7 +239,8 @@ function decorateToggleCarousel(selector, $parent) {
         addArrowNavigation($platform);
         mobileDrawer.parentElement.classList.remove('initial-load');
         mobileDrawer.classList.remove('initial-load');
-        $platform.style.overflowX = 'hidden';
+        $platform.classList.remove('mobile-drawer-nav-scrolling');
+        // $platform.style.overflowX = 'hidden';
       }, 300);
     }
   };
