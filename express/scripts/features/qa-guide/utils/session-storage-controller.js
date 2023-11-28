@@ -8,7 +8,7 @@ export function populateSessionStorage(payload) {
     };
 
     page.items.forEach((item) => {
-      pagePackage.checks[item.uid] = {
+      pagePackage.checks[item.idx] = {
         value: item.text,
         result: 'pending',
       };
@@ -27,7 +27,7 @@ export function updateSessionStorage(page, form) {
   const pageRecord = sessionRecord[page.link];
 
   allCheckboxes.forEach((checkbox) => {
-    const checkRecord = pageRecord.checks[checkbox.dataset.uid];
+    const checkRecord = pageRecord.checks[checkbox.dataset.idx];
     if (checkRecord) {
       checkRecord.result = checkbox.checked;
     }

@@ -3,14 +3,6 @@ import { populateSessionStorage, updateSessionStorage } from './utils/session-st
 
 const QA_LOG_FILE_LOCATION = '/express/qa-log';
 
-function generateUID() {
-  let firstPart = (Math.random() * 46656) || 0;
-  let secondPart = (Math.random() * 46656) || 0;
-  firstPart = `000${firstPart.toString(36)}`.slice(-3);
-  secondPart = `000${secondPart.toString(36)}`.slice(-3);
-  return firstPart + secondPart;
-}
-
 export default function initQAGuide(el, utils) {
   const {
     createTag,
@@ -25,9 +17,9 @@ export default function initQAGuide(el, utils) {
 
   const buildPayload = (pages) => pages.map((p) => ({
     link: p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type').textContent.trim() || null,
-    items: Array.from(p.querySelectorAll('li')).map((li) => ({
+    items: Array.from(p.querySelectorAll('li')).map((li, idx) => ({
       text: li.textContent.trim(),
-      uid: generateUID(),
+      idx,
     })),
   }));
 
@@ -47,18 +39,19 @@ export default function initQAGuide(el, utils) {
     const now = new Date(Date.now()).toLocaleString('en-US', {
       timeZone: 'America/Los_Angeles',
     });
-    const qaRecord = JSON.parse(sessionStorage.getItem('qa-record'));
     fetch(QA_LOG_FILE_LOCATION, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         data: {
           timestamp: `${now} (US West)`,
-          details: qaRecord,
+          details: sessionStorage.getItem('qa-record'),
           audience: document.body.dataset?.device || 'N/A',
         },
       }),
     });
+
+    sessionStorage.removeItem('qa-record');
   };
 
   const buildQAWidget = (index, payload) => {
@@ -83,7 +76,7 @@ export default function initQAGuide(el, utils) {
         id: `checkbox-${i + 1}`,
         type: 'checkbox',
         name: `checkbox-${i + 1}`,
-        'data-uid': item.uid,
+        'data-idx': item.idx,
       });
       const checkLabel = createTag('label', { for: `checkbox-${i + 1}` }, item.text);
       const checkboxWrapper = createTag('div');
