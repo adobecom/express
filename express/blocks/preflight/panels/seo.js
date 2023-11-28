@@ -135,6 +135,7 @@ async function checkLinks() {
 
   let badLink;
   for (const link of links) {
+    // eslint-disable-next-line no-await-in-loop
     const resp = await fetch(link.href, { method: 'HEAD' });
     if (!resp.ok) badLink = true;
   }
@@ -215,7 +216,9 @@ async function getResults() {
 }
 
 export default function Panel() {
-  useEffect(() => { getResults(); }, []);
+  useEffect(() => {
+    getResults();
+  }, []);
 
   return html`
       <div class=seo-columns>
