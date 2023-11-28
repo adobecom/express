@@ -1,18 +1,15 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import { loadCSS } from '../../utils.js';
+import { populateSessionStorage, updateSessionStorage } from './utils/session-storage-controller.js';
 
 const QA_LOG_FILE_LOCATION = '/express/qa-log';
+
+function generateUID() {
+  let firstPart = (Math.random() * 46656) || 0;
+  let secondPart = (Math.random() * 46656) || 0;
+  firstPart = `000${firstPart.toString(36)}`.slice(-3);
+  secondPart = `000${secondPart.toString(36)}`.slice(-3);
+  return firstPart + secondPart;
+}
 
 export default function initQAGuide(el, utils) {
   const {
@@ -28,7 +25,10 @@ export default function initQAGuide(el, utils) {
 
   const buildPayload = (pages) => pages.map((p) => ({
     link: p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type').textContent.trim() || null,
-    items: Array.from(p.querySelectorAll('li')).map((li) => li.textContent.trim()),
+    items: Array.from(p.querySelectorAll('li')).map((li) => ({
+      text: li.textContent.trim(),
+      uid: generateUID(),
+    })),
   }));
 
   const getQAIndex = () => {
@@ -43,17 +43,18 @@ export default function initQAGuide(el, utils) {
     return decodeURIComponent(url.toString());
   };
 
-  const logQARecord = (form) => {
+  const logQARecord = () => {
     const now = new Date(Date.now()).toLocaleString('en-US', {
       timeZone: 'America/Los_Angeles',
     });
+    const qaRecord = JSON.parse(sessionStorage.getItem('qa-record'));
     fetch(QA_LOG_FILE_LOCATION, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         data: {
           timestamp: `${now} (US West)`,
-          note: form.querySelector('textarea').value,
+          details: qaRecord,
           audience: document.body.dataset?.device || 'N/A',
         },
       }),
@@ -82,9 +83,9 @@ export default function initQAGuide(el, utils) {
         id: `checkbox-${i + 1}`,
         type: 'checkbox',
         name: `checkbox-${i + 1}`,
-        required: true,
+        'data-uid': item.uid,
       });
-      const checkLabel = createTag('label', { for: `checkbox-${i + 1}` }, item);
+      const checkLabel = createTag('label', { for: `checkbox-${i + 1}` }, item.text);
       const checkboxWrapper = createTag('div');
       checkboxWrapper.append(checkbox, checkLabel);
       checkboxesContainer.append(checkboxWrapper);
@@ -102,22 +103,26 @@ export default function initQAGuide(el, utils) {
       qaWidgetForm.append(checkboxesContainer);
     }
 
+    const noteArea = createTag('textarea', {
+      style: 'height: 88px; width: 200px;',
+      placeholder: 'Leave your notes here',
+    });
+    qaWidgetForm.append(noteArea);
+
     if (payload[index + 1]) {
       const nextBtn = createTag('button', { class: 'button', type: 'submit' }, 'Next');
       qaWidgetForm.append(nextBtn);
       qaWidgetForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        updateSessionStorage(payload[index], qaWidgetForm);
         window.location.assign(setNextQAIndexToUrl(index + 1, new URL(payload[index + 1].link)));
       });
     } else {
       const completeBtn = createTag('button', { class: 'button', type: 'submit' }, 'Done');
-      const noteArea = createTag('textarea', {
-        style: 'height: 88px; width: 200px;',
-        placeholder: 'Leave your notes here',
-      });
-      qaWidgetForm.append(noteArea, completeBtn);
+      qaWidgetForm.append(completeBtn);
       qaWidgetForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        updateSessionStorage(payload[index], qaWidgetForm);
         logQARecord(qaWidgetForm);
         resetQAProgress(qaWidget);
       });
@@ -148,6 +153,7 @@ export default function initQAGuide(el, utils) {
   const index = getQAIndex();
 
   if (!index && index !== 0) {
+    populateSessionStorage(payload);
     const testPage = payload[0].link;
     if (!testPage) {
       el.textContent = 'Missing QA url(s)';
