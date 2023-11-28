@@ -1635,6 +1635,8 @@ async function decorateTesting() {
     if (experiment) {
       const config = await getExperimentConfig(experiment);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
+        // rush launch for alloy configuration
+        await loadScript('/express/scripts/instrument.js', 'module');
         const { DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences } = await import('./experiment.js');
         const experimentOptions = {
           ...DEFAULT_EXPERIMENT_OPTIONS,
