@@ -105,7 +105,7 @@ async function fetchSearchUrl({
     'Oldest to Newest': '&orderBy=availabilityDate',
   }[sort] || sort || '';
   const qParam = q && q !== '{{q}}' ? `&q=${q}` : '';
-  const url = encodeURI(
+  let url = encodeURI(
     `${base}?${collectionIdParam}${queryParam}${qParam}${limitParam}${startParam}${sortParam}${filterStr}`,
   );
 
@@ -114,13 +114,17 @@ async function fetchSearchUrl({
     return memoizedFetch(url);
   }
 
+  // temporarily adding extra dummy queryParams to avoid cache collision
   const headers = {};
   const prefLang = getConfig().locales[langs[0] === 'en' ? '' : langs[0]].ietf;
   const [prefRegion] = extractRegions(filters.locales);
   headers['x-express-ims-region-code'] = prefRegion; // Region Boosting
+  url += `&regionHeader=${prefRegion}`; // TODO: remove once CDN includes headers when calculating cache key
   if (supportedLanguages.includes(prefLang)) {
     headers['x-express-pref-lang'] = prefLang; // Language Boosting
+    url += `&prefLangHeader=${prefLang}`; // TODO: remove once CDN includes headers when calculating cache key
   }
+
   const res = await memoizedFetch(url, { headers });
   if (!res) return res;
   if (langs.length > 1 && supportedLanguages.includes(prefLang)) {
