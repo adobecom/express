@@ -81,7 +81,6 @@ async function loadAlloy() {
   });
   // listen on event from instrument.js to know when alloy is loaded from launch
   document.addEventListener('alloyReady', () => {
-    window.alloyLoaded = true;
     // resolve the window.alloyLoading promise
     alloyLoadingResolver();
   });
