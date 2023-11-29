@@ -116,11 +116,11 @@ async function fetchSearchUrl({
 
   // temporarily adding extra dummy queryParams to avoid cache collision
   const headers = {};
-  const prefLang = getConfig().locales[langs[0] === 'en' ? '' : langs[0]].ietf;
+  const prefLang = getConfig().locales?.[langs[0] === 'en' ? '' : langs[0]]?.ietf;
   const [prefRegion] = extractRegions(filters.locales);
   headers['x-express-ims-region-code'] = prefRegion; // Region Boosting
   url += `&regionHeader=${prefRegion}`; // TODO: remove once CDN includes headers when calculating cache key
-  if (supportedLanguages.includes(prefLang)) {
+  if (prefLang && supportedLanguages.includes(prefLang)) {
     headers['x-express-pref-lang'] = prefLang; // Language Boosting
     url += `&prefLangHeader=${prefLang}`; // TODO: remove once CDN includes headers when calculating cache key
   }
