@@ -1,4 +1,4 @@
-import { createTag, loadCSS, loadScript } from './utils.js';
+import { createTag, loadStyle, loadScript } from './utils.js';
 import { getAvailableVimeoSubLang } from '../blocks/shared/video.js';
 
 export function getDefaultEmbed(url) {
@@ -15,7 +15,7 @@ export function embedYoutube(url) {
   const id = searchParams.get('v') || url.pathname.split('/').pop();
   searchParams.delete('v');
   loadScript('/express/scripts/libs/lite-yt-embed/lite-yt-embed.js', 'module');
-  loadCSS('/express/scripts/libs/lite-yt-embed/lite-yt-embed.css');
+  loadStyle('/express/scripts/libs/lite-yt-embed/lite-yt-embed.css');
 
   return createTag('lite-youtube', {
     videoid: id,
@@ -30,7 +30,7 @@ export function embedVimeo(url, thumbnail) {
   const language = getAvailableVimeoSubLang();
   if (url.hostname !== 'player.vimeo.com') {
     loadScript('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.js', 'module');
-    loadCSS('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.css');
+    loadStyle('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.css');
     const video = url.pathname.split('/')[1];
     const embed = createTag('lite-vimeo', {
       videoid: video,
