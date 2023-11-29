@@ -3,11 +3,9 @@
 import {
   loadScript,
   getAssetDetails,
-  getLocale,
-  getLanguage,
   getMetadata,
   checkTesting,
-  fetchPlaceholders,
+  fetchPlaceholders, getConfig,
 } from './utils.js';
 
 import BlockMediator from './block-mediator.min.js';
@@ -206,12 +204,12 @@ const martechLoadedCB = () => {
   // gathering the data
   //------------------------------------------------------------------------------------
 
-  const locale = getLocale(w.location);
+  const locale = getConfig().locale.prefix;
   const pathSegments = pathname.substr(1).split('/');
-  if (locale !== 'us') pathSegments.shift();
+  if (locale !== '') pathSegments.shift();
   const pageName = `adobe.com:${pathSegments.join(':')}`;
 
-  const language = getLanguage(getLocale(window.location));
+  const language = document.documentElement.getAttribute('lang');
 
   let category = getMetadata('category');
   if (!category && (pathname.includes('/create/')
@@ -1056,6 +1054,9 @@ const martechLoadedCB = () => {
     };
 
     await _satellite.alloyConfigurePromise;
+    // trigger alloyReady event so that experimentation will proceed
+    window.alloyLoaded = true;
+    document.dispatchEvent(new Event('alloyReady'));
     const data = await alloy('getIdentity');
     getSegments(data && data.identity ? data.identity.ECID : null);
   }

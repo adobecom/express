@@ -1,8 +1,4 @@
-import {
-  createTag,
-  loadCSS,
-  // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
+import { createTag, loadStyle } from '../../scripts/utils.js';
 
 export function showFader(fader) {
   if (!fader) return;
@@ -66,9 +62,7 @@ function correctCenterAlignment(plat) {
 }
 
 export default async function buildCarousel(selector, parent, options = {}) {
-  // Load CSS
-  loadCSS('/express/blocks/shared/carousel.css');
-
+  loadStyle('/express/blocks/shared/carousel.css');
   // Build the carousel HTML
   const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
   carouselContent.forEach((el) => el.classList.add('carousel-element'));
