@@ -41,18 +41,19 @@ main .icon-list .icon-list-description > p:first-child {
   line-height: unset;
 }
 
-main .icon-list h3, main .icon-list h4 {
+main .icon-list h3,
+main .icon-list h4 {
   margin-top: 0;
   text-align: left;
 }
 
-@media (min-width:600px) {
+@media (min-width: 600px) {
   main .icon-list {
     margin-top: 56px;
   }
 }
 
-@media (min-width:900px) {
+@media (min-width: 900px) {
   main .icon-list {
     padding-bottom: 0;
   }
@@ -108,7 +109,8 @@ main .icon-list .icon-list-heading .icon-list-description {
   align-self: center;
 }
 
-main .icon-list .icon-list-heading .icon-list-image img, main .icon-list .icon-list-heading .icon-list-image svg {
+main .icon-list .icon-list-heading .icon-list-image img,
+main .icon-list .icon-list-heading .icon-list-image svg {
   fill: currentColor;
   width: 100px;
   height: 100px;
@@ -163,8 +165,7 @@ main .icon-list-center-container ~ .columns-highlight-container {
   margin-top: 120px;
 }
 
-
-@media (min-width:900px) {
+@media (min-width: 900px) {
   main .icon-list.two-column {
     flex-wrap: nowrap;
   }
@@ -176,11 +177,19 @@ main .icon-list-center-container ~ .columns-highlight-container {
   main .section.icon-list-two-column-container > div {
     max-width: 1122px;
   }
-}
 
-@media (min-width:1200px) {
-  main .section.icon-list-two-column-container > div {
-    max-width: 1200px;
+  main .icon-list.fullwidth {
+    justify-content: space-between;
   }
 }
 
+@media (min-width: 1200px) {
+  main .section.icon-list-two-column-container > div {
+    max-width: 1200px;
+  }
+
+  main .icon-list.fullwidth > div {
+    width: 480px;
+    margin: 16px 0 32px;
+  }
+}
