@@ -1650,8 +1650,9 @@ async function decorateTesting() {
           }
         });
         // rush launch for alloy configuration
-        await loadScript('/express/scripts/instrument.js', 'module');
-        const { DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences } = await import('./experiment.js');
+        const [{ DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences }] = await Promise.all(
+          [import('./experiment.js'), import('./block-mediator.min.js'), loadScript('/express/scripts/instrument.js', 'module')],
+        );
         const experimentOptions = {
           ...DEFAULT_EXPERIMENT_OPTIONS,
           ...{ audiences: AUDIENCES },
