@@ -39,6 +39,7 @@
 
   /* header */
   --header-height: 65px;
+  --breadcrumbs-height: 43px;
   --brand-header-height: 79px;
 
   /* body */
@@ -119,8 +120,14 @@ body > header {
 }
 
 .feds-topnav-spacing,
-body > header:not(.feds-header-wrapper){
+body > header{
   height: var(--header-height);
+}
+@media (min-width:900px) {
+  body.banner-spacing > .feds-topnav-spacing,
+  body.banner-spacing > header{
+    height: calc(var(--header-height) + var(--banner-height));
+  }
 }
 
 body>footer[data-status='loading']{

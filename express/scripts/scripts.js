@@ -7,7 +7,27 @@ import {
   registerPerformanceLogger,
   setConfig,
   loadStyle,
+  getMetadata,
 } from './utils.js';
+
+function hasBreadcrumbs() {
+  // breadcrumbs on/off
+  const breadcrumbsMetadata = getMetadata('breadcrumbs');
+  if (breadcrumbsMetadata !== 'on') return false;
+
+  // page short-title exists
+  const pageName = getMetadata('short-title');
+  if (pageName === '') return false;
+
+  // crumbs too shallow
+  const pathSegments = window.location.pathname.split('/').filter((e) => e !== '');
+  if (pathSegments.length <= pathSegments.indexOf('express') + 1) return false;
+
+  // non english locale (temporary)
+  if (pathSegments.indexOf('express') > 0) return false;
+
+  return true;
+}
 
 const locales = {
   '': { ietf: 'en-US', tk: 'jdq5hay.css' },
@@ -86,6 +106,7 @@ const showNotifications = () => {
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
+  if (hasBreadcrumbs()) document.querySelector('body').classList.add('breadcrumbs-spacing');
   showNotifications();
   await loadArea();
 }());
