@@ -135,7 +135,7 @@ async function autoUpdatePage(main) {
         url = new URL(a.href);
       }
     } catch (e) {
-      // invalid url
+      window.lana?.log(`Error while attempting to replace link ${a.href}: ${e}`);
     }
   });
 }
