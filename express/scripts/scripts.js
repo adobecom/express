@@ -4,11 +4,13 @@ import {
   removeIrrelevantSections,
   loadArea,
   stamp,
-  registerPerformanceLogger, setConfig, loadCSS,
+  registerPerformanceLogger,
+  setConfig,
+  loadStyle,
 } from './utils.js';
 
 const locales = {
-  '': { ietf: 'en-US', tk: 'hah7vzn.css' },
+  '': { ietf: 'en-US', tk: 'jdq5hay.css' },
   br: { ietf: 'pt-BR', tk: 'inq1xob.css' },
   cn: { ietf: 'zh-Hans-CN', tk: 'puu3xkp' },
   de: { ietf: 'de-DE', tk: 'vin7zsi.css' },
@@ -17,7 +19,7 @@ const locales = {
   fi: { ietf: 'fi-FI', tk: 'aaz7dvd.css' },
   fr: { ietf: 'fr-FR', tk: 'vrk5vyv.css' },
   gb: { ietf: 'en-GB', tk: 'pps7abe.css' },
-  in: { ietf: 'en-GB', tk: 'pps7abe.css' },
+  in: { ietf: 'en-IN', tk: 'pps7abe.css' },
   it: { ietf: 'it-IT', tk: 'bbf5pok.css' },
   jp: { ietf: 'ja-JP', tk: 'dvg6awq' },
   kr: { ietf: 'ko-KR', tk: 'qjs5sfm' },
@@ -70,7 +72,7 @@ const showNotifications = () => {
   const notification = url.searchParams.get('notification');
   if (notification) {
     const handler = () => {
-      loadCSS('/express/features/notification/notification.css', () => {
+      loadStyle('/express/features/notification/notification.css', () => {
         import('../features/notification/notification.js').then((mod) => {
           mod.default(notification);
           window.removeEventListener('milo:LCP:loaded', handler);

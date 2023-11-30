@@ -4,9 +4,9 @@ import {
   sampleRUM,
   getCookie,
   getMetadata,
-  loadCSS,
   getConfig,
   createTag,
+  loadStyle,
 } from './utils.js';
 
 const isHomepage = window.location.pathname.endsWith('/express/');
@@ -71,7 +71,7 @@ async function loadFEDS() {
       path: '/express/fragments/regions',
       id: 'langnav',
     };
-    loadCSS('/express/blocks/modal/modal.css');
+    loadStyle('/express/blocks/modal/modal.css');
     return getModal(details);
   }
 

@@ -1,5 +1,7 @@
+// eslint-disable-next-line no-unused-vars
 import { fetchPlaceholders, createTag } from '../../scripts/utils.js';
 
+// eslint-disable-next-line no-unused-vars
 function showToast(text) {
   const img = createTag('img', { src: '/express/icons/close-white.svg' });
   const span = createTag('span', {}, text);
@@ -18,10 +20,11 @@ function showToast(text) {
 
 export default async function loadNotifications(notification) {
   if (notification === 'pageDidNotExist') {
-    fetchPlaceholders().then((placeholders) => {
-      const text = placeholders['page-did-not-exist'] ?? 'This page did not exist for your locale.';
-      showToast(text);
-    });
+    // fetchPlaceholders().then((placeholders) => {
+    // eslint-disable-next-line max-len
+    // const text = placeholders['page-did-not-exist'] ?? 'This page did not exist for your locale.';
+    // showToast(text);
+    // });
   }
   const currentUrl = new URL(window.location.href);
   currentUrl.searchParams.delete('notification');

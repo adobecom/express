@@ -3,10 +3,6 @@ const AUTO_BLOCKS = [
   { fragment: '/express/fragments/' },
 ];
 
-const TK_IDS = {
-  jp: 'dvg6awq',
-};
-
 const DO_NOT_INLINE = [
   'accordion',
   'columns',
@@ -915,7 +911,7 @@ export function getHelixEnv() {
     stage: {
       commerce: 'commerce-stg.adobe.com',
       adminconsole: 'stage.adminconsole.adobe.com',
-      spark: 'express-stage.adobeprojectm.com',
+      spark: 'stage.projectx.corp.adobe.com',
     },
     prod: {
       commerce: 'commerce.adobe.com',
@@ -1014,24 +1010,32 @@ function decorateHeaderAndFooter() {
   } else footer.remove();
 }
 
-/**
- * Loads a CSS file
- * @param {string} href The path to the CSS file
- * @param {function} callback a function to run upon successful style loading
- */
-export function loadCSS(href, callback = null) {
-  if (!document.querySelector(`head > link[href="${href}"]`)) {
-    const link = document.createElement('link');
-    link.setAttribute('rel', 'stylesheet');
+export function loadLink(href, {
+  as,
+  callback,
+  crossorigin,
+  rel,
+} = {}) {
+  let link = document.head.querySelector(`link[href="${href}"]`);
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', rel);
+    if (as) link.setAttribute('as', as);
+    if (crossorigin) link.setAttribute('crossorigin', crossorigin);
     link.setAttribute('href', href);
-    if (typeof callback === 'function') {
+    if (callback) {
       link.onload = (e) => callback(e.type);
       link.onerror = (e) => callback(e.type);
     }
     document.head.appendChild(link);
-  } else if (typeof callback === 'function') {
+  } else if (callback) {
     callback('noop');
   }
+  return link;
+}
+
+export function loadStyle(href, callback) {
+  return loadLink(href, { rel: 'stylesheet', callback });
 }
 
 function resolveFragments() {
@@ -1136,7 +1140,7 @@ export function buildBlock(blockName, content) {
 
 async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
   const cssLoaded = new Promise((resolve) => {
-    loadCSS(cssPath, resolve);
+    loadStyle(cssPath, resolve);
   });
   const scriptLoaded = new Promise((resolve) => {
     (async () => {
@@ -1227,7 +1231,7 @@ export async function setTemplateTheme() {
   const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
   document.body.classList.add(name);
   await new Promise((resolve) => {
-    loadCSS(`/express/templates/${name}/${name}.css`, resolve);
+    loadStyle(`/express/templates/${name}/${name}.css`, resolve);
   });
 }
 
@@ -1633,10 +1637,16 @@ async function decorateTesting() {
     const [forcedExperiment, forcedVariant] = usp.get('experiment') ? usp.get('experiment').split('/') : [];
 
     if (experiment) {
-      console.log('experiment', experiment);
       const config = await getExperimentConfig(experiment);
-      console.log('config -->', config);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
+        window.addEventListener('alloy_sendEvent', (e) => {
+          if (e.detail.type === 'pageView') {
+            console.log(e.detail);
+            console.log(e.detail.result);
+          }
+        });
+        // rush launch for alloy configuration
+        await loadScript('/express/scripts/instrument.js', 'module');
         const { DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences } = await import('./experiment.js');
         const experimentOptions = {
           ...DEFAULT_EXPERIMENT_OPTIONS,
@@ -1646,7 +1656,6 @@ async function decorateTesting() {
         config.run = forcedExperiment
           || !config.resolvedAudiences
           || config.resolvedAudiences.length;
-        console.log('run', config.run, config.audience);
 
         window.hlx = window.hlx || {};
         if (config.run) {
@@ -1659,7 +1668,6 @@ async function decorateTesting() {
             config.selectedVariant = decision.items[0].id;
           }
           sampleRUM('experiment', { source: config.id, target: config.selectedVariant });
-          console.log(`running experiment (${window.hlx.experiment.id}) -> ${window.hlx.experiment.selectedVariant}`);
           // populate ttMETA with hlx experimentation details
           window.ttMETA = window.ttMETA || [];
           const experimentDetails = {
@@ -1681,13 +1689,13 @@ async function decorateTesting() {
           if (config.selectedVariant !== 'control') {
             const currentPath = window.location.pathname;
             const pageIndex = config.variants.control.pages.indexOf(currentPath);
-            console.log(pageIndex, config.variants.control.pages, currentPath);
             if (pageIndex >= 0) {
               const page = config.variants[config.selectedVariant].pages[pageIndex];
               if (page) {
                 const experimentPath = new URL(page, window.location.href).pathname.split('.')[0];
                 if (experimentPath && experimentPath !== currentPath) {
                   await replaceInner(experimentPath, document.querySelector('main'));
+                  removeIrrelevantSections(document.querySelector('main'));
                 }
               }
             }
@@ -2083,8 +2091,6 @@ function decorateSocialIcons($main) {
 function displayOldLinkWarning() {
   if (window.location.hostname.includes('localhost') || window.location.hostname.includes('.hlx.page')) {
     document.querySelectorAll('main a[href^="https://spark.adobe.com/"]').forEach(($a) => {
-      const url = new URL($a.href);
-      console.log(`old link: ${url}`);
       $a.style.border = '10px solid red';
     });
   }
@@ -2395,7 +2401,7 @@ function removeMetadata() {
  */
 async function loadLazy(main) {
   addPromotion();
-  loadCSS('/express/styles/lazy-styles.css');
+  loadStyle('/express/styles/lazy-styles.css');
   scrollToHash();
   resolveFragments();
   removeMetadata();
@@ -2409,17 +2415,14 @@ async function loadLazy(main) {
   ]);
 }
 
-async function loadPostLCP() {
+async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   window.dispatchEvent(new Event('milo:LCP:loaded'));
   if (window.hlx.martech) loadMartech();
   loadGnav();
-  const tkID = TK_IDS[getConfig().locale.prefix.replace('/', '')];
-  if (tkID) {
-    const { default: loadFonts } = await import('./fonts.js');
-    loadFonts(tkID, loadCSS);
-  }
+  const { default: loadFonts } = await import('./fonts.js');
+  loadFonts(config.locale, loadStyle);
 }
 
 /**
@@ -2442,7 +2445,7 @@ export async function loadSections(sections, isDoc) {
     // eslint-disable-next-line no-await-in-loop
     await Promise.all(loaded);
     // Post LCP operations.
-    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP();
+    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP(getConfig());
 
     // Show the section when all blocks inside are done.
     delete section.el.dataset.status;
@@ -2459,7 +2462,7 @@ function initSidekick() {
       createTag,
       loadBlock,
       loadScript,
-      loadCSS,
+      loadStyle,
     });
   };
 
