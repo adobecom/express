@@ -52,7 +52,7 @@ main .icon-list h3, main .icon-list h4 {
   }
 }
 
-@media (min-width: 900px) {
+@media (min-width:900px) {
   main .icon-list {
     padding-bottom: 0;
   }
@@ -108,8 +108,7 @@ main .icon-list .icon-list-heading .icon-list-description {
   align-self: center;
 }
 
-main .icon-list .icon-list-heading .icon-list-image img,
-main .icon-list .icon-list-heading .icon-list-image svg {
+main .icon-list .icon-list-heading .icon-list-image img, main .icon-list .icon-list-heading .icon-list-image svg {
   fill: currentColor;
   width: 100px;
   height: 100px;
@@ -141,7 +140,8 @@ main .icon-list .icon-list-regular .icon-list-description {
   align-self: start;
 }
 
-main .icon-list.highlight .icon-list-regular .icon-list-image img, main .icon-list.highlight .icon-list-regular .icon-list-image svg {
+main .icon-list.highlight .icon-list-regular .icon-list-image img, 
+main .icon-list.highlight .icon-list-regular .icon-list-image svg {
   fill: currentColor;
   width: 73px;
   height: 72px;
@@ -179,10 +179,6 @@ main .icon-list-center-container ~ .columns-highlight-container {
   main .icon-list.fullwidth {
     justify-content: space-between;
   }
-
-  main .icon-list.fullwidth > div {
-    margin: 16px 4px 32px;
-  }
 }
 
 @media (min-width:1200px) {
@@ -191,7 +187,7 @@ main .icon-list-center-container ~ .columns-highlight-container {
   }
 
   main .icon-list.fullwidth > div {
-    margin: 16px 0 32px;
+    margin: 56px 0 auto;
   }
 
   main .icon-list.fullwidth {
