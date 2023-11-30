@@ -140,7 +140,7 @@ main .icon-list .icon-list-regular .icon-list-description {
   align-self: start;
 }
 
-main .icon-list.highlight .icon-list-regular .icon-list-image img, 
+main .icon-list.highlight .icon-list-regular .icon-list-image img,
 main .icon-list.highlight .icon-list-regular .icon-list-image svg {
   fill: currentColor;
   width: 73px;
