@@ -1639,10 +1639,14 @@ async function decorateTesting() {
     if (experiment) {
       const config = await getExperimentConfig(experiment);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
+        let alloyLoadingResolver;
+        window.alloyLoader = new Promise((resolve) => {
+          alloyLoadingResolver = resolve;
+        });
         window.addEventListener('alloy_sendEvent', (e) => {
+          // fired by launch loaded by martech-main loaded by instrument
           if (e.detail.type === 'pageView') {
-            console.log(e.detail);
-            console.log(e.detail.result);
+            alloyLoadingResolver(e.detail.result);
           }
         });
         // rush launch for alloy configuration

@@ -38,64 +38,6 @@ function getSegmentsFromAlloyResponse(response) {
   return segments;
 }
 
-async function getSegmentsFromAlloy() {
-  if (!window.alloy) {
-    return [];
-  }
-  if (window.rtcdpSegments) {
-    return window.rtcdpSegments;
-  }
-  await window.alloyLoader;
-  let result;
-  // avoid multiple calls to alloy for render decisions from different audiences
-  if (window.renderDecisionsResult) {
-    result = await window.renderDecisionsResult;
-  } else {
-    // eslint-disable-next-line no-undef
-    window.renderDecisionsResult = alloy('sendEvent', {
-      renderDecisions: true,
-    }).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.error('Error sending event to alloy:', error);
-      return [];
-    });
-    result = await window.renderDecisionsResult;
-  }
-  window.rtcdpSegments = getSegmentsFromAlloyResponse(result);
-  return window.rtcdpSegments;
-}
-
-async function loadAlloy() {
-  if (window.alloyLoaded) {
-    return;
-  }
-  if (window.alloyLoader) {
-    await window.alloyLoader;
-    return;
-  }
-  // create a promise that will be resolved when alloy is loaded
-  // this is used to avoid multiple alloy loads
-  let alloyLoadingResolver;
-  window.alloyLoader = new Promise((resolve) => {
-    alloyLoadingResolver = resolve;
-  });
-  // listen on event from instrument.js to know when alloy is loaded from launch
-  document.addEventListener('alloyReady', () => {
-    // resolve the window.alloyLoading promise
-    alloyLoadingResolver();
-  });
-  // show the control in case if there're any errors in launch,
-  // which will prevent alloy from loading
-  setTimeout(() => {
-    if (!window.alloyLoaded) {
-      // eslint-disable-next-line no-console
-      console.error('Alloy failed to load');
-      alloyLoadingResolver();
-    }
-  }, 5000);
-  await window.alloyLoader;
-}
-
 // Define the custom audiences mapping for experience decisioning
 export const AUDIENCES = {
   mobile: () => window.innerWidth < 600,
@@ -103,8 +45,8 @@ export const AUDIENCES = {
   'new-visitor': () => !localStorage.getItem('franklin-visitor-returning'),
   'returning-visitor': () => !!localStorage.getItem('franklin-visitor-returning'),
   ccentitled: async () => {
-    await loadAlloy();
-    const segments = await getSegmentsFromAlloy();
+    const res = await window.alloyLoader;
+    const segments = getSegmentsFromAlloyResponse(res);
     return segments.includes(getCCEntitledUsersSegmentId());
   },
 };
