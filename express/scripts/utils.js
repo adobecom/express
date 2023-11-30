@@ -1654,7 +1654,7 @@ async function decorateTesting() {
         });
         // rush launch for alloy configuration
         const [{ DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences }] = await Promise.all(
-          [import('./experiment.js'), import('./block-mediator.min.js'), loadScript('/express/scripts/instrument.js', 'module')],
+          [import('./experiment.js'), loadScript('/express/scripts/instrument.js', 'module')],
         );
         setTimeout(() => {
           if (!window.alloyLoaded) {

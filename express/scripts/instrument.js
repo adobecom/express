@@ -8,8 +8,6 @@ import {
   fetchPlaceholders, getConfig,
 } from './utils.js';
 
-import BlockMediator from './block-mediator.min.js';
-
 function getPlacement(btn) {
   const parentBlock = btn.closest('.block');
   let placement = 'outside-blocks';
@@ -998,64 +996,64 @@ const martechLoadedCB = () => {
     [24793488, 'enableReverseVideoRating'],
   ];
 
-  BlockMediator.set('audiences', []);
-  BlockMediator.set('segments', []);
-
   async function getAudiences() {
-    const getSegments = (ecid) => {
-      if (ecid) {
-        w.setAudienceManagerSegments = (json) => {
-          if (json && json.segments && json.segments.includes(RETURNING_VISITOR_SEGMENT_ID)) {
-            const audiences = BlockMediator.get('audiences');
-            const segments = BlockMediator.get('segments');
-            audiences.push(ENABLE_PRICING_MODAL_AUDIENCE);
-            segments.push(RETURNING_VISITOR_SEGMENT_ID);
+    const getSegments = async (ecid) => {
+      const { default: BlockMediator } = await import('./block-mediator.min.js');
 
-            _satellite.track('event', {
-              xdm: {},
-              data: {
-                eventType: 'web.webinteraction.linkClicks',
-                web: {
-                  webInteraction: {
-                    name: 'pricingModalUserInSegment',
-                    linkClicks: {
-                      value: 1,
-                    },
-                    type: 'other',
+      BlockMediator.set('audiences', []);
+      BlockMediator.set('segments', []);
+      if (!ecid) return;
+      w.setAudienceManagerSegments = (json) => {
+        if (json && json.segments && json.segments.includes(RETURNING_VISITOR_SEGMENT_ID)) {
+          const audiences = BlockMediator.get('audiences');
+          const segments = BlockMediator.get('segments');
+          audiences.push(ENABLE_PRICING_MODAL_AUDIENCE);
+          segments.push(RETURNING_VISITOR_SEGMENT_ID);
+
+          _satellite.track('event', {
+            xdm: {},
+            data: {
+              eventType: 'web.webinteraction.linkClicks',
+              web: {
+                webInteraction: {
+                  name: 'pricingModalUserInSegment',
+                  linkClicks: {
+                    value: 1,
                   },
+                  type: 'other',
                 },
-                _adobe_corpnew: {
-                  digitalData: {
-                    primaryEvent: {
-                      eventInfo: {
-                        eventName: 'pricingModalUserInSegment',
-                      },
+              },
+              _adobe_corpnew: {
+                digitalData: {
+                  primaryEvent: {
+                    eventInfo: {
+                      eventName: 'pricingModalUserInSegment',
                     },
                   },
                 },
               },
-            });
-          }
-
-          QUICK_ACTION_SEGMENTS.forEach((QUICK_ACTION_SEGMENT) => {
-            if (json && json.segments && json.segments.includes(QUICK_ACTION_SEGMENT[0])) {
-              const audiences = BlockMediator.get('audiences');
-              const segments = BlockMediator.get('segments');
-              audiences.push(QUICK_ACTION_SEGMENT[1]);
-              segments.push(QUICK_ACTION_SEGMENT[0]);
-            }
+            },
           });
+        }
 
-          document.dispatchEvent(new Event('context_loaded'));
-        };
-        // TODO: What the heck is this?  This needs to be behind one trust and cmp
-        loadScript(`https://adobe.demdex.net/event?d_dst=1&d_rtbd=json&d_cb=setAudienceManagerSegments&d_cts=2&d_mid=${ecid}`);
-      }
+        QUICK_ACTION_SEGMENTS.forEach((QUICK_ACTION_SEGMENT) => {
+          if (json && json.segments && json.segments.includes(QUICK_ACTION_SEGMENT[0])) {
+            const audiences = BlockMediator.get('audiences');
+            const segments = BlockMediator.get('segments');
+            audiences.push(QUICK_ACTION_SEGMENT[1]);
+            segments.push(QUICK_ACTION_SEGMENT[0]);
+          }
+        });
+
+        document.dispatchEvent(new Event('context_loaded'));
+      };
+      // TODO: What the heck is this?  This needs to be behind one trust and cmp
+      loadScript(`https://adobe.demdex.net/event?d_dst=1&d_rtbd=json&d_cb=setAudienceManagerSegments&d_cts=2&d_mid=${ecid}`);
     };
 
     await _satellite.alloyConfigurePromise;
     const data = await alloy('getIdentity');
-    getSegments(data && data.identity ? data.identity.ECID : null);
+    getSegments(data?.identity?.ECID || null);
   }
 
   __satelliteLoadedCallback(getAudiences);
