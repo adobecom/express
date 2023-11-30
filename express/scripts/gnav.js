@@ -4,10 +4,9 @@ import {
   sampleRUM,
   getCookie,
   getMetadata,
-  fetchPlaceholders,
   loadCSS,
   getConfig,
-// eslint-disable-next-line import/no-unresolved
+  createTag,
 } from './utils.js';
 
 const isHomepage = window.location.pathname.endsWith('/express/');
@@ -108,34 +107,34 @@ async function loadFEDS() {
     ? 'adobe-express/ax-gnav-x'
     : 'adobe-express/ax-gnav-x-row';
 
-  async function buildBreadCrumbArray() {
-    if (isHomepage || getMetadata('hide-breadcrumbs') === 'true') {
+  async function buildBreadcrumbs() {
+    const baseFrag = getMetadata('breadcrumbs-base');
+    if (isHomepage || getMetadata('breadcrumbs') !== 'on' || !baseFrag) {
       return null;
     }
 
-    const buildBreadCrumb = (path, name, parentPath = '') => (
-      { title: name, url: `${parentPath}/${path}` }
-    );
+    const baseRes = await fetch(`${baseFrag}.plain.html`);
+    if (!baseRes.ok) return null;
 
-    const placeholders = await fetchPlaceholders();
-    const pathSegments = window.location.pathname
-      .split('/')
-      .filter((e) => e !== '')
-      .filter((e) => e !== prefix);
-    const localePath = prefix === '' ? '' : `${prefix}/`;
-    const secondPathSegment = pathSegments[1].toLowerCase();
-    const shortTitle = getMetadata('short-title');
-    const secondBreadCrumbText = placeholders[`breadcrumbs-${secondPathSegment}`];
+    const base = createTag('div');
+    base.innerHTML = await baseRes.text();
+    const baseBreadcrumbs = base.querySelectorAll('.breadcrumbs ul > li > a');
 
-    if (pathSegments.length < 2 || !secondBreadCrumbText) return null;
+    if (baseBreadcrumbs.length < 2) return null;
 
-    const secondBreadCrumb = buildBreadCrumb(secondPathSegment, secondBreadCrumbText, `${localePath}/express`);
-    const breadCrumbList = [secondBreadCrumb];
+    const breadCrumbList = Array.from(baseBreadcrumbs).map((a) => (
+      {
+        title: a.textContent.trim(),
+        url: a.href,
+      }
+    ));
 
-    if (pathSegments.length >= 3 && shortTitle) {
-      const thirdBreadCrumb = buildBreadCrumb(shortTitle, shortTitle, secondBreadCrumb.url);
-      breadCrumbList.push(thirdBreadCrumb);
+    const lastBreadcrumb = getMetadata('short-title') || getMetadata('breadcrumbs-page-title');
+    const lastBaseUrl = new URL(baseBreadcrumbs[baseBreadcrumbs.length - 1].href);
+    if (lastBreadcrumb && window.location.pathname !== lastBaseUrl.pathname) {
+      breadCrumbList.push({ title: lastBreadcrumb, url: window.location.href });
     }
+
     return breadCrumbList;
   }
 
@@ -173,8 +172,8 @@ async function loadFEDS() {
       }
       : {},
     breadcrumbs: {
-      showLogo: true,
-      links: await buildBreadCrumbArray(),
+      showLogo: false,
+      links: await buildBreadcrumbs(),
     },
   };
 
