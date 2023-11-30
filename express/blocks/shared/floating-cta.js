@@ -6,7 +6,7 @@ import {
   getLottie,
   getMobileOperatingSystem,
   lazyLoadLottiePlayer,
-  loadCSS,
+  loadStyle,
 } from '../../scripts/utils.js';
 
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -135,7 +135,7 @@ function buildLottieArrow(wrapper, floatingBtn, data) {
 export async function createFloatingButton(block, audience, data) {
   const aTag = makeCTAFromSheet(block, data);
   const main = document.querySelector('main');
-  loadCSS('/express/blocks/shared/floating-cta.css');
+  loadStyle('/express/blocks/shared/floating-cta.css');
 
   // Floating button html
   const floatButtonLink = aTag.cloneNode(true);

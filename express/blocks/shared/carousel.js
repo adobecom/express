@@ -1,7 +1,5 @@
-import {
-  createTag,
-  loadCSS,
-} from '../../scripts/utils.js';
+import { createTag, loadStyle } from '../../scripts/utils.js';
+
 
 function correctCenterAlignment(plat) {
   if (plat.parentElement.offsetWidth <= plat.offsetWidth) return;
@@ -190,12 +188,12 @@ export default async function buildCarousel(selector, parent, options = {}) {
   parent.style.visibility = 'hidden';
   return new Promise((resolve) => {
     if (window.isTestEnv) {
-      loadCSS('/express/blocks/shared/carousel.css');
+      loadStyle('/express/blocks/shared/carousel.css');
       onCarouselCSSLoad(selector, parent, options);
       resolve();
     }
 
-    loadCSS('/express/blocks/shared/carousel.css', () => {
+    loadStyle('/express/blocks/shared/carousel.css', () => {
       onCarouselCSSLoad(selector, parent, options);
       resolve();
     });
