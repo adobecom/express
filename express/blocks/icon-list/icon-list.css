@@ -181,13 +181,17 @@ main .icon-list-center-container ~ .columns-highlight-container {
   }
 
   main .icon-list.fullwidth > div {
-    margin: 16px 0 32px;
+    margin: 16px 4px 32px;
   }
 }
 
 @media (min-width:1200px) {
   main .section.icon-list-two-column-container > div {
     max-width: 1200px;
+  }
+
+  main .icon-list.fullwidth > div {
+    margin: 16px 0 32px;
   }
 
   main .icon-list.fullwidth {
