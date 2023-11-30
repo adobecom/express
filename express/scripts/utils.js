@@ -1646,6 +1646,9 @@ async function decorateTesting() {
         window.addEventListener('alloy_sendEvent', (e) => {
           // fired by launch loaded by martech-main loaded by instrument
           if (e.detail.type === 'pageView') {
+            // eslint-disable-next-line no-console
+            console.log({ alloyResult: e.detail.result });
+            window.alloyLoaded = true;
             alloyLoadingResolver(e.detail.result);
           }
         });
@@ -1653,6 +1656,13 @@ async function decorateTesting() {
         const [{ DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences }] = await Promise.all(
           [import('./experiment.js'), import('./block-mediator.min.js'), loadScript('/express/scripts/instrument.js', 'module')],
         );
+        setTimeout(() => {
+          if (!window.alloyLoaded) {
+            // eslint-disable-next-line no-console
+            console.error('Alloy failed to load');
+            alloyLoadingResolver();
+          }
+        }, 5000);
         const experimentOptions = {
           ...DEFAULT_EXPERIMENT_OPTIONS,
           ...{ audiences: AUDIENCES },
