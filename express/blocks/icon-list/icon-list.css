@@ -175,9 +175,13 @@ main .icon-list-center-container ~ .columns-highlight-container {
   main .section.icon-list-two-column-container > div {
     max-width: 1122px;
   }
-
+  
   main .icon-list.fullwidth {
     justify-content: space-between;
+  }
+
+  main .icon-list.fullwidth > div {
+    margin: 16px 0 32px;
   }
 }
 
@@ -193,7 +197,5 @@ main .icon-list-center-container ~ .columns-highlight-container {
   
   main .icon-list.fullwidth > div {
     width: 480px;
-    margin: 16px 0 32px;
   }
-
 }
