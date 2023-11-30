@@ -187,7 +187,7 @@ main .icon-list-center-container ~ .columns-highlight-container {
   }
 
   main .icon-list.fullwidth > div {
-    margin: 56px 0 auto;
+    margin: 56px auto 0;
   }
 
   main .icon-list.fullwidth {
