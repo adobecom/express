@@ -123,7 +123,7 @@ body > header {
 body > header{
   height: var(--header-height);
 }
-@media (min-width:900px) {
+@media (min-width: 900px) {
   body.banner-spacing > .feds-topnav-spacing,
   body.banner-spacing > header{
     height: calc(var(--header-height) + var(--banner-height));
@@ -507,7 +507,7 @@ main .section:last-of-type>.default-content-wrapper {
   padding-bottom: 40px;
 }
 
-@media (min-width:600px) {
+@media (min-width: 600px) {
 
   main h2 {
     font-size: var(--heading-font-size-l);
@@ -541,7 +541,7 @@ main .section:last-of-type>.default-content-wrapper {
   }
 }
 
-@media (min-width:900px) {
+@media (min-width: 900px) {
 
   main h5+p,
   main .section p.button-container {
@@ -553,7 +553,7 @@ main .section:last-of-type>.default-content-wrapper {
   }
 }
 
-@media(min-width:1200px) {
+@media(min-width: 1200px) {
   main h1,
   h2,
   h3,
@@ -682,7 +682,7 @@ main .section div .block p.legal-copy {
   line-height: 1.5;
 }
 
-@media (min-width:600px) {
+@media (min-width: 600px) {
   main .hero h5 {
     font-size: 22px;
     font-weight: 400;
@@ -700,7 +700,7 @@ main .section div .block p.legal-copy {
   }
 }
 
-@media (min-width:900px) {
+@media (min-width: 900px) {
   main .hero {
     padding-left: 50px;
     padding-right: 50px;
@@ -713,7 +713,7 @@ main .section div .block p.legal-copy {
   }
 }
 
-@media (min-width:1200px) {
+@media (min-width: 1200px) {
   main .hero h1 {
     font-size: var(--heading-font-size-xxl);
     margin: 0;
@@ -849,13 +849,13 @@ body[data-device="mobile"] main [data-audience="mobile"][data-section-status="lo
   display: block;
 }
 
-@media (min-width:900px) {
+@media (min-width: 900px) {
   main .section>div {
     max-width: 830px;
   }
 }
 
-@media (min-width:1200px) {
+@media (min-width: 1200px) {
   main .section>div {
     max-width: 1024px;
   }

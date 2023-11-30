@@ -106,7 +106,7 @@ const showNotifications = () => {
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
-  if (hasBreadcrumbs()) document.querySelector('body').classList.add('breadcrumbs-spacing');
+  if (hasBreadcrumbs()) document.body.classList.add('breadcrumbs-spacing');
   showNotifications();
   await loadArea();
 }());
