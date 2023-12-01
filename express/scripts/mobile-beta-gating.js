@@ -1,6 +1,24 @@
 import BlockMediator from './block-mediator.min.js';
 import { getMobileOperatingSystem } from './utils.js';
 
+function isSupportedAndroidDevice() {
+  // todo: need to determine the final source of this list
+  const eligibleAndroidDevices = [
+
+  ];
+
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+  const regex = /Android.+; ([^;]+)\) AppleWebKit\//;
+
+  const match = regex.exec(userAgent);
+  if (match && match.length > 1) {
+    return eligibleAndroidDevices.includes(match[1]);
+  }
+
+  return false;
+}
+
 function setSessionCookie(name, value, domain) {
   let cookie = '';
 
@@ -50,15 +68,14 @@ function runBenchmark() {
         cpuSpeedPass: e.data <= 400,
       };
 
-      // old android approach
-      // if (getMobileOperatingSystem() !== 'iOS') {
-      //   criterion.cpuCoreCountPass = (navigator.hardwareConcurrency
-      //     && navigator.hardwareConcurrency >= 4)
-      //   || false;
-      //   criterion.memoryCapacityPass = (navigator.deviceMemory
-      //     && navigator.deviceMemory >= 4)
-      //   || false;
-      // }
+      if (getMobileOperatingSystem() === 'android') {
+        criterion.cpuCoreCountPass = (navigator.hardwareConcurrency
+          && navigator.hardwareConcurrency >= 4)
+        || false;
+        criterion.memoryCapacityPass = (navigator.deviceMemory
+          && navigator.deviceMemory >= 4)
+        || false;
+      }
 
       if (getMobileOperatingSystem() === 'iOS') {
         criterion.iOSVersionPass = isIOS16AndUp();
@@ -82,6 +99,13 @@ export default async function checkMobileBetaEligibility() {
   if (deviceSupportCookie) {
     BlockMediator.set('mobileBetaEligibility', {
       deviceSupport: deviceSupportCookie,
+      data: {
+        reason: 'pre-checked',
+      },
+    });
+  } else if (isSupportedAndroidDevice()) {
+    BlockMediator.set('mobileBetaEligibility', {
+      deviceSupport: 'true',
       data: {
         reason: 'pre-checked',
       },
