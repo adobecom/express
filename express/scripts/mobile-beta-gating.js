@@ -71,7 +71,7 @@ function runBenchmark() {
     benchmarkWorker.postMessage(10000000);
     benchmarkWorker.onmessage = (e) => {
       const criterion = {
-        cpuSpeedPass: e.data <= 400,
+        cpuSpeedPass: e.data <= 600,
       };
 
       if (getMobileOperatingSystem() === 'android') {
