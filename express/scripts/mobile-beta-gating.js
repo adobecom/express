@@ -1,19 +1,40 @@
 import BlockMediator from './block-mediator.min.js';
 import { getMobileOperatingSystem } from './utils.js';
 
-function isSupportedAndroidDevice() {
-  // todo: need to determine the final source of this list
-  const eligibleAndroidDevices = [
-
-  ];
-
+function isIOS16AndUp() {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
-  const regex = /Android.+; ([^;]+)\) AppleWebKit\//;
+  if (/iPhone/i.test(userAgent)) {
+    const iOSVersionMatch = userAgent.match(/OS (\d+)_/);
+    if (iOSVersionMatch && iOSVersionMatch.length > 1) {
+      const iOSVersion = parseInt(iOSVersionMatch[1], 10);
 
-  const match = regex.exec(userAgent);
-  if (match && match.length > 1) {
-    return eligibleAndroidDevices.includes(match[1]);
+      return iOSVersion >= 16;
+    }
+  }
+
+  return false;
+}
+
+function isOfficiallySupportedDevice() {
+  if (getMobileOperatingSystem() === 'iOS') {
+    return isIOS16AndUp();
+  }
+
+  if (getMobileOperatingSystem() === 'android') {
+    // todo: need to determine the final source of this list
+    const eligibleAndroidDevices = [
+
+    ];
+
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+    const regex = /Android.+; ([^;]+)\) AppleWebKit\//;
+
+    const match = regex.exec(userAgent);
+    if (match && match.length > 1) {
+      return eligibleAndroidDevices.includes(match[1]);
+    }
   }
 
   return false;
@@ -42,21 +63,6 @@ function getCookie(name) {
     if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
   }
   return null;
-}
-
-function isIOS16AndUp() {
-  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-
-  if (/iPhone/i.test(userAgent)) {
-    const iOSVersionMatch = userAgent.match(/OS (\d+)_/);
-    if (iOSVersionMatch && iOSVersionMatch.length > 1) {
-      const iOSVersion = parseInt(iOSVersionMatch[1], 10);
-
-      return iOSVersion >= 16;
-    }
-  }
-
-  return false;
 }
 
 function runBenchmark() {
@@ -103,7 +109,7 @@ export default async function checkMobileBetaEligibility() {
         reason: 'pre-checked',
       },
     });
-  } else if (isSupportedAndroidDevice()) {
+  } else if (isOfficiallySupportedDevice()) {
     BlockMediator.set('mobileBetaEligibility', {
       deviceSupport: 'true',
       data: {
