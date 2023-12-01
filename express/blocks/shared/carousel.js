@@ -1,6 +1,5 @@
 import { createTag, loadStyle } from '../../scripts/utils.js';
 
-
 function correctCenterAlignment(plat) {
   if (plat.parentElement.offsetWidth <= plat.offsetWidth) return;
   plat.parentElement.style.maxWidth = `${plat.offsetWidth}px`;
