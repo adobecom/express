@@ -1,20 +1,24 @@
 import BlockMediator from './block-mediator.min.js';
 import { getMobileOperatingSystem } from './utils.js';
 
+function isIOS16AndUp() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+  if (/iPhone/i.test(userAgent)) {
+    const iOSVersionMatch = userAgent.match(/OS (\d+)_/);
+    if (iOSVersionMatch && iOSVersionMatch.length > 1) {
+      const iOSVersion = parseInt(iOSVersionMatch[1], 10);
+
+      return iOSVersion >= 16;
+    }
+  }
+
+  return false;
+}
+
 function isOfficiallySupportedDevice() {
   if (getMobileOperatingSystem() === 'iOS') {
-    const userAgent = navigator.userAgent || window.opera;
-
-    if (/iPhone/i.test(userAgent)) {
-      const iOSVersionMatch = userAgent.match(/OS (\d+)_/);
-      if (iOSVersionMatch && iOSVersionMatch.length > 1) {
-        const iOSVersion = parseInt(iOSVersionMatch[1], 10);
-
-        return iOSVersion >= 16;
-      }
-    }
-
-    return false;
+    return isIOS16AndUp();
   }
 
   if (getMobileOperatingSystem() === 'android') {
