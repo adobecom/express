@@ -1912,7 +1912,7 @@ async function buildAutoBlocks($main) {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
     if (!BlockMediator.get('floatingCtasLoaded')) {
       const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
-        if (e.newValue.result === 'passed') {
+        if (e.newValue.deviceSupport === 'true') {
           const buttonBlock = await initFloatingCTABuild(lastDiv);
           await decorateBlock(buttonBlock);
           await loadBlock(buttonBlock);
@@ -1920,7 +1920,7 @@ async function buildAutoBlocks($main) {
           unsubscribe();
         }
 
-        if (e.newValue.result === 'rejected') {
+        if (e.newValue.deviceSupport === 'false') {
           const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
           if (!fragment) return;
 

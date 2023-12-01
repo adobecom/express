@@ -1,4 +1,4 @@
-import { BlockMediator } from './block-mediator.min.js';
+import BlockMediator from './block-mediator.min.js';
 import { getMobileOperatingSystem } from './utils.js';
 
 function setSessionCookie(name, value, domain) {
