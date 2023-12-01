@@ -248,7 +248,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
       timeZone: 'UTC',
     });
 
-    const filteredTitle = title.replace('｜ Adobe Express', '').replace('|Adobe Express', '').replace('| Adobe Express', '').replace('｜Adobe Express', '');
+    const filteredTitle = title.replace(/(\s?)(｜|\|)(\s?Adobe\sExpress\s?)$/g, '');
     const imagePath = image.split('?')[0].split('_')[1];
     const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
     const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
