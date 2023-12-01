@@ -2458,10 +2458,11 @@ export async function loadArea(area = document) {
   }
 
   if (getMetadata('mobile-benchmark')) {
-    const [{ checkMobileBetaEligibility }] = await Promise.all(
+    const [gatingScript] = await Promise.all(
       [import('./mobile-beta-gating.js'), import('./block-mediator.min.js')],
     );
-    checkMobileBetaEligibility();
+
+    gatingScript.default();
   }
 
   window.hlx = window.hlx || {};
