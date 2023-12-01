@@ -7,7 +7,7 @@ function setSessionCookie(name, value, domain) {
   cookie = `${name}=${value};`;
 
   if (domain) {
-    cookie += ` domain=${domain};`;
+    cookie += `domain=${domain};`;
   }
 
   cookie += 'path=/';
