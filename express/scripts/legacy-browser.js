@@ -1,5 +1,4 @@
 /* eslint-disable */
-console.log(window.fetch);
 if (Math.random() < 0.1) {
   var hashCode = function hashCode(s) {
     return s.split('').reduce(function (a, b) {
