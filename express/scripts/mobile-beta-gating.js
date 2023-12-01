@@ -90,7 +90,7 @@ export default async function checkMobileBetaEligibility() {
     runBenchmark();
     const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
       if (['true', 'false'].includes(e.newValue.deviceSupport)) {
-        setSessionCookie('device-support', e.newValue.deviceSupport, '.adobe.com');
+        setSessionCookie('device-support', e.newValue.deviceSupport, 'adobe.com');
         unsubscribe();
       }
     });
