@@ -2446,52 +2446,6 @@ export function getMobileOperatingSystem() {
   return 'unknown';
 }
 
-async function checkMobileBetaEligibility(main) {
-  const { default: BlockMediator } = await import('./block-mediator.min.js');
-  if (window.Worker) {
-    const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
-    benchmarkWorker.postMessage(10000000);
-    benchmarkWorker.onmessage = (e) => {
-      const criterion = {
-        cpuSpeedPass: e.data <= 400,
-        cpuCoreCountPass: (navigator.hardwareConcurrency
-          && navigator.hardwareConcurrency >= 4)
-        || false,
-      };
-
-      if (getMobileOperatingSystem() !== 'iOS') {
-        criterion.memoryCapacityPass = (navigator.deviceMemory
-          && navigator.deviceMemory >= 4)
-        || false;
-      }
-
-      const deviceEligible = Object.values(criterion).every((criteria) => criteria);
-
-      BlockMediator.set('mobileBetaEligibility', {
-        result: deviceEligible ? 'passed' : 'rejected',
-        data: criterion,
-      });
-      // const benchmarkResult = createTag('div', {
-      //   class: 'section',
-      //   style: 'text-align: center;',
-      // });
-      // Object.entries(BlockMediator.get('mobileBetaEligibility')).forEach((entry) => {
-      //   if (entry[0] === 'result') {
-      //     benchmarkResult.append(createTag('p', {}, `${entry[0]}: ${entry[1]}`));
-      //   }
-      //
-      //   if (entry[0] === 'data') {
-      //     Object.entries(entry[1]).forEach((en) => {
-      //       benchmarkResult.append(createTag('p', {}, `${en[0]}: ${en[1]}`));
-      //     });
-      //   }
-      // });
-      // main.prepend(benchmarkResult);
-      benchmarkWorker.terminate();
-    };
-  }
-}
-
 /**
  * Decorates the page.
  */
@@ -2504,7 +2458,10 @@ export async function loadArea(area = document) {
   }
 
   if (getMetadata('mobile-benchmark')) {
-    checkMobileBetaEligibility(main);
+    const [{ checkMobileBetaEligibility }] = await Promise.all(
+      [import('./mobile-beta-gating.js'), import('./block-mediator.min.js')],
+    );
+    checkMobileBetaEligibility();
   }
 
   window.hlx = window.hlx || {};
