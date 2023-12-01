@@ -100,11 +100,11 @@ function runBenchmark() {
 }
 
 export default async function checkMobileBetaEligibility() {
-  const deviceSupportCookie = getCookie('device-support');
+  const deviceSupportCookie = getCookie('device-support') === 'true';
 
   if (deviceSupportCookie) {
     BlockMediator.set('mobileBetaEligibility', {
-      deviceSupport: deviceSupportCookie,
+      deviceSupport: 'true',
       data: {
         reason: 'pre-checked',
       },
