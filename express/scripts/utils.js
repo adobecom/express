@@ -105,6 +105,7 @@ export const [setConfig, updateConfig, getConfig] = (() => {
           || 'ltr';
         document.documentElement.setAttribute('dir', dir);
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.log('Invalid or missing locale:', e);
       }
       config.locale.contentRoot = `${origin}${config.locale.prefix}${config.contentRoot ?? ''}`;
@@ -1051,7 +1052,6 @@ function resolveFragments() {
       const $marker = Array.from(document.querySelectorAll('main > div h3'))
         .find(($title) => $title.textContent.trim().toLocaleLowerCase() === marker);
       if (!$marker) {
-        console.log(`no fragment with marker "${marker}" found`);
         return;
       }
       let $fragment = $marker.closest('main > div');
@@ -1063,7 +1063,6 @@ function resolveFragments() {
         $emptyFragment.remove();
       }
       if (!$fragment) {
-        console.log(`no content found for fragment "${marker}"`);
         return;
       }
       setTimeout(() => {
@@ -1071,7 +1070,6 @@ function resolveFragments() {
         Array.from($fragment.children).forEach(($elem) => $cell.appendChild($elem));
         $marker.remove();
         $fragment.remove();
-        console.log(`fragment "${marker}" resolved`);
       }, 500);
     });
 }
@@ -1567,9 +1565,9 @@ export async function getExperimentConfig(experimentId) {
       });
       config.variants = variants;
       config.variantNames = variantNames;
-      console.log(config);
       return config;
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log('error loading experiment manifest: %s', path, e);
     }
     return null;
@@ -1588,6 +1586,7 @@ async function replaceInner(path, element) {
     const html = await resp.text();
     element.innerHTML = html;
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log(`error loading experiment content: ${plainPath}`, e);
   }
   return null;
@@ -1625,12 +1624,38 @@ function getDecisionPolicy(config) {
   return decisionPolicy;
 }
 
+function loadExperimentScripts() {
+  const promises = [import('./experiment.js')];
+  if (getMetadata('aepaudience') === 'on') {
+    // only rush launch for aep experiments
+    promises.push(loadScript('/express/scripts/instrument.js', 'module'));
+    let alloyLoadingResolver;
+    window.alloyLoader = new Promise((resolve) => {
+      alloyLoadingResolver = resolve;
+    });
+    window.addEventListener('alloy_sendEvent', (e) => {
+      // fired by launch loaded by martech-main loaded by instrument
+      if (e.detail.type === 'pageView') {
+        window.alloyLoaded = true;
+        alloyLoadingResolver(e.detail.result);
+      }
+    });
+    setTimeout(() => {
+      if (!window.alloyLoaded) {
+        // eslint-disable-next-line no-console
+        console.error('Alloy failed to load');
+        alloyLoadingResolver();
+      }
+    }, 5000);
+  }
+  return Promise.all(promises);
+}
+
 /**
  * checks if a test is active on this page and if so executes the test
  */
 async function decorateTesting() {
   try {
-    // let reason = '';
     const usp = new URLSearchParams(window.location.search);
 
     const experiment = getExperiment();
@@ -1639,33 +1664,11 @@ async function decorateTesting() {
     if (experiment) {
       const config = await getExperimentConfig(experiment);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
-        let alloyLoadingResolver;
-        window.alloyLoader = new Promise((resolve) => {
-          alloyLoadingResolver = resolve;
-        });
-        window.addEventListener('alloy_sendEvent', (e) => {
-          // fired by launch loaded by martech-main loaded by instrument
-          if (e.detail.type === 'pageView') {
-            // eslint-disable-next-line no-console
-            console.log({ alloyResult: e.detail.result });
-            window.alloyLoaded = true;
-            alloyLoadingResolver(e.detail.result);
-          }
-        });
-        // rush launch for alloy configuration
-        const [{ DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences }] = await Promise.all(
-          [import('./experiment.js'), loadScript('/express/scripts/instrument.js', 'module')],
-        );
-        setTimeout(() => {
-          if (!window.alloyLoaded) {
-            // eslint-disable-next-line no-console
-            console.error('Alloy failed to load');
-            alloyLoadingResolver();
-          }
-        }, 5000);
+        const [expFuncs] = await loadExperimentScripts();
+        const { DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences } = expFuncs;
         const experimentOptions = {
           ...DEFAULT_EXPERIMENT_OPTIONS,
-          ...{ audiences: AUDIENCES },
+          audiences: AUDIENCES,
         };
         config.resolvedAudiences = await getResolvedAudiences(config.audience.split(',').map((a) => a.trim()), experimentOptions);
         config.run = forcedExperiment
@@ -1725,6 +1728,7 @@ async function decorateTesting() {
       loadScript('/express/scripts/instrument.js', 'module');
     }
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log('error testing', e);
   }
 }
@@ -2142,6 +2146,7 @@ function displayEnv() {
         setHelixEnv('stage', { spark: url.host });
       }
       if (window.location.hostname !== url.hostname) {
+        // eslint-disable-next-line no-console
         console.log(`external referrer detected: ${document.referrer}`);
       }
     }
@@ -2153,6 +2158,7 @@ function displayEnv() {
       document.body.appendChild($helixEnv);
     }
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log(`display env failed: ${e.message}`);
   }
 }
