@@ -1054,6 +1054,9 @@ const martechLoadedCB = () => {
     };
 
     await _satellite.alloyConfigurePromise;
+    // trigger alloyReady event so that experimentation will proceed
+    window.alloyLoaded = true;
+    document.dispatchEvent(new Event('alloyReady'));
     const data = await alloy('getIdentity');
     getSegments(data && data.identity ? data.identity.ECID : null);
   }

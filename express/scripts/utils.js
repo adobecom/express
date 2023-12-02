@@ -3,10 +3,6 @@ const AUTO_BLOCKS = [
   { fragment: '/express/fragments/' },
 ];
 
-const TK_IDS = {
-  jp: 'dvg6awq',
-};
-
 const DO_NOT_INLINE = [
   'accordion',
   'columns',
@@ -1014,24 +1010,32 @@ function decorateHeaderAndFooter() {
   } else footer.remove();
 }
 
-/**
- * Loads a CSS file
- * @param {string} href The path to the CSS file
- * @param {function} callback a function to run upon successful style loading
- */
-export function loadCSS(href, callback = null) {
-  if (!document.querySelector(`head > link[href="${href}"]`)) {
-    const link = document.createElement('link');
-    link.setAttribute('rel', 'stylesheet');
+export function loadLink(href, {
+  as,
+  callback,
+  crossorigin,
+  rel,
+} = {}) {
+  let link = document.head.querySelector(`link[href="${href}"]`);
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', rel);
+    if (as) link.setAttribute('as', as);
+    if (crossorigin) link.setAttribute('crossorigin', crossorigin);
     link.setAttribute('href', href);
-    if (typeof callback === 'function') {
+    if (callback) {
       link.onload = (e) => callback(e.type);
       link.onerror = (e) => callback(e.type);
     }
     document.head.appendChild(link);
-  } else if (typeof callback === 'function') {
+  } else if (callback) {
     callback('noop');
   }
+  return link;
+}
+
+export function loadStyle(href, callback) {
+  return loadLink(href, { rel: 'stylesheet', callback });
 }
 
 function resolveFragments() {
@@ -1136,7 +1140,7 @@ export function buildBlock(blockName, content) {
 
 async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
   const cssLoaded = new Promise((resolve) => {
-    loadCSS(cssPath, resolve);
+    loadStyle(cssPath, resolve);
   });
   const scriptLoaded = new Promise((resolve) => {
     (async () => {
@@ -1227,7 +1231,7 @@ export async function setTemplateTheme() {
   const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
   document.body.classList.add(name);
   await new Promise((resolve) => {
-    loadCSS(`/express/templates/${name}/${name}.css`, resolve);
+    loadStyle(`/express/templates/${name}/${name}.css`, resolve);
   });
 }
 
@@ -1635,6 +1639,14 @@ async function decorateTesting() {
     if (experiment) {
       const config = await getExperimentConfig(experiment);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
+        window.addEventListener('alloy_sendEvent', (e) => {
+          if (e.detail.type === 'pageView') {
+            console.log(e.detail);
+            console.log(e.detail.result);
+          }
+        });
+        // rush launch for alloy configuration
+        await loadScript('/express/scripts/instrument.js', 'module');
         const { DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences } = await import('./experiment.js');
         const experimentOptions = {
           ...DEFAULT_EXPERIMENT_OPTIONS,
@@ -2389,7 +2401,7 @@ function removeMetadata() {
  */
 async function loadLazy(main) {
   addPromotion();
-  loadCSS('/express/styles/lazy-styles.css');
+  loadStyle('/express/styles/lazy-styles.css');
   scrollToHash();
   resolveFragments();
   removeMetadata();
@@ -2403,17 +2415,14 @@ async function loadLazy(main) {
   ]);
 }
 
-async function loadPostLCP() {
+async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   window.dispatchEvent(new Event('milo:LCP:loaded'));
   if (window.hlx.martech) loadMartech();
   loadGnav();
-  const tkID = TK_IDS[getConfig().locale.prefix.replace('/', '')];
-  if (tkID) {
-    const { default: loadFonts } = await import('./fonts.js');
-    loadFonts(tkID, loadCSS);
-  }
+  const { default: loadFonts } = await import('./fonts.js');
+  loadFonts(config.locale, loadStyle);
 }
 
 /**
@@ -2436,7 +2445,7 @@ export async function loadSections(sections, isDoc) {
     // eslint-disable-next-line no-await-in-loop
     await Promise.all(loaded);
     // Post LCP operations.
-    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP();
+    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP(getConfig());
 
     // Show the section when all blocks inside are done.
     delete section.el.dataset.status;
@@ -2453,7 +2462,7 @@ function initSidekick() {
       createTag,
       loadBlock,
       loadScript,
-      loadCSS,
+      loadStyle,
     });
   };
 
