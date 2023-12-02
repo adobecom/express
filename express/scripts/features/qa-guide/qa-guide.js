@@ -1,10 +1,10 @@
 import { createTag, loadStyle } from '../../utils.js';
 import {
-  populateSessionStorage,
-  updateSessionStorageChecks,
+  populatelocalStorage,
+  updatelocalStorageChecks,
   getGuideDocLocation,
   setGuideDocLocation,
-} from './utils/session-storage-controller.js';
+} from './utils/storage-controller.js';
 
 const QA_LOG_FILE_LOCATION = '/express/qa-log';
 const DEFAULT_QA_GUIDE_FILE_LOCATION = '/docs/qa-guide';
@@ -104,7 +104,7 @@ const buildQAWidget = (index, payload) => {
     qaWidgetForm.append(nextBtn);
     qaWidgetForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      updateSessionStorageChecks(payload[index], qaWidgetForm);
+      updatelocalStorageChecks(payload[index], qaWidgetForm);
       window.location.assign(setNextQAIndexToUrl(index + 1, new URL(payload[index + 1].link)));
     });
   } else {
@@ -112,7 +112,7 @@ const buildQAWidget = (index, payload) => {
     qaWidgetForm.append(completeBtn);
     qaWidgetForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      updateSessionStorageChecks(payload[index], qaWidgetForm);
+      updatelocalStorageChecks(payload[index], qaWidgetForm);
       logQARecord(qaWidgetForm);
       resetQAProgress(qaWidget);
     });
@@ -168,7 +168,7 @@ const launchStorySelector = async () => {
 
       const payload = buildPayload(pages);
 
-      populateSessionStorage(payload);
+      populatelocalStorage(payload);
       const testPage = payload[0].link;
       if (!testPage) {
         qaGuideEl.textContent = 'Missing QA url(s)';
@@ -193,7 +193,7 @@ const launchStorySelector = async () => {
 
     const payload = buildPayload(pages);
 
-    populateSessionStorage(payload);
+    populatelocalStorage(payload);
     const testPage = payload[0].link;
     if (!testPage) {
       qaGuideEl.textContent = 'Missing QA url(s)';

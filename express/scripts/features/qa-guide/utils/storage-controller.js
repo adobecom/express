@@ -1,4 +1,4 @@
-export function populateSessionStorage(payload) {
+export function populatelocalStorage(payload) {
   const storagePackage = {
     configs: {},
   };
@@ -19,13 +19,13 @@ export function populateSessionStorage(payload) {
     storagePackage[page.link] = pagePackage;
   });
 
-  sessionStorage.setItem('qa-record', JSON.stringify(storagePackage));
+  localStorage.setItem('qa-record', JSON.stringify(storagePackage));
 }
 
-export function updateSessionStorageChecks(page, form) {
+export function updatelocalStorageChecks(page, form) {
   const allCheckboxes = form.querySelectorAll('input[type="checkbox"]');
   const noteArea = form.querySelector('textarea');
-  const sessionRecord = JSON.parse(sessionStorage.getItem('qa-record'));
+  const sessionRecord = JSON.parse(localStorage.getItem('qa-record'));
   const pageRecord = sessionRecord[page.link];
 
   allCheckboxes.forEach((checkbox) => {
@@ -41,17 +41,17 @@ export function updateSessionStorageChecks(page, form) {
 
   sessionRecord[page.link] = pageRecord;
 
-  sessionStorage.setItem('qa-record', JSON.stringify(sessionRecord));
+  localStorage.setItem('qa-record', JSON.stringify(sessionRecord));
 }
 
 export function setGuideDocLocation(guideDocLocation) {
-  const sessionRecord = JSON.parse(sessionStorage.getItem('qa-record'));
+  const sessionRecord = JSON.parse(localStorage.getItem('qa-record'));
 
   if (sessionRecord) {
     sessionRecord.configs.story = guideDocLocation;
-    sessionStorage.setItem('qa-record', JSON.stringify(sessionRecord));
+    localStorage.setItem('qa-record', JSON.stringify(sessionRecord));
   } else {
-    sessionStorage.setItem('qa-record', JSON.stringify({
+    localStorage.setItem('qa-record', JSON.stringify({
       config: {
         story: guideDocLocation,
       },
@@ -60,10 +60,10 @@ export function setGuideDocLocation(guideDocLocation) {
 }
 
 export function getGuideDocLocation() {
-  const sessionRecord = JSON.parse(sessionStorage.getItem('qa-record'));
+  const sessionRecord = JSON.parse(localStorage.getItem('qa-record'));
 
   if (sessionRecord) {
-    return sessionStorage.getItem('qa-record').configs?.story;
+    return localStorage.getItem('qa-record').configs?.story;
   }
 
   return null;
