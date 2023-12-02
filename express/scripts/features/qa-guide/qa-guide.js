@@ -1,9 +1,14 @@
-import { createTag, loadStyle } from '../../utils.js';
 import {
-  populatelocalStorage,
-  updatelocalStorageChecks,
-  getGuideDocLocation,
-  setGuideDocLocation,
+  createTag,
+  loadStyle,
+  getDevice,
+} from '../../utils.js';
+
+import {
+  populateSessionStorage,
+  updateSessionStorageChecks,
+  getQAConfig,
+  setQAConfig,
 } from './utils/storage-controller.js';
 
 const QA_LOG_FILE_LOCATION = '/express/qa-log';
@@ -13,16 +18,23 @@ const resetQAProgress = (widget) => {
   widget.remove();
   const usp = new URLSearchParams(window.location.search);
   usp.delete('qaprogress');
+  sessionStorage.removeItem('qa-record');
   window.location.search = usp.toString();
 };
 
-const buildPayload = (pages) => pages.map((p) => ({
-  link: p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type').textContent.trim() || null,
-  items: Array.from(p.querySelectorAll('li')).map((li, idx) => ({
-    text: li.textContent.trim(),
-    idx,
-  })),
-}));
+const buildPayload = (pages) => pages.map((p) => {
+  const pageLink = p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type').textContent.trim();
+  const pageUrl = new URL(pageLink);
+  const targetUrl = pageUrl ? window.location.host + (pageUrl.pathname) : pageLink;
+
+  return {
+    link: targetUrl || null,
+    items: Array.from(p.querySelectorAll('li')).map((li, idx) => ({
+      text: li.textContent.trim(),
+      idx,
+    })),
+  };
+});
 
 const getQAIndex = () => {
   const usp = new URLSearchParams(window.location.search);
@@ -104,7 +116,7 @@ const buildQAWidget = (index, payload) => {
     qaWidgetForm.append(nextBtn);
     qaWidgetForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      updatelocalStorageChecks(payload[index], qaWidgetForm);
+      updateSessionStorageChecks(payload[index], qaWidgetForm);
       window.location.assign(setNextQAIndexToUrl(index + 1, new URL(payload[index + 1].link)));
     });
   } else {
@@ -112,7 +124,7 @@ const buildQAWidget = (index, payload) => {
     qaWidgetForm.append(completeBtn);
     qaWidgetForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      updatelocalStorageChecks(payload[index], qaWidgetForm);
+      updateSessionStorageChecks(payload[index], qaWidgetForm);
       logQARecord(qaWidgetForm);
       resetQAProgress(qaWidget);
     });
@@ -137,9 +149,8 @@ const buildQAWidget = (index, payload) => {
 const loadQAStory = async (resp) => {
   const main = createTag('main');
   main.innerHTML = await resp.text();
-  const audience = document.body.dataset?.device;
-  let qaGuideEl = main.querySelector('.qa-guide.desktop');
-  if (audience) qaGuideEl = main.querySelector(`.qa-guide.${audience}`);
+  const qaGuideEl = main.querySelector(`.qa-guide.${getDevice()}`);
+
   return qaGuideEl;
 };
 
@@ -159,7 +170,8 @@ const launchStorySelector = async () => {
     if (!resp.ok) {
       errorMsg.textContent = 'Invalid file location. Please check your input.';
     } else {
-      setGuideDocLocation(input.value);
+      sessionStorage.removeItem('qa-record');
+      setQAConfig('story', input.value);
       const qaGuideEl = await loadQAStory(resp);
 
       const pages = Array.from(qaGuideEl.children);
@@ -168,7 +180,7 @@ const launchStorySelector = async () => {
 
       const payload = buildPayload(pages);
 
-      populatelocalStorage(payload);
+      populateSessionStorage(payload);
       const testPage = payload[0].link;
       if (!testPage) {
         qaGuideEl.textContent = 'Missing QA url(s)';
@@ -185,6 +197,8 @@ const launchStorySelector = async () => {
     const resp = await fetch(`${DEFAULT_QA_GUIDE_FILE_LOCATION}.plain.html`);
     if (!resp.ok) return;
 
+    sessionStorage.removeItem('qa-record');
+    setQAConfig('story', input.value);
     const qaGuideEl = await loadQAStory(resp);
 
     const pages = Array.from(qaGuideEl.children);
@@ -193,7 +207,7 @@ const launchStorySelector = async () => {
 
     const payload = buildPayload(pages);
 
-    populatelocalStorage(payload);
+    populateSessionStorage(payload);
     const testPage = payload[0].link;
     if (!testPage) {
       qaGuideEl.textContent = 'Missing QA url(s)';
@@ -223,7 +237,7 @@ export default async function initQAGuide() {
   if (!index && index !== 0) {
     launchStorySelector();
   } else if (!document.querySelector('.qa-widget')) {
-    const resp = await fetch(`${getGuideDocLocation() || DEFAULT_QA_GUIDE_FILE_LOCATION}.plain.html`);
+    const resp = await fetch(`${getQAConfig('story') || DEFAULT_QA_GUIDE_FILE_LOCATION}.plain.html`);
     if (!resp.ok) return;
 
     const qaGuideEl = await loadQAStory(resp);

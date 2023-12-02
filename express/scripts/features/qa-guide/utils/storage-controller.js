@@ -1,7 +1,16 @@
-export function populatelocalStorage(payload) {
-  const storagePackage = {
-    configs: {},
-  };
+import { getDevice } from '../../../utils.js';
+
+export function populateSessionStorage(payload) {
+  let storagePackage = JSON.parse(sessionStorage.getItem('qa-record'));
+
+  if (!storagePackage) {
+    storagePackage = {
+      configs: {
+        host: window.location.host,
+        audience: getDevice(),
+      },
+    };
+  }
 
   payload.forEach((page) => {
     const pagePackage = {
@@ -19,13 +28,13 @@ export function populatelocalStorage(payload) {
     storagePackage[page.link] = pagePackage;
   });
 
-  localStorage.setItem('qa-record', JSON.stringify(storagePackage));
+  sessionStorage.setItem('qa-record', JSON.stringify(storagePackage));
 }
 
-export function updatelocalStorageChecks(page, form) {
+export function updateSessionStorageChecks(page, form) {
   const allCheckboxes = form.querySelectorAll('input[type="checkbox"]');
   const noteArea = form.querySelector('textarea');
-  const sessionRecord = JSON.parse(localStorage.getItem('qa-record'));
+  const sessionRecord = JSON.parse(sessionStorage.getItem('qa-record'));
   const pageRecord = sessionRecord[page.link];
 
   allCheckboxes.forEach((checkbox) => {
@@ -41,29 +50,29 @@ export function updatelocalStorageChecks(page, form) {
 
   sessionRecord[page.link] = pageRecord;
 
-  localStorage.setItem('qa-record', JSON.stringify(sessionRecord));
+  sessionStorage.setItem('qa-record', JSON.stringify(sessionRecord));
 }
 
-export function setGuideDocLocation(guideDocLocation) {
-  const sessionRecord = JSON.parse(localStorage.getItem('qa-record'));
+export function setQAConfig(key, val) {
+  const sessionRecord = JSON.parse(sessionStorage.getItem('qa-record'));
 
   if (sessionRecord) {
-    sessionRecord.configs.story = guideDocLocation;
-    localStorage.setItem('qa-record', JSON.stringify(sessionRecord));
+    sessionRecord.configs[key] = val;
+    sessionStorage.setItem('qa-record', JSON.stringify(sessionRecord));
   } else {
-    localStorage.setItem('qa-record', JSON.stringify({
+    sessionStorage.setItem('qa-record', JSON.stringify({
       config: {
-        story: guideDocLocation,
+        key: val,
       },
     }));
   }
 }
 
-export function getGuideDocLocation() {
-  const sessionRecord = JSON.parse(localStorage.getItem('qa-record'));
+export function getQAConfig(key) {
+  const sessionRecord = JSON.parse(sessionStorage.getItem('qa-record'));
 
   if (sessionRecord) {
-    return localStorage.getItem('qa-record').configs?.story;
+    return sessionRecord.configs?.[key];
   }
 
   return null;
