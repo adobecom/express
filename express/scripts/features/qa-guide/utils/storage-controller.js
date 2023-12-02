@@ -10,6 +10,9 @@ export function populateSessionStorage(payload) {
         audience: getDevice(),
       },
     };
+  } else {
+    storagePackage.configs.host = window.location.host;
+    storagePackage.configs.audience = getDevice();
   }
 
   payload.forEach((page) => {
@@ -60,11 +63,12 @@ export function setQAConfig(key, val) {
     sessionRecord.configs[key] = val;
     sessionStorage.setItem('qa-record', JSON.stringify(sessionRecord));
   } else {
-    sessionStorage.setItem('qa-record', JSON.stringify({
-      config: {
-        key: val,
-      },
-    }));
+    const configObj = {
+      configs: {},
+    };
+    configObj.configs[key] = val;
+
+    sessionStorage.setItem('qa-record', JSON.stringify(configObj));
   }
 }
 
@@ -72,6 +76,7 @@ export function getQAConfig(key) {
   const sessionRecord = JSON.parse(sessionStorage.getItem('qa-record'));
 
   if (sessionRecord) {
+    console.log(sessionRecord);
     return sessionRecord.configs?.[key];
   }
 

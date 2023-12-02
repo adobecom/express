@@ -198,7 +198,7 @@ const launchStorySelector = async () => {
     if (!resp.ok) return;
 
     sessionStorage.removeItem('qa-record');
-    setQAConfig('story', input.value);
+    setQAConfig('story', DEFAULT_QA_GUIDE_FILE_LOCATION);
     const qaGuideEl = await loadQAStory(resp);
 
     const pages = Array.from(qaGuideEl.children);
