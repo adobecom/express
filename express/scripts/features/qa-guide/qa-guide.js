@@ -56,7 +56,6 @@ const logQARecord = () => {
       data: {
         timestamp: Date.now(),
         details: sessionStorage.getItem('qa-record'),
-        audience: document.body.dataset?.device || 'N/A',
       },
     }),
   });
