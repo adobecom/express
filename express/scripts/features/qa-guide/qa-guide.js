@@ -226,7 +226,7 @@ export default async function initQAGuide() {
     const resp = await fetch(`${getGuideDocLocation() || DEFAULT_QA_GUIDE_FILE_LOCATION}.plain.html`);
     if (!resp.ok) return;
 
-    const qaGuideEl = await loadQAStory();
+    const qaGuideEl = await loadQAStory(resp);
     const pages = Array.from(qaGuideEl.children);
 
     if (!pages.length) return;
