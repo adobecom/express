@@ -88,6 +88,44 @@
     padding: 8px;
 }
 
+.qa-guide-story-selector {
+    padding: 16px;
+}
+
+.qa-guide-story-selector .story-selector-heading {
+    margin: 0;
+}
+
+.qa-guide-story-selector .story-selector-description {
+    margin: 0;
+}
+
+.qa-guide-story-selector .story-selector-input {
+    display: block;
+    padding: 8px;
+    box-sizing: border-box;
+    font-size: var(--body-font-size-m);
+    font-family: var(--body-font-family);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.qa-guide-story-selector .story-selector-input::placeholder {
+    font-family: var(--body-font-family);
+}
+
+.qa-guide-story-selector button {
+    padding: 4px 8px;
+    margin-right: 8px;
+    user-select: none;
+}
+
+.qa-guide-story-selector .story-selector-error {
+    margin-top: 8px;
+    color: red;
+}
+
 @media screen and (min-width: 900px) {
     .qa-widget,
     .qa-widget:hover {

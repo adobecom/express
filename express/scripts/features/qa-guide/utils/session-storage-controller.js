@@ -1,5 +1,7 @@
 export function populateSessionStorage(payload) {
-  const storagePackage = {};
+  const storagePackage = {
+    configs: {},
+  };
 
   payload.forEach((page) => {
     const pagePackage = {
@@ -40,4 +42,29 @@ export function updateSessionStorageChecks(page, form) {
   sessionRecord[page.link] = pageRecord;
 
   sessionStorage.setItem('qa-record', JSON.stringify(sessionRecord));
+}
+
+export function setGuideDocLocation(guideDocLocation) {
+  const sessionRecord = JSON.parse(sessionStorage.getItem('qa-record'));
+
+  if (sessionRecord) {
+    sessionRecord.configs.story = guideDocLocation;
+    sessionStorage.setItem('qa-record', JSON.stringify(sessionRecord));
+  } else {
+    sessionStorage.setItem('qa-record', JSON.stringify({
+      config: {
+        story: guideDocLocation,
+      },
+    }));
+  }
+}
+
+export function getGuideDocLocation() {
+  const sessionRecord = JSON.parse(sessionStorage.getItem('qa-record'));
+
+  if (sessionRecord) {
+    return sessionStorage.getItem('qa-record').configs?.story;
+  }
+
+  return null;
 }

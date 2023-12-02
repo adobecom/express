@@ -1,7 +1,13 @@
 import { createTag, loadStyle } from '../../utils.js';
-import { populateSessionStorage, updateSessionStorageChecks } from './utils/session-storage-controller.js';
+import {
+  populateSessionStorage,
+  updateSessionStorageChecks,
+  getGuideDocLocation,
+  setGuideDocLocation,
+} from './utils/session-storage-controller.js';
 
 const QA_LOG_FILE_LOCATION = '/express/qa-log';
+const DEFAULT_QA_GUIDE_FILE_LOCATION = '/docs/qa-guide';
 
 const resetQAProgress = (widget) => {
   widget.remove();
@@ -47,7 +53,6 @@ const logQARecord = () => {
 };
 
 const buildQAWidget = (index, payload) => {
-  loadStyle('/express/scripts/features/qa-guide/qa-guide.css');
   const progress = createTag('div', { class: 'qa-progress' }, `Page ${index + 1} / ${payload.length}`);
   const closeBtn = createTag('a', { class: 'qa-widget-close' }, '✕');
   const qaWidget = createTag('div', { class: 'qa-widget' });
@@ -129,27 +134,104 @@ const buildQAWidget = (index, payload) => {
   }
 };
 
-export default function initQAGuide(el) {
-  const pages = Array.from(el.children);
+const loadQAStory = async (resp) => {
+  const main = createTag('main');
+  main.innerHTML = await resp.text();
+  const audience = document.body.dataset?.device;
+  let qaGuideEl = main.querySelector('.qa-guide.desktop');
+  if (audience) qaGuideEl = main.querySelector(`.qa-guide.${audience}`);
+  return qaGuideEl;
+};
 
-  if (!pages.length) return;
+const launchStorySelector = async () => {
+  const selector = createTag('div');
+  const heading = createTag('h3', { class: 'story-selector-heading' }, 'QA Story Selector');
+  const description = createTag('p', { class: 'story-selector-description' }, 'Use the input below to specify a QA guide doc source to launch a custom QA Guide.');
+  const input = createTag('input', { class: 'story-selector-input', placeholder: `default: ${DEFAULT_QA_GUIDE_FILE_LOCATION}` });
+  const loadCta = createTag('button', { class: 'story-selector-load-btn', disabled: true }, 'Load');
+  const useDefaultCta = createTag('button', { class: 'story-selector-load-default-btn' }, 'Use Default');
+  const errorMsg = createTag('div', { class: 'story-selector-error' });
 
-  const payload = buildPayload(pages);
+  selector.append(heading, description, input, loadCta, useDefaultCta, errorMsg);
 
-  const index = getQAIndex();
+  loadCta.addEventListener('click', async () => {
+    const resp = await fetch(`${input.value}.plain.html`);
+    if (!resp.ok) {
+      errorMsg.textContent = 'Invalid file location. Please check your input.';
+    } else {
+      setGuideDocLocation(input.value);
+      const qaGuideEl = await loadQAStory(resp);
 
-  if (!index && index !== 0) {
+      const pages = Array.from(qaGuideEl.children);
+
+      if (!pages.length) return;
+
+      const payload = buildPayload(pages);
+
+      populateSessionStorage(payload);
+      const testPage = payload[0].link;
+      if (!testPage) {
+        qaGuideEl.textContent = 'Missing QA url(s)';
+        return;
+      }
+
+      const url = new URL(testPage);
+      const targetUrl = setNextQAIndexToUrl(0, url);
+      window.open(targetUrl);
+    }
+  });
+
+  useDefaultCta.addEventListener('click', async () => {
+    const resp = await fetch(`${DEFAULT_QA_GUIDE_FILE_LOCATION}.plain.html`);
+    if (!resp.ok) return;
+
+    const qaGuideEl = await loadQAStory(resp);
+
+    const pages = Array.from(qaGuideEl.children);
+
+    if (!pages.length) return;
+
+    const payload = buildPayload(pages);
+
     populateSessionStorage(payload);
     const testPage = payload[0].link;
     if (!testPage) {
-      el.textContent = 'Missing QA url(s)';
+      qaGuideEl.textContent = 'Missing QA url(s)';
       return;
     }
 
     const url = new URL(testPage);
     const targetUrl = setNextQAIndexToUrl(0, url);
     window.open(targetUrl);
+  });
+
+  input.addEventListener('input', () => {
+    errorMsg.textContent = '';
+    loadCta.disabled = input.value === '';
+  });
+
+  const mod = await import('../../../blocks/modal/modal.js');
+  mod.getModal(null, {
+    class: 'qa-guide-story-selector', id: 'qa-guide-story-selector', content: selector, closeEvent: 'close:qa-guide-story-selector',
+  });
+};
+
+export default async function initQAGuide() {
+  loadStyle('/express/scripts/features/qa-guide/qa-guide.css');
+  const index = getQAIndex();
+
+  if (!index && index !== 0) {
+    launchStorySelector();
   } else if (!document.querySelector('.qa-widget')) {
+    const resp = await fetch(`${getGuideDocLocation() || DEFAULT_QA_GUIDE_FILE_LOCATION}.plain.html`);
+    if (!resp.ok) return;
+
+    const qaGuideEl = await loadQAStory();
+    const pages = Array.from(qaGuideEl.children);
+
+    if (!pages.length) return;
+
+    const payload = buildPayload(pages);
     buildQAWidget(index, payload);
   }
 }
