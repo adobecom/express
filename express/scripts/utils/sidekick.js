@@ -38,7 +38,7 @@ export default function init({
 
     const { default: initQAGuide } = await import('../features/qa-guide/qa-guide.js');
 
-    initQAGuide(qaGuideEl, { createTag });
+    initQAGuide(qaGuideEl);
   };
 
   // Auto plugins

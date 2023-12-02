@@ -20,7 +20,7 @@ export function populateSessionStorage(payload) {
   sessionStorage.setItem('qa-record', JSON.stringify(storagePackage));
 }
 
-export function updateSessionStorage(page, form) {
+export function updateSessionStorageChecks(page, form) {
   const allCheckboxes = form.querySelectorAll('input[type="checkbox"]');
   const noteArea = form.querySelector('textarea');
   const sessionRecord = JSON.parse(sessionStorage.getItem('qa-record'));
