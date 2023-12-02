@@ -153,6 +153,20 @@ const loadQAStory = async (resp) => {
   return qaGuideEl;
 };
 
+const pauseElementsInteraction = (els = []) => {
+  if (!els.length) return;
+  els.forEach((el) => {
+    el.disabled = true;
+  });
+};
+
+const resumeElementsInteraction = (els = []) => {
+  if (!els.length) return;
+  els.forEach((el) => {
+    el.disabled = false;
+  });
+};
+
 const launchStorySelector = async () => {
   const selector = createTag('div');
   const heading = createTag('h3', { class: 'story-selector-heading' }, 'QA Story Selector');
@@ -165,7 +179,9 @@ const launchStorySelector = async () => {
   selector.append(heading, description, input, loadCta, useDefaultCta, errorMsg);
 
   loadCta.addEventListener('click', async () => {
+    pauseElementsInteraction([input, loadCta, useDefaultCta]);
     const resp = await fetch(`${input.value}.plain.html`);
+    resumeElementsInteraction([input, loadCta, useDefaultCta]);
     if (!resp.ok) {
       errorMsg.textContent = 'Invalid file location. Please check your input.';
     } else {
@@ -193,7 +209,9 @@ const launchStorySelector = async () => {
   });
 
   useDefaultCta.addEventListener('click', async () => {
+    pauseElementsInteraction([input, loadCta, useDefaultCta]);
     const resp = await fetch(`${DEFAULT_QA_GUIDE_FILE_LOCATION}.plain.html`);
+    resumeElementsInteraction([input, loadCta, useDefaultCta]);
     if (!resp.ok) return;
 
     sessionStorage.removeItem('qa-record');
