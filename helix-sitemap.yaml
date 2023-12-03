@@ -30,6 +30,11 @@ sitemaps:
         destination: /fr/express/sitemap.xml
         hreflang: fr
         alternate: /fr/{path}
+      india:
+        source: /in/express/query-index.json
+        destination: /in/express/sitemap.xml
+        hreflang: en-IN
+        alternate: /in/{path}
       italy:
         source: /it/express/query-index.json
         destination: /it/express/sitemap.xml
@@ -85,11 +90,6 @@ sitemaps:
         destination: /se/express/sitemap.xml
         hreflang: sv
         alternate: /se/{path}
-      india:
-        source: /in/express/query-index.json
-        destination: /in/express/sitemap.xml
-        hreflang: en-IN
-        alternate: /in/{path}
 
   blogs:
     origin: https://www.adobe.com
@@ -100,41 +100,41 @@ sitemaps:
         destination: /express/blog/sitemap.xml
         hreflang: en
         alternate: /{path}
-      japan:
-        source: /jp/express/learn/blog/query-index.json
-        destination: /jp/express/blog/sitemap.xml
-        hreflang: ja
-        alternate: /jp/{path}
-      unitedkingdom:
-        source: /uk/express/learn/blog/query-index.json
-        destination: /uk/express/blog/sitemap.xml
-        hreflang: en-GB
-        alternate: /uk/{path}
-      germany:
-        source: /de/express/learn/blog/query-index.json
-        destination: /de/express/blog/sitemap.xml
-        hreflang: de
-        alternate: /de/{path}
-      france:
-        source: /fr/express/learn/blog/query-index.json
-        destination: /fr/express/blog/sitemap.xml
-        hreflang: fr
-        alternate: /fr/{path}
-      spain:
-        source: /es/express/learn/blog/query-index.json
-        destination: /es/express/blog/sitemap.xml
-        hreflang: es
-        alternate: /es/{path}
       brazil:
         source: /br/express/learn/blog/query-index.json
         destination: /br/express/blog/sitemap.xml
         hreflang: pt
         alternate: /br/{path}
-      it:
+      france:
+        source: /fr/express/learn/blog/query-index.json
+        destination: /fr/express/blog/sitemap.xml
+        hreflang: fr
+        alternate: /fr/{path}
+      germany:
+        source: /de/express/learn/blog/query-index.json
+        destination: /de/express/blog/sitemap.xml
+        hreflang: de
+        alternate: /de/{path}
+      italy:
         source: /it/express/learn/blog/query-index.json
         destination: /it/express/blog/sitemap.xml
         hreflang: it
         alternate: /it/{path}
+      japan:
+        source: /jp/express/learn/blog/query-index.json
+        destination: /jp/express/blog/sitemap.xml
+        hreflang: ja
+        alternate: /jp/{path}
+      spain:
+        source: /es/express/learn/blog/query-index.json
+        destination: /es/express/blog/sitemap.xml
+        hreflang: es
+        alternate: /es/{path}
+      unitedkingdom:
+        source: /uk/express/learn/blog/query-index.json
+        destination: /uk/express/blog/sitemap.xml
+        hreflang: en-GB
+        alternate: /uk/{path}
 
   seo-templates:
     origin: https://www.adobe.com
