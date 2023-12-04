@@ -6,7 +6,7 @@ import {
   getLottie,
   getMobileOperatingSystem,
   lazyLoadLottiePlayer,
-  loadCSS,
+  loadStyle,
 } from '../../scripts/utils.js';
 
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -135,7 +135,7 @@ function buildLottieArrow(wrapper, floatingBtn, data) {
 export async function createFloatingButton(block, audience, data) {
   const aTag = makeCTAFromSheet(block, data);
   const main = document.querySelector('main');
-  loadCSS('/express/blocks/shared/floating-cta.css');
+  loadStyle('/express/blocks/shared/floating-cta.css');
 
   // Floating button html
   const floatButtonLink = aTag.cloneNode(true);
@@ -144,7 +144,8 @@ export async function createFloatingButton(block, audience, data) {
 
   // Hide CTAs with same url & text as the Floating CTA && is NOT a Floating CTA (in mobile/tablet)
   const sameUrlCTAs = Array.from(main.querySelectorAll('a.button:any-link'))
-    .filter((a) => (a.textContent.trim() === aTag.textContent.trim() || a.href === aTag.href)
+    .filter((a) => (a.textContent.trim() === aTag.textContent.trim()
+    || new URL(a.href).pathname === new URL(aTag.href).pathname)
       && !a.parentElement.parentElement.classList.contains('floating-button'));
   sameUrlCTAs.forEach((cta) => {
     cta.classList.add('same-as-floating-button-CTA');

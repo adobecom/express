@@ -72,6 +72,13 @@ indices:
       - '/es/express/learn/blog/**'
     target: /es/express/learn/blog/query-index.xlsx
 
+  blog-in:
+    <<: *blog
+    include:
+      - '/in/express/learn/blog'
+      - '/in/express/learn/blog/**'
+    target: /in/express/learn/blog/query-index.xlsx
+
   blog-it:
     <<: *blog
     include:

@@ -27,7 +27,8 @@ main .list .item-text {
     line-height: 1.4;
 }
 
-main li, p {
+main .list li, 
+main .list p {
   line-height: 200%
 }
 

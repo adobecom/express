@@ -1,7 +1,6 @@
 /* eslint-disable import/named, import/extensions */
 
 import {
-  addSearchQueryToHref,
   createOptimizedPicture,
   createTag,
   decorateMain,
@@ -221,7 +220,7 @@ function populateTemplates(block, props, templates) {
       if (link) {
         if (isPlaceholder) {
           const aTag = createTag('a', {
-            href: link.href ? addSearchQueryToHref(link.href) : '#',
+            href: link.href || '#',
           });
 
           aTag.append(...tmplt.children);
