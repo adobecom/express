@@ -74,41 +74,41 @@ export function buildUrl(optionUrl, country, language) {
   return planUrl.href;
 }
 
-function decorateIconList($pricingRight) {
-  let $iconList = createTag('div', { class: 'pricing-iconlist' });
-  let $iconListDescription;
-  [...$pricingRight.firstElementChild.children].forEach(($e) => {
-    const $img = $e.querySelector('img.icon, svg.icon');
-    if ($img) {
-      const $iconListRow = createTag('div');
-      const $iconDiv = createTag('div', { class: 'pricing-iconlist-icon' });
-      $iconDiv.appendChild($img);
-      $iconListRow.append($iconDiv);
-      $iconListDescription = createTag('div', { class: 'pricing-iconlist-description' });
-      $iconListRow.append($iconListDescription);
-      $iconListDescription.appendChild($e);
-      $iconList.appendChild($iconListRow);
+function decorateIconList(pricingRightEl) {
+  let iconList = createTag('div', { class: 'pricing-iconlist' });
+  let iconListDescription;
+  [...pricingRightEl.firstElementChild.children].forEach((el) => {
+    const imgEl = el.querySelector('img.icon, svg.icon');
+    if (imgEl) {
+      const iconListRow = createTag('div');
+      const iconDiv = createTag('div', { class: 'pricing-iconlist-icon' });
+      iconDiv.appendChild(imgEl);
+      iconListRow.append(iconDiv);
+      iconListDescription = createTag('div', { class: 'pricing-iconlist-description' });
+      iconListRow.append(iconListDescription);
+      iconListDescription.appendChild(el);
+      iconList.appendChild(iconListRow);
     } else {
-      if ($iconList.children.length > 0) {
-        $pricingRight.appendChild($iconList);
-        $iconList = createTag('div', { class: 'pricing-iconlist' });
+      if (iconList.children.length > 0) {
+        pricingRightEl.appendChild(iconList);
+        iconList = createTag('div', { class: 'pricing-iconlist' });
       }
-      $pricingRight.appendChild($e);
+      pricingRightEl.appendChild(el);
     }
   });
-  if ($iconList.children.length > 0) $pricingRight.appendChild($iconList);
+  if (iconList.children.length > 0) pricingRightEl.appendChild(iconList);
 }
 
 function selectPlan(block, plan) {
-  const $title = block.querySelector('.pricing-plan-title');
-  const $dropdown = block.querySelector('.pricing-plan-dropdown');
-  $title.innerText = plan.title;
-  $dropdown.innerHTML = '';
+  const title = block.querySelector('.pricing-plan-title');
+  const dropdown = block.querySelector('.pricing-plan-dropdown');
+  title.innerText = plan.title;
+  dropdown.innerHTML = '';
   plan.options.forEach((option) => {
-    const $option = createTag('option');
-    $option.innerText = option.title;
-    $option.value = option.id;
-    $dropdown.append($option);
+    const optionEl = createTag('option');
+    optionEl.innerText = option.title;
+    optionEl.value = option.id;
+    dropdown.append(optionEl);
   });
 }
 
@@ -139,11 +139,11 @@ export function buildPlans(contentEls) {
   let planOptionId = 0;
   planDivs.forEach((rowContent) => {
     const rowContents = Array.from(rowContent.children);
-    rowContents.forEach(($content) => {
-      if ($content.nodeName === 'H3') {
+    rowContents.forEach((contentEl) => {
+      if (contentEl.nodeName === 'H3') {
         plan = {
           id: planId,
-          title: $content.innerText,
+          title: contentEl.innerText,
           country: 'us',
           language: 'en',
           options: [],
@@ -152,15 +152,15 @@ export function buildPlans(contentEls) {
         planId += 1;
       }
 
-      if ($content.nodeName === 'P') {
-        const $link = $content.querySelector('a');
-        const link = new URL($link.href);
+      if (contentEl.nodeName === 'P') {
+        const linkEl = contentEl.querySelector('a');
+        const link = new URL(linkEl.href);
         const params = link.searchParams;
         plan.options.push({
           id: planOptionId,
           offerId: params.get('items[0][id]'),
-          title: $content.innerText,
-          link: $link.href,
+          title: contentEl.innerText,
+          link: linkEl.href,
           price: '9.99',
           currency: 'US',
           symbol: '$',
@@ -191,9 +191,9 @@ function populateOtherPlans(contentEls) {
   return otherPlans;
 }
 
-function closeActivePopups(block, $except) {
+function closeActivePopups(block, except) {
   block.querySelectorAll(':scope .active').forEach((activePopup) => {
-    if (activePopup !== $except) {
+    if (activePopup !== except) {
       activePopup.classList.remove('active');
     }
   });
