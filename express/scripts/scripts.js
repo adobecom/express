@@ -4,11 +4,13 @@ import {
   removeIrrelevantSections,
   loadArea,
   stamp,
-  registerPerformanceLogger, setConfig, loadCSS,
+  registerPerformanceLogger,
+  setConfig,
+  loadStyle,
 } from './utils.js';
 
 const locales = {
-  '': { ietf: 'en-US', tk: 'hah7vzn.css' },
+  '': { ietf: 'en-US', tk: 'jdq5hay.css' },
   br: { ietf: 'pt-BR', tk: 'inq1xob.css' },
   cn: { ietf: 'zh-Hans-CN', tk: 'puu3xkp' },
   de: { ietf: 'de-DE', tk: 'vin7zsi.css' },
@@ -71,7 +73,7 @@ const showNotifications = () => {
   const notification = url.searchParams.get('notification');
   if (notification) {
     const handler = () => {
-      loadCSS('/express/features/notification/notification.css', () => {
+      loadStyle('/express/features/notification/notification.css', () => {
         import('../features/notification/notification.js').then((mod) => {
           mod.default(notification);
           window.removeEventListener('milo:LCP:loaded', handler);

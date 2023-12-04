@@ -1,4 +1,4 @@
-import { createTag, loadCSS } from '../../utils.js';
+import { createTag, loadStyle } from '../../utils.js';
 
 const QA_LOG_FILE_LOCATION = '/express/qa-log';
 
@@ -45,7 +45,7 @@ export default function initQAGuide(el) {
   };
 
   const buildQAWidget = (index, payload) => {
-    loadCSS('/express/scripts/features/qa-guide/qa-guide.css');
+    loadStyle('/express/scripts/features/qa-guide/qa-guide.css');
     const progress = createTag('div', { class: 'qa-progress' }, `Page ${index + 1} / ${payload.length}`);
     const closeBtn = createTag('a', { class: 'qa-widget-close' }, '✕');
     const qaWidget = createTag('div', { class: 'qa-widget' });
