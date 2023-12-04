@@ -1574,81 +1574,36 @@ export async function getExperimentConfig(experimentId) {
   }
 }
 
-/**
- * Replaces element with content from path
- * @param {string} path
- * @param {HTMLElement} element
- */
-async function replaceInner(path, element) {
-  const plainPath = `${path}.plain.html`;
-  try {
-    const resp = await fetch(plainPath);
-    const html = await resp.text();
-    element.innerHTML = html;
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(`error loading experiment content: ${plainPath}`, e);
-  }
-  return null;
-}
-
-/**
- * Generates a decision policy object which is understood by UED from an
- * experiment configuration.
- * @param {*} config Experiment configuration
- * @returns Experiment decision policy object to be passed to UED.
- */
-function getDecisionPolicy(config) {
-  const decisionPolicy = {
-    id: 'content-experimentation-policy',
-    rootDecisionNodeId: 'n1',
-    decisionNodes: [{
-      id: 'n1',
-      type: 'EXPERIMENTATION',
-      experiment: {
-        id: config.id,
-        identityNamespace: 'ECID',
-        randomizationUnit: 'DEVICE',
-        treatments: Object.entries(config.variants).map(([key, props]) => ({
-          id: key,
-          allocationPercentage: props.percentageSplit
-            ? parseFloat(props.percentageSplit) * 100
-            : 100 - Object.values(config.variants).reduce((result, variant) => {
-              const returnResult = result - (parseFloat(variant.percentageSplit || 0) * 100);
-              return returnResult;
-            }, 100),
-        })),
-      },
-    }],
-  };
-  return decisionPolicy;
-}
-
-function loadExperimentScripts() {
+async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   const promises = [import('./experiment.js')];
   if (getMetadata('aepaudience') === 'on') {
-    // only rush launch for aep experiments
+    // only aep exps: rush alloy thru launch
     promises.push(loadScript('/express/scripts/instrument.js', 'module'));
     let alloyLoadingResolver;
     window.alloyLoader = new Promise((resolve) => {
       alloyLoadingResolver = resolve;
     });
     window.addEventListener('alloy_sendEvent', (e) => {
-      // fired by launch loaded by martech-main loaded by instrument
+      // fired by launch loaded by martech loaded by instrument
       if (e.detail.type === 'pageView') {
         window.alloyLoaded = true;
         alloyLoadingResolver(e.detail.result);
       }
     });
+    // tolerate max 5s for exp overheads
     setTimeout(() => {
       if (!window.alloyLoaded) {
+        // window.lana.log('Alloy failed to load', {
+        //   errorType: 'e',
+        // });
         // eslint-disable-next-line no-console
         console.error('Alloy failed to load');
         alloyLoadingResolver();
       }
     }, 5000);
   }
-  return Promise.all(promises);
+  const [{ runExps }] = await Promise.all(promises);
+  await runExps(config, forcedExperiment, forcedVariant);
 }
 
 /**
@@ -1664,61 +1619,7 @@ async function decorateTesting() {
     if (experiment) {
       const config = await getExperimentConfig(experiment);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
-        const [expFuncs] = await loadExperimentScripts();
-        const { DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences } = expFuncs;
-        const experimentOptions = {
-          ...DEFAULT_EXPERIMENT_OPTIONS,
-          audiences: AUDIENCES,
-        };
-        config.resolvedAudiences = await getResolvedAudiences(config.audience.split(',').map((a) => a.trim()), experimentOptions);
-        config.run = forcedExperiment
-          || !config.resolvedAudiences
-          || config.resolvedAudiences.length;
-
-        window.hlx = window.hlx || {};
-        if (config.run) {
-          window.hlx.experiment = config;
-          if (forcedVariant && config.variantNames.includes(forcedVariant)) {
-            config.selectedVariant = forcedVariant;
-          } else {
-            const ued = await import('./ued/ued-0.2.0.js');
-            const decision = ued.evaluateDecisionPolicy(getDecisionPolicy(config), {});
-            config.selectedVariant = decision.items[0].id;
-          }
-          sampleRUM('experiment', { source: config.id, target: config.selectedVariant });
-          // populate ttMETA with hlx experimentation details
-          window.ttMETA = window.ttMETA || [];
-          const experimentDetails = {
-            CampaignId: window.hlx.experiment.id,
-            CampaignName: window.hlx.experiment.experimentName,
-            OfferId: window.hlx.experiment.selectedVariant,
-            OfferName: window.hlx.experiment.variants[window.hlx.experiment.selectedVariant].label,
-          };
-          window.ttMETA.push(experimentDetails);
-          // add hlx experiment details as dynamic variables
-          // for Content Square integration
-          // eslint-disable-next-line no-underscore-dangle
-          if (window._uxa) {
-            for (const propName of Object.keys(experimentDetails)) {
-              // eslint-disable-next-line no-underscore-dangle
-              window._uxa.push(['trackDynamicVariable', { key: propName, value: experimentDetails[propName] }]);
-            }
-          }
-          if (config.selectedVariant !== 'control') {
-            const currentPath = window.location.pathname;
-            const pageIndex = config.variants.control.pages.indexOf(currentPath);
-            if (pageIndex >= 0) {
-              const page = config.variants[config.selectedVariant].pages[pageIndex];
-              if (page) {
-                const experimentPath = new URL(page, window.location.href).pathname.split('.')[0];
-                if (experimentPath && experimentPath !== currentPath) {
-                  await replaceInner(experimentPath, document.querySelector('main'));
-                  removeIrrelevantSections(document.querySelector('main'));
-                }
-              }
-            }
-          }
-        }
+        await loadAndRunExp(config, forcedExperiment, forcedVariant);
       }
     }
     const martech = usp.get('martech');
