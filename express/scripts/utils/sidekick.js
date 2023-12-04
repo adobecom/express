@@ -1,4 +1,4 @@
-=import { createTag, loadBlock } from '../utils.js';
+import { createTag, loadBlock } from '../utils.js';
 
 export function autoWidgetByUSP(name, callback) {
   const usp = new URLSearchParams(window.location.search);
