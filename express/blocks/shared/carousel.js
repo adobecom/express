@@ -186,12 +186,6 @@ export default async function buildCarousel(selector, parent, options = {}) {
   // Load CSS then build carousel
   parent.style.visibility = 'hidden';
   return new Promise((resolve) => {
-    if (window.isTestEnv) {
-      loadStyle('/express/blocks/shared/carousel.css');
-      onCarouselCSSLoad(selector, parent, options);
-      resolve();
-    }
-
     loadStyle('/express/blocks/shared/carousel.css', () => {
       onCarouselCSSLoad(selector, parent, options);
       resolve();

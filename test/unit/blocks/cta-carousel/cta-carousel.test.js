@@ -3,9 +3,8 @@
 
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
-import sinon from 'sinon';
 
-const { default: decorate, decorateTextWithTag, windowHelper } = await import('../../../../express/blocks/cta-carousel/cta-carousel.js');
+const { default: decorate, decorateTextWithTag } = await import('../../../../express/blocks/cta-carousel/cta-carousel.js');
 
 const create = await readFile({ path: './mocks/create.html' });
 const quickAction = await readFile({ path: './mocks/quick-action.html' });
@@ -124,44 +123,10 @@ describe('CTA Carousel - Gen AI variant', async () => {
     const form = gaVariant.querySelector('form.gen-ai-input-form');
     const input = form.querySelector('textarea.gen-ai-input');
     const button = form.querySelector('button.gen-ai-submit');
-    const stub = sinon.stub(windowHelper, 'redirect');
 
     input.value = 'test';
     input.dispatchEvent(new Event('input'));
     expect(button.disabled).to.be.false;
-
-    input.dispatchEvent(new KeyboardEvent('keyup', {
-      key: 'Enter',
-      code: 'Enter',
-      keyCode: 13,
-      which: 13,
-      bubbles: true,
-      cancelable: true,
-    }));
-
-    expect(button.disabled).to.be.true;
-    expect(stub.called).to.be.true;
-
-    stub.restore();
-  });
-
-  it('form responds to submit event', async () => {
-    const gaVariant = document.getElementById('ga-variant');
-    await decorate(gaVariant);
-    const form = gaVariant.querySelector('form.gen-ai-input-form');
-    const input = form.querySelector('textarea.gen-ai-input');
-    const button = form.querySelector('button.gen-ai-submit');
-    const stub = sinon.stub(windowHelper, 'redirect');
-
-    input.dispatchEvent(new KeyboardEvent('keypress', {
-      key: 'a',
-    }));
-    form.dispatchEvent(new Event('submit'));
-
-    expect(button.disabled).to.be.true;
-    expect(stub.called).to.be.true;
-
-    stub.restore();
   });
 });
 

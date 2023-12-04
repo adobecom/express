@@ -197,7 +197,7 @@ function loadNextVideo(block, payload) {
   }
 }
 
-function decorateSessionsCarousel(block, payload) {
+async function decorateSessionsCarousel(block, payload) {
   const thumbnailsContainer = createTag('div', { class: 'thumbnails-container' });
   block.append(thumbnailsContainer);
 
@@ -218,7 +218,7 @@ function decorateSessionsCarousel(block, payload) {
     });
   });
 
-  buildCarousel('.session', thumbnailsContainer);
+  await buildCarousel('.session', thumbnailsContainer);
   block.querySelectorAll('.session')[payload.sessionIndex].classList.add('active');
 }
 
@@ -271,7 +271,7 @@ function decorateInlineVideoPlayer(block, payload) {
   });
 }
 
-function decorateVideoPlayerMenu(block, payload) {
+async function decorateVideoPlayerMenu(block, payload) {
   const videoPlayerMenu = createTag('div', { class: 'video-player-menu' });
   const videoTitle = createTag('h3', { class: 'video-player-video-title' });
   const navButtons = createTag('div', { class: 'video-player-buttons' });
@@ -301,7 +301,7 @@ function decorateVideoPlayerMenu(block, payload) {
   });
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const payload = {
     sessionIndex: 0,
     videoIndex: 0,
@@ -346,7 +346,7 @@ export default function decorate(block) {
   block.innerHTML = '';
 
   // Rebuild the whole block properly.
-  decorateSessionsCarousel(block, payload);
+  await decorateSessionsCarousel(block, payload);
   decorateVideoPlayerSection(block);
   decorateInlineVideoPlayer(block, payload);
   decorateVideoPlayerMenu(block, payload);
