@@ -248,6 +248,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
       timeZone: 'UTC',
     });
 
+    const filteredTitle = title.replace(/(\s?)(｜|\|)(\s?Adobe\sExpress\s?)$/g, '');
     const imagePath = image.split('?')[0].split('_')[1];
     const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
     const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
@@ -264,7 +265,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
       ${pictureTag}
       </div>
       <div class="blog-hero-card-body">
-        <h3 class="blog-card-title">${title}</h3>
+        <h3 class="blog-card-title">${filteredTitle}</h3>
         <p class="blog-card-teaser">${teaser}</p>
         <p class="blog-card-date">${dateString}</p>
         <p class="blog-card-cta button-container">
@@ -275,7 +276,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
       $card.innerHTML = `<div class="blog-card-image">
         ${pictureTag}
         </div>
-        <h3 class="blog-card-title">${title}</h3>
+        <h3 class="blog-card-title">${filteredTitle}</h3>
         <p class="blog-card-teaser">${teaser}</p>
         <p class="blog-card-date">${dateString}</p>`;
       $cards.append($card);
