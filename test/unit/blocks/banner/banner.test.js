@@ -31,10 +31,6 @@ describe('Banner', () => {
     const button = banner.querySelector('a.button');
     expect(heading).to.exist;
     expect(button).to.exist;
-
-    // if more than 1 one CTA
-    const buttons = banner.querySelectorAll('a.button');
-    expect(buttons.length).to.be.at.least(2);
   });
 
   it('Banner light variant has correct elements', () => {
@@ -62,6 +58,8 @@ describe('Banner', () => {
 
     const button = banner.querySelector('a.button');
     expect(button.classList.contains('reverse')).to.be.true;
+    const buttons = banner.querySelectorAll('a.button');
+    expect(buttons.length).to.be.at.least(2);
   });
 
   it('If phone number exists', () => {
