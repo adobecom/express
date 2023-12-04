@@ -2356,12 +2356,7 @@ export async function loadSections(sections, isDoc) {
 function initSidekick() {
   const initPlugins = async () => {
     const { default: init } = await import('./utils/sidekick.js');
-    init({
-      createTag,
-      loadBlock,
-      loadScript,
-      loadStyle,
-    });
+    init();
   };
 
   if (document.querySelector('helix-sidekick')) {
