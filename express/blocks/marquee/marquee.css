@@ -182,6 +182,10 @@ body.no-desktop-brand-header header {
   content: url(/express/icons/play.svg);
 }
 
+.marquee.dark p.button-container a.primaryCTA::before {
+  filter: invert(100%) sepia(0%) saturate(1%) hue-rotate(172deg) brightness(110%) contrast(101%);
+}
+
 .marquee p.underline a {
   font-weight: normal;
   text-decoration: underline;

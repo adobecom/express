@@ -164,10 +164,8 @@ async function decorateCards(block, payload) {
         if (a.href && a.href.match('adobesparkpost.app.link')) {
           const btnUrl = new URL(a.href);
           if (placeholders?.['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
-            btnUrl.searchParams.set('search', cta.text);
             btnUrl.searchParams.set('q', cta.text);
             btnUrl.searchParams.set('category', 'templates');
-            btnUrl.searchParams.set('searchCategory', 'templates');
             a.href = decodeURIComponent(btnUrl.toString());
           }
           a.removeAttribute('title');

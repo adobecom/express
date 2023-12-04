@@ -2,7 +2,6 @@
 
 import {
   addAnimationToggle,
-  addSearchQueryToHref,
   createOptimizedPicture,
   createTag,
   decorateMain,
@@ -269,7 +268,7 @@ function populateTemplates($block, templates, props) {
       const $link = $linkContainer.querySelector(':scope a');
       if ($link) {
         const $a = createTag('a', {
-          href: $link.href ? addSearchQueryToHref($link.href) : '#',
+          href: $link.href || '#',
         });
 
         $a.append(...$tmplt.children);
