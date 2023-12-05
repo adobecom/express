@@ -1872,29 +1872,48 @@ async function buildAutoBlocks($main) {
 
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')) && getDevice() === 'mobile') {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
-    if (!BlockMediator.get('floatingCtasLoaded')) {
-      const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
-        if (e.newValue.deviceSupport === 'true') {
-          const buttonBlock = await initFloatingCTABuild(lastDiv);
+    const loadSplitFlow = async (payload) => {
+      if (payload.deviceSupport === 'true') {
+        const buttonBlock = await initFloatingCTABuild(lastDiv);
+
+        if (!payload.isMainThread) {
           await decorateBlock(buttonBlock);
           await loadBlock(buttonBlock);
-          BlockMediator.set('floatingCtasLoaded', true);
-          unsubscribe();
         }
 
-        if (e.newValue.deviceSupport === 'false') {
-          const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
-          if (!fragment) return;
+        BlockMediator.set('floatingCtasLoaded', true);
+      }
 
-          $main.append(fragment);
-          const block = fragment.querySelector('.sticky-promo-bar.block');
-          if (!block) return;
+      if (payload.deviceSupport === 'false') {
+        const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
+        if (!fragment) return;
 
+        $main.append(fragment);
+        const block = fragment.querySelector('.sticky-promo-bar.block');
+        if (!block) return;
+
+        if (!payload.isMainThread) {
           await loadBlock(block);
-
-          unsubscribe();
         }
-      });
+      }
+    };
+
+    if (!BlockMediator.get('floatingCtasLoaded')) {
+      const eligibilityChecked = BlockMediator.get('mobileBetaEligibility');
+      if (eligibilityChecked) {
+        await loadSplitFlow({
+          deviceSupport: eligibilityChecked.deviceSupport,
+          isMainThread: true,
+        });
+      } else {
+        const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
+          await loadSplitFlow({
+            deviceSupport: e.newValue.deviceSupport,
+            isMainThread: false,
+          });
+          unsubscribe();
+        });
+      }
     }
   }
 
