@@ -6,7 +6,7 @@ function correctCenterAlignment(plat) {
 }
 
 export default async function buildCarousel(selector, parent, options = {}) {
-  console.log('commenting code');
+  console.log('commenting gap code');
   loadStyle('/express/experiments/ccx0098/ch1/carousel/carousel.css');
   // Build the carousel HTML
   const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
@@ -16,44 +16,25 @@ export default async function buildCarousel(selector, parent, options = {}) {
   const container = createTag('div', { class: 'carousel-container' });
   const platform = createTag('div', { class: 'carousel-platform' });
 
-  const leftTrigger = createTag('div', { class: 'carousel-left-trigger' });
-  const rightTrigger = createTag('div', { class: 'carousel-right-trigger' });
-
-  // const faderLeft = createTag('div', { class: 'carousel-fader-left arrow-hidden' });
-  // const faderRight = createTag('div', { class: 'carousel-fader-right arrow-hidden' });
-
-  // const arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
-  // const arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
+  // const leftTrigger = createTag('div', { class: 'carousel-left-trigger' });
+  // const rightTrigger = createTag('div', { class: 'carousel-right-trigger' });
 
   platform.append(...carouselContent);
-  // platform.append(leftTrigger, ...carouselContent, rightTrigger);
-  // container.append(platform, faderLeft, faderRight);
   container.append(platform);
-  // faderLeft.append(arrowLeft);
-  // faderRight.append(arrowRight);
   parent.append(container);
 
   // If flex container has a gap, add negative margins to compensate
-  const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
-  if (gap !== 'normal') {
-    const gapInt = parseInt(gap.replace('px', ''), 10);
-    leftTrigger.style.marginRight = `-${gapInt + 1}px`;
-    rightTrigger.style.marginLeft = `-${gapInt + 1}px`;
-  }
+  // const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
+  // if (gap !== 'normal') {
+  //   const gapInt = parseInt(gap.replace('px', ''), 10);
+  //   leftTrigger.style.marginRight = `-${gapInt + 1}px`;
+  //   rightTrigger.style.marginLeft = `-${gapInt + 1}px`;
+  // }
 
   // Scroll the carousel by clicking on the controls
   const moveCarousel = (increment) => {
     platform.scrollLeft -= increment;
   };
-
-  // faderLeft.addEventListener('click', () => {
-  //   const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
-  //   moveCarousel(increment);
-  // });
-  // faderRight.addEventListener('click', () => {
-  //   const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
-  //   moveCarousel(-increment);
-  // });
 
   // Carousel loop functionality (if enabled)
   const stopScrolling = () => { // To prevent safari shakiness
@@ -108,9 +89,6 @@ export default async function buildCarousel(selector, parent, options = {}) {
   const setInitialState = (scrollable, opts) => {
     if (opts.infinityScrollEnabled) {
       infinityScroll([...carouselContent]);
-      // faderLeft.classList.remove('arrow-hidden');
-      // faderRight.classList.remove('arrow-hidden');
-      // platform.classList.add('left-fader', 'right-fader');
     }
 
     const onIntersect = ([entry], observer) => {
@@ -118,7 +96,6 @@ export default async function buildCarousel(selector, parent, options = {}) {
 
       if (opts.centerAlign) correctCenterAlignment(scrollable);
       if (opts.startPosition === 'right') moveCarousel(-scrollable.scrollWidth);
-      // if (!opts.infinityScrollEnabled) initToggleTriggers(container);
 
       observer.unobserve(scrollable);
     };
