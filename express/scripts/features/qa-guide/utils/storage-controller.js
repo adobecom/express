@@ -76,7 +76,6 @@ export function getQAConfig(key) {
   const sessionRecord = JSON.parse(sessionStorage.getItem('qa-record'));
 
   if (sessionRecord) {
-    console.log(sessionRecord);
     return sessionRecord.configs?.[key];
   }
 
