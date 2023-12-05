@@ -153,8 +153,10 @@ function decorateLink(link, path) {
   let valueInMap;
   if (!locale) {
     valueInMap = redirectMap.get(prefix)?.replaceAll('/', '') ?? '';
-    const regex = new RegExp(`${prefix}(?!.*${prefix})`);
-    href.replace(regex, valueInMap);
+    const index = href.lastIndexOf(prefix);
+    if (index > 0) {
+      href = href.substring(0, index) + valueInMap + href.substring(index + prefix.length);
+    }
     if (href.endsWith('/')) href = href.slice(0, -1);
   }
   link.href = `${href}${path}`;
