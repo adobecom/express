@@ -6,30 +6,14 @@ function correctCenterAlignment(plat) {
 }
 
 export default async function buildCarousel(selector, parent, options = {}) {
-  console.log('commenting gap code');
   loadStyle('/express/experiments/ccx0098/ch1/carousel/carousel.css');
-  // Build the carousel HTML
   const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
-
   carouselContent.forEach((el) => el.classList.add('carousel-element'));
-
   const container = createTag('div', { class: 'carousel-container' });
   const platform = createTag('div', { class: 'carousel-platform' });
-
-  // const leftTrigger = createTag('div', { class: 'carousel-left-trigger' });
-  // const rightTrigger = createTag('div', { class: 'carousel-right-trigger' });
-
   platform.append(...carouselContent);
   container.append(platform);
   parent.append(container);
-
-  // If flex container has a gap, add negative margins to compensate
-  // const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
-  // if (gap !== 'normal') {
-  //   const gapInt = parseInt(gap.replace('px', ''), 10);
-  //   leftTrigger.style.marginRight = `-${gapInt + 1}px`;
-  //   rightTrigger.style.marginLeft = `-${gapInt + 1}px`;
-  // }
 
   // Scroll the carousel by clicking on the controls
   const moveCarousel = (increment) => {
