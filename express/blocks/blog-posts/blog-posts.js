@@ -3,34 +3,28 @@
 import {
   createOptimizedPicture,
   createTag,
-  readBlockConfig,
-  getLanguage,
   fetchPlaceholders,
+  getConfig,
   getLocale,
-// eslint-disable-next-line import/no-unresolved
+  readBlockConfig,
 } from '../../scripts/utils.js';
 
 async function fetchBlogIndex(config) {
-  const prefix = getLocale(window.location);
+  const { prefix } = getConfig().locale;
   let currentLocaleProcessed = false;
-  const currentLocalePrefix = (prefix === 'us') ? '' : `/${prefix}`;
   const consolidatedJsonData = [];
   if (config.featuredOnly) {
     const linkLocales = [];
     const urls = [];
     const links = config.featured;
     for (let i = 0; i < links.length; i += 1) {
-      let localePrefix = getLocale(new URL(links[i]));
+      const localePrefix = getLocale(getConfig().locales, new URL(links[i]).pathname).prefix;
       if (localePrefix === prefix) {
         currentLocaleProcessed = true;
       }
-      if (localePrefix === 'us') {
-        localePrefix = '';
-      }
       if (!linkLocales.includes(localePrefix)) {
         linkLocales.push(localePrefix);
-        const prefixedLocale = localePrefix === '' ? '' : `/${localePrefix}`;
-        urls.push(`${prefixedLocale}/express/learn/blog/query-index.json`);
+        urls.push(`${localePrefix}/express/learn/blog/query-index.json`);
       }
     }
     const resp = await Promise.all(urls.map((url) => fetch(url)
@@ -39,7 +33,7 @@ async function fetchBlogIndex(config) {
     resp.forEach((item) => consolidatedJsonData.push(...item.data));
   }
   if (!currentLocaleProcessed) {
-    const resp = await fetch(`${currentLocalePrefix}/express/learn/blog/query-index.json`);
+    const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
     const res = await resp.json();
     consolidatedJsonData.push(...res.data);
   }
@@ -52,8 +46,10 @@ async function fetchBlogIndex(config) {
     }
     byPath[post.path.split('.')[0]] = post;
   });
-  const index = { data: consolidatedJsonData, byPath };
-  return (index);
+  return {
+    data: consolidatedJsonData,
+    byPath,
+  };
 }
 
 function getFeatured(index, urls) {
@@ -66,28 +62,27 @@ function getFeatured(index, urls) {
     }
   });
 
-  return (results);
+  return results;
 }
 
 function isDuplicate(path) {
-  const displayed = window.blogPosts || [];
-  const alreadyDisplayed = displayed.includes(path);
-  displayed.push(path);
-  window.blogPosts = displayed;
-  return (alreadyDisplayed);
+  return window.blogPosts.includes(path);
 }
 
 async function filterBlogPosts(config) {
   if (!window.blogIndex) {
     window.blogIndex = await fetchBlogIndex(config);
   }
+
   const result = [];
   const index = window.blogIndex;
   if (config.featured) {
     if (!Array.isArray(config.featured)) config.featured = [config.featured];
     const featured = getFeatured(index, config.featured);
     result.push(...featured);
-    featured.forEach((post) => isDuplicate(post.path));
+    featured.forEach((post) => {
+      if (!isDuplicate(post.path)) window.blogPosts.push(post.path);
+    });
   }
 
   if (!config.featuredOnly) {
@@ -104,9 +99,8 @@ async function filterBlogPosts(config) {
         f[name] = v.map((e) => e.toLowerCase().trim());
       }
     }
-
+    const limit = config['page-size'] || 12;
     let numMatched = 0;
-
     /* filter and ignore if already in result */
     const feed = index.data.filter((post) => {
       let matchedAll = true;
@@ -122,8 +116,12 @@ async function filterBlogPosts(config) {
           break;
         }
       }
-      if (matchedAll && numMatched < 12) {
-        matchedAll = !isDuplicate(post.path);
+      if (matchedAll && numMatched < limit) {
+        if (!isDuplicate(post.path)) {
+          window.blogPosts.push(post.path);
+        } else {
+          matchedAll = false;
+        }
       }
       if (matchedAll) numMatched += 1;
       return (matchedAll);
@@ -229,7 +227,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const placeholders = await fetchPlaceholders();
   let readMoreString = placeholders['read-more'];
   if (readMoreString === undefined || readMoreString === '') {
-    const locale = getLocale(window.location);
+    const locale = getConfig().locale.region;
     const readMore = {
       us: 'Read More',
       uk: 'Read More',
@@ -246,7 +244,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
       title, teaser, image,
     } = post;
     const publicationDate = new Date(post.date * 1000);
-    const language = getLanguage(getLocale(window.location));
+    const language = getConfig().locale.ietf;
     const dateString = publicationDate.toLocaleDateString(language, {
       day: '2-digit',
       month: '2-digit',
@@ -254,6 +252,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
       timeZone: 'UTC',
     });
 
+    const filteredTitle = title.replace(/(\s?)(｜|\|)(\s?Adobe\sExpress\s?)$/g, '');
     const imagePath = image.split('?')[0].split('_')[1];
     const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
     const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
@@ -270,7 +269,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
       ${pictureTag}
       </div>
       <div class="blog-hero-card-body">
-        <h3 class="blog-card-title">${title}</h3>
+        <h3 class="blog-card-title">${filteredTitle}</h3>
         <p class="blog-card-teaser">${teaser}</p>
         <p class="blog-card-date">${dateString}</p>
         <p class="blog-card-cta button-container">
@@ -281,7 +280,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
       $card.innerHTML = `<div class="blog-card-image">
         ${pictureTag}
         </div>
-        <h3 class="blog-card-title">${title}</h3>
+        <h3 class="blog-card-title">${filteredTitle}</h3>
         <p class="blog-card-teaser">${teaser}</p>
         <p class="blog-card-date">${dateString}</p>`;
       $cards.append($card);

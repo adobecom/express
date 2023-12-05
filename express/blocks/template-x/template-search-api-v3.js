@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { fetchPlaceholders, getLanguage } from '../../scripts/utils.js';
+import { fetchPlaceholders, getConfig } from '../../scripts/utils.js';
 import { memoize } from '../../scripts/hofs.js';
 
 // supported by content api
@@ -66,14 +66,16 @@ function formatFilterString(filters) {
     str += `&filters=topics==${topic.split(',').map((t) => t.trim()).join(',')}`;
   });
   // locale needs backward compatibility with old api
+  const confLocales = getConfig().locales;
   if (locales) {
     const langFilter = extractLangs(locales)
-      .map((l) => getLanguage(l))
+      .map((l) => confLocales[l === 'en' ? '' : l]?.ietf)
       .filter((l) => supportedLanguages.includes(l))
       .join(',');
     if (langFilter) str += `&filters=language==${langFilter}`;
 
-    // No Region Filter. We still have Region Boosting
+    // No Region Filter as template region tagging is still inconsistent.
+    // We still have Region Boosting via x-express-ims-region-code header
     // const regionFilter = extractRegions(locales).join(',');
     // if (regionFilter) str += `&filters=applicableRegions==${regionFilter}`;
   }
@@ -103,22 +105,26 @@ async function fetchSearchUrl({
     'Oldest to Newest': '&orderBy=availabilityDate',
   }[sort] || sort || '';
   const qParam = q && q !== '{{q}}' ? `&q=${q}` : '';
-  const url = encodeURI(
+  let url = encodeURI(
     `${base}?${collectionIdParam}${queryParam}${qParam}${limitParam}${startParam}${sortParam}${filterStr}`,
   );
 
-  const headers = {};
-
   const langs = extractLangs(filters.locales);
   if (langs.length === 0) {
-    return memoizedFetch(url, { headers });
+    return memoizedFetch(url);
   }
-  const prefLang = getLanguage(langs[0]);
+
+  // temporarily adding extra dummy queryParams to avoid cache collision
+  const headers = {};
+  const prefLang = getConfig().locales?.[langs[0] === 'en' ? '' : langs[0]]?.ietf;
   const [prefRegion] = extractRegions(filters.locales);
   headers['x-express-ims-region-code'] = prefRegion; // Region Boosting
-  if (supportedLanguages.includes(prefLang)) {
+  url += `&regionHeader=${prefRegion}`; // TODO: remove once CDN includes headers when calculating cache key
+  if (prefLang && supportedLanguages.includes(prefLang)) {
     headers['x-express-pref-lang'] = prefLang; // Language Boosting
+    url += `&prefLangHeader=${prefLang}`; // TODO: remove once CDN includes headers when calculating cache key
   }
+
   const res = await memoizedFetch(url, { headers });
   if (!res) return res;
   if (langs.length > 1 && supportedLanguages.includes(prefLang)) {

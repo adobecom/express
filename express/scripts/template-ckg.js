@@ -1,7 +1,6 @@
 import {
   titleCase,
-  getLocale,
-  getMetadata,
+  getMetadata, getConfig,
 } from './utils.js';
 
 import {
@@ -53,8 +52,8 @@ function matchCKGResult(ckgData, pageData) {
   const ckgMatch = pageData.ckgid === ckgData.ckgID;
   const pageDataTasks = pageData.tasks ?? pageData.templateTasks;
   const taskMatch = ckgData.tasks?.toLowerCase() === pageDataTasks?.toLowerCase();
-  const currentLocale = getLocale(window.location);
-  const pageLocale = pageData.url.split('/')[1] === 'express' ? 'us' : pageData.url.split('/')[1];
+  const currentLocale = getConfig().locale.prefix.replace('/', '');
+  const pageLocale = pageData.url.split('/')[1] === 'express' ? '' : pageData.url.split('/')[1];
   const sameLocale = currentLocale === pageLocale;
 
   return sameLocale && ckgMatch && taskMatch;
@@ -84,9 +83,9 @@ async function updateSEOLinkList(container, linkPill, list) {
     if (leftTrigger) container.append(leftTrigger);
 
     list.forEach((d) => {
-      const currentLocale = getLocale(window.location);
+      const currentLocale = getConfig().locale.prefix.replace('/', '');
       const templatePageData = templatePages.find((p) => {
-        const targetLocale = /^[a-z]{2}$/.test(p.url.split('/')[1]) ? p.url.split('/')[1] : 'us';
+        const targetLocale = /^[a-z]{2}$/.test(p.url.split('/')[1]) ? p.url.split('/')[1] : '';
         const isLive = p.live === 'Y';
         const titleMatch = p['short-title']?.toLowerCase() === d.childSibling?.toLowerCase();
         const localeMatch = currentLocale === targetLocale;
@@ -148,13 +147,12 @@ async function updateLinkList(container, linkPill, list) {
         .join(' ').trim();
       let displayText = formatLinkPillText(d);
 
-      const locale = getLocale(window.location);
-      const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-      const localeColumnString = locale === 'us' ? 'EN' : locale.toUpperCase();
+      const prefix = getConfig().locale.prefix.replace('/', '');
+      const localeColumnString = prefix === '' ? 'EN' : prefix.toUpperCase();
       let useSearchPill = true;
 
       if (pillsMapping) {
-        const alternateText = pillsMapping.find((row) => window.location.pathname === `${urlPrefix}${row['Express SEO URL']}` && d.ckgID === row['CKG Pill ID']);
+        const alternateText = pillsMapping.find((row) => window.location.pathname === `${prefix}${row['Express SEO URL']}` && d.ckgID === row['CKG Pill ID']);
         const hasAlternateTextForLocale = alternateText && alternateText[`${localeColumnString}`];
         if (hasAlternateTextForLocale) {
           displayText = alternateText[`${localeColumnString}`];
@@ -163,7 +161,7 @@ async function updateLinkList(container, linkPill, list) {
           }
         }
 
-        useSearchPill = (hasAlternateTextForLocale || locale === 'us') && d.ckgID;
+        useSearchPill = (hasAlternateTextForLocale || prefix === '') && d.ckgID;
       }
 
       if (templatePageData) {
@@ -176,7 +174,7 @@ async function updateLinkList(container, linkPill, list) {
         const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}`;
         const clone = linkPill.cloneNode(true);
 
-        clone.innerHTML = clone.innerHTML.replace('/express/templates/default', `${urlPrefix}/express/templates/search?${searchParams}`);
+        clone.innerHTML = clone.innerHTML.replace('/express/templates/default', `${prefix}/express/templates/search?${searchParams}`);
         clone.innerHTML = clone.innerHTML.replaceAll('Default', displayText);
         searchLinks.push(clone);
       }

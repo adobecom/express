@@ -1,4 +1,4 @@
-import { createTag, getLocale, titleCase } from '../../scripts/utils.js';
+import { createTag, getConfig, titleCase } from '../../scripts/utils.js';
 import { getDataWithContext } from '../../scripts/browse-api-controller.js';
 import buildCarousel from '../shared/carousel.js';
 
@@ -19,7 +19,6 @@ export default async function decorate(block) {
   block.style.visibility = 'hidden';
 
   const payloadContext = { urlPath: block.textContent.trim() || window.location.pathname };
-
   const ckgResult = await getDataWithContext(payloadContext);
   if (!ckgResult) return;
   const pills = ckgResult?.queryResults?.[0]?.facets?.[0]?.buckets;
@@ -29,9 +28,8 @@ export default async function decorate(block) {
 
   pills.forEach((pill) => {
     const colorHex = hexCodes[pill.canonicalName];
-    const locale = getLocale(window.location);
-    const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-    if (pill.value.startsWith(`${urlPrefix}/express/colors/search`)) {
+    const { prefix } = getConfig().locale;
+    if (pill.value.startsWith(`${prefix}/express/colors/search`)) {
       return;
     }
 

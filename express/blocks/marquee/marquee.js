@@ -1,10 +1,9 @@
 import {
   createTag,
   toClassName,
-  getLocale,
   addHeaderSizing,
   getIconElement,
-  fetchPlaceholders,
+  fetchPlaceholders, getConfig,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -385,7 +384,7 @@ export default async function decorate(block) {
     await formatSalesPhoneNumber(phoneNumberTags);
   }
 
-  if (getLocale(window.location) === 'jp') {
+  if (getConfig().locale.region === 'jp') {
     addHeaderSizing(block);
   }
 

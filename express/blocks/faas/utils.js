@@ -1,7 +1,7 @@
 /* global $ */
 
 import {
-  loadCSS,
+  loadStyle,
   loadScript,
   getHelixEnv,
   createTag,
@@ -33,7 +33,7 @@ export const getFaasHostSubDomain = (environment) => {
 export const faasHostUrl = `https://${getFaasHostSubDomain()}apps.enterprise.adobe.com`;
 const faasCurrentJS = `${faasHostUrl}/faas/service/jquery.faas-current.js`;
 export const loadFaasFiles = () => {
-  loadCSS('/express/blocks/faas/faas.css');
+  loadStyle('/express/blocks/faas/faas.css');
   return Promise.all([
     loadScript('/express/scripts/libs/jquery-3.6.0.min.js').then(() => loadScript(faasCurrentJS)),
   ]);
