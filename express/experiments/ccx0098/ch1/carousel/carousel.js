@@ -58,7 +58,7 @@ function correctCenterAlignment(plat) {
 
 export default async function buildCarousel(selector, parent, options = {}) {
   // Load CSS
-  loadStyle('/express/blocks/shared/carousel.css');
+  loadStyle('../carousel/carousel.css');
   // Build the carousel HTML
   const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
 
