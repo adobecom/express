@@ -22,18 +22,42 @@ const resetQAProgress = (widget) => {
   window.location.search = usp.toString();
 };
 
+const getTextWithoutChild = (element) => {
+  let text = '';
+
+  for (let i = 0; i < element.childNodes.length; i += 1) {
+    if (element.childNodes[i].nodeType === Node.TEXT_NODE) {
+      text += element.childNodes[i].textContent;
+    }
+  }
+
+  return text.trim();
+};
+
 const buildPayload = (pages) => pages.map((p) => {
-  const pageLink = p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type').textContent.trim();
+  const pageLink = p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type').innerText.trim();
   const pageUrl = new URL(pageLink);
   const targetUrl = pageUrl ? window.location.host + (pageUrl.pathname) : pageLink;
 
-  return {
+  const pagePackage = {
     link: targetUrl || null,
-    items: Array.from(p.querySelectorAll('li')).map((li, idx) => ({
-      text: li.textContent.trim(),
-      idx,
-    })),
+    items: Array.from(p.querySelectorAll(':scope > div:last-of-type > ul > li')).map((li, idx) => {
+      const item = {
+        text: getTextWithoutChild(li),
+        idx,
+      };
+
+      const nestedLis = li.querySelectorAll('ul > li');
+
+      if (nestedLis?.length) {
+        item.assertions = Array.from(nestedLis).map((nl) => nl.textContent.trim());
+      }
+
+      return item;
+    }),
   };
+
+  return pagePackage;
 });
 
 const getQAIndex = () => {
@@ -63,14 +87,8 @@ const logQARecord = () => {
   sessionStorage.removeItem('qa-record');
 };
 
-const buildQAWidget = (index, payload) => {
-  const progress = createTag('div', { class: 'qa-progress' }, `Page ${index + 1} / ${payload.length}`);
-  const closeBtn = createTag('a', { class: 'qa-widget-close' }, '✕');
-  const qaWidget = createTag('div', { class: 'qa-widget' });
-  const qaWidgetForm = createTag('form', { class: 'qa-widget-form' });
+const populateCheckboxes = (qaWidgetForm, payload, index) => {
   const checkboxesContainer = createTag('div', { class: 'checkboxes-container' });
-  const checkboxes = [];
-
   const checkboxAll = createTag('input', {
     id: 'checkbox-all',
     type: 'checkbox',
@@ -78,6 +96,7 @@ const buildQAWidget = (index, payload) => {
   });
   const checkboxAllLabel = createTag('label', { for: 'checkbox-all' }, 'Check all');
   const checkboxAllWrapper = createTag('div', { class: 'checkbox-all' });
+  const checkboxes = [];
 
   payload[index].items.forEach((item, i) => {
     const checkbox = createTag('input', {
@@ -87,7 +106,7 @@ const buildQAWidget = (index, payload) => {
       'data-idx': item.idx,
     });
     const checkLabel = createTag('label', { for: `checkbox-${i + 1}` }, item.text);
-    const checkboxWrapper = createTag('div');
+    const checkboxWrapper = createTag('div', { class: 'checkbox-wrapper' });
     checkboxWrapper.append(checkbox, checkLabel);
     checkboxesContainer.append(checkboxWrapper);
     checkboxes.push(checkbox);
@@ -95,6 +114,13 @@ const buildQAWidget = (index, payload) => {
     checkbox.addEventListener('change', () => {
       checkboxAll.checked = checkboxes.every((cb) => cb.checked);
     });
+
+    if (item.assertions) {
+      import('./utils/assertion.js').then((mod) => {
+        const runAssertions = mod.default;
+        runAssertions(checkbox, item);
+      });
+    }
   });
 
   if (checkboxes.length) {
@@ -103,6 +129,23 @@ const buildQAWidget = (index, payload) => {
   } else {
     qaWidgetForm.append(checkboxesContainer);
   }
+
+  if (checkboxes.length) {
+    checkboxAll.addEventListener('change', () => {
+      checkboxes.forEach((cb) => {
+        cb.checked = checkboxAll.checked;
+      });
+    });
+  }
+};
+
+const buildQAWidget = (index, payload) => {
+  const progress = createTag('div', { class: 'qa-progress' }, `Page ${index + 1} / ${payload.length}`);
+  const closeBtn = createTag('a', { class: 'qa-widget-close' }, '✕');
+  const qaWidget = createTag('div', { class: 'qa-widget' });
+  const qaWidgetForm = createTag('form', { class: 'qa-widget-form' });
+
+  populateCheckboxes(qaWidgetForm, payload, index);
 
   const noteArea = createTag('textarea', {
     style: 'height: 88px; width: 200px;',
@@ -135,14 +178,6 @@ const buildQAWidget = (index, payload) => {
 
   qaWidget.append(closeBtn, progress, qaWidgetForm);
   document.body.append(qaWidget);
-
-  if (checkboxes.length) {
-    checkboxAll.addEventListener('change', () => {
-      checkboxes.forEach((cb) => {
-        cb.checked = checkboxAll.checked;
-      });
-    });
-  }
 };
 
 const loadQAStory = async (resp) => {
