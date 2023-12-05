@@ -5,58 +5,8 @@ function correctCenterAlignment(plat) {
   plat.parentElement.style.maxWidth = `${plat.offsetWidth}px`;
 }
 
-// export function initToggleTriggers(parent) {
-//   console.log('mobile-drawer carousel');
-//   if (!parent) return;
-
-//   const isInHiddenSection = () => {
-//     const parentSection = parent.closest('.section');
-//     if (!parentSection) return false;
-
-//     return parentSection.dataset.toggle && parentSection.style.display === 'none';
-//   };
-
-  // const leftControl = parent.querySelector('.carousel-fader-left');
-  // const rightControl = parent.querySelector('.carousel-fader-right');
-  // const leftTrigger = parent.querySelector('.carousel-left-trigger');
-  // const rightTrigger = parent.querySelector('.carousel-right-trigger');
-  // const platform = parent.querySelector('.carousel-platform');
-
-  // intersection observer to toggle right arrow and gradient
-  // const onSlideIntersect = (entries) => {
-  //   if (isInHiddenSection()) return;
-
-  //   entries.forEach((entry) => {
-  //     if (entry.target === leftTrigger) {
-  //       if (entry.isIntersecting) {
-  //         leftControl.classList.add('arrow-hidden');
-  //         platform.classList.remove('left-fader');
-  //       } else {
-  //         leftControl.classList.remove('arrow-hidden');
-  //         platform.classList.add('left-fader');
-  //       }
-  //     }
-
-  //     if (entry.target === rightTrigger) {
-  //       if (entry.isIntersecting) {
-  //         rightControl.classList.add('arrow-hidden');
-  //         platform.classList.remove('right-fader');
-  //       } else {
-  //         rightControl.classList.remove('arrow-hidden');
-  //         platform.classList.add('right-fader');
-  //       }
-  //     }
-  //   });
-  // };
-
-  // const options = { threshold: 0, root: parent };
-  // const slideObserver = new IntersectionObserver(onSlideIntersect, options);
-  // slideObserver.observe(leftTrigger);
-  // slideObserver.observe(rightTrigger);
-  // todo: should unobserve triggers where/when appropriate...
-// }
-
 export default async function buildCarousel(selector, parent, options = {}) {
+  console.log('commenting code');
   loadStyle('/express/experiments/ccx0098/ch1/carousel/carousel.css');
   // Build the carousel HTML
   const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
@@ -69,16 +19,18 @@ export default async function buildCarousel(selector, parent, options = {}) {
   const leftTrigger = createTag('div', { class: 'carousel-left-trigger' });
   const rightTrigger = createTag('div', { class: 'carousel-right-trigger' });
 
-  const faderLeft = createTag('div', { class: 'carousel-fader-left arrow-hidden' });
-  const faderRight = createTag('div', { class: 'carousel-fader-right arrow-hidden' });
+  // const faderLeft = createTag('div', { class: 'carousel-fader-left arrow-hidden' });
+  // const faderRight = createTag('div', { class: 'carousel-fader-right arrow-hidden' });
 
-  const arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
-  const arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
+  // const arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
+  // const arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
 
-  platform.append(leftTrigger, ...carouselContent, rightTrigger);
-  container.append(platform, faderLeft, faderRight);
-  faderLeft.append(arrowLeft);
-  faderRight.append(arrowRight);
+  platform.append(...carouselContent);
+  // platform.append(leftTrigger, ...carouselContent, rightTrigger);
+  // container.append(platform, faderLeft, faderRight);
+  container.append(platform);
+  // faderLeft.append(arrowLeft);
+  // faderRight.append(arrowRight);
   parent.append(container);
 
   // If flex container has a gap, add negative margins to compensate
