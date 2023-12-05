@@ -1,12 +1,18 @@
 onmessage = (e) => {
   const startTime = performance.now();
-  const iterations = e.data;
-  let result = 0;
-  for (let i = 0; i < iterations; i += 1) {
-    // eslint-disable-next-line no-unused-vars
-    result += Math.random() * Math.random();
-  }
+  const input = e.data;
+  const numsArr = Array.from({ length: input + 1 }, () => true);
 
+  const primeNumbers = [];
+  for (let i = 2; i <= input; i += 1) {
+    if (numsArr[i]) {
+      primeNumbers.push(i);
+
+      for (let j = i + i; j <= input; j += i) {
+        numsArr[j] = false;
+      }
+    }
+  }
   const endTime = performance.now();
   postMessage(endTime - startTime);
 };

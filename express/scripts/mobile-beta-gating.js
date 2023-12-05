@@ -1,6 +1,9 @@
 import BlockMediator from './block-mediator.min.js';
 import { getMobileOperatingSystem } from './utils.js';
 
+const maxExecutionTimeAllowed = 450;
+const TOTAL_PRIME_NUMBER = 10000;
+
 function isIOS16AndUp() {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
@@ -68,10 +71,10 @@ function getCookie(name) {
 function runBenchmark() {
   if (window.Worker) {
     const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
-    benchmarkWorker.postMessage(10000000);
+    benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
     benchmarkWorker.onmessage = (e) => {
       const criterion = {
-        cpuSpeedPass: e.data <= 600,
+        cpuSpeedPass: e.data <= maxExecutionTimeAllowed,
       };
 
       if (getMobileOperatingSystem() === 'android') {
