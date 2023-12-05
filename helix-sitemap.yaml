@@ -115,6 +115,11 @@ sitemaps:
         destination: /de/express/blog/sitemap.xml
         hreflang: de
         alternate: /de/{path}
+      india:
+        source: /in/express/learn/blog/query-index.json
+        destination: /in/express/blog/sitemap.xml
+        hreflang: en-IN
+        alternate: /in/{path}
       italy:
         source: /it/express/learn/blog/query-index.json
         destination: /it/express/blog/sitemap.xml
