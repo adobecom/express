@@ -1550,11 +1550,12 @@ export async function getExperimentConfig(experimentId) {
   }
 }
 
-async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
+async function loadAndRunExp(config, forcedExperiment, forcedVariant, usp) {
   const promises = [import('./experiment.js')];
   if (getMetadata('aepaudience') === 'on') {
     // only aep exps: rush alloy thru launch
     promises.push(loadScript('/express/scripts/instrument.js', 'module'));
+    const t1 = performance.now();
     let alloyLoadingResolver;
     window.alloyLoader = new Promise((resolve) => {
       alloyLoadingResolver = resolve;
@@ -1562,21 +1563,21 @@ async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
     window.addEventListener('alloy_sendEvent', (e) => {
       // fired by launch loaded by martech loaded by instrument
       if (e.detail.type === 'pageView') {
+        // eslint-disable-next-line no-console
+        console.log(`Alloy loaded in ${performance.now() - t1}`);
         window.alloyLoaded = true;
         alloyLoadingResolver(e.detail.result);
       }
     });
     // tolerate max 5s for exp overheads
+    const MAX_WAIT = usp.get('aepwait') === 'on' ? 15000 : 5000;
     setTimeout(() => {
       if (!window.alloyLoaded) {
-        // window.lana.log('Alloy failed to load', {
-        //   errorType: 'e',
-        // });
         // eslint-disable-next-line no-console
-        console.error('Alloy failed to load');
+        console.error(`Alloy failed to load, waited ${performance.now() - t1}`);
         alloyLoadingResolver();
       }
-    }, 5000);
+    }, MAX_WAIT);
   }
   const [{ runExps }] = await Promise.all(promises);
   await runExps(config, forcedExperiment, forcedVariant);
@@ -1595,7 +1596,7 @@ async function decorateTesting() {
     if (experiment) {
       const config = await getExperimentConfig(experiment);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
-        await loadAndRunExp(config, forcedExperiment, forcedVariant);
+        await loadAndRunExp(config, forcedExperiment, forcedVariant, usp);
       }
     }
     const martech = usp.get('martech');
