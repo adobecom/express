@@ -1,6 +1,8 @@
 import BlockMediator from './block-mediator.min.js';
 import { getMobileOperatingSystem } from './utils.js';
 
+// todo: need to determine the final source of this whitelist
+const eligibleAndroidDevices = [];
 const maxExecutionTimeAllowed = 450;
 const TOTAL_PRIME_NUMBER = 10000;
 
@@ -25,11 +27,6 @@ function isOfficiallySupportedDevice() {
   }
 
   if (getMobileOperatingSystem() === 'android') {
-    // todo: need to determine the final source of this list
-    const eligibleAndroidDevices = [
-
-    ];
-
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
     const regex = /Android.+; ([^;]+)\) AppleWebKit\//;
