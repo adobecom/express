@@ -1,4 +1,4 @@
-import buildCarousel from '../../../../blocks/shared/carousel.js';
+import buildCarousel from '../carousel/carousel.js';
 
 import {
   getIcon,
