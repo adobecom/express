@@ -1553,7 +1553,8 @@ export async function getExperimentConfig(experimentId) {
 async function loadAndRunExp(config, forcedExperiment, forcedVariant, usp) {
   const promises = [import('./experiment.js')];
   if (getMetadata('aepaudience') === 'on') {
-    // only aep exps: rush alloy thru launch
+    // need gnav ims asap: alloy waits on primaryProfileInfo
+    loadGnav();
     promises.push(loadScript('/express/scripts/instrument.js', 'module'));
     const t1 = performance.now();
     let alloyLoadingResolver;
