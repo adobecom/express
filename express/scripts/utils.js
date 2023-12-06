@@ -1550,10 +1550,25 @@ export async function getExperimentConfig(experimentId) {
   }
 }
 
-async function loadAndRunExp(config, forcedExperiment, forcedVariant, usp) {
+function loadIMS() {
+  window.adobeid = {
+    client_id: 'MarvelWeb3',
+    scope: 'AdobeID,openid',
+    locale: getConfig().locale.region,
+    environment: 'prod',
+  };
+  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
+    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+  } else {
+    loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
+    window.adobeid.environment = 'stg1';
+  }
+}
+
+async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   const promises = [import('./experiment.js')];
   if (getMetadata('aepaudience') === 'on') {
-    // only aep exps: rush alloy thru launch
+    loadIMS(); // rush ims to unblock alloy without loading gnav
     promises.push(loadScript('/express/scripts/instrument.js', 'module'));
     const t1 = performance.now();
     let alloyLoadingResolver;
@@ -1570,14 +1585,15 @@ async function loadAndRunExp(config, forcedExperiment, forcedVariant, usp) {
       }
     });
     // tolerate max 5s for exp overheads
-    const MAX_WAIT = usp.get('aepwait') === 'on' ? 15000 : 5000;
     setTimeout(() => {
       if (!window.alloyLoaded) {
         // eslint-disable-next-line no-console
         console.error(`Alloy failed to load, waited ${performance.now() - t1}`);
         alloyLoadingResolver();
+        window.delay_preload_product = false;
       }
-    }, MAX_WAIT);
+    }, 5000);
+    window.delay_preload_product = true;
   }
   const [{ runExps }] = await Promise.all(promises);
   await runExps(config, forcedExperiment, forcedVariant);
@@ -1596,7 +1612,7 @@ async function decorateTesting() {
     if (experiment) {
       const config = await getExperimentConfig(experiment);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
-        await loadAndRunExp(config, forcedExperiment, forcedVariant, usp);
+        await loadAndRunExp(config, forcedExperiment, forcedVariant);
       }
     }
     const martech = usp.get('martech');
@@ -2442,7 +2458,7 @@ export async function loadArea(area = document) {
   await lazy;
 
   const { default: loadDelayed } = await import('./delayed.js');
-  loadDelayed(8000);
+  loadDelayed(10000);
 }
 
 export function getMobileOperatingSystem() {

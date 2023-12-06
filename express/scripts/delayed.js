@@ -20,6 +20,6 @@ export default function loadDelayed(DELAY = 3000) {
     setTimeout(() => {
       loadExpressProduct();
       resolve();
-    }, DELAY);
+    }, window.delay_preload_product ? DELAY * 2 : DELAY);
   });
 }
