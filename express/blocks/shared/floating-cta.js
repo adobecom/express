@@ -98,9 +98,10 @@ export function initLottieArrow(lottieScrollButton, floatButtonWrapper, scrollAn
 function makeCTAFromSheet(block, data) {
   const audience = block.querySelector(':scope > div').textContent.trim();
   const audienceSpecificUrl = audience && ['desktop', 'mobile'].includes(audience) ? data.mainCta[`${audience}Href`] : null;
+  const audienceSpecificText = audience && ['desktop', 'mobile'].includes(audience) ? data.mainCta[`${audience}Text`] : null;
   const buttonContainer = createTag('div', { class: 'button-container' });
-  const ctaFromSheet = createTag('a', { href: audienceSpecificUrl || data.mainCta.href, title: data.mainCta.text });
-  ctaFromSheet.textContent = data.mainCta.text;
+  const ctaFromSheet = createTag('a', { href: audienceSpecificUrl || data.mainCta.href, title: audienceSpecificText || data.mainCta.text });
+  ctaFromSheet.textContent = audienceSpecificText || data.mainCta.text;
   buttonContainer.append(ctaFromSheet);
   block.append(buttonContainer);
 
@@ -331,6 +332,14 @@ export async function collectFloatingButtonData() {
 
     if (key === 'mobile cta link') {
       data.mainCta.mobileHref = value;
+    }
+
+    if (key === 'desktop cta text') {
+      data.mainCta.desktopText = value;
+    }
+
+    if (key === 'mobile cta text') {
+      data.mainCta.mobileText = value;
     }
 
     if (key === 'main cta link') {
