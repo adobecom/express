@@ -7,10 +7,6 @@ import {
   getDataWithContext,
 } from './browse-api-controller.js';
 
-import {
-  constructTargetPath,
-} from './template-redirect.js';
-
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
 import { initToggleTriggers } from '../blocks/shared/carousel.js';
 
@@ -38,6 +34,7 @@ async function fetchLinkList() {
             parent: formattedTasks,
             ckgID: ckgItem.canonicalName,
             displayValue: ckgItem.displayValue,
+            value: ckgItem.value,
           };
         });
       }
@@ -108,6 +105,7 @@ async function updateLinkList(container, linkPill, list) {
 
   if (list && templatePages) {
     list.forEach((d) => {
+      const { prefix } = getConfig().locale;
       const topics = getMetadata('topics') !== '" "' ? `${getMetadata('topics')?.replace(/[$@%"]/g, '')}` : '';
       const topicsQuery = `${topics} ${d.displayValue.toLowerCase()}`.split(' ')
         .filter((item, i, allItems) => i === allItems.indexOf(item))
@@ -116,13 +114,14 @@ async function updateLinkList(container, linkPill, list) {
         .replace(currentTasksX, '')
         .trim();
       const templatePageData = templatePages.find((p) => p.live === 'Y' && p.url === constructTargetPath(topicsQuery, currentTasks, currentTasksX));
+      const templatePageData = templatePages.find((p) => p.live === 'Y' && p.url === `${prefix}${d.pathname}`);
       const displayText = d.displayValue;
-      const prefix = getConfig().locale.prefix.replace('/', '');
 
       if (templatePageData) {
         const clone = replaceLinkPill(linkPill, templatePageData);
         if (clone) pageLinks.push(clone);
       } else {
+        // fixme: we need single page search UX
         const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}`;
         const clone = linkPill.cloneNode(true);
 
@@ -176,6 +175,7 @@ async function lazyLoadLinklist() {
           shortTitle: getMetadata('short-title'),
           tasks: row.parent,
           displayValue: row.displayValue,
+          pathname: row.value,
         });
       });
     }
@@ -226,6 +226,7 @@ async function lazyLoadSearchMarqueeLinklist() {
             shortTitle: getMetadata('short-title'),
             tasks: row.parent, // parent tasks
             displayValue: row.displayValue,
+            pathname: row.value,
           });
         });
       }
@@ -256,8 +257,8 @@ export default async function updateAsyncBlocks() {
   // TODO: integrate memoization
   const showSearchMarqueeLinkList = getMetadata('show-search-marquee-link-list');
   if (document.body.dataset.device === 'desktop' && (!showSearchMarqueeLinkList || ['yes', 'true', 'on', 'Y'].includes(showSearchMarqueeLinkList))) {
-    await lazyLoadSearchMarqueeLinklist();
+    lazyLoadSearchMarqueeLinklist();
   }
-  await lazyLoadLinklist();
-  await lazyLoadSEOLinkList();
+  lazyLoadLinklist();
+  lazyLoadSEOLinkList();
 }
