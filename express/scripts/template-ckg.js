@@ -1,7 +1,6 @@
 import {
   titleCase,
-  getLocale,
-  getMetadata,
+  getMetadata, getConfig,
 } from './utils.js';
 
 import {
@@ -75,9 +74,9 @@ async function updateSEOLinkList(container, linkPill, list) {
     if (leftTrigger) container.append(leftTrigger);
 
     list.forEach((d) => {
-      const currentLocale = getLocale(window.location);
+      const currentLocale = getConfig().locale.prefix.replace('/', '');
       const templatePageData = templatePages.find((p) => {
-        const targetLocale = /^[a-z]{2}$/.test(p.url.split('/')[1]) ? p.url.split('/')[1] : 'us';
+        const targetLocale = /^[a-z]{2}$/.test(p.url.split('/')[1]) ? p.url.split('/')[1] : '';
         const isLive = p.live === 'Y';
         const titleMatch = p['short-title']?.toLowerCase() === d.childSibling?.toLowerCase();
         const localeMatch = currentLocale === targetLocale;
@@ -118,8 +117,7 @@ async function updateLinkList(container, linkPill, list) {
         .trim();
       const templatePageData = templatePages.find((p) => p.live === 'Y' && p.url === constructTargetPath(topicsQuery, currentTasks, currentTasksX));
       const displayText = d.displayValue;
-      const locale = getLocale(window.location);
-      const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+      const prefix = getConfig().locale.prefix.replace('/', '');
 
       if (templatePageData) {
         const clone = replaceLinkPill(linkPill, templatePageData);
@@ -128,7 +126,7 @@ async function updateLinkList(container, linkPill, list) {
         const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}`;
         const clone = linkPill.cloneNode(true);
 
-        clone.innerHTML = clone.innerHTML.replace('/express/templates/default', `${urlPrefix}/express/templates/search?${searchParams}`);
+        clone.innerHTML = clone.innerHTML.replace('/express/templates/default', `${prefix}/express/templates/search?${searchParams}`);
         clone.innerHTML = clone.innerHTML.replaceAll('Default', displayText);
         searchLinks.push(clone);
       }

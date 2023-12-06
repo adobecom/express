@@ -1,4 +1,4 @@
-import { getLocale } from './utils.js';
+import { getConfig } from './utils.js';
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
 
 async function existsTemplatePage(url) {
@@ -12,8 +12,8 @@ export function constructTargetPath(topics, tasks, tasksx) {
   const sanitizedTasksX = tasksx && tasksx !== "''" ? `/${tasksx}` : '';
   const slash = !(sanitizedTasks || sanitizedTasksX) && !sanitizedTopics ? '/' : '';
   const targetPath = `/express/templates${slash}${sanitizedTasks || sanitizedTasksX}${sanitizedTopics}`;
-  const locale = getLocale(window.location);
-  const pathToMatch = locale === 'us' ? targetPath : `/${locale}${targetPath}`;
+  const { prefix } = getConfig().locale;
+  const pathToMatch = `${prefix}${targetPath}`;
 
   return pathToMatch;
 }

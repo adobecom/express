@@ -1,4 +1,4 @@
-import { getHelixEnv, getLocale } from './utils.js';
+import { getConfig, getHelixEnv } from './utils.js';
 import { memoize } from './hofs.js';
 
 const memoizedFetchUrl = memoize((url) => fetch(url).then((r) => (r.ok ? r.json() : null)), {
@@ -9,8 +9,7 @@ const memoizedFetchUrl = memoize((url) => fetch(url).then((r) => (r.ok ? r.json(
 let allTemplatesMetadata;
 
 export default async function fetchAllTemplatesMetadata() {
-  const locale = getLocale(window.location);
-  const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+  const { prefix } = getConfig().locale;
 
   if (!allTemplatesMetadata) {
     try {
@@ -21,7 +20,7 @@ export default async function fetchAllTemplatesMetadata() {
       if (['yes', 'true', 'on'].includes(dev) && env?.name === 'stage') {
         sheet = '/templates-dev.json?sheet=seo-templates&limit=100000';
       } else {
-        sheet = `${urlPrefix}/express/templates/default/metadata.json?limit=100000`;
+        sheet = `${prefix}/express/templates/default/metadata.json?limit=100000`;
       }
 
       const resp = await memoizedFetchUrl(sheet);
