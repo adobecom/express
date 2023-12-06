@@ -40,11 +40,6 @@ export default async function loadLoginUserAutoRedirect() {
     const noticeText = createTag('span', { class: 'notice-text' }, placeholders['bmtp-cancel-text']);
     const noticeBtn = createTag('a', { class: 'notice-btn' }, placeholders.cancel);
 
-    const photoInGNav = document.querySelector('header .Profile-thumbnail');
-    if (photoInGNav) {
-      [, profilePhoto.src] = photoInGNav.style.backgroundImage.match('url\\("([^"]+)"\\)');
-    }
-
     headerWrapper.append(headerIcon, headerText);
     progressBg.append(progressBar);
     profilePhotoCont.append(profilePhoto);
