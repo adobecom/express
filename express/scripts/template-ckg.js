@@ -113,7 +113,6 @@ async function updateLinkList(container, linkPill, list) {
         .replace(currentTasks, '')
         .replace(currentTasksX, '')
         .trim();
-      const templatePageData = templatePages.find((p) => p.live === 'Y' && p.url === constructTargetPath(topicsQuery, currentTasks, currentTasksX));
       const templatePageData = templatePages.find((p) => p.live === 'Y' && p.url === `${prefix}${d.pathname}`);
       const displayText = d.displayValue;
 
