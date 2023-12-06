@@ -1550,11 +1550,27 @@ export async function getExperimentConfig(experimentId) {
   }
 }
 
+function loadIMS() {
+  window.adobeid = {
+    client_id: 'MarvelWeb3',
+    scope: 'AdobeID,openid',
+    locale: getConfig().locale.region,
+    environment: 'prod',
+  };
+  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
+    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+  } else {
+    loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
+    window.adobeid.environment = 'stg1';
+  }
+}
+
 async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   const promises = [import('./experiment.js')];
   if (getMetadata('aepaudience') === 'on') {
-    // only aep exps: rush alloy thru launch
+    loadIMS(); // rush ims to unblock alloy without loading gnav
     promises.push(loadScript('/express/scripts/instrument.js', 'module'));
+    const t1 = performance.now();
     let alloyLoadingResolver;
     window.alloyLoader = new Promise((resolve) => {
       alloyLoadingResolver = resolve;
@@ -1562,6 +1578,8 @@ async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
     window.addEventListener('alloy_sendEvent', (e) => {
       // fired by launch loaded by martech loaded by instrument
       if (e.detail.type === 'pageView') {
+        // eslint-disable-next-line no-console
+        console.log(`Alloy loaded in ${performance.now() - t1}`);
         window.alloyLoaded = true;
         alloyLoadingResolver(e.detail.result);
       }
@@ -1569,14 +1587,13 @@ async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
     // tolerate max 5s for exp overheads
     setTimeout(() => {
       if (!window.alloyLoaded) {
-        // window.lana.log('Alloy failed to load', {
-        //   errorType: 'e',
-        // });
         // eslint-disable-next-line no-console
-        console.error('Alloy failed to load');
+        console.error(`Alloy failed to load, waited ${performance.now() - t1}`);
         alloyLoadingResolver();
+        window.delay_preload_product = false;
       }
     }, 5000);
+    window.delay_preload_product = true;
   }
   const [{ runExps }] = await Promise.all(promises);
   await runExps(config, forcedExperiment, forcedVariant);
@@ -2441,7 +2458,7 @@ export async function loadArea(area = document) {
   await lazy;
 
   const { default: loadDelayed } = await import('./delayed.js');
-  loadDelayed(8000);
+  loadDelayed(10000);
 }
 
 export function getMobileOperatingSystem() {

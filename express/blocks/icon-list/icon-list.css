@@ -163,7 +163,6 @@ main .icon-list-center-container ~ .columns-highlight-container {
   margin-top: 120px;
 }
 
-
 @media (min-width:900px) {
   main .icon-list.two-column {
     flex-wrap: nowrap;
@@ -176,11 +175,27 @@ main .icon-list-center-container ~ .columns-highlight-container {
   main .section.icon-list-two-column-container > div {
     max-width: 1122px;
   }
+  
+  main .icon-list.fullwidth {
+    justify-content: space-between;
+  }
 }
 
 @media (min-width:1200px) {
   main .section.icon-list-two-column-container > div {
     max-width: 1200px;
   }
-}
 
+  main .icon-list.fullwidth > div {
+    margin: 56px auto 0;
+  }
+
+  main .icon-list.fullwidth {
+    max-width: 1024px;
+    margin: auto;
+  }
+  
+  main .icon-list.fullwidth > div {
+    width: 480px;
+  }
+}
