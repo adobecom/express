@@ -21,6 +21,8 @@ export default function runAssertions(checkbox, item) {
   const assertionResults = item.assertions.map((str) => {
     const [method, selector, expect] = str.split('::');
 
+    if (!assert[method.toLowerCase()]) return false;
+
     return assert[method.toLowerCase()](selector, expect);
   });
 
