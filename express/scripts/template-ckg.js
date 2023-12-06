@@ -6,10 +6,12 @@ import {
 
 import {
   getDataWithContext,
-  getPillWordsMapping,
 } from './browse-api-controller.js';
 
-import { memoize } from './hofs.js';
+import {
+  constructTargetPath,
+} from './template-redirect.js';
+
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
 import { initToggleTriggers } from '../blocks/shared/carousel.js';
 
@@ -49,22 +51,11 @@ async function fetchLinkList() {
   }
 }
 
-function matchCKGResult(ckgData, pageData) {
-  const ckgMatch = pageData.ckgid === ckgData.ckgID;
-  const pageDataTasks = pageData.tasks ?? pageData.templateTasks;
-  const taskMatch = ckgData.tasks?.toLowerCase() === pageDataTasks?.toLowerCase();
-  const currentLocale = getLocale(window.location);
-  const pageLocale = pageData.url.split('/')[1] === 'express' ? 'us' : pageData.url.split('/')[1];
-  const sameLocale = currentLocale === pageLocale;
-
-  return sameLocale && ckgMatch && taskMatch;
-}
-
 function replaceLinkPill(linkPill, data) {
   const clone = linkPill.cloneNode(true);
   if (data) {
     clone.innerHTML = clone.innerHTML.replace('/express/templates/default', data.url);
-    clone.innerHTML = clone.innerHTML.replaceAll('Default', data.altShortTitle || data['short-title']);
+    clone.innerHTML = clone.innerHTML.replaceAll('Default', data['short-title']);
   }
   if (defaultRegex.test(clone.innerHTML)) {
     return null;
@@ -104,75 +95,36 @@ async function updateSEOLinkList(container, linkPill, list) {
   }
 }
 
-function formatLinkPillText(linkPillData) {
-  const displayValue = titleCase(linkPillData.displayValue.replace(/-/g, ' '));
-  const titleName = titleCase(linkPillData.tasks.replace(/-/g, ' '));
-  const topicsMeta = getMetadata('topics');
-  const topics = topicsMeta !== '" "' ? `${topicsMeta?.replace(/[$@%"]/g, '').replace(/-/g, ' ')}` : '';
-
-  const displayTopics = topics && linkPillData.displayValue.indexOf(titleCase(topics)) < 0 ? titleCase(topics) : '';
-  let displayText;
-
-  if (getMetadata('tasks')) {
-    displayText = `${displayTopics} ${displayValue} ${titleName}`
-      .split(' ')
-      .filter((item, i, allItems) => i === allItems.indexOf(item))
-      .join(' ').trim();
-  } else {
-    displayText = `${displayValue} ${titleName} ${displayTopics}`
-      .split(' ')
-      .filter((item, i, allItems) => i === allItems.indexOf(item))
-      .join(' ').trim();
-  }
-
-  return displayText;
-}
-
-const memoizedGetPillWordsMapping = memoize(getPillWordsMapping, { ttl: 1000 * 60 * 60 * 24 });
-
 async function updateLinkList(container, linkPill, list) {
   const templatePages = await fetchAllTemplatesMetadata();
-  const pillsMapping = await memoizedGetPillWordsMapping();
   const pageLinks = [];
   const searchLinks = [];
   const leftTrigger = container.querySelector('.carousel-left-trigger');
   const rightTrigger = container.querySelector('.carousel-right-trigger');
   container.innerHTML = '';
 
+  const taskMeta = getMetadata('tasks');
+  const currentTasks = taskMeta ? taskMeta.replace(/[$@%"]/g, '') : ' ';
+  const currentTasksX = getMetadata('tasks-x') || '';
+
   if (list && templatePages) {
     list.forEach((d) => {
       const topics = getMetadata('topics') !== '" "' ? `${getMetadata('topics')?.replace(/[$@%"]/g, '')}` : '';
-      const templatePageData = templatePages.find((p) => p.live === 'Y' && matchCKGResult(d, p));
-      const topicsQuery = `${topics} ${d.displayValue}`.split(' ')
+      const topicsQuery = `${topics} ${d.displayValue.toLowerCase()}`.split(' ')
         .filter((item, i, allItems) => i === allItems.indexOf(item))
-        .join(' ').trim();
-      let displayText = formatLinkPillText(d);
-
+        .join(' ')
+        .replace(currentTasks, '')
+        .replace(currentTasksX, '')
+        .trim();
+      const templatePageData = templatePages.find((p) => p.live === 'Y' && p.url === constructTargetPath(topicsQuery, currentTasks, currentTasksX));
+      const displayText = d.displayValue;
       const locale = getLocale(window.location);
       const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-      const localeColumnString = locale === 'us' ? 'EN' : locale.toUpperCase();
-      let useSearchPill = true;
-
-      if (pillsMapping) {
-        const alternateText = pillsMapping.find((row) => window.location.pathname === `${urlPrefix}${row['Express SEO URL']}` && d.ckgID === row['CKG Pill ID']);
-        const hasAlternateTextForLocale = alternateText && alternateText[`${localeColumnString}`];
-        if (hasAlternateTextForLocale) {
-          displayText = alternateText[`${localeColumnString}`];
-          if (templatePageData) {
-            templatePageData.altShortTitle = displayText;
-          }
-        }
-
-        useSearchPill = (hasAlternateTextForLocale || locale === 'us') && d.ckgID;
-      }
 
       if (templatePageData) {
         const clone = replaceLinkPill(linkPill, templatePageData);
         if (clone) pageLinks.push(clone);
-      } else if (useSearchPill) {
-        const taskMeta = getMetadata('tasks');
-        const currentTasks = taskMeta ? taskMeta.replace(/[$@%"]/g, '') : ' ';
-        const currentTasksX = getMetadata('tasks-x') || '';
+      } else {
         const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}`;
         const clone = linkPill.cloneNode(true);
 
