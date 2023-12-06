@@ -75,7 +75,7 @@ function initRotation(howToWindow, howToDocument) {
   }
 }
 
-function buildHowToStepsCarousel(section, picture, block, howToDocument, rows, howToWindow) {
+function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow) {
   // join wrappers together
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
     if (i === 0) {
@@ -190,11 +190,18 @@ function buildHowToStepsCarousel(section, picture, block, howToDocument, rows, h
     });
   }
 
-  // slgiht delay to allow panel to size correctly
-  howToWindow.setTimeout(() => {
+  // set initial states
+  const onIntersect = ([entry], observer) => {
+    if (!entry.isIntersecting) return;
+
     activate(block, block.querySelector('.tip-number.tip-1'));
     initRotation(howToWindow, howToDocument);
-  }, 100);
+
+    observer.unobserve(block);
+  };
+
+  const howToStepsObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
+  howToStepsObserver.observe(block);
 }
 
 function roundedImage(x, y, width, height, radius, ctx) {
@@ -332,5 +339,5 @@ export default async function decorate(block) {
     parent.remove();
     section.prepend(picture);
   }
-  buildHowToStepsCarousel(section, picture, block, howToDocument, rows, howToWindow);
+  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow);
 }
