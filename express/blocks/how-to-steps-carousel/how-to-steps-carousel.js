@@ -254,28 +254,6 @@ function layerTemplateImage(canvas, ctx, templateImg) {
   });
 }
 
-function convertCanvasToBlob(canvas, width, height) {
-  return new Promise((resolve, reject) => {
-    const canvasWorker = new Worker('/express/scripts/workers/canvas-worker.js');
-    const ctx = canvas.getContext('2d');
-    const imageData = ctx.getImageData(0, 0, width, height);
-
-    canvasWorker.postMessage({ imageData }, [imageData.data.buffer]);
-
-    canvasWorker.onmessage = (e) => {
-      if (e.data.blob) {
-        resolve(e.data.blob);
-      } else {
-        reject(new Error('Blob creation failed'));
-      }
-    };
-
-    canvasWorker.onerror = (error) => {
-      reject(new Error(`Worker error: ${error.message}`));
-    };
-  });
-}
-
 export default async function decorate(block) {
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
@@ -323,13 +301,14 @@ export default async function decorate(block) {
       return loadImage(templateImg).then(() => {
         layerTemplateImage(canvas, ctx, templateImg).then(() => {
           templateDiv.remove();
-          convertCanvasToBlob(canvas, canvasWidth, canvasHeight).then((blob) => {
-            const img = createTag('img');
-            img.src = URL.createObjectURL(blob);
+          const img = createTag('img');
+          canvas.toBlob((blob) => {
+            const blobUrl = URL.createObjectURL(blob);
+            img.src = blobUrl;
             backgroundPic.append(img);
             backgroundPicImg.remove();
             setPictureHeight(block, true);
-          }).catch((error) => console.error('Error converting canvas to blob:', error));
+          });
         });
       });
     });
