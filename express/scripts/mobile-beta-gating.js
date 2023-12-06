@@ -40,14 +40,14 @@ function isOfficiallySupportedDevice() {
   return false;
 }
 
-function setSessionCookie(name, value, domain) {
+function setCookie(name, value, domain, expireDate) {
   let cookie = '';
 
   cookie = `${name}=${value};`;
 
-  if (domain) {
-    cookie += `domain=${domain};`;
-  }
+  if (domain) cookie += `domain=${domain};`;
+
+  if (expireDate) cookie += `expires=${expireDate};`;
 
   cookie += 'path=/';
 
@@ -120,7 +120,10 @@ export default async function checkMobileBetaEligibility() {
     runBenchmark();
     const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
       if (['true', 'false'].includes(e.newValue.deviceSupport)) {
-        setSessionCookie('device-support', e.newValue.deviceSupport, 'adobe.com');
+        const expireDate = new Date();
+        const month = (expireDate.getMonth() + 1) % 12;
+        expireDate.setMonth(month);
+        setCookie('device-support', e.newValue.deviceSupport, 'adobe.com', expireDate.toUTCString());
         unsubscribe();
       }
     });
