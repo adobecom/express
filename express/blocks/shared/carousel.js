@@ -172,7 +172,6 @@ export function onCarouselCSSLoad(selector, parent, options) {
       if (!opts.infinityScrollEnabled) initToggleTriggers(container);
 
       observer.unobserve(scrollable);
-      parent.style.removeProperty('visibility');
     };
 
     const carouselObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
@@ -184,7 +183,6 @@ export function onCarouselCSSLoad(selector, parent, options) {
 
 export default async function buildCarousel(selector, parent, options = {}) {
   // Load CSS then build carousel
-  parent.style.visibility = 'hidden';
   return new Promise((resolve) => {
     loadStyle('/express/blocks/shared/carousel.css', () => {
       onCarouselCSSLoad(selector, parent, options);
