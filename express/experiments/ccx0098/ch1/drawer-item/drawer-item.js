@@ -456,8 +456,7 @@ function initAfterDrawerFullyLoaded(payload) {
     addScratchLottie(payload);
   }
   document.querySelectorAll('.drawer-item .hero-animation-overlay', (overlay) => {
-    const parent = overlay.parentElement;
-    parent.append(overlay);
+    overlay.parentElement.parentElement?.append(overlay);
   });
 }
 function trackTotalItemsLoaded(payload) {
