@@ -455,9 +455,9 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateCarouselCTAList(payload);
     addScratchLottie(payload);
   }
-  document.querySelectorAll('.drawer-item .hero-animation-overlay').forEach((overlay) => {
-    overlay.parentElement.parentElement?.append(overlay);
-  });
+  // document.querySelectorAll('.drawer-item .hero-animation-overlay').forEach((overlay) => {
+  //   overlay.parentElement.parentElement?.append(overlay);
+  // });
 }
 function trackTotalItemsLoaded(payload) {
   payload.drawerItemContainer.dataset.itemLoadedCount = parseInt(
