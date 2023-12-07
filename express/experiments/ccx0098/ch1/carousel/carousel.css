@@ -1,0 +1,70 @@
+main .mobile-drawer-wrapper .carousel-container {
+  display: inline-block;
+  position: relative;
+  height: auto;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+main .mobile-drawer-wrapper .carousel-container .carousel-platform {
+  width: max-content;
+  max-width: 100%;
+  left: 0;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-y: hidden;
+  overflow-x: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  max-height: 500px;
+  padding-top: 4px;
+  padding-bottom: 6px;
+}
+
+main .mobile-drawer-wrapper .carousel-container:not(.controls-hidden) .carousel-platform::-webkit-scrollbar,
+main .mobile-drawer-wrapper .carousel-container .carousel-platform.infinity-scroll-loaded::-webkit-scrollbar {
+  display: none;
+}
+
+main .mobile-drawer-wrapper .carousel-container .carousel-platform > * {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+main .mobile-drawer-wrapper .carousel-container .carousel-fader-left {
+  display: none;
+}
+
+main  .mobile-drawer-wrapper .carousel-container .carousel-fader-right {
+  display: none;
+}
+
+main .mobile-drawer-wrapper .carousel-container .carousel-fader-left.arrow-hidden,
+main  .mobile-drawer-wrapper.carousel-container .carousel-fader-right.arrow-hidden {
+  display: none;
+}
+main .mobile-drawer-wrapper .carousel-container img,
+main .mobile-drawer-wrapper .carousel-container video {
+  pointer-events: none;
+}
+
+
+/* Remove snapping in mobile-breakpoint if they scrolled using drag */
+main .mobile-drawer-wrapper .carousel-container.controls-hidden .carousel-platform {
+  scroll-snap-type: none;
+}
+
+@media (min-width: 900px) {
+  main .mobile-drawer-wrapper .carousel-container .carousel-platform::-webkit-scrollbar {
+    display: none;
+  }
+
+  main .mobile-drawer-wrapper .carousel-container.controls-hidden .carousel-platform {
+    scroll-snap-type: x mandatory;
+  }
+}
