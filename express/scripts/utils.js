@@ -1904,7 +1904,7 @@ async function buildAutoBlocks($main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) || ['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
+  if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase())) {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {
@@ -1919,6 +1919,7 @@ async function buildAutoBlocks($main) {
         lastDiv.append(button);
         BlockMediator.set('floatingCtasLoaded', true);
       }
+    }
   }
 
   if (getMetadata('show-quick-action-card') && !['no', 'false', 'off'].includes(getMetadata('show-quick-action-card').toLowerCase())) {
