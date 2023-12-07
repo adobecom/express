@@ -135,11 +135,10 @@ main .mobile-drawer .drawer-item-animations-view-container .hero-animation-overl
 main .mobile-drawer .drawer-item-animations-view-container video {
   max-height: 35vh;
   pointer-events: none;
-  /* touch-action: none; */
 }
-/* main .mobile-drawer .drawer-item-animations-view-container .hero-animation-overlay {
-  touch-action: none;
-} */
+main .mobile-drawer .drawer-item-animations-view-container .drawer-item {
+  cursor: pointer;
+}
 main .mobile-drawer .drawer-item-animations-view-container .drawer-item h5 {
   margin-top: -0.5rem;
   position: relative;
