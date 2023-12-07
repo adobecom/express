@@ -1799,22 +1799,6 @@ export async function fetchFloatingCta(path) {
 }
 
 async function buildAutoBlocks($main) {
-  const initFloatingCTABuild = async (entryPoint) => {
-    const floatingCTAData = await fetchFloatingCta(window.location.pathname);
-    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
-    const device = document.body.dataset?.device;
-    const blockName = floatingCTAData?.[device];
-
-    if (validButtonVersion.includes(blockName) && entryPoint) {
-      const button = buildBlock(blockName, device);
-      button.classList.add('spreadsheet-powered');
-      entryPoint.append(button);
-      return button;
-    }
-
-    return null;
-  };
-
   const lastDiv = $main.querySelector(':scope > div:last-of-type');
 
   // Load the branch.io banner autoblock...
@@ -1870,14 +1854,23 @@ async function buildAutoBlocks($main) {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
     const loadSplitFlow = async (payload) => {
       if (payload.deviceSupport) {
-        const buttonBlock = await initFloatingCTABuild(lastDiv);
+        const floatingCTAData = await fetchFloatingCta(window.location.pathname);
+        const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+        const device = document.body.dataset?.device;
+        const blockName = floatingCTAData?.[device];
 
-        if (!payload.isMainThread) {
-          await decorateBlock(buttonBlock);
-          await loadBlock(buttonBlock);
+        if (validButtonVersion.includes(blockName) && lastDiv) {
+          const button = buildBlock(blockName, device);
+          button.classList.add('spreadsheet-powered');
+          lastDiv.append(button);
+
+          if (!payload.isMainThread) {
+            await decorateBlock(button);
+            await loadBlock(button);
+          }
+
+          BlockMediator.set('floatingCtasLoaded', true);
         }
-
-        BlockMediator.set('floatingCtasLoaded', true);
       } else {
         const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
         if (!fragment) return;
@@ -1915,9 +1908,17 @@ async function buildAutoBlocks($main) {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {
-      await initFloatingCTABuild(lastDiv);
-      BlockMediator.set('floatingCtasLoaded', true);
-    }
+      const floatingCTAData = await fetchFloatingCta(window.location.pathname);
+      const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+      const device = document.body.dataset?.device;
+      const blockName = floatingCTAData?.[device];
+
+      if (validButtonVersion.includes(blockName) && lastDiv) {
+        const button = buildBlock(blockName, device);
+        button.classList.add('spreadsheet-powered');
+        lastDiv.append(button);
+        BlockMediator.set('floatingCtasLoaded', true);
+      }
   }
 
   if (getMetadata('show-quick-action-card') && !['no', 'false', 'off'].includes(getMetadata('show-quick-action-card').toLowerCase())) {
