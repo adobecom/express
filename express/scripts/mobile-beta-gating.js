@@ -12,9 +12,9 @@ function isIOS16AndUp() {
   if (/iPhone/i.test(userAgent)) {
     const iOSVersionMatch = userAgent.match(/OS (\d+)_/);
     if (iOSVersionMatch && iOSVersionMatch.length > 1) {
-      const iOSVersion = parseInt(iOSVersionMatch[1], 10);
-
-      return iOSVersion >= 16;
+      return parseInt(iOSVersionMatch[1], 10) >= 16;
+    } else {
+      window.lana?.log('iOS userAgent regex match failed');
     }
   }
 
@@ -34,6 +34,8 @@ function isOfficiallySupportedDevice() {
     const match = regex.exec(userAgent);
     if (match && match.length > 1) {
       return ELIGIBLE_ANDROID_DEVICES.includes(match[1]);
+    } else {
+      window.lana?.log('Android device name regex match failed');
     }
   }
 
