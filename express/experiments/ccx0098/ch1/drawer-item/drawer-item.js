@@ -257,9 +257,10 @@ function decorateMedia(payload) {
     payload.mediaLink.title = payload.itemName.textContent;
     const isNotBubbleItem = !!payload.mediaText.textContent;
     const drawerItem = createTag('div', { class: 'drawer-item' });
-    payload.mediaLink.textContent = '';
-    payload.mediaLink.append(payload.media);
-    drawerItem.append(payload.mediaLink);
+    // payload.mediaLink.textContent = '';
+    // payload.mediaLink.append(payload.media);
+    // drawerItem.append(payload.mediaLink);
+    drawerItem.append(payload.media);
     if (isNotBubbleItem) {
       drawerItem.dataset.order = payload.order;
       drawerItem.append(payload.itemName);
@@ -455,9 +456,9 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateCarouselCTAList(payload);
     addScratchLottie(payload);
   }
-  // document.querySelectorAll('.drawer-item .hero-animation-overlay').forEach((overlay) => {
-  //   overlay.parentElement.parentElement?.append(overlay);
-  // });
+  document.querySelectorAll('.drawer-item .hero-animation-overlay').forEach((overlay) => {
+    overlay.parentElement.parentElement.append(overlay);
+  });
 }
 function trackTotalItemsLoaded(payload) {
   payload.drawerItemContainer.dataset.itemLoadedCount = parseInt(
