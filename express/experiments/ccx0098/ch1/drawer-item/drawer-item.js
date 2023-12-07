@@ -257,9 +257,11 @@ function decorateMedia(payload) {
     payload.mediaLink.title = payload.itemName.textContent;
     const isNotBubbleItem = !!payload.mediaText.textContent;
     const drawerItem = createTag('div', { class: 'drawer-item' });
-    // payload.mediaLink.textContent = '';
-    // payload.mediaLink.append(payload.media);
-    // drawerItem.append(payload.mediaLink);
+    if (!isNotBubbleItem) {
+      payload.mediaLink.textContent = '';
+      payload.mediaLink.append(payload.media);
+      drawerItem.append(payload.mediaLink);
+    }
     drawerItem.append(payload.media);
     if (isNotBubbleItem) {
       drawerItem.dataset.order = payload.order;
