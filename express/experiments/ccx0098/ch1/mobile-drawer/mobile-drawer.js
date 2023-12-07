@@ -554,4 +554,6 @@ export default async function decorate($block) {
   $main.append($mobileDrawer);
   initNotchDragAction($mobileDrawer);
   initSwipeAction($mobileDrawer);
+  const testDiv = createTag('div', { class: 'swiper' });
+  document.querySelector('#panel-QuickActions > div.carousel-container > div > div:nth-child(1) > a.drawer-swipeable-right').append(testDiv);
 }

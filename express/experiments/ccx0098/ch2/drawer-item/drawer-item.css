@@ -136,9 +136,6 @@ main .mobile-drawer .drawer-item-animations-view-container video {
   max-height: 35vh;
   pointer-events: none;
 }
-main .mobile-drawer .drawer-item-animations-view-container .drawer-item {
-  cursor: pointer;
-}
 main .mobile-drawer .drawer-item-animations-view-container .drawer-item h5 {
   margin-top: -0.5rem;
   position: relative;
@@ -706,11 +703,6 @@ main .mobile-drawer-wrapper .cta-hidden {
     padding-top: 15%;
 
   }
-
-  /* main .mobile-drawer-wrapper .drawer-item-bubbles-view-container {
-    width: calc(100% - 10px);
-    width: 100%
-  } */
 
   main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
     max-width: calc(100% - 30px);

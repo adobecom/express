@@ -371,3 +371,10 @@ body[data-device="mobile"].mobile-drawer-opened main .floating-button-wrapper[da
     display: none !important;
   }
 }
+
+.swiper {
+  position: absolute;
+  z-index: 2;
+  background-color: blue;
+  pointer-events: none;
+}
