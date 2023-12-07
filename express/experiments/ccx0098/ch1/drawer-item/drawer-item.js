@@ -454,10 +454,6 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateCarouselViews(payload);
     decorateCarouselCTAList(payload);
     addScratchLottie(payload);
-    console.log('testing');
-    const testDiv = createTag('div', { class: 'swiper' });
-    console.log(document.querySelector('#panel-QuickActions > div.carousel-container > div > div:nth-child(1) > a.drawer-swipeable-right'));
-    document.querySelector('#panel-QuickActions > div.carousel-container > div > div:nth-child(1) > a.drawer-swipeable-right').append(testDiv);
   }
 }
 function trackTotalItemsLoaded(payload) {
