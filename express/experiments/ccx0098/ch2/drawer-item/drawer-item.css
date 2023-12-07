@@ -134,6 +134,7 @@ main .mobile-drawer .drawer-item-animations-view-container .hero-animation-overl
 
 main .mobile-drawer .drawer-item-animations-view-container video {
   max-height: 35vh;
+  pointer-events: none;
 }
 
 main .mobile-drawer .drawer-item-animations-view-container .drawer-item h5 {
@@ -169,7 +170,9 @@ main .drawer-item p + a {
 main .mobile-drawer .drawer-item-default-view-container .drawer-item img {
   max-width: 85%;
   max-height: 35vh;
+  pointer-events: none;
 }
+
 
 main .mobile-drawer .drawer-item-default-view-container .drawer-item h5 {
   margin-top: 0.5rem;
