@@ -334,7 +334,7 @@ async function buildSearchDropdown(block) {
   }
 }
 
-async function decorateLinkList(block) {
+function decorateLinkList(block) {
   const carouselItemsWrapper = block.querySelector(':scope > div:nth-of-type(2) > div');
   if (carouselItemsWrapper) {
     const showLinkList = getMetadata('show-search-marquee-link-list');
