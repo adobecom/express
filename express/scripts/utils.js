@@ -1905,6 +1905,9 @@ async function buildAutoBlocks($main) {
   }
 
   if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase())) {
+    // yield to mobile beta gating
+    if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')) && document.body.dataset.device === 'mobile') return;
+
     const { default: BlockMediator } = await import('./block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {
