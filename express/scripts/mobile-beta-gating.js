@@ -6,9 +6,7 @@ const ELIGIBLE_ANDROID_DEVICES = [];
 const MAX_EXEC_TIME_ALLOWED = 450;
 const TOTAL_PRIME_NUMBER = 10000;
 
-function isIOS16AndUp() {
-  const { userAgent } = navigator;
-
+export function isIOS16AndUp(userAgent = navigator.userAgent) {
   if (/iPhone/i.test(userAgent)) {
     const iOSVersionMatch = userAgent.match(/OS (\d+)_/);
     if (iOSVersionMatch && iOSVersionMatch.length > 1) {
@@ -21,14 +19,13 @@ function isIOS16AndUp() {
   return false;
 }
 
-function isOfficiallySupportedDevice() {
-  if (getMobileOperatingSystem() === 'iOS') {
-    return isIOS16AndUp();
+export function isOfficiallySupportedDevice(os) {
+  const { userAgent } = navigator;
+  if (os === 'iOS') {
+    return isIOS16AndUp(userAgent);
   }
 
-  if (getMobileOperatingSystem() === 'android') {
-    const { userAgent } = navigator;
-
+  if (os === 'android') {
     const regex = /Android.+; ([^;]+)\) AppleWebKit\//;
 
     const match = regex.exec(userAgent);
@@ -61,7 +58,7 @@ function runBenchmark() {
       }
 
       if (getMobileOperatingSystem() === 'iOS') {
-        criterion.iOSVersionPass = isIOS16AndUp();
+        criterion.iOSVersionPass = isIOS16AndUp(navigator.userAgent);
       }
 
       const deviceEligible = Object.values(criterion).every((criteria) => criteria);
@@ -83,14 +80,14 @@ export default async function checkMobileBetaEligibility() {
     BlockMediator.set('mobileBetaEligibility', {
       deviceSupport: true,
       data: {
-        reason: 'pre-checked',
+        reason: 'cookie',
       },
     });
-  } else if (isOfficiallySupportedDevice()) {
+  } else if (isOfficiallySupportedDevice(getMobileOperatingSystem())) {
     BlockMediator.set('mobileBetaEligibility', {
       deviceSupport: true,
       data: {
-        reason: 'pre-checked',
+        reason: 'whitelisted',
       },
     });
   } else {
