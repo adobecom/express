@@ -131,7 +131,6 @@ main .mobile-drawer .drawer-item-animations-view-container .hero-animation-overl
   height: 100%;
   position: relative;
 }
-
 main .mobile-drawer .drawer-item-animations-view-container video {
   max-height: 35vh;
   pointer-events: none;

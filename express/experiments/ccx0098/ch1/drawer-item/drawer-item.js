@@ -455,6 +455,10 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateCarouselCTAList(payload);
     addScratchLottie(payload);
   }
+  document.querySelectorAll('.drawer-item .hero-animation-overlay', (overlay) => {
+    const parent = overlay.parentElement;
+    parent.append(overlay);
+  });
 }
 function trackTotalItemsLoaded(payload) {
   payload.drawerItemContainer.dataset.itemLoadedCount = parseInt(
