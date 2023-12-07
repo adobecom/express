@@ -560,14 +560,14 @@ export function linkPicture($picture) {
 
 export function linkImage($elem) {
   const $a = $elem.querySelector('a');
-  if (!$a) return;
-
-  const $parent = $a.closest('div');
-  $a.remove();
-  $a.className = '';
-  $a.innerHTML = '';
-  $a.append(...$parent.children);
-  $parent.append($a);
+  if ($a) {
+    const $parent = $a.closest('div');
+    $a.remove();
+    $a.className = '';
+    $a.innerHTML = '';
+    $a.append(...$parent.children);
+    $parent.append($a);
+  }
 }
 
 export function readBlockConfig($block) {
