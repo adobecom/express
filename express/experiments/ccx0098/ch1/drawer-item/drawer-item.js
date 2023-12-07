@@ -455,7 +455,7 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateCarouselCTAList(payload);
     addScratchLottie(payload);
   }
-  document.querySelectorAll('.drawer-item .hero-animation-overlay', (overlay) => {
+  document.querySelectorAll('.drawer-item .hero-animation-overlay').forEach((overlay) => {
     overlay.parentElement.parentElement?.append(overlay);
   });
 }
