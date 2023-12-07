@@ -198,28 +198,32 @@ function loadNextVideo(block, payload) {
 }
 
 async function decorateSessionsCarousel(block, payload) {
-  const thumbnailsContainer = createTag('div', { class: 'thumbnails-container' });
-  block.append(thumbnailsContainer);
+  return new Promise((resolve) => {
+    const thumbnailsContainer = createTag('div', { class: 'thumbnails-container' });
+    block.append(thumbnailsContainer);
 
-  payload.sessions.forEach((session, index) => {
-    const sessionEl = createTag('a', { class: 'session' });
-    const sessionThumbnail = session.thumbnail;
-    const sessionTitle = createTag('h5', { class: 'session-title' });
-    const sessionDescription = createTag('h4', { class: 'session-description' });
+    payload.sessions.forEach((session, index) => {
+      const sessionEl = createTag('a', { class: 'session' });
+      const sessionThumbnail = session.thumbnail;
+      const sessionTitle = createTag('h5', { class: 'session-title' });
+      const sessionDescription = createTag('h4', { class: 'session-description' });
 
-    thumbnailsContainer.append(sessionEl);
-    sessionTitle.textContent = session.title;
-    sessionDescription.textContent = session.description;
-    sessionEl.append(sessionThumbnail, sessionTitle, sessionDescription);
+      thumbnailsContainer.append(sessionEl);
+      sessionTitle.textContent = session.title;
+      sessionDescription.textContent = session.description;
+      sessionEl.append(sessionThumbnail, sessionTitle, sessionDescription);
 
-    sessionEl.addEventListener('click', () => {
-      payload.sessionIndex = index;
-      loadSession(block, payload);
+      sessionEl.addEventListener('click', () => {
+        payload.sessionIndex = index;
+        loadSession(block, payload);
+      });
+    });
+
+    buildCarousel('.session', thumbnailsContainer).then(() => {
+      block.querySelectorAll('.session')[payload.sessionIndex].classList.add('active');
+      resolve();
     });
   });
-
-  await buildCarousel('.session', thumbnailsContainer);
-  block.querySelectorAll('.session')[payload.sessionIndex].classList.add('active');
 }
 
 function decorateVideoPlayerSection(block) {
@@ -271,7 +275,7 @@ function decorateInlineVideoPlayer(block, payload) {
   });
 }
 
-async function decorateVideoPlayerMenu(block, payload) {
+function decorateVideoPlayerMenu(block, payload) {
   const videoPlayerMenu = createTag('div', { class: 'video-player-menu' });
   const videoTitle = createTag('h3', { class: 'video-player-video-title' });
   const navButtons = createTag('div', { class: 'video-player-buttons' });
@@ -346,11 +350,15 @@ export default async function decorate(block) {
   block.innerHTML = '';
 
   // Rebuild the whole block properly.
-  await decorateSessionsCarousel(block, payload);
+  const sessionsLoaded = decorateSessionsCarousel(block, payload);
   decorateVideoPlayerSection(block);
   decorateInlineVideoPlayer(block, payload);
   decorateVideoPlayerMenu(block, payload);
 
   // Load the latest section and video.
-  loadSession(block, payload);
+  sessionsLoaded.then(() => {
+    loadSession(block, payload);
+  });
+
+  return sessionsLoaded;
 }
