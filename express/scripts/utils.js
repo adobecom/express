@@ -1798,10 +1798,6 @@ export async function fetchFloatingCta(path) {
   return floatingBtnData;
 }
 
-export function getDevice() {
-  return navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
-}
-
 async function buildAutoBlocks($main) {
   const initFloatingCTABuild = async (entryPoint) => {
     const floatingCTAData = await fetchFloatingCta(window.location.pathname);
@@ -1870,10 +1866,10 @@ async function buildAutoBlocks($main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')) && getDevice() === 'mobile') {
+  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')) && document.body.dataset.device === 'mobile') {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
     const loadSplitFlow = async (payload) => {
-      if (payload.deviceSupport === 'true') {
+      if (payload.deviceSupport) {
         const buttonBlock = await initFloatingCTABuild(lastDiv);
 
         if (!payload.isMainThread) {
@@ -1882,9 +1878,7 @@ async function buildAutoBlocks($main) {
         }
 
         BlockMediator.set('floatingCtasLoaded', true);
-      }
-
-      if (payload.deviceSupport === 'false') {
+      } else {
         const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
         if (!fragment) return;
 
@@ -2449,14 +2443,6 @@ export async function loadArea(area = document) {
 
   if (isDoc) {
     decorateHeaderAndFooter();
-  }
-
-  if (getMetadata('mobile-benchmark')) {
-    const [gatingScript] = await Promise.all(
-      [import('./mobile-beta-gating.js'), import('./block-mediator.min.js')],
-    );
-
-    gatingScript.default();
   }
 
   window.hlx = window.hlx || {};

@@ -2,12 +2,12 @@ import BlockMediator from './block-mediator.min.js';
 import { getMobileOperatingSystem } from './utils.js';
 
 // todo: need to determine the final source of this whitelist
-const eligibleAndroidDevices = [];
-const maxExecutionTimeAllowed = 450;
+const ELIGIBLE_ANDROID_DEVICES = [];
+const MAX_EXEC_TIME_ALLOWED = 450;
 const TOTAL_PRIME_NUMBER = 10000;
 
 function isIOS16AndUp() {
-  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  const { userAgent } = navigator;
 
   if (/iPhone/i.test(userAgent)) {
     const iOSVersionMatch = userAgent.match(/OS (\d+)_/);
@@ -27,42 +27,17 @@ function isOfficiallySupportedDevice() {
   }
 
   if (getMobileOperatingSystem() === 'android') {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const { userAgent } = navigator;
 
     const regex = /Android.+; ([^;]+)\) AppleWebKit\//;
 
     const match = regex.exec(userAgent);
     if (match && match.length > 1) {
-      return eligibleAndroidDevices.includes(match[1]);
+      return ELIGIBLE_ANDROID_DEVICES.includes(match[1]);
     }
   }
 
   return false;
-}
-
-function setCookie(name, value, domain, expireDate) {
-  let cookie = '';
-
-  cookie = `${name}=${value};`;
-
-  if (domain) cookie += `domain=${domain};`;
-
-  if (expireDate) cookie += `expires=${expireDate};`;
-
-  cookie += 'path=/';
-
-  document.cookie = cookie;
-}
-
-function getCookie(name) {
-  const nameEQ = `${name}=`;
-  const ca = document.cookie.split(';');
-  for (let i = 0; i < ca.length; i += 1) {
-    let c = ca[i];
-    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
-  }
-  return null;
 }
 
 function runBenchmark() {
@@ -71,7 +46,7 @@ function runBenchmark() {
     benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
     benchmarkWorker.onmessage = (e) => {
       const criterion = {
-        cpuSpeedPass: e.data <= maxExecutionTimeAllowed,
+        cpuSpeedPass: e.data <= MAX_EXEC_TIME_ALLOWED,
       };
 
       if (getMobileOperatingSystem() === 'android') {
@@ -90,7 +65,7 @@ function runBenchmark() {
       const deviceEligible = Object.values(criterion).every((criteria) => criteria);
 
       BlockMediator.set('mobileBetaEligibility', {
-        deviceSupport: deviceEligible ? 'true' : 'false',
+        deviceSupport: !!deviceEligible,
         data: criterion,
       });
 
@@ -100,18 +75,18 @@ function runBenchmark() {
 }
 
 export default async function checkMobileBetaEligibility() {
-  const deviceSupportCookie = getCookie('device-support') === 'true';
+  const deviceSupportCookie = document.cookie.split('; ').find((row) => row.startsWith('device-support='))?.split('=')[1];
 
-  if (deviceSupportCookie) {
+  if (deviceSupportCookie === 'true') {
     BlockMediator.set('mobileBetaEligibility', {
-      deviceSupport: 'true',
+      deviceSupport: true,
       data: {
         reason: 'pre-checked',
       },
     });
   } else if (isOfficiallySupportedDevice()) {
     BlockMediator.set('mobileBetaEligibility', {
-      deviceSupport: 'true',
+      deviceSupport: true,
       data: {
         reason: 'pre-checked',
       },
@@ -119,13 +94,11 @@ export default async function checkMobileBetaEligibility() {
   } else {
     runBenchmark();
     const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
-      if (['true', 'false'].includes(e.newValue.deviceSupport)) {
-        const expireDate = new Date();
-        const month = (expireDate.getMonth() + 1) % 12;
-        expireDate.setMonth(month);
-        setCookie('device-support', e.newValue.deviceSupport, 'adobe.com', expireDate.toUTCString());
-        unsubscribe();
-      }
+      const expireDate = new Date();
+      const month = (expireDate.getMonth() + 1) % 12;
+      expireDate.setMonth(month);
+      document.cookie = `${'device-support'}=${e.newValue.deviceSupport};domain=${'adobe.com'};expires=${expireDate.toUTCString()};path=/`;
+      unsubscribe();
     });
   }
 }

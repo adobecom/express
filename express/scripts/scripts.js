@@ -1,8 +1,8 @@
 import {
   sampleRUM,
-  getDevice,
   removeIrrelevantSections,
   loadArea,
+  getMetadata,
   stamp,
   registerPerformanceLogger,
   setConfig,
@@ -56,9 +56,8 @@ const eagerLoad = (img) => {
 };
 
 (function loadLCPImage() {
-  const body = document.querySelector('body');
-  body.dataset.device = getDevice();
-  const main = body.querySelector('main');
+  document.body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
+  const main = document.body.querySelector('main');
   removeIrrelevantSections(main);
   const firstDiv = main.querySelector('div:nth-child(1) > div');
   if (firstDiv?.classList.contains('marquee')) {
@@ -89,6 +88,11 @@ const showNotifications = () => {
   setConfig(config);
   showNotifications();
   await loadArea();
+  if (getMetadata('mobile-benchmark') && document.body.dataset.device === 'mobile') {
+    Promise.all([import('./mobile-beta-gating.js'), import('./block-mediator.min.js')]).then(([gatingScript]) => {
+      gatingScript.default();
+    });
+  }
 }());
 
 stamp('start');
