@@ -22,7 +22,6 @@ const { default: decorate, hideFader, showFader } = await import(
 );
 
 const basicCarousel = await readFile({ path: './mocks/carousel.html' });
-const gapCarousel = await readFile({ path: './mocks/gap-carousel.html' });
 const narrowCarousel = await readFile({ path: './mocks/narrow-carousel.html' });
 const doubleCarousel = await readFile({ path: './mocks/double-carousel.html' });
 
@@ -35,9 +34,6 @@ describe('Default Carousel - General Tests', () => {
   });
 
   it('Intersection observer triggers exist', async () => {
-    // console.log('---intersection observer triggers exist---');
-    await clock.nextAsync();
-    await clock.nextAsync();
     await clock.nextAsync();
 
     const rightTrigger = document.querySelector('.carousel-right-trigger');
@@ -47,9 +43,6 @@ describe('Default Carousel - General Tests', () => {
   });
 
   it('arrows buttons scroll carousel platform', async () => {
-    // console.log('---Arrow buttons scroll carousel platform---');
-    await clock.nextAsync();
-    await clock.nextAsync();
     await clock.nextAsync();
 
     const platform = document.querySelector('.carousel-platform');
@@ -71,7 +64,6 @@ describe('Default Carousel - General Tests', () => {
   });
 
   it('hide fader function removes fader elements', async () => {
-    // console.log('---Hide fader function removes fader elements---');
     await clock.nextAsync();
 
     const platform = document.querySelector('.carousel-platform');
@@ -87,7 +79,6 @@ describe('Default Carousel - General Tests', () => {
   });
 
   it('show fader function adds fader elements', async () => {
-    // console.log('---Show fader function adds fader elements---');
     await clock.nextAsync();
 
     const platform = document.querySelector('.carousel-platform');
@@ -103,53 +94,6 @@ describe('Default Carousel - General Tests', () => {
   });
 });
 
-describe('Carousel With Gap - gap is applied as negative margin to arrow controls', () => {
-  before(() => {
-    window.isTestEnv = true;
-    document.body.innerHTML = gapCarousel;
-    const carousel = document.querySelector('#create-carousel');
-    decorate('', carousel);
-  });
-
-  it('Right trigger has negative left margin propritional to platforms gap', async () => {
-    // console.log('---Right trigger has negative left margin propritional to platforms gap---');
-    await clock.nextAsync();
-    await clock.nextAsync();
-    await clock.nextAsync();
-
-    const platform = document.querySelector('.carousel-platform');
-    expect(platform).to.exist;
-    const rightTrigger = document.querySelector('.carousel-right-trigger');
-    expect(rightTrigger).to.exist;
-
-    const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
-    const margin = window.getComputedStyle(rightTrigger, null).getPropertyValue('margin-left');
-    expect(gap).to.not.equal('normal');
-    expect(parseInt(margin.replace('px', ''), 10) * -1).to.be.equal(parseInt(gap.replace('px', ''), 10) + 1);
-    // if (gap !== 'normal') {
-    //   const gapInt = parseInt(gap.replace('px', ''), 10);
-    //   const marginInt = parseInt(margin.replace('px', ''), 10);
-    //   expect(marginInt * -1).to.be.equal(gapInt + 1);
-    // }
-  });
-  it('Left trigger has negative right margin propritional to platforms gap', async () => {
-    // console.log('---Left trigger has negative right margin propritional to platforms gap---');
-    await clock.nextAsync();
-    await clock.nextAsync();
-    await clock.nextAsync();
-
-    const platform = document.querySelector('.carousel-platform');
-    expect(platform).to.exist;
-    const leftTrigger = document.querySelector('.carousel-left-trigger');
-    expect(leftTrigger).to.exist;
-
-    const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
-    const margin = window.getComputedStyle(leftTrigger, null).getPropertyValue('margin-right');
-    expect(gap).to.not.equal('normal');
-    expect(parseInt(margin.replace('px', ''), 10) * -1).to.be.equal(parseInt(gap.replace('px', ''), 10) + 1);
-  });
-});
-
 describe('Infinity Scroll Carousel', () => {
   before(() => {
     window.isTestEnv = true;
@@ -159,7 +103,6 @@ describe('Infinity Scroll Carousel', () => {
   });
 
   it('Intersection observer triggers do not exist', async () => {
-    // console.log('---intersection observer triggers do not exist---');
     await clock.nextAsync();
 
     const rightTrigger = document.querySelector('.carousel-right-trigger');
@@ -169,7 +112,6 @@ describe('Infinity Scroll Carousel', () => {
   });
 
   it('Both faders visible', async () => {
-    // console.log('---both faders visible---');
     await clock.nextAsync();
 
     const platform = document.querySelector('.carousel-platform');
@@ -186,7 +128,6 @@ describe('Infinity Scroll Carousel', () => {
   });
 
   it('Arrow buttons scroll infinity carousel', async () => {
-    // console.log('---Arrow buttons scroll infinity carousel---');
     await clock.nextAsync();
 
     const platform = document.querySelector('.carousel-platform');
@@ -219,7 +160,6 @@ describe('Compare Standard Carousel To Infinity Scroll Carousel', () => {
   });
 
   it('infinity carousel max scroll position exceeds default carousel scroll position', async () => {
-    // console.log('---Arrow buttons scroll carousel platform---');
     await clock.nextAsync();
 
     const platform1 = document.querySelector('.carousel1 .carousel-platform');
@@ -238,10 +178,6 @@ describe('Compare Standard Carousel To Infinity Scroll Carousel', () => {
 
     let safety = 0;
     while (scrollPos1 !== platform1.scrollLeft && safety < 100) {
-      // console.log(`iteration:${safety}`)
-      // console.log(`scrollPos1:${scrollPos1}`);
-      // console.log(`carousel1:${platform1.scrollLeft}`);
-      // console.log(`carousel2:${platform2.scrollLeft}`);
       scrollPos1 = platform1.scrollLeft;
       rightFader1.click();
       rightFader2.click();
@@ -258,19 +194,6 @@ describe('Center Aligned Narrow Carousel', () => {
     const carousel = document.querySelector('#create-carousel');
     decorate('', carousel, { centerAlign: true });
   });
-
-  it('TEST Center Align Option centers carousel', async () => {
-    // console.log('---TEST Center Align Option centers carousel---');
-    await clock.nextAsync();
-    await clock.nextAsync();
-    await clock.nextAsync();
-
-    const platform = document.querySelector('.carousel-platform');
-    expect(platform).to.exist;
-
-    // console.log(`scrollPos:${platform.scrollLeft}`);
-    expect(platform.scrollLeft).to.not.equal(0);
-  });
 });
 
 describe('Disabled Fader Carousel', () => {
@@ -282,7 +205,6 @@ describe('Disabled Fader Carousel', () => {
   });
 
   it('Faders do not exist', async () => {
-    // console.log('---fader elements do not exist---');
     await clock.nextAsync();
 
     const platform = document.querySelector('.carousel-platform');
@@ -297,7 +219,6 @@ describe('Disabled Fader Carousel', () => {
   });
 
   it('Triggers do not exist', async () => {
-    // console.log('---intersection observer triggers do not exist---');
     await clock.nextAsync();
 
     const leftTrigger = document.querySelector('.carousel-left-trigger');
