@@ -372,3 +372,6 @@ body[data-device="mobile"].mobile-drawer-opened main .floating-button-wrapper[da
     display: none !important;
   }
 }
+body.mobile-drawer--touched {
+  overflow: hidden;
+}
