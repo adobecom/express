@@ -359,6 +359,7 @@ function decorateCarouselViews(payload) {
         const drawerItem = overlay.closest('.drawer-item');
         console.log('drawerItem', drawerItem);
         drawerItem.prepend(overlay);
+        drawerItem.querySelector('a')?.classList.add('drawer-item-overlay');
       });
       // console.log('here', payload.drawerItemContainer);
     }
