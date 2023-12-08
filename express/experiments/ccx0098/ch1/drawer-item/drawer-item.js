@@ -353,7 +353,15 @@ function decorateCarouselViews(payload) {
     const carousel = payload.drawerItemContainer.querySelector('.carousel-platform');
     carousel.querySelectorAll('.carousel-left-trigger, .carousel-right-trigger').forEach((trigger) => trigger.remove());
     const indicators = createIndicators(payload, carousel);
-    console.log('here', payload.drawerItemContainer);
+    if (payload.isAnimationsView) {
+      payload.drawerItemContainer.querySelectorAll('.hero-animation-overlay').forEach((overlay) => {
+        console.log('overlay', overlay);
+        const drawerItem = overlay.closest('.drawer-item');
+        console.log('drawerItem', drawerItem);
+        drawerItem.append(overlay);
+      });
+      // console.log('here', payload.drawerItemContainer);
+    }
     payload.drawerItemContainer.append(indicators);
     payload.drawerItemContainer.dataset.lh = payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('');
   }
