@@ -200,7 +200,7 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
     observer.unobserve(block);
   };
 
-  const howToStepsObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
+  const howToStepsObserver = new IntersectionObserver(onIntersect, { rootMargin: '1000px', threshold: 0 });
   howToStepsObserver.observe(block);
 }
 

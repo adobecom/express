@@ -231,6 +231,6 @@ export default async function decorate(block) {
     observer.unobserve(block);
   };
 
-  const colorHowToObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
+  const colorHowToObserver = new IntersectionObserver(onIntersect, { rootMargin: '1000px', threshold: 0 });
   colorHowToObserver.observe(block);
 }

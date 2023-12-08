@@ -174,7 +174,7 @@ export function onCarouselCSSLoad(selector, parent, options) {
       observer.unobserve(scrollable);
     };
 
-    const carouselObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
+    const carouselObserver = new IntersectionObserver(onIntersect, { rootMargin: '1000px', threshold: 0 });
     carouselObserver.observe(scrollable);
   };
 
