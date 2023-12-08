@@ -358,7 +358,7 @@ function decorateCarouselViews(payload) {
         console.log('overlay', overlay);
         const drawerItem = overlay.closest('.drawer-item');
         console.log('drawerItem', drawerItem);
-        drawerItem.append(overlay);
+        drawerItem.prepend(overlay);
       });
       // console.log('here', payload.drawerItemContainer);
     }
