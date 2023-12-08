@@ -455,6 +455,12 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateCarouselCTAList(payload);
     addScratchLottie(payload);
   }
+  document.querySelectorAll('.drawer-item-animations-view-container .drawer-item').forEach((container) => {
+    if (!container.querySelector('drawer-item-overlay')) {
+      const overlay = createTag('div', { class: 'drawer-item-overlay' });
+      container.append(overlay);
+    }
+  });
 }
 function trackTotalItemsLoaded(payload) {
   payload.drawerItemContainer.dataset.itemLoadedCount = parseInt(
