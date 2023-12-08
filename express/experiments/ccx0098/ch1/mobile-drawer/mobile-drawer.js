@@ -443,10 +443,8 @@ function initNotchDragAction($wrapper) {
   let initialHeight;
 
   $dragables.forEach((dragable) => {
-    const body = document.querySelector('body');
     if ('ontouchstart' in window) {
       dragable.addEventListener('touchstart', (e) => {
-        body.classList.add('mobile-drawer--touched');
         initialHeight = $wrapper.clientHeight;
         touchStart = e.changedTouches[0].clientY;
         $body.classList.add('mobile-drawer-opened');
@@ -460,7 +458,6 @@ function initNotchDragAction($wrapper) {
         }
       }, { passive: true });
       dragable.addEventListener('touchend', () => {
-        body.classList.remove('mobile-drawer--touched');
         if (!$wrapper.classList.contains('drawer-opened')) {
           toggleDrawer($wrapper, $lottie, true, $body);
         } else if ($wrapper.classList.contains('drawer-opened')) {
