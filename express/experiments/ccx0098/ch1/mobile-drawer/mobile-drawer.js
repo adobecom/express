@@ -528,7 +528,6 @@ export default async function decorate($block) {
   $tabLottie.innerHTML = getLottie('compass-lottie-white', '/express/experiments/ccx0098/ch1/mobile-drawer/compass-lottie-white.json');
   $tabLottie.append($tabText);
   $tabLottieContainer.append($tabLottie);
-  $tabLottie.querySelector('lottie-player')?.pause();
   $block.innerHTML = '';
 
   Array.from($toggles.children).forEach(($toggle) => {
