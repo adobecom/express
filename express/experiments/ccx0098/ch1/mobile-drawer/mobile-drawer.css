@@ -12,6 +12,7 @@ main .mobile-drawer-wrapper {
   z-index: 1;
   padding-top: 0px;
   transition: height 0.3s, padding-top 0.3s;
+  z-index: 11;
 }
 
 main .mobile-drawer-wrapper.drawer-opened {
