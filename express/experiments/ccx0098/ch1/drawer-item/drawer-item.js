@@ -279,6 +279,7 @@ function decorateAnimationsViewMedia(payload) {
       if (link?.href?.includes('.mp4')) {
         transformLinkToAnimation(link);
         console.log('link', link);
+        console.log('drawerItemContainer', drawerItemContainer);
         if (index === 0) link.classList.add('drawer-swipeable-right');
         if (index === animationLinks.length - 1) link.classList.add('drawer-swipeable-left');
       }
