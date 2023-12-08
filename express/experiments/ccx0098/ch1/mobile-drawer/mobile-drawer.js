@@ -525,7 +525,7 @@ export default async function decorate($block) {
   const $tabLottieContainer = createTag('div', { class: 'tab-lottie-container' });
   const $tabLottie = createTag('div', { class: 'tab-lottie' });
   const $tabText = $oldMobileDrawerSection.querySelector('.default-content-wrapper p');
-  $tabLottie.innerHTML = getLottie('compass-lottie-white', '/express/experiments/ccx0098/ch1/mobile-drawer/compass-lottie-white.json');
+  $tabLottie.innerHTML = getLottie('compass-lottie-white', '/express/experiments/ccx0098/ch1/mobile-drawer/compass-lottie-white.json', false, false);
   $tabLottie.append($tabText);
   $tabLottieContainer.append($tabLottie);
   $block.innerHTML = '';
