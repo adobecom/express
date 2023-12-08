@@ -197,7 +197,7 @@ function decorateToggleCarousel(selector, $parent) {
     const mobileDrawer = document.querySelector('.mobile-drawer');
     const toggleCarousel = mobileDrawer?.querySelector('.mobile-drawer-toggle .toggle-carousel-container');
     const toggleCarouselWidth = toggleCarousel?.clientWidth;
-    lazyLoadLottiePlayer();
+    // lazyLoadLottiePlayer();
 
     if (toggleCarouselWidth) {
       const buttonWidth = getDynamicButtonWidth($platform.clientWidth);
