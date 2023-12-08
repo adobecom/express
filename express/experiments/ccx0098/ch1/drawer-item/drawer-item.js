@@ -456,7 +456,7 @@ function initAfterDrawerFullyLoaded(payload) {
     addScratchLottie(payload);
   }
   document.querySelectorAll('.drawer-item-animations-view-container .drawer-item').forEach((container) => {
-    if (!container.querySelector('drawer-item-overlay')) {
+    if (!container.querySelector('.drawer-item-overlay')) {
       const overlay = createTag('div', { class: 'drawer-item-overlay' });
       container.append(overlay);
     }
