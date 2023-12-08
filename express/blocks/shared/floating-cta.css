@@ -90,11 +90,12 @@ main .floating-button .floating-button-inner-wrapper .floating-button-background
 main .floating-button a.button:any-link {
     position: relative;
     display: block;
-    min-width: 200px;
+    box-sizing: border-box;
+    max-width: 332px;
     white-space: nowrap;
     margin: 0;
     z-index: 2;
-    padding: 13px 64px;
+    width: calc(100vw - 54px);
     pointer-events: auto;
 }
 
@@ -108,7 +109,7 @@ main .floating-button a.button:any-link:focus {
 
 
 main .floating-button-wrapper.floating-button--above-the-fold:not(.floating-button--scrolled) a.button:any-link {
-    padding: 13px 80px 13px 48px;
+    padding: 13px 80px 14px 48px;
 }
 
 main .floating-button .floating-button-lottie {
