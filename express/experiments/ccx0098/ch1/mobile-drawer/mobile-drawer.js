@@ -405,9 +405,9 @@ function toggleDrawer($wrapper, $lottie, open = true, $body) {
     rootForClasses?.style.setProperty('--mobile-drawer-window-height', `${window.innerHeight - 64}px`);
     $body.classList.add('mobile-drawer-opened'); // used in both mobile-drawer.css and drawer-item.css
     $wrapper.classList.add('drawer-opened');
-    if ($lottie && $lottie.pause) {
-      $lottie.pause();
-    }
+    // if ($lottie && $lottie.pause) {
+    //   $lottie.pause();
+    // }
     setTimeout(() => {
       $body.style.overflow = 'hidden'; // allows down scroll to hide the mobile headers first
     }, 300);
@@ -420,9 +420,9 @@ function toggleDrawer($wrapper, $lottie, open = true, $body) {
     }, 250);
     $wrapper.transition = 'marginTop 300ms';
     $wrapper.style.marginTop = '0px';
-    if ($lottie && $lottie.play) {
-      $lottie.play();
-    }
+    // if ($lottie && $lottie.play) {
+    //   $lottie.play();
+    // }
     $wrapper.querySelector('.mobile-drawer-items-container')?.setAttribute('aria-hidden', true);
   }
   $wrapper.style = '';
