@@ -277,8 +277,10 @@ function decorateAnimationsViewMedia(payload) {
     const animationLinks = payload.drawerItemContainer.querySelectorAll('a');
     animationLinks.forEach((link, index) => {
       if (link?.href?.includes('.mp4')) {
-        transformLinkToAnimation(link);
         console.log('linkparent', link.parentElement);
+        console.log('link', link);
+        transformLinkToAnimation(link);
+        console.log('linkafter', link);
         console.log('drawerItemContainer', payload.drawerItemContainer);
         if (index === 0) link.classList.add('drawer-swipeable-right');
         if (index === animationLinks.length - 1) link.classList.add('drawer-swipeable-left');
