@@ -280,7 +280,7 @@ function decorateAnimationsViewMedia(payload) {
         console.log('linkparent', link.parentElement);
         console.log('linkparentparent', link.parentElement.parentElement);
         transformLinkToAnimation(link);
-        console.log('drawerItemContainer', payload.drawerItemContainer);
+        console.log(link.closest('.drawer-item'));
         if (index === 0) link.classList.add('drawer-swipeable-right');
         if (index === animationLinks.length - 1) link.classList.add('drawer-swipeable-left');
       }
