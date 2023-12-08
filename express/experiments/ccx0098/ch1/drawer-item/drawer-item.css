@@ -761,13 +761,11 @@ main .mobile-drawer-wrapper .cta-hidden {
   }
 }
 .drawer-item-overlay {
-  background: blue;
-  min-height: 100%;
   width: 100%;
   z-index: 2;
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: 25px;
   right: 0;
   left: 0;
   opacity: 0.5;
