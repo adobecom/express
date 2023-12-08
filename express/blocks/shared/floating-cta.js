@@ -239,7 +239,7 @@ export async function createFloatingButton(block, audience, data) {
     },
   }));
 
-  if (data.useLottieArrow) {
+  if (document.body.dataset.device === 'desktop' || data.useLottieArrow) {
     const heroCTA = document.querySelector('a.button.same-as-floating-button-CTA');
     if (heroCTA) {
       const hideButtonWhenIntersecting = new IntersectionObserver(([e]) => {
