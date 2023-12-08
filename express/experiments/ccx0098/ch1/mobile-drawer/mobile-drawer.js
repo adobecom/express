@@ -529,6 +529,7 @@ export default async function decorate($block) {
   $tabLottie.append($tabText);
   $tabLottieContainer.append($tabLottie);
   $block.innerHTML = '';
+  $tabLottie.querySelector('.lottie-compass-lottie-white')?.pause();
 
   Array.from($toggles.children).forEach(($toggle) => {
     const $button = createTag('button');
