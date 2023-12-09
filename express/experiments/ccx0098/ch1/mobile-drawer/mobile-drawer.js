@@ -397,11 +397,11 @@ function handleShakyLoadingImages($wrapper) {
 }
 
 function toggleDrawer($wrapper, $lottie, open = true, $body) {
-  const rootForClasses = document.querySelector(':root');
+  // const rootForClasses = document.querySelector(':root');
   handleShakyLoadingImages($wrapper);
   $wrapper.style.transition = '0.3s';
   if (open) {
-    rootForClasses?.style.setProperty('--mobile-drawer-window-height', `${window.innerHeight - 64}px`);
+    // rootForClasses?.style.setProperty('--mobile-drawer-window-height', `${window.innerHeight - 64}px`);
     $body.classList.add('mobile-drawer-opened'); // used in both mobile-drawer.css and drawer-item.css
     $wrapper.classList.add('drawer-opened');
     // if ($lottie && $lottie.pause) {
