@@ -374,3 +374,6 @@ body[data-device="mobile"].mobile-drawer-opened main .floating-button-wrapper[da
     display: none !important;
   }
 }
+html.mobile-drawer-opened {
+  overflow: hidden;
+}
