@@ -437,7 +437,8 @@ function handleDraggableEvents(e, $wrapper, $lottie, $body) {
 }
 function initNotchDragAction($wrapper) {
   const $body = document.querySelector('body');
-  const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch,.tab-lottie-container');
+  const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch');
+  // const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch,.tab-lottie-container');
   const $lottie = $wrapper.querySelector('lottie-player');
   let touchStart = 0;
   let initialHeight;

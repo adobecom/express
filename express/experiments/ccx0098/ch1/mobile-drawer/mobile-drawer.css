@@ -1,7 +1,7 @@
 /* Note: uses .list-view for toggled options and .has-list for differences between ch1 and ch2 */
-:root {
+/* :root {
   --mobile-drawer-window-height: calc(100vh - 178px);
-}
+} */
 
 main .mobile-drawer-wrapper {
   height: 250px;
@@ -16,7 +16,8 @@ main .mobile-drawer-wrapper {
 }
 
 main .mobile-drawer-wrapper.drawer-opened {
-  height: var(--mobile-drawer-window-height);
+  /* height: var(--mobile-drawer-window-height); */
+  height: 100%;
   background-color: var(--color-gray-700);
   padding-top: 64px;
   transition: height 0.3s, padding-top 0.3s, background-color 0.3s;
@@ -56,7 +57,7 @@ main .mobile-drawer {
 main .mobile-drawer-wrapper .mobile-drawer-notch {
   position: absolute;
   padding: 60px 40% 10px 40%;
-  top: -40px;
+  top: -52px;
   left: 50%;
   transform: translateX(-50%);
 }
