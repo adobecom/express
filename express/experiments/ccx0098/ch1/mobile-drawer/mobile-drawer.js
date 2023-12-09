@@ -413,7 +413,7 @@ function toggleDrawer($wrapper, $lottie, open = true, $body) {
     $wrapper.querySelector('.mobile-drawer-items-container')?.setAttribute('aria-hidden', false);
   } else {
     $wrapper.classList.remove('drawer-opened');
-    $body.style.overflow = 'visible';
+    // $body.style.overflow = 'visible';
     setTimeout(() => {
       $body.classList.remove('mobile-drawer-opened');
     }, 250);
