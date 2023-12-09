@@ -764,7 +764,7 @@ main .mobile-drawer-wrapper .cta-hidden {
   width: 100%;
   z-index: 2;
   position: absolute !important;
-  background: blue;
+  /* background: blue; */
   top: 0;
   bottom: 25px;
   right: 0;
