@@ -468,7 +468,7 @@ function initNotchDragAction($wrapper) {
           toggleDrawer($wrapper, $lottie, true, $body);
         } else if ($wrapper.classList.contains('drawer-opened')) {
           toggleDrawer($wrapper, $lottie, false, $body);
-          document.removeEventListener('touchmove', noScrollListener, { passive: false });
+          // document.removeEventListener('touchmove', noScrollListener, { passive: false });
         }
         $wrapper.classList.remove('mobile-drawer--dragged');
 
