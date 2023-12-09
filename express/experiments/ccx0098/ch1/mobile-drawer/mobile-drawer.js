@@ -455,6 +455,7 @@ function initNotchDragAction($wrapper) {
         $body.classList.add('mobile-drawer-opened');
         $wrapper.classList.add('mobile-drawer--dragged');
       }, { passive: true });
+      document.addEventListener('touchstart', noScrollListener, { passive: false });
       document.addEventListener('touchmove', noScrollListener, { passive: false });
       dragable.addEventListener('touchmove', (e) => {
         const newHeight = `${initialHeight - (e.changedTouches[0].clientY - touchStart)}`;
