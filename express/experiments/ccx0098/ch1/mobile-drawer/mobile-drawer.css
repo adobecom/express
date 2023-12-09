@@ -377,3 +377,6 @@ body[data-device="mobile"].mobile-drawer-opened main .floating-button-wrapper[da
 html.mobile-drawer-opened,html.mobile-drawer-opened body {
   overflow: hidden;
 }
+body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"][data-section-status="loaded"] {
+  z-index: 12;
+}
