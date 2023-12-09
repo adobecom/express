@@ -474,6 +474,8 @@ function initNotchDragAction($wrapper) {
           // document.removeEventListener('touchmove', noScrollListener, { passive: false });
         }
         $wrapper.classList.remove('mobile-drawer--dragged');
+        document.removeEventListener('touchstart', noScrollListener, { passive: false });
+        document.removeEventListener('touchmove', noScrollListener, { passive: false });
 
         setTimeout(() => {
           initialHeight = $wrapper.clientHeight;
