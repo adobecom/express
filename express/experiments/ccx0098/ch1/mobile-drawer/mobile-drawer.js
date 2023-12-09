@@ -408,7 +408,7 @@ function toggleDrawer($wrapper, $lottie, open = true, $body) {
     //   $lottie.pause();
     // }
     setTimeout(() => {
-      $body.style.overflow = 'hidden'; // allows down scroll to hide the mobile headers first
+      // $body.style.overflow = 'hidden'; // allows down scroll to hide the mobile headers first
     }, 300);
     $wrapper.querySelector('.mobile-drawer-items-container')?.setAttribute('aria-hidden', false);
   } else {
@@ -436,7 +436,8 @@ function handleDraggableEvents(e, $wrapper, $lottie, $body) {
   }
 }
 function initNotchDragAction($wrapper) {
-  const $body = document.querySelector('body');
+  // const $body = document.querySelector('body');
+  const $body = document.querySelector('html');
   const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch');
   // const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch,.tab-lottie-container');
   const $lottie = $wrapper.querySelector('lottie-player');
