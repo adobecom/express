@@ -445,16 +445,19 @@ function initNotchDragAction($wrapper) {
   let initialHeight;
 
   $dragables.forEach((dragable) => {
+    document.addEventListener('touchmove', noScrollListener, { passive: false });
     if ('ontouchstart' in window) {
+      const noScrollListener = (e) => {
+        e.preventDefault();
+      };
       dragable.addEventListener('touchstart', (e) => {
         initialHeight = $wrapper.clientHeight;
         touchStart = e.changedTouches[0].clientY;
         $body.classList.add('mobile-drawer-opened');
         $wrapper.classList.add('mobile-drawer--dragged');
       }, { passive: true });
-      document.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-      }, { passive: false });
+      document.removeEventListener('touchmove', noScrollListener, { passive: false });
+      document.addEventListener('touchmove', noScrollListener, { passive: false });
       dragable.addEventListener('touchmove', (e) => {
         const newHeight = `${initialHeight - (e.changedTouches[0].clientY - touchStart)}`;
         if (newHeight < window.innerHeight) {
@@ -462,11 +465,12 @@ function initNotchDragAction($wrapper) {
           $wrapper.style.height = `${newHeight}px`;
         }
       }, { passive: true });
-      dragable.addEventListener('touchend', (e) => {
+      dragable.addEventListener('touchend', () => {
         if (!$wrapper.classList.contains('drawer-opened')) {
           toggleDrawer($wrapper, $lottie, true, $body);
         } else if ($wrapper.classList.contains('drawer-opened')) {
           toggleDrawer($wrapper, $lottie, false, $body);
+          document.removeEventListener('touchmove', noScrollListener, { passive: false });
         }
         $wrapper.classList.remove('mobile-drawer--dragged');
 
