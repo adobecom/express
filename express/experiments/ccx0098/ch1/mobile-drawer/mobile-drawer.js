@@ -443,13 +443,12 @@ function initNotchDragAction($wrapper) {
   const $lottie = $wrapper.querySelector('lottie-player');
   let touchStart = 0;
   let initialHeight;
-
+  const noScrollListener = (e) => {
+    e.preventDefault();
+  };
   $dragables.forEach((dragable) => {
     document.addEventListener('touchmove', noScrollListener, { passive: false });
     if ('ontouchstart' in window) {
-      const noScrollListener = (e) => {
-        e.preventDefault();
-      };
       dragable.addEventListener('touchstart', (e) => {
         initialHeight = $wrapper.clientHeight;
         touchStart = e.changedTouches[0].clientY;
