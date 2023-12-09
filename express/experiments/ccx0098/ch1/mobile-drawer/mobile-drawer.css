@@ -55,7 +55,7 @@ main .mobile-drawer {
 
 main .mobile-drawer-wrapper .mobile-drawer-notch {
   position: absolute;
-  padding: 50px 50px 0 50px;
+  padding: 60px 40% 10px 40%;
   top: -40px;
   left: 50%;
   transform: translateX(-50%);
