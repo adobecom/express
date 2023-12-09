@@ -448,6 +448,7 @@ function initNotchDragAction($wrapper) {
     if ('ontouchstart' in window) {
       dragable.addEventListener('touchstart', (e) => {
         e.stopPropagation();
+        e.preventDefault();
         initialHeight = $wrapper.clientHeight;
         touchStart = e.changedTouches[0].clientY;
         $body.classList.add('mobile-drawer-opened');
@@ -455,6 +456,7 @@ function initNotchDragAction($wrapper) {
       }, { passive: true });
       dragable.addEventListener('touchmove', (e) => {
         e.stopPropagation();
+        e.preventDefault();
         const newHeight = `${initialHeight - (e.changedTouches[0].clientY - touchStart)}`;
         if (newHeight < window.innerHeight) {
           $wrapper.style.transition = 'none';
@@ -463,6 +465,7 @@ function initNotchDragAction($wrapper) {
       }, { passive: true });
       dragable.addEventListener('touchend', (e) => {
         e.stopPropagation();
+        e.preventDefault();
         if (!$wrapper.classList.contains('drawer-opened')) {
           toggleDrawer($wrapper, $lottie, true, $body);
         } else if ($wrapper.classList.contains('drawer-opened')) {
