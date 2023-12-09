@@ -467,9 +467,9 @@ function initNotchDragAction($wrapper) {
       dragable.addEventListener('touchend', () => {
         if (!$wrapper.classList.contains('drawer-opened')) {
           toggleDrawer($wrapper, $lottie, true, $body);
-        } else if ($wrapper.classList.contains('drawer-opened')) {
           document.removeEventListener('touchstart', noScrollListener, { passive: false });
           document.removeEventListener('touchmove', noScrollListener, { passive: false });
+        } else if ($wrapper.classList.contains('drawer-opened')) {
           toggleDrawer($wrapper, $lottie, false, $body);
           // document.removeEventListener('touchmove', noScrollListener, { passive: false });
         }
