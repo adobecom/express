@@ -376,6 +376,7 @@ html.mobile-drawer-opened,html.mobile-drawer-opened body {
 body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"][data-section-status="loaded"] {
   z-index: 12;
 }
-body[data-device="mobile"].mobile-drawer-opened main .floating-button-wrapper[data-audience="mobile"][data-section-status="loaded"] {
+
+html.mobile-drawer-opened body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"][data-section-status="loaded"] {
   display: none;
 }
