@@ -459,9 +459,9 @@ function initNotchDragAction($wrapper) {
   const onDragEndListener = (e) => {
     e.preventDefault();
   };
-  document.addEventListener('touchstart', onDragStartListener, { passive: false });
+  // document.addEventListener('touchstart', onDragStartListener, { passive: false });
   $dragables.forEach((dragable) => {
-    document.addEventListener('touchmove', noScrollListener, { passive: false });
+    // document.addEventListener('touchmove', noScrollListener, { passive: false });
     if ('ontouchstart' in window) {
       dragable.addEventListener('touchstart', (e) => {
         initialHeight = $wrapper.clientHeight;
