@@ -445,7 +445,7 @@ function initNotchDragAction($wrapper) {
   let initialHeight;
 
   const onDragBody = (e) => {
-    if (e.target.closest('.mobile-drawer-wrapper')) {
+    if (e.target.classList.contains('mobile-drawer-notch') || e.target.classList.contains('mobile-drawer-notch-pill')) {
       e.preventDefault();
     }
     console.log(e.target.classList[0]);
@@ -495,6 +495,7 @@ function initNotchDragAction($wrapper) {
         // document.removeEventListener('touchstart', onDragStartListener, { passive: false });
         // document.removeEventListener('touchmove', onDragListener, { passive: false });
         // document.removeEventListener('touchend', onDragEndListener, { passive: false });
+        document.removeEventListener('touchstart', onDragBody, { passive: false });
 
         setTimeout(() => {
           initialHeight = $wrapper.clientHeight;
