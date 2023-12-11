@@ -1,13 +1,12 @@
 import {
   fetchPlaceholders,
   createTag,
-  getDevice,
   getMetadata,
 } from './utils.js';
 
 export const loadExpressProduct = async () => {
   if (!window.hlx.preload_product) return;
-  if (getDevice() !== 'desktop') return;
+  if (document.body.dataset.device === 'mobile') return;
   const path = ['www.adobe.com'].includes(window.location.hostname)
     ? 'https://new.express.adobe.com/static/preload.html' : 'https://stage.projectx.corp.adobe.com/static/preload.html';
   const iframe = createTag('iframe', { src: path, style: 'display:none' });
@@ -19,7 +18,7 @@ async function isLoggedInDelayed() {
   const placeholders = await fetchPlaceholders();
   const autoRedirect = ['yes', 'true', 'Y', 'on'].includes(getMetadata('direct-path-to-product'));
   const autoRedirectLanguageFound = placeholders.cancel || placeholders['bmtp-header'] || placeholders['bmtp-cancel-text'];
-  const isDesktop = getDevice() !== 'desktop';
+  const isDesktop = document.body.dataset.device !== 'desktop';
 
   return userProfile && autoRedirect && autoRedirectLanguageFound && isDesktop;
 }
@@ -44,7 +43,7 @@ export default function loadDelayed(DELAY = 3000) {
       setTimeout(() => {
         loadExpressProduct();
         resolve();
-      }, DELAY);
+      }, window.delay_preload_product ? DELAY * 2 : DELAY);
     });
   });
 }

@@ -1,14 +1,16 @@
 import {
   sampleRUM,
-  getDevice,
   removeIrrelevantSections,
   loadArea,
+  getMetadata,
   stamp,
-  registerPerformanceLogger, setConfig, loadCSS,
+  registerPerformanceLogger,
+  setConfig,
+  loadStyle,
 } from './utils.js';
 
 const locales = {
-  '': { ietf: 'en-US', tk: 'hah7vzn.css' },
+  '': { ietf: 'en-US', tk: 'jdq5hay.css' },
   br: { ietf: 'pt-BR', tk: 'inq1xob.css' },
   cn: { ietf: 'zh-Hans-CN', tk: 'puu3xkp' },
   de: { ietf: 'de-DE', tk: 'vin7zsi.css' },
@@ -30,6 +32,7 @@ const locales = {
 
 const config = {
   locales,
+  codeRoot: '/express/',
 };
 
 window.RUM_GENERATION = 'ccx-gen-4-experiment-high-sample-rate';
@@ -53,9 +56,8 @@ const eagerLoad = (img) => {
 };
 
 (function loadLCPImage() {
-  const body = document.querySelector('body');
-  body.dataset.device = getDevice();
-  const main = body.querySelector('main');
+  document.body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
+  const main = document.body.querySelector('main');
   removeIrrelevantSections(main);
   const firstDiv = main.querySelector('div:nth-child(1) > div');
   if (firstDiv?.classList.contains('marquee')) {
@@ -70,7 +72,7 @@ const showNotifications = () => {
   const notification = url.searchParams.get('notification');
   if (notification) {
     const handler = () => {
-      loadCSS('/express/features/notification/notification.css', () => {
+      loadStyle('/express/features/notification/notification.css', () => {
         import('../features/notification/notification.js').then((mod) => {
           mod.default(notification);
           window.removeEventListener('milo:LCP:loaded', handler);
@@ -86,6 +88,11 @@ const showNotifications = () => {
   setConfig(config);
   showNotifications();
   await loadArea();
+  if (getMetadata('mobile-benchmark') && document.body.dataset.device === 'mobile') {
+    Promise.all([import('./mobile-beta-gating.js'), import('./block-mediator.min.js')]).then(([gatingScript]) => {
+      gatingScript.default();
+    });
+  }
 }());
 
 stamp('start');

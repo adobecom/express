@@ -1,4 +1,8 @@
-import { getHelixEnv } from './utils.js';
+import {
+  getHelixEnv,
+  removeIrrelevantSections,
+  sampleRUM,
+} from './utils.js';
 
 export const DEFAULT_EXPERIMENT_OPTIONS = {
   // Generic properties
@@ -38,120 +42,6 @@ function getSegmentsFromAlloyResponse(response) {
   return segments;
 }
 
-async function getSegmentsFromAlloy() {
-  if (!window.alloy) {
-    return [];
-  }
-  if (window.rtcdpSegments) {
-    return window.rtcdpSegments;
-  }
-  await window.alloyLoader;
-  let result;
-  // avoid multiple calls to alloy for render decisions from different audiences
-  if (window.renderDecisionsResult) {
-    result = await window.renderDecisionsResult;
-  } else {
-    // eslint-disable-next-line no-undef
-    window.renderDecisionsResult = alloy('sendEvent', {
-      renderDecisions: true,
-    }).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.error('Error sending event to alloy:', error);
-      return [];
-    });
-    result = await window.renderDecisionsResult;
-  }
-  window.rtcdpSegments = getSegmentsFromAlloyResponse(result);
-  return window.rtcdpSegments;
-}
-
-/**
- * Returns script that initializes a queue for each alloy instance,
- * in order to be ready to receive events before the alloy library is loaded
- * Documentation
- * https://experienceleague.adobe.com/docs/experience-platform/edge/fundamentals/installing-the-sdk.html?lang=en#adding-the-code
- * @type {string}
- */
-function getAlloyInitScript() {
-  return `!function(n,o){o.forEach(function(o){n[o]||((n.__alloyNS=n.__alloyNS||[]).push(o),n[o]=
-  function(){var u=arguments;return new Promise(function(i,l){n[o].q.push([i,l,u])})},n[o].q=[])})}(window,["alloy"]);`;
-}
-
-/**
- * Returns datastream id to use as edge configuration id
- * Custom logic can be inserted here in order to support
- * different datastream ids for different environments (non-prod/prod)
- * @returns {{edgeConfigId: string, orgId: string}}
- */
-function getDatastreamConfiguration() {
-  const orgId = '9E1005A551ED61CA0A490D45@AdobeOrg';
-  const edgeConfigIds = {
-    prod: '913eac4d-900b-45e8-9ee7-306216765cd2',
-    stage: '72b074a6-76d2-43de-a210-124acc734f1c',
-  };
-  return {
-    edgeConfigId: edgeConfigIds[getHelixEnv().name],
-    orgId,
-  };
-}
-
-/**
- * Returns alloy configuration
- * Documentation https://experienceleague.adobe.com/docs/experience-platform/edge/fundamentals/configuring-the-sdk.html
- */
-function getAlloyConfiguration(document) {
-  const { hostname } = document.location;
-
-  return {
-    // enable while debugging
-    debugEnabled: hostname.startsWith('localhost') || hostname.includes('--'),
-    // disable when clicks are also tracked via sendEvent with additional details
-    clickCollectionEnabled: true,
-    // adjust default based on customer use case
-    defaultConsent: 'in',
-    ...getDatastreamConfiguration(),
-  };
-}
-
-/**
- * Create inline script
- * @param document
- * @param element where to create the script element
- * @param innerHTML the script
- * @param type the type of the script element
- * @returns {HTMLScriptElement}
- */
-function createInlineScript(document, element, innerHTML, type) {
-  const script = document.createElement('script');
-  script.type = type;
-  script.innerHTML = innerHTML;
-  element.appendChild(script);
-  return script;
-}
-
-async function loadAlloy() {
-  if (window.alloyLoaded) {
-    return;
-  }
-  if (window.alloyLoader) {
-    await window.alloyLoader;
-    return;
-  }
-  // create a promise that will be resolved when alloy is loaded
-  // this is used to avoid multiple alloy loads
-  let alloyLoadingResolver;
-  window.alloyLoader = new Promise((resolve) => {
-    alloyLoadingResolver = resolve;
-  });
-  createInlineScript(document, document.body, getAlloyInitScript(), 'text/javascript');
-  await import('./libs/alloy.min.js');
-  // eslint-disable-next-line no-undef
-  await alloy('configure', getAlloyConfiguration(document));
-  window.allloyLoaded = true;
-  // resolve the window.alloyLoading promise
-  alloyLoadingResolver();
-}
-
 // Define the custom audiences mapping for experience decisioning
 export const AUDIENCES = {
   mobile: () => window.innerWidth < 600,
@@ -159,11 +49,43 @@ export const AUDIENCES = {
   'new-visitor': () => !localStorage.getItem('franklin-visitor-returning'),
   'returning-visitor': () => !!localStorage.getItem('franklin-visitor-returning'),
   ccentitled: async () => {
-    await loadAlloy();
-    const segments = await getSegmentsFromAlloy();
+    const res = await window.alloyLoader;
+    const segments = getSegmentsFromAlloyResponse(res);
     return segments.includes(getCCEntitledUsersSegmentId());
   },
 };
+
+/**
+ * Generates a decision policy object which is understood by UED from an
+ * experiment configuration.
+ * @param {*} config Experiment configuration
+ * @returns Experiment decision policy object to be passed to UED.
+ */
+function getDecisionPolicy(config) {
+  const decisionPolicy = {
+    id: 'content-experimentation-policy',
+    rootDecisionNodeId: 'n1',
+    decisionNodes: [{
+      id: 'n1',
+      type: 'EXPERIMENTATION',
+      experiment: {
+        id: config.id,
+        identityNamespace: 'ECID',
+        randomizationUnit: 'DEVICE',
+        treatments: Object.entries(config.variants).map(([key, props]) => ({
+          id: key,
+          allocationPercentage: props.percentageSplit
+            ? parseFloat(props.percentageSplit) * 100
+            : 100 - Object.values(config.variants).reduce((result, variant) => {
+              const returnResult = result - (parseFloat(variant.percentageSplit || 0) * 100);
+              return returnResult;
+            }, 100),
+        })),
+      },
+    }],
+  };
+  return decisionPolicy;
+}
 
 /**
  * Checks if any of the configured audiences on the page can be resolved.
@@ -171,7 +93,13 @@ export const AUDIENCES = {
  * @param {object} options the plugin options
  * @returns Returns the names of the resolved audiences, or `null` if no audience is configured
  */
-export async function getResolvedAudiences(applicableAudiences, options) {
+export async function getResolvedAudiences(
+  applicableAudiences,
+  options = {
+    ...DEFAULT_EXPERIMENT_OPTIONS,
+    audiences: AUDIENCES,
+  },
+) {
   if (!applicableAudiences.length || !Object.keys(options.audiences).length) {
     return null;
   }
@@ -196,4 +124,74 @@ export async function getResolvedAudiences(applicableAudiences, options) {
       }),
   );
   return applicableAudiences.filter((_, i) => results[i]);
+}
+
+/**
+ * Replaces element with content from path
+ * @param {string} path
+ * @param {HTMLElement} element
+ */
+async function replaceInner(path, element) {
+  const plainPath = `${path}.plain.html`;
+  try {
+    const resp = await fetch(plainPath);
+    const html = await resp.text();
+    element.innerHTML = html;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(`error loading experiment content: ${plainPath}`, e);
+  }
+  return null;
+}
+
+export async function runExps(config, forcedExperiment, forcedVariant) {
+  config.resolvedAudiences = await getResolvedAudiences(config.audience.split(',').map((a) => a.trim()));
+  config.run = forcedExperiment
+    || !config.resolvedAudiences
+    || config.resolvedAudiences.length;
+
+  window.hlx = window.hlx || {};
+  if (config.run) {
+    window.hlx.experiment = config;
+    if (forcedVariant && config.variantNames.includes(forcedVariant)) {
+      config.selectedVariant = forcedVariant;
+    } else {
+      const ued = await import('./ued/ued-0.2.0.js');
+      const decision = ued.evaluateDecisionPolicy(getDecisionPolicy(config), {});
+      config.selectedVariant = decision.items[0].id;
+    }
+    sampleRUM('experiment', { source: config.id, target: config.selectedVariant });
+    // populate ttMETA with hlx experimentation details
+    window.ttMETA = window.ttMETA || [];
+    const experimentDetails = {
+      CampaignId: window.hlx.experiment.id,
+      CampaignName: window.hlx.experiment.experimentName,
+      OfferId: window.hlx.experiment.selectedVariant,
+      OfferName: window.hlx.experiment.variants[window.hlx.experiment.selectedVariant].label,
+    };
+    window.ttMETA.push(experimentDetails);
+    // add hlx experiment details as dynamic variables
+    // for Content Square integration
+    // eslint-disable-next-line no-underscore-dangle
+    if (window._uxa) {
+      for (const propName of Object.keys(experimentDetails)) {
+        // eslint-disable-next-line no-underscore-dangle
+        window._uxa.push(['trackDynamicVariable', { key: propName, value: experimentDetails[propName] }]);
+      }
+    }
+    if (config.selectedVariant !== 'control') {
+      const currentPath = window.location.pathname;
+      const pageIndex = config.variants.control.pages.indexOf(currentPath);
+      if (pageIndex >= 0) {
+        const page = config.variants[config.selectedVariant].pages[pageIndex];
+        if (page) {
+          const experimentPath = new URL(page, window.location.href).pathname.split('.')[0];
+          if (experimentPath && experimentPath !== currentPath) {
+            await replaceInner(experimentPath, document.querySelector('main'));
+            removeIrrelevantSections(document.querySelector('main'));
+          }
+        }
+      }
+    }
+  }
 }

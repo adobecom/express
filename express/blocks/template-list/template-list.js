@@ -2,7 +2,6 @@
 
 import {
   addAnimationToggle,
-  addSearchQueryToHref,
   createOptimizedPicture,
   createTag,
   decorateMain,
@@ -269,7 +268,7 @@ function populateTemplates($block, templates, props) {
       const $link = $linkContainer.querySelector(':scope a');
       if ($link) {
         const $a = createTag('a', {
-          href: $link.href ? addSearchQueryToHref($link.href) : '#',
+          href: $link.href || '#',
         });
 
         $a.append(...$tmplt.children);
@@ -490,11 +489,10 @@ function getRedirectUrl(tasks, topics, format, allTemplatesMetadata) {
   const pathMatch = (e) => e.path === targetPath;
   if (allTemplatesMetadata.some(pathMatch)) {
     return `${window.location.origin}${targetPath}`;
-  } else {
-    const searchUrlTemplate = `/express/templates/search?tasks=${tasks}&phformat=${format}&topics=${topics || "''"}`;
-    const searchUrl = `${window.location.origin}${prefix}${searchUrlTemplate}`;
-    return searchUrl;
   }
+
+  const searchUrlTemplate = `/express/templates/search?tasks=${tasks}&phformat=${format}&topics=${topics || "''"}`;
+  return `${window.location.origin}${prefix}${searchUrlTemplate}`;
 }
 
 async function redirectSearch($searchBar, props) {
@@ -1957,7 +1955,7 @@ export default async function decorate($block) {
 
   if ($block.classList.contains('horizontal')) {
     const requireInfiniteScroll = !$block.classList.contains('mini') && !$block.classList.contains('collaboration');
-    buildCarousel(':scope > .template', $block, requireInfiniteScroll);
+    await buildCarousel(':scope > .template', $block, requireInfiniteScroll);
   } else {
     addAnimationToggle($block);
   }
