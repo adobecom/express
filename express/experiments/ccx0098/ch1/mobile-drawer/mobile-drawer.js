@@ -445,8 +445,10 @@ function initNotchDragAction($wrapper) {
   let initialHeight;
 
   const onDragBody = (e) => {
+    if (!e.target.closest('.mobile-drawer-wrapper')) {
+      e.preventDefault();
+    }
     console.log(e.target.classList[0]);
-    console.log(e.target);
     // e.preventDefault();
   };
   const onDragStartListener = (e) => {
