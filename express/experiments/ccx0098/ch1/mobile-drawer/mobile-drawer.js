@@ -196,7 +196,6 @@ function decorateToggleCarousel(selector, $parent) {
     const mobileDrawer = document.querySelector('.mobile-drawer');
     const toggleCarousel = mobileDrawer?.querySelector('.mobile-drawer-toggle .toggle-carousel-container');
     const toggleCarouselWidth = toggleCarousel?.clientWidth;
-    // lazyLoadLottiePlayer();
 
     if (toggleCarouselWidth) {
       const buttonWidth = getDynamicButtonWidth($platform.clientWidth);
@@ -397,11 +396,11 @@ function handleShakyLoadingImages($wrapper) {
 }
 
 function toggleDrawer($wrapper, $lottie, open = true, $body) {
-  // const rootForClasses = document.querySelector(':root');
+  const rootForClasses = document.querySelector(':root');
   handleShakyLoadingImages($wrapper);
   $wrapper.style.transition = '0.3s';
   if (open) {
-    // rootForClasses?.style.setProperty('--mobile-drawer-window-height', `${window.innerHeight - 64}px`);
+    rootForClasses?.style.setProperty('--mobile-drawer-window-height', `${window.innerHeight - 64}px`);
     $body.classList.add('mobile-drawer-opened'); // used in both mobile-drawer.css and drawer-item.css
     $wrapper.classList.add('drawer-opened');
     // if ($lottie && $lottie.pause) {
@@ -441,44 +440,15 @@ function initNotchDragAction($wrapper) {
   const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch');
   // const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch,.tab-lottie-container');
   const $lottie = $wrapper.querySelector('lottie-player');
-  let touchStart = 0;
-  let initialHeight;
 
-  const onDragBody = (e) => {
-    if (e.target.classList.contains('mobile-drawer-notch') || e.target.classList.contains('mobile-drawer-notch-pill')) {
-      e.preventDefault();
-    }
-    console.log(e.target.classList[0]);
-    // e.preventDefault();
-  };
-  const onDragStartListener = (e) => {
-    // alert(e.target.classList);
-    e.preventDefault();
-  };
-  const onDragListener = (e) => {
-    e.preventDefault();
-  };
-  const onDragEndListener = (e) => {
-    e.preventDefault();
-  };
-  // document.addEventListener('touchstart', onDragStartListener, { passive: false });
   $dragables.forEach((dragable) => {
-    // document.addEventListener('touchmove', noScrollListener, { passive: false });
     if ('ontouchstart' in window) {
-      dragable.addEventListener('touchstart', (e) => {
-        // document.addEventListener('touchstart', onDragBody, { passive: false });
-        initialHeight = $wrapper.clientHeight;
-        touchStart = e.changedTouches[0].clientY;
+      dragable.addEventListener('touchstart', () => {
         $body.classList.add('mobile-drawer-opened');
         $wrapper.classList.add('mobile-drawer--dragged');
       }, { passive: false });
       dragable.addEventListener('touchmove', (e) => {
         e.preventDefault();
-        // const newHeight = `${initialHeight - (e.changedTouches[0].clientY - touchStart)}`;
-        // if (newHeight < window.innerHeight) {
-          // $wrapper.style.transition = 'none';
-          // $wrapper.style.height = `${newHeight}px`;
-        // }
       }, { passive: false });
       dragable.addEventListener('touchend', () => {
         if (!$wrapper.classList.contains('drawer-opened')) {
@@ -488,7 +458,6 @@ function initNotchDragAction($wrapper) {
         }
         $wrapper.classList.remove('mobile-drawer--dragged');
         setTimeout(() => {
-          initialHeight = $wrapper.clientHeight;
           if (!$wrapper.classList.contains('drawer-opened')) {
             $body.classList.remove('mobile-drawer-opened');
           }

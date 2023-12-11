@@ -1,7 +1,7 @@
 /* Note: uses .list-view for toggled options and .has-list for differences between ch1 and ch2 */
-/* :root {
+:root {
   --mobile-drawer-window-height: calc(100vh - 178px);
-} */
+}
 
 main .mobile-drawer-wrapper {
   height: 250px;
