@@ -16,11 +16,11 @@ main .mobile-drawer-wrapper {
 }
 
 main .mobile-drawer-wrapper.drawer-opened {
-  /* height: var(--mobile-drawer-window-height); */
-  height: calc(100% - 40px);
+  height: var(--mobile-drawer-window-height);
+  /* height: calc(100% - 40px); */
   background-color: var(--color-gray-700);
-  /* padding-top: 64px; */
-  padding-top: 40px;
+  padding-top: 64px;
+  /* padding-top: 40px; */
   transition: height 0.3s, padding-top 0.3s, background-color 0.3s;
 }
 
