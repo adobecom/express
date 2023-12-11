@@ -466,12 +466,12 @@ function initNotchDragAction($wrapper) {
     // document.addEventListener('touchmove', noScrollListener, { passive: false });
     if ('ontouchstart' in window) {
       dragable.addEventListener('touchstart', (e) => {
+        document.addEventListener('touchstart', onDragBody, { passive: false });
         initialHeight = $wrapper.clientHeight;
         touchStart = e.changedTouches[0].clientY;
         $body.classList.add('mobile-drawer-opened');
         $wrapper.classList.add('mobile-drawer--dragged');
       }, { passive: true });
-      document.addEventListener('touchstart', onDragBody, { passive: false });
       // document.addEventListener('touchstart', onDragStartListener, { passive: false });
       // document.addEventListener('touchmove', onDragListener, { passive: false });
       // document.addEventListener('touchend', onDragEndListener, { passive: false });
