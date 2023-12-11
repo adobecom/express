@@ -27,7 +27,7 @@ main .mobile-drawer-wrapper.drawer-opened {
   /* padding-top: 40px; */
   /* padding-top: 24px; */
   /* height: calc(100% - 24px); */
-  height: calc(100% - 24px);
+  /* height: calc(100% - 24px); */
   transition: height 0.3s, padding-top 0.3s, background-color 0.3s;
 }
 
