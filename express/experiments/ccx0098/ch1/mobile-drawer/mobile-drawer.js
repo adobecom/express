@@ -443,7 +443,13 @@ function initNotchDragAction($wrapper) {
   const $lottie = $wrapper.querySelector('lottie-player');
   let touchStart = 0;
   let initialHeight;
-  const noScrollListener = (e) => {
+  const onDragStartListener = (e) => {
+    e.preventDefault();
+  };
+  const onDragListener = (e) => {
+    e.preventDefault();
+  };
+  const onDragEndListener = (e) => {
     e.preventDefault();
   };
   $dragables.forEach((dragable) => {
@@ -455,8 +461,9 @@ function initNotchDragAction($wrapper) {
         $body.classList.add('mobile-drawer-opened');
         $wrapper.classList.add('mobile-drawer--dragged');
       }, { passive: true });
-      document.addEventListener('touchstart', noScrollListener, { passive: false });
-      document.addEventListener('touchmove', noScrollListener, { passive: false });
+      document.addEventListener('touchstart', onDragStartListener, { passive: false });
+      document.addEventListener('touchmove', onDragListener, { passive: false });
+      document.addEventListener('touchend', onDragEndListener, { passive: false });
       dragable.addEventListener('touchmove', (e) => {
         const newHeight = `${initialHeight - (e.changedTouches[0].clientY - touchStart)}`;
         if (newHeight < window.innerHeight) {
@@ -474,8 +481,9 @@ function initNotchDragAction($wrapper) {
           // document.removeEventListener('touchmove', noScrollListener, { passive: false });
         }
         $wrapper.classList.remove('mobile-drawer--dragged');
-        document.removeEventListener('touchstart', noScrollListener, { passive: false });
-        document.removeEventListener('touchmove', noScrollListener, { passive: false });
+        document.removeEventListener('touchstart', onDragStartListener, { passive: false });
+        document.removeEventListener('touchmove', onDragListener, { passive: false });
+        document.removeEventListener('touchend', onDragEndListener, { passive: false });
 
         setTimeout(() => {
           initialHeight = $wrapper.clientHeight;
