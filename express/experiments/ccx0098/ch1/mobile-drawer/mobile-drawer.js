@@ -443,7 +443,14 @@ function initNotchDragAction($wrapper) {
   const $lottie = $wrapper.querySelector('lottie-player');
   let touchStart = 0;
   let initialHeight;
+
+  const onDragBody = (e) => {
+    console.log(e.target.classList[0]);
+    console.log(e.target);
+    // e.preventDefault();
+  };
   const onDragStartListener = (e) => {
+    // alert(e.target.classList);
     e.preventDefault();
   };
   const onDragListener = (e) => {
@@ -452,6 +459,7 @@ function initNotchDragAction($wrapper) {
   const onDragEndListener = (e) => {
     e.preventDefault();
   };
+  document.addEventListener('touchstart', onDragStartListener, { passive: false });
   $dragables.forEach((dragable) => {
     document.addEventListener('touchmove', noScrollListener, { passive: false });
     if ('ontouchstart' in window) {
@@ -461,9 +469,10 @@ function initNotchDragAction($wrapper) {
         $body.classList.add('mobile-drawer-opened');
         $wrapper.classList.add('mobile-drawer--dragged');
       }, { passive: true });
-      document.addEventListener('touchstart', onDragStartListener, { passive: false });
-      document.addEventListener('touchmove', onDragListener, { passive: false });
-      document.addEventListener('touchend', onDragEndListener, { passive: false });
+      document.addEventListener('touchstart', onDragBody, { passive: false });
+      // document.addEventListener('touchstart', onDragStartListener, { passive: false });
+      // document.addEventListener('touchmove', onDragListener, { passive: false });
+      // document.addEventListener('touchend', onDragEndListener, { passive: false });
       dragable.addEventListener('touchmove', (e) => {
         const newHeight = `${initialHeight - (e.changedTouches[0].clientY - touchStart)}`;
         if (newHeight < window.innerHeight) {
@@ -482,8 +491,8 @@ function initNotchDragAction($wrapper) {
         }
         $wrapper.classList.remove('mobile-drawer--dragged');
         document.removeEventListener('touchstart', onDragStartListener, { passive: false });
-        document.removeEventListener('touchmove', onDragListener, { passive: false });
-        document.removeEventListener('touchend', onDragEndListener, { passive: false });
+        // document.removeEventListener('touchmove', onDragListener, { passive: false });
+        // document.removeEventListener('touchend', onDragEndListener, { passive: false });
 
         setTimeout(() => {
           initialHeight = $wrapper.clientHeight;
