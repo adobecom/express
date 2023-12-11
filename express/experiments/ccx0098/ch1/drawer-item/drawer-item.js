@@ -277,10 +277,7 @@ function decorateAnimationsViewMedia(payload) {
     const animationLinks = payload.drawerItemContainer.querySelectorAll('a');
     animationLinks.forEach((link, index) => {
       if (link?.href?.includes('.mp4')) {
-        console.log('linkparent', link.parentElement);
-        console.log('linkparentparent', link.parentElement.parentElement);
         transformLinkToAnimation(link);
-        console.log(link.closest('.drawer-item'));
         if (index === 0) link.classList.add('drawer-swipeable-right');
         if (index === animationLinks.length - 1) link.classList.add('drawer-swipeable-left');
       }
@@ -355,13 +352,10 @@ function decorateCarouselViews(payload) {
     const indicators = createIndicators(payload, carousel);
     if (payload.isAnimationsView) {
       payload.drawerItemContainer.querySelectorAll('.hero-animation-overlay').forEach((overlay) => {
-        console.log('overlay', overlay);
         const drawerItem = overlay.closest('.drawer-item');
-        console.log('drawerItem', drawerItem);
         drawerItem.prepend(overlay);
         drawerItem.querySelector('a')?.classList.add('drawer-item-overlay');
       });
-      // console.log('here', payload.drawerItemContainer);
     }
     payload.drawerItemContainer.append(indicators);
     payload.drawerItemContainer.dataset.lh = payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('');
