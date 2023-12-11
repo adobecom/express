@@ -466,44 +466,34 @@ function initNotchDragAction($wrapper) {
     // document.addEventListener('touchmove', noScrollListener, { passive: false });
     if ('ontouchstart' in window) {
       dragable.addEventListener('touchstart', (e) => {
-        document.addEventListener('touchstart', onDragBody, { passive: false });
+        // document.addEventListener('touchstart', onDragBody, { passive: false });
         initialHeight = $wrapper.clientHeight;
         touchStart = e.changedTouches[0].clientY;
         $body.classList.add('mobile-drawer-opened');
         $wrapper.classList.add('mobile-drawer--dragged');
-      }, { passive: true });
-      // document.addEventListener('touchstart', onDragStartListener, { passive: false });
-      // document.addEventListener('touchmove', onDragListener, { passive: false });
-      // document.addEventListener('touchend', onDragEndListener, { passive: false });
+      }, { passive: false });
       dragable.addEventListener('touchmove', (e) => {
-        const newHeight = `${initialHeight - (e.changedTouches[0].clientY - touchStart)}`;
-        if (newHeight < window.innerHeight) {
-          $wrapper.style.transition = 'none';
-          $wrapper.style.height = `${newHeight}px`;
-        }
-      }, { passive: true });
+        e.preventDefault();
+        // const newHeight = `${initialHeight - (e.changedTouches[0].clientY - touchStart)}`;
+        // if (newHeight < window.innerHeight) {
+          // $wrapper.style.transition = 'none';
+          // $wrapper.style.height = `${newHeight}px`;
+        // }
+      }, { passive: false });
       dragable.addEventListener('touchend', () => {
         if (!$wrapper.classList.contains('drawer-opened')) {
           toggleDrawer($wrapper, $lottie, true, $body);
-          // document.removeEventListener('touchstart', noScrollListener, { passive: false });
-          // document.removeEventListener('touchmove', noScrollListener, { passive: false });
         } else if ($wrapper.classList.contains('drawer-opened')) {
           toggleDrawer($wrapper, $lottie, false, $body);
-          // document.removeEventListener('touchmove', noScrollListener, { passive: false });
         }
         $wrapper.classList.remove('mobile-drawer--dragged');
-        // document.removeEventListener('touchstart', onDragStartListener, { passive: false });
-        // document.removeEventListener('touchmove', onDragListener, { passive: false });
-        // document.removeEventListener('touchend', onDragEndListener, { passive: false });
-        document.removeEventListener('touchstart', onDragBody, { passive: false });
-
         setTimeout(() => {
           initialHeight = $wrapper.clientHeight;
           if (!$wrapper.classList.contains('drawer-opened')) {
             $body.classList.remove('mobile-drawer-opened');
           }
         }, 500);
-      }, { passive: true });
+      }, { passive: false });
     } else {
       dragable.addEventListener('click', (e) => {
         handleDraggableEvents(e, $wrapper, $lottie, $body);
