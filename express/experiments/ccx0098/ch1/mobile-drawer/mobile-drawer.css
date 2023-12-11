@@ -1,7 +1,10 @@
 /* Note: uses .list-view for toggled options and .has-list for differences between ch1 and ch2 */
-:root {
+/* :root {
   --mobile-drawer-window-height: calc(100vh - 178px);
-}
+} */
+:root { 
+  --mobile-drawer-window-height: 100%;
+} 
 
 main .mobile-drawer-wrapper {
   height: 250px;
@@ -16,13 +19,14 @@ main .mobile-drawer-wrapper {
 }
 
 main .mobile-drawer-wrapper.drawer-opened {
-  height: 100%;
-  /* height: var(--mobile-drawer-window-height); */
+  /* height: 100%; */
+  height: var(--mobile-drawer-window-height);
   /* height: calc(100% - 40px); */
   background-color: var(--color-gray-700);
   /* padding-top: 64px; */
   /* padding-top: 40px; */
-  padding-top: 24px;
+  /* padding-top: 24px; */
+  /* height: calc(100% - 24px); */
   height: calc(100% - 24px);
   transition: height 0.3s, padding-top 0.3s, background-color 0.3s;
 }

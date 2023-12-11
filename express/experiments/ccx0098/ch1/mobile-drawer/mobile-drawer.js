@@ -395,20 +395,24 @@ function handleShakyLoadingImages($wrapper) {
   });
 }
 
-function toggleDrawer($wrapper, $lottie, open = true, $body) {
+function toggleDrawer($wrapper, $lottie, open = true, $body, header) {
   const rootForClasses = document.querySelector(':root');
   handleShakyLoadingImages($wrapper);
   $wrapper.style.transition = '0.3s';
   if (open) {
-    rootForClasses?.style.setProperty('--mobile-drawer-window-height', `${window.innerHeight - 64}px`);
+    if (header.classList.contains('feds-header-wrapper--retracted')) {
+      rootForClasses?.style.setProperty('--mobile-drawer-window-height', '100%');
+    } else {
+      rootForClasses?.style.setProperty('--mobile-drawer-window-height', `${window.innerHeight - 64}px`);
+    }
     $body.classList.add('mobile-drawer-opened'); // used in both mobile-drawer.css and drawer-item.css
     $wrapper.classList.add('drawer-opened');
     // if ($lottie && $lottie.pause) {
     //   $lottie.pause();
     // }
-    setTimeout(() => {
-      // $body.style.overflow = 'hidden'; // allows down scroll to hide the mobile headers first
-    }, 300);
+    // setTimeout(() => {
+    // $body.style.overflow = 'hidden'; // allows down scroll to hide the mobile headers first
+    // }, 300);
     $wrapper.querySelector('.mobile-drawer-items-container')?.setAttribute('aria-hidden', false);
   } else {
     $wrapper.classList.remove('drawer-opened');
@@ -429,9 +433,9 @@ function handleDraggableEvents(e, $wrapper, $lottie, $body) {
   e.preventDefault();
   e.stopPropagation();
   if (!$wrapper.classList.contains('drawer-opened')) {
-    toggleDrawer($wrapper, $lottie, true, $body);
+    toggleDrawer($wrapper, $lottie, true, $body, header);
   } else if ($wrapper.classList.contains('drawer-opened')) {
-    toggleDrawer($wrapper, $lottie, false, $body);
+    toggleDrawer($wrapper, $lottie, false, $body, header);
   }
 }
 function initNotchDragAction($wrapper) {
@@ -440,6 +444,8 @@ function initNotchDragAction($wrapper) {
   const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch');
   // const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch,.tab-lottie-container');
   const $lottie = $wrapper.querySelector('lottie-player');
+  const header = document.querySelector('header');
+  // feds-header-wrapper--retracted
 
   $dragables.forEach((dragable) => {
     if ('ontouchstart' in window) {
@@ -452,9 +458,9 @@ function initNotchDragAction($wrapper) {
       }, { passive: false });
       dragable.addEventListener('touchend', () => {
         if (!$wrapper.classList.contains('drawer-opened')) {
-          toggleDrawer($wrapper, $lottie, true, $body);
+          toggleDrawer($wrapper, $lottie, true, $body, header);
         } else if ($wrapper.classList.contains('drawer-opened')) {
-          toggleDrawer($wrapper, $lottie, false, $body);
+          toggleDrawer($wrapper, $lottie, false, $body, header);
         }
         $wrapper.classList.remove('mobile-drawer--dragged');
         setTimeout(() => {
@@ -465,13 +471,13 @@ function initNotchDragAction($wrapper) {
       }, { passive: false });
     } else {
       dragable.addEventListener('click', (e) => {
-        handleDraggableEvents(e, $wrapper, $lottie, $body);
+        handleDraggableEvents(e, $wrapper, $lottie, $body, header);
       });
     }
     dragable.addEventListener('keyup', (e) => {
       const isClosed = !e.target.closest('.mobile-drawer-wrapper').classList.contains('draw-opened');
       if (e.target.classList.contains('mobile-drawer-notch') && e.type === 'keyup' && (e.key === 'Enter' || e.key === 'Escape')) {
-        handleDraggableEvents(e, $wrapper, $lottie, $body);
+        handleDraggableEvents(e, $wrapper, $lottie, $body, header);
       } else if ((e.target.classList.contains('mobile-drawer-notch') && e.key === 'Tab' && isClosed)) {
         e.preventDefault();
       }
