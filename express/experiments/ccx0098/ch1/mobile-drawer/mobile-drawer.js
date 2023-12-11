@@ -490,7 +490,7 @@ function initNotchDragAction($wrapper) {
           // document.removeEventListener('touchmove', noScrollListener, { passive: false });
         }
         $wrapper.classList.remove('mobile-drawer--dragged');
-        document.removeEventListener('touchstart', onDragStartListener, { passive: false });
+        // document.removeEventListener('touchstart', onDragStartListener, { passive: false });
         // document.removeEventListener('touchmove', onDragListener, { passive: false });
         // document.removeEventListener('touchend', onDragEndListener, { passive: false });
 
