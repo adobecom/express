@@ -49,9 +49,9 @@ export default async function init(a) {
   if (resp.ok) {
     const html = await resp.text();
     const doc = (new DOMParser()).parseFromString(html, 'text/html');
+    const body = doc.querySelector('body');
     // TODO remove
-    const main = doc.querySelector('main');
-    removeIrrelevantSections(main);
+    removeIrrelevantSections(body);
     //
     const sections = doc.querySelectorAll('body > div');
     if (sections.length > 0) {
