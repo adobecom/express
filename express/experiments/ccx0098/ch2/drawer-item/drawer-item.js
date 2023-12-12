@@ -350,6 +350,13 @@ function decorateCarouselViews(payload) {
     const carousel = payload.drawerItemContainer.querySelector('.carousel-platform');
     carousel.querySelectorAll('.carousel-left-trigger, .carousel-right-trigger').forEach((trigger) => trigger.remove());
     const indicators = createIndicators(payload, carousel);
+    if (payload.isAnimationsView) {
+      payload.drawerItemContainer.querySelectorAll('.hero-animation-overlay').forEach((overlay) => {
+        const drawerItem = overlay.closest('.drawer-item');
+        drawerItem.prepend(overlay);
+        drawerItem.querySelector('a')?.classList.add('drawer-item-overlay');
+      });
+    }
     payload.drawerItemContainer.append(indicators);
     payload.drawerItemContainer.dataset.lh = payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('');
   }

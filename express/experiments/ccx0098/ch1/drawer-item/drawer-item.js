@@ -462,19 +462,6 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateCarouselCTAList(payload);
     addScratchLottie(payload);
   }
-  // const drawerItems = document.querySelectorAll('.drawer-item-animations-view-container .drawer-item');
-  // drawerItems.forEach((container, index) => {
-  //   if (!container.querySelector('.drawer-item-overlay')) {
-  //     const overlay = createTag('div', { class: 'drawer-item-overlay' });
-  //     if (index === 0) {
-  //       overlay.classList.add('drawer-swipeable-right');
-  //     }
-  //     if (index === drawerItems.length - 1) {
-  //       overlay.classList.add('drawer-swipeable-left');
-  //     }
-  //     container.append(overlay);
-  //   }
-  // });
 }
 function trackTotalItemsLoaded(payload) {
   payload.drawerItemContainer.dataset.itemLoadedCount = parseInt(
