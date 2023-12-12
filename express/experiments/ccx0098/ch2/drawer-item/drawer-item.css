@@ -178,6 +178,8 @@ main .drawer-item p + a {
 
 main .mobile-drawer .drawer-item-default-view-container .drawer-item img {
   max-height: calc(100vh - 500px);
+  padding-right: 10px;
+  padding-left: 10px;
 }
 main .mobile-drawer--header-hidden .mobile-drawer .drawer-item-default-view-container .drawer-item img {
   max-width: 100%;
