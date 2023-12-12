@@ -6,6 +6,8 @@ import {
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.js';
 
+const OPT_OUT_KEY = 'no-direct-path-to-product';
+
 export default async function loadLoginUserAutoRedirect() {
   let followThrough = true;
   const placeholders = await fetchPlaceholders();
@@ -42,7 +44,7 @@ export default async function loadLoginUserAutoRedirect() {
     noticeBtn.addEventListener('click', () => {
       container.remove();
       followThrough = false;
-      localStorage.setItem('no-direct-path-to-product', '3');
+      localStorage.setItem(OPT_OUT_KEY, '3');
     });
 
     return container;
@@ -55,7 +57,7 @@ export default async function loadLoginUserAutoRedirect() {
       || document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA')?.href;
 
     // disable dptp to not annoy user when they come back to AX site.
-    localStorage.setItem('no-direct-path-to-product', '3');
+    localStorage.setItem(OPT_OUT_KEY, '3');
 
     if (primaryCtaUrl) {
       window.location.assign(primaryCtaUrl);
@@ -66,11 +68,11 @@ export default async function loadLoginUserAutoRedirect() {
 
   const profile = window.adobeProfile.getUserProfile();
 
-  const optOutCounter = localStorage.getItem('no-direct-path-to-product');
+  const optOutCounter = localStorage.getItem(OPT_OUT_KEY);
 
   if (optOutCounter && optOutCounter !== '0') {
     const counterNumber = parseInt(optOutCounter, 10);
-    localStorage.setItem('no-direct-path-to-product', (counterNumber - 1).toString());
+    localStorage.setItem(OPT_OUT_KEY, (counterNumber - 1).toString());
   } else {
     const container = buildRedirectAlert(profile);
     setTimeout(() => {
