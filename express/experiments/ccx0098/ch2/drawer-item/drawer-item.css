@@ -177,11 +177,11 @@ main .drawer-item p + a {
 }
 
 main .mobile-drawer .drawer-item-default-view-container .drawer-item img {
-  max-height: calc(100vh - 350px);
+  max-height: calc(100vh - 500px);
 }
 main .mobile-drawer--header-hidden .mobile-drawer .drawer-item-default-view-container .drawer-item img {
   max-width: 100%;
-  max-height: calc(100vh - 500px);
+  max-height: calc(100vh - 350px);
 }
 
 
