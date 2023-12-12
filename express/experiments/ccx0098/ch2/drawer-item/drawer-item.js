@@ -99,7 +99,7 @@ function createIcon(name) {
 }
 function addDecorativeBubbles(bubbleContainer) {
   for (let i = 0; i < 7; i += 1) {
-    const bigBubble = bubbleContainer.querySelector(`.drawer-item:nth-of-type(${i + 1}) drawer-swipeable-left drawer-swipeable-right`);
+    const bigBubble = bubbleContainer.querySelector(`.drawer-item:nth-of-type(${i + 1})`);
     if (bigBubble && i !== 3) {
       bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-large large-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
       bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-small small-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
