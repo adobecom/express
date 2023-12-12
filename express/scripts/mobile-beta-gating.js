@@ -48,7 +48,7 @@ function runBenchmark() {
         cpuSpeedPass: e.data <= MAX_EXEC_TIME_ALLOWED,
       };
 
-      if (getMobileOperatingSystem() === 'android') {
+      if (getMobileOperatingSystem() === 'Android') {
         criterion.cpuCoreCountPass = (navigator.hardwareConcurrency
           && navigator.hardwareConcurrency >= 4)
         || false;
@@ -96,7 +96,7 @@ export default async function checkMobileBetaEligibility() {
       const expireDate = new Date();
       const month = (expireDate.getMonth() + 1) % 12;
       expireDate.setMonth(month);
-      document.cookie = `device-support=${e.newValue.deviceSupport};domain=$adobe.com;expires=${expireDate.toUTCString()};path=/`;
+      document.cookie = `device-support=${e.newValue.deviceSupport};domain=adobe.com;expires=${expireDate.toUTCString()};path=/`;
       unsubscribe();
     });
   }
