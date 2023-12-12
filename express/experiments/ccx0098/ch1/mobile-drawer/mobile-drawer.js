@@ -432,13 +432,10 @@ function handleDraggableEvents(e, $wrapper, $lottie, $body, header) {
   }
 }
 function initNotchDragAction($wrapper) {
-  // const $body = document.querySelector('body');
   const $body = document.querySelector('html');
   const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch');
-  // const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch,.tab-lottie-container');
   const $lottie = $wrapper.querySelector('lottie-player');
   const header = document.querySelector('header');
-  // feds-header-wrapper--retracted
 
   $dragables.forEach((dragable) => {
     if ('ontouchstart' in window) {

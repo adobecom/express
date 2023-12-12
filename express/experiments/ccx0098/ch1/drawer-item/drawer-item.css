@@ -270,7 +270,6 @@ main .mobile-drawer .mobile-drawer-indicators>div:not(:last-child) {
 main .mobile-drawer .drawer-item-bubbles-view-container {
   position: relative;
   height: 100%;
-  /* width: calc(100% - 30px); */
   width: 100%;
   margin: 0 auto;
 }
@@ -708,11 +707,6 @@ main .mobile-drawer-wrapper .cta-hidden {
 
   }
 
-  /* main .mobile-drawer-wrapper .drawer-item-bubbles-view-container {
-    width: calc(100% - 10px);
-    width: 100%
-  } */
-
   main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
     max-width: calc(100% - 30px);
     max-height: 40vh;
@@ -770,7 +764,6 @@ main .mobile-drawer-wrapper .cta-hidden {
   width: 100%;
   z-index: 2;
   position: absolute !important;
-  /* background: blue; */
   top: 0;
   bottom: 25px;
   right: 0;

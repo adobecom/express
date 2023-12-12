@@ -128,10 +128,16 @@ main .mobile-drawer .drawer-item-default-view-container::-webkit-scrollbar {
 main .mobile-drawer .drawer-item-animations-view-container .drawer-item,
 main .mobile-drawer .drawer-item-animations-view-container .drawer-item a,
 main .mobile-drawer .drawer-item-animations-view-container .hero-animation-overlay {
-  height: 100%;
   position: relative;
 }
+main .mobile-drawer .drawer-item-animations-view-container .drawer-item,
+main .mobile-drawer .drawer-item-animations-view-container .drawer-item a {
+  height: 100%;
+}
 
+main .mobile-drawer .drawer-item-animations-view-container .hero-animation-overlay {
+  height: calc(100% - 85px);
+}
 main .mobile-drawer .drawer-item-animations-view-container video {
   max-height: 35vh;
 }
@@ -264,7 +270,6 @@ main .mobile-drawer .mobile-drawer-indicators>div:not(:last-child) {
 main .mobile-drawer .drawer-item-bubbles-view-container {
   position: relative;
   height: 100%;
-  /* width: calc(100% - 30px); */
   width: 100%;
   margin: 0 auto;
 }
@@ -702,11 +707,6 @@ main .mobile-drawer-wrapper .cta-hidden {
 
   }
 
-  /* main .mobile-drawer-wrapper .drawer-item-bubbles-view-container {
-    width: calc(100% - 10px);
-    width: 100%
-  } */
-
   main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
     max-width: calc(100% - 30px);
     max-height: 40vh;
@@ -759,4 +759,14 @@ main .mobile-drawer-wrapper .cta-hidden {
     max-height: 48vh;
     margin-top: 10px;
   }
+}
+.drawer-item-overlay {
+  width: 100%;
+  z-index: 2;
+  position: absolute !important;
+  top: 0;
+  bottom: 25px;
+  right: 0;
+  left: 0;
+  opacity: 0.5;
 }

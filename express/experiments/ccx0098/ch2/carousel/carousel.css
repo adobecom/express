@@ -21,7 +21,7 @@ main .mobile-drawer-wrapper .carousel-container .carousel-platform {
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
-  max-height: 500px;
+  max-height: 450px;
   padding-top: 4px;
   padding-bottom: 6px;
 }

@@ -1,7 +1,6 @@
-/* Note: uses .list-view for toggled options and .has-list for differences between ch1 and ch2 */
-:root {
-  --mobile-drawer-window-height: calc(100vh - 178px);
-}
+:root { 
+  --mobile-drawer-window-height: 100%;
+} 
 
 main .mobile-drawer-wrapper {
   height: 250px;
@@ -12,12 +11,12 @@ main .mobile-drawer-wrapper {
   z-index: 1;
   padding-top: 0px;
   transition: height 0.3s, padding-top 0.3s;
+  z-index: 11;
 }
 
 main .mobile-drawer-wrapper.drawer-opened {
   height: var(--mobile-drawer-window-height);
   background-color: var(--color-gray-700);
-  padding-top: 64px;
   transition: height 0.3s, padding-top 0.3s, background-color 0.3s;
 }
 
@@ -54,8 +53,8 @@ main .mobile-drawer {
 
 main .mobile-drawer-wrapper .mobile-drawer-notch {
   position: absolute;
-  padding: 6px;
-  top: 2px;
+  padding: 60px 40% 10px 40%;
+  top: -52px;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -362,12 +361,18 @@ body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"]
 
 }
 
-body[data-device="mobile"].mobile-drawer-opened main .floating-button-wrapper[data-audience="mobile"][data-section-status="loaded"] {
-  display: none;
-}
-
 @media screen and (min-width: 600px) {
   .mobile-drawer-wrapper {
     display: none !important;
   }
+}
+html.mobile-drawer-opened,html.mobile-drawer-opened body {
+  overflow: hidden;
+}
+body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"][data-section-status="loaded"] {
+  z-index: 12;
+}
+
+html.mobile-drawer-opened body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"][data-section-status="loaded"] {
+  display: none;
 }
