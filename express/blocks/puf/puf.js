@@ -417,6 +417,9 @@ async function build2ColDesign(block) {
         carouselContainer.style.maxHeight = 'none';
       } else {
         carouselContainer.style.maxHeight = `${entry.target.clientHeight}px`;
+        alert('intersecting');
+        alert(entry.target.clientHeight);
+        alert(carouselContainer.style.maxHeight);
       }
     });
   };
