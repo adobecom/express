@@ -224,7 +224,7 @@ const startInitialization = async (config, event) => {
     accessToken: window.adobeIMS?.isSignedInUser()
       ? `Bearer ${window.adobeIMS.getAccessToken()?.token}` : undefined,
     lazyLoad: true,
-    loadedVia: 'Acom_Express',
+    loadedVia: 'milo',
     language: language || 'en',
     region,
     cookiesEnabled: window.adobePrivacy?.activeCookieGroups()?.length > 1,
