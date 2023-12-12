@@ -176,9 +176,13 @@ main .drawer-item p + a {
 }
 
 main .mobile-drawer .drawer-item-default-view-container .drawer-item img {
-  max-width: 85%;
-  max-height: 35vh;
+  max-height: calc(100vh - 350px);
 }
+main .mobile-drawer--header-open .mobile-drawer .drawer-item-default-view-container .drawer-item img {
+  max-width: 100%;
+  max-height: calc(100vh - 500px);
+}
+
 
 main .mobile-drawer .drawer-item-default-view-container .drawer-item h5 {
   margin-top: 0.5rem;
