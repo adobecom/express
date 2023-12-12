@@ -412,7 +412,7 @@ function toggleDrawer($wrapper, $lottie, open = true, $body, header) {
     $wrapper.querySelector('.mobile-drawer-items-container')?.setAttribute('aria-hidden', false);
   } else {
     $wrapper.classList.remove('drawer-opened');
-    $wrapper.classList.remove('mobile-drawer--header-open');
+    $wrapper.classList.remove('mobile-drawer--header-hidden');
     setTimeout(() => {
       $body.classList.remove('mobile-drawer-opened');
     }, 250);
@@ -511,7 +511,7 @@ export default async function decorate($block) {
   const $tabLottieContainer = createTag('div', { class: 'tab-lottie-container' });
   const $tabLottie = createTag('div', { class: 'tab-lottie' });
   const $tabText = $oldMobileDrawerSection.querySelector('.default-content-wrapper p');
-  $tabLottie.innerHTML = getLottie('compass-lottie-white', '/express/experiments/ccx0098/ch1/mobile-drawer/compass-lottie-white.json', false, false);
+  $tabLottie.innerHTML = getLottie('compass-lottie-white', '/express/experiments/ccx0098/ch2/mobile-drawer/compass-lottie-white.json', false, false);
   $tabLottie.append($tabText);
   $tabLottieContainer.append($tabLottie);
   $block.innerHTML = '';
