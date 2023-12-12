@@ -139,7 +139,7 @@ main .mobile-drawer .drawer-item-animations-view-container .hero-animation-overl
   height: calc(100% - 85px);
 }
 main .mobile-drawer .drawer-item-animations-view-container video {
-  max-height: calc(100vh - 524px);
+  max-height: calc(100vh - 500px);
 }
 main .mobile-drawer--header-hidden .mobile-drawer .drawer-item-animations-view-container video {
   max-height: calc(100vh - 350px);
@@ -177,7 +177,7 @@ main .drawer-item p + a {
 }
 
 main .mobile-drawer .drawer-item-default-view-container .drawer-item img {
-  max-height: calc(100vh - 524px);
+  max-height: calc(100vh - 500px);
   padding-right: 10px;
   padding-left: 10px;
   pointer-events: none
