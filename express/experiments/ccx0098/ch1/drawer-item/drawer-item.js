@@ -310,7 +310,7 @@ function decorateBubblesView(payload) {
   if (payload.$mobileDrawer && payload.drawerItemContainer?.classList.contains('drawer-item-bubbles-view-container')) {
     const bubbleContainer = createTag(
       'div',
-      { class: 'drawer-item-bubbles-container' },
+      { class: 'drawer-item-bubbles-container drawer-swipeable-left drawer-swipeable-right' },
     );
     [...payload.drawerItemContainer.children].forEach((bubbleItem) => {
       bubbleItem.querySelector('a')?.classList.add('drawer-swipeable-left', 'drawer-swipeable-right');
