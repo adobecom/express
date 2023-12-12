@@ -407,7 +407,7 @@ async function build2ColDesign(block) {
   const options = {
     root: document.querySelector('.carousel-platform'),
     rootMargin: '0px',
-    threshold: 1,
+    threshold: 0.75,
   };
   const carouselContainer = block.querySelector('.carousel-container');
   const callback = (entries) => {
@@ -417,9 +417,6 @@ async function build2ColDesign(block) {
         carouselContainer.style.maxHeight = 'none';
       } else {
         carouselContainer.style.maxHeight = `${entry.target.clientHeight}px`;
-        alert('intersecting');
-        alert(entry.target.clientHeight);
-        alert(carouselContainer.style.maxHeight);
       }
     });
   };
