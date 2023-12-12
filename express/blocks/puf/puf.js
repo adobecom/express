@@ -410,12 +410,6 @@ async function build2ColDesign(block) {
     threshold: 1,
   };
   const carouselContainer = block.querySelector('.carousel-container');
-  const carouselLeftControlContainer = carouselContainer.querySelector(
-    '.carousel-fader-left',
-  );
-  const carouselRightControlContainer = carouselContainer.querySelector(
-    '.carousel-fader-right',
-  );
   const callback = (entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
@@ -424,12 +418,6 @@ async function build2ColDesign(block) {
       } else {
         carouselContainer.style.maxHeight = `${entry.target.clientHeight}px`;
       }
-      carouselLeftControlContainer.style.maxHeight = `${
-        entry.target.clientHeight - 125
-      }px`;
-      carouselRightControlContainer.style.maxHeight = `${
-        entry.target.clientHeight - 125
-      }px`;
     });
   };
 
