@@ -47,8 +47,8 @@ html.mobile-drawer-opened .drawer-item-icon-container {
   width: 25%;
 }
 
-main .mobile-drawer .carousel-container.controls-hidden .carousel-platform,
-main .mobile-drawer .carousel-container .carousel-platform {
+main .mobile-drawer .mobile-drawer-wrapper .carousel-container.controls-hidden .carousel-platform,
+main .mobile-drawer .mobile-drawer-wrapper .carousel-container .carousel-platform {
   max-height: none;
   padding: 0;
   align-items: flex-start;
