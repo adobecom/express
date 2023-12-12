@@ -42,7 +42,7 @@ main .mobile-drawer .drawer-item-icons-header {
 main .mobile-drawer .drawer-item-icon-container {
   display: none;
 }
-body.mobile-drawer-opened .drawer-item-icon-container {
+html.mobile-drawer-opened .drawer-item-icon-container {
   display: inline-block;
   width: 25%;
 }
