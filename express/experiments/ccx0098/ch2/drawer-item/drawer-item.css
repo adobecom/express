@@ -180,6 +180,7 @@ main .mobile-drawer .drawer-item-default-view-container .drawer-item img {
   max-height: calc(100vh - 524px);
   padding-right: 10px;
   padding-left: 10px;
+  pointer-events: none
 }
 main .mobile-drawer--header-hidden .mobile-drawer .drawer-item-default-view-container .drawer-item img {
   max-width: 100%;
@@ -719,7 +720,7 @@ main .mobile-drawer-wrapper .cta-hidden {
   }
 }
 
-@media (min-width: 360px) and (min-height: 750px) {
+/* @media (min-width: 360px) and (min-height: 750px) {
   main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
     margin-top: 5px;
   }
@@ -735,7 +736,7 @@ main .mobile-drawer-wrapper .cta-hidden {
   main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
     margin-top: 10px;
   }
-}
+} */
 .drawer-item-overlay {
   width: 100%;
   z-index: 2;
