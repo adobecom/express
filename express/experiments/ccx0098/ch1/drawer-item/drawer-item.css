@@ -128,10 +128,16 @@ main .mobile-drawer .drawer-item-default-view-container::-webkit-scrollbar {
 main .mobile-drawer .drawer-item-animations-view-container .drawer-item,
 main .mobile-drawer .drawer-item-animations-view-container .drawer-item a,
 main .mobile-drawer .drawer-item-animations-view-container .hero-animation-overlay {
-  height: 100%;
   position: relative;
 }
+main .mobile-drawer .drawer-item-animations-view-container .drawer-item,
+main .mobile-drawer .drawer-item-animations-view-container .drawer-item a {
+  height: 100%;
+}
 
+main .mobile-drawer .drawer-item-animations-view-container .hero-animation-overlay {
+  height: calc(100% - 85px);
+}
 main .mobile-drawer .drawer-item-animations-view-container video {
   max-height: 35vh;
 }

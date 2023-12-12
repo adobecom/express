@@ -402,34 +402,27 @@ function toggleDrawer($wrapper, $lottie, open = true, $body, header) {
   if (open) {
     if (header.classList.contains('feds-header-wrapper--retracted')) {
       rootForClasses?.style.setProperty('--mobile-drawer-window-height', '100%');
+      $wrapper.classList.add('mobile-drawer--header-open');
     } else {
       rootForClasses?.style.setProperty('--mobile-drawer-window-height', `${window.innerHeight - 64}px`);
     }
     $body.classList.add('mobile-drawer-opened'); // used in both mobile-drawer.css and drawer-item.css
     $wrapper.classList.add('drawer-opened');
-    // if ($lottie && $lottie.pause) {
-    //   $lottie.pause();
-    // }
-    // setTimeout(() => {
-    // $body.style.overflow = 'hidden'; // allows down scroll to hide the mobile headers first
-    // }, 300);
+
     $wrapper.querySelector('.mobile-drawer-items-container')?.setAttribute('aria-hidden', false);
   } else {
     $wrapper.classList.remove('drawer-opened');
-    // $body.style.overflow = 'visible';
+    $wrapper.classList.remove('mobile-drawer--header-open');
     setTimeout(() => {
       $body.classList.remove('mobile-drawer-opened');
     }, 250);
     $wrapper.transition = 'marginTop 300ms';
     $wrapper.style.marginTop = '0px';
-    // if ($lottie && $lottie.play) {
-    //   $lottie.play();
-    // }
     $wrapper.querySelector('.mobile-drawer-items-container')?.setAttribute('aria-hidden', true);
   }
   $wrapper.style = '';
 }
-function handleDraggableEvents(e, $wrapper, $lottie, $body) {
+function handleDraggableEvents(e, $wrapper, $lottie, $body, header) {
   e.preventDefault();
   e.stopPropagation();
   if (!$wrapper.classList.contains('drawer-opened')) {
