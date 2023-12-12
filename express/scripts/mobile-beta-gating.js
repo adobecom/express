@@ -48,7 +48,7 @@ function runBenchmark() {
         cpuSpeedPass: e.data <= MAX_EXEC_TIME_ALLOWED,
       };
 
-      if (getMobileOperatingSystem() === 'android') {
+      if (getMobileOperatingSystem() === 'Android') {
         criterion.cpuCoreCountPass = (navigator.hardwareConcurrency
           && navigator.hardwareConcurrency >= 4)
         || false;
