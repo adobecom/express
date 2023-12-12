@@ -99,13 +99,13 @@ function createIcon(name) {
 }
 function addDecorativeBubbles(bubbleContainer) {
   for (let i = 0; i < 7; i += 1) {
-    const bigBubble = bubbleContainer.querySelector(`.drawer-item:nth-of-type(${i + 1})`);
+    const bigBubble = bubbleContainer.querySelector(`.drawer-item:nth-of-type(${i + 1}) drawer-swipeable-left drawer-swipeable-right`);
     if (bigBubble && i !== 3) {
-      bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-large large-bubble-${i}` }));
-      bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-small small-bubble-${i}` }));
+      bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-large large-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
+      bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-small small-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
       if (i < 2) {
-        bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-medium medium-bubble-${i}` }));
-        bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-xs xs-bubble-${i}` }));
+        bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-medium medium-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
+        bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-xs xs-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
       }
     }
   }
@@ -264,6 +264,8 @@ function decorateMedia(payload) {
       drawerItem.dataset.order = payload.order;
       drawerItem.append(payload.itemName);
       drawerItem.append(payload.mediaText);
+    } else {
+      drawerItem.classList.add('drawer-swipeable-left', 'drawer-swipeable-right');
     }
     if (payload.isAnimationsView && payload.secondaryCTALink) {
       payload.secondaryCTALink.classList.add('drawer-item-secondary-cta');
