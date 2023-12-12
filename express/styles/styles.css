@@ -761,12 +761,6 @@ main .section.pricing-hub-toc .columns h1 {
   main .section.pricing-hub-toc .columns h1 { font-size: var(--heading-font-size-xl); max-width: 600px; }
 }
 
-main .section>div {
-  margin: auto;
-  max-width: 375px;
-  padding: 0;
-}
-
 main .section>div:empty {
   padding: 0;
 }
@@ -842,24 +836,10 @@ body[data-device="mobile"] main [data-audience="mobile"][data-section-status="lo
   display: block;
 }
 
-@media (min-width:900px) {
-  main .section>div {
-    max-width: 830px;
-  }
-}
-
-@media (min-width:1200px) {
-  main .section>div {
-    max-width: 1024px;
-  }
-}
-
-
 /* jank protection for async blocks/sections */
 
 main .pricing,
-main .hero-animation,
-main .fragment {
+main .hero-animation {
   opacity: 0;
   height: 100vh;
   transition: opacity 100ms;

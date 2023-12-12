@@ -935,7 +935,6 @@ async function decorateSections(el, isDoc) {
   // fixme: our decorateSections gets main while in Milo it gets area.
   //  For us, the selector never changes. That's why isDoc always needs to be false.
   // eslint-disable-next-line no-param-reassign
-  isDoc = false;
   const selector = isDoc ? 'body > main > div' : ':scope > div';
   return [...el.querySelectorAll(selector)].map((section, idx) => {
     /* process section metadata */
@@ -2021,8 +2020,9 @@ export async function fetchFloatingCta(path) {
   return floatingBtnData;
 }
 
-async function buildAutoBlocks($main) {
-  const $lastDiv = $main.querySelector(':scope > div:last-of-type');
+async function buildAutoBlocks($main, isDoc) {
+  const selector = isDoc ? 'body > main > div:last-of-type' : ':scope > div:last-of-type';
+  const $lastDiv = $main.querySelector(selector);
 
   // Load the branch.io banner autoblock...
   if (['yes', 'true', 'on'].includes(getMetadata('show-banner').toLowerCase())) {
@@ -2101,10 +2101,11 @@ async function buildAutoBlocks($main) {
   }
 }
 
-function splitSections($main) {
+function splitSections($main, isDoc) {
+  const selector = isDoc ? 'body > main > div > div' : ':scope > div > div';
   // check if there are more than one columns.fullsize-center. If so, don't split.
   const multipleColumns = $main.querySelectorAll('.columns.fullsize-center').length > 1;
-  $main.querySelectorAll(':scope > div > div').forEach(($block) => {
+  $main.querySelectorAll(selector).forEach(($block) => {
     const hasAppStoreBlocks = ['yes', 'true', 'on'].includes(getMetadata('show-standard-app-store-blocks').toLowerCase());
     const blocksToSplit = ['template-list', 'layouts', 'banner', 'faq', 'promotion', 'app-store-highlight', 'app-store-blade', 'plans-comparison'];
     // work around for splitting columns and sixcols template list
@@ -2129,9 +2130,10 @@ export function getDevice() {
   return navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
 
-function decorateLinkedPictures($main) {
+function decorateLinkedPictures($main, isDoc) {
+  const selector = isDoc ? 'body > main > picture' : ':scope > picture';
   /* thanks to word online */
-  $main.querySelectorAll(':scope > picture').forEach(($picture) => {
+  $main.querySelectorAll(selector).forEach(($picture) => {
     if (!$picture.closest('div.block')) {
       linkPicture($picture);
     }
@@ -2316,14 +2318,14 @@ function decoratePictures(main) {
  * @param {Boolean} isDoc Is document or fragment
  */
 export async function decorateMain(main, isDoc) {
-  await buildAutoBlocks(main);
-  splitSections(main);
+  await buildAutoBlocks(main, isDoc);
+  splitSections(main, isDoc);
   const sections = decorateSections(main, isDoc);
   decorateButtons(main);
   decorateMarqueeColumns(main);
   await fixIcons(main);
   decoratePictures(main);
-  decorateLinkedPictures(main);
+  decorateLinkedPictures(main, isDoc);
   decorateSocialIcons(main);
 
   await sections;
@@ -2377,20 +2379,20 @@ export function addAnimationToggle(target) {
  * Searches for Japanese text in headings and applies a smart word-breaking algorithm by surrounding
  * semantic blocks with spans. This allows browsers to break japanese sentences correctly.
  */
-async function wordBreakJapanese() {
+async function wordBreakJapanese(area) {
   if (getConfig().locale.region !== 'jp') {
     return;
   }
   const { loadDefaultJapaneseParser } = await import('./budoux-index-ja.min.js');
   const parser = loadDefaultJapaneseParser();
-  document.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
+  area.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
     el.classList.add('budoux');
     parser.applyElement(el);
   });
 
   const BalancedWordWrapper = (await import('./bw2.js')).default;
   const bw2 = new BalancedWordWrapper();
-  document.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
+  area.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
     // apply balanced word wrap to headings
     if (typeof window.requestIdleCallback === 'function') {
       window.requestIdleCallback(() => {
@@ -2631,17 +2633,17 @@ export async function loadArea(area = document) {
   }
 
   let sections = [];
-  if (main) {
+  if (area) {
     loadLana({ clientId: 'express' });
-    sections = await decorateMain(main, isDoc);
+    sections = await decorateMain(area, isDoc);
     decoratePageStyle();
-    decorateLegalCopy(main);
+    decorateLegalCopy(area);
     addJapaneseSectionHeaderSizing();
-    displayEnv();
+    if (isDoc) displayEnv();
     displayOldLinkWarning();
-    wordBreakJapanese();
+    wordBreakJapanese(area);
 
-    if (window.hlx.testing) {
+    if (window.hlx.testing && isDoc) {
       const target = checkTesting();
       document.querySelector('body').classList.add('personalization-container');
       // target = true;
@@ -2660,22 +2662,23 @@ export async function loadArea(area = document) {
 
   initSidekick();
 
-  const lazy = loadLazy(main);
+  if (isDoc) {
+    const lazy = loadLazy(main);
 
-  const buttonOff = params.get('button') === 'off';
-  if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
-    import('../../tools/preview/preview.js');
-  }
-  await lazy;
+    const buttonOff = params.get('button') === 'off';
+    if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
+      import('../../tools/preview/preview.js');
+    }
+    await lazy;
+    const { default: loadDelayed } = await import('./delayed.js');
+    loadDelayed(8000);
 
-  const { default: loadDelayed } = await import('./delayed.js');
-  loadDelayed(8000);
-
-  // milo's links featurecc
-  const config = getConfig();
-  if (config.links === 'on') {
-    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
-    import('../features/links.js').then((mod) => mod.default(path, area));
+    // milo's links featurecc
+    const config = getConfig();
+    if (config.links === 'on') {
+      const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
+      import('../features/links.js').then((mod) => mod.default(path, area));
+    }
   }
 }
 
