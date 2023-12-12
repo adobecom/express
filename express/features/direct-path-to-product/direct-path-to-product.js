@@ -14,14 +14,14 @@ import {
   createTag,
   fetchPlaceholders,
   getIconElement,
-  loadCSS,
+  loadStyle,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.js';
 
 export default async function loadLoginUserAutoRedirect() {
   let followThrough = true;
   const placeholders = await fetchPlaceholders();
-  loadCSS('/express/features/direct-path-to-product/direct-path-to-product.css');
+  loadStyle('/express/features/direct-path-to-product/direct-path-to-product.css');
 
   const buildRedirectAlert = async (profile) => {
     const container = createTag('div', { class: 'bmtp-container' });
