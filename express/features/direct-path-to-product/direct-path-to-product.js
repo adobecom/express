@@ -1,15 +1,3 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import {
   createTag,
   fetchPlaceholders,
@@ -23,7 +11,7 @@ export default async function loadLoginUserAutoRedirect() {
   const placeholders = await fetchPlaceholders();
   loadStyle('/express/features/direct-path-to-product/direct-path-to-product.css');
 
-  const buildRedirectAlert = async (profile) => {
+  const buildRedirectAlert = (profile) => {
     const container = createTag('div', { class: 'bmtp-container' });
     const headerWrapper = createTag('div', { class: 'bmtp-header' });
     const headerIcon = createTag('div', { class: 'bmtp-header-icon' }, getIconElement('cc-express'));
@@ -61,8 +49,6 @@ export default async function loadLoginUserAutoRedirect() {
   };
 
   const initRedirect = (container) => {
-    if (!followThrough) return;
-
     container.classList.add('done');
 
     const primaryCtaUrl = BlockMediator.get('primaryCtaUrl')
@@ -80,17 +66,15 @@ export default async function loadLoginUserAutoRedirect() {
 
   const profile = window.adobeProfile.getUserProfile();
 
-  const optOutCounter = localStorage.getItem('no-bmtp');
-  if (!optOutCounter || optOutCounter === '0') {
-    buildRedirectAlert(profile).then((container) => {
-      setTimeout(() => {
-        if (container) initRedirect(container);
-      }, 2000);
-    });
-  }
+  const optOutCounter = localStorage.getItem('no-direct-path-to-product');
 
   if (optOutCounter && optOutCounter !== '0') {
     const counterNumber = parseInt(optOutCounter, 10);
     localStorage.setItem('no-direct-path-to-product', (counterNumber - 1).toString());
+  } else {
+    const container = buildRedirectAlert(profile);
+    setTimeout(() => {
+      if (followThrough) initRedirect(container);
+    }, 2000);
   }
 }
