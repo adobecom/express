@@ -1567,7 +1567,8 @@ function loadIMS() {
 
 async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   const promises = [import('./experiment.js')];
-  if (getMetadata('aepaudience') === 'on') {
+  const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
+  if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
     loadIMS(); // rush ims to unblock alloy without loading gnav
     promises.push(loadScript('/express/scripts/instrument.js', 'module'));
     const t1 = performance.now();
