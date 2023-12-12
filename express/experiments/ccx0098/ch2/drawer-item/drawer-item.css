@@ -288,15 +288,18 @@ main .mobile-drawer .drawer-item-bubbles-view-container {
 main .mobile-drawer .drawer-item-bubbles-container img {
   max-width: none;
 }
-
 main .mobile-drawer .drawer-item-bubbles-container {
   display: grid;
   grid-template-columns: repeat(24, 1fr);
   /* padding-top: 10%; */
-  padding-top: 12vh;
+  padding-top: 4vh;
   padding-bottom: 250px;
   /* handles potential scrolling */
 }
+.mobile-drawer--header-hidden .mobile-drawer .drawer-item-bubbles-container {
+  padding-top: 12vh
+}
+
 
 main .mobile-drawer .drawer-item-bubbles-container>div {
   display: flex;
