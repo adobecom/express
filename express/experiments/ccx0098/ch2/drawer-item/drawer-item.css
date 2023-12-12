@@ -292,7 +292,8 @@ main .mobile-drawer .drawer-item-bubbles-container img {
 main .mobile-drawer .drawer-item-bubbles-container {
   display: grid;
   grid-template-columns: repeat(24, 1fr);
-  padding-top: 10%;
+  /* padding-top: 10%; */
+  padding-top: 12vh;
   padding-bottom: 250px;
   /* handles potential scrolling */
 }
@@ -714,7 +715,7 @@ main .mobile-drawer-wrapper .cta-hidden {
 
 @media (min-width: 350px) and (min-height: 700px) {
   main .mobile-drawer-wrapper .drawer-item-bubbles-container {
-    padding-top: 15%;
+    /* padding-top: 15%; */
 
   }
 
@@ -731,7 +732,7 @@ main .mobile-drawer-wrapper .cta-hidden {
 
 @media (min-width: 360px) and (min-height: 750px) {
   main .mobile-drawer-wrapper .drawer-item-bubbles-container {
-    padding-top: 18%;
+    /* padding-top: 18%; */
 
   }
 
@@ -747,7 +748,7 @@ main .mobile-drawer-wrapper .cta-hidden {
 
 @media (min-width: 360px) and (min-height: 800px) {
   main .mobile-drawer-wrapper .drawer-item-bubbles-container {
-    padding-top: 22%;
+    /* padding-top: 22%; */
 
   }
 
@@ -763,7 +764,7 @@ main .mobile-drawer-wrapper .cta-hidden {
 
 @media (min-width: 360px) and (min-height: 850px) {
   main .mobile-drawer-wrapper .drawer-item-bubbles-container {
-    padding-top: 22%;
+    /* padding-top: 22%; */
   }
 
   main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
