@@ -402,7 +402,7 @@ function toggleDrawer($wrapper, $lottie, open = true, $body, header) {
   if (open) {
     if (header.classList.contains('feds-header-wrapper--retracted')) {
       rootForClasses?.style.setProperty('--mobile-drawer-window-height', '100%');
-      $wrapper.classList.add('mobile-drawer--header-open');
+      $wrapper.classList.add('mobile-drawer--header-hidden');
     } else {
       rootForClasses?.style.setProperty('--mobile-drawer-window-height', `${window.innerHeight - 64}px`);
     }
