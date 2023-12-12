@@ -96,7 +96,7 @@ export default async function checkMobileBetaEligibility() {
       const expireDate = new Date();
       const month = (expireDate.getMonth() + 1) % 12;
       expireDate.setMonth(month);
-      document.cookie = `device-support=${e.newValue.deviceSupport};domain=$adobe.com;expires=${expireDate.toUTCString()};path=/`;
+      document.cookie = `device-support=${e.newValue.deviceSupport};domain=adobe.com;expires=${expireDate.toUTCString()};path=/`;
       unsubscribe();
     });
   }
