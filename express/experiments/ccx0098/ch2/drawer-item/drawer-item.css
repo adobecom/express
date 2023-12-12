@@ -713,30 +713,6 @@ main .mobile-drawer-wrapper .cta-hidden {
   display: none;
 }
 
-/* @media (min-width: 350px) and (min-height: 700px) {
-  main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
-    max-width: calc(100% - 30px);
-    pointer-events: none;
-  }
-} */
-
-/* @media (min-width: 360px) and (min-height: 750px) {
-  main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
-    margin-top: 5px;
-  }
-}
-
-@media (min-width: 360px) and (min-height: 800px) {
-  main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
-    max-width: calc(100% - 20px);
-  }
-}
-
-@media (min-width: 360px) and (min-height: 850px) {
-  main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
-    margin-top: 10px;
-  }
-} */
 .drawer-item-overlay {
   width: 100%;
   z-index: 2;

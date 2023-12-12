@@ -139,7 +139,7 @@ main .mobile-drawer .drawer-item-animations-view-container .hero-animation-overl
   height: calc(100% - 85px);
 }
 main .mobile-drawer .drawer-item-animations-view-container video {
-  max-height: calc(100vh - 500px);
+  max-height: calc(100vh - 524px);
 }
 main .mobile-drawer--header-hidden .mobile-drawer .drawer-item-animations-view-container video {
   max-height: calc(100vh - 350px);
@@ -177,9 +177,10 @@ main .drawer-item p + a {
 }
 
 main .mobile-drawer .drawer-item-default-view-container .drawer-item img {
-  max-height: calc(100vh - 516px);
+  max-height: calc(100vh - 524px);
   padding-right: 10px;
   padding-left: 10px;
+  pointer-events: none
 }
 main .mobile-drawer--header-hidden .mobile-drawer .drawer-item-default-view-container .drawer-item img {
   max-width: 100%;
@@ -712,30 +713,6 @@ main .mobile-drawer-wrapper .cta-hidden {
   display: none;
 }
 
-@media (min-width: 350px) and (min-height: 700px) {
-  main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
-    max-width: calc(100% - 30px);
-    pointer-events: none;
-  }
-}
-
-@media (min-width: 360px) and (min-height: 750px) {
-  main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
-    margin-top: 5px;
-  }
-}
-
-@media (min-width: 360px) and (min-height: 800px) {
-  main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
-    max-width: calc(100% - 20px);
-  }
-}
-
-@media (min-width: 360px) and (min-height: 850px) {
-  main .mobile-drawer-wrapper .drawer-item-default-view-container .drawer-item img {
-    margin-top: 10px;
-  }
-}
 .drawer-item-overlay {
   width: 100%;
   z-index: 2;
