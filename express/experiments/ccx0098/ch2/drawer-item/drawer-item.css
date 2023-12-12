@@ -139,7 +139,7 @@ main .mobile-drawer .drawer-item-animations-view-container .hero-animation-overl
   height: calc(100% - 85px);
 }
 main .mobile-drawer .drawer-item-animations-view-container video {
-  max-height: calc(100vh - 500px);
+  max-height: calc(100vh - 430px);
 }
 main .mobile-drawer--header-hidden .mobile-drawer .drawer-item-animations-view-container video {
   max-height: calc(100vh - 350px);
