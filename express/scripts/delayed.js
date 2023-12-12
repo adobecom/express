@@ -17,7 +17,7 @@ async function shouldBringToProduct() {
   const userProfile = window.adobeProfile?.getUserProfile();
   const placeholders = await fetchPlaceholders();
   const autoRedirect = ['yes', 'true', 'Y', 'on'].includes(getMetadata('direct-path-to-product'));
-  const autoRedirectLanguageFound = placeholders.cancel || placeholders['bmtp-header'] || placeholders['bmtp-cancel-text'];
+  const autoRedirectLanguageFound = placeholders.cancel && placeholders['bmtp-header'] && placeholders['bmtp-cancel-text'];
   const isDesktop = document.body.dataset.device === 'desktop';
 
   return userProfile && autoRedirect && autoRedirectLanguageFound && isDesktop;
