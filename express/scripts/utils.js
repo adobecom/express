@@ -1,3 +1,5 @@
+import premiumSVG from '../icons/premium.js';
+
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
   { fragment: '/express/fragments/' },
@@ -431,7 +433,6 @@ export function getIcon(icons, alt, size = 44) {
     'photoeffects',
     'pinterest',
     'play',
-    'premium',
     'premium-templates',
     'pricingfree',
     'pricingpremium',
@@ -485,6 +486,10 @@ export function getIcon(icons, alt, size = 44) {
     'pricingfree',
     'pricingpremium',
   ];
+
+  if (icon === 'premium') {
+    return premiumSVG;
+  }
 
   if (symbols.includes(icon)) {
     const iconName = icon;
