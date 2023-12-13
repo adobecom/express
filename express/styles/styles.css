@@ -484,9 +484,9 @@ main img {
   max-width: 100%;
 }
 
-main .section {
+/* main .section {
   padding-top: 40px;
-}
+} */
 
 main .section:first-of-type {
   padding-top: 0;
@@ -719,9 +719,9 @@ main .section div .block p.legal-copy {
 
 /* make page : default content */
 
-main .section {
+/* main .section {
   padding-top: 60px;
-}
+} */
 
 main .section.secondary {
   background-color: var(--color-gray-100);

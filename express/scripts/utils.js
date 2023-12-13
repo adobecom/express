@@ -643,6 +643,15 @@ export async function decorateBlock(block) {
     const section = block.closest('.section');
     if (section) section.classList.add(`${[...block.classList].join('-')}-container`);
 
+    // add padding to section with one block
+    if (section.children.length === 1 && !section.classList.contains('marquee-container') && !section.classList.contains('banner-container')) {
+      section.style.paddingTop = '20px';
+    }
+    // make banner an exception
+    if (section.children.length === 1 && section.classList.contains('banner-container')) {
+      section.style.marginTop = '20px';
+    }
+
     const showWith = [...block.classList].filter((c) => c.toLowerCase().startsWith('showwith'));
     // block visibility steered over metadata
     if (showWith.length) {
