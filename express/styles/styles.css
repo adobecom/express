@@ -119,13 +119,13 @@ body > header {
   background-color: #FFF;
 }
 
-.feds-topnav-spacing,
-body > header{
+body > .feds-topnav-spacing,
+body > header:not(.feds-header-wrapper){
   height: var(--header-height);
 }
 @media (min-width: 900px) {
   body.breadcrumbs-spacing > .feds-topnav-spacing,
-  body.breadcrumbs-spacing > header{
+  body.breadcrumbs-spacing > header:not(.feds-header-wrapper){
     height: calc(var(--header-height) + var(--breadcrumbs-height));
   }
 }
