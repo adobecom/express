@@ -222,5 +222,15 @@ export default async function decorate(block) {
   buildColorHowToCarousel(block, payload);
   colorizeSVG(block, payload);
   activate(block, payload, block.querySelector('.tip-number.tip-1'));
-  initRotation(payload);
+
+  const onIntersect = ([entry], observer) => {
+    if (!entry.isIntersecting) return;
+
+    initRotation(payload);
+
+    observer.unobserve(block);
+  };
+
+  const colorHowToObserver = new IntersectionObserver(onIntersect, { rootMargin: '1000px', threshold: 0 });
+  colorHowToObserver.observe(block);
 }
