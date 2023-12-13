@@ -335,7 +335,7 @@ async function buildSearchDropdown(block) {
 }
 
 function decorateLinkList(block) {
-  const carouselItemsWrapper = block.querySelector(':scope > div:nth-of-type(2)');
+  const carouselItemsWrapper = block.querySelector(':scope > div:nth-of-type(2) > div');
   if (carouselItemsWrapper) {
     const showLinkList = getMetadata('show-search-marquee-link-list');
     if ((showLinkList && !['yes', 'true', 'on', 'Y'].includes(showLinkList))
@@ -344,9 +344,11 @@ function decorateLinkList(block) {
       || window.location.pathname.endsWith('/express/templates')) {
       carouselItemsWrapper.remove();
     } else {
-      buildCarousel(':scope > div > p', carouselItemsWrapper);
-      const carousel = carouselItemsWrapper.querySelector('.carousel-container');
-      block.append(carousel);
+      buildCarousel(':scope > p', carouselItemsWrapper).then(() => {
+        const carousel = carouselItemsWrapper.querySelector('.carousel-container');
+        block.append(carousel);
+        carouselItemsWrapper.parentElement.remove();
+      });
     }
   }
 }
