@@ -1097,9 +1097,9 @@ function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
 }
 
 function decorateHoliday(block, props) {
-  const mobileViewport = window.innerWidth < 901;
   const templateTitle = block.querySelector('.template-title');
-  const toggleBar = templateTitle.querySelector('div');
+  const textWrapper = templateTitle.querySelector('.text-wrapper');
+  const textWrapperInnerDiv = textWrapper.querySelector(':scope > div');
   const heading = templateTitle.querySelector('h4');
   const subheading = templateTitle.querySelector('p');
   const link = templateTitle.querySelector('.template-title-link');
@@ -1129,19 +1129,19 @@ function decorateHoliday(block, props) {
   }
 
   block.classList.add('expanded', props.textColor);
-  toggleBar.classList.add('toggle-bar');
+  textWrapper.classList.add('toggle-bar');
   topElements.append(heading);
   toggle.append(link, toggleChev);
   linkWrapper.remove();
   bottomElements.append(subheading);
-  toggleBar.append(topElements, bottomElements);
+  textWrapperInnerDiv.append(topElements, bottomElements);
   block.style.backgroundColor = props.backgroundColor;
 
-  if (mobileViewport) {
+  if (document.body.dataset.device === 'mobile') {
     block.classList.add('mobile');
     block.append(toggle);
   } else {
-    toggleBar.append(toggle);
+    textWrapper.append(toggle);
   }
 
   initExpandCollapseToolbar(block, templateTitle, toggle, link);
