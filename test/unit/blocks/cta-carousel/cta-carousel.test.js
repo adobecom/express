@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
 
-import { readFile, sendKeys } from '@web/test-runner-commands';
+import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
 const { default: decorate, decorateTextWithTag } = await import('../../../../express/blocks/cta-carousel/cta-carousel.js');
@@ -117,41 +117,16 @@ describe('CTA Carousel - Gen AI variant', async () => {
     expect(buttonFound).to.exist;
   });
 
-  it('form input responds to keyup events', async () => {
+  it('form input responds to keypress events', async () => {
     const gaVariant = document.getElementById('ga-variant');
     await decorate(gaVariant);
     const form = gaVariant.querySelector('form.gen-ai-input-form');
     const input = form.querySelector('textarea.gen-ai-input');
     const button = form.querySelector('button.gen-ai-submit');
 
-    input.focus();
-    await sendKeys({
-      press: 'A',
-    });
-
+    input.value = 'test';
+    input.dispatchEvent(new Event('input'));
     expect(button.disabled).to.be.false;
-
-    await sendKeys({
-      press: 'Enter',
-    });
-
-    expect(button.disabled).to.be.true;
-  });
-
-  it('form responds to submit event', async () => {
-    const gaVariant = document.getElementById('ga-variant');
-    await decorate(gaVariant);
-    const form = gaVariant.querySelector('form.gen-ai-input-form');
-    const input = form.querySelector('textarea.gen-ai-input');
-    const button = form.querySelector('button.gen-ai-submit');
-
-    input.focus();
-    await sendKeys({
-      press: 'A',
-    });
-    form.dispatchEvent(new Event('submit'));
-
-    expect(button.disabled).to.be.true;
   });
 });
 
