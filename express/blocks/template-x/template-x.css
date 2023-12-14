@@ -136,12 +136,10 @@ div[class='section section-wrapper browse-by-category-card-fullwidth-container t
     width: 100vw;
     z-index: -1;
     pointer-events: none;
-    opacity: 0;
     transition: opacity 0.2s;
 }
 
 .template-x.fullwidth.holiday.expanded.animated video {
-    opacity: 1;
     transition: opacity 1s;
     padding: 0;
 }
