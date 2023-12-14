@@ -1379,7 +1379,8 @@ export function decorateButtons(el = document) {
       && !/hlx\.blob\.core\.windows\.net/.test(linkText)
       && !linkText.endsWith(' >')
       && !(hash === '#embed-video')
-      && !linkText.endsWith(' ›')) {
+      && !linkText.endsWith(' ›')
+      && !linkText.endsWith('.svg')) {
       const $up = $a.parentElement;
       const $twoup = $a.parentElement.parentElement;
       if (!$a.querySelector('img')) {
