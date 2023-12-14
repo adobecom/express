@@ -1833,7 +1833,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 .template-x.horizontal.holiday.mobile .toggle-button {
     display: flex;
     transform: translate(-50%);
-    margin-left: 192px;
+    margin-left: 50%;
     padding: 0 0 16px 0;
     width: 110px;
 }
