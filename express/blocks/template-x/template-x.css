@@ -88,7 +88,7 @@ div[class='section section-wrapper browse-by-category-card-fullwidth-container t
     margin-bottom: 0;
 }
 
-.template-x-wrapper .template-title.horizontal .text-wrapper > div {
+.template-x-wrapper .template-x.tabbed .template-title.horizontal .text-wrapper > div {
     width: 100%;
 }
 
@@ -134,7 +134,7 @@ div[class='section section-wrapper browse-by-category-card-fullwidth-container t
     object-fit: cover;
     height: 100%;
     width: 100vw;
-    z-index: 0;
+    z-index: -1;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s;
@@ -1796,7 +1796,18 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     z-index: 1;
 }
 
+.template-x.horizontal.holiday .template-title {
+    cursor: pointer;
+}
+
 .template-x.horizontal.holiday .toggle-bar {
+    margin: auto;
+    max-width: 925px;
+    gap: 14px;
+}
+
+.template-x.horizontal.holiday .toggle-bar > div:not(.toggle-button) {
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
     gap: 14px;
@@ -1891,7 +1902,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 .template-x.holiday .carousel-container .carousel-platform {
     scroll-padding: initial;
     max-height: 200px;
-    padding: 20px 0;
+    padding: 20px 0 24px;
 }
 
 .template-x-container .template-x-wrapper.horizontal.holiday > .template-x.horizontal > .template-title {
@@ -1902,11 +1913,6 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 .template-x-horizontal-holiday-container.expanded .animation-background {
     opacity: 1;
     transition: opacity 1s;
-}
-
-.template-x.horizontal.holiday .toggle-bar {
-    max-width: 925px;
-    cursor: pointer;
 }
 
 .template-x .template .still-wrapper .image-wrapper {
@@ -2506,7 +2512,7 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     }
 
     .template-x.horizontal.fullwidth .carousel-container {
-        margin-bottom: 20px;
+        margin-bottom: 16px;
         max-width: none;
         display: block;
     }
@@ -2747,7 +2753,7 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         left: 28px;
     }
 
-    .template-x-wrapper.holiday .toggle-bar {
+    .template-x.horizontal.holiday .toggle-bar {
         max-width: 1090px;
     }
 
