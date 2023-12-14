@@ -207,6 +207,6 @@ export default async function decorate(block) {
   const payload = constructPayload(block);
   decorateHeading(block, payload);
   await decorateCards(block, payload);
-  buildCarousel('', block.querySelector('.gen-ai-cards-cards'));
+  await buildCarousel('', block.querySelector('.gen-ai-cards-cards'));
   document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
 }

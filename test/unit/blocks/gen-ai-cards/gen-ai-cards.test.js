@@ -13,6 +13,7 @@ describe('Gen AI Cards', () => {
     document.body.innerHTML = testBody;
     window.placeholders = { 'search-branch-links': 'https://adobesparkpost.app.link/c4bWARQhWAb' };
   });
+
   afterEach(() => {
     window.placeholders = undefined;
   });
