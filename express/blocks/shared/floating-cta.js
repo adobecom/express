@@ -158,6 +158,7 @@ export async function createFloatingButton(block, audience, data) {
     'data-block-name': 'floating-button',
     'data-block-status': 'loaded',
   });
+  [...block.classList].filter((c) => c === 'closed').forEach((c) => floatButtonWrapper.classList.add(c));
   const floatButtonInnerWrapper = createTag('div', { class: 'floating-button-inner-wrapper' });
   const floatButtonBackground = createTag('div', { class: 'floating-button-background' });
 
@@ -420,8 +421,12 @@ export function buildToolBoxStructure(wrapper, data) {
 
   wrapper.classList.add('initial-load');
   wrapper.classList.add('clamped');
-  wrapper.classList.add('toolbox-opened');
-  floatingButton.classList.add('toolbox-opened');
+  if (wrapper.classList.contains('closed')) {
+    toolBox.classList.add('hidden');
+  } else {
+    wrapper.classList.add('toolbox-opened');
+    floatingButton.classList.add('toolbox-opened');
+  }
 }
 
 export function initToolBox(wrapper, data, toggleFunction) {
