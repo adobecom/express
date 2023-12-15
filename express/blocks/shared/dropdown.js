@@ -1,8 +1,4 @@
-import {
-  createTag, getIconElement,
-  loadCSS,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
+import { createTag, getIconElement, loadStyle } from '../../scripts/utils.js';
 
 function buildButton($button, $options, option) {
   $button.innerHTML = '';
@@ -79,7 +75,7 @@ export function buildDropdown(options, attrs = null, callback) {
   if (!Array.isArray(options)) return null;
   if (typeof callback !== 'function') return null;
 
-  loadCSS('/express/blocks/shared/dropdown.css', null);
+  loadStyle('/express/blocks/shared/dropdown.css', null);
 
   const $dropdown = createTag('div', { class: 'dropdown' });
   const $button = createTag('div', { class: 'dropdown-button' });

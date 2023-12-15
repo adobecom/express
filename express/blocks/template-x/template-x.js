@@ -1,7 +1,6 @@
 /* eslint-disable import/named, import/extensions */
 
 import {
-  addSearchQueryToHref,
   createOptimizedPicture,
   createTag,
   decorateMain,
@@ -221,7 +220,7 @@ function populateTemplates(block, props, templates) {
       if (link) {
         if (isPlaceholder) {
           const aTag = createTag('a', {
-            href: link.href ? addSearchQueryToHref(link.href) : '#',
+            href: link.href || '#',
           });
 
           aTag.append(...tmplt.children);
@@ -1109,24 +1108,12 @@ function decorateHoliday(block, props) {
   const topElements = createTag('div', { class: 'toggle-bar-top' });
   const bottomElements = createTag('div', { class: 'toggle-bar-bottom' });
   const toggleChev = createTag('div', { class: 'toggle-button-chev' });
-  const carouselFaderLeft = block.querySelector('.carousel-fader-left');
-  const carouselFaderRight = block.querySelector('.carousel-fader-right');
 
   if (props.holidayIcon) topElements.append(props.holidayIcon);
   if (props.backgroundAnimation) {
     const animation = transformLinkToAnimation(props.backgroundAnimation);
     block.classList.add('animated');
     block.prepend(animation);
-  }
-
-  if (props.backgroundColor) {
-    if (props.backgroundAnimation) {
-      carouselFaderRight.style.backgroundImage = 'none';
-      carouselFaderLeft.style.backgroundImage = 'none';
-    } else {
-      carouselFaderRight.style.backgroundImage = `linear-gradient(to right, rgba(0, 255, 255, 0), ${props.backgroundColor}`;
-      carouselFaderLeft.style.backgroundImage = `linear-gradient(to left, rgba(0, 255, 255, 0), ${props.backgroundColor}`;
-    }
   }
 
   block.classList.add('expanded', props.textColor);

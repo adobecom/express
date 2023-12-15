@@ -3,10 +3,6 @@ const AUTO_BLOCKS = [
   { fragment: '/express/fragments/' },
 ];
 
-const TK_IDS = {
-  jp: 'dvg6awq',
-};
-
 const DO_NOT_INLINE = [
   'accordion',
   'columns',
@@ -109,6 +105,7 @@ export const [setConfig, updateConfig, getConfig] = (() => {
           || 'ltr';
         document.documentElement.setAttribute('dir', dir);
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.log('Invalid or missing locale:', e);
       }
       config.locale.contentRoot = `${origin}${config.locale.prefix}${config.contentRoot ?? ''}`;
@@ -291,8 +288,6 @@ function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]'])
     });
   }).observe(document.body, { childList: true, subtree: true });
 }
-
-const postEditorLinksAllowList = ['adobesparkpost.app.link', 'spark.adobe.com/sp/design', 'express.adobe.com/sp/design'];
 
 export function addPublishDependencies(url) {
   if (!Array.isArray(url)) {
@@ -1045,7 +1040,7 @@ export function getHelixEnv() {
     stage: {
       commerce: 'commerce-stg.adobe.com',
       adminconsole: 'stage.adminconsole.adobe.com',
-      spark: 'express-stage.adobeprojectm.com',
+      spark: 'stage.projectx.corp.adobe.com',
     },
     prod: {
       commerce: 'commerce.adobe.com',
@@ -1144,24 +1139,32 @@ function decorateHeaderAndFooter() {
   } else footer.remove();
 }
 
-/**
- * Loads a CSS file
- * @param {string} href The path to the CSS file
- * @param {function} callback a function to run upon successful style loading
- */
-export function loadCSS(href, callback = null) {
-  if (!document.querySelector(`head > link[href="${href}"]`)) {
-    const link = document.createElement('link');
-    link.setAttribute('rel', 'stylesheet');
+export function loadLink(href, {
+  as,
+  callback,
+  crossorigin,
+  rel,
+} = {}) {
+  let link = document.head.querySelector(`link[href="${href}"]`);
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', rel);
+    if (as) link.setAttribute('as', as);
+    if (crossorigin) link.setAttribute('crossorigin', crossorigin);
     link.setAttribute('href', href);
-    if (typeof callback === 'function') {
+    if (callback) {
       link.onload = (e) => callback(e.type);
       link.onerror = (e) => callback(e.type);
     }
     document.head.appendChild(link);
-  } else if (typeof callback === 'function') {
+  } else if (callback) {
     callback('noop');
   }
+  return link;
+}
+
+export function loadStyle(href, callback) {
+  return loadLink(href, { rel: 'stylesheet', callback });
 }
 
 function resolveFragments() {
@@ -1177,7 +1180,6 @@ function resolveFragments() {
       const $marker = Array.from(document.querySelectorAll('main > div h3'))
         .find(($title) => $title.textContent.trim().toLocaleLowerCase() === marker);
       if (!$marker) {
-        console.log(`no fragment with marker "${marker}" found`);
         return;
       }
       let $fragment = $marker.closest('main > div');
@@ -1189,7 +1191,6 @@ function resolveFragments() {
         $emptyFragment.remove();
       }
       if (!$fragment) {
-        console.log(`no content found for fragment "${marker}"`);
         return;
       }
       setTimeout(() => {
@@ -1197,7 +1198,6 @@ function resolveFragments() {
         Array.from($fragment.children).forEach(($elem) => $cell.appendChild($elem));
         $marker.remove();
         $fragment.remove();
-        console.log(`fragment "${marker}" resolved`);
       }, 500);
     });
 }
@@ -1266,7 +1266,7 @@ export function buildBlock(blockName, content) {
 
 async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
   const cssLoaded = new Promise((resolve) => {
-    loadCSS(cssPath, resolve);
+    loadStyle(cssPath, resolve);
   });
   const scriptLoaded = new Promise((resolve) => {
     (async () => {
@@ -1357,7 +1357,7 @@ export async function setTemplateTheme() {
   const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
   document.body.classList.add(name);
   await new Promise((resolve) => {
-    loadCSS(`/express/templates/${name}/${name}.css`, resolve);
+    loadStyle(`/express/templates/${name}/${name}.css`, resolve);
   });
 }
 
@@ -1480,27 +1480,6 @@ function decoratePageStyle() {
   }
 }
 
-export function addSearchQueryToHref(href) {
-  const isCreateSeoPage = window.location.pathname.includes('/express/create/');
-  const isDiscoverSeoPage = window.location.pathname.includes('/express/discover/');
-  const isPostEditorLink = postEditorLinksAllowList.some((editorLink) => href.includes(editorLink));
-
-  if (!(isPostEditorLink && (isCreateSeoPage || isDiscoverSeoPage))) {
-    return href;
-  }
-
-  const templateSearchTag = getMetadata('short-title');
-  const url = new URL(href);
-  const params = url.searchParams;
-
-  if (templateSearchTag) {
-    params.set('search', templateSearchTag);
-  }
-  url.search = params.toString();
-
-  return url.toString();
-}
-
 /**
  * Button style applicator function
  * @param {Object} el the container of the buttons to be decorated
@@ -1516,7 +1495,6 @@ export function decorateButtons(el = document) {
       // propagates to buttons.
       $a.innerHTML = $a.innerHTML.replaceAll('<u>', '').replaceAll('</u>', '');
     }
-    $a.href = addSearchQueryToHref($a.href);
     $a.title = $a.title || linkText;
     const $block = $a.closest('div.section > div > div');
     const { hash } = new URL($a.href);
@@ -1581,10 +1559,10 @@ export function toCamelCase(name) {
  */
 export function getExperiment() {
   let experiment = toClassName(getMetadata('experiment'));
-
-  if (!/adobe\.com/.test(window.location.hostname) && !/\.hlx\.live/.test(window.location.hostname)) {
+  const { hostname } = window.location;
+  if (!(/adobe\.com/.test(hostname) || /\.hlx\.live/.test(hostname) || hostname.includes('localhost'))) {
     experiment = '';
-    // reason = 'not prod host';
+    // reason = 'not prod host and not local';
   }
   if (window.location.hash) {
     experiment = '';
@@ -1693,62 +1671,63 @@ export async function getExperimentConfig(experimentId) {
       });
       config.variants = variants;
       config.variantNames = variantNames;
-      console.log(config);
       return config;
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log('error loading experiment manifest: %s', path, e);
     }
     return null;
   }
 }
 
-/**
- * Replaces element with content from path
- * @param {string} path
- * @param {HTMLElement} element
- */
-async function replaceInner(path, element) {
-  const plainPath = `${path}.plain.html`;
-  try {
-    const resp = await fetch(plainPath);
-    const html = await resp.text();
-    element.innerHTML = html;
-  } catch (e) {
-    console.log(`error loading experiment content: ${plainPath}`, e);
+function loadIMS() {
+  window.adobeid = {
+    client_id: 'MarvelWeb3',
+    scope: 'AdobeID,openid',
+    locale: getConfig().locale.region,
+    environment: 'prod',
+  };
+  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
+    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+  } else {
+    loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
+    window.adobeid.environment = 'stg1';
   }
-  return null;
 }
 
-/**
- * Generates a decision policy object which is understood by UED from an
- * experiment configuration.
- * @param {*} config Experiment configuration
- * @returns Experiment decision policy object to be passed to UED.
- */
-function getDecisionPolicy(config) {
-  const decisionPolicy = {
-    id: 'content-experimentation-policy',
-    rootDecisionNodeId: 'n1',
-    decisionNodes: [{
-      id: 'n1',
-      type: 'EXPERIMENTATION',
-      experiment: {
-        id: config.id,
-        identityNamespace: 'ECID',
-        randomizationUnit: 'DEVICE',
-        treatments: Object.entries(config.variants).map(([key, props]) => ({
-          id: key,
-          allocationPercentage: props.percentageSplit
-            ? parseFloat(props.percentageSplit) * 100
-            : 100 - Object.values(config.variants).reduce((result, variant) => {
-              const returnResult = result - (parseFloat(variant.percentageSplit || 0) * 100);
-              return returnResult;
-            }, 100),
-        })),
-      },
-    }],
-  };
-  return decisionPolicy;
+async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
+  const promises = [import('./experiment.js')];
+  const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
+  if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
+    loadIMS(); // rush ims to unblock alloy without loading gnav
+    promises.push(loadScript('/express/scripts/instrument.js', 'module'));
+    const t1 = performance.now();
+    let alloyLoadingResolver;
+    window.alloyLoader = new Promise((resolve) => {
+      alloyLoadingResolver = resolve;
+    });
+    window.addEventListener('alloy_sendEvent', (e) => {
+      // fired by launch loaded by martech loaded by instrument
+      if (e.detail.type === 'pageView') {
+        // eslint-disable-next-line no-console
+        console.log(`Alloy loaded in ${performance.now() - t1}`);
+        window.alloyLoaded = true;
+        alloyLoadingResolver(e.detail.result);
+      }
+    });
+    // tolerate max 5s for exp overheads
+    setTimeout(() => {
+      if (!window.alloyLoaded) {
+        // eslint-disable-next-line no-console
+        console.error(`Alloy failed to load, waited ${performance.now() - t1}`);
+        alloyLoadingResolver();
+        window.delay_preload_product = false;
+      }
+    }, 5000);
+    window.delay_preload_product = true;
+  }
+  const [{ runExps }] = await Promise.all(promises);
+  await runExps(config, forcedExperiment, forcedVariant);
 }
 
 /**
@@ -1756,7 +1735,6 @@ function getDecisionPolicy(config) {
  */
 async function decorateTesting() {
   try {
-    // let reason = '';
     const usp = new URLSearchParams(window.location.search);
 
     const experiment = getExperiment();
@@ -1765,60 +1743,7 @@ async function decorateTesting() {
     if (experiment) {
       const config = await getExperimentConfig(experiment);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
-        const { DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences } = await import('./experiment.js');
-        const experimentOptions = {
-          ...DEFAULT_EXPERIMENT_OPTIONS,
-          ...{ audiences: AUDIENCES },
-        };
-        config.resolvedAudiences = await getResolvedAudiences(config.audience.split(',').map((a) => a.trim()), experimentOptions);
-        config.run = forcedExperiment
-          || !config.resolvedAudiences
-          || config.resolvedAudiences.length;
-
-        window.hlx = window.hlx || {};
-        if (config.run) {
-          window.hlx.experiment = config;
-          if (forcedVariant && config.variantNames.includes(forcedVariant)) {
-            config.selectedVariant = forcedVariant;
-          } else {
-            const ued = await import('./ued/ued-0.2.0.js');
-            const decision = ued.evaluateDecisionPolicy(getDecisionPolicy(config), {});
-            config.selectedVariant = decision.items[0].id;
-          }
-          sampleRUM('experiment', { source: config.id, target: config.selectedVariant });
-          // populate ttMETA with hlx experimentation details
-          window.ttMETA = window.ttMETA || [];
-          const experimentDetails = {
-            CampaignId: window.hlx.experiment.id,
-            CampaignName: window.hlx.experiment.experimentName,
-            OfferId: window.hlx.experiment.selectedVariant,
-            OfferName: window.hlx.experiment.variants[window.hlx.experiment.selectedVariant].label,
-          };
-          window.ttMETA.push(experimentDetails);
-          // add hlx experiment details as dynamic variables
-          // for Content Square integration
-          // eslint-disable-next-line no-underscore-dangle
-          if (window._uxa) {
-            for (const propName of Object.keys(experimentDetails)) {
-              // eslint-disable-next-line no-underscore-dangle
-              window._uxa.push(['trackDynamicVariable', { key: propName, value: experimentDetails[propName] }]);
-            }
-          }
-          if (config.selectedVariant !== 'control') {
-            const currentPath = window.location.pathname;
-            const pageIndex = config.variants.control.pages.indexOf(currentPath);
-            if (pageIndex >= 0) {
-              const page = config.variants[config.selectedVariant].pages[pageIndex];
-              if (page) {
-                const experimentPath = new URL(page, window.location.href).pathname.split('.')[0];
-                if (experimentPath && experimentPath !== currentPath) {
-                  await replaceInner(experimentPath, document.querySelector('main'));
-                  removeIrrelevantSections(document.querySelector('main'));
-                }
-              }
-            }
-          }
-        }
+        await loadAndRunExp(config, forcedExperiment, forcedVariant);
       }
     }
     const martech = usp.get('martech');
@@ -1828,6 +1753,7 @@ async function decorateTesting() {
       loadScript('/express/scripts/instrument.js', 'module');
     }
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log('error testing', e);
   }
 }
@@ -1951,7 +1877,6 @@ export async function fetchPlainBlockFromFragment(url, blockName) {
     section.className = `section section-wrapper ${blockName}-container`;
     const block = section.querySelector(`.${blockName}`);
     block.dataset.blockName = blockName;
-    block.dataset.blockStatus = 'loaded';
     block.parentElement.className = `${blockName}-wrapper`;
     block.classList.add('block');
     const img = section.querySelector('img');
@@ -2022,13 +1947,13 @@ export async function fetchFloatingCta(path) {
 }
 
 async function buildAutoBlocks($main) {
-  const $lastDiv = $main.querySelector(':scope > div:last-of-type');
+  const lastDiv = $main.querySelector(':scope > div:last-of-type');
 
   // Load the branch.io banner autoblock...
   if (['yes', 'true', 'on'].includes(getMetadata('show-banner').toLowerCase())) {
     const branchio = buildBlock('branch-io', '');
-    if ($lastDiv) {
-      $lastDiv.append(branchio);
+    if (lastDiv) {
+      lastDiv.append(branchio);
     }
   }
 
@@ -2056,38 +1981,92 @@ async function buildAutoBlocks($main) {
   // Load the app store autoblocks...
   if (['yes', 'true', 'on'].includes(getMetadata('show-standard-app-store-blocks').toLowerCase())) {
     const $highlight = buildBlock('app-store-highlight', '');
-    if ($lastDiv) {
-      $lastDiv.append($highlight);
+    if (lastDiv) {
+      lastDiv.append($highlight);
     }
 
     const $blade = buildBlock('app-store-blade', '');
-    if ($lastDiv) {
-      $lastDiv.append($blade);
+    if (lastDiv) {
+      lastDiv.append($blade);
     }
   }
 
   if (['yes', 'true', 'on'].includes(getMetadata('show-plans-comparison').toLowerCase())) {
     const $plansComparison = buildBlock('plans-comparison', '');
-    if ($lastDiv) {
-      $lastDiv.append($plansComparison);
+    if (lastDiv) {
+      lastDiv.append($plansComparison);
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) || ['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
+  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
+    const loadSplitFlow = async (payload) => {
+      if (payload.deviceSupport) {
+        const floatingCTAData = await fetchFloatingCta(window.location.pathname);
+        const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+        const device = document.body.dataset?.device;
+        const blockName = floatingCTAData?.[device];
+
+        if (validButtonVersion.includes(blockName) && lastDiv) {
+          const button = buildBlock(blockName, device);
+          button.classList.add('spreadsheet-powered');
+          lastDiv.append(button);
+
+          if (!payload.isMainThread) {
+            await decorateBlock(button);
+            await loadBlock(button);
+          }
+
+          BlockMediator.set('floatingCtasLoaded', true);
+        }
+      } else {
+        const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
+        if (!fragment) return;
+
+        $main.append(fragment);
+        const block = fragment.querySelector('.sticky-promo-bar.block');
+        if (!block) return;
+
+        if (!payload.isMainThread) {
+          await loadBlock(block);
+        }
+      }
+    };
+
+    if (!BlockMediator.get('floatingCtasLoaded')) {
+      const eligibilityChecked = BlockMediator.get('mobileBetaEligibility');
+      if (eligibilityChecked) {
+        await loadSplitFlow({
+          deviceSupport: eligibilityChecked.deviceSupport,
+          isMainThread: true,
+        });
+      } else {
+        const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
+          await loadSplitFlow({
+            deviceSupport: e.newValue.deviceSupport,
+            isMainThread: false,
+          });
+          unsubscribe();
+        });
+      }
+    }
+  }
+
+  if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) && !(['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile')) {
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
+
     if (!BlockMediator.get('floatingCtasLoaded')) {
       const floatingCTAData = await fetchFloatingCta(window.location.pathname);
       const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
       const device = document.body.dataset?.device;
       const blockName = floatingCTAData?.[device];
 
-      if (validButtonVersion.includes(blockName) && $lastDiv) {
+      if (validButtonVersion.includes(blockName) && lastDiv) {
         const button = buildBlock(blockName, device);
         button.classList.add('spreadsheet-powered');
-        $lastDiv.append(button);
+        lastDiv.append(button);
+        BlockMediator.set('floatingCtasLoaded', true);
       }
-
-      BlockMediator.set('floatingCtasLoaded', true);
     }
   }
 
@@ -2095,8 +2074,8 @@ async function buildAutoBlocks($main) {
     const fragmentName = getMetadata('show-quick-action-card').toLowerCase();
     const quickActionCardBlock = buildBlock('quick-action-card', fragmentName);
     quickActionCardBlock.classList.add('spreadsheet-powered');
-    if ($lastDiv) {
-      $lastDiv.append(quickActionCardBlock);
+    if (lastDiv) {
+      lastDiv.append(quickActionCardBlock);
     }
   }
 }
@@ -2123,10 +2102,6 @@ function splitSections($main) {
       }
     }
   });
-}
-
-export function getDevice() {
-  return navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
 
 function decorateLinkedPictures($main) {
@@ -2245,6 +2220,7 @@ function displayEnv() {
         setHelixEnv('stage', { spark: url.host });
       }
       if (window.location.hostname !== url.hostname) {
+        // eslint-disable-next-line no-console
         console.log(`external referrer detected: ${document.referrer}`);
       }
     }
@@ -2256,6 +2232,7 @@ function displayEnv() {
       document.body.appendChild($helixEnv);
     }
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log(`display env failed: ${e.message}`);
   }
 }
@@ -2519,7 +2496,7 @@ function removeMetadata() {
  */
 async function loadLazy(main) {
   addPromotion();
-  loadCSS('/express/styles/lazy-styles.css');
+  loadStyle('/express/styles/lazy-styles.css');
   scrollToHash();
   resolveFragments();
   removeMetadata();
@@ -2533,17 +2510,14 @@ async function loadLazy(main) {
   ]);
 }
 
-async function loadPostLCP() {
+async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   window.dispatchEvent(new Event('milo:LCP:loaded'));
   if (window.hlx.martech) loadMartech();
   loadGnav();
-  const tkID = TK_IDS[getConfig().locale.prefix.replace('/', '')];
-  if (tkID) {
-    const { default: loadFonts } = await import('./fonts.js');
-    loadFonts(tkID, loadCSS);
-  }
+  const { default: loadFonts } = await import('./fonts.js');
+  loadFonts(config.locale, loadStyle);
 }
 
 /**
@@ -2566,7 +2540,7 @@ export async function loadSections(sections, isDoc) {
     // eslint-disable-next-line no-await-in-loop
     await Promise.all(loaded);
     // Post LCP operations.
-    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP();
+    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP(getConfig());
 
     // Show the section when all blocks inside are done.
     delete section.el.dataset.status;
@@ -2576,15 +2550,29 @@ export async function loadSections(sections, isDoc) {
   return areaBlocks;
 }
 
+export function getMobileOperatingSystem() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+  // Windows Phone must come first because its UA also contains "Android"
+  if (/windows phone/i.test(userAgent)) {
+    return 'Windows Phone';
+  }
+
+  if (/android/i.test(userAgent)) {
+    return 'Android';
+  }
+
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+    return 'iOS';
+  }
+
+  return 'unknown';
+}
+
 function initSidekick() {
   const initPlugins = async () => {
     const { default: init } = await import('./utils/sidekick.js');
-    init({
-      createTag,
-      loadBlock,
-      loadScript,
-      loadCSS,
-    });
+    init();
   };
 
   if (document.querySelector('helix-sidekick')) {
@@ -2669,7 +2657,7 @@ export async function loadArea(area = document) {
   await lazy;
 
   const { default: loadDelayed } = await import('./delayed.js');
-  loadDelayed(8000);
+  loadDelayed(10000);
 
   // milo's links featurecc
   const config = getConfig();

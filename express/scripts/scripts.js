@@ -1,14 +1,16 @@
 import {
   sampleRUM,
-  getDevice,
   removeIrrelevantSections,
   loadArea,
+  getMetadata,
   stamp,
-  registerPerformanceLogger, setConfig, loadCSS,
+  registerPerformanceLogger,
+  setConfig,
+  loadStyle,
 } from './utils.js';
 
 const locales = {
-  '': { ietf: 'en-US', tk: 'hah7vzn.css' },
+  '': { ietf: 'en-US', tk: 'jdq5hay.css' },
   br: { ietf: 'pt-BR', tk: 'inq1xob.css' },
   cn: { ietf: 'zh-Hans-CN', tk: 'puu3xkp' },
   de: { ietf: 'de-DE', tk: 'vin7zsi.css' },
@@ -17,7 +19,7 @@ const locales = {
   fi: { ietf: 'fi-FI', tk: 'aaz7dvd.css' },
   fr: { ietf: 'fr-FR', tk: 'vrk5vyv.css' },
   gb: { ietf: 'en-GB', tk: 'pps7abe.css' },
-  in: { ietf: 'en-GB', tk: 'pps7abe.css' },
+  in: { ietf: 'en-IN', tk: 'pps7abe.css' },
   it: { ietf: 'it-IT', tk: 'bbf5pok.css' },
   jp: { ietf: 'ja-JP', tk: 'dvg6awq' },
   kr: { ietf: 'ko-KR', tk: 'qjs5sfm' },
@@ -30,6 +32,7 @@ const locales = {
 
 const config = {
   locales,
+  codeRoot: '/express/',
   links: 'on',
 };
 
@@ -54,9 +57,8 @@ const eagerLoad = (img) => {
 };
 
 (function loadLCPImage() {
-  const body = document.querySelector('body');
-  body.dataset.device = getDevice();
-  const main = body.querySelector('main');
+  document.body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
+  const main = document.body.querySelector('main');
   removeIrrelevantSections(main);
   const firstDiv = main.querySelector('div:nth-child(1) > div');
   if (firstDiv?.classList.contains('marquee')) {
@@ -71,7 +73,7 @@ const showNotifications = () => {
   const notification = url.searchParams.get('notification');
   if (notification) {
     const handler = () => {
-      loadCSS('/express/features/notification/notification.css', () => {
+      loadStyle('/express/features/notification/notification.css', () => {
         import('../features/notification/notification.js').then((mod) => {
           mod.default(notification);
           window.removeEventListener('milo:LCP:loaded', handler);
@@ -87,6 +89,11 @@ const showNotifications = () => {
   setConfig(config);
   showNotifications();
   await loadArea();
+  if (getMetadata('mobile-benchmark') && document.body.dataset.device === 'mobile') {
+    Promise.all([import('./mobile-beta-gating.js'), import('./block-mediator.min.js')]).then(([gatingScript]) => {
+      gatingScript.default();
+    });
+  }
 }());
 
 stamp('start');

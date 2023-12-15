@@ -7,10 +7,16 @@ import {
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 
 function sanitize(str) {
-  return str.replaceAll(/[$@%'"]/g, '');
+  return str?.replaceAll(/[$@%'"]/g, '');
 }
 
-function getCrumbsForSearch(templatesUrl, allTemplatesMetadata, taskCategories) {
+function translateTask(taskCategories, tasks) {
+  return Object.entries(taskCategories)
+    .find(([_, t]) => t === tasks || t === tasks.replace(/-/g, ' '))
+    ?.[0]?.toLowerCase() ?? tasks;
+}
+
+function getCrumbsForSearch(templatesUrl, allTemplatesMetadata, placeholders) {
   const { search, origin } = window.location;
   let { tasks, topics } = new Proxy(new URLSearchParams(search), {
     get: (searchParams, prop) => searchParams.get(prop),
@@ -41,9 +47,7 @@ function getCrumbsForSearch(templatesUrl, allTemplatesMetadata, taskCategories) 
     const taskCrumb = createTag('li');
     const taskAnchor = createTag('a', { href: taskUrl });
     taskCrumb.append(taskAnchor);
-    const translatedTasks = Object.entries(taskCategories)
-      .find(([_, t]) => t === tasks || t === tasks.replace(/-/g, ' '))
-      ?.[0]?.toLowerCase() ?? tasks;
+    const translatedTasks = translateTask(JSON.parse(placeholders['task-categories']), tasks);
     taskAnchor.textContent = titleCase(translatedTasks);
     crumbs.unshift(taskCrumb);
   }
@@ -51,16 +55,13 @@ function getCrumbsForSearch(templatesUrl, allTemplatesMetadata, taskCategories) 
   return crumbs;
 }
 
-function getCrumbsForSEOPage(templatesUrl, allTemplatesMetadata, taskCategories, segments) {
+function getCrumbsForSEOPage(templatesUrl, allTemplatesMetadata, placeholders, segments) {
   const { origin, pathname } = window.location;
   const tasks = getMetadata('tasks')
   // TODO: remove templateTasks and allTemplatesMetadata here after all content are updated
     ?? getMetadata('templateTasks')
     ?? allTemplatesMetadata[pathname]?.tasks
     ?? allTemplatesMetadata[pathname]?.templateTasks;
-  const translatedTasks = Object.entries(taskCategories)
-    .find(([_, t]) => t === tasks || t === tasks.replace(/-/g, ' '))
-    ?.[0]?.toLowerCase() ?? tasks;
   // we might have an inconsistent trailing slash problem
   let builtUrl = templatesUrl.replace('templates/', 'templates');
   const crumbs = [];
@@ -71,7 +72,16 @@ function getCrumbsForSEOPage(templatesUrl, allTemplatesMetadata, taskCategories,
       if (!seg) return;
       builtUrl = `${builtUrl}/${seg}`;
       // at least translate tasks seg
-      const translatedSeg = seg === tasks ? translatedTasks : seg;
+      let translatedSeg = seg;
+      if (seg === tasks) {
+        translatedSeg = translateTask(JSON.parse(placeholders['task-categories']), seg);
+      } else if (seg === getMetadata('tasks-x')) {
+        // try new v3x mapping
+        translatedSeg = translateTask(JSON.parse(placeholders['x-task-categories']), seg);
+      } else if (placeholders[seg]) {
+        // try placeholder sheet
+        translatedSeg = placeholders[seg];
+      }
       const segmentCrumb = createTag('li');
       if (allTemplatesMetadata.some((t) => t.url === builtUrl.replace(origin, ''))) {
         const segmentLink = createTag('a', { href: builtUrl });
@@ -130,12 +140,11 @@ export default async function getBreadcrumbs() {
   if (!children || children === '/') {
     return nav;
   }
-  const taskCategories = JSON.parse(placeholders['task-categories']);
   const allTemplatesMetadata = await fetchAllTemplatesMetadata();
   const isSearchPage = children.startsWith('/search?') || getMetadata('template-search-page') === 'Y';
   const crumbs = isSearchPage
-    ? getCrumbsForSearch(templatesUrl, allTemplatesMetadata, taskCategories)
-    : getCrumbsForSEOPage(templatesUrl, allTemplatesMetadata, taskCategories, children.split('/'));
+    ? getCrumbsForSearch(templatesUrl, allTemplatesMetadata, placeholders)
+    : getCrumbsForSEOPage(templatesUrl, allTemplatesMetadata, placeholders, children.split('/'));
 
   crumbs.forEach((c) => {
     breadcrumbs.append(c);

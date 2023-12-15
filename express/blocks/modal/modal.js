@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { loadCSS, createTag, getIconElement } from '../../scripts/utils.js';
+import { loadStyle, createTag, getIconElement } from '../../scripts/utils.js';
 
 const FOCUSABLES = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"]';
 
@@ -43,7 +43,7 @@ function isElementInView(element) {
 }
 
 function getCustomModal(custom, dialog) {
-  loadCSS('/express/blocks/modal/modal.css');
+  loadStyle('/express/blocks/modal/modal.css');
   if (custom.id) dialog.id = custom.id;
   if (custom.class) dialog.classList.add(custom.class);
   if (custom.closeEvent) {
