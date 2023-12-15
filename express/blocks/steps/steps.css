@@ -57,7 +57,7 @@ main .steps .step-description {
 main .section.steps-dark-container,
 main .section.steps-highlight-container,
 main .section.steps-container {
-  margin-top: 80px;
+  margin-top: 20px;
 }
 
 main .section.steps-dark-container,
@@ -117,6 +117,12 @@ main .steps .icon {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+  }
+
+  main .section.steps-dark-container,
+  main .section.steps-highlight-container,
+  main .section.steps-container {
+  margin-top: 90px;
   }
 }
 

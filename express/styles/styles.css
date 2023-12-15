@@ -492,21 +492,13 @@ main .section.section-wrapper.banner-container {
   margin-top: 20px;
 }
 
-/* main .section {
-  padding-top: 40px;
-} */
+main .section.section-wrapper:has(.default-content-wrapper):not(.steps-highlight-container) {
+  padding-bottom: 10px;
+}
 
-/* main .section:first-of-type {
-  padding-top: 20px;
-} */
-
-/* main .section:last-of-type {
-  margin-bottom: 30px;
-} */
-
-/* main .section:last-of-type>.default-content-wrapper {
-  padding-bottom: 40px;
-}  */
+main .section.section-wrapper:has(.promotion), main .section.section-wrapper:has(.long-text) {
+  padding-bottom: 30px;
+}
 
 @media (min-width:600px) {
 
@@ -551,6 +543,18 @@ main .section.section-wrapper.banner-container {
 
   main .section.cards-container {
     background-color: unset;
+  }
+
+  main .section.section-wrapper:not(:first-of-type):not(.banner-container):not(.steps-highlight-container):has(div) {
+    padding-top: 30px;
+  }
+  
+  main .section.section-wrapper.banner-container {
+    margin-top: 30px;
+  }
+
+  main .section.section-wrapper:has(.promotion), main .section.section-wrapper:has(.long-text),  main .section.section-wrapper:has(.premium-plan) {
+    padding-bottom: 50px;
   }
 }
 
