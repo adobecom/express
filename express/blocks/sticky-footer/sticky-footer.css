@@ -97,10 +97,19 @@ main .sticky-footer .rating-stars {
 
 main .sticky-footer .rating-stars svg {
     color: var(--color-premium);
+
 }
 
 main .sticky-footer .rating-stars .rating-votes {
     margin-left: 4px;
+}
+
+main .sticky-footer .icon-icon-editor-choice {
+    width: auto;
+}
+
+main .sticky-footer .rating-stars {
+    margin-left: 5px;
 }
 
 @media not (min-width: 900px) {
