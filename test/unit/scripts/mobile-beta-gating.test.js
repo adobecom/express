@@ -41,74 +41,17 @@ describe('Mobile Beta Gating', () => {
     ).to.be.false;
   });
 
-  it('is able to check whitelist', async () => {
+  it('is able to check allowlist', async () => {
     const MOCK_JSON = {
-      total: 20,
-      offset: 0,
-      limit: 20,
-      data: [
-        {
-          device: 'SM-S908E',
-        },
-        {
-          device: '2201117TI',
-        },
-        {
-          device: 'SM-G781B',
-        },
-        {
-          device: 'M2102J20SI',
-        },
-        {
-          device: 'SM-G980F',
-        },
-        {
-          device: 'SM-G955U',
-        },
-        {
-          device: 'SM-A546E',
-        },
-        {
-          device: 'RMX2001',
-        },
-        {
-          device: 'CPH2401',
-        },
-        {
-          device: 'SM-N980F',
-        },
-        {
-          device: 'M2012K11AI',
-        },
-        {
-          device: 'NE2211',
-        },
-        {
-          device: 'Pixel 2 XL',
-        },
-        {
-          device: 'Samsung M525G',
-        },
-        {
-          device: 'Samsung Galaxy S23 Ultra',
-        },
-        {
-          device: 'Samsung Galaxy A53 5G',
-        },
-        {
-          device: 'Redmi Note 8 Pro',
-        },
-        {
-          device: 'Samsung Galaxy S10',
-        },
-        {
-          device: 'Samsung Galaxy A71',
-        },
-        {
-          device: 'Pixel 6 Pro',
-        },
-      ],
-      ':type': 'sheet',
+      'allow-list': {
+        total: 25, offset: 0, limit: 25, data: [{ device: 'SM-S908E' }, { device: '2201117TI' }, { device: 'SM-G781B' }, { device: 'M2102J20SI' }, { device: 'SM-G980F' }, { device: 'SM-G955U' }, { device: 'SM-A546E' }, { device: 'RMX2001' }, { device: 'CPH2401' }, { device: 'SM-N980F' }, { device: 'M2012K11AI' }, { device: 'NE2211' }, { device: 'Pixel 2 XL' }, { device: 'Samsung M525G' }, { device: 'Samsung Galaxy S23 Ultra' }, { device: 'Samsung Galaxy A53 5G' }, { device: 'Redmi Note 8 Pro' }, { device: 'Samsung Galaxy S10' }, { device: 'Samsung Galaxy A71' }, { device: 'Pixel \\d Pro' }, { device: 'Pixel 4' }, { device: 'Pixel 5' }, { device: 'Pixel 6' }, { device: 'Pixel 7' }, { device: 'Pixel 8' }],
+      },
+      'deny-list': {
+        total: 1, offset: 0, limit: 1, data: [{ device: 'Samsung Galaxy A12' }],
+      },
+      ':version': 3,
+      ':names': ['allow-list', 'deny-list'],
+      ':type': 'multi-sheet',
     };
     const stub = sinon.stub(window, 'fetch');
     stub.returns({ ok: true, json: async () => MOCK_JSON });
@@ -119,6 +62,15 @@ describe('Mobile Beta Gating', () => {
     });
     let supported = await isOfficiallySupportedDevice('iOS');
     expect(supported).to.be.true;
+
+    Object.defineProperty(navigator, 'userAgent', {
+      get() {
+        return 'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53';
+      },
+    });
+    supported = await isOfficiallySupportedDevice('iOS');
+    expect(supported).to.be.false;
+
     Object.defineProperty(navigator, 'userAgent', {
       get() {
         return 'Mozilla/5.0 (Linux; Android 13; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36';
@@ -141,11 +93,19 @@ describe('Mobile Beta Gating', () => {
       },
     });
     supported = await isOfficiallySupportedDevice('Android');
+    expect(supported).to.be.true;
+
+    Object.defineProperty(navigator, 'userAgent', {
+      get() {
+        return 'Mozilla/5.0 (Linux; Android 13; Pixel 3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36';
+      },
+    });
+    supported = await isOfficiallySupportedDevice('Android');
     expect(supported).to.be.false;
 
     Object.defineProperty(navigator, 'userAgent', {
       get() {
-        return 'Mozilla/5.0 (Linux; Android 13; Pixel 6 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36';
+        return 'Mozilla/5.0 (Linux; Android 13; Pixel 3 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36';
       },
     });
     supported = await isOfficiallySupportedDevice('Android');
@@ -160,6 +120,30 @@ describe('Mobile Beta Gating', () => {
     expect(supported).to.be.true;
 
     supported = await isOfficiallySupportedDevice('windows');
+    expect(supported).to.be.false;
+    stub.restore();
+  });
+
+  it('is able to check denylist', async () => {
+    const MOCK_JSON = {
+      'allow-list': {
+        total: 25, offset: 0, limit: 25, data: [{ device: 'SM-S908E' }, { device: '2201117TI' }, { device: 'SM-G781B' }, { device: 'M2102J20SI' }, { device: 'SM-G980F' }, { device: 'SM-G955U' }, { device: 'SM-A546E' }, { device: 'RMX2001' }, { device: 'CPH2401' }, { device: 'SM-N980F' }, { device: 'M2012K11AI' }, { device: 'NE2211' }, { device: 'Pixel 2 XL' }, { device: 'Samsung M525G' }, { device: 'Samsung Galaxy S23 Ultra' }, { device: 'Samsung Galaxy A53 5G' }, { device: 'Redmi Note 8 Pro' }, { device: 'Samsung Galaxy S10' }, { device: 'Samsung Galaxy A71' }, { device: 'Pixel \\d Pro' }, { device: 'Pixel 4' }, { device: 'Pixel 5' }, { device: 'Pixel 6' }, { device: 'Pixel 7' }, { device: 'Pixel 8' }],
+      },
+      'deny-list': {
+        total: 1, offset: 0, limit: 1, data: [{ device: 'Samsung Galaxy A12' }],
+      },
+      ':version': 3,
+      ':names': ['allow-list', 'deny-list'],
+      ':type': 'multi-sheet',
+    };
+    const stub = sinon.stub(window, 'fetch');
+    stub.returns({ ok: true, json: async () => MOCK_JSON });
+    Object.defineProperty(navigator, 'userAgent', {
+      get() {
+        return 'Mozilla/5.0 (Linux; Android 8.0.0; Samsung Galaxy A12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36';
+      },
+    });
+    const supported = await isOfficiallySupportedDevice('Android');
     expect(supported).to.be.false;
     stub.restore();
   });

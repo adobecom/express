@@ -1,7 +1,7 @@
 import BlockMediator from './block-mediator.min.js';
 import { getMobileOperatingSystem, getMetadata } from './utils.js';
 
-const ANDROID_WL_DEVICES_PATH = '/express/benchmark-android-wl.json?limit=100000';
+const ANDROID_DEVICE_LIST_PATH = '/express/android-device-list.json?limit=100000';
 const MAX_EXEC_TIME_ALLOWED = 450;
 const TOTAL_PRIME_NUMBER = 10000;
 
@@ -25,13 +25,16 @@ export async function isOfficiallySupportedDevice(os) {
   }
 
   if (os === 'Android') {
-    const resp = await fetch(ANDROID_WL_DEVICES_PATH);
+    const resp = await fetch(ANDROID_DEVICE_LIST_PATH);
     if (!resp.ok) {
       window.lana?.log('Failed to fetch Android whitelist devices');
       return false;
     }
-    const json = await resp.json();
-    return json?.data?.some(({ device }) => new RegExp(device).test(userAgent));
+    const { 'allow-list': allowList, 'deny-list': denyList } = await resp.json();
+    if (denyList?.data?.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))) {
+      return false;
+    }
+    return allowList?.data?.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent));
   }
 
   return false;
@@ -73,7 +76,7 @@ function runBenchmark() {
 
 export default async function checkMobileBetaEligibility() {
   // allow disabling gating via metadata, regardless of eligibility
-  if (['off', 'false', 'no'].includes(getMetadata('mobile-gating'))) {
+  if (['off', 'false', 'no'].includes(getMetadata('mobile-benchmark'))) {
     BlockMediator.set('mobileBetaEligibility', {
       deviceSupport: false,
       data: {
