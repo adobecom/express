@@ -261,10 +261,9 @@ export default async function decorate(block) {
     }
   }
 
-  // add free plan widget to first columns block on every page
-  if (document.querySelector('main .columns') === block
-    && document.querySelector('main .block') === block) {
-    addFreePlanWidget(block.querySelector('.button-container')
+  // add free plan widget to first columns block on every page except blog
+  if (!window.location.href.includes('/express/learn/blog') && document.querySelector('main .columns') === block
+    && document.querySelector('main .block') === block) { addFreePlanWidget(block.querySelector('.button-container')
       || block.querySelector(':scope .column:not(.hero-animation-overlay,.columns-picture)'));
   }
 

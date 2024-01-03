@@ -60,7 +60,7 @@ main .blog-posts .blog-hero-card {
     flex-direction: column-reverse;
     width: 100%;
     max-width: 530px;
-    margin: 80px auto;
+    margin: auto;
 }
 
 main .blog-posts .blog-card > p, main .blog-posts .blog-hero-card > p {
