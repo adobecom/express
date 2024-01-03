@@ -1868,7 +1868,8 @@ async function buildAutoBlocks($main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
+  const mobileBenchmark = getMetadata('mobile-benchmark') && document.body.dataset.device === 'mobile';
+  if (mobileBenchmark) {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
     const loadSplitFlow = async (payload) => {
       if (payload.deviceSupport) {
@@ -1922,7 +1923,7 @@ async function buildAutoBlocks($main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) && !(['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile')) {
+  if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) && !mobileBenchmark) {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {
