@@ -76,7 +76,7 @@ function runBenchmark() {
 
 export default async function checkMobileBetaEligibility() {
   // allow disabling gating via metadata, regardless of eligibility
-  if (['off', 'false', 'no'].includes(getMetadata('mobile-benchmark'))) {
+  if (['off', 'false', 'no'].includes(getMetadata('mobile-benchmark').toLowerCase())) {
     BlockMediator.set('mobileBetaEligibility', {
       deviceSupport: false,
       data: {
