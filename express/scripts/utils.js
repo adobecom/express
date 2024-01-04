@@ -1379,7 +1379,8 @@ export function decorateButtons(el = document) {
       && !/hlx\.blob\.core\.windows\.net/.test(linkText)
       && !linkText.endsWith(' >')
       && !(hash === '#embed-video')
-      && !linkText.endsWith(' ›')) {
+      && !linkText.endsWith(' ›')
+      && !linkText.endsWith('.svg')) {
       const $up = $a.parentElement;
       const $twoup = $a.parentElement.parentElement;
       if (!$a.querySelector('img')) {
@@ -1929,11 +1930,13 @@ async function buildAutoBlocks($main) {
       const floatingCTAData = await fetchFloatingCta(window.location.pathname);
       const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
       const device = document.body.dataset?.device;
-      const blockName = floatingCTAData?.[device];
+      const blockNameWithVariants = floatingCTAData?.[device] ? floatingCTAData?.[device].split(' ') : [];
+      const blockName = blockNameWithVariants.shift();
 
       if (validButtonVersion.includes(blockName) && lastDiv) {
         const button = buildBlock(blockName, device);
         button.classList.add('spreadsheet-powered');
+        blockNameWithVariants.forEach((variant) => button.classList.add(variant));
         lastDiv.append(button);
         BlockMediator.set('floatingCtasLoaded', true);
       }

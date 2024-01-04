@@ -17,6 +17,10 @@ function toggleMultifunctionToolBox(wrapper, lottie, data, userInitiated = true)
   if (userInitiated) {
     wrapper.classList.remove('initial-load');
   }
+  if (wrapper.classList.contains('initial-load') && wrapper.classList.contains('closed')) {
+    wrapper.classList.remove('closed');
+    return;
+  }
 
   if (wrapper.classList.contains('toolbox-opened')) {
     openToolBox(wrapper, lottie, data, userInitiated);
