@@ -1937,6 +1937,7 @@ async function buildAutoBlocks($main) {
         const button = buildBlock(blockName, device);
         button.classList.add('spreadsheet-powered');
         blockNameWithVariants.forEach((variant) => button.classList.add(variant));
+        lastDiv.append(button);
         BlockMediator.set('floatingCtasLoaded', true);
       }
     }
