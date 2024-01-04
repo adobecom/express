@@ -171,7 +171,6 @@ main .floating-button-wrapper.multifunction .toolbox-background {
     transform: unset;
     height: 200vh;
     width: 100vw;
-    background-color: var(--color-black);
     z-index: 0;
     opacity: 0;
     transition: opacity 0.5s;
@@ -179,6 +178,7 @@ main .floating-button-wrapper.multifunction .toolbox-background {
 
 main .floating-button-wrapper.multifunction.toolbox-opened .toolbox-background {
     pointer-events: auto;
+    background-color: var(--color-black);
     opacity: 0.75;
 }
 

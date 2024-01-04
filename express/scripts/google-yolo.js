@@ -40,14 +40,16 @@ function setupOneTap() {
     }
 
     const GOOGLE_ID = '419611593676-9r4iflfe9652cjp3booqmmk8jht5as81.apps.googleusercontent.com';
-    const body = document.querySelector('body');
-    const wrapper = document.createElement('div');
-    // Position the dropdown below navigation
-    const navigationBarHeight = document.getElementById('feds-topnav')?.offsetHeight;
+    if (!window.IdentityCredential) {
+      const body = document.querySelector('body');
+      const wrapper = document.createElement('div');
+      // Position the dropdown below navigation
+      const navigationBarHeight = document.getElementById('feds-topnav')?.offsetHeight;
 
-    wrapper.id = 'GoogleOneTap';
-    wrapper.style = `position: absolute; z-index: 9999; top: ${navigationBarHeight}px; right: 0`;
-    body.appendChild(wrapper);
+      wrapper.id = 'GoogleOneTap';
+      wrapper.style = `position: absolute; z-index: 9999; top: ${navigationBarHeight}px; right: 0`;
+      body.appendChild(wrapper);
+    }
 
     // Load Google script
     window.feds.utilities.loadResource({
@@ -60,6 +62,7 @@ function setupOneTap() {
         callback: onGoogleToken,
         prompt_parent_id: 'GoogleOneTap',
         cancel_on_tap_outside: false,
+        ...(window.IdentityCredential ? { use_fedcm_for_prompt: true } : {}),
       });
 
       window.google.accounts.id.prompt();

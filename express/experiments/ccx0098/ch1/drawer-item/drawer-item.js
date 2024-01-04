@@ -1,4 +1,4 @@
-import buildCarousel from '../../../../blocks/shared/carousel.js';
+import buildCarousel from '../carousel/carousel.js';
 
 import {
   getIcon,
@@ -101,11 +101,11 @@ function addDecorativeBubbles(bubbleContainer) {
   for (let i = 0; i < 7; i += 1) {
     const bigBubble = bubbleContainer.querySelector(`.drawer-item:nth-of-type(${i + 1})`);
     if (bigBubble && i !== 3) {
-      bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-large large-bubble-${i}` }));
-      bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-small small-bubble-${i}` }));
+      bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-large large-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
+      bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-small small-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
       if (i < 2) {
-        bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-medium medium-bubble-${i}` }));
-        bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-xs xs-bubble-${i}` }));
+        bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-medium medium-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
+        bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-xs xs-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
       }
     }
   }
@@ -264,6 +264,8 @@ function decorateMedia(payload) {
       drawerItem.dataset.order = payload.order;
       drawerItem.append(payload.itemName);
       drawerItem.append(payload.mediaText);
+    } else {
+      drawerItem.classList.add('drawer-swipeable-left', 'drawer-swipeable-right');
     }
     if (payload.isAnimationsView && payload.secondaryCTALink) {
       payload.secondaryCTALink.classList.add('drawer-item-secondary-cta');
@@ -308,7 +310,7 @@ function decorateBubblesView(payload) {
   if (payload.$mobileDrawer && payload.drawerItemContainer?.classList.contains('drawer-item-bubbles-view-container')) {
     const bubbleContainer = createTag(
       'div',
-      { class: 'drawer-item-bubbles-container' },
+      { class: 'drawer-item-bubbles-container drawer-swipeable-left drawer-swipeable-right' },
     );
     [...payload.drawerItemContainer.children].forEach((bubbleItem) => {
       bubbleItem.querySelector('a')?.classList.add('drawer-swipeable-left', 'drawer-swipeable-right');
@@ -350,6 +352,13 @@ function decorateCarouselViews(payload) {
     const carousel = payload.drawerItemContainer.querySelector('.carousel-platform');
     carousel.querySelectorAll('.carousel-left-trigger, .carousel-right-trigger').forEach((trigger) => trigger.remove());
     const indicators = createIndicators(payload, carousel);
+    if (payload.isAnimationsView) {
+      payload.drawerItemContainer.querySelectorAll('.hero-animation-overlay').forEach((overlay) => {
+        const drawerItem = overlay.closest('.drawer-item');
+        drawerItem.prepend(overlay);
+        drawerItem.querySelector('a')?.classList.add('drawer-item-overlay');
+      });
+    }
     payload.drawerItemContainer.append(indicators);
     payload.drawerItemContainer.dataset.lh = payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('');
   }
