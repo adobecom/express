@@ -1,7 +1,6 @@
 import {
   createTag,
   getLottie,
-  lazyLoadLottiePlayer,
   // eslint-disable-next-line import/no-unresolved
 } from '../../../../scripts/utils.js';
 
@@ -197,7 +196,6 @@ function decorateToggleCarousel(selector, $parent) {
     const mobileDrawer = document.querySelector('.mobile-drawer');
     const toggleCarousel = mobileDrawer?.querySelector('.mobile-drawer-toggle .toggle-carousel-container');
     const toggleCarouselWidth = toggleCarousel?.clientWidth;
-    lazyLoadLottiePlayer();
 
     if (toggleCarouselWidth) {
       const buttonWidth = getDynamicButtonWidth($platform.clientWidth);
@@ -397,91 +395,79 @@ function handleShakyLoadingImages($wrapper) {
   });
 }
 
-function toggleDrawer($wrapper, $lottie, open = true, $body) {
+function toggleDrawer($wrapper, $lottie, open = true, $body, header) {
   const rootForClasses = document.querySelector(':root');
   handleShakyLoadingImages($wrapper);
   $wrapper.style.transition = '0.3s';
   if (open) {
-    rootForClasses?.style.setProperty('--mobile-drawer-window-height', `${window.innerHeight - 64}px`);
+    if (header.classList.contains('feds-header-wrapper--retracted')) {
+      rootForClasses?.style.setProperty('--mobile-drawer-window-height', '100%');
+      $wrapper.classList.add('mobile-drawer--header-hidden');
+    } else {
+      rootForClasses?.style.setProperty('--mobile-drawer-window-height', `${window.innerHeight - 64}px`);
+    }
     $body.classList.add('mobile-drawer-opened'); // used in both mobile-drawer.css and drawer-item.css
     $wrapper.classList.add('drawer-opened');
-    if ($lottie && $lottie.pause) {
-      $lottie.pause();
-    }
-    setTimeout(() => {
-      $body.style.overflow = 'hidden'; // allows down scroll to hide the mobile headers first
-    }, 300);
+
     $wrapper.querySelector('.mobile-drawer-items-container')?.setAttribute('aria-hidden', false);
   } else {
     $wrapper.classList.remove('drawer-opened');
-    $body.style.overflow = 'visible';
+    $wrapper.classList.remove('mobile-drawer--header-hidden');
     setTimeout(() => {
       $body.classList.remove('mobile-drawer-opened');
     }, 250);
     $wrapper.transition = 'marginTop 300ms';
     $wrapper.style.marginTop = '0px';
-    if ($lottie && $lottie.play) {
-      $lottie.play();
-    }
     $wrapper.querySelector('.mobile-drawer-items-container')?.setAttribute('aria-hidden', true);
   }
   $wrapper.style = '';
 }
-function handleDraggableEvents(e, $wrapper, $lottie, $body) {
+function handleDraggableEvents(e, $wrapper, $lottie, $body, header) {
   e.preventDefault();
   e.stopPropagation();
   if (!$wrapper.classList.contains('drawer-opened')) {
-    toggleDrawer($wrapper, $lottie, true, $body);
+    toggleDrawer($wrapper, $lottie, true, $body, header);
   } else if ($wrapper.classList.contains('drawer-opened')) {
-    toggleDrawer($wrapper, $lottie, false, $body);
+    toggleDrawer($wrapper, $lottie, false, $body, header);
   }
 }
 function initNotchDragAction($wrapper) {
-  const $body = document.querySelector('body');
-  const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch,.tab-lottie-container');
+  const $body = document.querySelector('html');
+  const $dragables = $wrapper.querySelectorAll('.mobile-drawer-notch');
   const $lottie = $wrapper.querySelector('lottie-player');
-  let touchStart = 0;
-  let initialHeight;
+  const header = document.querySelector('header');
 
   $dragables.forEach((dragable) => {
     if ('ontouchstart' in window) {
-      dragable.addEventListener('touchstart', (e) => {
-        initialHeight = $wrapper.clientHeight;
-        touchStart = e.changedTouches[0].clientY;
+      dragable.addEventListener('touchstart', () => {
         $body.classList.add('mobile-drawer-opened');
         $wrapper.classList.add('mobile-drawer--dragged');
-      }, { passive: true });
+      }, { passive: false });
       dragable.addEventListener('touchmove', (e) => {
-        const newHeight = `${initialHeight - (e.changedTouches[0].clientY - touchStart)}`;
-        if (newHeight < window.innerHeight) {
-          $wrapper.style.transition = 'none';
-          $wrapper.style.height = `${newHeight}px`;
-        }
-      }, { passive: true });
+        e.preventDefault();
+      }, { passive: false });
       dragable.addEventListener('touchend', () => {
         if (!$wrapper.classList.contains('drawer-opened')) {
-          toggleDrawer($wrapper, $lottie, true, $body);
+          toggleDrawer($wrapper, $lottie, true, $body, header);
         } else if ($wrapper.classList.contains('drawer-opened')) {
-          toggleDrawer($wrapper, $lottie, false, $body);
+          toggleDrawer($wrapper, $lottie, false, $body, header);
         }
         $wrapper.classList.remove('mobile-drawer--dragged');
-
         setTimeout(() => {
-          initialHeight = $wrapper.clientHeight;
           if (!$wrapper.classList.contains('drawer-opened')) {
             $body.classList.remove('mobile-drawer-opened');
           }
         }, 500);
-      }, { passive: true });
+      }, { passive: false });
     } else {
       dragable.addEventListener('click', (e) => {
-        handleDraggableEvents(e, $wrapper, $lottie, $body);
+        handleDraggableEvents(e, $wrapper, $lottie, $body, header);
       });
     }
     dragable.addEventListener('keyup', (e) => {
       const isClosed = !e.target.closest('.mobile-drawer-wrapper').classList.contains('draw-opened');
       if (e.target.classList.contains('mobile-drawer-notch') && e.type === 'keyup' && (e.key === 'Enter' || e.key === 'Escape')) {
-        handleDraggableEvents(e, $wrapper, $lottie, $body);
+        handleDraggableEvents(e, $wrapper, $lottie, $body, header);
       } else if ((e.target.classList.contains('mobile-drawer-notch') && e.key === 'Tab' && isClosed)) {
         e.preventDefault();
       }
@@ -525,7 +511,7 @@ export default async function decorate($block) {
   const $tabLottieContainer = createTag('div', { class: 'tab-lottie-container' });
   const $tabLottie = createTag('div', { class: 'tab-lottie' });
   const $tabText = $oldMobileDrawerSection.querySelector('.default-content-wrapper p');
-  $tabLottie.innerHTML = getLottie('compass-lottie-white', '/express/experiments/ccx0098/ch1/mobile-drawer/compass-lottie-white.json');
+  $tabLottie.innerHTML = getLottie('compass-lottie-white', '/express/experiments/ccx0098/ch2/mobile-drawer/compass-lottie-white.json', false, false);
   $tabLottie.append($tabText);
   $tabLottieContainer.append($tabLottie);
   $block.innerHTML = '';
@@ -552,6 +538,7 @@ export default async function decorate($block) {
   const $mobileDrawer = createMobileDrawer($block, $sections, $tabLottieContainer, listViewClass);
 
   $main.append($mobileDrawer);
+
   initNotchDragAction($mobileDrawer);
   initSwipeAction($mobileDrawer);
 }
