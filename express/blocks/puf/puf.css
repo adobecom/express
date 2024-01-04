@@ -373,7 +373,8 @@ main .block.puf .puf-card-container {
 
 main .block.puf .carousel-container .carousel-fader-left,
 main .block.puf .carousel-container .carousel-fader-right {
-    margin-top: 100px;
+    margin-top: 86px;
+    height: calc(100% - 172px);
 }
 
 main .block.puf .carousel-container .carousel-fader-left a.button.carousel-arrow,
