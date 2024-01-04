@@ -1934,13 +1934,11 @@ async function buildAutoBlocks($main) {
         const floatingCTAData = await fetchFloatingCta(window.location.pathname);
         const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
         const device = document.body.dataset?.device;
-        const blockNameWithVariants = floatingCTAData?.[device] ? floatingCTAData?.[device].split(' ') : [];
-        const blockName = blockNameWithVariants.shift();
+        const blockName = floatingCTAData?.[device];
 
         if (validButtonVersion.includes(blockName) && lastDiv) {
           const button = buildBlock(blockName, device);
           button.classList.add('spreadsheet-powered');
-          blockNameWithVariants.forEach((variant) => button.classList.add(variant));
           lastDiv.append(button);
           BlockMediator.set('floatingCtasLoaded', true);
         }
