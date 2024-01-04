@@ -1,5 +1,5 @@
 import BlockMediator from './block-mediator.min.js';
-import { getMobileOperatingSystem, getMetadata } from './utils.js';
+import { getMobileOperatingSystem } from './utils.js';
 
 const MAX_EXEC_TIME_ALLOWED = 450;
 const TOTAL_PRIME_NUMBER = 10000;
@@ -73,16 +73,6 @@ function runBenchmark() {
 }
 
 export default async function checkMobileBetaEligibility() {
-  // allow disabling gating via metadata, regardless of eligibility
-  if (['off', 'false', 'no'].includes(getMetadata('mobile-benchmark').toLowerCase())) {
-    BlockMediator.set('mobileBetaEligibility', {
-      deviceSupport: false,
-      data: {
-        reason: 'gating-off',
-      },
-    });
-    return;
-  }
   const deviceSupportCookie = document.cookie.split('; ').find((row) => row.startsWith('device-support='))?.split('=')[1];
 
   if (deviceSupportCookie === 'true') {

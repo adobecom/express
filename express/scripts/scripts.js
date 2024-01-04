@@ -89,7 +89,7 @@ const showNotifications = () => {
   showNotifications();
   await loadArea();
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
-    Promise.all([import('./mobile-beta-gating.js'), import('./block-mediator.min.js')]).then(([gatingScript]) => {
+    import('./mobile-beta-gating.js').then((gatingScript) => {
       gatingScript.default();
     });
   }
