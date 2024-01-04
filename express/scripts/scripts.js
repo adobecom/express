@@ -88,7 +88,7 @@ const showNotifications = () => {
   setConfig(config);
   showNotifications();
   await loadArea();
-  if (getMetadata('mobile-benchmark') && document.body.dataset.device === 'mobile') {
+  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
     Promise.all([import('./mobile-beta-gating.js'), import('./block-mediator.min.js')]).then(([gatingScript]) => {
       gatingScript.default();
     });

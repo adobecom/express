@@ -1,7 +1,6 @@
 import BlockMediator from './block-mediator.min.js';
 import { getMobileOperatingSystem, getMetadata } from './utils.js';
 
-const ANDROID_DEVICE_LIST_PATH = '/express/android-device-list.json?limit=100000';
 const MAX_EXEC_TIME_ALLOWED = 450;
 const TOTAL_PRIME_NUMBER = 10000;
 
@@ -25,16 +24,15 @@ export async function isOfficiallySupportedDevice(os) {
   }
 
   if (os === 'Android') {
-    const resp = await fetch(ANDROID_DEVICE_LIST_PATH);
+    const resp = await fetch('/express/android-device-list.json?limit=100000');
     if (!resp.ok) {
       window.lana?.log('Failed to fetch Android whitelist devices');
       return false;
     }
     const { 'allow-list': allowList, 'deny-list': denyList } = await resp.json();
-    if (denyList?.data?.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))) {
-      return false;
-    }
-    return allowList?.data?.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent));
+    return denyList.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))
+      ? false
+      : allowList.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent));
   }
 
   return false;

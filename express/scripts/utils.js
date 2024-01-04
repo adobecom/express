@@ -1868,11 +1868,65 @@ async function buildAutoBlocks($main) {
     }
   }
 
-  const mobileBenchmark = getMetadata('mobile-benchmark') && document.body.dataset.device === 'mobile';
-  if (mobileBenchmark) {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
-    const loadSplitFlow = async (payload) => {
-      if (payload.deviceSupport) {
+  async function loadPromoFrag() {
+    const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
+    if (!fragment) return;
+    $main.append(fragment);
+    const block = fragment?.querySelector('.sticky-promo-bar.block');
+    if (block) await loadBlock(block);
+  }
+
+  // handle mobile floating cta
+  if (document.body.dataset.device === 'mobile') {
+    if (['off', 'false', 'no'].includes(getMetadata('mobile-benchmark').toLowerCase())) {
+      await loadPromoFrag();
+    } else if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase())) {
+      const { default: BlockMediator } = await import('./block-mediator.min.js');
+      const loadSplitFlow = async (payload) => {
+        if (payload.deviceSupport) {
+          const floatingCTAData = await fetchFloatingCta(window.location.pathname);
+          const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+          const device = document.body.dataset?.device;
+          const blockName = floatingCTAData?.[device];
+
+          if (validButtonVersion.includes(blockName) && lastDiv) {
+            const button = buildBlock(blockName, device);
+            button.classList.add('spreadsheet-powered');
+            lastDiv.append(button);
+
+            if (!payload.isMainThread) {
+              await decorateBlock(button);
+              await loadBlock(button);
+            }
+
+            BlockMediator.set('floatingCtasLoaded', true);
+          }
+        } else {
+          await loadPromoFrag();
+        }
+      };
+
+      if (!BlockMediator.get('floatingCtasLoaded')) {
+        const eligibilityChecked = BlockMediator.get('mobileBetaEligibility');
+        if (eligibilityChecked) {
+          await loadSplitFlow({
+            deviceSupport: eligibilityChecked.deviceSupport,
+            isMainThread: true,
+          });
+        } else {
+          const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
+            await loadSplitFlow({
+              deviceSupport: e.newValue.deviceSupport,
+              isMainThread: false,
+            });
+            unsubscribe();
+          });
+        }
+      }
+    } else if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase())) {
+      const { default: BlockMediator } = await import('./block-mediator.min.js');
+
+      if (!BlockMediator.get('floatingCtasLoaded')) {
         const floatingCTAData = await fetchFloatingCta(window.location.pathname);
         const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
         const device = document.body.dataset?.device;
@@ -1882,61 +1936,8 @@ async function buildAutoBlocks($main) {
           const button = buildBlock(blockName, device);
           button.classList.add('spreadsheet-powered');
           lastDiv.append(button);
-
-          if (!payload.isMainThread) {
-            await decorateBlock(button);
-            await loadBlock(button);
-          }
-
           BlockMediator.set('floatingCtasLoaded', true);
         }
-      } else {
-        const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
-        if (!fragment) return;
-
-        $main.append(fragment);
-        const block = fragment.querySelector('.sticky-promo-bar.block');
-        if (!block) return;
-
-        if (!payload.isMainThread) {
-          await loadBlock(block);
-        }
-      }
-    };
-
-    if (!BlockMediator.get('floatingCtasLoaded')) {
-      const eligibilityChecked = BlockMediator.get('mobileBetaEligibility');
-      if (eligibilityChecked) {
-        await loadSplitFlow({
-          deviceSupport: eligibilityChecked.deviceSupport,
-          isMainThread: true,
-        });
-      } else {
-        const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
-          await loadSplitFlow({
-            deviceSupport: e.newValue.deviceSupport,
-            isMainThread: false,
-          });
-          unsubscribe();
-        });
-      }
-    }
-  }
-
-  if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) && !mobileBenchmark) {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
-
-    if (!BlockMediator.get('floatingCtasLoaded')) {
-      const floatingCTAData = await fetchFloatingCta(window.location.pathname);
-      const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
-      const device = document.body.dataset?.device;
-      const blockName = floatingCTAData?.[device];
-
-      if (validButtonVersion.includes(blockName) && lastDiv) {
-        const button = buildBlock(blockName, device);
-        button.classList.add('spreadsheet-powered');
-        lastDiv.append(button);
-        BlockMediator.set('floatingCtasLoaded', true);
       }
     }
   }
