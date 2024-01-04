@@ -1,8 +1,6 @@
 import BlockMediator from './block-mediator.min.js';
-import { getMobileOperatingSystem } from './utils.js';
+import { getMobileOperatingSystem, getMetadata } from './utils.js';
 
-// todo: need to determine the final source of this whitelist
-const ELIGIBLE_ANDROID_DEVICES = [];
 const MAX_EXEC_TIME_ALLOWED = 450;
 const TOTAL_PRIME_NUMBER = 10000;
 
@@ -19,21 +17,22 @@ export function isIOS16AndUp(userAgent = navigator.userAgent) {
   return false;
 }
 
-export function isOfficiallySupportedDevice(os) {
+export async function isOfficiallySupportedDevice(os) {
   const { userAgent } = navigator;
   if (os === 'iOS') {
     return isIOS16AndUp(userAgent);
   }
 
-  if (os === 'android') {
-    const regex = /Android.+; ([^;]+)\) AppleWebKit\//;
-
-    const match = regex.exec(userAgent);
-    if (match && match.length > 1) {
-      return ELIGIBLE_ANDROID_DEVICES.includes(match[1]);
-    } else {
-      window.lana?.log('Android device name regex match failed');
+  if (os === 'Android') {
+    const resp = await fetch('/express/android-device-list.json?limit=100000');
+    if (!resp.ok) {
+      window.lana?.log('Failed to fetch Android whitelist devices');
+      return false;
     }
+    const { 'allow-list': allowList, 'deny-list': denyList } = await resp.json();
+    return denyList.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))
+      ? false
+      : allowList.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent));
   }
 
   return false;
@@ -74,6 +73,16 @@ function runBenchmark() {
 }
 
 export default async function checkMobileBetaEligibility() {
+  // allow disabling gating via metadata, regardless of eligibility
+  if (['off', 'false', 'no'].includes(getMetadata('mobile-benchmark').toLowerCase())) {
+    BlockMediator.set('mobileBetaEligibility', {
+      deviceSupport: false,
+      data: {
+        reason: 'gating-off',
+      },
+    });
+    return;
+  }
   const deviceSupportCookie = document.cookie.split('; ').find((row) => row.startsWith('device-support='))?.split('=')[1];
 
   if (deviceSupportCookie === 'true') {
@@ -83,14 +92,17 @@ export default async function checkMobileBetaEligibility() {
         reason: 'cookie',
       },
     });
-  } else if (isOfficiallySupportedDevice(getMobileOperatingSystem())) {
-    BlockMediator.set('mobileBetaEligibility', {
-      deviceSupport: true,
-      data: {
-        reason: 'whitelisted',
-      },
-    });
   } else {
+    const isOfficiallySupported = await isOfficiallySupportedDevice(getMobileOperatingSystem());
+    if (isOfficiallySupported) {
+      BlockMediator.set('mobileBetaEligibility', {
+        deviceSupport: true,
+        data: {
+          reason: 'whitelisted',
+        },
+      });
+      return;
+    }
     runBenchmark();
     const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
       const expireDate = new Date();
