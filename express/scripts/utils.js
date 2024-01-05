@@ -1784,7 +1784,7 @@ export async function fetchFloatingCta(path) {
 
         if (experiment && path !== 'default') {
           return (pathMatch)
-            && p.expID === experiment.run
+            && p.expID === experiment.id
             && p.challengerID === experiment.selectedVariant;
         } else {
           return pathMatch;
