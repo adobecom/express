@@ -51,13 +51,19 @@ function decorateBlockEmbeds(block) {
     const url = new URL(a.href.replace(/\/$/, ''));
     const config = EMBEDS_CONFIG[url.hostname];
 
+    let embedContent;
     if (config) {
-      block.innerHTML = config.embed(url);
-      block.classList = `block embed embed-${config.type}`;
+      embedContent = config.embed(url);
+      // Check if embedContent is an HTML element, if so, convert it to a string
+      if (embedContent instanceof HTMLElement) {
+        embedContent = embedContent.outerHTML;
+      }
     } else {
       block.innerHTML = getDefaultEmbed(url);
-      block.classList = `block embed embed-${getServer(url)}`;
     }
+
+    block.innerHTML = embedContent;
+    block.classList = `block embed embed-${config ? config.type : getServer(url)}`;
   });
 }
 
