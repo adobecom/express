@@ -54,14 +54,13 @@ function decorateBlockEmbeds(block) {
     let embedContent;
     if (config) {
       embedContent = config.embed(url);
-      // Check if embedContent is an HTML element, if so, convert it to a string
       if (embedContent instanceof HTMLElement) {
         embedContent = embedContent.outerHTML;
       }
-      block.innerHTML = embedContent; // Set innerHTML here only when config exists
+      block.innerHTML = embedContent;
       block.classList = `block embed embed-${config.type}`;
     } else {
-      block.innerHTML = getDefaultEmbed(url); // Set innerHTML here for default embed
+      block.innerHTML = getDefaultEmbed(url);
       block.classList = `block embed embed-${getServer(url)}`;
     }
   });
