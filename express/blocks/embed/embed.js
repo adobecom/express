@@ -58,12 +58,12 @@ function decorateBlockEmbeds(block) {
       if (embedContent instanceof HTMLElement) {
         embedContent = embedContent.outerHTML;
       }
+      block.innerHTML = embedContent; // Set innerHTML here only when config exists
+      block.classList = `block embed embed-${config.type}`;
     } else {
-      block.innerHTML = getDefaultEmbed(url);
+      block.innerHTML = getDefaultEmbed(url); // Set innerHTML here for default embed
+      block.classList = `block embed embed-${getServer(url)}`;
     }
-
-    block.innerHTML = embedContent;
-    block.classList = `block embed embed-${config ? config.type : getServer(url)}`;
   });
 }
 
