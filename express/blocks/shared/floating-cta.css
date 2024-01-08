@@ -92,7 +92,7 @@ main .floating-button a.button:any-link {
     display: block;
     box-sizing: border-box;
     max-width: 332px;
-    white-space: nowrap;
+    white-space: normal;
     margin: 0;
     z-index: 2;
     width: calc(100vw - 54px);
