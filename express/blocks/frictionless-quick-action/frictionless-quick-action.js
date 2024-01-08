@@ -1,4 +1,5 @@
 import { createTag, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
+import { addFreePlanWidget, buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 function startSDK(data) {
   const CDN_URL = 'https://sdk.cc-embed.adobe.com/v3/CCEverywhere.js';
@@ -87,23 +88,30 @@ function uploadFile() {
   };
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const button = createTag('button', {}, 'remove background');
   const rows = Array.from(block.children);
   const actionAndAnimationRow = rows[1].children;
   const animationContainer = actionAndAnimationRow[0];
   const animation = animationContainer.querySelector('a');
   if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
-  const actionContainer = actionAndAnimationRow[1];
-  const action = actionContainer.querySelector('a');
-  action.addEventListener('click', (e) => {
+  const dropzone = actionAndAnimationRow[1];
+  dropzone.classList.add('dropzone');
+
+  const gtcText = dropzone.querySelector('p:last-child');
+  const actionColumn = createTag('div');
+  const dropzoneContainer = createTag('div', { class: 'dropzone-container' });
+  dropzone.parentElement.insertBefore(actionColumn, dropzone);
+  dropzoneContainer.append(dropzone);
+  actionColumn.append(dropzoneContainer);
+  actionColumn.append(gtcText);
+  dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();
     uploadFile();
   });
 
-  button.addEventListener('click', () => {
-    uploadFile();
-  });
+  const freePlanTags = await buildStaticFreePlanWidget(animationContainer);
+  dropzone.append(freePlanTags);
 
   block.append(button);
 }

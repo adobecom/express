@@ -1,3 +1,7 @@
 .frictionless-quick-action.block > div:nth-child(2) {
     display: inline-flex;
 }
+
+.frictionless-quick-action.block .dropzone-container {
+    cursor: pointer;
+}
