@@ -5,7 +5,7 @@ function correctCenterAlignment(plat) {
   plat.parentElement.style.maxWidth = `${plat.offsetWidth}px`;
 }
 
-export function initToggleTriggers(parent) {
+function initToggleTriggers(parent) {
   if (!parent) return;
 
   const isInHiddenSection = () => {
@@ -20,6 +20,14 @@ export function initToggleTriggers(parent) {
   const leftTrigger = parent.querySelector('.carousel-left-trigger');
   const rightTrigger = parent.querySelector('.carousel-right-trigger');
   const platform = parent.querySelector('.carousel-platform');
+
+  // If flex container has a gap, add negative margins to compensate
+  const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
+  if (gap !== 'normal') {
+    const gapInt = parseInt(gap.replace('px', ''), 10);
+    leftTrigger.style.marginRight = `-${gapInt + 1}px`;
+    rightTrigger.style.marginLeft = `-${gapInt + 1}px`;
+  }
 
   // intersection observer to toggle right arrow and gradient
   const onSlideIntersect = (entries) => {
@@ -55,10 +63,7 @@ export function initToggleTriggers(parent) {
   // todo: should unobserve triggers where/when appropriate...
 }
 
-export default async function buildCarousel(selector, parent, options = {}) {
-  // Load CSS
-  loadStyle('/express/blocks/shared/carousel.css');
-  // Build the carousel HTML
+export function onCarouselCSSLoad(selector, parent, options) {
   const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
 
   carouselContent.forEach((el) => el.classList.add('carousel-element'));
@@ -66,28 +71,26 @@ export default async function buildCarousel(selector, parent, options = {}) {
   const container = createTag('div', { class: 'carousel-container' });
   const platform = createTag('div', { class: 'carousel-platform' });
 
-  const leftTrigger = createTag('div', { class: 'carousel-left-trigger' });
-  const rightTrigger = createTag('div', { class: 'carousel-right-trigger' });
-
   const faderLeft = createTag('div', { class: 'carousel-fader-left arrow-hidden' });
   const faderRight = createTag('div', { class: 'carousel-fader-right arrow-hidden' });
 
   const arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
   const arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
 
-  platform.append(leftTrigger, ...carouselContent, rightTrigger);
+  platform.append(...carouselContent);
+
+  if (!options.infinityScrollEnabled) {
+    const leftTrigger = createTag('div', { class: 'carousel-left-trigger' });
+    const rightTrigger = createTag('div', { class: 'carousel-right-trigger' });
+
+    platform.prepend(leftTrigger);
+    platform.append(rightTrigger);
+  }
+
   container.append(platform, faderLeft, faderRight);
   faderLeft.append(arrowLeft);
   faderRight.append(arrowRight);
   parent.append(container);
-
-  // If flex container has a gap, add negative margins to compensate
-  const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
-  if (gap !== 'normal') {
-    const gapInt = parseInt(gap.replace('px', ''), 10);
-    leftTrigger.style.marginRight = `-${gapInt + 1}px`;
-    rightTrigger.style.marginLeft = `-${gapInt + 1}px`;
-  }
 
   // Scroll the carousel by clicking on the controls
   const moveCarousel = (increment) => {
@@ -161,19 +164,29 @@ export default async function buildCarousel(selector, parent, options = {}) {
       platform.classList.add('left-fader', 'right-fader');
     }
 
+    if (!opts.infinityScrollEnabled) initToggleTriggers(container);
     const onIntersect = ([entry], observer) => {
       if (!entry.isIntersecting) return;
 
       if (opts.centerAlign) correctCenterAlignment(scrollable);
       if (opts.startPosition === 'right') moveCarousel(-scrollable.scrollWidth);
-      if (!opts.infinityScrollEnabled) initToggleTriggers(container);
 
       observer.unobserve(scrollable);
     };
 
-    const carouselObserver = new IntersectionObserver(onIntersect, { threshold: 0 });
+    const carouselObserver = new IntersectionObserver(onIntersect, { rootMargin: '1000px', threshold: 0 });
     carouselObserver.observe(scrollable);
   };
 
   setInitialState(platform, options);
+}
+
+export default async function buildCarousel(selector, parent, options = {}) {
+  // Load CSS then build carousel
+  return new Promise((resolve) => {
+    loadStyle('/express/blocks/shared/carousel.css', () => {
+      onCarouselCSSLoad(selector, parent, options);
+      resolve();
+    });
+  });
 }

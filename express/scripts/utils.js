@@ -1568,7 +1568,8 @@ function loadIMS() {
 
 async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   const promises = [import('./experiment.js')];
-  if (getMetadata('aepaudience') === 'on') {
+  const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
+  if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
     loadIMS(); // rush ims to unblock alloy without loading gnav
     promises.push(loadScript('/express/scripts/instrument.js', 'module'));
     const t1 = performance.now();
@@ -1747,7 +1748,6 @@ export async function fetchPlainBlockFromFragment(url, blockName) {
     section.className = `section section-wrapper ${blockName}-container`;
     const block = section.querySelector(`.${blockName}`);
     block.dataset.blockName = blockName;
-    block.dataset.blockStatus = 'loaded';
     block.parentElement.className = `${blockName}-wrapper`;
     block.classList.add('block');
     const img = section.querySelector('img');
@@ -1784,7 +1784,7 @@ export async function fetchFloatingCta(path) {
 
         if (experiment && path !== 'default') {
           return (pathMatch)
-            && p.expID === experiment.run
+            && p.expID === experiment.id
             && p.challengerID === experiment.selectedVariant;
         } else {
           return pathMatch;
@@ -1818,13 +1818,13 @@ export async function fetchFloatingCta(path) {
 }
 
 async function buildAutoBlocks($main) {
-  const $lastDiv = $main.querySelector(':scope > div:last-of-type');
+  const lastDiv = $main.querySelector(':scope > div:last-of-type');
 
   // Load the branch.io banner autoblock...
   if (['yes', 'true', 'on'].includes(getMetadata('show-banner').toLowerCase())) {
     const branchio = buildBlock('branch-io', '');
-    if ($lastDiv) {
-      $lastDiv.append(branchio);
+    if (lastDiv) {
+      lastDiv.append(branchio);
     }
   }
 
@@ -1852,40 +1852,82 @@ async function buildAutoBlocks($main) {
   // Load the app store autoblocks...
   if (['yes', 'true', 'on'].includes(getMetadata('show-standard-app-store-blocks').toLowerCase())) {
     const $highlight = buildBlock('app-store-highlight', '');
-    if ($lastDiv) {
-      $lastDiv.append($highlight);
+    if (lastDiv) {
+      lastDiv.append($highlight);
     }
 
     const $blade = buildBlock('app-store-blade', '');
-    if ($lastDiv) {
-      $lastDiv.append($blade);
+    if (lastDiv) {
+      lastDiv.append($blade);
     }
   }
 
   if (['yes', 'true', 'on'].includes(getMetadata('show-plans-comparison').toLowerCase())) {
     const $plansComparison = buildBlock('plans-comparison', '');
-    if ($lastDiv) {
-      $lastDiv.append($plansComparison);
+    if (lastDiv) {
+      lastDiv.append($plansComparison);
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) || ['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
-    if (!BlockMediator.get('floatingCtasLoaded')) {
-      const floatingCTAData = await fetchFloatingCta(window.location.pathname);
-      const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
-      const device = document.body.dataset?.device;
-      const blockNameWithVariants = floatingCTAData?.[device] ? floatingCTAData?.[device].split(' ') : [];
-      const blockName = blockNameWithVariants.shift();
+  async function loadPromoFrag() {
+    const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
+    if (!fragment) return;
+    $main.append(fragment);
+    const block = fragment?.querySelector('.sticky-promo-bar.block');
+    if (block) await loadBlock(block);
+  }
 
-      if (validButtonVersion.includes(blockName) && $lastDiv) {
-        const button = buildBlock(blockName, device);
-        button.classList.add('spreadsheet-powered');
-        blockNameWithVariants.forEach((variant) => button.classList.add(variant));
-        $lastDiv.append(button);
+  async function loadFloatingCTA(BlockMediator, decorated) {
+    const floatingCTAData = await fetchFloatingCta(window.location.pathname);
+    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+    const device = document.body.dataset?.device;
+    const blockNameWithVariants = floatingCTAData?.[device] ? floatingCTAData?.[device].split(' ') : [];
+    const blockName = blockNameWithVariants.shift();
+
+    if (validButtonVersion.includes(blockName) && lastDiv) {
+      const button = buildBlock(blockName, device);
+      button.classList.add('spreadsheet-powered');
+      blockNameWithVariants.forEach((variant) => button.classList.add(variant));
+      lastDiv.append(button);
+      if (!decorated) {
+        await decorateBlock(button);
+        await loadBlock(button);
       }
-
       BlockMediator.set('floatingCtasLoaded', true);
+    }
+  }
+
+  if (document.body.dataset.device === 'mobile' && ['off', 'false', 'no'].includes(getMetadata('mobile-benchmark')
+    .toLowerCase())) {
+    await loadPromoFrag();
+  } else if (document.body.dataset.device === 'mobile' && ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')
+    .toLowerCase())) {
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
+
+    if (!BlockMediator.get('floatingCtasLoaded')) {
+      const eligibilityChecked = BlockMediator.get('mobileBetaEligibility');
+      if (eligibilityChecked) {
+        if (eligibilityChecked.deviceSupport) {
+          await loadFloatingCTA(BlockMediator, true);
+        } else {
+          await loadPromoFrag();
+        }
+      } else {
+        const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
+          if (e.newValue.deviceSupport) {
+            await loadFloatingCTA(BlockMediator, false);
+          } else {
+            await loadPromoFrag();
+          }
+          unsubscribe();
+        });
+      }
+    }
+  } else if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase())) {
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
+
+    if (!BlockMediator.get('floatingCtasLoaded')) {
+      await loadFloatingCTA(BlockMediator, true);
     }
   }
 
@@ -1893,8 +1935,8 @@ async function buildAutoBlocks($main) {
     const fragmentName = getMetadata('show-quick-action-card').toLowerCase();
     const quickActionCardBlock = buildBlock('quick-action-card', fragmentName);
     quickActionCardBlock.classList.add('spreadsheet-powered');
-    if ($lastDiv) {
-      $lastDiv.append(quickActionCardBlock);
+    if (lastDiv) {
+      lastDiv.append(quickActionCardBlock);
     }
   }
 }
@@ -1921,10 +1963,6 @@ function splitSections($main) {
       }
     }
   });
-}
-
-export function getDevice() {
-  return navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
 
 function decorateLinkedPictures($main) {
@@ -2373,6 +2411,25 @@ export async function loadSections(sections, isDoc) {
   return areaBlocks;
 }
 
+export function getMobileOperatingSystem() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+  // Windows Phone must come first because its UA also contains "Android"
+  if (/windows phone/i.test(userAgent)) {
+    return 'Windows Phone';
+  }
+
+  if (/android/i.test(userAgent)) {
+    return 'Android';
+  }
+
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+    return 'iOS';
+  }
+
+  return 'unknown';
+}
+
 function initSidekick() {
   const initPlugins = async () => {
     const { default: init } = await import('./utils/sidekick.js');
@@ -2462,25 +2519,6 @@ export async function loadArea(area = document) {
 
   const { default: loadDelayed } = await import('./delayed.js');
   loadDelayed(10000);
-}
-
-export function getMobileOperatingSystem() {
-  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-
-  // Windows Phone must come first because its UA also contains "Android"
-  if (/windows phone/i.test(userAgent)) {
-    return 'Windows Phone';
-  }
-
-  if (/android/i.test(userAgent)) {
-    return 'Android';
-  }
-
-  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-    return 'iOS';
-  }
-
-  return 'unknown';
 }
 
 export function titleCase(str) {
