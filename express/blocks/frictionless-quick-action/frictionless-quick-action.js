@@ -1,4 +1,4 @@
-import { createTag, loadScript } from '../../scripts/utils.js';
+import { createTag, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
 
 function startSDK(data) {
   const CDN_URL = 'https://sdk.cc-embed.adobe.com/v3/CCEverywhere.js';
@@ -17,7 +17,7 @@ function startSDK(data) {
         target: 'Editor',
         id: 'edit-in-express',
         buttonType: 'native',
-        optionType: 'button'
+        optionType: 'button',
       },
       /* This native button renders label "Download" */
       {
@@ -39,9 +39,8 @@ function startSDK(data) {
     const imageCallbacks = {
       onPublish: (publishParams) => {
         // Handle custom export button behavior here
-        debugger;
-        if (publishParams.exportButtonId=="my-custom-button"){
-          const localData = { asset: publishParams.asset[0].data }
+        if (publishParams.exportButtonId == 'my-custom-button') {
+          const localData = { asset: publishParams.asset[0].data };
           appImage.src = localData.asset;
         }
       },
@@ -58,9 +57,8 @@ function startSDK(data) {
         },
         exportOptions,
       },
-      callbacks: imageCallbacks
+      callbacks: imageCallbacks,
     });
-
   });
   // eslint-disable-next-line no-console
   console.log('quick action worked');
@@ -68,22 +66,20 @@ function startSDK(data) {
 
 function uploadFile() {
   // Create an input element
-  let inputElement = document.createElement('input');
+  const inputElement = document.createElement('input');
   inputElement.type = 'file';
 
   // Trigger the file selector when the button is clicked
   inputElement.click();
 
   // Handle file selection
-  inputElement.onchange = function() {
-    let file = inputElement.files[0];
-    let reader = new FileReader();
+  inputElement.onchange = () => {
+    const file = inputElement.files[0];
+    const reader = new FileReader();
 
-    reader.onloadend = function() {
-      // The file content is in reader.result as a Base64 encoded string
+    reader.onloadend = function () {
       console.log('Base64 string:', reader.result);
       startSDK(reader.result);
-      // You can add additional code here to use the Base64 string
     };
 
     // Read the file as a data URL (Base64)
@@ -92,15 +88,22 @@ function uploadFile() {
 }
 
 export default function decorate(block) {
-
-
   const button = createTag('button', {}, 'remove background');
+  const rows = Array.from(block.children);
+  const actionAndAnimationRow = rows[1].children;
+  const animationContainer = actionAndAnimationRow[0];
+  const animation = animationContainer.querySelector('a');
+  if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
+  const actionContainer = actionAndAnimationRow[1];
+  const action = actionContainer.querySelector('a');
+  action.addEventListener('click', (e) => {
+    e.preventDefault();
+    uploadFile();
+  });
 
-  button.addEventListener("click", () => {
+  button.addEventListener('click', () => {
     uploadFile();
   });
 
   block.append(button);
-
-
 }
