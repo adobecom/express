@@ -14,7 +14,7 @@
     min-width: 520px;
 }
 
-.frictionless-quick-action.block .dropzone-container:hover {
+.frictionless-quick-action.block .dropzone-container:hover, .frictionless-quick-action.block .dropzone-container.highlight  {
     background-color: rgb(211, 211, 211, 0.2);
 }
 

@@ -110,8 +110,36 @@ export default async function decorate(block) {
     uploadFile();
   });
 
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  function highlight() {
+    dropzoneContainer.classList.add('highlight');
+  }
+  function unhighlight() {
+    dropzoneContainer.classList.remove('highlight');
+  }
+  ['dragenter', 'dragover'].forEach((eventName) => {
+    dropzoneContainer.addEventListener(eventName, highlight, false);
+  });
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
+    dropzoneContainer.addEventListener(eventName, preventDefaults, false);
+  });
+
+  ['dragleave', 'drop'].forEach((eventName) => {
+    dropzoneContainer.addEventListener(eventName, unhighlight, false);
+  });
+
+  dropzoneContainer.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const { files } = dt;
+
+    [...files].forEach(uploadFile);
+  }, false);
+
   const freePlanTags = await buildStaticFreePlanWidget(animationContainer);
-  //dropzone.append(freePlanTags);
+  // dropzone.append(freePlanTags);
 
   block.append(button);
 }
