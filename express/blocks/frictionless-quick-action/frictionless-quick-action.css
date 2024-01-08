@@ -2,6 +2,20 @@
     display: inline-flex;
 }
 
+.frictionless-quick-action.block > div:nth-child(2) > div:nth-child(2) {
+    perspective: 100px;
+}
+
 .frictionless-quick-action.block .dropzone-container {
     cursor: pointer;
+    padding: 24px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    min-width: 520px;
+}
+
+
+.dropzone {
+    background: url(/express/img/dropzone.svg) center center / 100% no-repeat;
+    padding: 24px;
 }

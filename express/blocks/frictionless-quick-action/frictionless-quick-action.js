@@ -111,7 +111,7 @@ export default async function decorate(block) {
   });
 
   const freePlanTags = await buildStaticFreePlanWidget(animationContainer);
-  dropzone.append(freePlanTags);
+  //dropzone.append(freePlanTags);
 
   block.append(button);
 }
