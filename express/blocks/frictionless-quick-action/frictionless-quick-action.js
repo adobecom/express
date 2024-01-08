@@ -65,6 +65,18 @@ function startSDK(data) {
   console.log('quick action worked');
 }
 
+function startSDKWithUnconvertedFile(file) {
+  const reader = new FileReader();
+
+  reader.onloadend = function () {
+    console.log('Base64 string:', reader.result);
+    startSDK(reader.result);
+  };
+
+  // Read the file as a data URL (Base64)
+  reader.readAsDataURL(file);
+}
+
 function uploadFile() {
   // Create an input element
   const inputElement = document.createElement('input');
@@ -76,15 +88,7 @@ function uploadFile() {
   // Handle file selection
   inputElement.onchange = () => {
     const file = inputElement.files[0];
-    const reader = new FileReader();
-
-    reader.onloadend = function () {
-      console.log('Base64 string:', reader.result);
-      startSDK(reader.result);
-    };
-
-    // Read the file as a data URL (Base64)
-    reader.readAsDataURL(file);
+    startSDKWithUnconvertedFile(file);
   };
 }
 
@@ -135,7 +139,7 @@ export default async function decorate(block) {
     const dt = e.dataTransfer;
     const { files } = dt;
 
-    [...files].forEach(uploadFile);
+    [...files].forEach(startSDKWithUnconvertedFile);
   }, false);
 
   const freePlanTags = await buildStaticFreePlanWidget(animationContainer);
