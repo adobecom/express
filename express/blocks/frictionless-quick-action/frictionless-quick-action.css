@@ -2,8 +2,21 @@
     display: inline-flex;
 }
 
-.frictionless-quick-action.block > div:nth-child(2) > div:nth-child(2) {
-    perspective: 100px;
+.frictionless-quick-action.block h2 em {
+    font-style: normal;
+    background: linear-gradient(to right, deeppink, mediumpurple);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.frictionless-quick-action.block h3 {
+    font-size: 1.5rem;
+}
+
+.frictionless-quick-action.block h3 em {
+    font-style: normal;
+    color: var(--color-info-accent);
 }
 
 .frictionless-quick-action.block .dropzone-container {

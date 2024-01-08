@@ -1,6 +1,14 @@
 import { createTag, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
 import { addFreePlanWidget, buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
+const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+const imageInputAccept = '.png, .jpeg, .jpg';
+let inputElement;
+let quickAction;
+let invalidInputError;
+let fqaBlock;
+let error;
+
 function startSDK(data) {
   const CDN_URL = 'https://sdk.cc-embed.adobe.com/v3/CCEverywhere.js';
   loadScript(CDN_URL).then(async () => {
@@ -49,7 +57,7 @@ function startSDK(data) {
 
     console.log('opening crop image quick action');
     ccEverywhere.openQuickAction({
-      id: 'remove-background',
+      id: quickAction,
       inputParams: {
         asset: {
           data,
@@ -61,27 +69,34 @@ function startSDK(data) {
       callbacks: imageCallbacks,
     });
   });
-  // eslint-disable-next-line no-console
-  console.log('quick action worked');
 }
 
 function startSDKWithUnconvertedFile(file) {
-  const reader = new FileReader();
+  if (!file) return;
+  const maxSize = 17 * 1024 * 1024; // 17 MB in bytes
+  if (validImageTypes.includes(file.type) && file.size <= maxSize) {
+    const reader = new FileReader();
 
-  reader.onloadend = function () {
-    console.log('Base64 string:', reader.result);
-    startSDK(reader.result);
-  };
+    reader.onloadend = function () {
+      console.log('Base64 string:', reader.result);
+      startSDK(reader.result);
+    };
 
-  // Read the file as a data URL (Base64)
-  reader.readAsDataURL(file);
+    // Read the file as a data URL (Base64)
+    reader.readAsDataURL(file);
+  } else if (!error) {
+    error = createTag('p', {}, invalidInputError);
+    const dropzoneButton = fqaBlock.querySelector(':scope .dropzone a.button');
+    dropzoneButton.parentElement.insertBefore(error, dropzoneButton);
+  }
 }
 
 function uploadFile() {
-  // Create an input element
-  const inputElement = document.createElement('input');
-  inputElement.type = 'file';
-
+  if (!inputElement) {
+    inputElement = document.createElement('input');
+    inputElement.type = 'file';
+    inputElement.accept = imageInputAccept;
+  }
   // Trigger the file selector when the button is clicked
   inputElement.click();
 
@@ -93,7 +108,7 @@ function uploadFile() {
 }
 
 export default async function decorate(block) {
-  const button = createTag('button', {}, 'remove background');
+  fqaBlock = block;
   const rows = Array.from(block.children);
   const actionAndAnimationRow = rows[1].children;
   const animationContainer = actionAndAnimationRow[0];
@@ -142,8 +157,17 @@ export default async function decorate(block) {
     [...files].forEach(startSDKWithUnconvertedFile);
   }, false);
 
+  const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
+  if (quickActionRow[0]) {
+    quickAction = quickActionRow[0].children[1]?.textContent;
+    quickActionRow[0].remove();
+  }
+  const invalidInputErrorRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'invalid-input-error');
+  if (invalidInputErrorRow[0]) {
+    invalidInputError = invalidInputErrorRow[0].children[1]?.textContent;
+    invalidInputErrorRow[0].remove();
+  }
+
   const freePlanTags = await buildStaticFreePlanWidget(animationContainer);
   // dropzone.append(freePlanTags);
-
-  block.append(button);
 }
