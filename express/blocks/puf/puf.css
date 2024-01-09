@@ -104,6 +104,12 @@ main .block.puf .puf-card .puf-card-top h3 svg {
     height: 32px;
 }
 
+main .block.puf .puf-card .puf-card-top h3 img {
+    margin-right: 7px;
+    width: 37px;
+    height: 37px;
+}
+
 main .block.puf .puf-card .puf-card-top a {
     margin-top: 20px;
     width: 100%;
