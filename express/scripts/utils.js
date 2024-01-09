@@ -1,5 +1,3 @@
-import premiumSVG from '../icons/premium.js';
-
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
   { fragment: '/express/fragments/' },
