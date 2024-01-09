@@ -487,10 +487,6 @@ export function getIcon(icons, alt, size = 44) {
     'pricingpremium',
   ];
 
-  if (icon === 'premium') {
-    return premiumSVG;
-  }
-
   if (symbols.includes(icon)) {
     const iconName = icon;
     let sheetSize = size;
