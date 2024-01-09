@@ -116,6 +116,8 @@ export default async function decorate(block) {
   if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
   const dropzone = actionAndAnimationRow[1];
   dropzone.classList.add('dropzone');
+  const cta = dropzone.querySelector('a.button');
+  if (cta) cta.classList.add('xlarge');
 
   const gtcText = dropzone.querySelector('p:last-child');
   const actionColumn = createTag('div');

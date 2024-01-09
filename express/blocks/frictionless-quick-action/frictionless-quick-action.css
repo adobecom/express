@@ -1,37 +1,75 @@
-.frictionless-quick-action.block > div:nth-child(2) {
-    display: inline-flex;
+.frictionless-quick-action.block h1 {
+    font-size: 2.8125rem;
 }
 
-.frictionless-quick-action.block h2 em {
-    font-style: normal;
-    background: linear-gradient(to right, deeppink, mediumpurple);
+.frictionless-quick-action.block h1+p {
+    margin: 16px 0 24px;
+    font-size: 1rem;
+}
+
+.frictionless-quick-action.block h1 em {
+    background: linear-gradient(320deg, #7C84F3, #FF4DD2, #FF993B, #FF4DD2, #7C84F3, #FF4DD2, #FF993B);
+    background-size: 400% 400%;
+    -webkit-animation: quickActionGradient 45s ease infinite;
+    -moz-animation: quickActionGradient 45s ease infinite;
+    animation: quickActionGradient 45s ease infinite;
     -webkit-background-clip: text;
     background-clip: text;
-    color: transparent;
+    font-style: normal;
+    -webkit-text-fill-color: transparent;
 }
 
-.frictionless-quick-action.block h3 {
-    font-size: 1.5rem;
+.frictionless-quick-action.block > div:nth-child(2) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.frictionless-quick-action.block h3 em {
+.frictionless-quick-action.block > div:nth-child(2) > div:nth-child(2) {
+    margin-top: 26px;
+}
+
+.frictionless-quick-action.block video {
+    max-width: 444px;
+}
+
+.frictionless-quick-action.block h4 em {
     font-style: normal;
     color: var(--color-info-accent);
 }
 
 .frictionless-quick-action.block .dropzone-container {
     cursor: pointer;
-    padding: 24px;
+    padding: 24px 0;
     border-radius: 20px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-    min-width: 520px;
+    width: 600px;
+    height: 271px;
 }
 
 .frictionless-quick-action.block .dropzone-container:hover, .frictionless-quick-action.block .dropzone-container.highlight  {
     background-color: rgb(211, 211, 211, 0.2);
 }
 
-.dropzone {
-    background: url(/express/img/dropzone.svg) center center / 100% no-repeat;
-    padding: 24px;
+.frictionless-quick-action.block  .dropzone {
+    background: url(/express/img/dash-rectangle.svg) center center / 90% no-repeat;
+    height: 100%;
+}
+
+.frictionless-quick-action.block .dropzone h4 {
+    padding-top: 39px;
+}
+
+.frictionless-quick-action.block .dropzone p:last-of-type {
+    font-size: .6875rem;
+    margin: 0;
+}
+
+.frictionless-quick-action.block .dropzone .button {
+    margin-bottom: 0;
+}
+
+.frictionless-quick-action.block > div:nth-child(2) > div:nth-child(2) > p:last-of-type {
+    margin: 15px 0 0;
+    font-size: 0.75rem;
 }
