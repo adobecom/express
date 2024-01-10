@@ -1,4 +1,5 @@
-import { createTag } from './utils.js';
+// import { createTag } from './utils.js';
+import { createTag } from '../utils.js';
 
 export function decorateButtons(el, size) {
   const buttons = el.querySelectorAll('em a, strong a, p > a strong');
@@ -191,8 +192,12 @@ export function getVideoAttrs(hash, dataset) {
 export function applyHoverPlay(video) {
   if (!video) return;
   if (video.hasAttribute('data-hoverplay') && !video.hasAttribute('data-mouseevent')) {
-    video.addEventListener('mouseenter', () => { video.play(); });
-    video.addEventListener('mouseleave', () => { video.pause(); });
+    video.addEventListener('mouseenter', () => {
+      video.play();
+    });
+    video.addEventListener('mouseleave', () => {
+      video.pause();
+    });
     video.setAttribute('data-mouseevent', true);
   }
 }

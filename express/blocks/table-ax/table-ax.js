@@ -1,6 +1,8 @@
 /* eslint-disable no-plusplus */
-import { createTag, MILO_EVENTS } from '../../utils/utils.js';
-import { decorateButtons } from '../../utils/decorate.js';
+// import { createTag, MILO_EVENTS } from '../../utils/utils.js';
+import { createTag, MILO_EVENTS } from '../../scripts/utils.js';
+// import { decorateButtons } from '../../utils/decorate.js';
+import { decorateButtons } from '../../scripts/utils/decorate.js';
 
 const DESKTOP_SIZE = 900;
 const MOBILE_SIZE = 768;
