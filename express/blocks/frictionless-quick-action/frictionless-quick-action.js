@@ -7,6 +7,7 @@ let inputElement;
 let quickAction;
 let fqaBlock;
 let error;
+let ccEverywhere;
 
 function startSDK(data) {
   const CDN_URL = 'https://sdk.cc-embed.adobe.com/v3/CCEverywhere.js';
@@ -14,28 +15,28 @@ function startSDK(data) {
     if (!window.CCEverywhere) {
       return;
     }
-    const ccEverywhere = await window.CCEverywhere.initialize({
-      clientId: 'b20f1d10b99b4ad892a856478f87cec3',
-      appName: 'express',
-    }, {
-      loginMode: 'delayed',
-      locale: getConfig().locale.ietf,
-    });
+    if (!ccEverywhere) {
+      ccEverywhere = await window.CCEverywhere.initialize({
+        clientId: 'b20f1d10b99b4ad892a856478f87cec3',
+        appName: 'express',
+      }, {
+        loginMode: 'delayed',
+        locale: getConfig().locale.ietf,
+      });
+    }
 
     const exportOptions = [
-      /* This native button renders label "Open in Adobe Express" */
-      {
-        target: 'Editor',
-        id: 'edit-in-express',
-        buttonType: 'native',
-        optionType: 'button',
-      },
-      /* This native button renders label "Download" */
       {
         target: 'Download',
         id: 'download-button',
         optionType: 'button',
         buttonType: 'native',
+      },
+      {
+        target: 'Editor',
+        id: 'edit-in-express',
+        buttonType: 'native',
+        optionType: 'button',
       },
     ];
 
