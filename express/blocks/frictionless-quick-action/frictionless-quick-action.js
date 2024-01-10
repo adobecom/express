@@ -8,6 +8,7 @@ let quickAction;
 let fqaBlock;
 let error;
 let ccEverywhere;
+let container;
 
 function startSDK(data) {
   const CDN_URL = 'https://sdk.cc-embed.adobe.com/v3/CCEverywhere.js';
@@ -40,7 +41,12 @@ function startSDK(data) {
       },
     ];
 
+    const id = `${quickAction}-container`;
+    //if(container) container.remove();
+    container = createTag('div', { id });
+    fqaBlock.append(container);
     ccEverywhere.openQuickAction({
+      parentElementId: `${quickAction}-container`,
       id: quickAction,
       inputParams: {
         asset: {
