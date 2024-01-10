@@ -224,8 +224,12 @@
 }
 
 .tabs-ax.ax[class*='pill'] div[role="tablist"] .tab-list-container {
+  flex-wrap: wrap;
+  row-gap: 10px;
+  padding: 0;
   margin-top: var(--spacing-m);
   margin-bottom: 0;
+  width: 100%;
 }
 
 .tabs-ax[class*='pill'] div[role="tablist"] button {
