@@ -1,11 +1,10 @@
-import { createTag, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
+import { createTag, getConfig, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
 import { addFreePlanWidget, buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 const imageInputAccept = '.png, .jpeg, .jpg';
 let inputElement;
 let quickAction;
-let invalidInputError;
 let fqaBlock;
 let error;
 
@@ -18,6 +17,9 @@ function startSDK(data) {
     const ccEverywhere = await window.CCEverywhere.initialize({
       clientId: 'b20f1d10b99b4ad892a856478f87cec3',
       appName: 'express',
+    }, {
+      loginMode: 'delayed',
+      locale: getConfig().locale.ietf,
     });
 
     const exportOptions = [
@@ -35,27 +37,8 @@ function startSDK(data) {
         optionType: 'button',
         buttonType: 'native',
       },
-      {
-        target: 'Host',
-        id: 'my-custom-button',
-        label: 'Embed in app',
-        closeTargetOnExport: true,
-        optionType: 'button',
-        buttonType: 'custom',
-      },
     ];
 
-    const imageCallbacks = {
-      onPublish: (publishParams) => {
-        // Handle custom export button behavior here
-        if (publishParams.exportButtonId == 'my-custom-button') {
-          const localData = { asset: publishParams.asset[0].data };
-          appImage.src = localData.asset;
-        }
-      },
-    };
-
-    console.log('opening crop image quick action');
     ccEverywhere.openQuickAction({
       id: quickAction,
       inputParams: {
@@ -66,7 +49,6 @@ function startSDK(data) {
         },
         exportOptions,
       },
-      callbacks: imageCallbacks,
     });
   });
 }
@@ -164,11 +146,6 @@ export default async function decorate(block) {
   if (quickActionRow[0]) {
     quickAction = quickActionRow[0].children[1]?.textContent;
     quickActionRow[0].remove();
-  }
-  const invalidInputErrorRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'invalid-input-error');
-  if (invalidInputErrorRow[0]) {
-    invalidInputError = invalidInputErrorRow[0].children[1]?.textContent;
-    invalidInputErrorRow[0].remove();
   }
 
   const freePlanTags = await buildStaticFreePlanWidget(animationContainer);
