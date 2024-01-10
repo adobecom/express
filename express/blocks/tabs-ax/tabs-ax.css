@@ -42,6 +42,15 @@
   --tabs-pill-text-color: #fff;
 }
 
+:root .ax {
+  --tabs-pill-ax-bg-color: #e1e1e1;
+  --tabs-pill-ax-text-color: #000;
+  --tabs-pill-bg-color: #5258E4;
+  --tabs-pill-bg-color-hover: #5258E4;
+  --tabs-pill-bg-color-active: #5258E4;
+  --tabs-pill-text-color: #fff;
+}
+
 .tabs-ax {
   position: relative;
   margin: 0;
@@ -214,6 +223,11 @@
   margin-bottom: var(--spacing-xxs);
 }
 
+.tabs-ax.ax[class*='pill'] div[role="tablist"] .tab-list-container {
+  margin-top: var(--spacing-m);
+  margin-bottom: 0;
+}
+
 .tabs-ax[class*='pill'] div[role="tablist"] button {
   color: var(--tabs-pill-text-color);
   margin: 0;
@@ -221,6 +235,13 @@
   border-radius: 75px;
   font-weight: 400;
   padding: 0.2em 1em;
+}
+
+.tabs-ax.ax[class*='pill'] div[role="tablist"] button {
+  border-radius: 6px;
+  margin-inline-start: 10px;
+  background-color: var(--tabs-pill-ax-bg-color);
+  color: var(--tabs-pill-ax-text-color);
 }
 
 .tabs-ax.quiet div[role="tablist"] button:first-of-type,
