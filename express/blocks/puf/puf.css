@@ -429,14 +429,15 @@ main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-
         box-shadow: none;
     }
 
-    main .block.puf .puf-card-container .puf-card-border .puf-card.puf-left {
+    /* main .block.puf .puf-card-container .puf-card-border .puf-card.puf-left {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
     }
 
     main .block.puf .puf-card-container .puf-card-border:has(.puf-left) {
         padding-right: 0;
-    }
+    } */
+    
 
     main .block.puf .carousel-container .carousel-platform .puf-card-container {
         align-self: stretch;
