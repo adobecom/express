@@ -47,7 +47,6 @@ function startSDK(data) {
     fqaBlock.append(container);
     const divs = fqaBlock.querySelectorAll(':scope > div');
     divs[1].style.display = 'none';
-    debugger;
     ccEverywhere.openQuickAction({
       id: quickAction,
       inputParams: {
