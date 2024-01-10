@@ -2,7 +2,8 @@
  * tabs - consonant v6
  * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Tab_Role
  */
-import { createTag, MILO_EVENTS } from '../../utils/utils.js';
+import { createTag } from '../../scripts/utils.js';
+const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
 
 const isElementInContainerView = (targetEl) => {
   const rect = targetEl.getBoundingClientRect();
@@ -169,30 +170,17 @@ const init = (block) => {
   }
 
   // Tab Sections
-  const allSections = Array.from(rootElem.querySelectorAll('div.section'));
+  const allSections = Array.from(rootElem.querySelectorAll('div.section[data-tab]'));
   allSections.forEach((e) => {
-    const sectionMetadata = e.querySelector(':scope > .section-metadata');
-    if (!sectionMetadata) return;
-    const smRows = sectionMetadata.querySelectorAll(':scope > div');
-    smRows.forEach((row) => {
-      const key = getStringKeyName(row.children[0].textContent);
-      if (key !== 'tab') return;
-      let val = getStringKeyName(row.children[1].textContent);
-      /* c8 ignore next */
-      if (!val) return;
-      let id = tabId;
-      let assocTabItem = rootElem.querySelector(`#tab-panel-${id}-${val}`);
-      if (config.id) {
-        const values = row.children[1].textContent.split(',');
-        [id] = values;
-        val = getStringKeyName(String(values[1]));
-        assocTabItem = rootElem.querySelector(`#tab-panel-${id}-${val}`);
-      }
-      if (assocTabItem) {
-        const section = sectionMetadata.closest('.section');
-        assocTabItem.append(section);
-      }
-    });
+    let val = getStringKeyName(e.dataset.tab);
+    let assocTabItem = rootElem.querySelector(`#tab-panel-${val}`);
+
+    console.log(`#tab-panel-${val}`);
+    console.log(assocTabItem);
+
+    if (assocTabItem) {
+      assocTabItem.append(e);
+    }
   });
   handleDeferredImages(block);
   initTabs(block, config, rootElem);
