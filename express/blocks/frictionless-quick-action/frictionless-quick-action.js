@@ -1,14 +1,10 @@
 import { createTag, getConfig, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
 import { addFreePlanWidget, buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
-const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 const imageInputAccept = '.png, .jpeg, .jpg';
 let inputElement;
 let quickAction;
-let fqaBlock;
-let error;
 let ccEverywhere;
-let container;
 
 function startSDK(data) {
   const CDN_URL = 'https://sdk.cc-embed.adobe.com/v3/CCEverywhere.js';
@@ -60,7 +56,6 @@ function startSDK(data) {
 
 function startSDKWithUnconvertedFile(file) {
   if (!file) return;
-  const maxSize = 17 * 1024 * 1024; // 17 MB in bytes
   const reader = new FileReader();
 
   reader.onloadend = function () {
@@ -89,12 +84,18 @@ function uploadFile() {
 }
 
 export default async function decorate(block) {
-  fqaBlock = block;
   const rows = Array.from(block.children);
   const actionAndAnimationRow = rows[1].children;
   const animationContainer = actionAndAnimationRow[0];
   const animation = animationContainer.querySelector('a');
   if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
+  const video = animationContainer.querySelector('video');
+  const videoPromise = new Promise((resolve) => {
+    video.addEventListener('loadeddata', () => {
+      resolve();
+    }, false);
+    setTimeout(() => resolve(), 2000);
+  });
   const dropzone = actionAndAnimationRow[1];
   dropzone.classList.add('dropzone');
   const dropzoneBackground = createTag('div', { class: 'dropzone-bg' });
@@ -148,5 +149,7 @@ export default async function decorate(block) {
   }
 
   const freePlanTags = await buildStaticFreePlanWidget(animationContainer);
+
+  await videoPromise;
   // dropzone.append(freePlanTags);
 }
