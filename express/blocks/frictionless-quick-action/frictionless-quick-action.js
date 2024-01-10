@@ -41,10 +41,6 @@ function startSDK(data) {
       },
     ];
 
-    const id = `${quickAction}-container`;
-    //if(container) container.remove();
-    container = createTag('div', { id, class: 'quick-action-container' });
-    //fqaBlock.append(container);
     ccEverywhere.openQuickAction({
       id: quickAction,
       inputParams: {
@@ -65,21 +61,15 @@ function startSDK(data) {
 function startSDKWithUnconvertedFile(file) {
   if (!file) return;
   const maxSize = 17 * 1024 * 1024; // 17 MB in bytes
-  if (validImageTypes.includes(file.type) && file.size <= maxSize) {
-    const reader = new FileReader();
+  const reader = new FileReader();
 
-    reader.onloadend = function () {
-      console.log('Base64 string:', reader.result);
-      startSDK(reader.result);
-    };
+  reader.onloadend = function () {
+    console.log('Base64 string:', reader.result);
+    startSDK(reader.result);
+  };
 
-    // Read the file as a data URL (Base64)
-    reader.readAsDataURL(file);
-  } else if (!error) {
-    error = createTag('p', {}, invalidInputError);
-    const dropzoneButton = fqaBlock.querySelector(':scope .dropzone a.button');
-    dropzoneButton.parentElement.insertBefore(error, dropzoneButton);
-  }
+  // Read the file as a data URL (Base64)
+  reader.readAsDataURL(file);
 }
 
 function uploadFile() {
