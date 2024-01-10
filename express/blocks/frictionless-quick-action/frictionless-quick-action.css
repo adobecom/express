@@ -13,8 +13,6 @@
 
 .frictionless-quick-action.block .quick-action-container {
     min-height: 697px;
-    position: fixed;
-    top: 160px;
     width: 100%;
     z-index: 1;
     left: -1px;

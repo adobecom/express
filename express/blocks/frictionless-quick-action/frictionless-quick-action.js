@@ -45,6 +45,9 @@ function startSDK(data) {
     //if(container) container.remove();
     container = createTag('div', { id, class: 'quick-action-container' });
     fqaBlock.append(container);
+    const divs = fqaBlock.querySelectorAll(':scope > div');
+    divs[1].style.display = 'none';
+    debugger;
     ccEverywhere.openQuickAction({
       id: quickAction,
       inputParams: {
