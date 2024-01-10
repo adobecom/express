@@ -44,7 +44,7 @@ function startSDK(data) {
     const id = `${quickAction}-container`;
     //if(container) container.remove();
     container = createTag('div', { id, class: 'quick-action-container' });
-    fqaBlock.append(container);
+    //fqaBlock.append(container);
     ccEverywhere.openQuickAction({
       id: quickAction,
       inputParams: {
@@ -56,7 +56,6 @@ function startSDK(data) {
         exportOptions,
       },
       modalParams: {
-        parentElementId: `${quickAction}-container`,
         backgroundColor: 'rgba(0, 0, 0, 0.25)',
       },
     });
