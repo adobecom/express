@@ -1,5 +1,5 @@
 .frictionless-quick-action-wrapper, .frictionless-quick-action.block {
-    max-width: none;
+    max-width: none !important;
 }
 
 .frictionless-quick-action.block h1 {
