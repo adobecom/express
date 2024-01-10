@@ -857,7 +857,7 @@ body[data-device="mobile"] main [data-audience="mobile"][data-section-status="lo
 
 /* jank protection for async blocks/sections */
 
-main .pricing,
+main .pricing, /* <- very general target for very specific styling (any .pricing element in main is full screen height and invisible) */
 main .hero-animation,
 main .fragment {
   opacity: 0;

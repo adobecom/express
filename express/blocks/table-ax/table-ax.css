@@ -537,3 +537,11 @@ header.global-navigation {
     flex-direction: column;
   }
 }
+
+/* ---NEW--- */
+
+/* Negating the very general "main .pricing" rules in styles.css */
+.table-ax .pricing{
+  height: auto;
+  opacity:1;
+}
