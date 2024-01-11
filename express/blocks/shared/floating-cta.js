@@ -158,7 +158,9 @@ export async function createFloatingButton(block, audience, data) {
 
     const numberOfLines = availableHeight / lineHeightInt;
     if (numberOfLines >= 2) {
-      floatButtonLink.style.fontSize = '13.5px';
+      floatButtonLink.style.fontSize = '0.8em';
+      floatButtonLink.style.paddingLeft = '0.8em';
+      floatButtonLink.style.paddingRight = '0.8em';
     }
   }
 
