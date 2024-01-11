@@ -156,7 +156,7 @@ async function decorateCard(block, cardClass = '') {
   const cardTop = block.children[1].children[0];
   const cardBottom = block.children[2].children[0];
   const cardHeader = cardTop.querySelector('h3, p:first-of-type');
-  const cardHeaderSvg = cardTop.querySelector('svg');
+  const cardHeaderIcon = cardTop.querySelector('svg') || cardTop.querySelector('img');
   const cardPricingContainer = createTag('div', {
     class: 'puf-pricing-container',
   });
@@ -217,7 +217,7 @@ async function decorateCard(block, cardClass = '') {
     cardBanner.classList.add('recommended');
   }
 
-  if (cardHeaderSvg) formattedHeader.prepend(cardHeaderSvg);
+  if (cardHeaderIcon) formattedHeader.prepend(cardHeaderIcon);
 
   const ctaTextContainer = cardTop.querySelector('strong');
   if (ctaTextContainer) {

@@ -104,6 +104,12 @@ main .block.puf .puf-card .puf-card-top h3 svg {
     height: 32px;
 }
 
+main .block.puf .puf-card .puf-card-top h3 img {
+    margin-right: 7px;
+    width: 37px;
+    height: 37px;
+}
+
 main .block.puf .puf-card .puf-card-top a {
     margin-top: 20px;
     width: 100%;
@@ -421,15 +427,6 @@ main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-
     main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card-border:has(.recommended),
     main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-card-border .puf-card {
         box-shadow: none;
-    }
-
-    main .block.puf .puf-card-container .puf-card-border .puf-card.puf-left {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-    }
-
-    main .block.puf .puf-card-container .puf-card-border:has(.puf-left) {
-        padding-right: 0;
     }
 
     main .block.puf .carousel-container .carousel-platform .puf-card-container {
