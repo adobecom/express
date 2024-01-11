@@ -61,7 +61,7 @@ function decorateCard({ header, explain, offer, pricingContainer, ctaGroup, feat
     if (a.parentNode.tagName.toLowerCase() === 'p') {
       a.parentNode.remove();
     }
-    card.append(a);
+    ctaGroup.append(a);
   });
   card.append(ctaGroup);
 

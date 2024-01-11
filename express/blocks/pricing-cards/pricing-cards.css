@@ -118,14 +118,21 @@ main .pricing-cards-container > div {
   align-items: center;
 }
 
-.pricing-cards .card a {
+.pricing-cards .card .card-cta-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
+}
+
+.pricing-cards .card .card-cta-group a {
   width: 100%;
   box-sizing: border-box;
   margin: 0;
 }
 
 .pricing-cards .card-feature-list {
-  margin-top: auto;
+  /* margin-top: auto; */
   display: none;
 }
 .pricing-cards .card-feature-list p {
@@ -140,10 +147,10 @@ main .pricing-cards-container > div {
   padding-top: 16px;
   border-top: 1px solid #E9E9E9;
   width: 100%;
+  justify-content: center;
 }
 
 .pricing-cards .card-compare a {
-  text-align: center;
   text-decoration: underline;
   color: #5258E4;
   font-weight: 400;
