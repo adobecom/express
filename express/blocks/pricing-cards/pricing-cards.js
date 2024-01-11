@@ -93,5 +93,11 @@ export default function init(el) {
   el.querySelectorAll(':scope > div').forEach((div) => div.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   cards.map((card) => decorateCard(card)).forEach((card) => cardsContainer.append(card));
+  // const maxCTACnt = cards.reduce((max, card) => Math.max(max, card.ctaGroup.querySelectorAll('a').length), 0);
+  // if (maxCTACnt > 1) {
+  //   cards.forEach(({ ctaGroup }) => {
+  //     ctaGroup.style.minHeight = `${maxCTACnt * 45 + (maxCTACnt - 1) * 16}px`;
+  //   });
+  // }
   el.append(cardsContainer);
 }
