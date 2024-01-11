@@ -2377,7 +2377,8 @@ async function loadPostLCP(config) {
   window.dispatchEvent(new Event('milo:LCP:loaded'));
   if (window.hlx.martech) loadMartech();
   loadGnav();
-
+  const { default: loadFonts } = await import('./fonts.js');
+  loadFonts(config.locale, loadStyle);
 }
 
 /**
@@ -2502,8 +2503,6 @@ export async function loadArea(area = document) {
     }
   }
   await loadTemplateScript();
-  //const { default: loadFonts } = await import('./fonts.js');
-  //loadFonts(getConfig().locale, loadStyle);
   await loadSections(sections, isDoc);
   const footer = document.querySelector('footer');
   delete footer.dataset.status;
