@@ -27,7 +27,7 @@ function startSDK(data) {
       }, {
         loginMode: 'delayed',
         locale: ietf,
-        env
+        env,
       });
     }
 
