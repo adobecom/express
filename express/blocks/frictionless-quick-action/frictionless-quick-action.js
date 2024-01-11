@@ -7,7 +7,6 @@ import {
   loadScript,
   transformLinkToAnimation,
 } from '../../scripts/utils.js';
-import { addFreePlanWidget, buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 const imageInputAccept = '.png, .jpeg, .jpg';
 let inputElement;
