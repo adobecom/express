@@ -1,5 +1,5 @@
 import {
-  createTag, getConfig, loadScript, transformLinkToAnimation,
+  createTag, getConfig, getLottie, lazyLoadLottiePlayer, loadScript, transformLinkToAnimation,
 } from '../../scripts/utils.js';
 import { addFreePlanWidget, buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
@@ -14,13 +14,13 @@ function startSDK(data) {
     if (!window.CCEverywhere) {
       return;
     }
-    let { ietf } = getConfig().locale;
-    if (ietf === 'zh-Hant-TW') ietf = 'tw-TW';
-    else if (ietf === 'zh-Hans-CN') ietf = 'cn-CN';
-    let env = getConfig().env.name;
-    if (env === 'local') env = 'dev';
-    if (env === 'stage') env = 'preprod';
     if (!ccEverywhere) {
+      let { ietf } = getConfig().locale;
+      if (ietf === 'zh-Hant-TW') ietf = 'tw-TW';
+      else if (ietf === 'zh-Hans-CN') ietf = 'cn-CN';
+      let env = getConfig().env.name;
+      if (env === 'local') env = 'dev';
+      if (env === 'stage') env = 'preprod';
       ccEverywhere = await window.CCEverywhere.initialize({
         clientId: 'b20f1d10b99b4ad892a856478f87cec3',
         appName: 'express',
@@ -118,6 +118,17 @@ export default async function decorate(block) {
   dropzoneContainer.append(dropzone);
   actionColumn.append(dropzoneContainer);
   actionColumn.append(gtcText);
+
+  const span = cta.querySelector(':scope span');
+  if (span) {
+    const lottieUpload = [...span.classList].filter((c) => c === 'icon-lottie-arrow-up');
+    if (lottieUpload.length) {
+      span.remove();
+      cta.innerHTML = getLottie('lottie-arrow-up', '/express/icons/arrow-up-lottie.json') + cta.innerHTML;
+      lazyLoadLottiePlayer();
+    }
+  }
+
   dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();
     uploadFile();
