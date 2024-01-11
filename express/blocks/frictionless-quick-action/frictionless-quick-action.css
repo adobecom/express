@@ -82,7 +82,7 @@
 
 .frictionless-quick-action.block .dropzone p:last-of-type {
     font-size: .6875rem;
-    margin: 0;
+    margin: 6px 0 0;
 }
 
 .frictionless-quick-action.block .dropzone .button-container {
@@ -101,6 +101,10 @@
 .frictionless-quick-action.block > div:nth-child(2) > div:nth-child(2) > p:last-of-type {
     margin: 15px 0 0;
     font-size: 0.75rem;
+}
+
+.frictionless-quick-action.block > div:nth-child(2) > div:nth-child(2) > p:last-of-type a {
+    font-weight: 400;
 }
 
 .frictionless-quick-action.block .free-plan-container {

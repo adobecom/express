@@ -188,5 +188,4 @@ export default async function decorate(block) {
     dropzone.append(freePlan);
   }
   await videoPromise;
-  // dropzone.append(freePlanTags);
 }
