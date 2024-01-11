@@ -1,0 +1,133 @@
+main .pricing-cards-container > div {
+  max-width: none;
+}
+.pricing-cards .cards-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+.pricing-cards .card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid #C6C6C6;
+  width: 343px;
+  padding: 16px;
+  gap: 16px;
+  text-align: left;
+}
+
+.pricing-cards .card.special-promo {
+  border: 1px solid #FFE600;
+}
+
+.pricing-cards .card-header {
+  align-self: stretch;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pricing-cards .card.special-promo > div:first-of-type {
+  position: absolute;
+  right: 8px;
+  top: -10px;
+  border-radius: 4px;
+  background: #FFE600;
+  padding: 0px 6px 1px 6px;
+  height: 20px;
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.pricing-cards .card-header h3 {
+  font-weight: var(--heading-font-weight);
+  line-height: var(--heading-line-height);
+  font-size: var(--body-font-size-l);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pricing-cards .card-header img {
+  width: 22px;
+  height: 22px;
+}
+
+.pricing-cards .card-header .head-cnt {
+  border-bottom: 1px solid #000;
+  padding-bottom: 2px;
+  font-size: var(--body-font-size-m);
+  font-weight: 400;
+}
+
+.pricing-cards .card-explain {
+  display: none;
+}
+
+.pricing-cards .card-offer {
+  position: absolute;
+  right: 8px;
+  top: -10px;
+  border-radius: 4px;
+  background: #D3D5FF;
+  padding: 0px 6px 1px 6px;
+  height: 20px;
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  color: #5258E4;
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.pricing-cards .card-pricing {
+  position: relative;
+  border-radius: 8px;
+  background: var(--color-gray-150);
+  border: 1px solid #E0E2FF;
+  width: calc(100% - 32px);
+  height: 125px;
+  padding: 16px;
+}
+
+.pricing-cards .card-pricing p {
+  margin: 0;
+  font-size: var(--body-font-size-s);
+}
+
+.pricing-cards .card a {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.pricing-cards .card-feature-list {
+  display: none;
+}
+
+.pricing-cards .card-compare {
+  display: flex;
+  padding-top: 16px;
+  border-top: 1px solid #E9E9E9;
+  width: 100%;
+  
+  text-decoration: underline;
+}
+
+@media screen and (min-width: 1440px) {
+  .pricing-cards .card-explain {
+    display: block;
+  }
+  .pricing-cards .card-feature-list {
+    display: block;
+  }
+}
