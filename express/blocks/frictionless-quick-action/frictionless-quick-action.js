@@ -1,5 +1,11 @@
 import {
-  createTag, getConfig, getLottie, lazyLoadLottiePlayer, loadScript, transformLinkToAnimation,
+  createTag,
+  fetchPlaceholders,
+  getConfig,
+  getLottie,
+  lazyLoadLottiePlayer,
+  loadScript,
+  transformLinkToAnimation,
 } from '../../scripts/utils.js';
 import { addFreePlanWidget, buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
@@ -92,6 +98,14 @@ function uploadFile() {
   };
 }
 
+function createFreePlanContainer(text) {
+  const icon = createTag('img', { class: 'icon icon-checkmark', src: '/express/icons/checkmark.svg', alt: 'checkmark' });
+  const iconContainer = createTag('div', { class: 'free-plan-icon-container' }, icon);
+  const container = createTag('div', { class: 'free-plan-container' }, text);
+  container.prepend(iconContainer);
+  return container;
+}
+
 export default async function decorate(block) {
   const rows = Array.from(block.children);
   const actionAndAnimationRow = rows[1].children;
@@ -168,8 +182,12 @@ export default async function decorate(block) {
     quickActionRow[0].remove();
   }
 
-  const freePlanTags = await buildStaticFreePlanWidget(animationContainer);
-
+  const placeholders = await fetchPlaceholders();
+  for (let i = 1; i < 3; i += 1) {
+    const tagText = placeholders[`free-plan-check-${i}`];
+    const freePlan = createFreePlanContainer(tagText);
+    dropzone.append(freePlan);
+  }
   await videoPromise;
   // dropzone.append(freePlanTags);
 }
