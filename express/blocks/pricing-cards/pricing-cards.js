@@ -89,15 +89,18 @@ export default function init(el) {
       return obj;
     }, {}),
   );
-  // const disclaimer = el.querySelector(':scope > div:nth-child(6)');
+  const disclaimer = el.querySelector(':scope > div:last-child');
   el.querySelectorAll(':scope > div').forEach((div) => div.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   cards.map((card) => decorateCard(card)).forEach((card) => cardsContainer.append(card));
-  // const maxCTACnt = cards.reduce((max, card) => Math.max(max, card.ctaGroup.querySelectorAll('a').length), 0);
-  // if (maxCTACnt > 1) {
-  //   cards.forEach(({ ctaGroup }) => {
-  //     ctaGroup.style.minHeight = `${maxCTACnt * 45 + (maxCTACnt - 1) * 16}px`;
-  //   });
-  // }
+  const maxCTACnt = cards.reduce((max, card) => Math.max(max, card.ctaGroup.querySelectorAll('a').length), 0);
+  if (maxCTACnt > 1) {
+    cards.forEach(({ ctaGroup }) => {
+      // ctaGroup.style.minHeight = `${maxCTACnt * 45 + (maxCTACnt - 1) * 16}px`;
+      ctaGroup.classList.add(`min-height-${maxCTACnt}`);
+    });
+  }
   el.append(cardsContainer);
+  disclaimer.classList.add('disclaimer');
+  el.append(disclaimer);
 }
