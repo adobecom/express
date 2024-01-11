@@ -138,7 +138,7 @@ export default async function decorate(block) {
     if (lottieUpload.length) {
       span.remove();
       cta.innerHTML = getLottie('lottie-arrow-up', '/express/icons/arrow-up-lottie.json') + cta.innerHTML;
-      lazyLoadLottiePlayer();
+      //lazyLoadLottiePlayer();
     }
   }
 
