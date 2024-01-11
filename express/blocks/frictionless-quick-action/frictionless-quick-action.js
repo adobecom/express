@@ -14,8 +14,7 @@ let quickAction;
 let ccEverywhere;
 
 function startSDK(data) {
-  const CDN_URL = 'https://sdk.cc-embed.adobe.com/v3/CCEverywhere.js';
-  loadScript(CDN_URL).then(async () => {
+  loadScript('https://sdk.cc-embed.adobe.com/v3/CCEverywhere.js').then(async () => {
     if (!window.CCEverywhere) {
       return;
     }
@@ -73,7 +72,6 @@ function startSDKWithUnconvertedFile(file) {
   const reader = new FileReader();
 
   reader.onloadend = function () {
-    console.log('Base64 string:', reader.result);
     startSDK(reader.result);
   };
 
@@ -149,35 +147,26 @@ export default async function decorate(block) {
 
   function preventDefaults(e) {
     e.preventDefault();
-    e.stopPropagation();
-  }
-  function highlight() {
-    dropzoneContainer.classList.add('highlight');
-  }
-  function unhighlight() {
-    dropzoneContainer.classList.remove('highlight');
   }
   ['dragenter', 'dragover'].forEach((eventName) => {
-    dropzoneContainer.addEventListener(eventName, highlight, false);
+    dropzoneContainer.addEventListener(eventName, () => dropzoneContainer.classList.add('highlight'), false);
   });
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
     dropzoneContainer.addEventListener(eventName, preventDefaults, false);
   });
-
   ['dragleave', 'drop'].forEach((eventName) => {
-    dropzoneContainer.addEventListener(eventName, unhighlight, false);
+    dropzoneContainer.addEventListener(eventName, () => dropzoneContainer.classList.remove('highlight'), false);
   });
 
   dropzoneContainer.addEventListener('drop', (e) => {
     const dt = e.dataTransfer;
     const { files } = dt;
-
-    [...files].forEach(startSDKWithUnconvertedFile);
+    if (files.length) startSDKWithUnconvertedFile(files[0]);
   }, false);
 
   const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
   if (quickActionRow[0]) {
-    quickAction = quickActionRow[0].children[1]?.textContent;
+    quickAction = quickActionRow[0].children[1]?.textContent.toLowerCase().trim();
     quickActionRow[0].remove();
   }
 
