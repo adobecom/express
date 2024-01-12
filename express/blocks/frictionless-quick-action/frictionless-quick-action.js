@@ -109,7 +109,6 @@ export default async function decorate(block) {
   const animationContainer = actionAndAnimationRow[0];
   const animation = animationContainer.querySelector('a');
   if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
-  const video = animationContainer.querySelector('video');
   const dropzone = actionAndAnimationRow[1];
   dropzone.classList.add('dropzone');
   const dropzoneBackground = createTag('div', { class: 'dropzone-bg' });
