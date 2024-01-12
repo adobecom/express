@@ -3,7 +3,7 @@ import { expect } from '@esm-bundle/chai';
 
 import sinon from 'sinon';
 import init from '../../../express/blocks/frictionless-quick-action/frictionless-quick-action.js';
-import { mockRes } from '../test-utilities';
+import { mockRes } from '../test-utilities.js';
 
 document.body.innerHTML = await readFile({ path: './mocks/crop-image-quick-action.html' });
 const ogFetch = window.fetch;
