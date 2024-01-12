@@ -156,6 +156,7 @@ main .pricing-cards-container > div {
 }
 .pricing-cards .card-feature-list li a {
   text-decoration: underline;
+  font-weight: 400;
 }
 
 
@@ -197,7 +198,7 @@ main .pricing-cards-container > div {
     --card-padding: 24px 16px;
   }
   .pricing-cards .card-header h3 {
-    font-size: 28px;
+    font-size: 1.75rem;
   }
   .pricing-cards .card-explain {
     display: block;
