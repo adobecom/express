@@ -148,6 +148,7 @@ export function onCarouselCSSLoad(selector, parent, options) {
 
   // set initial states
   const setInitialState = (scrollable, opts) => {
+
     if (opts.infinityScrollEnabled) infinityScroll([...carouselContent]);
     else initToggleTriggers(container);
     const onCarouselIntersect = ([entry], observer) => {

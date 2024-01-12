@@ -103,6 +103,14 @@ main .sticky-footer .rating-stars .rating-votes {
     margin-left: 4px;
 }
 
+main .sticky-footer .icon-icon-editor-choice {
+    width: auto;
+}
+
+main .sticky-footer .rating-stars {
+    margin-left: 5px;
+}
+
 @media not (min-width: 900px) {
     main .sticky-footer-wrapper {
         display: none;
