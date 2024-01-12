@@ -1,14 +1,32 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
+import sinon from 'sinon';
 import init from '../../../express/blocks/frictionless-quick-action/frictionless-quick-action.js';
+import { mockRes } from '../test-utilities';
 
 document.body.innerHTML = await readFile({ path: './mocks/crop-image-quick-action.html' });
+const ogFetch = window.fetch;
 
 describe('Frictionless Quick Action Block', () => {
   it('initializes correctly', async () => {
+    window.fetch = sinon.stub().callsFake(() => mockRes({
+      payload: {
+        data: [
+          {
+            Key: 'free-plan-check-1',
+            Text: 'Free use forever',
+          },
+          {
+            Key: 'free-plan-check-2',
+            Text: 'No credit card required',
+          },
+        ],
+      },
+    }));
+
     const block = document.body.querySelector('.frictionless-quick-action');
-    init(block);
+    await init(block);
     const title = block.querySelector(':scope h1');
     const text = block.querySelector('div:nth-child(1) p');
     expect(title).to.not.be.null;
@@ -22,6 +40,10 @@ describe('Frictionless Quick Action Block', () => {
     expect(dropzoneTitle.textContent).to.be.equal('Drag and drop an image or browse to upload.');
     const lottie = dropzone.querySelector(':scope lottie-player');
     expect(lottie).to.not.be.null;
+    const freePlanTexts = dropzone.querySelectorAll(':scope .free-plan-container');
+    expect(freePlanTexts.length).to.be.equal(2);
+
+    window.fetch = ogFetch;
   });
 
   it('sdk starts on file drop', async () => {
