@@ -110,12 +110,6 @@ export default async function decorate(block) {
   const animation = animationContainer.querySelector('a');
   if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
   const video = animationContainer.querySelector('video');
-  const videoPromise = new Promise((resolve) => {
-    video.addEventListener('loadeddata', () => {
-      resolve();
-    }, false);
-    setTimeout(() => resolve(), 1500);
-  });
   const dropzone = actionAndAnimationRow[1];
   dropzone.classList.add('dropzone');
   const dropzoneBackground = createTag('div', { class: 'dropzone-bg' });
@@ -178,5 +172,5 @@ export default async function decorate(block) {
     }
   });
 
-  await Promise.all([videoPromise, placeholderPromise]);
+  await placeholderPromise;
 }

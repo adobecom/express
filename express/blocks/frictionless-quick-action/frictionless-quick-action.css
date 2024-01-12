@@ -34,6 +34,10 @@
     margin-top: 26px;
 }
 
+.frictionless-quick-action.block > div:nth-child(2) > div:nth-child(1) {
+    min-width: 444px;
+    min-height: 455px;
+}
 .frictionless-quick-action.block video {
     max-width: 444px;
 }
