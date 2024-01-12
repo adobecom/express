@@ -5,19 +5,17 @@ function correctCenterAlignment(plat) {
   plat.parentElement.style.maxWidth = `${plat.offsetWidth}px`;
 }
 
-export function showFader(fader) {
+export function toggleFader(fader, show) {
   if (!fader) return;
   const platform = fader.parentElement.querySelector('.carousel-platform');
-  if (fader.classList.contains('carousel-fader-left')) platform.classList.add('left-fader');
-  else platform.classList.add('right-fader');
-  fader.classList.remove('arrow-hidden');
-}
-export function hideFader(fader) {
-  if (!fader) return;
-  const platform = fader.parentElement.querySelector('.carousel-platform');
-  if (fader.classList.contains('carousel-fader-left')) platform.classList.remove('left-fader');
-  else platform.classList.remove('right-fader');
-  fader.classList.add('arrow-hidden');
+  const faderClass = fader.classList.contains('carousel-fader-left') ? 'left-fader' : 'right-fader';
+  if (show) {
+    platform.classList.add(faderClass);
+    fader.classList.remove('arrow-hidden');
+  } else {
+    platform.classList.remove(faderClass);
+    fader.classList.add('arrow-hidden');
+  }
 }
 
 function initToggleTriggers(parent) {
@@ -49,13 +47,8 @@ function initToggleTriggers(parent) {
   const slideIntersect = (entries) => {
     if (isInHiddenSection()) return;
     entries.forEach((entry) => {
-      if (entry.target.classList.contains('carousel-left-trigger')) {
-        if (entry.isIntersecting) hideFader(leftControl);
-        else showFader(leftControl);
-      } else if (entry.target.classList.contains('carousel-right-trigger')) {
-        if (entry.isIntersecting) hideFader(rightControl);
-        else showFader(rightControl);
-      }
+      if (entry.target.classList.contains('carousel-left-trigger')) toggleFader(leftControl, !entry.isIntersecting);
+      else if (entry.target.classList.contains('carousel-right-trigger')) toggleFader(rightControl, !entry.isIntersecting);
     });
   };
   const slideObserver = new IntersectionObserver(slideIntersect, { threshold: 0, root: parent });
@@ -158,11 +151,11 @@ export function onCarouselCSSLoad(selector, parent, options) {
   // set initial states
   const setInitialState = (scrollable, opts) => {
     if (opts.infinityScrollEnabled) infinityScroll([...carouselContent]);
+    if (!opts.infinityScrollEnabled && !opts.fadersDisabled) initToggleTriggers(container);
     const onCarouselIntersect = ([entry], observer) => {
       if (!entry.isIntersecting) return;
       if (opts.centerAlign) correctCenterAlignment(scrollable);
       if (opts.startPosition === 'right') moveCarousel(-scrollable.scrollWidth);
-      if (!opts.infinityScrollEnabled && !opts.fadersDisabled) initToggleTriggers(container);
       observer.unobserve(scrollable);
     };
     const carouselObserver = new IntersectionObserver(onCarouselIntersect, { rootMargin: '1000px', threshold: 0, root: container });
