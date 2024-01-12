@@ -5,7 +5,7 @@ function correctCenterAlignment(plat) {
   plat.parentElement.style.maxWidth = `${plat.offsetWidth}px`;
 }
 
-export function toggleFader(fader, show) {
+export function toggleFader(fader, show = fader.classList.contains('arrow-hidden')) {
   if (!fader) return;
   const platform = fader.parentElement.querySelector('.carousel-platform');
   const faderClass = fader.classList.contains('carousel-fader-left') ? 'left-fader' : 'right-fader';
