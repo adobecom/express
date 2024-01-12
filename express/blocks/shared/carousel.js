@@ -71,31 +71,29 @@ export function onCarouselCSSLoad(selector, parent, options) {
     platform.scrollLeft -= increment;
   };
 
-  if (!options.fadersDisabled) {
-    const faderLeft = createTag('div', { class: 'carousel-fader-left arrow-hidden' });
-    const arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
-    faderLeft.append(arrowLeft);
-    faderLeft.addEventListener('click', () => {
-      const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
-      moveCarousel(increment);
-    });
+  const faderLeft = createTag('div', { class: 'carousel-fader-left arrow-hidden' });
+  const arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
+  faderLeft.append(arrowLeft);
+  faderLeft.addEventListener('click', () => {
+    const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
+    moveCarousel(increment);
+  });
 
-    const faderRight = createTag('div', { class: 'carousel-fader-right arrow-hidden' });
-    const arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
-    faderRight.append(arrowRight);
-    faderRight.addEventListener('click', () => {
-      const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
-      moveCarousel(-increment);
-    });
+  const faderRight = createTag('div', { class: 'carousel-fader-right arrow-hidden' });
+  const arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
+  faderRight.append(arrowRight);
+  faderRight.addEventListener('click', () => {
+    const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
+    moveCarousel(-increment);
+  });
 
-    if (options.infinityScrollEnabled) {
-      platform.classList.add('left-fader', 'right-fader');
-      faderLeft.classList.remove('arrow-hidden');
-      faderRight.classList.remove('arrow-hidden');
-    }
-
-    container.append(faderLeft, faderRight);
+  if (options.infinityScrollEnabled) {
+    platform.classList.add('left-fader', 'right-fader');
+    faderLeft.classList.remove('arrow-hidden');
+    faderRight.classList.remove('arrow-hidden');
   }
+
+  container.append(faderLeft, faderRight);
 
   parent.append(container);
 
@@ -151,7 +149,7 @@ export function onCarouselCSSLoad(selector, parent, options) {
   // set initial states
   const setInitialState = (scrollable, opts) => {
     if (opts.infinityScrollEnabled) infinityScroll([...carouselContent]);
-    if (!opts.infinityScrollEnabled && !opts.fadersDisabled) initToggleTriggers(container);
+    else initToggleTriggers(container);
     const onCarouselIntersect = ([entry], observer) => {
       if (!entry.isIntersecting) return;
       if (opts.centerAlign) correctCenterAlignment(scrollable);
