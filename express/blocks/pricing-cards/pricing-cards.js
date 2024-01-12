@@ -3,6 +3,8 @@
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable function-paren-newline */
 import { createTag } from '../../scripts/utils.js';
+// FIXME: reenable linting rules
+// FIXME: rewrite using grid
 
 const blockKeys = ['header', 'explain', 'offer', 'pricingContainer', 'ctaGroup', 'featureList', 'compare'];
 

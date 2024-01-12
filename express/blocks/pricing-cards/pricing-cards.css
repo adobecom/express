@@ -2,7 +2,7 @@
   --card-width: 319px;
   --card-padding: 16px 12px;
 }
-main .pricing-cards-container > div {
+.pricing-cards-container > div.pricing-cards-wrapper {
   max-width: none;
 }
 .pricing-cards.block {
@@ -81,7 +81,7 @@ main .pricing-cards-container > div {
   top: -10px;
   border-radius: 4px;
   background: #D3D5FF;
-  padding: 0px 6px 1px 6px;
+  padding: 0px 6px 1px;
   height: 20px;
   font-size: var(--body-font-size-xs);
   font-weight: 700;
@@ -146,7 +146,7 @@ main .pricing-cards-container > div {
   padding: 0;
 }
 .pricing-cards .card-feature-list li {
-  padding: 8px 8px;
+  padding: 8px;
 }
 .pricing-cards .card-feature-list li:first-of-type {
   padding-top: 0;
