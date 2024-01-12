@@ -114,7 +114,7 @@ export default async function decorate(block) {
     video.addEventListener('loadeddata', () => {
       resolve();
     }, false);
-    setTimeout(() => resolve(), 2000);
+    setTimeout(() => resolve(), 1500);
   });
   const dropzone = actionAndAnimationRow[1];
   dropzone.classList.add('dropzone');
@@ -170,11 +170,13 @@ export default async function decorate(block) {
     quickActionRow[0].remove();
   }
 
-  const placeholders = await fetchPlaceholders();
-  for (let i = 1; i < 3; i += 1) {
-    const tagText = placeholders[`free-plan-check-${i}`];
-    const freePlan = createFreePlanContainer(tagText);
-    dropzone.append(freePlan);
-  }
-  await videoPromise;
+  const placeholderPromise = fetchPlaceholders().then((placeholders) => {
+    for (let i = 1; i < 3; i += 1) {
+      const tagText = placeholders[`free-plan-check-${i}`];
+      const freePlan = createFreePlanContainer(tagText);
+      dropzone.append(freePlan);
+    }
+  });
+
+  await Promise.all([videoPromise, placeholderPromise]);
 }
