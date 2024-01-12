@@ -15,9 +15,9 @@
 .frictionless-quick-action.block h1 em {
     background: linear-gradient(320deg, #7C84F3, #FF4DD2, #FF993B, #FF4DD2, #7C84F3, #FF4DD2, #FF993B);
     background-size: 400% 400%;
-    -webkit-animation: quickActionGradient 45s ease infinite;
-    -moz-animation: quickActionGradient 45s ease infinite;
-    animation: quickActionGradient 45s ease infinite;
+    -webkit-animation: frictionlessQuickActionGradient 45s ease infinite;
+    -moz-animation: frictionlessQuickActionGradient 45s ease infinite;
+    animation: frictionlessQuickActionGradient 45s ease infinite;
     -webkit-background-clip: text;
     background-clip: text;
     font-style: normal;
@@ -51,7 +51,7 @@
     cursor: pointer;
     padding: 24px 0;
     border-radius: 20px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     width: 600px;
     height: 271px;
 }
@@ -60,7 +60,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    left: 0px;
+    left: 0;
     background: url("/express/icons/dash-rectangle.svg") center center / 91% no-repeat;
 }
 
@@ -131,4 +131,46 @@
     left: 3px;
     width: 8px;
     max-height: 8px;
+}
+
+@-webkit-keyframes frictionlessQuickActionGradient {
+    0% {
+        background-position: 0 50%
+    }
+
+    50% {
+        background-position: 100% 50%
+    }
+
+    100% {
+        background-position: 0 50%
+    }
+}
+
+@-moz-keyframes frictionlessQuickActionGradient {
+    0% {
+        background-position: 0 50%
+    }
+
+    50% {
+        background-position: 100% 50%
+    }
+
+    100% {
+        background-position: 0 50%
+    }
+}
+
+@keyframes frictionlessQuickActionGradient {
+    0% {
+        background-position: 0 50%
+    }
+
+    50% {
+        background-position: 100% 50%
+    }
+
+    100% {
+        background-position: 0 50%
+    }
 }
