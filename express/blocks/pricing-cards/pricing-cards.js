@@ -4,7 +4,6 @@
 /* eslint-disable function-paren-newline */
 import { createTag } from '../../scripts/utils.js';
 // FIXME: reenable linting rules
-// FIXME: rewrite using grid
 
 const blockKeys = ['header', 'explain', 'offer', 'pricingContainer', 'ctaGroup', 'featureList', 'compare'];
 
@@ -91,9 +90,7 @@ export default function init(el) {
       return obj;
     }, {}),
   );
-  const disclaimer = el.querySelector(':scope > div:last-child');
-  disclaimer.classList.add('disclaimer');
-  el.querySelectorAll(':scope > div').forEach((div) => div.remove());
+  el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   cards.map((card) => decorateCard(card)).forEach((card) => cardsContainer.append(card));
   const maxCTACnt = cards.reduce((max, card) => Math.max(max, card.ctaGroup.querySelectorAll('a').length), 0);
@@ -102,6 +99,5 @@ export default function init(el) {
       ctaGroup.classList.add(`min-height-${maxCTACnt}`);
     });
   }
-  el.append(cardsContainer);
-  el.append(disclaimer);
+  el.prepend(cardsContainer);
 }
