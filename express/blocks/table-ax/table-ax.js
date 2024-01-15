@@ -30,9 +30,6 @@ function handleToggleMore(e) {
 
 function handleHeading(headingRow) {
   const headingCols = Array.from(headingRow.children);
-  // console.log(headingRow);
-  // console.log(headingRow.parentElement);
-  // console.log(headingCols.length);
   if (headingCols.length > 3) headingRow.parentElement.classList.add('many-cols');
   else if (headingCols.length < 3) headingRow.parentElement.classList.add('few-cols');
 
@@ -139,7 +136,10 @@ function handleSection(sectionParams) {
   } else {
     row.classList.add('section-row');
     rowCols.forEach((col, idx) => {
-      if (idx === 0) return;
+      if (idx === 0) {
+        if (!col.children.length) col.innerHTML = `<p class="tracking-col">${col.innerHTML}</p>`;
+        return;
+      }
       if (!col.children.length) {
         if (!col.innerHTML || col.innerHTML === '-') {
           col.classList.add('excluded-feature');
@@ -161,11 +161,6 @@ function handleSection(sectionParams) {
           }
         });
       }
-      /*
-if only one element, 
-if it is a + or a - add icon
-
-      */
     });
     if (!isAdditional && nextRow.classList.contains('toggle-row')) row.classList.add('table-end-row');
   }
