@@ -30,6 +30,12 @@ function handleToggleMore(e) {
 
 function handleHeading(headingRow) {
   const headingCols = Array.from(headingRow.children);
+  // console.log(headingRow);
+  // console.log(headingRow.parentElement);
+  // console.log(headingCols.length);
+  if (headingCols.length > 3) headingRow.parentElement.classList.add('many-cols');
+  else if (headingCols.length < 3) headingRow.parentElement.classList.add('few-cols');
+
   headingCols.forEach((col) => {
     col.classList.add('col-heading');
     if (!col.innerHTML) {
@@ -43,7 +49,7 @@ function handleHeading(headingRow) {
       decorateButtons(col, 'button-l');
       const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
       col.append(buttonsWrapper);
-      const buttons = col.querySelectorAll('.con-button');
+      const buttons = col.querySelectorAll('.button');
 
       buttons.forEach((btn) => {
         if (btn.innerHTML.includes('{{dark}}')) {
