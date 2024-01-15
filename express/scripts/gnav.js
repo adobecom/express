@@ -109,13 +109,9 @@ async function loadFEDS() {
     : 'adobe-express/ax-gnav-x-row';
 
   async function buildBreadCrumbArray() {
-    if (isHomepage || getMetadata('hide-breadcrumbs') === 'true') {
+    if (isHomepage || getMetadata('breadcrumbs') !== 'on') {
       return null;
     }
-    const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
-    const buildBreadCrumb = (path, name, parentPath = '') => (
-      { title: capitalize(name), url: `${parentPath}/${path}` }
-    );
 
     const placeholders = await fetchPlaceholders();
     const validSecondPathSegments = ['create', 'feature'];
@@ -137,6 +133,10 @@ async function loadFEDS() {
       return null;
     }
 
+    const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+    const buildBreadCrumb = (path, name, parentPath = '') => (
+      { title: capitalize(name), url: `${parentPath}/${path}` }
+    );
     const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
     const breadCrumbList = [secondBreadCrumb];
 

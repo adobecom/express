@@ -7,6 +7,7 @@ import {
   registerPerformanceLogger,
   setConfig,
   loadStyle,
+  createTag,
 } from './utils.js';
 
 const locales = {
@@ -86,6 +87,11 @@ const showNotifications = () => {
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
+  if (getMetadata('hide-breadcrumbs') !== 'true' && !getMetadata('breadcrumbs') && !window.location.pathname.endsWith('/express/')) {
+    const meta = createTag('meta', { name: 'breadcrumbs', content: 'on' });
+    document.head.append(meta);
+  }
+  if (getMetadata('breadcrumbs') === 'on' && !!getMetadata('breadcrumbs-base') && (!!getMetadata('short-title') || !!getMetadata('breadcrumbs-page-title'))) document.body.classList.add('breadcrumbs-spacing');
   showNotifications();
   await loadArea();
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
