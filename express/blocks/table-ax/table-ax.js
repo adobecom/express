@@ -1,517 +1,298 @@
 /* eslint-disable no-plusplus */
-// import { createTag, MILO_EVENTS } from '../../utils/utils.js';
-import { createTag, MILO_EVENTS } from '../../scripts/utils.js';
-// import { decorateButtons } from '../../utils/decorate.js';
+import { createTag, getIconElement } from '../../scripts/utils.js';
 import { decorateButtons } from '../../scripts/utils/decorate.js';
 
-const DESKTOP_SIZE = 900;
-const MOBILE_SIZE = 768;
-const tableHighlightLoadedEvent = new Event('milo:table:highlight:loaded');
-
+// const MOBILE_SIZE = 768;
+const MOBILE_SIZE = 900;
 function defineDeviceByScreenSize() {
   const screenWidth = window.innerWidth;
-  if (screenWidth >= DESKTOP_SIZE) {
-    return 'DESKTOP';
-  }
-  if (screenWidth <= MOBILE_SIZE) {
-    return 'MOBILE';
-  }
-  return 'TABLET';
+  if (screenWidth >= MOBILE_SIZE) return 'DESKTOP';
+  return 'MOBILE';
 }
 
-function handleHeading(headingCols, isPriceBottom) {
-  headingCols.forEach((col, i) => {
+function handleToggleMore(e) {
+  const sectionHead = e.closest('.row');
+  let prevElement = sectionHead.previousElementSibling;
+  const icon = e.querySelector('.icon');
+  const expanded = icon.getAttribute('aria-expanded') === 'false';
+  icon.setAttribute('aria-expanded', expanded.toString());
+  while (prevElement && !prevElement.classList.contains('section-header-row') && !prevElement.classList.contains('spacer-row')) {
+    if (expanded) {
+      sectionHead.classList.remove('collapsed');
+      prevElement.classList.remove('collapsed');
+    } else {
+      sectionHead.classList.add('collapsed');
+      prevElement.classList.add('collapsed');
+    }
+    prevElement = prevElement.previousElementSibling;
+  }
+}
+
+function handleHeading(headingRow) {
+  const headingCols = Array.from(headingRow.children);
+  headingCols.forEach((col) => {
     col.classList.add('col-heading');
     if (!col.innerHTML) {
       col.classList.add('hidden');
       return;
     }
-
-    if (!col.classList.contains('no-rounded') && headingCols[i - 1] && !headingCols[i - 1].innerText) {
-      col.classList.add('top-left-rounded');
-    }
-
     const elements = col.children;
     if (!elements.length) {
       col.innerHTML = `<p class="tracking-header">${col.innerHTML}</p>`;
     } else {
-      let textStartIndex = 0;
-      if (elements[0]?.querySelector('img')) {
-        textStartIndex += 1;
-      }
-      elements[textStartIndex]?.classList.add('tracking-header');
-      const pricingElem = elements[textStartIndex + 1];
-      let bodyElem = elements[textStartIndex + 2];
-
-      if (pricingElem) {
-        pricingElem.classList.add('pricing');
-        if (isPriceBottom) {
-          pricingElem.parentNode.insertBefore(
-            elements[textStartIndex + 2],
-            elements[textStartIndex + 1],
-          );
-          bodyElem = elements[textStartIndex + 1];
-        }
-      }
-      if (bodyElem) {
-        bodyElem.classList.add('body');
-      }
-
       decorateButtons(col, 'button-l');
       const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
       col.append(buttonsWrapper);
       const buttons = col.querySelectorAll('.con-button');
 
       buttons.forEach((btn) => {
+        if (btn.innerHTML.includes('{{dark}}')) {
+          btn.innerHTML = btn.innerHTML.replace('{{dark}}', '');
+          btn.classList.add('dark');
+        }
         const btnWrapper = btn.closest('P');
         buttonsWrapper.append(btnWrapper);
       });
 
-      const row1 = document.createElement('div');
-      const row2 = document.createElement('div');
-      const row1LastIdx = isPriceBottom ? 3 : 4;
-      [...elements].forEach((e, idx) => {
-        if (idx < row1LastIdx) row1.appendChild(e);
-        else row2.appendChild(e);
+      const div = document.createElement('div');
+      const colLabel = document.createElement('div');
+      colLabel.classList.add('col-heading');
+      [...elements].forEach((e) => {
+        if (!e.classList.contains('buttons-wrapper')) colLabel.append(e.cloneNode(true));
+        div.append(e);
       });
       col.innerHTML = '';
-      col.append(row1, row2);
+      col.append(div);
+      const colIndex = col.getAttribute('data-col-index');
+      const colItems = headingRow.parentElement.querySelectorAll(`.section-row > .col[data-col-index="${colIndex}"]`);
+      colItems.forEach((colItem) => {
+        const colWrapper = document.createElement('div');
+        colWrapper.classList.add('col-wrapper');
+        const colContent = document.createElement('div');
+        colContent.classList.add('col-content');
+        colWrapper.append(colLabel.cloneNode(true), colContent);
+        Array.from(colItem.children).forEach((colItemEl) => {
+          colContent.appendChild(colItemEl);
+        });
+        colItem.append(colWrapper);
+      });
     }
   });
 }
 
-function handleHighlight(table) {
-  const isHighlightTable = table.classList.contains('highlight');
-  const firstRow = table.querySelector('.row-1');
-  const firstRowCols = firstRow.querySelectorAll('.col');
-  const secondRow = table.querySelector('.row-2');
-  const secondRowCols = secondRow.querySelectorAll('.col');
-  const isPriceBottom = table.classList.contains('pricing-bottom');
-  let headingCols = null;
-
-  if (isHighlightTable) {
-    firstRow.classList.add('row-highlight');
-    secondRow.classList.add('row-heading');
-    secondRowCols.forEach((col) => col.classList.add('col-heading'));
-    headingCols = secondRowCols;
-
-    firstRowCols.forEach((col, i) => {
-      col.classList.add('col-highlight');
-      const hasText = col.innerText;
-      if (hasText) {
-        headingCols[i]?.classList.add('no-rounded');
-      } else if (!headingCols[i]?.innerText) {
-        col.classList.add('hidden');
-        headingCols[i]?.classList.add('hidden');
-      } else {
-        col.classList.add('hidden');
-        if (!headingCols[i - 1]?.innerText) {
-          headingCols[i]?.classList.add('top-left-rounded');
-        }
-      }
-    });
-  } else {
-    headingCols = firstRowCols;
-    firstRow.classList.add('row-heading');
-  }
-
-  handleHeading(headingCols, isPriceBottom);
-  table.dispatchEvent(tableHighlightLoadedEvent);
-}
-
-function handleExpand(e) {
-  const sectionHead = e.closest('.row');
-  let nextElement = sectionHead.nextElementSibling;
-  const expanded = e.getAttribute('aria-expanded') === 'false';
-  e.setAttribute('aria-expanded', expanded.toString());
-  while (nextElement && !nextElement.classList.contains('divider')) {
-    if (expanded) {
-      sectionHead.classList.remove('section-head-collaped');
-      nextElement.classList.remove('hidden');
-    } else {
-      sectionHead.classList.add('section-head-collaped');
-      nextElement.classList.add('hidden');
-    }
-    nextElement = nextElement.nextElementSibling;
-  }
-}
-
-/**
- * @param {*} sectionParams that is from init()
- * @returns {boolean expandSection} that is the only variable get updated from sectionParams
- */
 function handleSection(sectionParams) {
   const {
-    row, index, allRows, rowCols, isMerch, isCollapseTable, isHighlightTable,
+    row,
+    index,
+    allRows,
+    rowCols,
+    isBlank,
+    isColumnless,
+    isAdditional,
+    isShaded,
+    isToggle,
   } = sectionParams;
-  let { expandSection } = sectionParams;
 
   const previousRow = allRows[index - 1];
   const nextRow = allRows[index + 1];
-  const nextRowCols = Array.from(nextRow?.children || []);
 
-  if (row.querySelector('hr') && nextRow) {
-    row.classList.add('divider');
+  if (isShaded) row.classList.add('shaded-row');
+  if (isAdditional) row.classList.add('additional-row');
+  if (!nextRow) row.classList.add('table-end-row');
+  if (isBlank) {
+    row.classList.add('blank-row');
     row.removeAttribute('role');
-    nextRow.classList.add('section-head');
-    const sectionHeadTitle = nextRowCols?.[0];
+    if (index > 0) previousRow.classList.add('table-end-row');
+    if (nextRow) nextRow.classList.add('table-start-row');
+  } else if (isToggle) {
+    const expandIconTag = createTag('span', { class: 'expand-icon' });
+    expandIconTag.append(getIconElement('expand'));
 
-    if (isMerch && nextRowCols.length) {
-      nextRowCols.forEach((merchCol) => {
-        merchCol.classList.add('section-head-title');
-        merchCol.setAttribute('role', 'rowheader');
-      });
-    } else {
-      sectionHeadTitle.classList.add('section-head-title');
-      sectionHeadTitle.setAttribute('role', 'rowheader');
-    }
+    const collapseIconTag = createTag('span', { class: 'collapse-icon' });
+    collapseIconTag.append(getIconElement('collapse'));
 
-    if (isCollapseTable) {
-      const iconTag = createTag('span', { class: 'icon expand' });
-      sectionHeadTitle.appendChild(iconTag);
+    const toggleIconTag = createTag('span', { class: 'icon expand' });
+    toggleIconTag.setAttribute('aria-expanded', 'false');
+    toggleIconTag.append(expandIconTag, collapseIconTag);
 
-      if (expandSection) {
-        iconTag.setAttribute('aria-expanded', 'true');
-        expandSection = false;
-      } else {
-        iconTag.setAttribute('aria-expanded', 'false');
-        nextRow.classList.add('section-head-collaped');
-        let nextElement = row.nextElementSibling;
-        while (nextElement && !nextElement.classList.contains('divider')) {
-          nextElement.classList.add('hidden');
-          nextElement = nextElement.nextElementSibling;
-        }
-      }
+    row.querySelector('.toggle-icon').appendChild(toggleIconTag);
+    row.classList.add('collapsed');
+    let prevRow = previousRow;
+    let i = index;
+    while (prevRow && !prevRow.classList.contains('section-header-row') && !prevRow.classList.contains('blank-row')) {
+      prevRow.classList.add('collapsed');
+      i--;
+      prevRow = allRows[i].previousElementSibling;
     }
-  } else if (previousRow?.querySelector('hr') && nextRow) {
-    nextRow.classList.add('section-row');
-    if (!isMerch) {
-      const sectionRowTitle = nextRowCols?.[0];
-      sectionRowTitle.classList.add('section-row-title');
-    }
-  } else if (!row.classList.contains('row-1') && (!isHighlightTable || !row.classList.contains('row-2'))) {
+  } else if (isColumnless) {
+    row.classList.add('section-header-row');
+    rowCols[0].classList.add('section-head-title');
+    rowCols[0].setAttribute('role', 'rowheader');
+  } else if (index === 0) {
+    row.classList.add('row-heading', 'table-start-row');
+  } else {
     row.classList.add('section-row');
-    if (isMerch && !row.classList.contains('divider')) {
-      rowCols.forEach((merchCol) => {
-        merchCol.classList.add('col-merch');
-        const children = Array.from(merchCol.children);
-        const merchContent = createTag('div', { class: 'col-merch-content' });
-        if (children.length) {
-          children.forEach((child) => {
-            if (!child.querySelector('.icon')) {
-              merchContent.append(child);
+    rowCols.forEach((col, idx) => {
+      if (idx === 0) return;
+      if (!col.children.length) {
+        if (!col.innerHTML || col.innerHTML === '-') {
+          col.classList.add('excluded-feature');
+          col.innerHTML = '<span class="feature-status-icon dash-icon"></span>';
+        } else if (col.innerHTML === '+') {
+          col.classList.add('included-feature');
+          col.innerHTML = '<span class="feature-status-icon check-icon"></span>';
+        } else col.innerHTML = `<p class="tracking-col">${col.innerHTML}</p>`;
+      } else {
+        Array.from(col.children).forEach((child, i) => {
+          if (i === 0) {
+            if (!child.innerHTML || child.innerHTML === '-') {
+              col.classList.add('excluded-feature');
+              child.innerHTML = '<span class="feature-status-icon dash-icon"></span>';
+            } else if (child.innerHTML === '+') {
+              col.classList.add('included-feature');
+              child.innerHTML = '<span class="feature-status-icon check-icon"></span>';
             }
-          });
-          merchCol.insertBefore(merchContent, merchCol.firstChild);
-        } else if (merchCol.innerText) {
-          const pTag = createTag('p', { class: 'merch-col-text' }, merchCol.innerText);
-          merchCol.innerText = '';
-          merchContent.append(pTag);
-          merchCol.append(merchContent);
-        }
-      });
-    } else {
-      const sectionRowTitle = rowCols[0];
-      sectionRowTitle.classList.add('section-row-title');
-    }
-  }
-  return expandSection;
-}
-
-function formatMerchTable(table) {
-  const rows = table.querySelectorAll('.row');
-  const rowsNum = rows.length;
-  const firstRow = rows[0];
-  const colsInRow = firstRow.querySelectorAll('.col');
-  const colsInRowNum = colsInRow.length;
-
-  for (let i = colsInRowNum; i > 0; i--) {
-    const cols = table.querySelectorAll(`.col-${i}`);
-    for (let j = rowsNum - 1; j >= 0; j--) {
-      const currentCol = cols[j];
-      if (!currentCol?.innerText && currentCol?.children.length === 0) {
-        currentCol.classList.add('no-borders');
-      } else {
-        currentCol?.classList.add('border-bottom');
-        break;
-      }
-    }
-  }
-}
-
-function removeHover(cols) {
-  cols.forEach((col) => col.classList.remove('hover', 'no-top-border', 'hover-border-bottom'));
-}
-
-function handleHovering(table) {
-  const row1 = table.querySelector('.row-1');
-  const colsInRowNum = row1.childElementCount;
-  const isMerch = table.classList.contains('merch');
-  const startValue = isMerch ? 1 : 2;
-  const isCollapseTable = table.classList.contains('collapse');
-  const sectionHeads = table.querySelectorAll('.section-head');
-  const lastSectionHead = sectionHeads[sectionHeads.length - 1];
-  const lastExpandIcon = lastSectionHead?.querySelector('.icon.expand');
-
-  for (let i = startValue; i <= colsInRowNum; i++) {
-    const cols = table.querySelectorAll(`.col-${i}`);
-    cols.forEach((e) => {
-      e.addEventListener('mouseover', () => {
-        removeHover(cols);
-        const headingRow = table.querySelector('.row-heading');
-        const colClass = `col-${i}`;
-        const isLastRowCollapsed = lastExpandIcon?.getAttribute('aria-expanded') === 'false';
-        cols.forEach((col) => {
-          if (col.classList.contains('col-highlight') && col.innerText) {
-            const matchingColsClass = Array.from(col.classList).find(
-              (className) => className.startsWith(colClass),
-            );
-            const noTopBorderCol = headingRow.querySelector(`.${matchingColsClass}`);
-            noTopBorderCol?.classList.add('no-top-border');
           }
-          if (isCollapseTable && isLastRowCollapsed) {
-            const lastSectionHeadCol = lastSectionHead.querySelector(`.col-${i}`);
-            lastSectionHeadCol.classList.add('hover-border-bottom');
-          }
-          col.classList.add('hover');
         });
-      });
-      e.addEventListener('mouseout', () => removeHover(cols));
+      }
+      /*
+if only one element, 
+if it is a + or a - add icon
+
+      */
     });
+    if (!isAdditional && nextRow.classList.contains('toggle-row')) row.classList.add('table-end-row');
   }
 }
 
-function handleScrollEffect(table) {
-  const gnav = document.querySelector('header');
-  const gnavHeight = gnav ? gnav.offsetHeight : 0;
-  const highlightRow = table.querySelector('.row-highlight');
-  const headingRow = table.querySelector('.row-heading');
-
-  if (highlightRow) {
-    highlightRow.style.top = `${gnavHeight}px`;
-    highlightRow.classList.add('top-border-transparent');
-  } else {
-    headingRow.classList.add('top-border-transparent');
-  }
-  headingRow.style.top = `${gnavHeight + (highlightRow ? highlightRow.offsetHeight : 0)}px`;
-
-  const intercept = table.querySelector('.intercept') || createTag('div', { class: 'intercept' });
-  intercept.setAttribute('data-observer-intercept', '');
-  table.append(intercept);
-  headingRow.insertAdjacentElement('beforebegin', intercept);
-
-  const observer = new IntersectionObserver(([entry]) => {
-    headingRow.classList.toggle('active', !entry.isIntersecting);
+const assignEvents = (tableEl) => {
+  tableEl.querySelectorAll('.toggle-icon').forEach((icon) => {
+    icon.parentElement.classList.add('point-cursor');
+    const row = icon.closest('.row');
+    row.addEventListener('click', () => handleToggleMore(icon));
+    row.addEventListener('keydown', (e) => {
+      e.preventDefault();
+      if (e.key === 'Enter' || e.key === ' ') handleToggleMore(icon);
+    });
   });
-  observer.observe(intercept);
-}
-
-function applyStylesBasedOnScreenSize(table, originTable) {
-  const isMerch = table.classList.contains('merch');
-  const deviceBySize = defineDeviceByScreenSize();
-
-  const setRowStyle = () => {
-    if (isMerch) return;
-    const sectionRow = Array.from(table.getElementsByClassName('section-row'));
-    if (sectionRow.length) {
-      const colsForTablet = sectionRow[0].children.length - 1;
-      const percentage = 100 / colsForTablet;
-      const templateColumnsValue = `repeat(auto-fit, ${percentage}%)`;
-      sectionRow.forEach((row) => {
-        if (deviceBySize === 'TABLET' || (deviceBySize === 'MOBILE' && !row.querySelector('.col-3'))) {
-          row.style.gridTemplateColumns = templateColumnsValue;
-        } else {
-          row.style.gridTemplateColumns = '';
-        }
-      });
-    }
-  };
-
-  const reAssignEvents = (tableEl) => {
-    tableEl.dispatchEvent(tableHighlightLoadedEvent);
-    tableEl.querySelectorAll('.icon.expand').forEach((icon) => {
-      icon.parentElement.classList.add('point-cursor');
-      icon.parentElement.addEventListener('click', () => handleExpand(icon));
-      icon.parentElement.addEventListener('keydown', (e) => {
-        e.preventDefault();
-        if (e.key === 'Enter' || e.key === ' ') handleExpand(icon);
-      });
-    });
-    handleHovering(tableEl);
-  };
-
-  const mobileRenderer = () => {
-    const headings = table.querySelectorAll('.row-heading .col');
-    const headingsLength = headings.length;
-
-    if (isMerch && headingsLength > 2) {
-      table.querySelectorAll('.col:not(.col-1, .col-2)').forEach((col) => col.remove());
-    } else if (headingsLength > 3) {
-      table.querySelectorAll('.col:not(.col-1, .col-2, .col-3), .col.no-borders').forEach((col) => col.remove());
-    }
-
-    if ((!isMerch && !table.querySelector('.col-3'))
-    || (isMerch && !table.querySelector('.col-2'))) return;
-
-    const filterChangeEvent = () => {
-      table.innerHTML = originTable.innerHTML;
-      reAssignEvents(table);
-      const filters = Array.from(table.parentElement.querySelectorAll('.filter')).map((f) => parseInt(f.value, 10));
-      const highlights = table.querySelectorAll('.row-highlight .col');
-      const rows = table.querySelectorAll('.row');
-
-      if (isMerch) {
-        table.querySelectorAll(`.col:not(.col-${filters[0] + 1}, .col-${filters[1] + 1})`).forEach((col) => col.remove());
-      } else {
-        table.querySelectorAll(`.col:not(.col-1, .col-${filters[0] + 1}, .col-${filters[1] + 1}), .col.no-borders`).forEach((col) => col.remove());
-      }
-
-      if (filters[0] > filters[1]) {
-        if (isMerch) {
-          rows.forEach((row) => {
-            row.querySelector('.col:not(.section-row-title)').style.order = 1;
-          });
-        } else {
-          rows.forEach((row) => {
-            row.querySelector('.col:not(.section-row-title, .col-1)').style.order = 1;
-          });
-        }
-      } else if (filters[0] === filters[1]) {
-        rows.forEach((row) => {
-          row.append(row.querySelector('.col:last-child').cloneNode(true));
-        });
-      }
-
-      highlights.forEach((highlight, index) => {
-        if (!highlight.innerHTML && !headings[index + 1]?.classList.contains('hidden')) {
-          table.querySelector('.row-heading').querySelectorAll(`.col-${index + 1}`).forEach((heading) => {
-            heading.classList.add('top-left-rounded', 'top-right-rounded');
-          });
-        }
-      });
-      setRowStyle();
-    };
-
-    // Remove filter if table there are only 2 columns
-    const filter = isMerch ? headingsLength > 2 : headingsLength > 3;
-    if (!table.parentElement.querySelector('.filters') && filter) {
-      const filters = createTag('div', { class: 'filters' });
-      const filter1 = createTag('div', { class: 'filter-wrapper' });
-      const filter2 = createTag('div', { class: 'filter-wrapper' });
-      const colSelect0 = createTag('select', { class: 'filter' });
-      const headingsFromOrigin = originTable.querySelectorAll('.col-heading');
-      headingsFromOrigin.forEach((heading, index) => {
-        const title = heading.querySelector('.tracking-header');
-        if (!title || (!isMerch && title.closest('.col-1'))) return;
-
-        const option = createTag('option', { value: index }, title.innerText);
-        colSelect0.append(option);
-      });
-      const colSelect1 = colSelect0.cloneNode(true);
-      colSelect0.dataset.filterIndex = 0;
-      colSelect1.dataset.filterIndex = 1;
-      const visibleCols = table.querySelectorAll(`.col-heading:not([style*="display: none"], .hidden${isMerch ? '' : ', .col-1'})`);
-      colSelect0.querySelectorAll('option').item(visibleCols.item(0).dataset.colIndex - (isMerch ? 1 : 2)).selected = true;
-      colSelect1.querySelectorAll('option').item(visibleCols.item(1).dataset.colIndex - (isMerch ? 1 : 2)).selected = true;
-      filter1.append(colSelect0);
-      filter2.append(colSelect1);
-      filters.append(filter1, filter2);
-      filter1.addEventListener('change', filterChangeEvent);
-      filter2.addEventListener('change', filterChangeEvent);
-      table.parentElement.insertBefore(filters, table);
-      table.parentElement.classList.add(`table-${table.classList.contains('merch') ? 'merch-' : ''}section`);
-    }
-  };
-
-  // For Mobile (else: tablet / desktop)
-  if (!isMerch && !table.querySelector('.row-heading .col-2')) {
-    table.querySelector('.row-heading').style.display = 'block';
-    table.querySelector('.row-heading .col-1').style.display = 'flex';
-  }
-
-  if (deviceBySize === 'MOBILE' || (isMerch && deviceBySize === 'TABLET')) {
-    mobileRenderer();
-  } else {
-    table.innerHTML = originTable.innerHTML;
-    reAssignEvents(table);
-    table.parentElement.querySelectorAll('.filters select').forEach((select, index) => {
-      select.querySelectorAll('option').item(index).selected = true;
-    });
-  }
-
-  setRowStyle();
-}
+};
 
 export default function init(el) {
   el.setAttribute('role', 'table');
   if (el.parentElement.classList.contains('section')) {
-    el.parentElement.classList.add(`table-${el.classList.contains('merch') ? 'merch-' : ''}section`);
+    el.parentElement.classList.add('table-section');
   }
+  const defaultVisibleCount = Array.from(el.classList).find((e) => e.match(/^show\d+/g))?.substring(4) ?? 3;
   const rows = Array.from(el.children);
-  const isMerch = el.classList.contains('merch');
-  const isCollapseTable = el.classList.contains('collapse') && !isMerch;
-  const isHighlightTable = el.classList.contains('highlight');
-  let expandSection = true;
-
-  rows.forEach((row, rdx) => {
-    row.classList.add('row', `row-${rdx + 1}`);
+  let sectionTitle = '';
+  let sectionItem = 0;
+  let visibleCount = defaultVisibleCount;
+  for (let index = 0; index < rows.length; index++) {
+    const row = rows[index];
+    row.classList.add('row', `row-${index + 1}`);
     row.setAttribute('role', 'row');
     const cols = Array.from(row.children);
+
+    let isBlank = false;
+    let isShaded = false;
+    let isColumnless = false;
+    let isAdditional = false;
+    let isToggle = false;
+
+    if (row.classList.contains('toggle-row')) isToggle = true;
+    else if (cols.length <= 1) {
+      isColumnless = true;
+      if (cols.length === 0 || !cols[0].innerHTML) isBlank = true;
+      else {
+        sectionTitle = cols[0].innerHTML;
+        const sectionTitleArr = sectionTitle.split('{{');
+        if (sectionTitleArr.length <= 1) visibleCount = defaultVisibleCount;
+        else {
+          visibleCount = sectionTitleArr[1].split('}}')[0].trim();
+          sectionTitle = sectionTitleArr['0'];
+          cols[0].innerHTML = sectionTitle;
+        }
+        sectionItem = 1;
+        cols[0].dataset.colIndex = 1;
+        cols[0].classList.add('col', `col-${1}`);
+        cols[0].setAttribute('role', 'cell');
+        cols[0].tabIndex = 0;
+      }
+    } else {
+      if (sectionItem % 2 !== 0) isShaded = true;
+      if (visibleCount != 0 && sectionItem > visibleCount) isAdditional = true;
+      sectionItem++;
+      cols.forEach((col, cdx) => {
+        col.dataset.colIndex = cdx + 1;
+        col.classList.add('col', `col-${cdx + 1}`);
+        col.setAttribute('role', 'cell');
+        if (col.innerHTML) col.tabIndex = 0;
+      });
+    }
+
+    // Create and add the toggle row (needed for mobile)
+    const nextRow = rows[index + 1];
+    if (index > 0 && !isToggle && !isColumnless && (!nextRow || Array.from(nextRow.children).length <= 1)) {
+      const toggleOverflowRow = createTag('div', { class: 'toggle-row' });
+      if (!isAdditional) toggleOverflowRow.classList.add('mobile-only');
+      const toggleOverflowIcon = createTag('div', { class: 'toggle-icon' });
+      const toggleOverflowText = createTag('div', { class: 'toggle-text' });
+      const toggleOverflowTextOpened = createTag('span', { class: 'opened-text' });
+      const toggleOverflowTextClosed = createTag('span', { class: 'closed-text' });
+      const toggleOverflowLabel = createTag('div', { class: 'toggle-count col' });
+      const toggleOverflowContent = createTag('div', { class: 'toggle-content col' });
+
+      toggleOverflowRow.tabIndex = 0;
+      toggleOverflowContent.setAttribute('role', 'cell');
+      toggleOverflowContent.setAttribute('aria-label', `View All ${sectionTitle} Features`);
+      toggleOverflowTextOpened.innerHTML = 'View All Features'; // Replace with Placeholder fetch
+      toggleOverflowTextClosed.innerHTML = 'Close'; // Replace with Placeholder fetch
+      toggleOverflowLabel.innerHTML = `${sectionItem - 1} total items`; // Replace 'total items' with Placeholder
+      toggleOverflowText.append(toggleOverflowTextOpened, toggleOverflowTextClosed);
+      toggleOverflowContent.append(toggleOverflowIcon, toggleOverflowText);
+      toggleOverflowRow.append(toggleOverflowContent, toggleOverflowLabel);
+
+      if (nextRow) {
+        rows.splice(index + 1, 0, toggleOverflowRow);
+        el.insertBefore(toggleOverflowRow, nextRow);
+      } else {
+        rows.push(toggleOverflowRow);
+        el.append(toggleOverflowRow);
+      }
+    }
+
     const sectionParams = {
       row,
-      index: rdx,
+      index,
       allRows: rows,
       rowCols: cols,
-      isMerch,
-      isCollapseTable,
-      expandSection,
-      isHighlightTable,
+      isBlank,
+      isColumnless,
+      isAdditional,
+      isShaded,
+      isToggle,
     };
+    handleSection(sectionParams);
+  }
 
-    cols.forEach((col, cdx) => {
-      col.dataset.colIndex = cdx + 1;
-      col.classList.add('col', `col-${cdx + 1}`);
-      col.setAttribute('role', 'cell');
-      if (col.innerHTML) {
-        col.tabIndex = 0;
-      }
+  handleHeading(rows[0]);
+  assignEvents(el);
+
+  const handleResize = () => {
+    const collapisbleRows = el.querySelectorAll('.section-row, .toggle-row');
+    collapisbleRows.forEach((collapisbleRow) => {
+      collapisbleRow.classList.add('collapsed');
     });
-
-    expandSection = handleSection(sectionParams);
-  });
-
-  const isStickyHeader = el.classList.contains('sticky');
-
-  handleHighlight(el);
-  if (isMerch) formatMerchTable(el);
-
-  const handleTable = () => {
-    let originTable;
-    let visibleHeadingsSelector = '.col-heading:not(.hidden, .col-1)';
-    if (isMerch) {
-      visibleHeadingsSelector = '.col-heading:not(.hidden)';
-    }
-    if (el.querySelectorAll(visibleHeadingsSelector).length > 2) {
-      originTable = el.cloneNode(true);
-    } else {
-      originTable = el;
-    }
-
-    const handleResize = () => {
-      applyStylesBasedOnScreenSize(el, originTable);
-      if (isStickyHeader) handleScrollEffect(el);
-    };
-    handleResize();
-
-    let deviceBySize = defineDeviceByScreenSize();
-    window.addEventListener('resize', () => {
-      if (deviceBySize === defineDeviceByScreenSize()) return;
-      deviceBySize = defineDeviceByScreenSize();
-      handleResize();
+    const toggleRows = el.querySelectorAll('.toggle-row');
+    toggleRows.forEach((toggleRow) => {
+      toggleRow.querySelector('.icon.expand').setAttribute('aria-expanded', false);
     });
   };
-
-  window.addEventListener(MILO_EVENTS.DEFERRED, () => {
-    handleTable();
-  }, true);
+  // handleResize();
+  let deviceBySize = defineDeviceByScreenSize();
+  window.addEventListener('resize', () => {
+    if (deviceBySize === defineDeviceByScreenSize()) return;
+    deviceBySize = defineDeviceByScreenSize();
+    handleResize();
+  });
 }
