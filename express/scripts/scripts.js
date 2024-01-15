@@ -91,7 +91,7 @@ const showNotifications = () => {
     const meta = createTag('meta', { name: 'breadcrumbs', content: 'on' });
     document.head.append(meta);
   }
-  if (getMetadata('breadcrumbs') === 'on' && !!getMetadata('breadcrumbs-base') && (!!getMetadata('short-title') || !!getMetadata('breadcrumbs-page-title'))) document.body.classList.add('breadcrumbs-spacing');
+  if (getMetadata('breadcrumbs') === 'on') document.body.classList.add('breadcrumbs-spacing');
   showNotifications();
   await loadArea();
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
