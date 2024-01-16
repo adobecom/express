@@ -375,6 +375,9 @@ main .section .table-ax-wrapper .table-ax.many-cols {
 .table-ax .row.table-end-row .col:last-child {
   border-bottom-right-radius: var( --border-radius);
 }
+.table-ax .row.section-header-row .col {
+  border-top-width: var(--border-width);
+}
 /* /Table Borders */
 
 /* Table Header Row */

@@ -98,10 +98,10 @@ function handleSection(sectionParams) {
 
   const previousRow = allRows[index - 1];
   const nextRow = allRows[index + 1];
-
   if (isShaded) row.classList.add('shaded-row');
   if (isAdditional) row.classList.add('additional-row');
   if (!nextRow) row.classList.add('table-end-row');
+  if (index === allRows.length - 2 && nextRow.classList.contains('mobile-only')) row.classList.add('table-end-row');
   if (isBlank) {
     row.classList.add('blank-row');
     row.removeAttribute('role');
@@ -162,7 +162,7 @@ function handleSection(sectionParams) {
         });
       }
     });
-    if (!isAdditional && nextRow.classList.contains('toggle-row')) row.classList.add('table-end-row');
+    if (!isAdditional && nextRow.classList.contains('toggle-row') && !nextRow.classList.contains('mobile-only')) row.classList.add('table-end-row');
   }
 }
 
