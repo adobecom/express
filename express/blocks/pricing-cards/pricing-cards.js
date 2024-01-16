@@ -1,13 +1,10 @@
-/* eslint-disable object-curly-newline */
-/* eslint-disable max-len */
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable function-paren-newline */
 import { createTag } from '../../scripts/utils.js';
-// FIXME: reenable linting rules
 
 const blockKeys = ['header', 'explain', 'offer', 'pricingContainer', 'ctaGroup', 'featureList', 'compare'];
 
-function decorateCard({ header, explain, offer, pricingContainer, ctaGroup, featureList, compare }) {
+function decorateCard({
+  header, explain, offer, pricingContainer, ctaGroup, featureList, compare,
+}) {
   const card = createTag('div', { class: 'card' });
 
   header.classList.add('card-header');
@@ -20,6 +17,7 @@ function decorateCard({ header, explain, offer, pricingContainer, ctaGroup, feat
     if (/^\d/.test(cfg)) {
       const headCntDiv = createTag('div', { class: 'head-cnt' });
       headCntDiv.textContent = cfg;
+      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', class: 'head-count-icon' }));
       header.append(headCntDiv);
     } else {
       const specialPromo = createTag('div');
@@ -29,7 +27,7 @@ function decorateCard({ header, explain, offer, pricingContainer, ctaGroup, feat
     }
   }
 
-  const icon = header.querySelector('img');
+  const icon = header.querySelector('img:not(.head-count-icon)');
   if (icon) {
     if (icon.parentNode.tagName.toLowerCase() === 'p') {
       icon.parentNode.remove();
@@ -81,15 +79,11 @@ function decorateCard({ header, explain, offer, pricingContainer, ctaGroup, feat
 }
 
 export default function init(el) {
-  const divs = blockKeys.map((_, index) =>
-    el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`),
-  );
-  const cards = Array.from(divs[0]).map((_, index) =>
-    blockKeys.reduce((obj, key, keyIndex) => {
-      obj[key] = divs[keyIndex][index];
-      return obj;
-    }, {}),
-  );
+  const divs = blockKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
+  const cards = Array.from(divs[0]).map((_, index) => blockKeys.reduce((obj, key, keyIndex) => {
+    obj[key] = divs[keyIndex][index];
+    return obj;
+  }, {}));
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   cards.map((card) => decorateCard(card)).forEach((card) => cardsContainer.append(card));
