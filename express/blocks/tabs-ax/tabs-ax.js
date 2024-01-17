@@ -3,6 +3,7 @@
  * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Tab_Role
  */
 import { createTag } from '../../scripts/utils.js';
+
 const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
 
 const isElementInContainerView = (targetEl) => {
@@ -172,11 +173,8 @@ const init = (block) => {
   // Tab Sections
   const allSections = Array.from(rootElem.querySelectorAll('div.section[data-tab]'));
   allSections.forEach((e) => {
-    let val = getStringKeyName(e.dataset.tab);
-    let assocTabItem = rootElem.querySelector(`#tab-panel-${val}`);
-
-    console.log(`#tab-panel-${val}`);
-    console.log(assocTabItem);
+    const val = getStringKeyName(e.dataset.tab);
+    const assocTabItem = rootElem.querySelector(`#tab-panel-${val}`);
 
     if (assocTabItem) {
       assocTabItem.append(e);
