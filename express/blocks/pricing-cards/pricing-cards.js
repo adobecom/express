@@ -11,13 +11,15 @@ function decorateCard({
   const h3 = header.querySelector('h3');
   const h3Content = h3.textContent.trim();
   const headerConfig = /\((.+)\)/.exec(h3Content);
+  const premiumIcon = header.querySelector('img');
+  if (premiumIcon) h3.prepend(premiumIcon);
   if (headerConfig) {
     const cfg = headerConfig[1];
-    h3.textContent = h3Content.replace(`(${cfg})`, '').trim();
+    h3.textContent = (h3Content.replace(`(${cfg})`, '').trim());
     if (/^\d/.test(cfg)) {
-      const headCntDiv = createTag('div', { class: 'head-cnt' });
+      const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
       headCntDiv.textContent = cfg;
-      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', class: 'head-count-icon' }));
+      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
       header.append(headCntDiv);
     } else {
       const specialPromo = createTag('div');
@@ -25,11 +27,6 @@ function decorateCard({
       card.classList.add('special-promo');
       card.append(specialPromo);
     }
-  }
-
-  const icon = header.querySelector('img:not(.head-count-icon)');
-  if (icon) {
-    h3.prepend(icon);
   }
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
