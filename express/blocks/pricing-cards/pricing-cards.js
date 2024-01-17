@@ -29,11 +29,11 @@ function decorateCard({
 
   const icon = header.querySelector('img:not(.head-count-icon)');
   if (icon) {
-    if (icon.parentNode.tagName.toLowerCase() === 'p') {
-      icon.parentNode.remove();
-    }
     h3.prepend(icon);
   }
+  header.querySelectorAll('p').forEach((p) => {
+    if (p.innerHTML.trim() === '') p.remove();
+  });
   card.append(header);
 
   if (explain.textContent.trim()) {
