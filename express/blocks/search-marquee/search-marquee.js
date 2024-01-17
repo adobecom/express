@@ -250,7 +250,6 @@ function decorateBackground(block) {
   const mediaRow = block.querySelector('div:nth-child(2)');
   if (mediaRow) {
     const media = mediaRow.querySelector('picture img');
-    mediaRow.remove();
     if (media) {
       media.classList.add('backgroundimg');
       const wrapper = block.parentElement;
@@ -260,6 +259,7 @@ function decorateBackground(block) {
         block.prepend(media);
       }
     }
+    mediaRow.remove();
   }
 }
 
