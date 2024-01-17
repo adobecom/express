@@ -51,6 +51,11 @@
   --tabs-pill-text-color: #fff;
 }
 
+.hero.hero-noimage > div.tabs-ax-wrapper {
+  /* undo the max width set by hero */
+  max-width: none;
+}
+
 .tabs-ax {
   position: relative;
   margin: 0;
