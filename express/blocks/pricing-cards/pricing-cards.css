@@ -142,10 +142,15 @@
 
 .pricing-cards .card-feature-list {
   display: none;
+  align-self: flex-start;
 }
 .pricing-cards .card-feature-list p {
   padding: 16px 0px;
   border-bottom: 1px solid var(--Palette-gray-100, #E9E9E9);
+}
+.pricing-cards .card-feature-list strong {
+  font-size: var(--body-font-size-m);
+  padding: 8px;
 }
 .pricing-cards .card-feature-list ul {
   list-style-type: none;

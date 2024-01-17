@@ -51,8 +51,8 @@
   --tabs-pill-text-color: #fff;
 }
 
-.hero.hero-noimage > div.tabs-ax-wrapper {
-  /* undo the max width set by hero */
+.section div.tabs-ax-wrapper {
+  /* undo the max width set by section */
   max-width: none;
 }
 
