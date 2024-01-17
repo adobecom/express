@@ -147,8 +147,9 @@
 .pricing-cards .card-feature-list p {
   padding: 16px 0px;
   border-bottom: 1px solid var(--Palette-gray-100, #E9E9E9);
+  margin: 0 0 24px 0;
 }
-.pricing-cards .card-feature-list strong {
+.pricing-cards .card-feature-list p strong {
   font-size: var(--body-font-size-m);
   padding: 8px;
 }
@@ -214,6 +215,9 @@
   }
   .pricing-cards .cards-container:has(.card:first-child:nth-last-child(2)) {
     grid-template-columns: repeat(auto-fit, calc(83px + var(--card-width)));
+  }
+  .pricing-cards .card {
+    gap: 24px;
   }
   .pricing-cards .card-header h3 {
     font-size: 1.75rem;
