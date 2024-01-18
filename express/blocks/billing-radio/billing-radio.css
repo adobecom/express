@@ -1,0 +1,32 @@
+.billing-radio {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+  padding-top: 36px;
+  padding-bottom: 16px;
+  font-size: var(--body-font-size-s);
+  height: 32px;
+}
+
+.billing-radio > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--body-font-size-xs);
+}
+.billing-radio * {
+  cursor: pointer;
+}
+.billing-radio input {
+  appearance: none;
+  border-radius: 50%;
+  border: 2px solid #292929;
+  transition: 0.2s all linear;
+  margin: 0;
+  width: 16px;
+  height: 16px;
+}
+.billing-radio input:checked {
+  border: 6px solid #292929;
+}
