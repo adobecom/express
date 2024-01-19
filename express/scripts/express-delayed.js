@@ -28,7 +28,7 @@ const PEP_DELAY = 3000;
 /**
  * Executes everything that happens a lot later, without impacting the user experience.
  */
-export default async function loadDelayed(DELAY = 3000) {
+export default async function loadDelayed(DELAY = 15000) {
   const bringMeToProduct = await shouldBringToProduct();
   if (bringMeToProduct) {
     const { default: loadLoginUserAutoRedirect } = await import('../features/direct-path-to-product/direct-path-to-product.js');
