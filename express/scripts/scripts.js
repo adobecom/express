@@ -100,7 +100,7 @@ const showNotifications = () => {
   }
   import('./express-delayed.js').then((mod) => {
     mod.default();
-  });
+  }, 10000);
 }());
 
 stamp('start');
