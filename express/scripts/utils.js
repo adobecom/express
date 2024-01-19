@@ -2516,8 +2516,8 @@ export async function loadArea(area = document) {
   }
   await lazy;
 
-  const { default: loadDelayed } = await import('./delayed.js');
-  loadDelayed(10000);
+  const { default: delayed } = await import('./delayed.js');
+  delayed([getConfig, getMetadata, loadScript, loadStyle]);
 }
 
 export function titleCase(str) {
