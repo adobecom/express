@@ -214,6 +214,7 @@ header.global-navigation {
   --border-color: #d9d9d9;
   --border-radius: 8px;
   --border-width: 1px;
+  --global-height-nav: 64px;
 }
 
 /* Negating the very general "main .pricing" rules in styles.css */
@@ -674,4 +675,40 @@ main .section .table-ax-wrapper .table-ax.many-cols {
     border-width: 0px;
   }
 
+}
+
+/* for handling sticky row. In milo this is in styles.css */
+header:not(.global-navigation) {
+  height: 57px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  overflow: hidden;
+  background: #FFF;
+  box-sizing: border-box;
+}
+@media (min-width: 900px) {
+  header:not(.global-navigation) {
+    min-height: var(--global-height-nav);
+    border-bottom: 1px solid #EAEAEA;
+    overflow: unset;
+  }
+
+  header:not(.global-navigation) ~ main {
+    margin-top: 64px;
+  }
+
+  header:not(.global-navigation).has-breadcrumbs {
+    min-height: 97px;
+  }
+
+  header:not(.global-navigation) nav {
+    display: unset;
+  }
+
+  header:not(.global-navigation).has-breadcrumbs + main {
+    margin-top: 97px;
+  }
 }
