@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus */
-import { createTag, getIconElement } from '../../scripts/utils.js';
+import { createTag } from '../../scripts/utils.js';
 import { decorateButtons } from '../../scripts/utils/decorate.js';
 
 // const MOBILE_SIZE = 768;
@@ -108,15 +108,8 @@ function handleSection(sectionParams) {
     if (index > 0) previousRow.classList.add('table-end-row');
     if (nextRow) nextRow.classList.add('table-start-row');
   } else if (isToggle) {
-    const expandIconTag = createTag('span', { class: 'expand-icon' });
-    expandIconTag.append(getIconElement('expand'));
-
-    const collapseIconTag = createTag('span', { class: 'collapse-icon' });
-    collapseIconTag.append(getIconElement('collapse'));
-
     const toggleIconTag = createTag('span', { class: 'icon expand' });
     toggleIconTag.setAttribute('aria-expanded', 'false');
-    toggleIconTag.append(expandIconTag, collapseIconTag);
 
     row.querySelector('.toggle-icon').appendChild(toggleIconTag);
     row.classList.add('collapsed');
@@ -221,7 +214,7 @@ export default function init(el) {
       }
     } else {
       if (sectionItem % 2 !== 0) isShaded = true;
-      if (visibleCount != 0 && sectionItem > visibleCount) isAdditional = true;
+      if (parseInt(visibleCount, 10) !== 0 && sectionItem > visibleCount) isAdditional = true;
       sectionItem++;
       cols.forEach((col, cdx) => {
         col.dataset.colIndex = cdx + 1;
@@ -233,7 +226,8 @@ export default function init(el) {
 
     // Create and add the toggle row (needed for mobile)
     const nextRow = rows[index + 1];
-    if (index > 0 && !isToggle && !isColumnless && (!nextRow || Array.from(nextRow.children).length <= 1)) {
+    if (index > 0 && !isToggle && !isColumnless
+      && (!nextRow || Array.from(nextRow.children).length <= 1)) {
       const toggleOverflowRow = createTag('div', { class: 'toggle-row' });
       if (!isAdditional) toggleOverflowRow.classList.add('mobile-only');
       const toggleOverflowIcon = createTag('div', { class: 'toggle-icon' });

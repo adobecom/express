@@ -130,7 +130,7 @@
 .table-ax .icon.expand {
   background-color: transparent;
   border: 0;
-  background-image: url('../../ui/img/expand2.svg');
+  background-image: url('/express/icons/expand.svg');
   background-repeat: no-repeat;
   background-position: center right;
   width: 15px;
@@ -144,7 +144,7 @@
 }
 
 .table-ax .icon.expand[aria-expanded='true'] {
-  background-image: url('../../ui/img/collapse2.svg');
+  background-image: url('/express/icons/collapse.svg');
 }
 
 /* scroll */

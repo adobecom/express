@@ -2596,4 +2596,4 @@ export function registerPerformanceLogger() {
   }
 }
 
-export const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
+// export const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
