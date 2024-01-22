@@ -38,6 +38,7 @@ const config = {
     version: '1.0',
     onDemand: false,
   },
+  links: 'on',
 };
 
 window.RUM_GENERATION = 'ccx-gen-4-experiment-high-sample-rate';

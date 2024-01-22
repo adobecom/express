@@ -125,6 +125,19 @@ async function autoUpdatePage(main) {
     }
     return match;
   });
+
+  // handle link replacement on sheet-powered pages
+  main.querySelectorAll('a[href*="#"]').forEach((a) => {
+    try {
+      let url = new URL(a.href);
+      if (getMetadata(url.hash.replace('#', ''))) {
+        a.href = getMetadata(url.hash.replace('#', ''));
+        url = new URL(a.href);
+      }
+    } catch (e) {
+      window.lana?.log(`Error while attempting to replace link ${a.href}: ${e}`);
+    }
+  });
 }
 
 // cleanup remaining dom blades
