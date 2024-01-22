@@ -65,6 +65,12 @@ async function loadFEDS() {
   const config = getConfig();
   const prefix = config.locale.prefix.replaceAll('/', '');
 
+  // we're going to initialize jarvis later
+  let jarvis = true;
+  const jarvisMeta = getMetadata('jarvis-chat')?.toLowerCase();
+  if (!jarvisMeta || !['mobile', 'desktop', 'on'].includes(jarvisMeta)
+    || !config.jarvis?.id || !config.jarvis?.version) jarvis = false;
+
   async function showRegionPicker() {
     const { getModal } = await import('../blocks/modal/modal.js');
     const details = {
@@ -174,11 +180,11 @@ async function loadFEDS() {
         window.location.href = sparkLoginUrl;
       },
     },
-    jarvis: {
+    jarvis: jarvis ? {
       surfaceName: 'AdobeExpressEducation',
       surfaceVersion: '1',
       onDemand: true,
-    },
+    } : {},
     breadcrumbs: {
       showLogo: true,
       links: await buildBreadCrumbArray(),
