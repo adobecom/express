@@ -164,12 +164,12 @@ export function onCarouselCSSLoad(selector, parent, options) {
       platform.classList.add('left-fader', 'right-fader');
     }
 
-    if (!opts.infinityScrollEnabled) initToggleTriggers(container);
     const onIntersect = ([entry], observer) => {
       if (!entry.isIntersecting) return;
 
       if (opts.centerAlign) correctCenterAlignment(scrollable);
       if (opts.startPosition === 'right') moveCarousel(-scrollable.scrollWidth);
+      if (!opts.infinityScrollEnabled) initToggleTriggers(container);
 
       observer.unobserve(scrollable);
     };
