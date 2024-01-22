@@ -174,12 +174,11 @@ async function loadFEDS() {
         window.location.href = sparkLoginUrl;
       },
     },
-    jarvis: getMetadata('enable-chat') === 'yes'
-      ? {
-        surfaceName: 'AdobeExpressEducation',
-        surfaceVersion: '1',
-      }
-      : {},
+    jarvis: {
+      surfaceName: 'AdobeExpressEducation',
+      surfaceVersion: '1',
+      onDemand: true,
+    },
     breadcrumbs: {
       showLogo: true,
       links: await buildBreadCrumbArray(),
