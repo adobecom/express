@@ -1,7 +1,7 @@
 import BlockMediator from './block-mediator.min.js';
 import { getMobileOperatingSystem } from './utils.js';
 
-const MAX_EXEC_TIME_ALLOWED = 450;
+const MAX_EXEC_TIME_ALLOWED = 500;
 const TOTAL_PRIME_NUMBER = 10000;
 
 export function isIOS16AndUp(userAgent = navigator.userAgent) {
@@ -17,83 +17,52 @@ export function isIOS16AndUp(userAgent = navigator.userAgent) {
   return false;
 }
 
-export async function isOfficiallySupportedDevice(os) {
-  const { userAgent } = navigator;
-  if (os === 'iOS') {
-    return isIOS16AndUp(userAgent);
+export async function fetchAndroidAllowDenyLists() {
+  const resp = await fetch('/express/android-device-list.json?limit=100000');
+  if (!resp.ok) {
+    window.lana?.log('Failed to fetch Android whitelist devices');
+    return {};
   }
-
-  if (os === 'Android') {
-    const resp = await fetch('/express/android-device-list.json?limit=100000');
-    if (!resp.ok) {
-      window.lana?.log('Failed to fetch Android whitelist devices');
-      return false;
-    }
-    const { 'allow-list': allowList, 'deny-list': denyList } = await resp.json();
-    return denyList.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))
-      ? false
-      : allowList.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent));
-  }
-
-  return false;
+  const { 'allow-list': allowList, 'deny-list': denyList } = await resp.json();
+  return { allowList, denyList };
 }
 
-function runBenchmark() {
-  if (window.Worker) {
-    const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
-    benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
-    benchmarkWorker.onmessage = (e) => {
-      const criterion = {
-        cpuSpeedPass: e.data <= MAX_EXEC_TIME_ALLOWED,
-      };
-
-      if (getMobileOperatingSystem() === 'Android') {
-        criterion.cpuCoreCountPass = (navigator.hardwareConcurrency
-          && navigator.hardwareConcurrency >= 4)
-        || false;
-        criterion.memoryCapacityPass = (navigator.deviceMemory
-          && navigator.deviceMemory >= 4)
-        || false;
-      }
-
-      if (getMobileOperatingSystem() === 'iOS') {
-        criterion.iOSVersionPass = isIOS16AndUp(navigator.userAgent);
-      }
-
-      const deviceEligible = Object.values(criterion).every((criteria) => criteria);
-
-      BlockMediator.set('mobileBetaEligibility', {
-        deviceSupport: !!deviceEligible,
-        data: criterion,
-      });
-
-      benchmarkWorker.terminate();
-    };
+export async function preBenchmarkCheck() {
+  const deviceSupportCookie = document.cookie.split('; ').find((row) => row.startsWith('device-support='))?.split('=')[1];
+  if (deviceSupportCookie === 'true') {
+    return [true, 'cookie'];
   }
+
+  const os = getMobileOperatingSystem();
+  if (os === 'iOS') {
+    const ok = isIOS16AndUp();
+    return [ok, `iOS ${ok ? 'white' : 'deny'}listed`];
+  } else if (os !== 'Android') {
+    return [false, 'not iOS or Android'];
+  }
+  const { allowList, denyList } = await fetchAndroidAllowDenyLists();
+  const { userAgent, hardwareConcurrency, deviceMemory } = navigator;
+  if (allowList.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))) {
+    return [true, 'Android whitelisted'];
+  }
+  if (denyList.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))) {
+    return [false, 'Android denylisted'];
+  }
+  if (!hardwareConcurrency || hardwareConcurrency < 4) {
+    return [false, 'Android cpu core count'];
+  }
+  if (!deviceMemory || deviceMemory < 4) {
+    return [false, 'Android memory capacity'];
+  }
+  if (!window.Worker) {
+    return [false, 'Android no worker'];
+  }
+  return [null, 'needs benchmark'];
 }
 
 export default async function checkMobileBetaEligibility() {
-  const deviceSupportCookie = document.cookie.split('; ').find((row) => row.startsWith('device-support='))?.split('=')[1];
-
-  if (deviceSupportCookie === 'true') {
-    BlockMediator.set('mobileBetaEligibility', {
-      deviceSupport: true,
-      data: {
-        reason: 'cookie',
-      },
-    });
-  } else {
-    const isOfficiallySupported = await isOfficiallySupportedDevice(getMobileOperatingSystem());
-    if (isOfficiallySupported) {
-      BlockMediator.set('mobileBetaEligibility', {
-        deviceSupport: true,
-        data: {
-          reason: 'whitelisted',
-        },
-      });
-      return;
-    }
-    runBenchmark();
+  const [eligible, reason] = await preBenchmarkCheck();
+  if (reason === 'needs benchmark') {
     const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
       const expireDate = new Date();
       const month = (expireDate.getMonth() + 1) % 12;
@@ -101,6 +70,22 @@ export default async function checkMobileBetaEligibility() {
       if (month === 0) expireDate.setFullYear(expireDate.getFullYear() + 1);
       document.cookie = `device-support=${e.newValue.deviceSupport};domain=adobe.com;expires=${expireDate.toUTCString()};path=/`;
       unsubscribe();
+    });
+    const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
+    benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
+    benchmarkWorker.onmessage = (e) => {
+      BlockMediator.set('mobileBetaEligibility', {
+        deviceSupport: e.data <= MAX_EXEC_TIME_ALLOWED,
+        data: 'Android cpuSpeedPass',
+      });
+      benchmarkWorker.terminate();
+    };
+  } else {
+    BlockMediator.set('mobileBetaEligibility', {
+      deviceSupport: eligible,
+      data: {
+        reason,
+      },
     });
   }
 }
