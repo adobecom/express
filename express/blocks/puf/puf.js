@@ -156,7 +156,7 @@ async function decorateCard(block, cardClass = '') {
   const cardTop = block.children[1].children[0];
   const cardBottom = block.children[2].children[0];
   const cardHeader = cardTop.querySelector('h3, p:first-of-type');
-  const cardHeaderSvg = cardTop.querySelector('svg');
+  const cardHeaderIcon = cardTop.querySelector('svg') || cardTop.querySelector('img');
   const cardPricingContainer = createTag('div', {
     class: 'puf-pricing-container',
   });
@@ -217,7 +217,7 @@ async function decorateCard(block, cardClass = '') {
     cardBanner.classList.add('recommended');
   }
 
-  if (cardHeaderSvg) formattedHeader.prepend(cardHeaderSvg);
+  if (cardHeaderIcon) formattedHeader.prepend(cardHeaderIcon);
 
   const ctaTextContainer = cardTop.querySelector('strong');
   if (ctaTextContainer) {
@@ -407,15 +407,9 @@ async function build2ColDesign(block) {
   const options = {
     root: document.querySelector('.carousel-platform'),
     rootMargin: '0px',
-    threshold: 1,
+    threshold: 0.55,
   };
   const carouselContainer = block.querySelector('.carousel-container');
-  const carouselLeftControlContainer = carouselContainer.querySelector(
-    '.carousel-fader-left',
-  );
-  const carouselRightControlContainer = carouselContainer.querySelector(
-    '.carousel-fader-right',
-  );
   const callback = (entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
@@ -424,12 +418,6 @@ async function build2ColDesign(block) {
       } else {
         carouselContainer.style.maxHeight = `${entry.target.clientHeight}px`;
       }
-      carouselLeftControlContainer.style.maxHeight = `${
-        entry.target.clientHeight - 125
-      }px`;
-      carouselRightControlContainer.style.maxHeight = `${
-        entry.target.clientHeight - 125
-      }px`;
     });
   };
 

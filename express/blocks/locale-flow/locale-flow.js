@@ -1,6 +1,6 @@
-import { createTag } from '../../scripts/utils.js';
+import { createTag, getConfig } from '../../scripts/utils.js';
 
-const locales = ['English', 'French', 'German', 'Japanese'];
+const locales = Object.keys(getConfig().locales).map((l) => l || 'en');
 
 const createForm = () => {
   let selectedLocales = [];

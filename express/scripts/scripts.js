@@ -33,6 +33,11 @@ const locales = {
 const config = {
   locales,
   codeRoot: '/express/',
+  jarvis: {
+    id: 'Acom_Express',
+    version: '1.0',
+    onDemand: false,
+  },
   links: 'on',
 };
 
@@ -89,11 +94,14 @@ const showNotifications = () => {
   setConfig(config);
   showNotifications();
   await loadArea();
-  if (getMetadata('mobile-benchmark') && document.body.dataset.device === 'mobile') {
-    Promise.all([import('./mobile-beta-gating.js'), import('./block-mediator.min.js')]).then(([gatingScript]) => {
+  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
+    import('./mobile-beta-gating.js').then((gatingScript) => {
       gatingScript.default();
     });
   }
+  import('./express-delayed.js').then((mod) => {
+    mod.default();
+  });
 }());
 
 stamp('start');

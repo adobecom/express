@@ -431,7 +431,6 @@ export function getIcon(icons, alt, size = 44) {
     'photoeffects',
     'pinterest',
     'play',
-    'premium',
     'premium-templates',
     'pricingfree',
     'pricingpremium',
@@ -1509,7 +1508,8 @@ export function decorateButtons(el = document) {
       && !/hlx\.blob\.core\.windows\.net/.test(linkText)
       && !linkText.endsWith(' >')
       && !(hash === '#embed-video')
-      && !linkText.endsWith(' ›')) {
+      && !linkText.endsWith(' ›')
+      && !linkText.endsWith('.svg')) {
       const $up = $a.parentElement;
       const $twoup = $a.parentElement.parentElement;
       if (!$a.querySelector('img')) {
@@ -1913,7 +1913,7 @@ export async function fetchFloatingCta(path) {
 
         if (experiment && path !== 'default') {
           return (pathMatch)
-            && p.expID === experiment.run
+            && p.expID === experiment.id
             && p.challengerID === experiment.selectedVariant;
         } else {
           return pathMatch;
@@ -1998,75 +1998,65 @@ async function buildAutoBlocks($main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
-    const loadSplitFlow = async (payload) => {
-      if (payload.deviceSupport) {
-        const floatingCTAData = await fetchFloatingCta(window.location.pathname);
-        const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
-        const device = document.body.dataset?.device;
-        const blockName = floatingCTAData?.[device];
+  async function loadPromoFrag() {
+    const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
+    if (!fragment) return;
+    $main.append(fragment);
+    const block = fragment?.querySelector('.sticky-promo-bar.block');
+    if (block) await loadBlock(block);
+  }
 
-        if (validButtonVersion.includes(blockName) && lastDiv) {
-          const button = buildBlock(blockName, device);
-          button.classList.add('spreadsheet-powered');
-          lastDiv.append(button);
+  async function loadFloatingCTA(BlockMediator, decorated) {
+    const floatingCTAData = await fetchFloatingCta(window.location.pathname);
+    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+    const device = document.body.dataset?.device;
+    const blockNameWithVariants = floatingCTAData?.[device] ? floatingCTAData?.[device].split(' ') : [];
+    const blockName = blockNameWithVariants.shift();
 
-          if (!payload.isMainThread) {
-            await decorateBlock(button);
-            await loadBlock(button);
-          }
-
-          BlockMediator.set('floatingCtasLoaded', true);
-        }
-      } else {
-        const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
-        if (!fragment) return;
-
-        $main.append(fragment);
-        const block = fragment.querySelector('.sticky-promo-bar.block');
-        if (!block) return;
-
-        if (!payload.isMainThread) {
-          await loadBlock(block);
-        }
+    if (validButtonVersion.includes(blockName) && lastDiv) {
+      const button = buildBlock(blockName, device);
+      button.classList.add('spreadsheet-powered');
+      blockNameWithVariants.forEach((variant) => button.classList.add(variant));
+      lastDiv.append(button);
+      if (!decorated) {
+        await decorateBlock(button);
+        await loadBlock(button);
       }
-    };
+      BlockMediator.set('floatingCtasLoaded', true);
+    }
+  }
+
+  if (document.body.dataset.device === 'mobile' && ['off', 'false', 'no'].includes(getMetadata('mobile-benchmark')
+    .toLowerCase())) {
+    await loadPromoFrag();
+  } else if (document.body.dataset.device === 'mobile' && ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')
+    .toLowerCase())) {
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {
       const eligibilityChecked = BlockMediator.get('mobileBetaEligibility');
       if (eligibilityChecked) {
-        await loadSplitFlow({
-          deviceSupport: eligibilityChecked.deviceSupport,
-          isMainThread: true,
-        });
+        if (eligibilityChecked.deviceSupport) {
+          await loadFloatingCTA(BlockMediator, true);
+        } else {
+          await loadPromoFrag();
+        }
       } else {
         const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
-          await loadSplitFlow({
-            deviceSupport: e.newValue.deviceSupport,
-            isMainThread: false,
-          });
+          if (e.newValue.deviceSupport) {
+            await loadFloatingCTA(BlockMediator, false);
+          } else {
+            await loadPromoFrag();
+          }
           unsubscribe();
         });
       }
     }
-  }
-
-  if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) && !(['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile')) {
+  } else if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase())) {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {
-      const floatingCTAData = await fetchFloatingCta(window.location.pathname);
-      const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
-      const device = document.body.dataset?.device;
-      const blockName = floatingCTAData?.[device];
-
-      if (validButtonVersion.includes(blockName) && lastDiv) {
-        const button = buildBlock(blockName, device);
-        button.classList.add('spreadsheet-powered');
-        lastDiv.append(button);
-        BlockMediator.set('floatingCtasLoaded', true);
-      }
+      await loadFloatingCTA(BlockMediator, true);
     }
   }
 
@@ -2637,8 +2627,8 @@ export async function loadArea(area = document) {
   }
   await lazy;
 
-  const { default: loadDelayed } = await import('./delayed.js');
-  loadDelayed(10000);
+  const { default: delayed } = await import('./delayed.js');
+  delayed([getConfig, getMetadata, loadScript, loadStyle]);
 
   // milo's links featurecc
   const config = getConfig();

@@ -143,6 +143,29 @@ export async function createFloatingButton(block, audience, data) {
   floatButtonLink.className = '';
   floatButtonLink.classList.add('button', 'gradient', 'xlarge');
 
+  // Change font size when text is too long
+  function outputsize() {
+    const floatButtonLinkStyle = window.getComputedStyle(floatButtonLink);
+    const lineHeight = floatButtonLinkStyle.getPropertyValue('line-height');
+    const lineHeightInt = +lineHeight.replace('px', '');
+
+    // To figure out the available vertical space for text
+    const paddingTop = floatButtonLinkStyle.getPropertyValue('padding-top');
+    const paddingTopInt = +paddingTop.replace('px', '');
+    const paddingBottom = floatButtonLinkStyle.getPropertyValue('padding-bottom');
+    const paddingBottomInt = +paddingBottom.replace('px', '');
+    const availableHeight = floatButtonLink.offsetHeight - paddingTopInt - paddingBottomInt;
+
+    const numberOfLines = availableHeight / lineHeightInt;
+    if (numberOfLines >= 2) {
+      floatButtonLink.style.fontSize = '0.8rem';
+      floatButtonLink.style.paddingLeft = '0.8rem';
+      floatButtonLink.style.paddingRight = '0.8rem';
+    }
+  }
+
+  new ResizeObserver(outputsize).observe(floatButtonLink);
+
   // Hide CTAs with same url & text as the Floating CTA && is NOT a Floating CTA (in mobile/tablet)
   const sameUrlCTAs = Array.from(main.querySelectorAll('a.button:any-link'))
     .filter((a) => (a.textContent.trim() === aTag.textContent.trim()
@@ -159,6 +182,7 @@ export async function createFloatingButton(block, audience, data) {
     'data-block-name': 'floating-button',
     'data-block-status': 'loaded',
   });
+  [...block.classList].filter((c) => c === 'closed').forEach((c) => floatButtonWrapper.classList.add(c));
   const floatButtonInnerWrapper = createTag('div', { class: 'floating-button-inner-wrapper' });
   const floatButtonBackground = createTag('div', { class: 'floating-button-background' });
 
@@ -419,8 +443,12 @@ export function buildToolBoxStructure(wrapper, data) {
 
   wrapper.classList.add('initial-load');
   wrapper.classList.add('clamped');
-  wrapper.classList.add('toolbox-opened');
-  floatingButton.classList.add('toolbox-opened');
+  if (wrapper.classList.contains('closed')) {
+    toolBox.classList.add('hidden');
+  } else {
+    wrapper.classList.add('toolbox-opened');
+    floatingButton.classList.add('toolbox-opened');
+  }
 }
 
 export function initToolBox(wrapper, data, toggleFunction) {

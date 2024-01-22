@@ -92,7 +92,7 @@ main .floating-button a.button:any-link {
     display: block;
     box-sizing: border-box;
     max-width: 332px;
-    white-space: nowrap;
+    white-space: normal;
     margin: 0;
     z-index: 2;
     width: calc(100vw - 54px);
@@ -104,7 +104,6 @@ main .floating-button a.button:any-link:hover,
 main .floating-button a.button:any-link:active,
 main .floating-button a.button:any-link:focus {
     background: transparent;
-    transition: width .3s, margin .3s, min-width .3s, background-color .3s, color .3s, border .3s, background-position 2s ease-out, padding .3s;
 }
 
 
@@ -237,6 +236,13 @@ main .floating-button-wrapper:first-of-type + .section {
     main .floating-button-wrapper.floating-button--hidden {
         bottom: -151px;
         opacity: 0.9;
+    }
+
+    main .floating-button a.button:any-link,
+    main .floating-button a.button:any-link:hover,
+    main .floating-button a.button:any-link:active,
+    main .floating-button a.button:any-link:focus {
+        transition: width .3s, margin .3s, min-width .3s, background-color .3s, color .3s, border .3s, background-position 2s ease-out, padding .3s;
     }
 }
 
