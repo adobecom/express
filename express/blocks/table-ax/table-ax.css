@@ -126,12 +126,6 @@
   position: sticky;
   z-index: 1;
   background-color: var(--color-white);
-  transition: box-shadow 200ms cubic-bezier(0.33, 1, 0.68, 1);
-}
-
-.table-ax .row-heading.active {
-  transition-duration: 400ms;
-  box-shadow: 0 6px 3px -3px rgba(0, 0, 0, 0.15);
 }
 
 .top-border-transparent {
