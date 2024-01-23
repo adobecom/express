@@ -49,9 +49,9 @@ function handleHeading(headingRow) {
       const buttons = col.querySelectorAll('.button');
 
       buttons.forEach((btn) => {
-        if (btn.innerHTML.includes('{{dark}}')) {
-          btn.innerHTML = btn.innerHTML.replace('{{dark}}', '');
+        if (btn.classList.contains('con-button', 'blue')) {
           btn.classList.add('primary');
+          btn.parentNode.remove();
         }
         const btnWrapper = btn.closest('P');
         buttonsWrapper.append(btnWrapper);

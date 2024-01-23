@@ -50,7 +50,7 @@ function decorateCard({
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
     if (i === 1) a.classList.add('secondary');
-    if (a.parentNode.tagName.toLowerCase() === 'em') {
+    if (a.parentNode.tagName.toLowerCase() === 'strong') {
       a.classList.add('button', 'primary');
       a.parentNode.remove();
     }
