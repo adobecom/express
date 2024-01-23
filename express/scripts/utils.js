@@ -2732,3 +2732,5 @@ export function registerPerformanceLogger() {
     // no output
   }
 }
+
+// export const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
