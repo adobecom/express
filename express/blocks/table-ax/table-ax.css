@@ -1,4 +1,7 @@
 /* collapses below 980px */
+.table-ax.block {
+  padding: 40px 0;
+}
 .table-ax > .row {
   display: grid;
 }
@@ -195,15 +198,6 @@ main .section .table-ax-wrapper:has(.table-ax.few-cols) {
 }
 main .section .table-ax-wrapper:has(.table-ax.many-cols) {
   max-width: 1200px;
-} 
-main .section .table-ax-wrapper .table-ax{
-  margin: 0px 20px;
-}
-main .section .table-ax-wrapper .table-ax.few-cols {
-  margin: 0px 10px;
-}
-main .section .table-ax-wrapper .table-ax.many-cols {
-  margin: 0px 30px;
 }
 @media (max-width: 980px) {
   main .section .table-ax-wrapper,

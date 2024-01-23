@@ -1,5 +1,4 @@
-/* eslint-disable no-plusplus */
-import { createTag } from '../../scripts/utils.js';
+import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 import { debounce } from '../../scripts/hofs.js';
 import { decorateButtons } from '../../scripts/utils/decorate.js';
 
@@ -118,7 +117,7 @@ function handleSection(sectionParams) {
     let i = index;
     while (prevRow && !prevRow.classList.contains('section-header-row') && !prevRow.classList.contains('blank-row')) {
       prevRow.classList.add('collapsed');
-      i--;
+      i -= 1;
       prevRow = allRows[i].previousElementSibling;
     }
   } else if (isColumnless) {
@@ -172,7 +171,7 @@ const assignEvents = (tableEl) => {
   });
 };
 
-export default function init(el) {
+export default async function init(el) {
   el.setAttribute('role', 'table');
   if (el.parentElement.classList.contains('section')) {
     el.parentElement.classList.add('table-section');
@@ -182,7 +181,8 @@ export default function init(el) {
   let sectionTitle = '';
   let sectionItem = 0;
   let visibleCount = defaultVisibleCount;
-  for (let index = 0; index < rows.length; index++) {
+  const placeholders = await fetchPlaceholders();
+  for (let index = 0; index < rows.length; index += 1) {
     const row = rows[index];
     row.classList.add('row', `row-${index + 1}`);
     row.setAttribute('role', 'row');
@@ -216,7 +216,7 @@ export default function init(el) {
     } else {
       if (sectionItem % 2 !== 0) isShaded = true;
       if (parseInt(visibleCount, 10) !== 0 && sectionItem > visibleCount) isAdditional = true;
-      sectionItem++;
+      sectionItem += 1;
       cols.forEach((col, cdx) => {
         col.dataset.colIndex = cdx + 1;
         col.classList.add('col', `col-${cdx + 1}`);
@@ -241,9 +241,9 @@ export default function init(el) {
       toggleOverflowRow.tabIndex = 0;
       toggleOverflowContent.setAttribute('role', 'cell');
       toggleOverflowContent.setAttribute('aria-label', `View All ${sectionTitle} Features`);
-      toggleOverflowTextOpened.innerHTML = 'View All Features'; // Replace with Placeholder fetch
-      toggleOverflowTextClosed.innerHTML = 'Close'; // Replace with Placeholder fetch
-      toggleOverflowLabel.innerHTML = `${sectionItem - 1} total items`; // Replace 'total items' with Placeholder
+      toggleOverflowTextOpened.innerHTML = placeholders['show-more'] ?? 'Show More';
+      toggleOverflowTextClosed.innerHTML = placeholders['show-less'] ?? 'Show Less';
+      toggleOverflowLabel.innerHTML = (placeholders['total-items'] ?? '{{quantity}} total items').replace('{{quantity}}', sectionItem - 1);
       toggleOverflowText.append(toggleOverflowTextOpened, toggleOverflowTextClosed);
       toggleOverflowContent.append(toggleOverflowIcon, toggleOverflowText);
       toggleOverflowRow.append(toggleOverflowContent, toggleOverflowLabel);

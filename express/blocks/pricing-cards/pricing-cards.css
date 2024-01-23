@@ -6,11 +6,11 @@
   max-width: none;
 }
 .pricing-cards.block {
-  padding: 0 15px;
+  padding: 0 15px 40px;
 }
 .pricing-cards .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, var(--card-width));
+  grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
   grid-template-rows: repeat(auto-fit, minmax(311px, 1fr));
   justify-content: center;
   gap: 16px;
