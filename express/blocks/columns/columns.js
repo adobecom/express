@@ -6,6 +6,7 @@ import {
   toClassName,
   getIconElement,
   addHeaderSizing,
+  getMetadata,
 } from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
@@ -261,11 +262,9 @@ export default async function decorate(block) {
     }
   }
 
-  // add free plan widget to first columns block on every page
-  if (document.querySelector('main .columns') === block
-    && document.querySelector('main .block') === block) {
-    addFreePlanWidget(block.querySelector('.button-container')
-      || block.querySelector(':scope .column:not(.hero-animation-overlay,.columns-picture)'));
+  // add free plan widget to first columns block on every page except blog
+  if (!(getMetadata('theme') === 'blog' || getMetadata('template') === 'blog') && document.querySelector('main .columns') === block) {
+    addFreePlanWidget(block.querySelector('.button-container') || block.querySelector(':scope .column:not(.hero-animation-overlay,.columns-picture)'));
   }
 
   // invert buttons in regular columns inside columns-highlight-container
