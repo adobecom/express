@@ -297,11 +297,8 @@ export default function init(el) {
     const { top } = rows[0].getBoundingClientRect();
     if (top <= gnavHeight && !rows[0].classList.contains('stuck')) {
       rows[0].classList.add('stuck');
-      if (!gnav.classList.contains('feds-header-wrapper--retracted')) {
-        rows[0].style.top = `${gnavHeight}px`;
-      } else {
-        rows[0].style.top = '0px';
-      }
+      // FIXME: handle feds-header-wrapper--retracted
+      rows[0].style.top = `${gnavHeight}px`;
     } else if (rows[0].classList.contains('stuck') && top > gnavHeight) {
       rows[0].classList.remove('stuck');
     }
