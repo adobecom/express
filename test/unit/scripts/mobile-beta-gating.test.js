@@ -112,6 +112,16 @@ describe('Mobile Beta Gating', () => {
 
     Object.defineProperty(navigator, 'userAgent', {
       get() {
+        return 'Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Opera/92.0.4515.131 Mobile Safari/537.36';
+      },
+    });
+    [eligible, reason] = await preBenchmarkCheck();
+    // only testing for false negative. False positive can be unavoidable
+    expect(eligible).to.be.false;
+    expect(reason).to.equal('Android not Chrome');
+
+    Object.defineProperty(navigator, 'userAgent', {
+      get() {
         return 'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53';
       },
     });

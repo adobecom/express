@@ -17,6 +17,12 @@ export function isIOS16AndUp(userAgent = navigator.userAgent) {
   return false;
 }
 
+function isChrome() {
+  const { userAgent } = navigator;
+  // from horizon
+  return /Chrome|CriOS/.test(userAgent) && !/Edg|OPR|Opera|OPiOS|Vivaldi|YaBrowser|Avast|VivoBrowser|GSA/.test(userAgent);
+}
+
 export async function fetchAndroidAllowDenyLists() {
   const resp = await fetch('/express/android-device-list.json?limit=100000');
   if (!resp.ok) {
@@ -40,6 +46,7 @@ export async function preBenchmarkCheck() {
   } else if (os !== 'Android') {
     return [false, 'not iOS or Android'];
   }
+  if (!isChrome()) return [false, 'Android not Chrome'];
   const { allowList, denyList } = await fetchAndroidAllowDenyLists();
   const { userAgent, hardwareConcurrency, deviceMemory } = navigator;
   if (allowList.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))) {
