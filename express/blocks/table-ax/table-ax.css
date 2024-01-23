@@ -122,11 +122,6 @@
   background-image: url('/express/icons/collapse.svg');
 }
 
-/* scroll */
-header.global-navigation {
-  z-index: 2;
-}
-
 .table-ax .row-heading {
   position: sticky;
   z-index: 1;
@@ -189,8 +184,6 @@ header.global-navigation {
   --border-color: #d9d9d9;
   --border-radius: 8px;
   --border-width: 1px;
-  /* FIXME: this number should be calculated like in milo */
-  --global-height-nav: 65px;
 }
 
 /* Negating the very general "main .pricing" rules in styles.css */
@@ -236,7 +229,6 @@ main .section .table-ax-wrapper .table-ax.many-cols {
 
 /* Sticky Table */
 .table-ax.sticky .row.row-heading.stuck {
-  top: var(--global-height-nav);
   width: 100vw;
   margin-left: calc((100vw - 100%) / -2);
   padding: 0 calc((100vw - 100%) / 2);
@@ -660,7 +652,7 @@ main .section .table-ax-wrapper .table-ax.many-cols {
 }
 
 /* for handling sticky row. In milo this is in styles.css */
-header:not(.global-navigation) {
+/* header:not(.global-navigation) {
   height: 57px;
   position: fixed;
   top: 0;
@@ -693,4 +685,4 @@ header:not(.global-navigation) {
   header:not(.global-navigation).has-breadcrumbs + main {
     margin-top: 97px;
   }
-}
+} */
