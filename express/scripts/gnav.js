@@ -181,8 +181,8 @@ async function loadFEDS() {
       },
     },
     jarvis: jarvis ? {
-      surfaceName: 'AdobeExpressEducation',
-      surfaceVersion: '1',
+      surfaceName: config.jarvis.id,
+      surfaceVersion: config.jarvis.version,
       onDemand: true,
     } : {},
     breadcrumbs: {
