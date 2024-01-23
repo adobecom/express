@@ -290,16 +290,18 @@ export default function init(el) {
     deviceBySize = defineDeviceByScreenSize();
     handleResize();
   });
-  const gnavHeight = document.querySelector('header').offsetHeight || 0;
+  const gnav = document.querySelector('header');
   const scrollHandler = () => {
     if (deviceBySize === 'MOBILE') return;
+    const gnavHeight = gnav.offsetHeight;
     const { top } = rows[0].getBoundingClientRect();
     if (top <= gnavHeight && !rows[0].classList.contains('stuck')) {
       rows[0].classList.add('stuck');
-      rows[0].style.top = `${gnavHeight}px`;
+      if (!gnav.classList.contains('feds-header-wrapper--retracted')) {
+        rows[0].style.top = `${gnavHeight}px`;
+      }
     } else if (rows[0].classList.contains('stuck') && top > gnavHeight) {
       rows[0].classList.remove('stuck');
-      rows[0].style.top = `${gnavHeight}px`;
     }
   };
   window.addEventListener('scroll', debounce(scrollHandler, 100));
