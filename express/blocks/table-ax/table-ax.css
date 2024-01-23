@@ -1,18 +1,6 @@
-/* :root {
-  --border-color: #d9d9d9;
-  --checkmark-color: #268e6c;
-} */
-
-/* .table-ax {
-  max-width: 1200px;
-  margin: auto;
-  padding: 20px 0;
-  border-color: var(--border-color);
-} */
-
+/* collapses below 980px */
 .table-ax > .row {
   display: grid;
-  /* grid-template-columns: repeat(auto-fit, 50%); */
 }
 
 .table-ax .col {
@@ -21,8 +9,8 @@
 
 .table-ax .col,
 .table-ax .col p {
-  font-size: var(--type-body-s-size);
-  line-height: var(--type-body-s-lh);
+  font-size: var(--body-font-size-s);
+  line-height: 130%;
 }
 
 .table-ax .col p {
@@ -33,15 +21,10 @@
   margin-right: 8px;
 }
 
-.table-ax.m-heading-icon .row-heading .col-heading img {
-  height: var(--icon-size-m);
-  width: auto;
-}
-
 .table-ax .section-row .col.section-row-title,
 .table-ax .section-row .col.section-row-title p {
-  font-size: var(--type-body-xs-size);
-  line-height: var(--type-body-xs-lh);
+  font-size: var(--body-font-size-xs);
+  line-height: 130%;
 }
 
 .table-ax .section-row .col:not(.section-row-title),
@@ -67,25 +50,18 @@
 }
 
 .table-ax .row-heading .col-heading .tracking-header {
-  font-size: var(--type-heading-s-size);
-  line-height: var(--type-heading-s-lh);
-  font-weight: bold;
-  padding: var(--spacing-xxs) 0;
+  font-size: 1.375rem;
+  line-height: 130%;
 }
 
 .table-ax .row-heading .col-heading .body {
-  font-size: var(--type-body-m-size);
+  font-size: var(--body-font-size-m);
 }
 
 /* section */
 .table-ax .divider {
   display: none;
 }
-
-/* .table-ax .section-head .col {
-  background-color: var(--section-head-background);
-  padding: 28px 24px;
-} */
 
 .table-ax .row .col {
   padding: 16px 24px;
@@ -96,8 +72,7 @@
 }
 
 .table-ax .section-head .section-head-title > :not(.icon) {
-  font-size: var(--type-body-m-size);
-  line-height: var(--type-heading-s-lh);
+  font-size: var(--body-font-size-m);
   width: calc(100% - 20px);
 }
 
@@ -168,7 +143,7 @@ header.global-navigation {
   border-top: 1px solid transparent;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 900px) {
   .table-ax > .row {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   }
@@ -214,7 +189,8 @@ header.global-navigation {
   --border-color: #d9d9d9;
   --border-radius: 8px;
   --border-width: 1px;
-  --global-height-nav: 64px;
+  /* FIXME: this number should be calculated like in milo */
+  --global-height-nav: 65px;
 }
 
 /* Negating the very general "main .pricing" rules in styles.css */
@@ -242,7 +218,7 @@ main .section .table-ax-wrapper .table-ax.few-cols {
 main .section .table-ax-wrapper .table-ax.many-cols {
   margin: 0px 30px;
 }
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   main .section .table-ax-wrapper,
   main .section .table-ax-wrapper:has(.table-ax.few-cols),
   main .section .table-ax-wrapper:has(.table-ax.many-cols) {
@@ -259,8 +235,17 @@ main .section .table-ax-wrapper .table-ax.many-cols {
 }
 
 /* Sticky Table */
-.table-ax.sticky .row.row-heading {
+.table-ax.sticky .row.row-heading.stuck {
   top: var(--global-height-nav);
+  width: 100vw;
+  margin-left: calc((100vw - 100%) / -2);
+  padding: 0 calc((100vw - 100%) / 2);
+  box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.16);
+  box-sizing: border-box;
+  transition: box-shadow 200ms linear;
+}
+.table-ax.sticky .row.row-heading.stuck > .col {
+  border: 0;
 }
 /* /Sticky Table */
 
@@ -301,10 +286,12 @@ main .section .table-ax-wrapper .table-ax.many-cols {
 .table-ax .row.toggle-row .col.toggle-content .toggle-icon .icon.expand,
 .table-ax .row.toggle-row .col.toggle-content .toggle-icon .icon.expand .collapse-icon,
 .table-ax .row.toggle-row .col.toggle-content .toggle-icon .icon.expand .expand-icon {
-  /* -------ADD VIEW MORE ROWS ICON SIZING BELOW*/
+  height: 18px;
+  width: 18px;
 }
 .table-ax .row.toggle-row .col.toggle-content .toggle-text {
-  /* --------ADD VIEW MORE FEATURES TEXT FONT SIZING & WEIGHT BELOW */
+  font-weight: 700;
+  font-size: 1rem;
 }
 .table-ax .row.toggle-row:not(.collapsed) .col.toggle-content .toggle-icon .icon.expand .expand-icon,
 .table-ax .row.toggle-row.collapsed .col.toggle-content .toggle-icon .icon.expand .collapse-icon,
@@ -323,7 +310,7 @@ main .section .table-ax-wrapper .table-ax.many-cols {
   display: flex;
   align-items: center;
   justify-content: end;
-  /* --------ADD VIEW MORE # OF TOTAL ITEMS FONT SIZING & WEIGHT BELOW*/
+  font-size: 1rem;
 }
 .table-ax .row.toggle-row .col {
   white-space: nowrap;
@@ -383,15 +370,11 @@ main .section .table-ax-wrapper .table-ax.many-cols {
 
 /* Table Header Row */
 .table-ax .row.row-heading {
-  border-color: inherit;
+  /* border-color: inherit;
   background-color: white;
   border-bottom-left-radius: var( --border-radius);
   border-bottom-right-radius: var( --border-radius);
-  padding: 0;
-}
-.table-ax .row.row-heading .col .button.dark {
-  background-color: black;
-  color: white;
+  padding: 0; */
 }
 .table-ax .row.row-heading .col {
   display: flex;
@@ -430,22 +413,19 @@ main .section .table-ax-wrapper .table-ax.many-cols {
   margin-bottom:-4px;
 }
 .table-ax .row.row-heading .col div p {
-  /* ------------ADD MOBILE TABLE HEADER/TITLE TEXT SIZE */
-  font-size: larger;
-  font-weight: 600;
+  font-size: 1.125rem;
+  font-weight: 700;
 }
-.table-ax .row.row-heading .col:first-child *{
-    /* ------------ADD MOBILE TABLE HEADER/TITLE TEXT SIZE */
-    font-weight: 800;
-    font-size: x-large;
+.table-ax .row.row-heading .col:first-child * {
+    font-weight: 900;
     text-align: start;
   }
 /* /Table Header Row */
 
 /* Table Section Header Row */
 .table-ax .row.section-header-row * {
-  font-size: large;
-  font-weight: 600;
+  font-size: 1.375rem;
+  font-weight: 700;
 }
 /* /Table Section Header Row */
 
@@ -521,18 +501,22 @@ main .section .table-ax-wrapper .table-ax.many-cols {
 /* /Table Section Rows */
 
 
-/* @media (max-width: 768px) { */
-@media (max-width: 900px) {
-  /* .section .table-ax-wrapper {
-    max-width: 480px;
-  } */
+@media (max-width: 980px) {
   .table-ax .row:not(.blank-row){
     min-height: 66px;
+  }
+
+  .table-ax .row.row-heading {
+    min-height: 0px;
+    margin-bottom: 16px;
   }
 
   /* Table Blank Row */
   .table-ax .row.blank-row {
     height: 20px;
+  }
+  .table-ax .row.row-2.blank-row {
+    height: 0;
   }
   /* /Table Blank Row */
 
@@ -552,11 +536,6 @@ main .section .table-ax-wrapper .table-ax.many-cols {
   }
   .table-ax .row.row-heading .col:not(:first-child) {
     display: none;
-  }
-  .table-ax .row.row-heading .col * {
-    /* ------------ADD MOBILE TABLE HEADER/TITLE TEXT SIZE */
-    font-weight: 800;
-    font-size: x-large;
   }
   /* /Table Header Row */
 
@@ -598,6 +577,10 @@ main .section .table-ax-wrapper .table-ax.many-cols {
     text-align: start;
   }
 
+  .table-ax .row.section-row .col .col-heading p { 
+    font-weight: 700;
+  }
+
   .table-ax .row.section-row .col .col-heading .icon { 
     height: 24px;
     width: 24px;
@@ -631,35 +614,35 @@ main .section .table-ax-wrapper .table-ax.many-cols {
     align-items: center;
     justify-content: space-between;
   }
-
-  .table-ax .row.section-header-row .col {
-    /* --------SET FONT SIZE/WEIGHT OF FEATURE TITLE */
-    font-size: larger;
-    font-weight: 600;
-  }
-
+  
   .table-ax .row.section-header-row .col,
   .table-ax .row.section-row,
   .table-ax .row.toggle-row .col{
-    padding:16px;
+    padding: 16px;
+  }
+  .table-ax .row.toggle-row .col.toggle-content .toggle-text {
+    font-size: var(--body-font-size-s);
+  }
+  .table-ax .row.toggle-row .col.toggle-count {
+    font-size: var(--body-font-size-s);
   }
 
   .table-ax .row.section-row {
     display: flex;
     flex-direction: column;
-    row-gap: 12px;
+    row-gap: 8px;
   }
   .table-ax .row.section-row .col {
     padding: 0;
   }
 
   .table-ax .row.section-row .col.col-1 p:first-child {
-    font-size: large;
-    /* font-weight: 600; */
+    font-size: 1rem;
+    font-weight: 700;
   }
   .table-ax .row.section-row .col.col-1 p:not(:first-child) {
-    font-weight: 500;
-    /* font-size: large; */
+    font-weight: 400;
+    font-size: 0.75rem;
   }
 
   .table-ax .row.section-row .col,
@@ -674,7 +657,6 @@ main .section .table-ax-wrapper .table-ax.many-cols {
   .table-ax .row.section-row .col {
     border-width: 0px;
   }
-
 }
 
 /* for handling sticky row. In milo this is in styles.css */
@@ -689,7 +671,7 @@ header:not(.global-navigation) {
   background: #FFF;
   box-sizing: border-box;
 }
-@media (min-width: 900px) {
+@media (min-width: 980px) {
   header:not(.global-navigation) {
     min-height: var(--global-height-nav);
     border-bottom: 1px solid #EAEAEA;
@@ -697,7 +679,7 @@ header:not(.global-navigation) {
   }
 
   header:not(.global-navigation) ~ main {
-    margin-top: 64px;
+    margin-top: var(--global-height-nav);
   }
 
   header:not(.global-navigation).has-breadcrumbs {

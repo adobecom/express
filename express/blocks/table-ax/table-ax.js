@@ -1,5 +1,6 @@
 /* eslint-disable no-plusplus */
 import { createTag } from '../../scripts/utils.js';
+import { debounce } from '../../scripts/hofs.js';
 import { decorateButtons } from '../../scripts/utils/decorate.js';
 
 // const MOBILE_SIZE = 768;
@@ -51,7 +52,7 @@ function handleHeading(headingRow) {
       buttons.forEach((btn) => {
         if (btn.innerHTML.includes('{{dark}}')) {
           btn.innerHTML = btn.innerHTML.replace('{{dark}}', '');
-          btn.classList.add('dark');
+          btn.classList.add('primary');
         }
         const btnWrapper = btn.closest('P');
         buttonsWrapper.append(btnWrapper);
@@ -283,11 +284,21 @@ export default function init(el) {
       toggleRow.querySelector('.icon.expand').setAttribute('aria-expanded', false);
     });
   };
-  // handleResize();
   let deviceBySize = defineDeviceByScreenSize();
   window.addEventListener('resize', () => {
     if (deviceBySize === defineDeviceByScreenSize()) return;
     deviceBySize = defineDeviceByScreenSize();
     handleResize();
   });
+  const gnavHeight = document.querySelector('header').offsetHeight || 0;
+  const scrollHandler = () => {
+    if (deviceBySize === 'MOBILE') return;
+    const { top } = rows[0].getBoundingClientRect();
+    if (top <= gnavHeight && !rows[0].classList.contains('stuck')) {
+      rows[0].classList.add('stuck');
+    } else if (rows[0].classList.contains('stuck') && top > gnavHeight) {
+      rows[0].classList.remove('stuck');
+    }
+  };
+  window.addEventListener('scroll', debounce(scrollHandler, 100));
 }
