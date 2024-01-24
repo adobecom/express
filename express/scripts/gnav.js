@@ -64,9 +64,8 @@ function loadIMS() {
 async function loadFEDS() {
   const config = getConfig();
   const prefix = config.locale.prefix.replaceAll('/', '');
-
-  // we're going to initialize jarvis later
   let jarvis = true;
+  // if metadata found jarvis must not be initialized in gnav because it will be initiated later
   const jarvisMeta = getMetadata('jarvis-chat')?.toLowerCase();
   if (!jarvisMeta || !['mobile', 'desktop', 'on'].includes(jarvisMeta)
     || !config.jarvis?.id || !config.jarvis?.version) jarvis = false;
