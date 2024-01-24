@@ -180,7 +180,7 @@ async function loadFEDS() {
         window.location.href = sparkLoginUrl;
       },
     },
-    jarvis: jarvis ? {
+    jarvis: !jarvis ? {
       surfaceName: config.jarvis.id,
       surfaceVersion: config.jarvis.version,
       onDemand: true,
