@@ -65,6 +65,12 @@ async function loadFEDS() {
   const config = getConfig();
   const prefix = config.locale.prefix.replaceAll('/', '');
 
+  // we're going to initialize jarvis later
+  let jarvis = true;
+  const jarvisMeta = getMetadata('jarvis-chat')?.toLowerCase();
+  if (!jarvisMeta || !['mobile', 'desktop', 'on'].includes(jarvisMeta)
+    || !config.jarvis?.id || !config.jarvis?.version) jarvis = false;
+
   async function showRegionPicker() {
     const { getModal } = await import('../blocks/modal/modal.js');
     const details = {
@@ -174,12 +180,11 @@ async function loadFEDS() {
         window.location.href = sparkLoginUrl;
       },
     },
-    jarvis: getMetadata('enable-chat') === 'yes'
-      ? {
-        surfaceName: 'AdobeExpressEducation',
-        surfaceVersion: '1',
-      }
-      : {},
+    jarvis: !jarvis ? {
+      surfaceName: config.jarvis.id,
+      surfaceVersion: config.jarvis.version,
+      onDemand: true,
+    } : {},
     breadcrumbs: {
       showLogo: true,
       links: await buildBreadCrumbArray(),
@@ -257,7 +262,7 @@ async function loadFEDS() {
       otDomainId,
     };
     loadScript('https://www.adobe.com/etc.clientlibs/globalnav/clientlibs/base/privacy-standalone.js');
-  }, 4000);
+  }, 0);
   const footer = document.querySelector('footer');
   footer?.addEventListener('click', (event) => {
     if (event.target.closest('a[data-feds-action="open-adchoices-modal"]')) {
