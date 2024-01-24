@@ -34,6 +34,7 @@ export function polyfills() {
  */
 export async function initService() {
   await polyfills();
+  // eslint-disable-next-line import/no-unresolved
   const commerce = await import('https://www.adobe.com/libs/deps/commerce.js');
   return commerce.init(() => ({
     ...getConfig(),

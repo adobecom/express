@@ -2,7 +2,7 @@
  * tabs - consonant v6
  * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Tab_Role
  */
-import { createTag, MILO_EVENTS } from '../../utils/utils.js';
+import { createTag, MILO_EVENTS } from '../../scripts/utils.js';
 
 const isElementInContainerView = (targetEl) => {
   const rect = targetEl.getBoundingClientRect();
