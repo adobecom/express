@@ -171,7 +171,21 @@ const assignEvents = (tableEl) => {
   });
 };
 
+// multiple live on same page
+const getId = (function idSetups() {
+  const gen = (function* g() {
+    let id = 0;
+    while (true) {
+      yield id;
+      id += 1;
+    }
+  }());
+  return () => gen.next().value;
+}());
+
 export default async function init(el) {
+  const blockId = getId();
+  el.id = `table-ax-${blockId + 1}`;
   el.setAttribute('role', 'table');
   if (el.parentElement.classList.contains('section')) {
     el.parentElement.classList.add('table-section');
