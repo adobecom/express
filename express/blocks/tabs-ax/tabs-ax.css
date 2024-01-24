@@ -63,10 +63,6 @@
   background-color: var(--tabs-active-bg-color);
 }
 
-.tabs-ax.xxxl-spacing {
-  padding: var(--spacing-xxxl) 0;
-}
-
 .tabs-ax.xxl-spacing {
   padding: var(--spacing-xxl) 0;
 }
