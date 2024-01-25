@@ -52,8 +52,9 @@ function getUniqueId(el, rootElem) {
 }
 
 function configTabs(config, rootElem) {
-  if (config['active-tab']) {
-    const id = `#tab-${CSS.escape(config['tab-id'])}-${CSS.escape(getStringKeyName(config['active-tab']))}`;
+  const activeTab = new URLSearchParams(window.location.search).get('tab') || config['active-tab'];
+  if (activeTab) {
+    const id = `#tab-${CSS.escape(config['tab-id'])}-${CSS.escape(getStringKeyName(activeTab))}`;
     const sel = rootElem.querySelector(id);
     if (sel) sel.click();
   }
