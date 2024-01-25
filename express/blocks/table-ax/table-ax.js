@@ -193,7 +193,6 @@ export default async function init(el) {
   }
   const visibleCount = parseInt(Array.from(el.classList).find((c) => /^show(\d+)/i.test(c))?.substring(4) ?? '3', 10);
   const rows = Array.from(el.children);
-  let sectionTitle = '';
   let sectionItem = 0;
   const placeholders = await fetchPlaceholders();
   for (let index = 0; index < rows.length; index += 1) {
@@ -213,7 +212,6 @@ export default async function init(el) {
         isColumnless = true;
         if (!cols[0]?.innerHTML) isBlank = true;
         else {
-          sectionTitle = cols[0].innerHTML;
           sectionItem = 1;
           cols[0].dataset.colIndex = 1;
           cols[0].classList.add('col', `col-${1}`);
@@ -292,13 +290,20 @@ export default async function init(el) {
     handleResize();
   }, 100));
   const gnav = document.querySelector('header');
+  const gnavHeight = gnav.offsetHeight;
   const scrollHandler = () => {
     if (deviceBySize === 'MOBILE') return;
-    const gnavHeight = gnav.offsetHeight;
     const { top } = rows[0].getBoundingClientRect();
     if (top <= gnavHeight && !rows[0].classList.contains('stuck')) {
       rows[0].classList.add('stuck');
-      rows[0].style.top = `${gnavHeight}px`;
+      if (window.feds.experience) {
+        rows[0].style.top = `${gnavHeight}px`;
+      } else {
+        rows[0].style.top = '0';
+        window.addEventListener('feds.events.experience.loaded', () => {
+          rows[0].style.top = `${gnavHeight}px`;
+        }, { once: true });
+      }
     } else if (rows[0].classList.contains('stuck') && top > gnavHeight) {
       rows[0].classList.remove('stuck');
     }
