@@ -115,6 +115,7 @@ function handleSection(sectionParams) {
     row.classList.add('collapsed');
     let prevRow = previousRow;
     let i = index;
+    // TODO: clean up this func please...
     while (prevRow && !prevRow.classList.contains('section-header-row') && !prevRow.classList.contains('blank-row')) {
       prevRow.classList.add('collapsed');
       i -= 1;
@@ -190,11 +191,10 @@ export default async function init(el) {
   if (el.parentElement.classList.contains('section')) {
     el.parentElement.classList.add('table-section');
   }
-  const defaultVisibleCount = Array.from(el.classList).find((e) => e.match(/^show\d+/g))?.substring(4) ?? 3;
+  const visibleCount = parseInt(Array.from(el.classList).find((c) => /^show(\d+)/i.test(c))?.substring(4) ?? '3', 10);
   const rows = Array.from(el.children);
   let sectionTitle = '';
   let sectionItem = 0;
-  let visibleCount = defaultVisibleCount;
   const placeholders = await fetchPlaceholders();
   for (let index = 0; index < rows.length; index += 1) {
     const row = rows[index];
@@ -206,37 +206,31 @@ export default async function init(el) {
     let isShaded = false;
     let isColumnless = false;
     let isAdditional = false;
-    let isToggle = false;
+    const isToggle = row.classList.contains('toggle-row');
 
-    if (row.classList.contains('toggle-row')) isToggle = true;
-    else if (cols.length <= 1) {
-      isColumnless = true;
-      if (cols.length === 0 || !cols[0].innerHTML) isBlank = true;
-      else {
-        sectionTitle = cols[0].innerHTML;
-        const sectionTitleArr = sectionTitle.split('{{');
-        if (sectionTitleArr.length <= 1) visibleCount = defaultVisibleCount;
+    if (!isToggle) {
+      if (cols.length <= 1) {
+        isColumnless = true;
+        if (!cols[0]?.innerHTML) isBlank = true;
         else {
-          visibleCount = sectionTitleArr[1].split('}}')[0].trim();
-          sectionTitle = sectionTitleArr['0'];
-          cols[0].innerHTML = sectionTitle;
+          sectionTitle = cols[0].innerHTML;
+          sectionItem = 1;
+          cols[0].dataset.colIndex = 1;
+          cols[0].classList.add('col', `col-${1}`);
+          cols[0].setAttribute('role', 'cell');
+          cols[0].tabIndex = 0;
         }
-        sectionItem = 1;
-        cols[0].dataset.colIndex = 1;
-        cols[0].classList.add('col', `col-${1}`);
-        cols[0].setAttribute('role', 'cell');
-        cols[0].tabIndex = 0;
+      } else {
+        if (sectionItem % 2 !== 0) isShaded = true;
+        if (sectionItem > visibleCount) isAdditional = true;
+        sectionItem += 1;
+        cols.forEach((col, cdx) => {
+          col.dataset.colIndex = cdx + 1;
+          col.classList.add('col', `col-${cdx + 1}`);
+          col.setAttribute('role', 'cell');
+          if (col.innerHTML) col.tabIndex = 0;
+        });
       }
-    } else {
-      if (sectionItem % 2 !== 0) isShaded = true;
-      if (parseInt(visibleCount, 10) !== 0 && sectionItem > visibleCount) isAdditional = true;
-      sectionItem += 1;
-      cols.forEach((col, cdx) => {
-        col.dataset.colIndex = cdx + 1;
-        col.classList.add('col', `col-${cdx + 1}`);
-        col.setAttribute('role', 'cell');
-        if (col.innerHTML) col.tabIndex = 0;
-      });
     }
 
     // Create and add the toggle row (needed for mobile)
@@ -244,25 +238,26 @@ export default async function init(el) {
     if (index > 0 && !isToggle && !isColumnless
       && (!nextRow || Array.from(nextRow.children).length <= 1)) {
       const toggleOverflowRow = createTag('div', { class: 'toggle-row' });
-      if (!isAdditional) toggleOverflowRow.classList.add('mobile-only');
+      if (!isAdditional) toggleOverflowRow.classList.add('mobile-only'); // TODO: need a better flow & flag than "mobile-only"
+      const toggleOverflowLabel = createTag('div', { class: 'toggle-count col' });
+      toggleOverflowLabel.textContent = (placeholders['total-items'] ?? '{{quantity}} total items').replace('{{quantity}}', sectionItem - 1);
+
+      toggleOverflowRow.tabIndex = 0;
+      // TODO: remove dependencies on placeholders and rely on simpler authoring
+      const toggleOverflowContent = createTag('div', { class: 'toggle-content col', role: 'cell', 'aria-label': `View All ${sectionTitle} Features` });
       const toggleOverflowIcon = createTag('div', { class: 'toggle-icon' });
       const toggleOverflowText = createTag('div', { class: 'toggle-text' });
       const toggleOverflowTextOpened = createTag('span', { class: 'opened-text' });
       const toggleOverflowTextClosed = createTag('span', { class: 'closed-text' });
-      const toggleOverflowLabel = createTag('div', { class: 'toggle-count col' });
-      const toggleOverflowContent = createTag('div', { class: 'toggle-content col' });
-
-      toggleOverflowRow.tabIndex = 0;
-      toggleOverflowContent.setAttribute('role', 'cell');
-      toggleOverflowContent.setAttribute('aria-label', `View All ${sectionTitle} Features`);
       toggleOverflowTextOpened.innerHTML = placeholders['show-more'] ?? 'Show More';
       toggleOverflowTextClosed.innerHTML = placeholders['show-less'] ?? 'Show Less';
-      toggleOverflowLabel.innerHTML = (placeholders['total-items'] ?? '{{quantity}} total items').replace('{{quantity}}', sectionItem - 1);
       toggleOverflowText.append(toggleOverflowTextOpened, toggleOverflowTextClosed);
       toggleOverflowContent.append(toggleOverflowIcon, toggleOverflowText);
-      toggleOverflowRow.append(toggleOverflowContent, toggleOverflowLabel);
+      toggleOverflowRow.append(toggleOverflowContent);
+      toggleOverflowRow.append(toggleOverflowLabel);
 
       if (nextRow) {
+        // TODO: modifying while iterating is very dangerous
         rows.splice(index + 1, 0, toggleOverflowRow);
         el.insertBefore(toggleOverflowRow, nextRow);
       } else {
@@ -299,11 +294,11 @@ export default async function init(el) {
     });
   };
   let deviceBySize = defineDeviceByScreenSize();
-  window.addEventListener('resize', () => {
+  window.addEventListener('resize', debounce(() => {
     if (deviceBySize === defineDeviceByScreenSize()) return;
     deviceBySize = defineDeviceByScreenSize();
     handleResize();
-  });
+  }, 100));
   const gnav = document.querySelector('header');
   const scrollHandler = () => {
     if (deviceBySize === 'MOBILE') return;

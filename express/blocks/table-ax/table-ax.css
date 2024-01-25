@@ -236,9 +236,6 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
 /* /Blank Row */
 
 /* Toggle Row */
-.table-ax .row.toggle-row.mobile-only {
-  display: none;
-}
 .table-ax .row.toggle-row {
   display: flex;
   flex-direction: row;
@@ -259,6 +256,15 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+.table-ax .row.toggle-row .col.toggle-content .toggle-text {
+  display: flex;
+}
+.table-ax .row.toggle-row.mobile-only .col.toggle-content .toggle-icon {
+  display: none;
+}
+.table-ax .row.toggle-row.mobile-only .col.toggle-content .toggle-text {
+  display: none;
 }
 .table-ax .row.toggle-row:hover .col.toggle-content {
   text-decoration: underline;
@@ -600,8 +606,12 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
   .table-ax .row.toggle-row .col{
     padding: 16px;
   }
-  .table-ax .row.toggle-row .col.toggle-content .toggle-text {
+  .table-ax .row.toggle-row.mobile-only .col.toggle-content .toggle-text {
     font-size: var(--body-font-size-s);
+    display: flex;
+  }
+  .table-ax .row.toggle-row.mobile-only .col.toggle-content .toggle-icon {
+    display: flex;
   }
   .table-ax .row.toggle-row .col.toggle-count {
     font-size: var(--body-font-size-s);
