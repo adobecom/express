@@ -200,11 +200,6 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
   max-width: 1200px;
 }
 @media (max-width: 980px) {
-  main .section .table-ax-wrapper,
-  main .section .table-ax-wrapper:has(.table-ax.few-cols),
-  main .section .table-ax-wrapper:has(.table-ax.many-cols) {
-    max-width: 500px;
-  }
   main .section .table-ax-wrapper .table-ax {
     margin: 0px 20px;
   }
@@ -215,7 +210,8 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
   min-height: 80px;
 }
 
-/* Sticky Table */
+@media (min-width: 981px) {
+  /* Sticky Table */
 .table-ax.sticky .row.row-heading.stuck {
   width: 100vw;
   margin-left: calc((100vw - 100%) / -2);
@@ -228,6 +224,7 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
   border: 0;
 }
 /* /Sticky Table */
+}
 
 /* Blank Row */
 .table-ax .row.blank-row {
@@ -237,9 +234,6 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
 
 /* Toggle Row */
 .table-ax .row.toggle-row {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
   cursor: pointer;
 }
 .table-ax .row.toggle-row .col.toggle-content {
@@ -260,10 +254,7 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
 .table-ax .row.toggle-row .col.toggle-content .toggle-text {
   display: flex;
 }
-.table-ax .row.toggle-row.mobile-only .col.toggle-content .toggle-icon {
-  display: none;
-}
-.table-ax .row.toggle-row.mobile-only .col.toggle-content .toggle-text {
+.table-ax .row.toggle-row.desktop-hide {
   display: none;
 }
 .table-ax .row.toggle-row:hover .col.toggle-content {
@@ -277,25 +268,6 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
 }
 .table-ax .row.toggle-row .col.toggle-content .toggle-text {
   font-weight: 700;
-  font-size: 1rem;
-}
-.table-ax .row.toggle-row:not(.collapsed) .col.toggle-content .toggle-icon .icon.expand .expand-icon,
-.table-ax .row.toggle-row.collapsed .col.toggle-content .toggle-icon .icon.expand .collapse-icon,
-.table-ax .row.toggle-row:not(.collapsed) .col.toggle-content .toggle-text .opened-text,
-.table-ax .row.toggle-row.collapsed .col.toggle-content .toggle-text .closed-text {
-  display: none;
-}
-.table-ax .row.toggle-row.collapsed .col.toggle-content .toggle-text .opened-text,
-.table-ax .row.toggle-row:not(.collapsed) .col.toggle-content .toggle-text .closed-text,
-.table-ax .row.toggle-row.collapsed .col.toggle-content .toggle-icon .icon.expand .expand-icon,
-.table-ax .row.toggle-row:not(.collapsed) .col.toggle-content .toggle-icon .icon.expand .collapse-icon {
-  display: block;
-}
-.table-ax .row.toggle-row .col.toggle-count {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: end;
   font-size: 1rem;
 }
 .table-ax .row.toggle-row .col {
@@ -580,12 +552,6 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
   }
   /* /Collapsed Rows */
 
-  /* Toggle Rows */
-  .table-ax .row.toggle-row.mobile-only {
-    display: flex;
-  }
-  /* /Toggle Rows */
-
   .table-ax .row.section-row .col .col-header-container {
     flex-grow: 1;
     display: flex;
@@ -600,20 +566,20 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
     align-items: center;
     justify-content: space-between;
   }
+
+  .table-ax .row.section-header-row * {
+    font-size: 1.25rem;
+  }
   
   .table-ax .row.section-header-row .col,
   .table-ax .row.section-row,
   .table-ax .row.toggle-row .col{
     padding: 16px;
   }
-  .table-ax .row.toggle-row.mobile-only .col.toggle-content .toggle-text {
-    font-size: var(--body-font-size-s);
-    display: flex;
+  .table-ax .row.toggle-row.desktop-hide {
+    display: block;
   }
-  .table-ax .row.toggle-row.mobile-only .col.toggle-content .toggle-icon {
-    display: flex;
-  }
-  .table-ax .row.toggle-row .col.toggle-count {
+  .table-ax .row.toggle-row .col.toggle-content .toggle-text {
     font-size: var(--body-font-size-s);
   }
 
@@ -648,39 +614,3 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
     border-width: 0px;
   }
 }
-
-/* for handling sticky row. In milo this is in styles.css */
-/* header:not(.global-navigation) {
-  height: 57px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  overflow: hidden;
-  background: #FFF;
-  box-sizing: border-box;
-}
-@media (min-width: 980px) {
-  header:not(.global-navigation) {
-    min-height: var(--global-height-nav);
-    border-bottom: 1px solid #EAEAEA;
-    overflow: unset;
-  }
-
-  header:not(.global-navigation) ~ main {
-    margin-top: var(--global-height-nav);
-  }
-
-  header:not(.global-navigation).has-breadcrumbs {
-    min-height: 97px;
-  }
-
-  header:not(.global-navigation) nav {
-    display: unset;
-  }
-
-  header:not(.global-navigation).has-breadcrumbs + main {
-    margin-top: 97px;
-  }
-} */

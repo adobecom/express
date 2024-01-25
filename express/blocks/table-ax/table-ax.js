@@ -101,7 +101,7 @@ function handleSection(sectionParams) {
   if (isShaded) row.classList.add('shaded-row');
   if (isAdditional) row.classList.add('additional-row');
   if (!nextRow) row.classList.add('table-end-row');
-  if (index === allRows.length - 2 && nextRow.classList.contains('mobile-only')) row.classList.add('table-end-row');
+  if (index === allRows.length - 2 && nextRow.classList.contains('desktop-hide')) row.classList.add('table-end-row');
   if (isBlank) {
     row.classList.add('blank-row');
     row.removeAttribute('role');
@@ -156,7 +156,7 @@ function handleSection(sectionParams) {
         });
       }
     });
-    if (!isAdditional && nextRow.classList.contains('toggle-row') && !nextRow.classList.contains('mobile-only')) row.classList.add('table-end-row');
+    if (nextRow.classList.contains('toggle-row')) row.classList.add('table-end-row');
   }
 }
 
@@ -233,28 +233,20 @@ export default async function init(el) {
       }
     }
 
-    // Create and add the toggle row (needed for mobile)
     const nextRow = rows[index + 1];
     if (index > 0 && !isToggle && !isColumnless
       && (!nextRow || Array.from(nextRow.children).length <= 1)) {
       const toggleOverflowRow = createTag('div', { class: 'toggle-row' });
-      if (!isAdditional) toggleOverflowRow.classList.add('mobile-only'); // TODO: need a better flow & flag than "mobile-only"
-      const toggleOverflowLabel = createTag('div', { class: 'toggle-count col' });
-      toggleOverflowLabel.textContent = (placeholders['total-items'] ?? '{{quantity}} total items').replace('{{quantity}}', sectionItem - 1);
+      if (!isAdditional) toggleOverflowRow.classList.add('desktop-hide');
 
       toggleOverflowRow.tabIndex = 0;
-      // TODO: remove dependencies on placeholders and rely on simpler authoring
-      const toggleOverflowContent = createTag('div', { class: 'toggle-content col', role: 'cell', 'aria-label': `View All ${sectionTitle} Features` });
+      const viewAllText = placeholders['view-all-features'] ?? 'View all aeatures';
+      const toggleOverflowContent = createTag('div', { class: 'toggle-content col', role: 'cell', 'aria-label': viewAllText });
       const toggleOverflowIcon = createTag('div', { class: 'toggle-icon' });
       const toggleOverflowText = createTag('div', { class: 'toggle-text' });
-      const toggleOverflowTextOpened = createTag('span', { class: 'opened-text' });
-      const toggleOverflowTextClosed = createTag('span', { class: 'closed-text' });
-      toggleOverflowTextOpened.innerHTML = placeholders['show-more'] ?? 'Show More';
-      toggleOverflowTextClosed.innerHTML = placeholders['show-less'] ?? 'Show Less';
-      toggleOverflowText.append(toggleOverflowTextOpened, toggleOverflowTextClosed);
+      toggleOverflowText.textContent = viewAllText;
       toggleOverflowContent.append(toggleOverflowIcon, toggleOverflowText);
       toggleOverflowRow.append(toggleOverflowContent);
-      toggleOverflowRow.append(toggleOverflowLabel);
 
       if (nextRow) {
         // TODO: modifying while iterating is very dangerous
@@ -306,11 +298,10 @@ export default async function init(el) {
     const { top } = rows[0].getBoundingClientRect();
     if (top <= gnavHeight && !rows[0].classList.contains('stuck')) {
       rows[0].classList.add('stuck');
-      // FIXME: handle feds-header-wrapper--retracted
       rows[0].style.top = `${gnavHeight}px`;
     } else if (rows[0].classList.contains('stuck') && top > gnavHeight) {
       rows[0].classList.remove('stuck');
     }
   };
-  window.addEventListener('scroll', debounce(scrollHandler, 100));
+  window.addEventListener('scroll', debounce(scrollHandler, 150));
 }
