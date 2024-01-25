@@ -1515,17 +1515,17 @@ export function decorateButtons(el = document) {
       const $twoup = $a.parentElement.parentElement;
       if (!$a.querySelector('img')) {
         if ($up.childNodes.length === 1 && ($up.tagName === 'P' || $up.tagName === 'DIV')) {
-          $a.className = 'button accent'; // default
+          $a.classList.add('button', 'accent'); // default
           $up.classList.add('button-container');
         }
         if ($up.childNodes.length === 1 && $up.tagName === 'STRONG'
           && $twoup.children.length === 1 && $twoup.tagName === 'P') {
-          $a.className = 'button accent';
+          $a.classList.add('button', 'accent');
           $twoup.classList.add('button-container');
         }
         if ($up.childNodes.length === 1 && $up.tagName === 'EM'
           && $twoup.children.length === 1 && $twoup.tagName === 'P') {
-          $a.className = 'button accent light';
+          $a.classList.add('button', 'accent', 'light');
           $twoup.classList.add('button-container');
         }
       }
