@@ -13,9 +13,8 @@ function defineDeviceByScreenSize() {
 function handleToggleMore(e) {
   const sectionHead = e.closest('.row');
   let prevElement = sectionHead.previousElementSibling;
-  const icon = e.querySelector('.icon');
-  const expanded = icon.getAttribute('aria-expanded') === 'false';
-  icon.setAttribute('aria-expanded', expanded.toString());
+  const expanded = e.getAttribute('aria-expanded') === 'false';
+  e.setAttribute('aria-expanded', expanded.toString());
   while (prevElement && !prevElement.classList.contains('section-header-row') && !prevElement.classList.contains('spacer-row')) {
     if (expanded) {
       sectionHead.classList.remove('collapsed');
@@ -108,10 +107,9 @@ function handleSection(sectionParams) {
     if (index > 0) previousRow.classList.add('table-end-row');
     if (nextRow) nextRow.classList.add('table-start-row');
   } else if (isToggle) {
-    const toggleIconTag = createTag('span', { class: 'icon expand' });
-    toggleIconTag.setAttribute('aria-expanded', 'false');
+    const toggleIconTag = createTag('span', { class: 'icon expand', 'aria-expanded': 'false' });
 
-    row.querySelector('.toggle-icon').appendChild(toggleIconTag);
+    row.querySelector('.toggle-content').prepend(toggleIconTag);
     row.classList.add('collapsed');
     let prevRow = previousRow;
     let i = index;
@@ -161,7 +159,7 @@ function handleSection(sectionParams) {
 }
 
 const assignEvents = (tableEl) => {
-  tableEl.querySelectorAll('.toggle-icon').forEach((icon) => {
+  tableEl.querySelectorAll('.icon.expand').forEach((icon) => {
     icon.parentElement.classList.add('point-cursor');
     const row = icon.closest('.row');
     row.addEventListener('click', () => handleToggleMore(icon));
@@ -240,10 +238,9 @@ export default async function init(el) {
       toggleOverflowRow.tabIndex = 0;
       const viewAllText = placeholders['view-all-features'] ?? 'View all features';
       const toggleOverflowContent = createTag('div', { class: 'toggle-content col', role: 'cell', 'aria-label': viewAllText });
-      const toggleOverflowIcon = createTag('div', { class: 'toggle-icon' });
       const toggleOverflowText = createTag('div', { class: 'toggle-text' });
       toggleOverflowText.textContent = viewAllText;
-      toggleOverflowContent.append(toggleOverflowIcon, toggleOverflowText);
+      toggleOverflowContent.append(toggleOverflowText);
       toggleOverflowRow.append(toggleOverflowContent);
 
       if (nextRow) {

@@ -8,14 +8,14 @@ function decorateCard({
   const card = createTag('div', { class: 'card' });
 
   header.classList.add('card-header');
-  const h3 = header.querySelector('h3');
-  const h3Content = h3.textContent.trim();
-  const headerConfig = /\((.+)\)/.exec(h3Content);
+  const h2 = header.querySelector('h2');
+  const h2Content = h2.textContent.trim();
+  const headerConfig = /\((.+)\)/.exec(h2Content);
   const premiumIcon = header.querySelector('img');
-  if (premiumIcon) h3.prepend(premiumIcon);
+  if (premiumIcon) h2.prepend(premiumIcon);
   if (headerConfig) {
     const cfg = headerConfig[1];
-    h3.textContent = (h3Content.replace(`(${cfg})`, '').trim());
+    h2.textContent = (h2Content.replace(`(${cfg})`, '').trim());
     if (/^\d/.test(cfg)) {
       const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
       headCntDiv.textContent = cfg;

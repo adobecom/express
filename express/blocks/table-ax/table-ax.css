@@ -244,20 +244,10 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
 .table-ax .row.toggle-row .col.toggle-content {
   display: flex;
   flex-direction: row;
-  justify-content: start;
   align-items: center;
   color: var(--color-info-accent);
-  column-gap: 8px;
-  font-weight: 600;
-}
-.table-ax .row.toggle-row .col.toggle-content .toggle-icon {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-.table-ax .row.toggle-row .col.toggle-content .toggle-text {
-  display: flex;
+  gap: 8px;
+  font-weight: 700;
 }
 .table-ax .row.toggle-row.desktop-hide {
   display: none;
@@ -265,9 +255,7 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
 .table-ax .row.toggle-row:hover .col.toggle-content {
   text-decoration: underline;
 }
-.table-ax .row.toggle-row .col.toggle-content .toggle-icon .icon.expand,
-.table-ax .row.toggle-row .col.toggle-content .toggle-icon .icon.expand .collapse-icon,
-.table-ax .row.toggle-row .col.toggle-content .toggle-icon .icon.expand .expand-icon {
+.table-ax .row.toggle-row .col.toggle-content .icon.expand {
   height: 18px;
   width: 18px;
 }
@@ -332,13 +320,6 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
 /* /Table Borders */
 
 /* Table Header Row */
-.table-ax .row.row-heading {
-  /* border-color: inherit;
-  background-color: white;
-  border-bottom-left-radius: var( --border-radius);
-  border-bottom-right-radius: var( --border-radius);
-  padding: 0; */
-}
 .table-ax .row.row-heading .col {
   display: flex;
   justify-content: center;
