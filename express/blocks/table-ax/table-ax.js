@@ -289,20 +289,14 @@ export default async function init(el) {
     deviceBySize = defineDeviceByScreenSize();
     handleResize();
   }, 100));
-  const gnav = document.querySelector('header');
-  const gnavHeight = gnav.offsetHeight;
   const scrollHandler = () => {
     if (deviceBySize === 'MOBILE') return;
+    const gnav = document.querySelector('header');
+    const gnavHeight = gnav.offsetHeight;
     const { top } = rows[0].getBoundingClientRect();
     if (top <= gnavHeight && !rows[0].classList.contains('stuck')) {
       rows[0].classList.add('stuck');
       rows[0].style.top = `${gnavHeight}px`;
-      if (!window.feds.experience) {
-        gnav.classList.add('sticky-cover');
-        window.addEventListener('feds.events.experience.loaded', () => {
-          gnav.classList.remove('sticky-cover');
-        }, { once: true });
-      }
     } else if (rows[0].classList.contains('stuck') && top > gnavHeight) {
       rows[0].classList.remove('stuck');
     }
