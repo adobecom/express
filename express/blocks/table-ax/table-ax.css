@@ -614,3 +614,18 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
     border-width: 0px;
   }
 }
+
+/* for handling sticky row. In milo this is in styles.css */
+@media (min-width: 981px) {
+  header.sticky-cover:not(.feds-header-wrapper) {
+    border-bottom: 1px solid #EAEAEA;
+    overflow: unset;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    overflow: hidden;
+    background: #FFF;
+  }
+}

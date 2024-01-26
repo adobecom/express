@@ -296,12 +296,11 @@ export default async function init(el) {
     const { top } = rows[0].getBoundingClientRect();
     if (top <= gnavHeight && !rows[0].classList.contains('stuck')) {
       rows[0].classList.add('stuck');
-      if (window.feds.experience) {
-        rows[0].style.top = `${gnavHeight}px`;
-      } else {
-        rows[0].style.top = '0';
+      rows[0].style.top = `${gnavHeight}px`;
+      if (!window.feds.experience) {
+        gnav.classList.add('sticky-cover');
         window.addEventListener('feds.events.experience.loaded', () => {
-          rows[0].style.top = `${gnavHeight}px`;
+          gnav.classList.remove('sticky-cover');
         }, { once: true });
       }
     } else if (rows[0].classList.contains('stuck') && top > gnavHeight) {
