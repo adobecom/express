@@ -238,7 +238,7 @@ export default async function init(el) {
       if (!isAdditional) toggleOverflowRow.classList.add('desktop-hide');
 
       toggleOverflowRow.tabIndex = 0;
-      const viewAllText = placeholders['view-all-features'] ?? 'View all aeatures';
+      const viewAllText = placeholders['view-all-features'] ?? 'View all features';
       const toggleOverflowContent = createTag('div', { class: 'toggle-content col', role: 'cell', 'aria-label': viewAllText });
       const toggleOverflowIcon = createTag('div', { class: 'toggle-icon' });
       const toggleOverflowText = createTag('div', { class: 'toggle-text' });

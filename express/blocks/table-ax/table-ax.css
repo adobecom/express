@@ -200,6 +200,11 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
   max-width: 1200px;
 }
 @media (max-width: 980px) {
+  main .section .table-ax-wrapper,
+  main .section .table-ax-wrapper:has(.table-ax.few-cols),
+  main .section .table-ax-wrapper:has(.table-ax.many-cols) {
+    max-width: 500px;
+  }
   main .section .table-ax-wrapper .table-ax {
     margin: 0px 20px;
   }

@@ -22,14 +22,15 @@ export default function init(el) {
   el.append(title);
   plans.forEach((plan, planIndex) => {
     const wrapper = createTag('div');
-    const radio = createTag('input', {
-      type: 'radio', id: `billing-radio-${blockId}-${planIndex}`, name: `billing-${blockId}`, value: planIndex,
-    });
     wrapper.addEventListener('change', () => {
       BlockMediator.set('billing-plan', planIndex);
     });
-    wrapper.append(radio);
-    wrapper.append(createTag('label', { for: `billing-radio-${blockId}-${planIndex}` }, plan));
+    const label = createTag('label', {}, plan);
+    const radio = createTag('input', {
+      type: 'radio', name: `billing-${blockId}`, value: planIndex,
+    });
+    label.prepend(radio);
+    wrapper.append(label);
     el.append(wrapper);
   });
   el.querySelector('input[type="radio"]').checked = true;

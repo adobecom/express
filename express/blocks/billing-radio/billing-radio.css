@@ -8,14 +8,14 @@
   font-size: var(--body-font-size-s);
   height: 32px;
 }
-
-.billing-radio > div {
+.billing-radio label {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: var(--body-font-size-xs);
 }
-.billing-radio * {
+.billing-radio label,
+.billing-radio label * {
   cursor: pointer;
 }
 .billing-radio input {
