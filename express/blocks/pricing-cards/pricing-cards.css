@@ -54,7 +54,7 @@
   align-items: center;
   justify-content: space-between;
 }
-.pricing-cards .card-header h3 {
+.pricing-cards .card-header h2 {
   font-weight: var(--heading-font-weight);
   line-height: var(--heading-line-height);
   font-size: var(--body-font-size-l);
@@ -219,7 +219,7 @@
   .pricing-cards .card {
     gap: 24px;
   }
-  .pricing-cards .card-header h3 {
+  .pricing-cards .card-header h2 {
     font-size: 1.75rem;
   }
   .pricing-cards .card-explain {
