@@ -221,7 +221,12 @@ async function decorateCard(block, cardClass = '') {
 
   const ctaTextContainer = cardTop.querySelector('strong');
   if (ctaTextContainer) {
-    cardCta.textContent = ctaTextContainer.textContent.trim();
+    let ctaText = ctaTextContainer.textContent.trim();
+    if (/{{noreverse}}/.test(ctaText)) {
+      cardCta.classList.remove('reverse', 'accent');
+      ctaText = ctaText.replace(/{{noreverse}}/, '');
+    }
+    cardCta.textContent = ctaText;
     ctaTextContainer.parentNode.remove();
   } else {
     cardCta.textContent = 'Start your trial';
