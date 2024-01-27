@@ -354,11 +354,14 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
 .table-ax .row.row-heading .col .icon {
   height: 24px;
   width: 24px;
-  margin-bottom:-4px;
 }
 .table-ax .row.row-heading .col div p {
   font-size: 1.125rem;
   font-weight: 700;
+}
+.table-ax .row-heading .col.col-heading p {
+  display: flex;
+  gap: 6px;
 }
 .table-ax .row.row-heading .col:first-child * {
     font-weight: 900;
@@ -523,12 +526,14 @@ main .section .table-ax-wrapper:has(.table-ax.many-cols) {
 
   .table-ax .row.section-row .col .col-heading p { 
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 
   .table-ax .row.section-row .col .col-heading .icon { 
-    height: 24px;
-    width: 24px;
-    margin-bottom: -6px;
+    height: 18px;
+    width: 18px;
   }
   /* /Table Feature Row Content */
 
