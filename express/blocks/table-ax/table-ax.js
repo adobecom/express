@@ -107,7 +107,7 @@ function handleSection(sectionParams) {
     if (index > 0) previousRow.classList.add('table-end-row');
     if (nextRow) nextRow.classList.add('table-start-row');
   } else if (isToggle) {
-    const toggleIconTag = createTag('span', { class: 'icon expand', 'aria-expanded': 'false' });
+    const toggleIconTag = createTag('span', { class: 'icon expand', 'aria-expanded': 'false', role: 'button' });
 
     row.querySelector('.toggle-content').prepend(toggleIconTag);
     row.classList.add('collapsed');
