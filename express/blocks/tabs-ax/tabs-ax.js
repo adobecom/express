@@ -184,7 +184,7 @@ const init = (block) => {
   handleDeferredImages(block);
   initTabs(block, config, rootElem);
   // to avoid hero style conflicts
-  block.closest('.hero.hero-noimage').classList.remove('hero', 'hero-noimage');
+  block.closest('.hero.hero-noimage')?.classList?.remove('hero', 'hero-noimage');
 };
 
 export default init;
