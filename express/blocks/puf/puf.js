@@ -1,4 +1,4 @@
-import { addPublishDependencies, createTag } from '../../scripts/utils.js';
+import { addPublishDependencies, createTag, getMetadata } from '../../scripts/utils.js';
 import { buildUrl, fetchPlan } from '../../scripts/utils/pricing.js';
 import buildCarousel from '../shared/carousel.js';
 
@@ -176,7 +176,8 @@ async function decorateCard(block, cardClass = '') {
   const listItems = cardBottom.querySelectorAll('svg');
   const plans = buildPlans(plansElement);
 
-  if (cardClass === 'puf-left') {
+  if (cardClass === 'puf-left'
+    && !['off', 'no', 'false'].includes(getMetadata('puf-left-reverse')?.toLowerCase())) {
     cardCta.classList.add('reverse', 'accent');
   }
 
