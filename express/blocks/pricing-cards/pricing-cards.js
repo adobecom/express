@@ -1,4 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
+import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
 
 const blockKeys = ['header', 'explain', 'offer', 'pricingContainer', 'ctaGroup', 'featureList', 'compare'];
 
@@ -45,7 +46,12 @@ function decorateCard({
 
   pricingContainer.classList.add('card-pricing');
   card.append(pricingContainer);
-
+  const pricePlan = handlePrice(card);
+  if (pricePlan) {
+    pricingContainer.prepend(pricePlan);
+  } else {
+    card.classList.add('no-price-type');
+  }
   ctaGroup.classList.add('card-cta-group');
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
@@ -59,6 +65,10 @@ function decorateCard({
     }
     ctaGroup.append(a);
   });
+  if (pricePlan) {
+    // ctaGroup.prepend(pricePlan);
+    ctaGroup.querySelector('a')?.remove('button', 'accent');
+  }
   card.append(ctaGroup);
 
   if (featureList.innerHTML.trim()) {
@@ -68,11 +78,52 @@ function decorateCard({
 
   if (compare.innerHTML.trim()) {
     compare.classList.add('card-compare');
-    compare.querySelector('a').classList.remove('button', 'accent');
+    compare.querySelector('a')?.classList.remove('button', 'accent');
     card.append(compare);
   }
 
   return card;
+}
+
+function handlePrice(column) {
+  const pricePlan = createTag('div', { class: 'pricing-plan' });
+  const priceEl = column.querySelector('[title="{{pricing}}"]');
+  if (!priceEl) return null;
+  const priceParent = priceEl?.parentNode;
+  const plan = priceParent?.nextElementSibling?.querySelector('a') ? '' : priceParent?.nextElementSibling;
+
+  const priceWrapper = createTag('div', { class: 'pricing-price-wrapper' });
+  const price = createTag('span', { class: 'pricing-price' });
+  const basePrice = createTag('span', { class: 'pricing-base-price' });
+  const priceSuffix = createTag('div', { class: 'pricing-plan-suf' });
+
+  priceWrapper.append(basePrice, price, priceSuffix);
+  pricePlan.append(priceWrapper);
+
+  fetchPlan(priceEl?.href).then((response) => {
+    const parentP = priceEl.parentElement;
+    price.innerHTML = response.formatted;
+    basePrice.innerHTML = response.formattedBP || '';
+
+    if (parentP.children.length > 1) {
+      Array.from(parentP.childNodes).forEach((node) => {
+        if (node === priceEl) return;
+        if (node.nodeName === '#text') {
+          priceSuffix.append(node);
+        } else {
+          priceSuffix.before(node);
+        }
+      });
+    } else {
+      priceSuffix.textContent = response.suffix;
+    }
+
+    const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
+    if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
+  });
+
+  priceParent?.remove();
+  return pricePlan;
 }
 
 export default function init(el) {

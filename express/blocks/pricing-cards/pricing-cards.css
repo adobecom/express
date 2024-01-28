@@ -8,6 +8,55 @@
 .pricing-cards.block {
   padding: 0 15px 40px;
 }
+
+/** pricing styles start **/
+.pricing-cards .card-pricing .pricing-description > p,
+.pricing-cards .card-pricing .pricing-plan > p {
+  font-size: var(--body-font-size-s);
+}
+
+.pricing-cards .card-pricing .pricing-plan {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0 30px 0;
+  max-width: 330px;
+  gap: 15px;
+}
+.pricing-cards .pricing-price-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+.pricing-cards .pricing-base-price,
+.pricing-cards .pricing-price {
+  display: flex;
+  justify-content: center;
+  font-weight: 900;
+}
+.pricing-cards .pricing-base-price {
+  color: var(--color-gray-600);
+}
+
+.pricing-cards .pricing-base-price strong {
+  text-decoration: line-through;
+}
+
+.pricing-cards .pricing-price > strong,
+.pricing-cards .pricing-base-price > strong {
+  font-size: var(--heading-font-size-s);
+  font-weight: 900;
+}
+
+.pricing-cards .pricing-price > sup {
+  margin-left: 4px;
+}
+
+.pricing-cards .pricing-plan-suf {
+  font-size: var(--body-font-size-s);
+  line-height: var(--body-line-height);
+  align-self: flex-end;
+}
+/** pricing styles end **/
 .pricing-cards .cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
