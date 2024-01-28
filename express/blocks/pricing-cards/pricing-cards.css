@@ -16,25 +16,19 @@
 }
 
 .pricing-cards .card-pricing .pricing-plan {
-  display: flex;
-  flex-direction: column;
-  margin: 10px 0 30px 0;
   max-width: 330px;
-  gap: 15px;
-}
-.pricing-cards .pricing-price-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
 }
 .pricing-cards .pricing-base-price,
 .pricing-cards .pricing-price {
-  display: flex;
-  justify-content: center;
-  font-weight: 900;
+  font-size: var(--heading-font-size-s);
+  font-weight: 700;
+}
+.pricing-cards .pricing-price.price-active {
+  color: #5258E4;
 }
 .pricing-cards .pricing-base-price {
   color: var(--color-gray-600);
+  font-weight: 700;
 }
 
 .pricing-cards .pricing-base-price strong {
@@ -44,7 +38,8 @@
 .pricing-cards .pricing-price > strong,
 .pricing-cards .pricing-base-price > strong {
   font-size: var(--heading-font-size-s);
-  font-weight: 900;
+  font-weight: 700;
+  padding-left: 4px;
 }
 
 .pricing-cards .pricing-price > sup {
@@ -54,7 +49,6 @@
 .pricing-cards .pricing-plan-suf {
   font-size: var(--body-font-size-s);
   line-height: var(--body-line-height);
-  align-self: flex-end;
 }
 /** pricing styles end **/
 .pricing-cards .cards-container {
@@ -162,14 +156,12 @@
   margin: 0;
   font-size: var(--body-font-size-s);
 }
+
 .pricing-cards .card-pricing p:first-of-type {
   font-size: var(--body-font-size-xs);
   padding-bottom: 12px;
 }
-.pricing-cards .card-pricing p:first-of-type strong {
-  font-size: 22px;
-  display: block;
-}
+
 .pricing-cards .card-pricing:not(:has(p)) {
   font-size: 22px;
   display: flex;
@@ -183,6 +175,7 @@
   width: 100%;
   gap: 16px;
 }
+
 .pricing-cards .card .card-cta-group a {
   width: 100%;
   box-sizing: border-box;
@@ -193,34 +186,40 @@
   display: none;
   align-self: flex-start;
 }
+
 .pricing-cards .card-feature-list p {
   padding: 16px 0px;
   border-bottom: 1px solid var(--Palette-gray-100, #E9E9E9);
   margin: 0 0 24px 0;
 }
+
 .pricing-cards .card-feature-list p strong {
   font-size: var(--body-font-size-m);
   padding: 8px;
 }
+
 .pricing-cards .card-feature-list ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
+
 .pricing-cards .card-feature-list li {
   padding: 8px;
 }
+
 .pricing-cards .card-feature-list li:first-of-type {
   padding-top: 0;
 }
+
 .pricing-cards .card-feature-list li:last-of-type {
   padding-bottom: 0;
 }
+
 .pricing-cards .card-feature-list li a {
   text-decoration: underline;
   font-weight: 400;
 }
-
 
 .pricing-cards .card-compare {
   margin-top: auto;

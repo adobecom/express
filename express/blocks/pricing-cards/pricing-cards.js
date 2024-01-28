@@ -1,13 +1,12 @@
-import { createTag } from '../../scripts/utils.js';
+import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
 
 const blockKeys = ['header', 'explain', 'offer', 'mPricingContainer', 'mCtaGroup', 'yPricingContainer', 'yCtaGroup', 'featureList', 'compare'];
 
 function decorateCard({
   header, explain, offer, mPricingContainer, mCtaGroup, yPricingContainer, yCtaGroup, featureList, compare,
-}) {
+}, placeholders) {
   const card = createTag('div', { class: 'card' });
-
   header.classList.add('card-header');
   const h2 = header.querySelector('h2');
   const h2Content = h2.textContent.trim();
@@ -43,60 +42,9 @@ function decorateCard({
     offer.classList.add('card-offer');
     mPricingContainer.append(offer);
   }
-
-  mPricingContainer.classList.add('card-pricing');
-  mPricingContainer.classList.add('monthly');
-  mPricingContainer.classList.add('show');
-  card.append(mPricingContainer);
-  const mPricePlan = handlePrice(card);
-  if (mPricePlan) {
-    mPricingContainer.prepend(mPricePlan);
-  } else {
-    card.classList.add('no-price-type');
-  }
-  mCtaGroup.classList.add('card-cta-group');
-  mCtaGroup.classList.add('monthly');
-  mCtaGroup.classList.add('show');
-  mCtaGroup.querySelectorAll('a').forEach((a, i) => {
-    a.classList.add('large');
-    if (i === 1) a.classList.add('secondary');
-    if (a.parentNode.tagName.toLowerCase() === 'strong') {
-      a.classList.add('button', 'primary');
-      a.parentNode.remove();
-    }
-    if (a.parentNode.tagName.toLowerCase() === 'p') {
-      a.parentNode.remove();
-    }
-    mCtaGroup.append(a);
-  });
-  card.append(mCtaGroup);
-
-  yPricingContainer.classList.add('card-pricing');
-  yPricingContainer.classList.add('yearly');
-  yPricingContainer.classList.add('hide');
-  card.append(yPricingContainer);
-  const yPricePlan = handlePrice(card);
-  if (yPricePlan) {
-    yPricingContainer.prepend(yPricePlan);
-  } else {
-    card.classList.add('no-price-type');
-  }
-  yCtaGroup.classList.add('card-cta-group');
-  yCtaGroup.classList.add('yearly');
-  yCtaGroup.classList.add('hide');
-  yCtaGroup.querySelectorAll('a').forEach((a, i) => {
-    a.classList.add('large');
-    if (i === 1) a.classList.add('secondary');
-    if (a.parentNode.tagName.toLowerCase() === 'strong') {
-      a.classList.add('button', 'primary');
-      a.parentNode.remove();
-    }
-    if (a.parentNode.tagName.toLowerCase() === 'p') {
-      a.parentNode.remove();
-    }
-    yCtaGroup.append(a);
-  });
-  card.append(yCtaGroup);
+  
+  createPricingSection(card, placeholders, mPricingContainer, mCtaGroup, 'monthly', 'show');
+  createPricingSection(card, placeholders, yPricingContainer, yCtaGroup, 'yearly', 'hide'); 
 
   if (featureList.innerHTML.trim()) {
     featureList.classList.add('card-feature-list');
@@ -112,7 +60,46 @@ function decorateCard({
   return card;
 }
 
-function handlePrice(column) {
+function createPricingSection(card, placeholders, container, ctaGroup, containerClassName, displayClass) {
+  container.classList.add('card-pricing');
+  container.classList.add(containerClassName);
+  container.classList.add(displayClass);
+  card.append(container);
+  const pricingBtnContainer = container.querySelector('.button-container');
+  const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
+  const placeholderArr = pricingSuffixTextElem.textContent?.split(' '); 
+  const phTextArr = placeholderArr.map((phText) => {
+    const value = phText.replace('{{', '').replace('}}', '');
+    return placeholders[value] ? placeholders[value] : '';
+  });
+  const priceSuffixContent = phTextArr.toString().replace(',', ' ');
+  const pricePlan = handlePrice(card, priceSuffixContent);
+  if (pricePlan) {
+    container.prepend(pricePlan);
+    pricingBtnContainer?.remove();
+    pricingSuffixTextElem?.remove();
+  } else {
+    card.classList.add('no-price-type');
+  }
+  ctaGroup.classList.add('card-cta-group');
+  ctaGroup.classList.add('monthly');
+  ctaGroup.classList.add('show');
+  ctaGroup.querySelectorAll('a').forEach((a, i) => {
+    a.classList.add('large');
+    if (i === 1) a.classList.add('secondary');
+    if (a.parentNode.tagName.toLowerCase() === 'strong') {
+      a.classList.add('button', 'primary');
+      a.parentNode.remove();
+    }
+    if (a.parentNode.tagName.toLowerCase() === 'p') {
+      a.parentNode.remove();
+    }
+    ctaGroup.append(a);
+  });
+  card.append(ctaGroup);
+}
+
+function handlePrice(column, priceSuffixContext) {
   const pricePlan = createTag('div', { class: 'pricing-plan' });
   const priceEl = column.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
@@ -131,6 +118,12 @@ function handlePrice(column) {
     const parentP = priceEl.parentElement;
     price.innerHTML = response.formatted;
     basePrice.innerHTML = response.formattedBP || '';
+    if(basePrice.innerHTML !== '') {
+      price.classList.add('price-active');
+    }
+    else {
+      price.classList.remove('price-active'); 
+    }
 
     if (parentP.children.length > 1) {
       Array.from(parentP.childNodes).forEach((node) => {
@@ -142,7 +135,7 @@ function handlePrice(column) {
         }
       });
     } else {
-      priceSuffix.textContent = response.suffix;
+      priceSuffix.textContent = priceSuffixContext;
     }
 
     const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
@@ -153,7 +146,7 @@ function handlePrice(column) {
   return pricePlan;
 }
 
-export default function init(el) {
+export default async function init(el) {
   const divs = blockKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
   const cards = Array.from(divs[0]).map((_, index) => blockKeys.reduce((obj, key, keyIndex) => {
     obj[key] = divs[keyIndex][index];
@@ -161,7 +154,8 @@ export default function init(el) {
   }, {}));
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
-  cards.map((card) => decorateCard(card)).forEach((card) => cardsContainer.append(card));
+  const placeholders = await fetchPlaceholders();
+  cards.map((card) => decorateCard(card, placeholders)).forEach((card) => cardsContainer.append(card));
   const maxMSectionCTACnt = cards.reduce((max, card) => Math.max(max, card.mCtaGroup.querySelectorAll('a').length), 0);
   if (maxMSectionCTACnt > 1) {
     cards.forEach(({ mCtaGroup }) => {
