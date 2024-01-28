@@ -45,6 +45,8 @@ function decorateCard({
   }
 
   mPricingContainer.classList.add('card-pricing');
+  mPricingContainer.classList.add('monthly');
+  mPricingContainer.classList.add('show');
   card.append(mPricingContainer);
   const mPricePlan = handlePrice(card);
   if (mPricePlan) {
@@ -53,6 +55,8 @@ function decorateCard({
     card.classList.add('no-price-type');
   }
   mCtaGroup.classList.add('card-cta-group');
+  mCtaGroup.classList.add('monthly');
+  mCtaGroup.classList.add('show');
   mCtaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
     if (i === 1) a.classList.add('secondary');
@@ -65,12 +69,11 @@ function decorateCard({
     }
     mCtaGroup.append(a);
   });
-  if (mPricePlan) {
-    mCtaGroup.querySelector('a')?.remove('button', 'accent');
-  }
   card.append(mCtaGroup);
 
   yPricingContainer.classList.add('card-pricing');
+  yPricingContainer.classList.add('yearly');
+  yPricingContainer.classList.add('hide');
   card.append(yPricingContainer);
   const yPricePlan = handlePrice(card);
   if (yPricePlan) {
@@ -79,6 +82,8 @@ function decorateCard({
     card.classList.add('no-price-type');
   }
   yCtaGroup.classList.add('card-cta-group');
+  yCtaGroup.classList.add('yearly');
+  yCtaGroup.classList.add('hide');
   yCtaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
     if (i === 1) a.classList.add('secondary');
@@ -91,9 +96,6 @@ function decorateCard({
     }
     yCtaGroup.append(a);
   });
-  if (mPricePlan) {
-    yCtaGroup.querySelector('a')?.remove('button', 'accent');
-  }
   card.append(yCtaGroup);
 
   if (featureList.innerHTML.trim()) {
