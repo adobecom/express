@@ -1,10 +1,10 @@
 import { createTag } from '../../scripts/utils.js';
 import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
 
-const blockKeys = ['header', 'explain', 'offer', 'pricingContainer', 'ctaGroup', 'featureList', 'compare'];
+const blockKeys = ['header', 'explain', 'offer', 'mPricingContainer', 'mCtaGroup', 'yPricingContainer', 'yCtaGroup', 'featureList', 'compare'];
 
 function decorateCard({
-  header, explain, offer, pricingContainer, ctaGroup, featureList, compare,
+  header, explain, offer, mPricingContainer, mCtaGroup, yPricingContainer, yCtaGroup, featureList, compare,
 }) {
   const card = createTag('div', { class: 'card' });
 
@@ -41,19 +41,19 @@ function decorateCard({
 
   if (offer.textContent.trim()) {
     offer.classList.add('card-offer');
-    pricingContainer.append(offer);
+    mPricingContainer.append(offer);
   }
 
-  pricingContainer.classList.add('card-pricing');
-  card.append(pricingContainer);
-  const pricePlan = handlePrice(card);
-  if (pricePlan) {
-    pricingContainer.prepend(pricePlan);
+  mPricingContainer.classList.add('card-pricing');
+  card.append(mPricingContainer);
+  const mPricePlan = handlePrice(card);
+  if (mPricePlan) {
+    mPricingContainer.prepend(mPricePlan);
   } else {
     card.classList.add('no-price-type');
   }
-  ctaGroup.classList.add('card-cta-group');
-  ctaGroup.querySelectorAll('a').forEach((a, i) => {
+  mCtaGroup.classList.add('card-cta-group');
+  mCtaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
     if (i === 1) a.classList.add('secondary');
     if (a.parentNode.tagName.toLowerCase() === 'strong') {
@@ -63,13 +63,38 @@ function decorateCard({
     if (a.parentNode.tagName.toLowerCase() === 'p') {
       a.parentNode.remove();
     }
-    ctaGroup.append(a);
+    mCtaGroup.append(a);
   });
-  if (pricePlan) {
-    // ctaGroup.prepend(pricePlan);
-    ctaGroup.querySelector('a')?.remove('button', 'accent');
+  if (mPricePlan) {
+    mCtaGroup.querySelector('a')?.remove('button', 'accent');
   }
-  card.append(ctaGroup);
+  card.append(mCtaGroup);
+
+  yPricingContainer.classList.add('card-pricing');
+  card.append(yPricingContainer);
+  const yPricePlan = handlePrice(card);
+  if (yPricePlan) {
+    yPricingContainer.prepend(yPricePlan);
+  } else {
+    card.classList.add('no-price-type');
+  }
+  yCtaGroup.classList.add('card-cta-group');
+  yCtaGroup.querySelectorAll('a').forEach((a, i) => {
+    a.classList.add('large');
+    if (i === 1) a.classList.add('secondary');
+    if (a.parentNode.tagName.toLowerCase() === 'strong') {
+      a.classList.add('button', 'primary');
+      a.parentNode.remove();
+    }
+    if (a.parentNode.tagName.toLowerCase() === 'p') {
+      a.parentNode.remove();
+    }
+    yCtaGroup.append(a);
+  });
+  if (mPricePlan) {
+    yCtaGroup.querySelector('a')?.remove('button', 'accent');
+  }
+  card.append(yCtaGroup);
 
   if (featureList.innerHTML.trim()) {
     featureList.classList.add('card-feature-list');
@@ -135,10 +160,16 @@ export default function init(el) {
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   cards.map((card) => decorateCard(card)).forEach((card) => cardsContainer.append(card));
-  const maxCTACnt = cards.reduce((max, card) => Math.max(max, card.ctaGroup.querySelectorAll('a').length), 0);
-  if (maxCTACnt > 1) {
-    cards.forEach(({ ctaGroup }) => {
-      ctaGroup.classList.add(`min-height-${maxCTACnt}`);
+  const maxMSectionCTACnt = cards.reduce((max, card) => Math.max(max, card.mCtaGroup.querySelectorAll('a').length), 0);
+  if (maxMSectionCTACnt > 1) {
+    cards.forEach(({ mCtaGroup }) => {
+      mCtaGroup.classList.add(`min-height-${maxMSectionCTACnt}`);
+    });
+  }
+  const maxYSectionCTACnt = cards.reduce((max, card) => Math.max(max, card.yCtaGroup.querySelectorAll('a').length), 0);
+  if (maxYSectionCTACnt > 1) {
+    cards.forEach(({ yCtaGroup }) => {
+      yCtaGroup.classList.add(`min-height-${maxYSectionCTACnt}`);
     });
   }
   el.prepend(cardsContainer);
