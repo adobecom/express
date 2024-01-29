@@ -196,6 +196,7 @@ w.marketingtech = {
 // w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
 
 function sendEventToAdobeAnaltics(eventName) {
+  console.log(eventName);
   _satellite.track('event', {
     xdm: {},
     data: {
@@ -591,6 +592,7 @@ const martechLoadedCB = () => {
       adobeEventName = prefix + adobeEventName;
     }
 
+    console.log(adobeEventName);
     _satellite.track('event', {
       xdm: {},
       data: {
@@ -745,8 +747,7 @@ const martechLoadedCB = () => {
     const $button = d.querySelector('.sticky-promo-bar button.close');
     if ($button) {
       $button.addEventListener('click', () => {
-        const adobeEventName = 'adobe.com:express:cta:startYourFreeTrial:close';
-        sendEventToAdobeAnaltics(adobeEventName);
+        sendEventToAdobeAnaltics('adobe.com:express:cta:startYourFreeTrial:close');
       });
     }
 
@@ -754,8 +755,7 @@ const martechLoadedCB = () => {
     const $pricingDropdown = d.querySelector('.pricing-plan-dropdown');
     if ($pricingDropdown) {
       $pricingDropdown.addEventListener('change', () => {
-        const adobeEventName = 'adobe.com:express:pricing:commitmentType:selected';
-        sendEventToAdobeAnaltics(adobeEventName);
+        sendEventToAdobeAnaltics('adobe.com:express:pricing:commitmentType:selected');
       });
     }
 
@@ -786,8 +786,7 @@ const martechLoadedCB = () => {
     });
 
     d.addEventListener('pricingdropdown', () => {
-      const adobeEventName = 'adobe.com:express:pricing:bundleType:selected';
-      sendEventToAdobeAnaltics(adobeEventName);
+      sendEventToAdobeAnaltics('adobe.com:express:pricing:bundleType:selected');
     });
 
     // tracking videos loaded asynchronously.
@@ -797,8 +796,7 @@ const martechLoadedCB = () => {
     });
 
     d.addEventListener('videoclosed', (e) => {
-      const adobeEventName = `adobe.com:express:cta:learn:columns:${e.detail.parameters.videoId}:videoClosed`;
-      sendEventToAdobeAnaltics(adobeEventName);
+      sendEventToAdobeAnaltics(`adobe.com:express:cta:learn:columns:${e.detail.parameters.videoId}:videoClosed`);
     });
 
     // for tracking the tab-ax tabs
@@ -813,8 +811,7 @@ const martechLoadedCB = () => {
     import('./block-mediator.min.js').then((resp) => {
       const { default: BlockMediator } = resp;
       BlockMediator.subscribe('billing-plan', ({ newValue }) => {
-        const adobeEventName = `adobe.com:express:cta:pricing:toggle:${newValue}`;
-        sendEventToAdobeAnaltics(adobeEventName);
+        sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:toggle:${newValue}`);
       });
     });
   }
