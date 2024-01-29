@@ -148,7 +148,7 @@
   background: var(--color-gray-150);
   border: 1px solid #E0E2FF;
   width: calc(100% - 32px);
-  height: 150px;
+  height: 125px;
   padding: 16px;
 }
 
@@ -160,6 +160,11 @@
 .pricing-cards .card-pricing p:first-of-type {
   font-size: var(--body-font-size-xs);
   padding-bottom: 12px;
+}
+
+.pricing-cards .card-pricing p:first-of-type {
+  font-size: 14px;
+  padding-top: 10px;
 }
 
 .pricing-cards .card-pricing:not(:has(p)) {
