@@ -56,7 +56,6 @@ function decorateCard({
     compare.querySelector('a')?.classList.remove('button', 'accent');
     card.append(compare);
   }
-
   return card;
 }
 
@@ -66,21 +65,24 @@ function createPricingSection(card, placeholders, container, ctaGroup, container
   container.classList.add(displayClass);
   card.append(container);
   const pricingBtnContainer = container.querySelector('.button-container');
-  const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
-  const placeholderArr = pricingSuffixTextElem.textContent?.split(' '); 
-  const phTextArr = placeholderArr.map((phText) => {
-    const value = phText.replace('{{', '').replace('}}', '');
-    return placeholders[value] ? placeholders[value] : '';
-  });
-  const priceSuffixContent = phTextArr.toString().replace(',', ' ');
-  const pricePlan = handlePrice(card, priceSuffixContent);
-  if (pricePlan) {
-    container.prepend(pricePlan);
-    pricingBtnContainer?.remove();
-    pricingSuffixTextElem?.remove();
-  } else {
-    card.classList.add('no-price-type');
+  if (pricingBtnContainer != null) {
+    const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
+    const placeholderArr = pricingSuffixTextElem.textContent?.split(' '); 
+    const phTextArr = placeholderArr.map((phText) => {
+      const value = phText.replace('{{', '').replace('}}', '');
+      return placeholders[value] ? placeholders[value] : '';
+    });
+    const priceSuffixContent = phTextArr.toString().replace(',', ' ');
+    const pricePlan = handlePrice(card, priceSuffixContent);
+    if (pricePlan) {
+      container.prepend(pricePlan);
+      pricingBtnContainer?.remove();
+      pricingSuffixTextElem?.remove();
+    } else {
+      card.classList.add('no-price-type');
+    }
   }
+  
   ctaGroup.classList.add('card-cta-group');
   ctaGroup.classList.add('monthly');
   ctaGroup.classList.add('show');
