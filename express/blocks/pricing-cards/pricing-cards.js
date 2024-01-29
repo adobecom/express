@@ -59,10 +59,10 @@ function decorateCard({
   return card;
 }
 
-function createPricingSection(card, placeholders, container, ctaGroup, containerClassName, displayClass) {
+function createPricingSection(card, placeholders, container, ctaGroup, termClass, defaultClass) {
   container.classList.add('card-pricing');
-  container.classList.add(containerClassName);
-  container.classList.add(displayClass);
+  container.classList.add(termClass);
+  container.classList.add(defaultClass);
   card.append(container);
   const pricingBtnContainer = container.querySelector('.button-container');
   if (pricingBtnContainer != null) {
@@ -82,10 +82,9 @@ function createPricingSection(card, placeholders, container, ctaGroup, container
       card.classList.add('no-price-type');
     }
   }
-  
   ctaGroup.classList.add('card-cta-group');
-  ctaGroup.classList.add('monthly');
-  ctaGroup.classList.add('show');
+  ctaGroup.classList.add(termClass);
+  ctaGroup.classList.add(defaultClass);
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
     if (i === 1) a.classList.add('secondary');
