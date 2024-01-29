@@ -196,7 +196,6 @@ w.marketingtech = {
 // w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
 
 function sendEventToAdobeAnaltics(eventName) {
-  console.log(eventName);
   _satellite.track('event', {
     xdm: {},
     data: {
@@ -559,7 +558,7 @@ const martechLoadedCB = () => {
     } else if (a.closest('.template')) {
       adobeEventName = appendLinkText(adobeEventName, a);
     } else if (a.closest('.tabs-ax')) {
-      adobeEventName += `${a.closest('.tabs-ax').getAttribute('id')}:${a.getAttribute('id')}`;
+      adobeEventName += `${a.closest('.tabs-ax')?.id}:${a.id}`;
     // Default clicks
     } else {
       adobeEventName = appendLinkText(adobeEventName, a);
@@ -592,7 +591,6 @@ const martechLoadedCB = () => {
       adobeEventName = prefix + adobeEventName;
     }
 
-    console.log(adobeEventName);
     _satellite.track('event', {
       xdm: {},
       data: {
@@ -803,6 +801,14 @@ const martechLoadedCB = () => {
     d.querySelectorAll('main .tabs-ax .tab-list-container button[role="tab"]').forEach((btn) => {
       btn.addEventListener('click', () => {
         trackButtonClick(btn);
+      });
+    });
+
+    d.querySelectorAll('main .table-ax .toggle-content').forEach((toggle) => {
+      toggle.addEventListener('click', () => {
+        const buttonEl = toggle.querySelector('span[role="button"]');
+        const action = buttonEl && buttonEl.getAttribute('aria-expanded') === 'true' ? 'closed' : 'opened';
+        sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:tableToggle:${action || ''}`);
       });
     });
 
