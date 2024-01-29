@@ -1,7 +1,6 @@
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
   { fragment: '/express/fragments/' },
-  { merch: '/tools/ost?' },
 ];
 
 const DO_NOT_INLINE = [
