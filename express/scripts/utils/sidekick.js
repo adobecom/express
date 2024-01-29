@@ -19,6 +19,11 @@ const localeFlowListener = async () => {
   getModal(null, { id: 'locale-flow', content, closeEvent: 'closeModal' });
 };
 
+const blockNameHighlightListener = async () => {
+  const blockNameHighlight = createTag('div', { class: 'block-name-highlight' });
+  await loadBlock(blockNameHighlight);
+};
+
 export default function init() {
   const preflightListener = async () => {
     const preflight = createTag('div', { class: 'preflight', 'data-block-name': 'preflight' });
@@ -55,4 +60,5 @@ export default function init() {
   sk.addEventListener('custom:qa-guide', launchQAGuide);
   sk.addEventListener('custom:preflight', preflightListener);
   sk.addEventListener('custom:locale-flow', localeFlowListener);
+  sk.addEventListener('custom:block-name-highlight', blockNameHighlightListener);
 }

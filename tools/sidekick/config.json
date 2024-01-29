@@ -66,6 +66,17 @@
       "includePaths": [
         "**.docx**"
       ]
+    },
+    {
+      "containerId": "tools",
+      "id": "blocknamehighlight",
+      "title": "Show Block Names",
+      "environments": [
+        "dev",
+        "preview",
+        "live"
+      ],
+      "event": "block-name-highlight"
     }
   ]
 }

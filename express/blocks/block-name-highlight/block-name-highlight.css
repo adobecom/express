@@ -1,0 +1,12 @@
+.display-block-name {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    content: 'Block: ' attr(data-block) '';
+    background: aliceblue;
+    color: #0a6a6a;
+    padding: 2px 8px;
+    font-size: 12px;
+    border-radius: 2px;
+    z-index: 1000;
+}
