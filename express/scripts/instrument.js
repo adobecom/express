@@ -195,6 +195,33 @@ w.marketingtech = {
 // w.targetGlobalSettings = w.targetGlobalSettings || {};
 // w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
 
+function sendEventToAdobeAnaltics(eventName) {
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: eventName,
+          linkClicks: {
+            value: 1,
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        digitalData: {
+          primaryEvent: {
+            eventInfo: {
+              eventName,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 const martechLoadedCB = () => {
   /* eslint-disable no-underscore-dangle */
   const set = (path, value) => {
@@ -381,30 +408,7 @@ const martechLoadedCB = () => {
     sparkLandingPageType === 'pricing'
     && sparkTouchpoint
   ) {
-    _satellite.track('event', {
-      xdm: {},
-      data: {
-        eventType: 'web.webinteraction.linkClicks',
-        web: {
-          webInteraction: {
-            name: 'displayPurchasePanel',
-            linkClicks: {
-              value: 1,
-            },
-            type: 'other',
-          },
-        },
-        _adobe_corpnew: {
-          digitalData: {
-            primaryEvent: {
-              eventInfo: {
-                eventName: 'displayPurchasePanel',
-              },
-            },
-          },
-        },
-      },
-    });
+    sendEventToAdobeAnaltics('displayPurchasePanel');
   }
 
   function textToName(text) {
@@ -551,9 +555,11 @@ const martechLoadedCB = () => {
       } else {
         adobeEventName = appendLinkText(`${adobeEventName}toc:link:Click:`, a);
       }
-    // Default clicks
     } else if (a.closest('.template')) {
       adobeEventName = appendLinkText(adobeEventName, a);
+    } else if (a.closest('.tabs-ax')) {
+      adobeEventName += `${a.closest('.tabs-ax').getAttribute('id')}:${a.getAttribute('id')}`;
+    // Default clicks
     } else {
       adobeEventName = appendLinkText(adobeEventName, a);
     }
@@ -624,33 +630,6 @@ const martechLoadedCB = () => {
 
   // Frictionless Quick Actions tracking events
 
-  function sendEventToAdobeAnaltics(eventName) {
-    _satellite.track('event', {
-      xdm: {},
-      data: {
-        eventType: 'web.webinteraction.linkClicks',
-        web: {
-          webInteraction: {
-            name: eventName,
-            linkClicks: {
-              value: 1,
-            },
-            type: 'other',
-          },
-        },
-        _adobe_corpnew: {
-          digitalData: {
-            primaryEvent: {
-              eventInfo: {
-                eventName,
-              },
-            },
-          },
-        },
-      },
-    });
-  }
-
   function handleQuickActionEvents(el) {
     let frictionLessQuctionActionsTrackingEnabled = false;
     sendEventToAdobeAnaltics('quickAction:uploadPageViewed');
@@ -688,7 +667,7 @@ const martechLoadedCB = () => {
     }
   });
 
-  function trackVideoAnalytics($video, parameters) {
+  function trackVideoAnalytics(parameters) {
     const {
       videoName,
       videoId,
@@ -745,7 +724,7 @@ const martechLoadedCB = () => {
     });
 
     // for tracking split action block notch and underlay background
-    document.addEventListener('splitactionloaded', () => {
+    d.addEventListener('splitactionloaded', () => {
       const $notch = d.querySelector('main .split-action-container .notch');
       const $underlay = d.querySelector('main .split-action-container .underlay');
 
@@ -767,31 +746,7 @@ const martechLoadedCB = () => {
     if ($button) {
       $button.addEventListener('click', () => {
         const adobeEventName = 'adobe.com:express:cta:startYourFreeTrial:close';
-
-        _satellite.track('event', {
-          xdm: {},
-          data: {
-            eventType: 'web.webinteraction.linkClicks',
-            web: {
-              webInteraction: {
-                name: adobeEventName,
-                linkClicks: {
-                  value: 1,
-                },
-                type: 'other',
-              },
-            },
-            _adobe_corpnew: {
-              digitalData: {
-                primaryEvent: {
-                  eventInfo: {
-                    eventName: adobeEventName,
-                  },
-                },
-              },
-            },
-          },
-        });
+        sendEventToAdobeAnaltics(adobeEventName);
       });
     }
 
@@ -800,36 +755,12 @@ const martechLoadedCB = () => {
     if ($pricingDropdown) {
       $pricingDropdown.addEventListener('change', () => {
         const adobeEventName = 'adobe.com:express:pricing:commitmentType:selected';
-
-        _satellite.track('event', {
-          xdm: {},
-          data: {
-            eventType: 'web.webinteraction.linkClicks',
-            web: {
-              webInteraction: {
-                name: adobeEventName,
-                linkClicks: {
-                  value: 1,
-                },
-                type: 'other',
-              },
-            },
-            _adobe_corpnew: {
-              digitalData: {
-                primaryEvent: {
-                  eventInfo: {
-                    eventName: adobeEventName,
-                  },
-                },
-              },
-            },
-          },
-        });
+        sendEventToAdobeAnaltics(adobeEventName);
       });
     }
 
     // Tracking any video column blocks.
-    const $columnVideos = document.querySelectorAll('.column-video');
+    const $columnVideos = d.querySelectorAll('.column-video');
     if ($columnVideos.length) {
       $columnVideos.forEach(($columnVideo) => {
         const $parent = $columnVideo.closest('.columns');
@@ -839,37 +770,13 @@ const martechLoadedCB = () => {
 
         $parent.addEventListener('click', (e) => {
           e.stopPropagation();
-
-          _satellite.track('event', {
-            xdm: {},
-            data: {
-              eventType: 'web.webinteraction.linkClicks',
-              web: {
-                webInteraction: {
-                  name: adobeEventName,
-                  linkClicks: {
-                    value: 1,
-                  },
-                  type: 'other',
-                },
-              },
-              _adobe_corpnew: {
-                digitalData: {
-                  primaryEvent: {
-                    eventInfo: {
-                      eventName: adobeEventName,
-                    },
-                  },
-                },
-              },
-            },
-          });
+          sendEventToAdobeAnaltics(adobeEventName);
         });
       });
     }
 
     // Tracking any link or links that is added after page loaded.
-    document.addEventListener('linkspopulated', async (e) => {
+    d.addEventListener('linkspopulated', async (e) => {
       await trackBranchParameters(e.detail);
       e.detail.forEach(($link) => {
         $link.addEventListener('click', () => {
@@ -878,67 +785,36 @@ const martechLoadedCB = () => {
       });
     });
 
-    document.addEventListener('pricingdropdown', () => {
+    d.addEventListener('pricingdropdown', () => {
       const adobeEventName = 'adobe.com:express:pricing:bundleType:selected';
-
-      _satellite.track('event', {
-        xdm: {},
-        data: {
-          eventType: 'web.webinteraction.linkClicks',
-          web: {
-            webInteraction: {
-              name: adobeEventName,
-              linkClicks: {
-                value: 1,
-              },
-              type: 'other',
-            },
-          },
-          _adobe_corpnew: {
-            digitalData: {
-              primaryEvent: {
-                eventInfo: {
-                  eventName: adobeEventName,
-                },
-              },
-            },
-          },
-        },
-      });
+      sendEventToAdobeAnaltics(adobeEventName);
     });
 
     // tracking videos loaded asynchronously.
-    document.addEventListener('videoloaded', (e) => {
-      trackVideoAnalytics(e.detail.video, e.detail.parameters);
+    d.addEventListener('videoloaded', (e) => {
+      trackVideoAnalytics(e.detail.parameters);
       _satellite.track('videoloaded');
     });
 
-    document.addEventListener('videoclosed', (e) => {
+    d.addEventListener('videoclosed', (e) => {
       const adobeEventName = `adobe.com:express:cta:learn:columns:${e.detail.parameters.videoId}:videoClosed`;
+      sendEventToAdobeAnaltics(adobeEventName);
+    });
 
-      _satellite.track('event', {
-        xdm: {},
-        data: {
-          eventType: 'web.webinteraction.linkClicks',
-          web: {
-            webInteraction: {
-              name: adobeEventName,
-              linkClicks: {
-                value: 1,
-              },
-              type: 'other',
-            },
-          },
-          _adobe_corpnew: {
-            digitalData: {
-              primaryEvent: {
-                eventInfo: {
-                  eventName: adobeEventName,
-                },
-              },
-            },
-          },
-        },
+    // for tracking the tab-ax tabs
+    d.querySelectorAll('main .tabs-ax .tab-list-container button[role="tab"]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        trackButtonClick(btn);
+      });
+    });
+
+    // track non-click interactions
+    // BlockMediator triggered
+    import('./block-mediator.min.js').then((resp) => {
+      const { default: BlockMediator } = resp;
+      BlockMediator.subscribe('billing-plan', ({ newValue }) => {
+        const adobeEventName = `adobe.com:express:cta:pricing:toggle:${newValue}`;
+        sendEventToAdobeAnaltics(adobeEventName);
       });
     });
   }
@@ -1028,30 +904,7 @@ const martechLoadedCB = () => {
           audiences.push(ENABLE_PRICING_MODAL_AUDIENCE);
           segments.push(RETURNING_VISITOR_SEGMENT_ID);
 
-          _satellite.track('event', {
-            xdm: {},
-            data: {
-              eventType: 'web.webinteraction.linkClicks',
-              web: {
-                webInteraction: {
-                  name: 'pricingModalUserInSegment',
-                  linkClicks: {
-                    value: 1,
-                  },
-                  type: 'other',
-                },
-              },
-              _adobe_corpnew: {
-                digitalData: {
-                  primaryEvent: {
-                    eventInfo: {
-                      eventName: 'pricingModalUserInSegment',
-                    },
-                  },
-                },
-              },
-            },
-          });
+          sendEventToAdobeAnaltics('pricingModalUserInSegment');
         }
 
         QUICK_ACTION_SEGMENTS.forEach((QUICK_ACTION_SEGMENT) => {
