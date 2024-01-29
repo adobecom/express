@@ -1485,8 +1485,9 @@ function decoratePageStyle() {
  */
 
 export function decorateButtons(el = document) {
+  // FIXME: Different function from Milo.
   const noButtonBlocks = ['template-list', 'icon-list'];
-  el.querySelectorAll(':scope a:not(.faas.link-block, .fragment.link-block)').forEach(($a) => {
+  el.querySelectorAll(':scope a:not(.faas.link-block, .modal.link-block, .fragment.link-block)').forEach(($a) => {
     const originalHref = $a.href;
     const linkText = $a.textContent.trim();
     if ($a.children.length > 0) {
