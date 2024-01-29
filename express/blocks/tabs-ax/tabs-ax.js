@@ -38,6 +38,11 @@ function changeTabs(e) {
   grandparent.parentNode
     .querySelector(`#${target.getAttribute('aria-controls')}`)
     .removeAttribute('hidden');
+  const tabId = target.id;
+  const tabName = tabId.substring(tabId.lastIndexOf('-') + 1);
+  const url = new URL(window.location.href);
+  url.searchParams.set('tab', tabName);
+  window.history.replaceState({}, '', url);
 }
 
 function getStringKeyName(str) {
