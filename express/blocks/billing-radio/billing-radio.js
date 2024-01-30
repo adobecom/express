@@ -1,8 +1,7 @@
-// one-off radio buttons for plans
+// fires 'billing-plan' BM and has global sync values when multiple on same page
 import { createTag } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
-// multiple live on same page
 const getId = (function idSetups() {
   const gen = (function* g() {
     let id = 0;
