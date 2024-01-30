@@ -10,7 +10,7 @@ describe('Pricing Cards', () => {
   before(async () => {
     window.isTestEnv = true;
     blocks = Array.from(document.querySelectorAll('.pricing-cards'));
-    blocks.forEach((block) => decorate(block));
+    await Promise.all(blocks.map((block) => decorate(block)));
     cardCnts = (document.querySelector('div.card-cnts').textContent.split(',')).map((cnt) => parseInt(cnt, 10));
   });
 
@@ -34,7 +34,7 @@ describe('Pricing Cards', () => {
       cards.forEach((card) => {
         expect(card.querySelector('div.card-header')).to.exist;
         expect(card.querySelector('div.card-explain')).to.exist;
-        expect(card.querySelector('div.card-pricing')).to.exist;
+        expect(card.querySelector('div.pricing-area')).to.exist;
         expect(card.querySelector('div.card-cta-group')).to.exist;
         expect(card.querySelector('div.card-feature-list')).to.exist;
         expect(card.querySelector('div.card-compare')).to.exist;
@@ -43,4 +43,5 @@ describe('Pricing Cards', () => {
   });
   // TODO: add checks for pricing logic
   // TODO: add checks for optional/configurable elements
+  // TODO: add checks for BlockMediator
 });
