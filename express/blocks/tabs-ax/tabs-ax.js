@@ -42,6 +42,7 @@ function changeTabs(e) {
   const tabName = tabId.substring(tabId.lastIndexOf('-') + 1);
   const url = new URL(window.location.href);
   url.searchParams.set('tab', tabName);
+  url.hash = '';
   window.history.replaceState({}, '', url);
 }
 

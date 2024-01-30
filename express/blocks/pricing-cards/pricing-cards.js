@@ -99,7 +99,7 @@ function decorateCard({
   yCtaGroup,
   featureList,
   compare,
-}, placeholders) {
+}, el, placeholders) {
   const card = createTag('div', { class: 'card' });
   header.classList.add('card-header');
   const h2 = header.querySelector('h2');
@@ -157,6 +157,19 @@ function decorateCard({
   if (compare.innerHTML.trim()) {
     compare.classList.add('card-compare');
     compare.querySelector('a')?.classList.remove('button', 'accent');
+    // in a tab, update url
+    const closestTab = el.closest('div.tabpanel');
+    if (closestTab) {
+      try {
+        const tabId = parseInt(closestTab.id.split('-').pop(), 10);
+        const compareLink = compare.querySelector('a');
+        const url = new URL(compareLink.href);
+        url.searchParams.set('tab', tabId);
+        compareLink.href = url.href;
+      } catch (e) {
+        // ignore
+      }
+    }
     card.append(compare);
   }
   return card;
@@ -172,7 +185,7 @@ export default async function init(el) {
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
   cards
-    .map((card) => decorateCard(card, placeholders))
+    .map((card) => decorateCard(card, el, placeholders))
     .forEach((card) => cardsContainer.append(card));
   const maxMCTACnt = cards.reduce((max, card) => Math.max(max, card.mCtaGroup.querySelectorAll('a').length), 0);
   if (maxMCTACnt > 1) {
