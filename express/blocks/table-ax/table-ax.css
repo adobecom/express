@@ -2,6 +2,11 @@
 .table-ax.block {
   padding: 40px 0;
 }
+
+.table-ax .button.hide {
+  display: none;
+}
+
 .table-ax > .row {
   display: grid;
 }
