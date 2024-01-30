@@ -55,7 +55,7 @@
   align-items: center;
   justify-content: space-between;
 }
-.pricing-cards .card-header h2 {
+.pricing-cards .card .card-header h2 {
   font-weight: var(--heading-font-weight);
   line-height: var(--heading-line-height);
   font-size: var(--body-font-size-l);
@@ -101,7 +101,7 @@
 }
 
 /** pricing styles start **/
-.pricing-cards .card-pricing .pricing-row {
+.pricing-cards .pricing-area .pricing-row {
   max-width: 330px;
 }
 .pricing-cards .pricing-base-price,
@@ -137,7 +137,7 @@
   display: none;
 }
 
-.pricing-cards .card-pricing {
+.pricing-cards .pricing-area {
   position: relative;
   border-radius: 8px;
   background: var(--color-gray-150);
@@ -147,22 +147,22 @@
   padding: 16px;
 }
 
-.pricing-cards .card-pricing p {
+.pricing-cards .pricing-area p {
   margin: 0;
   font-size: var(--body-font-size-s);
 }
 
-.pricing-cards .card-pricing p em {
+.pricing-cards .pricing-area p em {
   font-style: normal;
   color: #5258E4;
 }
 
-.pricing-cards .card-pricing .pricing-row-suf {
+.pricing-cards .pricing-area .pricing-row-suf {
   font-size: var(--body-font-size-xs);
   padding-bottom: 12px;
 }
 
-.pricing-cards .card-pricing:not(:has(p)) {
+.pricing-cards .pricing-area:not(:has(p)) {
   font-size: 22px;
   display: flex;
   justify-content: center;
@@ -253,6 +253,9 @@
   :root {
     --card-width: 362px;
   }
+  .pricing-cards .card .card-header h2 {
+    margin-top: 0;
+  }
 }
 
 @media screen and (min-width: 1440px) {
@@ -269,7 +272,11 @@
   .pricing-cards .card {
     gap: 24px;
   }
-  .pricing-cards .card-header h2 {
+
+  .pricing-cards .card .card-header {
+    margin-bottom: -16px;
+  }
+  .pricing-cards .card .card-header h2 {
     font-size: 1.75rem;
   }
   .pricing-cards .card-explain {

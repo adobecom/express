@@ -2,13 +2,13 @@ import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
-const blockKeys = ['header', 'explain', 'offer', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
-const plans = ['monthly', 'yearly']; // sync with billing-radio
+const blockKeys = ['header', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
+const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
 
-function handlePrice(pricingRow, priceSuffixContext) {
-  const pricePlan = createTag('div', { class: 'pricing-row' });
-  const priceEl = pricingRow.querySelector('[title="{{pricing}}"]');
+function handlePrice(pricingCard, priceSuffixContext) {
+  const priceRow = createTag('div', { class: 'pricing-row' });
+  const priceEl = pricingCard.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
   const priceParent = priceEl?.parentNode;
 
@@ -16,7 +16,7 @@ function handlePrice(pricingRow, priceSuffixContext) {
   const basePrice = createTag('span', { class: 'pricing-base-price' });
   const priceSuffix = createTag('div', { class: 'pricing-row-suf' });
 
-  pricePlan.append(basePrice, price, priceSuffix);
+  priceRow.append(basePrice, price, priceSuffix);
 
   fetchPlan(priceEl?.href).then((response) => {
     const parentP = priceEl.parentElement;
@@ -41,18 +41,22 @@ function handlePrice(pricingRow, priceSuffixContext) {
       priceSuffix.textContent = priceSuffixContext;
     }
 
-    const planCTA = pricingRow.querySelector(':scope > .button-container:last-of-type a.button');
+    const planCTA = pricingCard.querySelector(':scope > .button-container:last-of-type a.button');
     if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
   });
 
   priceParent?.remove();
-  return pricePlan;
+  return priceRow;
 }
 
-function createPricingSection(placeholders, pricingRow, ctaGroup) {
+function createPricingSection(placeholders, pricingArea, ctaGroup) {
   const pricingSection = createTag('div', { class: 'pricing-section' });
-  pricingRow.classList.add('card-pricing');
-  const pricingBtnContainer = pricingRow.querySelector('.button-container');
+  pricingArea.classList.add('pricing-area');
+  const offer = pricingArea.querySelector(':scope > p > em');
+  if (offer) {
+    offer.classList.add('card-offer');
+  }
+  const pricingBtnContainer = pricingArea.querySelector('.button-container');
   if (pricingBtnContainer != null) {
     const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
     const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
@@ -61,9 +65,9 @@ function createPricingSection(placeholders, pricingRow, ctaGroup) {
       return placeholders[value] ? placeholders[value] : '';
     });
     const priceSuffixContent = phTextArr.join(' ');
-    const pricePlan = handlePrice(pricingRow, priceSuffixContent);
-    if (pricePlan) {
-      pricingRow.prepend(pricePlan);
+    const priceRow = handlePrice(pricingArea, priceSuffixContent);
+    if (priceRow) {
+      pricingArea.prepend(priceRow);
       pricingBtnContainer?.remove();
       pricingSuffixTextElem?.remove();
     }
@@ -81,7 +85,7 @@ function createPricingSection(placeholders, pricingRow, ctaGroup) {
     }
     ctaGroup.append(a);
   });
-  pricingSection.append(pricingRow);
+  pricingSection.append(pricingArea);
   pricingSection.append(ctaGroup);
   return pricingSection;
 }
@@ -141,6 +145,7 @@ function decorateCard({
       }
     });
   }
+  reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
   BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
   card.append(mPricingSection, yPricingSection);
 
