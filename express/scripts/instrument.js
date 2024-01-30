@@ -42,7 +42,11 @@ async function trackBranchParameters($links) {
   const { experiment } = window.hlx;
   const { referrer } = window.document;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
-  const templateSearchTag = getMetadata('short-title');
+  const templateSearchTag = getMetadata('branch-search-term') || getMetadata('short-title');
+  const canvasHeight = getMetadata('branch-canvas-height');
+  const canvasWidth = getMetadata('branch-canvas-width');
+  const canvasUnit = getMetadata('branch-canvas-unit');
+  const sceneline = getMetadata('branch-sceneline');
   const pageUrl = window.location.pathname;
   const sdid = rootUrlParameters.get('sdid');
   const mv = rootUrlParameters.get('mv');
@@ -71,6 +75,22 @@ async function trackBranchParameters($links) {
 
       if (pageUrl) {
         urlParams.set('url', pageUrl);
+      }
+
+      if (canvasHeight) {
+        urlParams.set('height', canvasHeight);
+      }
+
+      if (canvasWidth) {
+        urlParams.set('width', canvasWidth);
+      }
+
+      if (canvasUnit) {
+        urlParams.set('unit', canvasUnit);
+      }
+
+      if (sceneline) {
+        urlParams.set('sceneline', sceneline);
       }
 
       if (sdid) {

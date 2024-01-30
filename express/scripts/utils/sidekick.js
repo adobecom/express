@@ -9,6 +9,14 @@ export function autoWidgetByUSP(name, callback) {
   }
 }
 
+const localeFlowListener = async () => {
+  const localeFlow = createTag('div', { class: 'locale-flow', 'data-block-name': 'locale-flow' });
+  const content = await loadBlock(localeFlow);
+
+  const { getModal } = await import('../../blocks/modal/modal.js');
+  getModal(null, { id: 'locale-flow', content, closeEvent: 'closeModal' });
+};
+
 export default function init() {
   const preflightListener = async () => {
     const preflight = createTag('div', { class: 'preflight', 'data-block-name': 'preflight' });
@@ -35,4 +43,5 @@ export default function init() {
   // Add plugin listeners here
   sk.addEventListener('custom:qa-guide', launchQAGuide);
   sk.addEventListener('custom:preflight', preflightListener);
+  sk.addEventListener('custom:locale-flow', localeFlowListener);
 }
