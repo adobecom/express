@@ -8,6 +8,7 @@
 .pricing-cards.block {
   padding: 0 15px 40px;
 }
+
 .pricing-cards .cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
@@ -54,7 +55,7 @@
   align-items: center;
   justify-content: space-between;
 }
-.pricing-cards .card-header h2 {
+.pricing-cards .card .card-header h2 {
   font-weight: var(--heading-font-weight);
   line-height: var(--heading-line-height);
   font-size: var(--body-font-size-l);
@@ -99,7 +100,44 @@
   align-items: center;
 }
 
-.pricing-cards .card-pricing {
+/** pricing styles start **/
+.pricing-cards .pricing-area .pricing-row {
+  max-width: 330px;
+}
+.pricing-cards .pricing-base-price,
+.pricing-cards .pricing-price {
+  font-size: var(--heading-font-size-s);
+  font-weight: 700;
+}
+.pricing-cards .pricing-price.price-active {
+  color: #5258E4;
+}
+.pricing-cards .pricing-base-price {
+  color: var(--color-gray-600);
+}
+
+.pricing-cards .pricing-base-price > strong {
+  text-decoration: line-through;
+  padding-right: 4px;
+}
+
+.pricing-cards .pricing-price > strong,
+.pricing-cards .pricing-base-price > strong,
+.pricing-cards .pricing-price > sup {
+  padding-left: 4px;
+}
+
+.pricing-cards .pricing-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.pricing-cards .pricing-section.hide {
+  display: none;
+}
+
+.pricing-cards .pricing-area {
   position: relative;
   border-radius: 8px;
   background: var(--color-gray-150);
@@ -109,32 +147,38 @@
   padding: 16px;
 }
 
-.pricing-cards .card-pricing p {
+.pricing-cards .pricing-area p {
   margin: 0;
   font-size: var(--body-font-size-s);
 }
-.pricing-cards .card-pricing p:first-of-type {
+
+.pricing-cards .pricing-area p em {
+  font-style: normal;
+  color: #5258E4;
+}
+
+.pricing-cards .pricing-area .pricing-row-suf {
   font-size: var(--body-font-size-xs);
   padding-bottom: 12px;
 }
-.pricing-cards .card-pricing p:first-of-type strong {
-  font-size: 22px;
-  display: block;
-}
-.pricing-cards .card-pricing:not(:has(p)) {
+
+.pricing-cards .pricing-area:not(:has(p)) {
   font-size: 22px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.pricing-cards .card .card-cta-group {
+/** pricing styles end **/
+
+.pricing-cards .card-cta-group {
   display: flex;
   flex-direction: column;
   width: 100%;
   gap: 16px;
 }
-.pricing-cards .card .card-cta-group a {
+
+.pricing-cards .card-cta-group a {
   width: 100%;
   box-sizing: border-box;
   margin: 0;
@@ -144,34 +188,40 @@
   display: none;
   align-self: flex-start;
 }
+
 .pricing-cards .card-feature-list p {
   padding: 16px 0px;
   border-bottom: 1px solid var(--Palette-gray-100, #E9E9E9);
   margin: 0 0 24px 0;
 }
+
 .pricing-cards .card-feature-list p strong {
   font-size: var(--body-font-size-m);
   padding: 8px;
 }
+
 .pricing-cards .card-feature-list ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
+
 .pricing-cards .card-feature-list li {
   padding: 8px;
 }
+
 .pricing-cards .card-feature-list li:first-of-type {
   padding-top: 0;
 }
+
 .pricing-cards .card-feature-list li:last-of-type {
   padding-bottom: 0;
 }
+
 .pricing-cards .card-feature-list li a {
   text-decoration: underline;
   font-weight: 400;
 }
-
 
 .pricing-cards .card-compare {
   margin-top: auto;
@@ -203,6 +253,9 @@
   :root {
     --card-width: 362px;
   }
+  .pricing-cards .card .card-header h2 {
+    margin-top: 0;
+  }
 }
 
 @media screen and (min-width: 1440px) {
@@ -219,11 +272,18 @@
   .pricing-cards .card {
     gap: 24px;
   }
-  .pricing-cards .card-header h2 {
+
+  .pricing-cards .card .card-header {
+    margin-bottom: -16px;
+  }
+  .pricing-cards .card .card-header h2 {
     font-size: 1.75rem;
   }
   .pricing-cards .card-explain {
     display: block;
+  }
+  .pricing-cards .pricing-section {
+    gap: 24px;
   }
   .pricing-cards .card .card-cta-group.min-height-2 {
     min-height: 106px;

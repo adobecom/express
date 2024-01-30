@@ -1,7 +1,6 @@
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
   { fragment: '/express/fragments/' },
-  { merch: '/tools/ost?' },
 ];
 
 const DO_NOT_INLINE = [
@@ -2733,5 +2732,3 @@ export function registerPerformanceLogger() {
     // no output
   }
 }
-
-// export const MILO_EVENTS = { DEFERRED: 'milo:deferred' };

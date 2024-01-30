@@ -1,8 +1,7 @@
-// one-off radio buttons for plans
+// fires 'billing-plan' BM and has global sync values when multiple on same page
 import { createTag } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
-// multiple live on same page
 const getId = (function idSetups() {
   const gen = (function* g() {
     let id = 0;
@@ -14,6 +13,8 @@ const getId = (function idSetups() {
   return () => gen.next().value;
 }());
 
+const BILLING_PLAN = 'billing-plan';
+
 export default function init(el) {
   const blockId = getId();
   const title = el.querySelector('strong');
@@ -23,7 +24,7 @@ export default function init(el) {
   plans.forEach((plan, planIndex) => {
     const wrapper = createTag('div');
     wrapper.addEventListener('change', () => {
-      BlockMediator.set('billing-plan', planIndex);
+      BlockMediator.set(BILLING_PLAN, planIndex);
     });
     const label = createTag('label', {}, plan);
     const radio = createTag('input', {
@@ -35,8 +36,8 @@ export default function init(el) {
   });
   el.querySelector('input[type="radio"]').checked = true;
 
-  if (!BlockMediator.hasStore('billing-plan')) BlockMediator.set('billing-plan', 0);
-  BlockMediator.subscribe('billing-plan', ({ newValue, oldValue }) => {
+  if (!BlockMediator.hasStore(BILLING_PLAN)) BlockMediator.set(BILLING_PLAN, 0);
+  BlockMediator.subscribe(BILLING_PLAN, ({ newValue, oldValue }) => {
     el.querySelector(`input[value="${oldValue}"]`).checked = false;
     el.querySelector(`input[value="${newValue}"]`).checked = true;
   });

@@ -1,6 +1,10 @@
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 import { debounce } from '../../scripts/hofs.js';
 import { decorateButtons } from '../../scripts/utils/decorate.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
+
+const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
+const BILLING_PLAN = 'billing-plan';
 
 // const MOBILE_SIZE = 768;
 const MOBILE_SIZE = 900;
@@ -55,6 +59,23 @@ function handleHeading(headingRow) {
         const btnWrapper = btn.closest('P');
         buttonsWrapper.append(btnWrapper);
       });
+
+      if (buttons.length > 1) {
+        buttons.forEach((btn, index) => {
+          btn.classList.add(plans[index]);
+        });
+        const reactToPlanChange = ({ newValue }) => {
+          buttons.forEach((btn) => {
+            if (btn.classList.contains(plans[newValue])) {
+              btn.classList.remove('hide');
+            } else {
+              btn.classList.add('hide');
+            }
+          });
+        };
+        reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
+        BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
+      }
 
       const div = document.createElement('div');
       const colLabel = document.createElement('div');
