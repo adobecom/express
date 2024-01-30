@@ -352,56 +352,10 @@ const martechLoadedCB = () => {
   //------------------------------------------------------------------------------------
 
   // Fire the viewedPage event
-  _satellite.track('event', {
-    xdm: {},
-    data: {
-      eventType: 'web.webinteraction.linkClicks',
-      web: {
-        webInteraction: {
-          name: 'viewedPage',
-          linkClicks: {
-            value: 1,
-          },
-          type: 'other',
-        },
-      },
-      _adobe_corpnew: {
-        digitalData: {
-          primaryEvent: {
-            eventInfo: {
-              eventName: 'viewedPage',
-            },
-          },
-        },
-      },
-    },
-  });
+  sendEventToAdobeAnaltics('viewedPage');
 
   // Fire the landing:viewedPage event
-  _satellite.track('event', {
-    xdm: {},
-    data: {
-      eventType: 'web.webinteraction.linkClicks',
-      web: {
-        webInteraction: {
-          name: 'landing:viewedPage',
-          linkClicks: {
-            value: 1,
-          },
-          type: 'other',
-        },
-      },
-      _adobe_corpnew: {
-        digitalData: {
-          primaryEvent: {
-            eventInfo: {
-              eventName: 'landing:viewedPage',
-            },
-          },
-        },
-      },
-    },
-  });
+  sendEventToAdobeAnaltics('landing:viewedPage');
 
   // Fire the displayPurchasePanel event if it is the pricing site
   if (
@@ -557,7 +511,7 @@ const martechLoadedCB = () => {
       }
     } else if (a.closest('.template')) {
       adobeEventName = appendLinkText(adobeEventName, a);
-    } else if (a.closest('.tabs-ax')) {
+    } else if (a.closest('.tabs-ax .tab-list-container')) {
       adobeEventName += `${a.closest('.tabs-ax')?.id}:${a.id}`;
     // Default clicks
     } else {
