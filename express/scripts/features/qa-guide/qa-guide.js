@@ -37,7 +37,7 @@ const getTextWithoutChild = (element) => {
 const buildPayload = (pages) => pages.map((p) => {
   const pageLink = p.querySelector(':scope > div:first-of-type > a, :scope > div:first-of-type').innerText.trim();
   const pageUrl = new URL(pageLink);
-  const targetUrl = pageUrl ? window.location.host + (pageUrl.pathname) : pageLink;
+  const targetUrl = pageUrl ? `${window.location.protocol}//${window.location.host}${pageUrl.pathname}` : pageLink;
 
   const pagePackage = {
     link: targetUrl || null,
@@ -78,6 +78,8 @@ const logQARecord = () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       data: {
+        // Let's use raw timestamp.
+        // Data visualization should be handled in a different way (a separate dashboard).
         timestamp: Date.now(),
         details: sessionStorage.getItem('qa-record'),
       },
