@@ -335,7 +335,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   align-items: start;
 }
 
-.pricing-table .row.row-heading .col div {
+.pricing-table .row.row-heading .col > div {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
