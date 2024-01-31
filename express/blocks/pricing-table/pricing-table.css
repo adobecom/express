@@ -360,7 +360,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   height: 24px;
   width: 24px;
 }
-.pricing-table .row.row-heading .col div p {
+.pricing-table .row.row-heading .col > div p {
   font-size: 1.125rem;
   font-weight: 700;
 }
