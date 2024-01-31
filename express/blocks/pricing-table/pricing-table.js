@@ -204,7 +204,7 @@ const getId = (function idSetups() {
 
 export default async function init(el) {
   const blockId = getId();
-  el.id = `table-ax-${blockId + 1}`;
+  el.id = `pricing-table-${blockId + 1}`;
   el.setAttribute('role', 'table');
   if (el.parentElement.classList.contains('section')) {
     el.parentElement.classList.add('table-section');

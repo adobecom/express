@@ -758,7 +758,7 @@ const martechLoadedCB = () => {
       });
     });
 
-    d.querySelectorAll('main .table-ax .toggle-content').forEach((toggle) => {
+    d.querySelectorAll('main .pricing-table .toggle-content').forEach((toggle) => {
       toggle.addEventListener('click', () => {
         const buttonEl = toggle.querySelector('span[role="button"]');
         const action = buttonEl && buttonEl.getAttribute('aria-expanded') === 'true' ? 'closed' : 'opened';
