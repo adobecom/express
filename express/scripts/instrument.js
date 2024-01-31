@@ -414,7 +414,7 @@ const martechLoadedCB = () => {
   }
 
   function appendLinkText(eventName, a) {
-    let $img;
+    let img;
     let alt;
 
     if (!a) return eventName;
@@ -426,8 +426,8 @@ const martechLoadedCB = () => {
     } else if (a.textContent?.trim()) {
       return eventName + textToName(a.textContent.trim());
     } else {
-      $img = a.querySelector('img');
-      alt = $img && $img.getAttribute('alt');
+      img = a.querySelector('img');
+      alt = img && img.getAttribute('alt');
       if (alt) {
         return eventName + textToName(alt);
       } else {
