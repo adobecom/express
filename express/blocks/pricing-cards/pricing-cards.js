@@ -1,5 +1,5 @@
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
-import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
+import { fetchPlan, buildUrl, formatSalesPhoneNumberReplace } from '../../scripts/utils/pricing.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const blockKeys = ['header', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
@@ -204,7 +204,6 @@ export default async function init(el) {
 
   const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter((a) => a.title.includes(SALES_NUMBERS));
   if (phoneNumberTags.length > 0) {
-    const { formatSalesPhoneNumberReplace } = await import('../../scripts/utils/pricing.js');
     await formatSalesPhoneNumberReplace(phoneNumberTags, SALES_NUMBERS);
   }
   el.prepend(cardsContainer);
