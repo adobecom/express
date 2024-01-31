@@ -175,6 +175,8 @@ function decorateCard({
   return card;
 }
 
+const SALES_NUMBERS = '{{business-sales-numbers}}';
+
 export default async function init(el) {
   const divs = blockKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
   const cards = Array.from(divs[0]).map((_, index) => blockKeys.reduce((obj, key, keyIndex) => {
@@ -198,6 +200,12 @@ export default async function init(el) {
     cards.forEach(({ yCtaGroup }) => {
       yCtaGroup.classList.add(`min-height-${maxYCTACnt}`);
     });
+  }
+
+  const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter((a) => a.title.includes(SALES_NUMBERS));
+  if (phoneNumberTags.length > 0) {
+    const { formatSalesPhoneNumberReplace } = await import('../../scripts/utils/pricing.js');
+    await formatSalesPhoneNumberReplace(phoneNumberTags, SALES_NUMBERS);
   }
   el.prepend(cardsContainer);
 }

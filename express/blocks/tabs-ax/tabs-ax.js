@@ -38,12 +38,6 @@ function changeTabs(e) {
   grandparent.parentNode
     .querySelector(`#${target.getAttribute('aria-controls')}`)
     .removeAttribute('hidden');
-  const tabId = target.id;
-  const tabName = tabId.substring(tabId.lastIndexOf('-') + 1);
-  const url = new URL(window.location.href);
-  url.searchParams.set('tab', tabName);
-  url.hash = '';
-  window.history.replaceState({}, '', url);
 }
 
 function getStringKeyName(str) {
@@ -91,6 +85,14 @@ function initTabs(elm, config, rootElem) {
     tab.addEventListener('click', changeTabs);
   });
   if (config) configTabs(config, rootElem);
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', ({ target: { id: tabId } }) => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', tabId.substring(tabId.lastIndexOf('-') + 1));
+      url.hash = '';
+      window.history.replaceState({}, '', url);
+    });
+  });
 }
 
 const handleDeferredImages = (block) => {

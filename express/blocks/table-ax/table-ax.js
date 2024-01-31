@@ -306,17 +306,23 @@ export default async function init(el) {
     deviceBySize = defineDeviceByScreenSize();
     handleResize();
   }, 100));
-  const scrollHandler = () => {
-    if (deviceBySize === 'MOBILE') return;
-    const gnav = document.querySelector('header');
-    const gnavHeight = gnav.offsetHeight;
-    const { top } = rows[0].getBoundingClientRect();
-    if (top <= gnavHeight && !rows[0].classList.contains('stuck')) {
-      rows[0].classList.add('stuck');
-      rows[0].style.top = `${gnavHeight}px`;
-    } else if (rows[0].classList.contains('stuck') && top > gnavHeight) {
-      rows[0].classList.remove('stuck');
-    }
-  };
-  window.addEventListener('scroll', debounce(scrollHandler, 150));
+
+  if (el.classList.contains('sticky')) {
+    const scrollHandler = () => {
+      if (deviceBySize === 'MOBILE') return;
+      if (el.closest('div.tabpanel')?.getAttribute('hidden')) {
+        return;
+      }
+      const gnav = document.querySelector('header');
+      const gnavHeight = gnav.offsetHeight;
+      const { top } = rows[0].getBoundingClientRect();
+      if (top <= gnavHeight && !rows[0].classList.contains('stuck')) {
+        rows[0].classList.add('stuck');
+        rows[0].style.top = `${gnavHeight}px`;
+      } else if (rows[0].classList.contains('stuck') && top > gnavHeight) {
+        rows[0].classList.remove('stuck');
+      }
+    };
+    window.addEventListener('scroll', debounce(scrollHandler, 30), { passive: true });
+  }
 }
