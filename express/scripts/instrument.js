@@ -413,24 +413,27 @@ const martechLoadedCB = () => {
     return (camelCase);
   }
 
-  function appendLinkText(eventName, $a) {
+  function appendLinkText(eventName, a) {
     let $img;
     let alt;
-    let newEventName;
 
-    if ($a?.textContent?.trim()) {
-      newEventName = eventName + textToName($a.textContent.trim());
+    if (!a) return eventName;
+
+    if (a.getAttribute('title')?.trim()) {
+      return eventName + textToName(a.getAttribute('title').trim());
+    } else if (a.getAttribute('aria-label')?.trim()) {
+      return eventName + textToName(a.getAttribute('aria-label').trim());
+    } else if (a.textContent?.trim()) {
+      return eventName + textToName(a.textContent.trim());
     } else {
-      $img = $a?.querySelector('img');
+      $img = a.querySelector('img');
       alt = $img && $img.getAttribute('alt');
       if (alt) {
-        newEventName = eventName + textToName(alt);
+        return eventName + textToName(alt);
       } else {
-        newEventName = eventName;
+        return eventName;
       }
     }
-
-    return newEventName;
   }
 
   function trackButtonClick(a) {
@@ -585,6 +588,7 @@ const martechLoadedCB = () => {
       adobeEventName = prefix + adobeEventName;
     }
 
+    console.log(adobeEventName);
     _satellite.track('event', {
       xdm: {},
       data: {
@@ -625,6 +629,7 @@ const martechLoadedCB = () => {
   // Frictionless Quick Actions tracking events
 
   function sendEventToAdobeAnaltics(eventName) {
+    console.log(eventName);
     _satellite.track('event', {
       xdm: {},
       data: {
@@ -833,8 +838,7 @@ const martechLoadedCB = () => {
     if ($columnVideos.length) {
       $columnVideos.forEach(($columnVideo) => {
         const $parent = $columnVideo.closest('.columns');
-        const $a = $columnVideo.querySelector('a');
-
+        const $a = $parent.querySelector('a');
         const adobeEventName = appendLinkText(`adobe.com:express:cta:learn:columns:${sparkLandingPageType}:`, $a);
 
         $parent.addEventListener('click', (e) => {

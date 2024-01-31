@@ -1517,6 +1517,7 @@ async function buildTemplateList(block, props, type = []) {
     const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
     const textWrapper = block.querySelector('.template-title .text-wrapper > div');
     const tabsWrapper = createTag('div', { class: 'template-tabs' });
+    const tabBtns = [];
 
     const promises = [];
 
@@ -1531,6 +1532,7 @@ async function buildTemplateList(block, props, type = []) {
         const tabBtn = createTag('button', { class: 'template-tab-button' });
         tabBtn.textContent = tabs[index];
         tabsWrapper.append(tabBtn);
+        tabBtns.push(tabBtn);
 
         const [[task]] = taskObj;
 
@@ -1575,6 +1577,8 @@ async function buildTemplateList(block, props, type = []) {
           }
         }, { passive: true });
       });
+
+      document.dispatchEvent(new CustomEvent('linkspopulated', { detail: tabBtns }));
     }
 
     textWrapper.append(tabsWrapper);
