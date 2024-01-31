@@ -588,7 +588,6 @@ const martechLoadedCB = () => {
       adobeEventName = prefix + adobeEventName;
     }
 
-    console.log(adobeEventName);
     _satellite.track('event', {
       xdm: {},
       data: {
@@ -629,7 +628,6 @@ const martechLoadedCB = () => {
   // Frictionless Quick Actions tracking events
 
   function sendEventToAdobeAnaltics(eventName) {
-    console.log(eventName);
     _satellite.track('event', {
       xdm: {},
       data: {
