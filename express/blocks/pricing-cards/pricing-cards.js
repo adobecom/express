@@ -1,5 +1,5 @@
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
-import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
+import { fetchPlan, buildUrl, setInternationalCookie } from '../../scripts/utils/pricing.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const blockKeys = ['header', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
@@ -40,9 +40,6 @@ function handlePrice(pricingCard, priceSuffixContext) {
     } else {
       priceSuffix.textContent = priceSuffixContext;
     }
-
-    const planCTA = pricingCard.querySelector(':scope > .button-container:last-of-type a.button');
-    if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
   });
 
   priceParent?.remove();
@@ -84,6 +81,9 @@ function createPricingSection(placeholders, pricingArea, ctaGroup) {
       a.parentNode.remove();
     }
     ctaGroup.append(a);
+    fetchPlan(a?.href).then((response) => {
+      a.href = buildUrl(response.url, response.country, response.language, response.offerId);
+    });
   });
   pricingSection.append(pricingArea);
   pricingSection.append(ctaGroup);
@@ -184,6 +184,7 @@ export default async function init(el) {
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
+  setInternationalCookie();
   cards
     .map((card) => decorateCard(card, el, placeholders))
     .forEach((card) => cardsContainer.append(card));

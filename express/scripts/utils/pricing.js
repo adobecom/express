@@ -11,7 +11,7 @@ function replaceUrlParam(url, paramName, paramValue) {
   return url;
 }
 
-export function buildUrl(optionUrl, country, language) {
+export function buildUrl(optionUrl, country, language, offerId = '') {
   const currentUrl = new URL(window.location.href);
   let planUrl = new URL(optionUrl);
 
@@ -20,6 +20,9 @@ export function buildUrl(optionUrl, country, language) {
   }
   planUrl = replaceUrlParam(planUrl, 'co', country);
   planUrl = replaceUrlParam(planUrl, 'lang', language);
+  if (offerId.length) {
+    planUrl.searchParams.set(decodeURIComponent('items%5B0%5D%5Bid%5D'), offerId);
+  }
   let rUrl = planUrl.searchParams.get('rUrl');
   if (currentUrl.searchParams.has('host')) {
     const hostParam = currentUrl.searchParams.get('host');
@@ -240,30 +243,31 @@ export async function getOffer(offerId, countryOverride) {
   let country = getCountry();
   if (countryOverride) country = countryOverride;
   if (!country) country = 'us';
-  let currency = getCurrency(country);
+  let currency = getCurrency(country.toLowerCase());
   if (!currency) {
     country = 'us';
     currency = 'USD';
   }
   const resp = await fetch('/express/system/offers-new.json');
-  if (!resp.ok) return {};
+  if (!resp.ok) return;
   const json = await resp.json();
   const upperCountry = country.toUpperCase();
   let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
+
   if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
 
   if (offer) {
     const lang = getConfig().locale.ietf.split('-')[0];
     const unitPrice = offer.p;
     const unitPriceCurrencyFormatted = formatPrice(unitPrice, currency);
-    const commerceURL = `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${offerId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`;
+    const customOfferId = offer.oo ? offer.oo : offerId;
+    const commerceURL = `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`;
     const vatInfo = offer.vat;
     const prefix = offer.pre;
     const suffix = offer.suf;
     const basePrice = offer.bp;
     const priceSuperScript = offer.sup;
     const basePriceCurrencyFormatted = formatPrice(basePrice, currency);
-
     return {
       country,
       currency,
@@ -277,9 +281,21 @@ export async function getOffer(offerId, countryOverride) {
       basePrice,
       basePriceCurrencyFormatted,
       priceSuperScript,
+      customOfferId,
     };
   }
-  return {};
+  return {}; 
+}
+
+export async function setInternationalCookie() {
+  const countryCookieVal = getCookie('international');
+  if (!countryCookieVal) {
+    const resp = await fetch('https://geo2.adobe.com/json/');
+    if (resp.ok) {
+      const json = await resp.json();
+      document.cookie = `international=${json.country}`;
+    }
+  }
 }
 
 export async function fetchPlan(planUrl) {
@@ -334,6 +350,7 @@ export async function fetchPlan(planUrl) {
       plan.country = offer.country;
       plan.vatInfo = offer.vatInfo;
       plan.language = offer.lang;
+      plan.offerId = offer.customOfferId;
       plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
