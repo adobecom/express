@@ -105,7 +105,7 @@ function handleFeatureList(featureColumns, index) {
 
 function handleEyeBrows(columnWrapper, eyeBrowCols, index) {
   if (!eyeBrowCols) return null;
-  if (!eyeBrowCols[index].children.length) {
+  if (!eyeBrowCols[index].innerHTML) {
     eyeBrowCols[index].remove();
     return null;
   }
