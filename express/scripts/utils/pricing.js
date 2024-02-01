@@ -111,6 +111,28 @@ export async function formatSalesPhoneNumber(tags) {
   });
 }
 
+export async function formatSalesPhoneNumberReplace(tags, placeholder) {
+  if (!placeholder) {
+    formatSalesPhoneNumber(tags);
+    return;
+  }
+  if (tags.length <= 0) return;
+
+  const numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
+
+  if (!numbersMap?.data) return;
+
+  tags.forEach((a) => {
+    const r = numbersMap.data.find((d) => d.country === getCountry());
+
+    const decodedNumber = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
+
+    a.textContent = a.textContent.replace(placeholder, decodedNumber) || decodedNumber;
+    a.setAttribute('title', a.getAttribute('title').replace(placeholder, decodedNumber) || decodedNumber);
+    a.href = `tel:${decodedNumber}`;
+  });
+}
+
 export function formatPrice(price, currency) {
   if (price === '') return null;
 
