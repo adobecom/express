@@ -6,8 +6,7 @@ import BlockMediator from '../../scripts/block-mediator.min.js';
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
 
-// const MOBILE_SIZE = 768;
-const MOBILE_SIZE = 900;
+const MOBILE_SIZE = 981;
 function defineDeviceByScreenSize() {
   const screenWidth = window.innerWidth;
   if (screenWidth >= MOBILE_SIZE) return 'DESKTOP';
