@@ -6,9 +6,9 @@ const blockKeys = ['header', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
 
-function handlePrice(pricingCard, priceSuffixContext) {
+function handlePrice(pricingArea, priceSuffixContext) {
   const priceRow = createTag('div', { class: 'pricing-row' });
-  const priceEl = pricingCard.querySelector('[title="{{pricing}}"]');
+  const priceEl = pricingArea.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
   const priceParent = priceEl?.parentNode;
 
@@ -41,7 +41,7 @@ function handlePrice(pricingCard, priceSuffixContext) {
       priceSuffix.textContent = priceSuffixContext;
     }
 
-    const planCTA = pricingCard.querySelector(':scope > .button-container:last-of-type a.button');
+    const planCTA = pricingArea.querySelector(':scope > .button-container:last-of-type a.button');
     if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
   });
 
@@ -201,7 +201,6 @@ export default async function init(el) {
       yCtaGroup.classList.add(`min-height-${maxYCTACnt}`);
     });
   }
-
   const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter((a) => a.title.includes(SALES_NUMBERS));
   if (phoneNumberTags.length > 0) {
     await formatSalesPhoneNumberReplace(phoneNumberTags, SALES_NUMBERS);
