@@ -5,7 +5,8 @@ import {
   getAssetDetails,
   getMetadata,
   checkTesting,
-  fetchPlaceholders, getConfig,
+  fetchPlaceholders,
+  getConfig,
 } from './utils.js';
 
 function getPlacement(btn) {
@@ -866,6 +867,32 @@ const martechLoadedCB = () => {
               },
             },
           });
+        });
+      });
+    }
+
+    const toggleBar = d.querySelector('.toggle-bar.block');
+    if (toggleBar) {
+      const tgBtns = toggleBar.querySelectorAll('button.toggle-bar-button');
+
+      tgBtns.forEach((btn) => {
+        const textEl = btn.querySelector('.text-wrapper');
+        let texts = [];
+
+        if (textEl) {
+          let child = textEl.firstChild;
+          while (child) {
+            if (child.nodeType === 3) {
+              texts.push(child.data);
+            }
+            child = child.nextSibling;
+          }
+        }
+
+        texts = texts.join('') || textEl.textContent.trim();
+        const eventName = `adobe.com:express:homepage:intentToggle:${textToName(texts)}`;
+        btn.addEventListener('click', () => {
+          sendEventToAdobeAnaltics(eventName);
         });
       });
     }
