@@ -742,7 +742,8 @@ export function localizeLink(
     const relative = url.hostname === originHostName;
     const processedHref = relative ? href.replace(url.origin, '') : href;
     const { hash } = url;
-    if (hash.includes('#_dnt')) return processedHref.replace('#_dnt', '');
+    // TODO remove this special logic for uk & in after coordinating with Pankaj & Mili
+    if (hash.includes('#_dnt') || window.location.href.includes('/uk/express/learn/blog') || window.location.href.includes('/in/express/learn/blog')) return processedHref.replace('#_dnt', '');
     const path = url.pathname;
     const extension = getExtension(path);
     const allowedExts = ['', 'html', 'json'];
