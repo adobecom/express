@@ -1,4 +1,4 @@
-import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
+import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
 import { debounce } from '../../scripts/hofs.js';
 import { decorateButtons } from '../../scripts/utils/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -250,6 +250,8 @@ export default async function init(el) {
       isToggle,
     };
     handleSection(sectionParams);
+    // eslint-disable-next-line no-await-in-loop
+    if (index % 2 === 0 && index < rows.length - 1) await yieldToMain();
   }
 
   handleHeading(rows[0]);
