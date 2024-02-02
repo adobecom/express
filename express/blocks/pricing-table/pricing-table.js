@@ -102,8 +102,8 @@ function handleHeading(headingRow) {
   });
 }
 
-const EXCLUDE_ICON = '<span class="feature-status-icon dash-icon"></span>';
-const INCLUDE_ICON = '<span class="feature-status-icon check-icon"></span>';
+const EXCLUDE_ICON = '<span class=".feat-icon dash"></span>';
+const INCLUDE_ICON = '<span class=".feat-icon check"></span>';
 
 function handleSection(sectionParams) {
   const {
