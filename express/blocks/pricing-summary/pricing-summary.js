@@ -1,5 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
-import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
+import { fetchPlan, buildUrl, setVisitorCountry } from '../../scripts/utils/pricing.js';
 import buildCarousel from '../shared/carousel.js';
 
 function handleHeader(column) {
@@ -48,7 +48,7 @@ function handlePrice(block, column) {
     }
 
     const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
-    if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
+    if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language, response.offerId);
   });
 
   priceParent?.remove();
@@ -171,6 +171,7 @@ function alignContent(block) {
 }
 
 export default async function decorate(block) {
+  setVisitorCountry();
   const pricingContainer = block.classList.contains('feature') ? block.children[2] : block.children[1];
   const featureColumns = block.classList.contains('feature') ? Array.from(block.children[3].children) : null;
   const eyeBrows = block.classList.contains('feature') ? Array.from(block.children[1].children) : null;

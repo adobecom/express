@@ -11,7 +11,7 @@ function replaceUrlParam(url, paramName, paramValue) {
   return url;
 }
 
-export function buildUrl(optionUrl, country, language) {
+export function buildUrl(optionUrl, country, language, offerId = '') {
   const currentUrl = new URL(window.location.href);
   let planUrl = new URL(optionUrl);
 
@@ -20,6 +20,9 @@ export function buildUrl(optionUrl, country, language) {
   }
   planUrl = replaceUrlParam(planUrl, 'co', country);
   planUrl = replaceUrlParam(planUrl, 'lang', language);
+  if (offerId.length) {
+    planUrl.searchParams.set(decodeURIComponent('items%5B0%5D%5Bid%5D'), offerId);
+  }
   let rUrl = planUrl.searchParams.get('rUrl');
   if (currentUrl.searchParams.has('host')) {
     const hostParam = currentUrl.searchParams.get('host');
@@ -81,14 +84,22 @@ function getCurrencyDisplay(currency) {
   return 'symbol';
 }
 
+let countrySessionVal;
+
+export async function setVisitorCountry() {
+  countrySessionVal = sessionStorage.getItem('visitorCountry');
+  if (!countrySessionVal) {
+    const resp = await fetch('https://geo2.adobe.com/json/');
+    if (resp.ok) {
+      const json = await resp.json();
+      sessionStorage.setItem('visitorCountry', json.country.toLowerCase());
+    }
+  }
+}
+
 function getCountry() {
-  let country = new URLSearchParams(window.location.search).get('country');
-  if (!country) {
-    country = getCookie('international');
-  }
-  if (!country) {
-    country = getConfig().locale.prefix.replace('/', '');
-  }
+  const urlParams = new URLSearchParams(window.location.search);
+  let country = urlParams.get('country') || getCookie('international') || sessionStorage.getItem('visitorCountry') || getConfig().locale.prefix.replace('/', '');
   if (country === 'uk') country = 'gb';
   return (country.split('_')[0]);
 }
@@ -278,7 +289,8 @@ export async function getOffer(offerId, countryOverride) {
     const lang = getConfig().locale.ietf.split('-')[0];
     const unitPrice = offer.p;
     const unitPriceCurrencyFormatted = formatPrice(unitPrice, currency);
-    const commerceURL = `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${offerId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`;
+    const customOfferId = offer.oo ? offer.oo : offerId;
+    const commerceURL = `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`;
     const vatInfo = offer.vat;
     const prefix = offer.pre;
     const suffix = offer.suf;
@@ -299,6 +311,7 @@ export async function getOffer(offerId, countryOverride) {
       basePrice,
       basePriceCurrencyFormatted,
       priceSuperScript,
+      customOfferId,
     };
   }
   return {};
@@ -356,6 +369,7 @@ export async function fetchPlan(planUrl) {
       plan.country = offer.country;
       plan.vatInfo = offer.vatInfo;
       plan.language = offer.lang;
+      plan.offerId = offer.customOfferId;
       plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
