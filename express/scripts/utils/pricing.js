@@ -4,175 +4,6 @@ import {
   createTag, getConfig,
 } from '../utils.js';
 
-let countrySessionVal;
-
-function replaceUrlParam(url, paramName, paramValue) {
-  const params = url.searchParams;
-  params.set(paramName, paramValue);
-  url.search = params.toString();
-  return url;
-}
-
-export function buildUrl(optionUrl, country, language, offerId = '') {
-  const currentUrl = new URL(window.location.href);
-  let planUrl = new URL(optionUrl);
-
-  if (!planUrl.hostname.includes('commerce')) {
-    return planUrl.href;
-  }
-  planUrl = replaceUrlParam(planUrl, 'co', country);
-  planUrl = replaceUrlParam(planUrl, 'lang', language);
-  if (offerId) {
-    planUrl.searchParams.set(decodeURIComponent('items%5B0%5D%5Bid%5D'), offerId);
-  }
-  let rUrl = planUrl.searchParams.get('rUrl');
-  if (currentUrl.searchParams.has('host')) {
-    const hostParam = currentUrl.searchParams.get('host');
-    const { host } = new URL(hostParam);
-    if (host === 'express.adobe.com') {
-      planUrl.hostname = 'commerce.adobe.com';
-      if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
-    } else if (host === 'qa.adobeprojectm.com') {
-      planUrl.hostname = 'commerce.adobe.com';
-      if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
-    } else if (host.endsWith('.adobeprojectm.com')) {
-      planUrl.hostname = 'commerce-stg.adobe.com';
-      if (rUrl) rUrl = rUrl.replace('adminconsole.adobe.com', 'stage.adminconsole.adobe.com');
-      if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
-    }
-  }
-
-  const env = getHelixEnv();
-  if (env && env.commerce && planUrl.hostname.includes('commerce')) planUrl.hostname = env.commerce;
-  if (env && env.spark && rUrl) {
-    const url = new URL(rUrl);
-    url.hostname = env.spark;
-    rUrl = url.toString();
-  }
-
-  if (rUrl) {
-    rUrl = new URL(rUrl);
-
-    if (currentUrl.searchParams.has('touchpointName')) {
-      rUrl = replaceUrlParam(rUrl, 'touchpointName', currentUrl.searchParams.get('touchpointName'));
-    }
-    if (currentUrl.searchParams.has('destinationUrl')) {
-      rUrl = replaceUrlParam(rUrl, 'destinationUrl', currentUrl.searchParams.get('destinationUrl'));
-    }
-    if (currentUrl.searchParams.has('srcUrl')) {
-      rUrl = replaceUrlParam(rUrl, 'srcUrl', currentUrl.searchParams.get('srcUrl'));
-    }
-  }
-
-  if (currentUrl.searchParams.has('code')) {
-    planUrl.searchParams.set('code', currentUrl.searchParams.get('code'));
-  }
-
-  if (currentUrl.searchParams.get('rUrl')) {
-    rUrl = currentUrl.searchParams.get('rUrl');
-  }
-
-  if (rUrl) planUrl.searchParams.set('rUrl', rUrl.toString());
-  return planUrl.href;
-}
-
-function getCurrencyDisplay(currency) {
-  if (currency === 'JPY') {
-    return 'name';
-  }
-  if (['SEK', 'DKK', 'NOK'].includes(currency)) {
-    return 'code';
-  }
-  return 'symbol';
-}
-
-export async function setVisitorCountry() {
-  countrySessionVal = sessionStorage.getItem('visitorCountry');
-  if (!countrySessionVal) {
-    const resp = await fetch('https://geo2.adobe.com/json/');
-    if (resp.ok) {
-      const json = await resp.json();
-      sessionStorage.setItem('visitorCountry', json.country.toLowerCase());
-    }
-  }
-}
-
-function getCountry() {
-  const urlParams = new URLSearchParams(window.location.search);
-  let country = urlParams.get('country') || getCookie('international') || sessionStorage.getItem('visitorCountry') || getConfig().locale.prefix.replace('/', '');
-  if (country === 'uk') country = 'gb';
-  return (country.split('_')[0]);
-}
-
-let numbersMap;
-export async function formatSalesPhoneNumber(tags) {
-  if (tags.length <= 0) return;
-
-  if (!numbersMap) {
-    numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
-  }
-
-  if (!numbersMap?.data) return;
-  const country = getCountry();
-  tags.forEach((a) => {
-    const r = numbersMap.data.find((d) => d.country === country);
-
-    const decodedNumber = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
-
-    a.textContent = decodedNumber;
-    a.setAttribute('title', decodedNumber);
-    a.href = `tel:${decodedNumber}`;
-  });
-}
-
-export async function formatSalesPhoneNumberReplace(tags, placeholder) {
-  if (!placeholder) {
-    formatSalesPhoneNumber(tags);
-    return;
-  }
-  if (tags.length <= 0) return;
-
-  if (!numbersMap) {
-    numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
-  }
-
-  if (!numbersMap?.data) return;
-  const country = getCountry();
-  tags.forEach((a) => {
-    const r = numbersMap.data.find((d) => d.country === country);
-
-    const decodedNumber = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
-
-    a.textContent = a.textContent.replace(placeholder, decodedNumber) || decodedNumber;
-    a.setAttribute('title', a.getAttribute('title').replace(placeholder, decodedNumber) || decodedNumber);
-    a.href = `tel:${decodedNumber}`;
-  });
-}
-
-export function formatPrice(price, currency) {
-  if (price === '') return null;
-
-  const customSymbols = {
-    SAR: 'SR',
-    CA: 'CAD',
-  };
-  const locale = ['USD', 'TWD'].includes(currency)
-    ? 'en-GB' // use en-GB for intl $ symbol formatting
-    : (getConfig().locales[getCountry() || '']?.ietf ?? 'en-US');
-  const currencyDisplay = getCurrencyDisplay(currency);
-  let formattedPrice = new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency,
-    currencyDisplay,
-  }).format(price);
-
-  Object.entries(customSymbols).forEach(([symbol, replacement]) => {
-    formattedPrice = formattedPrice.replace(symbol, replacement);
-  });
-
-  return formattedPrice;
-}
-
 const currencies = {
   ar: 'ARS',
   at: 'EUR',
@@ -269,59 +100,198 @@ const currencies = {
   uy: 'USD',
   vn: 'USD',
 };
+
+function replaceUrlParam(url, paramName, paramValue) {
+  const params = url.searchParams;
+  params.set(paramName, paramValue);
+  url.search = params.toString();
+  return url;
+}
+
+export function buildUrl(optionUrl, country, language, offerId = '') {
+  const currentUrl = new URL(window.location.href);
+  let planUrl = new URL(optionUrl);
+
+  if (!planUrl.hostname.includes('commerce')) {
+    return planUrl.href;
+  }
+  planUrl = replaceUrlParam(planUrl, 'co', country);
+  planUrl = replaceUrlParam(planUrl, 'lang', language);
+  if (offerId) {
+    planUrl.searchParams.set(decodeURIComponent('items%5B0%5D%5Bid%5D'), offerId);
+  }
+  let rUrl = planUrl.searchParams.get('rUrl');
+  if (currentUrl.searchParams.has('host')) {
+    const hostParam = currentUrl.searchParams.get('host');
+    const { host } = new URL(hostParam);
+    if (host === 'express.adobe.com') {
+      planUrl.hostname = 'commerce.adobe.com';
+      if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
+    } else if (host === 'qa.adobeprojectm.com') {
+      planUrl.hostname = 'commerce.adobe.com';
+      if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
+    } else if (host.endsWith('.adobeprojectm.com')) {
+      planUrl.hostname = 'commerce-stg.adobe.com';
+      if (rUrl) rUrl = rUrl.replace('adminconsole.adobe.com', 'stage.adminconsole.adobe.com');
+      if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
+    }
+  }
+
+  const env = getHelixEnv();
+  if (env && env.commerce && planUrl.hostname.includes('commerce')) planUrl.hostname = env.commerce;
+  if (env && env.spark && rUrl) {
+    const url = new URL(rUrl);
+    url.hostname = env.spark;
+    rUrl = url.toString();
+  }
+
+  if (rUrl) {
+    rUrl = new URL(rUrl);
+
+    if (currentUrl.searchParams.has('touchpointName')) {
+      rUrl = replaceUrlParam(rUrl, 'touchpointName', currentUrl.searchParams.get('touchpointName'));
+    }
+    if (currentUrl.searchParams.has('destinationUrl')) {
+      rUrl = replaceUrlParam(rUrl, 'destinationUrl', currentUrl.searchParams.get('destinationUrl'));
+    }
+    if (currentUrl.searchParams.has('srcUrl')) {
+      rUrl = replaceUrlParam(rUrl, 'srcUrl', currentUrl.searchParams.get('srcUrl'));
+    }
+  }
+
+  if (currentUrl.searchParams.has('code')) {
+    planUrl.searchParams.set('code', currentUrl.searchParams.get('code'));
+  }
+
+  if (currentUrl.searchParams.get('rUrl')) {
+    rUrl = currentUrl.searchParams.get('rUrl');
+  }
+
+  if (rUrl) planUrl.searchParams.set('rUrl', rUrl.toString());
+  return planUrl.href;
+}
+
+function getCurrencyDisplay(currency) {
+  if (currency === 'JPY') {
+    return 'name';
+  }
+  if (['SEK', 'DKK', 'NOK'].includes(currency)) {
+    return 'code';
+  }
+  return 'symbol';
+}
+
+export async function setVisitorCountry() {
+  if (!sessionStorage.getItem('visitorCountry')) {
+    const resp = await fetch('https://geo2.adobe.com/json/');
+    if (resp.ok) {
+      const json = await resp.json();
+      sessionStorage.setItem('visitorCountry', json.country.toLowerCase());
+    }
+  }
+}
+
+function getCountry() {
+  const urlParams = new URLSearchParams(window.location.search);
+  let country = urlParams.get('country') || getCookie('international') || sessionStorage.getItem('visitorCountry') || getConfig().locale.prefix.replace('/', '');
+  if (country === 'uk') country = 'gb';
+  return (country.split('_')[0]);
+}
+
+export const formatSalesPhoneNumber = (() => {
+  let numbersMap;
+  return async (tags, placeholder = '') => {
+    if (tags.length <= 0) return;
+
+    if (!numbersMap) {
+      numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
+    }
+
+    if (!numbersMap?.data) return;
+    const country = getCountry();
+    tags.forEach((a) => {
+      const r = numbersMap.data.find((d) => d.country === country);
+
+      const decodedNum = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
+
+      a.textContent = placeholder ? a.textContent.replace(placeholder, decodedNum) : decodedNum;
+      a.setAttribute('title', placeholder ? a.getAttribute('title').replace(placeholder, decodedNum) : decodedNum);
+      a.href = `tel:${decodedNum}`;
+    });
+  };
+})();
+
+export function formatPrice(price, currency) {
+  if (price === '') return null;
+
+  const customSymbols = {
+    SAR: 'SR',
+    CA: 'CAD',
+  };
+  const locale = ['USD', 'TWD'].includes(currency)
+    ? 'en-GB' // use en-GB for intl $ symbol formatting
+    : (getConfig().locales[getCountry() || '']?.ietf ?? 'en-US');
+  const currencyDisplay = getCurrencyDisplay(currency);
+  let formattedPrice = new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    currencyDisplay,
+  }).format(price);
+
+  Object.entries(customSymbols).forEach(([symbol, replacement]) => {
+    formattedPrice = formattedPrice.replace(symbol, replacement);
+  });
+
+  return formattedPrice;
+}
+
 export function getCurrency(locale) {
   const loc = locale || getCountry();
   return currencies[loc];
 }
 
-let offersJson;
-export async function getOffer(offerId, countryOverride) {
-  let country = getCountry();
-  if (countryOverride) country = countryOverride;
-  if (!country) country = 'us';
-  let currency = getCurrency(country);
-  if (!currency) {
-    country = 'us';
-    currency = 'USD';
-  }
-  if (!offersJson) {
-    const resp = await fetch('/express/system/offers-new.json');
-    if (!resp.ok) return {};
-    offersJson = await resp.json();
-  }
+export const getOffer = (() => {
+  let json;
+  return async (offerId, countryOverride) => {
+    let country = getCountry();
+    if (countryOverride) country = countryOverride;
+    if (!country) country = 'us';
+    let currency = getCurrency(country);
+    if (!currency) {
+      country = 'us';
+      currency = 'USD';
+    }
+    if (!json) {
+      const resp = await fetch('/express/system/offers-new.json');
+      if (!resp.ok) return {};
+      json = await resp.json();
+    }
 
-  const upperCountry = country.toUpperCase();
-  let offer = offersJson.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
-  if (!offer) offer = offersJson.data.find((e) => (e.o === offerId) && (e.c === 'US'));
-  if (!offer) return {};
-  const lang = getConfig().locale.ietf.split('-')[0];
-  const unitPrice = offer.p;
-  const unitPriceCurrencyFormatted = formatPrice(unitPrice, currency);
-  const customOfferId = offer.oo || offerId;
-  const commerceURL = `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`;
-  const vatInfo = offer.vat;
-  const prefix = offer.pre;
-  const suffix = offer.suf;
-  const basePrice = offer.bp;
-  const priceSuperScript = offer.sup;
-  const basePriceCurrencyFormatted = formatPrice(basePrice, currency);
+    const upperCountry = country.toUpperCase();
+    let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
+    if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
+    if (!offer) return {};
+    const lang = getConfig().locale.ietf.split('-')[0];
+    const unitPrice = offer.p;
+    const customOfferId = offer.oo || offerId;
 
-  return {
-    country,
-    currency,
-    unitPrice,
-    unitPriceCurrencyFormatted,
-    commerceURL,
-    lang,
-    vatInfo,
-    prefix,
-    suffix,
-    basePrice,
-    basePriceCurrencyFormatted,
-    priceSuperScript,
-    customOfferId,
+    return {
+      country,
+      currency,
+      lang,
+      unitPrice: offer.p,
+      unitPriceCurrencyFormatted: formatPrice(unitPrice, currency),
+      commerceURL: `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`,
+      vatInfo: offer.vat,
+      prefix: offer.pre,
+      suffix: offer.suf,
+      basePrice: offer.bp,
+      basePriceCurrencyFormatted: formatPrice(offer.bp, currency),
+      priceSuperScript: offer.sup,
+      customOfferId: offer.oo || offerId,
+    };
   };
-}
+})();
 
 export async function fetchPlan(planUrl) {
   if (!window.pricingPlans) {
