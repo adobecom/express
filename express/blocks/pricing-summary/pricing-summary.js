@@ -29,10 +29,12 @@ function handlePrice(block, column) {
   priceWrapper.append(basePrice, price, priceSuffix);
   pricePlan.append(priceWrapper, plan);
 
-  fetchPlan(priceEl?.href).then((response) => {
+  fetchPlan(priceEl?.href).then(({
+    url, country, language, offerId, formatted, formattedBP, suffix,
+  }) => {
     const parentP = priceEl.parentElement;
-    price.innerHTML = response.formatted;
-    basePrice.innerHTML = response.formattedBP || '';
+    price.innerHTML = formatted;
+    basePrice.innerHTML = formattedBP || '';
 
     if (parentP.children.length > 1) {
       Array.from(parentP.childNodes).forEach((node) => {
@@ -44,11 +46,11 @@ function handlePrice(block, column) {
         }
       });
     } else {
-      priceSuffix.textContent = response.suffix;
+      priceSuffix.textContent = suffix;
     }
 
     const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
-    if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language, response.offerId);
+    if (planCTA) planCTA.href = buildUrl(url, country, language, offerId);
   });
 
   priceParent?.remove();

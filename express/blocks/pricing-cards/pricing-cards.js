@@ -82,8 +82,10 @@ function createPricingSection(placeholders, pricingArea, ctaGroup) {
     if (a.parentNode.tagName.toLowerCase() === 'p') {
       a.parentNode.remove();
     }
-    fetchPlan(a.href).then((response) => {
-      a.href = buildUrl(response.url, response.country, response.language, response.offerId);
+    fetchPlan(a.href).then(({
+      url, country, language, offerId,
+    }) => {
+      a.href = buildUrl(url, country, language, offerId);
     });
     ctaGroup.append(a);
   });

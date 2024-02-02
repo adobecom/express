@@ -4,6 +4,8 @@ import {
   createTag, getConfig,
 } from '../utils.js';
 
+let countrySessionVal;
+
 function replaceUrlParam(url, paramName, paramValue) {
   const params = url.searchParams;
   params.set(paramName, paramValue);
@@ -20,7 +22,7 @@ export function buildUrl(optionUrl, country, language, offerId = '') {
   }
   planUrl = replaceUrlParam(planUrl, 'co', country);
   planUrl = replaceUrlParam(planUrl, 'lang', language);
-  if (offerId.length) {
+  if (offerId) {
     planUrl.searchParams.set(decodeURIComponent('items%5B0%5D%5Bid%5D'), offerId);
   }
   let rUrl = planUrl.searchParams.get('rUrl');
@@ -83,8 +85,6 @@ function getCurrencyDisplay(currency) {
   }
   return 'symbol';
 }
-
-let countrySessionVal;
 
 export async function setVisitorCountry() {
   countrySessionVal = sessionStorage.getItem('visitorCountry');
@@ -289,7 +289,7 @@ export async function getOffer(offerId, countryOverride) {
     const lang = getConfig().locale.ietf.split('-')[0];
     const unitPrice = offer.p;
     const unitPriceCurrencyFormatted = formatPrice(unitPrice, currency);
-    const customOfferId = offer.oo ? offer.oo : offerId;
+    const customOfferId = offer.oo || offerId;
     const commerceURL = `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`;
     const vatInfo = offer.vat;
     const prefix = offer.pre;
