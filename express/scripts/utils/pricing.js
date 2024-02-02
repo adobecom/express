@@ -81,8 +81,10 @@ function getCurrencyDisplay(currency) {
   return 'symbol';
 }
 
+let country;
 function getCountry() {
-  let country = new URLSearchParams(window.location.search).get('country');
+  if (country) return country;
+  country = new URLSearchParams(window.location.search).get('country');
   if (!country) {
     country = getCookie('international');
   }
@@ -102,9 +104,8 @@ export async function formatSalesPhoneNumber(tags) {
   }
 
   if (!numbersMap?.data) return;
-  const country = getCountry();
   tags.forEach((a) => {
-    const r = numbersMap.data.find((d) => d.country === country);
+    const r = numbersMap.data.find((d) => d.country === getCountry());
 
     const decodedNumber = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
 
@@ -126,9 +127,8 @@ export async function formatSalesPhoneNumberReplace(tags, placeholder) {
   }
 
   if (!numbersMap?.data) return;
-  const country = getCountry();
   tags.forEach((a) => {
-    const r = numbersMap.data.find((d) => d.country === country);
+    const r = numbersMap.data.find((d) => d.country === getCountry());
 
     const decodedNumber = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
 
@@ -265,7 +265,7 @@ export function getCurrency(locale) {
 
 let offersJson;
 export async function getOffer(offerId, countryOverride) {
-  let country = getCountry();
+  country = getCountry();
   if (countryOverride) country = countryOverride;
   if (!country) country = 'us';
   let currency = getCurrency(country);
