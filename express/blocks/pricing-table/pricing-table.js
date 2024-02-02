@@ -102,8 +102,8 @@ function handleHeading(headingRow) {
   });
 }
 
-const EXCLUDE_ICON = '<span class=".feat-icon dash"></span>';
-const INCLUDE_ICON = '<span class=".feat-icon check"></span>';
+const EXCLUDE_ICON = '<span class="feat-icon dash"></span>';
+const INCLUDE_ICON = '<span class="feat-icon check"></span>';
 
 function handleSection(sectionParams) {
   const {
@@ -145,7 +145,7 @@ function handleSection(sectionParams) {
     row.classList.add('section-row');
     rowCols.forEach((col, idx) => {
       if (idx === 0) {
-        if (!col.children.length) col.innerHTML = `<p>${col.innerHTML}</p>`;
+        if (!col.children?.length || col.querySelector(':scope > sup')) col.innerHTML = `<p>${col.innerHTML}</p>`;
         return;
       }
       const child = col.children?.[0] || col;
@@ -210,9 +210,6 @@ export default async function init(el) {
           cols.shift().remove();
         } else {
           sectionItem = 0;
-          row.classList.add('section-header-row');
-          cols[0].classList.add('section-head-title');
-          cols[0].setAttribute('role', 'rowheader');
         }
       }
       if (sectionItem > visibleCount) isAdditional = true;
@@ -223,7 +220,7 @@ export default async function init(el) {
         col.setAttribute('role', 'cell');
         if (col.innerHTML) col.tabIndex = 0;
       });
-      if (sectionItem % 2 !== 0) row.classList.add('shaded');
+      if (sectionItem % 2 === 0 && cols.length > 1) row.classList.add('shaded');
     }
 
     const nextRow = rows[index + 1];
@@ -244,7 +241,7 @@ export default async function init(el) {
         el.append(toggleRow);
       }
     }
-    if (isAdditional) row.classList.add('additional-row');
+    if (isAdditional && cols.length > 1) row.classList.add('additional-row');
     const sectionParams = {
       row,
       index,
