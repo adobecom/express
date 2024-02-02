@@ -5,7 +5,7 @@ import {
   getMetadata,
   sampleRUM,
 } from '../../scripts/utils.js';
-import { buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
+import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
@@ -316,7 +316,7 @@ async function buildSearchDropdown(block) {
     suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
     suggestionsContainer.append(suggestionsTitle, suggestionsList);
 
-    const freePlanTags = await buildStaticFreePlanWidget();
+    const freePlanTags = await buildFreePlanWidget('branded');
 
     freePlanContainer.append(freePlanTags);
     dropdownContainer.append(trendsContainer, suggestionsContainer, freePlanContainer);
