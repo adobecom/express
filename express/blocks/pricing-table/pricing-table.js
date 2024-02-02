@@ -247,7 +247,7 @@ export default async function init(el) {
     };
     handleSection(sectionParams);
     // eslint-disable-next-line no-await-in-loop
-    if (index % 2 === 0) await yieldToMain();
+    await yieldToMain();
   }
 
   handleHeading(rows[0], headingChildren);
