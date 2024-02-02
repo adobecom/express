@@ -114,6 +114,8 @@ const handlePillSize = (pill) => {
 };
 
 const init = (block) => {
+  // to avoid hero style conflicts
+  block.closest('.hero.hero-noimage')?.classList?.remove('hero', 'hero-noimage');
   const rootElem = block.closest('.fragment') || document;
   const rows = block.querySelectorAll(':scope > div');
   const parentSection = block.closest('.section');
@@ -191,8 +193,6 @@ const init = (block) => {
   });
   handleDeferredImages(block);
   initTabs(block, config, rootElem);
-  // to avoid hero style conflicts
-  block.closest('.hero.hero-noimage')?.classList?.remove('hero', 'hero-noimage');
 };
 
 export default init;
