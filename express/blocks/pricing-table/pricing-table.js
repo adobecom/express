@@ -30,75 +30,69 @@ function handleToggleMore(e) {
   }
 }
 
-function handleHeading(headingRow) {
-  const headingCols = Array.from(headingRow.children);
+function handleHeading(headingRow, headingCols) {
   if (headingCols.length > 3) headingRow.parentElement.classList.add('many-cols');
   else if (headingCols.length < 3) headingRow.parentElement.classList.add('few-cols');
 
   headingCols.forEach((col) => {
     col.classList.add('col-heading');
-    if (!col.innerHTML) {
-      col.classList.add('hidden');
+    const elements = col.children;
+    if (!elements?.length) {
+      col.innerHTML = `<p class="tracking-header">${col.innerHTML}</p>`;
       return;
     }
-    const elements = col.children;
-    if (!elements.length) {
-      col.innerHTML = `<p class="tracking-header">${col.innerHTML}</p>`;
-    } else {
-      decorateButtons(col, 'button-l');
-      const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
-      col.append(buttonsWrapper);
-      const buttons = col.querySelectorAll('.button');
+    decorateButtons(col, 'button-l');
+    const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
+    const buttons = col.querySelectorAll('.button');
 
-      buttons.forEach((btn) => {
-        if (btn.classList.contains('con-button', 'blue')) {
-          btn.classList.add('primary');
-          btn.parentNode.remove();
-        }
-        const btnWrapper = btn.closest('P');
-        buttonsWrapper.append(btnWrapper);
-      });
-
-      if (buttons.length > 1) {
-        buttons.forEach((btn, index) => {
-          btn.classList.add(plans[index]);
-        });
-        const reactToPlanChange = ({ newValue }) => {
-          buttons.forEach((btn) => {
-            if (btn.classList.contains(plans[newValue])) {
-              btn.classList.remove('hide');
-            } else {
-              btn.classList.add('hide');
-            }
-          });
-        };
-        reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
-        BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
+    buttons.forEach((btn) => {
+      if (btn.classList.contains('con-button', 'blue')) {
+        btn.classList.add('primary');
+        btn.parentNode.remove();
       }
+      const btnWrapper = btn.closest('p');
+      buttonsWrapper.append(btnWrapper);
+    });
+    col.append(buttonsWrapper);
 
-      const div = document.createElement('div');
-      const colLabel = document.createElement('div');
-      colLabel.classList.add('col-heading');
-      [...elements].forEach((e) => {
-        if (!e.classList.contains('buttons-wrapper')) colLabel.append(e.cloneNode(true));
-        div.append(e);
+    if (buttons.length > 1) {
+      buttons.forEach((btn, index) => {
+        btn.classList.add(plans[index]);
       });
-      col.innerHTML = '';
-      col.append(div);
-      const colIndex = col.getAttribute('data-col-index');
-      const colItems = headingRow.parentElement.querySelectorAll(`.section-row > .col[data-col-index="${colIndex}"]`);
-      colItems.forEach((colItem) => {
-        const colWrapper = document.createElement('div');
-        colWrapper.classList.add('col-wrapper');
-        const colContent = document.createElement('div');
-        colContent.classList.add('col-content');
-        colWrapper.append(colLabel.cloneNode(true), colContent);
-        Array.from(colItem.children).forEach((colItemEl) => {
-          colContent.appendChild(colItemEl);
+      const reactToPlanChange = ({ newValue }) => {
+        buttons.forEach((btn) => {
+          if (btn.classList.contains(plans[newValue])) {
+            btn.classList.remove('hide');
+          } else {
+            btn.classList.add('hide');
+          }
         });
-        colItem.append(colWrapper);
-      });
+      };
+      reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
+      BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
     }
+
+    const div = document.createElement('div');
+    const colLabel = document.createElement('div');
+    colLabel.classList.add('col-heading');
+    [...elements].forEach((e) => {
+      if (!e.classList.contains('buttons-wrapper')) colLabel.append(e.cloneNode(true));
+      div.append(e);
+    });
+    col.replaceChildren(div);
+    const colIndex = col.getAttribute('data-col-index');
+    const colItems = headingRow.parentElement.querySelectorAll(`.section-row > .col[data-col-index="${colIndex}"]`);
+    colItems.forEach((colItem) => {
+      const colWrapper = document.createElement('div');
+      colWrapper.classList.add('col-wrapper');
+      const colContent = document.createElement('div');
+      colContent.classList.add('col-content');
+      Array.from(colItem.children).forEach((colItemEl) => {
+        colContent.appendChild(colItemEl);
+      });
+      colWrapper.append(colLabel.cloneNode(true), colContent);
+      colItem.append(colWrapper);
+    });
   });
 }
 
@@ -159,7 +153,7 @@ function handleSection(sectionParams) {
         child.innerHTML = `<p>${col.innerHTML}</p>`;
       }
     });
-    if (nextRow.classList.contains('toggle-row') && nextRow.classList.contains('desktop-hide')) row.classList.add('table-end-row');
+    if (nextRow.classList.contains('toggle-row', 'desktop-hide')) row.classList.add('table-end-row');
   }
 }
 
@@ -195,11 +189,13 @@ export default async function init(el) {
   const rows = Array.from(el.children);
   let sectionItem = 0;
   const placeholders = await fetchPlaceholders();
+  let headingChildren;
   for (let index = 0; index < rows.length; index += 1) {
     const row = rows[index];
     row.classList.add('row', `row-${index + 1}`);
     row.setAttribute('role', 'row');
     const cols = Array.from(row.children);
+    if (index === 0) headingChildren = cols;
 
     let isAdditional = false;
     const isToggle = row.classList.contains('toggle-row');
@@ -251,10 +247,10 @@ export default async function init(el) {
     };
     handleSection(sectionParams);
     // eslint-disable-next-line no-await-in-loop
-    if (index % 2 === 0 && index < rows.length - 1) await yieldToMain();
+    if (index % 2 === 0) await yieldToMain();
   }
 
-  handleHeading(rows[0]);
+  handleHeading(rows[0], headingChildren);
   assignEvents(el);
 
   const handleResize = () => {
