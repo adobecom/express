@@ -4,7 +4,102 @@ import {
   createTag, getConfig,
 } from '../utils.js';
 
-let countrySessionVal;
+const currencies = {
+  ar: 'ARS',
+  at: 'EUR',
+  au: 'AUD',
+  be: 'EUR',
+  bg: 'EUR',
+  br: 'BRL',
+  ca: 'CAD',
+  ch: 'CHF',
+  cl: 'CLP',
+  co: 'COP',
+  cr: 'USD',
+  cy: 'EUR',
+  cz: 'EUR',
+  de: 'EUR',
+  dk: 'DKK',
+  ec: 'USD',
+  ee: 'EUR',
+  es: 'EUR',
+  fi: 'EUR',
+  fr: 'EUR',
+  gb: 'GBP',
+  gr: 'EUR',
+  gt: 'USD',
+  hk: 'HKD',
+  hu: 'EUR',
+  id: 'IDR',
+  ie: 'EUR',
+  il: 'ILS',
+  in: 'INR',
+  it: 'EUR',
+  jp: 'JPY',
+  kr: 'KRW',
+  lt: 'EUR',
+  lu: 'EUR',
+  lv: 'EUR',
+  mt: 'EUR',
+  mx: 'MXN',
+  my: 'MYR',
+  nl: 'EUR',
+  no: 'NOK',
+  nz: 'AUD',
+  pe: 'PEN',
+  ph: 'PHP',
+  pl: 'EUR',
+  pt: 'EUR',
+  ro: 'EUR',
+  ru: 'RUB',
+  se: 'SEK',
+  sg: 'SGD',
+  si: 'EUR',
+  sk: 'EUR',
+  th: 'THB',
+  tw: 'TWD',
+  us: 'USD',
+  ve: 'USD',
+  za: 'USD',
+  ae: 'USD',
+  bh: 'BHD',
+  eg: 'EGP',
+  jo: 'JOD',
+  kw: 'KWD',
+  om: 'OMR',
+  qa: 'USD',
+  sa: 'SAR',
+  ua: 'USD',
+  dz: 'USD',
+  lb: 'LBP',
+  ma: 'USD',
+  tn: 'USD',
+  ye: 'USD',
+  am: 'USD',
+  az: 'USD',
+  ge: 'USD',
+  md: 'USD',
+  tm: 'USD',
+  by: 'USD',
+  kz: 'USD',
+  kg: 'USD',
+  tj: 'USD',
+  uz: 'USD',
+  bo: 'USD',
+  do: 'USD',
+  hr: 'EUR',
+  ke: 'USD',
+  lk: 'USD',
+  mo: 'HKD',
+  mu: 'USD',
+  ng: 'USD',
+  pa: 'USD',
+  py: 'USD',
+  sv: 'USD',
+  tt: 'USD',
+  uy: 'USD',
+  vn: 'USD',
+};
 
 function replaceUrlParam(url, paramName, paramValue) {
   const params = url.searchParams;
@@ -87,8 +182,7 @@ function getCurrencyDisplay(currency) {
 }
 
 export async function setVisitorCountry() {
-  countrySessionVal = sessionStorage.getItem('visitorCountry');
-  if (!countrySessionVal) {
+  if (!sessionStorage.getItem('visitorCountry')) {
     const resp = await fetch('https://geo2.adobe.com/json/');
     if (resp.ok) {
       const json = await resp.json();
@@ -104,45 +198,28 @@ function getCountry() {
   return (country.split('_')[0]);
 }
 
-export async function formatSalesPhoneNumber(tags) {
-  if (tags.length <= 0) return;
+export const formatSalesPhoneNumber = (() => {
+  let numbersMap;
+  return async (tags, placeholder = '') => {
+    if (tags.length <= 0) return;
 
-  const numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
+    if (!numbersMap) {
+      numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
+    }
 
-  if (!numbersMap?.data) return;
+    if (!numbersMap?.data) return;
+    const country = getCountry();
+    tags.forEach((a) => {
+      const r = numbersMap.data.find((d) => d.country === country);
 
-  tags.forEach((a) => {
-    const r = numbersMap.data.find((d) => d.country === getCountry());
+      const decodedNum = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
 
-    const decodedNumber = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
-
-    a.textContent = decodedNumber;
-    a.setAttribute('title', decodedNumber);
-    a.href = `tel:${decodedNumber}`;
-  });
-}
-
-export async function formatSalesPhoneNumberReplace(tags, placeholder) {
-  if (!placeholder) {
-    formatSalesPhoneNumber(tags);
-    return;
-  }
-  if (tags.length <= 0) return;
-
-  const numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
-
-  if (!numbersMap?.data) return;
-
-  tags.forEach((a) => {
-    const r = numbersMap.data.find((d) => d.country === getCountry());
-
-    const decodedNumber = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
-
-    a.textContent = a.textContent.replace(placeholder, decodedNumber) || decodedNumber;
-    a.setAttribute('title', a.getAttribute('title').replace(placeholder, decodedNumber) || decodedNumber);
-    a.href = `tel:${decodedNumber}`;
-  });
-}
+      a.textContent = placeholder ? a.textContent.replace(placeholder, decodedNum) : decodedNum;
+      a.setAttribute('title', placeholder ? a.getAttribute('title').replace(placeholder, decodedNum) : decodedNum);
+      a.href = `tel:${decodedNum}`;
+    });
+  };
+})();
 
 export function formatPrice(price, currency) {
   if (price === '') return null;
@@ -170,152 +247,51 @@ export function formatPrice(price, currency) {
 
 export function getCurrency(locale) {
   const loc = locale || getCountry();
-  const currencies = {
-    ar: 'ARS',
-    at: 'EUR',
-    au: 'AUD',
-    be: 'EUR',
-    bg: 'EUR',
-    br: 'BRL',
-    ca: 'CAD',
-    ch: 'CHF',
-    cl: 'CLP',
-    co: 'COP',
-    cr: 'USD',
-    cy: 'EUR',
-    cz: 'EUR',
-    de: 'EUR',
-    dk: 'DKK',
-    ec: 'USD',
-    ee: 'EUR',
-    es: 'EUR',
-    fi: 'EUR',
-    fr: 'EUR',
-    gb: 'GBP',
-    gr: 'EUR',
-    gt: 'USD',
-    hk: 'HKD',
-    hu: 'EUR',
-    id: 'IDR',
-    ie: 'EUR',
-    il: 'ILS',
-    in: 'INR',
-    it: 'EUR',
-    jp: 'JPY',
-    kr: 'KRW',
-    lt: 'EUR',
-    lu: 'EUR',
-    lv: 'EUR',
-    mt: 'EUR',
-    mx: 'MXN',
-    my: 'MYR',
-    nl: 'EUR',
-    no: 'NOK',
-    nz: 'AUD',
-    pe: 'PEN',
-    ph: 'PHP',
-    pl: 'EUR',
-    pt: 'EUR',
-    ro: 'EUR',
-    ru: 'RUB',
-    se: 'SEK',
-    sg: 'SGD',
-    si: 'EUR',
-    sk: 'EUR',
-    th: 'THB',
-    tw: 'TWD',
-    us: 'USD',
-    ve: 'USD',
-    za: 'USD',
-    ae: 'USD',
-    bh: 'BHD',
-    eg: 'EGP',
-    jo: 'JOD',
-    kw: 'KWD',
-    om: 'OMR',
-    qa: 'USD',
-    sa: 'SAR',
-    ua: 'USD',
-    dz: 'USD',
-    lb: 'LBP',
-    ma: 'USD',
-    tn: 'USD',
-    ye: 'USD',
-    am: 'USD',
-    az: 'USD',
-    ge: 'USD',
-    md: 'USD',
-    tm: 'USD',
-    by: 'USD',
-    kz: 'USD',
-    kg: 'USD',
-    tj: 'USD',
-    uz: 'USD',
-    bo: 'USD',
-    do: 'USD',
-    hr: 'EUR',
-    ke: 'USD',
-    lk: 'USD',
-    mo: 'HKD',
-    mu: 'USD',
-    ng: 'USD',
-    pa: 'USD',
-    py: 'USD',
-    sv: 'USD',
-    tt: 'USD',
-    uy: 'USD',
-    vn: 'USD',
-  };
   return currencies[loc];
 }
 
-export async function getOffer(offerId, countryOverride) {
-  let country = getCountry();
-  if (countryOverride) country = countryOverride;
-  if (!country) country = 'us';
-  let currency = getCurrency(country);
-  if (!currency) {
-    country = 'us';
-    currency = 'USD';
-  }
-  const resp = await fetch('/express/system/offers-new.json');
-  if (!resp.ok) return {};
-  const json = await resp.json();
-  const upperCountry = country.toUpperCase();
-  let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
-  if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
+export const getOffer = (() => {
+  let json;
+  return async (offerId, countryOverride) => {
+    let country = getCountry();
+    if (countryOverride) country = countryOverride;
+    if (!country) country = 'us';
+    let currency = getCurrency(country);
+    if (!currency) {
+      country = 'us';
+      currency = 'USD';
+    }
+    if (!json) {
+      const resp = await fetch('/express/system/offers-new.json');
+      if (!resp.ok) return {};
+      json = await resp.json();
+    }
 
-  if (offer) {
+    const upperCountry = country.toUpperCase();
+    let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
+    if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
+    if (!offer) return {};
     const lang = getConfig().locale.ietf.split('-')[0];
     const unitPrice = offer.p;
-    const unitPriceCurrencyFormatted = formatPrice(unitPrice, currency);
     const customOfferId = offer.oo || offerId;
-    const commerceURL = `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`;
-    const vatInfo = offer.vat;
-    const prefix = offer.pre;
-    const suffix = offer.suf;
-    const basePrice = offer.bp;
-    const priceSuperScript = offer.sup;
-    const basePriceCurrencyFormatted = formatPrice(basePrice, currency);
 
     return {
       country,
       currency,
-      unitPrice,
-      unitPriceCurrencyFormatted,
-      commerceURL,
       lang,
-      vatInfo,
-      prefix,
-      suffix,
-      basePrice,
-      basePriceCurrencyFormatted,
-      priceSuperScript,
-      customOfferId,
+      unitPrice: offer.p,
+      unitPriceCurrencyFormatted: formatPrice(unitPrice, currency),
+      commerceURL: `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`,
+      vatInfo: offer.vat,
+      prefix: offer.pre,
+      suffix: offer.suf,
+      basePrice: offer.bp,
+      basePriceCurrencyFormatted: formatPrice(offer.bp, currency),
+      priceSuperScript: offer.sup,
+      customOfferId: offer.oo || offerId,
     };
-  }
-  return {};
-}
+  };
+})();
 
 export async function fetchPlan(planUrl) {
   if (!window.pricingPlans) {
