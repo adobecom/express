@@ -1,3 +1,5 @@
+/* global _satellite */
+
 import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../scripts/utils.js';
 
 import buildCarousel from '../shared/carousel.js';
@@ -52,13 +54,35 @@ export function decorateHeading(block, payload) {
   block.append(headingSection);
 }
 
+function trachPromptInput(payload) {
+  if (!window.marketingtech) return;
+  const { onsiteSearchTerm } = payload;
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      _adobe_corpnew: {
+        digitalData: {
+          page: {
+            pageInfo: {
+              onsiteSearchTerm,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 function handleGenAISubmit(form, link) {
   const btn = form.querySelector('.gen-ai-submit');
   const input = form.querySelector('.gen-ai-input');
 
   btn.disabled = true;
   const genAILink = link.replace('%7B%7Bprompt-text%7D%7D', encodeURI(input.value).replaceAll(' ', '+'));
-  if (genAILink !== '') window.location.assign(genAILink);
+  if (genAILink !== '') {
+    trachPromptInput({ onsiteSearchTerm: input.value });
+    window.location.assign(genAILink);
+  }
 }
 
 function buildGenAIForm(ctaObj) {

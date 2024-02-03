@@ -1,4 +1,5 @@
 /* eslint-disable import/named, import/extensions */
+/* global _satellite */
 
 import {
   createOptimizedPicture,
@@ -10,7 +11,6 @@ import {
   getLottie,
   getMetadata,
   lazyLoadLottiePlayer,
-  sampleRUM,
   titleCase,
   toClassName,
   transformLinkToAnimation,
@@ -1284,6 +1284,25 @@ function cycleThroughSuggestions(block, targetIndex = 0) {
   if (suggestions.length > 0) suggestions[targetIndex].focus();
 }
 
+function trackSearch(payload) {
+  if (!window.marketingtech) return;
+  const { onsiteSearchTerm } = payload;
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      _adobe_corpnew: {
+        digitalData: {
+          page: {
+            pageInfo: {
+              onsiteSearchTerm,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 function importSearchBar(block, blockMediator) {
   blockMediator.subscribe('stickySearchBar', (e) => {
     const parent = block.querySelector('.api-templates-toolbar .wrapper-content-search');
@@ -1383,10 +1402,10 @@ function importSearchBar(block, blockMediator) {
         searchForm.addEventListener('submit', async (event) => {
           event.preventDefault();
           searchBar.disabled = true;
-          sampleRUM('search', {
-            source: block.dataset.blockName,
-            target: searchBar.value,
-          }, 1);
+          trackSearch({
+            onsiteSearchTerm: searchBar.value,
+            blockName: block.dataset.blockName,
+          });
           await redirectSearch();
         });
 
