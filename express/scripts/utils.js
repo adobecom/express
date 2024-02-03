@@ -1697,36 +1697,40 @@ function loadIMS() {
   }
 }
 
+let alloyLoadingResolver;
+let alloyLoaded;
+export async function getAlloyRes() {
+  loadIMS();
+  await loadScript('/express/scripts/instrument.js', 'module');
+  const t1 = performance.now();
+  window.alloyLoader = new Promise((r) => {
+    alloyLoadingResolver = r;
+  });
+  window.addEventListener('alloy_sendEvent', (e) => {
+    // fired by launch loaded by martech loaded by instrument
+    if (e.detail.type === 'pageView') {
+      // eslint-disable-next-line no-console
+      console.log(`Alloy loaded in ${performance.now() - t1}`);
+      alloyLoaded = true;
+      alloyLoadingResolver(e.detail.result);
+    }
+  });
+  // tolerate max 5s for exp overheads
+  setTimeout(() => {
+    if (!alloyLoaded) {
+      // eslint-disable-next-line no-console
+      console.error(`Alloy failed to load, waited ${performance.now() - t1}`);
+      alloyLoadingResolver();
+      window.delay_preload_product = false;
+    }
+  }, 5000);
+}
+
 async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   const promises = [import('./experiment.js')];
   const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
-    loadIMS(); // rush ims to unblock alloy without loading gnav
-    promises.push(loadScript('/express/scripts/instrument.js', 'module'));
-    const t1 = performance.now();
-    let alloyLoadingResolver;
-    window.alloyLoader = new Promise((resolve) => {
-      alloyLoadingResolver = resolve;
-    });
-    window.addEventListener('alloy_sendEvent', (e) => {
-      // fired by launch loaded by martech loaded by instrument
-      if (e.detail.type === 'pageView') {
-        // eslint-disable-next-line no-console
-        console.log(`Alloy loaded in ${performance.now() - t1}`);
-        window.alloyLoaded = true;
-        alloyLoadingResolver(e.detail.result);
-      }
-    });
-    // tolerate max 5s for exp overheads
-    setTimeout(() => {
-      if (!window.alloyLoaded) {
-        // eslint-disable-next-line no-console
-        console.error(`Alloy failed to load, waited ${performance.now() - t1}`);
-        alloyLoadingResolver();
-        window.delay_preload_product = false;
-      }
-    }, 5000);
-    window.delay_preload_product = true;
+    promises.push(getAlloyRes());
   }
   const [{ runExps }] = await Promise.all(promises);
   await runExps(config, forcedExperiment, forcedVariant);
