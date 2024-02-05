@@ -12,6 +12,21 @@
   --tabs-pill-bg-color-hover: #dadada;
   --tabs-pill-bg-color-active: #c6c6c6;
   --tabs-pill-text-color: #131313;
+
+  /* @TODO REMOVE IMPORTS DIRECTLY FROM MILO STYLE.CSS */
+
+  /* Spacing */
+  --spacing-xxs: 8px;
+  --spacing-xs: 16px;
+  --spacing-s: 24px;
+  --spacing-m: 32px;
+  --spacing-l: 40px;
+  --spacing-xl: 48px;
+  --spacing-xxl: 56px;
+  --spacing-xxxl: 80px;
+
+  /* grid sizes */
+  --grid-container-width: 83.4%;
 }
 
 :root .dark {
@@ -25,6 +40,20 @@
   --tabs-pill-bg-color-hover: #666;
   --tabs-pill-bg-color-active: #444;
   --tabs-pill-text-color: #fff;
+}
+
+:root .ax {
+  --tabs-pill-ax-bg-color: #e1e1e1;
+  --tabs-pill-ax-text-color: #000;
+  --tabs-pill-bg-color: #5258E4;
+  --tabs-pill-bg-color-hover: #5258E4;
+  --tabs-pill-bg-color-active: #5258E4;
+  --tabs-pill-text-color: #fff;
+}
+
+.section div.tabs-ax-wrapper {
+  /* undo the max width set by section */
+  max-width: none;
 }
 
 .tabs-ax {
@@ -86,6 +115,7 @@
 
 .tabs-ax div[role="tablist"] .tab-list-container {
   display: flex;
+  justify-content: center;
   padding: 0 8.3%;
   width: var(--grid-container-width);
   margin: 0 auto;
@@ -145,7 +175,7 @@
   margin-top: 0;
   padding: 14px 16px 12px;
   text-decoration: none;
-  transition: color 0.1s ease-in-out;
+  transition: color 0.1s ease-in-out, background-color 0.1s ease-in-out;
   white-space: nowrap;
   width: auto;
   z-index: 1;
@@ -198,6 +228,15 @@
   margin-bottom: var(--spacing-xxs);
 }
 
+.tabs-ax.ax[class*='pill'] div[role="tablist"] .tab-list-container {
+  flex-wrap: wrap;
+  row-gap: 10px;
+  padding: 0;
+  margin-top: var(--spacing-m);
+  margin-bottom: var(--spacing-xxs);
+  width: 100%;
+}
+
 .tabs-ax[class*='pill'] div[role="tablist"] button {
   color: var(--tabs-pill-text-color);
   margin: 0;
@@ -205,6 +244,13 @@
   border-radius: 75px;
   font-weight: 400;
   padding: 0.2em 1em;
+}
+
+.tabs-ax.ax[class*='pill'] div[role="tablist"] button {
+  border-radius: 6px;
+  margin-inline-start: 10px;
+  background-color: var(--tabs-pill-ax-bg-color);
+  color: var(--tabs-pill-ax-text-color);
 }
 
 .tabs-ax.quiet div[role="tablist"] button:first-of-type,
@@ -279,6 +325,10 @@
   [role='tabpanel'] > .section[class*='-up'] > .content,
   [role='tabpanel'] > .section[class*='grid-width-'] > .content {
     width: auto;
+  }
+
+  .tabs-ax div[role="tabpanel"] h2 {
+    margin-top: 40px;
   }
 
   .tabs-ax div[role="tablist"] button {

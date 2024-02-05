@@ -2,7 +2,9 @@
  * tabs - consonant v6
  * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Tab_Role
  */
-import { createTag, MILO_EVENTS } from '../../scripts/utils.js';
+import { createTag } from '../../scripts/utils.js';
+
+const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
 
 const isElementInContainerView = (targetEl) => {
   const rect = targetEl.getBoundingClientRect();
@@ -50,8 +52,9 @@ function getUniqueId(el, rootElem) {
 }
 
 function configTabs(config, rootElem) {
-  if (config['active-tab']) {
-    const id = `#tab-${CSS.escape(config['tab-id'])}-${CSS.escape(getStringKeyName(config['active-tab']))}`;
+  const activeTab = new URLSearchParams(window.location.search).get('tab') || config['active-tab'];
+  if (activeTab) {
+    const id = `#tab-${CSS.escape(config['tab-id'])}-${CSS.escape(getStringKeyName(activeTab))}`;
     const sel = rootElem.querySelector(id);
     if (sel) sel.click();
   }
@@ -82,6 +85,14 @@ function initTabs(elm, config, rootElem) {
     tab.addEventListener('click', changeTabs);
   });
   if (config) configTabs(config, rootElem);
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', ({ target: { id: tabId } }) => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', tabId.substring(tabId.lastIndexOf('-') + 1));
+      url.hash = '';
+      window.history.replaceState({}, '', url);
+    });
+  });
 }
 
 const handleDeferredImages = (block) => {
@@ -103,6 +114,8 @@ const handlePillSize = (pill) => {
 };
 
 const init = (block) => {
+  // to avoid hero style conflicts
+  block.closest('.hero.hero-noimage')?.classList?.remove('hero', 'hero-noimage');
   const rootElem = block.closest('.fragment') || document;
   const rows = block.querySelectorAll(':scope > div');
   const parentSection = block.closest('.section');
@@ -169,30 +182,14 @@ const init = (block) => {
   }
 
   // Tab Sections
-  const allSections = Array.from(rootElem.querySelectorAll('div.section'));
+  const allSections = Array.from(rootElem.querySelectorAll('div.section[data-tab]'));
   allSections.forEach((e) => {
-    const sectionMetadata = e.querySelector(':scope > .section-metadata');
-    if (!sectionMetadata) return;
-    const smRows = sectionMetadata.querySelectorAll(':scope > div');
-    smRows.forEach((row) => {
-      const key = getStringKeyName(row.children[0].textContent);
-      if (key !== 'tab') return;
-      let val = getStringKeyName(row.children[1].textContent);
-      /* c8 ignore next */
-      if (!val) return;
-      let id = tabId;
-      let assocTabItem = rootElem.querySelector(`#tab-panel-${id}-${val}`);
-      if (config.id) {
-        const values = row.children[1].textContent.split(',');
-        [id] = values;
-        val = getStringKeyName(String(values[1]));
-        assocTabItem = rootElem.querySelector(`#tab-panel-${id}-${val}`);
-      }
-      if (assocTabItem) {
-        const section = sectionMetadata.closest('.section');
-        assocTabItem.append(section);
-      }
-    });
+    const val = getStringKeyName(e.dataset.tab);
+    const assocTabItem = rootElem.querySelector(`#tab-panel-${val}`);
+
+    if (assocTabItem) {
+      assocTabItem.append(e);
+    }
   });
   handleDeferredImages(block);
   initTabs(block, config, rootElem);

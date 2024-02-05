@@ -192,6 +192,11 @@ async function loadFEDS() {
 
   window.addEventListener('feds.events.experience.loaded', async () => {
     document.querySelector('body').classList.add('feds-loaded');
+
+    if (['no', 'f', 'false', 'n', 'off'].includes(getMetadata('gnav-retract').toLowerCase())) {
+      window.feds.components.NavBar.disableRetractability();
+    }
+
     /* attempt to switch link */
     if (window.location.pathname.includes('/create/')
       || window.location.pathname.includes('/discover/')

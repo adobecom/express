@@ -160,10 +160,6 @@ main .floating-button--scrolled .floating-button-lottie {
     z-index: 0;
 }
 
-main > div:not(.banner-container) a.button.same-as-floating-button-CTA {
-    display: none;
-}
-
 main [data-audience].floating-button-wrapper {
     display: none;
 }
@@ -179,6 +175,10 @@ body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"]
 
 main .floating-button-wrapper:first-of-type + .section {
     padding-top: 0;
+}
+
+main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf) a.button.same-as-floating-button-CTA {
+    display: none;
 }
 
 @media screen and (min-width: 900px) {
@@ -198,7 +198,7 @@ main .floating-button-wrapper:first-of-type + .section {
     }
 
     /* set desktop below/above the fold styles */
-    main > div:not(.banner-container) a.button.same-as-floating-button-CTA {
+    main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf) a.button.same-as-floating-button-CTA {
         display: inline-block;
     }
 
