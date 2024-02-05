@@ -1284,9 +1284,22 @@ function cycleThroughSuggestions(block, targetIndex = 0) {
   if (suggestions.length > 0) suggestions[targetIndex].focus();
 }
 
+function getCurrentBlockLoc(block) {
+  let { blockName } = block.dataset;
+  const sameBlocks = document.querySelectorAll(`.block[data-block-name="${blockName}"]`);
+
+  if (sameBlocks.length > 1) {
+    sameBlocks.forEach((el, i) => {
+      if (el === block) blockName += `-${i + 1}`;
+    });
+  }
+
+  return blockName;
+}
+
 function trackSearch(payload) {
   if (!window.marketingtech) return;
-  const { onsiteSearchTerm } = payload;
+  const { onsiteSearchTerm, blockName } = payload;
   _satellite.track('event', {
     xdm: {},
     data: {
@@ -1295,6 +1308,7 @@ function trackSearch(payload) {
           page: {
             pageInfo: {
               onsiteSearchTerm,
+              blockName,
             },
           },
         },
@@ -1404,7 +1418,7 @@ function importSearchBar(block, blockMediator) {
           searchBar.disabled = true;
           trackSearch({
             onsiteSearchTerm: searchBar.value,
-            blockName: block.dataset.blockName,
+            blockName: getCurrentBlockLoc(block),
           });
           await redirectSearch();
         });

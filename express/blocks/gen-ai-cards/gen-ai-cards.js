@@ -63,9 +63,22 @@ export const windowHelper = {
   },
 };
 
+function getCurrentBlockLoc(block) {
+  let { blockName } = block.dataset;
+  const sameBlocks = document.querySelectorAll(`.block[data-block-name="${blockName}"]`);
+
+  if (sameBlocks.length > 1) {
+    sameBlocks.forEach((el, i) => {
+      if (el === block) blockName += `-${i + 1}`;
+    });
+  }
+
+  return blockName;
+}
+
 function trachPromptInput(payload) {
   if (!window.marketingtech) return;
-  const { onsiteSearchTerm } = payload;
+  const { onsiteSearchTerm, blockName } = payload;
   _satellite.track('event', {
     xdm: {},
     data: {
@@ -74,6 +87,7 @@ function trachPromptInput(payload) {
           page: {
             pageInfo: {
               onsiteSearchTerm,
+              blockName,
             },
           },
         },
@@ -82,17 +96,17 @@ function trachPromptInput(payload) {
   });
 }
 
-function handleGenAISubmit(form, link) {
+function handleGenAISubmit(block, form, link) {
   const input = form.querySelector('input');
   if (input.value.trim() === '') return;
   const genAILink = link.replace(genAIPlaceholder, encodeURI(input.value).replaceAll(' ', '+'));
   if (genAILink) {
-    trachPromptInput({ onsiteSearchTerm: input.value });
+    trachPromptInput({ onsiteSearchTerm: input.value, blockName: getCurrentBlockLoc(block) });
     windowHelper.redirect(genAILink);
   }
 }
 
-function buildGenAIForm({ ctaLinks, subtext }) {
+function buildGenAIForm(block, { ctaLinks, subtext }) {
   const genAIForm = createTag('form', { class: 'gen-ai-input-form' });
   const genAIInput = createTag('input', {
     placeholder: subtext || '',
@@ -117,13 +131,13 @@ function buildGenAIForm({ ctaLinks, subtext }) {
   genAIInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      handleGenAISubmit(genAIForm, ctaLinks[0].href);
+      handleGenAISubmit(block, genAIForm, ctaLinks[0].href);
     }
   });
 
   genAIForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    handleGenAISubmit(genAIForm, ctaLinks[0].href);
+    handleGenAISubmit(block, genAIForm, ctaLinks[0].href);
   });
 
   return genAIForm;
@@ -167,7 +181,7 @@ async function decorateCards(block, { actions }) {
 
     if (ctaLinks.length > 0) {
       if (hasGenAIForm) {
-        const genAIForm = buildGenAIForm(cta);
+        const genAIForm = buildGenAIForm(block, cta);
         card.classList.add('gen-ai-action');
         card.append(genAIForm);
         linksWrapper.remove();

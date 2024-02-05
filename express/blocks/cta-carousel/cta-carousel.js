@@ -56,7 +56,7 @@ export function decorateHeading(block, payload) {
 
 function trachPromptInput(payload) {
   if (!window.marketingtech) return;
-  const { onsiteSearchTerm } = payload;
+  const { onsiteSearchTerm, blockName } = payload;
   _satellite.track('event', {
     xdm: {},
     data: {
@@ -65,6 +65,7 @@ function trachPromptInput(payload) {
           page: {
             pageInfo: {
               onsiteSearchTerm,
+              blockName,
             },
           },
         },
@@ -73,19 +74,32 @@ function trachPromptInput(payload) {
   });
 }
 
-function handleGenAISubmit(form, link) {
+function getCurrentBlockLoc(block) {
+  let { blockName } = block.dataset;
+  const sameBlocks = document.querySelectorAll(`.block[data-block-name="${blockName}"]`);
+
+  if (sameBlocks.length > 1) {
+    sameBlocks.forEach((el, i) => {
+      if (el === block) blockName += `-${i + 1}`;
+    });
+  }
+
+  return blockName;
+}
+
+function handleGenAISubmit(block, form, link) {
   const btn = form.querySelector('.gen-ai-submit');
   const input = form.querySelector('.gen-ai-input');
 
   btn.disabled = true;
   const genAILink = link.replace('%7B%7Bprompt-text%7D%7D', encodeURI(input.value).replaceAll(' ', '+'));
   if (genAILink !== '') {
-    trachPromptInput({ onsiteSearchTerm: input.value });
+    trachPromptInput({ onsiteSearchTerm: input.value, blockName: getCurrentBlockLoc(block) });
     window.location.assign(genAILink);
   }
 }
 
-function buildGenAIForm(ctaObj) {
+function buildGenAIForm(block, ctaObj) {
   const genAIForm = createTag('form', { class: 'gen-ai-input-form' });
   const formWrapper = createTag('div', { class: 'gen-ai-form-wrapper' });
   const genAIInput = createTag('textarea', {
@@ -111,13 +125,13 @@ function buildGenAIForm(ctaObj) {
   genAIInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      handleGenAISubmit(genAIForm, ctaObj.ctaLinks[0].href);
+      handleGenAISubmit(block, genAIForm, ctaObj.ctaLinks[0].href);
     }
   });
 
   genAIForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    handleGenAISubmit(genAIForm, ctaObj.ctaLinks[0].href);
+    handleGenAISubmit(block, genAIForm, ctaObj.ctaLinks[0].href);
   });
 
   return genAIForm;
@@ -173,7 +187,7 @@ async function decorateCards(block, payload) {
     if (cta.ctaLinks.length > 0) {
       if (hasGenAIEl) {
         card.classList.add('gen-ai-action');
-        const el = block.classList.contains('upload') ? buildGenAIUpload(cta, card) : buildGenAIForm(cta);
+        const el = block.classList.contains('upload') ? buildGenAIUpload(cta, card) : buildGenAIForm(block, cta);
         cardSleeve.append(el);
         linksWrapper.remove();
       }

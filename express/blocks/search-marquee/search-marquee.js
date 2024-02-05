@@ -1,9 +1,10 @@
+/* global _satellite */
+
 import {
   createTag,
   fetchPlaceholders, getConfig,
   getIconElement,
   getMetadata,
-  sampleRUM,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
@@ -30,6 +31,39 @@ function cycleThroughSuggestions(block, targetIndex = 0) {
   const suggestions = block.querySelectorAll('.suggestions-list li');
   if (targetIndex >= suggestions.length || targetIndex < 0) return;
   if (suggestions.length > 0) suggestions[targetIndex].focus();
+}
+
+function getCurrentBlockLoc(block) {
+  let { blockName } = block.dataset;
+  const sameBlocks = document.querySelectorAll(`.block[data-block-name="${blockName}"]`);
+
+  if (sameBlocks.length > 1) {
+    sameBlocks.forEach((el, i) => {
+      if (el === block) blockName += `-${i + 1}`;
+    });
+  }
+
+  return blockName;
+}
+
+function trackSearch(payload) {
+  if (!window.marketingtech) return;
+  const { onsiteSearchTerm, blockName } = payload;
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      _adobe_corpnew: {
+        digitalData: {
+          page: {
+            pageInfo: {
+              onsiteSearchTerm,
+              blockName,
+            },
+          },
+        },
+      },
+    },
+  });
 }
 
 function initSearchFunction(block) {
@@ -151,10 +185,10 @@ function initSearchFunction(block) {
 
   const onSearchSubmit = async () => {
     searchBar.disabled = true;
-    sampleRUM('search', {
-      source: block.dataset.blockName,
-      target: searchBar.value,
-    }, 1);
+    trackSearch({
+      onsiteSearchTerm: searchBar.value,
+      blockName: getCurrentBlockLoc(block),
+    });
     await redirectSearch();
   };
 
