@@ -2,6 +2,7 @@ import {
   sampleRUM,
   removeIrrelevantSections,
   loadArea,
+  loadLana,
   getMetadata,
   stamp,
   registerPerformanceLogger,
@@ -93,6 +94,7 @@ const showNotifications = () => {
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
   showNotifications();
+  loadLana({ clientId: 'express' });
   await loadArea();
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
     import('./mobile-beta-gating.js').then((gatingScript) => {
