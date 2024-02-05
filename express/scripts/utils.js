@@ -1709,8 +1709,11 @@ export async function getAlloyRes() {
   window.addEventListener('alloy_sendEvent', (e) => {
     // fired by launch loaded by martech loaded by instrument
     if (e.detail.type === 'pageView') {
-      // eslint-disable-next-line no-console
-      console.log(`Alloy loaded in ${performance.now() - t1}`);
+      const usp = new URLSearchParams(window.location.search);
+      if (usp.has('debug-alloy')) {
+        // eslint-disable-next-line no-console
+        console.log(`Alloy loaded in ${performance.now() - t1}`);
+      }
       alloyLoaded = true;
       alloyLoadingResolver(e.detail.result);
     }
@@ -1719,7 +1722,7 @@ export async function getAlloyRes() {
   setTimeout(() => {
     if (!alloyLoaded) {
       // eslint-disable-next-line no-console
-      console.error(`Alloy failed to load, waited ${performance.now() - t1}`);
+      window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`);
       alloyLoadingResolver();
       window.delay_preload_product = false;
     }
@@ -2455,7 +2458,7 @@ function decorateLegalCopy(main) {
   });
 }
 
-function loadLana(options = {}) {
+export function loadLana(options = {}) {
   if (window.lana) return;
 
   const lanaError = (e) => {
