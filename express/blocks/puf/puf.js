@@ -75,7 +75,7 @@ async function selectPlan(card, planUrl, sendAnalyticEvent) {
     if (pricingVat) pricingVat.textContent = plan.vatInfo || '';
 
     if (pricingCta) {
-      pricingCta.href = buildUrl(plan);
+      pricingCta.href = buildUrl(plan.url, plan.country, plan.language, plan.offerId);
       pricingCta.dataset.planUrl = planUrl;
       pricingCta.id = plan.stringId;
     }
