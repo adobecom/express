@@ -6,8 +6,7 @@ import {
   getMetadata,
   loadBlock,
   createOptimizedPicture,
-  getLocale,
-  getLanguage,
+  getConfig,
 } from '../../scripts/utils.js';
 
 /**
@@ -105,13 +104,12 @@ export default async function decorateBlogPage() {
     const $blogHeader = createTag('div', { class: 'blog-header' });
     $div.append($blogHeader);
     const $eyebrow = createTag('div', { class: 'eyebrow' });
-    const locale = getLocale(window.location);
-    const urlPrefix = locale === 'us' ? '' : `/${locale}`;
-    $eyebrow.innerHTML = `<a href="${urlPrefix}/express/learn/blog/tags/${toClassName(getMetadata('category'))}">${getMetadata('category')}</a>`;
+    const { prefix } = getConfig().locale;
+    $eyebrow.innerHTML = `<a href="${prefix}/express/learn/blog/tags/${toClassName(getMetadata('category'))}">${getMetadata('category')}</a>`;
     $blogHeader.append($eyebrow);
     $blogHeader.append($h1);
     const publicationDate = new Date(date);
-    const language = getLanguage(getLocale(window.location));
+    const language = getConfig().locale.ietf;
     const dateString = publicationDate.toLocaleDateString(language, {
       day: '2-digit',
       month: '2-digit',

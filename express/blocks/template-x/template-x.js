@@ -1,14 +1,12 @@
 /* eslint-disable import/named, import/extensions */
 
 import {
-  addSearchQueryToHref,
   createOptimizedPicture,
   createTag,
   decorateMain,
   fetchPlaceholders,
   getIconElement,
-  getLanguage,
-  getLocale,
+  getConfig,
   getLottie,
   getMetadata,
   lazyLoadLottiePlayer,
@@ -101,8 +99,9 @@ async function processContentRow(block, props) {
 async function formatHeadingPlaceholder(props) {
   // special treatment for express/ root url
   const placeholders = await fetchPlaceholders();
-  const locale = getLocale(window.location);
-  const lang = getLanguage(locale);
+  const config = getConfig();
+  const { region } = config.locale;
+  const lang = config.locale.ietf;
   const templateCount = lang === 'es-ES' ? props.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : props.total.toLocaleString(lang);
   let toolBarHeading = getMetadata('toolbar-heading') ? props.templateStats : placeholders['template-placeholder'];
 
@@ -117,7 +116,7 @@ async function formatHeadingPlaceholder(props) {
       .replace('{{quantity}}', props.fallbackMsg ? '0' : templateCount)
       .replace('{{Type}}', titleCase(getMetadata('short-title') || getMetadata('q') || getMetadata('topics')))
       .replace('{{type}}', getMetadata('short-title') || getMetadata('q') || getMetadata('topics'));
-    if (locale === 'fr') {
+    if (region === 'fr') {
       toolBarHeading.split(' ').forEach((word, index, words) => {
         if (index + 1 < words.length) {
           if (word === 'de' && wordStartsWithVowels(words[index + 1])) {
@@ -192,7 +191,14 @@ function constructProps(block) {
     } else if (cols.length === 5) {
       if (key === 'holiday block' && ['yes', 'true', 'on'].includes(cols[1].textContent.trim().toLowerCase())) {
         const backgroundColor = cols[3].textContent.trim().toLowerCase();
-        const holidayIcon = cols[2].querySelector('picture');
+        let holidayIcon = cols[2].querySelector('picture');
+
+        if (!holidayIcon) {
+          const link = cols[2].querySelector('a');
+          if (link && (link.href.endsWith('.svg') || link.href.endsWith('.png'))) {
+            holidayIcon = createOptimizedPicture(link.href);
+          }
+        }
         const backgroundAnimation = cols[4].querySelector('a');
 
         props.holidayBlock = true;
@@ -221,7 +227,7 @@ function populateTemplates(block, props, templates) {
       if (link) {
         if (isPlaceholder) {
           const aTag = createTag('a', {
-            href: link.href ? addSearchQueryToHref(link.href) : '#',
+            href: link.href || '#',
           });
 
           aTag.append(...tmplt.children);
@@ -570,7 +576,7 @@ async function appendCategoryTemplatesCount(block, props) {
   }
   props.loadedOtherCategoryCounts = true;
   const categories = block.querySelectorAll('ul.category-list > li');
-  const lang = getLanguage(getLocale(window.location));
+  const lang = getConfig().locale.ietf;
 
   const fetchCntSpanPromises = [...categories]
     .map((li) => fetchCntSpan(props, li.querySelector('a'), lang));
@@ -586,7 +592,7 @@ async function appendCategoryTemplatesCount(block, props) {
 
 async function decorateCategoryList(block, props) {
   const placeholders = await fetchPlaceholders();
-  const locale = getLocale(window.location);
+  const { prefix } = getConfig().locale;
   const mobileDrawerWrapper = block.querySelector('.filter-drawer-mobile');
   const drawerWrapper = block.querySelector('.filter-drawer-mobile-inner-wrapper');
   const categories = placeholders['x-task-categories'] ? JSON.parse(placeholders['x-task-categories']) : {};
@@ -620,10 +626,9 @@ async function decorateCategoryList(block, props) {
     }
 
     const iconElement = getIconElement(icon);
-    const urlPrefix = locale === 'us' ? '' : `/${locale}`;
     const a = createTag('a', {
       'data-tasks': targetTasks,
-      href: `${urlPrefix}/express/templates/search?tasks=${targetTasks}&tasksx=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"}&q=${currentTopic || ''}`,
+      href: `${prefix}/express/templates/search?tasks=${targetTasks}&tasksx=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"}&q=${currentTopic || ''}`,
     });
     [a.textContent] = category;
 
@@ -1110,24 +1115,12 @@ function decorateHoliday(block, props) {
   const topElements = createTag('div', { class: 'toggle-bar-top' });
   const bottomElements = createTag('div', { class: 'toggle-bar-bottom' });
   const toggleChev = createTag('div', { class: 'toggle-button-chev' });
-  const carouselFaderLeft = block.querySelector('.carousel-fader-left');
-  const carouselFaderRight = block.querySelector('.carousel-fader-right');
 
   if (props.holidayIcon) topElements.append(props.holidayIcon);
   if (props.backgroundAnimation) {
     const animation = transformLinkToAnimation(props.backgroundAnimation);
     block.classList.add('animated');
     block.prepend(animation);
-  }
-
-  if (props.backgroundColor) {
-    if (props.backgroundAnimation) {
-      carouselFaderRight.style.backgroundImage = 'none';
-      carouselFaderLeft.style.backgroundImage = 'none';
-    } else {
-      carouselFaderRight.style.backgroundImage = `linear-gradient(to right, rgba(0, 255, 255, 0), ${props.backgroundColor}`;
-      carouselFaderLeft.style.backgroundImage = `linear-gradient(to left, rgba(0, 255, 255, 0), ${props.backgroundColor}`;
-    }
   }
 
   block.classList.add('expanded', props.textColor);
@@ -1150,11 +1143,11 @@ function decorateHoliday(block, props) {
 }
 
 async function decorateTemplates(block, props) {
-  const locale = getLocale(window.location);
+  const { prefix } = getConfig().locale;
   const innerWrapper = block.querySelector('.template-x-inner-wrapper');
 
   let rows = block.children.length;
-  if ((rows === 0 || block.querySelectorAll('img').length === 0) && locale !== 'us') {
+  if ((rows === 0 || block.querySelectorAll('img').length === 0) && prefix !== '') {
     const i18nTexts = block.firstElementChild
       // author defined localized edit text(s)
       && (block.firstElementChild.querySelector('p')
@@ -1373,18 +1366,17 @@ function importSearchBar(block, blockMediator) {
             [[currentTasks]] = tasksFoundInInput;
           }
 
-          const locale = getLocale(window.location);
-          const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+          const { prefix } = getConfig().locale;
           const topicUrl = searchInput ? `/${searchInput}` : '';
           const taskUrl = `/${handlelize(currentTasks.toLowerCase())}`;
-          const targetPath = `${urlPrefix}/express/templates${taskUrl}${topicUrl}`;
+          const targetPath = `${prefix}/express/templates${taskUrl}${topicUrl}`;
           const allTemplatesMetadata = await fetchAllTemplatesMetadata();
           const pathMatch = (event) => event.url === targetPath;
           if (allTemplatesMetadata.some(pathMatch)) {
             window.location = `${window.location.origin}${targetPath}`;
           } else {
             const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks}&phformat=${format}&topics=${searchInput || "''"}&q=${searchInput || "''"}`;
-            window.location = `${window.location.origin}${urlPrefix}${searchUrlTemplate}`;
+            window.location = `${window.location.origin}${prefix}${searchUrlTemplate}`;
           }
         };
 

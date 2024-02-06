@@ -1,3 +1,7 @@
+main .section.puf-container {
+    padding-bottom: 0;
+}
+
 main .puf-container > div {
     max-width: none;
 }
@@ -98,6 +102,12 @@ main .block.puf .puf-card .puf-card-top h3 svg {
     margin-right: 10px;
     width: 32px;
     height: 32px;
+}
+
+main .block.puf .puf-card .puf-card-top h3 img {
+    margin-right: 7px;
+    width: 37px;
+    height: 37px;
 }
 
 main .block.puf .puf-card .puf-card-top a {
@@ -311,26 +321,22 @@ main .block.puf .puf-card .puf-card-banner a {
     text-decoration: underline;
 }
 
-main .carousel-container .carousel-platform {
+main .block.puf .carousel-container .carousel-platform {
     position: relative;
 }
 
-main .carousel-container .carousel-platform .carousel-left-trigger,
-main .carousel-container .carousel-platform .carousel-right-trigger {
+main .block.puf .carousel-container .carousel-platform .carousel-left-trigger,
+main .block.puf .carousel-container .carousel-platform .carousel-right-trigger {
     align-self: stretch;
     width: 1px;
 }
 
-main .carousel-container .carousel-platform .carousel-left-trigger {
+main .block.puf .carousel-container .carousel-platform .carousel-left-trigger {
     left: 0;
 }
 
-main .carousel-container .carousel-platform .carousel-right-trigger {
+main .block.puf .carousel-container .carousel-platform .carousel-right-trigger {
     right: 0;
-}
-
-main .section.puf-container {
-    padding-bottom: 0;
 }
 
 main .block.puf .carousel-container {
@@ -371,13 +377,14 @@ main .block.puf .puf-card-container {
     align-self: start;
 }
 
-main .carousel-container .carousel-fader-left,
-main .carousel-container .carousel-fader-right {
-    margin-top: 100px;
+main .block.puf .carousel-container .carousel-fader-left,
+main .block.puf .carousel-container .carousel-fader-right {
+    margin-top: 86px;
+    height: calc(100% - 172px);
 }
 
-main .carousel-container .carousel-fader-left a.button.carousel-arrow,
-main .carousel-container .carousel-fader-right a.button.carousel-arrow {
+main .block.puf .carousel-container .carousel-fader-left a.button.carousel-arrow,
+main .block.puf .carousel-container .carousel-fader-right a.button.carousel-arrow {
     position: sticky;
     top: calc(50% - 16px);
     bottom: calc(50% - 16px);
@@ -422,15 +429,6 @@ main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-
         box-shadow: none;
     }
 
-    main .block.puf .puf-card-container .puf-card-border .puf-card.puf-left {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-    }
-
-    main .block.puf .puf-card-container .puf-card-border:has(.puf-left) {
-        padding-right: 0;
-    }
-
     main .block.puf .carousel-container .carousel-platform .puf-card-container {
         align-self: stretch;
         max-width: 100%;
@@ -444,8 +442,8 @@ main .block.puf .carousel-container .carousel-platform .puf-card-container .puf-
         padding: 40px 60px;
     }
 
-    main .carousel-container .carousel-platform .carousel-left-trigger,
-    main .carousel-container .carousel-platform .carousel-right-trigger {
+    main .block.puf .carousel-container .carousel-platform .carousel-left-trigger,
+    main .block.puf .carousel-container .carousel-platform .carousel-right-trigger {
         align-self: stretch;
         position: relative;
         height: auto;

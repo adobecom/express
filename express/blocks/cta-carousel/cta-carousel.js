@@ -80,14 +80,16 @@ function buildGenAIForm(ctaObj) {
   genAISubmit.textContent = ctaObj.ctaLinks[0].textContent;
   genAISubmit.disabled = genAIInput.value === '';
 
+  genAIInput.addEventListener('input', () => {
+    genAISubmit.disabled = genAIInput.value.trim() === '';
+  }, { passive: true });
+
   genAIInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleGenAISubmit(genAIForm, ctaObj.ctaLinks[0].href);
-    } else {
-      genAISubmit.disabled = genAIInput.value === '';
     }
-  }, { passive: true });
+  });
 
   genAIForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -162,10 +164,8 @@ async function decorateCards(block, payload) {
         if (a.href && a.href.match('adobesparkpost.app.link')) {
           const btnUrl = new URL(a.href);
           if (placeholders?.['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
-            btnUrl.searchParams.set('search', cta.text);
             btnUrl.searchParams.set('q', cta.text);
             btnUrl.searchParams.set('category', 'templates');
-            btnUrl.searchParams.set('searchCategory', 'templates');
             a.href = decodeURIComponent(btnUrl.toString());
           }
           a.removeAttribute('title');
@@ -227,7 +227,8 @@ export default async function decorate(block) {
   const payload = constructPayload(block);
 
   decorateHeading(block, payload);
-  await decorateCards(block, payload);
-  buildCarousel('', block.querySelector('.cta-carousel-cards'));
-  document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
+  decorateCards(block, payload).then(async () => {
+    await buildCarousel('', block.querySelector('.cta-carousel-cards'));
+    document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
+  });
 }

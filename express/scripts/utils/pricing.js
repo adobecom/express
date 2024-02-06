@@ -1,10 +1,105 @@
 import {
-  getLocale,
-  getLanguage,
   getCookie,
   getHelixEnv,
-  createTag,
+  createTag, getConfig,
 } from '../utils.js';
+
+const currencies = {
+  ar: 'ARS',
+  at: 'EUR',
+  au: 'AUD',
+  be: 'EUR',
+  bg: 'EUR',
+  br: 'BRL',
+  ca: 'CAD',
+  ch: 'CHF',
+  cl: 'CLP',
+  co: 'COP',
+  cr: 'USD',
+  cy: 'EUR',
+  cz: 'EUR',
+  de: 'EUR',
+  dk: 'DKK',
+  ec: 'USD',
+  ee: 'EUR',
+  es: 'EUR',
+  fi: 'EUR',
+  fr: 'EUR',
+  gb: 'GBP',
+  gr: 'EUR',
+  gt: 'USD',
+  hk: 'HKD',
+  hu: 'EUR',
+  id: 'IDR',
+  ie: 'EUR',
+  il: 'ILS',
+  in: 'INR',
+  it: 'EUR',
+  jp: 'JPY',
+  kr: 'KRW',
+  lt: 'EUR',
+  lu: 'EUR',
+  lv: 'EUR',
+  mt: 'EUR',
+  mx: 'MXN',
+  my: 'MYR',
+  nl: 'EUR',
+  no: 'NOK',
+  nz: 'AUD',
+  pe: 'PEN',
+  ph: 'PHP',
+  pl: 'EUR',
+  pt: 'EUR',
+  ro: 'EUR',
+  ru: 'RUB',
+  se: 'SEK',
+  sg: 'SGD',
+  si: 'EUR',
+  sk: 'EUR',
+  th: 'THB',
+  tw: 'TWD',
+  us: 'USD',
+  ve: 'USD',
+  za: 'USD',
+  ae: 'USD',
+  bh: 'BHD',
+  eg: 'EGP',
+  jo: 'JOD',
+  kw: 'KWD',
+  om: 'OMR',
+  qa: 'USD',
+  sa: 'SAR',
+  ua: 'USD',
+  dz: 'USD',
+  lb: 'LBP',
+  ma: 'USD',
+  tn: 'USD',
+  ye: 'USD',
+  am: 'USD',
+  az: 'USD',
+  ge: 'USD',
+  md: 'USD',
+  tm: 'USD',
+  by: 'USD',
+  kz: 'USD',
+  kg: 'USD',
+  tj: 'USD',
+  uz: 'USD',
+  bo: 'USD',
+  do: 'USD',
+  hr: 'EUR',
+  ke: 'USD',
+  lk: 'USD',
+  mo: 'HKD',
+  mu: 'USD',
+  ng: 'USD',
+  pa: 'USD',
+  py: 'USD',
+  sv: 'USD',
+  tt: 'USD',
+  uy: 'USD',
+  vn: 'USD',
+};
 
 function replaceUrlParam(url, paramName, paramValue) {
   const params = url.searchParams;
@@ -13,7 +108,7 @@ function replaceUrlParam(url, paramName, paramValue) {
   return url;
 }
 
-export function buildUrl(optionUrl, country, language) {
+export function buildUrl(optionUrl, country, language, offerId = '') {
   const currentUrl = new URL(window.location.href);
   let planUrl = new URL(optionUrl);
 
@@ -22,6 +117,9 @@ export function buildUrl(optionUrl, country, language) {
   }
   planUrl = replaceUrlParam(planUrl, 'co', country);
   planUrl = replaceUrlParam(planUrl, 'lang', language);
+  if (offerId) {
+    planUrl.searchParams.set(decodeURIComponent('items%5B0%5D%5Bid%5D'), offerId);
+  }
   let rUrl = planUrl.searchParams.get('rUrl');
   if (currentUrl.searchParams.has('host')) {
     const hostParam = currentUrl.searchParams.get('host');
@@ -83,35 +181,45 @@ function getCurrencyDisplay(currency) {
   return 'symbol';
 }
 
+export async function setVisitorCountry() {
+  if (!sessionStorage.getItem('visitorCountry')) {
+    const resp = await fetch('https://geo2.adobe.com/json/');
+    if (resp.ok) {
+      const json = await resp.json();
+      sessionStorage.setItem('visitorCountry', json.country.toLowerCase());
+    }
+  }
+}
+
 function getCountry() {
-  let country = new URLSearchParams(window.location.search).get('country');
-  if (!country) {
-    country = getCookie('international');
-  }
-  if (!country) {
-    country = getLocale(window.location);
-  }
+  const urlParams = new URLSearchParams(window.location.search);
+  let country = urlParams.get('country') || getCookie('international') || sessionStorage.getItem('visitorCountry') || getConfig().locale.prefix.replace('/', '');
   if (country === 'uk') country = 'gb';
   return (country.split('_')[0]);
 }
 
-export async function formatSalesPhoneNumber(tags) {
-  if (tags.length <= 0) return;
+export const formatSalesPhoneNumber = (() => {
+  let numbersMap;
+  return async (tags, placeholder = '') => {
+    if (tags.length <= 0) return;
 
-  const numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
+    if (!numbersMap) {
+      numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
+    }
 
-  if (!numbersMap?.data) return;
+    if (!numbersMap?.data) return;
+    const country = getCountry();
+    tags.forEach((a) => {
+      const r = numbersMap.data.find((d) => d.country === country);
 
-  tags.forEach((a) => {
-    const r = numbersMap.data.find((d) => d.country === getCountry());
+      const decodedNum = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
 
-    const decodedNumber = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
-
-    a.textContent = decodedNumber;
-    a.setAttribute('title', decodedNumber);
-    a.href = `tel:${decodedNumber}`;
-  });
-}
+      a.textContent = placeholder ? a.textContent.replace(placeholder, decodedNum) : decodedNum;
+      a.setAttribute('title', placeholder ? a.getAttribute('title').replace(placeholder, decodedNum) : decodedNum);
+      a.href = `tel:${decodedNum}`;
+    });
+  };
+})();
 
 export function formatPrice(price, currency) {
   if (price === '') return null;
@@ -122,7 +230,7 @@ export function formatPrice(price, currency) {
   };
   const locale = ['USD', 'TWD'].includes(currency)
     ? 'en-GB' // use en-GB for intl $ symbol formatting
-    : getLanguage(getCountry());
+    : (getConfig().locales[getCountry() || '']?.ietf ?? 'en-US');
   const currencyDisplay = getCurrencyDisplay(currency);
   let formattedPrice = new Intl.NumberFormat(locale, {
     style: 'currency',
@@ -139,150 +247,51 @@ export function formatPrice(price, currency) {
 
 export function getCurrency(locale) {
   const loc = locale || getCountry();
-  const currencies = {
-    ar: 'ARS',
-    at: 'EUR',
-    au: 'AUD',
-    be: 'EUR',
-    bg: 'EUR',
-    br: 'BRL',
-    ca: 'CAD',
-    ch: 'CHF',
-    cl: 'CLP',
-    co: 'COP',
-    cr: 'USD',
-    cy: 'EUR',
-    cz: 'EUR',
-    de: 'EUR',
-    dk: 'DKK',
-    ec: 'USD',
-    ee: 'EUR',
-    es: 'EUR',
-    fi: 'EUR',
-    fr: 'EUR',
-    gb: 'GBP',
-    gr: 'EUR',
-    gt: 'USD',
-    hk: 'HKD',
-    hu: 'EUR',
-    id: 'IDR',
-    ie: 'EUR',
-    il: 'ILS',
-    in: 'INR',
-    it: 'EUR',
-    jp: 'JPY',
-    kr: 'KRW',
-    lt: 'EUR',
-    lu: 'EUR',
-    lv: 'EUR',
-    mt: 'EUR',
-    mx: 'MXN',
-    my: 'MYR',
-    nl: 'EUR',
-    no: 'NOK',
-    nz: 'AUD',
-    pe: 'PEN',
-    ph: 'PHP',
-    pl: 'EUR',
-    pt: 'EUR',
-    ro: 'EUR',
-    ru: 'RUB',
-    se: 'SEK',
-    sg: 'SGD',
-    si: 'EUR',
-    sk: 'EUR',
-    th: 'THB',
-    tw: 'TWD',
-    us: 'USD',
-    ve: 'USD',
-    za: 'USD',
-    ae: 'USD',
-    bh: 'BHD',
-    eg: 'EGP',
-    jo: 'JOD',
-    kw: 'KWD',
-    om: 'OMR',
-    qa: 'USD',
-    sa: 'SAR',
-    ua: 'USD',
-    dz: 'USD',
-    lb: 'LBP',
-    ma: 'USD',
-    tn: 'USD',
-    ye: 'USD',
-    am: 'USD',
-    az: 'USD',
-    ge: 'USD',
-    md: 'USD',
-    tm: 'USD',
-    by: 'USD',
-    kz: 'USD',
-    kg: 'USD',
-    tj: 'USD',
-    uz: 'USD',
-    bo: 'USD',
-    do: 'USD',
-    hr: 'EUR',
-    ke: 'USD',
-    lk: 'USD',
-    mo: 'HKD',
-    mu: 'USD',
-    ng: 'USD',
-    pa: 'USD',
-    py: 'USD',
-    sv: 'USD',
-    tt: 'USD',
-    uy: 'USD',
-    vn: 'USD',
-  };
   return currencies[loc];
 }
 
-export async function getOffer(offerId, countryOverride) {
-  let country = getCountry();
-  if (countryOverride) country = countryOverride;
-  if (!country) country = 'us';
-  let currency = getCurrency(country);
-  if (!currency) {
-    country = 'us';
-    currency = 'USD';
-  }
-  const resp = await fetch('/express/system/offers-new.json');
-  if (!resp.ok) return {};
-  const json = await resp.json();
-  const upperCountry = country.toUpperCase();
-  let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
-  if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
+export const getOffer = (() => {
+  let json;
+  return async (offerId, countryOverride) => {
+    let country = getCountry();
+    if (countryOverride) country = countryOverride;
+    if (!country) country = 'us';
+    let currency = getCurrency(country);
+    if (!currency) {
+      country = 'us';
+      currency = 'USD';
+    }
+    if (!json) {
+      const resp = await fetch('/express/system/offers-new.json');
+      if (!resp.ok) return {};
+      json = await resp.json();
+    }
 
-  if (offer) {
-    const lang = getLanguage(getLocale(window.location)).split('-')[0];
+    const upperCountry = country.toUpperCase();
+    let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
+    if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
+    if (!offer) return {};
+    const lang = getConfig().locale.ietf.split('-')[0];
     const unitPrice = offer.p;
-    const unitPriceCurrencyFormatted = formatPrice(unitPrice, currency);
-    const commerceURL = `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${offerId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`;
-    const vatInfo = offer.vat;
-    const prefix = offer.pre;
-    const suffix = offer.suf;
-    const basePrice = offer.bp;
-    const priceSuperScript = offer.sup;
-    const basePriceCurrencyFormatted = formatPrice(basePrice, currency);
+    const customOfferId = offer.oo || offerId;
 
     return {
       country,
       currency,
-      unitPrice,
-      unitPriceCurrencyFormatted,
-      commerceURL,
       lang,
-      vatInfo,
-      prefix,
-      suffix,
-      basePrice,
-      basePriceCurrencyFormatted,
-      priceSuperScript,
+      unitPrice: offer.p,
+      unitPriceCurrencyFormatted: formatPrice(unitPrice, currency),
+      commerceURL: `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`,
+      vatInfo: offer.vat,
+      prefix: offer.pre,
+      suffix: offer.suf,
+      basePrice: offer.bp,
+      basePriceCurrencyFormatted: formatPrice(offer.bp, currency),
+      priceSuperScript: offer.sup,
+      customOfferId: offer.oo || offerId,
     };
-  }
-  return {};
-}
+  };
+})();
 
 export async function fetchPlan(planUrl) {
   if (!window.pricingPlans) {
@@ -336,6 +345,7 @@ export async function fetchPlan(planUrl) {
       plan.country = offer.country;
       plan.vatInfo = offer.vatInfo;
       plan.language = offer.lang;
+      plan.offerId = offer.customOfferId;
       plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';

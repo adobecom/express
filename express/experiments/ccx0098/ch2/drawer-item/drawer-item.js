@@ -1,4 +1,4 @@
-import buildCarousel from '../../../../blocks/shared/carousel.js';
+import buildCarousel from '../carousel/carousel.js';
 
 import {
   getIcon,
@@ -63,11 +63,7 @@ function tempWorkAroundForBubbleOrder(drawerItemContainer) {
   drawerItemContainer.prepend(drawerItemContainer.querySelector('.drawer-item:nth-of-type(7)'));
   drawerItemContainer.prepend(drawerItemContainer.querySelector('.drawer-item:nth-of-type(7)'));
 }
-function removeCarouselGeneratedArrows($mobileDrawer) {
-  $mobileDrawer.querySelectorAll('.carousel-fader-left,.carousel-fader-right').forEach((arrow) => {
-    arrow.remove();
-  });
-}
+
 function getMissingIcon(iconName) {
   const icons = {
     scratch: 'blank',
@@ -105,11 +101,11 @@ function addDecorativeBubbles(bubbleContainer) {
   for (let i = 0; i < 7; i += 1) {
     const bigBubble = bubbleContainer.querySelector(`.drawer-item:nth-of-type(${i + 1})`);
     if (bigBubble && i !== 3) {
-      bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-large large-bubble-${i}` }));
-      bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-small small-bubble-${i}` }));
+      bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-large large-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
+      bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-small small-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
       if (i < 2) {
-        bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-medium medium-bubble-${i}` }));
-        bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-xs xs-bubble-${i}` }));
+        bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-medium medium-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
+        bigBubble.append(createTag('div', { class: `drawer-item-bubble drawer-item-bubble-xs xs-bubble-${i} drawer-swipeable-left drawer-swipeable-right` }));
       }
     }
   }
@@ -180,60 +176,65 @@ function createCTA(payload, link, isSingleDownloadCTA) {
 function updatePayloadFromBlock($block, payload) {
   $block.querySelectorAll(':scope>div').forEach((item) => {
     const row = Array.from(item.children);
-    switch (row[0]?.textContent.trim().toLowerCase()) {
-      case 'item name':
-        payload.iconName.textContent = row[1]?.textContent.trim();
-        payload.itemName.textContent = payload.iconName.textContent;
-        break;
-      case 'icon':
-        if (row[1]?.querySelector('svg') && !getMissingIcon(payload.iconName.textContent)) {
-          payload.icon.append(row[1]?.querySelector('svg'));
-        } else if (getMissingIcon(payload.iconName.textContent)) {
-          payload.icon.innerHTML = createIcon(payload.iconName.textContent);
-        }
-        break;
-      case 'icon link':
-        payload.iconLink = row[1]?.querySelector('a');
-        payload.iconLink.textContent = '';
-        payload.iconLink.dataset.ll = payload.iconName.textContent.trim().split(' ').join('');
-        break;
-      case 'media': {
-        [, payload.media] = row;
-        const mediaAnchor = payload.media?.cloneNode().querySelector('a');
-        if (mediaAnchor && mediaAnchor?.href?.includes('.mp4')) {
-          payload.media.innerHtml = '';
-          payload.media = mediaAnchor;
-        } else if (payload.media?.querySelector('picture')) {
-          payload.media = payload.media?.querySelector('picture');
-          if (payload.isBubbleView && payload.media) {
-            payload.media?.querySelector('img').classList.add('drawer-swipeable-left', 'drawer-swipeable-right');
+    const keyValue = row[0]?.textContent.trim().toLowerCase();
+    if (/^[0-9]*$/.test(keyValue)) {
+      payload.order = keyValue;
+    } else {
+      switch (keyValue) {
+        case 'item name':
+          payload.iconName.textContent = row[1]?.textContent.trim();
+          payload.itemName.textContent = payload.iconName.textContent;
+          break;
+        case 'icon':
+          if (row[1]?.querySelector('svg') && !getMissingIcon(payload.iconName.textContent)) {
+            payload.icon.append(row[1]?.querySelector('svg'));
+          } else if (getMissingIcon(payload.iconName.textContent)) {
+            payload.icon.innerHTML = createIcon(payload.iconName.textContent);
           }
+          break;
+        case 'icon link':
+          payload.iconLink = row[1]?.querySelector('a');
+          payload.iconLink.textContent = '';
+          payload.iconLink.dataset.ll = payload.iconName.textContent.trim().split(' ').join('');
+          break;
+        case 'media': {
+          [, payload.media] = row;
+          const mediaAnchor = payload.media?.cloneNode().querySelector('a');
+          if (mediaAnchor && mediaAnchor?.href?.includes('.mp4')) {
+            payload.media.innerHtml = '';
+            payload.media = mediaAnchor;
+          } else if (payload.media?.querySelector('picture')) {
+            payload.media = payload.media?.querySelector('picture');
+            if (payload.isBubbleView && payload.media) {
+              payload.media?.querySelector('img').classList.add('drawer-swipeable-left', 'drawer-swipeable-right');
+            }
+          }
+          break;
         }
-        break;
+        case 'media link':
+          payload.mediaLink = row[1]?.querySelector('a');
+          payload.mediaLink.dataset.ll = payload.itemName.textContent.trim().split(' ').join('');
+          break;
+        case 'media text':
+          payload.mediaText.textContent = row[1]?.textContent;
+          break;
+        case 'cta text':
+          payload.ctaText = row[1]?.textContent;
+          break;
+        case 'download link':
+          payload.downloadLink = row[1]?.querySelector('a');
+          break;
+        case 'secondary link text':
+          payload.secondaryCTAText = row[1]?.textContent;
+          break;
+        case 'secondary cta link':
+          payload.secondaryCTALink = row[1]?.querySelector('a');
+          payload.secondaryCTALink.textContent = payload.secondaryCTAText;
+          payload.secondaryCTALink.dataset.ll = `${payload.secondaryCTAText.trim().split(' ').join('')}:${payload.itemName.textContent.trim().split(' ').join('')}`;
+          break;
+        default:
+          break;
       }
-      case 'media link':
-        payload.mediaLink = row[1]?.querySelector('a');
-        payload.mediaLink.dataset.ll = payload.itemName.textContent.trim().split(' ').join('');
-        break;
-      case 'media text':
-        payload.mediaText.textContent = row[1]?.textContent;
-        break;
-      case 'cta text':
-        payload.ctaText = row[1]?.textContent;
-        break;
-      case 'download link':
-        payload.downloadLink = row[1]?.querySelector('a');
-        break;
-      case 'secondary link text':
-        payload.secondaryCTAText = row[1]?.textContent;
-        break;
-      case 'secondary cta link':
-        payload.secondaryCTALink = row[1]?.querySelector('a');
-        payload.secondaryCTALink.textContent = payload.secondaryCTAText;
-        payload.secondaryCTALink.dataset.ll = `${payload.secondaryCTAText.trim().split(' ').join('')}:${payload.itemName.textContent.trim().split(' ').join('')}`;
-        break;
-      default:
-        break;
     }
   });
 }
@@ -247,6 +248,7 @@ function decorateIcon(payload) {
     payload.iconLink.append(payload.icon);
     payload.iconLink.append(payload.iconName);
     payload.iconContainer.append(payload.iconLink);
+    payload.iconContainer.dataset.order = payload.order;
     $drawerItemSectionIconsContainer.append(payload.iconContainer);
   }
 }
@@ -259,8 +261,11 @@ function decorateMedia(payload) {
     payload.mediaLink.append(payload.media);
     drawerItem.append(payload.mediaLink);
     if (isNotBubbleItem) {
+      drawerItem.dataset.order = payload.order;
       drawerItem.append(payload.itemName);
       drawerItem.append(payload.mediaText);
+    } else {
+      drawerItem.classList.add('drawer-swipeable-left', 'drawer-swipeable-right');
     }
     if (payload.isAnimationsView && payload.secondaryCTALink) {
       payload.secondaryCTALink.classList.add('drawer-item-secondary-cta');
@@ -294,11 +299,18 @@ function decorateBubbleCTAContainer(payload, selector) {
   container.style.display = 'none';
   appendSingleCTA(payload, container);
 }
+function decorateIconCTAContainer(payload, selector) {
+  const container = document.querySelector(selector);
+  if (container) {
+    container.dataset.lh = 'iconView';
+    appendSingleCTA(payload, container);
+  }
+}
 function decorateBubblesView(payload) {
   if (payload.$mobileDrawer && payload.drawerItemContainer?.classList.contains('drawer-item-bubbles-view-container')) {
     const bubbleContainer = createTag(
       'div',
-      { class: 'drawer-item-bubbles-container' },
+      { class: 'drawer-item-bubbles-container drawer-swipeable-left drawer-swipeable-right' },
     );
     [...payload.drawerItemContainer.children].forEach((bubbleItem) => {
       bubbleItem.querySelector('a')?.classList.add('drawer-swipeable-left', 'drawer-swipeable-right');
@@ -307,11 +319,12 @@ function decorateBubblesView(payload) {
       payload.drawerItemContainer.children[payload.drawerItemContainer.children.length - 1],
     );
     tempWorkAroundForBubbleOrder(payload.drawerItemContainer);
-    removeCarouselGeneratedArrows(payload.$mobileDrawer);
     bubbleContainer.append(...payload.drawerItemContainer.children);
     addDecorativeBubbles(bubbleContainer);
     payload.drawerItemContainer.append(bubbleContainer);
     decorateBubbleCTAContainer(payload, 'drawer-item-bubbles-cta-container');
+    decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
+
     payload.drawerItemContainer.dataset.lh = payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('');
   }
 }
@@ -322,6 +335,12 @@ function decorateCarouselSwipeableItems(carouselItems) {
   }
 }
 function decorateCarouselViews(payload) {
+  if (!payload.isBubbleView) {
+    const sortedChildren = [...payload.drawerItemContainer.children]
+      .sort((a, b) => a.dataset.order - b.dataset.order);
+    payload.drawerItemContainer.innerHTML = '';
+    sortedChildren.forEach((el) => payload.drawerItemContainer.appendChild(el));
+  }
   if (payload.isDefaultView) {
     decorateCarouselSwipeableItems(payload.drawerItemContainer.querySelectorAll('.drawer-item a'));
   } else if (payload.isAnimationsView) {
@@ -331,7 +350,15 @@ function decorateCarouselViews(payload) {
   if (!payload.isBubbleView) {
     buildCarousel('.drawer-item', payload.drawerItemContainer);
     const carousel = payload.drawerItemContainer.querySelector('.carousel-platform');
+    carousel.querySelectorAll('.carousel-left-trigger, .carousel-right-trigger').forEach((trigger) => trigger.remove());
     const indicators = createIndicators(payload, carousel);
+    if (payload.isAnimationsView) {
+      payload.drawerItemContainer.querySelectorAll('.hero-animation-overlay').forEach((overlay) => {
+        const drawerItem = overlay.closest('.drawer-item');
+        drawerItem.prepend(overlay);
+        drawerItem.querySelector('a')?.classList.add('drawer-item-overlay');
+      });
+    }
     payload.drawerItemContainer.append(indicators);
     payload.drawerItemContainer.dataset.lh = payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('');
   }
@@ -351,14 +378,6 @@ function decorateCTA(payload) {
     container.append(cta);
   }
   container.dataset.lh = `maincta:${payload.drawerItemContainer.dataset.drawer.trim().split(' ').join('')}`;
-}
-
-function decorateIconCTAContainer(payload, selector) {
-  const container = document.querySelector(selector);
-  if (container) {
-    container.dataset.lh = 'iconView';
-    appendSingleCTA(payload, container);
-  }
 }
 
 function showFirstCTAInContainer(wrapper, selector) {
@@ -433,7 +452,13 @@ function initAfterDrawerFullyLoaded(payload) {
     decorateAnimationsViewMedia(payload);
     decorateBubblesView(payload);
     if (payload.hasList) {
-      decorateIconCTAContainer(payload, '.drawer-item-icon-cta-container');
+      const iconsSection = payload.iconContainer?.closest('.drawer-item-icons');
+      const [heading, sortedIcons] = [[...iconsSection.children][0],
+        [...iconsSection.children].slice(1).sort((a, b) => a.dataset.order - b.dataset.order)];
+
+      iconsSection.innerHTML = '';
+      iconsSection.appendChild(heading);
+      sortedIcons.forEach((el) => iconsSection.appendChild(el));
     }
     decorateCarouselViews(payload);
     decorateCarouselCTAList(payload);

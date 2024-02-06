@@ -1,6 +1,6 @@
 import {
   createTag,
-  loadCSS,
+  loadStyle,
 } from '../../scripts/utils.js';
 
 function buildPagination(wrapper, payload) {
@@ -119,7 +119,7 @@ function resetPagination(wrapper, payload) {
 }
 
 export default function buildPaginatedCarousel(selector = ':scope > *', container, infinityScrollEnabled = false) {
-  loadCSS('/express/blocks/shared/paginated-carousel.css');
+  loadStyle('/express/blocks/shared/paginated-carousel.css');
 
   const payload = {
     cItemsPrev: [],
