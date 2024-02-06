@@ -34,7 +34,7 @@ export default async function loadDelayed(DELAY = 1000) {
     return new Promise((resolve) => {
       // TODO: not preloading product this early to protect desktop CWV
       // until we see significant proof of preloading improving product load time
-      loadExpressProduct();
+      // loadExpressProduct();
       setTimeout(() => {
         loadLoginUserAutoRedirect();
         resolve();
@@ -44,7 +44,7 @@ export default async function loadDelayed(DELAY = 1000) {
 
   return new Promise((resolve) => {
     setTimeout(() => {
-      loadExpressProduct();
+      // loadExpressProduct();
       resolve();
     }, window.delay_preload_product ? DELAY * 2 : DELAY);
   });
