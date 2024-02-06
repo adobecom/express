@@ -113,13 +113,13 @@ function handleFeatureList(featureColumns, index) {
 }
 
 function handleEyeBrows(columnWrapper, eyeBrowCols, index) {
-  const removeOfferBlock = checkOfferExcludeCountry();
-  if (removeOfferBlock) {
+  if (!eyeBrowCols) return null;
+  if (!eyeBrowCols[index].innerHTML) {
     eyeBrowCols[index].remove();
     return null;
   }
-  if (!eyeBrowCols) return null;
-  if (!eyeBrowCols[index].innerHTML) {
+  const removeOfferBlock = checkOfferExcludeCountry();
+  if (removeOfferBlock) {
     eyeBrowCols[index].remove();
     return null;
   }
