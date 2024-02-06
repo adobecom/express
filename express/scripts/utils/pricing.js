@@ -191,6 +191,10 @@ export async function setVisitorCountry() {
   }
 }
 
+export function checkOfferExcludeCountry() {
+  return ['hk', 'mo'].includes(getCountry());
+}
+
 function getCountry() {
   const urlParams = new URLSearchParams(window.location.search);
   let country = urlParams.get('country') || getCookie('international') || sessionStorage.getItem('visitorCountry') || getConfig().locale.prefix.replace('/', '');
@@ -262,7 +266,7 @@ export const getOffer = (() => {
       currency = 'USD';
     }
     if (!json) {
-      const resp = await fetch('/express/system/offers-new.json');
+      const resp = await fetch('/express/system/offers-new-save-per.json');
       if (!resp.ok) return {};
       json = await resp.json();
     }
@@ -289,6 +293,7 @@ export const getOffer = (() => {
       basePriceCurrencyFormatted: formatPrice(offer.bp, currency),
       priceSuperScript: offer.sup,
       customOfferId: offer.oo || offerId,
+      savePer: offer.savePer,
     };
   };
 })();
@@ -346,11 +351,12 @@ export async function fetchPlan(planUrl) {
       plan.vatInfo = offer.vatInfo;
       plan.language = offer.lang;
       plan.offerId = offer.customOfferId;
-      plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
+      plan.rawPrice = offer.unitPriceCurrencyFormatted?.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
       plan.sup = offer.priceSuperScript ?? '';
-      plan.formatted = offer.unitPriceCurrencyFormatted.replace(
+      plan.savePer = offer.savePer ?? '';
+      plan.formatted = offer.unitPriceCurrencyFormatted?.replace(
         plan.rawPrice[0],
         `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`,
       );

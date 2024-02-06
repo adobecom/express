@@ -1,5 +1,7 @@
 import { createTag } from '../../scripts/utils.js';
-import { fetchPlan, buildUrl, setVisitorCountry } from '../../scripts/utils/pricing.js';
+import {
+  fetchPlan, buildUrl, setVisitorCountry, checkOfferExcludeCountry,
+} from '../../scripts/utils/pricing.js';
 import buildCarousel from '../shared/carousel.js';
 
 function handleHeader(column) {
@@ -14,7 +16,7 @@ function handleHeader(column) {
   return header;
 }
 
-function handlePrice(block, column) {
+function handlePrice(block, column, eyeBrow) {
   const pricePlan = createTag('div', { class: 'pricing-plan' });
   const priceEl = column.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
@@ -30,7 +32,7 @@ function handlePrice(block, column) {
   pricePlan.append(priceWrapper, plan);
 
   fetchPlan(priceEl?.href).then(({
-    url, country, language, offerId, formatted, formattedBP, suffix,
+    url, country, language, offerId, formatted, formattedBP, suffix, savePer,
   }) => {
     const parentP = priceEl.parentElement;
     price.innerHTML = formatted;
@@ -51,6 +53,11 @@ function handlePrice(block, column) {
 
     const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
     if (planCTA) planCTA.href = buildUrl(url, country, language, offerId);
+
+    if (eyeBrow !== null) {
+      const offerTextContent = eyeBrow.innerHTML;
+      eyeBrow.innerHTML = offerTextContent.replace('{{savePercentage}}', savePer);
+    }
   });
 
   priceParent?.remove();
@@ -106,6 +113,11 @@ function handleFeatureList(featureColumns, index) {
 }
 
 function handleEyeBrows(columnWrapper, eyeBrowCols, index) {
+  const removeOfferBlock = checkOfferExcludeCountry();
+  if (removeOfferBlock) {
+    eyeBrowCols[index].remove();
+    return null;
+  }
   if (!eyeBrowCols) return null;
   if (!eyeBrowCols[index].innerHTML) {
     eyeBrowCols[index].remove();
@@ -189,11 +201,11 @@ export default async function decorate(block) {
 
       const contentWrapper = createTag('div', { class: 'pricing-content-wrapper' });
       const header = handleHeader(column);
-      const pricePlan = handlePrice(block, column);
+      const eyeBrow = handleEyeBrows(columnWrapper, eyeBrows, index);
+      const pricePlan = handlePrice(block, column, eyeBrow);
       const cta = handleCtas(block, column);
       const description = handleDescription(column);
       const featureList = handleFeatureList(featureColumns, index);
-      const eyeBrow = handleEyeBrows(columnWrapper, eyeBrows, index);
 
       contentWrapper.append(header, description);
       if (pricePlan) {

@@ -1,6 +1,6 @@
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 import {
-  fetchPlan, buildUrl, formatSalesPhoneNumber, setVisitorCountry,
+  fetchPlan, buildUrl, formatSalesPhoneNumber, setVisitorCountry, checkOfferExcludeCountry,
 } from '../../scripts/utils/pricing.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -19,7 +19,6 @@ function handlePrice(pricingArea, priceSuffixContext) {
   const priceSuffix = createTag('div', { class: 'pricing-row-suf' });
 
   priceRow.append(basePrice, price, priceSuffix);
-
   fetchPlan(priceEl?.href).then((response) => {
     const parentP = priceEl.parentElement;
     price.innerHTML = response.formatted;
@@ -41,6 +40,16 @@ function handlePrice(pricingArea, priceSuffixContext) {
       });
     } else {
       priceSuffix.textContent = priceSuffixContext;
+    }
+    const savePercentElem = pricingArea.querySelector('.card-offer');
+    if (savePercentElem) {
+      const removeOfferBlock = checkOfferExcludeCountry();
+      if (removeOfferBlock) {
+        savePercentElem.remove();
+      } else {
+        const offerTextContent = savePercentElem.textContent;
+        savePercentElem.textContent = offerTextContent.replace('{{savePercentage}}', response.savePer);
+      }
     }
   });
 
