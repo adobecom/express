@@ -55,6 +55,17 @@
       "id": "preflight",
       "environments": ["dev", "preview", "live"],
       "event": "preflight"
+    },
+    {
+      "id": "localeflow",
+      "title": "Translate",
+      "environments": [
+        "dev"
+      ],
+      "event": "locale-flow",
+      "includePaths": [
+        "**.docx**"
+      ]
     }
   ]
 }

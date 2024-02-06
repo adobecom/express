@@ -64,6 +64,11 @@ function loadIMS() {
 async function loadFEDS() {
   const config = getConfig();
   const prefix = config.locale.prefix.replaceAll('/', '');
+  let jarvis = true;
+  // if metadata found jarvis must not be initialized in gnav because it will be initiated later
+  const jarvisMeta = getMetadata('jarvis-chat')?.toLowerCase();
+  if (!jarvisMeta || !['mobile', 'desktop', 'on'].includes(jarvisMeta)
+    || !config.jarvis?.id || !config.jarvis?.version) jarvis = false;
 
   async function showRegionPicker() {
     const { getModal } = await import('../blocks/modal/modal.js');
@@ -174,12 +179,11 @@ async function loadFEDS() {
         window.location.href = sparkLoginUrl;
       },
     },
-    jarvis: getMetadata('enable-chat') === 'yes'
-      ? {
-        surfaceName: 'AdobeExpressEducation',
-        surfaceVersion: '1',
-      }
-      : {},
+    jarvis: !jarvis ? {
+      surfaceName: config.jarvis.id,
+      surfaceVersion: config.jarvis.version,
+      onDemand: true,
+    } : {},
     breadcrumbs: {
       showLogo: true,
       links: await buildBreadCrumbArray(),
@@ -188,6 +192,11 @@ async function loadFEDS() {
 
   window.addEventListener('feds.events.experience.loaded', async () => {
     document.querySelector('body').classList.add('feds-loaded');
+
+    if (['no', 'f', 'false', 'n', 'off'].includes(getMetadata('gnav-retract').toLowerCase())) {
+      window.feds.components.NavBar.disableRetractability();
+    }
+
     /* attempt to switch link */
     if (window.location.pathname.includes('/create/')
       || window.location.pathname.includes('/discover/')
@@ -257,7 +266,7 @@ async function loadFEDS() {
       otDomainId,
     };
     loadScript('https://www.adobe.com/etc.clientlibs/globalnav/clientlibs/base/privacy-standalone.js');
-  }, 0);
+  }, 4000);
   const footer = document.querySelector('footer');
   footer?.addEventListener('click', (event) => {
     if (event.target.closest('a[data-feds-action="open-adchoices-modal"]')) {
