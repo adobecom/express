@@ -257,16 +257,15 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
 .pricing-table .row.toggle-row.desktop-hide {
   display: none;
 }
+.pricing-table .row.toggle-row .col.toggle-content {
+  font-size: 1rem;
+}
 .pricing-table .row.toggle-row:hover .col.toggle-content {
   text-decoration: underline;
 }
 .pricing-table .row.toggle-row .col.toggle-content .icon.expand {
   height: 18px;
   width: 18px;
-}
-.pricing-table .row.toggle-row .col.toggle-content .toggle-text {
-  font-weight: 700;
-  font-size: 1rem;
 }
 .pricing-table .row.toggle-row .col {
   white-space: nowrap;
@@ -382,7 +381,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
 /* /Table Section Header Row */
 
 /* Table Shaded Rows */
-.pricing-table .row.shaded-row {
+.pricing-table .row.shaded {
   background: var(--shaded-color);
 }
 /* /Table Shaded Rows */
@@ -425,7 +424,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
 .pricing-table .row.section-row .col .col-wrapper .col-content {
   row-gap: 12px;
 }
-.pricing-table .col .feature-status-icon {
+.pricing-table .feat-icon {
   display: block;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
@@ -434,7 +433,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   mask-position: center;
   mask-size: contain;
 }
-.pricing-table .col .feature-status-icon.dash-icon {
+.pricing-table .dash {
   width: 13px;
   height: 11.5px;
   margin-bottom: 4.5px;
@@ -443,7 +442,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   -webkit-mask-image: url('./dash.svg');
   mask-image: url('./dash.svg');
 }
-.pricing-table .col .feature-status-icon.check-icon {
+.pricing-table .check {
   width: 13px;
   height: 11.5px;
   background-color: var(--checkmark-color);
@@ -575,7 +574,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   .pricing-table .row.toggle-row.desktop-hide {
     display: block;
   }
-  .pricing-table .row.toggle-row .col.toggle-content .toggle-text {
+  .pricing-table .row.toggle-row .col.toggle-content {
     font-size: var(--body-font-size-s);
   }
 
