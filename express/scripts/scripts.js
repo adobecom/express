@@ -90,30 +90,28 @@ const showNotifications = () => {
   }
 };
 
-const listenAlloy = (() => {
+const listenAlloy = () => {
   let resolver;
   let loaded;
-  return () => {
-    const t1 = performance.now();
-    window.alloyLoader = new Promise((r) => {
-      resolver = r;
-    });
-    window.addEventListener('alloy_sendEvent', (e) => {
-      if (e.detail.type === 'pageView') {
-        // eslint-disable-next-line no-console
-        if (usp.has('debug-alloy')) console.log(`Alloy loaded in ${performance.now() - t1}`);
-        loaded = true;
-        resolver(e.detail.result);
-      }
-    }, { once: true });
-    setTimeout(() => {
-      if (!loaded) {
-        window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`);
-        resolver();
-      }
-    }, 5000);
-  };
-})();
+  const t1 = performance.now();
+  window.alloyLoader = new Promise((r) => {
+    resolver = r;
+  });
+  window.addEventListener('alloy_sendEvent', (e) => {
+    if (e.detail.type === 'pageView') {
+      // eslint-disable-next-line no-console
+      if (usp.has('debug-alloy')) console.log(`Alloy loaded in ${performance.now() - t1}`);
+      loaded = true;
+      resolver(e.detail.result);
+    }
+  }, { once: true });
+  setTimeout(() => {
+    if (!loaded) {
+      window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`);
+      resolver();
+    }
+  }, 5000);
+};
 
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
