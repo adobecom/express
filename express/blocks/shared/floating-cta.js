@@ -419,6 +419,7 @@ export function decorateBadge() {
 }
 
 export function buildToolBoxStructure(wrapper, data) {
+  lazyLoadLottiePlayer();
   const toolBox = createTag('div', { class: 'toolbox' });
   const toolBoxWrapper = createTag('div', { class: 'toolbox-inner-wrapper' });
   const notch = createTag('a', { class: 'notch' });
