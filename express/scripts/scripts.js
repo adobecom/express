@@ -89,10 +89,42 @@ const showNotifications = () => {
   }
 };
 
+const listenAlloy = (() => {
+  let alloyLoadingResolver;
+  let alloyLoaded;
+  return () => {
+    const t1 = performance.now();
+    window.alloyLoader = new Promise((r) => {
+      alloyLoadingResolver = r;
+    });
+    window.addEventListener('alloy_sendEvent', (e) => {
+      // fired by launch loaded by martech loaded by instrument
+      if (e.detail.type === 'pageView') {
+        if (usp.has('debug-alloy')) {
+          // eslint-disable-next-line no-console
+          console.log(`Alloy loaded in ${performance.now() - t1}`);
+        }
+        alloyLoaded = true;
+        alloyLoadingResolver(e.detail.result);
+      }
+    });
+    // tolerate max 5s for exp overheads
+    setTimeout(() => {
+      if (!alloyLoaded) {
+        // eslint-disable-next-line no-console
+        window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`);
+        alloyLoadingResolver();
+        window.delay_preload_product = false;
+      }
+    }, 5000);
+  };
+})();
+
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
   showNotifications();
+  listenAlloy();
   await loadArea();
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
     import('./mobile-beta-gating.js').then((gatingScript) => {

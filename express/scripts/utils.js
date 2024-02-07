@@ -1697,36 +1697,10 @@ function loadIMS() {
   }
 }
 
-let alloyLoadingResolver;
-let alloyLoaded;
 export async function getAlloyRes() {
   loadIMS();
   await loadScript('/express/scripts/instrument.js', 'module');
-  const t1 = performance.now();
-  window.alloyLoader = new Promise((r) => {
-    alloyLoadingResolver = r;
-  });
-  window.addEventListener('alloy_sendEvent', (e) => {
-    // fired by launch loaded by martech loaded by instrument
-    if (e.detail.type === 'pageView') {
-      const usp = new URLSearchParams(window.location.search);
-      if (usp.has('debug-alloy')) {
-        // eslint-disable-next-line no-console
-        console.log(`Alloy loaded in ${performance.now() - t1}`);
-      }
-      alloyLoaded = true;
-      alloyLoadingResolver(e.detail.result);
-    }
-  });
-  // tolerate max 5s for exp overheads
-  setTimeout(() => {
-    if (!alloyLoaded) {
-      // eslint-disable-next-line no-console
-      window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`);
-      alloyLoadingResolver();
-      window.delay_preload_product = false;
-    }
-  }, 5000);
+  return window.alloyLoader;
 }
 
 async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
