@@ -2574,7 +2574,6 @@ export async function loadArea(area = document) {
 
   let sections = [];
   if (main) {
-    loadLana({ clientId: 'express' });
     sections = await decorateMain(main, isDoc);
     decoratePageStyle();
     decorateLegalCopy(main);

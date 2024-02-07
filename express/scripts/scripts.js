@@ -2,6 +2,7 @@ import {
   sampleRUM,
   removeIrrelevantSections,
   loadArea,
+  loadLana,
   getMetadata,
   stamp,
   registerPerformanceLogger,
@@ -124,6 +125,7 @@ const listenAlloy = (() => {
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
   showNotifications();
+  loadLana({ clientId: 'express' });
   listenAlloy();
   await loadArea();
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
