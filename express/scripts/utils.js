@@ -2451,7 +2451,7 @@ function decorateLegalCopy(main) {
   });
 }
 
-function loadLana(options = {}) {
+export function loadLana(options = {}) {
   if (window.lana) return;
 
   const lanaError = (e) => {
@@ -2593,7 +2593,6 @@ export async function loadArea(area = document) {
 
   let sections = [];
   if (main) {
-    loadLana({ clientId: 'express' });
     sections = await decorateMain(main, isDoc);
     decoratePageStyle();
     decorateLegalCopy(main);
