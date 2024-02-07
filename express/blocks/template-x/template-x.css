@@ -1821,8 +1821,6 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 .template-x.horizontal.holiday .toggle-bar img {
     display: block;
     max-height: 32px;
-    width: 84px;
-    min-width: 84px;
 }
 
 .template-x.horizontal.holiday .toggle-button {
