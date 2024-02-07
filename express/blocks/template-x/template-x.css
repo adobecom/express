@@ -1603,14 +1603,12 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
     transform: translate3d(0, 0, 0);
     height: 232px;
-    width: 170px;
     right: -2px;
 }
 
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-left {
     transform: translate3d(0, 0, 0);
     height: 232px;
-    width: 170px;
     left: -4px
 }
 
@@ -2523,11 +2521,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         display: block;
     }
 
-    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left,
-    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-right {
-        width: 150px;
-    }
-
     .template-x .api-templates-toolbar {
         border-radius: 12px;
     }
@@ -2693,11 +2686,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         margin-bottom: 20px;
         max-width: none;
         display: block;
-    }
-
-    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left,
-    .template-x.horizontal.holiday .carousel-container .carousel-fader-right {
-        width: 150px;
     }
 
     .template-x .api-templates-toolbar {
