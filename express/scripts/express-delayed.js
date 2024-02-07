@@ -2,8 +2,6 @@ import {
   fetchPlaceholders,
   createTag,
   getMetadata,
-  loadIMS,
-  loadScript,
 } from './utils.js';
 
 function loadExpressProduct() {
@@ -16,17 +14,17 @@ function loadExpressProduct() {
 }
 
 function getSegmentsFromAlloyResponse(response) {
-  const segments = [];
-  if (response && response.destinations) {
-    Object.values(response.destinations).forEach((destination) => {
-      if (destination.segments) {
-        Object.values(destination.segments).forEach((segment) => {
-          segments.push(segment.id);
+  const ids = [];
+  if (response?.destinations) {
+    Object.values(response.destinations).forEach(({ segments }) => {
+      if (segments) {
+        Object.values(segments).forEach(({ id }) => {
+          segments.push(id);
         });
       }
     });
   }
-  return segments;
+  return ids;
 }
 
 // product entry prompt
@@ -38,29 +36,8 @@ async function isPEP() {
   const placeholders = await fetchPlaceholders();
   const autoRedirectLanguageFound = placeholders.cancel && placeholders['pep-header'] && placeholders['pep-cancel-text'];
   if (!autoRedirectLanguageFound) return false;
-
-  if (!window.alloyLoaded) {
-    loadIMS();
-    await loadScript('/express/scripts/instrument.js', 'module');
-    let alloyLoadingResolver;
-    window.addEventListener('alloy_sendEvent', (e) => {
-      if (e.detail.type === 'pageView') {
-        window.alloyLoaded = true;
-        alloyLoadingResolver(e.detail.result);
-      }
-    });
-    window.alloyLoader = new Promise((resolve) => {
-      alloyLoadingResolver = resolve;
-    });
-    setTimeout(() => {
-      if (!window.alloyLoaded) {
-        alloyLoadingResolver();
-      }
-    }, 5000);
-  }
-
-  const res = await window.alloyLoader;
-  const segments = getSegmentsFromAlloyResponse(res);
+  if (!window.adobeProfile.getUserProfile()) return false;
+  const segments = getSegmentsFromAlloyResponse(await window.alloyLoader);
   return segments.includes(pepSegment);
 }
 

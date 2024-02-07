@@ -91,31 +91,25 @@ const showNotifications = () => {
 };
 
 const listenAlloy = (() => {
-  let alloyLoadingResolver;
-  let alloyLoaded;
+  let resolver;
+  let loaded;
   return () => {
     const t1 = performance.now();
     window.alloyLoader = new Promise((r) => {
-      alloyLoadingResolver = r;
+      resolver = r;
     });
     window.addEventListener('alloy_sendEvent', (e) => {
-      // fired by launch loaded by martech loaded by instrument
       if (e.detail.type === 'pageView') {
-        if (usp.has('debug-alloy')) {
-          // eslint-disable-next-line no-console
-          console.log(`Alloy loaded in ${performance.now() - t1}`);
-        }
-        alloyLoaded = true;
-        alloyLoadingResolver(e.detail.result);
-      }
-    });
-    // tolerate max 5s for exp overheads
-    setTimeout(() => {
-      if (!alloyLoaded) {
         // eslint-disable-next-line no-console
+        if (usp.has('debug-alloy')) console.log(`Alloy loaded in ${performance.now() - t1}`);
+        loaded = true;
+        resolver(e.detail.result);
+      }
+    }, { once: true });
+    setTimeout(() => {
+      if (!loaded) {
         window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`);
-        alloyLoadingResolver();
-        window.delay_preload_product = false;
+        resolver();
       }
     }, 5000);
   };
