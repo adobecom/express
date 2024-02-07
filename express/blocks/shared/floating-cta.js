@@ -13,13 +13,15 @@ import BlockMediator from '../../scripts/block-mediator.min.js';
 
 export const hideScrollArrow = (floatButtonWrapper, lottieScrollButton) => {
   floatButtonWrapper.classList.add('floating-button--scrolled');
-  if (document.activeElement === lottieScrollButton) lottieScrollButton.blur();
-  lottieScrollButton.tabIndex = -1;
+  if (lottieScrollButton) {
+    if (document.activeElement === lottieScrollButton) lottieScrollButton.blur();
+    lottieScrollButton.tabIndex = -1;
+  }
 };
 
 export const showScrollArrow = (floatButtonWrapper, lottieScrollButton) => {
   floatButtonWrapper.classList.remove('floating-button--scrolled');
-  lottieScrollButton.removeAttribute('tabIndex');
+  if (lottieScrollButton) lottieScrollButton.removeAttribute('tabIndex');
 };
 
 export function openToolBox(wrapper, lottie, data, userInitiated) {
@@ -417,6 +419,7 @@ export function decorateBadge() {
 }
 
 export function buildToolBoxStructure(wrapper, data) {
+  lazyLoadLottiePlayer();
   const toolBox = createTag('div', { class: 'toolbox' });
   const toolBoxWrapper = createTag('div', { class: 'toolbox-inner-wrapper' });
   const notch = createTag('a', { class: 'notch' });
