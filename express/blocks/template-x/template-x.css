@@ -52,7 +52,7 @@ div[class='section section-wrapper browse-by-category-card-fullwidth-container t
     margin-top: 24px;
     display: flex;
     overflow: auto;
-    max-width: 100%;
+    width: 100%;
 }
 
 .template-x.horizontal .template-tabs button.template-tab-button {
