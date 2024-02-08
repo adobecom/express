@@ -148,7 +148,6 @@ async function loadFEDS() {
     ? 'adobe-express/ax-gnav-x'
     : 'adobe-express/ax-gnav-x-row';
 
-  // eslint-disable-next-line import/prefer-default-export
   window.fedsConfig = {
     ...(window.fedsConfig || {}),
 
