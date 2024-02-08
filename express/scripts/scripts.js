@@ -8,6 +8,8 @@ import {
   registerPerformanceLogger,
   setConfig,
   loadStyle,
+  createTag,
+  getConfig,
 } from './utils.js';
 
 const locales = {
@@ -93,6 +95,14 @@ const showNotifications = () => {
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
+
+  if (getMetadata('hide-breadcrumbs') !== 'true' && !getMetadata('breadcrumbs') && !window.location.pathname.endsWith('/express/')) {
+    const meta = createTag('meta', { name: 'breadcrumbs', content: 'on' });
+    document.head.append(meta);
+    import('./gnav.js').then((gnav) => gnav.buildBreadCrumbArray(getConfig().locale.prefix.replaceAll('/', ''))).then((breadcrumbs) => {
+      if (breadcrumbs && breadcrumbs.length) document.body.classList.add('breadcrumbs-spacing');
+    });
+  } else if (getMetadata('breadcrumbs') === 'on' && !!getMetadata('breadcrumbs-base') && (!!getMetadata('short-title') || !!getMetadata('breadcrumbs-page-title'))) document.body.classList.add('breadcrumbs-spacing');
   showNotifications();
   loadLana({ clientId: 'express' });
   await loadArea();
