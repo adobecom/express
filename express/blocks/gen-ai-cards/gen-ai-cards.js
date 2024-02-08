@@ -1,5 +1,3 @@
-/* global _satellite */
-
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
 import buildCarousel from '../shared/carousel.js';
@@ -63,45 +61,11 @@ export const windowHelper = {
   },
 };
 
-function getCurrentBlockLoc(block) {
-  let { blockName } = block.dataset;
-  const sameBlocks = document.querySelectorAll(`.block[data-block-name="${blockName}"]`);
-
-  if (sameBlocks.length > 1) {
-    sameBlocks.forEach((el, i) => {
-      if (el === block) blockName += `-${i + 1}`;
-    });
-  }
-
-  return blockName;
-}
-
-function trachPromptInput(payload) {
-  if (!window.marketingtech) return;
-  const { onsiteSearchTerm, blockName } = payload;
-  _satellite.track('event', {
-    xdm: {},
-    data: {
-      _adobe_corpnew: {
-        digitalData: {
-          page: {
-            pageInfo: {
-              onsiteSearchTerm,
-              blockName,
-            },
-          },
-        },
-      },
-    },
-  });
-}
-
-function handleGenAISubmit(block, form, link) {
+function handleGenAISubmit(form, link) {
   const input = form.querySelector('input');
   if (input.value.trim() === '') return;
   const genAILink = link.replace(genAIPlaceholder, encodeURI(input.value).replaceAll(' ', '+'));
   if (genAILink) {
-    trachPromptInput({ onsiteSearchTerm: input.value, blockName: getCurrentBlockLoc(block) });
     windowHelper.redirect(genAILink);
   }
 }
@@ -131,13 +95,13 @@ function buildGenAIForm(block, { ctaLinks, subtext }) {
   genAIInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      handleGenAISubmit(block, genAIForm, ctaLinks[0].href);
+      handleGenAISubmit(genAIForm, ctaLinks[0].href);
     }
   });
 
   genAIForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    handleGenAISubmit(block, genAIForm, ctaLinks[0].href);
+    handleGenAISubmit(genAIForm, ctaLinks[0].href);
   });
 
   return genAIForm;

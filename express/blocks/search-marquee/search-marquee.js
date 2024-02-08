@@ -33,37 +33,38 @@ function cycleThroughSuggestions(block, targetIndex = 0) {
   if (suggestions.length > 0) suggestions[targetIndex].focus();
 }
 
-function getCurrentBlockLoc(block) {
-  let { blockName } = block.dataset;
-  const sameBlocks = document.querySelectorAll(`.block[data-block-name="${blockName}"]`);
+// function getCurrentBlockLoc(block) {
+//   let { blockName } = block.dataset;
+//   const sameBlocks = document.querySelectorAll(`.block[data-block-name="${blockName}"]`);
 
-  if (sameBlocks.length > 1) {
-    sameBlocks.forEach((el, i) => {
-      if (el === block) blockName += `-${i + 1}`;
-    });
-  }
+//   if (sameBlocks.length > 1) {
+//     sameBlocks.forEach((el, i) => {
+//       if (el === block) blockName += `-${i + 1}`;
+//     });
+//   }
 
-  return blockName;
-}
+//   return blockName;
+// }
 
 function trackSearch(payload) {
   if (!window.marketingtech) return;
-  const { onsiteSearchTerm, blockName } = payload;
   _satellite.track('event', {
     xdm: {},
     data: {
       _adobe_corpnew: {
         digitalData: {
           page: {
-            pageInfo: {
-              onsiteSearchTerm,
-              blockName,
-            },
+            pageInfo: payload,
           },
         },
       },
     },
   });
+}
+
+function generateSearchId() {
+  // todo: follow up with Linh on ID generation rules. Also refer to wiki: https://wiki.corp.adobe.com/pages/viewpage.action?pageId=2833614476
+  return null;
 }
 
 function initSearchFunction(block) {
@@ -183,12 +184,18 @@ function initSearchFunction(block) {
     }
   };
 
-  const onSearchSubmit = async () => {
+  const onSearchSubmit = async (searchEvent) => {
     searchBar.disabled = true;
-    trackSearch({
-      onsiteSearchTerm: searchBar.value,
-      blockName: getCurrentBlockLoc(block),
-    });
+
+    const eventSpecs = {
+      search_keyword: searchEvent.searchKeyword,
+      category: 'templates',
+      location: 'seo',
+      search_type: searchEvent.searchType,
+      search_id: generateSearchId(),
+    };
+
+    trackSearch(eventSpecs);
     await redirectSearch();
   };
 
