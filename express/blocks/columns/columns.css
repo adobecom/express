@@ -525,6 +525,12 @@ main .columns.fullsize .hero-animation-overlay {
   padding-bottom: 4px;
 }
 
+main .columns.fullsize .hero-animation-overlay video {
+  max-height: 40vh;
+  margin-bottom: 40px;
+  max-width: 370px;
+}
+
 main .columns.fullsize .has-brand > div:not(.column-picture):not(.hero-animation-overlay) {
   padding-top: 16px;
 }
@@ -714,6 +720,11 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     padding-top: 0;
     padding-bottom: 0;
     order: unset;
+  }
+
+  main .columns.fullsize .hero-animation-overlay video {
+    max-height: unset;
+    margin-bottom: unset;
   }
 
   main .columns.fullsize > div > div {

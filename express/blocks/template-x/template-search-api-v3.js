@@ -105,7 +105,7 @@ async function fetchSearchUrl({
     'Oldest to Newest': '&orderBy=availabilityDate',
   }[sort] || sort || '';
   const qParam = q && q !== '{{q}}' ? `&q=${q}` : '';
-  let url = encodeURI(
+  const url = encodeURI(
     `${base}?${collectionIdParam}${queryParam}${qParam}${limitParam}${startParam}${sortParam}${filterStr}`,
   );
 
@@ -114,15 +114,12 @@ async function fetchSearchUrl({
     return memoizedFetch(url);
   }
 
-  // temporarily adding extra dummy queryParams to avoid cache collision
   const headers = {};
   const prefLang = getConfig().locales?.[langs[0] === 'en' ? '' : langs[0]]?.ietf;
   const [prefRegion] = extractRegions(filters.locales);
   headers['x-express-ims-region-code'] = prefRegion; // Region Boosting
-  url += `&regionHeader=${prefRegion}`; // TODO: remove once CDN includes headers when calculating cache key
   if (prefLang && supportedLanguages.includes(prefLang)) {
     headers['x-express-pref-lang'] = prefLang; // Language Boosting
-    url += `&prefLangHeader=${prefLang}`; // TODO: remove once CDN includes headers when calculating cache key
   }
 
   const res = await memoizedFetch(url, { headers });
@@ -218,7 +215,6 @@ function isValidBehaviors(behaviors) {
 export function isValidTemplate(template) {
   return !!(template.status === 'approved'
     && template.customLinks?.branchUrl
-    && template['dc:title']?.['i-default']
     && template.pages?.[0]?.rendition?.image?.thumbnail?.componentId
     && template._links?.['http://ns.adobe.com/adobecloud/rel/rendition']?.href?.replace
     && template._links?.['http://ns.adobe.com/adobecloud/rel/component']?.href?.replace

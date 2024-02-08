@@ -13,13 +13,15 @@ import BlockMediator from '../../scripts/block-mediator.min.js';
 
 export const hideScrollArrow = (floatButtonWrapper, lottieScrollButton) => {
   floatButtonWrapper.classList.add('floating-button--scrolled');
-  if (document.activeElement === lottieScrollButton) lottieScrollButton.blur();
-  lottieScrollButton.tabIndex = -1;
+  if (lottieScrollButton) {
+    if (document.activeElement === lottieScrollButton) lottieScrollButton.blur();
+    lottieScrollButton.tabIndex = -1;
+  }
 };
 
 export const showScrollArrow = (floatButtonWrapper, lottieScrollButton) => {
   floatButtonWrapper.classList.remove('floating-button--scrolled');
-  lottieScrollButton.removeAttribute('tabIndex');
+  if (lottieScrollButton) lottieScrollButton.removeAttribute('tabIndex');
 };
 
 export function openToolBox(wrapper, lottie, data, userInitiated) {
@@ -98,9 +100,10 @@ export function initLottieArrow(lottieScrollButton, floatButtonWrapper, scrollAn
 function makeCTAFromSheet(block, data) {
   const audience = block.querySelector(':scope > div').textContent.trim();
   const audienceSpecificUrl = audience && ['desktop', 'mobile'].includes(audience) ? data.mainCta[`${audience}Href`] : null;
+  const audienceSpecificText = audience && ['desktop', 'mobile'].includes(audience) ? data.mainCta[`${audience}Text`] : null;
   const buttonContainer = createTag('div', { class: 'button-container' });
-  const ctaFromSheet = createTag('a', { href: audienceSpecificUrl || data.mainCta.href, title: data.mainCta.text });
-  ctaFromSheet.textContent = data.mainCta.text;
+  const ctaFromSheet = createTag('a', { href: audienceSpecificUrl || data.mainCta.href, title: audienceSpecificText || data.mainCta.text });
+  ctaFromSheet.textContent = audienceSpecificText || data.mainCta.text;
   buttonContainer.append(ctaFromSheet);
   block.append(buttonContainer);
 
@@ -142,9 +145,33 @@ export async function createFloatingButton(block, audience, data) {
   floatButtonLink.className = '';
   floatButtonLink.classList.add('button', 'gradient', 'xlarge');
 
+  // Change font size when text is too long
+  function outputsize() {
+    const floatButtonLinkStyle = window.getComputedStyle(floatButtonLink);
+    const lineHeight = floatButtonLinkStyle.getPropertyValue('line-height');
+    const lineHeightInt = +lineHeight.replace('px', '');
+
+    // To figure out the available vertical space for text
+    const paddingTop = floatButtonLinkStyle.getPropertyValue('padding-top');
+    const paddingTopInt = +paddingTop.replace('px', '');
+    const paddingBottom = floatButtonLinkStyle.getPropertyValue('padding-bottom');
+    const paddingBottomInt = +paddingBottom.replace('px', '');
+    const availableHeight = floatButtonLink.offsetHeight - paddingTopInt - paddingBottomInt;
+
+    const numberOfLines = availableHeight / lineHeightInt;
+    if (numberOfLines >= 2) {
+      floatButtonLink.style.fontSize = '0.8rem';
+      floatButtonLink.style.paddingLeft = '0.8rem';
+      floatButtonLink.style.paddingRight = '0.8rem';
+    }
+  }
+
+  new ResizeObserver(outputsize).observe(floatButtonLink);
+
   // Hide CTAs with same url & text as the Floating CTA && is NOT a Floating CTA (in mobile/tablet)
   const sameUrlCTAs = Array.from(main.querySelectorAll('a.button:any-link'))
-    .filter((a) => (a.textContent.trim() === aTag.textContent.trim() || a.href === aTag.href)
+    .filter((a) => (a.textContent.trim() === aTag.textContent.trim()
+    || new URL(a.href).pathname === new URL(aTag.href).pathname)
       && !a.parentElement.parentElement.classList.contains('floating-button'));
   sameUrlCTAs.forEach((cta) => {
     cta.classList.add('same-as-floating-button-CTA');
@@ -157,6 +184,7 @@ export async function createFloatingButton(block, audience, data) {
     'data-block-name': 'floating-button',
     'data-block-status': 'loaded',
   });
+  [...block.classList].filter((c) => c === 'closed').forEach((c) => floatButtonWrapper.classList.add(c));
   const floatButtonInnerWrapper = createTag('div', { class: 'floating-button-inner-wrapper' });
   const floatButtonBackground = createTag('div', { class: 'floating-button-background' });
 
@@ -237,44 +265,44 @@ export async function createFloatingButton(block, audience, data) {
     },
   }));
 
-  if (data.useLottieArrow) {
-    const heroCTA = document.querySelector('a.button.same-as-floating-button-CTA');
-    if (heroCTA) {
-      const hideButtonWhenIntersecting = new IntersectionObserver(([e]) => {
-        if (e.boundingClientRect.top > window.innerHeight - 40 || e.boundingClientRect.top === 0) {
-          floatButtonWrapper.classList.remove('floating-button--below-the-fold');
-          floatButtonWrapper.classList.add('floating-button--above-the-fold');
-        } else {
-          floatButtonWrapper.classList.add('floating-button--below-the-fold');
-          floatButtonWrapper.classList.remove('floating-button--above-the-fold');
-        }
-        if (e.intersectionRatio > 0 || e.isIntersecting) {
-          floatButtonWrapper.classList.add('floating-button--intersecting');
-          floatButton.style.bottom = '0px';
-        } else {
-          floatButtonWrapper.classList.remove('floating-button--intersecting');
-          if (promoBar && promoBar.block) {
-            floatButton.style.bottom = currentBottom ? `${currentBottom + promoBarHeight}px` : `${promoBarHeight}px`;
-          } else if (currentBottom) {
-            floatButton.style.bottom = currentBottom;
-          }
-        }
-      }, {
-        root: null,
-        rootMargin: '-40px 0px',
-        threshold: 0,
-      });
-      if (document.readyState === 'complete') {
-        hideButtonWhenIntersecting.observe(heroCTA);
+  const heroCTA = document.querySelector('a.button.same-as-floating-button-CTA');
+  if (heroCTA) {
+    const hideButtonWhenIntersecting = new IntersectionObserver(([e]) => {
+      if (e.boundingClientRect.top > window.innerHeight - 40 || e.boundingClientRect.top === 0) {
+        floatButtonWrapper.classList.remove('floating-button--below-the-fold');
+        floatButtonWrapper.classList.add('floating-button--above-the-fold');
       } else {
-        window.addEventListener('load', () => {
-          hideButtonWhenIntersecting.observe(heroCTA);
-        });
+        floatButtonWrapper.classList.add('floating-button--below-the-fold');
+        floatButtonWrapper.classList.remove('floating-button--above-the-fold');
       }
+      if (e.intersectionRatio > 0 || e.isIntersecting) {
+        floatButtonWrapper.classList.add('floating-button--intersecting');
+        floatButton.style.bottom = '0px';
+      } else {
+        floatButtonWrapper.classList.remove('floating-button--intersecting');
+        if (promoBar && promoBar.block) {
+          floatButton.style.bottom = currentBottom ? `${currentBottom + promoBarHeight}px` : `${promoBarHeight}px`;
+        } else if (currentBottom) {
+          floatButton.style.bottom = currentBottom;
+        }
+      }
+    }, {
+      root: null,
+      rootMargin: '-40px 0px',
+      threshold: 0,
+    });
+    if (document.readyState === 'complete') {
+      hideButtonWhenIntersecting.observe(heroCTA);
     } else {
-      floatButtonWrapper.classList.add('floating-button--above-the-fold');
+      window.addEventListener('load', () => {
+        hideButtonWhenIntersecting.observe(heroCTA);
+      });
     }
+  } else {
+    floatButtonWrapper.classList.add('floating-button--above-the-fold');
+  }
 
+  if (data.useLottieArrow) {
     const lottieScrollButton = buildLottieArrow(floatButtonWrapper, floatButton, data);
     document.dispatchEvent(new CustomEvent('linkspopulated', { detail: [floatButtonLink, lottieScrollButton] }));
   } else {
@@ -291,21 +319,11 @@ export async function collectFloatingButtonData() {
   const pageButton = await fetchFloatingCta(window.location.pathname);
   const dataArray = [];
 
-  if (pageButton) {
-    const objectKeys = Object.keys(defaultButton);
-    // eslint-disable-next-line consistent-return
-    objectKeys.forEach((key) => {
-      if (['path', 'live'].includes(key)) return false;
-      dataArray.push([key, pageButton[key] || defaultButton[key]]);
-    });
-  } else {
-    const objectKeys = Object.keys(defaultButton);
-    // eslint-disable-next-line consistent-return
-    objectKeys.forEach((key) => {
-      if (['path', 'live'].includes(key)) return false;
-      dataArray.push([key, defaultButton[key]]);
-    });
-  }
+  const objectKeys = Object.keys(defaultButton);
+  objectKeys.forEach((key) => {
+    if (['path', 'live'].includes(key)) return;
+    dataArray.push([key, pageButton?.[key] || defaultButton[key]]);
+  });
 
   const data = {
     scrollState: 'withLottie',
@@ -330,6 +348,14 @@ export async function collectFloatingButtonData() {
 
     if (key === 'mobile cta link') {
       data.mainCta.mobileHref = value;
+    }
+
+    if (key === 'desktop cta text') {
+      data.mainCta.desktopText = value;
+    }
+
+    if (key === 'mobile cta text') {
+      data.mainCta.mobileText = value;
     }
 
     if (key === 'main cta link') {
@@ -393,6 +419,7 @@ export function decorateBadge() {
 }
 
 export function buildToolBoxStructure(wrapper, data) {
+  lazyLoadLottiePlayer();
   const toolBox = createTag('div', { class: 'toolbox' });
   const toolBoxWrapper = createTag('div', { class: 'toolbox-inner-wrapper' });
   const notch = createTag('a', { class: 'notch' });
@@ -419,8 +446,12 @@ export function buildToolBoxStructure(wrapper, data) {
 
   wrapper.classList.add('initial-load');
   wrapper.classList.add('clamped');
-  wrapper.classList.add('toolbox-opened');
-  floatingButton.classList.add('toolbox-opened');
+  if (wrapper.classList.contains('closed')) {
+    toolBox.classList.add('hidden');
+  } else {
+    wrapper.classList.add('toolbox-opened');
+    floatingButton.classList.add('toolbox-opened');
+  }
 }
 
 export function initToolBox(wrapper, data, toggleFunction) {

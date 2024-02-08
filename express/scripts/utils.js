@@ -105,6 +105,7 @@ export const [setConfig, updateConfig, getConfig] = (() => {
           || 'ltr';
         document.documentElement.setAttribute('dir', dir);
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.log('Invalid or missing locale:', e);
       }
       config.locale.contentRoot = `${origin}${config.locale.prefix}${config.contentRoot ?? ''}`;
@@ -288,8 +289,6 @@ function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]'])
   }).observe(document.body, { childList: true, subtree: true });
 }
 
-const postEditorLinksAllowList = ['adobesparkpost.app.link', 'spark.adobe.com/sp/design', 'express.adobe.com/sp/design'];
-
 export function addPublishDependencies(url) {
   if (!Array.isArray(url)) {
     // eslint-disable-next-line no-param-reassign
@@ -432,7 +431,6 @@ export function getIcon(icons, alt, size = 44) {
     'photoeffects',
     'pinterest',
     'play',
-    'premium',
     'premium-templates',
     'pricingfree',
     'pricingpremium',
@@ -696,7 +694,145 @@ export async function decorateBlock(block) {
   }
 }
 
+export function decorateSVG(a) {
+  const { textContent, href } = a;
+  if (!(textContent.includes('.svg') || href.includes('.svg'))) return a;
+  try {
+    // Mine for URL and alt text
+    const splitText = textContent.split('|');
+    const textUrl = new URL(splitText.shift().trim());
+    const altText = splitText.join('|').trim();
+
+    // Relative link checking
+    const hrefUrl = a.href.startsWith('/')
+      ? new URL(`${window.location.origin}${a.href}`)
+      : new URL(a.href);
+
+    const src = textUrl.hostname.includes('.hlx.') ? textUrl.pathname : textUrl;
+
+    const img = createTag('img', { loading: 'lazy', src });
+    if (altText) img.alt = altText;
+    const pic = createTag('picture', null, img);
+
+    if (textUrl.pathname === hrefUrl.pathname) {
+      a.parentElement.replaceChild(pic, a);
+      return pic;
+    }
+    a.textContent = '';
+    a.append(pic);
+    return a;
+  } catch (e) {
+    console.log('Failed to create SVG.', e.message);
+    return a;
+  }
+}
+
+function getExtension(path) {
+  const pageName = path.split('/').pop();
+  return pageName.includes('.') ? pageName.split('.').pop() : '';
+}
+
+export function localizeLink(
+  href,
+  originHostName = window.location.hostname,
+  overrideDomain = false,
+) {
+  try {
+    const url = new URL(href);
+    const relative = url.hostname === originHostName;
+    const processedHref = relative ? href.replace(url.origin, '') : href;
+    const { hash } = url;
+    // TODO remove this special logic for uk & in after coordinating with Pankaj & Mili
+    if (hash.includes('#_dnt') || window.location.href.includes('/uk/express/learn/blog') || window.location.href.includes('/in/express/learn/blog')) return processedHref.replace('#_dnt', '');
+    const path = url.pathname;
+    const extension = getExtension(path);
+    const allowedExts = ['', 'html', 'json'];
+    if (!allowedExts.includes(extension)) return processedHref;
+    const { locale, locales, prodDomains } = getConfig();
+    if (!locale || !locales) return processedHref;
+    const isLocalizable = relative || (prodDomains && prodDomains.includes(url.hostname))
+      || overrideDomain;
+    if (!isLocalizable) return processedHref;
+    const isLocalizedLink = path.startsWith(`/${LANGSTORE}`) || Object.keys(locales)
+      .some((loc) => loc !== '' && (path.startsWith(`/${loc}/`) || path.endsWith(`/${loc}`)));
+    if (isLocalizedLink) return processedHref;
+    const urlPath = `${locale.prefix}${path}${url.search}${hash}`;
+    return relative ? urlPath : `${url.origin}${urlPath}`;
+  } catch (error) {
+    return href;
+  }
+}
+
+function appendHtmlToLink(link) {
+  const { useDotHtml } = getConfig();
+  if (!useDotHtml) return;
+  const href = link.getAttribute('href');
+  if (!href?.length) return;
+
+  const { autoBlocks = [], htmlExclude = [] } = getConfig();
+
+  const HAS_EXTENSION = /\..*$/;
+  let url = { pathname: href };
+
+  try {
+    url = new URL(href, PAGE_URL);
+  } catch (e) {
+    /* do nothing */
+  }
+
+  if (!(href.startsWith('/') || href.startsWith(PAGE_URL.origin))
+    || url.pathname?.endsWith('/')
+    || href === PAGE_URL.origin
+    || HAS_EXTENSION.test(href.split('/').pop())
+    || htmlExclude?.some((excludeRe) => excludeRe.test(href))) {
+    return;
+  }
+
+  const relativeAutoBlocks = autoBlocks
+    .map((b) => Object.values(b)[0])
+    .filter((b) => b.startsWith('/'));
+  const isAutoblockLink = relativeAutoBlocks.some((block) => href.includes(block));
+  if (isAutoblockLink) return;
+
+  try {
+    const linkUrl = new URL(href.startsWith('http') ? href : `${PAGE_URL.origin}${href}`);
+    if (linkUrl.pathname && !linkUrl.pathname.endsWith('.html')) {
+      linkUrl.pathname = `${linkUrl.pathname}.html`;
+      link.setAttribute('href', href.startsWith('/')
+        ? `${linkUrl.pathname}${linkUrl.search}${linkUrl.hash}`
+        : linkUrl.href);
+    }
+  } catch (e) {
+    window.lana?.log(`Error while attempting to append '.html' to ${link}: ${e}`);
+  }
+}
+
+function decorateImageLinks(el) {
+  const images = el.querySelectorAll('img[alt*="|"]');
+  if (!images.length) return;
+  [...images].forEach((img) => {
+    const [source, alt, icon] = img.alt.split('|');
+    try {
+      const url = new URL(source.trim());
+      const href = url.hostname.includes('.hlx.') ? `${url.pathname}${url.hash}` : url.href;
+      if (alt?.trim().length) img.alt = alt.trim();
+      const pic = img.closest('picture');
+      const picParent = pic.parentElement;
+      const aTag = createTag('a', { href, class: 'image-link' });
+      picParent.insertBefore(aTag, pic);
+      if (icon) {
+        import('./image-video-link.js').then((mod) => mod.default(picParent, aTag, icon));
+      } else {
+        aTag.append(pic);
+      }
+    } catch (e) {
+      console.log('Error:', `${e.message} '${source.trim()}'`);
+    }
+  });
+}
+
 export function decorateAutoBlock(a) {
+  const config = getConfig();
   const { hostname } = window.location;
   let url;
   try {
@@ -710,10 +846,15 @@ export function decorateAutoBlock(a) {
     ? `${url.pathname}${url.search}${url.hash}`
     : a.href;
 
-  return AUTO_BLOCKS.find((candidate) => {
+  return config.autoBlocks.find((candidate) => {
     const key = Object.keys(candidate)[0];
     const match = href.includes(candidate[key]);
     if (!match) return false;
+
+    if (key === 'pdf-viewer' && !a.textContent.includes('.pdf')) {
+      a.target = '_blank';
+      return false;
+    }
 
     if (key === 'fragment') {
       if (a.href === window.location.href) {
@@ -721,72 +862,60 @@ export function decorateAutoBlock(a) {
       }
 
       const isInlineFrag = url.hash.includes('#_inline');
-      const videoTag = url.hash.includes('#embed-video');
+      if (url.hash === '' || isInlineFrag) {
+        const { parentElement } = a;
+        const { nodeName, innerHTML } = parentElement;
+        const noText = innerHTML === a.outerHTML;
+        if (noText && nodeName === 'P') {
+          const div = createTag('div', null, a);
+          parentElement.parentElement.replaceChild(div, parentElement);
+        }
+      }
+
+      // previewing a fragment page with mp4 video
+      if (a.textContent.match('media_.*.mp4')) {
+        a.className = 'video link-block';
+        return false;
+      }
 
       // Modals
-      if (url.hash !== '' && !isInlineFrag && !videoTag) {
+      if (url.hash !== '' && !isInlineFrag) {
         a.dataset.modalPath = url.pathname;
         a.dataset.modalHash = url.hash;
         a.href = url.hash;
-        a.className = 'modal';
-        a.setAttribute('data-block-name', 'modal');
+        a.className = `modal link-block ${[...a.classList].join(' ')}`;
         return true;
       }
     }
 
-    a.className = `${key} link-block`;
-    a.setAttribute('data-block-name', key);
+    // slack uploaded mp4s
+    if (key === 'video' && !a.textContent.match('media_.*.mp4')) {
+      return false;
+    }
 
+    a.className = `${key} link-block`;
     return true;
   });
 }
 
-function decorateLinks(main) {
-  const anchors = main.querySelectorAll('a');
+export function decorateLinks(el) {
+  decorateImageLinks(el);
+  const anchors = el.getElementsByTagName('a');
   return [...anchors].reduce((rdx, a) => {
-    if (!a.href) return rdx;
-    try {
-      let url = new URL(a.href);
-
-      // handle link replacement on sheet-powered pages
-      if (getMetadata('sheet-powered') === 'Y' && getMetadata(url.hash.replace('#', ''))) {
-        a.href = getMetadata(url.hash.replace('#', ''));
-        url = new URL(a.href);
+    appendHtmlToLink(a);
+    a.href = localizeLink(a.href);
+    decorateSVG(a);
+    if (a.href.includes('#_blank')) {
+      a.setAttribute('target', '_blank');
+      a.href = a.href.replace('#_blank', '');
+    }
+    if (a.href.includes('#_dnb')) {
+      a.href = a.href.replace('#_dnb', '');
+    } else {
+      const autoBlock = decorateAutoBlock(a);
+      if (autoBlock) {
+        rdx.push(a);
       }
-
-      const isContactLink = ['tel:', 'mailto:', 'sms:'].includes(url.protocol);
-      const isAdobeOwnedLinks = [
-        'adobesparkpost.app.link',
-        'new.express.adobe.com',
-        'express.adobe.com',
-        'www.adobe.com',
-        'www.stage.adobe.com',
-        'commerce.adobe.com',
-        'commerce-stg.adobe.com',
-        'helpx.adobe.com',
-      ].includes(url.hostname);
-
-      if (!isContactLink) {
-        // make url relative if needed
-        const relative = url.hostname === window.location.hostname;
-        const urlPath = `${url.pathname}${url.search}${url.hash}`;
-        a.href = relative ? urlPath : `${url.origin}${urlPath}`;
-
-        if (!relative && !isAdobeOwnedLinks) {
-          // open external links in a new tab
-          a.target = '_blank';
-        }
-      }
-      if (a.href.includes('#_dnb')) {
-        a.href = a.href.replace('#_dnb', '');
-      } else {
-        const autoBlock = decorateAutoBlock(a);
-        if (autoBlock) {
-          rdx.push(a);
-        }
-      }
-    } catch (e) {
-      // invalid url
     }
     return rdx;
   }, []);
@@ -1051,7 +1180,6 @@ function resolveFragments() {
       const $marker = Array.from(document.querySelectorAll('main > div h3'))
         .find(($title) => $title.textContent.trim().toLocaleLowerCase() === marker);
       if (!$marker) {
-        console.log(`no fragment with marker "${marker}" found`);
         return;
       }
       let $fragment = $marker.closest('main > div');
@@ -1063,7 +1191,6 @@ function resolveFragments() {
         $emptyFragment.remove();
       }
       if (!$fragment) {
-        console.log(`no content found for fragment "${marker}"`);
         return;
       }
       setTimeout(() => {
@@ -1071,7 +1198,6 @@ function resolveFragments() {
         Array.from($fragment.children).forEach(($elem) => $cell.appendChild($elem));
         $marker.remove();
         $fragment.remove();
-        console.log(`fragment "${marker}" resolved`);
       }, 500);
     });
 }
@@ -1167,7 +1293,7 @@ async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
 export async function loadBlock(block, eager = false) {
   if (!(block.getAttribute('data-block-status') === 'loading' || block.getAttribute('data-block-status') === 'loaded')) {
     block.setAttribute('data-block-status', 'loading');
-    const blockName = block.getAttribute('data-block-name');
+    const blockName = block.getAttribute('data-block-name') || block.classList[0];
     let cssPath = `/express/blocks/${blockName}/${blockName}.css`;
     let jsPath = `/express/blocks/${blockName}/${blockName}.js`;
 
@@ -1354,35 +1480,15 @@ function decoratePageStyle() {
   }
 }
 
-export function addSearchQueryToHref(href) {
-  const isCreateSeoPage = window.location.pathname.includes('/express/create/');
-  const isDiscoverSeoPage = window.location.pathname.includes('/express/discover/');
-  const isPostEditorLink = postEditorLinksAllowList.some((editorLink) => href.includes(editorLink));
-
-  if (!(isPostEditorLink && (isCreateSeoPage || isDiscoverSeoPage))) {
-    return href;
-  }
-
-  const templateSearchTag = getMetadata('short-title');
-  const url = new URL(href);
-  const params = url.searchParams;
-
-  if (templateSearchTag) {
-    params.set('search', templateSearchTag);
-  }
-  url.search = params.toString();
-
-  return url.toString();
-}
-
 /**
  * Button style applicator function
  * @param {Object} el the container of the buttons to be decorated
  */
 
 export function decorateButtons(el = document) {
+  // FIXME: Different function from Milo.
   const noButtonBlocks = ['template-list', 'icon-list'];
-  el.querySelectorAll(':scope a:not(.link-block)').forEach(($a) => {
+  el.querySelectorAll(':scope a:not(.faas.link-block, .fragment.link-block)').forEach(($a) => {
     const originalHref = $a.href;
     const linkText = $a.textContent.trim();
     if ($a.children.length > 0) {
@@ -1390,7 +1496,6 @@ export function decorateButtons(el = document) {
       // propagates to buttons.
       $a.innerHTML = $a.innerHTML.replaceAll('<u>', '').replaceAll('</u>', '');
     }
-    $a.href = addSearchQueryToHref($a.href);
     $a.title = $a.title || linkText;
     const $block = $a.closest('div.section > div > div');
     const { hash } = new URL($a.href);
@@ -1405,22 +1510,23 @@ export function decorateButtons(el = document) {
       && !/hlx\.blob\.core\.windows\.net/.test(linkText)
       && !linkText.endsWith(' >')
       && !(hash === '#embed-video')
-      && !linkText.endsWith(' ›')) {
+      && !linkText.endsWith(' ›')
+      && !linkText.endsWith('.svg')) {
       const $up = $a.parentElement;
       const $twoup = $a.parentElement.parentElement;
       if (!$a.querySelector('img')) {
         if ($up.childNodes.length === 1 && ($up.tagName === 'P' || $up.tagName === 'DIV')) {
-          $a.className = 'button accent'; // default
+          $a.classList.add('button', 'accent'); // default
           $up.classList.add('button-container');
         }
         if ($up.childNodes.length === 1 && $up.tagName === 'STRONG'
           && $twoup.children.length === 1 && $twoup.tagName === 'P') {
-          $a.className = 'button accent';
+          $a.classList.add('button', 'accent');
           $twoup.classList.add('button-container');
         }
         if ($up.childNodes.length === 1 && $up.tagName === 'EM'
           && $twoup.children.length === 1 && $twoup.tagName === 'P') {
-          $a.className = 'button accent light';
+          $a.classList.add('button', 'accent', 'light');
           $twoup.classList.add('button-container');
         }
       }
@@ -1455,10 +1561,10 @@ export function toCamelCase(name) {
  */
 export function getExperiment() {
   let experiment = toClassName(getMetadata('experiment'));
-
-  if (!/adobe\.com/.test(window.location.hostname) && !/\.hlx\.live/.test(window.location.hostname)) {
+  const { hostname } = window.location;
+  if (!(/adobe\.com/.test(hostname) || /\.hlx\.live/.test(hostname) || hostname.includes('localhost'))) {
     experiment = '';
-    // reason = 'not prod host';
+    // reason = 'not prod host and not local';
   }
   if (window.location.hash) {
     experiment = '';
@@ -1567,62 +1673,63 @@ export async function getExperimentConfig(experimentId) {
       });
       config.variants = variants;
       config.variantNames = variantNames;
-      console.log(config);
       return config;
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log('error loading experiment manifest: %s', path, e);
     }
     return null;
   }
 }
 
-/**
- * Replaces element with content from path
- * @param {string} path
- * @param {HTMLElement} element
- */
-async function replaceInner(path, element) {
-  const plainPath = `${path}.plain.html`;
-  try {
-    const resp = await fetch(plainPath);
-    const html = await resp.text();
-    element.innerHTML = html;
-  } catch (e) {
-    console.log(`error loading experiment content: ${plainPath}`, e);
+function loadIMS() {
+  window.adobeid = {
+    client_id: 'MarvelWeb3',
+    scope: 'AdobeID,openid',
+    locale: getConfig().locale.region,
+    environment: 'prod',
+  };
+  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
+    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+  } else {
+    loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
+    window.adobeid.environment = 'stg1';
   }
-  return null;
 }
 
-/**
- * Generates a decision policy object which is understood by UED from an
- * experiment configuration.
- * @param {*} config Experiment configuration
- * @returns Experiment decision policy object to be passed to UED.
- */
-function getDecisionPolicy(config) {
-  const decisionPolicy = {
-    id: 'content-experimentation-policy',
-    rootDecisionNodeId: 'n1',
-    decisionNodes: [{
-      id: 'n1',
-      type: 'EXPERIMENTATION',
-      experiment: {
-        id: config.id,
-        identityNamespace: 'ECID',
-        randomizationUnit: 'DEVICE',
-        treatments: Object.entries(config.variants).map(([key, props]) => ({
-          id: key,
-          allocationPercentage: props.percentageSplit
-            ? parseFloat(props.percentageSplit) * 100
-            : 100 - Object.values(config.variants).reduce((result, variant) => {
-              const returnResult = result - (parseFloat(variant.percentageSplit || 0) * 100);
-              return returnResult;
-            }, 100),
-        })),
-      },
-    }],
-  };
-  return decisionPolicy;
+async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
+  const promises = [import('./experiment.js')];
+  const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
+  if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
+    loadIMS(); // rush ims to unblock alloy without loading gnav
+    promises.push(loadScript('/express/scripts/instrument.js', 'module'));
+    const t1 = performance.now();
+    let alloyLoadingResolver;
+    window.alloyLoader = new Promise((resolve) => {
+      alloyLoadingResolver = resolve;
+    });
+    window.addEventListener('alloy_sendEvent', (e) => {
+      // fired by launch loaded by martech loaded by instrument
+      if (e.detail.type === 'pageView') {
+        // eslint-disable-next-line no-console
+        console.log(`Alloy loaded in ${performance.now() - t1}`);
+        window.alloyLoaded = true;
+        alloyLoadingResolver(e.detail.result);
+      }
+    });
+    // tolerate max 5s for exp overheads
+    setTimeout(() => {
+      if (!window.alloyLoaded) {
+        // eslint-disable-next-line no-console
+        console.error(`Alloy failed to load, waited ${performance.now() - t1}`);
+        alloyLoadingResolver();
+        window.delay_preload_product = false;
+      }
+    }, 5000);
+    window.delay_preload_product = true;
+  }
+  const [{ runExps }] = await Promise.all(promises);
+  await runExps(config, forcedExperiment, forcedVariant);
 }
 
 /**
@@ -1630,7 +1737,6 @@ function getDecisionPolicy(config) {
  */
 async function decorateTesting() {
   try {
-    // let reason = '';
     const usp = new URLSearchParams(window.location.search);
 
     const experiment = getExperiment();
@@ -1639,68 +1745,7 @@ async function decorateTesting() {
     if (experiment) {
       const config = await getExperimentConfig(experiment);
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
-        window.addEventListener('alloy_sendEvent', (e) => {
-          if (e.detail.type === 'pageView') {
-            console.log(e.detail);
-            console.log(e.detail.result);
-          }
-        });
-        // rush launch for alloy configuration
-        await loadScript('/express/scripts/instrument.js', 'module');
-        const { DEFAULT_EXPERIMENT_OPTIONS, AUDIENCES, getResolvedAudiences } = await import('./experiment.js');
-        const experimentOptions = {
-          ...DEFAULT_EXPERIMENT_OPTIONS,
-          ...{ audiences: AUDIENCES },
-        };
-        config.resolvedAudiences = await getResolvedAudiences(config.audience.split(',').map((a) => a.trim()), experimentOptions);
-        config.run = forcedExperiment
-          || !config.resolvedAudiences
-          || config.resolvedAudiences.length;
-
-        window.hlx = window.hlx || {};
-        if (config.run) {
-          window.hlx.experiment = config;
-          if (forcedVariant && config.variantNames.includes(forcedVariant)) {
-            config.selectedVariant = forcedVariant;
-          } else {
-            const ued = await import('./ued/ued-0.2.0.js');
-            const decision = ued.evaluateDecisionPolicy(getDecisionPolicy(config), {});
-            config.selectedVariant = decision.items[0].id;
-          }
-          sampleRUM('experiment', { source: config.id, target: config.selectedVariant });
-          // populate ttMETA with hlx experimentation details
-          window.ttMETA = window.ttMETA || [];
-          const experimentDetails = {
-            CampaignId: window.hlx.experiment.id,
-            CampaignName: window.hlx.experiment.experimentName,
-            OfferId: window.hlx.experiment.selectedVariant,
-            OfferName: window.hlx.experiment.variants[window.hlx.experiment.selectedVariant].label,
-          };
-          window.ttMETA.push(experimentDetails);
-          // add hlx experiment details as dynamic variables
-          // for Content Square integration
-          // eslint-disable-next-line no-underscore-dangle
-          if (window._uxa) {
-            for (const propName of Object.keys(experimentDetails)) {
-              // eslint-disable-next-line no-underscore-dangle
-              window._uxa.push(['trackDynamicVariable', { key: propName, value: experimentDetails[propName] }]);
-            }
-          }
-          if (config.selectedVariant !== 'control') {
-            const currentPath = window.location.pathname;
-            const pageIndex = config.variants.control.pages.indexOf(currentPath);
-            if (pageIndex >= 0) {
-              const page = config.variants[config.selectedVariant].pages[pageIndex];
-              if (page) {
-                const experimentPath = new URL(page, window.location.href).pathname.split('.')[0];
-                if (experimentPath && experimentPath !== currentPath) {
-                  await replaceInner(experimentPath, document.querySelector('main'));
-                  removeIrrelevantSections(document.querySelector('main'));
-                }
-              }
-            }
-          }
-        }
+        await loadAndRunExp(config, forcedExperiment, forcedVariant);
       }
     }
     const martech = usp.get('martech');
@@ -1710,6 +1755,7 @@ async function decorateTesting() {
       loadScript('/express/scripts/instrument.js', 'module');
     }
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log('error testing', e);
   }
 }
@@ -1833,7 +1879,6 @@ export async function fetchPlainBlockFromFragment(url, blockName) {
     section.className = `section section-wrapper ${blockName}-container`;
     const block = section.querySelector(`.${blockName}`);
     block.dataset.blockName = blockName;
-    block.dataset.blockStatus = 'loaded';
     block.parentElement.className = `${blockName}-wrapper`;
     block.classList.add('block');
     const img = section.querySelector('img');
@@ -1870,7 +1915,7 @@ export async function fetchFloatingCta(path) {
 
         if (experiment && path !== 'default') {
           return (pathMatch)
-            && p.expID === experiment.run
+            && p.expID === experiment.id
             && p.challengerID === experiment.selectedVariant;
         } else {
           return pathMatch;
@@ -1904,13 +1949,13 @@ export async function fetchFloatingCta(path) {
 }
 
 async function buildAutoBlocks($main) {
-  const $lastDiv = $main.querySelector(':scope > div:last-of-type');
+  const lastDiv = $main.querySelector(':scope > div:last-of-type');
 
   // Load the branch.io banner autoblock...
   if (['yes', 'true', 'on'].includes(getMetadata('show-banner').toLowerCase())) {
     const branchio = buildBlock('branch-io', '');
-    if ($lastDiv) {
-      $lastDiv.append(branchio);
+    if (lastDiv) {
+      lastDiv.append(branchio);
     }
   }
 
@@ -1938,38 +1983,82 @@ async function buildAutoBlocks($main) {
   // Load the app store autoblocks...
   if (['yes', 'true', 'on'].includes(getMetadata('show-standard-app-store-blocks').toLowerCase())) {
     const $highlight = buildBlock('app-store-highlight', '');
-    if ($lastDiv) {
-      $lastDiv.append($highlight);
+    if (lastDiv) {
+      lastDiv.append($highlight);
     }
 
     const $blade = buildBlock('app-store-blade', '');
-    if ($lastDiv) {
-      $lastDiv.append($blade);
+    if (lastDiv) {
+      lastDiv.append($blade);
     }
   }
 
   if (['yes', 'true', 'on'].includes(getMetadata('show-plans-comparison').toLowerCase())) {
     const $plansComparison = buildBlock('plans-comparison', '');
-    if ($lastDiv) {
-      $lastDiv.append($plansComparison);
+    if (lastDiv) {
+      lastDiv.append($plansComparison);
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase()) || ['yes', 'true', 'on'].includes(getMetadata('show-multifunction-button').toLowerCase())) {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
-    if (!BlockMediator.get('floatingCtasLoaded')) {
-      const floatingCTAData = await fetchFloatingCta(window.location.pathname);
-      const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
-      const device = document.body.dataset?.device;
-      const blockName = floatingCTAData?.[device];
+  async function loadPromoFrag() {
+    const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
+    if (!fragment) return;
+    $main.append(fragment);
+    const block = fragment?.querySelector('.sticky-promo-bar.block');
+    if (block) await loadBlock(block);
+  }
 
-      if (validButtonVersion.includes(blockName) && $lastDiv) {
-        const button = buildBlock(blockName, device);
-        button.classList.add('spreadsheet-powered');
-        $lastDiv.append(button);
+  async function loadFloatingCTA(BlockMediator, decorated) {
+    const floatingCTAData = await fetchFloatingCta(window.location.pathname);
+    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+    const device = document.body.dataset?.device;
+    const blockNameWithVariants = floatingCTAData?.[device] ? floatingCTAData?.[device].split(' ') : [];
+    const blockName = blockNameWithVariants.shift();
+
+    if (validButtonVersion.includes(blockName) && lastDiv) {
+      const button = buildBlock(blockName, device);
+      button.classList.add('spreadsheet-powered');
+      blockNameWithVariants.forEach((variant) => button.classList.add(variant));
+      lastDiv.append(button);
+      if (!decorated) {
+        await decorateBlock(button);
+        await loadBlock(button);
       }
-
       BlockMediator.set('floatingCtasLoaded', true);
+    }
+  }
+
+  if (document.body.dataset.device === 'mobile' && ['off', 'false', 'no'].includes(getMetadata('mobile-benchmark')
+    .toLowerCase())) {
+    await loadPromoFrag();
+  } else if (document.body.dataset.device === 'mobile' && ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')
+    .toLowerCase())) {
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
+
+    if (!BlockMediator.get('floatingCtasLoaded')) {
+      const eligibilityChecked = BlockMediator.get('mobileBetaEligibility');
+      if (eligibilityChecked) {
+        if (eligibilityChecked.deviceSupport) {
+          await loadFloatingCTA(BlockMediator, true);
+        } else {
+          await loadPromoFrag();
+        }
+      } else {
+        const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
+          if (e.newValue.deviceSupport) {
+            await loadFloatingCTA(BlockMediator, false);
+          } else {
+            await loadPromoFrag();
+          }
+          unsubscribe();
+        });
+      }
+    }
+  } else if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase())) {
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
+
+    if (!BlockMediator.get('floatingCtasLoaded')) {
+      await loadFloatingCTA(BlockMediator, true);
     }
   }
 
@@ -1977,8 +2066,8 @@ async function buildAutoBlocks($main) {
     const fragmentName = getMetadata('show-quick-action-card').toLowerCase();
     const quickActionCardBlock = buildBlock('quick-action-card', fragmentName);
     quickActionCardBlock.classList.add('spreadsheet-powered');
-    if ($lastDiv) {
-      $lastDiv.append(quickActionCardBlock);
+    if (lastDiv) {
+      lastDiv.append(quickActionCardBlock);
     }
   }
 }
@@ -2005,10 +2094,6 @@ function splitSections($main) {
       }
     }
   });
-}
-
-export function getDevice() {
-  return navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
 }
 
 function decorateLinkedPictures($main) {
@@ -2127,6 +2212,7 @@ function displayEnv() {
         setHelixEnv('stage', { spark: url.host });
       }
       if (window.location.hostname !== url.hostname) {
+        // eslint-disable-next-line no-console
         console.log(`external referrer detected: ${document.referrer}`);
       }
     }
@@ -2138,6 +2224,7 @@ function displayEnv() {
       document.body.appendChild($helixEnv);
     }
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log(`display env failed: ${e.message}`);
   }
 }
@@ -2364,7 +2451,7 @@ function decorateLegalCopy(main) {
   });
 }
 
-function loadLana(options = {}) {
+export function loadLana(options = {}) {
   if (window.lana) return;
 
   const lanaError = (e) => {
@@ -2458,12 +2545,7 @@ export async function loadSections(sections, isDoc) {
 function initSidekick() {
   const initPlugins = async () => {
     const { default: init } = await import('./utils/sidekick.js');
-    init({
-      createTag,
-      loadBlock,
-      loadScript,
-      loadStyle,
-    });
+    init();
   };
 
   if (document.querySelector('helix-sidekick')) {
@@ -2511,7 +2593,6 @@ export async function loadArea(area = document) {
 
   let sections = [];
   if (main) {
-    loadLana({ clientId: 'express' });
     sections = await decorateMain(main, isDoc);
     decoratePageStyle();
     decorateLegalCopy(main);
@@ -2547,8 +2628,15 @@ export async function loadArea(area = document) {
   }
   await lazy;
 
-  const { default: loadDelayed } = await import('./delayed.js');
-  loadDelayed(8000);
+  const { default: delayed } = await import('./delayed.js');
+  delayed([getConfig, getMetadata, loadScript, loadStyle]);
+
+  // milo's links featurecc
+  const config = getConfig();
+  if (config.links === 'on') {
+    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
+    import('../features/links.js').then((mod) => mod.default(path, area));
+  }
 }
 
 export function getMobileOperatingSystem() {
