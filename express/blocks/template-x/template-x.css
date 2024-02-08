@@ -52,7 +52,7 @@ div[class='section section-wrapper browse-by-category-card-fullwidth-container t
     margin-top: 24px;
     display: flex;
     overflow: auto;
-    width: 100%;
+    max-width: 100%;
 }
 
 .template-x.horizontal .template-tabs button.template-tab-button {
@@ -1760,7 +1760,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 .template-x.horizontal.holiday {
     position: absolute;
     overflow-x: hidden;
-    max-width: 100%;
+    width: 100%;
     background: var(--color-black);
 }
 
