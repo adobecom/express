@@ -17,10 +17,19 @@ import {
 } from '../../scripts/utils.js';
 import { Masonry } from '../shared/masonry.js';
 import buildCarousel from '../shared/carousel.js';
-import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './template-search-api-v3.js';
+import {
+  fetchTemplates,
+  isValidTemplate,
+  fetchTemplatesCategoryCount,
+  gatherPageImpression,
+  removeOptionalImpressionFields,
+  generateSearchId,
+  updateImpressionCache,
+} from '../../scripts/template-search-api-v3.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import renderTemplate from './template-rendering.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function wordStartsWithVowels(word) {
   return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
@@ -300,12 +309,34 @@ function populateTemplates(block, props, templates) {
   }
 }
 
-function updateLoadMoreButton(block, props, loadMore) {
+function updateLoadMoreButton(props, loadMore) {
   if (props.start === '') {
     loadMore.style.display = 'none';
   } else {
     loadMore.style.removeProperty('display');
   }
+}
+
+function trackSearch() {
+  updateImpressionCache({
+    search_id: generateSearchId(),
+  });
+  const impression = BlockMediator.get('templateSearchSpecs');
+  console.log(impression);
+  // if (!window.marketingtech) return;
+  // _satellite.track('event', {
+  //   xdm: {},
+  //   data: {
+  //     _adobe_corpnew: {
+  //       digitalData: {
+  //         page: {
+  //           pageInfo: payload,
+  //         },
+  //       },
+  //     },
+  //   },
+  // });
+  // todo: also send the search ID to a separate event. Ask Linh Nguyen.
 }
 
 async function decorateNewTemplates(block, props, options = { reDrawMasonry: false }) {
@@ -325,7 +356,7 @@ async function decorateNewTemplates(block, props, options = { reDrawMasonry: fal
   props.masonry.draw(newCells);
 
   if (loadMore) {
-    updateLoadMoreButton(block, props, loadMore);
+    updateLoadMoreButton(props, loadMore);
   }
 }
 
@@ -838,8 +869,7 @@ function updateQuery(functionWrapper, props, option) {
   }
 }
 
-async function redrawTemplates(block, existingProps, props, toolBar) {
-  if (JSON.stringify(props) === JSON.stringify(existingProps)) return;
+async function redrawTemplates(block, props, toolBar) {
   const heading = toolBar.querySelector('h2');
   const currentTotal = props.total.toLocaleString('en-US');
   props.templates = [props.templates[0]];
@@ -912,8 +942,18 @@ async function initFilterSort(block, props, toolBar) {
           updateQuery(wrapper, props, option);
           updateFilterIcon(block);
 
-          if (!button.classList.contains('in-drawer')) {
-            await redrawTemplates(block, existingProps, props, toolBar);
+          if (!button.classList.contains('in-drawer') && JSON.stringify(props) !== JSON.stringify(existingProps)) {
+            updateImpressionCache({
+              ...gatherPageImpression(props),
+              ...{
+                search_type: 'adjust-filter',
+                search_keyword: 'change filters, no keyword found',
+              },
+            });
+            removeOptionalImpressionFields();
+
+            trackSearch();
+            await redrawTemplates(block, props, toolBar);
           }
         }, { passive: true });
       });
@@ -929,7 +969,19 @@ async function initFilterSort(block, props, toolBar) {
     if (applyFilterButton) {
       applyFilterButton.addEventListener('click', async (e) => {
         e.preventDefault();
-        await redrawTemplates(block, existingProps, props, toolBar);
+        if (JSON.stringify(props) !== JSON.stringify(existingProps)) {
+          updateImpressionCache({
+            ...gatherPageImpression(props),
+            ...{
+              search_type: 'adjust-filter',
+              search_keyword: 'change filters, no keyword found',
+            },
+          });
+          removeOptionalImpressionFields();
+          trackSearch();
+          await redrawTemplates(block, props, toolBar);
+        }
+
         closeDrawer(toolBar);
       });
     }
@@ -1032,7 +1084,7 @@ function initViewToggle(block, props, toolBar) {
   });
 }
 
-function initToolbarShadow(block, toolbar) {
+function initToolbarShadow(toolbar) {
   const toolbarWrapper = toolbar.parentElement;
   document.addEventListener('scroll', () => {
     if (toolbarWrapper.getBoundingClientRect().top <= 0) {
@@ -1081,7 +1133,7 @@ async function decorateToolbar(block, props) {
     initDrawer(block, props, tBar);
     initFilterSort(block, props, tBar);
     initViewToggle(block, props, tBar);
-    initToolbarShadow(block, tBar);
+    initToolbarShadow(tBar);
   }
 }
 
@@ -1143,6 +1195,8 @@ function decorateHoliday(block, props) {
 }
 
 async function decorateTemplates(block, props) {
+  const impression = gatherPageImpression(props);
+  BlockMediator.set('templateSearchSpecs', impression);
   const { prefix } = getConfig().locale;
   const innerWrapper = block.querySelector('.template-x-inner-wrapper');
 
@@ -1284,39 +1338,6 @@ function cycleThroughSuggestions(block, targetIndex = 0) {
   if (suggestions.length > 0) suggestions[targetIndex].focus();
 }
 
-function getCurrentBlockLoc(block) {
-  let { blockName } = block.dataset;
-  const sameBlocks = document.querySelectorAll(`.block[data-block-name="${blockName}"]`);
-
-  if (sameBlocks.length > 1) {
-    sameBlocks.forEach((el, i) => {
-      if (el === block) blockName += `-${i + 1}`;
-    });
-  }
-
-  return blockName;
-}
-
-function trackSearch(payload) {
-  if (!window.marketingtech) return;
-  const { onsiteSearchTerm, blockName } = payload;
-  _satellite.track('event', {
-    xdm: {},
-    data: {
-      _adobe_corpnew: {
-        digitalData: {
-          page: {
-            pageInfo: {
-              onsiteSearchTerm,
-              blockName,
-            },
-          },
-        },
-      },
-    },
-  });
-}
-
 function importSearchBar(block, blockMediator) {
   blockMediator.subscribe('stickySearchBar', (e) => {
     const parent = block.querySelector('.api-templates-toolbar .wrapper-content-search');
@@ -1413,14 +1434,40 @@ function importSearchBar(block, blockMediator) {
           }
         };
 
+        const onSearchSubmit = () => {
+          searchBar.disabled = true;
+          trackSearch();
+          // await redirectSearch();
+        };
+
+        const handleSubmitInteraction = async (item, index) => {
+          if (item.query !== searchBar.value) {
+            searchBar.value = item.query;
+            searchBar.dispatchEvent(new Event('input'));
+          }
+          updateImpressionCache({
+            status_filter: 'free',
+            type_filter: 'all',
+            collection: 'all-templates',
+            keyword_rank: index + 1,
+            search_keyword: searchBar.value,
+            search_type: 'autocomplete',
+          });
+          await onSearchSubmit();
+        };
+
         searchForm.addEventListener('submit', async (event) => {
           event.preventDefault();
           searchBar.disabled = true;
-          trackSearch({
-            onsiteSearchTerm: searchBar.value,
-            blockName: getCurrentBlockLoc(block),
+          updateImpressionCache({
+            status_filter: 'free',
+            type_filter: 'all',
+            collection: 'all-templates',
+            search_type: 'direct',
+            search_keyword: searchBar.value,
           });
-          await redirectSearch();
+          removeOptionalImpressionFields();
+          await onSearchSubmit();
         });
 
         clearBtn.addEventListener('click', () => {
@@ -1439,10 +1486,18 @@ function importSearchBar(block, blockMediator) {
               const li = createTag('li', { tabindex: 0 });
               const valRegEx = new RegExp(searchBar.value, 'i');
               li.innerHTML = item.query.replace(valRegEx, `<b>${searchBarVal}</b>`);
-              li.addEventListener('click', () => {
+              li.addEventListener('click', async () => {
                 if (item.query === searchBar.value) return;
                 searchBar.value = item.query;
                 searchBar.dispatchEvent(new Event('input'));
+
+                await handleSubmitInteraction(item, index);
+              });
+
+              li.addEventListener('keydown', async (event) => {
+                if (event.key === 'Enter' || event.keyCode === 13) {
+                  await handleSubmitInteraction(item, index);
+                }
               });
 
               li.addEventListener('keydown', (event) => {
@@ -1460,6 +1515,12 @@ function importSearchBar(block, blockMediator) {
               });
 
               suggestionsList.append(li);
+            });
+
+            const suggestListString = suggestions.map((s) => s.query).join(',');
+            updateImpressionCache({
+              prefix_query: searchBarVal,
+              suggestion_list_shown: suggestListString,
             });
           }
         };
@@ -1618,7 +1679,7 @@ async function buildTemplateList(block, props, type = []) {
   if (templates && props.loadMoreTemplates) {
     const loadMore = await decorateLoadMoreButton(block, props);
     if (loadMore) {
-      updateLoadMoreButton(block, props, loadMore);
+      updateLoadMoreButton(props, loadMore);
     }
   }
 

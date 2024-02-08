@@ -2,12 +2,13 @@
 
 import {
   createTag,
-  fetchPlaceholders, getConfig,
+  fetchPlaceholders,
+  getConfig,
   getIconElement,
   getMetadata,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
-
+import { removeOptionalImpressionFields, generateSearchId, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
 import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -33,38 +34,26 @@ function cycleThroughSuggestions(block, targetIndex = 0) {
   if (suggestions.length > 0) suggestions[targetIndex].focus();
 }
 
-// function getCurrentBlockLoc(block) {
-//   let { blockName } = block.dataset;
-//   const sameBlocks = document.querySelectorAll(`.block[data-block-name="${blockName}"]`);
-
-//   if (sameBlocks.length > 1) {
-//     sameBlocks.forEach((el, i) => {
-//       if (el === block) blockName += `-${i + 1}`;
-//     });
-//   }
-
-//   return blockName;
-// }
-
-function trackSearch(payload) {
-  if (!window.marketingtech) return;
-  _satellite.track('event', {
-    xdm: {},
-    data: {
-      _adobe_corpnew: {
-        digitalData: {
-          page: {
-            pageInfo: payload,
-          },
-        },
-      },
-    },
+function trackSearch() {
+  updateImpressionCache({
+    search_id: generateSearchId(),
   });
-}
-
-function generateSearchId() {
-  // todo: follow up with Linh on ID generation rules. Also refer to wiki: https://wiki.corp.adobe.com/pages/viewpage.action?pageId=2833614476
-  return null;
+  const impression = BlockMediator.get('templateSearchSpecs');
+  console.log(impression);
+  // if (!window.marketingtech) return;
+  // _satellite.track('event', {
+  //   xdm: {},
+  //   data: {
+  //     _adobe_corpnew: {
+  //       digitalData: {
+  //         page: {
+  //           pageInfo: payload,
+  //         },
+  //       },
+  //     },
+  //   },
+  // });
+  // todo: also send the search ID to a separate event. Ask Linh Nguyen.
 }
 
 function initSearchFunction(block) {
@@ -184,31 +173,41 @@ function initSearchFunction(block) {
     }
   };
 
-  const onSearchSubmit = async (searchEvent) => {
+  const onSearchSubmit = async () => {
     searchBar.disabled = true;
-
-    const eventSpecs = {
-      search_keyword: searchEvent.searchKeyword,
-      category: 'templates',
-      location: 'seo',
-      search_type: searchEvent.searchType,
-      search_id: generateSearchId(),
-    };
-
-    trackSearch(eventSpecs);
-    await redirectSearch();
+    trackSearch();
+    // await redirectSearch();
   };
 
-  async function handleSubmitInteraction(item) {
+  async function handleSubmitInteraction(item, index) {
     if (item.query !== searchBar.value) {
       searchBar.value = item.query;
       searchBar.dispatchEvent(new Event('input'));
     }
+
+    updateImpressionCache({
+      status_filter: 'free',
+      type_filter: 'all',
+      collection: 'all-templates',
+      keyword_rank: index + 1,
+      search_keyword: searchBar.value,
+      search_type: 'autocomplete',
+    });
+
     await onSearchSubmit();
   }
 
   searchForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const payload = BlockMediator.get('templateSearchSpecs');
+    removeOptionalImpressionFields(payload);
+    updateImpressionCache({
+      status_filter: 'free',
+      type_filter: 'all',
+      collection: 'all-templates',
+      search_keyword: searchBar.value,
+      search_type: 'direct',
+    });
     await onSearchSubmit();
   });
 
@@ -229,12 +228,12 @@ function initSearchFunction(block) {
         const valRegEx = new RegExp(searchBar.value, 'i');
         li.innerHTML = item.query.replace(valRegEx, `<b>${searchBarVal}</b>`);
         li.addEventListener('click', async () => {
-          await handleSubmitInteraction(item);
+          await handleSubmitInteraction(item, index);
         });
 
         li.addEventListener('keydown', async (e) => {
           if (e.key === 'Enter' || e.keyCode === 13) {
-            await handleSubmitInteraction(item);
+            await handleSubmitInteraction(item, index);
           }
         });
 
@@ -253,6 +252,12 @@ function initSearchFunction(block) {
         });
 
         suggestionsList.append(li);
+      });
+
+      const suggestListString = suggestions.map((s) => s.query).join(',');
+      updateImpressionCache({
+        prefix_query: searchBarVal,
+        suggestion_list_shown: suggestListString,
       });
     }
   };
