@@ -24,6 +24,7 @@ import {
   removeOptionalImpressionFields,
   trackSearch,
   updateImpressionCache,
+  generateSearchId,
 } from '../../scripts/template-search-api-v3.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import renderTemplate from './template-rendering.js';
@@ -637,7 +638,7 @@ async function decorateCategoryList(block, props) {
     const a = createTag('a', {
       'data-tasks': targetTasks,
       'data-topics': currentTopic || '',
-      href: `${prefix}/express/templates/search?tasks=${targetTasks}&tasksx=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"}&q=${currentTopic || ''}`,
+      href: `${prefix}/express/templates/search?tasks=${targetTasks}&tasksx=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"}&q=${currentTopic || ''}&searchId=${generateSearchId()}`,
     });
     [a.textContent] = category;
 
@@ -650,9 +651,10 @@ async function decorateCategoryList(block, props) {
         search_keyword: a.dataset.tasks,
         collection: a.dataset.topics,
         collection_path: window.location.pathname,
+        search_id: new URLSearchParams(new URL(a.href).search).get('searchId'),
       });
       removeOptionalImpressionFields('search-inspire');
-      trackSearch('select-template');
+      trackSearch('search-inspire');
     }, { passive: true });
   });
 
@@ -668,9 +670,10 @@ async function decorateCategoryList(block, props) {
         search_keyword: a.dataset.tasks,
         collection: a.dataset.topics,
         collection_path: window.location.pathname,
+        search_id: new URLSearchParams(new URL(a.href).search).get('searchId'),
       });
       removeOptionalImpressionFields('search-inspire');
-      trackSearch('select-template');
+      trackSearch('search-inspire');
     }, { passive: true });
   });
 
