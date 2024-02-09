@@ -870,6 +870,33 @@ async function redrawTemplates(block, props, toolBar) {
   }
 }
 
+function parseOrderBy(queryString) {
+  let orderType = 'relevancy';
+  let orderDirection = 'descending';
+
+  if (!queryString) {
+    return {
+      orderType,
+      orderDirection,
+    };
+  }
+
+  const parts = queryString.split('=');
+
+  if (parts[1]?.startsWith('-')) {
+    orderDirection = 'descending';
+    orderType = parts[1].substring(1);
+  } else {
+    orderDirection = 'ascending';
+    [, orderType] = parts;
+  }
+
+  return {
+    orderType,
+    orderDirection,
+  };
+}
+
 async function initFilterSort(block, props, toolBar) {
   const buttons = toolBar.querySelectorAll('.button-wrapper');
   const applyFilterButton = toolBar.querySelector('.apply-filter-button');
@@ -920,16 +947,20 @@ async function initFilterSort(block, props, toolBar) {
           updateFilterIcon(block);
 
           if (!button.classList.contains('in-drawer') && JSON.stringify(props) !== JSON.stringify(existingProps)) {
+            const sortObj = parseOrderBy(props.sort);
             updateImpressionCache({
               ...gatherPageImpression(props),
               ...{
                 search_type: 'adjust-filter',
                 search_keyword: 'change filters, no keyword found',
+                sort_type: sortObj.orderType,
+                sort_order: sortObj.orderDirection,
               },
             });
             removeOptionalImpressionFields();
             trackSearch('search-inspire');
             await redrawTemplates(block, props, toolBar);
+            trackSearch('view-search-results', BlockMediator.get('templateSearchSpecs').search_id);
           }
         }, { passive: true });
       });
@@ -946,11 +977,14 @@ async function initFilterSort(block, props, toolBar) {
       applyFilterButton.addEventListener('click', async (e) => {
         e.preventDefault();
         if (JSON.stringify(props) !== JSON.stringify(existingProps)) {
+          const sortObj = parseOrderBy(props.sort);
           updateImpressionCache({
             ...gatherPageImpression(props),
             ...{
               search_type: 'adjust-filter',
               search_keyword: 'change filters, no keyword found',
+              sort_type: sortObj.orderType,
+              sort_order: sortObj.orderDirection,
             },
           });
           removeOptionalImpressionFields();
@@ -1299,7 +1333,10 @@ async function decorateTemplates(block, props) {
   const linksPopulated = new CustomEvent('linkspopulated', { detail: templateLinks });
 
   const searchId = new URLSearchParams(window.location.search).get('searchId');
-  trackSearch('view-search-results', searchId);
+  updateImpressionCache({
+    search_keyword: getMetadata('q') || getMetadata('topics-x'),
+  });
+  if (searchId) trackSearch('view-search-results', searchId);
 
   document.dispatchEvent(linksPopulated);
 }
@@ -1410,15 +1447,16 @@ function importSearchBar(block, blockMediator) {
           const searchId = BlockMediator.get('templateSearchSpecs').search_id;
           const allTemplatesMetadata = await fetchAllTemplatesMetadata();
           const pathMatch = (event) => event.url === targetPath;
+          let targetLocation;
 
           if (allTemplatesMetadata.some(pathMatch)) {
-            // window.location = `${window.location.origin}${targetPath}?searchId=${searchId || ''}`;
-            console.log('will redirect:'`${window.location.origin}${targetPath}?searchId=${searchId || ''}`);
+            targetLocation = `${window.location.origin}${targetPath}?searchId=${searchId || ''}`;
           } else {
             const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks}&phformat=${format}&topics=${searchInput || "''"}&q=${searchInput || "''"}&searchId=${searchId || ''}`;
-            // window.location = `${window.location.origin}${prefix}${searchUrlTemplate}`;
-            console.log('will redirect:'`${searchUrlTemplate}`);
+            targetLocation = `${window.location.origin}${prefix}${searchUrlTemplate}`;
           }
+
+          window.location.assign(targetLocation);
         };
 
         const onSearchSubmit = async () => {

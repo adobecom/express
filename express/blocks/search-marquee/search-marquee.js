@@ -139,18 +139,22 @@ function initSearchFunction(block) {
     const allTemplatesMetadata = await fetchAllTemplatesMetadata();
     const pathMatch = (e) => e.url === targetPath;
     const pathMatchX = (e) => e.url === targetPathX;
+    let targetLocation;
 
     updateImpressionCache({ collection: currentTasks.content || 'all-templates' });
     trackSearch('search-inspire');
 
+    const searchId = BlockMediator.get('templateSearchSpecs').search_id;
     if (allTemplatesMetadata.some(pathMatchX) && document.body.dataset.device !== 'mobile') {
-      window.location = `${window.location.origin}${targetPathX}`;
+      targetLocation = `${window.location.origin}${targetPathX}?searchId=${searchId || ''}`;
     } else if (allTemplatesMetadata.some(pathMatch) && document.body.dataset.device !== 'desktop') {
-      window.location = `${window.location.origin}${targetPath}`;
+      targetLocation = `${window.location.origin}${targetPath}`;
     } else {
-      const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks.xCore}&tasksx=${currentTasks.content}&phformat=${format}&topics=${searchInput || "''"}&q=${searchBar.value || "''"}`;
-      window.location = `${window.location.origin}${prefix}${searchUrlTemplate}`;
+      const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks.xCore}&tasksx=${currentTasks.content}&phformat=${format}&topics=${searchInput || "''"}&q=${searchBar.value || "''"}&searchId=${searchId || ''}`;
+      targetLocation = `${window.location.origin}${prefix}${searchUrlTemplate}`;
     }
+
+    window.location.assign(targetLocation);
   };
 
   const onSearchSubmit = async () => {
