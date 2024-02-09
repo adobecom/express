@@ -1,5 +1,4 @@
 /* eslint-disable import/named, import/extensions */
-/* global _satellite */
 
 import {
   createOptimizedPicture,
@@ -23,7 +22,7 @@ import {
   fetchTemplatesCategoryCount,
   gatherPageImpression,
   removeOptionalImpressionFields,
-  generateSearchId,
+  trackSearch,
   updateImpressionCache,
 } from '../../scripts/template-search-api-v3.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
@@ -315,28 +314,6 @@ function updateLoadMoreButton(props, loadMore) {
   } else {
     loadMore.style.removeProperty('display');
   }
-}
-
-function trackSearch() {
-  updateImpressionCache({
-    search_id: generateSearchId(),
-  });
-  const impression = BlockMediator.get('templateSearchSpecs');
-  console.log(impression);
-  // if (!window.marketingtech) return;
-  // _satellite.track('event', {
-  //   xdm: {},
-  //   data: {
-  //     _adobe_corpnew: {
-  //       digitalData: {
-  //         page: {
-  //           pageInfo: payload,
-  //         },
-  //       },
-  //     },
-  //   },
-  // });
-  // todo: also send the search ID to a separate event. Ask Linh Nguyen.
 }
 
 async function decorateNewTemplates(block, props, options = { reDrawMasonry: false }) {
@@ -951,8 +928,7 @@ async function initFilterSort(block, props, toolBar) {
               },
             });
             removeOptionalImpressionFields();
-
-            trackSearch();
+            trackSearch('search-inspire');
             await redrawTemplates(block, props, toolBar);
           }
         }, { passive: true });
@@ -978,7 +954,7 @@ async function initFilterSort(block, props, toolBar) {
             },
           });
           removeOptionalImpressionFields();
-          trackSearch();
+          trackSearch('search-inspire');
           await redrawTemplates(block, props, toolBar);
         }
 
@@ -1196,7 +1172,7 @@ function decorateHoliday(block, props) {
 
 async function decorateTemplates(block, props) {
   const impression = gatherPageImpression(props);
-  BlockMediator.set('templateSearchSpecs', impression);
+  updateImpressionCache(impression);
   const { prefix } = getConfig().locale;
   const innerWrapper = block.querySelector('.template-x-inner-wrapper');
 
@@ -1321,6 +1297,10 @@ async function decorateTemplates(block, props) {
 
   const templateLinks = block.querySelectorAll('.template .button-container > a, a.template.placeholder');
   const linksPopulated = new CustomEvent('linkspopulated', { detail: templateLinks });
+
+  const searchId = new URLSearchParams(window.location.search).get('searchId');
+  trackSearch('view-search-results', searchId);
+
   document.dispatchEvent(linksPopulated);
 }
 
@@ -1420,24 +1400,30 @@ function importSearchBar(block, blockMediator) {
             [[currentTasks]] = tasksFoundInInput;
           }
 
+          updateImpressionCache({ collection: currentTasks || 'all-templates' });
+          trackSearch('search-inspire');
+
           const { prefix } = getConfig().locale;
           const topicUrl = searchInput ? `/${searchInput}` : '';
           const taskUrl = `/${handlelize(currentTasks.toLowerCase())}`;
           const targetPath = `${prefix}/express/templates${taskUrl}${topicUrl}`;
+          const searchId = BlockMediator.get('templateSearchSpecs').search_id;
           const allTemplatesMetadata = await fetchAllTemplatesMetadata();
           const pathMatch = (event) => event.url === targetPath;
+
           if (allTemplatesMetadata.some(pathMatch)) {
-            window.location = `${window.location.origin}${targetPath}`;
+            // window.location = `${window.location.origin}${targetPath}?searchId=${searchId || ''}`;
+            console.log('will redirect:'`${window.location.origin}${targetPath}?searchId=${searchId || ''}`);
           } else {
-            const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks}&phformat=${format}&topics=${searchInput || "''"}&q=${searchInput || "''"}`;
-            window.location = `${window.location.origin}${prefix}${searchUrlTemplate}`;
+            const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks}&phformat=${format}&topics=${searchInput || "''"}&q=${searchInput || "''"}&searchId=${searchId || ''}`;
+            // window.location = `${window.location.origin}${prefix}${searchUrlTemplate}`;
+            console.log('will redirect:'`${searchUrlTemplate}`);
           }
         };
 
-        const onSearchSubmit = () => {
+        const onSearchSubmit = async () => {
           searchBar.disabled = true;
-          trackSearch();
-          // await redirectSearch();
+          await redirectSearch();
         };
 
         const handleSubmitInteraction = async (item, index) => {

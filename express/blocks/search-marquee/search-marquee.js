@@ -1,5 +1,3 @@
-/* global _satellite */
-
 import {
   createTag,
   fetchPlaceholders,
@@ -8,7 +6,7 @@ import {
   getMetadata,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
-import { removeOptionalImpressionFields, generateSearchId, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
+import { removeOptionalImpressionFields, trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
 import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -32,28 +30,6 @@ function cycleThroughSuggestions(block, targetIndex = 0) {
   const suggestions = block.querySelectorAll('.suggestions-list li');
   if (targetIndex >= suggestions.length || targetIndex < 0) return;
   if (suggestions.length > 0) suggestions[targetIndex].focus();
-}
-
-function trackSearch() {
-  updateImpressionCache({
-    search_id: generateSearchId(),
-  });
-  const impression = BlockMediator.get('templateSearchSpecs');
-  console.log(impression);
-  // if (!window.marketingtech) return;
-  // _satellite.track('event', {
-  //   xdm: {},
-  //   data: {
-  //     _adobe_corpnew: {
-  //       digitalData: {
-  //         page: {
-  //           pageInfo: payload,
-  //         },
-  //       },
-  //     },
-  //   },
-  // });
-  // todo: also send the search ID to a separate event. Ask Linh Nguyen.
 }
 
 function initSearchFunction(block) {
@@ -163,6 +139,10 @@ function initSearchFunction(block) {
     const allTemplatesMetadata = await fetchAllTemplatesMetadata();
     const pathMatch = (e) => e.url === targetPath;
     const pathMatchX = (e) => e.url === targetPathX;
+
+    updateImpressionCache({ collection: currentTasks.content || 'all-templates' });
+    trackSearch('search-inspire');
+
     if (allTemplatesMetadata.some(pathMatchX) && document.body.dataset.device !== 'mobile') {
       window.location = `${window.location.origin}${targetPathX}`;
     } else if (allTemplatesMetadata.some(pathMatch) && document.body.dataset.device !== 'desktop') {
@@ -175,8 +155,7 @@ function initSearchFunction(block) {
 
   const onSearchSubmit = async () => {
     searchBar.disabled = true;
-    trackSearch();
-    // await redirectSearch();
+    await redirectSearch();
   };
 
   async function handleSubmitInteraction(item, index) {

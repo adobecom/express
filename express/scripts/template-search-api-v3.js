@@ -137,6 +137,32 @@ export function removeOptionalImpressionFields() {
   BlockMediator.set('templateSearchSpecs', impression);
 }
 
+// trackSearch action logs a new search ID each time if an existing one isn't provided.
+// supported eventNames: search-inspire, view-search-result, select-template
+export function trackSearch(eventName, searchID = generateSearchId()) {
+  updateImpressionCache({
+    event_name: eventName,
+    search_id: searchID,
+  });
+
+  const impression = BlockMediator.get('templateSearchSpecs');
+  console.log(impression);
+  // if (!window.marketingtech) return;
+  // _satellite.track('event', {
+  //   xdm: {},
+  //   data: {
+  //     _adobe_corpnew: {
+  //       digitalData: {
+  //         page: {
+  //           pageInfo: payload,
+  //         },
+  //       },
+  //     },
+  //   },
+  // });
+  // todo: also send the search ID to a separate event. Ask Linh Nguyen.
+}
+
 const memoizedFetch = memoize(
   (url, headers) => fetch(url, headers).then((r) => (r.ok ? r.json() : null)), { ttl: 30 * 1000 },
 );

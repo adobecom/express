@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { createTag, getIconElement } from '../../scripts/utils.js';
+import { trackSearch } from '../../scripts/template-search-api-v3.js';
 
 function containsVideo(pages) {
   return pages.some((page) => !!page?.rendition?.video?.thumbnail?.componentId);
@@ -309,6 +310,11 @@ function renderHoverWrapper(template, placeholders) {
 
   const cta = renderCTA(placeholders, template.customLinks.branchUrl);
   btnContainer.append(cta);
+
+  console.log(template);
+  cta.addEventListener('click', () => {
+    trackSearch('select-template');
+  }, { passive: true });
 
   return btnContainer;
 }
