@@ -61,6 +61,38 @@ function loadIMS() {
   }
 }
 
+// eslint-disable-next-line import/prefer-default-export
+export async function buildBreadcrumbs() {
+  const baseFrag = getMetadata('breadcrumbs-base');
+  if (isHomepage || getMetadata('breadcrumbs') !== 'on' || !baseFrag) {
+    return null;
+  }
+
+  const baseRes = await fetch(`${baseFrag}.plain.html`);
+  if (!baseRes.ok) return null;
+
+  const base = createTag('div');
+  base.innerHTML = await baseRes.text();
+  const baseBreadcrumbs = base.querySelectorAll('.breadcrumbs ul > li > a');
+
+  if (baseBreadcrumbs.length < 2) return null;
+
+  const breadCrumbList = Array.from(baseBreadcrumbs).map((a) => (
+    {
+      title: a.textContent.trim(),
+      url: a.href,
+    }
+  ));
+
+  const lastBreadcrumb = getMetadata('short-title') || getMetadata('breadcrumbs-page-title');
+  const lastBaseUrl = new URL(baseBreadcrumbs[baseBreadcrumbs.length - 1].href);
+  if (lastBreadcrumb && window.location.pathname !== lastBaseUrl.pathname) {
+    breadCrumbList.push({ title: lastBreadcrumb, url: window.location.href });
+  }
+
+  return breadCrumbList;
+}
+
 async function loadFEDS() {
   const config = getConfig();
   const prefix = config.locale.prefix.replaceAll('/', '');
@@ -112,37 +144,6 @@ async function loadFEDS() {
   const fedsExp = isMegaNav
     ? 'adobe-express/ax-gnav-x'
     : 'adobe-express/ax-gnav-x-row';
-
-  async function buildBreadcrumbs() {
-    const baseFrag = getMetadata('breadcrumbs-base');
-    if (isHomepage || getMetadata('breadcrumbs') !== 'on' || !baseFrag) {
-      return null;
-    }
-
-    const baseRes = await fetch(`${baseFrag}.plain.html`);
-    if (!baseRes.ok) return null;
-
-    const base = createTag('div');
-    base.innerHTML = await baseRes.text();
-    const baseBreadcrumbs = base.querySelectorAll('.breadcrumbs ul > li > a');
-
-    if (baseBreadcrumbs.length < 2) return null;
-
-    const breadCrumbList = Array.from(baseBreadcrumbs).map((a) => (
-      {
-        title: a.textContent.trim(),
-        url: a.href,
-      }
-    ));
-
-    const lastBreadcrumb = getMetadata('short-title') || getMetadata('breadcrumbs-page-title');
-    const lastBaseUrl = new URL(baseBreadcrumbs[baseBreadcrumbs.length - 1].href);
-    if (lastBreadcrumb && window.location.pathname !== lastBaseUrl.pathname) {
-      breadCrumbList.push({ title: lastBreadcrumb, url: window.location.href });
-    }
-
-    return breadCrumbList;
-  }
 
   window.fedsConfig = {
     ...(window.fedsConfig || {}),
