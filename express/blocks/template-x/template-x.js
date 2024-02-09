@@ -636,6 +636,7 @@ async function decorateCategoryList(block, props) {
     const iconElement = getIconElement(icon);
     const a = createTag('a', {
       'data-tasks': targetTasks,
+      'data-topics': currentTopic || '',
       href: `${prefix}/express/templates/search?tasks=${targetTasks}&tasksx=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"}&q=${currentTopic || ''}`,
     });
     [a.textContent] = category;
@@ -643,6 +644,16 @@ async function decorateCategoryList(block, props) {
     a.prepend(iconElement);
     listItem.append(a);
     categoriesList.append(listItem);
+
+    a.addEventListener('click', () => {
+      updateImpressionCache({
+        search_keyword: a.dataset.tasks,
+        collection: a.dataset.topics,
+        collection_path: window.location.pathname,
+      });
+      removeOptionalImpressionFields('search-inspire');
+      trackSearch('select-template');
+    }, { passive: true });
   });
 
   categoriesDesktopWrapper.addEventListener('mouseover', () => {
@@ -650,6 +661,19 @@ async function decorateCategoryList(block, props) {
   }, { once: true });
 
   const categoriesMobileWrapper = categoriesDesktopWrapper.cloneNode({ deep: true });
+  const mobileJumpCategoryLinks = categoriesMobileWrapper.querySelector('.category-list > li > a');
+  mobileJumpCategoryLinks.forEach((a) => {
+    a.addEventListener('click', () => {
+      updateImpressionCache({
+        search_keyword: a.dataset.tasks,
+        collection: a.dataset.topics,
+        collection_path: window.location.pathname,
+      });
+      removeOptionalImpressionFields('search-inspire');
+      trackSearch('select-template');
+    }, { passive: true });
+  });
+
   const mobileCategoriesToggle = createTag('span', { class: 'category-list-toggle' });
   mobileCategoriesToggle.textContent = placeholders['jump-to-category'] ?? '';
   categoriesMobileWrapper.querySelector('.category-list-toggle-wrapper > .icon')?.replaceWith(mobileCategoriesToggle);
