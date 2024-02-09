@@ -178,7 +178,7 @@ async function loadFEDS() {
     } : {},
     breadcrumbs: {
       showLogo: false,
-      links: await buildBreadcrumbs(),
+      links: await buildBreadcrumbs(prefix),
     },
   };
 
