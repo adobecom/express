@@ -661,7 +661,7 @@ async function decorateCategoryList(block, props) {
   }, { once: true });
 
   const categoriesMobileWrapper = categoriesDesktopWrapper.cloneNode({ deep: true });
-  const mobileJumpCategoryLinks = categoriesMobileWrapper.querySelector('.category-list > li > a');
+  const mobileJumpCategoryLinks = categoriesMobileWrapper.querySelectorAll('.category-list > li > a');
   mobileJumpCategoryLinks.forEach((a) => {
     a.addEventListener('click', () => {
       updateImpressionCache({
