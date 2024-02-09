@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { createTag, getIconElement, getMetadata } from '../../scripts/utils.js';
-import { trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
+import { trackSearch, updateImpressionCache, removeOptionalImpressionFields } from '../../scripts/template-search-api-v3.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function containsVideo(pages) {
@@ -321,6 +321,7 @@ function renderHoverWrapper(template, placeholders) {
       collection: getMetadata('tasksx') || getMetadata('tasks') || '',
       collection_path: window.location.pathname,
     });
+    removeOptionalImpressionFields('select-template');
     trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
   }, { passive: true });
 

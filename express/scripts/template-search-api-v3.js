@@ -125,15 +125,31 @@ export function updateImpressionCache(newVals) {
   });
 }
 
-export function removeOptionalImpressionFields() {
+export function removeOptionalImpressionFields(eventType) {
   const impression = BlockMediator.get('templateSearchSpecs');
-  delete impression.keyword_rank;
-  delete impression.prefix_query;
 
-  if (impression.search_type === 'adjust-filter') {
+  if (eventType === 'search-inspire') {
+    delete impression.id;
+    delete impression.keyword_rank;
+    delete impression.prefix_query;
+
+    if (impression.search_type === 'adjust-filter') {
+      delete impression.suggestion_list_shown;
+    }
+  }
+
+  if (eventType === 'view-search-results') {
+    delete impression.id;
+    delete impression.keyword_rank;
+    delete impression.prefix_query;
     delete impression.suggestion_list_shown;
   }
 
+  if (eventType === 'select-template') {
+    delete impression.keyword_rank;
+    delete impression.prefix_query;
+    delete impression.suggestion_list_shown;
+  }
   BlockMediator.set('templateSearchSpecs', impression);
 }
 

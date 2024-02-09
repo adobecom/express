@@ -957,7 +957,7 @@ async function initFilterSort(block, props, toolBar) {
                 sort_order: sortObj.orderDirection,
               },
             });
-            removeOptionalImpressionFields();
+            removeOptionalImpressionFields('search-inspire');
             trackSearch('search-inspire');
             await redrawTemplates(block, props, toolBar);
             trackSearch('view-search-results', BlockMediator.get('templateSearchSpecs').search_id);
@@ -987,7 +987,7 @@ async function initFilterSort(block, props, toolBar) {
               sort_order: sortObj.orderDirection,
             },
           });
-          removeOptionalImpressionFields();
+          removeOptionalImpressionFields('search-inspire');
           trackSearch('search-inspire');
           await redrawTemplates(block, props, toolBar);
         }
@@ -1490,7 +1490,7 @@ function importSearchBar(block, blockMediator) {
             search_type: 'direct',
             search_keyword: searchBar.value,
           });
-          removeOptionalImpressionFields();
+          removeOptionalImpressionFields('search-inspire');
           await onSearchSubmit();
         });
 

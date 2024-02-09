@@ -182,8 +182,7 @@ function initSearchFunction(block) {
 
   searchForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const payload = BlockMediator.get('templateSearchSpecs');
-    removeOptionalImpressionFields(payload);
+    removeOptionalImpressionFields('search-inspire');
     updateImpressionCache({
       status_filter: 'free',
       type_filter: 'all',
