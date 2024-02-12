@@ -19,7 +19,7 @@ function getSegmentsFromAlloyResponse(response) {
     Object.values(response.destinations).forEach(({ segments }) => {
       if (segments) {
         Object.values(segments).forEach(({ id }) => {
-          segments.push(id);
+          ids.push(id);
         });
       }
     });
@@ -28,13 +28,12 @@ function getSegmentsFromAlloyResponse(response) {
 }
 
 // product entry prompt
-async function isPEP() {
+async function canPEP() {
   if (document.body.dataset.device !== 'desktop') return false;
-  const pepSegment = getMetadata('direct-path-to-product');
+  const pepSegment = getMetadata('pep-segment');
   if (!pepSegment) return false;
   const placeholders = await fetchPlaceholders();
-  const autoRedirectLanguageFound = placeholders.cancel && placeholders['pep-header'] && placeholders['pep-cancel-text'];
-  if (!autoRedirectLanguageFound) return false;
+  if (!placeholders.cancel || !placeholders['pep-header'] || !placeholders['pep-cancel']) return false;
   if (!window.adobeProfile.getUserProfile()) return false;
   const segments = getSegmentsFromAlloyResponse(await window.alloyLoader);
   return segments.includes(pepSegment);
@@ -46,7 +45,7 @@ const PEP_DELAY = 3000;
  * Executes everything that happens a lot later, without impacting the user experience.
  */
 export default async function loadDelayed(DELAY = 15000) {
-  if (await isPEP()) {
+  if (await canPEP()) {
     const { default: loadLoginUserAutoRedirect } = await import('../features/direct-path-to-product/direct-path-to-product.js');
     return new Promise((resolve) => {
       // TODO: not preloading product this early to protect desktop CWV
