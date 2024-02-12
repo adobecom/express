@@ -1,28 +1,37 @@
-import { createTag, getConfig, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
-import { buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
+import {
+  createTag,
+  fetchPlaceholders,
+  getConfig,
+  getLottie,
+  lazyLoadLottiePlayer,
+  loadScript,
+  transformLinkToAnimation,
+} from '../../scripts/utils.js';
 
-const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 const imageInputAccept = '.png, .jpeg, .jpg';
 let inputElement;
 let quickAction;
-let fqaBlock;
-let error;
 let ccEverywhere;
-let container;
 
 function startSDK(data) {
-  const CDN_URL = 'https://sdk.cc-embed.adobe.com/v3/CCEverywhere.js';
-  loadScript(CDN_URL).then(async () => {
+  loadScript('https://sdk.cc-embed.adobe.com/v3/CCEverywhere.js').then(async () => {
     if (!window.CCEverywhere) {
       return;
     }
     if (!ccEverywhere) {
+      let { ietf } = getConfig().locale;
+      if (ietf === 'zh-Hant-TW') ietf = 'tw-TW';
+      else if (ietf === 'zh-Hans-CN') ietf = 'cn-CN';
+      let env = getConfig().env.name;
+      if (env === 'local') env = 'dev';
+      if (env === 'stage') env = 'preprod';
       ccEverywhere = await window.CCEverywhere.initialize({
         clientId: 'b20f1d10b99b4ad892a856478f87cec3',
         appName: 'express',
       }, {
         loginMode: 'delayed',
-        locale: getConfig().locale.ietf,
+        locale: ietf,
+        env,
       });
     }
 
@@ -41,12 +50,6 @@ function startSDK(data) {
       },
     ];
 
-    const id = `${quickAction}-container`;
-    //if(container) container.remove();
-    container = createTag('div', { id, class: 'quick-action-container' });
-    fqaBlock.append(container);
-    const divs = fqaBlock.querySelectorAll(':scope > div');
-    divs[1].style.display = 'none';
     ccEverywhere.openQuickAction({
       id: quickAction,
       inputParams: {
@@ -58,8 +61,7 @@ function startSDK(data) {
         exportOptions,
       },
       modalParams: {
-        parentElementId: `${quickAction}-container`,
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(0, 0, 0, 0.25)',
       },
     });
   });
@@ -67,22 +69,14 @@ function startSDK(data) {
 
 function startSDKWithUnconvertedFile(file) {
   if (!file) return;
-  const maxSize = 17 * 1024 * 1024; // 17 MB in bytes
-  if (validImageTypes.includes(file.type) && file.size <= maxSize) {
-    const reader = new FileReader();
+  const reader = new FileReader();
 
-    reader.onloadend = function () {
-      console.log('Base64 string:', reader.result);
-      startSDK(reader.result);
-    };
+  reader.onloadend = function () {
+    startSDK(reader.result);
+  };
 
-    // Read the file as a data URL (Base64)
-    reader.readAsDataURL(file);
-  } else if (!error) {
-    error = createTag('p', {}, invalidInputError);
-    const dropzoneButton = fqaBlock.querySelector(':scope .dropzone a.button');
-    dropzoneButton.parentElement.insertBefore(error, dropzoneButton);
-  }
+  // Read the file as a data URL (Base64)
+  reader.readAsDataURL(file);
 }
 
 function uploadFile() {
@@ -101,8 +95,15 @@ function uploadFile() {
   };
 }
 
+function createFreePlanContainer(text) {
+  const icon = createTag('img', { class: 'icon icon-checkmark', src: '/express/icons/checkmark.svg', alt: 'checkmark' });
+  const iconContainer = createTag('div', { class: 'free-plan-icon-container' }, icon);
+  const container = createTag('div', { class: 'free-plan-container' }, text);
+  container.prepend(iconContainer);
+  return container;
+}
+
 export default async function decorate(block) {
-  fqaBlock = block;
   const rows = Array.from(block.children);
   const actionAndAnimationRow = rows[1].children;
   const animationContainer = actionAndAnimationRow[0];
@@ -121,6 +122,17 @@ export default async function decorate(block) {
   dropzoneContainer.append(dropzone);
   actionColumn.append(dropzoneContainer);
   actionColumn.append(gtcText);
+
+  const span = cta.querySelector(':scope span');
+  if (span) {
+    const lottieUpload = [...span.classList].filter((c) => c === 'icon-lottie-arrow-up');
+    if (lottieUpload.length) {
+      span.remove();
+      cta.innerHTML = getLottie('lottie-arrow-up', '/express/icons/arrow-up-lottie.json') + cta.innerHTML;
+      lazyLoadLottiePlayer();
+    }
+  }
+
   dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();
     uploadFile();
@@ -128,38 +140,36 @@ export default async function decorate(block) {
 
   function preventDefaults(e) {
     e.preventDefault();
-    e.stopPropagation();
-  }
-  function highlight() {
-    dropzoneContainer.classList.add('highlight');
-  }
-  function unhighlight() {
-    dropzoneContainer.classList.remove('highlight');
   }
   ['dragenter', 'dragover'].forEach((eventName) => {
-    dropzoneContainer.addEventListener(eventName, highlight, false);
+    dropzoneContainer.addEventListener(eventName, () => dropzoneContainer.classList.add('highlight'), false);
   });
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
     dropzoneContainer.addEventListener(eventName, preventDefaults, false);
   });
-
   ['dragleave', 'drop'].forEach((eventName) => {
-    dropzoneContainer.addEventListener(eventName, unhighlight, false);
+    dropzoneContainer.addEventListener(eventName, () => dropzoneContainer.classList.remove('highlight'), false);
   });
 
   dropzoneContainer.addEventListener('drop', (e) => {
     const dt = e.dataTransfer;
     const { files } = dt;
-
-    [...files].forEach(startSDKWithUnconvertedFile);
+    if (files.length) startSDKWithUnconvertedFile(files[0]);
   }, false);
 
   const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
   if (quickActionRow[0]) {
-    quickAction = quickActionRow[0].children[1]?.textContent;
+    quickAction = quickActionRow[0].children[1]?.textContent.toLowerCase().trim();
     quickActionRow[0].remove();
   }
 
-  const freePlanTags = await buildStaticFreePlanWidget(animationContainer);
-  // dropzone.append(freePlanTags);
+  const placeholderPromise = fetchPlaceholders().then((placeholders) => {
+    for (let i = 1; i < 3; i += 1) {
+      const tagText = placeholders[`free-plan-check-${i}`];
+      const freePlan = createFreePlanContainer(tagText);
+      dropzone.append(freePlan);
+    }
+  });
+
+  await placeholderPromise;
 }
