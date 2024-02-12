@@ -17,12 +17,19 @@ function startSDK(data) {
       return;
     }
     if (!ccEverywhere) {
+      let { ietf } = getConfig().locale;
+      if (ietf === 'zh-Hant-TW') ietf = 'tw-TW';
+      else if (ietf === 'zh-Hans-CN') ietf = 'cn-CN';
+      let env = getConfig().env.name;
+      if (env === 'local') env = 'dev';
+      if (env === 'stage') env = 'preprod';
       ccEverywhere = await window.CCEverywhere.initialize({
         clientId: 'b20f1d10b99b4ad892a856478f87cec3',
         appName: 'express',
       }, {
         loginMode: 'delayed',
-        locale: getConfig().locale.ietf,
+        locale: ietf,
+        env,
       });
     }
 
@@ -58,6 +65,7 @@ function startSDK(data) {
         exportOptions,
       },
       modalParams: {
+        isFrictionlessQa: true,
         parentElementId: `${quickAction}-container`,
         backgroundColor: 'transparent',
       },
