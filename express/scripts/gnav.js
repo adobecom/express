@@ -61,9 +61,54 @@ function loadIMS() {
   }
 }
 
+// eslint-disable-next-line import/prefer-default-export
+export async function buildBreadCrumbArray(prefix) {
+  if (isHomepage || getMetadata('breadcrumbs') !== 'on') {
+    return null;
+  }
+
+  const placeholders = await fetchPlaceholders();
+  const validSecondPathSegments = ['create', 'feature'];
+  const pathSegments = window.location.pathname
+    .split('/')
+    .filter((e) => e !== '')
+    .filter((e) => e !== prefix);
+  const localePath = prefix === '' ? '' : `${prefix}/`;
+  const secondPathSegment = pathSegments[1].toLowerCase();
+  const pagesShortNameElement = document.head.querySelector('meta[name="short-title"]');
+  const pagesShortName = pagesShortNameElement?.getAttribute('content') ?? null;
+  const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
+
+  if (!pagesShortName
+    || pathSegments.length <= 2
+    || !replacedCategory
+    || !validSecondPathSegments.includes(replacedCategory)
+    || prefix !== '') { // Remove this line once locale translations are complete
+    return null;
+  }
+
+  const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+  const buildBreadCrumb = (path, name, parentPath = '') => (
+    { title: capitalize(name), url: `${parentPath}/${path}` }
+  );
+  const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
+  const breadCrumbList = [secondBreadCrumb];
+
+  if (pathSegments.length >= 3) {
+    const thirdBreadCrumb = buildBreadCrumb(pagesShortName, pagesShortName, secondBreadCrumb.url);
+    breadCrumbList.push(thirdBreadCrumb);
+  }
+  return breadCrumbList;
+}
+
 async function loadFEDS() {
   const config = getConfig();
   const prefix = config.locale.prefix.replaceAll('/', '');
+  let jarvis = true;
+  // if metadata found jarvis must not be initialized in gnav because it will be initiated later
+  const jarvisMeta = getMetadata('jarvis-chat')?.toLowerCase();
+  if (!jarvisMeta || !['mobile', 'desktop', 'on'].includes(jarvisMeta)
+    || !config.jarvis?.id || !config.jarvis?.version) jarvis = false;
 
   async function showRegionPicker() {
     const { getModal } = await import('../blocks/modal/modal.js');
@@ -108,45 +153,6 @@ async function loadFEDS() {
     ? 'adobe-express/ax-gnav-x'
     : 'adobe-express/ax-gnav-x-row';
 
-  async function buildBreadCrumbArray() {
-    if (isHomepage || getMetadata('hide-breadcrumbs') === 'true') {
-      return null;
-    }
-    const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
-    const buildBreadCrumb = (path, name, parentPath = '') => (
-      { title: capitalize(name), url: `${parentPath}/${path}` }
-    );
-
-    const placeholders = await fetchPlaceholders();
-    const validSecondPathSegments = ['create', 'feature'];
-    const pathSegments = window.location.pathname
-      .split('/')
-      .filter((e) => e !== '')
-      .filter((e) => e !== prefix);
-    const localePath = prefix === '' ? '' : `${prefix}/`;
-    const secondPathSegment = pathSegments[1].toLowerCase();
-    const pagesShortNameElement = document.head.querySelector('meta[name="short-title"]');
-    const pagesShortName = pagesShortNameElement?.getAttribute('content') ?? null;
-    const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
-
-    if (!pagesShortName
-      || pathSegments.length <= 2
-      || !replacedCategory
-      || !validSecondPathSegments.includes(replacedCategory)
-      || prefix !== '') { // Remove this line once locale translations are complete
-      return null;
-    }
-
-    const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
-    const breadCrumbList = [secondBreadCrumb];
-
-    if (pathSegments.length >= 3) {
-      const thirdBreadCrumb = buildBreadCrumb(pagesShortName, pagesShortName, secondBreadCrumb.url);
-      breadCrumbList.push(thirdBreadCrumb);
-    }
-    return breadCrumbList;
-  }
-
   window.fedsConfig = {
     ...(window.fedsConfig || {}),
 
@@ -174,20 +180,24 @@ async function loadFEDS() {
         window.location.href = sparkLoginUrl;
       },
     },
-    jarvis: getMetadata('enable-chat') === 'yes'
-      ? {
-        surfaceName: 'AdobeExpressEducation',
-        surfaceVersion: '1',
-      }
-      : {},
+    jarvis: !jarvis ? {
+      surfaceName: config.jarvis.id,
+      surfaceVersion: config.jarvis.version,
+      onDemand: true,
+    } : {},
     breadcrumbs: {
       showLogo: true,
-      links: await buildBreadCrumbArray(),
+      links: await buildBreadCrumbArray(prefix),
     },
   };
 
   window.addEventListener('feds.events.experience.loaded', async () => {
     document.querySelector('body').classList.add('feds-loaded');
+
+    if (['no', 'f', 'false', 'n', 'off'].includes(getMetadata('gnav-retract').toLowerCase())) {
+      window.feds.components.NavBar.disableRetractability();
+    }
+
     /* attempt to switch link */
     if (window.location.pathname.includes('/create/')
       || window.location.pathname.includes('/discover/')
@@ -257,7 +267,7 @@ async function loadFEDS() {
       otDomainId,
     };
     loadScript('https://www.adobe.com/etc.clientlibs/globalnav/clientlibs/base/privacy-standalone.js');
-  }, 0);
+  }, 4000);
   const footer = document.querySelector('footer');
   footer?.addEventListener('click', (event) => {
     if (event.target.closest('a[data-feds-action="open-adchoices-modal"]')) {

@@ -13,13 +13,15 @@ import BlockMediator from '../../scripts/block-mediator.min.js';
 
 export const hideScrollArrow = (floatButtonWrapper, lottieScrollButton) => {
   floatButtonWrapper.classList.add('floating-button--scrolled');
-  if (document.activeElement === lottieScrollButton) lottieScrollButton.blur();
-  lottieScrollButton.tabIndex = -1;
+  if (lottieScrollButton) {
+    if (document.activeElement === lottieScrollButton) lottieScrollButton.blur();
+    lottieScrollButton.tabIndex = -1;
+  }
 };
 
 export const showScrollArrow = (floatButtonWrapper, lottieScrollButton) => {
   floatButtonWrapper.classList.remove('floating-button--scrolled');
-  lottieScrollButton.removeAttribute('tabIndex');
+  if (lottieScrollButton) lottieScrollButton.removeAttribute('tabIndex');
 };
 
 export function openToolBox(wrapper, lottie, data, userInitiated) {
@@ -142,6 +144,29 @@ export async function createFloatingButton(block, audience, data) {
   const floatButtonLink = aTag.cloneNode(true);
   floatButtonLink.className = '';
   floatButtonLink.classList.add('button', 'gradient', 'xlarge');
+
+  // Change font size when text is too long
+  function outputsize() {
+    const floatButtonLinkStyle = window.getComputedStyle(floatButtonLink);
+    const lineHeight = floatButtonLinkStyle.getPropertyValue('line-height');
+    const lineHeightInt = +lineHeight.replace('px', '');
+
+    // To figure out the available vertical space for text
+    const paddingTop = floatButtonLinkStyle.getPropertyValue('padding-top');
+    const paddingTopInt = +paddingTop.replace('px', '');
+    const paddingBottom = floatButtonLinkStyle.getPropertyValue('padding-bottom');
+    const paddingBottomInt = +paddingBottom.replace('px', '');
+    const availableHeight = floatButtonLink.offsetHeight - paddingTopInt - paddingBottomInt;
+
+    const numberOfLines = availableHeight / lineHeightInt;
+    if (numberOfLines >= 2) {
+      floatButtonLink.style.fontSize = '0.8rem';
+      floatButtonLink.style.paddingLeft = '0.8rem';
+      floatButtonLink.style.paddingRight = '0.8rem';
+    }
+  }
+
+  new ResizeObserver(outputsize).observe(floatButtonLink);
 
   // Hide CTAs with same url & text as the Floating CTA && is NOT a Floating CTA (in mobile/tablet)
   const sameUrlCTAs = Array.from(main.querySelectorAll('a.button:any-link'))
@@ -394,6 +419,7 @@ export function decorateBadge() {
 }
 
 export function buildToolBoxStructure(wrapper, data) {
+  lazyLoadLottiePlayer();
   const toolBox = createTag('div', { class: 'toolbox' });
   const toolBoxWrapper = createTag('div', { class: 'toolbox-inner-wrapper' });
   const notch = createTag('a', { class: 'notch' });

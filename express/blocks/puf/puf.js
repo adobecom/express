@@ -1,5 +1,5 @@
-import { addPublishDependencies, createTag } from '../../scripts/utils.js';
-import { buildUrl, fetchPlan } from '../../scripts/utils/pricing.js';
+import { addPublishDependencies, createTag, getMetadata } from '../../scripts/utils.js';
+import { buildUrl, fetchPlan, setVisitorCountry } from '../../scripts/utils/pricing.js';
 import buildCarousel from '../shared/carousel.js';
 
 let invisContainer;
@@ -75,7 +75,7 @@ async function selectPlan(card, planUrl, sendAnalyticEvent) {
     if (pricingVat) pricingVat.textContent = plan.vatInfo || '';
 
     if (pricingCta) {
-      pricingCta.href = buildUrl(plan.url, plan.country, plan.language);
+      pricingCta.href = buildUrl(plan.url, plan.country, plan.language, plan.offerId);
       pricingCta.dataset.planUrl = planUrl;
       pricingCta.id = plan.stringId;
     }
@@ -156,7 +156,7 @@ async function decorateCard(block, cardClass = '') {
   const cardTop = block.children[1].children[0];
   const cardBottom = block.children[2].children[0];
   const cardHeader = cardTop.querySelector('h3, p:first-of-type');
-  const cardHeaderSvg = cardTop.querySelector('svg');
+  const cardHeaderIcon = cardTop.querySelector('svg') || cardTop.querySelector('img');
   const cardPricingContainer = createTag('div', {
     class: 'puf-pricing-container',
   });
@@ -176,7 +176,8 @@ async function decorateCard(block, cardClass = '') {
   const listItems = cardBottom.querySelectorAll('svg');
   const plans = buildPlans(plansElement);
 
-  if (cardClass === 'puf-left') {
+  if (cardClass === 'puf-left'
+    && !['off', 'no', 'false'].includes(getMetadata('puf-left-reverse')?.toLowerCase())) {
     cardCta.classList.add('reverse', 'accent');
   }
 
@@ -217,7 +218,7 @@ async function decorateCard(block, cardClass = '') {
     cardBanner.classList.add('recommended');
   }
 
-  if (cardHeaderSvg) formattedHeader.prepend(cardHeaderSvg);
+  if (cardHeaderIcon) formattedHeader.prepend(cardHeaderIcon);
 
   const ctaTextContainer = cardTop.querySelector('strong');
   if (ctaTextContainer) {
@@ -444,5 +445,6 @@ async function buildPUF(block) {
 }
 
 export default async function decorate(block) {
+  setVisitorCountry();
   await buildPUF(block);
 }

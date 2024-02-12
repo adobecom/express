@@ -39,6 +39,7 @@
 
   /* header */
   --header-height: 65px;
+  --breadcrumbs-height: 43px;
   --brand-header-height: 79px;
 
   /* body */
@@ -535,6 +536,10 @@ main .section:last-of-type>.default-content-wrapper {
 }
 
 @media (min-width:900px) {
+  .breadcrumbs-spacing > .feds-topnav-spacing,
+  .breadcrumbs-spacing > header:not(.feds-header-wrapper){
+    height: calc(var(--header-height) + var(--breadcrumbs-height));
+  }
 
   main h5+p,
   main .section p.button-container {
@@ -930,30 +935,6 @@ main .block.center .free-plan-widget {
   margin: 32px auto;
 }
 
-main .block .free-plan-widget>div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-main .block .free-plan-widget>div>div:first-child {
-  position: relative;
-  margin-right: 6px;
-  width: 14px;
-  height: 14px;
-  background: #33AB84;
-  border-radius: 50%;
-}
-
-main .block .free-plan-widget .icon.icon-checkmark {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  fill: var(--color-white);
-  width: 8px;
-  max-height: 8px;
-}
-
 @media (min-width: 900px) {
   main .block .button-container.free-plan-container {
     width: max-content;
@@ -970,6 +951,10 @@ main .block .free-plan-widget .icon.icon-checkmark {
     display: flex;
     align-items: center;
     z-index: 4;
+  }
+
+  main .block .free-plan-widget .plan-widget-tag {
+    text-align: left;
   }
 }
 
