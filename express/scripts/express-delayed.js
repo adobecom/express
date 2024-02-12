@@ -34,9 +34,9 @@ async function canPEP() {
   if (!pepSegment) return false;
   const placeholders = await fetchPlaceholders();
   if (!placeholders.cancel || !placeholders['pep-header'] || !placeholders['pep-cancel']) return false;
-  if (!window.adobeProfile.getUserProfile()) return false;
+  if (!window.adobeProfile?.getUserProfile()) return false;
   const segments = getSegmentsFromAlloyResponse(await window.alloyLoader);
-  return segments.includes(pepSegment);
+  return pepSegment.replace(/\s/g, '').split(',').some((pepSeg) => segments.includes(pepSeg));
 }
 
 const PEP_DELAY = 3000;
