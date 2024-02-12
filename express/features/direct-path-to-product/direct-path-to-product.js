@@ -10,8 +10,12 @@ const OPT_OUT_KEY = 'no-direct-path-to-product';
 
 export default async function loadLoginUserAutoRedirect() {
   let followThrough = true;
-  const placeholders = await fetchPlaceholders();
-  loadStyle('/express/features/direct-path-to-product/direct-path-to-product.css');
+  const [placeholders] = await Promise.all([
+    fetchPlaceholders(),
+    new Promise((resolve) => {
+      loadStyle('/express/features/direct-path-to-product/direct-path-to-product.css', resolve);
+    }),
+  ]);
 
   const buildRedirectAlert = (profile) => {
     const container = createTag('div', { class: 'pep-container' });
