@@ -1,6 +1,6 @@
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 import {
-  fetchPlan, buildUrl, formatSalesPhoneNumber, setVisitorCountry, checkOfferExcludeCountry,
+  fetchPlan, buildUrl, formatSalesPhoneNumber, setVisitorCountry, shallSuppressOfferEyebrowText,
 } from '../../scripts/utils/pricing.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -8,7 +8,7 @@ const blockKeys = ['header', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
 
-function handlePrice(pricingArea, priceSuffixContext) {
+function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
   const priceRow = createTag('div', { class: 'pricing-row' });
   const priceEl = pricingArea.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
@@ -19,7 +19,10 @@ function handlePrice(pricingArea, priceSuffixContext) {
   const priceSuffix = createTag('div', { class: 'pricing-row-suf' });
 
   priceRow.append(basePrice, price, priceSuffix);
+
   fetchPlan(priceEl?.href).then((response) => {
+    let specialPromoPercentageEyeBrowTextReplaced = false;
+    let pricingCardPercentageEyeBrowTextReplaced = false;
     const parentP = priceEl.parentElement;
     price.innerHTML = response.formatted;
     basePrice.innerHTML = response.formattedBP || '';
@@ -41,14 +44,30 @@ function handlePrice(pricingArea, priceSuffixContext) {
     } else {
       priceSuffix.textContent = priceSuffixContext;
     }
+    const isPreiumCard = response.ooAvailable || false;
     const savePercentElem = pricingArea.querySelector('.card-offer');
-    if (savePercentElem) {
-      const removeOfferBlock = checkOfferExcludeCountry();
-      if (removeOfferBlock) {
+    if (savePercentElem && !pricingCardPercentageEyeBrowTextReplaced) {
+      const offerTextContent = savePercentElem.textContent;
+      if (shallSuppressOfferEyebrowText(response.savePer, offerTextContent, isPreiumCard,
+        false, response.offerId)) {
         savePercentElem.remove();
       } else {
-        const offerTextContent = savePercentElem.textContent;
         savePercentElem.textContent = offerTextContent.replace('{{savePercentage}}', response.savePer);
+        pricingCardPercentageEyeBrowTextReplaced = true;
+      }
+    }
+
+    if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced) {
+      const offerTextContent = specialPromo.textContent;
+      if (shallSuppressOfferEyebrowText(response.savePer, offerTextContent, isPreiumCard,
+        true, response.offerId)) {
+        if (specialPromo.parentElement !== null) {
+          specialPromo.parentElement.classList.remove('special-promo');
+          specialPromo.remove();
+        }
+      } else {
+        specialPromo.innerHTML = offerTextContent.replace('{{savePercentage}}', response.savePer);
+        specialPromoPercentageEyeBrowTextReplaced = true;
       }
     }
   });
@@ -57,7 +76,7 @@ function handlePrice(pricingArea, priceSuffixContext) {
   return priceRow;
 }
 
-function createPricingSection(placeholders, pricingArea, ctaGroup) {
+function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo) {
   const pricingSection = createTag('div', { class: 'pricing-section' });
   pricingArea.classList.add('pricing-area');
   const offer = pricingArea.querySelector(':scope > p > em');
@@ -73,7 +92,7 @@ function createPricingSection(placeholders, pricingArea, ctaGroup) {
       return placeholders[value] ? placeholders[value] : '';
     });
     const priceSuffixContent = phTextArr.join(' ');
-    const priceRow = handlePrice(pricingArea, priceSuffixContent);
+    const priceRow = handlePrice(pricingArea, priceSuffixContent, specialPromo);
     if (priceRow) {
       pricingArea.prepend(priceRow);
       pricingBtnContainer?.remove();
@@ -119,6 +138,7 @@ function decorateCard({
   const h2Content = h2.textContent.trim();
   const headerConfig = /\((.+)\)/.exec(h2Content);
   const premiumIcon = header.querySelector('img');
+  let specialPromo;
   if (premiumIcon) h2.prepend(premiumIcon);
   if (headerConfig) {
     const cfg = headerConfig[1];
@@ -129,8 +149,9 @@ function decorateCard({
       headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
       header.append(headCntDiv);
     } else {
-      const specialPromo = createTag('div');
+      specialPromo = createTag('div');
       specialPromo.textContent = cfg;
+      specialPromo.classList.add('card-eyebrow');
       card.classList.add('special-promo');
       card.append(specialPromo);
     }
@@ -145,9 +166,9 @@ function decorateCard({
     card.append(explain);
   }
 
-  const mPricingSection = createPricingSection(placeholders, mPricingRow, mCtaGroup);
+  const mPricingSection = createPricingSection(placeholders, mPricingRow, mCtaGroup, specialPromo);
   mPricingSection.classList.add('monthly');
-  const yPricingSection = createPricingSection(placeholders, yPricingRow, yCtaGroup);
+  const yPricingSection = createPricingSection(placeholders, yPricingRow, yCtaGroup, null);
   yPricingSection.classList.add('yearly', 'hide');
   function reactToPlanChange({ newValue }) {
     [mPricingSection, yPricingSection].forEach((section) => {
@@ -160,6 +181,7 @@ function decorateCard({
   }
   reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
   BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
+
   card.append(mPricingSection, yPricingSection);
 
   if (featureList.innerHTML.trim()) {

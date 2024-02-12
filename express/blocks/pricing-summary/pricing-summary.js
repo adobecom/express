@@ -1,6 +1,6 @@
 import { createTag } from '../../scripts/utils.js';
 import {
-  fetchPlan, buildUrl, setVisitorCountry, checkOfferExcludeCountry,
+  fetchPlan, buildUrl, setVisitorCountry, shallSuppressOfferEyebrowText,
 } from '../../scripts/utils/pricing.js';
 import buildCarousel from '../shared/carousel.js';
 
@@ -32,7 +32,7 @@ function handlePrice(block, column, eyeBrow) {
   pricePlan.append(priceWrapper, plan);
 
   fetchPlan(priceEl?.href).then(({
-    url, country, language, offerId, formatted, formattedBP, suffix, savePer,
+    url, country, language, offerId, formatted, formattedBP, suffix, savePer, ooAvailable,
   }) => {
     const parentP = priceEl.parentElement;
     price.innerHTML = formatted;
@@ -55,8 +55,14 @@ function handlePrice(block, column, eyeBrow) {
     if (planCTA) planCTA.href = buildUrl(url, country, language, offerId);
 
     if (eyeBrow !== null) {
+      const isPreiumCard = ooAvailable || false;
       const offerTextContent = eyeBrow.innerHTML;
-      eyeBrow.innerHTML = offerTextContent.replace('{{savePercentage}}', savePer);
+      if (shallSuppressOfferEyebrowText(savePer, offerTextContent, isPreiumCard, true, offerId)) {
+        eyeBrow.parentElement.classList.remove('has-pricing-eyebrow');
+        eyeBrow.remove;
+      } else {
+        eyeBrow.innerHTML = offerTextContent.replace('{{savePercentage}}', savePer);
+      }
     }
   });
 
@@ -115,11 +121,6 @@ function handleFeatureList(featureColumns, index) {
 function handleEyeBrows(columnWrapper, eyeBrowCols, index) {
   if (!eyeBrowCols) return null;
   if (!eyeBrowCols[index].innerHTML) {
-    eyeBrowCols[index].remove();
-    return null;
-  }
-  const removeOfferBlock = checkOfferExcludeCountry();
-  if (removeOfferBlock) {
     eyeBrowCols[index].remove();
     return null;
   }
