@@ -11,8 +11,7 @@ export async function buildStaticFreePlanWidget() {
   const widget = createTag('div', { class: 'free-plan-widget' });
   for (let i = 1; i < 3; i += 1) {
     const tagText = placeholders[`free-plan-check-${i}`];
-    const textDiv = createTag('div');
-    textDiv.textContent = tagText;
+    const textDiv = createTag('div', {}, tagText);
     widget.append(textDiv);
   }
   return widget;

@@ -99,3 +99,21 @@
     margin: 15px 0 0;
     font-size: 0.75rem;
 }
+
+.frictionless-quick-action.block .free-plan-widget {
+    background-color: unset;
+    flex-direction: row;
+    padding: unset;
+}
+
+.frictionless-quick-action.block .free-plan-widget > div {
+    margin: 10px;
+}
+
+.frictionless-quick-action.block .free-plan-widget img.icon.icon-checkmark {
+    position: initial;
+    padding: 4px;
+    border-radius: 50%;
+    background-color: #f06dad;
+    margin-right: 8px;
+}

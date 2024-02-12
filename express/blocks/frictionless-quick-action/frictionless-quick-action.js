@@ -1,4 +1,4 @@
-import { createTag, getConfig, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
+import { createTag, getConfig, getIconElement, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
 import { addFreePlanWidget, buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
@@ -49,7 +49,7 @@ function startSDK(data) {
     ];
 
     const id = `${quickAction}-container`;
-    //if(container) container.remove();
+    // if(container) container.remove();
     container = createTag('div', { id, class: 'quick-action-container' });
     fqaBlock.append(container);
     const divs = fqaBlock.querySelectorAll(':scope > div');
@@ -169,5 +169,11 @@ export default async function decorate(block) {
   }
 
   const freePlanTags = await buildStaticFreePlanWidget(animationContainer);
-  // dropzone.append(freePlanTags);
+  const innerDivs = freePlanTags.querySelectorAll(':scope > div');
+
+  innerDivs.forEach((d) => {
+    d.prepend(getIconElement('checkmark'));
+  });
+
+  dropzone.append(freePlanTags);
 }
