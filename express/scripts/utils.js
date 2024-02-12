@@ -683,6 +683,7 @@ export async function decorateBlock(block) {
 
     block.classList.add('block');
 
+    block.dataset.block = '';
     block.setAttribute('data-block-name', blockName);
     block.setAttribute('data-block-status', 'initialized');
 
