@@ -27,7 +27,7 @@ export default async function loadLoginUserAutoRedirect() {
     const profileName = createTag('strong', { class: 'profile-name' }, profile.display_name);
     const profileEmail = createTag('span', { class: 'profile-email' }, profile.email);
     const noticeWrapper = createTag('div', { class: 'notice-wrapper' });
-    const noticeText = createTag('span', { class: 'notice-text' }, placeholders['pep-cancel-text']);
+    const noticeText = createTag('span', { class: 'notice-text' }, placeholders['pep-cancel']);
     const noticeBtn = createTag('a', { class: 'notice-btn' }, placeholders.cancel);
 
     headerWrapper.append(headerIcon, headerText);
