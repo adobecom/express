@@ -2592,6 +2592,10 @@ export async function loadArea(area = document) {
     const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
+
+  import('./attributes.js').then((analytics) => {
+    document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
+  });
 }
 
 export function getMobileOperatingSystem() {
