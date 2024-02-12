@@ -30,8 +30,7 @@ function getSegmentsFromAlloyResponse(response) {
 // product entry prompt
 async function isPEP() {
   if (document.body.dataset.device !== 'desktop') return false;
-  if (!['yes', 'true', 'Y', 'on'].includes(getMetadata('direct-path-to-product'))) return false;
-  const pepSegment = getMetadata('pep-segment');
+  const pepSegment = getMetadata('direct-path-to-product');
   if (!pepSegment) return false;
   const placeholders = await fetchPlaceholders();
   const autoRedirectLanguageFound = placeholders.cancel && placeholders['pep-header'] && placeholders['pep-cancel-text'];
