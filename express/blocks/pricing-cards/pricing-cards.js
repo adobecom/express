@@ -59,14 +59,15 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
 
     if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced) {
       const offerTextContent = specialPromo.textContent;
-      if (shallSuppressOfferEyebrowText(response.savePer, offerTextContent, isPreiumCard,
-        true, response.offerId)) {
-        if (specialPromo.parentElement !== null) {
+      const shouldSuppress = shallSuppressOfferEyebrowText(response.savePer, offerTextContent,
+        isPreiumCard, true, response.offerId);
+      if (shouldSuppress) {
+        if (specialPromo.parentElement) {
           specialPromo.parentElement.classList.remove('special-promo');
           specialPromo.remove();
         }
       } else {
-        specialPromo.innerHTML = offerTextContent.replace('{{savePercentage}}', response.savePer);
+        specialPromo.textContent = offerTextContent.replace('{{savePercentage}}', response.savePer);
         specialPromoPercentageEyeBrowTextReplaced = true;
       }
     }
