@@ -52,7 +52,7 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
         false, response.offerId)) {
         savePercentElem.remove();
       } else {
-        savePercentElem.textContent = offerTextContent.replace('{{savePercentage}}', response.savePer);
+        savePercentElem.innerHTML = savePercentElem.innerHTML.replace('{{savePercentage}}', response.savePer);
         pricingCardPercentageEyeBrowTextReplaced = true;
       }
     }
@@ -67,7 +67,7 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
           specialPromo.remove();
         }
       } else {
-        specialPromo.textContent = offerTextContent.replace('{{savePercentage}}', response.savePer);
+        savePercentElem.innerHTML = savePercentElem.innerHTML.replace('{{savePercentage}}', response.savePer);
         specialPromoPercentageEyeBrowTextReplaced = true;
       }
     }
