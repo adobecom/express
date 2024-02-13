@@ -1123,6 +1123,7 @@ function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
 
 function decorateHoliday(block, props) {
   const main = document.querySelector('main');
+  const templateXSection = block.closest('div[class="section section-wrapper template-x-container"]');
   const mobileViewport = window.innerWidth < 901;
   const templateTitle = block.querySelector('.template-title');
   const toggleBar = templateTitle.querySelector('div');
@@ -1142,7 +1143,7 @@ function decorateHoliday(block, props) {
     block.prepend(animation);
   }
 
-  if (block.closest('div[class="section section-wrapper template-x-container"]')) main.classList.add('with-holiday-templates-banner');
+  if (templateXSection && templateXSection.querySelectorAll('div.block').length === 1) main.classList.add('with-holiday-templates-banner');
   block.classList.add('expanded', props.textColor);
   toggleBar.classList.add('toggle-bar');
   topElements.append(heading);
