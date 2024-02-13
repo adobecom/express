@@ -10,16 +10,20 @@ const OPT_OUT_KEY = 'no-direct-path-to-product';
 
 export default async function loadLoginUserAutoRedirect() {
   let followThrough = true;
-  const placeholders = await fetchPlaceholders();
-  loadStyle('/express/features/direct-path-to-product/direct-path-to-product.css');
+  const [placeholders] = await Promise.all([
+    fetchPlaceholders(),
+    new Promise((resolve) => {
+      loadStyle('/express/features/direct-path-to-product/direct-path-to-product.css', resolve);
+    }),
+  ]);
 
   const buildRedirectAlert = (profile) => {
-    const container = createTag('div', { class: 'bmtp-container' });
-    const headerWrapper = createTag('div', { class: 'bmtp-header' });
-    const headerIcon = createTag('div', { class: 'bmtp-header-icon' }, getIconElement('cc-express'));
-    const headerText = createTag('span', { class: 'bmtp-header-text' }, placeholders['bmtp-header']);
-    const progressBg = createTag('div', { class: 'bmtp-progress-bg' });
-    const progressBar = createTag('div', { class: 'bmtp-progress-bar' });
+    const container = createTag('div', { class: 'pep-container' });
+    const headerWrapper = createTag('div', { class: 'pep-header' });
+    const headerIcon = createTag('div', { class: 'pep-header-icon' }, getIconElement('cc-express'));
+    const headerText = createTag('span', { class: 'pep-header-text' }, placeholders['pep-header']);
+    const progressBg = createTag('div', { class: 'pep-progress-bg' });
+    const progressBar = createTag('div', { class: 'pep-progress-bar' });
     const profileWrapper = createTag('div', { class: 'profile-wrapper' });
     const profilePhotoCont = createTag('div', { class: 'profile-img-container' });
     const profilePhoto = createTag('img', { src: profile.avatar });
@@ -27,7 +31,7 @@ export default async function loadLoginUserAutoRedirect() {
     const profileName = createTag('strong', { class: 'profile-name' }, profile.display_name);
     const profileEmail = createTag('span', { class: 'profile-email' }, profile.email);
     const noticeWrapper = createTag('div', { class: 'notice-wrapper' });
-    const noticeText = createTag('span', { class: 'notice-text' }, placeholders['bmtp-cancel-text']);
+    const noticeText = createTag('span', { class: 'notice-text' }, placeholders['pep-cancel']);
     const noticeBtn = createTag('a', { class: 'notice-btn' }, placeholders.cancel);
 
     headerWrapper.append(headerIcon, headerText);

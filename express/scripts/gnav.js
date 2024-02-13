@@ -61,6 +61,46 @@ function loadIMS() {
   }
 }
 
+// eslint-disable-next-line import/prefer-default-export
+export async function buildBreadCrumbArray(prefix) {
+  if (isHomepage || getMetadata('breadcrumbs') !== 'on') {
+    return null;
+  }
+
+  const placeholders = await fetchPlaceholders();
+  const validSecondPathSegments = ['create', 'feature'];
+  const pathSegments = window.location.pathname
+    .split('/')
+    .filter((e) => e !== '')
+    .filter((e) => e !== prefix);
+  const localePath = prefix === '' ? '' : `${prefix}/`;
+  const secondPathSegment = pathSegments[1].toLowerCase();
+  const pagesShortNameElement = document.head.querySelector('meta[name="short-title"]');
+  const pagesShortName = pagesShortNameElement?.getAttribute('content') ?? null;
+  const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
+
+  if (!pagesShortName
+    || pathSegments.length <= 2
+    || !replacedCategory
+    || !validSecondPathSegments.includes(replacedCategory)
+    || prefix !== '') { // Remove this line once locale translations are complete
+    return null;
+  }
+
+  const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+  const buildBreadCrumb = (path, name, parentPath = '') => (
+    { title: capitalize(name), url: `${parentPath}/${path}` }
+  );
+  const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
+  const breadCrumbList = [secondBreadCrumb];
+
+  if (pathSegments.length >= 3) {
+    const thirdBreadCrumb = buildBreadCrumb(pagesShortName, pagesShortName, secondBreadCrumb.url);
+    breadCrumbList.push(thirdBreadCrumb);
+  }
+  return breadCrumbList;
+}
+
 async function loadFEDS() {
   const config = getConfig();
   const prefix = config.locale.prefix.replaceAll('/', '');
@@ -113,45 +153,6 @@ async function loadFEDS() {
     ? 'adobe-express/ax-gnav-x'
     : 'adobe-express/ax-gnav-x-row';
 
-  async function buildBreadCrumbArray() {
-    if (isHomepage || getMetadata('hide-breadcrumbs') === 'true') {
-      return null;
-    }
-    const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
-    const buildBreadCrumb = (path, name, parentPath = '') => (
-      { title: capitalize(name), url: `${parentPath}/${path}` }
-    );
-
-    const placeholders = await fetchPlaceholders();
-    const validSecondPathSegments = ['create', 'feature'];
-    const pathSegments = window.location.pathname
-      .split('/')
-      .filter((e) => e !== '')
-      .filter((e) => e !== prefix);
-    const localePath = prefix === '' ? '' : `${prefix}/`;
-    const secondPathSegment = pathSegments[1].toLowerCase();
-    const pagesShortNameElement = document.head.querySelector('meta[name="short-title"]');
-    const pagesShortName = pagesShortNameElement?.getAttribute('content') ?? null;
-    const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
-
-    if (!pagesShortName
-      || pathSegments.length <= 2
-      || !replacedCategory
-      || !validSecondPathSegments.includes(replacedCategory)
-      || prefix !== '') { // Remove this line once locale translations are complete
-      return null;
-    }
-
-    const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
-    const breadCrumbList = [secondBreadCrumb];
-
-    if (pathSegments.length >= 3) {
-      const thirdBreadCrumb = buildBreadCrumb(pagesShortName, pagesShortName, secondBreadCrumb.url);
-      breadCrumbList.push(thirdBreadCrumb);
-    }
-    return breadCrumbList;
-  }
-
   window.fedsConfig = {
     ...(window.fedsConfig || {}),
 
@@ -186,7 +187,7 @@ async function loadFEDS() {
     } : {},
     breadcrumbs: {
       showLogo: true,
-      links: await buildBreadCrumbArray(),
+      links: await buildBreadCrumbArray(prefix),
     },
   };
 

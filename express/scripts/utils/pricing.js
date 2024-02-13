@@ -198,6 +198,29 @@ function getCountry() {
   return (country.split('_')[0]);
 }
 
+const offerIdSuppressMap = new Map();
+
+export function shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremiumCard,
+  isSpecialEyebrowText, offerId) {
+  if (offerId == null || offerId === undefined) return true;
+  const key = offerId + isSpecialEyebrowText;
+  if (offerIdSuppressMap.has(key)) {
+    return offerIdSuppressMap.get(key);
+  }
+  let suppressOfferEyeBrowText = false;
+  if (isPremiumCard) {
+    if (isSpecialEyebrowText) {
+      suppressOfferEyeBrowText = !(savePer !== '' && offerTextContent.includes('{{savePercentage}}'));
+    } else {
+      suppressOfferEyeBrowText = true;
+    }
+  } else if (offerTextContent) {
+    suppressOfferEyeBrowText = savePer === '' && offerTextContent.includes('{{savePercentage}}');
+  }
+  offerIdSuppressMap.set(key, suppressOfferEyeBrowText);
+  return suppressOfferEyeBrowText;
+}
+
 export const formatSalesPhoneNumber = (() => {
   let numbersMap;
   return async (tags, placeholder = '') => {
@@ -274,6 +297,7 @@ export const getOffer = (() => {
     const lang = getConfig().locale.ietf.split('-')[0];
     const unitPrice = offer.p;
     const customOfferId = offer.oo || offerId;
+    const ooAvailable = offer.oo || false;
 
     return {
       country,
@@ -288,7 +312,9 @@ export const getOffer = (() => {
       basePrice: offer.bp,
       basePriceCurrencyFormatted: formatPrice(offer.bp, currency),
       priceSuperScript: offer.sup,
-      customOfferId: offer.oo || offerId,
+      customOfferId,
+      savePer: offer.savePer,
+      ooAvailable,
     };
   };
 })();
@@ -346,11 +372,13 @@ export async function fetchPlan(planUrl) {
       plan.vatInfo = offer.vatInfo;
       plan.language = offer.lang;
       plan.offerId = offer.customOfferId;
-      plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
+      plan.ooAvailable = offer.ooAvailable;
+      plan.rawPrice = offer.unitPriceCurrencyFormatted?.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
       plan.sup = offer.priceSuperScript ?? '';
-      plan.formatted = offer.unitPriceCurrencyFormatted.replace(
+      plan.savePer = offer.savePer ?? '';
+      plan.formatted = offer.unitPriceCurrencyFormatted?.replace(
         plan.rawPrice[0],
         `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`,
       );
