@@ -1089,7 +1089,7 @@ function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
   const onToggle = () => {
     block.classList.toggle('expanded');
 
-    if (document.body.dataset.device === 'mobile') {
+    if (document.body.dataset.device === 'mobile' || block.classList.contains('mobile')) {
       const tglBtn = block.querySelector('.toggle-button');
       const heading = templateTitle.querySelector('.toggle-bar-top > h4');
 
@@ -1142,7 +1142,7 @@ function decorateHoliday(block, props) {
     block.prepend(animation);
   }
 
-  main.classList.add('with-holiday-templates-banner');
+  if (block.closest('div[class="section section-wrapper template-x-container"]')) main.classList.add('with-holiday-templates-banner');
   block.classList.add('expanded', props.textColor);
   toggleBar.classList.add('toggle-bar');
   topElements.append(heading);

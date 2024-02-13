@@ -1809,6 +1809,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     width: max-content;
     margin: auto;
     cursor: pointer;
+    user-select: none;
 }
 
 .template-x.horizontal.holiday .toggle-bar {
