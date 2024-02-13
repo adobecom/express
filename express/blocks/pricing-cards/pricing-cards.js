@@ -67,7 +67,7 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
           specialPromo.remove();
         }
       } else {
-        savePercentElem.innerHTML = savePercentElem.innerHTML.replace('{{savePercentage}}', response.savePer);
+        specialPromo.innerHTML = specialPromo.innerHTML.replace('{{savePercentage}}', response.savePer);
         specialPromoPercentageEyeBrowTextReplaced = true;
       }
     }
