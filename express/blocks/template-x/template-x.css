@@ -4,6 +4,15 @@ div[class='section section-wrapper browse-by-category-card-fullwidth-container t
     padding-top: 0;
 }
 
+/* holiday special positioning */
+main.with-holiday-templates-banner > div[class='section section-wrapper template-x-container'] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 72px;
+    width: 100%;
+}
+
 .template-x-wrapper.fullwidth {
     max-width: none;
     padding: 0;
@@ -337,8 +346,9 @@ div[class='section section-wrapper browse-by-category-card-fullwidth-container t
     min-height: 220px;
 }
 
-.template-x.horizontal.holiday {
-    min-height: 54px;
+main.with-holiday-templates-banner {
+    padding-top: 72px;
+    position: relative;
 }
 
 .template-x.horizontal.fullwidth:not(.holiday) {
@@ -1570,6 +1580,7 @@ main .template-x .api-templates-toolbar .search-bar-wrapper.collapsed .search-dr
 }
 
 .template-x-wrapper.horizontal {
+    min-height: 54px;
     padding-left: 0;
     padding-right: 0;
 }
@@ -1602,14 +1613,12 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
     transform: translate3d(0, 0, 0);
     height: 232px;
-    width: 170px;
     right: -2px;
 }
 
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-left {
     transform: translate3d(0, 0, 0);
     height: 232px;
-    width: 170px;
     left: -4px
 }
 
@@ -1759,9 +1768,11 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x.horizontal.holiday {
-    position: relative;
-    overflow-x: hidden;
+    position: absolute;
+    overflow: hidden;
+    width: 100%;
     background: var(--color-black);
+    min-height: 72px
 }
 
 .template-x.horizontal.holiday.animated {
@@ -1795,20 +1806,21 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x.horizontal.holiday .template-title {
+    width: max-content;
+    margin: auto;
     cursor: pointer;
+    user-select: none;
 }
 
 .template-x.horizontal.holiday .toggle-bar {
     margin: auto;
     max-width: 925px;
-    gap: 14px;
 }
 
 .template-x.horizontal.holiday .toggle-bar > div:not(.toggle-button) {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    gap: 14px;
     margin: auto;
     align-items: center;
 }
@@ -1821,18 +1833,17 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 .template-x.horizontal.holiday .toggle-bar img {
     display: block;
     max-height: 32px;
-    width: 84px;
-    min-width: 84px;
 }
 
 .template-x.horizontal.holiday .toggle-button {
     align-self: center;
-    transition: margin 0.4s;
+    transition: margin 0.4s, transform 0.4s;
+    padding: 4px 0 16px 0;
 }
 
 .template-x.horizontal.holiday.mobile .toggle-button {
     display: flex;
-    transform: translate(-50%);
+    transform: translateX(0);
     margin-left: 50%;
     padding: 0 0 16px 0;
     width: 110px;
@@ -1840,7 +1851,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 .template-x.horizontal.holiday.expanded.mobile .toggle-button {
     margin-left: 50%;
-    transform: translate(-50%);
+    transform: translateX(-50%);
 }
 
 .template-x.horizontal.holiday .toggle-button a:hover {
@@ -1893,10 +1904,6 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     overflow: hidden;
 }
 
-.template-x.horizontal.holiday.expanded .template-x-wrapper {
-    padding-top: 16px;
-}
-
 .template-x.holiday .carousel-container .carousel-platform {
     scroll-padding: initial;
     max-height: 200px;
@@ -1904,7 +1911,6 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x-container .template-x-wrapper.horizontal.holiday > .template-x.horizontal > .template-title {
-    margin: 0;
     padding: 0 30px 0 30px;
 }
 
@@ -2394,8 +2400,21 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         margin-left: 0;
     }
 
+    .template-x.horizontal.holiday {
+        min-height: 54px;
+    }
+
+    main.with-holiday-templates-banner {
+        padding-top: 54px;
+    }
+    
+    .template-x.horizontal.holiday .toggle-bar {
+        gap: 14px;
+    }
+
     .template-x.horizontal.holiday .toggle-button {
         display: flex;
+        padding: unset;
     }
 
     .template-x.horizontal.holiday.mobile .toggle-button {
@@ -2513,11 +2532,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         margin-bottom: 16px;
         max-width: none;
         display: block;
-    }
-
-    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left,
-    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-right {
-        width: 150px;
     }
 
     .template-x .api-templates-toolbar {
@@ -2685,11 +2699,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         margin-bottom: 20px;
         max-width: none;
         display: block;
-    }
-
-    .template-x.horizontal.fullwidth .carousel-container .carousel-fader-left,
-    .template-x.horizontal.holiday .carousel-container .carousel-fader-right {
-        width: 150px;
     }
 
     .template-x .api-templates-toolbar {
