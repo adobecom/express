@@ -193,7 +193,7 @@ export async function setVisitorCountry() {
 
 function getCountry() {
   const urlParams = new URLSearchParams(window.location.search);
-  let country = urlParams.get('country') || getCookie('international') || sessionStorage.getItem('visitorCountry') || getConfig().locale.prefix.replace('/', '');
+  let country = urlParams.get('country') || getCookie('international') || getConfig().locale.prefix.replace('/', '');
   if (country === 'uk') country = 'gb';
   return (country.split('_')[0]);
 }
