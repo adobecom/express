@@ -44,11 +44,11 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
     } else {
       priceSuffix.textContent = priceSuffixContext;
     }
-    const isPreiumCard = response.ooAvailable || false;
+    const isPremiumCard = response.ooAvailable || false;
     const savePercentElem = pricingArea.querySelector('.card-offer');
     if (savePercentElem && !pricingCardPercentageEyeBrowTextReplaced) {
       const offerTextContent = savePercentElem.textContent;
-      if (shallSuppressOfferEyebrowText(response.savePer, offerTextContent, isPreiumCard,
+      if (shallSuppressOfferEyebrowText(response.savePer, offerTextContent, isPremiumCard,
         false, response.offerId)) {
         savePercentElem.remove();
       } else {
@@ -60,7 +60,7 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
     if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced) {
       const offerTextContent = specialPromo.textContent;
       const shouldSuppress = shallSuppressOfferEyebrowText(response.savePer, offerTextContent,
-        isPreiumCard, true, response.offerId);
+        isPremiumCard, true, response.offerId);
       if (shouldSuppress) {
         if (specialPromo.parentElement) {
           specialPromo.parentElement.classList.remove('special-promo');
@@ -152,7 +152,6 @@ function decorateCard({
     } else {
       specialPromo = createTag('div');
       specialPromo.textContent = cfg;
-      specialPromo.classList.add('card-eyebrow');
       card.classList.add('special-promo');
       card.append(specialPromo);
     }

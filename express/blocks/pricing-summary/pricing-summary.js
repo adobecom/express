@@ -55,9 +55,9 @@ function handlePrice(block, column, eyeBrow) {
     if (planCTA) planCTA.href = buildUrl(url, country, language, offerId);
 
     if (eyeBrow !== null) {
-      const isPreiumCard = ooAvailable || false;
+      const isPremiumCard = ooAvailable || false;
       const offerTextContent = eyeBrow.innerHTML;
-      if (shallSuppressOfferEyebrowText(savePer, offerTextContent, isPreiumCard, true, offerId)) {
+      if (shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremiumCard, true, offerId)) {
         eyeBrow.parentElement.classList.remove('has-pricing-eyebrow');
         eyeBrow.remove;
       } else {
