@@ -4,6 +4,15 @@ div[class='section section-wrapper browse-by-category-card-fullwidth-container t
     padding-top: 0;
 }
 
+/* holiday special positioning */
+main.with-holiday-templates-banner > div[class='section section-wrapper template-x-container'] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 72px;
+    width: 100%;
+}
+
 .template-x-wrapper.fullwidth {
     max-width: none;
     padding: 0;
@@ -336,9 +345,10 @@ div[class='section section-wrapper browse-by-category-card-fullwidth-container t
     margin-right: auto;
     min-height: 220px;
 }
-.template-x-wrapper.horizontal.holiday,
-.template-x.horizontal.holiday {
-    min-height: 80px;
+
+main.with-holiday-templates-banner {
+    padding-top: 72px;
+    position: relative;
 }
 
 .template-x.horizontal.fullwidth:not(.holiday) {
@@ -1759,9 +1769,10 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 .template-x.horizontal.holiday {
     position: absolute;
-    overflow-x: hidden;
+    overflow: hidden;
     width: 100%;
     background: var(--color-black);
+    min-height: 72px
 }
 
 .template-x.horizontal.holiday.animated {
@@ -1825,13 +1836,13 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 .template-x.horizontal.holiday .toggle-button {
     align-self: center;
-    transition: margin 0.4s;
+    transition: margin 0.4s, transform 0.4s;
     padding: 4px 0 16px 0;
 }
 
 .template-x.horizontal.holiday.mobile .toggle-button {
     display: flex;
-    transform: translate(-50%);
+    transform: translateX(0);
     margin-left: 50%;
     padding: 0 0 16px 0;
     width: 110px;
@@ -1839,7 +1850,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 .template-x.horizontal.holiday.expanded.mobile .toggle-button {
     margin-left: 50%;
-    transform: translate(-50%);
+    transform: translateX(-50%);
 }
 
 .template-x.horizontal.holiday .toggle-button a:hover {
@@ -2388,9 +2399,12 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         margin-left: 0;
     }
 
-    .template-x-wrapper.horizontal.holiday,
     .template-x.horizontal.holiday {
         min-height: 54px;
+    }
+
+    main.with-holiday-templates-banner {
+        padding-top: 54px;
     }
     
     .template-x.horizontal.holiday .toggle-bar {

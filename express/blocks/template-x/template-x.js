@@ -1086,24 +1086,43 @@ async function decorateToolbar(block, props) {
 }
 
 function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
+  const onToggle = () => {
+    block.classList.toggle('expanded');
+
+    if (document.body.dataset.device === 'mobile') {
+      const tglBtn = block.querySelector('.toggle-button');
+      const heading = templateTitle.querySelector('.toggle-bar-top > h4');
+
+      if (tglBtn && heading) {
+        const rect = heading.getBoundingClientRect();
+        if (!block.classList.contains('expanded')) {
+          tglBtn.style.marginLeft = `${rect.x}px`;
+        } else {
+          tglBtn.style.removeProperty('margin-left');
+        }
+      }
+    }
+  };
+
   const chev = block.querySelector('.toggle-button-chev');
-  templateTitle.addEventListener('click', () => block.classList.toggle('expanded'));
+  templateTitle.addEventListener('click', () => onToggle());
   chev.addEventListener('click', (e) => {
     e.stopPropagation();
-    block.classList.toggle('expanded');
+    onToggle();
   });
 
-  toggle.addEventListener('click', () => block.classList.toggle('expanded'));
+  toggle.addEventListener('click', () => onToggle());
   link.addEventListener('click', (e) => e.stopPropagation());
 
   setTimeout(() => {
     if (!block.matches(':hover')) {
-      block.classList.toggle('expanded');
+      onToggle();
     }
   }, 3000);
 }
 
 function decorateHoliday(block, props) {
+  const main = document.querySelector('main');
   const mobileViewport = window.innerWidth < 901;
   const templateTitle = block.querySelector('.template-title');
   const toggleBar = templateTitle.querySelector('div');
@@ -1111,7 +1130,7 @@ function decorateHoliday(block, props) {
   const subheading = templateTitle.querySelector('p');
   const link = templateTitle.querySelector('.template-title-link');
   const linkWrapper = link.closest('p');
-  const toggle = createTag('div', { class: 'expanded toggle-button' });
+  const toggle = createTag('div', { class: 'toggle-button' });
   const topElements = createTag('div', { class: 'toggle-bar-top' });
   const bottomElements = createTag('div', { class: 'toggle-bar-bottom' });
   const toggleChev = createTag('div', { class: 'toggle-button-chev' });
@@ -1123,6 +1142,7 @@ function decorateHoliday(block, props) {
     block.prepend(animation);
   }
 
+  main.classList.add('with-holiday-templates-banner');
   block.classList.add('expanded', props.textColor);
   toggleBar.classList.add('toggle-bar');
   topElements.append(heading);
