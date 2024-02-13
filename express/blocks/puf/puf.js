@@ -382,7 +382,7 @@ async function build1ColDesign(block) {
   block.innerHTML = '';
   block.append(pricingCard);
 
-  addPublishDependencies('/express/system/offers-new-saveper-new.json');
+  addPublishDependencies('/express/system/offers-new.json');
   wrapTextAndSup(block);
   block.append(footer);
   formatTextElements(block);
@@ -425,7 +425,7 @@ async function build2ColDesign(block) {
   const intersectionObserver = new IntersectionObserver(callback, options);
   intersectionObserver.observe(rightCard);
   intersectionObserver.observe(leftCard);
-  addPublishDependencies('/express/system/offers-new-saveper-new.json');
+  addPublishDependencies('/express/system/offers-new.json');
   wrapTextAndSup(block);
   block.append(footer);
   formatTextElements(block);
