@@ -117,6 +117,7 @@ function filterBlogPosts(config, index) {
   return result;
 }
 
+// Given a block element, construct a config object from all the links that children of the block.
 function getBlogPostsConfig($block) {
   let config = {};
 
@@ -174,7 +175,6 @@ async function filterAllBlogPostsOnPage() {
 
 async function getFilteredResults(config) {
   const results = await filterAllBlogPostsOnPage();
-
   const configStr = JSON.stringify(config);
   let matchingResult = {};
   results.forEach((res) => {
@@ -203,18 +203,9 @@ async function isInViewport(element) {
       && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
       && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
-}
+} 
 
-// function isInViewport(element) {
-//   const rect =  element.getBoundingClientRect()
-//     return (
-//       rect.top >= 0
-//       && rect.left >= 0
-//       && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-//       && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-//     );
-// }
-
+// Translates the Read More string into the local language
 async function getReadMoreString() {
   const placeholders = await fetchPlaceholders();
   let readMoreString = placeholders['read-more'];
@@ -232,7 +223,6 @@ async function getReadMoreString() {
   return readMoreString
 }
 
-
 // Given a post, get all the required parameters from it to construct a card or hero card
 function getCardParameters(post, dateFormatter) {
   const path = post.path.split('.')[0];
@@ -247,8 +237,6 @@ function getCardParameters(post, dateFormatter) {
     path, title, teaser, dateString, filteredTitle, imagePath
   }
 }
-
-
 
 // For configs with a single featuredd post, get a hero sized card
 async function getHeroCard(post, dateFormatter) {
@@ -371,6 +359,7 @@ function checkStructure(element, querySelectors) {
   return matched;
 }
 
+// Cached language and dateFormatter since creating a Dateformatter is an expensive operation
 let language;
 let dateFormatter;
 
