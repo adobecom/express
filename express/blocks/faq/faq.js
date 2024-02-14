@@ -54,23 +54,6 @@ function decorateFAQBlocks(block) {
     });
     document.head.appendChild($schemaScript);
   }
-
-  // find previous h2 and move it in the FAQ
-  const section = block.closest('.section');
-  if (section && section.previousElementSibling) {
-    const previousSection = section.previousElementSibling;
-    const h2 = previousSection.querySelector('div > h2:last-of-type');
-    // make sure there is no other element
-    if (h2 && !h2.nextElementSibling) {
-      const previous = h2.previousElementSibling;
-      block.before(h2);
-
-      if (!previous) {
-        // remove empty previous section
-        previousSection.remove();
-      }
-    }
-  }
 }
 
 export default async function decorate(block) {
