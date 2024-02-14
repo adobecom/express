@@ -63,6 +63,7 @@ function initSearchFunction(block) {
 
   searchBar.addEventListener('click', (e) => {
     e.stopPropagation();
+    searchBar.scrollIntoView({ behavior: 'smooth' });
     searchDropdown.classList.remove('hidden');
   }, { passive: true });
 

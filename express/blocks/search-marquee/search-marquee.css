@@ -82,7 +82,7 @@ main .search-marquee .search-dropdown-container .trends-container ul {
 main .search-marquee .search-dropdown-container .suggestions-container ul {
     padding-left: 0;
     list-style: none;
-    max-height: 216px;
+    max-height: 164px;
     overflow: auto;
     margin: 0 0 16px -8px;
 }
@@ -238,5 +238,9 @@ main .search-marquee .hidden {
 
     main .search-marquee .search-dropdown-container .free-plans-container .free-plan-widget .plan-widget-tag {
         font-size: var(--body-font-size-m);
+    }
+
+    main .search-marquee .search-dropdown-container .suggestions-container ul {
+        max-height: 216px;
     }
 }
