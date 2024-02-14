@@ -19,3 +19,9 @@
 .block.floating-buttons.hidden {
   bottom: -150px;
 }
+
+.block.floating-buttons > div > div > a,
+.block.floating-buttons > div > div > em, 
+.block.floating-buttons > div > div > strong {
+  flex: 1 1 0;
+}
