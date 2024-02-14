@@ -52,7 +52,7 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
         false, response.offerId)) {
         savePercentElem.remove();
       } else {
-        savePercentElem.textContent = offerTextContent.replace('{{savePercentage}}', response.savePer);
+        savePercentElem.innerHTML = savePercentElem.innerHTML.replace('{{savePercentage}}', response.savePer);
         pricingCardPercentageEyeBrowTextReplaced = true;
       }
     }
@@ -67,7 +67,7 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
           specialPromo.remove();
         }
       } else {
-        specialPromo.textContent = offerTextContent.replace('{{savePercentage}}', response.savePer);
+        specialPromo.innerHTML = specialPromo.innerHTML.replace('{{savePercentage}}', response.savePer);
         specialPromoPercentageEyeBrowTextReplaced = true;
       }
     }
@@ -136,14 +136,15 @@ function decorateCard({
   const card = createTag('div', { class: 'card' });
   header.classList.add('card-header');
   const h2 = header.querySelector('h2');
-  const h2Content = h2.textContent.trim();
-  const headerConfig = /\((.+)\)/.exec(h2Content);
+  const h2Text = h2.textContent.trim();
+  h2.innerHTML = '';
+  const headerConfig = /\((.+)\)/.exec(h2Text);
   const premiumIcon = header.querySelector('img');
   let specialPromo;
-  if (premiumIcon) h2.prepend(premiumIcon);
+  if (premiumIcon) h2.append(premiumIcon);
   if (headerConfig) {
     const cfg = headerConfig[1];
-    h2.textContent = (h2Content.replace(`(${cfg})`, '').trim());
+    h2.append(h2Text.replace(`(${cfg})`, '').trim());
     if (/^\d/.test(cfg)) {
       const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
       headCntDiv.textContent = cfg;
@@ -155,6 +156,8 @@ function decorateCard({
       card.classList.add('special-promo');
       card.append(specialPromo);
     }
+  } else {
+    h2.append(h2Text);
   }
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
