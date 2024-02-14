@@ -285,7 +285,7 @@ export const getOffer = (() => {
       currency = 'USD';
     }
     if (!json) {
-      const resp = await fetch('/express/system/offers-new.json');
+      const resp = await fetch('/express/system/offers-new.json?limit=5000');
       if (!resp.ok) return {};
       json = await resp.json();
     }
