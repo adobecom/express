@@ -194,7 +194,7 @@ const loadImage = (img) => new Promise((resolve) => {
   }
 });
 
-// Load the bounding rect in async mode. Helps metrics, however it can lead to delayed loading of the template list
+//Load the bounding rect in async mode. Helps metrics, however it can lead to delayed loading of the template list
 async function isInViewport(element) {
   const rect =   await element.getBoundingClientRect()
     return (
@@ -204,6 +204,16 @@ async function isInViewport(element) {
       && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
 }
+
+// function isInViewport(element) {
+//   const rect =  element.getBoundingClientRect()
+//     return (
+//       rect.top >= 0
+//       && rect.left >= 0
+//       && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+//       && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+//     );
+// }
 
 async function getReadMoreString() {
   const placeholders = await fetchPlaceholders();
@@ -283,6 +293,16 @@ function getCard(post, dateFormatter) {
   return $card
 }
 
+function getDateFormatter (newLanguage) {
+  language = newLanguage
+    dateFormatter = Intl.DateTimeFormat(language, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      timeZone: 'UTC',
+    })
+}
+
 // Given a blog post element and a config, append all posts defined in the config to the blog post element
 async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const posts = await getFilteredResults(config);
@@ -302,14 +322,10 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   let count = 0;
   const images = [];
 
-  const language = getConfig().locale.ietf;
-  const dateFormatter = Intl.DateTimeFormat(language, {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    timeZone: 'UTC',
-  })
-
+  const newLanguage = getConfig().locale.ietf;
+  if (!dateFormatter || newLanguage !== language){
+    getDateFormatter(newLanguage)
+  } 
 
   if (isHero) {
     let $card = await getHeroCard(posts[0], dateFormatter)
@@ -340,7 +356,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   if (images.length) {
     const section = $blogPosts.closest('.section');
     section.style.display = 'block';
-    const filteredImages = images.filter((i) => isInViewport(i));
+    const filteredImages = images.filter(async (i) => await isInViewport(i));
     const imagePromises = filteredImages.map((img) => loadImage(img));
     await Promise.all(imagePromises);
     delete section.style.display;
@@ -354,6 +370,9 @@ function checkStructure(element, querySelectors) {
   });
   return matched;
 }
+
+let language;
+let dateFormatter;
 
 export default async function decorate($block) {
   const config = getBlogPostsConfig($block);
