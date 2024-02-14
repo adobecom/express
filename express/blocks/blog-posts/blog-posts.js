@@ -204,6 +204,83 @@ function isInViewport(element) {
   );
 }
 
+async function getReadMoreString() {
+  const placeholders = await fetchPlaceholders();
+  let readMoreString = placeholders['read-more'];
+  if (readMoreString === undefined || readMoreString === '') {
+    const locale = getConfig().locale.region;
+    const readMore = {
+      us: 'Read More',
+      uk: 'Read More',
+      jp: 'もっと見る',
+      fr: 'En savoir plus',
+      de: 'Mehr dazu',
+    };
+    readMoreString = readMore[locale] || '&nbsp;&nbsp;&nbsp;&rightarrow;&nbsp;&nbsp;&nbsp;';
+  }
+  return readMoreString
+}
+
+function getCardParameters(post) {
+  const post = posts[i];
+  const path = post.path.split('.')[0];
+  const {
+    title, teaser, image,
+  } = post;
+  const publicationDate = new Date(post.date * 1000);
+  const language = getConfig().locale.ietf;
+  const dateString = publicationDate.toLocaleDateString(language, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+  const filteredTitle = title.replace(/(\s?)(｜|\|)(\s?Adobe\sExpress\s?)$/g, '');
+  const imagePath = image.split('?')[0].split('_')[1];
+  return {
+    path, title, teaser, dateString, filteredTitle, imagePath
+  }
+}
+
+function getCard(post, isHero, readMoreString) {
+  const post = posts[i];
+  const { path, title, teaser, dateString, filteredTitle, imagePath} = getCardParameters(post)
+  if (isHero) {
+
+    const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
+    let $card = createTag('a', {
+      class: 'blog-hero-card',
+      href: path,
+    });
+    const pictureTag = heroPicture.outerHTML;
+    $card.innerHTML = `<div class="blog-card-image">
+      ${pictureTag}
+      </div>
+      <div class="blog-hero-card-body">
+        <h3 class="blog-card-title">${filteredTitle}</h3>
+        <p class="blog-card-teaser">${teaser}</p>
+        <p class="blog-card-date">${dateString}</p>
+        <p class="blog-card-cta button-container">
+          <a href="${path}" title="${readMoreString}" class="button accent">${readMoreString}</a></p>
+      </div>`;
+    return card
+  } else {
+    const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
+    let $card = createTag('a', {
+      class: 'blog-card',
+      href: path,
+    });
+    const pictureTag = cardPicture.outerHTML;
+    $card.innerHTML = `<div class="blog-card-image">
+        ${pictureTag}
+        </div>
+        <h3 class="blog-card-title">${filteredTitle}</h3>
+        <p class="blog-card-teaser">${teaser}</p>
+        <p class="blog-card-date">${dateString}</p>`;
+    return $card
+  }
+}
+
 async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const posts = await getFilteredResults(config);
 
@@ -221,71 +298,25 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const pageEnd = offset + limit;
   let count = 0;
   const images = [];
-  const placeholders = await fetchPlaceholders();
-  let readMoreString = placeholders['read-more'];
-  if (readMoreString === undefined || readMoreString === '') {
-    const locale = getConfig().locale.region;
-    const readMore = {
-      us: 'Read More',
-      uk: 'Read More',
-      jp: 'もっと見る',
-      fr: 'En savoir plus',
-      de: 'Mehr dazu',
-    };
-    readMoreString = readMore[locale] || '&nbsp;&nbsp;&nbsp;&rightarrow;&nbsp;&nbsp;&nbsp;';
-  }
-
+  let readMoreString = await getReadMoreString()
+  console.log('---------')
+  console.log(isHero)
+  console.log(posts)
+  console.log(config)
   for (let i = offset; i < posts.length && count < limit; i += 1) {
-    const post = posts[i];
-    const path = post.path.split('.')[0];
-    const {
-      title, teaser, image,
-    } = post;
-    const publicationDate = new Date(post.date * 1000);
-    const language = getConfig().locale.ietf;
-    const dateString = publicationDate.toLocaleDateString(language, {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      timeZone: 'UTC',
-    });
 
-    const filteredTitle = title.replace(/(\s?)(｜|\|)(\s?Adobe\sExpress\s?)$/g, '');
-    const imagePath = image.split('?')[0].split('_')[1];
-    const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
-    const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
-    let pictureTag = cardPicture.outerHTML;
+    const post = posts[i];
+    let $card = getCard(post, isHero,readMoreString)
     if (isHero) {
-      pictureTag = heroPicture.outerHTML;
-    }
-    const $card = createTag('a', {
-      class: `${isHero ? 'blog-hero-card' : 'blog-card'}`,
-      href: path,
-    });
-    if (isHero) {
-      $card.innerHTML = `<div class="blog-card-image">
-      ${pictureTag}
-      </div>
-      <div class="blog-hero-card-body">
-        <h3 class="blog-card-title">${filteredTitle}</h3>
-        <p class="blog-card-teaser">${teaser}</p>
-        <p class="blog-card-date">${dateString}</p>
-        <p class="blog-card-cta button-container">
-          <a href="${path}" title="${readMoreString}" class="button accent">${readMoreString}</a></p>
-      </div>`;
       $blogPosts.prepend($card);
     } else {
-      $card.innerHTML = `<div class="blog-card-image">
-        ${pictureTag}
-        </div>
-        <h3 class="blog-card-title">${filteredTitle}</h3>
-        <p class="blog-card-teaser">${teaser}</p>
-        <p class="blog-card-date">${dateString}</p>`;
       $cards.append($card);
     }
     images.push($card.querySelector('img'));
     count += 1;
   }
+
+
   if (posts.length > pageEnd && config['load-more']) {
     const $loadMore = createTag('a', { class: 'load-more button secondary', href: '#' });
     $loadMore.innerHTML = config['load-more'];
