@@ -36,9 +36,9 @@
     background-color: var(--color-info-accent);
     width: 100%;
     height: 100%;
-    -webkit-animation: loginRedirectProgress 2s ease;
-    -moz-animation: loginRedirectProgress 2s ease;
-    animation: loginRedirectProgress 2s ease;
+    -webkit-animation: loginRedirectProgress 4s ease;
+    -moz-animation: loginRedirectProgress 4s ease;
+    animation: loginRedirectProgress 4s ease;
 }
 
 .pep-container .profile-wrapper {

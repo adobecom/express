@@ -1,3 +1,5 @@
+/* global _satellite */
+
 import {
   createTag,
   fetchPlaceholders,
@@ -7,6 +9,35 @@ import {
 import BlockMediator from '../../scripts/block-mediator.js';
 
 const OPT_OUT_KEY = 'no-direct-path-to-product';
+
+const adobeEventName = 'adobe.com:express:cta:pep';
+
+function track(name) {
+  _satellite?.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name,
+          linkClicks: {
+            value: 1,
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        digitalData: {
+          primaryEvent: {
+            eventInfo: {
+              eventName: name,
+            },
+          },
+        },
+      },
+    },
+  });
+}
 
 export default async function loadLoginUserAutoRedirect() {
   let followThrough = true;
@@ -46,6 +77,7 @@ export default async function loadLoginUserAutoRedirect() {
     header.append(container);
 
     noticeBtn.addEventListener('click', () => {
+      track(`${adobeEventName}:cancel`);
       container.remove();
       followThrough = false;
       localStorage.setItem(OPT_OUT_KEY, '3');
@@ -62,6 +94,8 @@ export default async function loadLoginUserAutoRedirect() {
 
     // disable dptp to not annoy user when they come back to AX site.
     localStorage.setItem(OPT_OUT_KEY, '3');
+
+    track(`${adobeEventName}:redirect`);
 
     if (primaryCtaUrl) {
       window.location.assign(primaryCtaUrl);
@@ -81,6 +115,6 @@ export default async function loadLoginUserAutoRedirect() {
     const container = buildRedirectAlert(profile);
     setTimeout(() => {
       if (followThrough) initRedirect(container);
-    }, 2000);
+    }, 4000);
   }
 }
