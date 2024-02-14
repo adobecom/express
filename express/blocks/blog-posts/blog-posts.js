@@ -194,14 +194,15 @@ const loadImage = (img) => new Promise((resolve) => {
   }
 });
 
-function isInViewport(element) {
-  const rect = element.getBoundingClientRect();
-  return (
-    rect.top >= 0
-    && rect.left >= 0
-    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-    && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  );
+// Load the bounding rect in async mode. Helps metrics, however it can lead to delayed loading of the template list
+async function isInViewport(element) {
+  const rect =   await element.getBoundingClientRect()
+    return (
+      rect.top >= 0
+      && rect.left >= 0
+      && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+      && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
 }
 
 async function getReadMoreString() {
