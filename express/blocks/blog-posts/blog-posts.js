@@ -194,16 +194,16 @@ const loadImage = (img) => new Promise((resolve) => {
   }
 });
 
-//Load the bounding rect in async mode. Helps metrics, however it can lead to delayed loading of the template list
+// Load the bounding rect in async mode.
 async function isInViewport(element) {
-  const rect =   await element.getBoundingClientRect()
-    return (
-      rect.top >= 0
-      && rect.left >= 0
-      && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-      && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-} 
+  const rect = await element.getBoundingClientRect();
+  return (
+    rect.top >= 0
+    && rect.left >= 0
+    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+    && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
 
 // Translates the Read More string into the local language
 async function getReadMoreString() {
@@ -220,7 +220,7 @@ async function getReadMoreString() {
     };
     readMoreString = readMore[locale] || '&nbsp;&nbsp;&nbsp;&rightarrow;&nbsp;&nbsp;&nbsp;';
   }
-  return readMoreString
+  return readMoreString;
 }
 
 // Given a post, get all the required parameters from it to construct a card or hero card
@@ -230,18 +230,20 @@ function getCardParameters(post, dateFormatter) {
     title, teaser, image,
   } = post;
   const publicationDate = new Date(post.date * 1000);
-  const dateString = dateFormatter.format(publicationDate)
+  const dateString = dateFormatter.format(publicationDate);
   const filteredTitle = title.replace(/(\s?)(｜|\|)(\s?Adobe\sExpress\s?)$/g, '');
   const imagePath = image.split('?')[0].split('_')[1];
   return {
-    path, title, teaser, dateString, filteredTitle, imagePath
-  }
+    path, title, teaser, dateString, filteredTitle, imagePath,
+  };
 }
 
 // For configs with a single featuredd post, get a hero sized card
 async function getHeroCard(post, dateFormatter) {
-  const readMoreString = await getReadMoreString()
-  const { path, title, teaser, dateString, filteredTitle, imagePath } = getCardParameters(post, dateFormatter)
+  const readMoreString = await getReadMoreString();
+  const {
+    path, title, teaser, dateString, filteredTitle, imagePath,
+  } = getCardParameters(post, dateFormatter);
   const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
   const $card = createTag('a', {
     class: 'blog-hero-card',
@@ -258,16 +260,15 @@ async function getHeroCard(post, dateFormatter) {
       <p class="blog-card-cta button-container">
         <a href="${path}" title="${readMoreString}" class="button accent">${readMoreString}</a></p>
     </div>`;
-  return $card
+  return $card;
 }
-
 // For configs with more than one post, get regular cards
 function getCard(post, dateFormatter) {
-
-  const { path, title, teaser, dateString, filteredTitle, imagePath } = getCardParameters(post, dateFormatter)
-
+  const {
+    path, title, teaser, dateString, filteredTitle, imagePath,
+  } = getCardParameters(post, dateFormatter);
   const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
-  let $card = createTag('a', {
+  const $card = createTag('a', {
     class: 'blog-card',
     href: path,
   });
@@ -278,20 +279,23 @@ function getCard(post, dateFormatter) {
         <h3 class="blog-card-title">${filteredTitle}</h3>
         <p class="blog-card-teaser">${teaser}</p>
         <p class="blog-card-date">${dateString}</p>`;
-  return $card
+  return $card;
+}
+// Cached language and dateFormatter since creating a Dateformatter is an expensive operation
+let language;
+let dateFormatter;
+
+function getDateFormatter(newLanguage) {
+  language = newLanguage;
+  dateFormatter = Intl.DateTimeFormat(language, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
 }
 
-function getDateFormatter (newLanguage) {
-  language = newLanguage
-    dateFormatter = Intl.DateTimeFormat(language, {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      timeZone: 'UTC',
-    })
-}
-
-// Given a blog post element and a config, append all posts defined in the config to the blog post element
+// Given a blog post element and a config, append all posts defined in the config to $blogPosts
 async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const posts = await getFilteredResults(config);
   // If a blog config has only one featured item, then build the item as a hero card.
@@ -311,19 +315,19 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const images = [];
 
   const newLanguage = getConfig().locale.ietf;
-  if (!dateFormatter || newLanguage !== language){
-    getDateFormatter(newLanguage)
-  } 
+  if (!dateFormatter || newLanguage !== language) {
+    getDateFormatter(newLanguage);
+  }
 
   if (isHero) {
-    let $card = await getHeroCard(posts[0], dateFormatter)
+    const $card = await getHeroCard(posts[0], dateFormatter);
     $blogPosts.prepend($card);
     images.push($card.querySelector('img'));
-    count = 1
+    count = 1;
   } else {
     for (let i = offset; i < posts.length && count < limit; i += 1) {
       const post = posts[i];
-      let $card = getCard(post, dateFormatter)
+      const $card = getCard(post, dateFormatter);
       $cards.append($card);
       images.push($card.querySelector('img'));
       count += 1;
@@ -344,7 +348,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   if (images.length) {
     const section = $blogPosts.closest('.section');
     section.style.display = 'block';
-    const filteredImages = images.filter(async (i) => await isInViewport(i));
+    const filteredImages = images.filter(async (i) => isInViewport(i));
     const imagePromises = filteredImages.map((img) => loadImage(img));
     await Promise.all(imagePromises);
     delete section.style.display;
@@ -358,10 +362,6 @@ function checkStructure(element, querySelectors) {
   });
   return matched;
 }
-
-// Cached language and dateFormatter since creating a Dateformatter is an expensive operation
-let language;
-let dateFormatter;
 
 export default async function decorate($block) {
   const config = getBlogPostsConfig($block);
