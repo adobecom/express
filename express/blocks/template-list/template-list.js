@@ -113,7 +113,8 @@ async function getFallbackMsg(tasks = '') {
     return tasks ? fallBacktextTemplate.replaceAll('{{tasks}}', tasks.toString()) : fallBacktextTemplate;
   }
 
-  return `Sorry we couldn't find any results for what you searched for, try some of these popular ${tasks ? ` ${tasks.toString()} ` : ''}templates instead.`;
+  return `Sorry we couldn't find any results for what you searched for, try some of these popular ${
+    tasks ? ` ${tasks.toString()} ` : ''}templates instead.`;
 }
 
 async function fetchTemplates(props) {
@@ -227,6 +228,7 @@ async function processResponse(props) {
         title: placeholders['edit-this-template'] ?? 'Edit this template',
         class: 'button accent',
       });
+
       $button.textContent = placeholders['edit-this-template'] ?? 'Edit this template';
       imgWrapper.append(img);
       $buttonWrapper.append($button);
@@ -256,51 +258,8 @@ async function fetchBlueprint(pathname) {
   return ($main);
 }
 
-function handleLinkedImages($imgLink, $tmplt) {
-  if ($imgLink) {
-    const $parent = $imgLink.closest('div');
-    if (!$imgLink.href.includes('.mp4')) {
-      linkImage($parent);
-    } else {
-      let videoLink = $imgLink.href;
-      if (videoLink.includes('/media_')) {
-        videoLink = `./media_${videoLink.split('/media_')[1]}`;
-      }
-      $tmplt.querySelectorAll(':scope br').forEach(($br) => $br.remove());
-      const $picture = $tmplt.querySelector('picture');
-      if ($picture) {
-        const $img = $tmplt.querySelector('img');
-        const $video = createTag('video', {
-          playsinline: '',
-          autoplay: '',
-          loop: '',
-          muted: '',
-          poster: $img.getAttribute('src'),
-          title: $img.getAttribute('alt'),
-        });
-        $video.append(createTag('source', {
-          src: videoLink,
-          type: 'video/mp4',
-        }));
-        $parent.replaceChild($video, $picture);
-        $imgLink.remove();
-        $video.addEventListener('canplay', () => {
-          $video.muted = true;
-          const playPromise = $video.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {
-              // ignore
-            });
-          }
-        });
-      }
-    }
-  }
-}
-
 function populateTemplates($block, templates, props) {
-  for (let i = 0; i < templates.length; i += 1) {
-    let $tmplt = templates[i];
+  for (let $tmplt of templates) {
     const isPlaceholder = $tmplt.querySelector(':scope > div:first-of-type > img[src*=".svg"], :scope > div:first-of-type > svg');
     const $linkContainer = $tmplt.querySelector(':scope > div:nth-of-type(2)');
     const $rowWithLinkInFirstCol = $tmplt.querySelector(':scope > div:first-of-type > a');
@@ -346,7 +305,6 @@ function populateTemplates($block, templates, props) {
             if (ratios?.length === 2) {
               const width = (ratios[0] / ratios[1]) * height;
               $tmplt.style = `width: ${width}px`;
-
               if (width / height > 1.3) {
                 $tmplt.classList.add('tall');
               }
@@ -374,12 +332,50 @@ function populateTemplates($block, templates, props) {
     if (!$tmplt.querySelectorAll(':scope > div > *').length) {
       // remove empty row
       $tmplt.remove();
-      return;
     }
     $tmplt.classList.add('template');
 
     // wrap "linked images" with link
-    handleLinkedImages($rowWithLinkInFirstCol, $tmplt);
+    const $imgLink = $tmplt.querySelector(':scope > div:first-of-type a');
+    if ($imgLink) {
+      const $parent = $imgLink.closest('div');
+      if (!$imgLink.href.includes('.mp4')) {
+        linkImage($parent);
+      } else {
+        let videoLink = $imgLink.href;
+        if (videoLink.includes('/media_')) {
+          videoLink = `./media_${videoLink.split('/media_')[1]}`;
+        }
+        $tmplt.querySelectorAll(':scope br').forEach(($br) => $br.remove());
+        const $picture = $tmplt.querySelector('picture');
+        if ($picture) {
+          const $img = $tmplt.querySelector('img');
+          const $video = createTag('video', {
+            playsinline: '',
+            autoplay: '',
+            loop: '',
+            muted: '',
+            poster: $img.getAttribute('src'),
+            title: $img.getAttribute('alt'),
+          });
+          $video.append(createTag('source', {
+            src: videoLink,
+            type: 'video/mp4',
+          }));
+          $parent.replaceChild($video, $picture);
+          $imgLink.remove();
+          $video.addEventListener('canplay', () => {
+            $video.muted = true;
+            const playPromise = $video.play();
+            if (playPromise !== undefined) {
+              playPromise.catch(() => {
+                // ignore
+              });
+            }
+          });
+        }
+      }
+    }
 
     if (isPlaceholder) {
       $tmplt.classList.add('placeholder');
