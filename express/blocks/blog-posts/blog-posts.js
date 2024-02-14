@@ -221,20 +221,15 @@ async function getReadMoreString() {
   return readMoreString
 }
 
+
 // Given a post, get all the required parameters from it to construct a card or hero card
-function getCardParameters(post) {
+function getCardParameters(post, dateFormatter) {
   const path = post.path.split('.')[0];
   const {
     title, teaser, image,
   } = post;
   const publicationDate = new Date(post.date * 1000);
-  const language = getConfig().locale.ietf;
-  const dateString = publicationDate.toLocaleDateString(language, {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
+  const dateString = dateFormatter.format(publicationDate)
   const filteredTitle = title.replace(/(\s?)(｜|\|)(\s?Adobe\sExpress\s?)$/g, '');
   const imagePath = image.split('?')[0].split('_')[1];
   return {
@@ -242,10 +237,12 @@ function getCardParameters(post) {
   }
 }
 
+
+
 // For configs with a single featuredd post, get a hero sized card
-async function getHeroCard(post) {
+async function getHeroCard(post, dateFormatter) {
   const readMoreString = await getReadMoreString()
-  const { path, title, teaser, dateString, filteredTitle, imagePath } = getCardParameters(post)
+  const { path, title, teaser, dateString, filteredTitle, imagePath } = getCardParameters(post, dateFormatter)
   const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
   const $card = createTag('a', {
     class: 'blog-hero-card',
@@ -266,9 +263,9 @@ async function getHeroCard(post) {
 }
 
 // For configs with more than one post, get regular cards
-function getCard(post) {
+function getCard(post, dateFormatter) {
 
-  const { path, title, teaser, dateString, filteredTitle, imagePath } = getCardParameters(post)
+  const { path, title, teaser, dateString, filteredTitle, imagePath } = getCardParameters(post, dateFormatter)
 
   const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
   let $card = createTag('a', {
@@ -283,12 +280,13 @@ function getCard(post) {
         <p class="blog-card-teaser">${teaser}</p>
         <p class="blog-card-date">${dateString}</p>`;
   return $card
-
 }
 
+// Given a blog post element and a config, append all posts defined in the config to the blog post element
 async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const posts = await getFilteredResults(config);
-
+  console.log(config)
+  // If a blog config has only one featured item, then build the item as a hero card.
   const isHero = config.featured && config.featured.length === 1;
 
   const limit = config['page-size'] || 12;
@@ -304,17 +302,24 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   let count = 0;
   const images = [];
 
+  const language = getConfig().locale.ietf;
+  const dateFormatter = Intl.DateTimeFormat(language, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'UTC',
+  })
+
 
   if (isHero) {
-
-    let $card = await getHeroCard(posts[0])
+    let $card = await getHeroCard(posts[0], dateFormatter)
     $blogPosts.prepend($card);
     images.push($card.querySelector('img'));
     count = 1
   } else {
     for (let i = offset; i < posts.length && count < limit; i += 1) {
       const post = posts[i];
-      let $card = getCard(post)
+      let $card = getCard(post, dateFormatter)
       $cards.append($card);
       images.push($card.querySelector('img'));
       count += 1;
