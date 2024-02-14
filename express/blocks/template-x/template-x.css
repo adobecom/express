@@ -202,6 +202,10 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     font-size: var(--body-font-size-m);
 }
 
+.template-x.horizontal.mini .template-title.horizontal p {
+    margin-bottom: 0;
+}
+
 .template-x-wrapper .template-link,
 .template-x-wrapper .template-title-link {
     text-decoration: none;
@@ -476,6 +480,7 @@ main.with-holiday-templates-banner {
 .template-x.fullwidth .template:not(.placeholder) .button-container {
     position: absolute;
     width: 120%;
+    max-width: 90vw;
     border-radius: 20px;
     min-height: 120%;
     top: 50%;
@@ -1615,13 +1620,16 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     margin-right: 0;
 }
 
+.template-x.horizontal.mini .carousel-container {
+    margin-bottom: 0;
+}
+
 .template-x.horizontal .carousel-platform {
     scroll-padding: 12px;
 }
 
-
 .template-x.horizontal.mini .carousel-platform {
-    padding: 36px;
+    padding: 32px;
 } 
 
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
@@ -2127,7 +2135,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 nav ol.templates-breadcrumbs {
     list-style: none;
-    margin: 0;
+    margin: 0 0 0 16px;
     padding: 0;
     display: flex;
 }
