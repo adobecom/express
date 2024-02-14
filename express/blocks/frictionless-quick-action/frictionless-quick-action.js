@@ -11,7 +11,7 @@ let ccEverywhere;
 let container;
 
 function startSDK(data) {
-  const CDN_URL = 'https://dev.cc-embed.adobe.com/sdk/prbuilds/3p/PR-1327/CCEverywhere.js';
+  const CDN_URL = 'https://dev.cc-embed.adobe.com/sdk/prbuilds/3p/PR-1338/CCEverywhere.js';
   loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
       return;
