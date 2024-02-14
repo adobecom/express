@@ -1,3 +1,7 @@
+div[class='section section-wrapper floating-buttons-container'] {
+  padding: 0;
+}
+
 .block.floating-buttons {
   position: fixed;
   bottom: 0;
@@ -10,9 +14,10 @@
 }
 
 .block.floating-buttons > div > div {
-  height: 75px;
+  min-height: 75px;
+  max-height: 150px;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
 }
 
@@ -20,8 +25,17 @@
   bottom: -150px;
 }
 
-.block.floating-buttons > div > div > a,
-.block.floating-buttons > div > div > em, 
-.block.floating-buttons > div > div > strong {
+.block.floating-buttons > div > div > a.button:any-link {
   flex: 1 1 0;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (min-width: 900px) {
+  .block.floating-buttons > div > div > a.button:any-link {
+    flex: initial;
+    display: inline-block;
+  }
 }

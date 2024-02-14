@@ -29,15 +29,19 @@ export default async function decorate(block) {
   block.classList.add('hidden');
 
   buttons.forEach((btn) => {
-    if (btn.parentElement.tagName === 'EM') {
-      btn.classList.add('primary', 'reverse');
-    }
+    const parentEl = btn.parentElement;
 
-    if (btn.parentElement.tagName === 'STRONG') {
-      btn.classList.add('gradient');
-    }
+    if (['EM', 'STRONG'].includes(parentEl.tagName)) {
+      if (parentEl.tagName === 'EM') {
+        btn.classList.add('primary', 'reverse');
+      }
 
-    if (btn.parentElement.tagName === 'DIV') {
+      if (parentEl.tagName === 'STRONG') {
+        btn.classList.add('gradient');
+      }
+
+      parentEl.parentElement.replaceChild(btn, parentEl);
+    } else {
       btn.classList.add('accent', 'cta');
     }
 
