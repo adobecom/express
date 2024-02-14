@@ -81,6 +81,6 @@ export default async function loadLoginUserAutoRedirect() {
     const container = buildRedirectAlert(profile);
     setTimeout(() => {
       if (followThrough) initRedirect(container);
-    }, 2000);
+    }, 4000);
   }
 }
