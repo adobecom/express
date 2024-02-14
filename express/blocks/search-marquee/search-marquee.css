@@ -109,18 +109,19 @@ main .search-marquee .search-dropdown-container .trends-container .trends-wrappe
     color: var(--color-black);
 }
 
-main .search-marquee .search-dropdown-container .suggestions-container {
-    min-width: 300px;
-}
-
 main .search-marquee .search-dropdown-container .free-plans-container .free-plan-widget {
     width: 100%;
     border-radius: 0 0 12px 12px;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
     margin: 0;
     justify-content: center;
+}
+
+main .search-marquee .search-dropdown-container .free-plans-container .free-plan-widget .plan-widget-tag {
+    font-size: var(--body-font-size-s);
 }
 
 main .search-marquee .search-bar-wrapper {
@@ -225,12 +226,6 @@ main .search-marquee .hidden {
     display: none;
 }
 
-@media (min-width: 600px) {
-    main .search-marquee .search-dropdown-container .free-plans-container .free-plan-widget {
-        flex-direction: row;
-    }
-}
-
 @media (min-width: 900px) {
     main .search-marquee > div:first-of-type h1 {
         font-size: var(--heading-font-size-xl);
@@ -239,5 +234,9 @@ main .search-marquee .hidden {
     main .search-marquee > div:first-of-type p {
         font-size: var(--body-font-size-l);
         max-width: 900px;
+    }
+
+    main .search-marquee .search-dropdown-container .free-plans-container .free-plan-widget .plan-widget-tag {
+        font-size: var(--body-font-size-m);
     }
 }

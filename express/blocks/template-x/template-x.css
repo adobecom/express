@@ -510,7 +510,7 @@ main.with-holiday-templates-banner {
     width: calc(100% + 24px);
 }
 
-.template-x.horizontal .template:not(.placeholder) .button-container {
+.template-x.horizontal.mini .template:not(.placeholder) .button-container {
     height: calc(100% + 56px);
     width: calc(100% + 40px);
 }
