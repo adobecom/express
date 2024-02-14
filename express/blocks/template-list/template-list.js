@@ -228,8 +228,6 @@ async function processResponse(props) {
         title: placeholders['edit-this-template'] ?? 'Edit this template',
         class: 'button accent',
       });
-      console.log('------')
-      console.log(img)
       $button.textContent = placeholders['edit-this-template'] ?? 'Edit this template';
       imgWrapper.append(img);
       $buttonWrapper.append($button);

@@ -285,7 +285,6 @@ function getCard(post, dateFormatter) {
 // Given a blog post element and a config, append all posts defined in the config to the blog post element
 async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const posts = await getFilteredResults(config);
-  console.log(config)
   // If a blog config has only one featured item, then build the item as a hero card.
   const isHero = config.featured && config.featured.length === 1;
 
