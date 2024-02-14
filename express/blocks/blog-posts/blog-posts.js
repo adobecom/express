@@ -221,8 +221,8 @@ async function getReadMoreString() {
   return readMoreString
 }
 
+// Given a post, get all the required parameters from it to construct a card or hero card
 function getCardParameters(post) {
- 
   const path = post.path.split('.')[0];
   const {
     title, teaser, image,
@@ -242,43 +242,48 @@ function getCardParameters(post) {
   }
 }
 
-function getCard(post, isHero, readMoreString) {
- 
-  const { path, title, teaser, dateString, filteredTitle, imagePath} = getCardParameters(post)
-  if (isHero) {
+// For configs with a single featuredd post, get a hero sized card
+async function getHeroCard(post) {
+  const readMoreString = await getReadMoreString()
+  const { path, title, teaser, dateString, filteredTitle, imagePath } = getCardParameters(post)
+  const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
+  const $card = createTag('a', {
+    class: 'blog-hero-card',
+    href: path,
+  });
+  const pictureTag = heroPicture.outerHTML;
+  $card.innerHTML = `<div class="blog-card-image">
+    ${pictureTag}
+    </div>
+    <div class="blog-hero-card-body">
+      <h3 class="blog-card-title">${filteredTitle}</h3>
+      <p class="blog-card-teaser">${teaser}</p>
+      <p class="blog-card-date">${dateString}</p>
+      <p class="blog-card-cta button-container">
+        <a href="${path}" title="${readMoreString}" class="button accent">${readMoreString}</a></p>
+    </div>`;
+  return $card
+}
 
-    const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
-    let $card = createTag('a', {
-      class: 'blog-hero-card',
-      href: path,
-    });
-    const pictureTag = heroPicture.outerHTML;
-    $card.innerHTML = `<div class="blog-card-image">
-      ${pictureTag}
-      </div>
-      <div class="blog-hero-card-body">
-        <h3 class="blog-card-title">${filteredTitle}</h3>
-        <p class="blog-card-teaser">${teaser}</p>
-        <p class="blog-card-date">${dateString}</p>
-        <p class="blog-card-cta button-container">
-          <a href="${path}" title="${readMoreString}" class="button accent">${readMoreString}</a></p>
-      </div>`;
-    return $card
-  } else {
-    const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
-    let $card = createTag('a', {
-      class: 'blog-card',
-      href: path,
-    });
-    const pictureTag = cardPicture.outerHTML;
-    $card.innerHTML = `<div class="blog-card-image">
+// For configs with more than one post, get regular cards
+function getCard(post) {
+
+  const { path, title, teaser, dateString, filteredTitle, imagePath } = getCardParameters(post)
+
+  const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
+  let $card = createTag('a', {
+    class: 'blog-card',
+    href: path,
+  });
+  const pictureTag = cardPicture.outerHTML;
+  $card.innerHTML = `<div class="blog-card-image">
         ${pictureTag}
         </div>
         <h3 class="blog-card-title">${filteredTitle}</h3>
         <p class="blog-card-teaser">${teaser}</p>
         <p class="blog-card-date">${dateString}</p>`;
-    return $card
-  }
+  return $card
+
 }
 
 async function decorateBlogPosts($blogPosts, config, offset = 0) {
@@ -298,20 +303,23 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   const pageEnd = offset + limit;
   let count = 0;
   const images = [];
-  let readMoreString = await getReadMoreString()
-  for (let i = offset; i < posts.length && count < limit; i += 1) {
 
-    const post = posts[i];
-    let $card = getCard(post, isHero,readMoreString)
-    if (isHero) {
-      $blogPosts.prepend($card);
-    } else {
-      $cards.append($card);
-    }
+
+  if (isHero) {
+
+    let $card = await getHeroCard(posts[0])
+    $blogPosts.prepend($card);
     images.push($card.querySelector('img'));
-    count += 1;
+    count = 1
+  } else {
+    for (let i = offset; i < posts.length && count < limit; i += 1) {
+      const post = posts[i];
+      let $card = getCard(post)
+      $cards.append($card);
+      images.push($card.querySelector('img'));
+      count += 1;
+    }
   }
-
 
   if (posts.length > pageEnd && config['load-more']) {
     const $loadMore = createTag('a', { class: 'load-more button secondary', href: '#' });
