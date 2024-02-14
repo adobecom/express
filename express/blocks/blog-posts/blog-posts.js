@@ -222,7 +222,7 @@ async function getReadMoreString() {
 }
 
 function getCardParameters(post) {
-  const post = posts[i];
+ 
   const path = post.path.split('.')[0];
   const {
     title, teaser, image,
@@ -243,7 +243,7 @@ function getCardParameters(post) {
 }
 
 function getCard(post, isHero, readMoreString) {
-  const post = posts[i];
+ 
   const { path, title, teaser, dateString, filteredTitle, imagePath} = getCardParameters(post)
   if (isHero) {
 
@@ -263,7 +263,7 @@ function getCard(post, isHero, readMoreString) {
         <p class="blog-card-cta button-container">
           <a href="${path}" title="${readMoreString}" class="button accent">${readMoreString}</a></p>
       </div>`;
-    return card
+    return $card
   } else {
     const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
     let $card = createTag('a', {
@@ -299,10 +299,6 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   let count = 0;
   const images = [];
   let readMoreString = await getReadMoreString()
-  console.log('---------')
-  console.log(isHero)
-  console.log(posts)
-  console.log(config)
   for (let i = offset; i < posts.length && count < limit; i += 1) {
 
     const post = posts[i];
