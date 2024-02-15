@@ -41,14 +41,10 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo) {
         }
       });
     } else {
-      const phTextArr = placeholderArr.map((phText) => {
+      const priceSuffixContent = placeholderArr.map((phText) => {
         const key = phText.replace('{{', '').replace('}}', '');
-        if (key.includes('vat') && !response.showVat) {
-          return '';
-        }
-        return placeholders[key] ? placeholders[key] : '';
-      });
-      const priceSuffixContent = phTextArr.join(' ');
+        return (key.includes('vat') && !response.showVat) ? '' : placeholders[key] || '';
+      }).join(' ');
       priceSuffix.textContent = priceSuffixContent;
     }
     const isPremiumCard = response.ooAvailable || false;
