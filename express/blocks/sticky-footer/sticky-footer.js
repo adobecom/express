@@ -74,10 +74,20 @@ function attachScrollHandler() {
   });
 }
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 /**
  * @param {HTMLDivElement} $block
  */
 export default function decorate($block) {
+  addTempWrapper($block, 'sticky-footer');
+
   if (document.body.dataset.device === 'mobile') {
     $block.remove();
   }

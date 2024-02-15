@@ -185,7 +185,17 @@ function alignContent(block) {
   setElementsHeight(contentWrappers);
 }
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default async function decorate(block) {
+  addTempWrapper(block, 'pricing-summary');
+
   setVisitorCountry();
   const pricingContainer = block.classList.contains('feature') ? block.children[2] : block.children[1];
   const featureColumns = block.classList.contains('feature') ? Array.from(block.children[3].children) : null;

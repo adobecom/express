@@ -1656,7 +1656,17 @@ function determineTemplateXType(props) {
   return type;
 }
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default async function decorate(block) {
+  addTempWrapper(block, 'template-x');
+
   const props = constructProps(block);
   block.innerHTML = '';
   await buildTemplateList(block, props, determineTemplateXType(props));

@@ -484,7 +484,17 @@ function initState() {
   });
 }
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default async function decorate(block) {
+  addTempWrapper(block, 'template-list');
+
   if (!(/localhost:3000/.test(window.location.host) || /stage\.adobe\.com/.test(window.location.hostname))) {
     block.style.display = 'none';
     return;

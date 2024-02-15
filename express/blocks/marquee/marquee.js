@@ -240,7 +240,18 @@ export async function transformToVideoLink(cell, a) {
   }
 }
 
+// marquee-wrapper's style is defined in marquee.css and search-marquee
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default async function decorate(block) {
+  addTempWrapper(block, 'marquee');
+
   const possibleBreakpoints = breakpointConfig.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const animations = {};

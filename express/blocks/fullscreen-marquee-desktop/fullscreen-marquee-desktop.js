@@ -139,7 +139,17 @@ async function buildApp(block, content) {
   return appFrame;
 }
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default async function decorate(block) {
+  addTempWrapper(block, 'fullscreen-marquee-desktop');
+
   const rows = Array.from(block.children);
   const heading = rows[0] ? rows[0].querySelector('div') : null;
   const background = rows[2] ? rows[2].querySelector('picture') : null;

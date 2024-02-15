@@ -3,7 +3,17 @@ import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import buildPaginatedCarousel from '../shared/paginated-carousel.js';
 import { buildAppStoreBadge } from '../shared/app-store-badge.js';
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default async function decorate($block) {
+  addTempWrapper($block, 'carousel-card-mobile');
+
   const payload = {
     carouselArray: [],
     other: [],

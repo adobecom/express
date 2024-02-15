@@ -113,7 +113,17 @@ const handlePillSize = (pill) => {
   return `${sizes[size]?.[0] ?? sizes[1]}-pill`;
 };
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 const init = (block) => {
+  addTempWrapper(block, 'tabs-ax');
+
   // to avoid hero style conflicts
   block.closest('.hero.hero-noimage')?.classList?.remove('hero', 'hero-noimage');
   const rootElem = block.closest('.fragment') || document;

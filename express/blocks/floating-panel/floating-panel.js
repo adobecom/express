@@ -138,7 +138,17 @@ function standardizeSection(section, audience) {
   }
 }
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default async function decorateBlock(block) {
+  addTempWrapper(block, 'floating-panel');
+
   if (block.classList.contains('spreadsheet-powered')) {
     const audience = block.querySelector(':scope > div').textContent.trim();
     const data = await collectFloatingButtonData();

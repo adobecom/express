@@ -181,7 +181,17 @@ const getId = (function idSetups() {
   return () => gen.next().value;
 }());
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default async function init(el) {
+  addTempWrapper(el, 'pricing-table');
+
   const blockId = getId();
   el.id = `pricing-table-${blockId + 1}`;
   el.setAttribute('role', 'table');

@@ -81,10 +81,20 @@ function addScrollAnimation(block, scrollTo) {
   lazyLoadLottiePlayer(block);
 }
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 /**
  * @param {HTMLDivElement} block
  */
 export default async function decorate(block) {
+  addTempWrapper(block, 'hero-3d');
+
   const conf = readBlockConfig(block);
   delete conf.desktop;
   delete conf.mobile;

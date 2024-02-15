@@ -3,7 +3,19 @@ import {
   collectFloatingButtonData,
 } from '../shared/floating-cta.js';
 
+// floating-button-wrapper's style is defined in app-banner.css,
+//   branch-io.css, bubble-ui-button.css and toc.css
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default async function decorate(block) {
+  addTempWrapper(block, 'floating-button');
+
   if (block.classList.contains('spreadsheet-powered')) {
     const audience = block.querySelector(':scope > div').textContent.trim();
     if (audience === 'mobile') {

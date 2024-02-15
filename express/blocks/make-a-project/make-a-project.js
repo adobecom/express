@@ -2,7 +2,17 @@ import { createTag } from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import buildCarousel from '../shared/carousel.js';
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default function decorate($block) {
+  addTempWrapper($block, 'make-a-project');
+
   if ($block.children.length) {
     const $projectlist = createTag('div', { class: 'make-a-project-projectlist' });
     const $marquee = createTag('div', { class: 'make-a-project-marquee' });

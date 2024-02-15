@@ -110,7 +110,17 @@ function decorateCTA(block) {
   BlockMediator.set('primaryCtaUrl', primaryCta.href);
 }
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default function decorate(block) {
+  addTempWrapper(block, 'hero-color');
+
   const svgContainer = createTag('div', { class: 'svg-container' });
   block.append(svgContainer);
 

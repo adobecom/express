@@ -30,7 +30,17 @@ export function updatePillsByCKG(block, carouselDiv) {
   };
 }
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default function decorate(block) {
+  addTempWrapper(block, 'seo-nav');
+
   const links = [...block.querySelectorAll('p.button-container')];
   const seoCopy = block.querySelectorAll('div')[block.querySelectorAll('div').length - 1];
   const carouselDiv = block.querySelector('div:nth-of-type(2) > div');

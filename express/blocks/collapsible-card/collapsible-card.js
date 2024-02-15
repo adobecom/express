@@ -52,7 +52,18 @@ function decorateBadge($block) {
   }
 }
 
+// collapsible-card-wrapper is defined in collapsible-card.css, columns/columns.css
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default async function decorate($block) {
+  addTempWrapper($block, 'collapsible-card');
+
   if ($block.classList.contains('spreadsheet-powered')) {
     const relevantRowsData = await fetchRelevantRows(window.location.pathname);
 

@@ -137,7 +137,19 @@ function transformToVideoLink($cell, $a) {
   }
 }
 
+// hero-animation-wrapper's style is defined in hero-animation.css,
+// link-list/link-list.css and make-a-project/make-a-project.css
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default async function decorate($block) {
+  addTempWrapper($block, 'hero-animation');
+
   const possibleBreakpoints = animationBreakPointSettings.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const $section = $block.closest('.section');

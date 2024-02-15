@@ -168,7 +168,16 @@ function watchFloatingButtonState(block) {
   }
 }
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default async function decorate($block) {
+  addTempWrapper($block, 'app-banner');
   if (weekPassed()) {
     localStorage.removeItem('app-banner-optout-exp-date');
     const payload = await buildPayload();

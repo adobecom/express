@@ -70,7 +70,17 @@ function initButton($block, $sections, index) {
   }
 }
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 export default function decorate($block) {
+  addTempWrapper($block, 'content-toggle');
+
   const $enclosingMain = $block.closest('main');
   if ($enclosingMain) {
     const $sections = $enclosingMain.querySelectorAll('[data-toggle]');

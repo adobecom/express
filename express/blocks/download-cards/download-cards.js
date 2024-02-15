@@ -81,10 +81,20 @@ function groupButtons($block) {
   });
 }
 
+function addTempWrapper($block, blockName) {
+  const div = document.createElement('div');
+  const parent = $block.parentElement;
+  div.append($block);
+  div.classList.add(`${blockName}-wrapper`);
+  parent.append(div);
+}
+
 /**
  * @param {HTMLDivElement} $block
  */
 export default async function decorate($block) {
+  addTempWrapper($block, 'download-cards');
+
   const conf = readBlockConfig($block);
   $block.querySelectorAll(':scope > div').forEach(($row) => {
     if ($row.childElementCount === 2) {
