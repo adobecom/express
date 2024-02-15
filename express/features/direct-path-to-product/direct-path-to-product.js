@@ -92,9 +92,6 @@ export default async function loadLoginUserAutoRedirect() {
     const primaryCtaUrl = BlockMediator.get('primaryCtaUrl')
       || document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA')?.href;
 
-    // disable dptp to not annoy user when they come back to AX site.
-    localStorage.setItem(OPT_OUT_KEY, '3');
-
     track(`${adobeEventName}:redirect`);
 
     if (primaryCtaUrl) {
