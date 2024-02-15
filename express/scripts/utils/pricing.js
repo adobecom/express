@@ -298,6 +298,7 @@ export const getOffer = (() => {
     const unitPrice = offer.p;
     const customOfferId = offer.oo || offerId;
     const ooAvailable = offer.oo || false;
+    const showVat = offer.showVat || false;
 
     return {
       country,
@@ -315,6 +316,7 @@ export const getOffer = (() => {
       customOfferId,
       savePer: offer.savePer,
       ooAvailable,
+      showVat,
     };
   };
 })();
@@ -378,6 +380,7 @@ export async function fetchPlan(planUrl) {
       plan.suffix = offer.suffix ?? '';
       plan.sup = offer.priceSuperScript ?? '';
       plan.savePer = offer.savePer ?? '';
+      plan.showVat = offer.showVat ?? false;
       plan.formatted = offer.unitPriceCurrencyFormatted?.replace(
         plan.rawPrice[0],
         `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`,
