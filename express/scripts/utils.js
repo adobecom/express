@@ -685,8 +685,9 @@ export async function decorateBlock(block) {
 
     block.setAttribute('data-block-name', blockName);
     block.setAttribute('data-block-status', 'initialized');
-    const blockWrapper = block.parentElement;
-    blockWrapper.classList.add(`${blockName}-wrapper`);
+
+    // This can be used to make itself as wrapper
+    // block.classList.add(`${blockName}-wrapper`);
     if (getMetadata('sheet-powered') === 'Y') {
       const { setBlockTheme } = await import('./content-replace.js');
       setBlockTheme(block);
@@ -964,10 +965,12 @@ async function decorateSections(el, isDoc) {
     let wrapper;
     [...section.children].forEach((child) => {
       if (child.tagName === 'DIV' || !defaultContent) {
-        wrapper = document.createElement('div');
         defaultContent = child.tagName !== 'DIV';
-        if (defaultContent) wrapper.classList.add('default-content-wrapper');
-        section.append(wrapper);
+        if (defaultContent) {
+          wrapper = document.createElement('div');
+          wrapper.classList.add('default-content-wrapper');
+          section.append(wrapper);
+        }
       }
       wrapper?.append(child);
     });
