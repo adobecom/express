@@ -33,13 +33,19 @@ const locales = {
   uk: { ietf: 'en-GB', tk: 'pps7abe.css' },
 };
 
+let jarvisImmediatelyVisible = false;
+const jarvisVisibleMeta = getMetadata('jarvis-immediately-visible')?.toLowerCase();
+const desktopViewport = window.matchMedia('(min-width: 900px)').matches;
+if (jarvisVisibleMeta && ['mobile', 'desktop', 'on'].includes(jarvisVisibleMeta) && (
+  (jarvisVisibleMeta === 'mobile' && !desktopViewport) || (jarvisVisibleMeta === 'desktop' && desktopViewport))) jarvisImmediatelyVisible = true;
+
 const config = {
   locales,
   codeRoot: '/express/',
   jarvis: {
     id: 'Acom_Express',
     version: '1.0',
-    onDemand: false,
+    onDemand: !jarvisImmediatelyVisible,
   },
   links: 'on',
 };
