@@ -38,15 +38,19 @@ function startSDK(data) {
         target: 'Download',
         id: 'download-button',
         optionType: 'button',
+        variant: 'secondary',
         buttonType: 'native',
+        treatment: 'fill',
+        size: "xl"
       },
       {
         target: 'Editor',
         id: 'edit-in-express',
         buttonType: 'native',
         optionType: 'button',
-        size: 'xl',
-      },
+        treatment: 'fill',
+        size: "xl"
+      }
     ];
 
     const id = `${quickAction}-container`;
