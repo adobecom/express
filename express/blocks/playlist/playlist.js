@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { createTag, getIconElement } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import buildCarousel from '../shared/carousel.js';
 import { fetchVideoAnalytics } from '../shared/video.js';
 
@@ -303,14 +304,6 @@ function decorateVideoPlayerMenu(block, payload) {
     e.preventDefault();
     loadNextVideo(block, payload);
   });
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate(block) {

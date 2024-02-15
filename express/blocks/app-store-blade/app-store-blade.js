@@ -6,6 +6,7 @@ import {
   getIconElement,
   getMetadata,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 /**
  * Determine the mobile operating system.
@@ -184,14 +185,6 @@ function decorateBlade($block, payload) {
   buildTamplateTitle($block);
 
   decorateRatings($block, payload);
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate($block) {

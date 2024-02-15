@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { normalizeHeadings } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 /**
  * Retrieves the content of a metadata tag.
@@ -12,14 +13,6 @@ export function getMetadata(name) {
     .map((el) => el.content)
     .join(', ');
   return meta;
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default function decorate(block) {

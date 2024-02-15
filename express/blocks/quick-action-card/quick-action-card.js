@@ -7,6 +7,7 @@ import {
   readBlockConfig,
   toClassName,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -119,14 +120,6 @@ async function buildBlockFromFragment($block) {
 
   await fixIcons(newBlock);
   return newBlock;
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate($block) {

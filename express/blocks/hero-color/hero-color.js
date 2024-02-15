@@ -1,4 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -108,14 +109,6 @@ function decorateCTA(block) {
 
   primaryCta.classList.add('primaryCta');
   BlockMediator.set('primaryCtaUrl', primaryCta.href);
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default function decorate(block) {

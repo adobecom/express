@@ -1,4 +1,5 @@
 import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { debounce } from '../../scripts/hofs.js';
 import { decorateButtons } from '../../scripts/utils/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -180,14 +181,6 @@ const getId = (function idSetups() {
   }());
   return () => gen.next().value;
 }());
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
-}
 
 export default async function init(el) {
   addTempWrapper(el, 'pricing-table');

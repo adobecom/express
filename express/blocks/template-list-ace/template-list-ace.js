@@ -5,6 +5,7 @@ import {
   getIconElement,
   toClassName,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 import { renderModalContent, fetchResults, renderResults } from './results-modal.js';
@@ -482,14 +483,6 @@ function initState() {
     modalContent: null,
     createTemplateLink: placeholders['template-list-ace-create-template-link'],
   });
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate(block) {

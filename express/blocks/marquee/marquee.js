@@ -5,6 +5,7 @@ import {
   getIconElement,
   fetchPlaceholders, getConfig,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const breakpointConfig = [
@@ -238,15 +239,6 @@ export async function transformToVideoLink(cell, a) {
   if (toClassName(title) === window.location.hash.substring(1)) {
     displayVideoModal(vidUrls, title);
   }
-}
-
-// marquee-wrapper's style is defined in marquee.css and search-marquee
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate(block) {

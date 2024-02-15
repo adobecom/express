@@ -4,6 +4,7 @@ import {
   getIconElement as genericGetIconElement,
   getMobileOperatingSystem,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 export function getToggleButton() {
   const $toggle = document.querySelector('.default-content-wrapper .button.accent');
@@ -119,14 +120,6 @@ export function addAppStoreButton($block) {
   } else {
     $button.append(genericGetIconElement('google-store'));
   }
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate($block) {

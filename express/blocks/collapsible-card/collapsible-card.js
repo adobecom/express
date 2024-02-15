@@ -4,6 +4,7 @@ import {
   getIconElement,
   getMobileOperatingSystem,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 function toggleCollapsibleCard($block) {
   $block.classList.toggle('expanded');
@@ -50,15 +51,6 @@ function decorateBadge($block) {
       $anchor.append(getIconElement('google-store'));
     }
   }
-}
-
-// collapsible-card-wrapper is defined in collapsible-card.css, columns/columns.css
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate($block) {

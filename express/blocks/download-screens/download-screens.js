@@ -1,4 +1,5 @@
 import { createTag, readBlockConfig } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 const CARD_WIDTH = 157;
 const CARD_HEIGHT = 313;
@@ -163,14 +164,6 @@ function applyHeight($block, heightStr) {
   if (Number.isNaN(height)) return;
 
   $block.style.height = `${height + CARD_HEIGHT}px`;
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 /**

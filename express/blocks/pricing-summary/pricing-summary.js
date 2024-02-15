@@ -1,4 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   fetchPlan, buildUrl, setVisitorCountry, shallSuppressOfferEyebrowText,
 } from '../../scripts/utils/pricing.js';
@@ -183,14 +184,6 @@ function alignContent(block) {
   const contentWrappers = block.querySelectorAll('.pricing-content-wrapper');
 
   setElementsHeight(contentWrappers);
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate(block) {

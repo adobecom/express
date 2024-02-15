@@ -8,6 +8,7 @@ import {
   addHeaderSizing,
   getMetadata,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
 
@@ -137,15 +138,6 @@ const handleVideos = (cell, a, block, thumbnail) => {
     e.preventDefault();
   });
 };
-
-// columns-wrapper's style is defined in columns.css, pricing-hub/pricing-hub.css
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
-}
 
 export default async function decorate(block) {
   addTempWrapper(block, 'columns');

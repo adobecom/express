@@ -10,6 +10,7 @@ import {
   decorateMain,
   loadSections,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 /**
  * Loads a fragment.
@@ -28,15 +29,6 @@ async function loadFragment(path) {
     }
   }
   return null;
-}
-
-// reference to fragment-wrapper is only included at line 63,64 here
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate(block) {

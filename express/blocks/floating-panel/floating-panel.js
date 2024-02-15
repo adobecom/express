@@ -5,6 +5,7 @@ import {
   getLottie,
   lazyLoadLottiePlayer,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import { collectFloatingButtonData } from '../shared/floating-cta.js';
 
@@ -136,14 +137,6 @@ function standardizeSection(section, audience) {
   if (heading) {
     heading.parentElement.classList.add('content-container');
   }
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorateBlock(block) {

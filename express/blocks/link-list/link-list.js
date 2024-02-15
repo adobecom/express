@@ -2,6 +2,7 @@ import {
   fetchRelevantRows,
   normalizeHeadings,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -24,16 +25,6 @@ async function loadSpreadsheetData($block, relevantRowsData) {
   if (relevantRowsData.linkListTitle) {
     $block.innerHTML = $block.innerHTML.replaceAll('link-list-title', relevantRowsData.linkListTitle.trim());
   }
-}
-
-// link-list-wrapper's style is defined in link-list.css, procing-hub.css,
-//    template-list/template-list.js and styles/styles.css
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate($block) {

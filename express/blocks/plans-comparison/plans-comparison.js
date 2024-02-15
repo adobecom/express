@@ -4,6 +4,7 @@ import {
   getIconElement,
   fetchPlainBlockFromFragment,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
 
 async function fetchPlan(planUrl) {
@@ -301,14 +302,6 @@ function resizeCards($cards, $featuresWrappers, payload) {
       });
     }
   });
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate($block) {

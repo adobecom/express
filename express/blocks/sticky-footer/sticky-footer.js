@@ -1,6 +1,7 @@
 import {
   createTag, fetchPlaceholders, getIcon, readBlockConfig,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 /**
  * @param {number} [rating=5]
@@ -72,14 +73,6 @@ function attachScrollHandler() {
       el.style.top = '100%';
     }
   });
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 /**

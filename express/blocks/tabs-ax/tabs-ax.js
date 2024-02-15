@@ -3,6 +3,7 @@
  * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Tab_Role
  */
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
 
@@ -112,14 +113,6 @@ const handlePillSize = (pill) => {
   const size = sizes.findIndex((tshirt) => variant.startsWith(tshirt));
   return `${sizes[size]?.[0] ?? sizes[1]}-pill`;
 };
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
-}
 
 const init = (block) => {
   addTempWrapper(block, 'tabs-ax');

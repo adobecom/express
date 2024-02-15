@@ -1,4 +1,5 @@
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   fetchPlan, buildUrl, formatSalesPhoneNumber, setVisitorCountry, shallSuppressOfferEyebrowText,
 } from '../../scripts/utils/pricing.js';
@@ -214,14 +215,6 @@ function decorateCard({
 }
 
 const SALES_NUMBERS = '{{business-sales-numbers}}';
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
-}
 
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');

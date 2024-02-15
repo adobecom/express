@@ -1,4 +1,5 @@
 import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -221,15 +222,6 @@ function constructPayload(block) {
   });
 
   return payload;
-}
-
-// cta-carousel-wrapper is defined in cat-carousel.css and test/unit/blocks/toggle-bar/mocks
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate(block) {

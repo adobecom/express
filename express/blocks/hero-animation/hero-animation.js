@@ -5,6 +5,7 @@ import {
   addHeaderSizing, getConfig,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 import {
@@ -135,16 +136,6 @@ function transformToVideoLink($cell, $a) {
   if (toClassName(title) === window.location.hash.substring(1)) {
     displayVideoModal(vidUrls, title);
   }
-}
-
-// hero-animation-wrapper's style is defined in hero-animation.css,
-// link-list/link-list.css and make-a-project/make-a-project.css
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate($block) {

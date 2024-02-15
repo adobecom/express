@@ -1,6 +1,7 @@
 /* eslint-disable import/named, import/extensions */
 
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
 
 function activate(block, payload, target) {
@@ -171,14 +172,6 @@ function getColorSVG(svgName) {
   }
 
   return null;
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate(block) {

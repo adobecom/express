@@ -6,6 +6,7 @@ import {
   readBlockConfig,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 const DEFAULT_DELAY = 1000;
 const MAX_NONCONFIG_ROWS = 4;
@@ -79,14 +80,6 @@ function addScrollAnimation(block, scrollTo) {
   block.append(container);
 
   lazyLoadLottiePlayer(block);
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 /**

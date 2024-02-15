@@ -8,6 +8,8 @@ import {
   getMobileOperatingSystem,
 } from '../../scripts/utils.js';
 
+import { addTempWrapper } from '../../scripts/decorate.js';
+
 const imageSrcs = [
   '/express/media_1e71d9d4a13e8a8422dd1b8dbdad9a0bf4d2565f8.jpeg?width=380&format=jpeg&optimize=medium',
   '/express/media_1595dccf97b235679b21f3ccd02b20efddc3f3839.jpeg?width=380&format=jpeg&optimize=medium',
@@ -203,14 +205,6 @@ function initScrollAnimation($block) {
       });
     }
   }
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate($block) {

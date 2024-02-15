@@ -1,4 +1,5 @@
 import { createTag, readBlockConfig } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { prependDownloadIcon } from '../hero-3d/hero-3d.js';
 
 /**
@@ -79,14 +80,6 @@ function groupButtons($block) {
       wrapper.append(btn);
     });
   });
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 /**

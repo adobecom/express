@@ -1,4 +1,5 @@
 import buildCarousel from '../shared/carousel.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 function decorateCarousel(links, container) {
   links.forEach((p) => {
@@ -28,14 +29,6 @@ export function updatePillsByCKG(block, carouselDiv) {
       }
     }
   };
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default function decorate(block) {

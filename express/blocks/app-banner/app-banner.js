@@ -6,6 +6,8 @@ import {
   getIconElement,
 } from '../../scripts/utils.js';
 
+import { addTempWrapper } from '../../scripts/decorate.js';
+
 async function buildPayload() {
   const payload = {
     userAgent: getMobileOperatingSystem(),
@@ -166,14 +168,6 @@ function watchFloatingButtonState(block) {
     // Start observing the target node for configured mutations
     observer.observe($floatingButton, config);
   }
-}
-
-function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
-  const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
 }
 
 export default async function decorate($block) {
