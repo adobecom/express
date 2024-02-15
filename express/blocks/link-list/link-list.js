@@ -28,12 +28,16 @@ async function loadSpreadsheetData($block, relevantRowsData) {
 
 export default async function decorate($block) {
   const options = {};
-  const highlightCurrentLink = (links) => {
+  const toggleLinksHighlight = (links) => {
     links.forEach((l) => {
-      console.log(l.href, window.location.href)
-    })
-    const link = links.find((l) => l.href === window.location.href);
-    if (link) link.classList.add('active');
+      const a = l.querySelector(':scope > a');
+
+      if (a && a.href === window.location.href) {
+        l.classList.add('active');
+      } else {
+        l.classList.remove('active');
+      }
+    });
   };
 
   if ($block.classList.contains('spreadsheet-powered')) {
@@ -69,11 +73,11 @@ export default async function decorate($block) {
   }
 
   if ($block.classList.contains('shaded')) {
-    highlightCurrentLink(links);
+    toggleLinksHighlight(links);
   }
 
-  window.addEventListener('locationchange', () => {
-    highlightCurrentLink(links);
+  window.addEventListener('popstate', () => {
+    toggleLinksHighlight(links);
   });
 
   if (window.location.href.includes('/express/templates/')) {

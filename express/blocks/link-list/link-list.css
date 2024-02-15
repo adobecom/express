@@ -4,7 +4,7 @@ main .section > div.link-list-wrapper {
 }
 
 main .link-list-container > div,
-main .link-list-center-container > div {
+main .link-list-centered-container > div {
   max-width: 1200px;
 }
 
@@ -151,7 +151,7 @@ main .link-list.shaded p.button-container .button {
 }
 
 main .link-list.shaded p.button-container .button:hover,
-main .link-list.shaded p.button-container .button.active {
+main .link-list.shaded p.button-container.active .button {
   background-color: var(--color-white);
 }
 
@@ -176,7 +176,7 @@ main .link-list.large p.button-container .button {
 
 @media (min-width: 900px) {
   main .link-list-container > div,
-  main .link-list-center-container > div {
+  main .link-list-centered-container > div {
     padding: 0 50px;
   }
 
@@ -195,11 +195,11 @@ main .link-list.large p.button-container .button {
   }
 
   main .section.link-list-container > div,
-  main .section.link-list-center-container > div {
+  main .section.link-list-centered-container > div {
     max-width: 1200px;
   }
 
-  main .section.link-list-container > div, main .link-list-center-container > div {
+  main .section.link-list-container > div, main .link-list-centered-container > div {
     padding: 0 50px;
   }
 
@@ -217,12 +217,12 @@ main .link-list.large p.button-container .button {
 
 @media (min-width: 1200px) {
   main .link-list-container > div,
-  main .link-list-center-container > div {
+  main .link-list-centered-container > div {
     padding: 0 55px;
   }
 
   main .section.link-list-container > div,
-  main .section.link-list-center-container > div {
+  main .section.link-list-centered-container > div {
     max-width: 1200px;
   }
 }
