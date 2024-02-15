@@ -27,6 +27,15 @@ async function loadSpreadsheetData($block, relevantRowsData) {
 }
 
 export default async function decorate($block) {
+  const options = {};
+  const highlightCurrentLink = (links) => {
+    links.forEach((l) => {
+      console.log(l.href, window.location.href)
+    })
+    const link = links.find((l) => l.href === window.location.href);
+    if (link) link.classList.add('active');
+  };
+
   if ($block.classList.contains('spreadsheet-powered')) {
     const relevantRowsData = await fetchRelevantRows(window.location.pathname);
 
@@ -35,6 +44,10 @@ export default async function decorate($block) {
     } else {
       $block.remove();
     }
+  }
+
+  if ($block.classList.contains('center')) {
+    options.centerAlign = true;
   }
 
   normalizeHeadings($block, ['h3']);
@@ -46,19 +59,22 @@ export default async function decorate($block) {
         link.classList.add('secondary');
       }
 
-      if ($block.classList.contains('shaded') && new URL(link.href).pathname === window.location.pathname) {
-        link.classList.add('active');
-      }
-
       link.classList.add('medium');
       link.classList.remove('accent');
     });
-    const div = links[0].closest('div');
+
     const platformEl = document.createElement('div');
     platformEl.classList.add('link-list-platform');
-    await buildCarousel('p.button-container', div);
-    div.append(platformEl);
+    await buildCarousel('p.button-container', $block, options);
   }
+
+  if ($block.classList.contains('shaded')) {
+    highlightCurrentLink(links);
+  }
+
+  window.addEventListener('locationchange', () => {
+    highlightCurrentLink(links);
+  });
 
   if (window.location.href.includes('/express/templates/')) {
     const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
