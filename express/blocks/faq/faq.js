@@ -7,15 +7,13 @@ function decorateFAQBlocks(block) {
   const showSchema = getMetadata('show-faq-schema');
   const faqs = [];
   const entities = [];
-  const $rows = Array.from(block.children);
-  $rows.forEach(($row) => {
-    const $cells = Array.from($row.children);
-    const $question = $cells[0];
-    const $answer = $cells[1];
-    const question = $question.textContent.trim();
-    const answer = $answer.innerHTML;
+  const rows = Array.from(block.children);
+  rows.forEach((row) => {
+    const cells = Array.from(row.children);
+    const question = cells[0];
+    const answer = cells[1];
     faqs.push({
-      question, answer,
+      question: question.textContent.trim(), answer: answer.innerHTML,
     });
   });
 
@@ -53,23 +51,6 @@ function decorateFAQBlocks(block) {
       mainEntity: entities,
     });
     document.head.appendChild($schemaScript);
-  }
-
-  // find previous h2 and move it in the FAQ
-  const section = block.closest('.section');
-  if (section && section.previousElementSibling) {
-    const previousSection = section.previousElementSibling;
-    const h2 = previousSection.querySelector('div > h2:last-of-type');
-    // make sure there is no other element
-    if (h2 && !h2.nextElementSibling) {
-      const previous = h2.previousElementSibling;
-      block.before(h2);
-
-      if (!previous) {
-        // remove empty previous section
-        previousSection.remove();
-      }
-    }
   }
 }
 

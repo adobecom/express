@@ -39,6 +39,7 @@
 
   /* header */
   --header-height: 65px;
+  --breadcrumbs-height: 43px;
   --brand-header-height: 79px;
 
   /* body */
@@ -535,6 +536,10 @@ main .section:last-of-type>.default-content-wrapper {
 }
 
 @media (min-width:900px) {
+  .breadcrumbs-spacing > .feds-topnav-spacing,
+  .breadcrumbs-spacing > header:not(.feds-header-wrapper){
+    height: calc(var(--header-height) + var(--breadcrumbs-height));
+  }
 
   main h5+p,
   main .section p.button-container {

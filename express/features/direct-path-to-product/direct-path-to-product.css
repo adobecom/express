@@ -1,4 +1,4 @@
-.bmtp-container {
+.pep-container {
     position: absolute;
     right: 8px;
     top: 72px;
@@ -10,49 +10,49 @@
     overflow: hidden;
 }
 
-.bmtp-container .bmtp-header {
+.pep-container .pep-header {
     display: flex;
     align-items: center;
     font-weight: 700;
     padding: 16px;
 }
 
-.bmtp-container .bmtp-header-icon {
+.pep-container .pep-header-icon {
     margin-right: 12px;
 }
 
-.bmtp-container .bmtp-header-icon .icon {
+.pep-container .pep-header-icon .icon {
     height: 32px;
     width: 32px;
     display: block;
 }
 
-.bmtp-container .bmtp-progress-bg {
+.pep-container .pep-progress-bg {
     height: 4px;
     background-color: #d6d6d6;
 }
 
-.bmtp-container .bmtp-progress-bg .bmtp-progress-bar {
+.pep-container .pep-progress-bg .pep-progress-bar {
     background-color: var(--color-info-accent);
     width: 100%;
     height: 100%;
-    -webkit-animation: loginRedirectProgress 2s ease;
-    -moz-animation: loginRedirectProgress 2s ease;
-    animation: loginRedirectProgress 2s ease;
+    -webkit-animation: loginRedirectProgress 4s ease;
+    -moz-animation: loginRedirectProgress 4s ease;
+    animation: loginRedirectProgress 4s ease;
 }
 
-.bmtp-container .profile-wrapper {
+.pep-container .profile-wrapper {
     display: flex;
     align-items: center;
     padding: 16px;
 }
 
-.bmtp-container .profile-wrapper .profile-img-container {
+.pep-container .profile-wrapper .profile-img-container {
     position: relative;
     margin-right: 14px;
 }
 
-.bmtp-container .profile-wrapper .profile-img-container::before {
+.pep-container .profile-wrapper .profile-img-container::before {
     content: "";
     animation: rotateCircle 1.5s linear infinite;
     animation-play-state: inherit;
@@ -68,14 +68,14 @@
     will-change: transform;
 }
 
-.bmtp-container.done .profile-wrapper .profile-img-container::before {
+.pep-container.done .profile-wrapper .profile-img-container::before {
     border: none;
     height: 32px;
     width: 32px;
     animation: unset;
 }
 
-.bmtp-container.done .profile-wrapper .profile-img-container::after {
+.pep-container.done .profile-wrapper .profile-img-container::after {
     background-image: url('/express/icons/success-check.svg');
     content: "";
     position: absolute;
@@ -87,23 +87,23 @@
     border-radius: 50%;
 }
 
-.bmtp-container .profile-wrapper .profile-img-container img {
+.pep-container .profile-wrapper .profile-img-container img {
     display: block;
     height: 30px;
     width: 30px;
     border-radius: 28px;
 }
 
-.bmtp-container .profile-text-wrapper {
+.pep-container .profile-text-wrapper {
     font-size: var(--body-font-size-s);
 }
 
-.bmtp-container .profile-text-wrapper .profile-name,
-.bmtp-container .profile-text-wrapper .profile-email {
+.pep-container .profile-text-wrapper .profile-name,
+.pep-container .profile-text-wrapper .profile-email {
     display: block;
 }
 
-.bmtp-container .notice-wrapper {
+.pep-container .notice-wrapper {
     padding: 16px;
     font-size: var(--body-font-size-s);
     background-color: var(--color-gray-100);
@@ -111,13 +111,13 @@
     justify-content: space-between;
 }
 
-.bmtp-container .notice-btn {
+.pep-container .notice-btn {
     font-weight: 700;
     color: var(--color-info-accent);
     cursor: pointer;
 }
 
-.bmtp-container .notice-btn:hover {
+.pep-container .notice-btn:hover {
     color: var(--color-info-accent-hover);
 }
 

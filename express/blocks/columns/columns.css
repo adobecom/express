@@ -520,6 +520,7 @@ main .columns.fullsize .hero-animation-overlay {
 main .columns.fullsize .hero-animation-overlay video {
   max-height: 40vh;
   margin-bottom: 40px;
+  max-width: 370px;
 }
 
 main .columns.fullsize .has-brand > div:not(.column-picture):not(.hero-animation-overlay) {
