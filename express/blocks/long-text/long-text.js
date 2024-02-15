@@ -8,7 +8,9 @@ function addTempWrapper($block, blockName) {
 }
 
 export default function decorate(block) {
-  addTempWrapper(block, 'long-text');
+  if (!block.parentElement.classList.contains('long-text-wrapper')) {
+    addTempWrapper(block, 'long-text');
+  }
 
   if (block.classList.contains('plain')) {
     block.parentElement.classList.add('plain');
