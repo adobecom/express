@@ -8,7 +8,7 @@ const blockKeys = ['header', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
 
-function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
+function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo) {
   const priceRow = createTag('div', { class: 'pricing-row' });
   const priceEl = pricingArea.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
@@ -31,7 +31,6 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
     } else {
       price.classList.remove('price-active');
     }
-
     if (parentP.children.length > 1) {
       Array.from(parentP.childNodes).forEach((node) => {
         if (node === priceEl) return;
@@ -42,7 +41,15 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
         }
       });
     } else {
-      priceSuffix.textContent = priceSuffixContext;
+      const phTextArr = placeholderArr.map((phText) => {
+        const key = phText.replace('{{', '').replace('}}', '');
+        if (key.includes('vat') && !response.showVat) {
+          return '';
+        }
+        return placeholders[key] ? placeholders[key] : '';
+      });
+      const priceSuffixContent = phTextArr.join(' ');
+      priceSuffix.textContent = priceSuffixContent;
     }
     const isPremiumCard = response.ooAvailable || false;
     const savePercentElem = pricingArea.querySelector('.card-offer');
@@ -88,12 +95,7 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo)
   if (pricingBtnContainer != null) {
     const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
     const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
-    const phTextArr = placeholderArr.map((phText) => {
-      const value = phText.replace('{{', '').replace('}}', '');
-      return placeholders[value] ? placeholders[value] : '';
-    });
-    const priceSuffixContent = phTextArr.join(' ');
-    const priceRow = handlePrice(pricingArea, priceSuffixContent, specialPromo);
+    const priceRow = handlePrice(placeholders, pricingArea, placeholderArr, specialPromo);
     if (priceRow) {
       pricingArea.prepend(priceRow);
       pricingBtnContainer?.remove();
