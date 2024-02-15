@@ -29,6 +29,19 @@
   margin-right: 8px;
 }
 
+/* links should stay links by default inside table */
+.pricing-table .col a.button,
+.pricing-table .col a.button:hover,
+.pricing-table .col a.button:active {
+  text-decoration: underline;
+  background-color: unset;
+  color: unset;
+  margin: unset;
+  border: 0;
+  border-radius: 0;
+  padding: unset;
+}
+
 .pricing-table .section-row .col.section-row-title,
 .pricing-table .section-row .col.section-row-title p {
   font-size: var(--body-font-size-xs);

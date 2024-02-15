@@ -12,7 +12,19 @@ function isVideo(iterator) {
 }
 
 function getTemplateTitle(template) {
-  return template['dc:title']?.['i-default'] || '';
+  if (template['dc:title']?.['i-default']) {
+    return template['dc:title']['i-default'];
+  }
+
+  if (template.moods?.length && template.task?.name) {
+    return `${template.moods.join(', ')} ${template.task.name}`;
+  }
+
+  if (getMetadata('tasks-x')?.trim() && getMetadata('topics-x')?.trim()) {
+    return `${getMetadata('topics-x').trim()} ${getMetadata('tasks-x').trim()}`;
+  }
+
+  return '';
 }
 
 function extractRenditionLinkHref(template) {
