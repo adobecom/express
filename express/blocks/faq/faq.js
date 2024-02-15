@@ -7,15 +7,13 @@ function decorateFAQBlocks(block) {
   const showSchema = getMetadata('show-faq-schema');
   const faqs = [];
   const entities = [];
-  const $rows = Array.from(block.children);
-  $rows.forEach(($row) => {
-    const $cells = Array.from($row.children);
-    const $question = $cells[0];
-    const $answer = $cells[1];
-    const question = $question.textContent.trim();
-    const answer = $answer.innerHTML;
+  const rows = Array.from(block.children);
+  rows.forEach((row) => {
+    const cells = Array.from(row.children);
+    const question = cells[0];
+    const answer = cells[1];
     faqs.push({
-      question, answer,
+      question: question.textContent.trim(), answer: answer.innerHTML,
     });
   });
 
