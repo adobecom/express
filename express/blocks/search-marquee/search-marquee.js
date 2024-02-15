@@ -154,7 +154,8 @@ function initSearchFunction(block) {
       targetLocation = `${window.location.origin}${prefix}${searchUrlTemplate}`;
     }
 
-    window.location.assign(targetLocation);
+    console.log('will redirect to:', targetLocation);
+    // window.location.assign(targetLocation);
   };
 
   const onSearchSubmit = async () => {

@@ -646,7 +646,8 @@ async function decorateCategoryList(block, props) {
     listItem.append(a);
     categoriesList.append(listItem);
 
-    a.addEventListener('click', () => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
       updateImpressionCache({
         search_keyword: a.dataset.tasks,
         collection: a.dataset.topics,
@@ -655,7 +656,7 @@ async function decorateCategoryList(block, props) {
       });
       removeOptionalImpressionFields('search-inspire');
       trackSearch('search-inspire');
-    }, { passive: true });
+    });
   });
 
   categoriesDesktopWrapper.addEventListener('mouseover', () => {
@@ -665,7 +666,8 @@ async function decorateCategoryList(block, props) {
   const categoriesMobileWrapper = categoriesDesktopWrapper.cloneNode({ deep: true });
   const mobileJumpCategoryLinks = categoriesMobileWrapper.querySelectorAll('.category-list > li > a');
   mobileJumpCategoryLinks.forEach((a) => {
-    a.addEventListener('click', () => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
       updateImpressionCache({
         search_keyword: a.dataset.tasks,
         collection: a.dataset.topics,
@@ -674,7 +676,7 @@ async function decorateCategoryList(block, props) {
       });
       removeOptionalImpressionFields('search-inspire');
       trackSearch('search-inspire');
-    }, { passive: true });
+    });
   });
 
   const mobileCategoriesToggle = createTag('span', { class: 'category-list-toggle' });
@@ -1503,8 +1505,8 @@ function importSearchBar(block, blockMediator) {
             const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks}&phformat=${format}&topics=${searchInput || "''"}&q=${searchInput || "''"}&searchId=${searchId || ''}`;
             targetLocation = `${window.location.origin}${prefix}${searchUrlTemplate}`;
           }
-
-          window.location.assign(targetLocation);
+          console.log('will redirect to:', targetLocation);
+          // window.location.assign(targetLocation);
         };
 
         const onSearchSubmit = async () => {

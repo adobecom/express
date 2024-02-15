@@ -324,7 +324,8 @@ function renderHoverWrapper(template, placeholders) {
   const cta = renderCTA(placeholders, template.customLinks.branchUrl);
   btnContainer.append(cta);
 
-  cta.addEventListener('click', () => {
+  cta.addEventListener('click', (e) => {
+    e.preventDefault();
     updateImpressionCache({
       id: template.id,
       status: template.licensingCategory,
@@ -335,7 +336,7 @@ function renderHoverWrapper(template, placeholders) {
     });
     removeOptionalImpressionFields('select-template');
     trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
-  }, { passive: true });
+  });
 
   return btnContainer;
 }
