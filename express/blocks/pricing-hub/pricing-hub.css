@@ -7,14 +7,6 @@ main .section.pricing-hub-toc .link-list-wrapper .link-list {
   margin-bottom: 32px;
 }
 
-main .section.pricing-hub-toc .link-list .carousel-fader-left {
-  background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-}
-
-main .section.pricing-hub-toc .link-list .carousel-fader-right {
-  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-}
-
 main .section.pricing-hub-toc .link-list-wrapper + .columns-wrapper .columns > div {
   padding-top: 0;
   padding-bottom: 0;
@@ -661,12 +653,12 @@ main .pricing-hub .pricing-hub-scroll-overlay-card h2 svg.icon-premium {
 
 header.feds-header-wrapper ~ main .pricing-hub .pricing-hub-scroll-overlay-card {
   transition: margin .3s ease;
-  margin-top: 64px; 
+  margin-top: 64px;
 }
 
 @media (min-width: 900px) {
   header.feds-header-wrapper ~ main .pricing-hub .pricing-hub-scroll-overlay-card {
-    margin-top: 76px; 
+    margin-top: 76px;
   }
 }
 

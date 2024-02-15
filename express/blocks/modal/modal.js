@@ -1,16 +1,5 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 /* eslint-disable max-len */
-import { loadCSS, createTag, getIconElement } from '../../scripts/utils.js';
+import { loadStyle, createTag, getIconElement } from '../../scripts/utils.js';
 
 const FOCUSABLES = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"]';
 
@@ -54,7 +43,7 @@ function isElementInView(element) {
 }
 
 function getCustomModal(custom, dialog) {
-  loadCSS('/express/blocks/modal/modal.css');
+  loadStyle('/express/blocks/modal/modal.css');
   if (custom.id) dialog.id = custom.id;
   if (custom.class) dialog.classList.add(custom.class);
   if (custom.closeEvent) {
@@ -135,14 +124,12 @@ export async function getModal(details, custom) {
 
   if (!dialog.classList.contains('curtain-off')) {
     const curtain = createTag('div', { class: 'modal-curtain is-open' });
-    curtain.style.zIndex = 100 + (openedModals.cnt) * 2 + 1;
-    dialog.style.zIndex = 100 + (openedModals.cnt) * 2 + 2;
-    dialog.style.borderRadius = `${20 * openedModals.cnt + 20}px`;
-    openedModals.cnt += 1;
     curtain.addEventListener('click', (e) => {
       if (e.target === curtain) closeModal(dialog);
     });
     dialog.insertAdjacentElement('afterend', curtain);
+    [...document.querySelectorAll('header, main, footer')]
+      .forEach((element) => element.setAttribute('aria-disabled', 'true'));
   }
 
   return dialog;

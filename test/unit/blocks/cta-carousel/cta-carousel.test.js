@@ -1,18 +1,7 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
 
-import { readFile, sendKeys } from '@web/test-runner-commands';
+import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
 const { default: decorate, decorateTextWithTag } = await import('../../../../express/blocks/cta-carousel/cta-carousel.js');
@@ -128,41 +117,16 @@ describe('CTA Carousel - Gen AI variant', async () => {
     expect(buttonFound).to.exist;
   });
 
-  it('form input responds to keyup events', async () => {
+  it('form input responds to keypress events', async () => {
     const gaVariant = document.getElementById('ga-variant');
     await decorate(gaVariant);
     const form = gaVariant.querySelector('form.gen-ai-input-form');
     const input = form.querySelector('textarea.gen-ai-input');
     const button = form.querySelector('button.gen-ai-submit');
 
-    input.focus();
-    await sendKeys({
-      press: 'A',
-    });
-
+    input.value = 'test';
+    input.dispatchEvent(new Event('input'));
     expect(button.disabled).to.be.false;
-
-    await sendKeys({
-      press: 'Enter',
-    });
-
-    expect(button.disabled).to.be.true;
-  });
-
-  it('form responds to submit event', async () => {
-    const gaVariant = document.getElementById('ga-variant');
-    await decorate(gaVariant);
-    const form = gaVariant.querySelector('form.gen-ai-input-form');
-    const input = form.querySelector('textarea.gen-ai-input');
-    const button = form.querySelector('button.gen-ai-submit');
-
-    input.focus();
-    await sendKeys({
-      press: 'A',
-    });
-    form.dispatchEvent(new Event('submit'));
-
-    expect(button.disabled).to.be.true;
   });
 });
 

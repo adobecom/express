@@ -1,16 +1,5 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 /* eslint-disable no-underscore-dangle */
-import { createTag, getIconElement } from '../../scripts/utils.js';
+import { createTag, getIconElement, getMetadata } from '../../scripts/utils.js';
 
 function containsVideo(pages) {
   return pages.some((page) => !!page?.rendition?.video?.thumbnail?.componentId);
@@ -21,7 +10,19 @@ function isVideo(iterator) {
 }
 
 function getTemplateTitle(template) {
-  return template['dc:title']['i-default'];
+  if (template['dc:title']?.['i-default']) {
+    return template['dc:title']['i-default'];
+  }
+
+  if (template.moods?.length && template.task?.name) {
+    return `${template.moods.join(', ')} ${template.task.name}`;
+  }
+
+  if (getMetadata('tasks-x')?.trim() && getMetadata('topics-x')?.trim()) {
+    return `${getMetadata('topics-x').trim()} ${getMetadata('tasks-x').trim()}`;
+  }
+
+  return '';
 }
 
 function extractRenditionLinkHref(template) {

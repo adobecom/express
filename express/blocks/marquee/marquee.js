@@ -1,23 +1,11 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import {
   createTag,
   toClassName,
-  getLocale,
   addHeaderSizing,
   getIconElement,
-  fetchPlaceholders,
+  fetchPlaceholders, getConfig,
 } from '../../scripts/utils.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const breakpointConfig = [
   {
@@ -346,9 +334,12 @@ export default async function decorate(block) {
       }
 
       const contentButtons = [...div.querySelectorAll('a.button.accent')];
+      const primaryBtn = contentButtons[0];
       const secondaryButton = contentButtons[1];
       const buttonAsLink = contentButtons[2];
       buttonAsLink?.classList.remove('button');
+      primaryBtn?.classList.add('primaryCTA');
+      BlockMediator.set('primaryCtaUrl', primaryBtn?.href);
       secondaryButton?.classList.add('secondary');
       const buttonContainers = [...div.querySelectorAll('p.button-container')];
       const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
@@ -393,7 +384,7 @@ export default async function decorate(block) {
     await formatSalesPhoneNumber(phoneNumberTags);
   }
 
-  if (getLocale(window.location) === 'jp') {
+  if (getConfig().locale.region === 'jp') {
     addHeaderSizing(block);
   }
 

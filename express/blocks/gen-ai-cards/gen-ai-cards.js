@@ -1,15 +1,3 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
 import buildCarousel from '../shared/carousel.js';
@@ -163,10 +151,8 @@ async function decorateCards(block, { actions }) {
         const a = ctaLinks[0];
         const btnUrl = new URL(a.href);
         if (placeholders?.['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
-          btnUrl.searchParams.set('search', cta.text);
           btnUrl.searchParams.set('q', cta.text);
           btnUrl.searchParams.set('category', 'templates');
-          btnUrl.searchParams.set('searchCategory', 'templates');
           a.href = decodeURIComponent(btnUrl.toString());
         }
         a.removeAttribute('title');
@@ -221,6 +207,6 @@ export default async function decorate(block) {
   const payload = constructPayload(block);
   decorateHeading(block, payload);
   await decorateCards(block, payload);
-  buildCarousel('', block.querySelector('.gen-ai-cards-cards'));
+  await buildCarousel('', block.querySelector('.gen-ai-cards-cards'));
   document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
 }

@@ -1,14 +1,5 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
+// A gently modified version of the dynamic subsetting loader from Adobe Fonts
+import { loadStyle } from './utils.js';
 
 function dynamicTypekit(kitId, d = document) {
   const config = { kitId, scriptTimeout: 3000, async: true };
@@ -26,12 +17,12 @@ function dynamicTypekit(kitId, d = document) {
  *
  * @param {Object} locale the locale details
  */
-export default function loadFonts(tk, loadCSS) {
-  const tkSplit = tk.split('.');
+export default function loadFonts(locale) {
+  const tkSplit = locale.tk.split('.');
   if (tkSplit[1] === 'css') {
     return new Promise((resolve) => {
-      loadCSS(`https://use.typekit.net/${tk}`, resolve);
+      loadStyle(`https://use.typekit.net/${locale.tk}`, resolve);
     });
   }
-  return dynamicTypekit(tk);
+  return dynamicTypekit(locale.tk);
 }

@@ -1,0 +1,47 @@
+.qa-guide {
+    background-color: var(--color-gray-200);
+    padding: 24px;
+    margin: 24px;
+    border-radius: 24px;;
+}
+
+.qa-guide .audience-icon .icon {
+    height: 44px;
+    width: 44px;
+}
+
+.qa-guide > div {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-black);
+}
+
+.qa-guide > div:last-of-type {
+    border-bottom: unset;
+}
+
+.qa-guide > div > div ul {
+    padding-left: 0;
+}
+
+.qa-guide > div > div ul li {
+    list-style: none;
+    padding: 8px;
+}
+
+.qa-guide > div > div ul li:nth-child(odd) {
+    background-color: var(--color-white);
+}
+
+@media (min-width: 900px) {
+    .qa-guide > div {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+    }
+
+    .qa-guide > div > div {
+        text-align: left;
+        width: 50%;
+    }
+}
+

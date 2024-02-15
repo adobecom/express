@@ -98,6 +98,7 @@ body.no-desktop-brand-header header {
   width: 100%;
   box-sizing: border-box;
   white-space: nowrap;
+  max-height: none;
 }
 
 .marquee .marquee-background {
@@ -143,8 +144,7 @@ body.no-desktop-brand-header header {
 .marquee .content-wrapper .button-container.free-plan-container {
   display: flex;
   justify-content: left;
-  align-items: flex-start;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .marquee .marquee-foreground .content-wrapper .button-container .cta-sub-text {
@@ -154,21 +154,13 @@ body.no-desktop-brand-header header {
 .marquee .button-container.button-inline.free-plan-container .free-plan-widget {
   color: var(--body-color);
   background: unset;
-  margin: unset;
-}
-
-.marquee.dark .button-container.button-inline.free-plan-container .free-plan-widget {
-  color: var(--color-white);
+  margin: 0;
+  background-color: transparent;
+  white-space: unset;
 }
 
 .marquee .button-container.button-inline.free-plan-container + .button-container.button-inline > a {
   margin-left: 0;
-}
-
-.marquee .free-plan-widget {
-  margin: 0;
-  background-color: transparent;
-  padding-left: 0;
 }
 
 .marquee p.button-container a.video-link::before {
@@ -180,6 +172,10 @@ body.no-desktop-brand-header header {
   top: 1px;
   position: relative;
   content: url(/express/icons/play.svg);
+}
+
+.marquee.dark p.button-container a.primaryCTA::before {
+  filter: invert(100%) sepia(0%) saturate(1%) hue-rotate(172deg) brightness(110%) contrast(101%);
 }
 
 .marquee p.underline a {
@@ -301,15 +297,12 @@ body.no-desktop-brand-header header {
   .marquee p.button-container a.button:any-link {
     width: auto;
     box-sizing: initial;
+    flex: none;
   }
 
   .marquee.dark,
   .marquee.dark a:any-link {
     color: var(--color-white);
-  }
-
-  body.no-desktop-brand-header header, body.no-brand-header header {
-    background-image: unset;
   }
 
   .marquee .marquee-foreground {
@@ -392,7 +385,16 @@ body.no-desktop-brand-header header {
   }
 
   .marquee .content-wrapper .button-container.free-plan-container {
+    flex-direction: row;
     align-items: center;
+  }
+
+  .marquee .button-container.button-inline.free-plan-container .free-plan-widget {
+    text-align: left;
+  }
+
+  .marquee.dark .button-container.button-inline.free-plan-container .free-plan-widget {
+    color: var(--color-white);
   }
 
   .marquee.short .button-container.free-plan-container .free-plan-widget {

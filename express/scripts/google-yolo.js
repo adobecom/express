@@ -1,21 +1,11 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import { getMetadata } from './utils.js';
+import BlockMediator from './block-mediator.min.js';
 
 function getRedirectUri() {
-  const primaryCta = document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA');
-  if (primaryCta) {
-    return primaryCta.href;
+  const primaryCtaUrl = BlockMediator.get('primaryCtaUrl')
+    || document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA')?.href;
+  if (primaryCtaUrl) {
+    return primaryCtaUrl;
   }
   return false;
 }
@@ -50,14 +40,16 @@ function setupOneTap() {
     }
 
     const GOOGLE_ID = '419611593676-9r4iflfe9652cjp3booqmmk8jht5as81.apps.googleusercontent.com';
-    const body = document.querySelector('body');
-    const wrapper = document.createElement('div');
-    // Position the dropdown below navigation
-    const navigationBarHeight = document.getElementById('feds-topnav')?.offsetHeight;
+    if (!window.IdentityCredential) {
+      const body = document.querySelector('body');
+      const wrapper = document.createElement('div');
+      // Position the dropdown below navigation
+      const navigationBarHeight = document.getElementById('feds-topnav')?.offsetHeight;
 
-    wrapper.id = 'GoogleOneTap';
-    wrapper.style = `position: absolute; z-index: 9999; top: ${navigationBarHeight}px; right: 0`;
-    body.appendChild(wrapper);
+      wrapper.id = 'GoogleOneTap';
+      wrapper.style = `position: absolute; z-index: 9999; top: ${navigationBarHeight}px; right: 0`;
+      body.appendChild(wrapper);
+    }
 
     // Load Google script
     window.feds.utilities.loadResource({
@@ -70,6 +62,7 @@ function setupOneTap() {
         callback: onGoogleToken,
         prompt_parent_id: 'GoogleOneTap',
         cancel_on_tap_outside: false,
+        ...(window.IdentityCredential ? { use_fedcm_for_prompt: true } : {}),
       });
 
       window.google.accounts.id.prompt();

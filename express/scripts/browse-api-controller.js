@@ -1,19 +1,6 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import {
+  getConfig,
   getHelixEnv,
-  getLanguage,
-  getLocale,
   getMetadata,
 } from './utils.js';
 import { memoize } from './hofs.js';
@@ -26,12 +13,9 @@ const endpoints = {
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   stage: {
-    // todo: use stage when browse API syncs up environments properly
-    cdn: 'https://uss-templates-dev.adobe.io/uss/v3/query',
-    // cdn: 'https://www.stage.adobe.com/ax-uss-api/',
+    cdn: 'https://www.stage.adobe.com/ax-uss-api/',
     url: 'https://uss-templates-stage.adobe.io/uss/v3/query',
-    token: window.atob('Y2QxODIzZWQtMDEwNC00OTJmLWJhOTEtMjVmNDE5NWQ1ZjZj'),
-    // token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
+    token: window.atob('ZGI3YTNkMTQtNWFhYS00YTNkLTk5YzMtNTJhMGYwZGJiNDU5'),
     key: window.atob('ZXhwcmVzcy1ja2ctc3RhZ2U='),
   },
   prod: {
@@ -47,8 +31,8 @@ const mFetch = memoize((url, data) => fetch(url, data).then((r) => (r.ok ? r.jso
 });
 
 export async function getPillWordsMapping() {
-  const locale = getLocale(window.location);
-  const localeColumnString = locale === 'us' ? 'EN' : locale.toUpperCase();
+  const locale = getConfig().locale.prefix.replace('/', '');
+  const localeColumnString = locale === '' ? 'EN' : locale.toUpperCase();
   try {
     const resp = await fetch('/express/linklist-qa-mapping.json?limit=100000');
     const filteredArray = await resp.json();
@@ -66,7 +50,13 @@ export async function getPillWordsMapping() {
 
 export default async function getData(env = 'dev', data = {}) {
   const endpoint = endpoints[env];
-  return mFetch(endpoint.cdn, {
+  let targetURl = endpoint.url;
+
+  if (['www.adobe.com', 'www.stage.adobe.com'].includes(window.location.hostname)) {
+    targetURl = endpoint.cdn;
+  }
+
+  return mFetch(targetURl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/vnd.adobe.search-request+json',
@@ -83,7 +73,7 @@ export async function getDataWithContext({ urlPath }) {
     context: {
       application: { urlPath },
     },
-    locale: getLanguage(getLocale(window.location)) || 'en_US',
+    locale: getConfig().locale.ietf || 'en-US',
     queries: [{
       id: 'ccx-search-1',
       start: 0,
@@ -92,8 +82,8 @@ export async function getDataWithContext({ urlPath }) {
       facets: [{ facet: 'categories', limit: 10 }],
     }],
   };
-  const useDev = window.location.host === 'localhost:3000' || window.isTestEnv;
-  const env = useDev ? { name: 'dev' } : getHelixEnv();
+
+  const env = window.location.host === 'localhost:3000' ? { name: 'dev' } : getHelixEnv();
   const result = await getData(env.name, data);
   if (result?.status?.httpCode !== 200) return null;
 
@@ -133,9 +123,8 @@ export async function getDataWithId() {
     ],
   };
 
-  const env = getHelixEnv();
+  const env = window.location.host === 'localhost:3000' ? { name: 'dev' } : getHelixEnv();
   const result = await getData(env.name, dataRaw);
-
   if (result.status.httpCode !== 200) return null;
 
   return result;

@@ -1,24 +1,11 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import {
   createTag,
-  fetchPlaceholders,
+  fetchPlaceholders, getConfig,
   getIconElement,
-  getLocale,
   getMetadata,
   sampleRUM,
 } from '../../scripts/utils.js';
-import { buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
+import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
@@ -31,30 +18,6 @@ function handlelize(str) {
     .replace(/--+/g, '-') // Replaces multiple hyphens by one hyphen
     .replace(/(^-+|-+$)/g, '') // Remove extra hyphens from beginning or end of the string
     .toLowerCase(); // To lowercase
-}
-
-// FIXME: as soon as we verify the rum approach works, this should be retired
-function logSearch(form, formUrl = '/express/search-terms-log') {
-  if (form) {
-    const input = form.querySelector('input');
-    const currentHref = new URL(window.location.href);
-    const params = new URLSearchParams(currentHref.search);
-    fetch(formUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        data: {
-          keyword: input.value,
-          locale: getLocale(window.location),
-          timestamp: Date.now(),
-          audience: document.body.dataset.device,
-          sourcePath: window.location.pathname,
-          previousSearch: params.toString() || 'N/A',
-          sessionId: sessionStorage.getItem('u_scsid'),
-        },
-      }),
-    });
-  }
 }
 
 function wordExistsInString(word, inputString) {
@@ -167,14 +130,12 @@ function initSearchFunction(block) {
       searchInput = trimInput(tasksXFoundInInput, searchInput);
       [[currentTasks.content]] = tasksXFoundInInput;
     }
-
-    const locale = getLocale(window.location);
-    const urlPrefix = locale === 'us' ? '' : `/${locale}`;
+    const { prefix } = getConfig().locale;
     const topicUrl = searchInput ? `/${searchInput}` : '';
     const taskUrl = `/${handlelize(currentTasks.xCore.toLowerCase())}`;
     const taskXUrl = `/${handlelize(currentTasks.content.toLowerCase())}`;
-    const targetPath = `${urlPrefix}/express/templates${taskUrl}${topicUrl}`;
-    const targetPathX = `${urlPrefix}/express/templates${taskXUrl}${topicUrl}`;
+    const targetPath = `${prefix}/express/templates${taskUrl}${topicUrl}`;
+    const targetPathX = `${prefix}/express/templates${taskXUrl}${topicUrl}`;
     const allTemplatesMetadata = await fetchAllTemplatesMetadata();
     const pathMatch = (e) => e.url === targetPath;
     const pathMatchX = (e) => e.url === targetPathX;
@@ -184,13 +145,12 @@ function initSearchFunction(block) {
       window.location = `${window.location.origin}${targetPath}`;
     } else {
       const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks.xCore}&tasksx=${currentTasks.content}&phformat=${format}&topics=${searchInput || "''"}&q=${searchBar.value || "''"}`;
-      window.location = `${window.location.origin}${urlPrefix}${searchUrlTemplate}`;
+      window.location = `${window.location.origin}${prefix}${searchUrlTemplate}`;
     }
   };
 
   const onSearchSubmit = async () => {
     searchBar.disabled = true;
-    logSearch(searchForm);
     sampleRUM('search', {
       source: block.dataset.blockName,
       target: searchBar.value,
@@ -286,31 +246,21 @@ async function decorateSearchFunctions(block) {
   block.append(searchBarWrapper);
 }
 
-async function decorateBackground(block) {
-  const supportedImgFormat = ['jpeg', 'jpg', 'webp', 'png', 'svg'];
+function decorateBackground(block) {
   const mediaRow = block.querySelector('div:nth-child(2)');
-  return new Promise((resolve) => {
-    if (mediaRow) {
-      const media = mediaRow.querySelector('a')?.href || mediaRow.querySelector(':scope > div')?.textContent;
-      mediaRow.remove();
-      if (media) {
-        const splitArr = media.split('.');
-
-        if (supportedImgFormat.includes(splitArr[splitArr.length - 1])) {
-          const backgroundImg = createTag('img', { src: media, class: 'backgroundimg' });
-          const wrapper = block.parentElement;
-          if (wrapper.classList.contains('search-marquee-wrapper')) {
-            wrapper.prepend(backgroundImg);
-          } else {
-            block.prepend(backgroundImg);
-          }
-          backgroundImg.onload = () => resolve();
-        } else {
-          resolve();
-        }
+  if (mediaRow) {
+    const media = mediaRow.querySelector('picture img');
+    if (media) {
+      media.classList.add('backgroundimg');
+      const wrapper = block.parentElement;
+      if (wrapper.classList.contains('search-marquee-wrapper')) {
+        wrapper.prepend(media);
+      } else {
+        block.prepend(media);
       }
     }
-  });
+    mediaRow.remove();
+  }
 }
 
 async function buildSearchDropdown(block) {
@@ -366,7 +316,7 @@ async function buildSearchDropdown(block) {
     suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
     suggestionsContainer.append(suggestionsTitle, suggestionsList);
 
-    const freePlanTags = await buildStaticFreePlanWidget();
+    const freePlanTags = await buildFreePlanWidget('branded');
 
     freePlanContainer.append(freePlanTags);
     dropdownContainer.append(trendsContainer, suggestionsContainer, freePlanContainer);
@@ -375,7 +325,7 @@ async function buildSearchDropdown(block) {
 }
 
 function decorateLinkList(block) {
-  const carouselItemsWrapper = block.querySelector(':scope > div:nth-of-type(2)');
+  const carouselItemsWrapper = block.querySelector(':scope > div:nth-of-type(2) > div');
   if (carouselItemsWrapper) {
     const showLinkList = getMetadata('show-search-marquee-link-list');
     if ((showLinkList && !['yes', 'true', 'on', 'Y'].includes(showLinkList))
@@ -384,9 +334,11 @@ function decorateLinkList(block) {
       || window.location.pathname.endsWith('/express/templates')) {
       carouselItemsWrapper.remove();
     } else {
-      buildCarousel(':scope > div > p', carouselItemsWrapper);
-      const carousel = carouselItemsWrapper.querySelector('.carousel-container');
-      block.append(carousel);
+      buildCarousel(':scope > p', carouselItemsWrapper).then(() => {
+        const carousel = carouselItemsWrapper.querySelector('.carousel-container');
+        block.append(carousel);
+        carouselItemsWrapper.parentElement.remove();
+      });
     }
   }
 }
@@ -397,7 +349,7 @@ export default async function decorate(block) {
     block.remove();
     return;
   }
-  const background = decorateBackground(block);
+  decorateBackground(block);
   await decorateSearchFunctions(block);
   await buildSearchDropdown(block);
   initSearchFunction(block);
@@ -412,5 +364,4 @@ export default async function decorate(block) {
     const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
     updateAsyncBlocks();
   }
-  await background;
 }

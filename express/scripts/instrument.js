@@ -1,27 +1,12 @@
-/*
- * Copyright 2021 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 /* global _satellite __satelliteLoadedCallback alloy */
 
 import {
   loadScript,
   getAssetDetails,
-  getLocale,
-  getLanguage,
   getMetadata,
   checkTesting,
-  fetchPlaceholders,
+  fetchPlaceholders, getConfig,
 } from './utils.js';
-
-import BlockMediator from './block-mediator.min.js';
 
 function getPlacement(btn) {
   const parentBlock = btn.closest('.block');
@@ -57,7 +42,11 @@ async function trackBranchParameters($links) {
   const { experiment } = window.hlx;
   const { referrer } = window.document;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
-  const templateSearchTag = getMetadata('short-title');
+  const templateSearchTag = getMetadata('branch-search-term') || getMetadata('short-title');
+  const canvasHeight = getMetadata('branch-canvas-height');
+  const canvasWidth = getMetadata('branch-canvas-width');
+  const canvasUnit = getMetadata('branch-canvas-unit');
+  const sceneline = getMetadata('branch-sceneline');
   const pageUrl = window.location.pathname;
   const sdid = rootUrlParameters.get('sdid');
   const mv = rootUrlParameters.get('mv');
@@ -76,10 +65,8 @@ async function trackBranchParameters($links) {
 
       if (templateSearchTag
         && placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
-        urlParams.set('search', templateSearchTag);
         urlParams.set('q', templateSearchTag);
         urlParams.set('category', 'templates');
-        urlParams.set('searchCategory', 'templates');
       }
 
       if (referrer) {
@@ -88,6 +75,22 @@ async function trackBranchParameters($links) {
 
       if (pageUrl) {
         urlParams.set('url', pageUrl);
+      }
+
+      if (canvasHeight) {
+        urlParams.set('height', canvasHeight);
+      }
+
+      if (canvasWidth) {
+        urlParams.set('width', canvasWidth);
+      }
+
+      if (canvasUnit) {
+        urlParams.set('unit', canvasUnit);
+      }
+
+      if (sceneline) {
+        urlParams.set('sceneline', sceneline);
       }
 
       if (sdid) {
@@ -192,6 +195,33 @@ w.marketingtech = {
 // w.targetGlobalSettings = w.targetGlobalSettings || {};
 // w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
 
+function sendEventToAdobeAnaltics(eventName) {
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: eventName,
+          linkClicks: {
+            value: 1,
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        digitalData: {
+          primaryEvent: {
+            eventInfo: {
+              eventName,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 const martechLoadedCB = () => {
   /* eslint-disable no-underscore-dangle */
   const set = (path, value) => {
@@ -217,12 +247,12 @@ const martechLoadedCB = () => {
   // gathering the data
   //------------------------------------------------------------------------------------
 
-  const locale = getLocale(w.location);
+  const locale = getConfig().locale.prefix;
   const pathSegments = pathname.substr(1).split('/');
-  if (locale !== 'us') pathSegments.shift();
+  if (locale !== '') pathSegments.shift();
   const pageName = `adobe.com:${pathSegments.join(':')}`;
 
-  const language = getLanguage(getLocale(window.location));
+  const language = document.documentElement.getAttribute('lang');
 
   let category = getMetadata('category');
   if (!category && (pathname.includes('/create/')
@@ -322,86 +352,17 @@ const martechLoadedCB = () => {
   //------------------------------------------------------------------------------------
 
   // Fire the viewedPage event
-  _satellite.track('event', {
-    xdm: {},
-    data: {
-      eventType: 'web.webinteraction.linkClicks',
-      web: {
-        webInteraction: {
-          name: 'viewedPage',
-          linkClicks: {
-            value: 1,
-          },
-          type: 'other',
-        },
-      },
-      _adobe_corpnew: {
-        digitalData: {
-          primaryEvent: {
-            eventInfo: {
-              eventName: 'viewedPage',
-            },
-          },
-        },
-      },
-    },
-  });
+  sendEventToAdobeAnaltics('viewedPage');
 
   // Fire the landing:viewedPage event
-  _satellite.track('event', {
-    xdm: {},
-    data: {
-      eventType: 'web.webinteraction.linkClicks',
-      web: {
-        webInteraction: {
-          name: 'landing:viewedPage',
-          linkClicks: {
-            value: 1,
-          },
-          type: 'other',
-        },
-      },
-      _adobe_corpnew: {
-        digitalData: {
-          primaryEvent: {
-            eventInfo: {
-              eventName: 'landing:viewedPage',
-            },
-          },
-        },
-      },
-    },
-  });
+  sendEventToAdobeAnaltics('landing:viewedPage');
 
   // Fire the displayPurchasePanel event if it is the pricing site
   if (
     sparkLandingPageType === 'pricing'
     && sparkTouchpoint
   ) {
-    _satellite.track('event', {
-      xdm: {},
-      data: {
-        eventType: 'web.webinteraction.linkClicks',
-        web: {
-          webInteraction: {
-            name: 'displayPurchasePanel',
-            linkClicks: {
-              value: 1,
-            },
-            type: 'other',
-          },
-        },
-        _adobe_corpnew: {
-          digitalData: {
-            primaryEvent: {
-              eventInfo: {
-                eventName: 'displayPurchasePanel',
-              },
-            },
-          },
-        },
-      },
-    });
+    sendEventToAdobeAnaltics('displayPurchasePanel');
   }
 
   function textToName(text) {
@@ -430,38 +391,40 @@ const martechLoadedCB = () => {
     return newEventName;
   }
 
-  function trackButtonClick($a) {
+  function trackButtonClick(a) {
     let adobeEventName = 'adobe.com:express:cta:';
     let hemingwayAssetId;
     let hemingwayAssetPath;
     let hemingwayAssetPosition;
 
-    const hemingwayAsset = $a.querySelector('picture,video,audio,img')
-      || $a.closest('[class*="-container"],[class*="-wrapper"]')?.querySelector('picture,video,audio,img');
-    if (hemingwayAsset) {
+    const hemingwayAsset = a.querySelector('picture,video,audio,img')
+      || a.closest('[class*="-container"],[class*="-wrapper"]')?.querySelector('picture,video,audio,img');
+    const block = a.closest('.block');
+    if (hemingwayAsset && block) {
       const { assetId, assetPath } = getAssetDetails(hemingwayAsset);
       hemingwayAssetPath = assetPath;
       hemingwayAssetId = assetId;
-      const siblings = [...$a.closest('.block')
-        .querySelectorAll(`.${$a.className.split(' ').join('.')}`)];
-      hemingwayAssetPosition = siblings.indexOf($a);
+
+      const siblings = [...block
+        .querySelectorAll(`.${a.className.split(' ').join('.')}`)];
+      hemingwayAssetPosition = siblings.indexOf(a);
     }
 
-    const $templateContainer = $a.closest('.template-list');
-    const $tutorialContainer = $a.closest('.tutorial-card');
-    const $contentToggleContainer = $a.closest('.content-toggle');
-    const $chooseYourPathContainer = $a.closest('.choose-your-path');
+    const $templateContainer = a.closest('.template-list');
+    const $tutorialContainer = a.closest('.tutorial-card');
+    const $contentToggleContainer = a.closest('.content-toggle');
+    const $chooseYourPathContainer = a.closest('.choose-your-path');
     // let cardPosition;
     // Template button click
     if ($templateContainer) {
       adobeEventName += 'template:';
 
-      const $img = $a.querySelector('img');
+      const $img = a.querySelector('img');
 
       // try to get the image alternate text
-      if ($a.classList.contains('template-title-link')) {
+      if (a.classList.contains('template-title-link')) {
         adobeEventName += 'viewAll';
-      } else if ($a.classList.contains('placeholder')) {
+      } else if (a.classList.contains('placeholder')) {
         adobeEventName += 'createFromScratch';
       } else if ($img && $img.alt) {
         adobeEventName += textToName($img.alt);
@@ -470,87 +433,116 @@ const martechLoadedCB = () => {
       }
       // Button in the FAQ
     } else if ($tutorialContainer) {
-      const videoName = textToName($a.querySelector('h3').textContent.trim());
+      const videoName = textToName(a.querySelector('h3').textContent.trim());
       adobeEventName = `${adobeEventName}tutorials:${videoName}:tutorialPressed`;
     } else if ($chooseYourPathContainer) {
-      const $slideTitle = $a.querySelector('.choose-your-path-slide-title');
+      const $slideTitle = a.querySelector('.choose-your-path-slide-title');
       const slideName = $slideTitle ? textToName($slideTitle.textContent.trim()) : 'slide';
 
       adobeEventName = `${adobeEventName}chooseYourPath:${slideName}:slidePressed`;
     } else if ($contentToggleContainer) {
-      const toggleName = textToName($a.textContent.trim());
+      const toggleName = textToName(a.textContent.trim());
       adobeEventName = `${adobeEventName}contentToggle:${toggleName}:buttonPressed`;
-    } else if ($a.classList.contains('floating-button-lottie')) {
+    } else if (a.classList.contains('floating-button-lottie')) {
       adobeEventName = `${adobeEventName}floatingButton:scrollPressed`;
-    } else if ($a.classList.contains('video-player-inline-player-overlay')) {
-      const sessionName = $a.parentNode.parentNode.parentNode.querySelector('.video-player-session-number').textContent.trim();
-      const videoName = $a.parentNode.parentNode.parentNode.querySelector('.video-player-video-title').textContent.trim();
+    } else if (a.classList.contains('video-player-inline-player-overlay')) {
+      const sessionName = a.parentNode.parentNode.parentNode.querySelector('.video-player-session-number').textContent.trim();
+      const videoName = a.parentNode.parentNode.parentNode.querySelector('.video-player-video-title').textContent.trim();
       adobeEventName = `${adobeEventName}playing:${sessionName}-${videoName}`;
-    } else if ($a.classList.contains('notch')) {
+    } else if (a.classList.contains('notch')) {
       adobeEventName = `${adobeEventName}splitAction:notch`;
-    } else if ($a.classList.contains('underlay')) {
+    } else if (a.classList.contains('underlay')) {
       adobeEventName = `${adobeEventName}splitAction:background`;
-    } else if ($a.parentElement.classList.contains('floating-button')) {
+    } else if (a.parentElement.classList.contains('floating-button')) {
       adobeEventName = `${adobeEventName}floatingButton:ctaPressed`;
-    } else if ($a.closest('.faq')) {
-      adobeEventName = appendLinkText(`${adobeEventName}faq:`, $a);
+    } else if (a.closest('.faq')) {
+      adobeEventName = appendLinkText(`${adobeEventName}faq:`, a);
       // CTA in the hero
-    } else if ($a.closest('.hero')) {
-      adobeEventName = appendLinkText(`${adobeEventName}hero:`, $a);
+    } else if (a.closest('.hero')) {
+      adobeEventName = appendLinkText(`${adobeEventName}hero:`, a);
       // Click in the pricing block
     } else if (sparkLandingPageType === 'express-your-fandom') {
-      adobeEventName = appendLinkText(`${adobeEventName}${sparkLandingPageType}:`, $a);
+      adobeEventName = appendLinkText(`${adobeEventName}${sparkLandingPageType}:`, a);
     } else if (sparkLandingPageType === 'express-your-brand') {
-      adobeEventName = appendLinkText(`${adobeEventName}learn:${sparkLandingPageType}:`, $a);
+      adobeEventName = appendLinkText(`${adobeEventName}learn:${sparkLandingPageType}:`, a);
     } else if (sparkLandingPageType === 'pricing') {
       // edu link
-      if ($a.pathname.includes('/edu')) {
+      if (a.pathname.includes('/edu')) {
         adobeEventName += 'pricing:education:Click';
         // business enterprise link
-      } else if ($a.pathname.includes('business/enterprise')) {
+      } else if (a.pathname.includes('business/enterprise')) {
         adobeEventName += 'pricing:enterprise:Click';
         // Creative cloud learn more
-      } else if ($a.parentElement.id === 'adobe-spark-is-a-part-of-most-creative-cloud-paid-plans-learn-more') {
+      } else if (a.parentElement.id === 'adobe-spark-is-a-part-of-most-creative-cloud-paid-plans-learn-more') {
         adobeEventName += 'pricing:creativeCloud:learnMore';
-      } else if ($a.id === 'free-trial') {
+      } else if (a.id === 'free-trial') {
         adobeEventName += 'pricing:cta:StartForFree';
-      } else if ($a.id === '3-month-trial') {
+      } else if (a.id === '3-month-trial') {
         adobeEventName += 'pricing:cta:StartYour3MonthTrial';
         // View plans
       } else {
         adobeEventName = 'adobe.com:express:CTA:pricing:viewPlans:Click';
       }
       // quick actions clicks
-    } else if ($a.closest('ccl-quick-action') && $a.classList.contains('upload-your-photo')) {
+    } else if (a.closest('ccl-quick-action') && a.classList.contains('upload-your-photo')) {
       // this event is handled at mock-file-input level
       return;
-    } else if ($a.href && ($a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || $a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?tools/g))) {
-      adobeEventName = appendLinkText(adobeEventName, $a);
-    } else if ($a.href && ($a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || $a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?express-apps\/animate-from-audio/g))) {
-      adobeEventName = appendLinkText(adobeEventName, $a);
+    } else if (a.href && (a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?tools/g))) {
+      adobeEventName = appendLinkText(adobeEventName, a);
+    } else if (a.href && (a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?express-apps\/animate-from-audio/g))) {
+      adobeEventName = appendLinkText(adobeEventName, a);
       // Frictionless Quick Actions clicks
-    } else if ($a.closest('ccl-quick-action') && ($a.getAttribute('data-action') === 'Download')) {
+    } else if (a.closest('ccl-quick-action') && (a.getAttribute('data-action') === 'Download')) {
       adobeEventName = 'quickAction:downloadPressed';
-    } else if ($a.closest('ccl-quick-action') && ($a.getAttribute('data-action') === 'Editor')) {
+    } else if (a.closest('ccl-quick-action') && (a.getAttribute('data-action') === 'Editor')) {
       adobeEventName = 'quickAction:openInEditorPressed';
     // ToC clicks
-    } else if ($a.closest('.toc-container')) {
-      if ($a.classList.contains('toc-toggle')) {
+    } else if (a.closest('.toc-container')) {
+      if (a.classList.contains('toc-toggle')) {
         adobeEventName += 'toc:toggle:Click';
-      } else if ($a.classList.contains('toc-close')) {
+      } else if (a.classList.contains('toc-close')) {
         adobeEventName += 'toc:close:Click';
-      } else if ($a.classList.contains('toc-handle')) {
+      } else if (a.classList.contains('toc-handle')) {
         adobeEventName += 'toc:close:Click:handle';
-      } else if ($a.classList.contains('toc-wrapper')) {
+      } else if (a.classList.contains('toc-wrapper')) {
         adobeEventName += 'toc:close:Click:background';
       } else {
-        adobeEventName = appendLinkText(`${adobeEventName}toc:link:Click:`, $a);
+        adobeEventName = appendLinkText(`${adobeEventName}toc:link:Click:`, a);
       }
+    } else if (a.closest('.template')) {
+      adobeEventName = appendLinkText(adobeEventName, a);
+    } else if (a.closest('.tabs-ax .tab-list-container')) {
+      adobeEventName += `${a.closest('.tabs-ax')?.id}:${a.id}`;
     // Default clicks
-    } else if ($a.closest('.template')) {
-      adobeEventName = appendLinkText(adobeEventName, $a);
     } else {
-      adobeEventName = appendLinkText(adobeEventName, $a);
+      adobeEventName = appendLinkText(adobeEventName, a);
+    }
+
+    // clicks using [data-lh and data-ll]
+    let trackingHeader = a.closest('[data-lh]');
+    if (trackingHeader || a.dataset.lh) {
+      adobeEventName = 'adobe.com:express';
+      let headerString = '';
+      while (trackingHeader) {
+        headerString = `:${textToName(trackingHeader.dataset.lh.trim())}${headerString}`;
+        trackingHeader = trackingHeader.parentNode.closest('[data-lh]');
+      }
+      adobeEventName += headerString;
+      if (a.dataset.ll) {
+        adobeEventName += `:${textToName(a.dataset.ll.trim())}`;
+      } else {
+        adobeEventName += `:${textToName(a.innerText.trim())}`;
+      }
+    }
+    if (window.hlx?.experiment) {
+      let prefix = '';
+      if (window.hlx.experiment?.id) prefix = `${window.hlx.experiment.id}:`;
+      if (window.hlx.experiment?.selectedVariant) {
+        let variant = window.hlx.experiment.selectedVariant;
+        if (variant.includes('-')) [, variant] = variant.split('-');
+        prefix += `${variant}:`;
+      }
+      adobeEventName = prefix + adobeEventName;
     }
 
     _satellite.track('event', {
@@ -575,10 +567,12 @@ const martechLoadedCB = () => {
             },
             ...(hemingwayAsset
               ? {
-                hemingway: {
-                  assetId: hemingwayAssetId,
-                  assetPath: hemingwayAssetPath,
-                  assetPosition: hemingwayAssetPosition,
+                asset: {
+                  assetInfo: {
+                    assetId: hemingwayAssetId,
+                    assetPath: hemingwayAssetPath,
+                    assetPosition: hemingwayAssetPosition,
+                  },
                 },
               }
               : {}),
@@ -589,33 +583,6 @@ const martechLoadedCB = () => {
   }
 
   // Frictionless Quick Actions tracking events
-
-  function sendEventToAdobeAnaltics(eventName) {
-    _satellite.track('event', {
-      xdm: {},
-      data: {
-        eventType: 'web.webinteraction.linkClicks',
-        web: {
-          webInteraction: {
-            name: eventName,
-            linkClicks: {
-              value: 1,
-            },
-            type: 'other',
-          },
-        },
-        _adobe_corpnew: {
-          digitalData: {
-            primaryEvent: {
-              eventInfo: {
-                eventName,
-              },
-            },
-          },
-        },
-      },
-    });
-  }
 
   function handleQuickActionEvents(el) {
     let frictionLessQuctionActionsTrackingEnabled = false;
@@ -654,7 +621,7 @@ const martechLoadedCB = () => {
     }
   });
 
-  function trackVideoAnalytics($video, parameters) {
+  function trackVideoAnalytics(parameters) {
     const {
       videoName,
       videoId,
@@ -684,7 +651,7 @@ const martechLoadedCB = () => {
 
     // for tracking all of the links
     d.addEventListener('click', (event) => {
-      if (event.target.tagName === 'A') {
+      if (event.target.tagName === 'A' || event.target.dataset.ll?.length) {
         trackButtonClick(event.target);
       }
     });
@@ -711,7 +678,7 @@ const martechLoadedCB = () => {
     });
 
     // for tracking split action block notch and underlay background
-    document.addEventListener('splitactionloaded', () => {
+    d.addEventListener('splitactionloaded', () => {
       const $notch = d.querySelector('main .split-action-container .notch');
       const $underlay = d.querySelector('main .split-action-container .underlay');
 
@@ -732,32 +699,7 @@ const martechLoadedCB = () => {
     const $button = d.querySelector('.sticky-promo-bar button.close');
     if ($button) {
       $button.addEventListener('click', () => {
-        const adobeEventName = 'adobe.com:express:cta:startYourFreeTrial:close';
-
-        _satellite.track('event', {
-          xdm: {},
-          data: {
-            eventType: 'web.webinteraction.linkClicks',
-            web: {
-              webInteraction: {
-                name: adobeEventName,
-                linkClicks: {
-                  value: 1,
-                },
-                type: 'other',
-              },
-            },
-            _adobe_corpnew: {
-              digitalData: {
-                primaryEvent: {
-                  eventInfo: {
-                    eventName: adobeEventName,
-                  },
-                },
-              },
-            },
-          },
-        });
+        sendEventToAdobeAnaltics('adobe.com:express:cta:startYourFreeTrial:close');
       });
     }
 
@@ -765,37 +707,12 @@ const martechLoadedCB = () => {
     const $pricingDropdown = d.querySelector('.pricing-plan-dropdown');
     if ($pricingDropdown) {
       $pricingDropdown.addEventListener('change', () => {
-        const adobeEventName = 'adobe.com:express:pricing:commitmentType:selected';
-
-        _satellite.track('event', {
-          xdm: {},
-          data: {
-            eventType: 'web.webinteraction.linkClicks',
-            web: {
-              webInteraction: {
-                name: adobeEventName,
-                linkClicks: {
-                  value: 1,
-                },
-                type: 'other',
-              },
-            },
-            _adobe_corpnew: {
-              digitalData: {
-                primaryEvent: {
-                  eventInfo: {
-                    eventName: adobeEventName,
-                  },
-                },
-              },
-            },
-          },
-        });
+        sendEventToAdobeAnaltics('adobe.com:express:pricing:commitmentType:selected');
       });
     }
 
     // Tracking any video column blocks.
-    const $columnVideos = document.querySelectorAll('.column-video');
+    const $columnVideos = d.querySelectorAll('.column-video');
     if ($columnVideos.length) {
       $columnVideos.forEach(($columnVideo) => {
         const $parent = $columnVideo.closest('.columns');
@@ -805,37 +722,13 @@ const martechLoadedCB = () => {
 
         $parent.addEventListener('click', (e) => {
           e.stopPropagation();
-
-          _satellite.track('event', {
-            xdm: {},
-            data: {
-              eventType: 'web.webinteraction.linkClicks',
-              web: {
-                webInteraction: {
-                  name: adobeEventName,
-                  linkClicks: {
-                    value: 1,
-                  },
-                  type: 'other',
-                },
-              },
-              _adobe_corpnew: {
-                digitalData: {
-                  primaryEvent: {
-                    eventInfo: {
-                      eventName: adobeEventName,
-                    },
-                  },
-                },
-              },
-            },
-          });
+          sendEventToAdobeAnaltics(adobeEventName);
         });
       });
     }
 
     // Tracking any link or links that is added after page loaded.
-    document.addEventListener('linkspopulated', async (e) => {
+    d.addEventListener('linkspopulated', async (e) => {
       await trackBranchParameters(e.detail);
       e.detail.forEach(($link) => {
         $link.addEventListener('click', () => {
@@ -844,67 +737,41 @@ const martechLoadedCB = () => {
       });
     });
 
-    document.addEventListener('pricingdropdown', () => {
-      const adobeEventName = 'adobe.com:express:pricing:bundleType:selected';
-
-      _satellite.track('event', {
-        xdm: {},
-        data: {
-          eventType: 'web.webinteraction.linkClicks',
-          web: {
-            webInteraction: {
-              name: adobeEventName,
-              linkClicks: {
-                value: 1,
-              },
-              type: 'other',
-            },
-          },
-          _adobe_corpnew: {
-            digitalData: {
-              primaryEvent: {
-                eventInfo: {
-                  eventName: adobeEventName,
-                },
-              },
-            },
-          },
-        },
-      });
+    d.addEventListener('pricingdropdown', () => {
+      sendEventToAdobeAnaltics('adobe.com:express:pricing:bundleType:selected');
     });
 
     // tracking videos loaded asynchronously.
-    document.addEventListener('videoloaded', (e) => {
-      trackVideoAnalytics(e.detail.video, e.detail.parameters);
+    d.addEventListener('videoloaded', (e) => {
+      trackVideoAnalytics(e.detail.parameters);
       _satellite.track('videoloaded');
     });
 
-    document.addEventListener('videoclosed', (e) => {
-      const adobeEventName = `adobe.com:express:cta:learn:columns:${e.detail.parameters.videoId}:videoClosed`;
+    d.addEventListener('videoclosed', (e) => {
+      sendEventToAdobeAnaltics(`adobe.com:express:cta:learn:columns:${e.detail.parameters.videoId}:videoClosed`);
+    });
 
-      _satellite.track('event', {
-        xdm: {},
-        data: {
-          eventType: 'web.webinteraction.linkClicks',
-          web: {
-            webInteraction: {
-              name: adobeEventName,
-              linkClicks: {
-                value: 1,
-              },
-              type: 'other',
-            },
-          },
-          _adobe_corpnew: {
-            digitalData: {
-              primaryEvent: {
-                eventInfo: {
-                  eventName: adobeEventName,
-                },
-              },
-            },
-          },
-        },
+    // for tracking the tab-ax tabs
+    d.querySelectorAll('main .tabs-ax .tab-list-container button[role="tab"]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        trackButtonClick(btn);
+      });
+    });
+
+    d.querySelectorAll('main .pricing-table .toggle-content').forEach((toggle) => {
+      toggle.addEventListener('click', () => {
+        const buttonEl = toggle.querySelector('span[role="button"]');
+        const action = buttonEl && buttonEl.getAttribute('aria-expanded') === 'true' ? 'closed' : 'opened';
+        sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:tableToggle:${action || ''}`);
+      });
+    });
+
+    // track non-click interactions
+    // BlockMediator triggered
+    import('./block-mediator.min.js').then((resp) => {
+      const { default: BlockMediator } = resp;
+      BlockMediator.subscribe('billing-plan', ({ newValue }) => {
+        sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:toggle:${newValue}`);
       });
     });
   }
@@ -941,9 +808,11 @@ const martechLoadedCB = () => {
                     eventName: 'assetView',
                   },
                 },
-                hemingway: {
-                  assetId: evt.assetId,
-                  assetPath: evt.assetPath,
+                asset: {
+                  assetInfo: {
+                    assetId: evt.assetId,
+                    assetPath: evt.assetPath,
+                  },
                 },
               },
             },
@@ -978,63 +847,41 @@ const martechLoadedCB = () => {
     [24793488, 'enableReverseVideoRating'],
   ];
 
-  BlockMediator.set('audiences', []);
-  BlockMediator.set('segments', []);
+  async function getAudiences() {
+    const getSegments = async (ecid) => {
+      const { default: BlockMediator } = await import('./block-mediator.min.js');
 
-  function getAudiences() {
-    const getSegments = (ecid) => {
-      if (ecid) {
-        w.setAudienceManagerSegments = (json) => {
-          if (json && json.segments && json.segments.includes(RETURNING_VISITOR_SEGMENT_ID)) {
+      BlockMediator.set('audiences', []);
+      BlockMediator.set('segments', []);
+      if (!ecid) return;
+      w.setAudienceManagerSegments = (json) => {
+        if (json && json.segments && json.segments.includes(RETURNING_VISITOR_SEGMENT_ID)) {
+          const audiences = BlockMediator.get('audiences');
+          const segments = BlockMediator.get('segments');
+          audiences.push(ENABLE_PRICING_MODAL_AUDIENCE);
+          segments.push(RETURNING_VISITOR_SEGMENT_ID);
+
+          sendEventToAdobeAnaltics('pricingModalUserInSegment');
+        }
+
+        QUICK_ACTION_SEGMENTS.forEach((QUICK_ACTION_SEGMENT) => {
+          if (json && json.segments && json.segments.includes(QUICK_ACTION_SEGMENT[0])) {
             const audiences = BlockMediator.get('audiences');
             const segments = BlockMediator.get('segments');
-            audiences.push(ENABLE_PRICING_MODAL_AUDIENCE);
-            segments.push(RETURNING_VISITOR_SEGMENT_ID);
-
-            _satellite.track('event', {
-              xdm: {},
-              data: {
-                eventType: 'web.webinteraction.linkClicks',
-                web: {
-                  webInteraction: {
-                    name: 'pricingModalUserInSegment',
-                    linkClicks: {
-                      value: 1,
-                    },
-                    type: 'other',
-                  },
-                },
-                _adobe_corpnew: {
-                  digitalData: {
-                    primaryEvent: {
-                      eventInfo: {
-                        eventName: 'pricingModalUserInSegment',
-                      },
-                    },
-                  },
-                },
-              },
-            });
+            audiences.push(QUICK_ACTION_SEGMENT[1]);
+            segments.push(QUICK_ACTION_SEGMENT[0]);
           }
+        });
 
-          QUICK_ACTION_SEGMENTS.forEach((QUICK_ACTION_SEGMENT) => {
-            if (json && json.segments && json.segments.includes(QUICK_ACTION_SEGMENT[0])) {
-              const audiences = BlockMediator.get('audiences');
-              const segments = BlockMediator.get('segments');
-              audiences.push(QUICK_ACTION_SEGMENT[1]);
-              segments.push(QUICK_ACTION_SEGMENT[0]);
-            }
-          });
-
-          document.dispatchEvent(new Event('context_loaded'));
-        };
-        // TODO: What the heck is this?  This needs to be behind one trust and cmp
-        loadScript(`https://adobe.demdex.net/event?d_dst=1&d_rtbd=json&d_cb=setAudienceManagerSegments&d_cts=2&d_mid=${ecid}`);
-      }
+        document.dispatchEvent(new Event('context_loaded'));
+      };
+      // TODO: What the heck is this?  This needs to be behind one trust and cmp
+      loadScript(`https://adobe.demdex.net/event?d_dst=1&d_rtbd=json&d_cb=setAudienceManagerSegments&d_cts=2&d_mid=${ecid}`);
     };
 
-    alloy('getIdentity')
-      .then((data) => getSegments(data && data.identity ? data.identity.ECID : null));
+    await _satellite.alloyConfigurePromise;
+    const data = await alloy('getIdentity');
+    getSegments(data?.identity?.ECID || null);
   }
 
   __satelliteLoadedCallback(getAudiences);

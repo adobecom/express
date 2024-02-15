@@ -1,15 +1,3 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../scripts/utils.js';
 
 import buildCarousel from '../shared/carousel.js';
@@ -92,14 +80,16 @@ function buildGenAIForm(ctaObj) {
   genAISubmit.textContent = ctaObj.ctaLinks[0].textContent;
   genAISubmit.disabled = genAIInput.value === '';
 
+  genAIInput.addEventListener('input', () => {
+    genAISubmit.disabled = genAIInput.value.trim() === '';
+  }, { passive: true });
+
   genAIInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleGenAISubmit(genAIForm, ctaObj.ctaLinks[0].href);
-    } else {
-      genAISubmit.disabled = genAIInput.value === '';
     }
-  }, { passive: true });
+  });
 
   genAIForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -174,10 +164,8 @@ async function decorateCards(block, payload) {
         if (a.href && a.href.match('adobesparkpost.app.link')) {
           const btnUrl = new URL(a.href);
           if (placeholders?.['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
-            btnUrl.searchParams.set('search', cta.text);
             btnUrl.searchParams.set('q', cta.text);
             btnUrl.searchParams.set('category', 'templates');
-            btnUrl.searchParams.set('searchCategory', 'templates');
             a.href = decodeURIComponent(btnUrl.toString());
           }
           a.removeAttribute('title');
@@ -239,7 +227,8 @@ export default async function decorate(block) {
   const payload = constructPayload(block);
 
   decorateHeading(block, payload);
-  await decorateCards(block, payload);
-  buildCarousel('', block.querySelector('.cta-carousel-cards'));
-  document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
+  decorateCards(block, payload).then(async () => {
+    await buildCarousel('', block.querySelector('.cta-carousel-cards'));
+    document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
+  });
 }

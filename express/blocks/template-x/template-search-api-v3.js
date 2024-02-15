@@ -1,16 +1,5 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
 /* eslint-disable no-underscore-dangle */
-import { fetchPlaceholders, getLanguage } from '../../scripts/utils.js';
+import { fetchPlaceholders, getConfig } from '../../scripts/utils.js';
 import { memoize } from '../../scripts/hofs.js';
 
 // supported by content api
@@ -77,14 +66,16 @@ function formatFilterString(filters) {
     str += `&filters=topics==${topic.split(',').map((t) => t.trim()).join(',')}`;
   });
   // locale needs backward compatibility with old api
+  const confLocales = getConfig().locales;
   if (locales) {
     const langFilter = extractLangs(locales)
-      .map((l) => getLanguage(l))
+      .map((l) => confLocales[l === 'en' ? '' : l]?.ietf)
       .filter((l) => supportedLanguages.includes(l))
       .join(',');
     if (langFilter) str += `&filters=language==${langFilter}`;
 
-    // No Region Filter. We still have Region Boosting
+    // No Region Filter as template region tagging is still inconsistent.
+    // We still have Region Boosting via x-express-ims-region-code header
     // const regionFilter = extractRegions(locales).join(',');
     // if (regionFilter) str += `&filters=applicableRegions==${regionFilter}`;
   }
@@ -118,18 +109,19 @@ async function fetchSearchUrl({
     `${base}?${collectionIdParam}${queryParam}${qParam}${limitParam}${startParam}${sortParam}${filterStr}`,
   );
 
-  const headers = {};
-
   const langs = extractLangs(filters.locales);
   if (langs.length === 0) {
-    return memoizedFetch(url, { headers });
+    return memoizedFetch(url);
   }
-  const prefLang = getLanguage(langs[0]);
+
+  const headers = {};
+  const prefLang = getConfig().locales?.[langs[0] === 'en' ? '' : langs[0]]?.ietf;
   const [prefRegion] = extractRegions(filters.locales);
   headers['x-express-ims-region-code'] = prefRegion; // Region Boosting
-  if (supportedLanguages.includes(prefLang)) {
+  if (prefLang && supportedLanguages.includes(prefLang)) {
     headers['x-express-pref-lang'] = prefLang; // Language Boosting
   }
+
   const res = await memoizedFetch(url, { headers });
   if (!res) return res;
   if (langs.length > 1 && supportedLanguages.includes(prefLang)) {
@@ -223,7 +215,6 @@ function isValidBehaviors(behaviors) {
 export function isValidTemplate(template) {
   return !!(template.status === 'approved'
     && template.customLinks?.branchUrl
-    && template['dc:title']?.['i-default']
     && template.pages?.[0]?.rendition?.image?.thumbnail?.componentId
     && template._links?.['http://ns.adobe.com/adobecloud/rel/rendition']?.href?.replace
     && template._links?.['http://ns.adobe.com/adobecloud/rel/component']?.href?.replace

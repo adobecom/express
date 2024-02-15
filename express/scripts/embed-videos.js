@@ -1,16 +1,4 @@
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
-import { createTag, loadCSS, loadScript } from './utils.js';
+import { createTag, loadStyle, loadScript } from './utils.js';
 import { getAvailableVimeoSubLang } from '../blocks/shared/video.js';
 
 export function getDefaultEmbed(url) {
@@ -27,7 +15,7 @@ export function embedYoutube(url) {
   const id = searchParams.get('v') || url.pathname.split('/').pop();
   searchParams.delete('v');
   loadScript('/express/scripts/libs/lite-yt-embed/lite-yt-embed.js', 'module');
-  loadCSS('/express/scripts/libs/lite-yt-embed/lite-yt-embed.css');
+  loadStyle('/express/scripts/libs/lite-yt-embed/lite-yt-embed.css');
 
   return createTag('lite-youtube', {
     videoid: id,
@@ -42,7 +30,7 @@ export function embedVimeo(url, thumbnail) {
   const language = getAvailableVimeoSubLang();
   if (url.hostname !== 'player.vimeo.com') {
     loadScript('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.js', 'module');
-    loadCSS('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.css');
+    loadStyle('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.css');
     const video = url.pathname.split('/')[1];
     const embed = createTag('lite-vimeo', {
       videoid: video,
