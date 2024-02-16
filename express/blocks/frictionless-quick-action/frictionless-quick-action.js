@@ -51,6 +51,7 @@ function startSDK(data) {
       {
         target: 'Editor',
         id: 'edit-in-express',
+        label: 'Edit in Adobe Express for free',
         buttonType: 'native',
         optionType: 'button',
         treatment: 'fill',
