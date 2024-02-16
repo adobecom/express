@@ -53,7 +53,7 @@ function pushPricingAnalytics(adobeEventName, sparkEventName, plan) {
 }
 
 async function selectPlan(card, planUrl, sendAnalyticEvent) {
-  const plan = await fetchPlan(planUrl);
+  const plan = await fetchPlan(planUrl, false);
 
   if (plan) {
     const pricingCta = card.querySelector('.puf-card-top a');

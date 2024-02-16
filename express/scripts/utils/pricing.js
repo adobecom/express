@@ -275,7 +275,7 @@ export function getCurrency(locale) {
 
 export const getOffer = (() => {
   let json;
-  return async (offerId, countryOverride) => {
+  return async (offerId, countryOverride, isPricingCardFlow) => {
     let country = getCountry();
     if (countryOverride) country = countryOverride;
     if (!country) country = 'us';
@@ -284,8 +284,9 @@ export const getOffer = (() => {
       country = 'us';
       currency = 'USD';
     }
+    const url = isPricingCardFlow ? '/express/system/offers-one.json?limit=5000' : '/express/system/offers-new.json?limit=5000';
     if (!json) {
-      const resp = await fetch('/express/system/offers-new.json?limit=5000');
+      const resp = await fetch(url);
       if (!resp.ok) return {};
       json = await resp.json();
     }
@@ -321,7 +322,7 @@ export const getOffer = (() => {
   };
 })();
 
-export async function fetchPlan(planUrl) {
+export async function fetchPlan(planUrl, isPricingCardFlow) {
   if (!window.pricingPlans) {
     window.pricingPlans = {};
   }
@@ -364,7 +365,7 @@ export async function fetchPlan(planUrl) {
     }
 
     const countryOverride = new URLSearchParams(window.location.search).get('country');
-    const offer = await getOffer(plan.offerId, countryOverride);
+    const offer = await getOffer(plan.offerId, countryOverride, isPricingCardFlow);
 
     if (offer) {
       plan.currency = offer.currency;
@@ -405,7 +406,7 @@ export function decoratePricing(block) {
   const pricingLinks = block.querySelectorAll('a[title^="{{pricing"]');
   pricingLinks.forEach((priceLink) => {
     const priceType = priceLink.textContent.replace(/\{\{|}}/g, '').split('.')[1];
-    fetchPlan(priceLink.href).then((response) => {
+    fetchPlan(priceLink.href, false).then((response) => {
       if (response[priceType]) {
         const priceText = createTag('span', { class: 'inline-pricing' }, response[priceType]);
         priceLink.parentElement.replaceChild(priceText, priceLink);

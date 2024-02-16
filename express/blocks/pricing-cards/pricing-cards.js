@@ -20,7 +20,7 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo) {
 
   priceRow.append(basePrice, price, priceSuffix);
 
-  fetchPlan(priceEl?.href).then((response) => {
+  fetchPlan(priceEl?.href, true).then((response) => {
     let specialPromoPercentageEyeBrowTextReplaced = false;
     let pricingCardPercentageEyeBrowTextReplaced = false;
     const parentP = priceEl.parentElement;
@@ -109,7 +109,7 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo)
     if (a.parentNode.tagName.toLowerCase() === 'p') {
       a.parentNode.remove();
     }
-    fetchPlan(a.href).then(({
+    fetchPlan(a.href, true).then(({
       url, country, language, offerId,
     }) => {
       a.href = buildUrl(url, country, language, offerId);

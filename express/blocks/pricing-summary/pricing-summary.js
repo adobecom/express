@@ -31,7 +31,7 @@ function handlePrice(block, column, eyeBrow) {
   priceWrapper.append(basePrice, price, priceSuffix);
   pricePlan.append(priceWrapper, plan);
 
-  fetchPlan(priceEl?.href).then(({
+  fetchPlan(priceEl?.href, false).then(({
     url, country, language, offerId, formatted, formattedBP, suffix, savePer, ooAvailable,
   }) => {
     const parentP = priceEl.parentElement;

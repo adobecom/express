@@ -46,7 +46,7 @@ async function fetchPlan(planUrl) {
     }
 
     const countryOverride = new URLSearchParams(window.location.search).get('country');
-    const offer = await getOffer(plan.offerId, countryOverride);
+    const offer = await getOffer(plan.offerId, countryOverride, false);
 
     if (offer) {
       plan.currency = offer.currency;
