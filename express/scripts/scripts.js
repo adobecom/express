@@ -107,6 +107,7 @@ const listenAlloy = () => {
   });
   window.addEventListener('alloy_sendEvent', (e) => {
     if (e.detail.type === 'pageView') {
+      console.log('alloy back!');
       // eslint-disable-next-line no-console
       if (usp.has('debug-alloy')) console.log(`Alloy loaded in ${performance.now() - t1}`);
       loaded = true;
@@ -122,8 +123,14 @@ const listenAlloy = () => {
 };
 
 (async function loadPage() {
-  window.addEventListener('adobeGNav:ImsReady', () => {
-    console.log('ha');
+  window.addEventListener('feds.events.profile_data.loaded', () => {
+    console.log('profile_data.loaded');
+  });
+  window.addEventListener('feds.events.profileDataReady', () => {
+    console.log('profileDataReady');
+  });
+  window.addEventListener('feds.events.experience.loaded', () => {
+    console.log('experience.loaded');
   });
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
