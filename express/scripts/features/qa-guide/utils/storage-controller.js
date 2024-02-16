@@ -1,5 +1,3 @@
-import { getDevice } from '../../../utils.js';
-
 export function populateSessionStorage(payload) {
   let storagePackage = JSON.parse(sessionStorage.getItem('qa-record'));
 
@@ -7,12 +5,12 @@ export function populateSessionStorage(payload) {
     storagePackage = {
       configs: {
         host: window.location.host,
-        audience: getDevice(),
+        audience: document.body.dataset.device,
       },
     };
   } else {
     storagePackage.configs.host = window.location.host;
-    storagePackage.configs.audience = getDevice();
+    storagePackage.configs.audience = document.body.dataset.device;
   }
 
   payload.forEach((page) => {
