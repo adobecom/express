@@ -16,6 +16,33 @@ let ccEverywhere;
 let quickActionContainer;
 let uploadContainer;
 
+function fade(element, action) {
+  return new Promise((resolve) => {
+    function onTransitionEnd() {
+      if (action === 'out') {
+        element.removeEventListener('transitionend', onTransitionEnd);
+        element.classList.add('hidden');
+      }
+      resolve(); // Resolve the promise when the transition ends
+    }
+
+    if (action === 'in') {
+      element.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          element.classList.remove('transparent');
+          if (action === 'in') {
+            resolve(); // For fading in, resolve immediately after removing 'transparent'
+          }
+        });
+      });
+    } else if (action === 'out') {
+      element.classList.add('transparent');
+      element.addEventListener('transitionend', onTransitionEnd);
+    }
+  });
+}
+
 function startSDK(data) {
   const CDN_URL = 'https://sdk-pr-builds.cc-embed.adobe.com/PR-1339/PR-1339/CCEverywhere.js';
   loadScript(CDN_URL).then(async () => {
@@ -65,7 +92,8 @@ function startSDK(data) {
     fqaBlock.append(quickActionContainer);
     const divs = fqaBlock.querySelectorAll(':scope > div');
     if (divs[1]) [, uploadContainer] = divs;
-    uploadContainer.style.display = 'none';
+    await fade(uploadContainer, 'out');
+    window.history.pushState({ hideDropzone: true }, '', '');
 
     ccEverywhere.openQuickAction({
       id: quickAction,
@@ -196,4 +224,10 @@ export default async function decorate(block) {
 
   const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
   dropzone.append(freePlanTags);
+
+  window.addEventListener('popstate', () => {
+    quickActionContainer.remove();
+    inputElement.value = '';
+    fade(uploadContainer, 'in');
+  });
 }

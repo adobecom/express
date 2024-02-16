@@ -20,6 +20,7 @@
     max-width: 1440px;
     width: 100%;
     margin: auto;
+    transition: opacity 0.2s;
 }
 
 .frictionless-quick-action.block h1 em {
@@ -38,6 +39,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: opacity 0.2s;
 }
 
 .frictionless-quick-action.block > div:nth-child(2) > div:nth-child(2) {
@@ -128,4 +130,12 @@
 .frictionless-quick-action.block .quick-action-container#resize-image-container > * {
     display: block;
     height: 840px;
+}
+
+.frictionless-quick-action.block > div.hidden {
+    display: none;
+}
+
+.frictionless-quick-action.block > div.transparent {
+    opacity: 0;
 }
