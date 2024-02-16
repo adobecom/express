@@ -2,6 +2,10 @@
     max-width: none !important;
 }
 
+.frictionless-quick-action.block {
+    min-height: 697px;
+}
+
 .frictionless-quick-action.block h1 {
     font-size: 2.8125rem;
 }
@@ -12,10 +16,13 @@
 }
 
 .frictionless-quick-action.block .quick-action-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     min-height: 697px;
+    max-width: 1215px;
     width: 100%;
-    z-index: 1;
-    left: -1px;
+    margin: auto;
 }
 
 .frictionless-quick-action.block h1 em {
@@ -104,6 +111,8 @@
     background-color: unset;
     flex-direction: row;
     padding: unset;
+    margin-top: 8px;
+    gap: 8px;
 }
 
 .frictionless-quick-action.block .free-plan-widget > div {
@@ -111,11 +120,5 @@
 }
 
 .frictionless-quick-action.block .free-plan-widget img.icon.icon-checkmark {
-    position: initial;
-    height: 8px;
-    width: 8px;
-    padding: 4px;
-    border-radius: 50%;
     background-color: #f06dad;
-    margin-right: 8px;
 }

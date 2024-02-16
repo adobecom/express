@@ -1,4 +1,4 @@
-import { createTag, getConfig, getIconElement, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
+import { createTag, getConfig, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
@@ -41,7 +41,7 @@ function startSDK(data) {
         variant: 'secondary',
         buttonType: 'native',
         treatment: 'fill',
-        size: "xl"
+        size: 'xl',
       },
       {
         target: 'Editor',
@@ -49,12 +49,11 @@ function startSDK(data) {
         buttonType: 'native',
         optionType: 'button',
         treatment: 'fill',
-        size: "xl"
-      }
+        size: 'xl',
+      },
     ];
 
     const id = `${quickAction}-container`;
-    // if(container) container.remove();
     container = createTag('div', { id, class: 'quick-action-container' });
     fqaBlock.append(container);
     const divs = fqaBlock.querySelectorAll(':scope > div');
@@ -93,9 +92,13 @@ function startSDKWithUnconvertedFile(file) {
     // Read the file as a data URL (Base64)
     reader.readAsDataURL(file);
   } else if (!error) {
+    let invalidInputError;
+    if (!validImageTypes.includes(file.type)) invalidInputError = 'invalid image type. Please make sure your image format is one of the following: "image/png", "image/jpeg", "image/jpg"';
+    else if (file.size > maxSize) invalidInputError = 'your image file is too large';
+
     error = createTag('p', {}, invalidInputError);
     const dropzoneButton = fqaBlock.querySelector(':scope .dropzone a.button');
-    dropzoneButton.parentElement.insertBefore(error, dropzoneButton);
+    dropzoneButton?.before(error);
   }
 }
 
@@ -116,25 +119,29 @@ function uploadFile() {
 }
 
 export default async function decorate(block) {
+  // cache block element for the
   fqaBlock = block;
+
   const rows = Array.from(block.children);
   const actionAndAnimationRow = rows[1].children;
   const animationContainer = actionAndAnimationRow[0];
   const animation = animationContainer.querySelector('a');
-  if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
   const dropzone = actionAndAnimationRow[1];
-  dropzone.classList.add('dropzone');
   const dropzoneBackground = createTag('div', { class: 'dropzone-bg' });
-  dropzone.prepend(dropzoneBackground);
   const cta = dropzone.querySelector('a.button');
-  if (cta) cta.classList.add('xlarge');
   const gtcText = dropzone.querySelector('p:last-child');
   const actionColumn = createTag('div');
   const dropzoneContainer = createTag('div', { class: 'dropzone-container' });
-  dropzone.parentElement.insertBefore(actionColumn, dropzone);
+
+  if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
+  if (cta) cta.classList.add('xlarge');
+  dropzone.classList.add('dropzone');
+
+  dropzone.prepend(dropzoneBackground);
+  dropzone.before(actionColumn);
   dropzoneContainer.append(dropzone);
-  actionColumn.append(dropzoneContainer);
-  actionColumn.append(gtcText);
+  actionColumn.append(dropzoneContainer, gtcText);
+
   dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();
     uploadFile();
@@ -144,15 +151,19 @@ export default async function decorate(block) {
     e.preventDefault();
     e.stopPropagation();
   }
+
   function highlight() {
     dropzoneContainer.classList.add('highlight');
   }
+
   function unhighlight() {
     dropzoneContainer.classList.remove('highlight');
   }
+
   ['dragenter', 'dragover'].forEach((eventName) => {
     dropzoneContainer.addEventListener(eventName, highlight, false);
   });
+
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
     dropzoneContainer.addEventListener(eventName, preventDefaults, false);
   });
