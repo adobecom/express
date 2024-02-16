@@ -145,7 +145,7 @@ async function updateLinkList(container, linkPill, list) {
           search_keyword: d.displayValue,
         });
         // TODO: event type might be different. Waiting on Linh's update.
-        trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
+        trackSearch('ckg-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
       });
     });
 
