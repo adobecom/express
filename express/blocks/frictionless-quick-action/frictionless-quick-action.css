@@ -112,6 +112,8 @@
 
 .frictionless-quick-action.block .free-plan-widget img.icon.icon-checkmark {
     position: initial;
+    height: 8px;
+    width: 8px;
     padding: 4px;
     border-radius: 50%;
     background-color: #f06dad;
