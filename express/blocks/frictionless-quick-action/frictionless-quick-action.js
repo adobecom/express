@@ -1,4 +1,9 @@
-import { createTag, getConfig, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
+import {
+  createTag,
+  getConfig,
+  loadScript,
+  transformLinkToAnimation,
+} from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];

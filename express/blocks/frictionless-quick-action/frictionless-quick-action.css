@@ -16,11 +16,8 @@
 }
 
 .frictionless-quick-action.block .quick-action-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     min-height: 697px;
-    max-width: 1215px;
+    max-width: 1440px;
     width: 100%;
     margin: auto;
 }
@@ -121,4 +118,9 @@
 
 .frictionless-quick-action.block .free-plan-widget img.icon.icon-checkmark {
     background-color: #f06dad;
+}
+
+.frictionless-quick-action.block #resize-image-container > * {
+    display: block;
+    height: 840px;
 }
