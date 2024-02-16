@@ -4,6 +4,7 @@ import {
   getMetadata,
   getLottie,
   lazyLoadLottiePlayer,
+  getIconElement,
 } from '../utils.js';
 
 const typeMap = {
@@ -20,9 +21,11 @@ const typeMap = {
   ],
 };
 
-export async function buildFreePlanWidget(typeKey) {
+export async function buildFreePlanWidget(config) {
+  const { typeKey, checkmarks } = config;
   const placeholders = await fetchPlaceholders();
   const widget = createTag('div', { class: 'free-plan-widget' });
+
   typeMap[typeKey].forEach((tagKey) => {
     const tagText = placeholders[tagKey];
 
@@ -30,6 +33,10 @@ export async function buildFreePlanWidget(typeKey) {
       const textDiv = createTag('span', { class: 'plan-widget-tag' });
       textDiv.textContent = tagText;
       widget.append(textDiv);
+
+      if (checkmarks) {
+        textDiv.prepend(getIconElement('checkmark'));
+      }
     }
   });
 
@@ -44,15 +51,15 @@ export async function addFreePlanWidget(elem) {
   let widget;
 
   if (elem && ['yes', 'true', 'y', 'on', 'branded'].includes(freePlanMeta)) {
-    widget = await buildFreePlanWidget('branded');
+    widget = await buildFreePlanWidget({ typeKey: 'branded' });
   }
 
   if (elem && ['features'].includes(freePlanMeta)) {
-    widget = await buildFreePlanWidget('features');
+    widget = await buildFreePlanWidget({ typeKey: 'features' });
   }
 
   if (elem && ['entitled'].includes(freePlanMeta)) {
-    widget = await buildFreePlanWidget('entitled');
+    widget = await buildFreePlanWidget({ typeKey: 'entitled' });
   }
 
   document.addEventListener('planscomparisonloaded', () => {
