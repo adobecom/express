@@ -350,6 +350,7 @@ async function decorateLoadMoreButton(block, props) {
   loadMoreButton.append(getIconElement('plus-icon'));
 
   loadMoreButton.addEventListener('click', async () => {
+    trackSearch('select-load-more', BlockMediator.get('templateSearchSpecs').search_id);
     loadMoreButton.classList.add('disabled');
     const scrollPosition = window.scrollY;
     await decorateNewTemplates(block, props);
