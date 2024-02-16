@@ -120,7 +120,12 @@
     background-color: #f06dad;
 }
 
-.frictionless-quick-action.block #resize-image-container > * {
+.frictionless-quick-action.block .quick-action-container > * {
+    display: block;
+    height: 697px;
+}
+
+.frictionless-quick-action.block .quick-action-container#resize-image-container > * {
     display: block;
     height: 840px;
 }
