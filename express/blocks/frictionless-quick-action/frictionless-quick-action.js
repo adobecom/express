@@ -64,7 +64,7 @@ function startSDK(data) {
     quickActionContainer = createTag('div', { id, class: 'quick-action-container' });
     fqaBlock.append(quickActionContainer);
     const divs = fqaBlock.querySelectorAll(':scope > div');
-    if (divs[1]) uploadContainer = divs[1];
+    if (divs[1]) [, uploadContainer] = divs;
     uploadContainer.style.display = 'none';
 
     ccEverywhere.openQuickAction({
