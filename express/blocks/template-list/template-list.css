@@ -69,12 +69,6 @@ main .template-list.fullwidth {
   justify-content: center;
 }
 
-main .template-list.fullwidth.sm-view,
-main .template-list.fullwidth.md-view,
-main .template-list.fullwidth.lg-view {
-  padding: 0 28px;
-}
-
 main .template-list-wrapper.with-categories-list .template-list.fullwidth {
   width: 100%;
   min-height: 600px;

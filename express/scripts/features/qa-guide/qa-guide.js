@@ -1,7 +1,6 @@
 import {
   createTag,
   loadStyle,
-  getDevice,
 } from '../../utils.js';
 
 import {
@@ -185,7 +184,7 @@ const buildQAWidget = (index, payload) => {
 const loadQAStory = async (resp) => {
   const main = createTag('main');
   main.innerHTML = await resp.text();
-  const qaGuideEl = main.querySelector(`.qa-guide.${getDevice()}`);
+  const qaGuideEl = main.querySelector(`.qa-guide.${document.body.dataset.device}`);
 
   return qaGuideEl;
 };
