@@ -142,10 +142,9 @@ async function updateLinkList(container, linkPill, list) {
         e.preventDefault();
         const a = clone.querySelector(':scope > a');
         updateImpressionCache({
-          search_keyword: d.displayValue,
+          keyword_filter: d.displayValue,
         });
-        // TODO: event type might be different. Waiting on Linh's update.
-        trackSearch('ckg-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
+        trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
       });
     });
 
