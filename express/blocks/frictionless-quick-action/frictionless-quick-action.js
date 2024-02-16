@@ -1,5 +1,5 @@
 import { createTag, getConfig, getIconElement, loadScript, transformLinkToAnimation } from '../../scripts/utils.js';
-import { buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
+import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 const imageInputAccept = '.png, .jpeg, .jpg';
@@ -174,12 +174,6 @@ export default async function decorate(block) {
     quickActionRow[0].remove();
   }
 
-  const freePlanTags = await buildStaticFreePlanWidget(animationContainer);
-  const innerDivs = freePlanTags.querySelectorAll(':scope > div');
-
-  innerDivs.forEach((d) => {
-    d.prepend(getIconElement('checkmark'));
-  });
-
+  const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
   dropzone.append(freePlanTags);
 }
