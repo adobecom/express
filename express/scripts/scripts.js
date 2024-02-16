@@ -122,6 +122,9 @@ const listenAlloy = () => {
 };
 
 (async function loadPage() {
+  window.addEventListener('adobeGNav:ProfileReady', () => {
+    console.log('ha');
+  });
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
 
