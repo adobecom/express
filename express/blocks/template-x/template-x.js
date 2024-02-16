@@ -842,7 +842,7 @@ function initDrawer(block, props, toolBar) {
           wrapper.classList.toggle('collapsed');
           wrapper.style.maxHeight = wrapper.classList.contains('collapsed') ? minHeight : maxHeight;
         }
-      }, { passive: true });
+      });
     }
   });
 
@@ -988,7 +988,7 @@ async function initFilterSort(block, props, toolBar) {
             await redrawTemplates(block, props, toolBar);
             trackSearch('view-search-results', BlockMediator.get('templateSearchSpecs').search_id);
           }
-        }, { passive: true });
+        });
       });
 
       document.addEventListener('click', (e) => {
