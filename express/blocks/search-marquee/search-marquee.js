@@ -5,7 +5,7 @@ import {
   getMetadata,
   sampleRUM,
 } from '../../scripts/utils.js';
-import { buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
+import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
@@ -246,31 +246,21 @@ async function decorateSearchFunctions(block) {
   block.append(searchBarWrapper);
 }
 
-async function decorateBackground(block) {
-  const supportedImgFormat = ['jpeg', 'jpg', 'webp', 'png', 'svg'];
+function decorateBackground(block) {
   const mediaRow = block.querySelector('div:nth-child(2)');
-  return new Promise((resolve) => {
-    if (mediaRow) {
-      const media = mediaRow.querySelector('a')?.href || mediaRow.querySelector(':scope > div')?.textContent;
-      mediaRow.remove();
-      if (media) {
-        const splitArr = media.split('.');
-
-        if (supportedImgFormat.includes(splitArr[splitArr.length - 1])) {
-          const backgroundImg = createTag('img', { src: media, class: 'backgroundimg' });
-          const wrapper = block.parentElement;
-          if (wrapper.classList.contains('search-marquee-wrapper')) {
-            wrapper.prepend(backgroundImg);
-          } else {
-            block.prepend(backgroundImg);
-          }
-          backgroundImg.onload = () => resolve();
-        } else {
-          resolve();
-        }
+  if (mediaRow) {
+    const media = mediaRow.querySelector('picture img');
+    if (media) {
+      media.classList.add('backgroundimg');
+      const wrapper = block.parentElement;
+      if (wrapper.classList.contains('search-marquee-wrapper')) {
+        wrapper.prepend(media);
+      } else {
+        block.prepend(media);
       }
     }
-  });
+    mediaRow.remove();
+  }
 }
 
 async function buildSearchDropdown(block) {
@@ -326,7 +316,7 @@ async function buildSearchDropdown(block) {
     suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
     suggestionsContainer.append(suggestionsTitle, suggestionsList);
 
-    const freePlanTags = await buildStaticFreePlanWidget();
+    const freePlanTags = await buildFreePlanWidget('branded');
 
     freePlanContainer.append(freePlanTags);
     dropdownContainer.append(trendsContainer, suggestionsContainer, freePlanContainer);
@@ -359,7 +349,7 @@ export default async function decorate(block) {
     block.remove();
     return;
   }
-  const background = decorateBackground(block);
+  decorateBackground(block);
   await decorateSearchFunctions(block);
   await buildSearchDropdown(block);
   initSearchFunction(block);
@@ -374,5 +364,4 @@ export default async function decorate(block) {
     const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
     updateAsyncBlocks();
   }
-  await background;
 }

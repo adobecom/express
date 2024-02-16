@@ -1,5 +1,5 @@
 import { createTag, fetchRelevantRows } from '../../scripts/utils.js';
-import { buildStaticFreePlanWidget } from '../../scripts/utils/free-plan.js';
+import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import buildPaginatedCarousel from '../shared/paginated-carousel.js';
 import { buildAppStoreBadge } from '../shared/app-store-badge.js';
 
@@ -42,6 +42,6 @@ export default async function decorate($block) {
     }
   });
 
-  const freePlanTags = await buildStaticFreePlanWidget();
+  const freePlanTags = await buildFreePlanWidget('branded');
   $block.insertAdjacentElement('afterend', freePlanTags);
 }

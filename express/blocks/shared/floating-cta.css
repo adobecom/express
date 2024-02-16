@@ -92,7 +92,7 @@ main .floating-button a.button:any-link {
     display: block;
     box-sizing: border-box;
     max-width: 332px;
-    white-space: nowrap;
+    white-space: normal;
     margin: 0;
     z-index: 2;
     width: calc(100vw - 54px);
@@ -104,7 +104,6 @@ main .floating-button a.button:any-link:hover,
 main .floating-button a.button:any-link:active,
 main .floating-button a.button:any-link:focus {
     background: transparent;
-    transition: width .3s, margin .3s, min-width .3s, background-color .3s, color .3s, border .3s, background-position 2s ease-out, padding .3s;
 }
 
 
@@ -161,10 +160,6 @@ main .floating-button--scrolled .floating-button-lottie {
     z-index: 0;
 }
 
-main > div:not(.banner-container) a.button.same-as-floating-button-CTA {
-    display: none;
-}
-
 main [data-audience].floating-button-wrapper {
     display: none;
 }
@@ -180,6 +175,10 @@ body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"]
 
 main .floating-button-wrapper:first-of-type + .section {
     padding-top: 0;
+}
+
+main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf) a.button.same-as-floating-button-CTA {
+    display: none;
 }
 
 @media screen and (min-width: 900px) {
@@ -199,7 +198,7 @@ main .floating-button-wrapper:first-of-type + .section {
     }
 
     /* set desktop below/above the fold styles */
-    main > div:not(.banner-container) a.button.same-as-floating-button-CTA {
+    main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf) a.button.same-as-floating-button-CTA {
         display: inline-block;
     }
 
@@ -237,6 +236,13 @@ main .floating-button-wrapper:first-of-type + .section {
     main .floating-button-wrapper.floating-button--hidden {
         bottom: -151px;
         opacity: 0.9;
+    }
+
+    main .floating-button a.button:any-link,
+    main .floating-button a.button:any-link:hover,
+    main .floating-button a.button:any-link:active,
+    main .floating-button a.button:any-link:focus {
+        transition: width .3s, margin .3s, min-width .3s, background-color .3s, color .3s, border .3s, background-position 2s ease-out, padding .3s;
     }
 }
 

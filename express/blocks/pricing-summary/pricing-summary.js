@@ -1,5 +1,7 @@
 import { createTag } from '../../scripts/utils.js';
-import { fetchPlan, buildUrl } from '../../scripts/utils/pricing.js';
+import {
+  fetchPlan, buildUrl, setVisitorCountry, shallSuppressOfferEyebrowText,
+} from '../../scripts/utils/pricing.js';
 import buildCarousel from '../shared/carousel.js';
 
 function handleHeader(column) {
@@ -14,7 +16,7 @@ function handleHeader(column) {
   return header;
 }
 
-function handlePrice(block, column) {
+function handlePrice(block, column, eyeBrow) {
   const pricePlan = createTag('div', { class: 'pricing-plan' });
   const priceEl = column.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
@@ -29,10 +31,12 @@ function handlePrice(block, column) {
   priceWrapper.append(basePrice, price, priceSuffix);
   pricePlan.append(priceWrapper, plan);
 
-  fetchPlan(priceEl?.href).then((response) => {
+  fetchPlan(priceEl?.href).then(({
+    url, country, language, offerId, formatted, formattedBP, suffix, savePer, ooAvailable,
+  }) => {
     const parentP = priceEl.parentElement;
-    price.innerHTML = response.formatted;
-    basePrice.innerHTML = response.formattedBP || '';
+    price.innerHTML = formatted;
+    basePrice.innerHTML = formattedBP || '';
 
     if (parentP.children.length > 1) {
       Array.from(parentP.childNodes).forEach((node) => {
@@ -44,11 +48,22 @@ function handlePrice(block, column) {
         }
       });
     } else {
-      priceSuffix.textContent = response.suffix;
+      priceSuffix.textContent = suffix;
     }
 
     const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
-    if (planCTA) planCTA.href = buildUrl(response.url, response.country, response.language);
+    if (planCTA) planCTA.href = buildUrl(url, country, language, offerId);
+
+    if (eyeBrow !== null) {
+      const isPremiumCard = ooAvailable || false;
+      const offerTextContent = eyeBrow.innerHTML;
+      if (shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremiumCard, true, offerId)) {
+        eyeBrow.parentElement.classList.remove('has-pricing-eyebrow');
+        eyeBrow.remove;
+      } else {
+        eyeBrow.innerHTML = offerTextContent.replace('{{savePercentage}}', savePer);
+      }
+    }
   });
 
   priceParent?.remove();
@@ -105,7 +120,7 @@ function handleFeatureList(featureColumns, index) {
 
 function handleEyeBrows(columnWrapper, eyeBrowCols, index) {
   if (!eyeBrowCols) return null;
-  if (!eyeBrowCols[index].children.length) {
+  if (!eyeBrowCols[index].innerHTML) {
     eyeBrowCols[index].remove();
     return null;
   }
@@ -171,6 +186,7 @@ function alignContent(block) {
 }
 
 export default async function decorate(block) {
+  setVisitorCountry();
   const pricingContainer = block.classList.contains('feature') ? block.children[2] : block.children[1];
   const featureColumns = block.classList.contains('feature') ? Array.from(block.children[3].children) : null;
   const eyeBrows = block.classList.contains('feature') ? Array.from(block.children[1].children) : null;
@@ -186,11 +202,11 @@ export default async function decorate(block) {
 
       const contentWrapper = createTag('div', { class: 'pricing-content-wrapper' });
       const header = handleHeader(column);
-      const pricePlan = handlePrice(block, column);
+      const eyeBrow = handleEyeBrows(columnWrapper, eyeBrows, index);
+      const pricePlan = handlePrice(block, column, eyeBrow);
       const cta = handleCtas(block, column);
       const description = handleDescription(column);
       const featureList = handleFeatureList(featureColumns, index);
-      const eyeBrow = handleEyeBrows(columnWrapper, eyeBrows, index);
 
       contentWrapper.append(header, description);
       if (pricePlan) {

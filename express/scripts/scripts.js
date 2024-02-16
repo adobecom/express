@@ -2,11 +2,14 @@ import {
   sampleRUM,
   removeIrrelevantSections,
   loadArea,
+  loadLana,
   getMetadata,
   stamp,
   registerPerformanceLogger,
   setConfig,
   loadStyle,
+  createTag,
+  getConfig,
 } from './utils.js';
 
 const locales = {
@@ -30,9 +33,21 @@ const locales = {
   uk: { ietf: 'en-GB', tk: 'pps7abe.css' },
 };
 
+let jarvisImmediatelyVisible = false;
+const jarvisVisibleMeta = getMetadata('jarvis-immediately-visible')?.toLowerCase();
+const desktopViewport = window.matchMedia('(min-width: 900px)').matches;
+if (jarvisVisibleMeta && ['mobile', 'desktop', 'on'].includes(jarvisVisibleMeta) && (
+  (jarvisVisibleMeta === 'mobile' && !desktopViewport) || (jarvisVisibleMeta === 'desktop' && desktopViewport))) jarvisImmediatelyVisible = true;
+
 const config = {
   locales,
   codeRoot: '/express/',
+  jarvis: {
+    id: 'Acom_Express',
+    version: '1.0',
+    onDemand: !jarvisImmediatelyVisible,
+  },
+  links: 'on',
 };
 
 window.RUM_GENERATION = 'ccx-gen-4-experiment-high-sample-rate';
@@ -83,16 +98,52 @@ const showNotifications = () => {
   }
 };
 
+const listenAlloy = () => {
+  let resolver;
+  let loaded;
+  const t1 = performance.now();
+  window.alloyLoader = new Promise((r) => {
+    resolver = r;
+  });
+  window.addEventListener('alloy_sendEvent', (e) => {
+    if (e.detail.type === 'pageView') {
+      // eslint-disable-next-line no-console
+      if (usp.has('debug-alloy')) console.log(`Alloy loaded in ${performance.now() - t1}`);
+      loaded = true;
+      resolver(e.detail.result);
+    }
+  }, { once: true });
+  setTimeout(() => {
+    if (!loaded) {
+      window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`);
+      resolver();
+    }
+  }, 5000);
+};
+
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
+
+  if (getMetadata('hide-breadcrumbs') !== 'true' && !getMetadata('breadcrumbs') && !window.location.pathname.endsWith('/express/')) {
+    const meta = createTag('meta', { name: 'breadcrumbs', content: 'on' });
+    document.head.append(meta);
+    import('./gnav.js').then((gnav) => gnav.buildBreadCrumbArray(getConfig().locale.prefix.replaceAll('/', ''))).then((breadcrumbs) => {
+      if (breadcrumbs && breadcrumbs.length) document.body.classList.add('breadcrumbs-spacing');
+    });
+  } else if (getMetadata('breadcrumbs') === 'on' && !!getMetadata('breadcrumbs-base') && (!!getMetadata('short-title') || !!getMetadata('breadcrumbs-page-title'))) document.body.classList.add('breadcrumbs-spacing');
   showNotifications();
+  loadLana({ clientId: 'express' });
+  listenAlloy();
   await loadArea();
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
     import('./mobile-beta-gating.js').then((gatingScript) => {
       gatingScript.default();
     });
   }
+  import('./express-delayed.js').then((mod) => {
+    mod.default();
+  });
 }());
 
 stamp('start');

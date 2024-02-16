@@ -9,45 +9,33 @@ import {
   readBlockConfig,
 } from '../../scripts/utils.js';
 
-async function fetchBlogIndex(config) {
-  const { prefix } = getConfig().locale;
-  let currentLocaleProcessed = false;
-  const consolidatedJsonData = [];
-  if (config.featuredOnly) {
-    const linkLocales = [];
-    const urls = [];
-    const links = config.featured;
-    for (let i = 0; i < links.length; i += 1) {
-      const localePrefix = getLocale(getConfig().locales, new URL(links[i]).pathname).prefix;
-      if (localePrefix === prefix) {
-        currentLocaleProcessed = true;
-      }
-      if (!linkLocales.includes(localePrefix)) {
-        linkLocales.push(localePrefix);
-        urls.push(`${localePrefix}/express/learn/blog/query-index.json`);
-      }
-    }
-    const resp = await Promise.all(urls.map((url) => fetch(url)
-      .then((res) => res.ok && res.json())))
-      .then((res) => res);
-    resp.forEach((item) => consolidatedJsonData.push(...item.data));
-  }
-  if (!currentLocaleProcessed) {
-    const resp = await fetch(`${prefix}/express/learn/blog/query-index.json`);
-    const res = await resp.json();
-    consolidatedJsonData.push(...res.data);
-  }
+const blogPosts = [];
+let blogResults;
+let blogResultsLoaded;
+let blogIndex;
+
+async function fetchBlogIndex(locales) {
+  const jointData = [];
+  const urls = locales.map((l) => `${l}/express/learn/blog/query-index.json`);
+
+  const resp = await Promise.all(urls.map((url) => fetch(url)
+    .then((res) => res.ok && res.json())))
+    .then((res) => res);
+  resp.forEach((item) => jointData.push(...item.data));
+
   const byPath = {};
-  consolidatedJsonData.forEach((post) => {
+  jointData.forEach((post) => {
     if (post.tags) {
       const tags = JSON.parse(post.tags);
       tags.push(post.category);
       post.tags = JSON.stringify(tags);
     }
+
     byPath[post.path.split('.')[0]] = post;
   });
+
   return {
-    data: consolidatedJsonData,
+    data: jointData,
     byPath,
   };
 }
@@ -66,22 +54,18 @@ function getFeatured(index, urls) {
 }
 
 function isDuplicate(path) {
-  return window.blogPosts.includes(path);
+  return blogPosts.includes(path);
 }
 
-async function filterBlogPosts(config) {
-  if (!window.blogIndex) {
-    window.blogIndex = await fetchBlogIndex(config);
-  }
-
+function filterBlogPosts(config, index) {
   const result = [];
-  const index = window.blogIndex;
+
   if (config.featured) {
     if (!Array.isArray(config.featured)) config.featured = [config.featured];
     const featured = getFeatured(index, config.featured);
     result.push(...featured);
     featured.forEach((post) => {
-      if (!isDuplicate(post.path)) window.blogPosts.push(post.path);
+      if (!isDuplicate(post.path)) blogPosts.push(post.path);
     });
   }
 
@@ -118,7 +102,7 @@ async function filterBlogPosts(config) {
       }
       if (matchedAll && numMatched < limit) {
         if (!isDuplicate(post.path)) {
-          window.blogPosts.push(post.path);
+          blogPosts.push(post.path);
         } else {
           matchedAll = false;
         }
@@ -129,7 +113,8 @@ async function filterBlogPosts(config) {
 
     result.push(...feed);
   }
-  return (result);
+
+  return result;
 }
 
 function getBlogPostsConfig($block) {
@@ -152,27 +137,39 @@ function getBlogPostsConfig($block) {
 }
 
 async function filterAllBlogPostsOnPage() {
-  if (!window.blogResultsLoaded) {
+  if (!blogResultsLoaded) {
     let resolve;
-    window.blogResultsLoaded = new Promise((r) => {
+    blogResultsLoaded = new Promise((r) => {
       resolve = r;
     });
     const results = [];
-    window.blogPosts = [];
     const blocks = [...document.querySelectorAll('.blog-posts')];
+
+    if (!blogIndex) {
+      const locales = [getConfig().locale.prefix];
+      const allBlogLinks = document.querySelectorAll('.blog-posts a');
+      allBlogLinks.forEach((l) => {
+        const blogLocale = getLocale(getConfig().locales, new URL(l).pathname).prefix;
+        if (!locales.includes(blogLocale)) {
+          locales.push(blogLocale);
+        }
+      });
+
+      blogIndex = await fetchBlogIndex(locales);
+    }
+
     for (let i = 0; i < blocks.length; i += 1) {
       const block = blocks[i];
       const config = getBlogPostsConfig(block);
-      // eslint-disable-next-line no-await-in-loop
-      const posts = await filterBlogPosts(config);
+      const posts = filterBlogPosts(config, blogIndex);
       results.push({ config, posts });
     }
-    window.blogResults = results;
+    blogResults = results;
     resolve();
   } else {
-    await window.blogResultsLoaded;
+    await blogResultsLoaded;
   }
-  return (window.blogResults);
+  return (blogResults);
 }
 
 async function getFilteredResults(config) {
@@ -237,6 +234,7 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
     };
     readMoreString = readMore[locale] || '&nbsp;&nbsp;&nbsp;&rightarrow;&nbsp;&nbsp;&nbsp;';
   }
+
   for (let i = offset; i < posts.length && count < limit; i += 1) {
     const post = posts[i];
     const path = post.path.split('.')[0];
