@@ -656,7 +656,7 @@ async function decorateCategoryList(block, props) {
       });
       removeOptionalImpressionFields('search-inspire');
       trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
-    }, { passive: true });
+    });
   });
 
   categoriesDesktopWrapper.addEventListener('mouseover', () => {
@@ -675,7 +675,7 @@ async function decorateCategoryList(block, props) {
       });
       removeOptionalImpressionFields('search-inspire');
       trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
-    }, { passive: true });
+    });
   });
 
   const mobileCategoriesToggle = createTag('span', { class: 'category-list-toggle' });
@@ -1433,7 +1433,7 @@ function importSearchBar(block, blockMediator) {
           setTimeout(() => {
             searchDropdown.classList.remove('hidden');
           }, 500);
-        }, { passive: true });
+        });
 
         searchBar.addEventListener('keyup', () => {
           if (searchBar.value !== '') {

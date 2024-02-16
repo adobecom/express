@@ -6,11 +6,10 @@ import {
 
 import {
   getDataWithContext,
-  generateSearchId,
 } from './browse-api-controller.js';
 
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
-import { trackSearch, updateImpressionCache } from './template-search-api-v3.js';
+import { trackSearch, updateImpressionCache, generateSearchId } from './template-search-api-v3.js';
 
 const defaultRegex = /\/express\/templates\/default/;
 
@@ -139,7 +138,8 @@ async function updateLinkList(container, linkPill, list) {
         searchLinks.push(clone);
       }
 
-      clone.addEventListener('click', () => {
+      clone.addEventListener('click', (e) => {
+        e.preventDefault();
         const a = clone.querySelector(':scope > a');
         updateImpressionCache({
           search_keyword: d.displayValue,
