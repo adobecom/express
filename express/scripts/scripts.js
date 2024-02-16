@@ -122,7 +122,7 @@ const listenAlloy = () => {
 };
 
 (async function loadPage() {
-  window.addEventListener('adobeGNav:ProfileReady', () => {
+  window.addEventListener('adobeGNav:ImsReady', () => {
     console.log('ha');
   });
   if (window.hlx.init || window.isTestEnv) return;
