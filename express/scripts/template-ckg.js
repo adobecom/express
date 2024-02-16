@@ -112,8 +112,7 @@ async function updateLinkList(container, linkPill, list) {
         .replace(currentTasksX, '')
         .trim();
 
-      console.log(window.location.host + d.pathname)
-      if (!new URL(window.location.host + d.pathname).search) {
+      if (!new URL(`https://www.adobe.com${d.pathname}`).search) {
         const pageData = {
           url: d.pathname,
           'short-title': d.displayValue,
