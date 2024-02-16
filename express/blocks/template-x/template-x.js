@@ -319,7 +319,7 @@ function updateLoadMoreButton(props, loadMore) {
 
 async function decorateNewTemplates(block, props, options = { reDrawMasonry: false }) {
   const { templates: newTemplates } = await fetchAndRenderTemplates(props);
-  updateImpressionCache({ result_count: newTemplates.length });
+  updateImpressionCache({ result_count: props.total });
   const loadMore = block.parentElement.querySelector('.load-more');
 
   props.templates = props.templates.concat(newTemplates);
@@ -1387,7 +1387,7 @@ async function decorateTemplates(block, props) {
   const searchId = new URLSearchParams(window.location.search).get('searchId');
   updateImpressionCache({
     search_keyword: getMetadata('q') || getMetadata('topics-x'),
-    result_count: templates.length,
+    result_count: props.total,
   });
   if (searchId) trackSearch('view-search-results', searchId);
 
