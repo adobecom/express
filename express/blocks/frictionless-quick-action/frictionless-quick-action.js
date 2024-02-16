@@ -225,9 +225,11 @@ export default async function decorate(block) {
   const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
   dropzone.append(freePlanTags);
 
-  window.addEventListener('popstate', () => {
-    quickActionContainer.remove();
-    inputElement.value = '';
-    fade(uploadContainer, 'in');
-  });
+  window.addEventListener('popstate', (e) => {
+    if (e.state && e.state.hideDropzone) {
+      quickActionContainer.remove();
+      inputElement.value = '';
+      fade(uploadContainer, 'in');
+    }
+  }, { passive: true });
 }
