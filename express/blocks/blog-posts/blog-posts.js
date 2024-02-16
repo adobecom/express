@@ -296,18 +296,18 @@ function getDateFormatter(newLanguage) {
 }
 
 // Given a blog post element and a config, append all posts defined in the config to blogPosts
-async function decorateBlogPosts(blogPosts, config, offset = 0) {
+async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
   const posts = await getFilteredResults(config);
   // If a blog config has only one featured item, then build the item as a hero card.
   const isHero = config.featured && config.featured.length === 1;
 
   const limit = config['page-size'] || 12;
 
-  let cards = blogPosts.querySelector('.blog-cards');
+  let cards = blogPostsElements.querySelector('.blog-cards');
   if (!cards) {
-    blogPosts.innerHTML = '';
+    blogPostsElements.innerHTML = '';
     cards = createTag('div', { class: 'blog-cards' });
-    blogPosts.appendChild(cards);
+    blogPostsElements.appendChild(cards);
   }
 
   const pageEnd = offset + limit;
@@ -321,7 +321,7 @@ async function decorateBlogPosts(blogPosts, config, offset = 0) {
 
   if (isHero) {
     const card = await getHeroCard(posts[0], dateFormatter);
-    blogPosts.prepend(card);
+    blogPostsElements.prepend(card);
     images.push(card.querySelector('img'));
     count = 1;
   } else {
@@ -337,16 +337,16 @@ async function decorateBlogPosts(blogPosts, config, offset = 0) {
   if (posts.length > pageEnd && config['load-more']) {
     const loadMore = createTag('a', { class: 'load-more button secondary', href: '#' });
     loadMore.innerHTML = config['load-more'];
-    blogPosts.append(loadMore);
+    blogPostsElements.append(loadMore);
     loadMore.addEventListener('click', (event) => {
       event.preventDefault();
       loadMore.remove();
-      decorateBlogPosts(blogPosts, config, pageEnd);
+      decorateBlogPosts(blogPostsElements, config, pageEnd);
     });
   }
 
   if (images.length) {
-    const section = blogPosts.closest('.section');
+    const section = blogPostsElements.closest('.section');
     section.style.display = 'block';
     const filteredImages = images.filter(async (i) => isInViewport(i));
     const imagePromises = filteredImages.map((img) => loadImage(img));
