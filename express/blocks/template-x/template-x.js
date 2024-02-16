@@ -652,10 +652,9 @@ async function decorateCategoryList(block, props) {
         category_filter: a.dataset.tasks,
         collection: a.dataset.topics,
         collection_path: window.location.pathname,
-        search_id: new URLSearchParams(new URL(a.href).search).get('searchId'),
       });
       removeOptionalImpressionFields('search-inspire');
-      trackSearch('search-inspire');
+      trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
     }, { passive: true });
   });
 
@@ -671,10 +670,9 @@ async function decorateCategoryList(block, props) {
         search_keyword: a.dataset.tasks,
         collection: a.dataset.topics,
         collection_path: window.location.pathname,
-        search_id: new URLSearchParams(new URL(a.href).search).get('searchId'),
       });
       removeOptionalImpressionFields('search-inspire');
-      trackSearch('search-inspire');
+      trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
     }, { passive: true });
   });
 

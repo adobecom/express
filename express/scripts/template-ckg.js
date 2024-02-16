@@ -1,13 +1,16 @@
 import {
   titleCase,
-  getMetadata, getConfig,
+  getMetadata,
+  getConfig,
 } from './utils.js';
 
 import {
   getDataWithContext,
+  generateSearchId,
 } from './browse-api-controller.js';
 
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
+import { trackSearch, updateImpressionCache } from './template-search-api-v3.js';
 
 const defaultRegex = /\/express\/templates\/default/;
 
@@ -112,27 +115,38 @@ async function updateLinkList(container, linkPill, list) {
         .replace(currentTasksX, '')
         .trim();
 
+      let clone;
+
       if (!new URL(`https://www.adobe.com${d.pathname}`).search) {
         const pageData = {
           url: d.pathname,
           'short-title': d.displayValue,
         };
 
-        const clone = replaceLinkPill(linkPill, pageData);
+        clone = replaceLinkPill(linkPill, pageData);
         clone.innerHTML = clone.innerHTML.replaceAll('Default', d.displayValue);
-        clone.innerHTML = clone.innerHTML.replace('/express/templates/default', d.pathname);
+        clone.innerHTML = clone.innerHTML.replace('/express/templates/default', `${d.pathname}?searchId=${generateSearchId()}`);
         if (clone) pageLinks.push(clone);
       } else {
         // fixme: we need single page search UX
-        const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}`;
+        const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}&searchId=${generateSearchId()}`;
         const pageData = {
           url: `${prefix}/express/templates/search?${searchParams}`,
           'short-title': d.displayValue,
         };
 
-        const clone = replaceLinkPill(linkPill, pageData);
+        clone = replaceLinkPill(linkPill, pageData);
         searchLinks.push(clone);
       }
+
+      clone.addEventListener('click', () => {
+        const a = clone.querySelector(':scope > a');
+        updateImpressionCache({
+          search_keyword: d.displayValue,
+        });
+        // TODO: event type might be different. Waiting on Linh's update.
+        trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
+      });
     });
 
     if (leftTrigger) container.append(leftTrigger);
