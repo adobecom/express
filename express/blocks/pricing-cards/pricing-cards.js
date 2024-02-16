@@ -1,6 +1,7 @@
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 import {
-  fetchPlan, buildUrl, formatSalesPhoneNumber, setVisitorCountry, shallSuppressOfferEyebrowText,
+  buildUrl, formatSalesPhoneNumber, setVisitorCountry,
+  shallSuppressOfferEyebrowText, fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -8,7 +9,7 @@ const blockKeys = ['header', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
 
-function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
+function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo) {
   const priceRow = createTag('div', { class: 'pricing-row' });
   const priceEl = pricingArea.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
@@ -20,7 +21,7 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
 
   priceRow.append(basePrice, price, priceSuffix);
 
-  fetchPlan(priceEl?.href).then((response) => {
+  fetchPlanOnePlans(priceEl?.href).then((response) => {
     let specialPromoPercentageEyeBrowTextReplaced = false;
     let pricingCardPercentageEyeBrowTextReplaced = false;
     const parentP = priceEl.parentElement;
@@ -31,7 +32,6 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
     } else {
       price.classList.remove('price-active');
     }
-
     if (parentP.children.length > 1) {
       Array.from(parentP.childNodes).forEach((node) => {
         if (node === priceEl) return;
@@ -42,7 +42,11 @@ function handlePrice(pricingArea, priceSuffixContext, specialPromo) {
         }
       });
     } else {
-      priceSuffix.textContent = priceSuffixContext;
+      const priceSuffixContent = placeholderArr.map((phText) => {
+        const key = phText.replace('{{', '').replace('}}', '');
+        return (key.includes('vat') && !response.showVat) ? '' : placeholders[key] || '';
+      }).join(' ');
+      priceSuffix.textContent = priceSuffixContent;
     }
     const isPremiumCard = response.ooAvailable || false;
     const savePercentElem = pricingArea.querySelector('.card-offer');
@@ -88,12 +92,7 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo)
   if (pricingBtnContainer != null) {
     const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
     const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
-    const phTextArr = placeholderArr.map((phText) => {
-      const value = phText.replace('{{', '').replace('}}', '');
-      return placeholders[value] ? placeholders[value] : '';
-    });
-    const priceSuffixContent = phTextArr.join(' ');
-    const priceRow = handlePrice(pricingArea, priceSuffixContent, specialPromo);
+    const priceRow = handlePrice(placeholders, pricingArea, placeholderArr, specialPromo);
     if (priceRow) {
       pricingArea.prepend(priceRow);
       pricingBtnContainer?.remove();
@@ -111,7 +110,7 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo)
     if (a.parentNode.tagName.toLowerCase() === 'p') {
       a.parentNode.remove();
     }
-    fetchPlan(a.href).then(({
+    fetchPlanOnePlans(a.href).then(({
       url, country, language, offerId,
     }) => {
       a.href = buildUrl(url, country, language, offerId);

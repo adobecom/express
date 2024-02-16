@@ -319,6 +319,7 @@ function updateLoadMoreButton(props, loadMore) {
 
 async function decorateNewTemplates(block, props, options = { reDrawMasonry: false }) {
   const { templates: newTemplates } = await fetchAndRenderTemplates(props);
+  updateImpressionCache({ result_count: newTemplates.length });
   const loadMore = block.parentElement.querySelector('.load-more');
 
   props.templates = props.templates.concat(newTemplates);
@@ -649,14 +650,13 @@ async function decorateCategoryList(block, props) {
     a.addEventListener('click', (e) => {
       e.preventDefault();
       updateImpressionCache({
-        search_keyword: a.dataset.tasks,
+        category_filter: a.dataset.tasks,
         collection: a.dataset.topics,
         collection_path: window.location.pathname,
-        search_id: new URLSearchParams(new URL(a.href).search).get('searchId'),
       });
       removeOptionalImpressionFields('search-inspire');
-      trackSearch('search-inspire');
-    });
+      trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
+    }, { passive: true });
   });
 
   categoriesDesktopWrapper.addEventListener('mouseover', () => {
@@ -672,11 +672,10 @@ async function decorateCategoryList(block, props) {
         search_keyword: a.dataset.tasks,
         collection: a.dataset.topics,
         collection_path: window.location.pathname,
-        search_id: new URLSearchParams(new URL(a.href).search).get('searchId'),
       });
       removeOptionalImpressionFields('search-inspire');
-      trackSearch('search-inspire');
-    });
+      trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
+    }, { passive: true });
   });
 
   const mobileCategoriesToggle = createTag('span', { class: 'category-list-toggle' });
@@ -1112,11 +1111,14 @@ function toggleMasonryView(block, props, button, toggleButtons) {
 
 function initViewToggle(block, props, toolBar) {
   const toggleButtons = toolBar.querySelectorAll('.view-toggle-button ');
-  block.classList.add('sm-view');
-  block.parentElement.classList.add('sm-view');
-  toggleButtons[0].classList.add('active');
+  const authoredViewIndex = ['sm', 'md', 'lg'].findIndex((size) => getMetadata('initial-template-view')?.toLowerCase().trim() === size);
+  const initViewIndex = authoredViewIndex === -1 ? 0 : authoredViewIndex;
 
-  toggleButtons.forEach((button) => {
+  toggleButtons.forEach((button, index) => {
+    if (index === initViewIndex) {
+      toggleMasonryView(block, props, button, toggleButtons);
+    }
+
     button.addEventListener('click', () => {
       toggleMasonryView(block, props, button, toggleButtons);
     }, { passive: true });
@@ -1385,6 +1387,7 @@ async function decorateTemplates(block, props) {
   const searchId = new URLSearchParams(window.location.search).get('searchId');
   updateImpressionCache({
     search_keyword: getMetadata('q') || getMetadata('topics-x'),
+    result_count: templates.length,
   });
   if (searchId) trackSearch('view-search-results', searchId);
 

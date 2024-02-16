@@ -1,68 +1,59 @@
 import {
   titleCase,
-  getMetadata, getConfig,
+  getMetadata,
+  getConfig,
 } from './utils.js';
 
 import {
-  getDataWithId,
-  getPillWordsMapping,
+  getDataWithContext,
+  generateSearchId,
 } from './browse-api-controller.js';
 
-import { memoize } from './hofs.js';
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
+import { trackSearch, updateImpressionCache } from './template-search-api-v3.js';
 
 const defaultRegex = /\/express\/templates\/default/;
 
+let ckgData;
+let sheetData;
+
 async function fetchLinkList() {
-  if (!window.linkLists) {
-    window.linkLists = {};
-    if (!window.linkLists.ckgData) {
-      const response = await getDataWithId();
-      // catch data from CKG API, if empty, use top priority categories sheet
-      if (response && response.queryResults[0].facets) {
-        window.linkLists.ckgData = response.queryResults[0].facets[0].buckets.map((ckgItem) => {
-          let formattedTasks;
-          if (getMetadata('template-search-page') === 'Y') {
-            const params = new Proxy(new URLSearchParams(window.location.search), {
-              get: (searchParams, prop) => searchParams.get(prop),
-            });
-            formattedTasks = titleCase(params.tasks).replace(/[$@%"]/g, '');
-          } else {
-            formattedTasks = titleCase(getMetadata('tasks')).replace(/[$@%"]/g, '');
-          }
+  if (!ckgData) {
+    const response = await getDataWithContext({ urlPath: window.location.pathname });
+    // catch data from CKG API, if empty, use top priority categories sheet
+    if (response && response.queryResults[0].facets) {
+      ckgData = response.queryResults[0].facets[0].buckets.map((ckgItem) => {
+        let formattedTasks;
+        if (getMetadata('template-search-page') === 'Y') {
+          const params = new Proxy(new URLSearchParams(window.location.search), {
+            get: (searchParams, prop) => searchParams.get(prop),
+          });
+          formattedTasks = titleCase(params.tasks).replace(/[$@%"]/g, '');
+        } else {
+          formattedTasks = titleCase(getMetadata('tasks')).replace(/[$@%"]/g, '');
+        }
 
-          return {
-            parent: formattedTasks,
-            ckgID: ckgItem.canonicalName,
-            displayValue: ckgItem.displayValue,
-          };
-        });
-      }
-    }
-
-    if (!window.linkLists.sheetData) {
-      const resp = await fetch('/express/templates/top-priority-categories.json');
-      window.linkLists.sheetData = resp.ok ? (await resp.json()).data : [];
+        return {
+          parent: formattedTasks,
+          ckgID: ckgItem.canonicalName,
+          displayValue: ckgItem.displayValue,
+          value: ckgItem.value,
+        };
+      });
     }
   }
-}
 
-function matchCKGResult(ckgData, pageData) {
-  const ckgMatch = pageData.ckgid === ckgData.ckgID;
-  const pageDataTasks = pageData.tasks ?? pageData.templateTasks;
-  const taskMatch = ckgData.tasks?.toLowerCase() === pageDataTasks?.toLowerCase();
-  const currentLocale = getConfig().locale.prefix.replace('/', '');
-  const pageLocale = pageData.url.split('/')[1] === 'express' ? '' : pageData.url.split('/')[1];
-  const sameLocale = currentLocale === pageLocale;
-
-  return sameLocale && ckgMatch && taskMatch;
+  if (!sheetData) {
+    const resp = await fetch('/express/templates/top-priority-categories.json');
+    sheetData = resp.ok ? (await resp.json()).data : [];
+  }
 }
 
 function replaceLinkPill(linkPill, data) {
   const clone = linkPill.cloneNode(true);
   if (data) {
     clone.innerHTML = clone.innerHTML.replace('/express/templates/default', data.url);
-    clone.innerHTML = clone.innerHTML.replaceAll('Default', data.altShortTitle || data['short-title']);
+    clone.innerHTML = clone.innerHTML.replaceAll('Default', data['short-title']);
   }
   if (defaultRegex.test(clone.innerHTML)) {
     return null;
@@ -102,81 +93,60 @@ async function updateSEOLinkList(container, linkPill, list) {
   }
 }
 
-function formatLinkPillText(linkPillData) {
-  const displayValue = titleCase(linkPillData.displayValue.replace(/-/g, ' '));
-  const titleName = titleCase(linkPillData.tasks.replace(/-/g, ' '));
-  const topicsMeta = getMetadata('topics');
-  const topics = topicsMeta !== '" "' ? `${topicsMeta?.replace(/[$@%"]/g, '').replace(/-/g, ' ')}` : '';
-
-  const displayTopics = topics && linkPillData.displayValue.indexOf(titleCase(topics)) < 0 ? titleCase(topics) : '';
-  let displayText;
-
-  if (getMetadata('tasks')) {
-    displayText = `${displayTopics} ${displayValue} ${titleName}`
-      .split(' ')
-      .filter((item, i, allItems) => i === allItems.indexOf(item))
-      .join(' ').trim();
-  } else {
-    displayText = `${displayValue} ${titleName} ${displayTopics}`
-      .split(' ')
-      .filter((item, i, allItems) => i === allItems.indexOf(item))
-      .join(' ').trim();
-  }
-
-  return displayText;
-}
-
-const memoizedGetPillWordsMapping = memoize(getPillWordsMapping, { ttl: 1000 * 60 * 60 * 24 });
-
 async function updateLinkList(container, linkPill, list) {
-  const templatePages = await fetchAllTemplatesMetadata();
-  const pillsMapping = await memoizedGetPillWordsMapping();
   const pageLinks = [];
   const searchLinks = [];
   const leftTrigger = container.querySelector('.carousel-left-trigger');
   const rightTrigger = container.querySelector('.carousel-right-trigger');
   container.innerHTML = '';
 
-  if (list && templatePages) {
+  const taskMeta = getMetadata('tasks');
+  const currentTasks = taskMeta ? taskMeta.replace(/[$@%"]/g, '') : ' ';
+  const currentTasksX = getMetadata('tasks-x') || '';
+
+  if (list) {
     list.forEach((d) => {
+      const { prefix } = getConfig().locale;
       const topics = getMetadata('topics') !== '" "' ? `${getMetadata('topics')?.replace(/[$@%"]/g, '')}` : '';
-      const templatePageData = templatePages.find((p) => p.live === 'Y' && matchCKGResult(d, p));
-      const topicsQuery = `${topics} ${d.displayValue}`.split(' ')
+      const topicsQuery = `${topics} ${d.displayValue.toLowerCase()}`.split(' ')
         .filter((item, i, allItems) => i === allItems.indexOf(item))
-        .join(' ').trim();
-      let displayText = formatLinkPillText(d);
+        .join(' ')
+        .replace(currentTasks, '')
+        .replace(currentTasksX, '')
+        .trim();
 
-      const prefix = getConfig().locale.prefix.replace('/', '');
-      const localeColumnString = prefix === '' ? 'EN' : prefix.toUpperCase();
-      let useSearchPill = true;
+      let clone;
 
-      if (pillsMapping) {
-        const alternateText = pillsMapping.find((row) => window.location.pathname === `${prefix}${row['Express SEO URL']}` && d.ckgID === row['CKG Pill ID']);
-        const hasAlternateTextForLocale = alternateText && alternateText[`${localeColumnString}`];
-        if (hasAlternateTextForLocale) {
-          displayText = alternateText[`${localeColumnString}`];
-          if (templatePageData) {
-            templatePageData.altShortTitle = displayText;
-          }
-        }
+      if (!new URL(`https://www.adobe.com${d.pathname}`).search) {
+        const pageData = {
+          url: d.pathname,
+          'short-title': d.displayValue,
+        };
 
-        useSearchPill = (hasAlternateTextForLocale || prefix === '') && d.ckgID;
-      }
-
-      if (templatePageData) {
-        const clone = replaceLinkPill(linkPill, templatePageData);
+        clone = replaceLinkPill(linkPill, pageData);
+        clone.innerHTML = clone.innerHTML.replaceAll('Default', d.displayValue);
+        clone.innerHTML = clone.innerHTML.replace('/express/templates/default', `${d.pathname}?searchId=${generateSearchId()}`);
         if (clone) pageLinks.push(clone);
-      } else if (useSearchPill) {
-        const taskMeta = getMetadata('tasks');
-        const currentTasks = taskMeta ? taskMeta.replace(/[$@%"]/g, '') : ' ';
-        const currentTasksX = getMetadata('tasks-x') || '';
-        const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}`;
-        const clone = linkPill.cloneNode(true);
+      } else {
+        // fixme: we need single page search UX
+        const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}&searchId=${generateSearchId()}`;
+        const pageData = {
+          url: `${prefix}/express/templates/search?${searchParams}`,
+          'short-title': d.displayValue,
+        };
 
-        clone.innerHTML = clone.innerHTML.replace('/express/templates/default', `${prefix}/express/templates/search?${searchParams}`);
-        clone.innerHTML = clone.innerHTML.replaceAll('Default', displayText);
+        clone = replaceLinkPill(linkPill, pageData);
         searchLinks.push(clone);
       }
+
+      clone.addEventListener('click', () => {
+        const a = clone.querySelector(':scope > a');
+        updateImpressionCache({
+          search_keyword: d.displayValue,
+        });
+        // TODO: event type might be different. Waiting on Linh's update.
+        trackSearch('ckg-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
+      });
     });
 
     if (leftTrigger) container.append(leftTrigger);
@@ -186,9 +156,10 @@ async function updateLinkList(container, linkPill, list) {
     if (rightTrigger) container.append(rightTrigger);
 
     if (container.children.length === 2) {
+      const templatePages = await fetchAllTemplatesMetadata();
       const linkListData = [];
 
-      window.linkLists.sheetData.forEach((row) => {
+      sheetData.forEach((row) => {
         if (row.parent === getMetadata('short-title')) {
           linkListData.push({
             childSibling: row['child-siblings'],
@@ -216,13 +187,14 @@ async function lazyLoadLinklist() {
     const linkListTemplate = linkList.querySelector('p').cloneNode(true);
     const linkListData = [];
 
-    if (window.linkLists && window.linkLists.ckgData && getMetadata('short-title')) {
-      window.linkLists.ckgData.forEach((row) => {
+    if (ckgData && getMetadata('short-title')) {
+      ckgData.forEach((row) => {
         linkListData.push({
           ckgID: row.ckgID,
           shortTitle: getMetadata('short-title'),
           tasks: row.parent,
           displayValue: row.displayValue,
+          pathname: row.value,
         });
       });
     }
@@ -265,13 +237,14 @@ async function lazyLoadSearchMarqueeLinklist() {
 
       const linkListData = [];
 
-      if (window.linkLists && window.linkLists.ckgData && getMetadata('short-title')) {
-        window.linkLists.ckgData.forEach((row) => {
+      if (ckgData && getMetadata('short-title')) {
+        ckgData.forEach((row) => {
           linkListData.push({
             ckgID: row.ckgID,
             shortTitle: getMetadata('short-title'),
             tasks: row.parent, // parent tasks
             displayValue: row.displayValue,
+            pathname: row.value,
           });
         });
       }
@@ -301,8 +274,8 @@ export default async function updateAsyncBlocks() {
   // TODO: integrate memoization
   const showSearchMarqueeLinkList = getMetadata('show-search-marquee-link-list');
   if (document.body.dataset.device === 'desktop' && (!showSearchMarqueeLinkList || ['yes', 'true', 'on', 'Y'].includes(showSearchMarqueeLinkList))) {
-    await lazyLoadSearchMarqueeLinklist();
+    lazyLoadSearchMarqueeLinklist();
   }
-  await lazyLoadLinklist();
-  await lazyLoadSEOLinkList();
+  lazyLoadLinklist();
+  lazyLoadSEOLinkList();
 }
