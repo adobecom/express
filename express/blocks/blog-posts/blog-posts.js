@@ -118,21 +118,21 @@ function filterBlogPosts(config, index) {
 }
 
 // Given a block element, construct a config object from all the links that children of the block.
-function getBlogPostsConfig($block) {
+function getBlogPostsConfig(block) {
   let config = {};
 
-  const $rows = [...$block.children];
-  const $firstRow = [...$rows[0].children];
+  const rows = [...block.children];
+  const firstRow = [...rows[0].children];
 
-  if ($rows.length === 1 && $firstRow.length === 1) {
+  if (rows.length === 1 && firstRow.length === 1) {
     /* handle links */
-    const links = [...$block.querySelectorAll('a')].map(($a) => $a.href);
+    const links = [...block.querySelectorAll('a')].map((a) => a.href);
     config = {
       featured: links,
       featuredOnly: true,
     };
   } else {
-    config = readBlockConfig($block);
+    config = readBlockConfig(block);
   }
   return config;
 }
@@ -245,12 +245,12 @@ async function getHeroCard(post, dateFormatter) {
     path, title, teaser, dateString, filteredTitle, imagePath,
   } = getCardParameters(post, dateFormatter);
   const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
-  const $card = createTag('a', {
+  const card = createTag('a', {
     class: 'blog-hero-card',
     href: path,
   });
   const pictureTag = heroPicture.outerHTML;
-  $card.innerHTML = `<div class="blog-card-image">
+  card.innerHTML = `<div class="blog-card-image">
     ${pictureTag}
     </div>
     <div class="blog-hero-card-body">
@@ -260,7 +260,7 @@ async function getHeroCard(post, dateFormatter) {
       <p class="blog-card-cta button-container">
         <a href="${path}" title="${readMoreString}" class="button accent">${readMoreString}</a></p>
     </div>`;
-  return $card;
+  return card;
 }
 // For configs with more than one post, get regular cards
 function getCard(post, dateFormatter) {
@@ -268,18 +268,18 @@ function getCard(post, dateFormatter) {
     path, title, teaser, dateString, filteredTitle, imagePath,
   } = getCardParameters(post, dateFormatter);
   const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
-  const $card = createTag('a', {
+  const card = createTag('a', {
     class: 'blog-card',
     href: path,
   });
   const pictureTag = cardPicture.outerHTML;
-  $card.innerHTML = `<div class="blog-card-image">
+  card.innerHTML = `<div class="blog-card-image">
         ${pictureTag}
         </div>
         <h3 class="blog-card-title">${filteredTitle}</h3>
         <p class="blog-card-teaser">${teaser}</p>
         <p class="blog-card-date">${dateString}</p>`;
-  return $card;
+  return card;
 }
 // Cached language and dateFormatter since creating a Dateformatter is an expensive operation
 let language;
@@ -295,19 +295,19 @@ function getDateFormatter(newLanguage) {
   });
 }
 
-// Given a blog post element and a config, append all posts defined in the config to $blogPosts
-async function decorateBlogPosts($blogPosts, config, offset = 0) {
+// Given a blog post element and a config, append all posts defined in the config to blogPosts
+async function decorateBlogPosts(blogPosts, config, offset = 0) {
   const posts = await getFilteredResults(config);
   // If a blog config has only one featured item, then build the item as a hero card.
   const isHero = config.featured && config.featured.length === 1;
 
   const limit = config['page-size'] || 12;
 
-  let $cards = $blogPosts.querySelector('.blog-cards');
-  if (!$cards) {
-    $blogPosts.innerHTML = '';
-    $cards = createTag('div', { class: 'blog-cards' });
-    $blogPosts.appendChild($cards);
+  let cards = blogPosts.querySelector('.blog-cards');
+  if (!cards) {
+    blogPosts.innerHTML = '';
+    cards = createTag('div', { class: 'blog-cards' });
+    blogPosts.appendChild(cards);
   }
 
   const pageEnd = offset + limit;
@@ -320,33 +320,33 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
   }
 
   if (isHero) {
-    const $card = await getHeroCard(posts[0], dateFormatter);
-    $blogPosts.prepend($card);
-    images.push($card.querySelector('img'));
+    const card = await getHeroCard(posts[0], dateFormatter);
+    blogPosts.prepend(card);
+    images.push(card.querySelector('img'));
     count = 1;
   } else {
     for (let i = offset; i < posts.length && count < limit; i += 1) {
       const post = posts[i];
-      const $card = getCard(post, dateFormatter);
-      $cards.append($card);
-      images.push($card.querySelector('img'));
+      const card = getCard(post, dateFormatter);
+      cards.append(card);
+      images.push(card.querySelector('img'));
       count += 1;
     }
   }
 
   if (posts.length > pageEnd && config['load-more']) {
-    const $loadMore = createTag('a', { class: 'load-more button secondary', href: '#' });
-    $loadMore.innerHTML = config['load-more'];
-    $blogPosts.append($loadMore);
-    $loadMore.addEventListener('click', (event) => {
+    const loadMore = createTag('a', { class: 'load-more button secondary', href: '#' });
+    loadMore.innerHTML = config['load-more'];
+    blogPosts.append(loadMore);
+    loadMore.addEventListener('click', (event) => {
       event.preventDefault();
-      $loadMore.remove();
-      decorateBlogPosts($blogPosts, config, pageEnd);
+      loadMore.remove();
+      decorateBlogPosts(blogPosts, config, pageEnd);
     });
   }
 
   if (images.length) {
-    const section = $blogPosts.closest('.section');
+    const section = blogPosts.closest('.section');
     section.style.display = 'block';
     const filteredImages = images.filter(async (i) => isInViewport(i));
     const imagePromises = filteredImages.map((img) => loadImage(img));
@@ -363,18 +363,18 @@ function checkStructure(element, querySelectors) {
   return matched;
 }
 
-export default async function decorate($block) {
-  const config = getBlogPostsConfig($block);
+export default async function decorate(block) {
+  const config = getBlogPostsConfig(block);
 
   // wrap p in parent section
-  if (checkStructure($block.parentNode, ['h2 + p + p + div.blog-posts', 'h2 + p + div.blog-posts', 'h2 + div.blog-posts'])) {
+  if (checkStructure(block.parentNode, ['h2 + p + p + div.blog-posts', 'h2 + p + div.blog-posts', 'h2 + div.blog-posts'])) {
     const wrapper = createTag('div', { class: 'blog-posts-decoration' });
-    $block.parentNode.insertBefore(wrapper, $block);
-    const allP = $block.parentNode.querySelectorAll(':scope > p');
+    block.parentNode.insertBefore(wrapper, block);
+    const allP = block.parentNode.querySelectorAll(':scope > p');
     allP.forEach((p) => {
       wrapper.appendChild(p);
     });
   }
 
-  await decorateBlogPosts($block, config);
+  await decorateBlogPosts(block, config);
 }
