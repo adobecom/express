@@ -13,7 +13,8 @@ let quickAction;
 let fqaBlock;
 let error;
 let ccEverywhere;
-let container;
+let quickActionContainer;
+let uploadContainer;
 
 function startSDK(data) {
   const CDN_URL = 'https://sdk-pr-builds.cc-embed.adobe.com/PR-1339/PR-1339/CCEverywhere.js';
@@ -60,10 +61,12 @@ function startSDK(data) {
     ];
 
     const id = `${quickAction}-container`;
-    container = createTag('div', { id, class: 'quick-action-container' });
-    fqaBlock.append(container);
+    quickActionContainer = createTag('div', { id, class: 'quick-action-container' });
+    fqaBlock.append(quickActionContainer);
     const divs = fqaBlock.querySelectorAll(':scope > div');
-    divs[1].style.display = 'none';
+    if (divs[1]) uploadContainer = divs[1];
+    uploadContainer.style.display = 'none';
+
     ccEverywhere.openQuickAction({
       id: quickAction,
       inputParams: {
