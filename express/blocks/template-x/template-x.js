@@ -319,6 +319,7 @@ function updateLoadMoreButton(props, loadMore) {
 
 async function decorateNewTemplates(block, props, options = { reDrawMasonry: false }) {
   const { templates: newTemplates } = await fetchAndRenderTemplates(props);
+  updateImpressionCache({ result_count: newTemplates.length });
   const loadMore = block.parentElement.querySelector('.load-more');
 
   props.templates = props.templates.concat(newTemplates);
@@ -648,7 +649,7 @@ async function decorateCategoryList(block, props) {
 
     a.addEventListener('click', () => {
       updateImpressionCache({
-        search_keyword: a.dataset.tasks,
+        category_filter: a.dataset.tasks,
         collection: a.dataset.topics,
         collection_path: window.location.pathname,
         search_id: new URLSearchParams(new URL(a.href).search).get('searchId'),
@@ -1383,6 +1384,7 @@ async function decorateTemplates(block, props) {
   const searchId = new URLSearchParams(window.location.search).get('searchId');
   updateImpressionCache({
     search_keyword: getMetadata('q') || getMetadata('topics-x'),
+    result_count: templates.length,
   });
   if (searchId) trackSearch('view-search-results', searchId);
 
