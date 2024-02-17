@@ -273,7 +273,7 @@ async function handleAnimation(div, typeHint, block, animations) {
     const srcURL = new URL(poster.src);
     const srcUSP = new URLSearchParams(srcURL.search);
     srcUSP.set('format', 'webply');
-    srcUSP.set('width', typeHint === 'mobile' ? 750 :  1024);
+    srcUSP.set('width', typeHint === 'mobile' ? 750 : 4080);
     optimizedPosterSrc = `${srcURL.pathname}?${srcUSP.toString()}`;
   }
 
@@ -283,8 +283,8 @@ async function handleAnimation(div, typeHint, block, animations) {
     title: (poster && poster.getAttribute('alt')) || '',
     params: videoParameters,
   };
+
   div.remove();
-  // div.style.display = "none"
 }
 
 async function handleContent(div, block, animations) {
@@ -372,11 +372,8 @@ export default async function decorate(block) {
   const animations = {};
   const rows = [...block.children];
   let index = 0
-
-
   
-  for (let index = 0; index < rows.length; index += 1) {
-    const div = rows[index];
+  for await (const div of rows){
    
     let rowType = 'animation';
     let typeHint; 
