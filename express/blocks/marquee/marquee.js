@@ -273,7 +273,7 @@ async function handleAnimation(div, typeHint, block, animations) {
     const srcURL = new URL(poster.src);
     const srcUSP = new URLSearchParams(srcURL.search);
     srcUSP.set('format', 'webply');
-    srcUSP.set('width', typeHint === 'mobile' ? 750 :  1024);
+    srcUSP.set('width', typeHint === 'mobile' ? 750 :  4080);
     optimizedPosterSrc = `${srcURL.pathname}?${srcUSP.toString()}`;
   }
 
