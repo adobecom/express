@@ -106,7 +106,7 @@ function startSDK(data) {
         exportOptions,
       },
       modalParams: {
-        isFrictionlessQa: true,
+        metaData: { isFrictionlessQa: true },
         parentElementId: `${quickAction}-container`,
         backgroundColor: 'transparent',
         hideCloseButton: true,
