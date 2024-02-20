@@ -171,7 +171,7 @@ function createAnimation(animations) {
 
   // replace anchor with video element
   const video = createTag('video', attribs);
-  video.setAttribute("preload", "auto")
+  video.setAttribute('preloas', 'auto');
   if (source) {
     video.innerHTML = `<source src="${source}" type="video/mp4">`;
   }
@@ -256,14 +256,13 @@ async function handleAnimation(div, typeHint, block, animations) {
     const id = url.hostname.includes('hlx.blob.core') ? url.pathname.split('/')[2] : url.pathname.split('media_')[1].split('.')[0];
     source = `./media_${id}.mp4`;
   }
-  let optimizedPosterSrc; 
-
-  if (poster) { 
+  let optimizedPosterSrc;
+  if (poster) {
     const srcURL = new URL(poster.src);
     const srcUSP = new URLSearchParams(srcURL.search);
     srcUSP.set('format', 'webply');
     srcUSP.set('width', 750);
-    srcUSP.set('width', window.innerWidth <= 750 ? 750 :  4080);
+    srcUSP.set('width', window.innerWidth <= 750 ? 750 : 4080);
     optimizedPosterSrc = `${srcURL.pathname}?${srcUSP.toString()}`;
   }
 
@@ -274,7 +273,7 @@ async function handleAnimation(div, typeHint, block, animations) {
     params: videoParameters,
   };
 
-  div.remove(); 
+  div.remove();
 }
 
 async function handleContent(div, block, animations) {
@@ -361,34 +360,29 @@ export default async function decorate(block) {
   const possibleOptions = ['shadow', 'background'];
   const animations = {};
   const rows = [...block.children];
- 
-  
+
   for (let index = 0; index < rows.length; index += 1) {
     const div = rows[index];
     let rowType = 'animation';
-    let typeHint; 
+    let typeHint;
     if ([...div.children].length > 1) typeHint = div.children[0].textContent.trim().toLowerCase();
-    if (index + 1 === rows.length ) {
-      rowType = 'content'
+    if (index + 1 === rows.length) {
+      rowType = 'content';
     }
     if (typeHint && possibleOptions.includes(typeHint)) {
       rowType = 'option';
     } else if (!typeHint || (typeHint && !possibleBreakpoints.includes(typeHint))) {
       typeHint = 'default';
     }
-    
 
     if (rowType === 'animation') {
-      handleAnimation(div, typeHint, block, animations)
-    } else if (rowType == 'content'){
-      handleContent(rows[rows.length - 1], block, animations)
-    } 
-    else if (rowType === 'option') {
-      handleOptions(div, typeHint, block)
-    } 
+      handleAnimation(div, typeHint, block, animations);
+    } else if (rowType === 'content') {
+      handleContent(rows[rows.length - 1], block, animations);
+    } else if (rowType === 'option') {
+      handleOptions(div, typeHint, block);
+    }
   }
-
-  
 
   const button = block.querySelector('.button');
   if (button) {
