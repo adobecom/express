@@ -122,15 +122,6 @@ const listenAlloy = () => {
 };
 
 (async function loadPage() {
-  window.addEventListener('feds.events.profile_data.loaded', () => {
-    console.log('profile_data.loaded', performance.now(), window.adobeProfile, window.feds.events.profile_data);
-  });
-  window.addEventListener('feds.events.profileDataReady', () => {
-    console.log('profileDataReady', performance.now(), window.adobeProfile, window.feds.events.profile_data);
-  });
-  window.addEventListener('feds.events.experience.loaded', () => {
-    console.log('experience.loaded', performance.now(), window.adobeProfile, window.feds.events.profile_data);
-  });
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
 
