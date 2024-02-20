@@ -22,29 +22,51 @@
   flex-direction: column;
   align-items: center;
   border-radius: 8px;
-  border: 1px solid #C6C6C6;
   width: 100%;
   padding: var(--card-padding);
   gap: 16px;
   text-align: left;
   box-sizing: border-box;
+  height: 100%;
 }
 
-.pricing-cards .card.gradient-promo {
-  background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
-  padding: 4px;
+.gradient-promo .card {
+  background-color: white;
+
+}
+
+.gradient-promo > div:first-of-type {
+  margin-left: 4px;
+  color: var(--color-white);
+  font-weight: 400;
+  text-decoration: underline;
+  padding-bottom: 12px;
+}
+
+.gradient-promo {
+  background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
+  padding: 12px 4px 4px 4px;
   border-radius: 24px;
   overflow: hidden;
-  background: var(--color-white);
-  margin-bottom: 16px;
+  background: var(--color-white); 
+  margin-top: 0px !important;
+  display: flex;
+  flex-direction: column;
 }
 
-.pricing-cards .card.special-promo {
+ .card-border {
+  border : 1px solid #C6C6C6;
+  border-radius: 8px;
+  margin-top: 44px;
+ }
+
+.special-promo {
   border: 1px solid #FFE600;
 }
-.pricing-cards .card.special-promo > div:first-of-type {
-  position: absolute;
-  right: 8px;
+.special-promo > div:first-of-type {
+  position: relative;
+  width: fit-content;
+  float:right;
   top: -10px;
   border-radius: 4px;
   background: #FFE600;
@@ -56,6 +78,11 @@
   height: 20px;
   justify-content: center;
   align-items: center;
+}
+
+.special-promo .card {
+  position: relative;
+  top : -10px;
 }
 
 .pricing-cards .card-header {

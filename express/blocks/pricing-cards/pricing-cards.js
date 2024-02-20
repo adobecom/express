@@ -128,8 +128,7 @@ function extractCurlyBracketsContent(inputString, card) {
   const match = pattern.exec(inputString)
   console.log(inputString, match)
   if (match) {
-    //const promoType = match[2].trim()
-    const promoType = "special-promo"
+    const promoType = match[2].trim() 
     const specialPromo = createTag('div');
     specialPromo.textContent = match[1].trim()
     console.log(promoType)
@@ -163,11 +162,12 @@ function decorateCard({
   compare,
 }, el, placeholders) {
   const card = createTag('div', { class: 'card' });
-  console.log('--------')
-  console.log(header)
-  const specialPromo = decorateHeader(header, borderParams,card)
-  card.append(header);
+  const cardBorder = createTag('div', { class : 'card-border'})
+ 
 
+  const specialPromo = decorateHeader(header, borderParams,cardBorder)
+  card.append(header);
+  cardBorder.append(card)
   if (explain.textContent.trim()) {
     explain.classList.add('card-explain');
     card.append(explain);
@@ -214,7 +214,7 @@ function decorateCard({
     }
     card.append(compare);
   }
-  return card;
+  return cardBorder;
 }
 
 const SALES_NUMBERS = '{{business-sales-numbers}}';
