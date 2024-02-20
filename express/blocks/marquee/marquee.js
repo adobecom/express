@@ -256,12 +256,14 @@ async function handleAnimation(div, typeHint, block, animations) {
     const id = url.hostname.includes('hlx.blob.core') ? url.pathname.split('/')[2] : url.pathname.split('media_')[1].split('.')[0];
     source = `./media_${id}.mp4`;
   }
-  let optimizedPosterSrc;
+  let optimizedPosterSrc; 
+
   if (poster) { 
     const srcURL = new URL(poster.src);
     const srcUSP = new URLSearchParams(srcURL.search);
     srcUSP.set('format', 'webply');
-    srcUSP.set('width', typeHint === 'mobile' ? 750 :  4080);
+    srcUSP.set('width', 750);
+    srcUSP.set('width', window.innerWidth <= 750 ? 750 :  4080);
     optimizedPosterSrc = `${srcURL.pathname}?${srcUSP.toString()}`;
   }
 
@@ -363,7 +365,6 @@ export default async function decorate(block) {
   
   for (let index = 0; index < rows.length; index += 1) {
     const div = rows[index];
-   
     let rowType = 'animation';
     let typeHint; 
     if ([...div.children].length > 1) typeHint = div.children[0].textContent.trim().toLowerCase();
