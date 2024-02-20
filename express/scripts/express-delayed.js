@@ -27,10 +27,9 @@ function getSegmentsFromAlloyResponse(response) {
   return ids;
 }
 
-async function isSignedIn() {
+async function checkSignedIn() {
   if (window.adobeProfile?.getUserProfile()) return true;
-  // 2 seconds or profile is loaded.
-  // TODO: see if these listeners should be moved to scripts.js
+  if (window.feds.events?.profile_data) return false; // data ready -> not signed in
   let resolve;
   const resolved = new Promise((r) => {
     resolve = r;
@@ -38,9 +37,7 @@ async function isSignedIn() {
   window.addEventListener('feds.events.profile_data.loaded', () => {
     resolve();
   }, { once: true });
-  window.addEventListener('feds.events.profileDataReady', () => {
-    resolve();
-  }, { once: true });
+  // if not ready, abort
   await Promise.race([resolved, new Promise((r) => setTimeout(r, 2000))]);
   return window.adobeProfile?.getUserProfile();
 }
@@ -52,8 +49,9 @@ async function canPEP() {
   if (!pepSegment) return false;
   const placeholders = await fetchPlaceholders();
   if (!placeholders.cancel || !placeholders['pep-header'] || !placeholders['pep-cancel']) return false;
-  if (!(await isSignedIn())) return false;
-  const segments = getSegmentsFromAlloyResponse(await window.alloyLoader);
+  const [alloyRes, isSignedIn] = await Promise.all([window.alloyLoader, checkSignedIn()]);
+  if (!isSignedIn) return false;
+  const segments = getSegmentsFromAlloyResponse(alloyRes);
   return pepSegment.replace(/\s/g, '').split(',').some((pepSeg) => segments.includes(pepSeg));
 }
 
