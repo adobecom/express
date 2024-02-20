@@ -4,6 +4,7 @@
 
 .frictionless-quick-action.block {
     min-height: 697px;
+    padding: 0 20px;
 }
 
 .frictionless-quick-action.block h1 {
@@ -41,6 +42,7 @@
     align-items: center;
     justify-content: center;
     transition: opacity 0.2s;
+    flex-wrap: wrap;
 }
 
 .frictionless-quick-action.block > div:nth-child(2) > div:nth-child(2) {
@@ -111,7 +113,7 @@
     background-color: unset;
     flex-direction: row;
     padding: unset;
-    margin-top: 8px;
+    margin: 8px auto 0 auto;
     gap: 8px;
 }
 
@@ -125,11 +127,13 @@
 .frictionless-quick-action.block .quick-action-container {
     height: 667px;
 }
+
 .frictionless-quick-action.block .quick-action-container > * {
     height: 100%;
 }
+
 .frictionless-quick-action.block .quick-action-container#resize-image-container {
-    height: 1000px;
+    height: 1080px;
 }
 
 .frictionless-quick-action.block > div.hidden {
@@ -138,4 +142,10 @@
 
 .frictionless-quick-action.block > div.transparent {
     opacity: 0;
+}
+
+@media (min-width: 1200) {
+    .frictionless-quick-action.block .quick-action-container#resize-image-container {
+        height: 1000px;
+    }
 }
