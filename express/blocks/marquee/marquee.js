@@ -240,19 +240,6 @@ export async function transformToVideoLink(cell, a) {
   }
 }
 
-async function handleMarqeeEntry(row) {
-  const index = rows.indexOf(div);
-  let rowType = 'animation';
-  let typeHint;
-  if (index + 1 === rows.length) rowType = 'content';
-  if ([...div.children].length > 1) typeHint = div.children[0].textContent.trim().toLowerCase();
-  if (typeHint && possibleOptions.includes(typeHint)) {
-    rowType = 'option';
-  } else if (!typeHint || (typeHint && !possibleBreakpoints.includes(typeHint))) {
-    typeHint = 'default';
-  }
-}
-
 async function handleAnimation(div, typeHint, block, animations) {
   if (typeHint !== 'default') block.classList.add(`has-${typeHint}-animation`);
   let source;
@@ -273,7 +260,7 @@ async function handleAnimation(div, typeHint, block, animations) {
     const srcURL = new URL(poster.src);
     const srcUSP = new URLSearchParams(srcURL.search);
     srcUSP.set('format', 'webply');
-    srcUSP.set('width', typeHint === 'mobile' ? 750 : 4080);
+    srcUSP.set('width', typeHint === 'mobile' ? 750 :  4080);
     optimizedPosterSrc = `${srcURL.pathname}?${srcUSP.toString()}`;
   }
 
@@ -284,7 +271,7 @@ async function handleAnimation(div, typeHint, block, animations) {
     params: videoParameters,
   };
 
-  div.remove();
+  div.remove(); 
 }
 
 async function handleContent(div, block, animations) {
@@ -371,14 +358,15 @@ export default async function decorate(block) {
   const possibleOptions = ['shadow', 'background'];
   const animations = {};
   const rows = [...block.children];
-  let index = 0
+ 
   
-  for await (const div of rows){
+  for (let index = 0; index < rows.length; index += 1) {
+    const div = rows[index];
    
     let rowType = 'animation';
     let typeHint; 
     if ([...div.children].length > 1) typeHint = div.children[0].textContent.trim().toLowerCase();
-    if (index == rows.length - 1) {
+    if (index + 1 === rows.length ) {
       rowType = 'content'
     }
     if (typeHint && possibleOptions.includes(typeHint)) {
@@ -386,6 +374,7 @@ export default async function decorate(block) {
     } else if (!typeHint || (typeHint && !possibleBreakpoints.includes(typeHint))) {
       typeHint = 'default';
     }
+    
 
     if (rowType === 'animation') {
       handleAnimation(div, typeHint, block, animations)
