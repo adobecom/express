@@ -1022,11 +1022,14 @@ function toggleMasonryView(block, props, button, toggleButtons) {
 
 function initViewToggle(block, props, toolBar) {
   const toggleButtons = toolBar.querySelectorAll('.view-toggle-button ');
-  block.classList.add('sm-view');
-  block.parentElement.classList.add('sm-view');
-  toggleButtons[0].classList.add('active');
+  const authoredViewIndex = ['sm', 'md', 'lg'].findIndex((size) => getMetadata('initial-template-view')?.toLowerCase().trim() === size);
+  const initViewIndex = authoredViewIndex === -1 ? 0 : authoredViewIndex;
 
-  toggleButtons.forEach((button) => {
+  toggleButtons.forEach((button, index) => {
+    if (index === initViewIndex) {
+      toggleMasonryView(block, props, button, toggleButtons);
+    }
+
     button.addEventListener('click', () => {
       toggleMasonryView(block, props, button, toggleButtons);
     }, { passive: true });

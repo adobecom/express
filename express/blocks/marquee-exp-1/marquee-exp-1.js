@@ -403,12 +403,6 @@ export default async function decorate(block) {
     }
   }
 
-  const button = block.querySelector('.button');
-  if (button) {
-    const { addFreePlanWidget } = await import('../../scripts/utils/free-plan.js');
-    await addFreePlanWidget(button.parentElement);
-  }
-
   const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
   if (phoneNumberTags.length > 0) {
     const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');

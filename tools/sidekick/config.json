@@ -46,8 +46,8 @@
       "containerId": "tools",
       "id": "qa-guide",
       "title": "QA Guide",
-      "event": "qa-guide",
-      "excludePaths": [ "**.docx**", "**/:x:**" ]
+      "environments": ["dev", "preview", "live"],
+      "event": "qa-guide"
     },
     {
       "containerId": "tools",

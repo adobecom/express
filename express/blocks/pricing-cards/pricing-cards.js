@@ -1,7 +1,8 @@
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
-  fetchPlan, buildUrl, formatSalesPhoneNumber, setVisitorCountry, shallSuppressOfferEyebrowText,
+  buildUrl, formatSalesPhoneNumber, setVisitorCountry,
+  shallSuppressOfferEyebrowText, fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -21,7 +22,7 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo) {
 
   priceRow.append(basePrice, price, priceSuffix);
 
-  fetchPlan(priceEl?.href).then((response) => {
+  fetchPlanOnePlans(priceEl?.href).then((response) => {
     let specialPromoPercentageEyeBrowTextReplaced = false;
     let pricingCardPercentageEyeBrowTextReplaced = false;
     const parentP = priceEl.parentElement;
@@ -110,7 +111,7 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo)
     if (a.parentNode.tagName.toLowerCase() === 'p') {
       a.parentNode.remove();
     }
-    fetchPlan(a.href).then(({
+    fetchPlanOnePlans(a.href).then(({
       url, country, language, offerId,
     }) => {
       a.href = buildUrl(url, country, language, offerId);
