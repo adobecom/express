@@ -27,7 +27,7 @@ function getSegmentsFromAlloyResponse(response) {
   return ids;
 }
 
-async function checkSignedIn() {
+async function isSignedIn() {
   if (window.adobeProfile?.getUserProfile()) return true;
   if (window.feds.events?.profile_data) return false; // data ready -> not signed in
   let resolve;
@@ -49,10 +49,9 @@ async function canPEP() {
   if (!pepSegment) return false;
   const placeholders = await fetchPlaceholders();
   if (!placeholders.cancel || !placeholders['pep-header'] || !placeholders['pep-cancel']) return false;
-  const [alloyRes, isSignedIn] = await Promise.all([window.alloyLoader, checkSignedIn()]);
-  if (!isSignedIn) return false;
-  const segments = getSegmentsFromAlloyResponse(alloyRes);
-  return pepSegment.replace(/\s/g, '').split(',').some((pepSeg) => segments.includes(pepSeg));
+  const segments = getSegmentsFromAlloyResponse(await window.alloyLoader);
+  if (!pepSegment.replace(/\s/g, '').split(',').some((pepSeg) => segments.includes(pepSeg))) return false;
+  return !!(await isSignedIn());
 }
 
 const PEP_DELAY = 3000;
