@@ -122,6 +122,70 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo)
   return pricingSection;
 }
 
+function extractCurlyBracketsContent(inputString) {
+  // Pattern to find text directly before the first {{...}} and all instances of {{...}}
+  const pattern = /(.*?)\{\{(.+?)\}\}/g;
+  let match;
+  let result = {
+      mainHeaderContent: "",
+      promoArgs: []
+  };
+  console.log(inputString)
+  while ((match = pattern.exec(inputString)) !== null) {
+      console.log(match)
+      if (result.headerContent === "" && match[1].trim()) {
+          result.headerContent = match[1].trim();
+      } 
+      result.promoArgs.push(match[2].trim());
+  }
+ 
+  if(result.promoArgs.length === 0){
+      const beforeFirstBracketMatch = /^(.*)\{\{/.exec(inputString);
+      if(beforeFirstBracketMatch){
+          result.headerContent = beforeFirstBracketMatch[1].trim();
+      } else {
+          result.headerContent = inputString.trim();
+      }
+  }
+
+  return result;
+}
+ 
+function decorateHeader(header) {
+  const h2 = header.querySelector('h2');
+  // The raw text extracted from the word doc
+  const h2Text = h2.textContent
+  h2.innerHTML = '';
+
+   
+  const premiumIcon = header.querySelector('img');
+  let specialPromo;
+  if (premiumIcon) h2.append(premiumIcon);
+  const headerConfig = extractCurlyBracketsContent(h2Text)
+  console.log(headerConfig)
+  h2.innerHTML = headerConfig.headerContent;
+  if (headerConfig.promoArgs.length == 2) {
+    const promoType = headerConfig.promoArgs[0]
+    const promoText = headerConfig.promoArgs[1]
+    const specialPromo = createTag('div');
+    specialPromo.textContent = promoText
+    // let promoClassName = ""
+    // switch (headerConfig.promoArgs[0]) { 
+    //   case (GRADIENT_PROMO):
+    //     promoClassName = "pricing-column-wrapper"
+    //   case (YELLOW_PROMO):
+    //     promoClassName = "special-promo"
+    // }
+    card.classList.add(promoType);
+    card.append(specialPromo);
+  }
+ 
+  header.querySelectorAll('p').forEach((p) => {
+    if (p.innerHTML.trim() === '') p.remove();
+  });
+  return specialPromo
+}
+
 function decorateCard({
   header,
   explain,
@@ -133,34 +197,7 @@ function decorateCard({
   compare,
 }, el, placeholders) {
   const card = createTag('div', { class: 'card' });
-  header.classList.add('card-header');
-  const h2 = header.querySelector('h2');
-  const h2Text = h2.textContent.trim();
-  h2.innerHTML = '';
-  const headerConfig = /\((.+)\)/.exec(h2Text);
-  const premiumIcon = header.querySelector('img');
-  let specialPromo;
-  if (premiumIcon) h2.append(premiumIcon);
-  if (headerConfig) {
-    const cfg = headerConfig[1];
-    h2.append(h2Text.replace(`(${cfg})`, '').trim());
-    if (/^\d/.test(cfg)) {
-      const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
-      headCntDiv.textContent = cfg;
-      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
-      header.append(headCntDiv);
-    } else {
-      specialPromo = createTag('div');
-      specialPromo.textContent = cfg;
-      card.classList.add('special-promo');
-      card.append(specialPromo);
-    }
-  } else {
-    h2.append(h2Text);
-  }
-  header.querySelectorAll('p').forEach((p) => {
-    if (p.innerHTML.trim() === '') p.remove();
-  });
+  const specialPromo = decorateHeader(header, card)
   card.append(header);
 
   if (explain.textContent.trim()) {
@@ -220,6 +257,7 @@ export default async function init(el) {
     obj[key] = divs[keyIndex][index];
     return obj;
   }, {}));
+  console.log(cards)
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
