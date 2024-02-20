@@ -30,6 +30,15 @@
   box-sizing: border-box;
 }
 
+.pricing-cards .card.gradient-promo {
+  background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
+  padding: 4px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--color-white);
+  margin-bottom: 16px;
+}
+
 .pricing-cards .card.special-promo {
   border: 1px solid #FFE600;
 }
