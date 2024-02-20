@@ -171,6 +171,7 @@ function createAnimation(animations) {
 
   // replace anchor with video element
   const video = createTag('video', attribs);
+  video.setAttribute("preload", "auto")
   if (source) {
     video.innerHTML = `<source src="${source}" type="video/mp4">`;
   }
@@ -256,7 +257,7 @@ async function handleAnimation(div, typeHint, block, animations) {
     source = `./media_${id}.mp4`;
   }
   let optimizedPosterSrc;
-  if (poster) {
+  if (poster) { 
     const srcURL = new URL(poster.src);
     const srcUSP = new URLSearchParams(srcURL.search);
     srcUSP.set('format', 'webply');
