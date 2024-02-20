@@ -383,8 +383,7 @@ export default async function decorate(block) {
     } 
     else if (rowType === 'option') {
       handleOptions(div, typeHint, block)
-    }
-    index += 1
+    } 
   }
 
   
