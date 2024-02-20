@@ -63,6 +63,15 @@ body.no-desktop-brand-header header {
   align-items: flex-start;
 }
 
+.marquee .marquee-foreground .with-inline-ctas.buttons-wrapper {
+  align-items: center;
+  gap: 8px;
+}
+
+.marquee .marquee-foreground .with-inline-ctas.buttons-wrapper a.button.accent {
+  margin: 0;
+}
+
 .marquee .content-wrapper h1 {
   font-size: clamp(var(--heading-font-size-l), 4vw, var(--heading-font-size-xxl));
   margin: 0 0 8px 0;
@@ -324,6 +333,11 @@ body.no-desktop-brand-header header {
 
   .marquee .marquee-foreground .buttons-wrapper {
     flex-direction: row;
+  }
+
+  .marquee .marquee-foreground .with-inline-ctas.buttons-wrapper {
+    margin-top: 24px;
+    gap: 24px;
   }
 
   .marquee.narrow .marquee-foreground .content-wrapper {
