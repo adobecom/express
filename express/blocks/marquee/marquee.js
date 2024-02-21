@@ -371,7 +371,7 @@ export default async function decorate(block) {
     }
     if (typeHint && possibleOptions.includes(typeHint)) {
       rowType = 'option';
-    } else if (!typeHint || ( !possibleBreakpoints.includes(typeHint))) {
+    } else if (!typeHint || (!possibleBreakpoints.includes(typeHint))) {
       typeHint = 'default';
     }
 
