@@ -1,8 +1,8 @@
 // eslint-disable-next-line import/prefer-default-export
 export function addTempWrapper($block, blockName) {
-  const div = document.createElement('div');
+  const wrapper = document.createElement('div');
   const parent = $block.parentElement;
-  div.append($block);
-  div.classList.add(`${blockName}-wrapper`);
-  parent.append(div);
+  wrapper.classList.add(`${blockName}-wrapper`);
+  parent.insertBefore(wrapper, $block);
+  wrapper.append($block);
 }
