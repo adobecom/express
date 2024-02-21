@@ -51,7 +51,10 @@ async function canPEP() {
   if (!placeholders.cancel || !placeholders['pep-header'] || !placeholders['pep-cancel']) return false;
   const segments = getSegmentsFromAlloyResponse(await window.alloyLoader);
   if (!pepSegment.replace(/\s/g, '').split(',').some((pepSeg) => segments.includes(pepSeg))) return false;
-  return !!(await isSignedIn());
+  // eslint-disable-next-line no-unused-vars
+  const profileReady = !!(await isSignedIn()); // TODO: keeping for debugging adobeProfile
+  return true;
+  // return profileReady;
 }
 
 const PEP_DELAY = 3000;
