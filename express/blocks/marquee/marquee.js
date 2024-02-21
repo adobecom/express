@@ -241,7 +241,7 @@ export async function transformToVideoLink(cell, a) {
   }
 }
 
-function handleAnimation(div, typeHint, block, animations) {
+async function handleAnimation(div, typeHint, block, animations) {
   if (typeHint !== 'default') block.classList.add(`has-${typeHint}-animation`);
   let source;
   let videoParameters = {};
@@ -276,7 +276,7 @@ function handleAnimation(div, typeHint, block, animations) {
   div.remove();
 }
 
-function handleContent(div, block, animations) {
+async function handleContent(div, block, animations) {
   const videoWrapper = createTag('div', { class: 'background-wrapper' });
   const video = createAnimation(animations);
   let bg;
@@ -311,7 +311,7 @@ function handleContent(div, block, animations) {
 
   // check for video link
   // eslint-disable-next-line no-await-in-loop
-  const { isVideoLink } = import('../shared/video.js');
+  const { isVideoLink } = await import('../shared/video.js');
   const videoLink = [...div.querySelectorAll('a')].find((a) => isVideoLink(a.href));
   if (videoLink) {
     transformToVideoLink(div, videoLink);
@@ -336,7 +336,7 @@ function handleContent(div, block, animations) {
   });
 }
 
-function handleOptions(div, typeHint, block) {
+async function handleOptions(div, typeHint, block) {
   if (typeHint === 'shadow') {
     const shadow = (div.querySelector('picture')) ? div.querySelector('picture') : createTag('img', { src: '/express/blocks/marquee/shadow.png' });
     div.innerHTML = '';
