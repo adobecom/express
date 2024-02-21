@@ -171,7 +171,7 @@ function createAnimation(animations) {
 
   // replace anchor with video element
   const video = createTag('video', attribs);
-  video.setAttribute('preloas', 'auto');
+  video.setAttribute('preload', 'auto');
   if (source) {
     video.innerHTML = `<source src="${source}" type="video/mp4">`;
   }
@@ -241,7 +241,7 @@ export async function transformToVideoLink(cell, a) {
   }
 }
 
-async function handleAnimation(div, typeHint, block, animations) {
+function handleAnimation(div, typeHint, block, animations) {
   if (typeHint !== 'default') block.classList.add(`has-${typeHint}-animation`);
   let source;
   let videoParameters = {};
@@ -276,7 +276,7 @@ async function handleAnimation(div, typeHint, block, animations) {
   div.remove();
 }
 
-async function handleContent(div, block, animations) {
+function handleContent(div, block, animations) {
   const videoWrapper = createTag('div', { class: 'background-wrapper' });
   const video = createAnimation(animations);
   let bg;
@@ -336,7 +336,7 @@ async function handleContent(div, block, animations) {
   });
 }
 
-async function handleOptions(div, typeHint, block) {
+function handleOptions(div, typeHint, block) {
   if (typeHint === 'shadow') {
     const shadow = (div.querySelector('picture')) ? div.querySelector('picture') : createTag('img', { src: '/express/blocks/marquee/shadow.png' });
     div.innerHTML = '';
@@ -371,7 +371,7 @@ export default async function decorate(block) {
     }
     if (typeHint && possibleOptions.includes(typeHint)) {
       rowType = 'option';
-    } else if (!typeHint || (typeHint && !possibleBreakpoints.includes(typeHint))) {
+    } else if (!typeHint || ( !possibleBreakpoints.includes(typeHint))) {
       typeHint = 'default';
     }
 
