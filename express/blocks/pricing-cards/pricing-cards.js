@@ -140,15 +140,23 @@ function decorateHeader(header, borderParams, card) {
   // The raw text extracted from the word doc
   header.classList.add('card-header')
   extractCurlyBracketsContent(borderParams.innerText, card)
-
   const premiumIcon = header.querySelector('img');
-  
   if (premiumIcon) h2.append(premiumIcon);
  
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
-  });
- 
+  }); 
+
+  // Finds the headcount, removes it from the original string and creates an icon with the hc
+  const extractHeadCountExp =  /(>?)\(\d+(.*?)\)/
+  if (extractHeadCountExp.test(h2.innerText)) {
+    const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' }); 
+    const headCount = h2.innerText.match(extractHeadCountExp)[0].replace(')','').replace("(",'')
+    h2.innerText = h2.innerText.split(extractHeadCountExp)[0]
+    headCntDiv.textContent = headCount
+    headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
+    header.append(headCntDiv);
+  }
 }
 
 function decorateCard({
