@@ -686,8 +686,6 @@ export async function decorateBlock(block) {
     block.setAttribute('data-block-name', blockName);
     block.setAttribute('data-block-status', 'initialized');
 
-    // This can be used to make itself as wrapper
-    // block.classList.add(`${blockName}-wrapper`);
     if (getMetadata('sheet-powered') === 'Y') {
       const { setBlockTheme } = await import('./content-replace.js');
       setBlockTheme(block);
