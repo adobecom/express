@@ -311,7 +311,7 @@ function handleContent(div, block, animations) {
 
   // check for video link
   // eslint-disable-next-line no-await-in-loop
-  const { isVideoLink } = await import('../shared/video.js');
+  const { isVideoLink } = import('../shared/video.js');
   const videoLink = [...div.querySelectorAll('a')].find((a) => isVideoLink(a.href));
   if (videoLink) {
     transformToVideoLink(div, videoLink);
