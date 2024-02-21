@@ -49,6 +49,7 @@ function buildProfileWrapper(profile) {
   profilePhotoCont.append(profilePhoto);
   profileWrapper.append(profilePhotoCont, profileTextWrapper);
   profileTextWrapper.append(profileName, profileEmail);
+  return profileWrapper;
 }
 
 export default async function loadLoginUserAutoRedirect() {
