@@ -125,13 +125,11 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo)
 function extractCurlyBracketsContent(inputString, card) {
   // Pattern to find text directly before the first {{...}} and all instances of {{...}}
   const pattern = /(.*?)\{\{(.+?)\}\}/g;
-  const match = pattern.exec(inputString)
-  console.log(inputString, match)
+  const match = pattern.exec(inputString) 
   if (match) {
     const promoType = match[2].trim() 
     const specialPromo = createTag('div');
-    specialPromo.textContent = match[1].trim()
-    console.log(promoType)
+    specialPromo.textContent = match[1].trim() 
     card.classList.add(promoType);
     card.append(specialPromo);
   }
@@ -140,10 +138,13 @@ function extractCurlyBracketsContent(inputString, card) {
 function decorateHeader(header, borderParams, card) {
   const h2 = header.querySelector('h2');
   // The raw text extracted from the word doc
+  header.classList.add('card-header')
+  extractCurlyBracketsContent(borderParams.innerText, card)
 
   const premiumIcon = header.querySelector('img');
+  
   if (premiumIcon) h2.append(premiumIcon);
-  extractCurlyBracketsContent(borderParams.innerText, card)
+ 
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
   });
@@ -167,6 +168,7 @@ function decorateCard({
 
   const specialPromo = decorateHeader(header, borderParams,cardBorder)
   card.append(header);
+
   cardBorder.append(card)
   if (explain.textContent.trim()) {
     explain.classList.add('card-explain');
