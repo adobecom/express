@@ -5,7 +5,7 @@ import {
 } from '../../scripts/utils/pricing.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
-const blockKeys = ['header', 'borderParams' , 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
+const blockKeys = ['header', 'borderParams', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
 
@@ -123,37 +123,40 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo)
 }
 
 function extractCurlyBracketsContent(inputString, card) {
+  if (!inputString) {
+    return;
+  }
   // Pattern to find text directly before the first {{...}} and all instances of {{...}}
   const pattern = /(.*?)\{\{(.+?)\}\}/g;
-  const match = pattern.exec(inputString) 
+  const match = pattern.exec(inputString);
   if (match) {
-    const promoType = match[2].trim() 
+    const promoType = match[2].trim();
     const specialPromo = createTag('div');
-    specialPromo.textContent = match[1].trim() 
+    specialPromo.textContent = match[1].trim();
     card.classList.add(promoType);
     card.append(specialPromo);
   }
 }
- 
+
 function decorateHeader(header, borderParams, card) {
   const h2 = header.querySelector('h2');
   // The raw text extracted from the word doc
-  header.classList.add('card-header')
-  extractCurlyBracketsContent(borderParams.innerText, card)
+  header.classList.add('card-header');
+  extractCurlyBracketsContent(borderParams?.innerText, card);
   const premiumIcon = header.querySelector('img');
   if (premiumIcon) h2.append(premiumIcon);
- 
+
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
-  }); 
+  });
 
   // Finds the headcount, removes it from the original string and creates an icon with the hc
-  const extractHeadCountExp =  /(>?)\(\d+(.*?)\)/
+  const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
   if (extractHeadCountExp.test(h2.innerText)) {
-    const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' }); 
-    const headCount = h2.innerText.match(extractHeadCountExp)[0].replace(')','').replace("(",'')
-    h2.innerText = h2.innerText.split(extractHeadCountExp)[0]
-    headCntDiv.textContent = headCount
+    const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
+    const headCount = h2.innerText.match(extractHeadCountExp)[0].replace(')', '').replace('(', '');
+    [h2.innerText]  = h2.innerText.split(extractHeadCountExp)
+    headCntDiv.textContent = headCount;
     headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
     header.append(headCntDiv);
   }
@@ -171,17 +174,18 @@ function decorateCard({
   compare,
 }, el, placeholders) {
   const card = createTag('div', { class: 'card' });
-  const cardBorder = createTag('div', { class : 'card-border'})
- 
+  const cardBorder = createTag('div', { class: 'card-border' });
 
-  const specialPromo = decorateHeader(header, borderParams,cardBorder)
+  const specialPromo = decorateHeader(header, borderParams, cardBorder);
   card.append(header);
 
-  cardBorder.append(card)
+  cardBorder.append(card);
   if (explain.textContent.trim()) {
     explain.classList.add('card-explain');
     card.append(explain);
   }
+
+  console.log(mPricingRow, mCtaGroup);
 
   const mPricingSection = createPricingSection(placeholders, mPricingRow, mCtaGroup, specialPromo);
   mPricingSection.classList.add('monthly');
@@ -206,7 +210,7 @@ function decorateCard({
     card.append(featureList);
   }
 
-  if (compare.innerHTML.trim()) {
+  if (compare?.innerHTML.trim()) {
     compare.classList.add('card-compare');
     compare.querySelector('a')?.classList.remove('button', 'accent');
     // in a tab, update url
@@ -235,7 +239,7 @@ export default async function init(el) {
   const cards = Array.from(divs[0]).map((_, index) => blockKeys.reduce((obj, key, keyIndex) => {
     obj[key] = divs[keyIndex][index];
     return obj;
-  }, {})); 
+  }, {}));
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
