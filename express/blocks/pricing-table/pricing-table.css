@@ -29,10 +29,10 @@
   margin-right: 8px;
 }
 
-/* links should stay links by default inside table */
-.pricing-table .col a.button,
-.pricing-table .col a.button:hover,
-.pricing-table .col a.button:active {
+/* links stay links by default in cells */
+.pricing-table .row:not(.row-heading) .col a.button,
+.pricing-table .row:not(.row-heading) .col a.button:hover,
+.pricing-table .row:not(.row-heading) .col a.button:active {
   text-decoration: underline;
   background-color: unset;
   color: unset;
