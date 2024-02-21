@@ -39,6 +39,18 @@ function track(name) {
   });
 }
 
+function buildProfileWrapper(profile) {
+  const profileWrapper = createTag('div', { class: 'profile-wrapper' });
+  const profilePhotoCont = createTag('div', { class: 'profile-img-container' });
+  const profilePhoto = createTag('img', { src: profile.avatar });
+  const profileTextWrapper = createTag('div', { class: 'profile-text-wrapper' });
+  const profileName = createTag('strong', { class: 'profile-name' }, profile.display_name);
+  const profileEmail = createTag('span', { class: 'profile-email' }, profile.email);
+  profilePhotoCont.append(profilePhoto);
+  profileWrapper.append(profilePhotoCont, profileTextWrapper);
+  profileTextWrapper.append(profileName, profileEmail);
+}
+
 export default async function loadLoginUserAutoRedirect() {
   let followThrough = true;
   const [placeholders] = await Promise.all([
@@ -48,30 +60,26 @@ export default async function loadLoginUserAutoRedirect() {
     }),
   ]);
 
-  const buildRedirectAlert = (profile) => {
+  const buildRedirectAlert = () => {
     const container = createTag('div', { class: 'pep-container' });
     const headerWrapper = createTag('div', { class: 'pep-header' });
     const headerIcon = createTag('div', { class: 'pep-header-icon' }, getIconElement('cc-express'));
     const headerText = createTag('span', { class: 'pep-header-text' }, placeholders['pep-header']);
     const progressBg = createTag('div', { class: 'pep-progress-bg' });
     const progressBar = createTag('div', { class: 'pep-progress-bar' });
-    const profileWrapper = createTag('div', { class: 'profile-wrapper' });
-    const profilePhotoCont = createTag('div', { class: 'profile-img-container' });
-    const profilePhoto = createTag('img', { src: profile.avatar });
-    const profileTextWrapper = createTag('div', { class: 'profile-text-wrapper' });
-    const profileName = createTag('strong', { class: 'profile-name' }, profile.display_name);
-    const profileEmail = createTag('span', { class: 'profile-email' }, profile.email);
     const noticeWrapper = createTag('div', { class: 'notice-wrapper' });
     const noticeText = createTag('span', { class: 'notice-text' }, placeholders['pep-cancel']);
     const noticeBtn = createTag('a', { class: 'notice-btn' }, placeholders.cancel);
 
     headerWrapper.append(headerIcon, headerText);
     progressBg.append(progressBar);
-    profilePhotoCont.append(profilePhoto);
-    profileWrapper.append(profilePhotoCont, profileTextWrapper);
-    profileTextWrapper.append(profileName, profileEmail);
     noticeWrapper.append(noticeText, noticeBtn);
-    container.append(headerWrapper, progressBg, profileWrapper, noticeWrapper);
+    container.append(headerWrapper, progressBg);
+    const profile = window.adobeProfile?.getUserProfile();
+    if (profile) {
+      container.append(buildProfileWrapper(profile));
+    }
+    container.append(noticeWrapper);
 
     const header = document.querySelector('header');
     header.append(container);
@@ -101,15 +109,13 @@ export default async function loadLoginUserAutoRedirect() {
     }
   };
 
-  const profile = window.adobeProfile.getUserProfile();
-
   const optOutCounter = localStorage.getItem(OPT_OUT_KEY);
 
   if (optOutCounter && optOutCounter !== '0') {
     const counterNumber = parseInt(optOutCounter, 10);
     localStorage.setItem(OPT_OUT_KEY, (counterNumber - 1).toString());
   } else {
-    const container = buildRedirectAlert(profile);
+    const container = buildRedirectAlert();
     setTimeout(() => {
       if (followThrough) initRedirect(container);
     }, 4000);
