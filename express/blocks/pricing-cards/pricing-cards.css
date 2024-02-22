@@ -293,7 +293,7 @@
   :root {
     --card-width: 362px;
   }
-  .pricing-cards .card .card-header h2 {
+  .pricing-cards .card-border .card-header h2 {
     margin-top: 0;
   }
 }
@@ -304,10 +304,12 @@
     --card-padding: 24px 16px;
   }
   .pricing-cards .cards-container:has(.card-border:only-child) {
-    grid-template-columns: repeat(auto-fit, calc(91px + var(--card-width)));
+    width : var(--card-width);
+    margin: auto;
   }
   .pricing-cards .cards-container:has(.card-border:first-child:nth-last-child(2)) {
-    grid-template-columns: repeat(auto-fit, calc(83px + var(--card-width)));
+    width : var(2 * --card-width);
+    margin : auto;
   }
  
   .pricing-cards .card-border .card-header {
