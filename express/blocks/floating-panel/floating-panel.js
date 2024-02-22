@@ -22,6 +22,7 @@ function initScrollWatcher(block) {
       block.classList.remove('hidden');
     } else {
       block.classList.add('hidden');
+      block.classList.remove('expanded');
     }
   }, {
     root: null,
