@@ -118,7 +118,7 @@ export default async function decorateBlock(block) {
       const innerCol = row.querySelector(':scope > div');
       if (innerCol) innerCol.classList.add('buttons-wrapper');
       block.replaceChild(innerCol, row);
-      const buttons = innerCol.querySelectorAll('a.button');
+      const buttons = innerCol.querySelectorAll('a');
       decorateButtons(buttons);
 
       bottomCont.append(innerCol);

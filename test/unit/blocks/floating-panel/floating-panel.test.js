@@ -64,4 +64,18 @@ describe('Floating Panel', () => {
     const timeline = block.querySelector('.timeline');
     expect(timeline.children.length).to.equal(3);
   });
+
+  it('there are ways to close the box', async () => {
+    const block = document.querySelector('.floating-panel');
+    await decorate(block);
+    const { x, y } = getMiddleOfElement(block);
+    await sendMouse({ type: 'move', position: [x, y] });
+    await sendMouse({ type: 'move', position: [x - 1000, y] });
+    expect(block.classList.contains('expanded')).to.be.false;
+
+    await sendMouse({ type: 'move', position: [x, y] });
+    const closeButton = block.querySelector('.close-panel-button');
+    closeButton.click();
+    expect(block.classList.contains('expanded')).to.be.false;
+  });
 });
