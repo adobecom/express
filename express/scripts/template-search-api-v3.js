@@ -1,3 +1,4 @@
+/* global _satellite */
 /* eslint-disable no-underscore-dangle */
 import { fetchPlaceholders, getConfig } from './utils.js';
 import { memoize } from './hofs.js';
@@ -154,7 +155,6 @@ export function removeOptionalImpressionFields(eventType) {
 }
 
 // trackSearch action logs a new search ID each time if an existing one isn't provided.
-// supported eventNames: search-inspire, view-search-result, select-template
 export function trackSearch(eventName, searchID = generateSearchId()) {
   updateImpressionCache({
     event_name: eventName,
@@ -162,20 +162,29 @@ export function trackSearch(eventName, searchID = generateSearchId()) {
   });
 
   const impression = BlockMediator.get('templateSearchSpecs');
-  console.log(impression);
-  // if (!window.marketingtech) return;
-  // _satellite.track('event', {
-  //   xdm: {},
-  //   data: {
-  //     _adobe_corpnew: {
-  //       digitalData: {
-  //         page: {
-  //           pageInfo: payload,
-  //         },
-  //       },
-  //     },
-  //   },
-  // });
+  if (!window.marketingtech) return;
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: eventName,
+          linkClicks: {
+            value: 1,
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        digitalData: {
+          page: {
+            pageInfo: impression,
+          },
+        },
+      },
+    },
+  });
   // todo: also send the search ID to a separate event. Ask Linh Nguyen.
 }
 
