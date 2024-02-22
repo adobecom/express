@@ -10,8 +10,6 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
-import BlockMediator from '../../scripts/block-mediator.min.js';
-
 export default async function decorate($block) {
   let submitButtonText;
   let submissionTitle;
@@ -96,7 +94,7 @@ export default async function decorate($block) {
     }
 
     // "production" mode: check for audience
-    const segments = BlockMediator.get('segments');
+    const segments = window.bmd8r.get('segments');
 
     if (actionSegments && segments) {
       const parsedActionSegments = actionSegments.replace(/ /g, '').split(',').map(Number);
@@ -107,7 +105,7 @@ export default async function decorate($block) {
   }
 
   function submitRating(rating, comment) {
-    const segments = BlockMediator.get('segments');
+    const segments = window.bmd8r.get('segments');
     const content = {
       data: [
         {

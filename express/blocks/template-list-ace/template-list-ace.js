@@ -5,7 +5,6 @@ import {
   getIconElement,
   toClassName,
 } from '../../scripts/utils.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 
 import { renderModalContent, fetchResults, renderResults } from './results-modal.js';
 
@@ -303,7 +302,7 @@ function setDropdownSelected(firstElem, dropdownText, selectedVal) {
     width: 15,
     height: 9,
   });
-  BlockMediator.get('ace-state').dropdown = selectedVal;
+  window.bmd8r.get('ace-state').dropdown = selectedVal;
   dropdownText.textContent = selectedVal;
   dropdownText.appendChild(downArrow);
   if (firstElem) {
@@ -385,7 +384,7 @@ function addHandlerForModalClose(block) {
       query,
       fetchingState,
       dropdown,
-    } = BlockMediator.get('ace-state');
+    } = window.bmd8r.get('ace-state');
     searchBar.value = query;
     fetchingState.results = null;
     fetchingState.progressManager = null;
@@ -404,7 +403,7 @@ async function openModal(block) {
   modal.style.width = '1240px';
   const modalContent = createTag('div', { class: 'modal-content' });
   modal.append(modalContent);
-  BlockMediator.get('ace-state').modalContent = modalContent;
+  window.bmd8r.get('ace-state').modalContent = modalContent;
   const mod = await import('../modal/modal.js');
   mod.getModal(null, {
     class: 'generated-results-modal', id: GENERATED_RESULTS_MODAL_ID, content: modal, closeEvent: `close:${GENERATED_RESULTS_MODAL_ID}`,
@@ -422,7 +421,7 @@ function createSearchBar(searchRows, titleRow, block) {
     placeholder: placeholders['template-list-ace-search-hint'],
     enterKeyHint: placeholders.search ?? 'Search',
   });
-  const aceState = BlockMediator.get('ace-state');
+  const aceState = window.bmd8r.get('ace-state');
   searchForm.append(searchBar);
   const button = searchRows[1];
   searchForm.append(button);
@@ -466,7 +465,7 @@ function createSearchBar(searchRows, titleRow, block) {
   return searchBar;
 }
 function initState() {
-  BlockMediator.set('ace-state', {
+  window.bmd8r.set('ace-state', {
     dropdownValue: placeholders['template-list-ace-categories-dropdown'].split(',')[0].trim(),
     query: null,
     placeholders,
@@ -513,7 +512,7 @@ export default async function decorate(block) {
   }
   const templatesRow = rows.shift();
   createTemplateLink = templatesRow.querySelector(':scope a')?.src ?? placeholders['template-list-ace-create-template-link'];
-  BlockMediator.get('ace-state').createTemplateLink = createTemplateLink;
+  window.bmd8r.get('ace-state').createTemplateLink = createTemplateLink;
   createTemplateImgSrc = templatesRow.querySelector(':scope img').src;
 
   searchRows.remove();

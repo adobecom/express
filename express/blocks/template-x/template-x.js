@@ -1308,8 +1308,8 @@ function cycleThroughSuggestions(block, targetIndex = 0) {
   if (suggestions.length > 0) suggestions[targetIndex].focus();
 }
 
-function importSearchBar(block, blockMediator) {
-  blockMediator.subscribe('stickySearchBar', (e) => {
+function importSearchBar(block) {
+  window.bmd8r.subscribe('stickySearchBar', (e) => {
     const parent = block.querySelector('.api-templates-toolbar .wrapper-content-search');
     if (parent) {
       const existingStickySearchBar = parent.querySelector('.search-bar-wrapper');
@@ -1623,9 +1623,7 @@ async function buildTemplateList(block, props, type = []) {
   }
 
   if (props.toolBar && props.searchBar) {
-    import('../../scripts/block-mediator.min.js').then(({ default: blockMediator }) => {
-      importSearchBar(block, blockMediator);
-    });
+    importSearchBar(block);
   }
 
   await decorateBreadcrumbs(block);

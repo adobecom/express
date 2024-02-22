@@ -9,8 +9,6 @@ import {
   loadStyle,
 } from '../../scripts/utils.js';
 
-import BlockMediator from '../../scripts/block-mediator.min.js';
-
 export const hideScrollArrow = (floatButtonWrapper, lottieScrollButton) => {
   floatButtonWrapper.classList.add('floating-button--scrolled');
   if (lottieScrollButton) {
@@ -206,7 +204,7 @@ export async function createFloatingButton(block, audience, data) {
     }
   }
 
-  const promoBar = BlockMediator.get('promobar');
+  const promoBar = window.bmd8r.get('promobar');
   const currentBottom = parseInt(floatButtonWrapper.style.bottom, 10);
   let promoBarHeight;
   if (promoBar) {
@@ -220,7 +218,7 @@ export async function createFloatingButton(block, audience, data) {
     floatButton.style.removeProperty('bottom');
   }
 
-  BlockMediator.subscribe('promobar', (e) => {
+  window.bmd8r.subscribe('promobar', (e) => {
     if (!e.newValue.rendered && floatButtonWrapper.dataset.audience !== 'desktop') {
       floatButton.style.bottom = currentBottom ? `${currentBottom - promoBarHeight}px` : '';
     } else {

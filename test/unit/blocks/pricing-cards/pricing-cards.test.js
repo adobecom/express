@@ -1,5 +1,6 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
+import '../../../../express/scripts/libs/block-mediator/block-mediator.js';
 
 const { default: decorate } = await import('../../../../express/blocks/pricing-cards/pricing-cards.js');
 document.body.innerHTML = await readFile({ path: './mocks/body.html' });

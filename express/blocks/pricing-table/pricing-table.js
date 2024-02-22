@@ -1,7 +1,6 @@
 import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
 import { debounce } from '../../scripts/hofs.js';
 import { decorateButtons } from '../../scripts/utils/decorate.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
@@ -68,8 +67,8 @@ function handleHeading(headingRow, headingCols) {
           }
         });
       };
-      reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
-      BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
+      reactToPlanChange({ newValue: window.bmd8r.get(BILLING_PLAN) ?? 0 });
+      window.bmd8r.subscribe(BILLING_PLAN, reactToPlanChange);
     }
 
     const div = document.createElement('div');

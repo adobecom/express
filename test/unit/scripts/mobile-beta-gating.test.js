@@ -5,7 +5,9 @@ import checkMobileBetaEligibility, {
   fetchAndroidAllowDenyLists,
   preBenchmarkCheck,
 } from '../../../express/scripts/mobile-beta-gating.js';
-import BlockMediator from '../../../express/scripts/block-mediator.min.js';
+import '../../../express/scripts/libs/block-mediator/block-mediator.js';
+
+const { bmd8r } = window;
 
 describe('Mobile Beta Gating', () => {
   Object.defineProperty(navigator, 'userAgent', {
@@ -69,14 +71,14 @@ describe('Mobile Beta Gating', () => {
 
   it('resorts to subsequent tests if cookie does not exist', async () => {
     await checkMobileBetaEligibility();
-    expect(BlockMediator.hasStore('mobileBetaEligibility')).to.be.true;
+    expect(bmd8r.hasStore('mobileBetaEligibility')).to.be.true;
   });
 
   it('sets correct value according to cookies', async () => {
     document.cookie = 'device-support=true;path=/';
     await checkMobileBetaEligibility();
 
-    const blockMediatorVal = BlockMediator.get('mobileBetaEligibility');
+    const blockMediatorVal = bmd8r.get('mobileBetaEligibility');
     expect(blockMediatorVal.deviceSupport).to.be.true;
     expect(blockMediatorVal.data.reason).to.equal('cookie');
   });

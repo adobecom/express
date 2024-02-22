@@ -7,6 +7,7 @@ import {
 } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 import { setConfig } from '../../../../express/scripts/utils.js';
+import '../../../../express/scripts/libs/block-mediator/block-mediator.js';
 
 window.isTestEnv = true;
 const {

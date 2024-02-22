@@ -1,8 +1,7 @@
 import { getMetadata } from './utils.js';
-import BlockMediator from './block-mediator.min.js';
 
 function getRedirectUri() {
-  const primaryCtaUrl = BlockMediator.get('primaryCtaUrl')
+  const primaryCtaUrl = window.bmd8r.get('primaryCtaUrl')
     || document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA')?.href;
   if (primaryCtaUrl) {
     return primaryCtaUrl;

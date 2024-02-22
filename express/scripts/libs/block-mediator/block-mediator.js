@@ -1,32 +1,33 @@
-const BlockMediator = (() => {
-  const stores = {}; // { [name]: { callbacks: [cb], value: any } }
+// context + cross-block interactions
+window.bmd8r = (() => {
+  const stores = {}; // { [name]: { cbs: [cb], value: any } }
 
   const initStore = (name) => {
-    stores[name] = { callbacks: [], value: undefined };
+    stores[name] = { cbs: [] };
   };
 
   const hasStore = (name) => name in stores;
 
   const listStores = () => Object.keys(stores);
 
-  const get = (name) => stores[name]?.value;
+  const get = (name) => stores[name]?.v;
 
   /**
    * @param {string} name
-   * @param {any} value
+   * @param {any} v
    * @returns {Promise<{ succeed: boolean, errors: Error[] }>}
    */
-  const set = (name, value) => {
+  const set = (name, v) => {
     if (!hasStore(name)) {
       initStore(name);
     }
     const oldValue = get(name);
-    stores[name].value = value;
+    stores[name].v = v;
     return new Promise((resolve) => {
       const errors = [];
-      for (const cb of stores[name].callbacks) {
+      for (const cb of stores[name].cbs) {
         try {
-          cb({ oldValue, newValue: value });
+          cb({ oldValue, newValue: v });
         } catch (e) {
           errors.push(e);
         }
@@ -56,10 +57,10 @@ const BlockMediator = (() => {
       initStore(name);
     }
     const store = stores[name];
-    if (store.callbacks.includes(cb)) return () => {};
-    store.callbacks.push(cb);
+    if (store.cbs.includes(cb)) return () => {};
+    store.cbs.push(cb);
     const unsubscribe = () => {
-      store.callbacks = store.callbacks.filter((f) => f !== cb);
+      store.cbs = store.cbs.filter((f) => f !== cb);
     };
     return unsubscribe;
   };
@@ -72,5 +73,3 @@ const BlockMediator = (() => {
     subscribe,
   };
 })();
-
-export default BlockMediator;

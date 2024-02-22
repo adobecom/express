@@ -796,12 +796,8 @@ const martechLoadedCB = () => {
     });
 
     // track non-click interactions
-    // BlockMediator triggered
-    import('./block-mediator.min.js').then((resp) => {
-      const { default: BlockMediator } = resp;
-      BlockMediator.subscribe('billing-plan', ({ newValue }) => {
-        sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:toggle:${newValue}`);
-      });
+    window.bmd8r.subscribe('billing-plan', ({ newValue }) => {
+      sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:toggle:${newValue}`);
     });
   }
 
@@ -878,15 +874,15 @@ const martechLoadedCB = () => {
 
   async function getAudiences() {
     const getSegments = async (ecid) => {
-      const { default: BlockMediator } = await import('./block-mediator.min.js');
+      const { bmd8r } = window;
 
-      BlockMediator.set('audiences', []);
-      BlockMediator.set('segments', []);
+      bmd8r.set('audiences', []);
+      bmd8r.set('segments', []);
       if (!ecid) return;
       w.setAudienceManagerSegments = (json) => {
         if (json && json.segments && json.segments.includes(RETURNING_VISITOR_SEGMENT_ID)) {
-          const audiences = BlockMediator.get('audiences');
-          const segments = BlockMediator.get('segments');
+          const audiences = bmd8r.get('audiences');
+          const segments = bmd8r.get('segments');
           audiences.push(ENABLE_PRICING_MODAL_AUDIENCE);
           segments.push(RETURNING_VISITOR_SEGMENT_ID);
 
@@ -895,8 +891,8 @@ const martechLoadedCB = () => {
 
         QUICK_ACTION_SEGMENTS.forEach((QUICK_ACTION_SEGMENT) => {
           if (json && json.segments && json.segments.includes(QUICK_ACTION_SEGMENT[0])) {
-            const audiences = BlockMediator.get('audiences');
-            const segments = BlockMediator.get('segments');
+            const audiences = bmd8r.get('audiences');
+            const segments = bmd8r.get('segments');
             audiences.push(QUICK_ACTION_SEGMENT[1]);
             segments.push(QUICK_ACTION_SEGMENT[0]);
           }

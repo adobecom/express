@@ -1,5 +1,4 @@
 import { createTag } from '../../scripts/utils.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function initScrollInteraction(block) {
   const inBodyBanner = block.cloneNode(true);
@@ -32,14 +31,14 @@ export default function decorate(block) {
   });
   block.appendChild(close);
 
-  BlockMediator.set('promobar', {
+  window.bmd8r.set('promobar', {
     block,
     rendered: true,
   });
 
   close.addEventListener('click', () => {
     block.remove();
-    BlockMediator.set('promobar', {
+    window.bmd8r.set('promobar', {
       block,
       rendered: false,
     });

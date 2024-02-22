@@ -16,7 +16,6 @@ import {
   hideVideoModal,
   isVideoLink,
 } from '../shared/video.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function transformToVideoColumn(cell, aTag, block) {
   const parent = cell.parentElement;
@@ -205,7 +204,7 @@ export default async function decorate(block) {
       if (aTag && aTag.classList.contains('button')) {
         if (block.className.includes('fullsize')) {
           aTag.classList.add('xlarge');
-          BlockMediator.set('primaryCtaUrl', aTag.href);
+          window.bmd8r.set('primaryCtaUrl', aTag.href);
           aTag.classList.add('primaryCTA');
         } else if (aTag.classList.contains('light')) {
           aTag.classList.replace('accent', 'primary');

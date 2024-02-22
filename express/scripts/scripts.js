@@ -121,6 +121,9 @@ const listenAlloy = () => {
   }, 5000);
 };
 
+// eslint-disable-next-line
+window.bmd8r=(()=>{const r={};const i=s=>{r[s]={cbs:[]}};const b=s=>s in r;const s=()=>Object.keys(r);const t=s=>r[s]?.v;const c=(n,o)=>{if(!b(n)){i(n)}const e=t(n);r[n].v=o;return new Promise(s=>{const t=[];for(const c of r[n].cbs){try{c({oldValue:e,newValue:o})}catch(s){t.push(s)}}s(t)})};const n=(s,t)=>{if(!b(s)){i(s)}const c=r[s];if(c.cbs.includes(t))return()=>{};c.cbs.push(t);const n=()=>{c.cbs=c.cbs.filter(s=>s!==t)};return n};return{hasStore:b,listStores:s,get:t,set:c,subscribe:n}})();
+
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);

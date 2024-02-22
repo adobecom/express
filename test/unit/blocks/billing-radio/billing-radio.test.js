@@ -1,6 +1,6 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
-import BlockMediator from '../../../../express/scripts/block-mediator.min.js';
+import '../../../../express/scripts/libs/block-mediator/block-mediator.js';
 
 const { default: decorate } = await import(
   '../../../../express/blocks/billing-radio/billing-radio.js'
@@ -47,8 +47,8 @@ describe('Billing Radio', () => {
     });
   });
   it('Billing Radio initializes BlockMediator billing-plan store', () => {
-    expect(BlockMediator.hasStore('billing-plan')).to.be.true;
-    expect(BlockMediator.get('billing-plan')).to.equal(0);
+    expect(window.bmd8r.hasStore('billing-plan')).to.be.true;
+    expect(window.bmd8r.get('billing-plan')).to.equal(0);
   });
   it('Billing Radio changes after clicking', () => {
     blocks[0].querySelectorAll('input')[1].click();
@@ -57,7 +57,7 @@ describe('Billing Radio', () => {
         expect(input.checked).to.equal(index === 1);
       });
     });
-    expect(BlockMediator.get('billing-plan')).to.equal(1);
+    expect(window.bmd8r.get('billing-plan')).to.equal(1);
 
     blocks[2].querySelectorAll('input')[2].click();
     blocks.forEach((block) => {
@@ -65,11 +65,11 @@ describe('Billing Radio', () => {
         expect(input.checked).to.equal(index === 2);
       });
     });
-    expect(BlockMediator.get('billing-plan')).to.equal(2);
+    expect(window.bmd8r.get('billing-plan')).to.equal(2);
   });
   it('Billing Radio propagate changes via BlockMediator', async () => {
     let triggered = 0;
-    const unsub = BlockMediator.subscribe('billing-plan', () => {
+    const unsub = window.bmd8r.subscribe('billing-plan', () => {
       triggered += 1;
     });
     expect(triggered).to.equal(0);

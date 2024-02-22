@@ -6,7 +6,6 @@ import {
   fetchPlaceholders,
   getConfig,
 } from '../../scripts/utils.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const breakpointConfig = [
   {
@@ -341,7 +340,7 @@ export default async function decorate(block) {
       const buttonAsLink = contentButtons[2];
       buttonAsLink?.classList.remove('button');
       primaryBtn?.classList.add('primaryCTA');
-      BlockMediator.set('primaryCtaUrl', primaryBtn?.href);
+      window.bmd8r.set('primaryCtaUrl', primaryBtn?.href);
       secondaryButton?.classList.add('secondary');
       const buttonContainers = [...div.querySelectorAll('p.button-container')];
       const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });

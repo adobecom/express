@@ -1970,7 +1970,7 @@ async function buildAutoBlocks($main) {
     if (block) await loadBlock(block);
   }
 
-  async function loadFloatingCTA(BlockMediator, decorated) {
+  async function loadFloatingCTA(decorated) {
     const floatingCTAData = await fetchFloatingCta(window.location.pathname);
     const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
     const device = document.body.dataset?.device;
@@ -1986,7 +1986,7 @@ async function buildAutoBlocks($main) {
         await decorateBlock(button);
         await loadBlock(button);
       }
-      BlockMediator.set('floatingCtasLoaded', true);
+      window.bmd8r.set('floatingCtasLoaded', true);
     }
   }
 
@@ -1995,20 +1995,20 @@ async function buildAutoBlocks($main) {
     await loadPromoFrag();
   } else if (document.body.dataset.device === 'mobile' && ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')
     .toLowerCase())) {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
+    const { bmd8r } = window;
 
-    if (!BlockMediator.get('floatingCtasLoaded')) {
-      const eligibilityChecked = BlockMediator.get('mobileBetaEligibility');
+    if (!bmd8r.get('floatingCtasLoaded')) {
+      const eligibilityChecked = bmd8r.get('mobileBetaEligibility');
       if (eligibilityChecked) {
         if (eligibilityChecked.deviceSupport) {
-          await loadFloatingCTA(BlockMediator, true);
+          await loadFloatingCTA(true);
         } else {
           await loadPromoFrag();
         }
       } else {
-        const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
+        const unsubscribe = bmd8r.subscribe('mobileBetaEligibility', async (e) => {
           if (e.newValue.deviceSupport) {
-            await loadFloatingCTA(BlockMediator, false);
+            await loadFloatingCTA(false);
           } else {
             await loadPromoFrag();
           }
@@ -2017,10 +2017,10 @@ async function buildAutoBlocks($main) {
       }
     }
   } else if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase())) {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
+    const { bmd8r } = window;
 
-    if (!BlockMediator.get('floatingCtasLoaded')) {
-      await loadFloatingCTA(BlockMediator, true);
+    if (!bmd8r.get('floatingCtasLoaded')) {
+      await loadFloatingCTA(bmd8r, true);
     }
   }
 

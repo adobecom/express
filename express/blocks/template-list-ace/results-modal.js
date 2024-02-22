@@ -8,7 +8,6 @@ import {
 } from './ace-api.js';
 import useProgressManager from './progress-manager.js';
 import { openFeedbackModal } from './feedback-modal.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 import { createDropdown } from './template-list-ace.js';
 
 const NUM_RESULTS = 4;
@@ -152,7 +151,7 @@ function createTemplate(result) {
 }
 
 async function waitForGeneration(jobId) {
-  const { fetchingState } = BlockMediator.get('ace-state');
+  const { fetchingState } = window.bmd8r.get('ace-state');
   const { progressManager } = fetchingState;
 
   clearInterval(fetchingState.intervalId);
@@ -193,7 +192,7 @@ async function waitForGeneration(jobId) {
 }
 
 export function renderLoader(modalContent) {
-  if (modalContent !== BlockMediator.get('ace-state').modalContent) {
+  if (modalContent !== window.bmd8r.get('ace-state').modalContent) {
     return;
   }
   const loaderWrapper = createTag('div', {
@@ -226,7 +225,7 @@ export function renderLoader(modalContent) {
 }
 
 function updateSearchableAndDropdown(modalContent, searchable) {
-  if (modalContent !== BlockMediator.get('ace-state').modalContent) {
+  if (modalContent !== window.bmd8r.get('ace-state').modalContent) {
     return;
   }
   const dropdown = modalContent.querySelector(':scope .picker-open');
@@ -276,7 +275,7 @@ export async function fetchResults(modalContent) {
     dropdownValue,
     fetchingState,
     placeholders,
-  } = BlockMediator.get('ace-state');
+  } = window.bmd8r.get('ace-state');
   const { searchPositionMap } = fetchingState;
   if (!fetchingState.progressManager) {
     const updateProgressBar = (percentage) => {
@@ -340,7 +339,7 @@ export async function fetchResults(modalContent) {
       }
       jobId = generatedJobId;
     }, 2500);
-    if (modalContent !== BlockMediator.get('ace-state').modalContent) {
+    if (modalContent !== window.bmd8r.get('ace-state').modalContent) {
       return;
     }
     // first 6-12% as the time for triggering generation
@@ -363,7 +362,7 @@ export async function fetchResults(modalContent) {
 }
 
 export function renderResults(modalContent) {
-  const { fetchingState: { results }, modalContent: currModal } = BlockMediator.get('ace-state');
+  const { fetchingState: { results }, modalContent: currModal } = window.bmd8r.get('ace-state');
   if (modalContent !== currModal) {
     return;
   }
@@ -396,7 +395,7 @@ export function renderResults(modalContent) {
 }
 
 function createModalSearch(modalContent) {
-  const aceState = BlockMediator.get('ace-state');
+  const aceState = window.bmd8r.get('ace-state');
   const { placeholders, query } = aceState;
   const searchForm = createTag('form', { class: 'search-form' });
   const searchBar = createTag('input', {
@@ -445,12 +444,12 @@ function createModalSearch(modalContent) {
   return searchForm;
 }
 function createTitleRow(block) {
-  const { placeholders, createTemplateLink } = BlockMediator.get('ace-state');
+  const { placeholders, createTemplateLink } = window.bmd8r.get('ace-state');
   const titleRow = createTag('div', { class: 'modal-title-row' });
   const title = createTag('h1');
   titleRow.appendChild(title);
   title.textContent = placeholders['template-list-ace-modal-title'];
-  createDropdown(titleRow, block, BlockMediator.get('ace-state').dropdown);
+  createDropdown(titleRow, block, window.bmd8r.get('ace-state').dropdown);
   const scratchWrapper = createTag('div', { class: 'scratch-wrapper' });
   const noGuidanceSpan = createTag('span', { class: 'no-guidance' });
   noGuidanceSpan.textContent = placeholders['template-list-ace-no-guidance'] ?? 'Don\'t need guidance?';
@@ -475,7 +474,7 @@ function createSubmittedTooltip() {
   submittedTooltip.append(checkmarkIcon);
   submittedTooltip.append(text);
   tooltipWrapper.append(submittedTooltip);
-  const { feedbackState } = BlockMediator.get('ace-state');
+  const { feedbackState } = window.bmd8r.get('ace-state');
   let tooltipTimeoutId = null;
   feedbackState.showSubmittedTooltip = () => {
     tooltipWrapper.classList.add('show');

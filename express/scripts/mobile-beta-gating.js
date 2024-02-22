@@ -1,4 +1,3 @@
-import BlockMediator from './block-mediator.min.js';
 import { getMobileOperatingSystem } from './utils.js';
 
 const MAX_EXEC_TIME_ALLOWED = 500;
@@ -69,8 +68,9 @@ export async function preBenchmarkCheck() {
 
 export default async function checkMobileBetaEligibility() {
   const [eligible, reason] = await preBenchmarkCheck();
+  const { bmd8r } = window;
   if (reason === 'needs benchmark') {
-    const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
+    const unsubscribe = bmd8r.subscribe('mobileBetaEligibility', async (e) => {
       const expireDate = new Date();
       const month = (expireDate.getMonth() + 1) % 12;
       expireDate.setMonth(month);
@@ -81,14 +81,14 @@ export default async function checkMobileBetaEligibility() {
     const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
     benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
     benchmarkWorker.onmessage = (e) => {
-      BlockMediator.set('mobileBetaEligibility', {
+      bmd8r.set('mobileBetaEligibility', {
         deviceSupport: e.data <= MAX_EXEC_TIME_ALLOWED,
         data: 'Android cpuSpeedPass',
       });
       benchmarkWorker.terminate();
     };
   } else {
-    BlockMediator.set('mobileBetaEligibility', {
+    bmd8r.set('mobileBetaEligibility', {
       deviceSupport: eligible,
       data: {
         reason,

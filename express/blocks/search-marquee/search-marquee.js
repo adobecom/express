@@ -9,7 +9,6 @@ import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function handlelize(str) {
   return str.normalize('NFD')
@@ -46,17 +45,10 @@ function initSearchFunction(block) {
   clearBtn.style.display = 'none';
 
   const searchBarWatcher = new IntersectionObserver((entries) => {
-    if (!entries[0].isIntersecting) {
-      BlockMediator.set('stickySearchBar', {
-        element: searchBarWrapper.cloneNode(true),
-        loadSearchBar: true,
-      });
-    } else {
-      BlockMediator.set('stickySearchBar', {
-        element: searchBarWrapper.cloneNode(true),
-        loadSearchBar: false,
-      });
-    }
+    window.bmd8r.set('stickySearchBar', {
+      element: searchBarWrapper.cloneNode(true),
+      loadSearchBar: !entries[0].isIntersecting,
+    });
   }, { rootMargin: '0px', threshold: 1 });
 
   searchBarWatcher.observe(searchBarWrapper);

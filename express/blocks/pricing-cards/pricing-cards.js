@@ -3,7 +3,6 @@ import {
   buildUrl, formatSalesPhoneNumber, setVisitorCountry,
   shallSuppressOfferEyebrowText, fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const blockKeys = ['header', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
@@ -181,8 +180,8 @@ function decorateCard({
       }
     });
   }
-  reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
-  BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
+  reactToPlanChange({ newValue: window.bmd8r.get(BILLING_PLAN) ?? 0 });
+  window.bmd8r.subscribe(BILLING_PLAN, reactToPlanChange);
 
   card.append(mPricingSection, yPricingSection);
 

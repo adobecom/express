@@ -1,6 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function changeTextColorAccordingToBg(
   primaryColor,
@@ -107,7 +106,7 @@ function decorateCTA(block) {
   if (!primaryCta) return;
 
   primaryCta.classList.add('primaryCta');
-  BlockMediator.set('primaryCtaUrl', primaryCta.href);
+  window.bmd8r.set('primaryCtaUrl', primaryCta.href);
 }
 
 export default function decorate(block) {

@@ -5,8 +5,6 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
-import BlockMediator from '../../scripts/block-mediator.min.js';
-
 const ENABLE_PRICING_MODAL_AUDIENCE = 'enablePricingModal';
 
 function enablePricingModal() {
@@ -19,7 +17,7 @@ function enablePricingModal() {
   }
 
   // "production" mode: check for audience
-  const audiences = BlockMediator.get('audiences');
+  const audiences = window.bmd8r.get('audiences');
   return audiences && audiences.includes(ENABLE_PRICING_MODAL_AUDIENCE);
 }
 
