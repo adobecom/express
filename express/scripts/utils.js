@@ -959,19 +959,18 @@ async function decorateSections(el, isDoc) {
     section.dataset.status = 'decorated';
     section.dataset.idx = idx;
 
-    let defaultContent = false;
-    let wrapper;
+    let defaultContentWrapper;
     [...section.children].forEach((child) => {
-      if (child.tagName === 'DIV' || !defaultContent) {
-        defaultContent = child.tagName !== 'DIV';
-        if (defaultContent) {
-          wrapper = document.createElement('div');
-          wrapper.classList.add('default-content-wrapper');
-          section.insertBefore(wrapper, child);
+      const isDivTag = child.tagName === 'DIV';
+      if (isDivTag) {
+        defaultContentWrapper = undefined;
+      } else {
+        if (!defaultContentWrapper) {
+          defaultContentWrapper = document.createElement('div');
+          defaultContentWrapper.classList.add('default-content-wrapper');
+          section.insertBefore(defaultContentWrapper, child);
         }
-      }
-      if (wrapper !== undefined) {
-        wrapper.append(child);
+        defaultContentWrapper.append(child);
       }
     });
     blocks.forEach(async (block) => {
