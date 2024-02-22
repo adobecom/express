@@ -968,8 +968,10 @@ async function decorateSections(el, isDoc) {
           wrapper = document.createElement('div');
           wrapper.classList.add('default-content-wrapper');
           section.insertBefore(wrapper, child);
-          wrapper.append(child);
         }
+      }
+      if (wrapper !== undefined) {
+        wrapper.append(child);
       }
     });
     blocks.forEach(async (block) => {
