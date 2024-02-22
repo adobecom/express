@@ -76,7 +76,9 @@ function buildColorHowToCarousel(block, payload) {
   carousel.prepend(numbers);
   const tips = createTag('div', { class: 'tips' });
   carousel.append(tips);
-  carouselDivs.append(payload.icon, payload.heading, carousel, payload.cta);
+  if (payload.icon) carouselDivs.append(payload.icon);
+  carouselDivs.append(payload.heading, carousel);
+  if (payload.cta) carouselDivs.append(payload.icon);
 
   if (includeSchema) {
     buildSchema(rows, payload);
@@ -210,6 +212,27 @@ export default async function decorate(block) {
       imgWrapper.prepend(colorTextOverlay);
       block.prepend(imgWrapper);
       colorDataDiv.remove();
+    }
+
+    if (colorDataRows.length === 4) {
+      [payload.heading] = colorDataRows;
+      payload.colorName = colorDataRows[1].textContent.trim();
+      [payload.primaryHex, payload.secondaryHex] = colorDataRows[2].textContent.split(',');
+      payload.colorGraphName = colorDataRows[3].textContent.trim();
+      const imgWrapper = createTag('div', { class: 'img-wrapper' });
+      imgWrapper.innerHTML = getColorSVG(payload.colorGraphName);
+
+      const colorTextOverlay = createTag('div', { class: 'color-graph-text-overlay' });
+      const colorName = createTag('p', { class: 'color-name' });
+      const colorHex = createTag('p', { class: 'color-hex' });
+      colorName.textContent = payload.colorName;
+      colorHex.textContent = payload.primaryHex;
+
+      colorTextOverlay.append(colorName, colorHex);
+      imgWrapper.prepend(colorTextOverlay);
+      block.prepend(imgWrapper);
+      colorDataDiv.remove();
+      block.classList.add('top-align');
     }
 
     rows.forEach((step) => {
