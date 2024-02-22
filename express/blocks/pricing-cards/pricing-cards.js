@@ -155,7 +155,7 @@ function decorateHeader(header, borderParams, card) {
   if (extractHeadCountExp.test(h2.innerText)) {
     const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
     const headCount = h2.innerText.match(extractHeadCountExp)[0].replace(')', '').replace('(', '');
-    [h2.innerText]  = h2.innerText.split(extractHeadCountExp)
+    [h2.innerText] = h2.innerText.split(extractHeadCountExp);
     headCntDiv.textContent = headCount;
     headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
     header.append(headCntDiv);
