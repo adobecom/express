@@ -1,6 +1,6 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
-import { setConfig, getConfig } from '../../../../express/scripts/utils.js';
+import { setConfig } from '../../../../express/scripts/utils.js';
 
 const locales = { '': { ietf: 'en-US', tk: 'hah7vzn.css' } };
 const conf = { locales };
@@ -36,7 +36,7 @@ describe('Pricing Cards', () => {
       expect(cardContainer).to.exist;
       const cards = cardContainer.querySelectorAll('div.card-border');
 
-      cards.forEach((card, index) => {
+      cards.forEach((card) => {
         expect(card.querySelector('.card-header')).to.exist;
         expect(card.querySelector('.card-explain')).to.exist;
         expect(card.querySelector('.pricing-area')).to.exist;
