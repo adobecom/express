@@ -106,6 +106,7 @@ indices:
     exclude:
       - '/express/learn/blog'
       - '/express/learn/blog/**'
+      - '/express/fragments/**'
     target: /express/query-index.xlsx
     properties:
       title:
