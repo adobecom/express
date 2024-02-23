@@ -1,5 +1,5 @@
 import BlockMediator from './block-mediator.min.js';
-import { getMobileOperatingSystem } from './utils.js';
+import { getMobileOperatingSystem, loadArea } from './utils.js';
 
 const MAX_EXEC_TIME_ALLOWED = 500;
 const TOTAL_PRIME_NUMBER = 10000;
@@ -80,7 +80,7 @@ export default async function checkMobileBetaEligibility() {
     });
     const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
     benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
-    benchmarkWorker.onmessage = (e) => {
+    benchmarkWorker.onmessage = async (e) => {
       const isEligible = e.data <= MAX_EXEC_TIME_ALLOWED;
       BlockMediator.set('mobileBetaEligibility', {
         deviceSupport: isEligible,
@@ -90,6 +90,7 @@ export default async function checkMobileBetaEligibility() {
       if (isEligible) {
         document.body.classList.add('beta-ineligible-mobile-device');
       }
+      await loadArea();
       benchmarkWorker.terminate();
     };
   } else {
@@ -102,5 +103,6 @@ export default async function checkMobileBetaEligibility() {
         reason,
       },
     });
+    await loadArea();
   }
 }
