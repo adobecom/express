@@ -3,6 +3,7 @@ import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function initScrollInteraction(block) {
   const inBodyBanner = block.cloneNode(true);
+  inBodyBanner.dataset.blockStatus = 'loaded';
   inBodyBanner.classList.add('clone');
   block.classList.add('inbody');
   block.insertAdjacentElement('afterend', inBodyBanner);
