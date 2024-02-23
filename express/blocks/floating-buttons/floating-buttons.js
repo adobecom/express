@@ -34,6 +34,7 @@ export default async function decorate(block) {
     if (['EM', 'STRONG'].includes(parentEl.tagName)) {
       if (parentEl.tagName === 'EM') {
         btn.classList.add('primary', 'reverse');
+        btn.classList.remove('accent');
       }
 
       if (parentEl.tagName === 'STRONG') {
@@ -43,6 +44,10 @@ export default async function decorate(block) {
       parentEl.parentElement.replaceChild(btn, parentEl);
     } else {
       btn.classList.add('accent', 'cta');
+    }
+
+    if (btn.parentElement.classList.contains('button-container') || btn.parentElement.tagName === 'P') {
+      btn.parentElement.parentElement.replaceChild(btn, btn.parentElement);
     }
 
     btn.classList.add('button', 'xlarge');
