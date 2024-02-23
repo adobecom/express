@@ -2,6 +2,7 @@ import { createTag } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function initScrollInteraction(block) {
+  const inBodyBanner = block.nextElementSibling;
   const intersectionCallback = (entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting && inBodyBanner.getBoundingClientRect().top < 0) {
@@ -45,7 +46,7 @@ export default function decorate(block) {
     inBodyBanner.dataset.blockStatus = 'loaded';
     inBodyBanner.classList.add('clone');
     block.classList.add('inbody');
-    block.insertAdjacentElement('afterend', inBodyBanner);
+    block.after(inBodyBanner);
     setTimeout(() => {
       initScrollInteraction(block);
     });
