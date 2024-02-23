@@ -105,12 +105,12 @@ const showNotifications = () => {
   } else if (getMetadata('breadcrumbs') === 'on' && !!getMetadata('breadcrumbs-base') && (!!getMetadata('short-title') || !!getMetadata('breadcrumbs-page-title'))) document.body.classList.add('breadcrumbs-spacing');
   showNotifications();
   loadLana({ clientId: 'express' });
-  await loadArea();
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
     import('./mobile-beta-gating.js').then((gatingScript) => {
       gatingScript.default();
     });
   }
+  await loadArea();
   import('./express-delayed.js').then((mod) => {
     mod.default();
   });
