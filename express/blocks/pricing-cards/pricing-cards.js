@@ -125,12 +125,12 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo)
 function extractCurlyBracketsContent(inputString, card) {
   if (!inputString) {
     return;
-  } 
+  }
   // Pattern to find text directly before the first {{...}} and all instances of {{...}}
   const pattern = /(.*?)\{\{(.+?)\}\}/g;
-  const match = pattern.exec(inputString);  
+  const match = pattern.exec(inputString);
   if (match) {
-    const promoType = match[2].trim(); 
+    const promoType = match[2].trim();
     const specialPromo = createTag('div');
     specialPromo.textContent = match[1].trim();
     card.classList.add(promoType);
