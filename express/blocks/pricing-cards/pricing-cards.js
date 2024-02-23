@@ -184,9 +184,6 @@ function decorateCard({
     explain.classList.add('card-explain');
     card.append(explain);
   }
-
-  console.log(mPricingRow, mCtaGroup);
-
   const mPricingSection = createPricingSection(placeholders, mPricingRow, mCtaGroup, specialPromo);
   mPricingSection.classList.add('monthly');
   const yPricingSection = createPricingSection(placeholders, yPricingRow, yCtaGroup, null);
