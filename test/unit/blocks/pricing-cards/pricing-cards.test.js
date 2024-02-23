@@ -32,7 +32,6 @@ describe('Pricing Cards', () => {
       expect(cardContainer).to.exist;
       const cards = cardContainer.querySelectorAll('div.card-border.card');
       cards.forEach((card) => {
-        
         expect(card.querySelector('div.card-header')).to.exist;
         expect(card.querySelector('div.card-explain')).to.exist;
         expect(card.querySelector('div.pricing-area')).to.exist;
