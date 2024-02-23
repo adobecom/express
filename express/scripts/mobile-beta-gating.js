@@ -81,13 +81,21 @@ export default async function checkMobileBetaEligibility() {
     const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
     benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
     benchmarkWorker.onmessage = (e) => {
+      const isEligible = e.data <= MAX_EXEC_TIME_ALLOWED;
       BlockMediator.set('mobileBetaEligibility', {
-        deviceSupport: e.data <= MAX_EXEC_TIME_ALLOWED,
+        deviceSupport: isEligible,
         data: 'Android cpuSpeedPass',
       });
+
+      if (isEligible) {
+        document.body.classList.add('beta-ineligible-mobile-device');
+      }
       benchmarkWorker.terminate();
     };
   } else {
+    if (eligible) {
+      document.body.classList.add('beta-ineligible-mobile-device');
+    }
     BlockMediator.set('mobileBetaEligibility', {
       deviceSupport: eligible,
       data: {

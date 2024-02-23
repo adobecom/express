@@ -1216,3 +1216,12 @@ main .block .app-store-aTag .app-store-wrapper {
 #feds-topnav .feds-login {
   border: none
 }
+
+main .section#beta-ineligible-mobile-device {
+  padding-top: 0;
+  display: none;
+}
+
+body.beta-ineligible-mobile-device .section#beta-ineligible-mobile-device {
+  display: block;
+}

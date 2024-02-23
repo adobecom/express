@@ -2001,7 +2001,8 @@ async function buildAutoBlocks($main) {
   }
 
   async function loadPromoFrag() {
-    const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
+    if (document.querySelector('sticky-promo-bar')) return;
+    const fragment = await fetchPlainBlockFromFragment(`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`, 'sticky-promo-bar');
     if (!fragment) return;
     $main.append(fragment);
     const block = fragment?.querySelector('.sticky-promo-bar.block');
