@@ -87,13 +87,13 @@ export default async function checkMobileBetaEligibility() {
         data: 'Android cpuSpeedPass',
       });
 
-      if (!isEligible) {
+      if (isEligible) {
         document.body.classList.add('beta-ineligible-mobile-device');
       }
       benchmarkWorker.terminate();
     };
   } else {
-    if (!eligible) {
+    if (eligible) {
       document.body.classList.add('beta-ineligible-mobile-device');
     }
     BlockMediator.set('mobileBetaEligibility', {
