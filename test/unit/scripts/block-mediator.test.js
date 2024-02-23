@@ -2,9 +2,8 @@
 /* eslint-env mocha */
 
 import { expect } from '@esm-bundle/chai';
-import '../../../express/scripts/libs/block-mediator/block-mediator.js';
 
-const { bmd8r: mediator } = window;
+let mediator;
 
 // that class is not really testable, being singleton and having private methods
 
@@ -20,7 +19,7 @@ const [getCnt, getNextStoreName] = (function storeNameIIFE() {
   ];
 }());
 
-describe('BlockMediator', () => {
+const testBlockMediator = () => {
   describe('hasStore', () => {
     it('hasStore should return false for non-existing stores', () => {
       expect(mediator.hasStore('non-existing-store')).to.be.false;
@@ -154,4 +153,14 @@ describe('BlockMediator', () => {
       expect(mediator.listStores().length).to.equal(getCnt());
     });
   });
+};
+
+describe('BlockMediator', async () => {
+  await import('../../../express/scripts/libs/block-mediator/block-mediator.js');
+  mediator = window.bmd8r;
+  testBlockMediator();
+  window.bmd8r = undefined;
+  await import('../../../express/scripts/libs/block-mediator/block-mediator.min.js');
+  mediator = window.bmd8r;
+  testBlockMediator();
 });

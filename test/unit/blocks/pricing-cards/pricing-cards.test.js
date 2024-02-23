@@ -1,6 +1,6 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
-import '../../../../express/scripts/libs/block-mediator/block-mediator.js';
+import resetBlockMediator from '../../../helpers/reset-block-mediator.js';
 
 const { default: decorate } = await import('../../../../express/blocks/pricing-cards/pricing-cards.js');
 document.body.innerHTML = await readFile({ path: './mocks/body.html' });
@@ -10,6 +10,7 @@ describe('Pricing Cards', () => {
   let cardCnts;
   before(async () => {
     window.isTestEnv = true;
+    resetBlockMediator();
     blocks = Array.from(document.querySelectorAll('.pricing-cards'));
     await Promise.all(blocks.map((block) => decorate(block)));
     cardCnts = (document.querySelector('div.card-cnts').textContent.split(',')).map((cnt) => parseInt(cnt, 10));

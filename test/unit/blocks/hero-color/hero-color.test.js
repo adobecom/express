@@ -4,7 +4,7 @@
 import sinon from 'sinon';
 import { readFile, setViewport } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
-import '../../../../express/scripts/libs/block-mediator/block-mediator.js';
+import resetBlockMediator from '../../../helpers/reset-block-mediator.js';
 
 const { default: decorate, resizeSvg } = await import(
   '../../../../express/blocks/hero-color/hero-color.js'
@@ -15,6 +15,7 @@ const clock = sinon.useFakeTimers({ shouldAdvanceTime: true });
 describe('Hero Color', () => {
   before(() => {
     window.isTestEnv = true;
+    resetBlockMediator();
     const heroColor = document.querySelector('.hero-color');
     decorate(heroColor);
   });

@@ -5,10 +5,9 @@ import checkMobileBetaEligibility, {
   fetchAndroidAllowDenyLists,
   preBenchmarkCheck,
 } from '../../../express/scripts/mobile-beta-gating.js';
-import '../../../express/scripts/libs/block-mediator/block-mediator.js';
+import resetBlockMediator from '../../helpers/reset-block-mediator.js';
 
-const { bmd8r } = window;
-
+let bmd8r;
 describe('Mobile Beta Gating', () => {
   Object.defineProperty(navigator, 'userAgent', {
     configurable: true,
@@ -16,6 +15,8 @@ describe('Mobile Beta Gating', () => {
 
   let stub;
   before(() => {
+    resetBlockMediator();
+    bmd8r = window.bmd8r;
     const MOCK_JSON = {
       'allow-list': {
         total: 25,

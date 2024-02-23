@@ -1,6 +1,6 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
-import '../../../../express/scripts/libs/block-mediator/block-mediator.js';
+import resetBlockMediator from '../../../helpers/reset-block-mediator.js';
 
 const { default: decorate } = await import(
   '../../../../express/blocks/billing-radio/billing-radio.js'
@@ -11,6 +11,7 @@ describe('Billing Radio', () => {
   let blocks;
   before(async () => {
     window.isTestEnv = true;
+    resetBlockMediator();
     blocks = Array.from(document.querySelectorAll('.billing-radio'));
     blocks.forEach((block) => decorate(block));
   });
