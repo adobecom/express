@@ -48,7 +48,7 @@ async function checkGeo(userGeo, userLocale, geoCheckForce) {
 
 function loadIMS() {
   window.adobeid = {
-    client_id: 'MarvelWeb3',
+    client_id: sessionStorage.getItem('imsclient'),
     scope: 'AdobeID,openid',
     locale: getConfig().locale.region,
     environment: 'prod',
@@ -104,11 +104,6 @@ export async function buildBreadCrumbArray(prefix) {
 async function loadFEDS() {
   const config = getConfig();
   const prefix = config.locale.prefix.replaceAll('/', '');
-  let jarvis = true;
-  // if metadata found jarvis must not be initialized in gnav because it will be initiated later
-  const jarvisMeta = getMetadata('jarvis-chat')?.toLowerCase();
-  if (!jarvisMeta || !['mobile', 'desktop', 'on'].includes(jarvisMeta)
-    || !config.jarvis?.id || !config.jarvis?.version) jarvis = false;
 
   async function showRegionPicker() {
     const { getModal } = await import('../blocks/modal/modal.js');
@@ -180,11 +175,11 @@ async function loadFEDS() {
         window.location.href = sparkLoginUrl;
       },
     },
-    jarvis: !jarvis ? {
+    jarvis: {
       surfaceName: config.jarvis.id,
       surfaceVersion: config.jarvis.version,
       onDemand: true,
-    } : {},
+    },
     breadcrumbs: {
       showLogo: true,
       links: await buildBreadCrumbArray(prefix),

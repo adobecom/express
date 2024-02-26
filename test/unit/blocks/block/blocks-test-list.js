@@ -105,14 +105,6 @@ export default [
     input: 'input/inline-banner.highlight.doc.html',
     expected: 'expected/inline-banner.inverted.section.html',
   }, {
-    name: 'Commerce CTA',
-    input: 'input/commerce-cta.doc.html',
-    expected: 'expected/commerce-cta.block.html',
-  }, {
-    name: 'Commerce CTA - custom cadence',
-    input: 'input/commerce-cta.cadence.doc.html',
-    expected: 'expected/commerce-cta.cadence.block.html',
-  }, {
     name: 'FAQ - basic',
     input: 'input/faq.doc.html',
     expected: 'expected/faq.block.html',

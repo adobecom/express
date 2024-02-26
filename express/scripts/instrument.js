@@ -5,7 +5,8 @@ import {
   getAssetDetails,
   getMetadata,
   checkTesting,
-  fetchPlaceholders, getConfig,
+  fetchPlaceholders,
+  getConfig,
 } from './utils.js';
 
 function getPlacement(btn) {
@@ -371,24 +372,27 @@ const martechLoadedCB = () => {
     return (camelCase);
   }
 
-  function appendLinkText(eventName, $a) {
-    let $img;
+  function appendLinkText(eventName, a) {
+    let img;
     let alt;
-    let newEventName;
 
-    if ($a?.textContent?.trim()) {
-      newEventName = eventName + textToName($a.textContent.trim());
+    if (!a) return eventName;
+
+    if (a.getAttribute('title')?.trim()) {
+      return eventName + textToName(a.getAttribute('title').trim());
+    } else if (a.getAttribute('aria-label')?.trim()) {
+      return eventName + textToName(a.getAttribute('aria-label').trim());
+    } else if (a.textContent?.trim()) {
+      return eventName + textToName(a.textContent.trim());
     } else {
-      $img = $a?.querySelector('img');
-      alt = $img && $img.getAttribute('alt');
+      img = a.querySelector('img');
+      alt = img && img.getAttribute('alt');
       if (alt) {
-        newEventName = eventName + textToName(alt);
+        return eventName + textToName(alt);
       } else {
-        newEventName = eventName;
+        return eventName;
       }
     }
-
-    return newEventName;
   }
 
   function trackButtonClick(a) {
@@ -716,13 +720,38 @@ const martechLoadedCB = () => {
     if ($columnVideos.length) {
       $columnVideos.forEach(($columnVideo) => {
         const $parent = $columnVideo.closest('.columns');
-        const $a = $columnVideo.querySelector('a');
-
+        const $a = $parent.querySelector('a');
         const adobeEventName = appendLinkText(`adobe.com:express:cta:learn:columns:${sparkLandingPageType}:`, $a);
 
         $parent.addEventListener('click', (e) => {
           e.stopPropagation();
           sendEventToAdobeAnaltics(adobeEventName);
+        });
+      });
+    }
+
+    const toggleBar = d.querySelector('.toggle-bar.block');
+    if (toggleBar) {
+      const tgBtns = toggleBar.querySelectorAll('button.toggle-bar-button');
+
+      tgBtns.forEach((btn) => {
+        const textEl = btn.querySelector('.text-wrapper');
+        let texts = [];
+
+        if (textEl) {
+          let child = textEl.firstChild;
+          while (child) {
+            if (child.nodeType === 3) {
+              texts.push(child.data);
+            }
+            child = child.nextSibling;
+          }
+        }
+
+        texts = texts.join('') || textEl.textContent.trim();
+        const eventName = `adobe.com:express:homepage:intentToggle:${textToName(texts)}`;
+        btn.addEventListener('click', () => {
+          sendEventToAdobeAnaltics(eventName);
         });
       });
     }
