@@ -127,6 +127,10 @@ End legacy CSS
   top: -20px;
 }
 
+.card-border .hide {
+  display: none;
+}
+
 .pricing-cards .card-header {
   align-self: stretch;
   display: flex;
@@ -335,6 +339,8 @@ End legacy CSS
   max-width: 1200px;
   box-sizing: border-box;
 }
+
+
 
 
 @media screen and (min-width: 768px) {

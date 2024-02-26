@@ -8,8 +8,22 @@ import BlockMediator from '../../scripts/block-mediator.min.js';
 const blockKeys = ['header', 'borderParams', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
+const SAVE_PERCENTAGE = 'savePercentage';
 
-function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo) {
+function suppressOfferEyebrow(specialPromo, legacyVersion) {
+  if (specialPromo.parentElement) {
+    if (legacyVersion) {
+      specialPromo.parentElement.classList.remove('special-promo');
+    } else {
+      specialPromo.className = 'hide';
+      specialPromo.parentElement.className = '';
+      specialPromo.parentElement.classList.add('card-border');
+      specialPromo.remove();
+    }
+  }
+}
+
+function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, legacyVersion) {
   const priceRow = createTag('div', { class: 'pricing-row' });
   const priceEl = pricingArea.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
@@ -56,22 +70,21 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo) {
         false, response.offerId)) {
         savePercentElem.remove();
       } else {
-        savePercentElem.innerHTML = savePercentElem.innerHTML.replace('{{savePercentage}}', response.savePer);
+        savePercentElem.innerHTML = savePercentElem.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
         pricingCardPercentageEyeBrowTextReplaced = true;
       }
     }
 
     if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced) {
       const offerTextContent = specialPromo.textContent;
+
       const shouldSuppress = shallSuppressOfferEyebrowText(response.savePer, offerTextContent,
+
         isPremiumCard, true, response.offerId);
       if (shouldSuppress) {
-        if (specialPromo.parentElement) {
-          specialPromo.parentElement.classList.remove('special-promo');
-          specialPromo.remove();
-        }
+        suppressOfferEyebrow(specialPromo, legacyVersion);
       } else {
-        specialPromo.innerHTML = specialPromo.innerHTML.replace('{{savePercentage}}', response.savePer);
+        specialPromo.innerHTML = specialPromo.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
         specialPromoPercentageEyeBrowTextReplaced = true;
       }
     }
@@ -81,7 +94,7 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo) {
   return priceRow;
 }
 
-function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo) {
+function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo, legacyVersion) {
   const pricingSection = createTag('div', { class: 'pricing-section' });
   pricingArea.classList.add('pricing-area');
   const offer = pricingArea.querySelector(':scope > p > em');
@@ -92,7 +105,8 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo)
   if (pricingBtnContainer != null) {
     const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
     const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
-    const priceRow = handlePrice(placeholders, pricingArea, placeholderArr, specialPromo);
+    const priceRow = handlePrice(placeholders, pricingArea,
+      placeholderArr, specialPromo, legacyVersion);
     if (priceRow) {
       pricingArea.prepend(priceRow);
       pricingBtnContainer?.remove();
@@ -124,18 +138,23 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo)
 
 function extractCurlyBracketsContent(inputString, card) {
   if (!inputString) {
-    return;
+    return null;
   }
+
   // Pattern to find text directly before the first {{...}} and all instances of {{...}}
-  const pattern = /(.*?)\{\{(.+?)\}\}/g;
-  const match = pattern.exec(inputString);
-  if (match) {
-    const promoType = match[2].trim();
+  const pattern = /(?<=\{\{).*?(?=\}\})/g;
+  const matches = Array.from(inputString.trim().matchAll(pattern));
+
+  if (matches.length > 0) {
+    let [promoType] = matches[matches.length - 1];
     const specialPromo = createTag('div');
-    specialPromo.textContent = match[1].trim();
+    [specialPromo.textContent] = inputString.split(`{{${promoType}}}`);
+    promoType = promoType.trim();
     card.classList.add(promoType);
     card.append(specialPromo);
+    return specialPromo;
   }
+  return null;
 }
 // Function for decorating a legacy header / promo.
 function decorateLegacyHeader(header, card) {
@@ -168,14 +187,14 @@ function decorateLegacyHeader(header, card) {
     if (p.innerHTML.trim() === '') p.remove();
   });
   card.append(header);
-  return specialPromo;
+  return { specialPromo, cardWrapper: card };
 }
 
 function decorateHeader(header, borderParams, card, cardBorder) {
   const h2 = header.querySelector('h2');
   // The raw text extracted from the word doc
   header.classList.add('card-header');
-  extractCurlyBracketsContent(borderParams?.innerText, cardBorder);
+  const specialPromo = extractCurlyBracketsContent(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
   if (premiumIcon) h2.append(premiumIcon);
 
@@ -193,38 +212,20 @@ function decorateHeader(header, borderParams, card, cardBorder) {
     headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
     header.append(headCntDiv);
   }
-
   card.append(header);
   cardBorder.append(card);
+  return { cardWrapper: cardBorder, specialPromo };
 }
 
-function decorateCard({
-  header,
-  borderParams,
-  explain,
-  mPricingRow,
-  mCtaGroup,
-  yPricingRow,
-  yCtaGroup,
-  featureList,
-  compare,
-}, el, placeholders, legacyVersion) {
-  const card = createTag('div', { class: 'card' });
-  const cardBorder = createTag('div', { class: 'card-border' });
-
-  const specialPromo = legacyVersion
-    ? decorateLegacyHeader(header, card)
-    : decorateHeader(header, borderParams, card, cardBorder);
-
-  if (explain.textContent.trim()) {
-    explain.classList.add('card-explain');
-    card.append(explain);
+function decorateBasicTextSection(textElement, className, card) {
+  if (textElement.innerHTML.trim()) {
+    textElement.classList.add(className);
+    card.append(textElement);
   }
-
-  const mPricingSection = createPricingSection(placeholders, mPricingRow, mCtaGroup, specialPromo);
-  mPricingSection.classList.add('monthly');
-  const yPricingSection = createPricingSection(placeholders, yPricingRow, yCtaGroup, null);
-  yPricingSection.classList.add('yearly', 'hide');
+}
+// Subscribes to the block mediator in order to receive price updates
+// for each plan specified by authors
+function subscribeToBlockMediator(mPricingSection, yPricingSection) {
   function reactToPlanChange({ newValue }) {
     [mPricingSection, yPricingSection].forEach((section) => {
       if (section.classList.contains(plans[newValue])) {
@@ -236,14 +237,9 @@ function decorateCard({
   }
   reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
   BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
-
-  card.append(mPricingSection, yPricingSection);
-
-  if (featureList.innerHTML.trim()) {
-    featureList.classList.add('card-feature-list');
-    card.append(featureList);
-  }
-
+}
+// Links user to page where plans can be compared
+function decorateCompareSection(compare, el, card) {
   if (compare?.innerHTML.trim()) {
     compare.classList.add('card-compare');
     compare.querySelector('a')?.classList.remove('button', 'accent');
@@ -262,7 +258,38 @@ function decorateCard({
     }
     card.append(compare);
   }
-  return legacyVersion ? card : cardBorder;
+}
+// In legacy versions, the card element encapsulates all content
+// In new versions, the cardBorder element encapsulates all content instead
+function decorateCard({
+  header,
+  borderParams,
+  explain,
+  mPricingRow,
+  mCtaGroup,
+  yPricingRow,
+  yCtaGroup,
+  featureList,
+  compare,
+}, el, placeholders, legacyVersion) {
+  const card = createTag('div', { class: 'card' });
+  const cardBorder = createTag('div', { class: 'card-border' });
+
+  const { specialPromo, cardWrapper } = legacyVersion
+    ? decorateLegacyHeader(header, card)
+    : decorateHeader(header, borderParams, card, cardBorder);
+
+  decorateBasicTextSection(explain, 'card-explain', card);
+  const mPricingSection = createPricingSection(placeholders, mPricingRow, mCtaGroup,
+    specialPromo, legacyVersion);
+  mPricingSection.classList.add('monthly');
+  const yPricingSection = createPricingSection(placeholders, yPricingRow, yCtaGroup, null);
+  yPricingSection.classList.add('yearly', 'hide');
+  card.append(mPricingSection, yPricingSection);
+  subscribeToBlockMediator(mPricingSection, yPricingSection);
+  decorateBasicTextSection(featureList, 'card-feature-list', card);
+  decorateCompareSection(compare, el, card);
+  return cardWrapper;
 }
 
 const SALES_NUMBERS = '{{business-sales-numbers}}';
