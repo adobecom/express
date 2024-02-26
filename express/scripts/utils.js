@@ -1428,9 +1428,8 @@ function loadMartech() {
   const usp = new URLSearchParams(window.location.search);
   const martech = usp.get('martech');
 
-  const analyticsUrl = '/express/scripts/instrument.js';
-  if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
-    loadScript(analyticsUrl, 'module');
+  if (martech !== 'off') {
+    loadScript('/express/scripts/instrument.js', 'module');
   }
 }
 
@@ -1727,7 +1726,10 @@ async function decorateTesting() {
     if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
       // eslint-disable-next-line no-console
       console.log('rushing martech');
-      loadScript('/express/scripts/instrument.js', 'module');
+      import('./instrument.js').then((instrument) => {
+        instrument.default();
+      });
+      // loadScript('/express/scripts/instrument.js', 'module');
     }
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -2557,7 +2559,7 @@ export async function loadArea(area = document) {
       // target = true;
       if (target) {
         hideBody();
-        setTimeout(() => {
+        setTimeout(async () => {
           unhideBody();
         }, 3000);
       }

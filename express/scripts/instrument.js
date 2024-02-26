@@ -223,7 +223,7 @@ function sendEventToAdobeAnaltics(eventName) {
   });
 }
 
-const martechLoadedCB = () => {
+export default function martechLoadedCB() {
   /* eslint-disable no-underscore-dangle */
   const set = (path, value) => {
     const obj = w.alloy_all;
@@ -914,6 +914,6 @@ const martechLoadedCB = () => {
   }
 
   __satelliteLoadedCallback(getAudiences);
-};
+}
 
 loadScript(martechURL).then(martechLoadedCB);
