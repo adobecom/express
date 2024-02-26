@@ -127,7 +127,6 @@ export default async function checkMobileBetaEligibility() {
     if (eligible) {
       document.body.classList.add('beta-ineligible-mobile-device');
       setMetadata('betaineligibledevice', 'on');
-      console.log('gated')
     }
     BlockMediator.set('mobileBetaEligibility', {
       deviceSupport: eligible,
