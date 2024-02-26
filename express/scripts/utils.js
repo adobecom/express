@@ -1963,7 +1963,7 @@ async function buildAutoBlocks($main) {
   }
 
   async function loadPromoFrag() {
-    if (document.querySelector('sticky-promo-bar')) return;
+    if (document.querySelector('.sticky-promo-bar')) return;
     const fragment = await fetchPlainBlockFromFragment(`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`, 'sticky-promo-bar');
     if (!fragment) return;
     $main.append(fragment);
