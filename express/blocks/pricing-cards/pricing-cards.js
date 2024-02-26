@@ -231,6 +231,11 @@ function decorateCard({
 const SALES_NUMBERS = '{{business-sales-numbers}}';
 
 export default async function init(el) {
+  // For backwards compatability with old versions of the pricing card
+  const newBlockVersion = el.querySelectorAll(':scope > div').length === 10;
+  if (!newBlockVersion) {
+    blockKeys.splice(1, 1);
+  }
   const divs = blockKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
 
   const cards = Array.from(divs[0]).map((_, index) => blockKeys.reduce((obj, key, keyIndex) => {
