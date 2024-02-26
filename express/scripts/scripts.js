@@ -107,9 +107,16 @@ const showNotifications = () => {
   loadLana({ clientId: 'express' });
 
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
-    import('./mobile-beta-gating.js').then(async (gatingScript) => {
-      gatingScript.default();
-    });
+    if (['yes', 'true', 'on'].includes(getMetadata('rush-beta-gating').toLowerCase())) {
+      import('./mobile-beta-gating.js').then(async (gatingScript) => {
+        gatingScript.rushCheckMobileBetaEligibility();
+      });
+    } else {
+      await loadArea();
+      import('./mobile-beta-gating.js').then(async (gatingScript) => {
+        gatingScript.default();
+      });
+    }
   } else {
     await loadArea();
   }

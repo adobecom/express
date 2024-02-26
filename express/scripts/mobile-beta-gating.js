@@ -96,19 +96,46 @@ export async function preBenchmarkCheck() {
   return [null, 'needs benchmark'];
 }
 
+function initWebWorker() {
+  const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
+    const expireDate = new Date();
+    const month = (expireDate.getMonth() + 1) % 12;
+    expireDate.setMonth(month);
+    if (month === 0) expireDate.setFullYear(expireDate.getFullYear() + 1);
+    document.cookie = `device-support=${e.newValue.deviceSupport};domain=adobe.com;expires=${expireDate.toUTCString()};path=/`;
+    unsubscribe();
+  });
+  const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
+  benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
+  return benchmarkWorker;
+}
+
 export default async function checkMobileBetaEligibility() {
   const [eligible, reason] = await preBenchmarkCheck();
   if (reason === 'needs benchmark') {
-    const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
-      const expireDate = new Date();
-      const month = (expireDate.getMonth() + 1) % 12;
-      expireDate.setMonth(month);
-      if (month === 0) expireDate.setFullYear(expireDate.getFullYear() + 1);
-      document.cookie = `device-support=${e.newValue.deviceSupport};domain=adobe.com;expires=${expireDate.toUTCString()};path=/`;
-      unsubscribe();
+    const benchmarkWorker = initWebWorker();
+    benchmarkWorker.onmessage = async (e) => {
+      const isEligible = e.data <= MAX_EXEC_TIME_ALLOWED;
+      BlockMediator.set('mobileBetaEligibility', {
+        deviceSupport: isEligible,
+        data: 'Android cpuSpeedPass',
+      });
+      benchmarkWorker.terminate();
+    };
+  } else {
+    BlockMediator.set('mobileBetaEligibility', {
+      deviceSupport: eligible,
+      data: {
+        reason,
+      },
     });
-    const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
-    benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
+  }
+}
+
+export async function rushCheckMobileBetaEligibility() {
+  const [eligible, reason] = await preBenchmarkCheck();
+  if (reason === 'needs benchmark') {
+    const benchmarkWorker = initWebWorker();
     benchmarkWorker.onmessage = async (e) => {
       const isEligible = e.data <= MAX_EXEC_TIME_ALLOWED;
       BlockMediator.set('mobileBetaEligibility', {
@@ -117,7 +144,6 @@ export default async function checkMobileBetaEligibility() {
       });
 
       if (!isEligible) {
-        document.body.classList.add('beta-ineligible-mobile-device');
         setMetadata('betaineligibledevice', 'on');
       }
       await loadArea();
@@ -125,7 +151,6 @@ export default async function checkMobileBetaEligibility() {
     };
   } else {
     if (!eligible) {
-      document.body.classList.add('beta-ineligible-mobile-device');
       setMetadata('betaineligibledevice', 'on');
     }
     BlockMediator.set('mobileBetaEligibility', {
