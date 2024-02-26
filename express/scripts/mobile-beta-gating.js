@@ -4,6 +4,35 @@ import { getMobileOperatingSystem, loadArea } from './utils.js';
 const MAX_EXEC_TIME_ALLOWED = 500;
 const TOTAL_PRIME_NUMBER = 10000;
 
+function setMetadata(name, content, attribute = 'name') {
+  // Special case for the document title
+  if (name.toLowerCase() === 'title') {
+    document.title = content;
+    return;
+  }
+
+  // Handling <link> elements separately (e.g., favicon)
+  if (name.toLowerCase() === 'favicon') {
+    const linkElement = document.querySelector('link[rel="icon"]') || document.createElement('link');
+    linkElement.rel = 'icon';
+    linkElement.href = content;
+    document.head.appendChild(linkElement);
+    return;
+  }
+
+  // Check if the meta tag already exists
+  const existingMeta = document.querySelector(`meta[${attribute}="${name}"]`);
+  if (existingMeta) {
+    existingMeta.content = content;
+  } else {
+    // If it does not exist, create a new meta tag
+    const metaElement = document.createElement('meta');
+    metaElement.setAttribute(attribute, name);
+    metaElement.content = content;
+    document.head.appendChild(metaElement);
+  }
+}
+
 export function isIOS16AndUp(userAgent = navigator.userAgent) {
   if (/iPhone/i.test(userAgent)) {
     const iOSVersionMatch = userAgent.match(/OS (\d+)_/);
@@ -89,6 +118,7 @@ export default async function checkMobileBetaEligibility() {
 
       if (isEligible) {
         document.body.classList.add('beta-ineligible-mobile-device');
+        setMetadata('betaineligibledevice', 'on');
       }
       await loadArea();
       benchmarkWorker.terminate();
@@ -96,6 +126,8 @@ export default async function checkMobileBetaEligibility() {
   } else {
     if (eligible) {
       document.body.classList.add('beta-ineligible-mobile-device');
+      setMetadata('betaineligibledevice', 'on');
+      console.log('gated')
     }
     BlockMediator.set('mobileBetaEligibility', {
       deviceSupport: eligible,

@@ -656,7 +656,7 @@ export async function decorateBlock(block) {
             caseInsensitiveParams[name.toLowerCase()] = value.toLowerCase();
           }
           showWithSearchParam = caseInsensitiveParams[featureFlag];
-          blockRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(featureFlag.toLowerCase()) !== 'on';
+          blockRemove = showWithSearchParam ? showWithSearchParam !== 'on' : getMetadata(featureFlag.toLowerCase()) !== 'on';
         });
       }
       if (blockRemove) {
