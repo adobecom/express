@@ -1219,9 +1219,9 @@ main .block .app-store-aTag .app-store-wrapper {
 
 main .section#beta-ineligible-mobile-device {
   padding-top: 0;
-  display: none;
+  /* display: none; */
 }
 
 body.beta-ineligible-mobile-device .section#beta-ineligible-mobile-device {
-  display: block;
+  /* display: block; */
 }
