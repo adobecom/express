@@ -5,13 +5,11 @@ const MAX_EXEC_TIME_ALLOWED = 500;
 const TOTAL_PRIME_NUMBER = 10000;
 
 function setMetadata(name, content, attribute = 'name') {
-  // Special case for the document title
   if (name.toLowerCase() === 'title') {
     document.title = content;
     return;
   }
 
-  // Handling <link> elements separately (e.g., favicon)
   if (name.toLowerCase() === 'favicon') {
     const linkElement = document.querySelector('link[rel="icon"]') || document.createElement('link');
     linkElement.rel = 'icon';
@@ -20,12 +18,10 @@ function setMetadata(name, content, attribute = 'name') {
     return;
   }
 
-  // Check if the meta tag already exists
   const existingMeta = document.querySelector(`meta[${attribute}="${name}"]`);
   if (existingMeta) {
     existingMeta.content = content;
   } else {
-    // If it does not exist, create a new meta tag
     const metaElement = document.createElement('meta');
     metaElement.setAttribute(attribute, name);
     metaElement.content = content;
