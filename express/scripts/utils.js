@@ -1428,8 +1428,9 @@ function loadMartech() {
   const usp = new URLSearchParams(window.location.search);
   const martech = usp.get('martech');
 
-  if (martech !== 'off') {
-    loadScript('/express/scripts/instrument.js', 'module');
+  const analyticsUrl = '/express/scripts/instrument.js';
+  if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
+    loadScript(analyticsUrl, 'module');
   }
 }
 
@@ -2558,7 +2559,7 @@ export async function loadArea(area = document) {
       // target = true;
       if (target) {
         hideBody();
-        setTimeout(async () => {
+        setTimeout(() => {
           unhideBody();
         }, 3000);
       }
