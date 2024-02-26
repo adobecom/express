@@ -3,6 +3,7 @@ import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function initScrollInteraction(block) {
   const inBodyBanner = block.nextElementSibling;
+  if (!inBodyBanner) return;
   const intersectionCallback = (entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting && inBodyBanner.getBoundingClientRect().top < 0) {
