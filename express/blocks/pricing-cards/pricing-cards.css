@@ -2,20 +2,60 @@
   --card-width: 353px;
   --card-padding: 16px 12px;
 }
-.pricing-cards-container > div.pricing-cards-wrapper {
+
+
+/*
+Legacy CSS for cards and special promo
+*/
+
+.pricing-cards .card.special-promo {
+  border: 1px solid #FFE600;
+}
+
+.pricing-cards .card.special-promo>div:first-of-type {
+  position: absolute;
+  right: 8px;
+  top: -10px;
+  border-radius: 4px;
+  background: #FFE600;
+  padding: 0px 6px 1px 6px;
+  height: 20px;
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.pricing-cards .card .card-header h2 {
+  font-weight: var(--heading-font-weight);
+  line-height: var(--heading-line-height);
+  font-size: var(--body-font-size-l);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/*
+End legacy CSS
+*/
+.pricing-cards-container>div.pricing-cards-wrapper {
   max-width: none;
 }
+
 .pricing-cards.block {
   padding: 0 15px 40px;
 }
 
 .pricing-cards .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
+  grid-template-columns: repeat(auto-fit, calc(83px + var(--card-width)));
   grid-template-rows: repeat(auto-fit, minmax(311px, 1fr));
   justify-content: center;
   gap: 16px;
 }
+
 .pricing-cards .card {
   position: relative;
   display: flex;
@@ -28,6 +68,7 @@
   text-align: left;
   box-sizing: border-box;
   height: 100%;
+  border: 1px solid #C6C6C6;
 }
 
 .gradient-promo .card {
@@ -35,7 +76,7 @@
 
 }
 
-.gradient-promo > div:first-of-type {
+.gradient-promo>div:first-of-type {
   margin-left: 4px;
   color: var(--color-white);
   font-weight: 400;
@@ -48,25 +89,26 @@
   padding: 12px 4px 4px 4px;
   border-radius: 24px;
   overflow: hidden;
-  background: var(--color-white); 
+  background: var(--color-white);
   margin-top: 0px !important;
   display: flex;
   flex-direction: column;
 }
 
- .card-border {
-  border : 1px solid #C6C6C6;
+.card-border {
+  border: 1px solid #C6C6C6;
   border-radius: 8px;
   margin-top: 44px;
- }
+}
 
 .special-promo {
   border: 1px solid #FFE600;
 }
-.special-promo > div:first-of-type {
+
+.special-promo>div:first-of-type {
   position: relative;
   width: fit-content;
-  float:right;
+  float: right;
   top: -10px;
   border-radius: 4px;
   background: #FFE600;
@@ -82,7 +124,7 @@
 
 .special-promo .card {
   position: relative;
-  top : -20px;
+  top: -20px;
 }
 
 .pricing-cards .card-header {
@@ -91,26 +133,27 @@
   align-items: center;
   justify-content: space-between;
 }
-.pricing-cards .card .card-header h2 {
-  font-weight: var(--heading-font-weight);
-  line-height: var(--heading-line-height);
-  font-size: var(--body-font-size-l);
+
+
+.pricing-cards .card-border .card .card-header h2 {
   display: flex;
-  align-items: center;
-  gap: 8px;
   flex-direction: row-reverse;
+  gap: 8px;
 }
+
 .pricing-cards .card-header img {
   width: 22px;
   height: 22px;
 }
+
 .pricing-cards .card-header .head-cnt {
   border-bottom: 1px solid #000;
   padding-bottom: 2px;
   font-size: var(--body-font-size-m);
   font-weight: 400;
 }
-.pricing-cards .card-header .head-cnt > img {
+
+.pricing-cards .card-header .head-cnt>img {
   width: 14px;
   height: 14px;
   padding-right: 6px;
@@ -133,6 +176,7 @@
   color: #5258E4;
   height: 20px;
 }
+
 .pricing-cards .card-offer a {
   text-decoration: underline;
 }
@@ -141,26 +185,29 @@
 .pricing-cards .pricing-row {
   max-width: 330px;
 }
+
 .pricing-cards .pricing-base-price,
 .pricing-cards .pricing-price {
   font-size: var(--heading-font-size-s);
   font-weight: 700;
 }
+
 .pricing-cards .pricing-price.price-active {
   color: #5258E4;
 }
+
 .pricing-cards .pricing-base-price {
   color: var(--color-gray-600);
 }
 
-.pricing-cards .pricing-base-price > strong {
+.pricing-cards .pricing-base-price>strong {
   text-decoration: line-through;
   padding-right: 4px;
 }
 
-.pricing-cards .pricing-price > strong,
-.pricing-cards .pricing-base-price > strong,
-.pricing-cards .pricing-price > sup {
+.pricing-cards .pricing-price>strong,
+.pricing-cards .pricing-base-price>strong,
+.pricing-cards .pricing-price>sup {
   padding-left: 4px;
 }
 
@@ -170,6 +217,7 @@
   flex-direction: column;
   gap: 16px;
 }
+
 .pricing-cards .pricing-section.hide {
   display: none;
 }
@@ -278,7 +326,7 @@
   font-weight: 400;
 }
 
-.pricing-cards > div:last-of-type {
+.pricing-cards>div:last-of-type {
   padding: 12px 8px;
   margin: 16px auto;
   border-radius: 4px;
@@ -293,6 +341,7 @@
   :root {
     --card-width: 362px;
   }
+
   .pricing-cards .card-border .card-header h2 {
     margin-top: 0;
   }
@@ -303,34 +352,59 @@
     --card-width: 391px;
     --card-padding: 24px 16px;
   }
+
   .pricing-cards .cards-container:has(.card-border:only-child) {
-    width : var(--card-width);
+    width: var(--card-width);
     margin: auto;
   }
-  .pricing-cards .cards-container:has(.card-border:first-child:nth-last-child(2)) {
-    width : var(2 * --card-width);
-    margin : auto;
+
+  .pricing-cards .cards-container:has(.card-border:first-child:nth-last-child(3)) {
+    width: var(2 * --card-width);
+    margin: auto;
   }
- 
-  .pricing-cards .card-border .card-header {
-    margin-bottom: -16px;
+
+  .pricing-cards .cards-container:has(.card:first-child:nth-last-child(3)) {
+    width: var(2 * --card-width);
+    margin: auto;
+    grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
   }
-  .pricing-cards .card-border .card-header h2 {
-    font-size: 1.75rem;
-  }
+
   .pricing-cards .card-explain {
     display: block;
   }
+
   .pricing-cards .pricing-section {
     gap: 24px;
   }
+
   .pricing-cards .card-border .card-cta-group.min-height-2 {
     min-height: 106px;
   }
+
   .pricing-cards .card-border .card-cta-group.min-height-3 {
     min-height: 167px;
   }
+
+  .pricing-cards .card-border .card-header h2 {
+    font-size: 1.75rem;
+  }
+
   .pricing-cards .card-feature-list {
     display: block;
+  }
+
+  /* Legacy styles */
+
+  .pricing-cards .card .card-cta-group.min-height-2 {
+    min-height: 106px;
+  }
+
+  .pricing-cards .card .card-cta-group.min-height-3 {
+    min-height: 167px;
+  }
+
+  .pricing-cards .card .card-header h2 {
+    font-size: 1.75rem;
+    margin-top: 0px;
   }
 }

@@ -137,12 +137,45 @@ function extractCurlyBracketsContent(inputString, card) {
     card.append(specialPromo);
   }
 }
+// Function for decorating a legacy header / promo.
+function decorateLegacyHeader(header, card) {
+  header.classList.add('card-header');
+  const h2 = header.querySelector('h2');
+  const h2Text = h2.textContent.trim();
+  h2.innerHTML = '';
+  const headerConfig = /\((.+)\)/.exec(h2Text);
+  const premiumIcon = header.querySelector('img');
+  let specialPromo;
+  if (premiumIcon) h2.append(premiumIcon);
+  if (headerConfig) {
+    const cfg = headerConfig[1];
+    h2.append(h2Text.replace(`(${cfg})`, '').trim());
+    if (/^\d/.test(cfg)) {
+      const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
+      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
+      headCntDiv.textContent = cfg;
+      header.append(headCntDiv);
+    } else {
+      specialPromo = createTag('div');
+      specialPromo.textContent = cfg;
+      card.classList.add('special-promo');
+      card.append(specialPromo);
+    }
+  } else {
+    h2.append(h2Text);
+  }
+  header.querySelectorAll('p').forEach((p) => {
+    if (p.innerHTML.trim() === '') p.remove();
+  });
+  card.append(header);
+  return specialPromo;
+}
 
-function decorateHeader(header, borderParams, card) {
+function decorateHeader(header, borderParams, card, cardBorder) {
   const h2 = header.querySelector('h2');
   // The raw text extracted from the word doc
   header.classList.add('card-header');
-  extractCurlyBracketsContent(borderParams?.innerText, card);
+  extractCurlyBracketsContent(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
   if (premiumIcon) h2.append(premiumIcon);
 
@@ -160,6 +193,9 @@ function decorateHeader(header, borderParams, card) {
     headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
     header.append(headCntDiv);
   }
+
+  card.append(header);
+  cardBorder.append(card);
 }
 
 function decorateCard({
@@ -172,18 +208,19 @@ function decorateCard({
   yCtaGroup,
   featureList,
   compare,
-}, el, placeholders) {
+}, el, placeholders, legacyVersion) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
 
-  const specialPromo = decorateHeader(header, borderParams, cardBorder);
-  card.append(header);
+  const specialPromo = legacyVersion
+    ? decorateLegacyHeader(header, card)
+    : decorateHeader(header, borderParams, card, cardBorder);
 
-  cardBorder.append(card);
   if (explain.textContent.trim()) {
     explain.classList.add('card-explain');
     card.append(explain);
   }
+
   const mPricingSection = createPricingSection(placeholders, mPricingRow, mCtaGroup, specialPromo);
   mPricingSection.classList.add('monthly');
   const yPricingSection = createPricingSection(placeholders, yPricingRow, yCtaGroup, null);
@@ -225,16 +262,16 @@ function decorateCard({
     }
     card.append(compare);
   }
-  return cardBorder;
+  return legacyVersion ? card : cardBorder;
 }
 
 const SALES_NUMBERS = '{{business-sales-numbers}}';
 
 export default async function init(el) {
   // For backwards compatability with old versions of the pricing card
-  const newBlockVersion = el.querySelectorAll(':scope > div').length === 10;
+  const legacyVersion = el.querySelectorAll(':scope > div').length < 10;
   const currentKeys = [...blockKeys];
-  if (!newBlockVersion) {
+  if (legacyVersion) {
     currentKeys.splice(1, 1);
   }
   const divs = currentKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
@@ -248,7 +285,7 @@ export default async function init(el) {
   const placeholders = await fetchPlaceholders();
   setVisitorCountry();
   cards
-    .map((card) => decorateCard(card, el, placeholders))
+    .map((card) => decorateCard(card, el, placeholders, legacyVersion))
     .forEach((card) => cardsContainer.append(card));
   const maxMCTACnt = cards.reduce((max, card) => Math.max(max, card.mCtaGroup.querySelectorAll('a').length), 0);
   if (maxMCTACnt > 1) {
