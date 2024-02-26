@@ -9,6 +9,15 @@ import {
   getConfig,
 } from './utils.js';
 
+// this saves on file size when this file gets minified...
+const w = window;
+const d = document;
+const loc = w.location;
+const { pathname } = loc;
+const usp = new URLSearchParams(window.location.search);
+const martech = usp.get('martech');
+let sparkLandingPageType;
+
 function getPlacement(btn) {
   const parentBlock = btn.closest('.block');
   let placement = 'outside-blocks';
@@ -34,6 +43,25 @@ function getPlacement(btn) {
 
   return placement;
 }
+
+const set = (path, value) => {
+  const obj = w.alloy_all;
+  const newPath = `data._adobe_corpnew.digitalData.${path}`;
+  const segs = newPath.split('.');
+  let temp = obj;
+  let i = 0;
+  const il = segs.length - 1;
+  // get to the path
+  // eslint-disable-next-line no-plusplus
+  for (; i < il; i++) {
+    const seg = segs[i];
+    temp[seg] = temp[seg] || {};
+    temp = temp[seg];
+  }
+  // set the value
+  temp[segs[i]] = value;
+  return obj;
+};
 
 async function trackBranchParameters($links) {
   const placeholders = await fetchPlaceholders();
@@ -148,14 +176,6 @@ async function trackBranchParameters($links) {
   });
 }
 
-// this saves on file size when this file gets minified...
-const w = window;
-const d = document;
-const loc = w.location;
-const { pathname } = loc;
-const usp = new URLSearchParams(window.location.search);
-const martech = usp.get('martech');
-
 // alloy feature flag
 let martechURL;
 if (
@@ -223,27 +243,449 @@ function sendEventToAdobeAnaltics(eventName) {
   });
 }
 
-export default function martechLoadedCB() {
-  /* eslint-disable no-underscore-dangle */
-  const set = (path, value) => {
-    const obj = w.alloy_all;
-    const newPath = `data._adobe_corpnew.digitalData.${path}`;
-    const segs = newPath.split('.');
-    let temp = obj;
-    let i = 0;
-    const il = segs.length - 1;
-    // get to the path
-    // eslint-disable-next-line no-plusplus
-    for (; i < il; i++) {
-      const seg = segs[i];
-      temp[seg] = temp[seg] || {};
-      temp = temp[seg];
-    }
-    // set the value
-    temp[segs[i]] = value;
-    return obj;
-  };
+function textToName(text) {
+  const splits = text.toLowerCase().split(' ');
+  const camelCase = splits.map((s, i) => (i ? s.charAt(0).toUpperCase() + s.substr(1) : s)).join('');
+  return (camelCase);
+}
 
+function appendLinkText(eventName, a) {
+  let img;
+  let alt;
+
+  if (!a) return eventName;
+
+  if (a.getAttribute('title')?.trim()) {
+    return eventName + textToName(a.getAttribute('title').trim());
+  } else if (a.getAttribute('aria-label')?.trim()) {
+    return eventName + textToName(a.getAttribute('aria-label').trim());
+  } else if (a.textContent?.trim()) {
+    return eventName + textToName(a.textContent.trim());
+  } else {
+    img = a.querySelector('img');
+    alt = img && img.getAttribute('alt');
+    if (alt) {
+      return eventName + textToName(alt);
+    } else {
+      return eventName;
+    }
+  }
+}
+
+function trackButtonClick(a) {
+  let adobeEventName = 'adobe.com:express:cta:';
+  let hemingwayAssetId;
+  let hemingwayAssetPath;
+  let hemingwayAssetPosition;
+
+  const hemingwayAsset = a.querySelector('picture,video,audio,img')
+    || a.closest('[class*="-container"],[class*="-wrapper"]')?.querySelector('picture,video,audio,img');
+  const block = a.closest('.block');
+  if (hemingwayAsset && block) {
+    const { assetId, assetPath } = getAssetDetails(hemingwayAsset);
+    hemingwayAssetPath = assetPath;
+    hemingwayAssetId = assetId;
+
+    const siblings = [...block
+      .querySelectorAll(`.${a.className.split(' ').join('.')}`)];
+    hemingwayAssetPosition = siblings.indexOf(a);
+  }
+
+  const $templateContainer = a.closest('.template-list');
+  const $tutorialContainer = a.closest('.tutorial-card');
+  const $contentToggleContainer = a.closest('.content-toggle');
+  const $chooseYourPathContainer = a.closest('.choose-your-path');
+  // let cardPosition;
+  // Template button click
+  if ($templateContainer) {
+    adobeEventName += 'template:';
+
+    const $img = a.querySelector('img');
+
+    // try to get the image alternate text
+    if (a.classList.contains('template-title-link')) {
+      adobeEventName += 'viewAll';
+    } else if (a.classList.contains('placeholder')) {
+      adobeEventName += 'createFromScratch';
+    } else if ($img && $img.alt) {
+      adobeEventName += textToName($img.alt);
+    } else {
+      adobeEventName += 'Click';
+    }
+    // Button in the FAQ
+  } else if ($tutorialContainer) {
+    const videoName = textToName(a.querySelector('h3').textContent.trim());
+    adobeEventName = `${adobeEventName}tutorials:${videoName}:tutorialPressed`;
+  } else if ($chooseYourPathContainer) {
+    const $slideTitle = a.querySelector('.choose-your-path-slide-title');
+    const slideName = $slideTitle ? textToName($slideTitle.textContent.trim()) : 'slide';
+
+    adobeEventName = `${adobeEventName}chooseYourPath:${slideName}:slidePressed`;
+  } else if ($contentToggleContainer) {
+    const toggleName = textToName(a.textContent.trim());
+    adobeEventName = `${adobeEventName}contentToggle:${toggleName}:buttonPressed`;
+  } else if (a.classList.contains('floating-button-lottie')) {
+    adobeEventName = `${adobeEventName}floatingButton:scrollPressed`;
+  } else if (a.classList.contains('video-player-inline-player-overlay')) {
+    const sessionName = a.parentNode.parentNode.parentNode.querySelector('.video-player-session-number').textContent.trim();
+    const videoName = a.parentNode.parentNode.parentNode.querySelector('.video-player-video-title').textContent.trim();
+    adobeEventName = `${adobeEventName}playing:${sessionName}-${videoName}`;
+  } else if (a.classList.contains('notch')) {
+    adobeEventName = `${adobeEventName}splitAction:notch`;
+  } else if (a.classList.contains('underlay')) {
+    adobeEventName = `${adobeEventName}splitAction:background`;
+  } else if (a.parentElement.classList.contains('floating-button')) {
+    adobeEventName = `${adobeEventName}floatingButton:ctaPressed`;
+  } else if (a.closest('.faq')) {
+    adobeEventName = appendLinkText(`${adobeEventName}faq:`, a);
+    // CTA in the hero
+  } else if (a.closest('.hero')) {
+    adobeEventName = appendLinkText(`${adobeEventName}hero:`, a);
+    // Click in the pricing block
+  } else if (sparkLandingPageType === 'express-your-fandom') {
+    adobeEventName = appendLinkText(`${adobeEventName}${sparkLandingPageType}:`, a);
+  } else if (sparkLandingPageType === 'express-your-brand') {
+    adobeEventName = appendLinkText(`${adobeEventName}learn:${sparkLandingPageType}:`, a);
+  } else if (sparkLandingPageType === 'pricing') {
+    // edu link
+    if (a.pathname.includes('/edu')) {
+      adobeEventName += 'pricing:education:Click';
+      // business enterprise link
+    } else if (a.pathname.includes('business/enterprise')) {
+      adobeEventName += 'pricing:enterprise:Click';
+      // Creative cloud learn more
+    } else if (a.parentElement.id === 'adobe-spark-is-a-part-of-most-creative-cloud-paid-plans-learn-more') {
+      adobeEventName += 'pricing:creativeCloud:learnMore';
+    } else if (a.id === 'free-trial') {
+      adobeEventName += 'pricing:cta:StartForFree';
+    } else if (a.id === '3-month-trial') {
+      adobeEventName += 'pricing:cta:StartYour3MonthTrial';
+      // View plans
+    } else {
+      adobeEventName = 'adobe.com:express:CTA:pricing:viewPlans:Click';
+    }
+    // quick actions clicks
+  } else if (a.closest('ccl-quick-action') && a.classList.contains('upload-your-photo')) {
+    // this event is handled at mock-file-input level
+    return;
+  } else if (a.href && (a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?tools/g))) {
+    adobeEventName = appendLinkText(adobeEventName, a);
+  } else if (a.href && (a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?express-apps\/animate-from-audio/g))) {
+    adobeEventName = appendLinkText(adobeEventName, a);
+    // Frictionless Quick Actions clicks
+  } else if (a.closest('ccl-quick-action') && (a.getAttribute('data-action') === 'Download')) {
+    adobeEventName = 'quickAction:downloadPressed';
+  } else if (a.closest('ccl-quick-action') && (a.getAttribute('data-action') === 'Editor')) {
+    adobeEventName = 'quickAction:openInEditorPressed';
+  // ToC clicks
+  } else if (a.closest('.toc-container')) {
+    if (a.classList.contains('toc-toggle')) {
+      adobeEventName += 'toc:toggle:Click';
+    } else if (a.classList.contains('toc-close')) {
+      adobeEventName += 'toc:close:Click';
+    } else if (a.classList.contains('toc-handle')) {
+      adobeEventName += 'toc:close:Click:handle';
+    } else if (a.classList.contains('toc-wrapper')) {
+      adobeEventName += 'toc:close:Click:background';
+    } else {
+      adobeEventName = appendLinkText(`${adobeEventName}toc:link:Click:`, a);
+    }
+  } else if (a.closest('.template')) {
+    adobeEventName = appendLinkText(adobeEventName, a);
+  } else if (a.closest('.tabs-ax .tab-list-container')) {
+    adobeEventName += `${a.closest('.tabs-ax')?.id}:${a.id}`;
+  // Default clicks
+  } else {
+    adobeEventName = appendLinkText(adobeEventName, a);
+  }
+
+  // clicks using [data-lh and data-ll]
+  let trackingHeader = a.closest('[data-lh]');
+  if (trackingHeader || a.dataset.lh) {
+    adobeEventName = 'adobe.com:express';
+    let headerString = '';
+    while (trackingHeader) {
+      headerString = `:${textToName(trackingHeader.dataset.lh.trim())}${headerString}`;
+      trackingHeader = trackingHeader.parentNode.closest('[data-lh]');
+    }
+    adobeEventName += headerString;
+    if (a.dataset.ll) {
+      adobeEventName += `:${textToName(a.dataset.ll.trim())}`;
+    } else {
+      adobeEventName += `:${textToName(a.innerText.trim())}`;
+    }
+  }
+  if (window.hlx?.experiment) {
+    let prefix = '';
+    if (window.hlx.experiment?.id) prefix = `${window.hlx.experiment.id}:`;
+    if (window.hlx.experiment?.selectedVariant) {
+      let variant = window.hlx.experiment.selectedVariant;
+      if (variant.includes('-')) [, variant] = variant.split('-');
+      prefix += `${variant}:`;
+    }
+    adobeEventName = prefix + adobeEventName;
+  }
+
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: adobeEventName,
+          linkClicks: {
+            value: 1,
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        digitalData: {
+          primaryEvent: {
+            eventInfo: {
+              eventName: adobeEventName,
+            },
+          },
+          ...(hemingwayAsset
+            ? {
+              asset: {
+                assetInfo: {
+                  assetId: hemingwayAssetId,
+                  assetPath: hemingwayAssetPath,
+                  assetPosition: hemingwayAssetPosition,
+                },
+              },
+            }
+            : {}),
+        },
+      },
+    },
+  });
+}
+
+// Frictionless Quick Actions tracking events
+
+function handleQuickActionEvents(el) {
+  let frictionLessQuctionActionsTrackingEnabled = false;
+  sendEventToAdobeAnaltics('quickAction:uploadPageViewed');
+  el[0].addEventListener('ccl-quick-action-complete', () => {
+    if (frictionLessQuctionActionsTrackingEnabled) {
+      return;
+    }
+    sendEventToAdobeAnaltics('quickAction:assetUploaded');
+    sendEventToAdobeAnaltics('project:editorDisplayed');
+    const $links = d.querySelectorAll('ccl-quick-action a');
+    // for tracking all of the links
+    $links.forEach(($a) => {
+      $a.addEventListener('click', () => {
+        trackButtonClick($a);
+      });
+    });
+    frictionLessQuctionActionsTrackingEnabled = true;
+  });
+}
+
+const cclQuickAction = d.getElementsByTagName('ccl-quick-action');
+if (cclQuickAction.length) {
+  handleQuickActionEvents(cclQuickAction);
+} else {
+  d.addEventListener('ccl-quick-action-rendered', (e) => {
+    if (e.target.tagName === 'CCL-QUICK-ACTION') {
+      handleQuickActionEvents(d.getElementsByTagName('ccl-quick-action'));
+    }
+  });
+}
+
+d.addEventListener('click', (e) => {
+  if (e.target.id === 'mock-file-input') {
+    sendEventToAdobeAnaltics('adobe.com:express:cta:uploadYourPhoto');
+  }
+});
+
+function trackVideoAnalytics(parameters) {
+  const {
+    videoName,
+    videoId,
+    videoLength,
+    product,
+    videoCategory,
+    videoDescription,
+    videoPlayer,
+    videoMediaType,
+  } = parameters;
+
+  set('video.videoInfo.videoName', videoName);
+  set('video.videoInfo.videoId', videoId);
+  set('video.videoInfo.videoLength', videoLength);
+  set('video.videoInfo.product', product);
+  set('video.videoInfo.videoCategory', videoCategory);
+  set('video.videoInfo.videoDescription', videoDescription);
+  set('video.videoInfo.videoPlayer', videoPlayer);
+  set('video.videoInfo.videoMediaType', videoMediaType);
+}
+
+function decorateAnalyticsEvents() {
+  // for tracking all of the links
+  d.addEventListener('click', (event) => {
+    if (event.target.tagName === 'A' || event.target.dataset.ll?.length) {
+      trackButtonClick(event.target);
+    }
+  });
+
+  // for tracking split action block notch and underlay background
+  d.addEventListener('splitactionloaded', () => {
+    const $notch = d.querySelector('main .split-action-container .notch');
+    const $underlay = d.querySelector('main .split-action-container .underlay');
+
+    if ($notch) {
+      $notch.addEventListener('click', () => {
+        trackButtonClick($notch);
+      });
+    }
+
+    if ($underlay) {
+      $underlay.addEventListener('click', () => {
+        trackButtonClick($underlay);
+      });
+    }
+  });
+
+  // Tracking any link or links that is added after page loaded.
+  d.addEventListener('linkspopulated', async (e) => {
+    await trackBranchParameters(e.detail);
+    e.detail.forEach(($link) => {
+      $link.addEventListener('click', () => {
+        trackButtonClick($link);
+      });
+    });
+  });
+
+  d.addEventListener('pricingdropdown', () => {
+    sendEventToAdobeAnaltics('adobe.com:express:pricing:bundleType:selected');
+  });
+
+  // tracking videos loaded asynchronously.
+  d.addEventListener('videoloaded', (e) => {
+    trackVideoAnalytics(e.detail.parameters);
+    _satellite.track('videoloaded');
+  });
+
+  d.addEventListener('videoclosed', (e) => {
+    sendEventToAdobeAnaltics(`adobe.com:express:cta:learn:columns:${e.detail.parameters.videoId}:videoClosed`);
+  });
+
+  // track non-click interactions
+  // BlockMediator triggered
+  import('./block-mediator.min.js').then((resp) => {
+    const { default: BlockMediator } = resp;
+    BlockMediator.subscribe('billing-plan', ({ newValue }) => {
+      sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:toggle:${newValue}`);
+    });
+  });
+}
+
+export default function decorateInteractionTrackingEvents() {
+  const $links = d.querySelectorAll('main a');
+
+  // for adding branch parameters to branch links
+  trackBranchParameters($links);
+
+  // for tracking the faq
+  d.querySelectorAll('main .faq-accordion').forEach(($a) => {
+    $a.addEventListener('click', () => {
+      trackButtonClick($a);
+    });
+  });
+
+  // for tracking the content toggle buttons
+  d.querySelectorAll('main .content-toggle button').forEach(($button) => {
+    $button.addEventListener('click', () => {
+      trackButtonClick($button);
+    });
+  });
+
+  // for tracking the choose your path links
+  d.querySelectorAll('main .choose-your-path div.choose-your-path-slide').forEach(($slide) => {
+    $slide.addEventListener('click', () => {
+      trackButtonClick($slide);
+    });
+  });
+
+  // for tracking just the sticky banner close button
+  const $button = d.querySelector('.sticky-promo-bar button.close');
+  if ($button) {
+    $button.addEventListener('click', () => {
+      sendEventToAdobeAnaltics('adobe.com:express:cta:startYourFreeTrial:close');
+    });
+  }
+
+  // for tracking just the commitment type dropdown on the pricing block
+  const $pricingDropdown = d.querySelector('.pricing-plan-dropdown');
+  if ($pricingDropdown) {
+    $pricingDropdown.addEventListener('change', () => {
+      sendEventToAdobeAnaltics('adobe.com:express:pricing:commitmentType:selected');
+    });
+  }
+
+  // Tracking any video column blocks.
+  const $columnVideos = d.querySelectorAll('.column-video');
+  if ($columnVideos.length) {
+    $columnVideos.forEach(($columnVideo) => {
+      const $parent = $columnVideo.closest('.columns');
+      const $a = $parent.querySelector('a');
+      const adobeEventName = appendLinkText(`adobe.com:express:cta:learn:columns:${sparkLandingPageType}:`, $a);
+
+      $parent.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sendEventToAdobeAnaltics(adobeEventName);
+      });
+    });
+  }
+
+  const toggleBar = d.querySelector('.toggle-bar.block');
+  if (toggleBar) {
+    const tgBtns = toggleBar.querySelectorAll('button.toggle-bar-button');
+
+    tgBtns.forEach((btn) => {
+      const textEl = btn.querySelector('.text-wrapper');
+      let texts = [];
+
+      if (textEl) {
+        let child = textEl.firstChild;
+        while (child) {
+          if (child.nodeType === 3) {
+            texts.push(child.data);
+          }
+          child = child.nextSibling;
+        }
+      }
+
+      texts = texts.join('') || textEl.textContent.trim();
+      const eventName = `adobe.com:express:homepage:intentToggle:${textToName(texts)}`;
+      btn.addEventListener('click', () => {
+        sendEventToAdobeAnaltics(eventName);
+      });
+    });
+  }
+
+  // for tracking the tab-ax tabs
+  d.querySelectorAll('main .tabs-ax .tab-list-container button[role="tab"]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      trackButtonClick(btn);
+    });
+  });
+
+  d.querySelectorAll('main .pricing-table .toggle-content').forEach((toggle) => {
+    toggle.addEventListener('click', () => {
+      const buttonEl = toggle.querySelector('span[role="button"]');
+      const action = buttonEl && buttonEl.getAttribute('aria-expanded') === 'true' ? 'closed' : 'opened';
+      sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:tableToggle:${action || ''}`);
+    });
+  });
+}
+
+const martechLoadedCB = () => {
+  /* eslint-disable no-underscore-dangle */
   //------------------------------------------------------------------------------------
   // gathering the data
   //------------------------------------------------------------------------------------
@@ -263,7 +705,6 @@ export default function martechLoadedCB() {
     if (pathname.includes('/video')) category = 'video';
   }
 
-  let sparkLandingPageType;
   // home
   if (
     pathname === '/express'
@@ -366,445 +807,6 @@ export default function martechLoadedCB() {
     sendEventToAdobeAnaltics('displayPurchasePanel');
   }
 
-  function textToName(text) {
-    const splits = text.toLowerCase().split(' ');
-    const camelCase = splits.map((s, i) => (i ? s.charAt(0).toUpperCase() + s.substr(1) : s)).join('');
-    return (camelCase);
-  }
-
-  function appendLinkText(eventName, a) {
-    let img;
-    let alt;
-
-    if (!a) return eventName;
-
-    if (a.getAttribute('title')?.trim()) {
-      return eventName + textToName(a.getAttribute('title').trim());
-    } else if (a.getAttribute('aria-label')?.trim()) {
-      return eventName + textToName(a.getAttribute('aria-label').trim());
-    } else if (a.textContent?.trim()) {
-      return eventName + textToName(a.textContent.trim());
-    } else {
-      img = a.querySelector('img');
-      alt = img && img.getAttribute('alt');
-      if (alt) {
-        return eventName + textToName(alt);
-      } else {
-        return eventName;
-      }
-    }
-  }
-
-  function trackButtonClick(a) {
-    let adobeEventName = 'adobe.com:express:cta:';
-    let hemingwayAssetId;
-    let hemingwayAssetPath;
-    let hemingwayAssetPosition;
-
-    const hemingwayAsset = a.querySelector('picture,video,audio,img')
-      || a.closest('[class*="-container"],[class*="-wrapper"]')?.querySelector('picture,video,audio,img');
-    const block = a.closest('.block');
-    if (hemingwayAsset && block) {
-      const { assetId, assetPath } = getAssetDetails(hemingwayAsset);
-      hemingwayAssetPath = assetPath;
-      hemingwayAssetId = assetId;
-
-      const siblings = [...block
-        .querySelectorAll(`.${a.className.split(' ').join('.')}`)];
-      hemingwayAssetPosition = siblings.indexOf(a);
-    }
-
-    const $templateContainer = a.closest('.template-list');
-    const $tutorialContainer = a.closest('.tutorial-card');
-    const $contentToggleContainer = a.closest('.content-toggle');
-    const $chooseYourPathContainer = a.closest('.choose-your-path');
-    // let cardPosition;
-    // Template button click
-    if ($templateContainer) {
-      adobeEventName += 'template:';
-
-      const $img = a.querySelector('img');
-
-      // try to get the image alternate text
-      if (a.classList.contains('template-title-link')) {
-        adobeEventName += 'viewAll';
-      } else if (a.classList.contains('placeholder')) {
-        adobeEventName += 'createFromScratch';
-      } else if ($img && $img.alt) {
-        adobeEventName += textToName($img.alt);
-      } else {
-        adobeEventName += 'Click';
-      }
-      // Button in the FAQ
-    } else if ($tutorialContainer) {
-      const videoName = textToName(a.querySelector('h3').textContent.trim());
-      adobeEventName = `${adobeEventName}tutorials:${videoName}:tutorialPressed`;
-    } else if ($chooseYourPathContainer) {
-      const $slideTitle = a.querySelector('.choose-your-path-slide-title');
-      const slideName = $slideTitle ? textToName($slideTitle.textContent.trim()) : 'slide';
-
-      adobeEventName = `${adobeEventName}chooseYourPath:${slideName}:slidePressed`;
-    } else if ($contentToggleContainer) {
-      const toggleName = textToName(a.textContent.trim());
-      adobeEventName = `${adobeEventName}contentToggle:${toggleName}:buttonPressed`;
-    } else if (a.classList.contains('floating-button-lottie')) {
-      adobeEventName = `${adobeEventName}floatingButton:scrollPressed`;
-    } else if (a.classList.contains('video-player-inline-player-overlay')) {
-      const sessionName = a.parentNode.parentNode.parentNode.querySelector('.video-player-session-number').textContent.trim();
-      const videoName = a.parentNode.parentNode.parentNode.querySelector('.video-player-video-title').textContent.trim();
-      adobeEventName = `${adobeEventName}playing:${sessionName}-${videoName}`;
-    } else if (a.classList.contains('notch')) {
-      adobeEventName = `${adobeEventName}splitAction:notch`;
-    } else if (a.classList.contains('underlay')) {
-      adobeEventName = `${adobeEventName}splitAction:background`;
-    } else if (a.parentElement.classList.contains('floating-button')) {
-      adobeEventName = `${adobeEventName}floatingButton:ctaPressed`;
-    } else if (a.closest('.faq')) {
-      adobeEventName = appendLinkText(`${adobeEventName}faq:`, a);
-      // CTA in the hero
-    } else if (a.closest('.hero')) {
-      adobeEventName = appendLinkText(`${adobeEventName}hero:`, a);
-      // Click in the pricing block
-    } else if (sparkLandingPageType === 'express-your-fandom') {
-      adobeEventName = appendLinkText(`${adobeEventName}${sparkLandingPageType}:`, a);
-    } else if (sparkLandingPageType === 'express-your-brand') {
-      adobeEventName = appendLinkText(`${adobeEventName}learn:${sparkLandingPageType}:`, a);
-    } else if (sparkLandingPageType === 'pricing') {
-      // edu link
-      if (a.pathname.includes('/edu')) {
-        adobeEventName += 'pricing:education:Click';
-        // business enterprise link
-      } else if (a.pathname.includes('business/enterprise')) {
-        adobeEventName += 'pricing:enterprise:Click';
-        // Creative cloud learn more
-      } else if (a.parentElement.id === 'adobe-spark-is-a-part-of-most-creative-cloud-paid-plans-learn-more') {
-        adobeEventName += 'pricing:creativeCloud:learnMore';
-      } else if (a.id === 'free-trial') {
-        adobeEventName += 'pricing:cta:StartForFree';
-      } else if (a.id === '3-month-trial') {
-        adobeEventName += 'pricing:cta:StartYour3MonthTrial';
-        // View plans
-      } else {
-        adobeEventName = 'adobe.com:express:CTA:pricing:viewPlans:Click';
-      }
-      // quick actions clicks
-    } else if (a.closest('ccl-quick-action') && a.classList.contains('upload-your-photo')) {
-      // this event is handled at mock-file-input level
-      return;
-    } else if (a.href && (a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?tools/g))) {
-      adobeEventName = appendLinkText(adobeEventName, a);
-    } else if (a.href && (a.href.match(/spark\.adobe\.com\/[a-zA-Z-]*\/?tools/g) || a.href.match(/express\.adobe\.com\/[a-zA-Z-]*\/?express-apps\/animate-from-audio/g))) {
-      adobeEventName = appendLinkText(adobeEventName, a);
-      // Frictionless Quick Actions clicks
-    } else if (a.closest('ccl-quick-action') && (a.getAttribute('data-action') === 'Download')) {
-      adobeEventName = 'quickAction:downloadPressed';
-    } else if (a.closest('ccl-quick-action') && (a.getAttribute('data-action') === 'Editor')) {
-      adobeEventName = 'quickAction:openInEditorPressed';
-    // ToC clicks
-    } else if (a.closest('.toc-container')) {
-      if (a.classList.contains('toc-toggle')) {
-        adobeEventName += 'toc:toggle:Click';
-      } else if (a.classList.contains('toc-close')) {
-        adobeEventName += 'toc:close:Click';
-      } else if (a.classList.contains('toc-handle')) {
-        adobeEventName += 'toc:close:Click:handle';
-      } else if (a.classList.contains('toc-wrapper')) {
-        adobeEventName += 'toc:close:Click:background';
-      } else {
-        adobeEventName = appendLinkText(`${adobeEventName}toc:link:Click:`, a);
-      }
-    } else if (a.closest('.template')) {
-      adobeEventName = appendLinkText(adobeEventName, a);
-    } else if (a.closest('.tabs-ax .tab-list-container')) {
-      adobeEventName += `${a.closest('.tabs-ax')?.id}:${a.id}`;
-    // Default clicks
-    } else {
-      adobeEventName = appendLinkText(adobeEventName, a);
-    }
-
-    // clicks using [data-lh and data-ll]
-    let trackingHeader = a.closest('[data-lh]');
-    if (trackingHeader || a.dataset.lh) {
-      adobeEventName = 'adobe.com:express';
-      let headerString = '';
-      while (trackingHeader) {
-        headerString = `:${textToName(trackingHeader.dataset.lh.trim())}${headerString}`;
-        trackingHeader = trackingHeader.parentNode.closest('[data-lh]');
-      }
-      adobeEventName += headerString;
-      if (a.dataset.ll) {
-        adobeEventName += `:${textToName(a.dataset.ll.trim())}`;
-      } else {
-        adobeEventName += `:${textToName(a.innerText.trim())}`;
-      }
-    }
-    if (window.hlx?.experiment) {
-      let prefix = '';
-      if (window.hlx.experiment?.id) prefix = `${window.hlx.experiment.id}:`;
-      if (window.hlx.experiment?.selectedVariant) {
-        let variant = window.hlx.experiment.selectedVariant;
-        if (variant.includes('-')) [, variant] = variant.split('-');
-        prefix += `${variant}:`;
-      }
-      adobeEventName = prefix + adobeEventName;
-    }
-
-    _satellite.track('event', {
-      xdm: {},
-      data: {
-        eventType: 'web.webinteraction.linkClicks',
-        web: {
-          webInteraction: {
-            name: adobeEventName,
-            linkClicks: {
-              value: 1,
-            },
-            type: 'other',
-          },
-        },
-        _adobe_corpnew: {
-          digitalData: {
-            primaryEvent: {
-              eventInfo: {
-                eventName: adobeEventName,
-              },
-            },
-            ...(hemingwayAsset
-              ? {
-                asset: {
-                  assetInfo: {
-                    assetId: hemingwayAssetId,
-                    assetPath: hemingwayAssetPath,
-                    assetPosition: hemingwayAssetPosition,
-                  },
-                },
-              }
-              : {}),
-          },
-        },
-      },
-    });
-  }
-
-  // Frictionless Quick Actions tracking events
-
-  function handleQuickActionEvents(el) {
-    let frictionLessQuctionActionsTrackingEnabled = false;
-    sendEventToAdobeAnaltics('quickAction:uploadPageViewed');
-    el[0].addEventListener('ccl-quick-action-complete', () => {
-      if (frictionLessQuctionActionsTrackingEnabled) {
-        return;
-      }
-      sendEventToAdobeAnaltics('quickAction:assetUploaded');
-      sendEventToAdobeAnaltics('project:editorDisplayed');
-      const $links = d.querySelectorAll('ccl-quick-action a');
-      // for tracking all of the links
-      $links.forEach(($a) => {
-        $a.addEventListener('click', () => {
-          trackButtonClick($a);
-        });
-      });
-      frictionLessQuctionActionsTrackingEnabled = true;
-    });
-  }
-
-  const cclQuickAction = d.getElementsByTagName('ccl-quick-action');
-  if (cclQuickAction.length) {
-    handleQuickActionEvents(cclQuickAction);
-  } else {
-    d.addEventListener('ccl-quick-action-rendered', (e) => {
-      if (e.target.tagName === 'CCL-QUICK-ACTION') {
-        handleQuickActionEvents(d.getElementsByTagName('ccl-quick-action'));
-      }
-    });
-  }
-
-  d.addEventListener('click', (e) => {
-    if (e.target.id === 'mock-file-input') {
-      sendEventToAdobeAnaltics('adobe.com:express:cta:uploadYourPhoto');
-    }
-  });
-
-  function trackVideoAnalytics(parameters) {
-    const {
-      videoName,
-      videoId,
-      videoLength,
-      product,
-      videoCategory,
-      videoDescription,
-      videoPlayer,
-      videoMediaType,
-    } = parameters;
-
-    set('video.videoInfo.videoName', videoName);
-    set('video.videoInfo.videoId', videoId);
-    set('video.videoInfo.videoLength', videoLength);
-    set('video.videoInfo.product', product);
-    set('video.videoInfo.videoCategory', videoCategory);
-    set('video.videoInfo.videoDescription', videoDescription);
-    set('video.videoInfo.videoPlayer', videoPlayer);
-    set('video.videoInfo.videoMediaType', videoMediaType);
-  }
-
-  function decorateAnalyticsEvents() {
-    const $links = d.querySelectorAll('main a');
-
-    // for adding branch parameters to branch links
-    trackBranchParameters($links);
-
-    // for tracking all of the links
-    d.addEventListener('click', (event) => {
-      if (event.target.tagName === 'A' || event.target.dataset.ll?.length) {
-        trackButtonClick(event.target);
-      }
-    });
-
-    // for tracking the faq
-    d.querySelectorAll('main .faq-accordion').forEach(($a) => {
-      $a.addEventListener('click', () => {
-        trackButtonClick($a);
-      });
-    });
-
-    // for tracking the content toggle buttons
-    d.querySelectorAll('main .content-toggle button').forEach(($button) => {
-      $button.addEventListener('click', () => {
-        trackButtonClick($button);
-      });
-    });
-
-    // for tracking the choose your path links
-    d.querySelectorAll('main .choose-your-path div.choose-your-path-slide').forEach(($slide) => {
-      $slide.addEventListener('click', () => {
-        trackButtonClick($slide);
-      });
-    });
-
-    // for tracking split action block notch and underlay background
-    d.addEventListener('splitactionloaded', () => {
-      const $notch = d.querySelector('main .split-action-container .notch');
-      const $underlay = d.querySelector('main .split-action-container .underlay');
-
-      if ($notch) {
-        $notch.addEventListener('click', () => {
-          trackButtonClick($notch);
-        });
-      }
-
-      if ($underlay) {
-        $underlay.addEventListener('click', () => {
-          trackButtonClick($underlay);
-        });
-      }
-    });
-
-    // for tracking just the sticky banner close button
-    const $button = d.querySelector('.sticky-promo-bar button.close');
-    if ($button) {
-      $button.addEventListener('click', () => {
-        sendEventToAdobeAnaltics('adobe.com:express:cta:startYourFreeTrial:close');
-      });
-    }
-
-    // for tracking just the commitment type dropdown on the pricing block
-    const $pricingDropdown = d.querySelector('.pricing-plan-dropdown');
-    if ($pricingDropdown) {
-      $pricingDropdown.addEventListener('change', () => {
-        sendEventToAdobeAnaltics('adobe.com:express:pricing:commitmentType:selected');
-      });
-    }
-
-    // Tracking any video column blocks.
-    const $columnVideos = d.querySelectorAll('.column-video');
-    if ($columnVideos.length) {
-      $columnVideos.forEach(($columnVideo) => {
-        const $parent = $columnVideo.closest('.columns');
-        const $a = $parent.querySelector('a');
-        const adobeEventName = appendLinkText(`adobe.com:express:cta:learn:columns:${sparkLandingPageType}:`, $a);
-
-        $parent.addEventListener('click', (e) => {
-          e.stopPropagation();
-          sendEventToAdobeAnaltics(adobeEventName);
-        });
-      });
-    }
-
-    const toggleBar = d.querySelector('.toggle-bar.block');
-    if (toggleBar) {
-      const tgBtns = toggleBar.querySelectorAll('button.toggle-bar-button');
-
-      tgBtns.forEach((btn) => {
-        const textEl = btn.querySelector('.text-wrapper');
-        let texts = [];
-
-        if (textEl) {
-          let child = textEl.firstChild;
-          while (child) {
-            if (child.nodeType === 3) {
-              texts.push(child.data);
-            }
-            child = child.nextSibling;
-          }
-        }
-
-        texts = texts.join('') || textEl.textContent.trim();
-        const eventName = `adobe.com:express:homepage:intentToggle:${textToName(texts)}`;
-        btn.addEventListener('click', () => {
-          sendEventToAdobeAnaltics(eventName);
-        });
-      });
-    }
-
-    // Tracking any link or links that is added after page loaded.
-    d.addEventListener('linkspopulated', async (e) => {
-      await trackBranchParameters(e.detail);
-      e.detail.forEach(($link) => {
-        $link.addEventListener('click', () => {
-          trackButtonClick($link);
-        });
-      });
-    });
-
-    d.addEventListener('pricingdropdown', () => {
-      sendEventToAdobeAnaltics('adobe.com:express:pricing:bundleType:selected');
-    });
-
-    // tracking videos loaded asynchronously.
-    d.addEventListener('videoloaded', (e) => {
-      trackVideoAnalytics(e.detail.parameters);
-      _satellite.track('videoloaded');
-    });
-
-    d.addEventListener('videoclosed', (e) => {
-      sendEventToAdobeAnaltics(`adobe.com:express:cta:learn:columns:${e.detail.parameters.videoId}:videoClosed`);
-    });
-
-    // for tracking the tab-ax tabs
-    d.querySelectorAll('main .tabs-ax .tab-list-container button[role="tab"]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        trackButtonClick(btn);
-      });
-    });
-
-    d.querySelectorAll('main .pricing-table .toggle-content').forEach((toggle) => {
-      toggle.addEventListener('click', () => {
-        const buttonEl = toggle.querySelector('span[role="button"]');
-        const action = buttonEl && buttonEl.getAttribute('aria-expanded') === 'true' ? 'closed' : 'opened';
-        sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:tableToggle:${action || ''}`);
-      });
-    });
-
-    // track non-click interactions
-    // BlockMediator triggered
-    import('./block-mediator.min.js').then((resp) => {
-      const { default: BlockMediator } = resp;
-      BlockMediator.subscribe('billing-plan', ({ newValue }) => {
-        sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:toggle:${newValue}`);
-      });
-    });
-  }
-
   const processed = {};
   function initHemingway() {
     // poll the dataLayer every 2 seconds
@@ -852,6 +854,7 @@ export default function martechLoadedCB() {
   }
 
   decorateAnalyticsEvents();
+  decorateInteractionTrackingEvents();
   initHemingway();
 
   const ENABLE_PRICING_MODAL_AUDIENCE = 'enablePricingModal';
@@ -914,6 +917,6 @@ export default function martechLoadedCB() {
   }
 
   __satelliteLoadedCallback(getAudiences);
-}
+};
 
 loadScript(martechURL).then(martechLoadedCB);
