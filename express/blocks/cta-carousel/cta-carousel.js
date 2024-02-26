@@ -156,9 +156,11 @@ async function decorateCards(block, payload) {
       }
 
       if ((block.classList.contains('quick-action') || block.classList.contains('gen-ai')) && cta.ctaLinks.length === 1) {
-        cta.ctaLinks[0].textContent = '';
-        cta.ctaLinks[0].classList.add('clickable-overlay');
-        cta.ctaLinks[0].removeAttribute('title');
+        const a = cta.ctaLinks[0];
+        a.removeAttribute('title');
+        a.setAttribute('aria-label', `quick action: ${cta.text.toLowerCase().trim()}`);
+        a.textContent = '';
+        a.classList.add('clickable-overlay');
       }
 
       cta.ctaLinks.forEach((a) => {
@@ -170,6 +172,7 @@ async function decorateCards(block, payload) {
             a.href = decodeURIComponent(btnUrl.toString());
           }
           a.removeAttribute('title');
+          a.setAttribute('aria-label', `${cta.text.toLowerCase().trim()} ${a.text.toLowerCase().trim()}`);
         }
         linksWrapper.append(a);
       });
