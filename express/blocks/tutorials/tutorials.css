@@ -1,20 +1,20 @@
-main .tutorials-container > div {
+main .section .tutorials-container > div {
   max-width: 1200px;
 }
 
-main .tutorials {
+main .section .tutorials {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin: 64px 72px;
 }
 
-main .tutorials .tutorial-card {
+main .section .tutorials .tutorial-card {
   width: 330px;
   margin: 16px 8px;
 }
 
-main .tutorials .tutorial-card .tutorial-card-top {
+main .section .tutorials .tutorial-card .tutorial-card-top {
   height: 200px;
   width: 330px;
   position: relative;
@@ -23,7 +23,7 @@ main .tutorials .tutorial-card .tutorial-card-top {
   overflow: hidden;
 }
 
-main .tutorials .tutorial-card-overlay {
+main .section .tutorials .tutorial-card-overlay {
   position: absolute;
   background-image: linear-gradient(#ffffff00, #90909025, #000000a0);
   right: 0;
@@ -37,37 +37,37 @@ main .tutorials .tutorial-card-overlay {
   cursor: pointer;
 }
 
-main .tutorials .tutorial-card-overlay .tutorial-card-play {
+main .section .tutorials .tutorial-card-overlay .tutorial-card-play {
   visibility: hidden;
   line-height: 0;
 }
 
-main .tutorials .tutorial-card-overlay .tutorial-card-play svg {
+main .section .tutorials .tutorial-card-overlay .tutorial-card-play svg {
   fill: var(--color-white);
   width: 32px;
   height: 32px;
 }
 
-main .tutorials .tutorial-card-overlay:hover {
+main .section .tutorials .tutorial-card-overlay:hover {
   background-image: linear-gradient(#00000080, #00000080);
 }
 
-main .tutorials .tutorial-card-overlay:hover .tutorial-card-play {
+main .section .tutorials .tutorial-card-overlay:hover .tutorial-card-play {
   visibility: visible;
 }
 
-main .tutorials .tutorial-card picture {
+main .section .tutorials .tutorial-card picture {
   z-index: -1;
 }
 
-main .tutorials .tutorial-card .tutorial-card-top .tutorial-card-duration {
+main .section .tutorials .tutorial-card .tutorial-card-top .tutorial-card-duration {
   border-radius: 16px;
   border: 2px solid white;
   padding: 3px 9px;
   font-size: var(--body-font-size-s);
 }
 
-main .tutorials h3 {
+main .section .tutorials h3 {
   margin-top: 16px;
   text-align: left;
   font-size: var(--body-font-size-l);

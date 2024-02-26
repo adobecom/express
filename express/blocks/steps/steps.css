@@ -1,5 +1,5 @@
 
-main .steps {
+main .section .steps {
   margin-top: 56px;
   display: -ms-grid;
   display: grid;
@@ -11,24 +11,24 @@ main .steps {
   margin-right: auto;
 }
 
-main .steps h2 {
+main .section .steps h2 {
   margin: 0;
 }
 
-main .steps h3 {
+main .section .steps h3 {
   font-size: var(--heading-font-size-s);
   text-align: left;
   line-height: 26px;
   margin-top: 0;
 }
 
-main .steps p {
+main .section .steps p {
   font-size: var(--body-font-size-s);
   text-align: left;
   margin: 4px 0;
 }
 
-main .steps > div {
+main .section .steps > div {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -38,19 +38,19 @@ main .steps > div {
   color: var(--color-white);
 }
 
-main .steps .step-image {
+main .section .steps .step-image {
   margin-right: 20px;
 }
 
-main .steps .step-image svg,
-main .steps .step-image img.icon {
+main .section .steps .step-image svg,
+main .section .steps .step-image img.icon {
   width: 40px;
   max-width: unset;
   height: 40px;
   margin: 4px 0;
 }
 
-main .steps .step-description {
+main .section .steps .step-description {
   width: 100%;
 }
 
@@ -92,7 +92,7 @@ main .section.steps-highlight-container .steps > div {
   color: var(--color-gray-800);
 }
 
-main .steps .icon {
+main .section .steps .icon {
   fill: currentColor;
   width: 24px;
   height: 24px;
@@ -108,12 +108,12 @@ main .steps .icon {
   main .section.steps-highlight-container > div {
     max-width: 950px;
   }
-  main .steps {
+  main .section .steps {
     -ms-grid-columns: 1fr 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr;
     max-width: none;
   }
-  main .steps > div {
+  main .section .steps > div {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
