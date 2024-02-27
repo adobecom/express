@@ -107,14 +107,11 @@ export default async function decorate(block) {
     const eligible = await awaitGatingResult;
     if (eligible) {
       block.remove();
-    } else {
-      const payload = buildPayload(block);
-      buildCard(block, payload);
-      initCycleCards(block, payload);
+      return;
     }
-  } else {
-    const payload = buildPayload(block);
-    buildCard(block, payload);
-    initCycleCards(block, payload);
   }
+
+  const payload = buildPayload(block);
+  buildCard(block, payload);
+  initCycleCards(block, payload);
 }

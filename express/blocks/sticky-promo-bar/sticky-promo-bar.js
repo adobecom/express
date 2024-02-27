@@ -62,16 +62,13 @@ export default async function decorate(block) {
       const eligible = await awaitGatingResult;
       if (eligible) {
         block.remove();
-      } else {
-        setTimeout(() => {
-          initScrollInteraction(block);
-        });
+        return;
       }
-    } else {
-      setTimeout(() => {
-        initScrollInteraction(block);
-      });
     }
+
+    setTimeout(() => {
+      initScrollInteraction(block);
+    });
   } else {
     setTimeout(() => {
       block.classList.add('shown');
