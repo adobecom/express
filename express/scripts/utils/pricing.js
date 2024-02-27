@@ -26,6 +26,7 @@ const currencies = {
   fi: 'EUR',
   fr: 'EUR',
   gb: 'GBP',
+  uk: 'GBP',
   gr: 'EUR',
   gt: 'USD',
   hk: 'HKD',
@@ -99,6 +100,7 @@ const currencies = {
   tt: 'USD',
   uy: 'USD',
   vn: 'USD',
+  tr: 'TRY',
 };
 
 function replaceUrlParam(url, paramName, paramValue) {
@@ -250,6 +252,7 @@ export function formatPrice(price, currency) {
   const customSymbols = {
     SAR: 'SR',
     CA: 'CAD',
+    EGP: 'LE',
   };
   const locale = ['USD', 'TWD'].includes(currency)
     ? 'en-GB' // use en-GB for intl $ symbol formatting
