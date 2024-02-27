@@ -145,20 +145,18 @@ const listenAlloy = () => {
   }
 
   const isMobileGating = ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile';
-  const mobileGatingRushed = ['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating'));
-  if (isMobileGating && mobileGatingRushed) {
+  const rushGating = ['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating').toLowerCase());
+  const runGating = () => {
     import('./mobile-beta-gating.js').then(async (gatingScript) => {
       gatingScript.default();
     });
-  }
+  };
+
+  isMobileGating && rushGating && runGating();
 
   await loadArea();
 
-  if (isMobileGating && !mobileGatingRushed) {
-    import('./mobile-beta-gating.js').then(async (gatingScript) => {
-      gatingScript.default();
-    });
-  }
+  isMobileGating && !rushGating && runGating();
 
   import('./express-delayed.js').then((mod) => {
     mod.default();
