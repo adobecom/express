@@ -26,6 +26,7 @@ const currencies = {
   fi: 'EUR',
   fr: 'EUR',
   gb: 'GBP',
+  uk: 'GBP',
   gr: 'EUR',
   gt: 'USD',
   hk: 'HKD',
@@ -63,7 +64,7 @@ const currencies = {
   za: 'USD',
   ae: 'USD',
   bh: 'BHD',
-  eg: 'EGP',
+  eg: 'LE',
   jo: 'JOD',
   kw: 'KWD',
   om: 'OMR',
@@ -99,6 +100,7 @@ const currencies = {
   tt: 'USD',
   uy: 'USD',
   vn: 'USD',
+  tr: 'TRY',
 };
 
 function replaceUrlParam(url, paramName, paramValue) {
