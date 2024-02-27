@@ -80,7 +80,7 @@ export default async function checkMobileBetaEligibility() {
     });
     const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
     benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
-    benchmarkWorker.onmessage = async (e) => {
+    benchmarkWorker.onmessage = (e) => {
       BlockMediator.set('mobileBetaEligibility', {
         deviceSupport: e.data <= MAX_EXEC_TIME_ALLOWED,
         data: 'Android cpuSpeedPass',
