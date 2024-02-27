@@ -121,6 +121,14 @@ const listenAlloy = () => {
   }, 5000);
 };
 
+function runGatingScript() {
+  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
+    import('./mobile-beta-gating.js').then(async (gatingScript) => {
+      gatingScript.default();
+    });
+  }
+}
+
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
@@ -144,12 +152,14 @@ const listenAlloy = () => {
     sessionStorage.setItem('imsclient', 'MarvelWeb3');
   }
 
+  if (['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating').toLowerCase())) {
+    runGatingScript();
+  }
+
   await loadArea();
 
-  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
-    import('./mobile-beta-gating.js').then(async (gatingScript) => {
-      gatingScript.default();
-    });
+  if (!['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating').toLowerCase())) {
+    runGatingScript();
   }
 
   import('./express-delayed.js').then((mod) => {

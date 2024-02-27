@@ -91,7 +91,7 @@ const buildCard = (block, payload) => {
   block.append(aTag);
 };
 
-export default function decorate(block) {
+export default async function decorate(block) {
   if (['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating'))) {
     let resolvePromise;
 
@@ -104,15 +104,14 @@ export default function decorate(block) {
       unsub();
     });
 
-    awaitGatingResult.then((eligible) => {
-      if (eligible) {
-        block.remove();
-      } else {
-        const payload = buildPayload(block);
-        buildCard(block, payload);
-        initCycleCards(block, payload);
-      }
-    });
+    const eligible = await awaitGatingResult;
+    if (eligible) {
+      block.remove();
+    } else {
+      const payload = buildPayload(block);
+      buildCard(block, payload);
+      initCycleCards(block, payload);
+    }
   } else {
     const payload = buildPayload(block);
     buildCard(block, payload);
