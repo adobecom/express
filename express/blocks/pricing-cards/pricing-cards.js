@@ -1,7 +1,10 @@
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 import {
-  buildUrl, formatSalesPhoneNumber, setVisitorCountry,
-  shallSuppressOfferEyebrowText, fetchPlanOnePlans,
+  buildUrl,
+  formatSalesPhoneNumber,
+  setVisitorCountry,
+  shallSuppressOfferEyebrowText,
+  fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
