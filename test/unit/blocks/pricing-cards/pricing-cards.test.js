@@ -1,6 +1,8 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
+import sinon from 'sinon';
 import { setConfig } from '../../../../express/scripts/utils.js';
+import { mockRes } from './../../../blocks/test-utilities.js'
 
 const locales = { '': { ietf: 'en-US', tk: 'hah7vzn.css' } };
 const conf = { locales };
@@ -11,11 +13,19 @@ document.body.innerHTML = await readFile({ path: './mocks/body.html' });
 describe('Pricing Cards', () => {
   let blocks;
   let cardCnts;
+  let fetchStub;
+
   before(async () => {
     window.isTestEnv = true;
     blocks = Array.from(document.querySelectorAll('.pricing-cards'));
     await Promise.all(blocks.map((block) => decorate(block)));
     cardCnts = (document.querySelector('div.card-cnts').textContent.split(',')).map((cnt) => parseInt(cnt, 10));
+    fetchStub = sinon.stub(window, 'fetch')
+  });
+
+  afterEach(() => {
+    // Restore the original functionality after each test
+    fetchStub.restore()
   });
 
   it('Pricing Cards exists', () => {
@@ -48,8 +58,29 @@ describe('Pricing Cards', () => {
   });
 
   it('Special and gradient promo classes are added', () => {
-    expect(document.querySelectorAll('.special-promo')).to.exist;
-    expect(document.querySelectorAll('.gradient-promo')).to.exist;
+    expect(document.querySelectorAll('.special-promo')).to.have.lengthOf.at.least(1)
+    expect(document.querySelectorAll('.gradient-promo')).to.have.lengthOf.at.least(1)
+  });
+
+  it('Expect the eyebrow / promo border of an offer with a null ID to be suppressed', async () => {
+    fetchStub.onCall(0).callsFake(() => mockRes({
+      payload: {
+        data: [
+          {
+            Key: 'free-plan-check-1',
+            Text: 'Free use forever',
+          },
+          {
+            Key: 'free-plan-check-2',
+            Text: 'No credit card required',
+          },
+        ]
+      }
+    }))
+    document.body.innerHTML = await readFile({ path: './mocks/pricingTests.html' });
+    blocks = Array.from(document.querySelectorAll('.pricing-cards'));
+    await Promise.all(blocks.map((block) => decorate(block))); 
+    expect(document.querySelectorAll('.special-promo')).to.have.lengthOf.at.least(0)
   });
   // TODO: add checks for pricing logic
   // TODO: add checks for optional/configurable elements
