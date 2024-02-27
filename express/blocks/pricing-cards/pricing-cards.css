@@ -117,6 +117,7 @@ Border style variants
   height: 20px;
   justify-content: center;
   align-items: center;
+  z-index: 3;
 }
 
 .pricing-cards .special-promo .card {
