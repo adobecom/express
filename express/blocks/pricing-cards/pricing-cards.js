@@ -9,6 +9,7 @@ const blockKeys = ['header', 'borderParams', 'explain', 'mPricingRow', 'mCtaGrou
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
 const SAVE_PERCENTAGE = 'savePercentage';
+const SALES_NUMBERS = '{{business-sales-numbers}}';
 
 function suppressOfferEyebrow(specialPromo, legacyVersion) {
   if (specialPromo.parentElement) {
@@ -136,12 +137,12 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo,
   return pricingSection;
 }
 
-function extractCurlyBracketsContent(inputString, card) {
+function readBraces(inputString, card) {
   if (!inputString) {
     return null;
   }
 
-  // Pattern to find text directly before the first {{...}} and all instances of {{...}}
+  // Pattern to find {{...}}
   const pattern = /(?<=\{\{).*?(?=\}\})/g;
   const matches = Array.from(inputString.trim().matchAll(pattern));
 
@@ -194,7 +195,7 @@ function decorateHeader(header, borderParams, card, cardBorder) {
   const h2 = header.querySelector('h2');
   // The raw text extracted from the word doc
   header.classList.add('card-header');
-  const specialPromo = extractCurlyBracketsContent(borderParams?.innerText, cardBorder);
+  const specialPromo = readBraces(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
   if (premiumIcon) h2.append(premiumIcon);
 
@@ -291,8 +292,6 @@ function decorateCard({
   decorateCompareSection(compare, el, card);
   return cardWrapper;
 }
-
-const SALES_NUMBERS = '{{business-sales-numbers}}';
 
 export default async function init(el) {
   // For backwards compatability with old versions of the pricing card
