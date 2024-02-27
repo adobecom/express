@@ -1,4 +1,5 @@
-import { createTag } from '../../scripts/utils.js';
+import { createTag, getMetadata } from '../../scripts/utils.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const typeWord = (textSpan, word, textWrapper, cta) => new Promise((resolve) => {
   const typingSpeed = 100;
@@ -91,7 +92,30 @@ const buildCard = (block, payload) => {
 };
 
 export default function decorate(block) {
-  const payload = buildPayload(block);
-  buildCard(block, payload);
-  initCycleCards(block, payload);
+  if (['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating'))) {
+    let resolvePromise;
+
+    const awaitGatingResult = new Promise((resolve) => {
+      resolvePromise = resolve;
+    });
+
+    const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
+      resolvePromise(e.newValue.deviceSupport);
+      unsub();
+    });
+
+    awaitGatingResult.then((eligible) => {
+      if (eligible) {
+        block.remove();
+      } else {
+        const payload = buildPayload(block);
+        buildCard(block, payload);
+        initCycleCards(block, payload);
+      }
+    });
+  } else {
+    const payload = buildPayload(block);
+    buildCard(block, payload);
+    initCycleCards(block, payload);
+  }
 }

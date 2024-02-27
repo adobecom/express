@@ -1,33 +1,8 @@
 import BlockMediator from './block-mediator.min.js';
-import { getMobileOperatingSystem, loadArea } from './utils.js';
+import { getMobileOperatingSystem } from './utils.js';
 
 const MAX_EXEC_TIME_ALLOWED = 500;
 const TOTAL_PRIME_NUMBER = 10000;
-
-function setMetadata(name, content, attribute = 'name') {
-  if (name.toLowerCase() === 'title') {
-    document.title = content;
-    return;
-  }
-
-  if (name.toLowerCase() === 'favicon') {
-    const linkElement = document.querySelector('link[rel="icon"]') || document.createElement('link');
-    linkElement.rel = 'icon';
-    linkElement.href = content;
-    document.head.appendChild(linkElement);
-    return;
-  }
-
-  const existingMeta = document.querySelector(`meta[${attribute}="${name}"]`);
-  if (existingMeta) {
-    existingMeta.content = content;
-  } else {
-    const metaElement = document.createElement('meta');
-    metaElement.setAttribute(attribute, name);
-    metaElement.content = content;
-    document.head.appendChild(metaElement);
-  }
-}
 
 export function isIOS16AndUp(userAgent = navigator.userAgent) {
   if (/iPhone/i.test(userAgent)) {
@@ -92,24 +67,19 @@ export async function preBenchmarkCheck() {
   return [null, 'needs benchmark'];
 }
 
-function initWebWorker() {
-  const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
-    const expireDate = new Date();
-    const month = (expireDate.getMonth() + 1) % 12;
-    expireDate.setMonth(month);
-    if (month === 0) expireDate.setFullYear(expireDate.getFullYear() + 1);
-    document.cookie = `device-support=${e.newValue.deviceSupport};domain=adobe.com;expires=${expireDate.toUTCString()};path=/`;
-    unsubscribe();
-  });
-  const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
-  benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
-  return benchmarkWorker;
-}
-
 export default async function checkMobileBetaEligibility() {
   const [eligible, reason] = await preBenchmarkCheck();
   if (reason === 'needs benchmark') {
-    const benchmarkWorker = initWebWorker();
+    const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
+      const expireDate = new Date();
+      const month = (expireDate.getMonth() + 1) % 12;
+      expireDate.setMonth(month);
+      if (month === 0) expireDate.setFullYear(expireDate.getFullYear() + 1);
+      document.cookie = `device-support=${e.newValue.deviceSupport};domain=adobe.com;expires=${expireDate.toUTCString()};path=/`;
+      unsubscribe();
+    });
+    const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
+    benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
     benchmarkWorker.onmessage = async (e) => {
       const isEligible = e.data <= MAX_EXEC_TIME_ALLOWED;
       BlockMediator.set('mobileBetaEligibility', {
@@ -125,36 +95,5 @@ export default async function checkMobileBetaEligibility() {
         reason,
       },
     });
-  }
-}
-
-export async function rushCheckMobileBetaEligibility() {
-  const [eligible, reason] = await preBenchmarkCheck();
-  if (reason === 'needs benchmark') {
-    const benchmarkWorker = initWebWorker();
-    benchmarkWorker.onmessage = async (e) => {
-      const isEligible = e.data <= MAX_EXEC_TIME_ALLOWED;
-      BlockMediator.set('mobileBetaEligibility', {
-        deviceSupport: isEligible,
-        data: 'Android cpuSpeedPass',
-      });
-
-      if (!isEligible) {
-        setMetadata('betaineligibledevice', 'on');
-      }
-      await loadArea();
-      benchmarkWorker.terminate();
-    };
-  } else {
-    if (!eligible) {
-      setMetadata('betaineligibledevice', 'on');
-    }
-    BlockMediator.set('mobileBetaEligibility', {
-      deviceSupport: eligible,
-      data: {
-        reason,
-      },
-    });
-    await loadArea();
   }
 }

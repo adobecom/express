@@ -1,9 +1,13 @@
-import { createTag } from '../../scripts/utils.js';
+import { createTag, getMetadata } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function initScrollInteraction(block) {
-  const inBodyBanner = block.nextElementSibling;
-  if (!inBodyBanner) return;
+  const inBodyBanner = block.cloneNode(true);
+  inBodyBanner.dataset.blockStatus = 'loaded';
+  inBodyBanner.classList.add('clone');
+  block.classList.add('inbody');
+  block.after(inBodyBanner);
+
   const intersectionCallback = (entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting && inBodyBanner.getBoundingClientRect().top < 0) {
@@ -22,7 +26,7 @@ function initScrollInteraction(block) {
   observer.observe(inBodyBanner);
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const close = createTag('button', {
     class: 'close',
     'aria-label': 'close',
@@ -43,14 +47,32 @@ export default function decorate(block) {
   });
 
   if (block.classList.contains('loadinbody')) {
-    const inBodyBanner = block.cloneNode(true);
-    inBodyBanner.dataset.blockStatus = 'loaded';
-    inBodyBanner.classList.add('clone');
-    block.classList.add('inbody');
-    block.after(inBodyBanner);
-    setTimeout(() => {
-      initScrollInteraction(block);
-    });
+    if (['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating'))) {
+      let resolvePromise;
+
+      const awaitGatingResult = new Promise((resolve) => {
+        resolvePromise = resolve;
+      });
+
+      const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
+        resolvePromise(e.newValue.deviceSupport);
+        unsub();
+      });
+
+      awaitGatingResult.then((eligible) => {
+        if (eligible) {
+          block.remove();
+        } else {
+          setTimeout(() => {
+            initScrollInteraction(block);
+          });
+        }
+      });
+    } else {
+      setTimeout(() => {
+        initScrollInteraction(block);
+      });
+    }
   } else {
     setTimeout(() => {
       block.classList.add('shown');

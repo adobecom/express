@@ -144,19 +144,12 @@ const listenAlloy = () => {
     sessionStorage.setItem('imsclient', 'MarvelWeb3');
   }
 
+  await loadArea();
+
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
-    if (['yes', 'true', 'on'].includes(getMetadata('rush-beta-gating').toLowerCase())) {
-      import('./mobile-beta-gating.js').then(async (gatingScript) => {
-        gatingScript.rushCheckMobileBetaEligibility();
-      });
-    } else {
-      await loadArea();
-      import('./mobile-beta-gating.js').then(async (gatingScript) => {
-        gatingScript.default();
-      });
-    }
-  } else {
-    await loadArea();
+    import('./mobile-beta-gating.js').then(async (gatingScript) => {
+      gatingScript.default();
+    });
   }
 
   import('./express-delayed.js').then((mod) => {
