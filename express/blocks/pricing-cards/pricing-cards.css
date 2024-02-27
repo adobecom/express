@@ -75,8 +75,8 @@ Border style variants
 */
 
 .pricing-cards .gradient-promo .card {
-  background-color: white;
-
+  background-color: white; 
+  margin-bottom: 5px;
 }
 
 .pricing-cards .gradient-promo>div:first-of-type {
@@ -90,7 +90,7 @@ Border style variants
 .pricing-cards .gradient-promo {
   background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
   padding: 12px 4px 4px 4px;
-  border-radius: 24px;
+  border-radius: 16px;
   overflow: hidden;
   background: var(--color-white);
   margin-top: 0px !important;
