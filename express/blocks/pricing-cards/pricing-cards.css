@@ -50,7 +50,7 @@ End legacy CSS
 
 .pricing-cards .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, calc(83px + var(--card-width)));
+  grid-template-columns: repeat(auto-fit, calc(var(--card-width)));
   grid-template-rows: repeat(auto-fit, minmax(311px, 1fr));
   justify-content: center;
   gap: 16px;
