@@ -70,7 +70,7 @@ export async function preBenchmarkCheck() {
 export default async function checkMobileBetaEligibility() {
   const [eligible, reason] = await preBenchmarkCheck();
   if (reason === 'needs benchmark') {
-    const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
+    const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
       const expireDate = new Date();
       const month = (expireDate.getMonth() + 1) % 12;
       expireDate.setMonth(month);
@@ -81,9 +81,8 @@ export default async function checkMobileBetaEligibility() {
     const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
     benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
     benchmarkWorker.onmessage = async (e) => {
-      const isEligible = e.data <= MAX_EXEC_TIME_ALLOWED;
       BlockMediator.set('mobileBetaEligibility', {
-        deviceSupport: isEligible,
+        deviceSupport: e.data <= MAX_EXEC_TIME_ALLOWED,
         data: 'Android cpuSpeedPass',
       });
       benchmarkWorker.terminate();
