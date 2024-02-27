@@ -276,7 +276,7 @@ div[class='section section-wrapper floating-panel-container'] {
     align-items: center;
 }
 
-.block.floating-panel p.button-container .button.gradient img.icon.icon-premium {
+.block.floating-panel p.button-container .button.gradient img.icon {
     width: 22px;
     height: 22px;
     margin-right: 8px;

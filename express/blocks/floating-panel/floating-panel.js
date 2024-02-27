@@ -51,7 +51,7 @@ function decorateButtons(buttons) {
 
       if (parentEl.tagName === 'STRONG') {
         btn.classList.add('gradient');
-        btn.prepend(getIconElement('premium'));
+        btn.prepend(getIconElement('premium-crown-white'));
       }
 
       parentEl.parentElement.replaceChild(btn, parentEl);
@@ -69,7 +69,7 @@ async function buildTimeline() {
   const placeholders = await fetchPlaceholders();
   const timeline = createTag('div', { class: 'timeline' });
   const todayWrapper = createTag('div', { class: 'time-wrapper time-today' }, getIconElement('premium'));
-  const reminderDayWrapper = createTag('div', { class: 'time-wrapper time-reminder' }, getIconElement('clock-white'));
+  const reminderDayWrapper = createTag('div', { class: 'time-wrapper time-reminder' }, getIconElement('bell-white'));
   const endDayWrapper = createTag('div', { class: 'time-wrapper time-end' }, getIconElement('clock-white'));
 
   [todayWrapper, reminderDayWrapper, endDayWrapper].forEach((w, i) => {
