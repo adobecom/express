@@ -276,6 +276,10 @@ div[class='section section-wrapper floating-panel-container'] {
     align-items: center;
 }
 
+.block.floating-panel p.button-container .button.hidden {
+    display: none;
+}
+
 .block.floating-panel p.button-container .button.gradient img.icon {
     width: 22px;
     height: 22px;

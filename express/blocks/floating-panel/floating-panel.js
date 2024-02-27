@@ -1,5 +1,4 @@
 // no block wrapper dependency
-import BlockMediator from '../../scripts/block-mediator.min.js';
 import {
   lazyLoadLottiePlayer,
   getIconElement,
@@ -14,15 +13,15 @@ import {
 let panelFragmentUrl;
 let panelFragment;
 
-function initScrollWatcher(block) {
+function initObserver(elem, observeTargets) {
   const hideOnIntersect = new IntersectionObserver((entries) => {
     const notIntersecting = entries.every((entry) => !entry.isIntersecting);
 
     if (notIntersecting) {
-      block.classList.remove('hidden');
+      elem.classList.remove('hidden');
     } else {
-      block.classList.add('hidden');
-      block.classList.remove('expanded');
+      elem.classList.add('hidden');
+      elem.classList.remove('expanded');
     }
   }, {
     root: null,
@@ -30,13 +29,9 @@ function initScrollWatcher(block) {
     threshold: 0,
   });
 
-  const primaryCta = BlockMediator.get('primaryCtaUrl');
-
-  const pageCta = document.querySelector(`.section a.primaryCTA[href='${primaryCta}']`, `.section. a.cta[href='${primaryCta}']`, `.section. a.button[href='${primaryCta}']`);
-  const footer = document.querySelector('footer');
-
-  if (pageCta) hideOnIntersect.observe(pageCta);
-  if (footer) hideOnIntersect.observe(footer);
+  observeTargets.forEach((t) => {
+    hideOnIntersect.observe(t);
+  });
 }
 
 function decorateButtons(buttons) {
@@ -60,6 +55,9 @@ function decorateButtons(buttons) {
     }
 
     btn.classList.add('button', 'xlarge');
+
+    const sameHrefButtonsOnPage = Array.from(document.querySelectorAll(`a[href='${btn.href}']`)).filter((b) => btn !== b);
+    initObserver(btn, sameHrefButtonsOnPage);
   });
 }
 
@@ -100,7 +98,77 @@ async function buildTimeline() {
   return timeline;
 }
 
-export default async function decorateBlock(block) {
+function initBlockInteraction(block) {
+  const topContainer = createTag('div', { class: 'top-container' });
+  const closeButton = createTag('a', { class: 'close-panel-button' }, getIconElement('close-white'));
+  let timeline;
+  topContainer.prepend(closeButton);
+  block.prepend(topContainer);
+
+  block.addEventListener('mouseenter', async () => {
+    if (!timeline) {
+      timeline = await buildTimeline();
+      const contentRow = block.querySelector('.content-container');
+      contentRow.after(timeline);
+    }
+
+    if (!panelFragment) {
+      panelFragment = await fetchPlainBlockFromFragment(panelFragmentUrl.pathname, 'columns');
+      const columnsBlock = panelFragment.querySelector('.columns.block');
+
+      if (columnsBlock) {
+        await fixIcons(columnsBlock);
+        const columnInnerDiv = columnsBlock.querySelector(':scope > div');
+
+        if (columnInnerDiv) {
+          topContainer.append(columnInnerDiv);
+        }
+      }
+    }
+
+    block.classList.add('expanded');
+  });
+
+  closeButton.addEventListener(('click'), () => {
+    block.classList.remove('expanded');
+  }, { passive: true });
+
+  block.addEventListener('mouseleave', async () => {
+    block.classList.remove('expanded');
+  });
+
+  const buttons = block.querySelectorAll('a.button');
+  const config = { attributes: true, childList: false, subtree: false };
+  const buttonsObj = {};
+
+  const observer = new MutationObserver((mutationList) => {
+    for (const mutation of mutationList) {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        const btn = mutation.target;
+        buttonsObj[btn] = !btn.classList.contains('hidden');
+      }
+    }
+
+    const allButtonsHidden = Object.values(buttonsObj).every((v) => !v);
+
+    if (allButtonsHidden) {
+      block.classList.add('hidden');
+      block.classList.remove('expanded');
+    } else {
+      block.classList.remove('hidden');
+    }
+  });
+
+  buttons.forEach((btn) => {
+    buttonsObj[btn] = true;
+    observer.observe(btn, config);
+  });
+
+  const footer = document.querySelector('footer');
+  initObserver(block, [footer]);
+}
+
+export default async function decorate(block) {
   const bottomCont = createTag('div', { class: 'bottom-container' });
   lazyLoadLottiePlayer();
   Array.from(block.children).forEach((row, index) => {
@@ -131,40 +199,6 @@ export default async function decorateBlock(block) {
   });
 
   block.append(bottomCont);
-  initScrollWatcher(block);
 
-  const topContainer = createTag('div', { class: 'top-container' });
-  const closeButton = createTag('a', { class: 'close-panel-button' }, getIconElement('close-white'));
-  topContainer.prepend(closeButton);
-  block.prepend(topContainer);
-
-  block.addEventListener('mouseenter', async () => {
-    if (!panelFragment) {
-      const timeline = await buildTimeline();
-      const contentRow = block.querySelector('.content-container');
-      contentRow.after(timeline);
-
-      panelFragment = await fetchPlainBlockFromFragment(panelFragmentUrl.pathname, 'columns');
-      const columnsBlock = panelFragment.querySelector('.columns.block');
-
-      if (columnsBlock) {
-        await fixIcons(columnsBlock);
-        const columnInnerDiv = columnsBlock.querySelector(':scope > div');
-
-        if (columnInnerDiv) {
-          topContainer.append(columnInnerDiv);
-        }
-      }
-    }
-
-    block.classList.add('expanded');
-  });
-
-  closeButton.addEventListener(('click'), () => {
-    block.classList.remove('expanded');
-  }, { passive: true });
-
-  block.addEventListener('mouseleave', async () => {
-    block.classList.remove('expanded');
-  });
+  initBlockInteraction(block);
 }
