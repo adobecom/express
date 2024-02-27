@@ -64,7 +64,7 @@ const currencies = {
   za: 'USD',
   ae: 'USD',
   bh: 'BHD',
-  eg: 'LE',
+  eg: 'EGP',
   jo: 'JOD',
   kw: 'KWD',
   om: 'OMR',
@@ -252,6 +252,7 @@ export function formatPrice(price, currency) {
   const customSymbols = {
     SAR: 'SR',
     CA: 'CAD',
+    EGP: 'LE',
   };
   const locale = ['USD', 'TWD'].includes(currency)
     ? 'en-GB' // use en-GB for intl $ symbol formatting
