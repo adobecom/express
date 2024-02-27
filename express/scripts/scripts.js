@@ -121,14 +121,6 @@ const listenAlloy = () => {
   }, 5000);
 };
 
-function runGatingScript() {
-  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
-    import('./mobile-beta-gating.js').then(async (gatingScript) => {
-      gatingScript.default();
-    });
-  }
-}
-
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   setConfig(config);
@@ -152,14 +144,20 @@ function runGatingScript() {
     sessionStorage.setItem('imsclient', 'MarvelWeb3');
   }
 
-  if (['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating').toLowerCase())) {
-    runGatingScript();
+  const isMobileGating = ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile';
+  const mobileGatingRushed = ['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating'));
+  if (isMobileGating && mobileGatingRushed) {
+    import('./mobile-beta-gating.js').then(async (gatingScript) => {
+      gatingScript.default();
+    });
   }
 
   await loadArea();
 
-  if (!['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating').toLowerCase())) {
-    runGatingScript();
+  if (isMobileGating && !mobileGatingRushed) {
+    import('./mobile-beta-gating.js').then(async (gatingScript) => {
+      gatingScript.default();
+    });
   }
 
   import('./express-delayed.js').then((mod) => {
