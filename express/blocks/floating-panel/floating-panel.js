@@ -30,7 +30,7 @@ function initObserver(elem, observeTargets) {
   });
 
   observeTargets.forEach((t) => {
-    hideOnIntersect.observe(t);
+    if (t) hideOnIntersect.observe(t);
   });
 }
 
