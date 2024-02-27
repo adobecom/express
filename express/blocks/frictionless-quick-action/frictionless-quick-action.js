@@ -44,7 +44,7 @@ function fade(element, action) {
 }
 
 function startSDK(data) {
-  const CDN_URL = 'https://sdk-pr-builds.cc-embed.adobe.com/PR-1339/PR-1339/CCEverywhere.js';
+  const CDN_URL = 'https://dev.cc-embed.adobe.com/sdk/prbuilds/1p/PR-1366/CCEverywhere.js';
   loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
       return;
@@ -95,23 +95,39 @@ function startSDK(data) {
     await fade(uploadContainer, 'out');
     window.history.pushState({ hideDropzone: true }, '', '');
 
-    ccEverywhere.openQuickAction({
-      id: quickAction,
-      inputParams: {
-        asset: {
-          data,
-          dataType: 'base64',
-          type: 'image',
-        },
-        exportOptions,
-      },
-      modalParams: {
-        metaData: { isFrictionlessQa: true },
-        parentElementId: `${quickAction}-container`,
-        backgroundColor: 'transparent',
-        hideCloseButton: true,
-      },
-    });
+    const modalParams = {
+      metaData: { isFrictionlessQa: true },
+      parentElementId: `${quickAction}-container`,
+      backgroundColor: 'transparent',
+      hideCloseButton: true
+    };
+    const docConfig = {};
+    const appConfig = { receiveQuickActionErrors: false, editorTitle: "test" };
+    const exportConfig = { exportOptions };
+    switch (quickAction) {
+      case 'convert-to-jpg':
+        ccEverywhere.quickAction.convertToJPEG(docConfig, appConfig, exportConfig, modalParams);
+        break;
+      case 'convert-to-png':
+        ccEverywhere.quickAction.convertToPNG(docConfig, appConfig, exportConfig, modalParams);
+        break;
+      case 'convert-to-svg':
+        ccEverywhere.quickAction.convertToSVG(docConfig, appConfig, exportConfig, modalParams);
+        break;
+      case 'crop-image':
+        ccEverywhere.quickAction.cropImage(docConfig, appConfig, exportConfig, modalParams);
+        break;
+      case 'resize-image':
+        ccEverywhere.quickAction.resizeImage(docConfig, appConfig, exportConfig, modalParams);
+        break;
+      case 'remove-background':
+        ccEverywhere.quickAction.removeBackground(docConfig, appConfig, exportConfig, modalParams);
+        break;
+      case 'generate-qr-code':
+        ccEverywhere.quickAction.generateQRCode(docConfig, appConfig, exportConfig, modalParams);
+        break;
+      default: break;
+    }
   });
 }
 
