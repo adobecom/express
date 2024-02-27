@@ -48,7 +48,7 @@ async function checkGeo(userGeo, userLocale, geoCheckForce) {
 
 function loadIMS() {
   window.adobeid = {
-    client_id: 'MarvelWeb3',
+    client_id: sessionStorage.getItem('imsclient'),
     scope: 'AdobeID,openid',
     locale: getConfig().locale.region,
     environment: 'prod',

@@ -231,7 +231,7 @@ export const formatSalesPhoneNumber = (() => {
     }
 
     if (!numbersMap?.data) return;
-    const country = getCountry();
+    const country = getCountry() || 'us';
     tags.forEach((a) => {
       const r = numbersMap.data.find((d) => d.country === country);
 
