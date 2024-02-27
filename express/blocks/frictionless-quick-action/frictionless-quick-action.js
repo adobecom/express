@@ -93,7 +93,6 @@ function startSDK(data) {
     const divs = fqaBlock.querySelectorAll(':scope > div');
     if (divs[1]) [, uploadContainer] = divs;
     await fade(uploadContainer, 'out');
-    window.history.pushState({ hideDropzone: true }, '', '');
 
     ccEverywhere.openQuickAction({
       id: quickAction,
@@ -123,6 +122,7 @@ function startSDKWithUnconvertedFile(file) {
 
     reader.onloadend = function () {
       console.log('Base64 string:', reader.result);
+      window.history.pushState({ hideDropzone: true }, '', '');
       startSDK(reader.result);
     };
 
