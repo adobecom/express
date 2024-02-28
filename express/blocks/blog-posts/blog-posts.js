@@ -194,17 +194,6 @@ const loadImage = (img) => new Promise((resolve) => {
   }
 });
 
-// Load the bounding rect in async mode.
-async function isInViewport(element) {
-  const rect = await element.getBoundingClientRect();
-  return (
-    rect.top >= 0
-    && rect.left >= 0
-    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-    && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  );
-}
-
 // Translates the Read More string into the local language
 async function getReadMoreString() {
   const placeholders = await fetchPlaceholders();
@@ -348,8 +337,7 @@ async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
   if (images.length) {
     const section = blogPostsElements.closest('.section');
     section.style.display = 'block';
-    const filteredImages = images.filter(async (i) => isInViewport(i));
-    const imagePromises = filteredImages.map((img) => loadImage(img));
+    const imagePromises = images.map((img) => loadImage(img));
     await Promise.all(imagePromises);
     delete section.style.display;
   }

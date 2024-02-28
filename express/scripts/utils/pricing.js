@@ -26,6 +26,7 @@ const currencies = {
   fi: 'EUR',
   fr: 'EUR',
   gb: 'GBP',
+  uk: 'GBP',
   gr: 'EUR',
   gt: 'USD',
   hk: 'HKD',
@@ -99,6 +100,7 @@ const currencies = {
   tt: 'USD',
   uy: 'USD',
   vn: 'USD',
+  tr: 'TRY',
 };
 
 function replaceUrlParam(url, paramName, paramValue) {
@@ -181,19 +183,12 @@ function getCurrencyDisplay(currency) {
   return 'symbol';
 }
 
-export async function setVisitorCountry() {
-  if (!sessionStorage.getItem('visitorCountry')) {
-    const resp = await fetch('https://geo2.adobe.com/json/');
-    if (resp.ok) {
-      const json = await resp.json();
-      sessionStorage.setItem('visitorCountry', json.country.toLowerCase());
-    }
-  }
-}
-
 function getCountry() {
+  const userGeo = window.feds && window.feds.data && window.feds.data.location && window.feds.data.location.country
+        ? window.feds.data.location.country 
+        : null;
   const urlParams = new URLSearchParams(window.location.search);
-  let country = urlParams.get('country') || getCookie('international') || getConfig().locale.prefix.replace('/', '');
+  let country = urlParams.get('country') || getCookie('international') || userGeo || getConfig().locale.prefix.replace('/', '');
   if (country === 'uk') country = 'gb';
   return (country.split('_')[0]);
 }
@@ -231,7 +226,7 @@ export const formatSalesPhoneNumber = (() => {
     }
 
     if (!numbersMap?.data) return;
-    const country = getCountry();
+    const country = getCountry() || 'us';
     tags.forEach((a) => {
       const r = numbersMap.data.find((d) => d.country === country);
 
@@ -250,6 +245,7 @@ export function formatPrice(price, currency) {
   const customSymbols = {
     SAR: 'SR',
     CA: 'CAD',
+    EGP: 'LE',
   };
   const locale = ['USD', 'TWD'].includes(currency)
     ? 'en-GB' // use en-GB for intl $ symbol formatting
