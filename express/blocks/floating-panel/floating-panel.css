@@ -67,7 +67,7 @@ div[class='section section-wrapper floating-panel-container'] {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    padding: 24px 24px 24px 24px;
+    padding: 24px 64px;
     background: #F8F8F8;
 }
 
@@ -141,13 +141,16 @@ div[class='section section-wrapper floating-panel-container'] {
 .block.floating-panel .top-container > div {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 24px
+    justify-content: space-evenly;
 }
 
 .block.floating-panel .top-container > div > div {
     flex: 1 1 0;
-    max-width: 44%;
+    max-width: 50%;
+}
+
+.block.floating-panel .top-container > div > div:last-of-type {
+    max-width: 43%;
 }
 
 .block.floating-panel .top-container picture img {
