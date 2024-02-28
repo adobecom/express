@@ -195,8 +195,8 @@ const loadImage = (img) => new Promise((resolve) => {
 });
 
 // Load the bounding rect in async mode.
-async function isInViewport(element) {
-  const rect = element.getBoundingClientRect();
+ function isInViewport(element) {
+  const rect =  element.getBoundingClientRect();
   return (
     rect.top >= 0
     && rect.left >= 0
@@ -348,7 +348,7 @@ async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
   if (images.length) {
     const section = blogPostsElements.closest('.section');
     section.style.display = 'block';
-    const filteredImages = images.filter((i) => isInViewport(i));
+    const filteredImages = images.filter((i) =>  isInViewport(i));
     const imagePromises = filteredImages.map((img) => loadImage(img));
     await Promise.all(imagePromises);
     delete section.style.display;
