@@ -1,5 +1,5 @@
-import BlockMediator from "../../scripts/block-mediator.min.js";
-import { createTag, fetchPlaceholders } from "../../scripts/utils.js";
+import BlockMediator from '../../scripts/block-mediator.min.js';
+import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
 import {
   buildUrl,
