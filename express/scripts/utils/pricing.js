@@ -184,9 +184,12 @@ function getCurrencyDisplay(currency) {
 }
 
 function getCountry() {
-  const userGeo = window.feds && window.feds.data && window.feds.data.location && window.feds.data.location.country
-        ? window.feds.data.location.country 
-        : null;
+  const userGeo = window.feds
+  && window.feds.data
+  && window.feds.data.location
+  && window.feds.data.location.country
+    ? window.feds.data.location.country
+    : null;
   const urlParams = new URLSearchParams(window.location.search);
   let country = urlParams.get('country') || getCookie('international') || userGeo || getConfig().locale.prefix.replace('/', '');
   if (country === 'uk') country = 'gb';

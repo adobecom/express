@@ -1,8 +1,8 @@
-import buildCarousel from "../shared/carousel.js";
-import { createTag } from "../../scripts/utils.js";
+import buildCarousel from '../shared/carousel.js';
+import { createTag } from '../../scripts/utils.js';
 
 import {
-  fetchPlan, buildUrl, setVisitorCountry, shallSuppressOfferEyebrowText,
+  fetchPlan, buildUrl, shallSuppressOfferEyebrowText,
 } from '../../scripts/utils/pricing.js';
 
 function handleHeader(column) {
