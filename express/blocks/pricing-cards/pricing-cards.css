@@ -103,6 +103,14 @@ Border style variants
   border: 1px solid #FFE600;
 }
 
+.pricing-cards .card-border.special-promo{
+  border-radius: 4px;
+}
+
+.pricing-cards .card-border.special-promo .card {
+  border-style: none;
+}
+
 .pricing-cards .special-promo>div:first-of-type {
   position: relative;
   width: fit-content;
