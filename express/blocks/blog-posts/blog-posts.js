@@ -348,8 +348,7 @@ async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
   if (images.length) {
     const section = blogPostsElements.closest('.section');
     section.style.display = 'block';
-    const filteredImages = images.filter(async (i) => isInViewport(i));
-    const imagePromises = filteredImages.map((img) => loadImage(img));
+    const imagePromises = images.map(async(img) => isInViewport(i) && loadImage(img));
     await Promise.all(imagePromises);
     delete section.style.display;
   }
