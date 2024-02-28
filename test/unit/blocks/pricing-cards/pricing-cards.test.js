@@ -2,7 +2,7 @@ import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 import sinon from 'sinon';
 import { setConfig } from '../../../../express/scripts/utils.js';
-import { mockRes } from './../../../blocks/test-utilities.js'
+import { mockRes } from '../../../blocks/test-utilities.js';
 
 const locales = { '': { ietf: 'en-US', tk: 'hah7vzn.css' } };
 const conf = { locales };
@@ -20,12 +20,12 @@ describe('Pricing Cards', () => {
     blocks = Array.from(document.querySelectorAll('.pricing-cards'));
     await Promise.all(blocks.map((block) => decorate(block)));
     cardCnts = (document.querySelector('div.card-cnts').textContent.split(',')).map((cnt) => parseInt(cnt, 10));
-    fetchStub = sinon.stub(window, 'fetch')
+    fetchStub = sinon.stub(window, 'fetch');
   });
 
   afterEach(() => {
     // Restore the original functionality after each test
-    fetchStub.restore()
+    fetchStub.restore();
   });
 
   it('Pricing Cards exists', () => {
@@ -58,8 +58,8 @@ describe('Pricing Cards', () => {
   });
 
   it('Special and gradient promo classes are added', () => {
-    expect(document.querySelectorAll('.special-promo')).to.have.lengthOf.at.least(1)
-    expect(document.querySelectorAll('.gradient-promo')).to.have.lengthOf.at.least(1)
+    expect(document.querySelectorAll('.special-promo')).to.have.lengthOf.at.least(1);
+    expect(document.querySelectorAll('.gradient-promo')).to.have.lengthOf.at.least(1);
   });
 
   it('Expect the eyebrow / promo border of an offer with a null ID to be suppressed', async () => {
@@ -74,13 +74,13 @@ describe('Pricing Cards', () => {
             Key: 'free-plan-check-2',
             Text: 'No credit card required',
           },
-        ]
-      }
-    }))
+        ],
+      },
+    }));
     document.body.innerHTML = await readFile({ path: './mocks/pricingTests.html' });
     blocks = Array.from(document.querySelectorAll('.pricing-cards'));
-    await Promise.all(blocks.map((block) => decorate(block))); 
-    expect(document.querySelectorAll('.special-promo')).to.have.lengthOf.at.least(0)
+    await Promise.all(blocks.map((block) => decorate(block)));
+    expect(document.querySelectorAll('.special-promo')).to.have.lengthOf.at.least(0);
   });
   // TODO: add checks for pricing logic
   // TODO: add checks for optional/configurable elements
