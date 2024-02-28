@@ -336,7 +336,7 @@ async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
 
   if (images.length) {
     const section = blogPostsElements.closest('.section');
-    section.style.display = 'block'; 
+    section.style.display = 'block';
     const imagePromises = images.map((img) => loadImage(img));
     await Promise.all(imagePromises);
     delete section.style.display;
