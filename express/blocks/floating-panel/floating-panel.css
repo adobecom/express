@@ -133,7 +133,7 @@ div[class='section section-wrapper floating-panel-container'] {
     content: '';
     position: absolute;
     width: 88px;
-    border: 2px dotted var(--color-info-accent);
+    border: 2px dashed var(--color-info-accent);
     left: calc(100% - 20px);
     top: 18px;
 }
@@ -193,7 +193,7 @@ div[class='section section-wrapper floating-panel-container'] {
 }
 
 .block.floating-panel.hidden {
-    bottom: -150px;
+    bottom: -164px;
 }
 
 .block.floating-panel .content-container {
