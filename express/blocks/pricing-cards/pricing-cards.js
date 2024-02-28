@@ -1,12 +1,12 @@
-import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
+import BlockMediator from "../../scripts/block-mediator.min.js";
+import { createTag, fetchPlaceholders } from "../../scripts/utils.js";
+
 import {
   buildUrl,
   formatSalesPhoneNumber,
-  setVisitorCountry,
   shallSuppressOfferEyebrowText,
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const blockKeys = ['header', 'borderParams', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
@@ -312,7 +312,6 @@ export default async function init(el) {
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
-  setVisitorCountry();
   cards
     .map((card) => decorateCard(card, el, placeholders, legacyVersion))
     .forEach((card) => cardsContainer.append(card));
