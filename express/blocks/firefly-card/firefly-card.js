@@ -94,15 +94,19 @@ const buildCard = (block, payload) => {
 export default async function decorate(block) {
   if (['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating'))) {
     let resolvePromise;
-
+    const eligibility = BlockMediator.get('mobileBetaEligibility');
     const awaitGatingResult = new Promise((resolve) => {
       resolvePromise = resolve;
     });
 
-    const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
-      resolvePromise(e.newValue.deviceSupport);
-      unsub();
-    });
+    if (!eligibility) {
+      const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
+        resolvePromise(e.newValue.deviceSupport);
+        unsub();
+      });
+    } else {
+      resolvePromise(eligibility.deviceSupport);
+    }
 
     const eligible = await awaitGatingResult;
     if (eligible) {
