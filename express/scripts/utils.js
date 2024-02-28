@@ -656,7 +656,7 @@ export async function decorateBlock(block) {
             caseInsensitiveParams[name.toLowerCase()] = value.toLowerCase();
           }
           showWithSearchParam = caseInsensitiveParams[featureFlag];
-          blockRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(featureFlag.toLowerCase()) !== 'on';
+          blockRemove = showWithSearchParam ? showWithSearchParam !== 'on' : getMetadata(featureFlag.toLowerCase()) !== 'on';
         });
       }
       if (blockRemove) {
@@ -1963,7 +1963,8 @@ async function buildAutoBlocks($main) {
   }
 
   async function loadPromoFrag() {
-    const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
+    if (document.querySelector('.sticky-promo-bar')) return;
+    const fragment = await fetchPlainBlockFromFragment(`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`, 'sticky-promo-bar');
     if (!fragment) return;
     $main.append(fragment);
     const block = fragment?.querySelector('.sticky-promo-bar.block');
