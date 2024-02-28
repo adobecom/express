@@ -150,11 +150,12 @@ div[class='section section-wrapper floating-panel-container'] {
 }
 
 .block.floating-panel .top-container > div > div:last-of-type {
-    max-width: 43%;
+    max-width: 404px;
 }
 
 .block.floating-panel .top-container picture img {
     object-fit: cover;
+    height: 100%;
 }
 
 .block.floating-panel .top-container h2,
@@ -172,10 +173,12 @@ div[class='section section-wrapper floating-panel-container'] {
     align-items: center;
 }
 
-.block.floating-panel .top-container p img.icon {
+.block.floating-panel .top-container p img.icon,
+.block.floating-panel .top-container p svg.icon {
     margin-right: 16px;
     height: 24px;
     width: 24px;
+    fill: var(--color-black);
 }
 
 .block.floating-panel .top-container p a {

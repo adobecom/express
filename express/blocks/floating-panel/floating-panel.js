@@ -126,7 +126,7 @@ function initBlockInteraction(block) {
       }
     }
 
-    block.classList.add('expanded');
+    if (!block.classList.contains('hidden')) block.classList.add('expanded');
   });
 
   closeButton.addEventListener(('click'), () => {
