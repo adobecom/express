@@ -92,7 +92,7 @@ const buildCard = (block, payload) => {
 };
 
 export default async function decorate(block) {
-  if (['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating'))) {
+  if (['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating')) && ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
     let resolvePromise;
     const eligibility = BlockMediator.get('mobileBetaEligibility');
     const awaitGatingResult = new Promise((resolve) => {
