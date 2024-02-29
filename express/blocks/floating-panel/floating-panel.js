@@ -10,9 +10,6 @@ import {
   getConfig,
 } from '../../scripts/utils.js';
 
-let panelFragmentUrl;
-let panelFragment;
-
 function initObserver(elem, observeTargets) {
   const hideOnIntersect = new IntersectionObserver((entries) => {
     const notIntersecting = entries.every((entry) => !entry.isIntersecting);
@@ -61,7 +58,7 @@ function decorateButtons(buttons) {
   });
 }
 
-async function buildTimeline() {
+async function buildTimeline(props) {
   const today = new Date();
   const ietf = getConfig().locale.ietf || 'en-US';
   const placeholders = await fetchPlaceholders();
@@ -80,14 +77,18 @@ async function buildTimeline() {
       statusWrapper.textContent = placeholders['full-access'] || 'Full access';
     }
 
-    if (i === 1) {
-      const reminderDate = new Date(new Date().setDate(today.getDate() + 23));
+    if (i === 1 && props.trialTimeline[0]) {
+      const reminderDate = new Date(
+        new Date().setDate(today.getDate() + parseInt(props.trialTimeline[0], 10)),
+      );
       textWrapper.textContent = reminderDate.toLocaleDateString(ietf);
       statusWrapper.textContent = placeholders['reminder-email'] || 'Reminder email';
     }
 
-    if (i === 2) {
-      const endDate = new Date(new Date().setDate(today.getDate() + 30));
+    if (i === 2 && props.trialTimeline[1]) {
+      const endDate = new Date(
+        new Date().setDate(today.getDate() + parseInt(props.trialTimeline[1], 10)),
+      );
       textWrapper.textContent = endDate.toLocaleDateString(ietf);
       statusWrapper.textContent = placeholders['free-trial-ends'] || 'Free trial ends';
     }
@@ -98,7 +99,7 @@ async function buildTimeline() {
   return timeline;
 }
 
-function initBlockInteraction(block) {
+function initBlockInteraction(block, props) {
   const topContainer = createTag('div', { class: 'top-container' });
   const closeButton = createTag('a', { class: 'close-panel-button' }, getIconElement('close-white'));
   let timeline;
@@ -107,14 +108,14 @@ function initBlockInteraction(block) {
 
   block.addEventListener('mouseenter', async () => {
     if (!timeline) {
-      timeline = await buildTimeline();
+      timeline = await buildTimeline(props);
       const contentRow = block.querySelector('.content-container');
       contentRow.after(timeline);
     }
 
-    if (!panelFragment) {
-      panelFragment = await fetchPlainBlockFromFragment(panelFragmentUrl.pathname, 'columns');
-      const columnsBlock = panelFragment.querySelector('.columns.block');
+    if (!props.panelFragment) {
+      props.panelFragment = await fetchPlainBlockFromFragment(props.panelFragmentUrl.pathname, 'columns');
+      const columnsBlock = props.panelFragment.querySelector('.columns.block');
 
       if (columnsBlock) {
         await fixIcons(columnsBlock);
@@ -133,9 +134,9 @@ function initBlockInteraction(block) {
     block.classList.remove('expanded');
   }, { passive: true });
 
-  block.addEventListener('mouseleave', async () => {
-    block.classList.remove('expanded');
-  });
+  // block.addEventListener('mouseleave', async () => {
+  //   block.classList.remove('expanded');
+  // });
 
   const buttons = block.querySelectorAll('a.button');
   const config = { attributes: true, childList: false, subtree: false };
@@ -169,6 +170,7 @@ function initBlockInteraction(block) {
 }
 
 export default async function decorate(block) {
+  const props = {};
   const bottomCont = createTag('div', { class: 'bottom-container' });
   lazyLoadLottiePlayer();
   Array.from(block.children).forEach((row, index) => {
@@ -193,12 +195,25 @@ export default async function decorate(block) {
     }
 
     if (index === 2) {
-      panelFragmentUrl = new URL(row.querySelector('a:any-link')?.href);
+      props.panelFragmentUrl = new URL(row.querySelector('a:any-link')?.href);
+      row.remove();
+    }
+
+    if (index === 3) {
+      const cols = row.querySelectorAll(':scope > div');
+
+      const [key, val] = cols;
+
+      if (key?.textContent.trim().toLowerCase() === 'trial-timeline') {
+        const [reminder, end] = val.textContent.replaceAll(' ', '').split(',');
+        props.trialTimeline = [reminder, end];
+      }
+
       row.remove();
     }
   });
 
   block.append(bottomCont);
 
-  initBlockInteraction(block);
+  initBlockInteraction(block, props);
 }

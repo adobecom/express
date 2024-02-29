@@ -59,7 +59,7 @@ div[class='section section-wrapper floating-panel-container'] {
     border-radius: 20px 20px 0 0;
     background: var(--color-black);
     color: var(--color-black);
-    transition: max-height 0.4s, background-color 0.4s;
+    transition: max-height 0.6s ease, background-color 0.2s ease, padding 0.6s ease;
 }
 
 .block.floating-panel.expanded .top-container {
@@ -67,7 +67,7 @@ div[class='section section-wrapper floating-panel-container'] {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    padding: 24px 64px;
+    padding: 24px;
     background: #F8F8F8;
 }
 
@@ -141,7 +141,7 @@ div[class='section section-wrapper floating-panel-container'] {
 .block.floating-panel .top-container > div {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    gap: 48px;
 }
 
 .block.floating-panel .top-container > div > div {
@@ -163,6 +163,7 @@ div[class='section section-wrapper floating-panel-container'] {
 .block.floating-panel .top-container h4 {
     font-size: var(--heading-font-size-m);
     text-align: left;
+    color: var(--color-gray-800);
 }
 
 .block.floating-panel .top-container p {
@@ -171,6 +172,7 @@ div[class='section section-wrapper floating-panel-container'] {
     margin: 18px 0;
     display: flex;
     align-items: center;
+    color: var(--color-gray-800);
 }
 
 .block.floating-panel .top-container p img.icon,
@@ -178,7 +180,7 @@ div[class='section section-wrapper floating-panel-container'] {
     margin-right: 16px;
     height: 24px;
     width: 24px;
-    fill: var(--color-black);
+    fill: var(--color-gray-800);
 }
 
 .block.floating-panel .top-container p a {
@@ -186,7 +188,7 @@ div[class='section section-wrapper floating-panel-container'] {
 }
 
 .block.floating-panel .top-container .close-panel-button {
-    background: var(--color-black);
+    background: var(--color-gray-800);
     padding: 16px;
     border-radius: 50%;
     min-height: 16px;
@@ -206,10 +208,8 @@ div[class='section section-wrapper floating-panel-container'] {
     display: flex;
     align-items: center;
     gap: 16px;
-    max-width: 530px;
     overflow: hidden;
     width: 100%;
-    transition: max-width 0.4s;
 }
 
 .block.floating-panel .content-container .toggle-button {
@@ -219,10 +219,6 @@ div[class='section section-wrapper floating-panel-container'] {
     border-radius: 50%;
     min-height: 16px;
     min-width: 16px;
-}
-
-.block.floating-panel.expanded .content-container {
-    display: none;
 }
 
 .block.floating-panel.expanded .content-container {
