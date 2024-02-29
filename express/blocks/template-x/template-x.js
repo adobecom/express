@@ -1410,6 +1410,23 @@ function importSearchBar(block, blockMediator) {
           }
         };
 
+        const onSearchSubmit = async () => {
+          searchBar.disabled = true;
+          sampleRUM('search', {
+            source: block.dataset.blockName,
+            target: searchBar.value,
+          }, 1);
+          await redirectSearch();
+        };
+
+        const handleSubmitInteraction = async (item) => {
+          if (item.query !== searchBar.value) {
+            searchBar.value = item.query;
+            searchBar.dispatchEvent(new Event('input'));
+          }
+          await onSearchSubmit();
+        };
+
         searchForm.addEventListener('submit', async (event) => {
           event.preventDefault();
           searchBar.disabled = true;
@@ -1436,10 +1453,14 @@ function importSearchBar(block, blockMediator) {
               const li = createTag('li', { tabindex: 0 });
               const valRegEx = new RegExp(searchBar.value, 'i');
               li.innerHTML = item.query.replace(valRegEx, `<b>${searchBarVal}</b>`);
-              li.addEventListener('click', () => {
-                if (item.query === searchBar.value) return;
-                searchBar.value = item.query;
-                searchBar.dispatchEvent(new Event('input'));
+              li.addEventListener('click', async () => {
+                await handleSubmitInteraction(item);
+              });
+
+              li.addEventListener('keydown', async (event) => {
+                if (event.key === 'Enter' || event.keyCode === 13) {
+                  await handleSubmitInteraction(item);
+                }
               });
 
               li.addEventListener('keydown', (event) => {

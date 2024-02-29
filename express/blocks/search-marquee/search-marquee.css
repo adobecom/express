@@ -134,6 +134,7 @@ main .search-marquee .search-bar-wrapper {
 }
 
 main .search-marquee .search-bar-wrapper .search-bar {
+    scroll-margin: 65px;
     box-sizing: border-box;
     margin: 0;
     font-family: var(--body-font-family);
