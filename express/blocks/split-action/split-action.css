@@ -96,7 +96,7 @@ main .split-action > .buttons-wrapper > a.button:last-of-type {
     margin: 8px 0 0 0;
 }
 
-main .split-action > .buttons-wrapper > a.button[target="_self"] {
+main .split-action > .buttons-wrapper > a.button:first-of-type {
     padding: 14px 11px;
     display: unset;
     background-color: transparent;

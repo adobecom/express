@@ -1021,11 +1021,14 @@ function toggleMasonryView(block, props, button, toggleButtons) {
 
 function initViewToggle(block, props, toolBar) {
   const toggleButtons = toolBar.querySelectorAll('.view-toggle-button ');
-  block.classList.add('sm-view');
-  block.parentElement.classList.add('sm-view');
-  toggleButtons[0].classList.add('active');
+  const authoredViewIndex = ['sm', 'md', 'lg'].findIndex((size) => getMetadata('initial-template-view')?.toLowerCase().trim() === size);
+  const initViewIndex = authoredViewIndex === -1 ? 0 : authoredViewIndex;
 
-  toggleButtons.forEach((button) => {
+  toggleButtons.forEach((button, index) => {
+    if (index === initViewIndex) {
+      toggleMasonryView(block, props, button, toggleButtons);
+    }
+
     button.addEventListener('click', () => {
       toggleMasonryView(block, props, button, toggleButtons);
     }, { passive: true });
@@ -1538,6 +1541,7 @@ async function buildTemplateList(block, props, type = []) {
     const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
     const textWrapper = block.querySelector('.template-title .text-wrapper > div');
     const tabsWrapper = createTag('div', { class: 'template-tabs' });
+    const tabBtns = [];
 
     const promises = [];
 
@@ -1552,6 +1556,7 @@ async function buildTemplateList(block, props, type = []) {
         const tabBtn = createTag('button', { class: 'template-tab-button' });
         tabBtn.textContent = tabs[index];
         tabsWrapper.append(tabBtn);
+        tabBtns.push(tabBtn);
 
         const [[task]] = taskObj;
 
@@ -1596,6 +1601,8 @@ async function buildTemplateList(block, props, type = []) {
           }
         }, { passive: true });
       });
+
+      document.dispatchEvent(new CustomEvent('linkspopulated', { detail: tabBtns }));
     }
 
     textWrapper.append(tabsWrapper);
