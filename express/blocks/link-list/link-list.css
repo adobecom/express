@@ -1,5 +1,10 @@
+main .section > div.link-list-wrapper {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 main .link-list-container > div,
-main .link-list-center-container > div {
+main .link-list-centered-container > div {
   max-width: 1200px;
 }
 
@@ -44,33 +49,6 @@ main .link-list a.button.secondary {
   margin: 6px 0;
 }
 
-@media (min-width: 900px) {
-  main .link-list-container > div,
-  main .link-list-center-container > div {
-    padding: 0 50px;
-  }
-
-  main .link-list {
-    text-align: left;
-  }
-
-  main .link-list h2,
-  main .link-list h3,
-  main .link-list h4 {
-    text-align: left;
-  }
-}
-
-@media (min-width: 1200px) {
-  main .link-list-container > div,
-  main .link-list-center-container > div {
-      padding: 0 55px;
-  }
-}
-
-
-/* Carousel styles (Link-list specific) */
-
 /* Remove max-width on mobile breakpoints */
 main .section.link-list-container,
 main .section.link-list-container > div,
@@ -111,40 +89,6 @@ main .link-list .carousel-platform p.button-container:first-child {
 
 main .link-list.centered .carousel-platform p.button-container:first-child {
   margin-left: unset;
-}
-
-@media (min-width: 900px) {
-  main .link-list .carousel-platform {
-    scroll-padding: 0;
-  }
-
-  main .section.link-list-container > div,
-  main .section.link-list-center-container > div {
-    max-width: 1200px;
-  }
-
-  main .section.link-list-container > div, main .link-list-center-container > div {
-    padding: 0 50px;
-  }
-}
-
-@media (min-width: 1200px) {
-  main .section.link-list-container > div,
-  main .section.link-list-center-container > div {
-    padding: 0 55px;
-  }
-
-  main .section.link-list-container > div,
-  main .section.link-list-center-container > div {
-    max-width: 1200px;
-  }
-}
-
-@media (max-width: 900px) {
-  main .section > div.link-list-wrapper {
-    padding-left: 0;
-    padding-right: 0;
-  }
 }
 
 /* fullwidth variant */
@@ -207,7 +151,7 @@ main .link-list.shaded p.button-container .button {
 }
 
 main .link-list.shaded p.button-container .button:hover,
-main .link-list.shaded p.button-container .button.active {
+main .link-list.shaded p.button-container.active .button {
   background-color: var(--color-white);
 }
 
@@ -225,7 +169,40 @@ main .section.link-list-fullwidth-leftalign-container ~ .section {
   padding-top: 0;
 }
 
+main .link-list.large p.button-container .button {
+  padding: 12px 24px;
+  border-radius: 24px;
+}
+
 @media (min-width: 900px) {
+  main .link-list-container > div,
+  main .link-list-centered-container > div {
+    padding: 0 50px;
+  }
+
+  main .link-list {
+    text-align: left;
+  }
+
+  main .link-list h2,
+  main .link-list h3,
+  main .link-list h4 {
+    text-align: left;
+  }
+
+  main .link-list .carousel-platform {
+    scroll-padding: 0;
+  }
+
+  main .section.link-list-container > div,
+  main .section.link-list-centered-container > div {
+    max-width: 1200px;
+  }
+
+  main .section.link-list-container > div, main .link-list-centered-container > div {
+    padding: 0 50px;
+  }
+
   main .section.link-list-fullwidth-leftalign-container > div.link-list-wrapper .link-list,
   main .section.link-list-fullwidth-leftalign-container > div.link-list-wrapper .link-list h2,
   main .section.link-list-fullwidth-leftalign-container > div.link-list-wrapper .link-list h3,
@@ -235,5 +212,17 @@ main .section.link-list-fullwidth-leftalign-container ~ .section {
 
   main .section.link-list-fullwidth-leftalign-container .link-list .carousel-platform p.button-container:first-child {
     margin-left: 10px;
+  }
+}
+
+@media (min-width: 1200px) {
+  main .link-list-container > div,
+  main .link-list-centered-container > div {
+    padding: 0 55px;
+  }
+
+  main .section.link-list-container > div,
+  main .section.link-list-centered-container > div {
+    max-width: 1200px;
   }
 }

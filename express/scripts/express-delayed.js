@@ -27,6 +27,25 @@ function getSegmentsFromAlloyResponse(response) {
   return ids;
 }
 
+async function isSignedIn() {
+  if (window.adobeProfile?.getUserProfile()) return true;
+  if (window.feds.events?.profile_data) return false; // data ready -> not signed in
+  let resolve;
+  const resolved = new Promise((r) => {
+    resolve = r;
+  });
+  window.addEventListener('feds.events.profile_data.loaded', () => {
+    resolve();
+  }, { once: true });
+  // if not ready, abort
+  await Promise.race([resolved, new Promise((r) => setTimeout(r, 5000))]);
+  if (window.adobeProfile?.getUserProfile() === null) {
+    // retry after 1s
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+  return window.adobeProfile?.getUserProfile();
+}
+
 // product entry prompt
 async function canPEP() {
   if (document.body.dataset.device !== 'desktop') return false;
@@ -34,9 +53,9 @@ async function canPEP() {
   if (!pepSegment) return false;
   const placeholders = await fetchPlaceholders();
   if (!placeholders.cancel || !placeholders['pep-header'] || !placeholders['pep-cancel']) return false;
-  if (!window.adobeProfile?.getUserProfile()) return false;
   const segments = getSegmentsFromAlloyResponse(await window.alloyLoader);
-  return pepSegment.replace(/\s/g, '').split(',').some((pepSeg) => segments.includes(pepSeg));
+  if (!pepSegment.replace(/\s/g, '').split(',').some((pepSeg) => segments.includes(pepSeg))) return false;
+  return !!(await isSignedIn());
 }
 
 const PEP_DELAY = 3000;

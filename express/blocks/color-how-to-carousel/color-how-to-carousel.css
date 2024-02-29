@@ -210,6 +210,10 @@
         margin-top: 24px;
     }
 
+    .color-how-to-carousel.top-align > .img-wrapper {
+        margin-top: unset;
+    }
+
     .color-how-to-carousel > .img-wrapper .color-graph-text-overlay .color-name {
         font-size: var(--heading-font-size-m);
     }
