@@ -58,7 +58,7 @@ div[class='section section-wrapper floating-panel-container'] {
     padding: 24px 24px 0 24px;
     border-radius: 20px 20px 0 0;
     background: var(--color-black);
-    color: var(--color-black);
+    color: var(--color-gray-800);
     transition: max-height 0.6s ease, background-color 0.2s ease, padding 0.6s ease;
 }
 
@@ -110,6 +110,7 @@ div[class='section section-wrapper floating-panel-container'] {
 
 .block.floating-panel .bottom-container .timeline .time-wrapper {
     position: relative;
+    color: var(--color-gray-800);
 }
 
 .block.floating-panel .bottom-container .timeline .time-today img.icon {
