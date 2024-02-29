@@ -235,7 +235,8 @@ export async function fetchTemplatesCategoryCount(props, tasks) {
 
 export async function fetchTemplates(props) {
   // api rejects 10000+
-  if (props.start > 9999) {
+  const start = parseInt(props.start, 10);
+  if (Number.isInteger(start) && start > 9999) {
     return { response: null, fallbackMsg: await getFallbackMsg() };
   }
   // different strategies w/o toolBar
