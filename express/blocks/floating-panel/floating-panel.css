@@ -45,7 +45,7 @@ div[class='section section-wrapper floating-panel-container'] {
     padding: 0 24px 24px 24px;
     border-radius: 0 0 20px 20px;
     max-height: 56px;
-    transition: background-color 0.4s;
+    transition: background-color 0.4s, padding 0.6s ease;
 }
 
 .block.floating-panel .top-container {
