@@ -94,10 +94,11 @@ Border style variants
   border-radius: 16px;
   overflow: hidden;
   background: var(--color-white);
-  margin-top: 0px !important;
+  margin-top: -4px !important;
   display: flex;
   flex-direction: column;
 }
+
 
 .pricing-cards .special-promo {
   border: 1px solid #FFE600;
@@ -137,6 +138,10 @@ Border style variants
 /*
 End border style variants
 */
+
+.pricing-cards .card-border {
+  margin-top: 44px;
+}
 
 .pricing-cards .card-border .hide {
   display: none;
