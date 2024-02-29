@@ -39,7 +39,20 @@ function handlelize(str) {
     .toLowerCase(); // To lowercase
 }
 
+async function getTemplates(response, phs, fallbackMsg) {
+  const filtered = response.items.filter((item) => isValidTemplate(item));
+  const templates = await Promise.all(filtered.map((template) => renderTemplate(template, phs)));
+  return {
+    fallbackMsg,
+    templates,
+  };
+}
+
 async function fetchAndRenderTemplates(props) {
+  import('../../scripts/mobile-beta-gating.js').then((gatingScript) => {
+    gatingScript.default();
+  });
+
   const [placeholders, { response, fallbackMsg }] = await Promise.all(
     [fetchPlaceholders(), fetchTemplates(props)],
   );
@@ -58,12 +71,8 @@ async function fetchAndRenderTemplates(props) {
 
   props.total = response.metadata.totalHits;
 
-  return {
-    fallbackMsg,
-    templates: response.items
-      .filter((item) => isValidTemplate(item))
-      .map((template) => renderTemplate(template, placeholders)),
-  };
+  // eslint-disable-next-line no-return-await
+  return await getTemplates(response, placeholders, fallbackMsg);
 }
 
 async function processContentRow(block, props) {
@@ -300,7 +309,7 @@ function populateTemplates(block, props, templates) {
   }
 }
 
-function updateLoadMoreButton(block, props, loadMore) {
+function updateLoadMoreButton(props, loadMore) {
   if (props.start === '') {
     loadMore.style.display = 'none';
   } else {
@@ -325,7 +334,7 @@ async function decorateNewTemplates(block, props, options = { reDrawMasonry: fal
   props.masonry.draw(newCells);
 
   if (loadMore) {
-    updateLoadMoreButton(block, props, loadMore);
+    updateLoadMoreButton(props, loadMore);
   }
 }
 
@@ -1606,7 +1615,7 @@ async function buildTemplateList(block, props, type = []) {
   if (templates && props.loadMoreTemplates) {
     const loadMore = await decorateLoadMoreButton(block, props);
     if (loadMore) {
-      updateLoadMoreButton(block, props, loadMore);
+      updateLoadMoreButton(props, loadMore);
     }
   }
 
