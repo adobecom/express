@@ -345,11 +345,6 @@ function decorateLinkList(block) {
 }
 
 export default async function decorate(block) {
-  // desktop-only block
-  if (document.body.dataset?.device !== 'desktop') {
-    block.remove();
-    return;
-  }
   decorateBackground(block);
   await decorateSearchFunctions(block);
   await buildSearchDropdown(block);
