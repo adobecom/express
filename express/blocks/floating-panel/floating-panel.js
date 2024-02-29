@@ -134,9 +134,9 @@ function initBlockInteraction(block, props) {
     block.classList.remove('expanded');
   }, { passive: true });
 
-  // block.addEventListener('mouseleave', async () => {
-  //   block.classList.remove('expanded');
-  // });
+  block.addEventListener('mouseleave', async () => {
+    block.classList.remove('expanded');
+  });
 
   const buttons = block.querySelectorAll('a.button');
   const config = { attributes: true, childList: false, subtree: false };
