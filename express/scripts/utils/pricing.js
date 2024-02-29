@@ -183,17 +183,30 @@ function getCurrencyDisplay(currency) {
   return 'symbol';
 }
 
-function getCountry() {
-  const userGeo = window.feds
-  && window.feds.data
-  && window.feds.data.location
-  && window.feds.data.location.country
-    ? window.feds.data.location.country
-    : null;
+export async function getCountry() {
+  const internationalCookieCountry = getCookie('international');
+  const visitorCountry = sessionStorage.getItem('visitorCountry');
+  if (internationalCookieCountry && internationalCookieCountry !== visitorCountry) {
+    sessionStorage.setItem('visitorCountry', internationalCookieCountry);
+  }
+  if (!internationalCookieCountry && !visitorCountry) {
+    const fedsUserGeo = window.feds?.data?.location?.country;
+    if (!fedsUserGeo) {
+      const resp = await fetch('https://geo2.adobe.com/json/');
+      if (resp.ok) {
+        const { country } = await resp.json();
+        sessionStorage.setItem('visitorCountry', country?.toLowerCase());
+      }
+    } else {
+      sessionStorage.setItem('visitorCountry', fedsUserGeo.toLowerCase());
+    }
+  }
   const urlParams = new URLSearchParams(window.location.search);
-  let country = urlParams.get('country') || getCookie('international') || userGeo || getConfig().locale.prefix.replace('/', '');
-  if (country === 'uk') country = 'gb';
-  return (country.split('_')[0]);
+  let country = urlParams.get('country') || getCookie('international') || sessionStorage.getItem('visitorCountry') || getConfig().locale.prefix.replace('/', '');
+  if (country === 'uk') {
+    country = 'gb';
+  }
+  return country.split('_')[0];
 }
 
 const offerIdSuppressMap = new Map();
@@ -219,7 +232,7 @@ export function shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremi
   return suppressOfferEyeBrowText;
 }
 
-export const formatSalesPhoneNumber = (() => {
+export const formatSalesPhoneNumber = (async () => {
   let numbersMap;
   return async (tags, placeholder = '') => {
     if (tags.length <= 0) return;
@@ -229,7 +242,7 @@ export const formatSalesPhoneNumber = (() => {
     }
 
     if (!numbersMap?.data) return;
-    const country = getCountry() || 'us';
+    const country = await getCountry() || 'us';
     tags.forEach((a) => {
       const r = numbersMap.data.find((d) => d.country === country);
 
@@ -242,7 +255,7 @@ export const formatSalesPhoneNumber = (() => {
   };
 })();
 
-export function formatPrice(price, currency) {
+export async function formatPrice(price, currency) {
   if (price === '') return null;
 
   const customSymbols = {
@@ -252,7 +265,7 @@ export function formatPrice(price, currency) {
   };
   const locale = ['USD', 'TWD'].includes(currency)
     ? 'en-GB' // use en-GB for intl $ symbol formatting
-    : (getConfig().locales[getCountry() || '']?.ietf ?? 'en-US');
+    : (getConfig().locales[await getCountry() || '']?.ietf ?? 'en-US');
   const currencyDisplay = getCurrencyDisplay(currency);
   let formattedPrice = new Intl.NumberFormat(locale, {
     style: 'currency',
@@ -267,18 +280,18 @@ export function formatPrice(price, currency) {
   return formattedPrice;
 }
 
-export function getCurrency(locale) {
-  const loc = locale || getCountry();
+export async function getCurrency(locale) {
+  const loc = locale || await getCountry();
   return currencies[loc];
 }
 
-export const getOffer = (() => {
+export const getOffer = (async () => {
   let json;
   return async (offerId, countryOverride) => {
-    let country = getCountry();
+    let country = await getCountry();
     if (countryOverride) country = countryOverride;
     if (!country) country = 'us';
-    let currency = getCurrency(country);
+    let currency = await getCurrency(country);
     if (!currency) {
       country = 'us';
       currency = 'USD';
@@ -320,13 +333,13 @@ export const getOffer = (() => {
   };
 })();
 
-export const getOfferOnePlans = (() => {
+export const getOfferOnePlans = (async () => {
   let json;
   return async (offerId, countryOverride) => {
-    let country = getCountry();
+    let country = await getCountry();
     if (countryOverride) country = countryOverride;
     if (!country) country = 'us';
-    let currency = getCurrency(country);
+    let currency = await getCurrency(country);
     if (!currency) {
       country = 'us';
       currency = 'USD';

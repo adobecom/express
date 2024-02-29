@@ -1,6 +1,10 @@
 import BlockMediator from '../../scripts/block-mediator.min.js';
-import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
+import {
+  createTag,
+  fetchPlaceholders,
+  setVisitorCountry,
+} from '../../scripts/utils.js';
 import {
   buildUrl,
   formatSalesPhoneNumber,
@@ -298,6 +302,7 @@ function decorateCard({
 
 export default async function init(el) {
   // For backwards compatability with old versions of the pricing card
+  await setVisitorCountry();
   const legacyVersion = el.querySelectorAll(':scope > div').length < 10;
   const currentKeys = [...blockKeys];
   if (legacyVersion) {
