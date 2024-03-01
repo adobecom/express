@@ -515,7 +515,7 @@ export async function fetchPlan(planUrl) {
       plan.language = offer.lang;
       plan.offerId = offer.customOfferId;
       plan.ooAvailable = offer.ooAvailable;
-      plan.rawPrice = typeof offer.unitPriceCurrencyFormatted === 'string' ? offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g) : null;
+      plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
       plan.sup = offer.priceSuperScript ?? '';
@@ -527,7 +527,7 @@ export async function fetchPlan(planUrl) {
       );
 
       if (offer.basePriceCurrencyFormatted) {
-        plan.rawBasePrice = typeof offer.basePriceCurrencyFormatted.match(/[\d\s,.+]+/g) === 'string' ? offer.basePriceCurrencyFormatted.match(/[\d\s,.+]+/g) : null;
+        plan.rawBasePrice = offer.basePriceCurrencyFormatted.match(/[\d\s,.+]+/g);
         plan.formattedBP = offer.basePriceCurrencyFormatted.replace(
           plan.rawBasePrice[0],
           `<strong>${plan.prefix}${plan.rawBasePrice[0]}</strong>`,
