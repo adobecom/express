@@ -1,20 +1,20 @@
-main .section .tutorials-container > div {
+main .tutorials-container > div {
   max-width: 1200px;
 }
 
-main .section .tutorials {
+main .tutorials {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin: 64px 72px;
 }
 
-main .section .tutorials .tutorial-card {
+main .tutorials .tutorial-card {
   width: 330px;
   margin: 16px 8px;
 }
 
-main .section .tutorials .tutorial-card .tutorial-card-top {
+main .tutorials .tutorial-card .tutorial-card-top {
   height: 200px;
   width: 330px;
   position: relative;
@@ -23,7 +23,7 @@ main .section .tutorials .tutorial-card .tutorial-card-top {
   overflow: hidden;
 }
 
-main .section .tutorials .tutorial-card-overlay {
+main .tutorials .tutorial-card-overlay {
   position: absolute;
   background-image: linear-gradient(#ffffff00, #90909025, #000000a0);
   right: 0;
@@ -37,37 +37,37 @@ main .section .tutorials .tutorial-card-overlay {
   cursor: pointer;
 }
 
-main .section .tutorials .tutorial-card-overlay .tutorial-card-play {
+main .tutorials .tutorial-card-overlay .tutorial-card-play {
   visibility: hidden;
   line-height: 0;
 }
 
-main .section .tutorials .tutorial-card-overlay .tutorial-card-play svg {
+main .tutorials .tutorial-card-overlay .tutorial-card-play svg {
   fill: var(--color-white);
   width: 32px;
   height: 32px;
 }
 
-main .section .tutorials .tutorial-card-overlay:hover {
+main .tutorials .tutorial-card-overlay:hover {
   background-image: linear-gradient(#00000080, #00000080);
 }
 
-main .section .tutorials .tutorial-card-overlay:hover .tutorial-card-play {
+main .tutorials .tutorial-card-overlay:hover .tutorial-card-play {
   visibility: visible;
 }
 
-main .section .tutorials .tutorial-card picture {
+main .tutorials .tutorial-card picture {
   z-index: -1;
 }
 
-main .section .tutorials .tutorial-card .tutorial-card-top .tutorial-card-duration {
+main .tutorials .tutorial-card .tutorial-card-top .tutorial-card-duration {
   border-radius: 16px;
   border: 2px solid white;
   padding: 3px 9px;
   font-size: var(--body-font-size-s);
 }
 
-main .section .tutorials h3 {
+main .tutorials h3 {
   margin-top: 16px;
   text-align: left;
   font-size: var(--body-font-size-l);
