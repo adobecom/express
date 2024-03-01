@@ -515,7 +515,7 @@ export async function fetchPlan(planUrl) {
       plan.language = offer.lang;
       plan.offerId = offer.customOfferId;
       plan.ooAvailable = offer.ooAvailable;
-      plan.rawPrice = offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g);
+      plan.rawPrice = offer.unitPriceCurrencyFormatted?.match(/[\d\s,.+]+/g);
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
       plan.sup = offer.priceSuperScript ?? '';
