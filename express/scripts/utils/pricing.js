@@ -288,8 +288,8 @@ export async function formatPrice(price, currency) {
   return formattedPrice;
 }
 
-export async function getCurrency(locale) {
-  return currencies[locale];
+export function getCurrency(country) {
+  return currencies[country];
 }
 
 export const getOffer = (() => {
@@ -297,7 +297,7 @@ export const getOffer = (() => {
   return async (offerId) => {
     let country = await getCountry();
     if (!country) country = 'us';
-    let currency = await getCurrency(country);
+    let currency = getCurrency(country);
     if (!currency) {
       country = 'us';
       currency = 'USD';
@@ -344,7 +344,7 @@ export const getOfferOnePlans = (() => {
   return async (offerId) => {
     let country = await getCountry();
     if (!country) country = 'us';
-    let currency = await getCurrency(country);
+    let currency = getCurrency(country);
     if (!currency) {
       country = 'us';
       currency = 'USD';
