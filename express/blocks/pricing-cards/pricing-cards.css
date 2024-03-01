@@ -90,14 +90,17 @@ Border style variants
 
 .pricing-cards .gradient-promo {
   background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
-  padding: 12px 4px 4px 4px;
+  padding: 12px 2px 4px 2px;
   border-radius: 16px;
   overflow: hidden;
   background: var(--color-white);
   margin-top: 0px !important;
+  margin-left: -2px;
+  margin-right: -2px;
   display: flex;
   flex-direction: column;
 }
+
 
 .pricing-cards .special-promo {
   border: 1px solid #FFE600;
@@ -137,6 +140,10 @@ Border style variants
 /*
 End border style variants
 */
+
+.pricing-cards .card-border {
+  margin-top: 44px;
+}
 
 .pricing-cards .card-border .hide {
   display: none;
