@@ -4,7 +4,7 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
-const { default: decorate } = await import('../../../../express/blocks/feature-grid-desktop/feature-grid-desktop.js');
+const { default: decorate } = await import('../../../../express/blocks/feature-grid/feature-grid.js');
 document.body.innerHTML = await readFile({ path: './mocks/body.html' });
 
 describe('Feature Grid Desktop', async () => {
