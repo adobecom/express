@@ -324,12 +324,6 @@ async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
       decorateBlogPosts(blogPostsElements, config, pageEnd);
     });
   }
-
-  if (images.length) {
-    const section = blogPostsElements.closest('.section');
-    section.style.display = 'block';
-    delete section.style.display;
-  }
 }
 
 function checkStructure(element, querySelectors) {
