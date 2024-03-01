@@ -171,6 +171,7 @@ function createAnimation(animations) {
 
   // replace anchor with video element
   const video = createTag('video', attribs);
+  video.setAttribute('preload', 'auto');
   if (source) {
     video.innerHTML = `<source src="${source}" type="video/mp4">`;
   }
@@ -240,135 +241,156 @@ export async function transformToVideoLink(cell, a) {
   }
 }
 
+async function handleAnimation(div, typeHint, block, animations) {
+  if (typeHint !== 'default') block.classList.add(`has-${typeHint}-animation`);
+  let source;
+  let videoParameters = {};
+  const a = div.querySelector('a');
+  const poster = div.querySelector('img');
+  if (a) {
+    const url = new URL(a.href);
+    const params = new URLSearchParams(url.search);
+    videoParameters = {
+      loop: params.get('loop') !== 'false',
+    };
+    const id = url.hostname.includes('hlx.blob.core') ? url.pathname.split('/')[2] : url.pathname.split('media_')[1].split('.')[0];
+    source = `./media_${id}.mp4`;
+  }
+  let optimizedPosterSrc;
+  if (poster) {
+    const srcURL = new URL(poster.src);
+    const srcUSP = new URLSearchParams(srcURL.search);
+    srcUSP.set('format', 'webply');
+    srcUSP.set('width', 750);
+    srcUSP.set('width', window.innerWidth <= 750 ? 750 : 4080);
+    optimizedPosterSrc = `${srcURL.pathname}?${srcUSP.toString()}`;
+  }
+
+  animations[typeHint] = {
+    source,
+    poster: optimizedPosterSrc || '',
+    title: (poster && poster.getAttribute('alt')) || '',
+    params: videoParameters,
+  };
+
+  div.remove();
+}
+
+async function handleContent(div, block, animations) {
+  const videoWrapper = createTag('div', { class: 'background-wrapper' });
+  const video = createAnimation(animations);
+  let bg;
+  if (video) {
+    bg = videoWrapper;
+    videoWrapper.append(video);
+    div.prepend(videoWrapper);
+    video.addEventListener('canplay', () => {
+      buildReduceMotionSwitch(block);
+    });
+
+    window.addEventListener('resize', () => {
+      adjustLayout(animations, videoWrapper);
+    }, { passive: true });
+    adjustLayout(animations, videoWrapper);
+  } else {
+    bg = createTag('div');
+    bg.classList.add('marquee-background');
+    div.prepend(bg);
+  }
+
+  const marqueeForeground = createTag('div', { class: 'marquee-foreground' });
+  bg.nextElementSibling.classList.add('content-wrapper');
+  marqueeForeground.append(bg.nextElementSibling);
+  div.append(marqueeForeground);
+
+  div.querySelectorAll(':scope p:empty').forEach((p) => {
+    if (p.innerHTML.trim() === '') {
+      p.remove();
+    }
+  });
+
+  // check for video link
+  // eslint-disable-next-line no-await-in-loop
+  const { isVideoLink } = await import('../shared/video.js');
+  const videoLink = [...div.querySelectorAll('a')].find((a) => isVideoLink(a.href));
+  if (videoLink) {
+    transformToVideoLink(div, videoLink);
+  }
+
+  const contentButtons = [...div.querySelectorAll('a.button.accent')];
+  if (contentButtons.length) {
+    const primaryBtn = contentButtons[0];
+    const secondaryButton = contentButtons[1];
+    const buttonAsLink = contentButtons[2];
+    buttonAsLink?.classList.remove('button');
+    primaryBtn?.classList.add('primaryCTA');
+    BlockMediator.set('primaryCtaUrl', primaryBtn?.href);
+    secondaryButton?.classList.add('secondary');
+    const buttonContainers = [...div.querySelectorAll('p.button-container')];
+    const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
+    buttonContainers[0]?.before(buttonsWrapper);
+    buttonContainers.forEach((btnContainer) => {
+      handleSubCTAText(btnContainer);
+      btnContainer.classList.add('button-inline');
+      btnContainer.querySelector('a.button')?.classList.add('xlarge');
+      buttonsWrapper.append(btnContainer);
+    });
+  } else {
+    const inlineButtons = [...div.querySelectorAll('p:last-of-type > a:not(.button.accent)')];
+    if (inlineButtons.length) {
+      const primaryCta = inlineButtons[0];
+      primaryCta.classList.add('button', 'accent', 'primaryCTA', 'xlarge');
+      BlockMediator.set('primaryCtaUrl', primaryCta.href);
+      primaryCta.parentElement.classList.add('buttons-wrapper', 'with-inline-ctas');
+    }
+  }
+}
+
+async function handleOptions(div, typeHint, block) {
+  if (typeHint === 'shadow') {
+    const shadow = (div.querySelector('picture')) ? div.querySelector('picture') : createTag('img', { src: '/express/blocks/marquee/shadow.png' });
+    div.innerHTML = '';
+    div.appendChild(shadow);
+    div.classList.add('hero-shadow');
+  }
+  if (typeHint === 'background') {
+    const color = div.children[1].textContent.trim().toLowerCase();
+    if (color) block.style.background = color;
+    const lightness = (
+      parseInt(color.substring(1, 2), 16)
+      + parseInt(color.substring(3, 2), 16)
+      + parseInt(color.substring(5, 2), 16)) / 3;
+    if (lightness < 200) block.classList.add('white-text');
+    div.remove();
+  }
+}
+
 export default async function decorate(block) {
   const possibleBreakpoints = breakpointConfig.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const animations = {};
   const rows = [...block.children];
 
-  for (const div of rows) {
-    const index = rows.indexOf(div);
+  for (let index = 0; index < rows.length; index += 1) {
+    const div = rows[index];
     let rowType = 'animation';
     let typeHint;
-    if (index + 1 === rows.length) rowType = 'content';
     if ([...div.children].length > 1) typeHint = div.children[0].textContent.trim().toLowerCase();
+    if (index + 1 === rows.length) {
+      rowType = 'content';
+    }
     if (typeHint && possibleOptions.includes(typeHint)) {
       rowType = 'option';
-    } else if (!typeHint || (typeHint && !possibleBreakpoints.includes(typeHint))) {
+    } else if (!typeHint || (!possibleBreakpoints.includes(typeHint))) {
       typeHint = 'default';
     }
 
     if (rowType === 'animation') {
-      if (typeHint !== 'default') block.classList.add(`has-${typeHint}-animation`);
-      let source;
-      let videoParameters = {};
-      const a = div.querySelector('a');
-      const poster = div.querySelector('img');
-      if (a) {
-        const url = new URL(a.href);
-        const params = new URLSearchParams(url.search);
-        videoParameters = {
-          loop: params.get('loop') !== 'false',
-        };
-        const id = url.hostname.includes('hlx.blob.core') ? url.pathname.split('/')[2] : url.pathname.split('media_')[1].split('.')[0];
-        source = `./media_${id}.mp4`;
-      }
-      let optimizedPosterSrc;
-      if (poster) {
-        const srcURL = new URL(poster.src);
-        const srcUSP = new URLSearchParams(srcURL.search);
-        srcUSP.set('format', 'webply');
-        srcUSP.set('width', typeHint === 'mobile' ? 750 : 4080);
-        optimizedPosterSrc = `${srcURL.pathname}?${srcUSP.toString()}`;
-      }
-
-      animations[typeHint] = {
-        source,
-        poster: optimizedPosterSrc || '',
-        title: (poster && poster.getAttribute('alt')) || '',
-        params: videoParameters,
-      };
-
-      div.remove();
-    }
-
-    if (rowType === 'content') {
-      const videoWrapper = createTag('div', { class: 'background-wrapper' });
-      const video = createAnimation(animations);
-      let bg;
-      if (video) {
-        bg = videoWrapper;
-        videoWrapper.append(video);
-        div.prepend(videoWrapper);
-        video.addEventListener('canplay', () => {
-          buildReduceMotionSwitch(block);
-        });
-
-        window.addEventListener('resize', () => {
-          adjustLayout(animations, videoWrapper);
-        }, { passive: true });
-        adjustLayout(animations, videoWrapper);
-      } else {
-        bg = createTag('div');
-        bg.classList.add('marquee-background');
-        div.prepend(bg);
-      }
-
-      const marqueeForeground = createTag('div', { class: 'marquee-foreground' });
-      bg.nextElementSibling.classList.add('content-wrapper');
-      marqueeForeground.append(bg.nextElementSibling);
-      div.append(marqueeForeground);
-
-      div.querySelectorAll(':scope p:empty').forEach((p) => {
-        if (p.innerHTML.trim() === '') {
-          p.remove();
-        }
-      });
-
-      // check for video link
-      // eslint-disable-next-line no-await-in-loop
-      const { isVideoLink } = await import('../shared/video.js');
-      const videoLink = [...div.querySelectorAll('a')].find((a) => isVideoLink(a.href));
-      if (videoLink) {
-        transformToVideoLink(div, videoLink);
-      }
-
-      const contentButtons = [...div.querySelectorAll('a.button.accent')];
-      const primaryBtn = contentButtons[0];
-      const secondaryButton = contentButtons[1];
-      const buttonAsLink = contentButtons[2];
-      buttonAsLink?.classList.remove('button');
-      primaryBtn?.classList.add('primaryCTA');
-      BlockMediator.set('primaryCtaUrl', primaryBtn?.href);
-      secondaryButton?.classList.add('secondary');
-      const buttonContainers = [...div.querySelectorAll('p.button-container')];
-      const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
-      buttonContainers[0]?.before(buttonsWrapper);
-      buttonContainers.forEach((btnContainer) => {
-        handleSubCTAText(btnContainer);
-        btnContainer.classList.add('button-inline');
-        btnContainer.querySelector('a.button')?.classList.add('xlarge');
-        buttonsWrapper.append(btnContainer);
-      });
-    }
-
-    if (rowType === 'option') {
-      if (typeHint === 'shadow') {
-        const shadow = (div.querySelector('picture')) ? div.querySelector('picture') : createTag('img', { src: '/express/blocks/marquee/shadow.png' });
-        div.innerHTML = '';
-        div.appendChild(shadow);
-        div.classList.add('hero-shadow');
-      }
-      if (typeHint === 'background') {
-        const color = div.children[1].textContent.trim().toLowerCase();
-        if (color) block.style.background = color;
-        const lightness = (
-          parseInt(color.substring(1, 2), 16)
-          + parseInt(color.substring(3, 2), 16)
-          + parseInt(color.substring(5, 2), 16)) / 3;
-        if (lightness < 200) block.classList.add('white-text');
-        div.remove();
-      }
+      handleAnimation(div, typeHint, block, animations);
+    } else if (rowType === 'content') {
+      handleContent(rows[rows.length - 1], block, animations);
+    } else if (rowType === 'option') {
+      handleOptions(div, typeHint, block);
     }
   }
 

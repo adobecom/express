@@ -46,17 +46,17 @@ async function checkGeo(userGeo, userLocale, geoCheckForce) {
   return checkRedirect(window.location, region);
 }
 
-function loadIMS() {
+async function loadIMS() {
   window.adobeid = {
-    client_id: 'MarvelWeb3',
+    client_id: sessionStorage.getItem('imsclient'),
     scope: 'AdobeID,openid',
     locale: getConfig().locale.region,
     environment: 'prod',
   };
   if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
-    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+    await loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
   } else {
-    loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
+    await loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
     window.adobeid.environment = 'stg1';
   }
 }
@@ -175,11 +175,7 @@ async function loadFEDS() {
         window.location.href = sparkLoginUrl;
       },
     },
-    jarvis: {
-      surfaceName: config.jarvis.id,
-      surfaceVersion: config.jarvis.version,
-      onDemand: true,
-    },
+    jarvis: {},
     breadcrumbs: {
       showLogo: true,
       links: await buildBreadCrumbArray(prefix),
@@ -273,7 +269,7 @@ async function loadFEDS() {
 }
 
 if (!window.hlx || window.hlx.gnav) {
-  loadIMS();
+  await loadIMS();
   loadFEDS();
   setTimeout(() => {
     import('./google-yolo.js').then((mod) => {

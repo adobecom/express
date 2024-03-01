@@ -181,6 +181,12 @@ const init = (block) => {
     tabListItems[0].parentElement.remove();
   }
 
+  // as of now tabs-ax is used above the fold and it's usually h1 default wrapper before it
+  // TODO: develop consistent padding/margin patterns for block/section
+  if (parentSection.previousElementSibling.classList.contains('hero', 'hero-noimage')) {
+    parentSection.previousElementSibling.style.paddingTop = '0';
+  }
+
   // Tab Sections
   const allSections = Array.from(rootElem.querySelectorAll('div.section[data-tab]'));
   allSections.forEach((e) => {

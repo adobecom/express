@@ -1,11 +1,12 @@
-import { createTag } from '../../scripts/utils.js';
+import { createTag, getMetadata } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function initScrollInteraction(block) {
   const inBodyBanner = block.cloneNode(true);
+  inBodyBanner.dataset.blockStatus = 'loaded';
   inBodyBanner.classList.add('clone');
   block.classList.add('inbody');
-  block.insertAdjacentElement('afterend', inBodyBanner);
+  block.after(inBodyBanner);
 
   const intersectionCallback = (entries) => {
     entries.forEach((entry) => {
@@ -25,7 +26,7 @@ function initScrollInteraction(block) {
   observer.observe(inBodyBanner);
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const close = createTag('button', {
     class: 'close',
     'aria-label': 'close',
@@ -46,6 +47,28 @@ export default function decorate(block) {
   });
 
   if (block.classList.contains('loadinbody')) {
+    if (['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating')) && ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
+      const eligibility = BlockMediator.get('mobileBetaEligibility');
+      if (eligibility) {
+        if (eligibility.deviceSupport) {
+          block.remove();
+          return;
+        }
+      } else {
+        const eligible = await new Promise((resolve) => {
+          const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
+            resolve(e.newValue.deviceSupport);
+            unsub();
+          });
+        });
+
+        if (eligible) {
+          block.remove();
+          return;
+        }
+      }
+    }
+
     setTimeout(() => {
       initScrollInteraction(block);
     });
