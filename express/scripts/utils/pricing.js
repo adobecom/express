@@ -183,30 +183,38 @@ function getCurrencyDisplay(currency) {
   return 'symbol';
 }
 
-export async function getCountry() {
-  const internationalCookieCountry = getCookie('international');
-  const visitorCountry = sessionStorage.getItem('visitorCountry');
-  if (internationalCookieCountry && internationalCookieCountry !== visitorCountry) {
-    sessionStorage.setItem('visitorCountry', internationalCookieCountry);
-  }
-  if (!internationalCookieCountry && !visitorCountry) {
-    const fedsUserGeo = window.feds?.data?.location?.country;
-    if (!fedsUserGeo) {
-      const resp = await fetch('https://geo2.adobe.com/json/');
-      if (resp.ok) {
-        const { country } = await resp.json();
-        sessionStorage.setItem('visitorCountry', country?.toLowerCase());
-      }
-    } else {
-      sessionStorage.setItem('visitorCountry', fedsUserGeo.toLowerCase());
-    }
-  }
-  const urlParams = new URLSearchParams(window.location.search);
-  let country = urlParams.get('country') || getCookie('international') || sessionStorage.getItem('visitorCountry') || getConfig().locale.prefix.replace('/', '');
+export function updateCountryCode(country) {
+  let updatedCountry = country;
   if (country === 'uk') {
-    country = 'gb';
+    updatedCountry = 'gb';
   }
-  return country.split('_')[0];
+  return updatedCountry.split('_')[0];
+}
+
+export async function getCountry() {
+  const urlParams = new URLSearchParams(window.location.search);
+  let countryCode = urlParams.get('country') || getCookie('international');
+  if (countryCode) {
+    return updateCountryCode(countryCode.toLowerCase());
+  }
+  countryCode = sessionStorage.getItem('visitorCountry');
+  if (countryCode) return countryCode;
+
+  const fedsUserGeo = window.feds?.data?.location?.country;
+  if (fedsUserGeo) {
+    sessionStorage.setItem('visitorCountry', fedsUserGeo.toLowerCase());
+    return updateCountryCode(fedsUserGeo);
+  }
+
+  const resp = await fetch('https://geo2.adobe.com/json/');
+  if (resp.ok) {
+    const { country } = await resp.json();
+    sessionStorage.setItem('visitorCountry', country.toLowerCase());
+    return updateCountryCode(country);
+  }
+
+  const configCountry = getConfig().locale.region;
+  return updateCountryCode(configCountry);
 }
 
 const offerIdSuppressMap = new Map();
