@@ -185,15 +185,6 @@ async function getFilteredResults(config) {
   return (matchingResult);
 }
 
-const loadImage = (img) => new Promise((resolve) => {
-  if (img.complete && img.naturalHeight !== 0) resolve();
-  else {
-    img.onload = () => {
-      resolve();
-    };
-  }
-});
-
 // Translates the Read More string into the local language
 async function getReadMoreString() {
   const placeholders = await fetchPlaceholders();
@@ -337,8 +328,6 @@ async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
   if (images.length) {
     const section = blogPostsElements.closest('.section');
     section.style.display = 'block';
-    const imagePromises = images.map((img) => loadImage(img));
-    await Promise.all(imagePromises);
     delete section.style.display;
   }
 }
