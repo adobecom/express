@@ -2584,8 +2584,9 @@ export async function loadArea(area = document) {
 
   // milo's links featurecc
   const config = getConfig();
+
   if (config.links === 'on') {
-    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
+    const path = `${config.contentRoot || ''}${getMetadata('links-path') || (window.location.origin === 'https://www.adobe.com' && '/express/seo/links.json') || '/seo/links.json'}`;
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 }
