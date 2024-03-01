@@ -93,6 +93,7 @@
 .feature-grid:not(.expanded) .load-more-div {
   position: absolute;
   display: flex;
+  margin: auto;
   flex-direction: column;
   justify-content: center;
   height: 200px;
