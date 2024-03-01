@@ -1,8 +1,6 @@
-/* This block is desktop only */
 .feature-grid.block {
   position: relative;
-  flex-flow: column;
-  align-items: center;
+  padding: 0 16px;
 }
 
 .feature-grid.block.dark .grid-item,
@@ -152,6 +150,10 @@
   /* To be removed after wrapper deprecation */
   .section > .feature-grid-wrapper {
     max-width: 760px;
+  }
+
+  .feature-grid.block {
+    padding: 0;
   }
 
   .feature-grid.expanded .grid-container {
