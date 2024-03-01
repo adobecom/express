@@ -31,6 +31,8 @@ const locales = {
   se: { ietf: 'sv-SE', tk: 'fpk1pcd.css' },
   tw: { ietf: 'zh-Hant-TW', tk: 'jay0ecd' },
   uk: { ietf: 'en-GB', tk: 'pps7abe.css' },
+  tr: { ietf: 'tr-TR', tk: 'ley8vds.css' },
+  eg: { ietf: 'en-EG', tk: 'pps7abe.css' },
 };
 
 let jarvisImmediatelyVisible = false;
