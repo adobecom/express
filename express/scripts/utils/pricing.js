@@ -232,7 +232,7 @@ export function shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremi
   return suppressOfferEyeBrowText;
 }
 
-export const formatSalesPhoneNumber = (async () => {
+export const formatSalesPhoneNumber = (() => {
   let numbersMap;
   return async (tags, placeholder = '') => {
     if (tags.length <= 0) return;
@@ -285,101 +285,97 @@ export async function getCurrency(locale) {
   return currencies[loc];
 }
 
-export const getOffer = (async () => {
+export async function getOffer(offerId, countryOverride) {
   let json;
-  return async (offerId, countryOverride) => {
-    let country = await getCountry();
-    if (countryOverride) country = countryOverride;
-    if (!country) country = 'us';
-    let currency = await getCurrency(country);
-    if (!currency) {
-      country = 'us';
-      currency = 'USD';
-    }
-    if (!json) {
-      const resp = await fetch('/express/system/offers-new.json?limit=5000');
-      if (!resp.ok) return {};
-      json = await resp.json();
-    }
+  let country = await getCountry();
+  if (countryOverride) country = countryOverride;
+  if (!country) country = 'us';
+  let currency = await getCurrency(country);
+  if (!currency) {
+    country = 'us';
+    currency = 'USD';
+  }
+  if (!json) {
+    const resp = await fetch('/express/system/offers-new.json?limit=5000');
+    if (!resp.ok) return {};
+    json = await resp.json();
+  }
 
-    const upperCountry = country.toUpperCase();
-    let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
-    if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
-    if (!offer) return {};
-    const lang = getConfig().locale.ietf.split('-')[0];
-    const unitPrice = offer.p;
-    const customOfferId = offer.oo || offerId;
-    const ooAvailable = offer.oo || false;
-    const showVat = offer.showVat || false;
+  const upperCountry = country.toUpperCase();
+  let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
+  if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
+  if (!offer) return {};
+  const lang = getConfig().locale.ietf.split('-')[0];
+  const unitPrice = offer.p;
+  const customOfferId = offer.oo || offerId;
+  const ooAvailable = offer.oo || false;
+  const showVat = offer.showVat || false;
 
-    return {
-      country,
-      currency,
-      lang,
-      unitPrice: offer.p,
-      unitPriceCurrencyFormatted: formatPrice(unitPrice, currency),
-      commerceURL: `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`,
-      vatInfo: offer.vat,
-      prefix: offer.pre,
-      suffix: offer.suf,
-      basePrice: offer.bp,
-      basePriceCurrencyFormatted: formatPrice(offer.bp, currency),
-      priceSuperScript: offer.sup,
-      customOfferId,
-      savePer: offer.savePer,
-      ooAvailable,
-      showVat,
-    };
+  return {
+    country,
+    currency,
+    lang,
+    unitPrice: offer.p,
+    unitPriceCurrencyFormatted: await formatPrice(unitPrice, currency),
+    commerceURL: `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`,
+    vatInfo: offer.vat,
+    prefix: offer.pre,
+    suffix: offer.suf,
+    basePrice: offer.bp,
+    basePriceCurrencyFormatted: await formatPrice(offer.bp, currency),
+    priceSuperScript: offer.sup,
+    customOfferId,
+    savePer: offer.savePer,
+    ooAvailable,
+    showVat,
   };
-})();
+}
 
-export const getOfferOnePlans = (async () => {
+export async function getOfferOnePlans(offerId, countryOverride) {
   let json;
-  return async (offerId, countryOverride) => {
-    let country = await getCountry();
-    if (countryOverride) country = countryOverride;
-    if (!country) country = 'us';
-    let currency = await getCurrency(country);
-    if (!currency) {
-      country = 'us';
-      currency = 'USD';
-    }
-    if (!json) {
-      const resp = await fetch('/express/system/offers-one.json?limit=5000');
-      if (!resp.ok) return {};
-      json = await resp.json();
-    }
+  let country = await getCountry();
+  if (countryOverride) country = countryOverride;
+  if (!country) country = 'us';
+  let currency = await getCurrency(country);
+  if (!currency) {
+    country = 'us';
+    currency = 'USD';
+  }
+  if (!json) {
+    const resp = await fetch('/express/system/offers-one.json?limit=5000');
+    if (!resp.ok) return {};
+    json = await resp.json();
+  }
 
-    const upperCountry = country.toUpperCase();
-    let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
-    if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
-    if (!offer) return {};
-    const lang = getConfig().locale.ietf.split('-')[0];
-    const unitPrice = offer.p;
-    const customOfferId = offer.oo || offerId;
-    const ooAvailable = offer.oo || false;
-    const showVat = offer.showVat || false;
+  const upperCountry = country.toUpperCase();
+  let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
+  if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
+  if (!offer) return {};
+  const lang = getConfig().locale.ietf.split('-')[0];
+  const unitPrice = offer.p;
+  const customOfferId = offer.oo || offerId;
+  const ooAvailable = offer.oo || false;
+  const showVat = offer.showVat || false;
 
-    return {
-      country,
-      currency,
-      lang,
-      unitPrice: offer.p,
-      unitPriceCurrencyFormatted: formatPrice(unitPrice, currency),
-      commerceURL: `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`,
-      vatInfo: offer.vat,
-      prefix: offer.pre,
-      suffix: offer.suf,
-      basePrice: offer.bp,
-      basePriceCurrencyFormatted: formatPrice(offer.bp, currency),
-      priceSuperScript: offer.sup,
-      customOfferId,
-      savePer: offer.savePer,
-      ooAvailable,
-      showVat,
-    };
+  return {
+    country,
+    currency,
+    lang,
+    unitPrice: offer.p,
+    unitPriceCurrencyFormatted: await formatPrice(unitPrice, currency),
+    commerceURL: `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`,
+    vatInfo: offer.vat,
+    prefix: offer.pre,
+    suffix: offer.suf,
+    basePrice: offer.bp,
+    basePriceCurrencyFormatted: await formatPrice(offer.bp, currency),
+    priceSuperScript: offer.sup,
+    customOfferId,
+    savePer: offer.savePer,
+    ooAvailable,
+    showVat,
   };
-})();
+}
 
 export async function fetchPlanOnePlans(planUrl) {
   if (!window.pricingPlans) {
@@ -515,7 +511,7 @@ export async function fetchPlan(planUrl) {
       plan.language = offer.lang;
       plan.offerId = offer.customOfferId;
       plan.ooAvailable = offer.ooAvailable;
-      plan.rawPrice = offer.unitPriceCurrencyFormatted?.match(/[\d\s,.+]+/g);
+      plan.rawPrice = typeof offer.unitPriceCurrencyFormatted === 'string' ? offer.unitPriceCurrencyFormatted.match(/[\d\s,.+]+/g) : null;
       plan.prefix = offer.prefix ?? '';
       plan.suffix = offer.suffix ?? '';
       plan.sup = offer.priceSuperScript ?? '';
@@ -527,7 +523,7 @@ export async function fetchPlan(planUrl) {
       );
 
       if (offer.basePriceCurrencyFormatted) {
-        plan.rawBasePrice = offer.basePriceCurrencyFormatted.match(/[\d\s,.+]+/g);
+        plan.rawBasePrice = typeof offer.basePriceCurrencyFormatted.match(/[\d\s,.+]+/g) === 'string' ? offer.basePriceCurrencyFormatted.match(/[\d\s,.+]+/g) : null;
         plan.formattedBP = offer.basePriceCurrencyFormatted.replace(
           plan.rawBasePrice[0],
           `<strong>${plan.prefix}${plan.rawBasePrice[0]}</strong>`,
