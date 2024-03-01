@@ -289,15 +289,13 @@ export async function formatPrice(price, currency) {
 }
 
 export async function getCurrency(locale) {
-  const loc = locale || await getCountry();
-  return currencies[loc];
+  return currencies[locale];
 }
 
 export const getOffer = (() => {
   let json;
-  return async (offerId, countryOverride) => {
+  return async (offerId) => {
     let country = await getCountry();
-    if (countryOverride) country = countryOverride;
     if (!country) country = 'us';
     let currency = await getCurrency(country);
     if (!currency) {
@@ -343,9 +341,8 @@ export const getOffer = (() => {
 
 export const getOfferOnePlans = (() => {
   let json;
-  return async (offerId, countryOverride) => {
+  return async (offerId) => {
     let country = await getCountry();
-    if (countryOverride) country = countryOverride;
     if (!country) country = 'us';
     let currency = await getCurrency(country);
     if (!currency) {
@@ -431,8 +428,7 @@ export async function fetchPlanOnePlans(planUrl) {
       plan.frequency = null;
     }
 
-    const countryOverride = new URLSearchParams(window.location.search).get('country');
-    const offer = await getOfferOnePlans(plan.offerId, countryOverride);
+    const offer = await getOfferOnePlans(plan.offerId);
 
     if (offer) {
       plan.currency = offer.currency;
@@ -511,8 +507,7 @@ export async function fetchPlan(planUrl) {
       plan.frequency = null;
     }
 
-    const countryOverride = new URLSearchParams(window.location.search).get('country');
-    const offer = await getOffer(plan.offerId, countryOverride);
+    const offer = await getOffer(plan.offerId);
 
     if (offer) {
       plan.currency = offer.currency;
