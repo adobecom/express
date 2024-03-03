@@ -27,8 +27,18 @@ function getSegmentsFromAlloyResponse(response) {
   return ids;
 }
 
+export function getProfile() {
+  const { feds, adobeProfile, fedsConfig } = window;
+  if (fedsConfig?.universalNav) {
+    return feds?.services?.universalnav?.interface?.adobeProfile?.getUserProfile()
+    || adobeProfile?.getUserProfile();
+  }
+  return feds?.services?.profile?.interface?.adobeProfile?.getUserProfile()
+    || adobeProfile?.getUserProfile();
+}
+
 async function isSignedIn() {
-  if (window.adobeProfile?.getUserProfile()) return true;
+  if (getProfile()) return true;
   if (window.feds.events?.profile_data) return false; // data ready -> not signed in
   let resolve;
   const resolved = new Promise((r) => {
@@ -39,11 +49,11 @@ async function isSignedIn() {
   }, { once: true });
   // if not ready, abort
   await Promise.race([resolved, new Promise((r) => setTimeout(r, 5000))]);
-  if (window.adobeProfile?.getUserProfile() === null) {
+  if (getProfile() === null) {
     // retry after 1s
     await new Promise((r) => setTimeout(r, 1000));
   }
-  return window.adobeProfile?.getUserProfile();
+  return getProfile();
 }
 
 // product entry prompt
