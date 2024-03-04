@@ -34,6 +34,7 @@ function decorateList(block) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'list');
   decorateList(block);
 
   const pricingLinks = block.querySelectorAll('a[title^="{{pricing"]');
