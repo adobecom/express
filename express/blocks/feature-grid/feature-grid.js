@@ -50,7 +50,6 @@ const decorateLoadMoreSection = (block, loadMoreInfo) => {
   const loadMoreText = createTag('span', { class: 'load-more-text' });
   const toggleChev = createTag('div', { class: 'load-more-chev' });
 
-  if (loadMoreInfo.color) loadMoreWrapper.style.background = loadMoreInfo.color;
   [loadMoreText.textContent] = loadMoreInfo.text;
   loadMoreButton.append(loadMoreText, toggleChev);
   loadMoreWrapper.append(loadMoreButton);
@@ -58,27 +57,17 @@ const decorateLoadMoreSection = (block, loadMoreInfo) => {
 
   loadMoreButton.addEventListener('click', () => {
     block.classList.toggle('expanded');
-    if (block.classList.contains('expanded') && loadMoreInfo.color) {
+    if (block.classList.contains('expanded')) {
       [, loadMoreText.textContent] = loadMoreInfo.text;
-      loadMoreWrapper.style.background = 'none';
-    } else if (loadMoreInfo.color) {
+    } else {
       [loadMoreText.textContent] = loadMoreInfo.text;
-      loadMoreWrapper.style.background = loadMoreInfo.color;
     }
   });
 };
 
-const getGradient = (rows) => {
-  const gradientText = rows.pop().textContent.split('|').map((item) => item.trim());
-  // eslint-disable-next-line no-useless-escape
-  const regex = /linear-gradient\(([^\)]+)\)/;
-  const gradientColorRow = rows.findIndex((row) => row.textContent.match(regex));
-  const loadMore = { text: gradientText };
-
-  if (gradientColorRow !== -1) {
-    loadMore.color = rows[gradientColorRow].textContent;
-    rows.splice(gradientColorRow, 1);
-  }
+function getLoadMoreText(rows) {
+  const loadMoreText = rows.pop().textContent.split('|').map((item) => item.trim());
+  const loadMore = { text: loadMoreText };
   return loadMore;
 };
 
@@ -87,7 +76,7 @@ export default function decorate(block) {
   block.innerHTML = '';
   const rows = Array.from(inputRows);
   const heading = rows.shift();
-  const loadMoreSection = rows.length > 4 ? getGradient(rows) : '';
+  const loadMoreSection = rows.length > 4 ? getLoadMoreText(rows) : null;
   const gridProps = rows.map((row) => {
     const subText = row.querySelector('p');
     const media = row.querySelector('p:last-of-type > a, p:last-of-type > picture');

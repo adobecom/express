@@ -32,6 +32,10 @@
   height: 2568px;
 }
 
+.feature-grid:not(.expanded) .grid-container:has(+ .load-more-div) {
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 200px, rgba(0, 0, 0, 1) calc(100% - 200px), transparent, transparent);
+}
+
 .feature-grid .grid-item {
   position: relative;
   display: flex;
@@ -103,7 +107,6 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 1;
-  background: linear-gradient(#ffffff00, #FCFAFF, #FCFAFF)
 }
 
 .feature-grid.expanded .load-more-div {
@@ -123,6 +126,7 @@
   font-size: var(--body-font-size-m);
   font-family: var(--body-font-family);
   font-weight: bold;
+  margin: auto;
 }
 
 .feature-grid .load-more-chev {
