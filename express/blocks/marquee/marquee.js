@@ -3,7 +3,7 @@ import {
   toClassName,
   addHeaderSizing,
   getIconElement,
-  fetchPlaceholders, getConfig,
+  fetchPlaceholders, getConfig, yieldToMain,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -39,9 +39,13 @@ function handleSubCTAText(buttonContainer) {
   elAfterBtn.remove();
 }
 
+let windowInnerWidth = window.innerWidth;
+window.addEventListener('resize', () => {
+  windowInnerWidth = window.innerWidth;
+}, { passive: true });
 function getBreakpoint(animations) {
   let breakpoint = 'default';
-  const windowInnerWidth = window.innerWidth;
+  // const windowInnerWidth = window.innerWidth;
   breakpointConfig.forEach((bp) => {
     if ((windowInnerWidth > bp.minWidth) && animations[bp.typeHint]) breakpoint = bp.typeHint;
   });
@@ -280,6 +284,7 @@ async function handleAnimation(div, typeHint, block, animations) {
 async function handleContent(div, block, animations) {
   const videoWrapper = createTag('div', { class: 'background-wrapper' });
   const video = createAnimation(animations);
+  await yieldToMain();
   let bg;
   if (video) {
     bg = videoWrapper;
