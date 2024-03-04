@@ -2594,9 +2594,11 @@ export async function loadArea(area = document) {
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 
-  import('./attributes.js').then((analytics) => {
-    document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
-  });
+  if (getMetadata('milo-analytics')?.toLowerCase() === 'yes') {
+    import('./attributes.js').then((analytics) => {
+      document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
+    });
+  }
 }
 
 export function getMobileOperatingSystem() {
