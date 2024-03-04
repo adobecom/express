@@ -7,6 +7,7 @@ import {
   getConfig,
   getLocale,
   readBlockConfig,
+  yieldToMain,
 } from '../../scripts/utils.js';
 
 const blogPosts = [];
@@ -298,6 +299,7 @@ async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
   const newLanguage = getConfig().locale.ietf;
   if (!dateFormatter || newLanguage !== language) {
     getDateFormatter(newLanguage);
+    await yieldToMain();
   }
 
   if (isHero) {
