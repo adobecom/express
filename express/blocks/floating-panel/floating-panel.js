@@ -1,7 +1,7 @@
 import {
   createTag,
   fetchPlaceholders,
-  fetchBlockFragDecorated,
+  fetchPlainBlockFromFragment,
   getLottie,
   lazyLoadLottiePlayer,
 } from '../../scripts/utils.js';
@@ -142,7 +142,7 @@ export default async function decorateBlock(block) {
   if (block.classList.contains('spreadsheet-powered')) {
     const audience = block.querySelector(':scope > div').textContent.trim();
     const data = await collectFloatingButtonData();
-    const container = await fetchBlockFragDecorated(`/express/fragments/floating-panel/${data.panelFragment}`, 'floating-panel');
+    const container = await fetchPlainBlockFromFragment(block, `/express/fragments/floating-panel/${data.panelFragment}`, 'floating-panel');
 
     if (container) {
       const $section = block.closest('.section');
