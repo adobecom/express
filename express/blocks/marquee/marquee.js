@@ -319,22 +319,32 @@ async function handleContent(div, block, animations) {
   }
 
   const contentButtons = [...div.querySelectorAll('a.button.accent')];
-  const primaryBtn = contentButtons[0];
-  const secondaryButton = contentButtons[1];
-  const buttonAsLink = contentButtons[2];
-  buttonAsLink?.classList.remove('button');
-  primaryBtn?.classList.add('primaryCTA');
-  BlockMediator.set('primaryCtaUrl', primaryBtn?.href);
-  secondaryButton?.classList.add('secondary');
-  const buttonContainers = [...div.querySelectorAll('p.button-container')];
-  const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
-  buttonContainers[0]?.before(buttonsWrapper);
-  buttonContainers.forEach((btnContainer) => {
-    handleSubCTAText(btnContainer);
-    btnContainer.classList.add('button-inline');
-    btnContainer.querySelector('a.button')?.classList.add('xlarge');
-    buttonsWrapper.append(btnContainer);
-  });
+  if (contentButtons.length) {
+    const primaryBtn = contentButtons[0];
+    const secondaryButton = contentButtons[1];
+    const buttonAsLink = contentButtons[2];
+    buttonAsLink?.classList.remove('button');
+    primaryBtn?.classList.add('primaryCTA');
+    BlockMediator.set('primaryCtaUrl', primaryBtn?.href);
+    secondaryButton?.classList.add('secondary');
+    const buttonContainers = [...div.querySelectorAll('p.button-container')];
+    const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
+    buttonContainers[0]?.before(buttonsWrapper);
+    buttonContainers.forEach((btnContainer) => {
+      handleSubCTAText(btnContainer);
+      btnContainer.classList.add('button-inline');
+      btnContainer.querySelector('a.button')?.classList.add('xlarge');
+      buttonsWrapper.append(btnContainer);
+    });
+  } else {
+    const inlineButtons = [...div.querySelectorAll('p:last-of-type > a:not(.button.accent)')];
+    if (inlineButtons.length) {
+      const primaryCta = inlineButtons[0];
+      primaryCta.classList.add('button', 'accent', 'primaryCTA', 'xlarge');
+      BlockMediator.set('primaryCtaUrl', primaryCta.href);
+      primaryCta.parentElement.classList.add('buttons-wrapper', 'with-inline-ctas');
+    }
+  }
 }
 
 async function handleOptions(div, typeHint, block) {

@@ -1,9 +1,10 @@
-import { createTag } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
-import {
-  fetchPlan, buildUrl, setVisitorCountry, shallSuppressOfferEyebrowText,
-} from '../../scripts/utils/pricing.js';
 import buildCarousel from '../shared/carousel.js';
+import { createTag } from '../../scripts/utils.js';
+
+import {
+  fetchPlan, buildUrl, shallSuppressOfferEyebrowText,
+} from '../../scripts/utils/pricing.js';
 
 function handleHeader(column) {
   column.classList.add('pricing-column');
@@ -189,7 +190,6 @@ function alignContent(block) {
 export default async function decorate(block) {
   addTempWrapper(block, 'pricing-summary');
 
-  setVisitorCountry();
   const pricingContainer = block.classList.contains('feature') ? block.children[2] : block.children[1];
   const featureColumns = block.classList.contains('feature') ? Array.from(block.children[3].children) : null;
   const eyeBrows = block.classList.contains('feature') ? Array.from(block.children[1].children) : null;
