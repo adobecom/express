@@ -39,6 +39,10 @@ async function isSignedIn() {
   }, { once: true });
   // if not ready, abort
   await Promise.race([resolved, new Promise((r) => setTimeout(r, 5000))]);
+  if (window.adobeProfile?.getUserProfile() === null) {
+    // retry after 1s
+    await new Promise((r) => setTimeout(r, 1000));
+  }
   return window.adobeProfile?.getUserProfile();
 }
 
