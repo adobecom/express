@@ -13,6 +13,11 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     width: 100%;
 }
 
+.template-x {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 300px;
+}
+
 .template-x-wrapper.fullwidth {
     max-width: none;
     padding: 0;
