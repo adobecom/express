@@ -1968,28 +1968,36 @@ async function buildAutoBlocks(main) {
     if (document.querySelector('.sticky-promo-bar')) return;
 
     let promoFrag;
-    const location = new URL(window.location);
-    const { prefix } = getConfig().locale;
-    const fragmentUrl = `${location.origin}${prefix}${`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`}`;
-    const path = new URL(fragmentUrl).pathname.split('.')[0];
-    const resp = await fetch(`${path}.plain.html`);
-    if (resp.status === 404) {
-      return;
+    const undecoratedSection = document.querySelector('main > div:not(.section)');
+    if (!undecoratedSection) {
+      promoFrag = await fetchBlockFragDecorated(`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`, 'sticky-promo-bar');
+      main.append(promoFrag);
+      const block = promoFrag?.querySelector('.sticky-promo-bar.block');
+      if (block) await loadBlock(block);
     } else {
-      const html = await resp.text();
-      const htmlHolder = createTag('div');
-      htmlHolder.innerHTML = html;
-      promoFrag = htmlHolder.querySelector(':scope > div');
+      const location = new URL(window.location);
+      const { prefix } = getConfig().locale;
+      const fragmentUrl = `${location.origin}${prefix}${`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`}`;
+      const path = new URL(fragmentUrl).pathname.split('.')[0];
+      const resp = await fetch(`${path}.plain.html`);
+      if (resp.status === 404) {
+        return;
+      } else {
+        const html = await resp.text();
+        const htmlHolder = createTag('div');
+        htmlHolder.innerHTML = html;
+        promoFrag = htmlHolder.querySelector(':scope > div');
 
-      if (!promoFrag) return;
+        if (!promoFrag) return;
 
-      const img = promoFrag.querySelector('img');
-      if (img) {
-        img.setAttribute('loading', 'lazy');
+        const img = promoFrag.querySelector('img');
+        if (img) {
+          img.setAttribute('loading', 'lazy');
+        }
       }
-    }
 
-    main.append(promoFrag);
+      main.append(promoFrag);
+    }
   }
 
   async function loadFloatingCTA(BlockMediator, decorated) {
