@@ -6,8 +6,10 @@ import {
   createTag,
   decorateMain,
   fetchPlaceholders,
-  fetchPlainBlockFromFragment,
-  fetchRelevantRows, fixIcons, getConfig,
+  fetchBlockFragDecorated,
+  fetchRelevantRows,
+  fixIcons,
+  getConfig,
   getIconElement,
   getLottie,
   getMetadata,
@@ -1859,7 +1861,7 @@ async function replaceRRTemplateList($block, props) {
     props.viewAllLink = relevantRowsData.viewAllLink || null;
 
     if (relevantRowsData.manualTemplates === 'Y') {
-      const $sectionFromFragment = await fetchPlainBlockFromFragment(`/express/fragments/relevant-rows/${relevantRowsData.templateFragment}`, 'template-list');
+      const $sectionFromFragment = await fetchBlockFragDecorated(`/express/fragments/relevant-rows/${relevantRowsData.templateFragment}`, 'template-list');
       const $newBlock = $sectionFromFragment.querySelector('.template-list');
 
       if ($newBlock) {
