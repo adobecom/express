@@ -312,7 +312,7 @@ async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
     for (let i = offset; i < posts.length && count < limit; i += 1) {
       const post = posts[i];
       const card = getCard(post, dateFormatter);
-      toAppend.append(card);
+      toAppend.push(card);
       images.push(card.querySelector('img'));
       count += 1;
     }
