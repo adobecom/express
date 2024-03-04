@@ -298,8 +298,8 @@ async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
 
   const newLanguage = getConfig().locale.ietf;
   if (!dateFormatter || newLanguage !== language) {
-    getDateFormatter(newLanguage);
     await yieldToMain();
+    getDateFormatter(newLanguage);
   }
 
   if (isHero) {
