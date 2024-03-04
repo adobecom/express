@@ -1,8 +1,37 @@
+/* global _satellite */
+
 import BlockMediator from './block-mediator.min.js';
 import { getMobileOperatingSystem } from './utils.js';
 
 const MAX_EXEC_TIME_ALLOWED = 500;
 const TOTAL_PRIME_NUMBER = 10000;
+
+function sendEventToAdobeAnaltics(eventName) {
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: eventName,
+          linkClicks: {
+            value: 1,
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        digitalData: {
+          primaryEvent: {
+            eventInfo: {
+              eventName,
+            },
+          },
+        },
+      },
+    },
+  });
+}
 
 export function isIOS16AndUp(userAgent = navigator.userAgent) {
   if (/iPhone/i.test(userAgent)) {
@@ -86,6 +115,7 @@ export default async function checkMobileBetaEligibility() {
         data: 'Android cpuSpeedPass',
       });
       benchmarkWorker.terminate();
+      sendEventToAdobeAnaltics(`betaEligibility:${eligible}`);
     };
   } else {
     BlockMediator.set('mobileBetaEligibility', {
@@ -94,5 +124,6 @@ export default async function checkMobileBetaEligibility() {
         reason,
       },
     });
+    sendEventToAdobeAnaltics(`betaEligibility:${eligible}`);
   }
 }
