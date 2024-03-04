@@ -41,8 +41,9 @@ function handleSubCTAText(buttonContainer) {
 
 function getBreakpoint(animations) {
   let breakpoint = 'default';
+  const windowInnerWidth = window.innerWidth;
   breakpointConfig.forEach((bp) => {
-    if ((window.innerWidth > bp.minWidth) && animations[bp.typeHint]) breakpoint = bp.typeHint;
+    if ((windowInnerWidth > bp.minWidth) && animations[bp.typeHint]) breakpoint = bp.typeHint;
   });
   return breakpoint;
 }

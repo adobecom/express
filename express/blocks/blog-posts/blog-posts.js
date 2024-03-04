@@ -148,13 +148,14 @@ async function filterAllBlogPostsOnPage() {
 
     if (!blogIndex) {
       const locales = [getConfig().locale.prefix];
-      const allBlogLinks = document.querySelectorAll('.blog-posts a');
-      allBlogLinks.forEach((l) => {
-        const blogLocale = getLocale(getConfig().locales, new URL(l).pathname).prefix;
-        if (!locales.includes(blogLocale)) {
-          locales.push(blogLocale);
-        }
-      });
+      for (const blog of blocks) {
+        blog.querySelectorAll('a').forEach((l) => {
+          const blogLocale = getLocale(getConfig().locales, new URL(l).pathname).prefix;
+          if (!locales.includes(blogLocale)) {
+            locales.push(blogLocale);
+          }
+        });
+      }
 
       blogIndex = await fetchBlogIndex(locales);
     }
@@ -305,13 +306,15 @@ async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
     images.push(card.querySelector('img'));
     count = 1;
   } else {
+    const toAppend = [];
     for (let i = offset; i < posts.length && count < limit; i += 1) {
       const post = posts[i];
       const card = getCard(post, dateFormatter);
-      cards.append(card);
+      toAppend.append(card);
       images.push(card.querySelector('img'));
       count += 1;
     }
+    cards.append(...toAppend);
   }
 
   if (posts.length > pageEnd && config['load-more']) {
