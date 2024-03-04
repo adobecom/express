@@ -1727,7 +1727,9 @@ async function decorateTesting() {
     if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
       // eslint-disable-next-line no-console
       console.log('rushing martech');
-      loadScript('/express/scripts/instrument.js', 'module');
+      import('./instrument.js').then(({ default: decorateInteractionTrackingEvents }) => {
+        decorateInteractionTrackingEvents();
+      });
     }
   } catch (e) {
     // eslint-disable-next-line no-console
