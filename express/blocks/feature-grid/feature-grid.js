@@ -69,7 +69,7 @@ function getLoadMoreText(rows) {
   const loadMoreText = rows.pop().textContent.split('|').map((item) => item.trim());
   const loadMore = { text: loadMoreText };
   return loadMore;
-};
+}
 
 export default function decorate(block) {
   const inputRows = block.querySelectorAll(':scope > div > div');

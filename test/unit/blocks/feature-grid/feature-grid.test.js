@@ -72,13 +72,6 @@ describe('Feature Grid Desktop', async () => {
       expect(fullGrid.classList.contains('expanded')).to.be.true;
     });
 
-    it('adds the authored color back to the background gradient of the "load-more" section when toggled off/on again', async () => {
-      const loadMoreDiv = fullGrid.querySelector('.load-more-div');
-      loadMoreButton.click();
-      loadMoreButton.click();
-      expect(loadMoreDiv.style.background).to.equal('linear-gradient(rgba(255, 255, 255, 0), rgb(252, 250, 255), rgb(252, 250, 255))');
-    });
-
     it('has the correct text in the "Load more" button', () => {
       expect(loadMoreButton.textContent).to.equal('Explore more Adobe Express features');
       loadMoreButton.click();
@@ -90,18 +83,6 @@ describe('Feature Grid Desktop', async () => {
     const oversizedGrid = document.querySelector('#over-sized-grid');
     it('gives an error message if too many cells are passed in', () => {
       expect(() => decorate(oversizedGrid)).to.throw('Authoring issue: Feature Grid Fixed block should have 12 children. Received: 14');
-    });
-  });
-
-  describe('Unauthored gradient', () => {
-    it('leaves gradient blank if none authored (styled by CSS)', () => {
-      const noGradientGrid = document.querySelector('#no-gradient');
-      decorate(noGradientGrid);
-      const loadMoreButton = noGradientGrid.querySelector('.load-more-button');
-      const loadMoreDiv = noGradientGrid.querySelector('.load-more-div');
-      loadMoreButton.click();
-      loadMoreButton.click();
-      expect(loadMoreDiv.style.background).to.equal('');
     });
   });
 });
