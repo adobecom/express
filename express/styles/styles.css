@@ -875,7 +875,7 @@ main .block[data-block-status='initialized'] {
   visibility: hidden;
 }
 
-main .columns.columns-marquee {
+main .section:first-of-type .columns:first-of-type {
   min-height: 650px;
 }
 
