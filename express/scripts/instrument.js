@@ -582,6 +582,21 @@ function decorateAnalyticsEvents() {
       sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:toggle:${newValue}`);
     });
   });
+
+  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
+    import('./block-mediator.min.js').then((resp) => {
+      const { default: BlockMediator } = resp;
+      const eligibility = BlockMediator.get('mobileBetaEligibility');
+      if (eligibility) {
+        sendEventToAdobeAnaltics(`betaEligibility:${eligibility.deviceSupport}`);
+      } else {
+        const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
+          sendEventToAdobeAnaltics(`betaEligibility:${e.newValue.deviceSupport}`);
+          unsub();
+        });
+      }
+    });
+  }
 }
 
 export default function decorateInteractionTrackingEvents() {
