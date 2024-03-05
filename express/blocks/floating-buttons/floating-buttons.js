@@ -15,7 +15,12 @@ function initScrollWatcher(block) {
     threshold: 0,
   });
 
+  const footer = document.querySelector('footer');
+  if (footer) hideOnIntersect.observe(footer);
+
   const primaryCta = BlockMediator.get('primaryCtaUrl');
+  if (!primaryCta) return;
+
   const primaryUrl = new URL(primaryCta);
 
   const pageCta = Array.from(document.querySelectorAll(
@@ -23,11 +28,8 @@ function initScrollWatcher(block) {
     '.section:first-of-type a.cta',
     '.section:first-of-type a.button',
   )).find((a) => a.href === primaryUrl.href);
-
-  const footer = document.querySelector('footer');
-
+  
   if (pageCta) hideOnIntersect.observe(pageCta);
-  if (footer) hideOnIntersect.observe(footer);
 }
 
 export default async function decorate(block) {
