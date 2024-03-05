@@ -875,10 +875,6 @@ main .block[data-block-status='initialized'] {
   visibility: hidden;
 }
 
-main .section:first-of-type .columns:first-of-type {
-  min-height: 650px;
-}
-
 /* free plan widget */
 main .block .button-container.free-plan-container {
   position: relative;
