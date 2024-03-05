@@ -1,3 +1,11 @@
+/* .blog-posts-container {
+    content-visibility: auto;
+}
+
+.template-list-wrapper {
+    content-visibility: auto;
+} */
+
 .blog div.blog-posts-container {
     padding: 0;
     margin-top: 64px;
