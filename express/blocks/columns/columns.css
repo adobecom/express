@@ -236,14 +236,6 @@ main .columns.columns-marquee .brand.icon {
   transform: translateX(-50%);
 }
 
-main .split-by-app-store-highlight {
-  padding: 0;
-}
-
-main .split-by-app-store-highlight .columns-wrapper {
-  padding: 0;
-}
-
 main .columns .has-brand {
   padding-top: 72px;
   position: relative;

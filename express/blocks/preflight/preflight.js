@@ -4,7 +4,7 @@ import General from './panels/general.js';
 import SEO from './panels/seo.js';
 
 const HEADING = 'Milo Preflight';
-const IMG_PATH = '/blocks/preflight/img';
+const IMG_PATH = 'blocks/preflight/img';
 
 const tabs = signal([
   { title: 'General', selected: true },
