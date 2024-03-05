@@ -1,3 +1,4 @@
+import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
@@ -297,6 +298,7 @@ function decorateCard({
 }
 
 export default async function init(el) {
+  addTempWrapper(el, 'pricing-cards');
   // For backwards compatability with old versions of the pricing card
   const legacyVersion = el.querySelectorAll(':scope > div').length < 10;
   const currentKeys = [...blockKeys];

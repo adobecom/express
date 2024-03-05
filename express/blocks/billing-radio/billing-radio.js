@@ -1,6 +1,7 @@
 // fires 'billing-plan' BM and has global sync values when multiple on same page
 import { createTag } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 const getId = (function idSetups() {
   const gen = (function* g() {
@@ -16,6 +17,8 @@ const getId = (function idSetups() {
 const BILLING_PLAN = 'billing-plan';
 
 export default function init(el) {
+  addTempWrapper(el, 'billing-radio');
+
   const blockId = getId();
   const title = el.querySelector('strong');
   const plans = Array.from(el.querySelectorAll('ol > li')).map((li) => li.textContent.trim());

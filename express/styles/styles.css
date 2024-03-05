@@ -675,7 +675,7 @@ main .hero a.button:any-link {
   border-radius: 22px;
 }
 
-main .section div .block p.legal-copy {
+main .section .block p.legal-copy {
   font-size: var(--body-font-size-xs);
   line-height: 1.5;
 }

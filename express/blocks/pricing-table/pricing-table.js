@@ -1,4 +1,5 @@
 import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { debounce } from '../../scripts/hofs.js';
 import { decorateButtons } from '../../scripts/utils/decorate.js';
 import {
@@ -191,6 +192,8 @@ const getId = (function idSetups() {
 }());
 
 export default async function init(el) {
+  addTempWrapper(el, 'pricing-table');
+
   const blockId = getId();
   el.id = `pricing-table-${blockId + 1}`;
   el.setAttribute('role', 'table');

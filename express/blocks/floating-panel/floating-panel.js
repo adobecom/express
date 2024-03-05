@@ -5,6 +5,7 @@ import {
   getLottie,
   lazyLoadLottiePlayer,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import { collectFloatingButtonData } from '../shared/floating-cta.js';
 
@@ -139,6 +140,8 @@ function standardizeSection(section, audience) {
 }
 
 export default async function decorateBlock(block) {
+  addTempWrapper(block, 'floating-panel');
+
   if (block.classList.contains('spreadsheet-powered')) {
     const audience = block.querySelector(':scope > div').textContent.trim();
     const data = await collectFloatingButtonData();

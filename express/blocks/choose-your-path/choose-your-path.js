@@ -1,4 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
+import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
   fetchPlaceholders,
@@ -136,6 +137,8 @@ async function enableMouseAnimation($block) {
 }
 
 export default function decorate($block) {
+  addTempWrapper($block, 'choose-your-path');
+
   const $rows = Array.from($block.children);
   const $slides = [];
 

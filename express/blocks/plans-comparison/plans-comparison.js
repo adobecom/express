@@ -4,6 +4,7 @@ import {
   getIconElement,
   fetchPlainBlockFromFragment,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
 
 async function fetchPlan(planUrl) {
@@ -304,6 +305,8 @@ function resizeCards($cards, $featuresWrappers, payload) {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'plans-comparison');
+
   const enclosingMain = $block.closest('main');
   if (enclosingMain) {
     let payload;
