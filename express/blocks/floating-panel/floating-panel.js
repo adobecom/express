@@ -53,7 +53,7 @@ function decorateButtons(buttons) {
 
     btn.classList.add('button', 'xlarge');
 
-    const sameHrefButtonsOnPage = Array.from(document.querySelectorAll(`a[href='${btn.href}']`)).filter((b) => btn !== b);
+    const sameHrefButtonsOnPage = Array.from(document.querySelectorAll('a')).filter((b) => btn !== b && b.href === btn.href);
     initObserver(btn, sameHrefButtonsOnPage);
   });
 }
