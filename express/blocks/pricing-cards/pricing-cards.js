@@ -18,6 +18,7 @@ function suppressOfferEyebrow(specialPromo, legacyVersion) {
   if (specialPromo.parentElement) {
     if (legacyVersion) {
       specialPromo.parentElement.classList.remove('special-promo');
+      specialPromo.remove();
     } else {
       specialPromo.className = 'hide';
       specialPromo.parentElement.className = '';
@@ -82,9 +83,13 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
     if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced) {
       const offerTextContent = specialPromo.textContent;
 
-      const shouldSuppress = shallSuppressOfferEyebrowText(response.savePer, offerTextContent,
-
-        isPremiumCard, true, response.offerId);
+      const shouldSuppress = shallSuppressOfferEyebrowText(
+        response.savePer,
+        offerTextContent,
+        isPremiumCard,
+        true,
+        response.offerId,
+      );
       if (shouldSuppress) {
         suppressOfferEyebrow(specialPromo, legacyVersion);
       } else {
