@@ -11,6 +11,7 @@ div[class='section section-wrapper floating-buttons-container'] {
   padding-bottom: 24px;
   transition: bottom 0.4s;
   z-index: 99;
+  max-width: none;
 }
 
 .block.floating-buttons > div > div {
@@ -19,18 +20,20 @@ div[class='section section-wrapper floating-buttons-container'] {
   display: flex;
   align-items: stretch;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .block.floating-buttons.hidden {
-  bottom: -150px;
+  bottom: -200px;
 }
 
 .block.floating-buttons > div > div > a.button:any-link {
-  flex: 1 1 0;
+  flex: 1 0 auto;
   border-radius: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 4px 8px;
 }
 
 @media screen and (min-width: 900px) {
