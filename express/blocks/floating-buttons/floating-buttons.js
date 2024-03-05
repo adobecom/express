@@ -28,7 +28,7 @@ function initScrollWatcher(block) {
     '.section:first-of-type a.cta',
     '.section:first-of-type a.button',
   )).find((a) => a.href === primaryUrl.href);
-  
+
   if (pageCta) hideOnIntersect.observe(pageCta);
 }
 
