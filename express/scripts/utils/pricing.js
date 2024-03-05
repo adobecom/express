@@ -183,38 +183,37 @@ function getCurrencyDisplay(currency) {
   return 'symbol';
 }
 
-export function updateCountryCode(country) {
-  let updatedCountry = country;
-  if (country === 'uk') {
-    updatedCountry = 'gb';
-  }
-  return updatedCountry.split('_')[0];
+export function normCountry(country) {
+  return (country === 'uk' ? 'gb' : country).toLowerCase().split('_')[0];
 }
 
+// urlparam > cookie > sessionStorage > feds > api > config
 export async function getCountry() {
   const urlParams = new URLSearchParams(window.location.search);
   let countryCode = urlParams.get('country') || getCookie('international');
   if (countryCode) {
-    return updateCountryCode(countryCode.toLowerCase());
+    return normCountry(countryCode);
   }
   countryCode = sessionStorage.getItem('visitorCountry');
   if (countryCode) return countryCode;
 
   const fedsUserGeo = window.feds?.data?.location?.country;
   if (fedsUserGeo) {
-    sessionStorage.setItem('visitorCountry', fedsUserGeo.toLowerCase());
-    return updateCountryCode(fedsUserGeo);
+    const normalized = normCountry(fedsUserGeo);
+    sessionStorage.setItem('visitorCountry', normalized);
+    return normalized;
   }
 
   const resp = await fetch('https://geo2.adobe.com/json/');
   if (resp.ok) {
     const { country } = await resp.json();
-    sessionStorage.setItem('visitorCountry', country.toLowerCase());
-    return updateCountryCode(country);
+    const normalized = normCountry(country);
+    sessionStorage.setItem('visitorCountry', normalized);
+    return normalized;
   }
 
   const configCountry = getConfig().locale.region;
-  return updateCountryCode(configCountry);
+  return normCountry(configCountry);
 }
 
 const offerIdSuppressMap = new Map();
