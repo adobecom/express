@@ -229,7 +229,7 @@ export function shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremi
   let suppressOfferEyeBrowText = false;
   if (isPremiumCard) {
     if (isSpecialEyebrowText) {
-      suppressOfferEyeBrowText = savePer === '' && offerTextContent.includes('{{savePercentage}}');
+      suppressOfferEyeBrowText = !(savePer !== '' && offerTextContent.includes('{{savePercentage}}'));
     } else {
       suppressOfferEyeBrowText = true;
     }

@@ -80,7 +80,7 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
       }
     }
 
-    if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced) {
+    if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced && specialPromo.textContent.includes(`{{${SAVE_PERCENTAGE}}}`) ) {
       const offerTextContent = specialPromo.textContent;
 
       const shouldSuppress = shallSuppressOfferEyebrowText(response.savePer, offerTextContent,
