@@ -45,7 +45,6 @@ window.addEventListener('resize', () => {
 }, { passive: true });
 function getBreakpoint(animations) {
   let breakpoint = 'default';
-  // const windowInnerWidth = window.innerWidth;
   breakpointConfig.forEach((bp) => {
     if ((windowInnerWidth > bp.minWidth) && animations[bp.typeHint]) breakpoint = bp.typeHint;
   });

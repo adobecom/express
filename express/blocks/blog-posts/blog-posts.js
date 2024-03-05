@@ -16,13 +16,11 @@ let blogResultsLoaded;
 let blogIndex;
 
 async function fetchBlogIndex(locales) {
-  const jointData = [];
   const urls = locales.map((l) => `${l}/express/learn/blog/query-index.json`);
 
   const resp = await Promise.all(urls.map((url) => fetch(url)
-    .then((res) => res.ok && res.json())))
-    .then((res) => res);
-  resp.forEach((item) => jointData.push(...item.data));
+    .then((res) => res.ok && res.json())));
+  const jointData = resp.reduce((acc, item) => acc.concat(item.data), []);
 
   const byPath = {};
   jointData.forEach((post) => {
@@ -166,6 +164,8 @@ async function filterAllBlogPostsOnPage() {
       const config = getBlogPostsConfig(block);
       const posts = filterBlogPosts(config, blogIndex);
       results.push({ config, posts });
+      // eslint-disable-next-line no-await-in-loop
+      if (i < blocks.length - 1) await yieldToMain();
     }
     blogResults = results;
     resolve();
