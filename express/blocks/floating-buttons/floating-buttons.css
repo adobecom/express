@@ -11,6 +11,7 @@ div[class='section section-wrapper floating-buttons-container'] {
   padding-bottom: 24px;
   transition: bottom 0.4s;
   z-index: 99;
+  max-width: none;
 }
 
 .block.floating-buttons > div > div {
