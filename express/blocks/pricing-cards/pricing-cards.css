@@ -418,7 +418,6 @@ End border style variants
   }
 
   .pricing-cards .cards-container:has(>.card:first-child:nth-last-child(3)) {
-    width: var(2 * --card-width);
     margin: auto;
     grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
   }
