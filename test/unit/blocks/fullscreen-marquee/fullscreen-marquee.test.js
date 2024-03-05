@@ -1,4 +1,4 @@
-import { readFile, sendMouse } from '@web/test-runner-commands';
+import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
 const { default: decorate } = await import(
