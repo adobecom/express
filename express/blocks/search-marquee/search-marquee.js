@@ -5,6 +5,7 @@ import {
   getMetadata,
   sampleRUM,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 import buildCarousel from '../shared/carousel.js';
@@ -344,6 +345,8 @@ function decorateLinkList(block) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'search-marquee');
+
   // desktop-only block
   if (document.body.dataset?.device !== 'desktop') {
     block.remove();

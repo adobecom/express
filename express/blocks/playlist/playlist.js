@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { createTag, getIconElement } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import buildCarousel from '../shared/carousel.js';
 import { fetchVideoAnalytics } from '../shared/video.js';
 
@@ -306,6 +307,8 @@ function decorateVideoPlayerMenu(block, payload) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'playlist');
+
   const payload = {
     sessionIndex: 0,
     videoIndex: 0,

@@ -2,6 +2,7 @@ import {
   fetchRelevantRows,
   normalizeHeadings,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -27,6 +28,8 @@ async function loadSpreadsheetData(block, relevantRowsData) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'link-list');
+
   const options = {};
   const toggleLinksHighlight = (links) => {
     links.forEach((l) => {

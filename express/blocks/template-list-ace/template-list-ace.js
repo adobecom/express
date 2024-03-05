@@ -5,6 +5,7 @@ import {
   getIconElement,
   toClassName,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 import { renderModalContent, fetchResults, renderResults } from './results-modal.js';
@@ -485,6 +486,8 @@ function initState() {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'template-list');
+
   if (!(/localhost:3000/.test(window.location.host) || /stage\.adobe\.com/.test(window.location.hostname))) {
     block.style.display = 'none';
     return;

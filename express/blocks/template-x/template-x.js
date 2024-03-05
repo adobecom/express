@@ -15,6 +15,7 @@ import {
   toClassName,
   transformLinkToAnimation,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { Masonry } from '../shared/masonry.js';
 import buildCarousel from '../shared/carousel.js';
 import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './template-search-api-v3.js';
@@ -1664,6 +1665,8 @@ function determineTemplateXType(props) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'template-x');
+
   const props = constructProps(block);
   block.innerHTML = '';
   await buildTemplateList(block, props, determineTemplateXType(props));
