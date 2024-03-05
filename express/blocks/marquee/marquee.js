@@ -3,7 +3,8 @@ import {
   toClassName,
   addHeaderSizing,
   getIconElement,
-  fetchPlaceholders, getConfig, yieldToMain,
+  fetchPlaceholders,
+  getConfig,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -266,7 +267,7 @@ async function handleAnimation(div, typeHint, block, animations) {
     const srcUSP = new URLSearchParams(srcURL.search);
     srcUSP.set('format', 'webply');
     srcUSP.set('width', 750);
-    srcUSP.set('width', window.innerWidth <= 750 ? 750 : 4080);
+    srcUSP.set('width', windowInnerWidth <= 750 ? 750 : 4080);
     optimizedPosterSrc = `${srcURL.pathname}?${srcUSP.toString()}`;
   }
 
@@ -283,7 +284,6 @@ async function handleAnimation(div, typeHint, block, animations) {
 async function handleContent(div, block, animations) {
   const videoWrapper = createTag('div', { class: 'background-wrapper' });
   const video = createAnimation(animations);
-  await yieldToMain();
   let bg;
   if (video) {
     bg = videoWrapper;
