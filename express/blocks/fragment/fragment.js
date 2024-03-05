@@ -13,10 +13,13 @@ async function loadFragment(path) {
   if (path && path.startsWith('/')) {
     const resp = await fetch(`${path}.plain.html`);
     if (resp.ok) {
+      const html = await resp.text();
       const main = document.createElement('main');
-      main.innerHTML = await resp.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      main.append(...doc.body.children);
+
       removeIrrelevantSections(main);
-      const sections = await decorateMain(main);
+      const sections = await decorateMain(main, false);
       await loadSections(sections, false);
       return main;
     }
