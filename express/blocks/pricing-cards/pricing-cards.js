@@ -9,7 +9,7 @@ import {
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
-const blockKeys = ['header', 'borderParams', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare', 'footer','comparePlans'];
+const blockKeys = ['header', 'borderParams', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare', 'footer', 'comparePlans'];
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
 const SAVE_PERCENTAGE = 'savePercentage';
@@ -104,8 +104,8 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
   return priceRow;
 }
 
-function createCTA( ctaGroup,pricingSection, additionalStyle) {
-  if (! ctaGroup) return
+function createCTA(ctaGroup, pricingSection, additionalStyle) {
+  if (!ctaGroup) return;
   ctaGroup.classList.add('card-cta-group');
   additionalStyle && ctaGroup.classList.add(additionalStyle);
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
@@ -126,7 +126,6 @@ function createCTA( ctaGroup,pricingSection, additionalStyle) {
     ctaGroup.append(a);
   });
   pricingSection.append(ctaGroup);
-  
 }
 
 function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo, legacyVersion) {
@@ -150,7 +149,7 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo,
   }
   createCTA(ctaGroup, pricingSection);
   pricingSection.append(pricingArea);
-  
+
   return pricingSection;
 }
 
@@ -290,7 +289,7 @@ function decorateCard({
   featureList,
   compare,
   footer,
-  comparePlans
+  comparePlans,
 }, el, placeholders, legacyVersion) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
@@ -309,8 +308,8 @@ function decorateCard({
   subscribeToBlockMediator(mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
-  footer && decorateBasicTextSection(footer,'footer', el)
-  createCTA(comparePlans, el, 'compare-all-plans')
+  footer && decorateBasicTextSection(footer, 'footer', el);
+  createCTA(comparePlans, el, 'compare-all-plans');
   return cardWrapper;
 }
 
