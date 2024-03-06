@@ -181,7 +181,7 @@ function decorateLegacyHeader(header, card) {
     h2.append(h2Text.replace(`(${cfg})`, '').trim());
     if (/^\d/.test(cfg)) {
       const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
-      headCntDiv.textContent = cfg
+      headCntDiv.textContent = cfg;
       headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
       header.append(headCntDiv);
     } else {
