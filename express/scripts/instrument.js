@@ -45,4 +45,8 @@ window.marketingtech = {
 // w.targetGlobalSettings = w.targetGlobalSettings || {};
 // w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
 
-return loadScript(martechURL);
+export default function initMartechLoading() {
+  return loadScript(martechURL);
+}
+
+initMartechLoading();

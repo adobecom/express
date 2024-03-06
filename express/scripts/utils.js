@@ -1733,7 +1733,7 @@ async function decorateTesting() {
     if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
       // eslint-disable-next-line no-console
       console.log('rushing martech');
-      import('./instrument.js').then(({ default: decorateInteractionTrackingEvents }) => {
+      import('./analytics.js').then(({ decorateInteractionTrackingEvents }) => {
         decorateInteractionTrackingEvents();
       });
     }

@@ -1,11 +1,11 @@
 /* global _satellite __satelliteLoadedCallback alloy */
 
 import {
+  loadScript,
   getAssetDetails,
   getMetadata,
   fetchPlaceholders,
   getConfig,
-  loadScript,
 } from './utils.js';
 
 // this saves on file size when this file gets minified...
@@ -90,7 +90,7 @@ async function trackBranchParameters($links) {
       const placement = getPlacement($a);
 
       if (templateSearchTag
-        && placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
+          && placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
         urlParams.set('q', templateSearchTag);
         urlParams.set('category', 'templates');
       }
@@ -236,7 +236,7 @@ function trackButtonClick(a) {
   let hemingwayAssetPosition;
 
   const hemingwayAsset = a.querySelector('picture,video,audio,img')
-    || a.closest('[class*="-container"],[class*="-wrapper"]')?.querySelector('picture,video,audio,img');
+      || a.closest('[class*="-container"],[class*="-wrapper"]')?.querySelector('picture,video,audio,img');
   const block = a.closest('.block');
   if (hemingwayAsset && block) {
     const { assetId, assetPath } = getAssetDetails(hemingwayAsset);
@@ -304,8 +304,12 @@ function trackButtonClick(a) {
   } else if (sparkLandingPageType === 'express-your-brand') {
     adobeEventName = appendLinkText(`${adobeEventName}learn:${sparkLandingPageType}:`, a);
   } else if (sparkLandingPageType === 'pricing') {
-    if (a.tagName !== 'A') {
-      adobeEventName += `pricing:pricing:${a.textContent.trim()}:Click`;
+    // edu link
+    if (a.pathname.includes('/edu')) {
+      adobeEventName += 'pricing:education:Click';
+      // business enterprise link
+    } else if (a.pathname.includes('business/enterprise')) {
+      adobeEventName += 'pricing:enterprise:Click';
       // Creative cloud learn more
     } else if (a.parentElement.id === 'adobe-spark-is-a-part-of-most-creative-cloud-paid-plans-learn-more') {
       adobeEventName += 'pricing:creativeCloud:learnMore';
@@ -330,7 +334,7 @@ function trackButtonClick(a) {
     adobeEventName = 'quickAction:downloadPressed';
   } else if (a.closest('ccl-quick-action') && (a.getAttribute('data-action') === 'Editor')) {
     adobeEventName = 'quickAction:openInEditorPressed';
-  // ToC clicks
+    // ToC clicks
   } else if (a.closest('.toc-container')) {
     if (a.classList.contains('toc-toggle')) {
       adobeEventName += 'toc:toggle:Click';
@@ -347,7 +351,7 @@ function trackButtonClick(a) {
     adobeEventName = appendLinkText(adobeEventName, a);
   } else if (a.closest('.tabs-ax .tab-list-container')) {
     adobeEventName += `${a.closest('.tabs-ax')?.id}:${a.id}`;
-  // Default clicks
+    // Default clicks
   } else {
     adobeEventName = appendLinkText(adobeEventName, a);
   }
@@ -477,7 +481,7 @@ function trackVideoAnalytics(parameters) {
   set('video.videoInfo.videoMediaType', videoMediaType);
 }
 
-export function decorateAnalyticsEvents() {
+function decorateAnalyticsEvents() {
   // for tracking all of the links
   d.addEventListener('click', (event) => {
     if (event.target.tagName === 'A' || event.target.dataset.ll?.length) {
