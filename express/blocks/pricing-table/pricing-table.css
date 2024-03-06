@@ -272,7 +272,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   gap: 8px;
   font-weight: 700;
   height: 100%;
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 .pricing-table .row.toggle-row.desktop-hide {
   display: none;
