@@ -8,8 +8,8 @@ import {
 } from '../shared/masonry.js';
 
 export default function decorate($block) {
-  addTempWrapper($block, 'template-list');
-  unwrapBlock($block.parentNode, 'template-list');
+  addTempWrapper($block, 'layouts');
+  unwrapBlock($block.parentNode, 'layouts');
 
   const $layouts = Array.from($block.children);
   const layouts = [];
