@@ -38,7 +38,7 @@ const LANGSTORE = 'langstore';
 
 const PAGE_URL = new URL(window.location.href);
 
-let martechPromise;
+let instrumentPromise;
 
 export function getMetadata(name) {
   const attr = name && name.includes(':') ? 'property' : 'name';
@@ -1437,7 +1437,7 @@ function loadMartech() {
     return loadScript(analyticsUrl, 'module');
   }
 
-  return new Promise().resolve();
+  return null;
 }
 
 function loadGnav() {
@@ -1733,9 +1733,6 @@ async function decorateTesting() {
     if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
       // eslint-disable-next-line no-console
       console.log('rushing martech');
-      import('./analytics.js').then(({ decorateInteractionTrackingEvents }) => {
-        decorateInteractionTrackingEvents();
-      });
     }
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -2465,7 +2462,7 @@ async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   window.dispatchEvent(new Event('milo:LCP:loaded'));
-  if (window.hlx.martech) martechPromise = loadMartech();
+  if (window.hlx.martech) instrumentPromise = loadMartech();
   loadGnav();
   const { default: loadFonts } = await import('./fonts.js');
   loadFonts(config.locale, loadStyle);
@@ -2597,8 +2594,11 @@ export async function loadArea(area = document) {
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 
-  const { default: martechLoadedCB } = await import('./analytics.js');
-  martechPromise.then(martechLoadedCB);
+  if (instrumentPromise) {
+    import('./legacy-analytics.js').then(({ default: decorateTrackingEvents }) => {
+      decorateTrackingEvents();
+    });
+  }
 }
 
 export function getMobileOperatingSystem() {
