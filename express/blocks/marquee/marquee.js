@@ -34,6 +34,7 @@ const breakpointConfig = [
 async function handlePrice(block) {
   const priceEl = block.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
+  priceEl.closest('p')?.classList.remove('button-container');
   let textContent = 'Contact sales for prices';
   const parent = priceEl.parentElement;
   const newContainer = createTag('span');
