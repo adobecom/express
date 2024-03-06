@@ -276,6 +276,7 @@ End border style variants
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
 }
 
 /** pricing styles end **/
