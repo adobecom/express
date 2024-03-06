@@ -7,6 +7,9 @@ import {
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
+import {
+  fetchPlanOnePlans,
+} from '../../scripts/utils/pricing.js';
 
 const breakpointConfig = [
   {
@@ -26,6 +29,26 @@ const breakpointConfig = [
     minWidth: 1440,
   },
 ];
+
+async function handlePrice(block) {
+  const priceEl = block.querySelector('[title="{{pricing}}"]');
+  if (!priceEl) return null;
+  let textContent = 'Contact Sales for prices';
+  const parent = priceEl.parentElement;
+  const newContainer = createTag('span');
+  priceEl.remove();
+  parent.parentElement.append(newContainer);
+  parent.remove();
+  try {
+    const response = await fetchPlanOnePlans(priceEl?.href);
+    textContent = `${response.symbol}${response.price}${response.suffix}`;
+  } catch (error) {
+    console.error('Failed to fetch prices for page plan');
+    console.error(error);
+  }
+  newContainer.textContent = textContent;
+  return newContainer;
+}
 
 // FIXME: Not fulfilling requirement. Re-think of a way to allow subtext to contain link.
 function handleSubCTAText(buttonContainer) {
@@ -318,7 +341,7 @@ async function handleContent(div, block, animations) {
     transformToVideoLink(div, videoLink);
   }
 
-  const contentButtons = [...div.querySelectorAll('a.button.accent')];
+  const contentButtons = [...div.querySelectorAll('a.button.accent')].filter((a) => !a.textContent.includes('{{'));
   if (contentButtons.length) {
     const primaryBtn = contentButtons[0];
     const secondaryButton = contentButtons[1];
@@ -373,7 +396,7 @@ export default async function decorate(block) {
   const possibleOptions = ['shadow', 'background'];
   const animations = {};
   const rows = [...block.children];
-
+  handlePrice(block);
   for (let index = 0; index < rows.length; index += 1) {
     const div = rows[index];
     let rowType = 'animation';
@@ -412,6 +435,5 @@ export default async function decorate(block) {
   if (getConfig().locale.region === 'jp') {
     addHeaderSizing(block);
   }
-
   block.classList.add('appear');
 }
