@@ -15,7 +15,6 @@ div[class='section section-wrapper floating-buttons-container'] {
 }
 
 .block.floating-buttons > div > div {
-  min-height: 75px;
   max-height: 150px;
   display: flex;
   align-items: stretch;
