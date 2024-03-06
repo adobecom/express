@@ -38,7 +38,7 @@ const LANGSTORE = 'langstore';
 
 const PAGE_URL = new URL(window.location.href);
 
-let instrumentPromise;
+let martechLoaded;
 
 export function getMetadata(name) {
   const attr = name && name.includes(':') ? 'property' : 'name';
@@ -1428,16 +1428,15 @@ function addPromotion() {
   }
 }
 
-function loadMartech() {
+async function loadMartech() {
   const usp = new URLSearchParams(window.location.search);
   const martech = usp.get('martech');
 
   const analyticsUrl = '/express/scripts/instrument.js';
   if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
-    return loadScript(analyticsUrl, 'module');
+    const mod = await import('./instrument.js');
+    mod.default();
   }
-
-  return null;
 }
 
 function loadGnav() {
@@ -1706,7 +1705,7 @@ async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
     loadIMS();
     // rush instrument-martech-launch-alloy
-    promises.push(import('./instrument.js'));
+    promises.push(loadMartech());
     window.delay_preload_product = true;
   }
   const [{ runExps }] = await Promise.all(promises);
@@ -2462,7 +2461,7 @@ async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   window.dispatchEvent(new Event('milo:LCP:loaded'));
-  if (window.hlx.martech) instrumentPromise = loadMartech();
+  if (window.hlx.martech) martechLoaded = loadMartech();
   loadGnav();
   const { default: loadFonts } = await import('./fonts.js');
   loadFonts(config.locale, loadStyle);
@@ -2594,11 +2593,9 @@ export async function loadArea(area = document) {
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 
-  if (instrumentPromise) {
-    import('./legacy-analytics.js').then(({ default: decorateTrackingEvents }) => {
-      decorateTrackingEvents();
-    });
-  }
+  martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
+    decorateTrackingEvents();
+  });
 }
 
 export function getMobileOperatingSystem() {

@@ -805,13 +805,7 @@ function martechLoadedCB() {
   __satelliteLoadedCallback(getAudiences);
 }
 
-export default function initMartech() {
-  return new Promise((resolve) => {
-    loadScript(martechURL).then(() => {
-      martechLoadedCB();
-      resolve();
-    });
-  });
+export default async function initMartech() {
+  await loadScript(martechURL);
+  return martechLoadedCB();
 }
-
-initMartech();
