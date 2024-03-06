@@ -88,7 +88,7 @@
   padding: 16px 24px;
 }
 
-.pricing-table .section-head-title.point-cursor {
+.pricing-table .point-cursor {
   cursor: pointer;
 }
 
@@ -228,7 +228,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
 }
 /* /Table Width */
 
-.pricing-table .row:not(.blank-row){
+.pricing-table .row:not(.blank-row) {
   min-height: 80px;
 }
 
@@ -256,7 +256,13 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
 
 /* Toggle Row */
 .pricing-table .row.toggle-row {
-  cursor: pointer;
+  border: none;
+  padding: 0;
+  background-color: unset;
+  font-family: var(--body-font-family);
+  display: grid;
+  appearance: unset;
+  width: 100%;
 }
 .pricing-table .row.toggle-row .col.toggle-content {
   display: flex;
@@ -265,6 +271,8 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   color: var(--color-info-accent);
   gap: 8px;
   font-weight: 700;
+  height: 100%;
+  box-sizing: border-box;
 }
 .pricing-table .row.toggle-row.desktop-hide {
   display: none;
@@ -309,7 +317,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
 .pricing-table .row .col:last-child {
   border-right-width: var(--border-width);
 }
-.pricing-table .row.table-end-row .col {
+.pricing-table .row.table-end-row:not(.connect-to-toggle) .col {
   border-bottom-width: var(--border-width);
 }
 .pricing-table .row.table-start-row .col,
@@ -324,10 +332,10 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
 .pricing-table .row.table-start-row .col:last-child {
   border-top-right-radius: var( --border-radius);
 }
-.pricing-table .row.table-end-row .col:first-child {
+.pricing-table .row.table-end-row:not(.connect-to-toggle) .col:first-child {
   border-bottom-left-radius: var( --border-radius);
 }
-.pricing-table .row.table-end-row .col:last-child {
+.pricing-table .row.table-end-row:not(.connect-to-toggle) .col:last-child {
   border-bottom-right-radius: var( --border-radius);
 }
 .pricing-table .row.section-header-row .col {
@@ -515,7 +523,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   /* Table Feature Row Content */
   .pricing-table .row.section-row .col .col-heading {
     display: flex;
-    flex-grow: 1;
+    flex: 1 1 0;
     justify-content: start;
     align-items: center;
     column-gap: 6px;
@@ -531,7 +539,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   }
   .pricing-table .row.section-row .col .col-wrapper .col-content {
     width: 60%;
-    flex-shrink: 1;
+    flex: 1 1 0;
     display: flex;
     flex-direction: row;
     column-gap: 12px;
@@ -585,7 +593,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
     padding: 16px;
   }
   .pricing-table .row.toggle-row.desktop-hide {
-    display: block;
+    display: grid;
   }
   .pricing-table .row.toggle-row .col.toggle-content {
     font-size: var(--body-font-size-s);
