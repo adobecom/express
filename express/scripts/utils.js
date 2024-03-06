@@ -38,8 +38,6 @@ const LANGSTORE = 'langstore';
 
 const PAGE_URL = new URL(window.location.href);
 
-let martechLoaded;
-
 export function getMetadata(name) {
   const attr = name && name.includes(':') ? 'property' : 'name';
   const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
@@ -2461,7 +2459,7 @@ async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   window.dispatchEvent(new Event('milo:LCP:loaded'));
-  if (window.hlx.martech) martechLoaded = loadMartech();
+  if (window.hlx.martech) window.hlx.martechLoaded = loadMartech();
   loadGnav();
   const { default: loadFonts } = await import('./fonts.js');
   loadFonts(config.locale, loadStyle);
@@ -2593,7 +2591,7 @@ export async function loadArea(area = document) {
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 
-  martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
+  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
     decorateTrackingEvents();
   });
 }
