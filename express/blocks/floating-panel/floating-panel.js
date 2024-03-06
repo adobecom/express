@@ -9,7 +9,6 @@ import {
   fetchPlaceholders,
   getConfig,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
 
 function initObserver(elem, observeTargets) {
   const hideOnIntersect = new IntersectionObserver((entries) => {
@@ -171,8 +170,6 @@ function initBlockInteraction(block, props) {
 }
 
 export default async function decorate(block) {
-  addTempWrapper(block, 'floating-panel');
-  
   const props = {};
   const bottomCont = createTag('div', { class: 'bottom-container' });
   lazyLoadLottiePlayer();
