@@ -38,6 +38,8 @@ const LANGSTORE = 'langstore';
 
 const PAGE_URL = new URL(window.location.href);
 
+let martechPromise;
+
 export function getMetadata(name) {
   const attr = name && name.includes(':') ? 'property' : 'name';
   const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
@@ -1432,8 +1434,10 @@ function loadMartech() {
 
   const analyticsUrl = '/express/scripts/instrument.js';
   if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
-    loadScript(analyticsUrl, 'module');
+    return loadScript(analyticsUrl, 'module');
   }
+
+  return new Promise().resolve();
 }
 
 function loadGnav() {
@@ -2461,7 +2465,7 @@ async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   window.dispatchEvent(new Event('milo:LCP:loaded'));
-  if (window.hlx.martech) loadMartech();
+  if (window.hlx.martech) martechPromise = loadMartech();
   loadGnav();
   const { default: loadFonts } = await import('./fonts.js');
   loadFonts(config.locale, loadStyle);
@@ -2592,6 +2596,9 @@ export async function loadArea(area = document) {
     const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
+
+  const { default: martechLoadedCB } = await import('./analytics.js');
+  martechPromise.then(martechLoadedCB);
 }
 
 export function getMobileOperatingSystem() {
