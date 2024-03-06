@@ -2594,7 +2594,7 @@ export async function loadArea(area = document) {
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 
-  if (getMetadata('milo-analytics')?.toLowerCase() === 'yes') {
+  if (['on', 'yes'].includes(getMetadata('milo-analytics')?.toLowerCase()) || params.get('milo-analytics') === 'on') {
     import('./attributes.js').then((analytics) => {
       document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
     });
