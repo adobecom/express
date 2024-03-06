@@ -347,7 +347,7 @@ End border style variants
   font-weight: 400;
 }
 
-.pricing-cards>div:last-of-type {
+.pricing-cards>.footer {
   padding: 12px 8px;
   margin: 16px auto;
   border-radius: 4px;
@@ -355,6 +355,11 @@ End border style variants
   font-size: var(--body-font-size-xs);
   max-width: 1200px;
   box-sizing: border-box;
+}
+
+.pricing-cards> .compare-all-plans>a {
+  width: fit-content;
+  margin: auto;
 }
 
 
