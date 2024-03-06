@@ -9,7 +9,7 @@ import {
 
 export default function decorate($block) {
   addTempWrapper($block, 'layouts');
-  unwrapBlock($block.parentNode, 'layouts');
+  unwrapBlock($block, 'layouts');
 
   const $layouts = Array.from($block.children);
   const layouts = [];

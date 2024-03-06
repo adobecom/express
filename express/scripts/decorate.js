@@ -10,7 +10,7 @@ export function addTempWrapper(block, blockName) {
 }
 
 export function unwrapBlock(block, blockName) {
-  const section = block.parentNode;
+  const section = block.closest('.section');
   const elems = [...section.children];
 
   if (elems.length <= 1) return;
