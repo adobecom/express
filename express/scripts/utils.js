@@ -656,7 +656,7 @@ export async function decorateBlock(block) {
             caseInsensitiveParams[name.toLowerCase()] = value.toLowerCase();
           }
           showWithSearchParam = caseInsensitiveParams[featureFlag];
-          blockRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(featureFlag.toLowerCase()) !== 'on';
+          blockRemove = showWithSearchParam ? showWithSearchParam !== 'on' : getMetadata(featureFlag.toLowerCase()) !== 'on';
         });
       }
       if (blockRemove) {
@@ -685,8 +685,7 @@ export async function decorateBlock(block) {
 
     block.setAttribute('data-block-name', blockName);
     block.setAttribute('data-block-status', 'initialized');
-    const blockWrapper = block.parentElement;
-    blockWrapper.classList.add(`${blockName}-wrapper`);
+
     if (getMetadata('sheet-powered') === 'Y') {
       const { setBlockTheme } = await import('./content-replace.js');
       setBlockTheme(block);
@@ -960,16 +959,19 @@ async function decorateSections(el, isDoc) {
     section.dataset.status = 'decorated';
     section.dataset.idx = idx;
 
-    let defaultContent = false;
-    let wrapper;
+    let defaultContentWrapper;
     [...section.children].forEach((child) => {
-      if (child.tagName === 'DIV' || !defaultContent) {
-        wrapper = document.createElement('div');
-        defaultContent = child.tagName !== 'DIV';
-        if (defaultContent) wrapper.classList.add('default-content-wrapper');
-        section.append(wrapper);
+      const isDivTag = child.tagName === 'DIV';
+      if (isDivTag) {
+        defaultContentWrapper = undefined;
+      } else {
+        if (!defaultContentWrapper) {
+          defaultContentWrapper = document.createElement('div');
+          defaultContentWrapper.classList.add('default-content-wrapper');
+          section.insertBefore(defaultContentWrapper, child);
+        }
+        defaultContentWrapper.append(child);
       }
-      wrapper?.append(child);
     });
     blocks.forEach(async (block) => {
       await decorateBlock(block);
@@ -1204,12 +1206,9 @@ function resolveFragments() {
 
 function decorateMarqueeColumns($main) {
   // flag first columns block in first section block as marquee
-  const $sectionSplitByHighlight = $main.querySelector('.split-by-app-store-highlight');
   const $firstColumnsBlock = $main.querySelector('.section:first-of-type .columns:first-of-type');
 
-  if ($sectionSplitByHighlight) {
-    $sectionSplitByHighlight.querySelector('.columns.fullsize.center').classList.add('columns-marquee');
-  } else if ($firstColumnsBlock) {
+  if ($firstColumnsBlock) {
     $firstColumnsBlock.classList.add('columns-marquee');
   }
 }
@@ -1684,7 +1683,7 @@ export async function getExperimentConfig(experimentId) {
 
 function loadIMS() {
   window.adobeid = {
-    client_id: 'MarvelWeb3',
+    client_id: sessionStorage.getItem('imsclient'),
     scope: 'AdobeID,openid',
     locale: getConfig().locale.region,
     environment: 'prod',
@@ -1701,31 +1700,9 @@ async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   const promises = [import('./experiment.js')];
   const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
-    loadIMS(); // rush ims to unblock alloy without loading gnav
-    promises.push(loadScript('/express/scripts/instrument.js', 'module'));
-    const t1 = performance.now();
-    let alloyLoadingResolver;
-    window.alloyLoader = new Promise((resolve) => {
-      alloyLoadingResolver = resolve;
-    });
-    window.addEventListener('alloy_sendEvent', (e) => {
-      // fired by launch loaded by martech loaded by instrument
-      if (e.detail.type === 'pageView') {
-        // eslint-disable-next-line no-console
-        console.log(`Alloy loaded in ${performance.now() - t1}`);
-        window.alloyLoaded = true;
-        alloyLoadingResolver(e.detail.result);
-      }
-    });
-    // tolerate max 5s for exp overheads
-    setTimeout(() => {
-      if (!window.alloyLoaded) {
-        // eslint-disable-next-line no-console
-        console.error(`Alloy failed to load, waited ${performance.now() - t1}`);
-        alloyLoadingResolver();
-        window.delay_preload_product = false;
-      }
-    }, 5000);
+    loadIMS();
+    // rush instrument-martech-launch-alloy
+    promises.push(import('./instrument.js'));
     window.delay_preload_product = true;
   }
   const [{ runExps }] = await Promise.all(promises);
@@ -1752,7 +1729,9 @@ async function decorateTesting() {
     if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
       // eslint-disable-next-line no-console
       console.log('rushing martech');
-      loadScript('/express/scripts/instrument.js', 'module');
+      import('./instrument.js').then(({ default: decorateInteractionTrackingEvents }) => {
+        decorateInteractionTrackingEvents();
+      });
     }
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -1980,19 +1959,6 @@ async function buildAutoBlocks($main) {
     }
   }
 
-  // Load the app store autoblocks...
-  if (['yes', 'true', 'on'].includes(getMetadata('show-standard-app-store-blocks').toLowerCase())) {
-    const $highlight = buildBlock('app-store-highlight', '');
-    if (lastDiv) {
-      lastDiv.append($highlight);
-    }
-
-    const $blade = buildBlock('app-store-blade', '');
-    if (lastDiv) {
-      lastDiv.append($blade);
-    }
-  }
-
   if (['yes', 'true', 'on'].includes(getMetadata('show-plans-comparison').toLowerCase())) {
     const $plansComparison = buildBlock('plans-comparison', '');
     if (lastDiv) {
@@ -2001,7 +1967,8 @@ async function buildAutoBlocks($main) {
   }
 
   async function loadPromoFrag() {
-    const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
+    if (document.querySelector('.sticky-promo-bar')) return;
+    const fragment = await fetchPlainBlockFromFragment(`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`, 'sticky-promo-bar');
     if (!fragment) return;
     $main.append(fragment);
     const block = fragment?.querySelector('.sticky-promo-bar.block');
@@ -2072,26 +2039,14 @@ async function buildAutoBlocks($main) {
   }
 }
 
-function splitSections($main) {
-  // check if there are more than one columns.fullsize-center. If so, don't split.
-  const multipleColumns = $main.querySelectorAll('.columns.fullsize-center').length > 1;
-  $main.querySelectorAll(':scope > div > div').forEach(($block) => {
-    const hasAppStoreBlocks = ['yes', 'true', 'on'].includes(getMetadata('show-standard-app-store-blocks').toLowerCase());
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'faq', 'promotion', 'app-store-highlight', 'app-store-blade', 'plans-comparison'];
+function splitSections(main) {
+  main.querySelectorAll(':scope > div > div').forEach((block) => {
+    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion', 'plans-comparison'];
     // work around for splitting columns and sixcols template list
     // add metadata condition to minimize impact on other use cases
-    if (hasAppStoreBlocks && !multipleColumns) {
-      blocksToSplit.push('columns fullsize-center');
-    }
-    if (blocksToSplit.includes($block.className)) {
-      unwrapBlock($block);
-    }
 
-    if (hasAppStoreBlocks && $block.className.includes('columns fullsize-center')) {
-      const $parentNode = $block.parentNode;
-      if ($parentNode && !multipleColumns) {
-        $parentNode.classList.add('split-by-app-store-highlight');
-      }
+    if (blocksToSplit.includes(block.className)) {
+      unwrapBlock(block);
     }
   });
 }

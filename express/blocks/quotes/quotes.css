@@ -109,10 +109,10 @@ main .section.quotes-dark-container h5 {
   color: var(--color-white);
 }
 
-main .section.quotes-container h2,
-main .section.quotes-highlight-container h2,
-main .section.quotes-dark-container h2 {
-  margin-top: 40px;
+main .section.quotes-container,
+main .section.quotes-highlight-container,
+main .section.quotes-dark-container {
+  padding-top: 40px;
 }
 
 @media (min-width: 900px) {

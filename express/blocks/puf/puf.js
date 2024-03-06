@@ -1,6 +1,6 @@
-import { addPublishDependencies, createTag, getMetadata } from '../../scripts/utils.js';
-import { buildUrl, fetchPlan, setVisitorCountry } from '../../scripts/utils/pricing.js';
 import buildCarousel from '../shared/carousel.js';
+import { addPublishDependencies, createTag, getMetadata } from '../../scripts/utils.js';
+import { buildUrl, fetchPlan } from '../../scripts/utils/pricing.js';
 
 let invisContainer;
 let parent;
@@ -382,7 +382,7 @@ async function build1ColDesign(block) {
   block.innerHTML = '';
   block.append(pricingCard);
 
-  addPublishDependencies('/express/system/offers-new.json');
+  addPublishDependencies('/express/system/offers-new.json?limit=5000');
   wrapTextAndSup(block);
   block.append(footer);
   formatTextElements(block);
@@ -425,7 +425,7 @@ async function build2ColDesign(block) {
   const intersectionObserver = new IntersectionObserver(callback, options);
   intersectionObserver.observe(rightCard);
   intersectionObserver.observe(leftCard);
-  addPublishDependencies('/express/system/offers-new.json');
+  addPublishDependencies('/express/system/offers-new.json?limit=5000');
   wrapTextAndSup(block);
   block.append(footer);
   formatTextElements(block);
@@ -445,6 +445,5 @@ async function buildPUF(block) {
 }
 
 export default async function decorate(block) {
-  setVisitorCountry();
   await buildPUF(block);
 }

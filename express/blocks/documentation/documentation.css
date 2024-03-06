@@ -1,0 +1,15 @@
+.documentation {
+    text-align: initial;
+    border-bottom: 2px solid grey;
+}
+
+.documentation-row {
+    border-top: 2px solid grey;
+    border-right: 2px solid grey;
+    border-left: 2px solid grey;
+    padding: 20px;
+}
+
+p {
+    margin: 0px
+}

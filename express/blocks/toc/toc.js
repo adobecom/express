@@ -4,6 +4,7 @@ import {
   getIconElement as genericGetIconElement,
   getMobileOperatingSystem,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 export function getToggleButton() {
   const $toggle = document.querySelector('.default-content-wrapper .button.accent');
@@ -122,6 +123,8 @@ export function addAppStoreButton($block) {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'toc');
+
   const iconHTML = getLottie('arrow-down', '/express/icons/arrow-down.json');
   const $toggle = getToggleButton();
   $toggle.innerHTML = iconHTML + $toggle.innerHTML;

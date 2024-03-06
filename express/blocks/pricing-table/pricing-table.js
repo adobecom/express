@@ -1,6 +1,11 @@
 import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { debounce } from '../../scripts/hofs.js';
 import { decorateButtons } from '../../scripts/utils/decorate.js';
+import {
+  buildUrl,
+  fetchPlanOnePlans,
+} from '../../scripts/utils/pricing.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
@@ -50,6 +55,11 @@ function handleHeading(headingRow, headingCols) {
         btn.classList.add('primary');
         btn.parentNode.remove();
       }
+      fetchPlanOnePlans(btn.href).then(({
+        url, country, language, offerId,
+      }) => {
+        btn.href = buildUrl(url, country, language, offerId);
+      });
       const btnWrapper = btn.closest('p');
       buttonsWrapper.append(btnWrapper);
     });
@@ -182,6 +192,8 @@ const getId = (function idSetups() {
 }());
 
 export default async function init(el) {
+  addTempWrapper(el, 'pricing-table');
+
   const blockId = getId();
   el.id = `pricing-table-${blockId + 1}`;
   el.setAttribute('role', 'table');

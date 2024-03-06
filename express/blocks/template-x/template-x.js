@@ -15,6 +15,7 @@ import {
   toClassName,
   transformLinkToAnimation,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { Masonry } from '../shared/masonry.js';
 import buildCarousel from '../shared/carousel.js';
 import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './template-search-api-v3.js';
@@ -1021,11 +1022,14 @@ function toggleMasonryView(block, props, button, toggleButtons) {
 
 function initViewToggle(block, props, toolBar) {
   const toggleButtons = toolBar.querySelectorAll('.view-toggle-button ');
-  block.classList.add('sm-view');
-  block.parentElement.classList.add('sm-view');
-  toggleButtons[0].classList.add('active');
+  const authoredViewIndex = ['sm', 'md', 'lg'].findIndex((size) => getMetadata('initial-template-view')?.toLowerCase().trim() === size);
+  const initViewIndex = authoredViewIndex === -1 ? 0 : authoredViewIndex;
 
-  toggleButtons.forEach((button) => {
+  toggleButtons.forEach((button, index) => {
+    if (index === initViewIndex) {
+      toggleMasonryView(block, props, button, toggleButtons);
+    }
+
     button.addEventListener('click', () => {
       toggleMasonryView(block, props, button, toggleButtons);
     }, { passive: true });
@@ -1086,24 +1090,44 @@ async function decorateToolbar(block, props) {
 }
 
 function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
+  const onToggle = () => {
+    block.classList.toggle('expanded');
+
+    if (document.body.dataset.device === 'mobile' || block.classList.contains('mobile')) {
+      const tglBtn = block.querySelector('.toggle-button');
+      const heading = templateTitle.querySelector('.toggle-bar-top > h4');
+
+      if (tglBtn && heading) {
+        const rect = heading.getBoundingClientRect();
+        if (!block.classList.contains('expanded')) {
+          tglBtn.style.marginLeft = `${rect.x}px`;
+        } else {
+          tglBtn.style.removeProperty('margin-left');
+        }
+      }
+    }
+  };
+
   const chev = block.querySelector('.toggle-button-chev');
-  templateTitle.addEventListener('click', () => block.classList.toggle('expanded'));
+  templateTitle.addEventListener('click', () => onToggle());
   chev.addEventListener('click', (e) => {
     e.stopPropagation();
-    block.classList.toggle('expanded');
+    onToggle();
   });
 
-  toggle.addEventListener('click', () => block.classList.toggle('expanded'));
+  toggle.addEventListener('click', () => onToggle());
   link.addEventListener('click', (e) => e.stopPropagation());
 
   setTimeout(() => {
     if (!block.matches(':hover')) {
-      block.classList.toggle('expanded');
+      onToggle();
     }
   }, 3000);
 }
 
 function decorateHoliday(block, props) {
+  const main = document.querySelector('main');
+  const templateXSection = block.closest('div[class="section section-wrapper template-x-container"]');
   const mobileViewport = window.innerWidth < 901;
   const templateTitle = block.querySelector('.template-title');
   const toggleBar = templateTitle.querySelector('div');
@@ -1111,7 +1135,7 @@ function decorateHoliday(block, props) {
   const subheading = templateTitle.querySelector('p');
   const link = templateTitle.querySelector('.template-title-link');
   const linkWrapper = link.closest('p');
-  const toggle = createTag('div', { class: 'expanded toggle-button' });
+  const toggle = createTag('div', { class: 'toggle-button' });
   const topElements = createTag('div', { class: 'toggle-bar-top' });
   const bottomElements = createTag('div', { class: 'toggle-bar-bottom' });
   const toggleChev = createTag('div', { class: 'toggle-button-chev' });
@@ -1123,6 +1147,7 @@ function decorateHoliday(block, props) {
     block.prepend(animation);
   }
 
+  if (templateXSection && templateXSection.querySelectorAll('div.block').length === 1) main.classList.add('with-holiday-templates-banner');
   block.classList.add('expanded', props.textColor);
   toggleBar.classList.add('toggle-bar');
   topElements.append(heading);
@@ -1517,6 +1542,7 @@ async function buildTemplateList(block, props, type = []) {
     const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
     const textWrapper = block.querySelector('.template-title .text-wrapper > div');
     const tabsWrapper = createTag('div', { class: 'template-tabs' });
+    const tabBtns = [];
 
     const promises = [];
 
@@ -1531,6 +1557,7 @@ async function buildTemplateList(block, props, type = []) {
         const tabBtn = createTag('button', { class: 'template-tab-button' });
         tabBtn.textContent = tabs[index];
         tabsWrapper.append(tabBtn);
+        tabBtns.push(tabBtn);
 
         const [[task]] = taskObj;
 
@@ -1575,6 +1602,8 @@ async function buildTemplateList(block, props, type = []) {
           }
         }, { passive: true });
       });
+
+      document.dispatchEvent(new CustomEvent('linkspopulated', { detail: tabBtns }));
     }
 
     textWrapper.append(tabsWrapper);
@@ -1636,6 +1665,8 @@ function determineTemplateXType(props) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'template-x');
+
   const props = constructProps(block);
   block.innerHTML = '';
   await buildTemplateList(block, props, determineTemplateXType(props));

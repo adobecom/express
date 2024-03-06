@@ -16,6 +16,7 @@ import {
   sampleRUM,
   toClassName,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import { Masonry } from '../shared/masonry.js';
 
@@ -1405,16 +1406,18 @@ function toggleMasonryView($block, $button, $toggleButtons, props) {
   }
 }
 
-function initViewToggle($block, $toolBar, props) {
-  const $toggleButtons = $toolBar.querySelectorAll('.view-toggle-button ');
+function initViewToggle(block, toolBar, props) {
+  const toggleButtons = toolBar.querySelectorAll('.view-toggle-button ');
+  const authoredViewIndex = ['sm', 'md', 'lg'].findIndex((size) => getMetadata('initial-template-view')?.toLowerCase().trim() === size);
+  const initViewIndex = authoredViewIndex === -1 ? 0 : authoredViewIndex;
 
-  $toggleButtons.forEach(($button, index) => {
-    if (index === 0) {
-      toggleMasonryView($block, $button, $toggleButtons, props);
+  toggleButtons.forEach((button, index) => {
+    if (index === initViewIndex && getMetadata('initial-template-view') !== 'no') {
+      toggleMasonryView(block, button, toggleButtons, props);
     }
 
-    $button.addEventListener('click', () => {
-      toggleMasonryView($block, $button, $toggleButtons, props);
+    button.addEventListener('click', () => {
+      toggleMasonryView(block, button, toggleButtons, props);
     }, { passive: true });
   });
 }
@@ -1427,7 +1430,7 @@ async function decorateBreadcrumbs(block) {
   if (breadcrumbs) parent.prepend(breadcrumbs);
 }
 
-function initToolbarShadow($block, $toolbar) {
+function initToolbarShadow($toolbar) {
   const $toolbarWrapper = $toolbar.parentElement;
   document.addEventListener('scroll', () => {
     if ($toolbarWrapper.getBoundingClientRect().top <= 0) {
@@ -1940,6 +1943,8 @@ function constructProps() {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'template-list');
+
   const props = constructProps();
   if ($block.classList.contains('spreadsheet-powered')) {
     await replaceRRTemplateList($block, props);

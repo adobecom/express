@@ -1,6 +1,10 @@
-import { createTag } from '../../scripts/utils.js';
-import { fetchPlan, buildUrl, setVisitorCountry } from '../../scripts/utils/pricing.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import buildCarousel from '../shared/carousel.js';
+import { createTag } from '../../scripts/utils.js';
+
+import {
+  fetchPlan, buildUrl, shallSuppressOfferEyebrowText,
+} from '../../scripts/utils/pricing.js';
 
 function handleHeader(column) {
   column.classList.add('pricing-column');
@@ -14,7 +18,7 @@ function handleHeader(column) {
   return header;
 }
 
-function handlePrice(block, column) {
+function handlePrice(block, column, eyeBrow) {
   const pricePlan = createTag('div', { class: 'pricing-plan' });
   const priceEl = column.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
@@ -30,7 +34,7 @@ function handlePrice(block, column) {
   pricePlan.append(priceWrapper, plan);
 
   fetchPlan(priceEl?.href).then(({
-    url, country, language, offerId, formatted, formattedBP, suffix,
+    url, country, language, offerId, formatted, formattedBP, suffix, savePer, ooAvailable,
   }) => {
     const parentP = priceEl.parentElement;
     price.innerHTML = formatted;
@@ -51,6 +55,17 @@ function handlePrice(block, column) {
 
     const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
     if (planCTA) planCTA.href = buildUrl(url, country, language, offerId);
+
+    if (eyeBrow !== null) {
+      const isPremiumCard = ooAvailable || false;
+      const offerTextContent = eyeBrow.innerHTML;
+      if (shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremiumCard, true, offerId)) {
+        eyeBrow.parentElement.classList.remove('has-pricing-eyebrow');
+        eyeBrow.remove;
+      } else {
+        eyeBrow.innerHTML = offerTextContent.replace('{{savePercentage}}', savePer);
+      }
+    }
   });
 
   priceParent?.remove();
@@ -173,7 +188,8 @@ function alignContent(block) {
 }
 
 export default async function decorate(block) {
-  setVisitorCountry();
+  addTempWrapper(block, 'pricing-summary');
+
   const pricingContainer = block.classList.contains('feature') ? block.children[2] : block.children[1];
   const featureColumns = block.classList.contains('feature') ? Array.from(block.children[3].children) : null;
   const eyeBrows = block.classList.contains('feature') ? Array.from(block.children[1].children) : null;
@@ -189,11 +205,11 @@ export default async function decorate(block) {
 
       const contentWrapper = createTag('div', { class: 'pricing-content-wrapper' });
       const header = handleHeader(column);
-      const pricePlan = handlePrice(block, column);
+      const eyeBrow = handleEyeBrows(columnWrapper, eyeBrows, index);
+      const pricePlan = handlePrice(block, column, eyeBrow);
       const cta = handleCtas(block, column);
       const description = handleDescription(column);
       const featureList = handleFeatureList(featureColumns, index);
-      const eyeBrow = handleEyeBrows(columnWrapper, eyeBrows, index);
 
       contentWrapper.append(header, description);
       if (pricePlan) {
