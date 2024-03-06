@@ -57,7 +57,33 @@ window.marketingtech = {
 // w.targetGlobalSettings = w.targetGlobalSettings || {};
 // w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
 
-const set = (path, value) => {
+function getPlacement(btn) {
+  const parentBlock = btn.closest('.block');
+  let placement = 'outside-blocks';
+
+  if (parentBlock) {
+    const blockName = parentBlock.dataset.blockName || parentBlock.classList[0];
+    const sameBlocks = btn.closest('main')?.querySelectorAll(`.${blockName}`);
+
+    if (sameBlocks && sameBlocks.length > 1) {
+      sameBlocks.forEach((b, i) => {
+        if (b === parentBlock) {
+          placement = `${blockName}-${i + 1}`;
+        }
+      });
+    } else {
+      placement = blockName;
+    }
+
+    if (['template-list', 'template-x'].includes(blockName) && btn.classList.contains('placeholder')) {
+      placement = 'blank-template-cta';
+    }
+  }
+
+  return placement;
+}
+
+function set(path, value) {
   const obj = w.alloy_all;
   const newPath = `data._adobe_corpnew.digitalData.${path}`;
   const segs = newPath.split('.');
@@ -74,7 +100,7 @@ const set = (path, value) => {
   // set the value
   temp[segs[i]] = value;
   return obj;
-};
+}
 
 export function sendEventToAdobeAnaltics(eventName) {
   _satellite.track('event', {
@@ -107,32 +133,6 @@ export function textToName(text) {
   const splits = text.toLowerCase().split(' ');
   const camelCase = splits.map((s, i) => (i ? s.charAt(0).toUpperCase() + s.substr(1) : s)).join('');
   return (camelCase);
-}
-
-function getPlacement(btn) {
-  const parentBlock = btn.closest('.block');
-  let placement = 'outside-blocks';
-
-  if (parentBlock) {
-    const blockName = parentBlock.dataset.blockName || parentBlock.classList[0];
-    const sameBlocks = btn.closest('main')?.querySelectorAll(`.${blockName}`);
-
-    if (sameBlocks && sameBlocks.length > 1) {
-      sameBlocks.forEach((b, i) => {
-        if (b === parentBlock) {
-          placement = `${blockName}-${i + 1}`;
-        }
-      });
-    } else {
-      placement = blockName;
-    }
-
-    if (['template-list', 'template-x'].includes(blockName) && btn.classList.contains('placeholder')) {
-      placement = 'blank-template-cta';
-    }
-  }
-
-  return placement;
 }
 
 export async function trackBranchParameters($links) {
@@ -249,26 +249,31 @@ export async function trackBranchParameters($links) {
 }
 
 export function appendLinkText(eventName, a) {
-  let img;
-  let alt;
-
   if (!a) return eventName;
 
   if (a.getAttribute('title')?.trim()) {
     return eventName + textToName(a.getAttribute('title').trim());
-  } else if (a.getAttribute('aria-label')?.trim()) {
-    return eventName + textToName(a.getAttribute('aria-label').trim());
-  } else if (a.textContent?.trim()) {
-    return eventName + textToName(a.textContent.trim());
-  } else {
-    img = a.querySelector('img');
-    alt = img && img.getAttribute('alt');
-    if (alt) {
-      return eventName + textToName(alt);
-    } else {
-      return eventName;
-    }
   }
+
+  if (a.getAttribute('aria-label')?.trim()) {
+    return eventName + textToName(a.getAttribute('aria-label').trim());
+  }
+
+  if (a.textContent?.trim()) {
+    return eventName + textToName(a.textContent.trim());
+  }
+
+  const img = a.querySelector('img');
+  const alt = img?.getAttribute('alt');
+  if (alt) {
+    return eventName + textToName(alt);
+  }
+
+  if (a.className) {
+    return eventName + textToName(a.className);
+  }
+
+  return eventName;
 }
 
 export function trackButtonClick(a) {
@@ -280,7 +285,8 @@ export function trackButtonClick(a) {
   const hemingwayAsset = a.querySelector('picture,video,audio,img')
       || a.closest('[class*="-container"],[class*="-wrapper"]')?.querySelector('picture,video,audio,img');
   const block = a.closest('.block');
-  if (hemingwayAsset && block) {
+  const urlConstructable = a.href || a.currentSrc || a.src;
+  if (hemingwayAsset && block && urlConstructable) {
     const { assetId, assetPath } = getAssetDetails(hemingwayAsset);
     hemingwayAssetPath = assetPath;
     hemingwayAssetId = assetId;
