@@ -1389,7 +1389,9 @@ export async function fetchPlaceholders() {
       const json = await resp.json();
       window.placeholders = {};
       json.data.forEach((placeholder) => {
-        window.placeholders[toClassName(placeholder.Key)] = placeholder.Text;
+        const key = placeholder.Key || placeholder.key;
+        const value = placeholder.Text || placeholder.value;
+        window.placeholders[toClassName(key)] = value;
       });
     }
   };
