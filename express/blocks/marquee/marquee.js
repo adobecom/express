@@ -30,10 +30,11 @@ const breakpointConfig = [
   },
 ];
 
+// Transforms a {{pricing}} tag into human readable format.
 async function handlePrice(block) {
   const priceEl = block.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
-  let textContent = 'Contact Sales for prices';
+  let textContent = 'Contact sales for prices';
   const parent = priceEl.parentElement;
   const newContainer = createTag('span');
   priceEl.remove();
@@ -41,7 +42,7 @@ async function handlePrice(block) {
   parent.remove();
   try {
     const response = await fetchPlanOnePlans(priceEl?.href);
-    textContent = `${response.symbol}${response.price}${response.suffix}`;
+    textContent = `${response.symbol}${response.price}${response.suffix}.`;
   } catch (error) {
     console.error('Failed to fetch prices for page plan');
     console.error(error);
@@ -391,12 +392,11 @@ async function handleOptions(div, typeHint, block) {
 
 export default async function decorate(block) {
   addTempWrapper(block, 'marquee');
-
+  handlePrice(block);
   const possibleBreakpoints = breakpointConfig.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const animations = {};
   const rows = [...block.children];
-  handlePrice(block);
   for (let index = 0; index < rows.length; index += 1) {
     const div = rows[index];
     let rowType = 'animation';
