@@ -16,7 +16,7 @@ import {
   sampleRUM,
   toClassName,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper, unwrapBlock } from '../../scripts/decorate.js';
 
 import { Masonry } from '../shared/masonry.js';
 
@@ -1944,6 +1944,7 @@ function constructProps() {
 
 export default async function decorate($block) {
   addTempWrapper($block, 'template-list');
+  unwrapBlock($block, 'template-list');
 
   const props = constructProps();
   if ($block.classList.contains('spreadsheet-powered')) {

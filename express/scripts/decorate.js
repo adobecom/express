@@ -18,14 +18,15 @@ export function unwrapBlock($block, $blockName) {
   const $blockSection = createTag('div');
   $blockSection.className = `section section-wrapper ${$blockName}-container`;
   const $postBlockSection = createTag('div');
-  $postBlockSection.className = 'section section-wrapper';
+  $postBlockSection.className = $section.className;
+  $postBlockSection.classList.remove(`${$blockName}-container`);
   const $nextSection = $section.nextElementSibling;
   $section.parentNode.insertBefore($blockSection, $nextSection);
   $section.parentNode.insertBefore($postBlockSection, $nextSection);
 
   let $appendTo;
   $elems.forEach(($e) => {
-    if ($e === $block || ($e.className === 'section-metadata')) {
+    if ($e === $block || $e.className === 'section-metadata') {
       $appendTo = $blockSection;
     }
 

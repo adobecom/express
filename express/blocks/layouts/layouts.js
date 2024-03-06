@@ -1,3 +1,4 @@
+import { addTempWrapper, unwrapBlock } from '../../scripts/decorate.js';
 import {
   createTag,
   getIcon,
@@ -7,6 +8,9 @@ import {
 } from '../shared/masonry.js';
 
 export default function decorate($block) {
+  addTempWrapper($block, 'template-list');
+  unwrapBlock($block.parentNode, 'template-list');
+
   const $layouts = Array.from($block.children);
   const layouts = [];
   $layouts.forEach(($layout) => {

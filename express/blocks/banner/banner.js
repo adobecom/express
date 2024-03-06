@@ -1,6 +1,9 @@
+import { addTempWrapper, unwrapBlock } from '../../scripts/decorate.js';
 import { normalizeHeadings } from '../../scripts/utils.js';
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'banner');
+  unwrapBlock(block.parentNode, 'banner');
   normalizeHeadings(block, ['h2', 'h3']);
   const buttons = block.querySelectorAll('a.button');
   if (buttons.length > 1) {
