@@ -1,6 +1,7 @@
 /* eslint-disable import/named, import/extensions */
 
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -44,6 +45,8 @@ export function decorateCategories(block, payload) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'browse-by-category');
+
   const rows = Array.from(block.children);
   const headingDiv = rows.shift();
 

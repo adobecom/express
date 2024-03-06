@@ -1,3 +1,4 @@
+import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
@@ -18,6 +19,7 @@ function suppressOfferEyebrow(specialPromo, legacyVersion) {
   if (specialPromo.parentElement) {
     if (legacyVersion) {
       specialPromo.parentElement.classList.remove('special-promo');
+      specialPromo.remove();
     } else {
       specialPromo.className = 'hide';
       specialPromo.parentElement.className = '';
@@ -79,12 +81,16 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
       }
     }
 
-    if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced) {
+    if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced && specialPromo.textContent.includes(`{{${SAVE_PERCENTAGE}}}`)) {
       const offerTextContent = specialPromo.textContent;
 
-      const shouldSuppress = shallSuppressOfferEyebrowText(response.savePer, offerTextContent,
-
-        isPremiumCard, true, response.offerId);
+      const shouldSuppress = shallSuppressOfferEyebrowText(
+        response.savePer,
+        offerTextContent,
+        isPremiumCard,
+        true,
+        response.offerId,
+      );
       if (shouldSuppress) {
         suppressOfferEyebrow(specialPromo, legacyVersion);
       } else {
@@ -175,8 +181,8 @@ function decorateLegacyHeader(header, card) {
     h2.append(h2Text.replace(`(${cfg})`, '').trim());
     if (/^\d/.test(cfg)) {
       const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
-      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
       headCntDiv.textContent = cfg;
+      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
       header.append(headCntDiv);
     } else {
       specialPromo = createTag('div');
@@ -205,7 +211,6 @@ function decorateHeader(header, borderParams, card, cardBorder) {
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
   });
-
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
   if (extractHeadCountExp.test(h2.innerText)) {
@@ -297,6 +302,7 @@ function decorateCard({
 }
 
 export default async function init(el) {
+  addTempWrapper(el, 'pricing-cards');
   // For backwards compatability with old versions of the pricing card
   const legacyVersion = el.querySelectorAll(':scope > div').length < 10;
   const currentKeys = [...blockKeys];

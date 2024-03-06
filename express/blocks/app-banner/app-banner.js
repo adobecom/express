@@ -6,6 +6,8 @@ import {
   getIconElement,
 } from '../../scripts/utils.js';
 
+import { addTempWrapper } from '../../scripts/decorate.js';
+
 async function buildPayload() {
   const payload = {
     userAgent: getMobileOperatingSystem(),
@@ -169,6 +171,7 @@ function watchFloatingButtonState(block) {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'app-banner');
   if (weekPassed()) {
     localStorage.removeItem('app-banner-optout-exp-date');
     const payload = await buildPayload();

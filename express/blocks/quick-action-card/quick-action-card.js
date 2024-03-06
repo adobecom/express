@@ -7,6 +7,7 @@ import {
   readBlockConfig,
   toClassName,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -122,6 +123,8 @@ async function buildBlockFromFragment($block) {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'quick-action-card');
+
   const payload = {
     userAgent: getMobileOperatingSystem(),
     heading: '',

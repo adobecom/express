@@ -4,6 +4,7 @@ import {
   getIconElement,
   getMobileOperatingSystem,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 function toggleCollapsibleCard($block) {
   $block.classList.toggle('expanded');
@@ -53,6 +54,8 @@ function decorateBadge($block) {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'collapsible-card');
+
   if ($block.classList.contains('spreadsheet-powered')) {
     const relevantRowsData = await fetchRelevantRows(window.location.pathname);
 

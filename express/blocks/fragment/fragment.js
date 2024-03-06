@@ -10,6 +10,7 @@ import {
   decorateMain,
   loadSections,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 /**
  * Loads a fragment.
@@ -31,6 +32,8 @@ async function loadFragment(path) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'fragment');
+
   const link = block.querySelector('a');
   const path = link ? link.getAttribute('href') : block.textContent.trim();
   const fragment = await loadFragment(path);

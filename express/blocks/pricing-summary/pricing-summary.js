@@ -1,3 +1,4 @@
+import { addTempWrapper } from '../../scripts/decorate.js';
 import buildCarousel from '../shared/carousel.js';
 import { createTag } from '../../scripts/utils.js';
 
@@ -187,6 +188,8 @@ function alignContent(block) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'pricing-summary');
+
   const pricingContainer = block.classList.contains('feature') ? block.children[2] : block.children[1];
   const featureColumns = block.classList.contains('feature') ? Array.from(block.children[3].children) : null;
   const eyeBrows = block.classList.contains('feature') ? Array.from(block.children[1].children) : null;
