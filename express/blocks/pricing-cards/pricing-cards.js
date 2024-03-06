@@ -173,16 +173,18 @@ function decorateLegacyHeader(header, card) {
   const h2Text = h2.textContent.trim();
   h2.innerHTML = '';
   const headerConfig = /\((.+)\)/.exec(h2Text);
-  const premiumIcon = header.querySelector('img');
+  const premiumIcon = header.querySelector('img'); 
   let specialPromo;
   if (premiumIcon) h2.append(premiumIcon);
   if (headerConfig) {
     const cfg = headerConfig[1];
-    h2.append(h2Text.replace(`(${cfg})`, '').trim());
+    h2.append(h2Text.replace(`(${cfg})`, '').trim()); 
     if (/^\d/.test(cfg)) {
       const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
       headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
-      headCntDiv.textContent = cfg;
+      const s = createTag('span')
+      s.textContent = cfg;
+      headCntDiv.append(s) 
       header.append(headCntDiv);
     } else {
       specialPromo = createTag('div');
@@ -210,8 +212,7 @@ function decorateHeader(header, borderParams, card, cardBorder) {
 
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
-  });
-
+  }); 
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
   if (extractHeadCountExp.test(h2.innerText)) {
