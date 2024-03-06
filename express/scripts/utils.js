@@ -685,8 +685,7 @@ export async function decorateBlock(block) {
 
     block.setAttribute('data-block-name', blockName);
     block.setAttribute('data-block-status', 'initialized');
-    const blockWrapper = block.parentElement;
-    blockWrapper.classList.add(`${blockName}-wrapper`);
+
     if (getMetadata('sheet-powered') === 'Y') {
       const { setBlockTheme } = await import('./content-replace.js');
       setBlockTheme(block);
@@ -960,16 +959,19 @@ async function decorateSections(el, isDoc) {
     section.dataset.status = 'decorated';
     section.dataset.idx = idx;
 
-    let defaultContent = false;
-    let wrapper;
+    let defaultContentWrapper;
     [...section.children].forEach((child) => {
-      if (child.tagName === 'DIV' || !defaultContent) {
-        wrapper = document.createElement('div');
-        defaultContent = child.tagName !== 'DIV';
-        if (defaultContent) wrapper.classList.add('default-content-wrapper');
-        section.append(wrapper);
+      const isDivTag = child.tagName === 'DIV';
+      if (isDivTag) {
+        defaultContentWrapper = undefined;
+      } else {
+        if (!defaultContentWrapper) {
+          defaultContentWrapper = document.createElement('div');
+          defaultContentWrapper.classList.add('default-content-wrapper');
+          section.insertBefore(defaultContentWrapper, child);
+        }
+        defaultContentWrapper.append(child);
       }
-      wrapper?.append(child);
     });
     blocks.forEach(async (block) => {
       await decorateBlock(block);
@@ -1727,7 +1729,9 @@ async function decorateTesting() {
     if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
       // eslint-disable-next-line no-console
       console.log('rushing martech');
-      loadScript('/express/scripts/instrument.js', 'module');
+      import('./instrument.js').then(({ default: decorateInteractionTrackingEvents }) => {
+        decorateInteractionTrackingEvents();
+      });
     }
   } catch (e) {
     // eslint-disable-next-line no-console

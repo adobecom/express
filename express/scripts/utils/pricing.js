@@ -183,17 +183,37 @@ function getCurrencyDisplay(currency) {
   return 'symbol';
 }
 
-function getCountry() {
-  const userGeo = window.feds
-  && window.feds.data
-  && window.feds.data.location
-  && window.feds.data.location.country
-    ? window.feds.data.location.country
-    : null;
+export function normCountry(country) {
+  return (country.toLowerCase() === 'uk' ? 'gb' : country.toLowerCase()).split('_')[0];
+}
+
+// urlparam > cookie > sessionStorage > feds > api > config
+export async function getCountry() {
   const urlParams = new URLSearchParams(window.location.search);
-  let country = urlParams.get('country') || getCookie('international') || userGeo || getConfig().locale.prefix.replace('/', '');
-  if (country === 'uk') country = 'gb';
-  return (country.split('_')[0]);
+  let countryCode = urlParams.get('country') || getCookie('international');
+  if (countryCode) {
+    return normCountry(countryCode);
+  }
+  countryCode = sessionStorage.getItem('visitorCountry');
+  if (countryCode) return countryCode;
+
+  const fedsUserGeo = window.feds?.data?.location?.country;
+  if (fedsUserGeo) {
+    const normalized = normCountry(fedsUserGeo);
+    sessionStorage.setItem('visitorCountry', normalized);
+    return normalized;
+  }
+
+  const resp = await fetch('https://geo2.adobe.com/json/');
+  if (resp.ok) {
+    const { country } = await resp.json();
+    const normalized = normCountry(country);
+    sessionStorage.setItem('visitorCountry', normalized);
+    return normalized;
+  }
+
+  const configCountry = getConfig().locale.region;
+  return normCountry(configCountry);
 }
 
 const offerIdSuppressMap = new Map();
@@ -229,7 +249,7 @@ export const formatSalesPhoneNumber = (() => {
     }
 
     if (!numbersMap?.data) return;
-    const country = getCountry() || 'us';
+    const country = await getCountry() || 'us';
     tags.forEach((a) => {
       const r = numbersMap.data.find((d) => d.country === country);
 
@@ -242,7 +262,7 @@ export const formatSalesPhoneNumber = (() => {
   };
 })();
 
-export function formatPrice(price, currency) {
+export async function formatPrice(price, currency) {
   if (price === '') return null;
 
   const customSymbols = {
@@ -252,7 +272,7 @@ export function formatPrice(price, currency) {
   };
   const locale = ['USD', 'TWD'].includes(currency)
     ? 'en-GB' // use en-GB for intl $ symbol formatting
-    : (getConfig().locales[getCountry() || '']?.ietf ?? 'en-US');
+    : (getConfig().locales[await getCountry() || '']?.ietf ?? 'en-US');
   const currencyDisplay = getCurrencyDisplay(currency);
   let formattedPrice = new Intl.NumberFormat(locale, {
     style: 'currency',
@@ -267,16 +287,14 @@ export function formatPrice(price, currency) {
   return formattedPrice;
 }
 
-export function getCurrency(locale) {
-  const loc = locale || getCountry();
-  return currencies[loc];
+export function getCurrency(country) {
+  return currencies[country];
 }
 
 export const getOffer = (() => {
   let json;
-  return async (offerId, countryOverride) => {
-    let country = getCountry();
-    if (countryOverride) country = countryOverride;
+  return async (offerId) => {
+    let country = await getCountry();
     if (!country) country = 'us';
     let currency = getCurrency(country);
     if (!currency) {
@@ -304,13 +322,13 @@ export const getOffer = (() => {
       currency,
       lang,
       unitPrice: offer.p,
-      unitPriceCurrencyFormatted: formatPrice(unitPrice, currency),
+      unitPriceCurrencyFormatted: await formatPrice(unitPrice, currency),
       commerceURL: `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`,
       vatInfo: offer.vat,
       prefix: offer.pre,
       suffix: offer.suf,
       basePrice: offer.bp,
-      basePriceCurrencyFormatted: formatPrice(offer.bp, currency),
+      basePriceCurrencyFormatted: await formatPrice(offer.bp, currency),
       priceSuperScript: offer.sup,
       customOfferId,
       savePer: offer.savePer,
@@ -322,9 +340,8 @@ export const getOffer = (() => {
 
 export const getOfferOnePlans = (() => {
   let json;
-  return async (offerId, countryOverride) => {
-    let country = getCountry();
-    if (countryOverride) country = countryOverride;
+  return async (offerId) => {
+    let country = await getCountry();
     if (!country) country = 'us';
     let currency = getCurrency(country);
     if (!currency) {
@@ -352,13 +369,13 @@ export const getOfferOnePlans = (() => {
       currency,
       lang,
       unitPrice: offer.p,
-      unitPriceCurrencyFormatted: formatPrice(unitPrice, currency),
+      unitPriceCurrencyFormatted: await formatPrice(unitPrice, currency),
       commerceURL: `https://commerce.adobe.com/checkout?cli=spark&co=${country}&items%5B0%5D%5Bid%5D=${customOfferId}&items%5B0%5D%5Bcs%5D=0&rUrl=https%3A%2F%express.adobe.com%2Fsp%2F&lang=${lang}`,
       vatInfo: offer.vat,
       prefix: offer.pre,
       suffix: offer.suf,
       basePrice: offer.bp,
-      basePriceCurrencyFormatted: formatPrice(offer.bp, currency),
+      basePriceCurrencyFormatted: await formatPrice(offer.bp, currency),
       priceSuperScript: offer.sup,
       customOfferId,
       savePer: offer.savePer,
@@ -410,8 +427,7 @@ export async function fetchPlanOnePlans(planUrl) {
       plan.frequency = null;
     }
 
-    const countryOverride = new URLSearchParams(window.location.search).get('country');
-    const offer = await getOfferOnePlans(plan.offerId, countryOverride);
+    const offer = await getOfferOnePlans(plan.offerId);
 
     if (offer) {
       plan.currency = offer.currency;
@@ -490,8 +506,7 @@ export async function fetchPlan(planUrl) {
       plan.frequency = null;
     }
 
-    const countryOverride = new URLSearchParams(window.location.search).get('country');
-    const offer = await getOffer(plan.offerId, countryOverride);
+    const offer = await getOffer(plan.offerId);
 
     if (offer) {
       plan.currency = offer.currency;

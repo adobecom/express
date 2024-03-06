@@ -5,6 +5,7 @@ import {
   getIconElement,
   fetchPlaceholders, getConfig,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const breakpointConfig = [
@@ -366,6 +367,8 @@ async function handleOptions(div, typeHint, block) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'marquee');
+
   const possibleBreakpoints = breakpointConfig.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const animations = {};

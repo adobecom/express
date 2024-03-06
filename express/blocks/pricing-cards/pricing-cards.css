@@ -84,20 +84,22 @@ Border style variants
   margin-left: 4px;
   color: var(--color-white);
   font-weight: 400;
-  text-decoration: underline;
   padding-bottom: 12px;
 }
 
 .pricing-cards .gradient-promo {
   background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
-  padding: 12px 4px 4px 4px;
+  padding: 12px 2px 4px 2px;
   border-radius: 16px;
   overflow: hidden;
   background: var(--color-white);
   margin-top: 0px !important;
+  margin-left: -2px;
+  margin-right: -2px;
   display: flex;
   flex-direction: column;
 }
+
 
 .pricing-cards .special-promo {
   border: 1px solid #FFE600;
@@ -137,6 +139,10 @@ Border style variants
 /*
 End border style variants
 */
+
+.pricing-cards .card-border {
+  margin-top: 44px;
+}
 
 .pricing-cards .card-border .hide {
   display: none;
@@ -411,7 +417,6 @@ End border style variants
   }
 
   .pricing-cards .cards-container:has(>.card:first-child:nth-last-child(3)) {
-    width: var(2 * --card-width);
     margin: auto;
     grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
   }
