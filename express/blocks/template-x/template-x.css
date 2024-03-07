@@ -599,7 +599,6 @@ main.with-holiday-templates-banner {
     margin: 21px auto;
     max-width: 80%;
     max-height: 30vh;
-    min-height: 120px;
     z-index: 0;
 }
 
@@ -618,8 +617,10 @@ main.with-holiday-templates-banner {
 .template-x .template.placeholder div:nth-of-type(2) {
     margin: 0;
     position: absolute;
-    padding: 0 20px;
+    padding: 10px 20px 0;
     bottom: 10%;
+    min-height: 28px;
+    background: linear-gradient(rgb(255 255 255 / 0%) 0%, rgb(255 255 255) 24%);
 }
 
 .template-x .template.placeholder .template-link {
@@ -663,7 +664,6 @@ main.with-holiday-templates-banner {
     height: 22px;
 }
 
-
 .template-x .template.placeholder .template-link::after {
     display: none;
 }
@@ -676,10 +676,6 @@ main.with-holiday-templates-banner {
 .template-x .template.placeholder.wide > div:first-of-type > svg {
     width: 24px;
     height: 24px;
-}
-
-.template-x .template.placeholder div:nth-of-type(2) {
-    min-height: 28px;
 }
 
 .template-x-inner-wrapper.flex-masonry .template {
