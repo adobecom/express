@@ -3,7 +3,6 @@
 import {
   createOptimizedPicture,
   createTag,
-  decorateMain,
   fetchPlaceholders,
   getIconElement,
   getConfig,
@@ -362,23 +361,6 @@ async function decorateLoadMoreButton(block, props) {
   });
 
   return loadMoreDiv;
-}
-
-async function fetchBlueprint(pathname) {
-  if (window.spark.bluePrint) {
-    return (window.spark.bluePrint);
-  }
-
-  const bpPath = pathname.substr(pathname.indexOf('/', 1))
-    .split('.')[0];
-  const resp = await fetch(`${bpPath}.plain.html`);
-  const body = await resp.text();
-  const $main = createTag('main');
-  $main.innerHTML = body;
-  await decorateMain($main);
-
-  window.spark.bluePrint = $main;
-  return ($main);
 }
 
 async function attachFreeInAppPills(block) {
@@ -1177,70 +1159,9 @@ function decorateHoliday(block, props) {
 }
 
 async function decorateTemplates(block, props) {
-  const { prefix } = getConfig().locale;
   const innerWrapper = block.querySelector('.template-x-inner-wrapper');
 
   let rows = block.children.length;
-  if ((rows === 0 || block.querySelectorAll('img').length === 0) && prefix !== '') {
-    const i18nTexts = block.firstElementChild
-      // author defined localized edit text(s)
-      && (block.firstElementChild.querySelector('p')
-        // multiple lines in separate p tags
-        ? Array.from(block.querySelectorAll('p'))
-          .map((p) => p.textContent.trim())
-        // single text directly in div
-        : [block.firstElementChild.textContent.trim()]);
-    block.innerHTML = '';
-    const tls = Array.from(block.closest('main').querySelectorAll('.template-x'));
-    const i = tls.indexOf(block);
-
-    const bluePrint = await fetchBlueprint(window.location.pathname);
-
-    const $bpBlocks = bluePrint.querySelectorAll('.template-x');
-    if ($bpBlocks[i] && $bpBlocks[i].className === block.className) {
-      block.innerHTML = $bpBlocks[i].innerHTML;
-    } else if ($bpBlocks.length > 1 && $bpBlocks[i].className !== block.className) {
-      for (let x = 0; x < $bpBlocks.length; x += 1) {
-        if ($bpBlocks[x].className === block.className) {
-          block.innerHTML = $bpBlocks[x].innerHTML;
-          break;
-        }
-      }
-    } else {
-      block.remove();
-    }
-
-    if (i18nTexts && i18nTexts.length > 0) {
-      const [placeholderText] = i18nTexts;
-      let [, templateText] = i18nTexts;
-      if (!templateText) {
-        templateText = placeholderText;
-      }
-      block.querySelectorAll('a')
-        .forEach((aTag, index) => {
-          aTag.textContent = index === 0 ? placeholderText : templateText;
-        });
-    }
-
-    const heroPicture = document.querySelector('.hero-bg');
-
-    if (!heroPicture && bluePrint) {
-      const bpHeroImage = bluePrint.querySelector('div:first-of-type img');
-      if (bpHeroImage) {
-        const heroSection = document.querySelector('main .hero');
-        const $heroDiv = document.querySelector('main .hero > div');
-
-        if (heroSection && !$heroDiv) {
-          const p = createTag('p');
-          const pic = createTag('picture', { class: 'hero-bg' });
-          pic.appendChild(bpHeroImage);
-          p.append(pic);
-          heroSection.classList.remove('hero-noimage');
-          $heroDiv.prepend(p);
-        }
-      }
-    }
-  }
 
   const templates = Array.from(innerWrapper.children);
 
