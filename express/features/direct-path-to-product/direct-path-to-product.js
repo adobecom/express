@@ -7,6 +7,7 @@ import {
   loadStyle,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.js';
+import { getProfile } from '../../scripts/express-delayed.js';
 
 const OPT_OUT_KEY = 'no-direct-path-to-product';
 
@@ -76,7 +77,7 @@ export default async function loadLoginUserAutoRedirect() {
     progressBg.append(progressBar);
     noticeWrapper.append(noticeText, noticeBtn);
     container.append(headerWrapper, progressBg);
-    const profile = window.adobeProfile?.getUserProfile();
+    const profile = getProfile();
     if (profile) {
       container.append(buildProfileWrapper(profile));
     }

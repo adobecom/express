@@ -185,6 +185,9 @@ const assignEvents = (tableEl) => {
       if (e.key === 'Enter' || e.key === ' ') handleToggleMore(btn);
     });
   });
+
+  const linksPopulated = new CustomEvent('linkspopulated', { detail: buttons });
+  document.dispatchEvent(linksPopulated);
 };
 
 // multiple live on same page
