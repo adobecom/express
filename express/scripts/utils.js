@@ -1427,13 +1427,14 @@ function addPromotion() {
   }
 }
 
-function loadMartech() {
+async function loadMartech() {
   const usp = new URLSearchParams(window.location.search);
   const martech = usp.get('martech');
 
   const analyticsUrl = '/express/scripts/instrument.js';
   if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
-    loadScript(analyticsUrl, 'module');
+    const mod = await import('./instrument.js');
+    mod.default();
   }
 }
 
@@ -1703,7 +1704,7 @@ async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
     loadIMS();
     // rush instrument-martech-launch-alloy
-    promises.push(import('./instrument.js'));
+    promises.push(loadMartech());
     window.delay_preload_product = true;
   }
   const [{ runExps }] = await Promise.all(promises);
@@ -1730,9 +1731,6 @@ async function decorateTesting() {
     if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
       // eslint-disable-next-line no-console
       console.log('rushing martech');
-      import('./instrument.js').then(({ default: decorateInteractionTrackingEvents }) => {
-        decorateInteractionTrackingEvents();
-      });
     }
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -2462,7 +2460,7 @@ async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   window.dispatchEvent(new Event('milo:LCP:loaded'));
-  if (window.hlx.martech) loadMartech();
+  if (window.hlx.martech) window.hlx.martechLoaded = loadMartech();
   loadGnav();
   const { default: loadFonts } = await import('./fonts.js');
   loadFonts(config.locale, loadStyle);
@@ -2599,6 +2597,9 @@ export async function loadArea(area = document) {
       document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
     });
   }
+  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
+    decorateTrackingEvents();
+  });
 }
 
 export function getMobileOperatingSystem() {
