@@ -1944,7 +1944,7 @@ function constructProps() {
 
 export default async function decorate($block) {
   addTempWrapper($block, 'template-list');
-  unwrapBlock($block, 'template-list');
+  unwrapBlock($block.parentNode, 'template-list');
 
   const props = constructProps();
   if ($block.classList.contains('spreadsheet-powered')) {

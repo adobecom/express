@@ -9,8 +9,8 @@ export function addTempWrapper(block, blockName) {
   wrapper.append(block);
 }
 
-export function unwrapBlock(block, blockName) {
-  const section = block.closest('.section');
+export function unwrapBlock(blockWrapper, blockName) {
+  const section = blockWrapper.parentNode;
   const elems = [...section.children];
 
   if (elems.length <= 1) return;
@@ -21,12 +21,14 @@ export function unwrapBlock(block, blockName) {
   postBlockSection.className = section.className;
   postBlockSection.classList.remove(`${blockName}-container`);
   const nextSection = section.nextElementSibling;
+
+  section.classList.remove(`${blockName}-container`);
   section.parentNode.insertBefore(blockSection, nextSection);
   section.parentNode.insertBefore(postBlockSection, nextSection);
 
   let appendTo;
   elems.forEach((e) => {
-    if (e === block || e.className === 'section-metadata') {
+    if (e === blockWrapper || e.className === 'section-metadata') {
       appendTo = blockSection;
     }
 
@@ -39,4 +41,8 @@ export function unwrapBlock(block, blockName) {
   if (!postBlockSection.hasChildNodes()) {
     postBlockSection.remove();
   }
+
+  console.log(section.outerHTML);
+  console.log(blockSection.outerHTML);
+  console.log(postBlockSection.outerHTML);
 }
