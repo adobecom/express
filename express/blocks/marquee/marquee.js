@@ -9,6 +9,7 @@ import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 import {
   fetchPlanOnePlans,
+  buildUrl,
 } from '../../scripts/utils/pricing.js';
 
 const breakpointConfig = [
@@ -41,15 +42,20 @@ async function handlePrice(block) {
   priceEl.remove();
   parent.parentElement.append(newContainer);
   parent.remove();
+  let newTrialHref = '';
   try {
     const response = await fetchPlanOnePlans(priceEl?.href);
-    textContent = `${response.symbol}${response.price}${response.suffix}.`;
+    newTrialHref = buildUrl(response.url, response.country, response.language, response.offerId);
+    textContent = `${response.formatted}`;
+    if (textContent.includes('US$')) {
+      textContent = textContent.replace('US$', '$');
+    }
   } catch (error) {
     console.error('Failed to fetch prices for page plan');
     console.error(error);
   }
-  newContainer.textContent = textContent;
-  return newContainer;
+  newContainer.innerHTML = textContent;
+  return newTrialHref;
 }
 
 // FIXME: Not fulfilling requirement. Re-think of a way to allow subtext to contain link.
@@ -302,7 +308,7 @@ async function handleAnimation(div, typeHint, block, animations) {
   div.remove();
 }
 
-async function handleContent(div, block, animations) {
+async function handleContent(div, block, animations, newTrialHref) {
   const videoWrapper = createTag('div', { class: 'background-wrapper' });
   const video = createAnimation(animations);
   let bg;
@@ -350,6 +356,12 @@ async function handleContent(div, block, animations) {
     const buttonAsLink = contentButtons[2];
     buttonAsLink?.classList.remove('button');
     primaryBtn?.classList.add('primaryCTA');
+    const link = await newTrialHref;
+    console.log(link);
+    if (link) {
+      primaryBtn.href = link;
+    }
+
     BlockMediator.set('primaryCtaUrl', primaryBtn?.href);
     secondaryButton?.classList.add('secondary');
     const buttonContainers = [...div.querySelectorAll('p.button-container')];
@@ -390,10 +402,9 @@ async function handleOptions(div, typeHint, block) {
     div.remove();
   }
 }
-
 export default async function decorate(block) {
   addTempWrapper(block, 'marquee');
-  handlePrice(block);
+  const newTrialHref = handlePrice(block);
   const possibleBreakpoints = breakpointConfig.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const animations = {};
@@ -415,7 +426,7 @@ export default async function decorate(block) {
     if (rowType === 'animation') {
       handleAnimation(div, typeHint, block, animations);
     } else if (rowType === 'content') {
-      handleContent(rows[rows.length - 1], block, animations);
+      handleContent(rows[rows.length - 1], block, animations, newTrialHref);
     } else if (rowType === 'option') {
       handleOptions(div, typeHint, block);
     }
