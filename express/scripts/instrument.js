@@ -347,12 +347,8 @@ function trackButtonClick(a) {
   } else if (sparkLandingPageType === 'express-your-brand') {
     adobeEventName = appendLinkText(`${adobeEventName}learn:${sparkLandingPageType}:`, a);
   } else if (sparkLandingPageType === 'pricing') {
-    // edu link
-    if (a.pathname.includes('/edu')) {
-      adobeEventName += 'pricing:education:Click';
-      // business enterprise link
-    } else if (a.pathname.includes('business/enterprise')) {
-      adobeEventName += 'pricing:enterprise:Click';
+    if (a.tagName !== 'A') {
+      adobeEventName += `pricing:pricing:${a.textContent.trim()}:Click`;
       // Creative cloud learn more
     } else if (a.parentElement.id === 'adobe-spark-is-a-part-of-most-creative-cloud-paid-plans-learn-more') {
       adobeEventName += 'pricing:creativeCloud:learnMore';
