@@ -17,11 +17,12 @@ export function isIOS16AndUp(userAgent = navigator.userAgent) {
   return false;
 }
 
-function isChrome() {
-  const { userAgent } = navigator;
-  // from horizon
-  return /Chrome|CriOS/.test(userAgent) && !/Edg|OPR|Opera|OPiOS|Vivaldi|YaBrowser|Avast|VivoBrowser|GSA/.test(userAgent);
-}
+// function isChrome() {
+//   const { userAgent } = navigator;
+//   // from horizon
+//   return /Chrome|CriOS/.test(userAgent)
+//   && !/Edg|OPR|Opera|OPiOS|Vivaldi|YaBrowser|Avast|VivoBrowser|GSA/.test(userAgent);
+// }
 
 export async function fetchAndroidAllowDenyLists() {
   const resp = await fetch('/express/android-device-list.json?limit=100000');
