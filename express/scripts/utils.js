@@ -722,7 +722,7 @@ export function decorateSVG(a) {
     a.append(pic);
     return a;
   } catch (e) {
-    console.log('Failed to create SVG.', e.message);
+    window.lana.log(`Failed to create SVG: ${e.message}`);
     return a;
   }
 }
@@ -826,7 +826,7 @@ function decorateImageLinks(el) {
         aTag.append(pic);
       }
     } catch (e) {
-      console.log('Error:', `${e.message} '${source.trim()}'`);
+      window.lana.log(`Error: ${e.message} '${source.trim()}'`);
     }
   });
 }
