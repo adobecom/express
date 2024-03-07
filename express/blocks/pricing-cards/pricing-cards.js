@@ -9,7 +9,7 @@ import {
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
-const blockKeys = ['header', 'borderParams', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
+const blockKeys = ['header', 'borderParams', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare', 'footer', 'comparePlans'];
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
 const SAVE_PERCENTAGE = 'savePercentage';
@@ -104,6 +104,30 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
   return priceRow;
 }
 
+function createCTA(ctaGroup, pricingSection, additionalStyle) {
+  if (!ctaGroup) return;
+  ctaGroup.classList.add('card-cta-group');
+  additionalStyle && ctaGroup.classList.add(additionalStyle);
+  ctaGroup.querySelectorAll('a').forEach((a, i) => {
+    a.classList.add('large');
+    if (i === 1) a.classList.add('secondary');
+    if (a.parentNode.tagName.toLowerCase() === 'strong') {
+      a.classList.add('button', 'primary');
+      a.parentNode.remove();
+    }
+    if (a.parentNode.tagName.toLowerCase() === 'p') {
+      a.parentNode.remove();
+    }
+    fetchPlanOnePlans(a.href).then(({
+      url, country, language, offerId,
+    }) => {
+      a.href = buildUrl(url, country, language, offerId);
+    });
+    ctaGroup.append(a);
+  });
+  pricingSection.append(ctaGroup);
+}
+
 function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo, legacyVersion) {
   const pricingSection = createTag('div', { class: 'pricing-section' });
   pricingArea.classList.add('pricing-area');
@@ -123,26 +147,9 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo,
       pricingSuffixTextElem?.remove();
     }
   }
-  ctaGroup.classList.add('card-cta-group');
-  ctaGroup.querySelectorAll('a').forEach((a, i) => {
-    a.classList.add('large');
-    if (i === 1) a.classList.add('secondary');
-    if (a.parentNode.tagName.toLowerCase() === 'strong') {
-      a.classList.add('button', 'primary');
-      a.parentNode.remove();
-    }
-    if (a.parentNode.tagName.toLowerCase() === 'p') {
-      a.parentNode.remove();
-    }
-    fetchPlanOnePlans(a.href).then(({
-      url, country, language, offerId,
-    }) => {
-      a.href = buildUrl(url, country, language, offerId);
-    });
-    ctaGroup.append(a);
-  });
+  createCTA(ctaGroup, pricingSection);
   pricingSection.append(pricingArea);
-  pricingSection.append(ctaGroup);
+
   return pricingSection;
 }
 
@@ -280,6 +287,8 @@ function decorateCard({
   yCtaGroup,
   featureList,
   compare,
+  footer,
+  comparePlans,
 }, el, placeholders, legacyVersion) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
@@ -298,6 +307,8 @@ function decorateCard({
   subscribeToBlockMediator(mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
+  footer && decorateBasicTextSection(footer, 'footer', el);
+  createCTA(comparePlans, el, 'compare-all-plans');
   return cardWrapper;
 }
 
