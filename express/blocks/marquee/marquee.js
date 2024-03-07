@@ -40,8 +40,8 @@ async function handleDynamicCheckoutCTA(primaryBtn) {
       primaryBtn.href = newTrialHref;
     }
   } catch (error) {
-    console.error('Failed to fetch prices for page plan');
-    console.error(error);
+    window.lana.log('Failed to fetch prices for page plan');
+    window.lana.log(error);
   }
   return primaryBtn;
 }
@@ -57,10 +57,10 @@ async function handlePrice(block) {
   parent.remove();
   try {
     const response = await fetchPlanOnePlans(priceEl?.href);
-    newContainer.innerHTML = response.formatted
+    newContainer.innerHTML = response.formatted;
   } catch (error) {
-    console.error('Failed to fetch prices for page plan');
-    console.error(error);
+    window.lana.log('Failed to fetch prices for page plan');
+    window.lana.log(error);
   }
   return newContainer;
 }
@@ -314,7 +314,6 @@ async function handleAnimation(div, typeHint, block, animations) {
 
   div.remove();
 }
-
 
 async function handleContent(div, block, animations) {
   const videoWrapper = createTag('div', { class: 'background-wrapper' });
