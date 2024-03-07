@@ -3,6 +3,12 @@ import {
   createTag,
   getMetadata,
 } from './utils.js';
+import BlockMediator from './block-mediator.js';
+
+export function getDestination() {
+  return BlockMediator.get('primaryCtaUrl')
+    || document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA')?.href;
+}
 
 function loadExpressProduct() {
   if (!window.hlx.preload_product) return;
@@ -61,6 +67,7 @@ async function canPEP() {
   if (document.body.dataset.device !== 'desktop') return false;
   const pepSegment = getMetadata('pep-segment');
   if (!pepSegment) return false;
+  if (!getDestination()) return false;
   const placeholders = await fetchPlaceholders();
   if (!placeholders.cancel || !placeholders['pep-header'] || !placeholders['pep-cancel']) return false;
   const segments = getSegmentsFromAlloyResponse(await window.alloyLoader);
