@@ -31,21 +31,6 @@ const breakpointConfig = [
   },
 ];
 
-async function fetchCountryTrialHref(priceEl) {
-  try {
-    const response = await fetchPlanOnePlans(priceEl?.href);
-    let textContent = `${response.formatted}`;
-    if (textContent.includes('US$')) {
-      textContent = textContent.replace('US$', '$');
-    }
-    return textContent;
-  } catch (error) {
-    console.error('Failed to fetch prices for page plan');
-    console.error(error);
-  }
-  return undefined;
-}
-
 async function handleDynamicCheckoutCTA(primaryBtn) {
   try {
     const response = await fetchPlanOnePlans(primaryBtn?.href);
@@ -70,8 +55,13 @@ async function handlePrice(block) {
   priceEl.remove();
   parent.parentElement.append(newContainer);
   parent.remove();
-  const textContent = await fetchCountryTrialHref(priceEl);
-  newContainer.innerHTML = textContent;
+  try {
+    const response = await fetchPlanOnePlans(priceEl?.href);
+    newContainer.innerHTML = response.formatted
+  } catch (error) {
+    console.error('Failed to fetch prices for page plan');
+    console.error(error);
+  }
   return newContainer;
 }
 
@@ -324,6 +314,7 @@ async function handleAnimation(div, typeHint, block, animations) {
 
   div.remove();
 }
+
 
 async function handleContent(div, block, animations) {
   const videoWrapper = createTag('div', { class: 'background-wrapper' });
