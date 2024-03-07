@@ -2026,7 +2026,9 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x .template .button-container a {
+    max-width: 100%;
     margin: 6px 6px 0;
+    box-sizing: border-box;
     display: block;
     white-space: nowrap;
     overflow: hidden;
@@ -2039,7 +2041,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 .template-x.horizontal.mini .template .button-container a {
     font-size: var(--body-font-size-xs);
-    padding: 2px 6px;
+    padding: 2px 6px 4px;
 }
 
 .template-x .template .button-container .media-wrapper .icon-share-arrow {
