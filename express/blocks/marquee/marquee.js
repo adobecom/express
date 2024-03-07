@@ -31,31 +31,48 @@ const breakpointConfig = [
   },
 ];
 
-// Transforms a {{pricing}} tag into human readable format.
-async function handlePrice(block) {
-  const priceEl = block.querySelector('[title="{{pricing}}"]');
-  if (!priceEl) return null;
-  priceEl.closest('p')?.classList.remove('button-container');
-  let textContent = 'Contact sales for prices';
-  const parent = priceEl.parentElement;
-  const newContainer = createTag('span');
-  priceEl.remove();
-  parent.parentElement.append(newContainer);
-  parent.remove();
-  let newTrialHref = '';
+async function fetchCountryTrialHref(priceEl) {
   try {
     const response = await fetchPlanOnePlans(priceEl?.href);
-    newTrialHref = buildUrl(response.url, response.country, response.language, response.offerId);
-    textContent = `${response.formatted}`;
+    let textContent = `${response.formatted}`;
     if (textContent.includes('US$')) {
       textContent = textContent.replace('US$', '$');
+    }
+    return textContent;
+  } catch (error) {
+    console.error('Failed to fetch prices for page plan');
+    console.error(error);
+  }
+  return undefined;
+}
+
+async function handleDynamicCheckoutCTA(primaryBtn) {
+  try {
+    const response = await fetchPlanOnePlans(primaryBtn?.href);
+    const newTrialHref = buildUrl(response.url, response.country,
+      response.language, response.offerId);
+    if (newTrialHref) {
+      primaryBtn.href = newTrialHref;
     }
   } catch (error) {
     console.error('Failed to fetch prices for page plan');
     console.error(error);
   }
+  return primaryBtn;
+}
+// Transforms a {{pricing}} tag into human readable format.
+async function handlePrice(block) {
+  const priceEl = block.querySelector('[title="{{pricing}}"]');
+  if (!priceEl) return null;
+  priceEl.closest('p')?.classList.remove('button-container');
+  const parent = priceEl.parentElement;
+  const newContainer = createTag('span');
+  priceEl.remove();
+  parent.parentElement.append(newContainer);
+  parent.remove();
+  const textContent = await fetchCountryTrialHref(priceEl);
   newContainer.innerHTML = textContent;
-  return newTrialHref;
+  return newContainer;
 }
 
 // FIXME: Not fulfilling requirement. Re-think of a way to allow subtext to contain link.
@@ -308,7 +325,7 @@ async function handleAnimation(div, typeHint, block, animations) {
   div.remove();
 }
 
-async function handleContent(div, block, animations, newTrialHref) {
+async function handleContent(div, block, animations) {
   const videoWrapper = createTag('div', { class: 'background-wrapper' });
   const video = createAnimation(animations);
   let bg;
@@ -356,11 +373,8 @@ async function handleContent(div, block, animations, newTrialHref) {
     const buttonAsLink = contentButtons[2];
     buttonAsLink?.classList.remove('button');
     primaryBtn?.classList.add('primaryCTA');
-    const link = await newTrialHref;
-    console.log(link);
-    if (link) {
-      primaryBtn.href = link;
-    }
+
+    handleDynamicCheckoutCTA(primaryBtn);
 
     BlockMediator.set('primaryCtaUrl', primaryBtn?.href);
     secondaryButton?.classList.add('secondary');
@@ -404,7 +418,7 @@ async function handleOptions(div, typeHint, block) {
 }
 export default async function decorate(block) {
   addTempWrapper(block, 'marquee');
-  const newTrialHref = handlePrice(block);
+  handlePrice(block);
   const possibleBreakpoints = breakpointConfig.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const animations = {};
@@ -426,7 +440,7 @@ export default async function decorate(block) {
     if (rowType === 'animation') {
       handleAnimation(div, typeHint, block, animations);
     } else if (rowType === 'content') {
-      handleContent(rows[rows.length - 1], block, animations, newTrialHref);
+      handleContent(rows[rows.length - 1], block, animations);
     } else if (rowType === 'option') {
       handleOptions(div, typeHint, block);
     }
