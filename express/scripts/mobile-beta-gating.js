@@ -46,7 +46,8 @@ export async function preBenchmarkCheck() {
   } else if (os !== 'Android') {
     return [false, 'not iOS or Android'];
   }
-  if (!isChrome()) return [false, 'Android not Chrome'];
+  // do not guard against non-chrome users as beta release was about the mobile app
+  // if (!isChrome()) return [false, 'Android not Chrome'];
   const { allowList, denyList } = await fetchAndroidAllowDenyLists();
   const { userAgent, hardwareConcurrency, deviceMemory } = navigator;
   if (allowList.data.some(({ device }) => new RegExp(`Android .+ ${device}`).test(userAgent))) {
