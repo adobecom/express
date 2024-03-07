@@ -49,10 +49,10 @@ export async function preBenchmarkCheck() {
   if (!isChrome()) return [false, 'Android not Chrome'];
   const { allowList, denyList } = await fetchAndroidAllowDenyLists();
   const { userAgent, hardwareConcurrency, deviceMemory } = navigator;
-  if (allowList.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))) {
+  if (allowList?.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))) {
     return [true, 'Android whitelisted'];
   }
-  if (denyList.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))) {
+  if (denyList?.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))) {
     return [false, 'Android denylisted'];
   }
   if (!hardwareConcurrency || hardwareConcurrency < 4) {
