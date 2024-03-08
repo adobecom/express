@@ -7,10 +7,9 @@ import {
   lazyLoadLottiePlayer,
   toClassName,
   getMetadata, getConfig,
-// eslint-disable-next-line import/no-unresolved
 } from '../../utils/utils.js';
 
-import BlockMediator from '../../scripts/block-mediator.min.js';
+import BlockMediator from '../../features/block-mediator.min.js';
 
 export default async function decorate($block) {
   let submitButtonText;

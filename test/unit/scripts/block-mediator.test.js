@@ -2,7 +2,7 @@
 /* eslint-env mocha */
 
 import { expect } from '@esm-bundle/chai';
-import mediator from '../../../express/scripts/block-mediator.min.js';
+import mediator from '../../../express/features/block-mediator.min.js';
 
 // that class is not really testable, being singleton and having private methods
 

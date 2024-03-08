@@ -1,7 +1,7 @@
 import {
   titleCase,
   getMetadata, getConfig,
-} from './utils.js';
+} from '../utils/utils.js';
 
 import {
   getDataWithContext,

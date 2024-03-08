@@ -1,6 +1,5 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
-
 import sinon from 'sinon';
 import init from '../../../express/blocks/frictionless-quick-action/frictionless-quick-action.js';
 import { mockRes } from '../test-utilities.js';
@@ -55,7 +54,7 @@ describe('Frictionless Quick Action Block', () => {
     dataTransfer.items.add(file);
 
     const event = new DragEvent('drop', { dataTransfer });
-    const callback = function (mutationsList, observer) {
+    const callback = (mutationsList, observer) => {
       for (const mutation of mutationsList) {
         if (mutation.type === 'childList') {
           mutation.addedNodes.forEach((node) => {

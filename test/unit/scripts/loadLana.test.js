@@ -1,7 +1,7 @@
 import { expect } from '@esm-bundle/chai';
 import sinon from 'sinon';
 import { waitFor } from '../../helpers/waitfor.js';
-import { loadLana } from '../../../express/scripts/utils.js';
+import { loadLana } from '../../../express/utils/utils.js';
 
 describe('Utils loadLana', () => {
   it('Loads lana.js upon calling lana.log the first time', async () => {

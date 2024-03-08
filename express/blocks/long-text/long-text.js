@@ -1,4 +1,4 @@
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
 export default function decorate(block) {
   if (!block.parentElement.classList.contains('long-text-wrapper')) {

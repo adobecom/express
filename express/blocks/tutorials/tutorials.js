@@ -1,15 +1,15 @@
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 import {
   createTag,
   toClassName,
   getIconElement,
-// eslint-disable-next-line import/no-unresolved
+
 } from '../../utils/utils.js';
 
 import {
   displayVideoModal,
   hideVideoModal,
-} from '../shared/video.js';
+} from '../../components/video.js';
 
 function createTutorialCard(title, url, time, $picture) {
   const $card = createTag('a', { class: 'tutorial-card', title, tabindex: 0 });

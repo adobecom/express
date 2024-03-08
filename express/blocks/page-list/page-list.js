@@ -1,10 +1,7 @@
-/* eslint-disable import/named, import/extensions */
-
 import {
   createTag,
   readBlockConfig,
   getConfig,
-// eslint-disable-next-line import/no-unresolved
 } from '../../utils/utils.js';
 
 async function fetchIndex(indexURL) {

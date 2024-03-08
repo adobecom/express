@@ -1,5 +1,5 @@
 import { createTag, getMetadata } from '../../utils/utils.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
+import BlockMediator from '../../features/block-mediator.min.js';
 
 function initScrollInteraction(block) {
   const inBodyBanner = block.cloneNode(true);

@@ -5,8 +5,8 @@ import {
   getIconElement,
   fetchPlaceholders, getConfig,
 } from '../../utils/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import BlockMediator from '../../features/block-mediator.min.js';
 
 const breakpointConfig = [
   {
@@ -203,7 +203,7 @@ function adjustLayout(animations, parent) {
 }
 
 export async function transformToVideoLink(cell, a) {
-  const { isVideoLink, displayVideoModal } = await import('../shared/video.js');
+  const { isVideoLink, displayVideoModal } = await import('../../components/video.js');
   a.setAttribute('rel', 'nofollow');
   a.classList.add('video-link');
   const title = a.textContent.trim();
@@ -312,7 +312,7 @@ async function handleContent(div, block, animations) {
 
   // check for video link
   // eslint-disable-next-line no-await-in-loop
-  const { isVideoLink } = await import('../shared/video.js');
+  const { isVideoLink } = await import('../../components/video.js');
   const videoLink = [...div.querySelectorAll('a')].find((a) => isVideoLink(a.href));
   if (videoLink) {
     transformToVideoLink(div, videoLink);
@@ -399,13 +399,13 @@ export default async function decorate(block) {
 
   const button = block.querySelector('.button');
   if (button) {
-    const { addFreePlanWidget } = await import('../../scripts/utils/free-plan.js');
+    const { addFreePlanWidget } = await import('../../components/free-plan.js');
     await addFreePlanWidget(button.parentElement);
   }
 
   const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
   if (phoneNumberTags.length > 0) {
-    const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');
+    const { formatSalesPhoneNumber } = await import('../../features/pricing.js');
     await formatSalesPhoneNumber(phoneNumberTags);
   }
 

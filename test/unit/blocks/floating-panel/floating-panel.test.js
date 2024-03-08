@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { readFile, sendMouse } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
-import { setConfig } from '../../../../express/scripts/utils.js';
+import { setConfig } from '../../../../express/utils/utils.js';
 
 const { default: decorate } = await import('../../../../express/blocks/floating-panel/floating-panel.js');
 const testBody = await readFile({ path: './mocks/body.html' });

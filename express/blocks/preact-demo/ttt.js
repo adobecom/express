@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { html, useState } from '../../scripts/libs/htm-preact.js';
+import { html, useState } from '../../deps/htm-preact.js';
 
 function Square({ value, onSquareClick }) {
   return html`

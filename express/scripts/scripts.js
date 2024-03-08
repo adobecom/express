@@ -10,7 +10,7 @@ import {
   loadStyle,
   createTag,
   getConfig,
-} from './utils.js';
+} from '../utils/utils.js';
 
 const locales = {
   '': { ietf: 'en-US', tk: 'jdq5hay.css' },
@@ -130,7 +130,7 @@ const listenAlloy = () => {
   if (getMetadata('hide-breadcrumbs') !== 'true' && !getMetadata('breadcrumbs') && !window.location.pathname.endsWith('/express/')) {
     const meta = createTag('meta', { name: 'breadcrumbs', content: 'on' });
     document.head.append(meta);
-    import('./gnav.js').then((gnav) => gnav.buildBreadCrumbArray(getConfig().locale.prefix.replaceAll('/', ''))).then((breadcrumbs) => {
+    import('../utils/gnav.js').then((gnav) => gnav.buildBreadCrumbArray(getConfig().locale.prefix.replaceAll('/', ''))).then((breadcrumbs) => {
       if (breadcrumbs && breadcrumbs.length) document.body.classList.add('breadcrumbs-spacing');
     });
   } else if (getMetadata('breadcrumbs') === 'on' && !!getMetadata('breadcrumbs-base') && (!!getMetadata('short-title') || !!getMetadata('breadcrumbs-page-title'))) document.body.classList.add('breadcrumbs-spacing');
@@ -149,7 +149,7 @@ const listenAlloy = () => {
   const isMobileGating = ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile';
   const rushGating = ['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating').toLowerCase());
   const runGating = () => {
-    import('./mobile-beta-gating.js').then(async (gatingScript) => {
+    import('../utils/mobile-beta-gating.js').then(async (gatingScript) => {
       gatingScript.default();
     });
   };

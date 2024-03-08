@@ -7,9 +7,9 @@ import {
   readBlockConfig,
   toClassName,
 } from '../../utils/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
-import buildCarousel from '../shared/carousel.js';
+import buildCarousel from '../../components/carousel.js';
 
 function updatePayload(block, payload) {
   Array.from(block.children).forEach(($row) => {

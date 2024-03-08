@@ -2,8 +2,8 @@ import {
   getConfig,
   getHelixEnv,
   getMetadata,
-} from '../scripts/utils.js';
-import { memoize } from '../scripts/hofs.js';
+} from '../utils/utils.js';
+import { memoize } from '../utils/hofs.js';
 
 const endpoints = {
   dev: {

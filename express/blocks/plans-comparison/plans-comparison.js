@@ -4,8 +4,8 @@ import {
   getIconElement,
   fetchPlainBlockFromFragment,
 } from '../../utils/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import { getOffer } from '../../scripts/utils/pricing.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import { getOffer } from '../../features/pricing.js';
 
 async function fetchPlan(planUrl) {
   if (!window.pricingPlans) {

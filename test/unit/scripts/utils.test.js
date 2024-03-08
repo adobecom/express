@@ -1,6 +1,6 @@
 import { expect } from '@esm-bundle/chai';
 import { readFile } from '@web/test-runner-commands';
-import { removeIrrelevantSections, createTag } from '../../../express/scripts/utils.js';
+import { removeIrrelevantSections, createTag } from '../../../express/utils/utils.js';
 
 describe('Scripts', () => {
   it('removes sections from main component if section metadata showwith set to validcode0 and not active in metadata', async () => {

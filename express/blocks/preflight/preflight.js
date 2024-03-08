@@ -1,4 +1,4 @@
-import { html, render, signal } from '../../scripts/libs/htm-preact.js';
+import { html, render, signal } from '../../deps/htm-preact.js';
 import { createTag, getConfig } from '../../utils/utils.js';
 import General from './panels/general.js';
 import SEO from './panels/seo.js';

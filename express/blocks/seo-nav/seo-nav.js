@@ -1,5 +1,5 @@
-import buildCarousel from '../shared/carousel.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import buildCarousel from '../../components/carousel.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
 function decorateCarousel(links, container) {
   links.forEach((p) => {

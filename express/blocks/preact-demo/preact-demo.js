@@ -1,5 +1,5 @@
 import { createTag } from '../../utils/utils.js';
-import { html, render } from '../../scripts/libs/htm-preact.js';
+import { html, render } from '../../deps/htm-preact.js';
 import Game from './ttt.js';
 import Temperature from './temperature.js';
 

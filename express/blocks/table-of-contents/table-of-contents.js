@@ -1,10 +1,7 @@
-/* eslint-disable import/named, import/extensions */
-
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 import {
   createTag,
   readBlockConfig,
-// eslint-disable-next-line import/no-unresolved
 } from '../../utils/utils.js';
 
 export default function decorate($block, name, doc) {

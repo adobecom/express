@@ -7,7 +7,9 @@ import {
   decorateMain,
   fetchPlaceholders,
   fetchPlainBlockFromFragment,
-  fetchRelevantRows, fixIcons, getConfig,
+  fetchRelevantRows,
+  fixIcons,
+  getConfig,
   getIconElement,
   getLottie,
   getMetadata,
@@ -16,13 +18,11 @@ import {
   sampleRUM,
   toClassName,
 } from '../../utils/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-
-import { Masonry } from '../shared/masonry.js';
-
-import buildCarousel from '../shared/carousel.js';
-import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
-import { memoize } from '../../scripts/hofs.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import { Masonry } from '../../components/masonry.js';
+import buildCarousel from '../../components/carousel.js';
+import fetchAllTemplatesMetadata from '../../middlewares/all-templates-metadata.js';
+import { memoize } from '../../utils/hofs.js';
 import getBreadcrumbs from './breadcrumbs.js';
 
 function wordStartsWithVowels(word) {

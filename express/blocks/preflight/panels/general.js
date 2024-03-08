@@ -1,5 +1,5 @@
 /* eslint-disable max-statements-per-line */
-import { html, signal, useEffect } from '../../../scripts/libs/htm-preact.js';
+import { html, signal, useEffect } from '../../../deps/htm-preact.js';
 
 const NOT_FOUND = { preview: { lastModified: 'Not found' }, live: { lastModified: 'Not found' } };
 

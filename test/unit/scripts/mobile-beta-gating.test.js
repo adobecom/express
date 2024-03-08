@@ -4,8 +4,8 @@ import checkMobileBetaEligibility, {
   isIOS16AndUp,
   fetchAndroidAllowDenyLists,
   preBenchmarkCheck,
-} from '../../../express/scripts/mobile-beta-gating.js';
-import BlockMediator from '../../../express/scripts/block-mediator.min.js';
+} from '../../../express/utils/mobile-beta-gating.js';
+import BlockMediator from '../../../express/features/block-mediator.min.js';
 
 describe('Mobile Beta Gating', () => {
   Object.defineProperty(navigator, 'userAgent', {

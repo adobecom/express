@@ -11,7 +11,7 @@ const defaultTestOptions = {
 
 it('lana should load existing window.lana.options', async () => {
   window.lana = { options: defaultTestOptions };
-  await import('../../../express/scripts/lana.js');
+  await import('../../../express/utils/lana.js');
 
   expect(window.lana.options).to.be.eql({
     clientId: 'testClientId',

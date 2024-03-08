@@ -2,7 +2,6 @@
 
 import {
   createTag,
-// eslint-disable-next-line import/no-unresolved
 } from '../../../../utils/utils.js';
 
 function decorateFAQBlocks($block) {

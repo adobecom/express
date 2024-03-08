@@ -1,7 +1,7 @@
 import { createTag } from '../../utils/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
-import buildCarousel from '../shared/carousel.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import { addFreePlanWidget } from '../../components/free-plan.js';
+import buildCarousel from '../../components/carousel.js';
 
 export default function decorate($block) {
   addTempWrapper($block, 'make-a-project');

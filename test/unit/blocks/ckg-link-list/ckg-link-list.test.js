@@ -1,7 +1,7 @@
 import { expect } from '@esm-bundle/chai';
 import { readFile } from '@web/test-runner-commands';
 import sinon from 'sinon';
-import { setConfig } from '../../../../express/scripts/utils.js';
+import { setConfig } from '../../../../express/utils/utils.js';
 
 setConfig({});
 const { default: decorate } = await import('../../../../express/blocks/ckg-link-list/ckg-link-list.js');

@@ -2,7 +2,7 @@ import {
   getHelixEnv,
   removeIrrelevantSections,
   sampleRUM,
-} from './utils.js';
+} from '../utils/utils.js';
 
 export const DEFAULT_EXPERIMENT_OPTIONS = {
   // Generic properties
@@ -156,7 +156,7 @@ export async function runExps(config, forcedExperiment, forcedVariant) {
     if (forcedVariant && config.variantNames.includes(forcedVariant)) {
       config.selectedVariant = forcedVariant;
     } else {
-      const ued = await import('./ued/ued-0.2.0.js');
+      const ued = await import('../deps/ued-0.2.0.js');
       const decision = ued.evaluateDecisionPolicy(getDecisionPolicy(config), {});
       config.selectedVariant = decision.items[0].id;
     }

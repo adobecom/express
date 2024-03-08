@@ -2,7 +2,7 @@
 /* eslint-env mocha */
 
 import { expect } from '@esm-bundle/chai';
-import { throttle, debounce, memoize } from '../../../express/scripts/hofs.js';
+import { throttle, debounce, memoize } from '../../../express/utils/hofs.js';
 
 describe('Throttle', () => {
   it('should throttle a function', () => {

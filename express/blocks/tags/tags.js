@@ -1,6 +1,5 @@
-// eslint-disable-next-line import/no-unresolved
 import { normalizeHeadings } from '../../utils/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
 /**
  * Retrieves the content of a metadata tag.

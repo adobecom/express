@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import HtmlSanitizer from '../../../express/scripts/html-sanitizer.js';
+import HtmlSanitizer from '../../../express/utils/html-sanitizer.js';
 
 describe('HTML Sanitizer', () => {
   it('Allows safe HTML', () => {

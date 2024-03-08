@@ -4,7 +4,7 @@
 import { expect } from '@esm-bundle/chai';
 import { stub } from 'sinon';
 import TESTS from './blocks-test-list.js';
-import { setConfig } from '../../../../express/scripts/utils.js';
+import { setConfig } from '../../../../express/utils/utils.js';
 
 setConfig({});
 const ROOT_PATH = '/test/unit/blocks/block';

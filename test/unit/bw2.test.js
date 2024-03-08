@@ -3,8 +3,8 @@
 import { expect } from '@esm-bundle/chai';
 import {
   createTag,
-} from '../../express/scripts/utils.js';
-import BalancedWordWrapper from '../../express/scripts/bw2.js';
+} from '../../express/utils/utils.js';
+import BalancedWordWrapper from '../../express/features/bw2.js';
 
 describe('Japanese balanced word wrap', () => {
   describe('BalancedWordWrapper', () => {

@@ -1,8 +1,7 @@
-// eslint-disable-next-line import/no-unresolved
 import { createTag, getIconElement } from '../../utils/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import buildCarousel from '../shared/carousel.js';
-import { fetchVideoAnalytics } from '../shared/video.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import buildCarousel from '../../components/carousel.js';
+import { fetchVideoAnalytics } from '../../components/video.js';
 
 async function loadVideoAnalytic(video) {
   const videoAnalytics = await fetchVideoAnalytics();

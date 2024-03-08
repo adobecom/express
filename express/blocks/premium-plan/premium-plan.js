@@ -1,10 +1,9 @@
 import {
   createTag,
   getIcon,
-  // eslint-disable-next-line import/no-unresolved
 } from '../../utils/utils.js';
 
-import buildCarousel from '../shared/carousel.js';
+import buildCarousel from '../../components/carousel.js';
 
 export default function decorate($block) {
   if ($block.children.length) {

@@ -5,12 +5,10 @@ import {
   getIconElement,
   toClassName,
 } from '../../utils/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
-
+import { addTempWrapper } from '../../utils/decorate.js';
+import BlockMediator from '../../features/block-mediator.min.js';
 import { renderModalContent, fetchResults, renderResults } from './results-modal.js';
-
-import buildCarousel from '../shared/carousel.js';
+import buildCarousel from '../../components/carousel.js';
 
 const props = {
   templates: [],

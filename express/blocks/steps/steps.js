@@ -1,7 +1,6 @@
 import {
   addBlockClasses,
   createTag,
-// eslint-disable-next-line import/no-unresolved
 } from '../../utils/utils.js';
 
 export default function decorate(block) {

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { expect } from '@esm-bundle/chai';
 import sinon from 'sinon';
-import '../../../express/scripts/lana.js';
+import '../../../express/utils/lana.js';
 
 const defaultTestOptions = {
   clientId: 'testClientId',

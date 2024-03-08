@@ -10,7 +10,7 @@ import {
   initToolBox,
   openToolBox,
   closeToolBox,
-} from '../shared/floating-cta.js';
+} from '../../components/floating-cta.js';
 
 function toggleMultifunctionToolBox(wrapper, lottie, data, userInitiated = true) {
   wrapper.classList.add('with-transition');

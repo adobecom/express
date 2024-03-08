@@ -6,7 +6,7 @@ import {
   sendKeys,
 } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
-import { setConfig } from '../../../../express/scripts/utils.js';
+import { setConfig } from '../../../../express/utils/utils.js';
 
 window.isTestEnv = true;
 const {

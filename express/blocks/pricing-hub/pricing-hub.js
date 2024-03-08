@@ -1,4 +1,3 @@
-/* eslint-disable import/named, import/extensions */
 import {
   createTag,
   getHelixEnv,
@@ -6,12 +5,11 @@ import {
   lazyLoadLottiePlayer,
   getIconElement, fetchPlaceholders,
 } from '../../utils/utils.js';
-import { getOffer } from '../../scripts/utils/pricing.js';
+import { getOffer } from '../../features/pricing.js';
 
-/* eslint-disable import/named, import/extensions */
 import {
   buildDropdown,
-} from '../shared/dropdown.js';
+} from '../../components/dropdown.js';
 
 function replaceUrlParam(url, paramName, paramValue) {
   const params = url.searchParams;

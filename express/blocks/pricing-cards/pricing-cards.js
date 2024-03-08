@@ -1,5 +1,5 @@
-import { addTempWrapper } from '../../scripts/decorate.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import BlockMediator from '../../features/block-mediator.min.js';
 import { createTag, fetchPlaceholders } from '../../utils/utils.js';
 
 import {
@@ -7,7 +7,7 @@ import {
   formatSalesPhoneNumber,
   shallSuppressOfferEyebrowText,
   fetchPlanOnePlans,
-} from '../../scripts/utils/pricing.js';
+} from '../../features/pricing.js';
 
 const blockKeys = ['header', 'borderParams', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio

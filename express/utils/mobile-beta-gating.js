@@ -1,4 +1,4 @@
-import BlockMediator from './block-mediator.min.js';
+import BlockMediator from '../features/block-mediator.min.js';
 import { getMobileOperatingSystem } from './utils.js';
 
 const MAX_EXEC_TIME_ALLOWED = 500;

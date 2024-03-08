@@ -1,16 +1,17 @@
 import {
   createTag,
-  fetchPlaceholders, getConfig,
+  fetchPlaceholders,
+  getConfig,
   getIconElement,
   getMetadata,
   sampleRUM,
 } from '../../utils/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import { buildFreePlanWidget } from '../../components/free-plan.js';
 
-import buildCarousel from '../shared/carousel.js';
-import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
+import buildCarousel from '../../components/carousel.js';
+import fetchAllTemplatesMetadata from '../../middlewares/all-templates-metadata.js';
+import BlockMediator from '../../features/block-mediator.min.js';
 
 function handlelize(str) {
   return str.normalize('NFD')
@@ -217,7 +218,7 @@ function initSearchFunction(block) {
     }
   };
 
-  import('../../scripts/autocomplete-api-v3.js').then(({ default: useInputAutocomplete }) => {
+  import('../../middlewares/autocomplete-api-v3.js').then(({ default: useInputAutocomplete }) => {
     const { inputHandler } = useInputAutocomplete(
       suggestionsListUIUpdateCB, { throttleDelay: 300, debounceDelay: 500, limit: 7 },
     );
@@ -364,7 +365,7 @@ export default async function decorate(block) {
     document.dispatchEvent(linksPopulated);
   }
   if (window.location.href.includes('/express/templates/')) {
-    const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
+    const { default: updateAsyncBlocks } = await import('../../middlewares/template-ckg.js');
     updateAsyncBlocks();
   }
 }

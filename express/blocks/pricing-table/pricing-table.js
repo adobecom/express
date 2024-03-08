@@ -1,12 +1,8 @@
 import { createTag, fetchPlaceholders, yieldToMain } from '../../utils/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import { debounce } from '../../scripts/hofs.js';
-import { decorateButtons } from '../../scripts/utils/decorate.js';
-import {
-  buildUrl,
-  fetchPlanOnePlans,
-} from '../../scripts/utils/pricing.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
+import { addTempWrapper, decorateButtons } from '../../utils/decorate.js';
+import { debounce } from '../../utils/hofs.js';
+import { buildUrl, fetchPlanOnePlans } from '../../features/pricing.js';
+import BlockMediator from '../../features/block-mediator.min.js';
 
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';

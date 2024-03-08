@@ -1,4 +1,4 @@
-import { html, signal, useEffect } from '../../../scripts/libs/htm-preact.js';
+import { html, signal, useEffect } from '../../../deps/htm-preact.js';
 
 const DEF_ICON = 'purple';
 const DEF_DESC = 'Checking...';

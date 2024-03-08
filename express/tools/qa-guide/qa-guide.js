@@ -1,7 +1,7 @@
 import {
   createTag,
   loadStyle,
-} from '../../utils.js';
+} from '../../utils/utils.js';
 
 import {
   populateSessionStorage,
@@ -277,7 +277,7 @@ const launchStorySelector = async () => {
     loadCta.disabled = input.value === '';
   });
 
-  const mod = await import('../../../blocks/modal/modal.js');
+  const mod = await import('../../blocks/modal/modal.js');
   mod.getModal(null, {
     class: 'qa-guide-story-selector', id: 'qa-guide-story-selector', content: selector, closeEvent: 'close:qa-guide-story-selector',
   });

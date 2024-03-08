@@ -1,11 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 
-import {
-  createTag,
-// eslint-disable-next-line import/no-unresolved
-} from '../../utils/utils.js';
+import { createTag } from '../../utils/utils.js';
 
-import BlockMediator from '../../scripts/block-mediator.min.js';
+import BlockMediator from '../../features/block-mediator.min.js';
 
 const ENABLE_PRICING_MODAL_AUDIENCE = 'enablePricingModal';
 

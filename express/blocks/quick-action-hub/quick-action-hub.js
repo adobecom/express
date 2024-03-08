@@ -1,9 +1,8 @@
 import {
   createTag,
   transformLinkToAnimation,
-// eslint-disable-next-line import/no-unresolved
 } from '../../utils/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
 export default function decorate($block) {
   addTempWrapper($block, 'quick-action-hub');

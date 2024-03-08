@@ -1,7 +1,6 @@
 import {
   createTag,
   getLottie,
-  // eslint-disable-next-line import/no-unresolved
 } from '../../../../utils/utils.js';
 
 function getMaxButtonWidth() {

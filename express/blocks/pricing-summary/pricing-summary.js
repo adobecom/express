@@ -1,10 +1,8 @@
-import { addTempWrapper } from '../../scripts/decorate.js';
-import buildCarousel from '../shared/carousel.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import buildCarousel from '../../components/carousel.js';
 import { createTag } from '../../utils/utils.js';
 
-import {
-  fetchPlan, buildUrl, shallSuppressOfferEyebrowText,
-} from '../../scripts/utils/pricing.js';
+import { fetchPlan, buildUrl, shallSuppressOfferEyebrowText } from '../../features/pricing.js';
 
 function handleHeader(column) {
   column.classList.add('pricing-column');

@@ -6,7 +6,7 @@ import {
   getMetadata,
   getExperimentConfig,
   checkTesting,
-} from '../../express/scripts/utils.js';
+} from '../../express/utils/utils.js';
 
 /**
  * Create Badge if a Page is enlisted in an Adobe Target test

@@ -1,6 +1,6 @@
-import buildCarousel from '../shared/carousel.js';
+import buildCarousel from '../../components/carousel.js';
 import { addPublishDependencies, createTag, getMetadata } from '../../utils/utils.js';
-import { buildUrl, fetchPlan } from '../../scripts/utils/pricing.js';
+import { buildUrl, fetchPlan } from '../../features/pricing.js';
 
 let invisContainer;
 let parent;

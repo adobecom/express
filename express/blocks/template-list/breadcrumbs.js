@@ -4,7 +4,7 @@ import {
   titleCase,
   createTag,
 } from '../../utils/utils.js';
-import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
+import fetchAllTemplatesMetadata from '../../middlewares/all-templates-metadata.js';
 
 function sanitize(str) {
   return str?.replaceAll(/[$@%'"]/g, '');

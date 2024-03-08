@@ -6,9 +6,8 @@ import {
   createTag,
   fetchPlaceholders,
   getHelixEnv,
-// eslint-disable-next-line import/no-unresolved
 } from '../../utils/utils.js';
-import { getOffer } from '../../scripts/utils/pricing.js';
+import { getOffer } from '../../features/pricing.js';
 
 function replaceUrlParam(url, paramName, paramValue) {
   const params = url.searchParams;

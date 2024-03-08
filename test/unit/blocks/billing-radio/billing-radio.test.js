@@ -1,6 +1,6 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
-import BlockMediator from '../../../../express/scripts/block-mediator.min.js';
+import BlockMediator from '../../../../express/features/block-mediator.min.js';
 
 const { default: decorate } = await import(
   '../../../../express/blocks/billing-radio/billing-radio.js'

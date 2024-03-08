@@ -2,8 +2,8 @@ import {
   fetchPlaceholders,
   createTag,
   getMetadata,
-} from './utils.js';
-import BlockMediator from './block-mediator.js';
+} from '../utils/utils.js';
+import BlockMediator from '../features/block-mediator.min.js';
 
 export function getDestination() {
   return BlockMediator.get('primaryCtaUrl')

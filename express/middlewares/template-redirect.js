@@ -1,4 +1,4 @@
-import { getConfig } from './utils.js';
+import { getConfig } from '../utils/utils.js';
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
 
 async function existsTemplatePage(url) {
