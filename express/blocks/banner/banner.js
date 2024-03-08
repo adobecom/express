@@ -1,4 +1,4 @@
-import { addTempWrapper, unwrapBlock } from '../../scripts/decorate.js';
+import { addTempWrapper, unwrapBlock } from '../../scripts/utils/decorate.js';
 import { normalizeHeadings } from '../../scripts/utils.js';
 
 export default async function decorate(block) {

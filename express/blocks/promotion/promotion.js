@@ -6,7 +6,7 @@ import {
   toClassName,
   createOptimizedPicture, getConfig,
 } from '../../scripts/utils.js';
-import { addTempWrapper, unwrapBlock } from '../../scripts/decorate.js';
+import { addTempWrapper, unwrapBlock } from '../../scripts/utils/decorate.js';
 
 const PROMOTION_FOLDER = 'express/promotions';
 

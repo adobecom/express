@@ -1,7 +1,7 @@
 /* eslint-disable import/named, import/extensions */
 
 import { createTag } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 

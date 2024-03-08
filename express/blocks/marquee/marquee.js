@@ -5,7 +5,7 @@ import {
   getIconElement,
   fetchPlaceholders, getConfig,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const breakpointConfig = [

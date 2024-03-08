@@ -6,7 +6,7 @@ import {
   getIconElement,
 } from '../../scripts/utils.js';
 
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 async function buildPayload() {
   const payload = {

@@ -1,6 +1,6 @@
 /* eslint-disable import/named, import/extensions */
 
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import {
   createTag,
   readBlockConfig,

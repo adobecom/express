@@ -5,7 +5,7 @@ import {
   getLottie,
   lazyLoadLottiePlayer,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 import { collectFloatingButtonData } from '../shared/floating-cta.js';
 

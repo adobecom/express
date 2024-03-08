@@ -16,7 +16,7 @@ import {
   sampleRUM,
   toClassName,
 } from '../../scripts/utils.js';
-import { addTempWrapper, unwrapBlock } from '../../scripts/decorate.js';
+import { addTempWrapper, unwrapBlock } from '../../scripts/utils/decorate.js';
 
 import { Masonry } from '../shared/masonry.js';
 

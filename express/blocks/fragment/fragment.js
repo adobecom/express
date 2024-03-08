@@ -10,7 +10,7 @@ import {
   decorateMain,
   loadSections,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 /**
  * Loads a fragment.

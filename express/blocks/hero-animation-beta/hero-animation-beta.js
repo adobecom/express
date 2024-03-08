@@ -5,7 +5,7 @@ import {
   addHeaderSizing, getConfig,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 import {
   isVideoLink,
