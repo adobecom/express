@@ -1,7 +1,7 @@
 import {
   createTag, getConfig,
   getIconElement,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 import {
   createFloatingButton,
@@ -11,7 +11,7 @@ import {
   collectFloatingButtonData,
   buildToolBoxStructure,
   initToolBox,
-} from '../shared/floating-cta.js';
+} from '../../components/floating-cta.js';
 
 const bubbleUI = {
   addEventListeners(boxBottom) {

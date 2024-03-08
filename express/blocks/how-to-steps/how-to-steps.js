@@ -1,9 +1,4 @@
-/* eslint-disable import/named, import/extensions */
-
-import {
-  createTag,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
+import { createTag } from '../../utils/utils.js';
 
 export default function decorate($block, name, doc) {
   const $howto = $block;

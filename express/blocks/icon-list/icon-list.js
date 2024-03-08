@@ -3,9 +3,8 @@ import {
   getIcon,
   addBlockClasses,
   createTag,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+} from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
 export default function decorate($block) {
   addTempWrapper($block, 'icon-list');

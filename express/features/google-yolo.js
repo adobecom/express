@@ -1,4 +1,4 @@
-import { getMetadata } from '../scripts/utils.js';
+import { getMetadata } from '../utils/utils.js';
 import BlockMediator from './block-mediator.min.js';
 
 function getRedirectUri() {

@@ -1,6 +1,6 @@
 import {
   getConfig,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 function decorateSchemasBlocks(block) {
   const rows = Array.from(block.children);

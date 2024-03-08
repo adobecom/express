@@ -1,6 +1,6 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
-import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
+import { createTag, fetchPlaceholders } from '../../utils/utils.js';
 
 import {
   buildUrl,

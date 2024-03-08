@@ -2,7 +2,7 @@ import {
   createTag,
   getLottie,
   // eslint-disable-next-line import/no-unresolved
-} from '../../../../scripts/utils.js';
+} from '../../../../utils/utils.js';
 
 function getMaxButtonWidth() {
   return 540;

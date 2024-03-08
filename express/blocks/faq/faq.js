@@ -1,7 +1,7 @@
 import {
   createTag,
   getMetadata,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 function decorateFAQBlocks(block) {
   const showSchema = getMetadata('show-faq-schema');
@@ -59,7 +59,7 @@ export default async function decorate(block) {
 
   const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
   if (phoneNumberTags.length > 0) {
-    const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');
+    const { formatSalesPhoneNumber } = await import('../../features/pricing.js');
     await formatSalesPhoneNumber(phoneNumberTags);
   }
 }

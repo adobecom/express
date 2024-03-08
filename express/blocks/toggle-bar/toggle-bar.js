@@ -1,4 +1,4 @@
-import { createTag } from '../../scripts/utils.js';
+import { createTag } from '../../utils/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 
 function decorateButton(block, toggle) {

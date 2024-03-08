@@ -2,7 +2,7 @@ import {
   createTag,
   getIconElement,
   getMobileOperatingSystem,
-} from '../../scripts/utils.js';
+} from '../utils/utils.js';
 
 // eslint-disable-next-line import/prefer-default-export
 export function buildAppStoreBadge(href, attrs) {

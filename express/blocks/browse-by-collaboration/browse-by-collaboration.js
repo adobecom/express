@@ -2,10 +2,10 @@
 
 import {
   createTag,
-} from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+} from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
-import buildCarousel from '../shared/carousel.js';
+import buildCarousel from '../../components/carousel.js';
 
 export function decorateHeading($block, payload) {
   const $headingSection = createTag('div', { class: 'browse-by-collaboration-heading-section' });

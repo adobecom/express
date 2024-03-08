@@ -4,7 +4,7 @@ import {
   getIconElement,
   getMetadata,
   sampleRUM,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 

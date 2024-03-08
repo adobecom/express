@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { loadStyle, createTag, getIconElement } from '../../scripts/utils.js';
+import { loadStyle, createTag, getIconElement } from '../../scripts/utils/utils.js';
 
 const FOCUSABLES = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"]';
 

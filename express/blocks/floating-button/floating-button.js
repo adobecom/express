@@ -1,8 +1,8 @@
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 import {
   createFloatingButton,
   collectFloatingButtonData,
-} from '../shared/floating-cta.js';
+} from '../../components/floating-cta.js';
 
 export default async function decorate(block) {
   addTempWrapper(block, 'floating-button');

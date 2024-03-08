@@ -1,6 +1,6 @@
 import {
   createTag,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 import {
   createFloatingButton,

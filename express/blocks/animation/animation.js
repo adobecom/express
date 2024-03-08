@@ -1,4 +1,4 @@
-import { createTag } from '../../scripts/utils.js';
+import { createTag } from '../../utils/utils.js';
 
 export default function decorate(block, name, doc) {
   doc.querySelectorAll('.animation a[href], .video a[href]').forEach((a) => {

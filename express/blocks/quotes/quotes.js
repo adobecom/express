@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { addTempWrapper } from '../../scripts/decorate.js';
-import { createTag } from '../../scripts/utils.js';
+import { createTag } from '../../utils/utils.js';
 
 export default function decorate($block) {
   addTempWrapper($block, 'quotes');

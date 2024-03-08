@@ -5,7 +5,7 @@ import {
   fetchPlaceholders,
   getIconElement,
   loadStyle,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 import { getProfile, getDestination } from '../../scripts/express-delayed.js';
 
 const OPT_OUT_KEY = 'no-direct-path-to-product';

@@ -1,7 +1,6 @@
 import {
   createTag, getConfig, loadBlock, toClassName,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
+} from '../utils/utils.js';
 
 const docTitle = document.title;
 

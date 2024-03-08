@@ -5,7 +5,7 @@ import {
   createTag,
   readBlockConfig,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 export default function decorate($block, name, doc) {
   addTempWrapper($block, 'table-of-contents');

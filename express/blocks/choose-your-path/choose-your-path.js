@@ -4,7 +4,7 @@ import {
   createTag,
   fetchPlaceholders,
   getLottie,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 function getWidth() {
   return Math.max(

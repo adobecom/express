@@ -1,4 +1,4 @@
-import { createTag, getIconElement } from '../../scripts/utils.js';
+import { createTag, getIconElement } from '../../utils/utils.js';
 import {
   requestGeneration,
   postFeedback,

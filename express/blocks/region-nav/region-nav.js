@@ -1,4 +1,4 @@
-import { fetchPlaceholders, getConfig } from '../../scripts/utils.js';
+import { fetchPlaceholders, getConfig } from '../../utils/utils.js';
 
 const domain = window.location.host === 'adobe.com'
   || window.location.host.endsWith('.adobe.com') ? 'domain=adobe.com' : '';

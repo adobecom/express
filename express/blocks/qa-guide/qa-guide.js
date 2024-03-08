@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { createTag, getIconElement } from '../../scripts/utils.js';
+import { createTag, getIconElement } from '../../utils/utils.js';
 
 export default async function init(el) {
   let audienceIcon;

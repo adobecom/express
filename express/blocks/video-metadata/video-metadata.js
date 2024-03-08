@@ -1,6 +1,6 @@
 import {
   createTag,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 const LINES2ARRAY_SPLIT_RE = /\s*?\r?\n\s*/;
 const BROADCAST_EVENT_RE = /broadcast-event-(\d+)-([\w-]+)/;

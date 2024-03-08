@@ -1,7 +1,6 @@
-import { createTag } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import isDarkOverlayReadable from '../../scripts/color-tools.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
+import { createTag } from '../../utils/utils.js';
+import { addTempWrapper, isDarkOverlayReadable } from '../../utils/decorate.js';
+import BlockMediator from '../../features/block-mediator.min.js';
 
 function changeTextColorAccordingToBg(
   primaryColor,

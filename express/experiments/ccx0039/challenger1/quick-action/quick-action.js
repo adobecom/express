@@ -1,4 +1,4 @@
-import { loadScript } from '../../../../scripts/utils.js';
+import { loadScript } from '../../../../utils/utils.js';
 
 export default function decorate(block) {
   window.qtId = 'remove-background';

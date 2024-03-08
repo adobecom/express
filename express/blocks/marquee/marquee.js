@@ -4,7 +4,7 @@ import {
   addHeaderSizing,
   getIconElement,
   fetchPlaceholders, getConfig,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 

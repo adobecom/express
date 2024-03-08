@@ -1698,7 +1698,7 @@ function loadIMS() {
 }
 
 async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
-  const promises = [import('./experiment.js')];
+  const promises = [import('../scripts/experiment.js')];
   const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
     loadIMS();
@@ -2303,14 +2303,14 @@ async function wordBreakJapanese() {
   if (getConfig().locale.region !== 'jp') {
     return;
   }
-  const { loadDefaultJapaneseParser } = await import('./budoux-index-ja.min.js');
+  const { loadDefaultJapaneseParser } = await import('../deps/budoux-index-ja.min.js');
   const parser = loadDefaultJapaneseParser();
   document.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
     el.classList.add('budoux');
     parser.applyElement(el);
   });
 
-  const BalancedWordWrapper = (await import('./bw2.js')).default;
+  const BalancedWordWrapper = (await import('../features/bw2.js')).default;
   const bw2 = new BalancedWordWrapper();
   document.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
     // apply balanced word wrap to headings
@@ -2497,7 +2497,7 @@ export async function loadSections(sections, isDoc) {
 
 function initSidekick() {
   const initPlugins = async () => {
-    const { default: init } = await import('./utils/sidekick.js');
+    const { default: init } = await import('./sidekick.js');
     init();
   };
 
@@ -2540,7 +2540,7 @@ export async function loadArea(area = document) {
   }
 
   if (getMetadata('template-search-page') === 'Y') {
-    const { default: redirect } = await import('./template-redirect.js');
+    const { default: redirect } = await import('../middlewares/template-redirect.js');
     await redirect();
   }
 
@@ -2581,7 +2581,7 @@ export async function loadArea(area = document) {
   }
   await lazy;
 
-  const { default: delayed } = await import('./delayed.js');
+  const { default: delayed } = await import('../scripts/delayed.js');
   delayed([getConfig, getMetadata, loadScript, loadStyle]);
 
   // milo's links featurecc

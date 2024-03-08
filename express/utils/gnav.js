@@ -272,7 +272,7 @@ if (!window.hlx || window.hlx.gnav) {
   await loadIMS();
   loadFEDS();
   setTimeout(() => {
-    import('./google-yolo.js').then((mod) => {
+    import('../features/google-yolo.js').then((mod) => {
       mod.default();
     });
   }, 4000);

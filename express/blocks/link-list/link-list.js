@@ -1,10 +1,10 @@
 import {
   fetchRelevantRows,
   normalizeHeadings,
-} from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+} from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
-import buildCarousel from '../shared/carousel.js';
+import buildCarousel from '../../components/carousel.js';
 
 async function loadSpreadsheetData(block, relevantRowsData) {
   const defaultContainer = block.querySelector('.button-container');
@@ -82,7 +82,7 @@ export default async function decorate(block) {
   });
 
   if (window.location.href.includes('/express/templates/')) {
-    const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
+    const { default: updateAsyncBlocks } = await import('../../middlewares/template-ckg.js');
     await updateAsyncBlocks();
   }
 }

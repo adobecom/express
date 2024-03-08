@@ -1,8 +1,7 @@
 /* eslint-disable import/named, import/extensions */
 
-import { createTag } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import isDarkOverlayReadable from '../../scripts/color-tools.js';
+import { createTag } from '../../utils/utils.js';
+import { addTempWrapper, isDarkOverlayReadable } from '../../utils/decorate.js';
 
 function activate(block, payload, target) {
   // de-activate all

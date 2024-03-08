@@ -3,8 +3,8 @@ import {
   fetchRelevantRows,
   getIconElement,
   getMobileOperatingSystem,
-} from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+} from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
 function toggleCollapsibleCard($block) {
   $block.classList.toggle('expanded');

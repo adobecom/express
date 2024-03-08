@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
-import { normalizeHeadings } from '../../scripts/utils.js';
+import { normalizeHeadings } from '../../utils/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 
 /**

@@ -2,7 +2,7 @@ import {
   createTag,
   getIcon,
   // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 import buildCarousel from '../shared/carousel.js';
 

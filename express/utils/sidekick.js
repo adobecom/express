@@ -13,7 +13,7 @@ const localeFlowListener = async () => {
   const localeFlow = createTag('div', { class: 'locale-flow', 'data-block-name': 'locale-flow' });
   const content = await loadBlock(localeFlow);
 
-  const { getModal } = await import('../../blocks/modal/modal.js');
+  const { getModal } = await import('../blocks/modal/modal.js');
   getModal(null, { id: 'locale-flow', content, closeEvent: 'closeModal' });
 };
 
@@ -22,12 +22,12 @@ export default function init() {
     const preflight = createTag('div', { class: 'preflight', 'data-block-name': 'preflight' });
     const content = await loadBlock(preflight);
 
-    const { getModal } = await import('../../blocks/modal/modal.js');
+    const { getModal } = await import('../blocks/modal/modal.js');
     getModal(null, { id: 'preflight', content, closeEvent: 'closeModal' });
   };
 
   const launchQAGuide = async () => {
-    const { default: initQAGuide } = await import('../features/qa-guide/qa-guide.js');
+    const { default: initQAGuide } = await import('../tools/qa-guide/qa-guide.js');
 
     initQAGuide();
   };

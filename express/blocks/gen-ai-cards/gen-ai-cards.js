@@ -1,7 +1,7 @@
-import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { createTag, fetchPlaceholders } from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
-import buildCarousel from '../shared/carousel.js';
+import buildCarousel from '../../components/carousel.js';
 
 const genAIPlaceholder = '%7B%7Bprompt-text%7D%7D';
 

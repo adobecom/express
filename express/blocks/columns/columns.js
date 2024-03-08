@@ -7,17 +7,17 @@ import {
   getIconElement,
   addHeaderSizing,
   getMetadata,
-} from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
-import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
+} from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import { addFreePlanWidget } from '../../components/free-plan.js';
+import { embedYoutube, embedVimeo } from '../../components/embed-videos.js';
 
 import {
   displayVideoModal,
   hideVideoModal,
   isVideoLink,
-} from '../shared/video.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
+} from '../../components/video.js';
+import BlockMediator from '../../features/block-mediator.min.js';
 
 function transformToVideoColumn(cell, aTag, block) {
   const parent = cell.parentElement;
@@ -351,7 +351,7 @@ export default async function decorate(block) {
     svg.style.fill = accentColor;
     rows[0].append(svg);
 
-    const { default: isDarkOverlayReadable } = await import('../../scripts/color-tools.js');
+    const { isDarkOverlayReadable } = await import('../../utils/decorate.js');
 
     if (isDarkOverlayReadable(primaryColor)) {
       block.classList.add('shadow');
@@ -360,7 +360,7 @@ export default async function decorate(block) {
 
   const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
   if (phoneNumberTags.length > 0) {
-    const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');
+    const { formatSalesPhoneNumber } = await import('../../features/pricing.js');
     await formatSalesPhoneNumber(phoneNumberTags);
   }
 }

@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
-import { fetchPlaceholders, getConfig } from '../../scripts/utils.js';
-import { memoize } from '../../scripts/hofs.js';
+import { fetchPlaceholders, getConfig } from '../../utils/utils.js';
+import { memoize } from '../../utils/hofs.js';
 
 // supported by content api
 const supportedLanguages = [

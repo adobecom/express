@@ -2,7 +2,7 @@ import {
   addBlockClasses,
   createTag,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 export default function decorate(block) {
   addBlockClasses(block, ['step-image', 'step-description']);

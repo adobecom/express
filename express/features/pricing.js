@@ -2,7 +2,7 @@ import {
   getCookie,
   getHelixEnv,
   createTag, getConfig,
-} from '../utils.js';
+} from '../utils/utils.js';
 
 const currencies = {
   ar: 'ARS',

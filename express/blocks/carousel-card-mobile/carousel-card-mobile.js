@@ -1,8 +1,8 @@
-import { createTag, fetchRelevantRows } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
-import buildPaginatedCarousel from '../shared/paginated-carousel.js';
-import { buildAppStoreBadge } from '../shared/app-store-badge.js';
+import { createTag, fetchRelevantRows } from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import { buildFreePlanWidget } from '../../components/free-plan.js';
+import buildPaginatedCarousel from '../../components/paginated-carousel.js';
+import { buildAppStoreBadge } from '../../components/app-store-badge.js';
 
 export default async function decorate($block) {
   addTempWrapper($block, 'carousel-card-mobile');

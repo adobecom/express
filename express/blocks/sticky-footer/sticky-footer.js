@@ -1,6 +1,6 @@
 import {
   createTag, fetchPlaceholders, getIcon, readBlockConfig,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 
 /**

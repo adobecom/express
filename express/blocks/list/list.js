@@ -1,5 +1,5 @@
-import { createTag } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { createTag } from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
 function decorateList(block) {
   const list = [];
@@ -40,7 +40,7 @@ export default async function decorate(block) {
 
   const pricingLinks = block.querySelectorAll('a[title^="{{pricing"]');
   if (pricingLinks.length > 0) {
-    const { decoratePricing } = await import('../../scripts/utils/pricing.js');
+    const { decoratePricing } = await import('../../features/pricing.js');
     decoratePricing(block);
   }
 }

@@ -1,4 +1,4 @@
-import { loadScript } from '../../scripts/utils.js';
+import { loadScript } from '../../utils/utils.js';
 
 export const ELEMENT_NAME = 'ccl-quick-action';
 

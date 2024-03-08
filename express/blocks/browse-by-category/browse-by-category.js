@@ -1,9 +1,9 @@
 /* eslint-disable import/named, import/extensions */
 
-import { createTag } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { createTag } from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
-import buildCarousel from '../shared/carousel.js';
+import buildCarousel from '../../components/carousel.js';
 
 export function decorateHeading(block, payload) {
   const headingSection = createTag('div', { class: 'browse-by-category-heading-section' });

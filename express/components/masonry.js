@@ -1,4 +1,4 @@
-import { createTag } from '../../scripts/utils.js';
+import { createTag } from '../utils/utils.js';
 
 // todo: remove this.needBackwardCompatibility() when template-list is deprecated
 function nodeIsBefore(node, otherNode) {

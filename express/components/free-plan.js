@@ -4,7 +4,7 @@ import {
   getMetadata,
   getLottie,
   lazyLoadLottiePlayer,
-} from '../utils.js';
+} from '../utils/utils.js';
 
 const typeMap = {
   branded: [

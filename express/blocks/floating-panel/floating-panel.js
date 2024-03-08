@@ -8,7 +8,7 @@ import {
   fixIcons,
   fetchPlaceholders,
   getConfig,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 function initObserver(elem, observeTargets) {
   const hideOnIntersect = new IntersectionObserver((entries) => {

@@ -3,7 +3,7 @@ import {
   toClassName,
   getIconElement as genericGetIconElement,
   getMobileOperatingSystem,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 
 export function getToggleButton() {

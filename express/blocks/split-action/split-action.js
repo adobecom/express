@@ -1,4 +1,4 @@
-import { createTag, getIconElement } from '../../scripts/utils.js';
+import { createTag, getIconElement } from '../../utils/utils.js';
 
 function show(block) {
   const body = block.closest('body');

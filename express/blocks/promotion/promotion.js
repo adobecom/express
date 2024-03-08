@@ -5,7 +5,7 @@ import {
   fixIcons,
   toClassName,
   createOptimizedPicture, getConfig,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 
 const PROMOTION_FOLDER = 'express/promotions';

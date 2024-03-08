@@ -1,5 +1,5 @@
-import { getConfig } from './utils.js';
-import { memoize, throttle, debounce } from './hofs.js';
+import { getConfig } from '../utils/utils.js';
+import { memoize, throttle, debounce } from '../utils/hofs.js';
 
 const url = 'https://adobesearch-atc.adobe.io/uss/v3/autocomplete';
 const experienceId = 'default-templates-autocomplete-v1';

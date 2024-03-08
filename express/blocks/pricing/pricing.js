@@ -5,7 +5,7 @@ import {
   createTag,
   getHelixEnv,
   getIcon,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
 
 function replaceUrlParam(url, paramName, paramValue) {

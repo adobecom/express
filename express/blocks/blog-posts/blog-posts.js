@@ -7,7 +7,7 @@ import {
   getConfig,
   getLocale,
   readBlockConfig,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 const blogPosts = [];
 let blogResults;

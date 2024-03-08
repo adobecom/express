@@ -7,9 +7,9 @@ import {
   getMobileOperatingSystem,
   lazyLoadLottiePlayer,
   loadStyle,
-} from '../../scripts/utils.js';
+} from '../utils/utils.js';
 
-import BlockMediator from '../../scripts/block-mediator.min.js';
+import BlockMediator from '../features/block-mediator.min.js';
 
 export const hideScrollArrow = (floatButtonWrapper, lottieScrollButton) => {
   floatButtonWrapper.classList.add('floating-button--scrolled');

@@ -4,9 +4,8 @@ import {
   getLottie,
   lazyLoadLottiePlayer,
   readBlockConfig,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+} from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
 const DEFAULT_DELAY = 1000;
 const MAX_NONCONFIG_ROWS = 4;
@@ -17,9 +16,8 @@ const SCROLL_ANIMATION_PATH = '/express/icons/lottie-scroll.json';
  * @param {string} href
  * @param {number} [delay=0]
  */
-// eslint-disable-next-line no-unused-vars
 async function loadSpline(block, href, delay = 0) {
-  const { Application } = await import('../../scripts/spline-runtime.min.js');
+  const { Application } = await import('../../deps/spline-runtime.min.js');
   const canvas = createTag('canvas', { id: 'canvas3d', class: 'canvas3d' });
   block.append(canvas);
   const app = new Application(canvas);

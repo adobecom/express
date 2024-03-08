@@ -1,5 +1,5 @@
-import { createTag } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { createTag } from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
 function decorateButton($block, $toggle) {
   const $button = createTag('button', { class: 'content-toggle-button' });

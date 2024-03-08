@@ -4,9 +4,9 @@ import {
   getMobileOperatingSystem,
   fetchPlaceholders,
   getIconElement,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
 async function buildPayload() {
   const payload = {

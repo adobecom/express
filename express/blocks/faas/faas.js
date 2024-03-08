@@ -1,4 +1,4 @@
-import { createIntersectionObserver } from '../../scripts/utils.js';
+import { createIntersectionObserver } from '../../utils/utils.js';
 import { initFaas, loadFaasFiles } from './utils.js';
 
 const ROOT_MARGIN = 1000;

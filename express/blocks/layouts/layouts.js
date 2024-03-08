@@ -1,10 +1,8 @@
 import {
   createTag,
   getIcon,
-} from '../../scripts/utils.js';
-import {
-  Masonry,
-} from '../shared/masonry.js';
+} from '../../utils/utils.js';
+import { Masonry } from '../../components/masonry.js';
 
 export default function decorate($block) {
   const $layouts = Array.from($block.children);

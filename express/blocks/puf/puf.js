@@ -1,5 +1,5 @@
 import buildCarousel from '../shared/carousel.js';
-import { addPublishDependencies, createTag, getMetadata } from '../../scripts/utils.js';
+import { addPublishDependencies, createTag, getMetadata } from '../../utils/utils.js';
 import { buildUrl, fetchPlan } from '../../scripts/utils/pricing.js';
 
 let invisContainer;

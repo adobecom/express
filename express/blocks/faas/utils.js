@@ -6,7 +6,7 @@ import {
   getHelixEnv,
   createTag,
   getIconElement,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 let state = {};
 

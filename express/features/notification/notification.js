@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { fetchPlaceholders, createTag } from '../../scripts/utils.js';
+import { fetchPlaceholders, createTag } from '../../utils/utils.js';
 
 // eslint-disable-next-line no-unused-vars
 function showToast(text) {

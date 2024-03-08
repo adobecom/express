@@ -1,5 +1,5 @@
-import { createTag } from '../../scripts/utils.js';
-import { isVideoLink } from '../shared/video.js';
+import { createTag } from '../../utils/utils.js';
+import { isVideoLink } from '../../components/video.js';
 
 function renderImageOrVideo(media) {
   let updatedMedia;

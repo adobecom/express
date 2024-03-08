@@ -1,5 +1,3 @@
-/* eslint-disable import/named, import/extensions */
-
 export default function decorateCheckerBoards($block) {
   const blobPrefix = 'https://hlx.blob.core.windows.net/external/';
   const $a = $block.querySelector(`a[href^="${blobPrefix}`);

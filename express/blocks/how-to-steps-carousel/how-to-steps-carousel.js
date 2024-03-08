@@ -1,10 +1,8 @@
-/* eslint-disable import/named, import/extensions */
-
 import {
   createOptimizedPicture,
   createTag,
   fetchPlaceholders,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 let rotationInterval;
 let fixedImageSize = false;

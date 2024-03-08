@@ -1,4 +1,4 @@
-import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
+import { createTag, fetchPlaceholders, yieldToMain } from '../../utils/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { debounce } from '../../scripts/hofs.js';
 import { decorateButtons } from '../../scripts/utils/decorate.js';

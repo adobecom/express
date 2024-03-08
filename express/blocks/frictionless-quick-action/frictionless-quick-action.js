@@ -6,7 +6,7 @@ import {
   lazyLoadLottiePlayer,
   loadScript,
   transformLinkToAnimation,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 const imageInputAccept = '.png, .jpeg, .jpg';
 let inputElement;

@@ -1,6 +1,6 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import buildCarousel from '../shared/carousel.js';
-import { createTag } from '../../scripts/utils.js';
+import { createTag } from '../../utils/utils.js';
 
 import {
   fetchPlan, buildUrl, shallSuppressOfferEyebrowText,

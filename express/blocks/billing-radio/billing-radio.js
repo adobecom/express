@@ -1,7 +1,7 @@
 // fires 'billing-plan' BM and has global sync values when multiple on same page
-import { createTag } from '../../scripts/utils.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { createTag } from '../../utils/utils.js';
+import BlockMediator from '../../features/block-mediator.min.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
 const getId = (function idSetups() {
   const gen = (function* g() {

@@ -1,4 +1,4 @@
-import BlockMediator from '../../scripts/block-mediator.min.js';
+import BlockMediator from '../../features/block-mediator.min.js';
 
 function initScrollWatcher(block) {
   const hideOnIntersect = new IntersectionObserver((entries) => {

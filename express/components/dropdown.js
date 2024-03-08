@@ -1,4 +1,4 @@
-import { createTag, getIconElement, loadStyle } from '../../scripts/utils.js';
+import { createTag, getIconElement, loadStyle } from '../utils/utils.js';
 
 function buildButton($button, $options, option) {
   $button.innerHTML = '';

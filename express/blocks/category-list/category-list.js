@@ -1,6 +1,6 @@
-import { normalizeHeadings } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import buildCarousel from '../shared/carousel.js';
+import { normalizeHeadings } from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import buildCarousel from '../../components/carousel.js';
 
 // category-list-wrapper's style is defined in template-list/template-list.css
 

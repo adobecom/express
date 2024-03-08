@@ -1,11 +1,8 @@
-/* eslint-disable import/named, import/extensions */
-
 import {
   createTag,
   readBlockConfig,
   addPublishDependencies,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 function filterMigratedPages(filter) {
   const $results = document.getElementById('page-filter-results');

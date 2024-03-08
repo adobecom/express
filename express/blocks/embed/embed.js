@@ -7,7 +7,7 @@ import {
   embedVimeo,
   embedYoutube,
   getDefaultEmbed,
-} from '../../scripts/embed-videos.js';
+} from '../../components/embed-videos.js';
 
 // 'open.spotify.com' returns 'spotify'
 function getServer(url) {

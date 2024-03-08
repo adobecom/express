@@ -7,7 +7,7 @@ import {
   getMobileOperatingSystem,
   createTag,
   transformLinkToAnimation,
-} from '../../../../scripts/utils.js';
+} from '../../../../utils/utils.js';
 
 function createIndicators(payload, carousel) {
   const count = parseInt(payload.drawerItemContainer.dataset.itemLoadedCount, 10);

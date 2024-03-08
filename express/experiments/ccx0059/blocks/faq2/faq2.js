@@ -3,7 +3,7 @@
 import {
   createTag,
 // eslint-disable-next-line import/no-unresolved
-} from '../../../../scripts/utils.js';
+} from '../../../../utils/utils.js';
 
 function decorateFAQBlocks($block) {
   const faqs = [];

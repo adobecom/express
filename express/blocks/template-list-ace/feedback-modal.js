@@ -1,4 +1,4 @@
-import { createTag } from '../../scripts/utils.js';
+import { createTag } from '../../utils/utils.js';
 import { postFeedback, FEEDBACK_CATEGORIES } from './ace-api.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 

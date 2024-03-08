@@ -1,7 +1,4 @@
-import {
-  normalizeHeadings,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
+import { normalizeHeadings } from '../../utils/utils.js';
 
 export default function decorate($block) {
   normalizeHeadings($block, ['h2', 'h3', 'h4']);

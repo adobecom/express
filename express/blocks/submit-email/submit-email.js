@@ -1,4 +1,4 @@
-import { fetchPlaceholders } from '../../scripts/utils.js';
+import { fetchPlaceholders } from '../../utils/utils.js';
 
 export default function decorate($block) {
   const $container = document.querySelector('.submit-email-container');

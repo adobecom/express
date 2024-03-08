@@ -1,4 +1,4 @@
-import { createTag, getConfig } from '../../scripts/utils.js';
+import { createTag, getConfig } from '../../utils/utils.js';
 
 const locales = Object.keys(getConfig().locales).map((l) => l || 'en');
 

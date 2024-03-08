@@ -7,7 +7,7 @@ import {
   loadBlock,
   createOptimizedPicture,
   getConfig,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 
 /**
  * Builds a block DOM Element from a two dimensional array
@@ -126,7 +126,7 @@ export default async function decorateBlogPage() {
     if (author) {
       const $author = createTag('div', { class: 'author' });
       const url = encodeURIComponent(window.location.href);
-      $author.innerHTML = `<div class="image"><img src="/express/gnav-placeholder/adobe-logo.svg"/></div>
+      $author.innerHTML = `<div class="image"><img src="/express/icons/adobe-logo.svg"/></div>
       <div>
         <div class="name">${author}</div>
         <div class="date">${dateString}</div>

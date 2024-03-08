@@ -3,9 +3,9 @@ import {
   createTag,
   fetchPlaceholders,
   transformLinkToAnimation,
-} from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
+} from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import { addFreePlanWidget } from '../../components/free-plan.js';
 
 function buildContent(content) {
   const contentLink = content.querySelector('a');

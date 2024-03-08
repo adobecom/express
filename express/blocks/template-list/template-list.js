@@ -15,7 +15,7 @@ import {
   linkImage,
   sampleRUM,
   toClassName,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 
 import { Masonry } from '../shared/masonry.js';

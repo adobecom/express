@@ -1,4 +1,4 @@
-import { createTag } from '../../scripts/utils.js';
+import { createTag } from '../../utils/utils.js';
 import { html, render } from '../../scripts/libs/htm-preact.js';
 import Game from './ttt.js';
 import Temperature from './temperature.js';

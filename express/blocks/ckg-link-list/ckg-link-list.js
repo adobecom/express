@@ -1,6 +1,6 @@
-import { createTag, getConfig, titleCase } from '../../scripts/utils.js';
-import { getDataWithContext } from '../../scripts/browse-api-controller.js';
-import buildCarousel from '../shared/carousel.js';
+import { createTag, getConfig, titleCase } from '../../utils/utils.js';
+import { getDataWithContext } from '../../middlewares/browse-api-controller.js';
+import buildCarousel from '../../components/carousel.js';
 
 function addColorSampler(pill, colorHex, btn) {
   const colorDot = createTag('div', {

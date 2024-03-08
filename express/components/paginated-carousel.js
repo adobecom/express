@@ -1,7 +1,7 @@
 import {
   createTag,
   loadStyle,
-} from '../../scripts/utils.js';
+} from '../utils/utils.js';
 
 function buildPagination(wrapper, payload) {
   const paginationContainer = createTag('div', { class: 'pagination-container' });

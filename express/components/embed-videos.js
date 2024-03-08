@@ -1,5 +1,5 @@
-import { createTag, loadStyle, loadScript } from './utils.js';
-import { getAvailableVimeoSubLang } from '../blocks/shared/video.js';
+import { createTag, loadStyle, loadScript } from '../utils/utils.js';
+import { getAvailableVimeoSubLang } from './video.js';
 
 export function getDefaultEmbed(url) {
   return `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">

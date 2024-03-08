@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { createTag, getIconElement, getMetadata } from '../../scripts/utils.js';
+import { createTag, getIconElement, getMetadata } from '../../utils/utils.js';
 
 function containsVideo(pages) {
   return pages.some((page) => !!page?.rendition?.video?.thumbnail?.componentId);

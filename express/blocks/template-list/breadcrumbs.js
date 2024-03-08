@@ -3,7 +3,7 @@ import {
   getMetadata,
   titleCase,
   createTag,
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 
 function sanitize(str) {

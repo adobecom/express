@@ -14,14 +14,13 @@ import {
   titleCase,
   toClassName,
   transformLinkToAnimation,
-} from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import { Masonry } from '../shared/masonry.js';
-import buildCarousel from '../shared/carousel.js';
+} from '../../utils/utils.js';
+import { addTempWrapper, isDarkOverlayReadable } from '../../utils/decorate.js';
+import { Masonry } from '../../components/masonry.js';
+import buildCarousel from '../../components/carousel.js';
 import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './template-search-api-v3.js';
-import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
+import fetchAllTemplatesMetadata from '../../middlewares/all-templates-metadata.js';
 import renderTemplate from './template-rendering.js';
-import isDarkOverlayReadable from '../../scripts/color-tools.js';
 
 function wordStartsWithVowels(word) {
   return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
@@ -1456,7 +1455,7 @@ function importSearchBar(block, blockMediator) {
           }
         };
 
-        import('../../scripts/autocomplete-api-v3.js').then(({ default: useInputAutocomplete }) => {
+        import('../../middlewares/autocomplete-api-v3.js').then(({ default: useInputAutocomplete }) => {
           const { inputHandler } = useInputAutocomplete(
             suggestionsListUIUpdateCB, { throttleDelay: 300, debounceDelay: 500, limit: 7 },
           );
@@ -1624,7 +1623,7 @@ async function buildTemplateList(block, props, type = []) {
   }
 
   if (props.toolBar && props.searchBar) {
-    import('../../scripts/block-mediator.min.js').then(({ default: blockMediator }) => {
+    import('../../features/block-mediator.min.js').then(({ default: blockMediator }) => {
       importSearchBar(block, blockMediator);
     });
   }

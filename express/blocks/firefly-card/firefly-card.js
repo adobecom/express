@@ -1,5 +1,5 @@
-import { createTag, getMetadata } from '../../scripts/utils.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
+import { createTag, getMetadata } from '../../utils/utils.js';
+import BlockMediator from '../../features/block-mediator.min.js';
 
 const typeWord = (textSpan, word, textWrapper, cta) => new Promise((resolve) => {
   const typingSpeed = 100;

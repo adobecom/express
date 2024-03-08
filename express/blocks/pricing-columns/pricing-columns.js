@@ -7,7 +7,7 @@ import {
   fetchPlaceholders,
   getHelixEnv,
 // eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
+} from '../../utils/utils.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
 
 function replaceUrlParam(url, paramName, paramValue) {

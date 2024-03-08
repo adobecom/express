@@ -2,16 +2,16 @@ import {
   addAnimationToggle,
   createTag,
   toClassName,
-  addHeaderSizing, getConfig,
-// eslint-disable-next-line import/no-unresolved
-} from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
+  addHeaderSizing,
+  getConfig,
+} from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
+import { addFreePlanWidget } from '../../components/free-plan.js';
 
 import {
   isVideoLink,
   displayVideoModal,
-} from '../shared/video.js';
+} from '../../components/video.js';
 
 const animationBreakPointSettings = [
   {

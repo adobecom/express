@@ -1,4 +1,4 @@
-import { createTag, getMetadata } from '../../scripts/utils.js';
+import { createTag, getMetadata } from '../../utils/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function initScrollInteraction(block) {
