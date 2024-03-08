@@ -615,9 +615,9 @@ main.with-holiday-templates-banner {
 }
 
 .template-x .template.placeholder div:nth-of-type(2) {
-    margin: 0;
     position: absolute;
-    padding: 10px 20px 0;
+    padding-top: 10px;
+    max-width: 64%;
     bottom: 10%;
     min-height: 28px;
     background: linear-gradient(rgb(255 255 255 / 0%) 0%, rgb(255 255 255) 24%);
