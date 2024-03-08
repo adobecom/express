@@ -411,25 +411,25 @@ main.with-holiday-templates-banner {
     left: calc(50% + 16px);
 }
 
-.template-x.horizontal.mini .template.placeholder {
+.template-x.horizontal.mini a.template.placeholder {
     height: 100px;
     width: 60px;
-    margin: 0 4px 0 12px;
+    margin: 0 12px 0 4px;
 }
 
-.template-x.horizontal.mini .template.placeholder > div:first-of-type {
+.template-x.horizontal.mini a.template.placeholder > div:first-of-type {
     height: unset;
     width: unset;
     display: block;
     padding-top: 16px;
 }
 
-.template-x.horizontal.mini .template.placeholder svg {
+.template-x.horizontal.mini a.template.placeholder svg {
     height: 18px;
     width: 18px;
 }
 
-.template-x.horizontal.mini .template.placeholder .template-link {
+.template-x.horizontal.mini a.template.placeholder .template-link {
     font-size: var(--body-font-size-xs);
 }
 
@@ -615,9 +615,9 @@ main.with-holiday-templates-banner {
 }
 
 .template-x .template.placeholder div:nth-of-type(2) {
-    margin: 0;
     position: absolute;
-    padding: 10px 20px 0;
+    padding-top: 10px;
+    max-width: 64%;
     bottom: 10%;
     min-height: 28px;
     background: linear-gradient(rgb(255 255 255 / 0%) 0%, rgb(255 255 255) 24%);
