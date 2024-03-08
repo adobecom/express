@@ -17,11 +17,12 @@ export function isIOS16AndUp(userAgent = navigator.userAgent) {
   return false;
 }
 
-function isChrome() {
-  const { userAgent } = navigator;
-  // from horizon
-  return /Chrome|CriOS/.test(userAgent) && !/Edg|OPR|Opera|OPiOS|Vivaldi|YaBrowser|Avast|VivoBrowser|GSA/.test(userAgent);
-}
+// function isChrome() {
+//   const { userAgent } = navigator;
+//   // from horizon
+//   return /Chrome|CriOS/.test(userAgent)
+//   && !/Edg|OPR|Opera|OPiOS|Vivaldi|YaBrowser|Avast|VivoBrowser|GSA/.test(userAgent);
+// }
 
 export async function fetchAndroidAllowDenyLists() {
   const resp = await fetch('/express/android-device-list.json?limit=100000');
@@ -46,13 +47,14 @@ export async function preBenchmarkCheck() {
   } else if (os !== 'Android') {
     return [false, 'not iOS or Android'];
   }
-  if (!isChrome()) return [false, 'Android not Chrome'];
+  // do not guard against non-chrome users as beta release was about the mobile app
+  // if (!isChrome()) return [false, 'Android not Chrome'];
   const { allowList, denyList } = await fetchAndroidAllowDenyLists();
   const { userAgent, hardwareConcurrency, deviceMemory } = navigator;
-  if (allowList?.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))) {
+  if (allowList?.data.some(({ device }) => new RegExp(`Android .+ ${device}`).test(userAgent))) {
     return [true, 'Android whitelisted'];
   }
-  if (denyList?.data.some(({ device }) => new RegExp(`Android .+; ${device}`).test(userAgent))) {
+  if (denyList?.data.some(({ device }) => new RegExp(`Android .+ ${device}`).test(userAgent))) {
     return [false, 'Android denylisted'];
   }
   if (!hardwareConcurrency || hardwareConcurrency < 4) {
