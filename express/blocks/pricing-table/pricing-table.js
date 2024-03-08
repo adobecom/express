@@ -5,6 +5,7 @@ import { decorateButtons } from '../../scripts/utils/decorate.js';
 import {
   buildUrl,
   fetchPlanOnePlans,
+  formatDynamicCartLink,
 } from '../../scripts/utils/pricing.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -55,11 +56,7 @@ function handleHeading(headingRow, headingCols) {
         btn.classList.add('primary');
         btn.parentNode.remove();
       }
-      fetchPlanOnePlans(btn.href).then(({
-        url, country, language, offerId,
-      }) => {
-        btn.href = buildUrl(url, country, language, offerId);
-      });
+      formatDynamicCartLink(btn);
       const btnWrapper = btn.closest('p');
       buttonsWrapper.append(btnWrapper);
     });
