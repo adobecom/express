@@ -305,15 +305,17 @@ function correctExplainHeights(el) {
   requestAnimationFrame(() => {
     const elements = el.getElementsByClassName('card-explain');
     if (elements.length < 2) return;
-    let max = 0;
     for (const e of elements) {
-      if (e.clientHeight > max) {
-        max = e.clientHeight;
+      let max = 0;
+      if (e.innerText.length > max) {
+        max = e.innerText.length;
+      } 
+      if (max >= 110) {
+        for (const e2 of elements) {
+          e2.classList.add("card-explain-extra-line");
+        }
       }
-    }
-    for (const e of elements) {
-      e.style.height = `${max}px`;
-    }
+    };
   });
 }
 
@@ -353,8 +355,9 @@ export default async function init(el) {
   if (phoneNumberTags.length > 0) {
     await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
   }
-  correctExplainHeights(cardsContainer)
+ 
 
 
   el.prepend(cardsContainer);
+  correctExplainHeights(cardsContainer);
 }
