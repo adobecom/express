@@ -391,7 +391,6 @@ export async function fetchPlanOnePlans(planUrl) {
   }
 
   let plan = window.pricingPlans[planUrl];
-
   if (!plan) {
     plan = {};
     const link = new URL(planUrl);
@@ -428,7 +427,6 @@ export async function fetchPlanOnePlans(planUrl) {
     }
 
     const offer = await getOfferOnePlans(plan.offerId);
-
     if (offer) {
       plan.currency = offer.currency;
       plan.price = offer.unitPrice;
@@ -460,7 +458,6 @@ export async function fetchPlanOnePlans(planUrl) {
 
     window.pricingPlans[planUrl] = plan;
   }
-
   return plan;
 }
 
@@ -541,6 +538,22 @@ export async function fetchPlan(planUrl) {
   }
 
   return plan;
+}
+
+export async function formatDynamicCartLink(a) {
+  try { 
+    const pattern = new RegExp(/.*commerce.*adobe\.com.*/gm); 
+    if (pattern.test(a.href)) {
+      const response = await fetchPlanOnePlans(a.href); 
+      const newTrialHref = buildUrl(response.url, response.country,
+        response.language, response.offerId); 
+      a.href = newTrialHref;
+    }
+  } catch (error) {
+    window.lana.log('Failed to fetch prices for page plan');
+    window.lana.log(error);
+  }
+  return a;
 }
 
 export function decoratePricing(block) {
