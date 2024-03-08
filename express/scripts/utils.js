@@ -683,6 +683,7 @@ export async function decorateBlock(block) {
 
     block.classList.add('block');
 
+    block.dataset.block = '';
     block.setAttribute('data-block-name', blockName);
     block.setAttribute('data-block-status', 'initialized');
 
@@ -721,7 +722,7 @@ export function decorateSVG(a) {
     a.append(pic);
     return a;
   } catch (e) {
-    console.log('Failed to create SVG.', e.message);
+    window.lana.log(`Failed to create SVG: ${e.message}`);
     return a;
   }
 }
@@ -825,7 +826,7 @@ function decorateImageLinks(el) {
         aTag.append(pic);
       }
     } catch (e) {
-      console.log('Error:', `${e.message} '${source.trim()}'`);
+      window.lana.log(`Error: ${e.message} '${source.trim()}'`);
     }
   });
 }
@@ -2591,6 +2592,11 @@ export async function loadArea(area = document) {
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 
+  if (['on', 'yes'].includes(getMetadata('milo-analytics')?.toLowerCase()) || params.get('milo-analytics') === 'on') {
+    import('./attributes.js').then((analytics) => {
+      document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
+    });
+  }
   window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
     decorateTrackingEvents();
   });
