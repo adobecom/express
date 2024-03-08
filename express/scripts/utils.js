@@ -1998,7 +1998,7 @@ async function buildAutoBlocks($main) {
     await loadPromoFrag();
   } else if (document.body.dataset.device === 'mobile' && ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')
     .toLowerCase())) {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
+    const { default: BlockMediator } = await import('../features/block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {
       const eligibilityChecked = BlockMediator.get('mobileBetaEligibility');
@@ -2020,7 +2020,7 @@ async function buildAutoBlocks($main) {
       }
     }
   } else if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase())) {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
+    const { default: BlockMediator } = await import('../features/block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {
       await loadFloatingCTA(BlockMediator, true);

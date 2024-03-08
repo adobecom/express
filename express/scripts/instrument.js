@@ -544,7 +544,7 @@ function decorateAnalyticsEvents() {
 
   // track non-click interactions
   // BlockMediator triggered
-  import('./block-mediator.min.js').then((resp) => {
+  import('../features/block-mediator.min.js').then((resp) => {
     const { default: BlockMediator } = resp;
     BlockMediator.subscribe('billing-plan', ({ newValue }) => {
       sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:toggle:${newValue}`);
@@ -552,7 +552,7 @@ function decorateAnalyticsEvents() {
   });
 
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
-    import('./block-mediator.min.js').then((resp) => {
+    import('../features/block-mediator.min.js').then((resp) => {
       const { default: BlockMediator } = resp;
       const eligibility = BlockMediator.get('mobileBetaEligibility');
       if (eligibility) {
@@ -763,7 +763,7 @@ function martechLoadedCB() {
 
   async function getAudiences() {
     const getSegments = async (ecid) => {
-      const { default: BlockMediator } = await import('./block-mediator.min.js');
+      const { default: BlockMediator } = await import('../features/block-mediator.min.js');
 
       BlockMediator.set('audiences', []);
       BlockMediator.set('segments', []);
