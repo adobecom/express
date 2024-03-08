@@ -153,7 +153,7 @@
 
 @media (min-width: 900px) {
   /* To be removed after wrapper deprecation */
-  .section > .feature-grid-wrapper {
+  .section > .block.feature-grid {
     max-width: 760px;
   }
 
@@ -285,7 +285,7 @@
   }
 
   /* To be removed after wrapper deprecation */
-  .section > .feature-grid-wrapper {
+  .section > .block.feature-grid {
     max-width: 1020px;
   }
 
@@ -391,7 +391,7 @@
 
 @media (min-width: 1440px) {
   /* To be removed after wrapper deprecation */
-  .section > .feature-grid-wrapper {
+  .section > .block.feature-grid {
     max-width: 1255px;
   }
 
