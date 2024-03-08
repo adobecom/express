@@ -411,25 +411,25 @@ main.with-holiday-templates-banner {
     left: calc(50% + 16px);
 }
 
-.template-x.horizontal.mini .template.placeholder {
+.template-x.horizontal.mini a.template.placeholder {
     height: 100px;
     width: 60px;
-    margin: 0 4px 0 12px;
+    margin: 0 12px 0 4px;
 }
 
-.template-x.horizontal.mini .template.placeholder > div:first-of-type {
+.template-x.horizontal.mini a.template.placeholder > div:first-of-type {
     height: unset;
     width: unset;
     display: block;
     padding-top: 16px;
 }
 
-.template-x.horizontal.mini .template.placeholder svg {
+.template-x.horizontal.mini a.template.placeholder svg {
     height: 18px;
     width: 18px;
 }
 
-.template-x.horizontal.mini .template.placeholder .template-link {
+.template-x.horizontal.mini a.template.placeholder .template-link {
     font-size: var(--body-font-size-xs);
 }
 
