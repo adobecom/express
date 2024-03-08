@@ -301,6 +301,22 @@ function decorateCard({
   return cardWrapper;
 }
 
+function correctExplainHeights(el) {
+  requestAnimationFrame(() => {
+    const elements = el.getElementsByClassName('card-explain');
+    if (elements.length < 2) return;
+    let max = 0;
+    for (const e of elements) {
+      if (e.clientHeight > max) {
+        max = e.clientHeight;
+      }
+    }
+    for (const e of elements) {
+      e.style.height = `${max}px`;
+    }
+  });
+}
+
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
   // For backwards compatability with old versions of the pricing card
@@ -337,5 +353,8 @@ export default async function init(el) {
   if (phoneNumberTags.length > 0) {
     await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
   }
+  correctExplainHeights(cardsContainer)
+
+
   el.prepend(cardsContainer);
 }
