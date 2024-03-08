@@ -1,4 +1,4 @@
-import { getConfig } from '../../scripts/utils.js';
+import { getConfig } from '../../utils/utils.js';
 import { processTrackingLabels } from '../../scripts/attributes.js';
 
 export const getMetadata = (el, config) => [...el.childNodes].reduce((rdx, row) => {

@@ -2593,7 +2593,7 @@ export async function loadArea(area = document) {
   }
 
   if (['on', 'yes'].includes(getMetadata('milo-analytics')?.toLowerCase()) || params.get('milo-analytics') === 'on') {
-    import('./attributes.js').then((analytics) => {
+    import('../scripts/attributes.js').then((analytics) => {
       document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
     });
   }
