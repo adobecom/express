@@ -41,8 +41,4 @@ export function unwrapBlock(blockWrapper, blockName) {
   if (!postBlockSection.hasChildNodes()) {
     postBlockSection.remove();
   }
-
-  console.log(section.outerHTML);
-  console.log(blockSection.outerHTML);
-  console.log(postBlockSection.outerHTML);
 }
