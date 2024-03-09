@@ -1431,7 +1431,7 @@ async function loadMartech() {
   const usp = new URLSearchParams(window.location.search);
   const martech = usp.get('martech');
 
-  const analyticsUrl = '/express/scripts/instrument.js';
+  const analyticsUrl = '/express/utils/instrument.js';
   if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
     const mod = await import('./instrument.js');
     mod.default();
@@ -1442,7 +1442,7 @@ function loadGnav() {
   const usp = new URLSearchParams(window.location.search);
   const gnav = usp.get('gnav') || getMetadata('gnav');
 
-  const gnavUrl = '/express/scripts/gnav.js';
+  const gnavUrl = '/express/utils/gnav.js';
   if (!(gnav === 'off' || document.querySelector(`head script[src="${gnavUrl}"]`))) {
     loadScript(gnavUrl, 'module');
   }

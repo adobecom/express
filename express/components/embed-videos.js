@@ -14,8 +14,8 @@ export function embedYoutube(url) {
   const searchParams = new URLSearchParams(url.search);
   const id = searchParams.get('v') || url.pathname.split('/').pop();
   searchParams.delete('v');
-  loadScript('/express/scripts/libs/lite-yt-embed/lite-yt-embed.js', 'module');
-  loadStyle('/express/scripts/libs/lite-yt-embed/lite-yt-embed.css');
+  loadScript('/express/deps/lite-yt-embed/lite-yt-embed.js', 'module');
+  loadStyle('/express/deps/lite-yt-embed/lite-yt-embed.css');
 
   return createTag('lite-youtube', {
     videoid: id,
@@ -29,8 +29,8 @@ export function embedVimeo(url, thumbnail) {
   const src = url.href;
   const language = getAvailableVimeoSubLang();
   if (url.hostname !== 'player.vimeo.com') {
-    loadScript('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.js', 'module');
-    loadStyle('/express/scripts/libs/lite-vimeo-embed/lite-vimeo-embed.css');
+    loadScript('/express/deps/lite-vimeo-embed/lite-vimeo-embed.js', 'module');
+    loadStyle('/express/deps/lite-vimeo-embed/lite-vimeo-embed.css');
     const video = url.pathname.split('/')[1];
     const embed = createTag('lite-vimeo', {
       videoid: video,
