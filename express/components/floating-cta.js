@@ -138,7 +138,7 @@ function buildLottieArrow(wrapper, floatingBtn, data) {
 export async function createFloatingButton(block, audience, data) {
   const aTag = makeCTAFromSheet(block, data);
   const main = document.querySelector('main');
-  loadStyle('/express/blocks/shared/floating-cta.css');
+  loadStyle('/express/components/floating-cta.css');
 
   // Floating button html
   const floatButtonLink = aTag.cloneNode(true);

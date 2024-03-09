@@ -119,7 +119,7 @@ function resetPagination(wrapper, payload) {
 }
 
 export default function buildPaginatedCarousel(selector = ':scope > *', container, infinityScrollEnabled = false) {
-  loadStyle('/express/blocks/shared/paginated-carousel.css');
+  loadStyle('/express/components/paginated-carousel.css');
 
   const payload = {
     cItemsPrev: [],

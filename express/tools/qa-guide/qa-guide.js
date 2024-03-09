@@ -284,7 +284,7 @@ const launchStorySelector = async () => {
 };
 
 export default async function initQAGuide() {
-  loadStyle('/express/scripts/features/qa-guide/qa-guide.css');
+  loadStyle('/express/tools/qa-guide/qa-guide.css');
   const index = getQAIndex();
 
   if (!index && index !== 0) {

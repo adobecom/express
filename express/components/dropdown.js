@@ -75,7 +75,7 @@ export function buildDropdown(options, attrs = null, callback) {
   if (!Array.isArray(options)) return null;
   if (typeof callback !== 'function') return null;
 
-  loadStyle('/express/blocks/shared/dropdown.css', null);
+  loadStyle('/express/components/dropdown.css', null);
 
   const $dropdown = createTag('div', { class: 'dropdown' });
   const $button = createTag('div', { class: 'dropdown-button' });
