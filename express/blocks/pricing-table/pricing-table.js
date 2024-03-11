@@ -2,9 +2,7 @@ import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.j
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { debounce } from '../../scripts/hofs.js';
 import { decorateButtons } from '../../scripts/utils/decorate.js';
-import {
-  buildUrl,
-  fetchPlanOnePlans,
+import { 
   formatDynamicCartLink,
 } from '../../scripts/utils/pricing.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
