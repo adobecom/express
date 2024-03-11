@@ -5,76 +5,9 @@ import {
   addPublishDependencies,
   createTag,
   fetchPlaceholders,
-  getHelixEnv,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
-import { getOffer } from '../../scripts/utils/pricing.js';
-
-function replaceUrlParam(url, paramName, paramValue) {
-  const params = url.searchParams;
-  params.set(paramName, paramValue);
-  url.search = params.toString();
-  return url;
-}
-
-export function buildUrl(optionUrl, country, language) {
-  const currentUrl = new URL(window.location.href);
-  let planUrl = new URL(optionUrl);
-
-  if (!planUrl.hostname.includes('commerce')) {
-    return planUrl.href;
-  }
-  planUrl = replaceUrlParam(planUrl, 'co', country);
-  planUrl = replaceUrlParam(planUrl, 'lang', language);
-  let rUrl = planUrl.searchParams.get('rUrl');
-  if (currentUrl.searchParams.has('host')) {
-    const hostParam = currentUrl.searchParams.get('host');
-    if (hostParam === 'express.adobe.com') {
-      planUrl.hostname = 'commerce.adobe.com';
-      if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
-    } else if (/qa\.adobeprojectm\.com/.test(hostParam)) {
-      planUrl.hostname = 'commerce.adobe.com';
-      if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
-    } else if (/\.adobeprojectm\.com/.test(hostParam)) {
-      planUrl.hostname = 'commerce-stg.adobe.com';
-      if (rUrl) rUrl = rUrl.replace('adminconsole.adobe.com', 'stage.adminconsole.adobe.com');
-      if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
-    }
-  }
-
-  const env = getHelixEnv();
-  if (env && env.commerce && planUrl.hostname.includes('commerce')) planUrl.hostname = env.commerce;
-  if (env && env.spark && rUrl) {
-    const url = new URL(rUrl);
-    url.hostname = env.spark;
-    rUrl = url.toString();
-  }
-
-  if (rUrl) {
-    rUrl = new URL(rUrl);
-
-    if (currentUrl.searchParams.has('touchpointName')) {
-      rUrl = replaceUrlParam(rUrl, 'touchpointName', currentUrl.searchParams.get('touchpointName'));
-    }
-    if (currentUrl.searchParams.has('destinationUrl')) {
-      rUrl = replaceUrlParam(rUrl, 'destinationUrl', currentUrl.searchParams.get('destinationUrl'));
-    }
-    if (currentUrl.searchParams.has('srcUrl')) {
-      rUrl = replaceUrlParam(rUrl, 'srcUrl', currentUrl.searchParams.get('srcUrl'));
-    }
-  }
-
-  if (currentUrl.searchParams.has('code')) {
-    planUrl.searchParams.set('code', currentUrl.searchParams.get('code'));
-  }
-
-  if (currentUrl.searchParams.get('rUrl')) {
-    rUrl = currentUrl.searchParams.get('rUrl');
-  }
-
-  if (rUrl) planUrl.searchParams.set('rUrl', rUrl.toString());
-  return planUrl.href;
-}
+import { formatDynamicCartLink, getOffer } from '../../scripts/utils/pricing.js';
 
 function pushPricingAnalytics(adobeEventName, sparkEventName, plan) {
   const url = new URL(window.location.href);
@@ -234,7 +167,7 @@ async function selectPlan($pricingHeader, planUrl, sendAnalyticEvent) {
 
   $pricingHeader.querySelector('.pricing-columns-price').innerHTML = plan.formatted;
   $pricingHeader.querySelector('.pricing-columns-price').classList.add(plan.currency.toLowerCase());
-  $pricingHeader.querySelector('.pricing-columns-cta').href = buildUrl(plan.url, plan.country, plan.language);
+  formatDynamicCartLink($pricingHeader.querySelector('.pricing-columns-cta'), plan);
   $pricingHeader.querySelector('.pricing-columns-cta').dataset.planUrl = planUrl;
   $pricingHeader.querySelector('.pricing-columns-cta').id = plan.stringId;
   $pricingHeader.querySelector('.pricing-columns-vat-info').innerHTML = plan.vatInfo || '';

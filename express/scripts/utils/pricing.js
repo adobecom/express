@@ -540,13 +540,18 @@ export async function fetchPlan(planUrl) {
   return plan;
 }
 
-export async function formatDynamicCartLink(a) {
+export async function formatDynamicCartLink(a, plan) {
   try { 
-    const pattern = new RegExp(/.*commerce.*adobe\.com.*/gm); 
+    const pattern = new RegExp(/.*commerce.*adobe\.com.*/gm);
     if (pattern.test(a.href)) {
-      const response = await fetchPlanOnePlans(a.href); 
+      let response;
+      if (!plan) {
+        response = await fetchPlanOnePlans(a.href);
+      } else {
+        response = plan;
+      }
       const newTrialHref = buildUrl(response.url, response.country,
-        response.language, response.offerId); 
+        response.language, response.offerId);
       a.href = newTrialHref;
     }
   } catch (error) {
