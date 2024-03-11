@@ -279,6 +279,10 @@ End border style variants
   text-align: center;
 }
 
+.pricing-cards-wrapper + .default-content-wrapper .button-container {
+  margin-top : -40px;
+}
+
 /** pricing styles end **/
 
 .pricing-cards .card-cta-group {
