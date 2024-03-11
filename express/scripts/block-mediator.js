@@ -12,9 +12,11 @@ const BlockMediator = (() => {
   const get = (name) => stores[name]?.value;
 
   /**
+   * one unhandled subscribe cb error will not block the rest
+   * instead, combined error will be thrown
    * @param {string} name
    * @param {any} value
-   * @returns {Error[]}
+   * @throws {Error} if any cb throws
    */
   const set = (name, value) => {
     if (!hasStore(name)) {
@@ -30,7 +32,11 @@ const BlockMediator = (() => {
         errors.push(e);
       }
     }
-    return errors;
+    if (errors.length > 0) {
+      const combinedError = new Error(errors.map((e) => e.message).join('\n'));
+      combinedError.errors = errors;
+      throw combinedError;
+    }
   };
 
   /**

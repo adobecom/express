@@ -67,8 +67,7 @@ describe('BlockMediator', () => {
       });
       expect(mediator.get(storeName)).to.be.undefined;
 
-      const errors = mediator.set(storeName, 'value1');
-      expect(errors.length === 0).to.be.true;
+      mediator.set(storeName, 'value1');
       expect(mediator.get(storeName)).to.equal('value1');
       expect(oldV).to.be.undefined;
       expect(newV).to.equal('value1');
@@ -119,7 +118,14 @@ describe('BlockMediator', () => {
         throw err2;
       });
 
-      const errors = mediator.set(storeName, 'value1');
+      let err;
+      try {
+        mediator.set(storeName, 'value1');
+      } catch (e) {
+        err = e;
+      }
+      const { message, errors } = err;
+      expect(message).equal('err1\nerr2');
       expect(mediator.get(storeName)).to.equal('value1');
       expect(errors.length === 0).to.be.false;
       expect(errors).to.deep.equal([err1, err2]);
@@ -140,8 +146,7 @@ describe('BlockMediator', () => {
         called += 1;
       });
       expect(called).to.equal(0);
-      const errors = mediator.set(storeName, 'value2');
-      expect(errors.length === 0).to.be.true;
+      mediator.set(storeName, 'value2');
       expect(called).to.equal(1);
       unsubscribe();
       mediator.set(storeName, 'value3');
