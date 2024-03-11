@@ -6,12 +6,78 @@ import {
   lazyLoadLottiePlayer,
   getIconElement, fetchPlaceholders,
 } from '../../scripts/utils.js';
-import { formatDynamicCartLink, getOffer } from '../../scripts/utils/pricing.js';
+import { getOffer } from '../../scripts/utils/pricing.js';
 
 /* eslint-disable import/named, import/extensions */
 import {
   buildDropdown,
 } from '../shared/dropdown.js';
+
+function replaceUrlParam(url, paramName, paramValue) {
+  const params = url.searchParams;
+  params.set(paramName, paramValue);
+  url.search = params.toString();
+  return url;
+}
+
+function buildUrl(optionUrl, country, language) {
+  const currentUrl = new URL(window.location.href);
+  let planUrl = new URL(optionUrl);
+
+  if (!planUrl.hostname.includes('commerce')) {
+    return planUrl.href;
+  }
+  planUrl = replaceUrlParam(planUrl, 'co', country);
+  planUrl = replaceUrlParam(planUrl, 'lang', language);
+  let rUrl = planUrl.searchParams.get('rUrl');
+  if (currentUrl.searchParams.has('host')) {
+    const hostParam = currentUrl.searchParams.get('host');
+    if (hostParam === 'express.adobe.com') {
+      planUrl.hostname = 'commerce.adobe.com';
+      if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
+    } else if (/qa\.adobeprojectm\.com/.test(hostParam)) {
+      planUrl.hostname = 'commerce.adobe.com';
+      if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
+    } else if (/\.adobeprojectm\.com/.test(hostParam)) {
+      planUrl.hostname = 'commerce-stg.adobe.com';
+      if (rUrl) rUrl = rUrl.replace('adminconsole.adobe.com', 'stage.adminconsole.adobe.com');
+      if (rUrl) rUrl = rUrl.replace('express.adobe.com', hostParam);
+    }
+  }
+
+  const env = getHelixEnv();
+  if (env && env.commerce && planUrl.hostname.includes('commerce')) planUrl.hostname = env.commerce;
+  if (env && env.spark && rUrl) {
+    const url = new URL(rUrl);
+    url.hostname = env.spark;
+    rUrl = url.toString();
+  }
+
+  if (rUrl) {
+    rUrl = new URL(rUrl);
+
+    if (currentUrl.searchParams.has('touchpointName')) {
+      rUrl = replaceUrlParam(rUrl, 'touchpointName', currentUrl.searchParams.get('touchpointName'));
+    }
+    if (currentUrl.searchParams.has('destinationUrl')) {
+      rUrl = replaceUrlParam(rUrl, 'destinationUrl', currentUrl.searchParams.get('destinationUrl'));
+    }
+    if (currentUrl.searchParams.has('srcUrl')) {
+      rUrl = replaceUrlParam(rUrl, 'srcUrl', currentUrl.searchParams.get('srcUrl'));
+    }
+  }
+
+  if (currentUrl.searchParams.has('code')) {
+    planUrl.searchParams.set('code', currentUrl.searchParams.get('code'));
+  }
+
+  if (currentUrl.searchParams.get('rUrl')) {
+    rUrl = currentUrl.searchParams.get('rUrl');
+  }
+
+  if (rUrl) planUrl.searchParams.set('rUrl', rUrl.toString());
+  return planUrl.href;
+}
 
 async function fetchPlan(planUrl) {
   if (!window.pricingPlans) {
@@ -78,7 +144,7 @@ async function fetchPlan(planUrl) {
   return plan;
 }
 
-async function buildPlansDropdown($block, $card, button, $appList) {
+async function buildPlansDropdown($block, $card, $button, $appList) {
   const dropdownOptions = [];
 
   $appList.querySelectorAll('li').forEach(($listItem) => {
@@ -87,27 +153,28 @@ async function buildPlansDropdown($block, $card, button, $appList) {
     const option = {
       icon: $listItem.querySelector('img, svg'),
       text: $link ? $link.textContent : $listItem.textContent,
-      value: $link ? $link.href : button.href,
+      value: $link ? $link.href : $button.href,
     };
 
     dropdownOptions.push(option);
   });
 
   const $dropdown = buildDropdown(dropdownOptions, [], async (option) => {
-    const newPlan = await fetchPlan(option.value); 
+    const newPlan = await fetchPlan(option.value);
+    const planLink = buildUrl(newPlan.url, newPlan.country, newPlan.language);
 
-    Array.from($card.children).forEach((row) => {
-      if (row.classList.contains('pricing-hub-card-pricing-text')) {
-        row.innerHTML = newPlan.formatted;
-        formatDynamicCartLink(button);
+    Array.from($card.children).forEach(($row) => {
+      if ($row.classList.contains('pricing-hub-card-pricing-text')) {
+        $row.innerHTML = newPlan.formatted;
+        $button.href = planLink;
       }
 
-      if (row.classList.contains('pricing-hub-card-pricing-secondary')) {
+      if ($row.classList.contains('pricing-hub-card-pricing-secondary')) {
         if (newPlan.vatInfo) {
-          row.style.display = 'block';
-          row.textContent = newPlan.vatInfo;
+          $row.style.display = 'block';
+          $row.textContent = newPlan.vatInfo;
         } else {
-          row.style.display = 'none';
+          $row.style.display = 'none';
         }
       }
     });
@@ -145,24 +212,24 @@ async function buildPlansDropdown($block, $card, button, $appList) {
 
   $appList.remove();
 
-  Array.from($card.children).forEach((row) => {
-    if (row.textContent.includes('{{ App Picker }}')) {
-      row.textContent = '';
-      row.append($dropdown);
+  Array.from($card.children).forEach(($row) => {
+    if ($row.textContent.includes('{{ App Picker }}')) {
+      $row.textContent = '';
+      $row.append($dropdown);
     }
   });
 }
 
 async function decorateCards($block) {
-  const rows = Array.from($block.children);
+  const $rows = Array.from($block.children);
 
-  const $headersContainer = rows[0];
-  const $cardsContainer = rows[1];
-  const buttonsContainer = rows[2];
+  const $headersContainer = $rows[0];
+  const $cardsContainer = $rows[1];
+  const $buttonsContainer = $rows[2];
 
   const $headers = Array.from($headersContainer.children);
   const $cards = Array.from($cardsContainer.children);
-  const buttonDivs = Array.from(buttonsContainer.children);
+  const $buttonDivs = Array.from($buttonsContainer.children);
 
   $cardsContainer.classList.add('pricing-hub-cards');
   $cards[0].remove();
@@ -170,8 +237,8 @@ async function decorateCards($block) {
   for (let i = 1; i < 4; i += 1) {
     const $header = $headers[i];
     const $card = $cards[i];
-    const buttonContainer = buttonDivs[i];
-    const button = buttonContainer.querySelector('a');
+    const $buttonContainer = $buttonDivs[i];
+    const $button = $buttonContainer.querySelector('a');
     const $svg = $card.querySelector('svg');
     const $title = $card.querySelector('h2');
 
@@ -193,36 +260,36 @@ async function decorateCards($block) {
       $card.classList.add('pricing-hub-card-highlight');
     }
 
-    if (buttonContainer && button) {
-      $card.append(buttonContainer);
+    if ($buttonContainer && $button) {
+      $card.append($buttonContainer);
 
       if ($card.classList.contains('pricing-hub-card-highlight')) {
-        button.classList.remove('accent');
-        button.classList.add('large', 'dark');
+        $button.classList.remove('accent');
+        $button.classList.add('large', 'dark');
       } else {
-        button.classList.add('large', 'reverse');
+        $button.classList.add('large', 'reverse');
       }
 
       // eslint-disable-next-line no-await-in-loop
-      const plan = await fetchPlan(button.href);
+      const plan = await fetchPlan($button.href);
 
       if ($card.textContent.includes('{{ App Picker }}')) {
         const $appList = $card.querySelector('ul');
 
         if ($appList) {
           // eslint-disable-next-line no-await-in-loop
-          await buildPlansDropdown($block, $card, button, $appList);
+          await buildPlansDropdown($block, $card, $button, $appList);
         }
       }
 
       if (plan) {
-        Array.from($card.children).forEach((row) => {
-          if (row.textContent.includes('{{ Pricing }}')) {
-            row.classList.add('pricing-hub-card-pricing-text');
-            row.innerHTML = row.innerHTML.replace('{{ Pricing }}', plan.formatted);
+        Array.from($card.children).forEach(($row) => {
+          if ($row.textContent.includes('{{ Pricing }}')) {
+            $row.classList.add('pricing-hub-card-pricing-text');
+            $row.innerHTML = $row.innerHTML.replace('{{ Pricing }}', plan.formatted);
 
             const $pricingSecondaryText = createTag('p', { class: 'pricing-hub-card-pricing-secondary' });
-            row.parentElement.insertBefore($pricingSecondaryText, row.nextSibling);
+            $row.parentElement.insertBefore($pricingSecondaryText, $row.nextSibling);
 
             if (plan.vatInfo) {
               $pricingSecondaryText.style.display = 'block';
@@ -230,16 +297,17 @@ async function decorateCards($block) {
             } else {
               $pricingSecondaryText.style.display = 'none';
             }
-            formatDynamicCartLink(button);
+
+            $button.href = buildUrl(plan.url, plan.country, plan.language);
           }
         });
       }
-      button.removeAttribute('target');
+      $button.removeAttribute('target');
     }
   }
 
   $headersContainer.remove();
-  buttonsContainer.remove();
+  $buttonsContainer.remove();
 }
 
 async function decorateScrollOverlay(block) {
@@ -280,8 +348,8 @@ async function decorateScrollOverlay(block) {
 }
 
 function decorateMidSection($block) {
-  const rows = Array.from($block.children);
-  const $midSection = rows[1];
+  const $rows = Array.from($block.children);
+  const $midSection = $rows[1];
   const $midSectionHeader = $midSection.querySelector('strong');
   $midSectionHeader.classList.add('pricing-hub-lottie-button-scroll');
   $midSectionHeader.addEventListener('click', () => {
@@ -300,12 +368,12 @@ function decorateMidSection($block) {
 }
 
 function decorateFeatures($block) {
-  const rows = Array.from($block.children);
+  const $rows = Array.from($block.children);
   const $features = createTag('div', { class: 'pricing-hub-features' });
   $features.append(createTag('div', { class: 'pricing-hub-gradient' }));
 
-  for (let i = 2; i < rows.length; i += 1) {
-    const $feature = rows[i];
+  for (let i = 2; i < $rows.length; i += 1) {
+    const $feature = $rows[i];
     const $columns = Array.from($feature.children);
     const $columnsContainer = createTag('div', { class: 'pricing-hub-feature-columns' });
     const $title = $feature.querySelector('h3');
