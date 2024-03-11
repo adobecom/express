@@ -56,34 +56,52 @@ function startSDK(data) {
       let env = getConfig().env.name;
       if (env === 'local') env = 'dev';
       if (env === 'stage') env = 'preprod';
-      ccEverywhere = await window.CCEverywhere.initialize({
-        clientId: 'b20f1d10b99b4ad892a856478f87cec3',
-        appName: 'express',
-      }, {
-        loginMode: 'delayed',
-        locale: ietf,
-        env,
-      });
+
+      const ccEverywhereConfig = {
+        hostInfo: {
+          clientId: 'b20f1d10b99b4ad892a856478f87cec3',
+          appName: 'express',
+        },
+        configParams: {
+          loginMode: 'delayed',
+          locale: ietf,
+          env,
+        },
+      };
+
+      ccEverywhere = await window.CCEverywhere.initialize(...Object.values(ccEverywhereConfig));
     }
 
     const exportOptions = [
       {
-        target: 'Download',
         id: 'download-button',
-        optionType: 'button',
-        variant: 'secondary',
-        buttonType: 'native',
-        treatment: 'fill',
-        size: 'xl',
+        label: 'Download',
+        action: {
+          target: 'download',
+        },
+        style: {
+          uiType: 'button',
+        },
+        buttonStyle: {
+          variant: 'secondary',
+          treatment: 'fill',
+          size: 'XL',
+        },
       },
       {
-        target: 'Editor',
-        id: 'edit-in-express',
-        label: 'Edit in Adobe Express for free',
-        buttonType: 'native',
-        optionType: 'button',
-        treatment: 'fill',
-        size: 'xl',
+        id: 'download-button',
+        label: 'Download',
+        action: {
+          target: 'download',
+        },
+        style: {
+          uiType: 'button',
+        },
+        buttonStyle: {
+          variant: 'primary',
+          treatment: 'fill',
+          size: 'XL',
+        },
       },
     ];
 
@@ -98,10 +116,18 @@ function startSDK(data) {
       metaData: { isFrictionlessQa: true },
       parentElementId: `${quickAction}-container`,
       backgroundColor: 'transparent',
-      hideCloseButton: true
+      hideCloseButton: true,
     };
-    const docConfig = {};
-    const appConfig = { receiveQuickActionErrors: false, editorTitle: "test" };
+
+    const docConfig = {
+      asset: {
+        data,
+        dataType: 'base64',
+        type: 'image',
+      },
+    };
+
+    const appConfig = { receiveQuickActionErrors: false, editorTitle: 'test' };
     const exportConfig = { exportOptions };
     switch (quickAction) {
       case 'convert-to-jpg':
@@ -136,8 +162,7 @@ function startSDKWithUnconvertedFile(file) {
   if (validImageTypes.includes(file.type) && file.size <= maxSize) {
     const reader = new FileReader();
 
-    reader.onloadend = function () {
-      console.log('Base64 string:', reader.result);
+    reader.onloadend = () => {
       window.history.pushState({ hideDropzone: true }, '', '');
       startSDK(reader.result);
     };
