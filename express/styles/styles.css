@@ -950,6 +950,7 @@ main .block.center .free-plan-widget {
     margin: 0;
     display: flex;
     align-items: center;
+    /* todo: investigate why */
     z-index: 4;
   }
 
