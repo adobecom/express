@@ -1,4 +1,4 @@
-main .embed {
+main .section .embed {
   margin: auto;
   margin-top: 64px;
   max-width: 100%;
@@ -6,35 +6,35 @@ main .embed {
   width: unset;
 }
 
-main .embed+* {
+main .section .embed+* {
   margin-top: 64px;
 }
 
-main .embed+p.legend {
+main .section .embed+p.legend {
   margin-top: 16px;
 }
 
-main .embed img {
+main .section .embed img {
   max-width: 100%;
 }
 
-main .embed {
+main .section .embed {
   text-align: center;
   max-width: 800px;
 }
 
-main .embed.embed-instagram {
+main .section .embed.embed-instagram {
   max-width: fit-content;
 }
 
-main .embed.embed-twitter {
+main .section .embed.embed-twitter {
   max-height: unset;
 }
 
-main .embed lite-youtube {
+main .section .embed lite-youtube {
   max-width: unset;
 }
 
-main .embed-soundcloud>iframe {
+main .section .embed-soundcloud>iframe {
   height: 200px ! important;
 }

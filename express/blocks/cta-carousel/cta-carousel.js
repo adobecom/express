@@ -1,4 +1,5 @@
 import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -227,11 +228,12 @@ function constructPayload(block) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'cta-carousel');
+
   const payload = constructPayload(block);
 
   decorateHeading(block, payload);
   decorateCards(block, payload).then(async () => {
     await buildCarousel('', block.querySelector('.cta-carousel-cards'));
-    document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
   });
 }

@@ -80,10 +80,8 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
     if (i === 0) {
       // add block to first wrapper
-      const blockWrapper = block.parentElement;
       wrapper.append(block);
       wrapper.className = '';
-      blockWrapper.remove();
     } else if (i >= 1) {
       // add children from rest of wrappers to first wrapper
       wrapper.previousElementSibling.append(...wrapper.children);

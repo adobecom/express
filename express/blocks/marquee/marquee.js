@@ -5,7 +5,12 @@ import {
   getIconElement,
   fetchPlaceholders, getConfig,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
+import {
+  fetchPlanOnePlans,
+  buildUrl,
+} from '../../scripts/utils/pricing.js';
 
 const breakpointConfig = [
   {
@@ -25,6 +30,40 @@ const breakpointConfig = [
     minWidth: 1440,
   },
 ];
+
+async function handleDynamicCheckoutCTA(primaryBtn) {
+  try {
+    const response = await fetchPlanOnePlans(primaryBtn?.href);
+    const newTrialHref = buildUrl(response.url, response.country,
+      response.language, response.offerId);
+    if (newTrialHref) {
+      primaryBtn.href = newTrialHref;
+    }
+  } catch (error) {
+    window.lana.log('Failed to fetch prices for page plan');
+    window.lana.log(error);
+  }
+  return primaryBtn;
+}
+// Transforms a {{pricing}} tag into human readable format.
+async function handlePrice(block) {
+  const priceEl = block.querySelector('[title="{{pricing}}"]');
+  if (!priceEl) return null;
+  priceEl.closest('p')?.classList.remove('button-container');
+  const parent = priceEl.parentElement;
+  const newContainer = createTag('span');
+  priceEl.remove();
+  parent.parentElement.append(newContainer);
+  parent.remove();
+  try {
+    const response = await fetchPlanOnePlans(priceEl?.href);
+    newContainer.innerHTML = response.formatted;
+  } catch (error) {
+    window.lana.log('Failed to fetch prices for page plan');
+    window.lana.log(error);
+  }
+  return newContainer;
+}
 
 // FIXME: Not fulfilling requirement. Re-think of a way to allow subtext to contain link.
 function handleSubCTAText(buttonContainer) {
@@ -317,13 +356,16 @@ async function handleContent(div, block, animations) {
     transformToVideoLink(div, videoLink);
   }
 
-  const contentButtons = [...div.querySelectorAll('a.button.accent')];
+  const contentButtons = [...div.querySelectorAll('a.button.accent')].filter((a) => !a.textContent.includes('{{'));
   if (contentButtons.length) {
     const primaryBtn = contentButtons[0];
     const secondaryButton = contentButtons[1];
     const buttonAsLink = contentButtons[2];
     buttonAsLink?.classList.remove('button');
     primaryBtn?.classList.add('primaryCTA');
+
+    handleDynamicCheckoutCTA(primaryBtn);
+
     BlockMediator.set('primaryCtaUrl', primaryBtn?.href);
     secondaryButton?.classList.add('secondary');
     const buttonContainers = [...div.querySelectorAll('p.button-container')];
@@ -364,13 +406,13 @@ async function handleOptions(div, typeHint, block) {
     div.remove();
   }
 }
-
 export default async function decorate(block) {
+  addTempWrapper(block, 'marquee');
+  handlePrice(block);
   const possibleBreakpoints = breakpointConfig.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const animations = {};
   const rows = [...block.children];
-
   for (let index = 0; index < rows.length; index += 1) {
     const div = rows[index];
     let rowType = 'animation';
@@ -409,6 +451,5 @@ export default async function decorate(block) {
   if (getConfig().locale.region === 'jp') {
     addHeaderSizing(block);
   }
-
   block.classList.add('appear');
 }

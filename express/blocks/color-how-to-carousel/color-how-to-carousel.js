@@ -1,6 +1,7 @@
 /* eslint-disable import/named, import/extensions */
 
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
 
 function activate(block, payload, target) {
@@ -176,6 +177,8 @@ function getColorSVG(svgName) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'color-how-to-carousel');
+
   const payload = {
     rotationInterval: null,
     fixedImageSize: false,
