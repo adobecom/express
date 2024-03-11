@@ -85,7 +85,7 @@ function startSDK(data) {
         buttonStyle: {
           variant: 'secondary',
           treatment: 'fill',
-          size: 'XL',
+          size: 'xl',
         },
       },
       {
@@ -100,7 +100,7 @@ function startSDK(data) {
         buttonStyle: {
           variant: 'primary',
           treatment: 'fill',
-          size: 'XL',
+          size: 'xl',
         },
       },
     ];
@@ -113,7 +113,7 @@ function startSDK(data) {
     await fade(uploadContainer, 'out');
 
     const modalParams = {
-      metaData: { isFrictionlessQa: true },
+      mode: 'inline',
       parentElementId: `${quickAction}-container`,
       backgroundColor: 'transparent',
       hideCloseButton: true,
@@ -127,8 +127,13 @@ function startSDK(data) {
       },
     };
 
-    const appConfig = { receiveQuickActionErrors: false, editorTitle: 'test' };
+    const appConfig = {
+      metaData: { isFrictionlessQa: true },
+      receiveQuickActionErrors: false,
+    };
+
     const exportConfig = { exportOptions };
+
     switch (quickAction) {
       case 'convert-to-jpg':
         ccEverywhere.quickAction.convertToJPEG(docConfig, appConfig, exportConfig, modalParams);
@@ -162,7 +167,7 @@ function startSDKWithUnconvertedFile(file) {
   if (validImageTypes.includes(file.type) && file.size <= maxSize) {
     const reader = new FileReader();
 
-    reader.onloadend = () => {
+    reader.onload = () => {
       window.history.pushState({ hideDropzone: true }, '', '');
       startSDK(reader.result);
     };
