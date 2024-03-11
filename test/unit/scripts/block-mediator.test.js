@@ -25,9 +25,9 @@ describe('BlockMediator', () => {
     });
   });
 
-  describe('hasStore, listStores, get, set', async () => {
+  describe('hasStore, listStores, get, set', () => {
     const storeName = getNextStoreName();
-    await mediator.set(storeName, 'value1');
+    mediator.set(storeName, 'value1');
     it('hasStore should return true for existing stores', () => {
       expect(mediator.hasStore(storeName)).to.be.true;
     });
@@ -47,17 +47,17 @@ describe('BlockMediator', () => {
       expect(mediator.get(storeName)).to.be.undefined;
     });
 
-    it('should not create a new store when it already exists', async () => {
+    it('should not create a new store when it already exists', () => {
       const storeName = getNextStoreName();
       mediator.subscribe(storeName, () => {});
       const oldLen = mediator.listStores().length;
       mediator.subscribe(storeName, () => {});
       expect(mediator.listStores().length).to.equal(oldLen);
-      await mediator.set(storeName, 42);
+      mediator.set(storeName, 42);
       expect(mediator.listStores().length).to.equal(oldLen);
     });
 
-    it('should call the callback when the store is updated', async () => {
+    it('should call the callback when the store is updated', () => {
       const storeName = getNextStoreName();
       let oldV = null;
       let newV = null;
@@ -67,7 +67,7 @@ describe('BlockMediator', () => {
       });
       expect(mediator.get(storeName)).to.be.undefined;
 
-      const errors = await mediator.set(storeName, 'value1');
+      const errors = mediator.set(storeName, 'value1');
       expect(errors.length === 0).to.be.true;
       expect(mediator.get(storeName)).to.equal('value1');
       expect(oldV).to.be.undefined;
@@ -78,33 +78,33 @@ describe('BlockMediator', () => {
         anotherListner.value = newValue;
       });
 
-      await mediator.set(storeName, 'value2');
+      mediator.set(storeName, 'value2');
       expect(mediator.get(storeName)).to.equal('value2');
       expect(oldV).to.equal('value1');
       expect(newV).to.equal('value2');
       expect(anotherListner.value).to.equal('value2');
 
-      await mediator.set(storeName, undefined);
+      mediator.set(storeName, undefined);
       expect(mediator.get(storeName)).to.be.undefined;
       expect(oldV).to.equal('value2');
       expect(newV).to.be.undefined;
     });
 
-    it('should call the callback when the store is updated, when subscribing after the first set', async () => {
+    it('should call the callback when the store is updated, when subscribing after the first set', () => {
       const storeName = getNextStoreName();
-      await mediator.set(storeName, 'value1');
+      mediator.set(storeName, 'value1');
       let newV = null;
       mediator.subscribe(storeName, ({ newValue }) => {
         newV = newValue;
       });
       expect(mediator.get(storeName)).to.equal('value1');
 
-      await mediator.set(storeName, 'value1');
+      mediator.set(storeName, 'value1');
       expect(mediator.get(storeName)).to.equal('value1');
       expect(newV).to.equal('value1');
     });
 
-    it('should have all callbacks executed despite errors', async () => {
+    it('should have all callbacks executed despite errors', () => {
       const storeName = getNextStoreName();
       let newV = null;
       const err1 = new Error('err1');
@@ -119,7 +119,7 @@ describe('BlockMediator', () => {
         throw err2;
       });
 
-      const errors = await mediator.set(storeName, 'value1');
+      const errors = mediator.set(storeName, 'value1');
       expect(mediator.get(storeName)).to.equal('value1');
       expect(errors.length === 0).to.be.false;
       expect(errors).to.deep.equal([err1, err2]);
@@ -132,19 +132,19 @@ describe('BlockMediator', () => {
       expect(unsubscribe).to.be.an.instanceOf(Function);
     });
 
-    it('should not call the callback after unsubscribing it', async () => {
+    it('should not call the callback after unsubscribing it', () => {
       const storeName = getNextStoreName();
       let called = 0;
-      await mediator.set(storeName, 'value1');
+      mediator.set(storeName, 'value1');
       const unsubscribe = mediator.subscribe(storeName, () => {
         called += 1;
       });
       expect(called).to.equal(0);
-      const errors = await mediator.set(storeName, 'value2');
+      const errors = mediator.set(storeName, 'value2');
       expect(errors.length === 0).to.be.true;
       expect(called).to.equal(1);
       unsubscribe();
-      await mediator.set(storeName, 'value3');
+      mediator.set(storeName, 'value3');
       expect(called).to.equal(1);
     });
 

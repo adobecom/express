@@ -14,7 +14,7 @@ const BlockMediator = (() => {
   /**
    * @param {string} name
    * @param {any} value
-   * @returns {Promise<{ succeed: boolean, errors: Error[] }>}
+   * @returns {Error[]}
    */
   const set = (name, value) => {
     if (!hasStore(name)) {
@@ -22,17 +22,15 @@ const BlockMediator = (() => {
     }
     const oldValue = get(name);
     stores[name].value = value;
-    return new Promise((resolve) => {
-      const errors = [];
-      for (const cb of stores[name].callbacks) {
-        try {
-          cb({ oldValue, newValue: value });
-        } catch (e) {
-          errors.push(e);
-        }
+    const errors = [];
+    for (const cb of stores[name].callbacks) {
+      try {
+        cb({ oldValue, newValue: value });
+      } catch (e) {
+        errors.push(e);
       }
-      resolve(errors);
-    });
+    }
+    return errors;
   };
 
   /**
