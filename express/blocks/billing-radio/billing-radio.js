@@ -27,7 +27,7 @@ export default function init(el) {
   });
   if (!BlockMediator.hasStore(BILLING_PLAN)) BlockMediator.set(BILLING_PLAN, 0);
   BlockMediator.subscribe(BILLING_PLAN, ({ newValue, oldValue }) => {
-    buttons[oldValue].classList.remove('checked');
+    buttons[oldValue || 0].classList.remove('checked');
     buttons[newValue].classList.add('checked');
   });
 }
