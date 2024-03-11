@@ -242,6 +242,13 @@
   transition: .5s opacity ease-in;
 }
 
+.fullscreen-marquee-image-container + .template-list-sixcols-container > .default-content-wrapper {
+  display: none;
+}
+.fullscreen-marquee-image-container + .section {
+  padding-top: 0px;
+}
+
 .block.fullscreen-marquee .button-container.free-plan-container {
   flex-direction: row;
   width: auto;
