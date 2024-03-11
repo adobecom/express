@@ -81,7 +81,7 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
       }
     }
 
-    if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced) {
+    if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced && specialPromo.textContent.includes(`{{${SAVE_PERCENTAGE}}}`)) {
       const offerTextContent = specialPromo.textContent;
 
       const shouldSuppress = shallSuppressOfferEyebrowText(
@@ -181,8 +181,8 @@ function decorateLegacyHeader(header, card) {
     h2.append(h2Text.replace(`(${cfg})`, '').trim());
     if (/^\d/.test(cfg)) {
       const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
-      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
       headCntDiv.textContent = cfg;
+      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
       header.append(headCntDiv);
     } else {
       specialPromo = createTag('div');
@@ -211,7 +211,6 @@ function decorateHeader(header, borderParams, card, cardBorder) {
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
   });
-
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
   if (extractHeadCountExp.test(h2.innerText)) {

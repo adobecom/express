@@ -211,5 +211,4 @@ export default async function decorate(block) {
   decorateHeading(block, payload);
   await decorateCards(block, payload);
   await buildCarousel('', block.querySelector('.gen-ai-cards-cards'));
-  document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
 }

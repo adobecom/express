@@ -486,7 +486,7 @@ function initState() {
 }
 
 export default async function decorate(block) {
-  addTempWrapper(block, 'template-list');
+  addTempWrapper(block, 'template-list-ace');
 
   if (!(/localhost:3000/.test(window.location.host) || /stage\.adobe\.com/.test(window.location.hostname))) {
     block.style.display = 'none';
