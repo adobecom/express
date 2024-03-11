@@ -24,11 +24,11 @@ describe('Billing Radio', () => {
     ).to.be.true;
   });
   it('Billing Radio element structure is correct', () => {
-    blocks.forEach((block, i) => {
+    blocks.forEach((block) => {
       const strong = block.querySelector('strong');
       expect(strong).to.exist;
       const options = block.querySelectorAll(':scope > div');
-      expect(options).to.have.lengthOf(i === 2 ? 4 : 2);
+      expect(options).to.have.lengthOf(4);
       options.forEach((option) => {
         const input = option.querySelector('input');
         expect(input).to.exist;
