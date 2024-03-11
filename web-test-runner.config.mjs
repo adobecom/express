@@ -19,6 +19,9 @@ export default {
     include: [
       '**/express/blocks/**',
       '**/express/scripts/**',
+      '**/express/utils/**',
+      '**/express/features/**',
+      '**/express/middlewares/**',
     ],
     exclude: [
       '**/node_modules/**',

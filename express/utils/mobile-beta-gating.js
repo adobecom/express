@@ -80,7 +80,7 @@ export default async function checkMobileBetaEligibility() {
       document.cookie = `device-support=${e.newValue.deviceSupport};domain=adobe.com;expires=${expireDate.toUTCString()};path=/`;
       unsubscribe();
     });
-    const benchmarkWorker = new Worker('/express/scripts/gating-benchmark.js');
+    const benchmarkWorker = new Worker('/express/utils/gating-benchmark.js');
     benchmarkWorker.postMessage(TOTAL_PRIME_NUMBER);
     benchmarkWorker.onmessage = (e) => {
       BlockMediator.set('mobileBetaEligibility', {

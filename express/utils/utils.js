@@ -344,7 +344,7 @@ export function lazyLoadLottiePlayer($block = null) {
       const script = document.createElement('script');
       script.type = 'text/javascript';
       script.async = true;
-      script.src = '/express/scripts/lottie-player.1.5.6.js';
+      script.src = '/express/deps/lottie-player.1.5.6.js';
       document.head.appendChild(script);
       window['lottie-player'] = true;
     };

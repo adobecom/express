@@ -9,8 +9,8 @@
     "test:file": "wtr --config ./web-test-runner.config.mjs --node-resolve --port=2000 --coverage",
     "integration-test": "mocha integration/*.test.js",
     "lint": "eslint .",
-    "build:htm-preact": "microbundle ./build/htm-preact.js -o ./express/scripts/libs/htm-preact.js -f modern --no-sourcemap --target web; mv ./express/scripts/libs/htm-preact.modern.mjs ./express/scripts/libs/htm-preact.js",
-    "build:preact-debug": "microbundle ./build/htm-preact-debug.js -o ./express/scripts/libs/htm-preact-debug.js -f modern --no-sourcemap --target web; mv ./express/scripts/libs/htm-preact-debug.modern.mjs ./express/scripts/libs/htm-preact-debug.js"
+    "build:htm-preact": "microbundle ./build/htm-preact.js -o ./express/deps/htm-preact.js -f modern --no-sourcemap --target web; mv ./express/deps/htm-preact.modern.mjs ./express/deps/htm-preact.js",
+    "build:preact-debug": "microbundle ./build/htm-preact-debug.js -o ./express/deps/htm-preact-debug.js -f modern --no-sourcemap --target web; mv ./express/deps/htm-preact-debug.modern.mjs ./express/deps/htm-preact-debug.js"
   },
   "repository": {
     "type": "git",
