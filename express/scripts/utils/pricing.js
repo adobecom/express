@@ -541,7 +541,7 @@ export async function fetchPlan(planUrl) {
 }
 
 export async function formatDynamicCartLink(a, plan) {
-  try { 
+  try {
     const pattern = new RegExp(/.*commerce.*adobe\.com.*/gm);
     if (pattern.test(a.href)) {
       let response;
