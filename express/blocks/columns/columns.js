@@ -140,7 +140,7 @@ const handleVideos = (cell, a, block, thumbnail) => {
 };
 
 function handleRows(block, rows, isNumberedList, total) {
-  rows.forEach((row, rowNum) => {
+  rows.forEach(async (row, rowNum) => {
     const cells = Array.from(row.children);
 
     cells.forEach(async (cell, cellNum) => 
@@ -149,7 +149,7 @@ function handleRows(block, rows, isNumberedList, total) {
   });
 }
 
-async function handleCell(block,cell, cellNum, isNumberedList, rowNum, total) {
+async function handleCell(block, cell, cellNum, isNumberedList, rowNum, total) {
   const aTag = cell.querySelector('a');
   const pics = cell.querySelectorAll(':scope picture');
 
