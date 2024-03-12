@@ -279,6 +279,17 @@ End border style variants
   text-align: center;
 }
 
+.pricing-cards-wrapper + .default-content-wrapper .button-container {
+  margin-top : -40px;
+  
+}
+.pricing-cards-wrapper + .default-content-wrapper .button-container .button{
+  padding: 13px 1.5em 14px 1.5em;
+  border-radius: 27px;
+  font-size: var(--body-font-size-m);
+}
+
+
 /** pricing styles end **/
 
 .pricing-cards .card-cta-group {
@@ -348,7 +359,7 @@ End border style variants
   font-weight: 400;
 }
 
-.pricing-cards>.footer {
+.pricing-cards>div:last-of-type {
   padding: 12px 8px;
   margin: 16px auto;
   border-radius: 4px;
@@ -356,11 +367,6 @@ End border style variants
   font-size: var(--body-font-size-xs);
   max-width: 1200px;
   box-sizing: border-box;
-}
-
-.pricing-cards> .compare-all-plans>a {
-  width: fit-content;
-  margin: auto;
 }
 
 

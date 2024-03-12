@@ -235,6 +235,5 @@ export default async function decorate(block) {
   decorateHeading(block, payload);
   decorateCards(block, payload).then(async () => {
     await buildCarousel('', block.querySelector('.cta-carousel-cards'));
-    document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
   });
 }
