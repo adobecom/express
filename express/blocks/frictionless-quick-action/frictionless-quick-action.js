@@ -73,7 +73,7 @@ function startSDK(data) {
       ccEverywhere = await window.CCEverywhere.initialize(...Object.values(ccEverywhereConfig));
     }
 
-    const exportOptions = [
+    const exportConfig = [
       {
         id: 'download-button',
         label: 'Download',
@@ -132,8 +132,6 @@ function startSDK(data) {
       metaData: { isFrictionlessQa: true },
       receiveQuickActionErrors: false,
     };
-
-    const exportConfig = { exportOptions };
 
     switch (quickAction) {
       case 'convert-to-jpg':
