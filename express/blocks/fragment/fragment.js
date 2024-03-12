@@ -40,21 +40,19 @@ export default async function decorate(block) {
 
     const blockSection = block.closest('.section');
 
-    if (blockSection) {
-      let currentNode = blockSection;
-      fragmentSections.forEach((fragmentSection, idx) => {
-        if (idx < 1) {
-          blockSection.classList.add(...fragmentSection.classList);
-          if (block.closest('.fragment-wrapper')) {
-            block.closest('.fragment-wrapper').replaceWith(...fragmentSection.childNodes);
-          } else {
-            block.replaceWith(...fragmentSection.childNodes);
-          }
+    let currentNode = blockSection;
+    fragmentSections.forEach((fragmentSection, idx) => {
+      if (idx < 1 && blockSection) {
+        blockSection.classList.add(...fragmentSection.classList);
+        if (block.closest('.fragment-wrapper')) {
+          block.closest('.fragment-wrapper').replaceWith(...fragmentSection.childNodes);
         } else {
-          currentNode.after(fragmentSection);
-          currentNode = fragmentSection;
+          block.replaceWith(...fragmentSection.childNodes);
         }
-      });
-    }
+      } else {
+        currentNode.after(fragmentSection);
+        currentNode = fragmentSection;
+      }
+    });
   }
 }
