@@ -2588,7 +2588,7 @@ export async function loadArea(area = document) {
   // milo's links featurecc
   const config = getConfig();
   if (config.links === 'on') {
-    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
+    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/express/seo/links.json'}`;
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 
