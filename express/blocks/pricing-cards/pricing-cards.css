@@ -57,6 +57,7 @@ End legacy CSS
 }
 
 .pricing-cards .card {
+  background-color: white;
   position: relative;
   display: flex;
   flex-direction: column;
