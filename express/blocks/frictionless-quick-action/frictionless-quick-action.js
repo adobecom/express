@@ -67,7 +67,9 @@ function startSDK(data) {
           env,
         },
         callbacks: {},
-        authOption: { mode: 'delayed' },
+        authOption: () => ({
+          mode: 'delayed',
+        }),
       };
 
       ccEverywhere = await window.CCEverywhere.initialize(...Object.values(ccEverywhereConfig));
