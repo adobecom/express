@@ -1,6 +1,5 @@
 /* eslint-disable import/named, import/extensions */
 
-import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createOptimizedPicture,
   createTag,
@@ -81,10 +80,8 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
     if (i === 0) {
       // add block to first wrapper
-      const blockWrapper = block.parentElement;
       wrapper.append(block);
       wrapper.className = '';
-      blockWrapper.remove();
     } else if (i >= 1) {
       // add children from rest of wrappers to first wrapper
       wrapper.previousElementSibling.append(...wrapper.children);
@@ -256,8 +253,6 @@ function layerTemplateImage(canvas, ctx, templateImg) {
 }
 
 export default async function decorate(block) {
-  addTempWrapper(block, 'how-to-steps-carousel');
-
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
   const image = block.classList.contains('image');
@@ -322,4 +317,6 @@ export default async function decorate(block) {
     section.prepend(picture);
   }
   buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow);
+
+  console.log(block.outerHTML);
 }
