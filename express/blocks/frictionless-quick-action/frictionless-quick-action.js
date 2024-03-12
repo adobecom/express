@@ -63,10 +63,11 @@ function startSDK(data) {
           appName: 'express',
         },
         configParams: {
-          loginMode: 'delayed',
           locale: ietf,
           env,
         },
+        callbacks: {},
+        authOption: { mode: 'delayed' },
       };
 
       ccEverywhere = await window.CCEverywhere.initialize(...Object.values(ccEverywhereConfig));
