@@ -131,7 +131,7 @@ function startSDK(data) {
     };
 
     const appConfig = {
-      metaData: { isFrictionlessQa: true },
+      metaData: { isFrictionlessQa: 'true' },
       receiveQuickActionErrors: false,
     };
 
