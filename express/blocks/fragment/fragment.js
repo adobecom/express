@@ -42,15 +42,14 @@ export default async function decorate(block) {
 
     let currentNode = blockSection;
     fragmentSections.forEach((fragmentSection, idx) => {
-      if (!blockSection) return;
       if (idx < 1) {
-        blockSection.classList.add(...fragmentSection.classList);
+        blockSection?.classList.add(...fragmentSection.classList);
         if (block.closest('.fragment-wrapper')) {
           block.closest('.fragment-wrapper').replaceWith(...fragmentSection.childNodes);
         } else {
           block.replaceWith(...fragmentSection.childNodes);
         }
-      } else {
+      } else if (currentNode) {
         currentNode.after(fragmentSection);
         currentNode = fragmentSection;
       }
