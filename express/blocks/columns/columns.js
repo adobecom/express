@@ -186,7 +186,7 @@ async function handleCell(block, cell, cellNum, isNumberedList, rowNum, total) {
 
   if (aTag?.textContent.trim().startsWith('https://')) {
     if (aTag.href.endsWith('.mp4')) {
-      transformLinkToAnimation(aTag);
+      // transformLinkToAnimation(aTag);
     } else if (pics[0]) {
       linkImage(cell);
     }
@@ -234,6 +234,15 @@ async function handleCell(block, cell, cellNum, isNumberedList, rowNum, total) {
 
 export default async function decorate(block) {
   addTempWrapper(block, 'columns');
+
+  const aTags = block.querySelectorAll('a');
+  aTags.forEach((aTag) => {
+    if (aTag?.textContent.trim().startsWith('https://')) {
+      if (aTag.href.endsWith('.mp4')) {
+        transformLinkToAnimation(aTag);
+      } 
+    }
+  });
 
   const rows = Array.from(block.children);
 
