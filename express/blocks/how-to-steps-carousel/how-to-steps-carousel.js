@@ -317,6 +317,4 @@ export default async function decorate(block) {
     section.prepend(picture);
   }
   buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow);
-
-  console.log(block.outerHTML);
 }
