@@ -90,10 +90,10 @@ function startSDK(data) {
         },
       },
       {
-        id: 'download-button',
-        label: 'Download',
+        id: 'edit-in-express',
+        label: 'Edit in Adobe Express for free',
         action: {
-          target: 'download',
+          target: 'express',
         },
         style: {
           uiType: 'button',
