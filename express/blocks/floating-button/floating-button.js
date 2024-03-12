@@ -26,7 +26,7 @@ export default async function decorate(block) {
 
     const blockLinks = blockWrapper.querySelectorAll('a');
     if (blockLinks && blockLinks.length > 0) {
-      await formatDynamicCartLink(blockLinks[0]);
+      formatDynamicCartLink(blockLinks[0]);
       const linksPopulated = new CustomEvent('linkspopulated', {
         detail: blockLinks,
       });
