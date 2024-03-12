@@ -1,5 +1,6 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { createTag, getIconElement } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 function show(block) {
   const body = block.closest('body');
