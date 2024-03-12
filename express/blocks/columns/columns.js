@@ -139,6 +139,99 @@ const handleVideos = (cell, a, block, thumbnail) => {
   });
 };
 
+function handleRows(block, rows, isNumberedList, total) {
+  rows.forEach((row, rowNum) => {
+    const cells = Array.from(row.children);
+
+    cells.forEach(async (cell, cellNum) => 
+      handleCell(block,cell,cellNum, isNumberedList, rowNum, total)
+    );
+  });
+}
+
+async function handleCell(block,cell, cellNum, isNumberedList, rowNum, total) {
+  const aTag = cell.querySelector('a');
+  const pics = cell.querySelectorAll(':scope picture');
+
+  if (cellNum === 0 && isNumberedList) {
+    // add number to first cell
+    let num = rowNum + 1;
+    if (total > 9) {
+      // stylize with total for 10 or more items
+      num = `${num}/${total} —`;
+      if (rowNum < 9) {
+        // pad number with 0
+        num = `0${num}`;
+      }
+    } else {
+      // regular ordered list style for 1 to 9 items
+      num = `${num}.`;
+    }
+    cell.innerHTML = `<span class="num">${num}</span>${cell.innerHTML}`;
+  }
+
+  if (pics.length === 1 && pics[0].parentElement.tagName === 'P') {
+    // unwrap single picture if wrapped in p tag, see https://github.com/adobe/helix-word2md/issues/662
+    const parentDiv = pics[0].closest('div');
+    const parentParagraph = pics[0].parentNode;
+    parentDiv.insertBefore(pics[0], parentParagraph);
+  }
+
+  if (cell.querySelector('img.icon, svg.icon')) {
+    decorateIconList(cell, rowNum, block.classList);
+  }
+  if (isVideoLink(aTag?.href)) {
+    handleVideos(cell, aTag, block, pics[0]);
+  }
+
+  if (aTag?.textContent.trim().startsWith('https://')) {
+    if (aTag.href.endsWith('.mp4')) {
+      transformLinkToAnimation(aTag);
+    } else if (pics[0]) {
+      linkImage(cell);
+    }
+  }
+
+  if (aTag && aTag.classList.contains('button')) {
+    if (block.className.includes('fullsize')) {
+      aTag.classList.add('xlarge');
+      BlockMediator.set('primaryCtaUrl', aTag.href);
+      aTag.classList.add('primaryCTA');
+    } else if (aTag.classList.contains('light')) {
+      aTag.classList.replace('accent', 'primary');
+    }
+  }
+
+  // handle history events
+  window.addEventListener('popstate', ({ state }) => {
+    hideVideoModal();
+    const { url, title } = state || {};
+    if (url) {
+      displayVideoModal(url, title);
+    }
+  });
+
+  cell.querySelectorAll(':scope p:empty').forEach(($p) => {
+    if ($p.innerHTML.trim() === '') {
+      $p.remove();
+    }
+  });
+
+  cell.classList.add('column');
+  const childEls = [...cell.children];
+  const isPictureColumn = childEls.every((el) => ['BR', 'PICTURE'].includes(el.tagName)) && childEls.length > 0;
+  if (isPictureColumn) {
+    cell.classList.add('column-picture');
+  }
+
+  const $pars = cell.querySelectorAll('p');
+  for (let i = 0; i < $pars.length; i += 1) {
+    if ($pars[i].innerText.match(/Powered by/)) {
+      $pars[i].classList.add('powered-by');
+    }
+  }
+}
+
 export default async function decorate(block) {
   addTempWrapper(block, 'columns');
 
@@ -159,92 +252,8 @@ export default async function decorate(block) {
     }
   }
 
-  rows.forEach((row, rowNum) => {
-    const cells = Array.from(row.children);
+  handleRows(block, rows, isNumberedList, total);
 
-    cells.forEach((cell, cellNum) => {
-      const aTag = cell.querySelector('a');
-      const pics = cell.querySelectorAll(':scope picture');
-
-      if (cellNum === 0 && isNumberedList) {
-        // add number to first cell
-        let num = rowNum + 1;
-        if (total > 9) {
-          // stylize with total for 10 or more items
-          num = `${num}/${total} —`;
-          if (rowNum < 9) {
-            // pad number with 0
-            num = `0${num}`;
-          }
-        } else {
-          // regular ordered list style for 1 to 9 items
-          num = `${num}.`;
-        }
-        cell.innerHTML = `<span class="num">${num}</span>${cell.innerHTML}`;
-      }
-
-      if (pics.length === 1 && pics[0].parentElement.tagName === 'P') {
-        // unwrap single picture if wrapped in p tag, see https://github.com/adobe/helix-word2md/issues/662
-        const parentDiv = pics[0].closest('div');
-        const parentParagraph = pics[0].parentNode;
-        parentDiv.insertBefore(pics[0], parentParagraph);
-      }
-
-      if (cell.querySelector('img.icon, svg.icon')) {
-        decorateIconList(cell, rowNum, block.classList);
-      }
-      if (isVideoLink(aTag?.href)) {
-        handleVideos(cell, aTag, block, pics[0]);
-      }
-
-      if (aTag?.textContent.trim().startsWith('https://')) {
-        if (aTag.href.endsWith('.mp4')) {
-          transformLinkToAnimation(aTag);
-        } else if (pics[0]) {
-          linkImage(cell);
-        }
-      }
-
-      if (aTag && aTag.classList.contains('button')) {
-        if (block.className.includes('fullsize')) {
-          aTag.classList.add('xlarge');
-          BlockMediator.set('primaryCtaUrl', aTag.href);
-          aTag.classList.add('primaryCTA');
-        } else if (aTag.classList.contains('light')) {
-          aTag.classList.replace('accent', 'primary');
-        }
-      }
-
-      // handle history events
-      window.addEventListener('popstate', ({ state }) => {
-        hideVideoModal();
-        const { url, title } = state || {};
-        if (url) {
-          displayVideoModal(url, title);
-        }
-      });
-
-      cell.querySelectorAll(':scope p:empty').forEach(($p) => {
-        if ($p.innerHTML.trim() === '') {
-          $p.remove();
-        }
-      });
-
-      cell.classList.add('column');
-      const childEls = [...cell.children];
-      const isPictureColumn = childEls.every((el) => ['BR', 'PICTURE'].includes(el.tagName)) && childEls.length > 0;
-      if (isPictureColumn) {
-        cell.classList.add('column-picture');
-      }
-
-      const $pars = cell.querySelectorAll('p');
-      for (let i = 0; i < $pars.length; i += 1) {
-        if ($pars[i].innerText.match(/Powered by/)) {
-          $pars[i].classList.add('powered-by');
-        }
-      }
-    });
-  });
   addAnimationToggle(block);
   addHeaderSizing(block, 'columns-heading');
 
