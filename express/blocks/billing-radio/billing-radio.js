@@ -13,6 +13,7 @@ export default function init(el) {
   el.innerHTML = '';
   el.append(title);
   const buttons = [];
+  if (BlockMediator.get(BILLING_PLAN) === undefined) BlockMediator.set(BILLING_PLAN, 0);
   plans.forEach((plan, planIndex) => {
     const button = createTag('button', {
       class: planIndex === (BlockMediator.get(BILLING_PLAN) || 0) ? 'checked' : '',
@@ -25,7 +26,6 @@ export default function init(el) {
     el.append(button);
     buttons.push(button);
   });
-  if (!BlockMediator.hasStore(BILLING_PLAN)) BlockMediator.set(BILLING_PLAN, 0);
   BlockMediator.subscribe(BILLING_PLAN, ({ newValue, oldValue }) => {
     buttons[oldValue || 0].classList.remove('checked');
     buttons[newValue].classList.add('checked');
