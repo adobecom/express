@@ -1,4 +1,5 @@
 import { createTag, getIconElement } from '../../utils/utils.js';
+import { addTempWrapper } from '../../utils/decorate.js';
 
 function show(block) {
   const body = block.closest('body');
@@ -58,6 +59,7 @@ function initNotchDragAction(block) {
 }
 
 export default function decorate(block) {
+  addTempWrapper(block, 'split-action');
   const section = block.closest('.section');
   const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
   const blockBackground = createTag('div', { class: 'block-background' });
