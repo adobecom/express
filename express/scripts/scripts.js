@@ -78,6 +78,8 @@ const eagerLoad = (img) => {
   removeIrrelevantSections(main);
   const firstDiv = main.querySelector('div:nth-child(1) > div');
   if (firstDiv?.classList.contains('marquee')) {
+    console.log(firstDiv.querySelectorAll('a'));
+    firstDiv.querySelectorAll('a').forEach(eagerLoad);
     firstDiv.querySelectorAll('img').forEach(eagerLoad);
   } else {
     eagerLoad(document.querySelector('img'));

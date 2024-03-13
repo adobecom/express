@@ -1,3 +1,6 @@
+import { isVideoLink } from '../blocks/shared/video.js';
+import { embedVimeo,embedYoutube } from './embed-videos.js';
+
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
   { fragment: '/express/fragments/' },
@@ -2261,6 +2264,7 @@ function decoratePictures(main) {
  * @param {Boolean} isDoc Is document or fragment
  */
 export async function decorateMain(main, isDoc) {
+  getVideoLinks(main);
   await buildAutoBlocks(main);
   splitSections(main);
   const sections = decorateSections(main, isDoc);
@@ -2274,6 +2278,39 @@ export async function decorateMain(main, isDoc) {
   await sections;
   return sections;
 }
+
+function getVideoLinks(main) {
+  const videos = Array.from(main.querySelectorAll('a').values()).filter((aTag) => {
+    if (isVideoLink(aTag?.href)){
+      handleVideos(aTag);
+    }
+  });
+
+  console.log(videos);
+  return videos;
+}
+
+
+const handleVideos = (a, thumbnail) => {
+  if (!a.href) return;
+
+  const url = new URL(a.href);
+  console.log(url)
+  if (url.hash === '#embed-video') {
+    if (a.href.includes('youtu')) {
+      a.parentElement.replaceChild(embedYoutube(url), a);
+    } else if (a.href.includes('vimeo')) {
+      a.parentElement.replaceChild(embedVimeo(url, thumbnail), a);
+    }
+    if (thumbnail) thumbnail.remove();
+
+    return;
+  }
+  transformLinkToAnimation(a,true)
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+  });
+};
 
 function unhideBody() {
   try {
