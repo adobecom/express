@@ -152,7 +152,8 @@ export default async function decorate(block) {
   }
 
   if (heading) {
-    block.append(heading.classList.add('fullscreen-marquee-heading'));
+    heading.classList.add('fullscreen-marquee-heading');
+    block.append(heading);
   }
 
   if (content && document.body.dataset.device === 'desktop') {
