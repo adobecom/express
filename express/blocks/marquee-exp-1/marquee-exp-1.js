@@ -6,6 +6,7 @@ import {
   fetchPlaceholders,
   getConfig,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const breakpointConfig = [
@@ -242,6 +243,8 @@ export async function transformToVideoLink(cell, a) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'marquee-exp-1');
+
   const possibleBreakpoints = breakpointConfig.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const animations = {};

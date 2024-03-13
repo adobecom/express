@@ -656,7 +656,7 @@ export async function decorateBlock(block) {
             caseInsensitiveParams[name.toLowerCase()] = value.toLowerCase();
           }
           showWithSearchParam = caseInsensitiveParams[featureFlag];
-          blockRemove = showWithSearchParam !== null ? showWithSearchParam !== 'on' : getMetadata(featureFlag.toLowerCase()) !== 'on';
+          blockRemove = showWithSearchParam ? showWithSearchParam !== 'on' : getMetadata(featureFlag.toLowerCase()) !== 'on';
         });
       }
       if (blockRemove) {
@@ -683,10 +683,10 @@ export async function decorateBlock(block) {
 
     block.classList.add('block');
 
+    block.dataset.block = '';
     block.setAttribute('data-block-name', blockName);
     block.setAttribute('data-block-status', 'initialized');
-    const blockWrapper = block.parentElement;
-    blockWrapper.classList.add(`${blockName}-wrapper`);
+
     if (getMetadata('sheet-powered') === 'Y') {
       const { setBlockTheme } = await import('./content-replace.js');
       setBlockTheme(block);
@@ -722,7 +722,7 @@ export function decorateSVG(a) {
     a.append(pic);
     return a;
   } catch (e) {
-    console.log('Failed to create SVG.', e.message);
+    window.lana.log(`Failed to create SVG: ${e.message}`);
     return a;
   }
 }
@@ -826,7 +826,7 @@ function decorateImageLinks(el) {
         aTag.append(pic);
       }
     } catch (e) {
-      console.log('Error:', `${e.message} '${source.trim()}'`);
+      window.lana.log(`Error: ${e.message} '${source.trim()}'`);
     }
   });
 }
@@ -960,16 +960,19 @@ async function decorateSections(el, isDoc) {
     section.dataset.status = 'decorated';
     section.dataset.idx = idx;
 
-    let defaultContent = false;
-    let wrapper;
+    let defaultContentWrapper;
     [...section.children].forEach((child) => {
-      if (child.tagName === 'DIV' || !defaultContent) {
-        wrapper = document.createElement('div');
-        defaultContent = child.tagName !== 'DIV';
-        if (defaultContent) wrapper.classList.add('default-content-wrapper');
-        section.append(wrapper);
+      const isDivTag = child.tagName === 'DIV';
+      if (isDivTag) {
+        defaultContentWrapper = undefined;
+      } else {
+        if (!defaultContentWrapper) {
+          defaultContentWrapper = document.createElement('div');
+          defaultContentWrapper.classList.add('default-content-wrapper');
+          section.insertBefore(defaultContentWrapper, child);
+        }
+        defaultContentWrapper.append(child);
       }
-      wrapper?.append(child);
     });
     blocks.forEach(async (block) => {
       await decorateBlock(block);
@@ -1424,13 +1427,14 @@ function addPromotion() {
   }
 }
 
-function loadMartech() {
+async function loadMartech() {
   const usp = new URLSearchParams(window.location.search);
   const martech = usp.get('martech');
 
   const analyticsUrl = '/express/scripts/instrument.js';
   if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
-    loadScript(analyticsUrl, 'module');
+    const mod = await import('./instrument.js');
+    mod.default();
   }
 }
 
@@ -1681,7 +1685,7 @@ export async function getExperimentConfig(experimentId) {
 
 function loadIMS() {
   window.adobeid = {
-    client_id: 'MarvelWeb3',
+    client_id: sessionStorage.getItem('imsclient'),
     scope: 'AdobeID,openid',
     locale: getConfig().locale.region,
     environment: 'prod',
@@ -1700,7 +1704,7 @@ async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
     loadIMS();
     // rush instrument-martech-launch-alloy
-    promises.push(import('./instrument.js'));
+    promises.push(loadMartech());
     window.delay_preload_product = true;
   }
   const [{ runExps }] = await Promise.all(promises);
@@ -1727,7 +1731,6 @@ async function decorateTesting() {
     if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
       // eslint-disable-next-line no-console
       console.log('rushing martech');
-      loadScript('/express/scripts/instrument.js', 'module');
     }
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -1963,7 +1966,8 @@ async function buildAutoBlocks($main) {
   }
 
   async function loadPromoFrag() {
-    const fragment = await fetchPlainBlockFromFragment('/express/fragments/rejected-beta-promo-bar', 'sticky-promo-bar');
+    if (document.querySelector('.sticky-promo-bar')) return;
+    const fragment = await fetchPlainBlockFromFragment(`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`, 'sticky-promo-bar');
     if (!fragment) return;
     $main.append(fragment);
     const block = fragment?.querySelector('.sticky-promo-bar.block');
@@ -2456,7 +2460,7 @@ async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   window.dispatchEvent(new Event('milo:LCP:loaded'));
-  if (window.hlx.martech) loadMartech();
+  if (window.hlx.martech) window.hlx.martechLoaded = loadMartech();
   loadGnav();
   const { default: loadFonts } = await import('./fonts.js');
   loadFonts(config.locale, loadStyle);
@@ -2587,6 +2591,15 @@ export async function loadArea(area = document) {
     const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
+
+  if (['on', 'yes'].includes(getMetadata('milo-analytics')?.toLowerCase()) || params.get('milo-analytics') === 'on') {
+    import('./attributes.js').then((analytics) => {
+      document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
+    });
+  }
+  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
+    decorateTrackingEvents();
+  });
 }
 
 export function getMobileOperatingSystem() {

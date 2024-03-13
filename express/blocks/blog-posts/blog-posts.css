@@ -80,6 +80,7 @@ main .blog-posts .blog-hero-card .blog-card-image {
     line-height: 0;
     grid-area: image;
     margin: 0;
+    height: 276px;
 }
 
 main .blog-posts .blog-card .blog-card-image img {
@@ -90,9 +91,11 @@ main .blog-posts .blog-card .blog-card-image img {
 }
 
 main .blog-posts .blog-hero-card .blog-card-image img {
-    height: 276px;
+    height: 100%;
+    width: 100%;
     margin: auto;
     display: block;
+    object-fit: cover;
 }
 
 main .blog-posts .blog-card h3.blog-card-title {
@@ -201,14 +204,9 @@ main .blog-posts .card .card-body p {
     }
 
     main .blog-posts .blog-hero-card .blog-card-image {
-        height: unset;
-        width: unset;
-    }
-
-    main .blog-posts .blog-hero-card .blog-card-image img {
-        height: unset;
-        width: unset;
+        min-width: 488px;
         max-width: 488px;
+        height: 274px;
     }
 
     main .blog-posts .blog-card {
@@ -250,10 +248,11 @@ main .blog-posts .card .card-body p {
         max-width: 1200px;
     }
 
-    main .blog-posts .blog-hero-card .blog-card-image img {
+    main .blog-posts .blog-hero-card .blog-card-image {
+        min-width: 600px;
         max-width: 600px;
+        height: 338px;
     }
-
 
     .blog main .blog-posts-container > div > h2, main .blog-posts-container div.blog-posts-decoration {
         max-width: 1088px;

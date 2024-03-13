@@ -1,165 +1,219 @@
+// no block wrapper dependency
 import {
-  createTag,
-  fetchPlaceholders,
-  fetchPlainBlockFromFragment,
-  getLottie,
   lazyLoadLottiePlayer,
+  getIconElement,
+  getLottie,
+  createTag,
+  fetchPlainBlockFromFragment,
+  fixIcons,
+  fetchPlaceholders,
+  getConfig,
 } from '../../scripts/utils.js';
 
-import { collectFloatingButtonData } from '../shared/floating-cta.js';
+function initObserver(elem, observeTargets) {
+  const hideOnIntersect = new IntersectionObserver((entries) => {
+    const notIntersecting = entries.every((entry) => !entry.isIntersecting);
 
-const hideScrollArrow = ($floatButtonWrapper, $lottieScrollButton) => {
-  $floatButtonWrapper.classList.add('scrolled');
-  if (document.activeElement === $lottieScrollButton) $lottieScrollButton.blur();
-  $lottieScrollButton.tabIndex = -1;
-};
+    if (notIntersecting) {
+      elem.classList.remove('hidden');
+    } else {
+      elem.classList.add('hidden');
+      elem.classList.remove('expanded');
+    }
+  }, {
+    root: null,
+    rootMargin: '32px',
+    threshold: 0,
+  });
 
-const showScrollArrow = ($floatButtonWrapper, $lottieScrollButton) => {
-  $floatButtonWrapper.classList.remove('scrolled');
-  $lottieScrollButton.removeAttribute('tabIndex');
-};
+  observeTargets.forEach((t) => {
+    if (t) hideOnIntersect.observe(t);
+  });
+}
 
-function initLottieArrow($lottieScrollButton, buttonWrapper, $scrollAnchor, section) {
-  let clicked = false;
-  $lottieScrollButton.addEventListener('click', () => {
-    clicked = true;
-    buttonWrapper.classList.add('floating-panel-button--clicked');
-    window.scrollTo({ top: $scrollAnchor.offsetTop, behavior: 'smooth' });
+function decorateButtons(buttons) {
+  buttons.forEach((btn) => {
+    const parentEl = btn.parentElement;
 
-    const checkIfScrollToIsFinished = setInterval(() => {
-      if ($scrollAnchor.offsetTop <= window.scrollY) {
-        clicked = false;
-        buttonWrapper.classList.remove('floating-button--clicked');
-        clearInterval(checkIfScrollToIsFinished);
+    if (['EM', 'STRONG'].includes(parentEl.tagName)) {
+      if (parentEl.tagName === 'EM') {
+        btn.classList.add('primary', 'reverse', 'dark');
+        btn.classList.remove('light');
       }
-    }, 200);
-    hideScrollArrow(buttonWrapper, $lottieScrollButton);
-  });
 
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 10) {
-      section.style.bottom = '0';
+      if (parentEl.tagName === 'STRONG') {
+        btn.classList.add('gradient');
+        btn.prepend(getIconElement('premium-crown-white'));
+      }
+
+      parentEl.parentElement.replaceChild(btn, parentEl);
     } else {
-      section.style.bottom = `-${section.offsetHeight + 8}px`;
+      btn.classList.add('accent', 'cta');
     }
 
-    if (clicked) return;
-    if ($scrollAnchor.getBoundingClientRect().top < 100) {
-      hideScrollArrow(buttonWrapper, $lottieScrollButton);
-    } else {
-      showScrollArrow(buttonWrapper, $lottieScrollButton);
-    }
-  }, { passive: true });
+    btn.classList.add('button', 'xlarge');
+
+    const sameHrefButtonsOnPage = Array.from(document.querySelectorAll('a')).filter((b) => btn !== b && b.href === btn.href);
+    initObserver(btn, sameHrefButtonsOnPage);
+  });
 }
 
-async function decorateLottieButton(block) {
-  const buttonContainers = block.querySelectorAll('p.button-container');
-  const $lottieScrollButton = createTag('button', { class: 'floating-panel-lottie' });
+async function buildTimeline(props) {
+  const today = new Date();
+  const ietf = getConfig().locale.ietf || 'en-US';
+  const placeholders = await fetchPlaceholders();
+  const timeline = createTag('div', { class: 'timeline' });
+  const todayWrapper = createTag('div', { class: 'time-wrapper time-today' }, getIconElement('premium'));
+  const reminderDayWrapper = createTag('div', { class: 'time-wrapper time-reminder' }, getIconElement('bell-white'));
+  const endDayWrapper = createTag('div', { class: 'time-wrapper time-end' }, getIconElement('clock-white'));
 
-  $lottieScrollButton.innerHTML = getLottie('purple-arrows', '/express/icons/purple-arrows.json');
-  fetchPlaceholders().then((placeholders) => {
-    $lottieScrollButton.setAttribute('aria-label', placeholders['see-more']);
+  [todayWrapper, reminderDayWrapper, endDayWrapper].forEach((w, i) => {
+    const textWrapper = createTag('p', { class: 'text-wrapper' });
+    const statusWrapper = createTag('p', { class: 'status-wrapper' });
+    w.append(textWrapper, statusWrapper);
+
+    if (i === 0) {
+      textWrapper.textContent = placeholders.today || 'Today';
+      statusWrapper.textContent = placeholders['full-access'] || 'Full access';
+    }
+
+    if (i === 1 && props.trialTimeline[0]) {
+      const reminderDate = new Date(
+        new Date().setDate(today.getDate() + parseInt(props.trialTimeline[0], 10)),
+      );
+      textWrapper.textContent = reminderDate.toLocaleDateString(ietf);
+      statusWrapper.textContent = placeholders['reminder-email'] || 'Reminder email';
+    }
+
+    if (i === 2 && props.trialTimeline[1]) {
+      const endDate = new Date(
+        new Date().setDate(today.getDate() + parseInt(props.trialTimeline[1], 10)),
+      );
+      textWrapper.textContent = endDate.toLocaleDateString(ietf);
+      statusWrapper.textContent = placeholders['free-trial-ends'] || 'Free trial ends';
+    }
+
+    timeline.append(w);
   });
 
-  if (buttonContainers.length > 0) {
-    buttonContainers[buttonContainers.length - 1].append($lottieScrollButton);
-  }
-
-  return {
-    cta: buttonContainers[buttonContainers.length - 1],
-    lottie: $lottieScrollButton,
-  };
+  return timeline;
 }
 
-function togglePanel(section, otherCTAs) {
-  let CTAsOffBounds = 0;
+function initBlockInteraction(block, props) {
+  const topContainer = createTag('div', { class: 'top-container' });
+  const closeButton = createTag('a', { class: 'close-panel-button' }, getIconElement('close-white'));
+  let timeline;
+  topContainer.prepend(closeButton);
+  block.prepend(topContainer);
 
-  for (let i = 0; i < otherCTAs.length; i += 1) {
-    const options = {
-      root: document,
-      rootMargin: '0px',
-      threshold: 1.0,
-    };
+  block.addEventListener('mouseenter', async () => {
+    if (!timeline) {
+      timeline = await buildTimeline(props);
+      const contentRow = block.querySelector('.content-container');
+      contentRow.after(timeline);
+    }
 
-    // eslint-disable-next-line no-loop-func
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) {
-          CTAsOffBounds += 1;
-          observer.disconnect();
-          if (CTAsOffBounds === otherCTAs.length) {
-            section.style.bottom = '0';
-          } else {
-            section.style.bottom = `-${section.offsetHeight}px`;
-          }
+    if (!props.panelFragment) {
+      props.panelFragment = await fetchPlainBlockFromFragment(props.panelFragmentUrl.pathname, 'columns');
+      const columnsBlock = props.panelFragment.querySelector('.columns.block');
+
+      if (columnsBlock) {
+        await fixIcons(columnsBlock);
+        const columnInnerDiv = columnsBlock.querySelector(':scope > div');
+
+        if (columnInnerDiv) {
+          topContainer.append(columnInnerDiv);
         }
-      });
-    }, options);
-    observer.observe(otherCTAs[i]);
-  }
+      }
+    }
+
+    if (!block.classList.contains('hidden')) block.classList.add('expanded');
+  });
+
+  closeButton.addEventListener(('click'), () => {
+    block.classList.remove('expanded');
+  }, { passive: true });
+
+  block.addEventListener('mouseleave', async () => {
+    block.classList.remove('expanded');
+  });
+
+  const buttons = block.querySelectorAll('a.button');
+  const config = { attributes: true, childList: false, subtree: false };
+  const buttonsObj = {};
+
+  const observer = new MutationObserver((mutationList) => {
+    for (const mutation of mutationList) {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        const btn = mutation.target;
+        buttonsObj[btn] = !btn.classList.contains('hidden');
+      }
+    }
+
+    const allButtonsHidden = Object.values(buttonsObj).every((v) => !v);
+
+    if (allButtonsHidden) {
+      block.classList.add('hidden');
+      block.classList.remove('expanded');
+    } else {
+      block.classList.remove('hidden');
+    }
+  });
+
+  buttons.forEach((btn) => {
+    buttonsObj[btn] = true;
+    observer.observe(btn, config);
+  });
+
+  const footer = document.querySelector('footer');
+  initObserver(block, [footer]);
 }
-function initCTAWatcher(section) {
-  const buttons = section.querySelectorAll('a');
 
-  if (buttons.length > 0) {
-    const ctaInBlock = buttons[buttons.length - 1];
-    ctaInBlock.classList.add('floating-panel-cta');
-    const otherCTAs = document.querySelectorAll(`a.button[href='${ctaInBlock.href}']:not(.floating-panel-cta)`);
+export default async function decorate(block) {
+  const props = {};
+  const bottomCont = createTag('div', { class: 'bottom-container' });
+  lazyLoadLottiePlayer();
+  Array.from(block.children).forEach((row, index) => {
+    if (index === 0) {
+      row.classList.add('content-container');
+      const toggleButton = createTag('a', { class: 'toggle-button' });
+      toggleButton.innerHTML = getLottie('plus-animation', '/express/icons/plus-animation.json');
+      const toggleIcon = getIconElement('plus-heavy');
+      toggleButton.append(toggleIcon);
+      row.prepend(toggleButton);
+      bottomCont.append(row);
+    }
 
-    togglePanel(section, otherCTAs);
+    if (index === 1) {
+      const innerCol = row.querySelector(':scope > div');
+      if (innerCol) innerCol.classList.add('buttons-wrapper');
+      block.replaceChild(innerCol, row);
+      const buttons = innerCol.querySelectorAll('a');
+      decorateButtons(buttons);
 
-    window.addEventListener('resize', () => {
-      togglePanel(section, otherCTAs);
-    }, { passive: true });
-  }
-}
+      bottomCont.append(innerCol);
+    }
 
-function standardizeSection(section, audience) {
-  const wrapperDiv = section.querySelector(':scope > div');
-  const block = section.querySelector('.floating-panel');
-  const buttons = block.querySelectorAll('a');
-  const heading = block.querySelector('h1, h2, h3, h4, h5, h6');
+    if (index === 2) {
+      props.panelFragmentUrl = new URL(row.querySelector('a:any-link')?.href);
+      row.remove();
+    }
 
-  section.dataset.audience = audience;
-  block.classList.add('block');
-  wrapperDiv.classList.add('floating-panel-wrapper');
+    if (index === 3) {
+      const cols = row.querySelectorAll(':scope > div');
 
-  if (buttons.length > 0) {
-    buttons.forEach((button) => {
-      const buttonWrapper = button.parentElement;
-      button.classList.add('button');
-      buttonWrapper.classList.add('button-container');
-      buttonWrapper.parentElement.classList.add('buttons-container');
-    });
-  }
+      const [key, val] = cols;
 
-  if (heading) {
-    heading.parentElement.classList.add('content-container');
-  }
-}
-
-export default async function decorateBlock(block) {
-  if (block.classList.contains('spreadsheet-powered')) {
-    const audience = block.querySelector(':scope > div').textContent.trim();
-    const data = await collectFloatingButtonData();
-    const container = await fetchPlainBlockFromFragment(block, `/express/fragments/floating-panel/${data.panelFragment}`, 'floating-panel');
-
-    if (container) {
-      const $section = block.closest('.section');
-      $section.parentNode.replaceChild(container, $section);
-      standardizeSection(container, audience);
-
-      lazyLoadLottiePlayer();
-      const ctaElements = await decorateLottieButton(container);
-
-      const $scrollAnchor = document.querySelector('.section:not(:nth-child(1)):not(:nth-child(2)) .template-list, .section:not(:nth-child(1)):not(:nth-child(2)) .layouts, .section:not(:nth-child(1)):not(:nth-child(2)) .steps-highlight-container') ?? document.querySelector('.section:nth-child(3)');
-      if (!$scrollAnchor) {
-        hideScrollArrow(ctaElements.cta, ctaElements.lottie);
-      } else {
-        initLottieArrow(ctaElements.lottie, ctaElements.cta, $scrollAnchor, container);
+      if (key?.textContent.trim().toLowerCase() === 'trial-timeline') {
+        const [reminder, end] = val.textContent.replaceAll(' ', '').split(',');
+        props.trialTimeline = [reminder, end];
       }
 
-      initCTAWatcher(container);
+      row.remove();
     }
-  }
+  });
+
+  block.append(bottomCont);
+
+  initBlockInteraction(block, props);
 }

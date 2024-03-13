@@ -1,4 +1,5 @@
 import { createTag, readBlockConfig } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 const CARD_WIDTH = 157;
 const CARD_HEIGHT = 313;
@@ -169,6 +170,8 @@ function applyHeight($block, heightStr) {
  * @param {HTMLDivElement} $block
  */
 export default async function decorate($block) {
+  addTempWrapper($block, 'download-screens');
+
   const conf = readBlockConfig($block);
   $block.querySelectorAll(':scope > div').forEach(($row) => {
     if ($row.childElementCount === 2) {
