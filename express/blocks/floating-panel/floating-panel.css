@@ -35,6 +35,7 @@ div[class='section section-wrapper floating-panel-container'] {
 
 .block.floating-panel.expanded {
     color: var(--color-black);
+    z-index: 10000000;
 }
 
 .block.floating-panel .bottom-container {
