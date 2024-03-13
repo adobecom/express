@@ -25,11 +25,6 @@ function buildContent(content) {
   return formattedContent;
 }
 
-function buildHeading(block, heading) {
-  heading.classList.add('fullscreen-marquee-heading');
-  return heading;
-}
-
 function buildBackground(block, background) {
   background.classList.add('fullscreen-marquee-background');
 
@@ -157,7 +152,7 @@ export default async function decorate(block) {
   }
 
   if (heading) {
-    block.append(buildHeading(block, heading));
+    block.append(heading.classList.add('fullscreen-marquee-heading'));
   }
 
   if (content && document.body.dataset.device === 'desktop') {
