@@ -13,7 +13,6 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-
 }
 
 .section > .fullscreen-marquee {
@@ -254,6 +253,7 @@
 
 .block.fullscreen-marquee .button-container.free-plan-container .free-plan-widget {
   margin: 0;
+  display: none;
 }
 
 @media (min-width: 900px) {
@@ -275,10 +275,14 @@
   .fullscreen-marquee .fullscreen-marquee-heading p {
     font-size: var(--body-font-size-l);
     line-height: 30px;
+    text-align: center;
   }
-  
 
   .fullscreen-marquee .fullscreen-marquee-heading .button-container {
+    display: flex;
+  }
+
+  .block.fullscreen-marquee .button-container.free-plan-container .free-plan-widget {
     display: flex;
   }
 
