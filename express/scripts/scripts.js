@@ -10,6 +10,7 @@ import {
   loadStyle,
   createTag,
   getConfig,
+  fetchPlaceholders
 } from './utils.js';
 
 const locales = {
@@ -66,6 +67,8 @@ document.addEventListener('click', () => sampleRUM('click'));
 const usp = new URLSearchParams(window.location.search);
 window.spark = {};
 window.spark.hostname = usp.get('hostname') || window.location.hostname;
+
+fetchPlaceholders();
 
 const eagerLoad = (img) => {
   img?.setAttribute('loading', 'eager');
