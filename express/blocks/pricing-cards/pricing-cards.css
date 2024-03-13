@@ -57,6 +57,7 @@ End legacy CSS
 }
 
 .pricing-cards .card {
+  background-color: var(--color-white);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -76,7 +77,6 @@ Border style variants
 */
 
 .pricing-cards .gradient-promo .card {
-  background-color: white;
   margin-bottom: 2px;
 }
 
