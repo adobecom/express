@@ -3,7 +3,7 @@ import BlockMediator from '../../scripts/block-mediator.min.js';
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
 import {
-  buildUrl,
+  formatDynamicCartLink,
   formatSalesPhoneNumber,
   shallSuppressOfferEyebrowText,
   fetchPlanOnePlans,
@@ -134,11 +134,7 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo,
     if (a.parentNode.tagName.toLowerCase() === 'p') {
       a.parentNode.remove();
     }
-    fetchPlanOnePlans(a.href).then(({
-      url, country, language, offerId,
-    }) => {
-      a.href = buildUrl(url, country, language, offerId);
-    });
+    formatDynamicCartLink(a);
     ctaGroup.append(a);
   });
   pricingSection.append(pricingArea);
