@@ -2264,7 +2264,7 @@ function decoratePictures(main) {
  * @param {Boolean} isDoc Is document or fragment
  */
 export async function decorateMain(main, isDoc) {
- // getVideoLinks(main);
+  getVideoLinks(main);
   await buildAutoBlocks(main);
   splitSections(main);
   const sections = decorateSections(main, isDoc);
