@@ -98,7 +98,8 @@ Border style variants
 
 
 .pricing-cards .special-promo {
-  border: 1px solid #FFE600;
+  border: 2px solid #FFE600;
+  padding-bottom: 1px;
 }
 
 .pricing-cards .card-border.special-promo{
