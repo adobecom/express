@@ -45,7 +45,6 @@
 }
 
 .fullscreen-marquee .fullscreen-marquee-heading .button-container {
-  display: flex;
   align-items: center;
   display: none;
 }
@@ -253,7 +252,6 @@
 
 .block.fullscreen-marquee .button-container.free-plan-container .free-plan-widget {
   margin: 0;
-  display: none;
 }
 
 @media (min-width: 900px) {
@@ -279,10 +277,6 @@
   }
 
   .fullscreen-marquee .fullscreen-marquee-heading .button-container {
-    display: flex;
-  }
-
-  .block.fullscreen-marquee .button-container.free-plan-container .free-plan-widget {
     display: flex;
   }
 
