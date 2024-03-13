@@ -1,5 +1,6 @@
-main .browse-by-category-wrapper.fullwidth {
+main .browse-by-category.fullwidth {
   margin: 0;
+  padding: 0 28px;
   max-width: fit-content;
 }
 
@@ -25,8 +26,6 @@ main .browse-by-category .browse-by-category-heading-section {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  padding-left: 28px;
-  padding-right: 28px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 10px;
@@ -192,11 +191,7 @@ main .browse-by-category.card .browse-by-category-card-title {
 }
 
 @media (min-width: 900px) {
-  main .section .browse-by-category-wrapper {
-    padding: 0 28px;
-  }
-
-  main .section .browse-by-category-wrapper {
+  main .section .browse-by-category {
     max-width: none;
   }
 
