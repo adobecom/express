@@ -2279,7 +2279,7 @@ export async function decorateMain(main, isDoc) {
   return sections;
 }
 
-function getVideoLinks(main) {
+async function getVideoLinks(main) {
   const videos = Array.from(main.querySelectorAll('a').values()).filter((aTag) => {
     if (isVideoLink(aTag?.href)){
       handleVideos(aTag);
