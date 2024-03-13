@@ -202,7 +202,7 @@ function decorateHeader(header, borderParams, card, cardBorder) {
   header.classList.add('card-header');
   const specialPromo = readBraces(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
- 
+
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
   if (extractHeadCountExp.test(h2.innerText)) {
