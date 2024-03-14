@@ -2,7 +2,7 @@ import {
   createTag,
   fixIcons,
   getIconElement,
-  fetchPlainBlockFromFragment,
+  fetchBlockFragDecorated,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
@@ -312,7 +312,7 @@ export default async function decorate($block) {
     let payload;
     const $linkList = enclosingMain.querySelector('.link-list-container');
     const $oldSection = $block.closest('.section');
-    const $newSection = await fetchPlainBlockFromFragment('/express/fragments/plans-comparison', 'plans-comparison');
+    const $newSection = await fetchBlockFragDecorated('/express/fragments/plans-comparison', 'plans-comparison');
 
     if ($oldSection) {
       $oldSection.parentNode.replaceChild($newSection, $oldSection);

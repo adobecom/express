@@ -1,4 +1,5 @@
 import BlockMediator from '../../scripts/block-mediator.min.js';
+import { formatDynamicCartLink } from '../../scripts/utils/pricing.js';
 
 function initScrollWatcher(block) {
   const hideOnIntersect = new IntersectionObserver((entries) => {
@@ -38,7 +39,7 @@ export default async function decorate(block) {
 
   buttons.forEach((btn) => {
     const parentEl = btn.parentElement;
-
+    formatDynamicCartLink(btn);
     if (['EM', 'STRONG'].includes(parentEl.tagName)) {
       if (parentEl.tagName === 'EM') {
         btn.classList.add('primary', 'reverse');

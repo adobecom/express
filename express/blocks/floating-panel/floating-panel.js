@@ -4,7 +4,7 @@ import {
   getIconElement,
   getLottie,
   createTag,
-  fetchPlainBlockFromFragment,
+  fetchBlockFragDecorated,
   fixIcons,
   fetchPlaceholders,
   getConfig,
@@ -114,7 +114,7 @@ function initBlockInteraction(block, props) {
     }
 
     if (!props.panelFragment) {
-      props.panelFragment = await fetchPlainBlockFromFragment(props.panelFragmentUrl.pathname, 'columns');
+      props.panelFragment = await fetchBlockFragDecorated(props.panelFragmentUrl.pathname, 'columns');
       const columnsBlock = props.panelFragment.querySelector('.columns.block');
 
       if (columnsBlock) {
