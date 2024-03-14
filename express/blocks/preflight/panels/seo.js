@@ -50,28 +50,32 @@ async function checkTitle() {
 }
 
 async function checkCanon() {
-  const canon = document.querySelector("link[rel='canonical']");
   const result = { ...canonResult.value };
-  const { href } = canon;
-
-  try {
-    const resp = await fetch(href, { method: 'HEAD' });
-    if (!resp.ok) {
-      result.icon = fail;
-      result.description = 'Reason: Error with canonical reference.';
-    }
-    if (resp.ok) {
-      if (resp.status >= 300 && resp.status <= 308) {
+  const canon = document.querySelector("link[rel='canonical']");
+  if (!canon) {
+    result.icon = pass;
+    result.description = 'Canonical is self-referencing.';
+  } else {
+    const { href } = canon;
+    try {
+      const resp = await fetch(href, { method: 'HEAD' });
+      if (!resp.ok) {
         result.icon = fail;
-        result.description = 'Reason: Canonical reference redirects.';
-      } else {
-        result.icon = pass;
-        result.description = 'Canonical referenced is valid.';
+        result.description = 'Reason: Error with canonical reference.';
       }
+      if (resp.ok) {
+        if (resp.status >= 300 && resp.status <= 308) {
+          result.icon = fail;
+          result.description = 'Reason: Canonical reference redirects.';
+        } else {
+          result.icon = pass;
+          result.description = 'Canonical referenced is valid.';
+        }
+      }
+    } catch (e) {
+      result.icon = limbo;
+      result.description = 'Canonical cannot be crawled.';
     }
-  } catch (e) {
-    result.icon = limbo;
-    result.description = 'Canonical cannot be crawled.';
   }
   canonResult.value = result;
   return result.icon;
@@ -216,9 +220,8 @@ async function getResults() {
 }
 
 export default function Panel() {
-  useEffect(() => {
-    getResults();
-  }, []);
+  // eslint-disable-next-line max-statements-per-line
+  useEffect(() => { getResults(); }, []);
 
   return html`
       <div class=seo-columns>
