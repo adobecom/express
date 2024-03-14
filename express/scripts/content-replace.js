@@ -46,8 +46,9 @@ async function getReplacementsFromSearch() {
   const sanitizedTopics = topics === "''" ? '' : topics;
   const sanitizedQuery = q === "''" ? '' : q;
   const exp = /['"<>?.;{}]/gm;
-  
-  if (tasks?.match(exp)?.length > 0 || topics?.match(exp)?.length > 0 || q?.match(exp)?.length > 0) {
+
+  if (tasks?.match(exp)?.length > 0
+   || topics?.match(exp)?.length > 0 || q?.match(exp)?.length > 0) {
     return null;
   }
 
