@@ -70,14 +70,8 @@ function startSDK(data) {
         callbacks: {
           onIntentChange: () => {
             window.history.pushState({ hideFrictionlessQa: true }, null, '');
-            const ccEverywhereCont = selectElementByTagPrefix('cc-everywhere-container-');
             inputElement.value = '';
             fade(uploadContainer, 'in');
-
-            if (ccEverywhereCont) {
-              ccEverywhereCont.style.position = 'fixed';
-              ccEverywhereCont.style.zIndex = 11;
-            }
 
             return {
               containerConfig: {
