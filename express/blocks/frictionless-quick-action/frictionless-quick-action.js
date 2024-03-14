@@ -68,12 +68,6 @@ function startSDK(data) {
         },
         callbacks: {
           onIntentChange: () => ({
-            appConfig: {
-
-            },
-            exportConfig: {
-
-            },
             containerConfig: {
               mode: 'modal',
               hideCloseButton: true,
