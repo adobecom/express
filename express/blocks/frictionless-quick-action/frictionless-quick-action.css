@@ -1,3 +1,8 @@
+body > cc-everywhere-container-18e3ebe05f5 {
+    position: fixed;
+    z-index: 11;
+}
+
 .frictionless-quick-action-wrapper, .frictionless-quick-action.block {
     max-width: none !important;
 }
