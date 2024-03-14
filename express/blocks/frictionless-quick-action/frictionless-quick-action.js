@@ -42,7 +42,6 @@ function fade(element, action) {
 function selectElementByTagPrefix(p) {
   const allEls = document.body.querySelectorAll('*');
   return Array.from(allEls).find((e) => e.tagName.toLowerCase().startsWith(p.toLowerCase()));
-
 }
 
 function startSDK(data) {
