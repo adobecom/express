@@ -66,7 +66,20 @@ function startSDK(data) {
           locale: ietf,
           env,
         },
-        callbacks: {},
+        callbacks: {
+          onIntentChange: () => ({
+            appConfig: {
+
+            },
+            exportConfig: {
+
+            },
+            containerConfig: {
+              mode: 'modal',
+              hideCloseButton: true,
+            },
+          }),
+        },
         authOption: () => ({
           mode: 'delayed',
         }),
@@ -115,7 +128,7 @@ function startSDK(data) {
     if (divs[1]) [, uploadContainer] = divs;
     await fade(uploadContainer, 'out');
 
-    const modalParams = {
+    const contConfig = {
       mode: 'inline',
       parentElementId: `${quickAction}-container`,
       backgroundColor: 'transparent',
@@ -137,25 +150,25 @@ function startSDK(data) {
 
     switch (quickAction) {
       case 'convert-to-jpg':
-        ccEverywhere.quickAction.convertToJPEG(docConfig, appConfig, exportConfig, modalParams);
+        ccEverywhere.quickAction.convertToJPEG(docConfig, appConfig, exportConfig, contConfig);
         break;
       case 'convert-to-png':
-        ccEverywhere.quickAction.convertToPNG(docConfig, appConfig, exportConfig, modalParams);
+        ccEverywhere.quickAction.convertToPNG(docConfig, appConfig, exportConfig, contConfig);
         break;
       case 'convert-to-svg':
-        ccEverywhere.quickAction.convertToSVG(docConfig, appConfig, exportConfig, modalParams);
+        ccEverywhere.quickAction.convertToSVG(docConfig, appConfig, exportConfig, contConfig);
         break;
       case 'crop-image':
-        ccEverywhere.quickAction.cropImage(docConfig, appConfig, exportConfig, modalParams);
+        ccEverywhere.quickAction.cropImage(docConfig, appConfig, exportConfig, contConfig);
         break;
       case 'resize-image':
-        ccEverywhere.quickAction.resizeImage(docConfig, appConfig, exportConfig, modalParams);
+        ccEverywhere.quickAction.resizeImage(docConfig, appConfig, exportConfig, contConfig);
         break;
       case 'remove-background':
-        ccEverywhere.quickAction.removeBackground(docConfig, appConfig, exportConfig, modalParams);
+        ccEverywhere.quickAction.removeBackground(docConfig, appConfig, exportConfig, contConfig);
         break;
       case 'generate-qr-code':
-        ccEverywhere.quickAction.generateQRCode(docConfig, appConfig, exportConfig, modalParams);
+        ccEverywhere.quickAction.generateQRCode(docConfig, appConfig, exportConfig, contConfig);
         break;
       default: break;
     }
