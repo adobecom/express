@@ -45,7 +45,7 @@ function selectElementByTagPrefix(p) {
 }
 
 function startSDK(data) {
-  const CDN_URL = 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
+  const CDN_URL = 'https://dev.cc-embed.adobe.com/sdk/prbuilds/1p/PR-1410/CCEverywhere.js';
   loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
       return;
