@@ -76,10 +76,6 @@ End legacy CSS
 Border style variants
 */
 
-.pricing-cards .gradient-promo .card {
-  margin-bottom: 2px;
-}
-
 .pricing-cards .gradient-promo>div:first-of-type {
   margin-left: 4px;
   color: var(--color-white);
@@ -90,7 +86,7 @@ Border style variants
 .pricing-cards .gradient-promo {
   background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
   padding: 12px 2px 4px 2px;
-  border-radius: 16px;
+  border-radius: 10px;
   overflow: hidden;
   background: var(--color-white);
   margin-top: 0px !important;
@@ -102,7 +98,8 @@ Border style variants
 
 
 .pricing-cards .special-promo {
-  border: 1px solid #FFE600;
+  border: 2px solid #FFE600;
+  padding-bottom: 1px;
 }
 
 .pricing-cards .card-border.special-promo{
@@ -384,7 +381,7 @@ End border style variants
 
 @media screen and (min-width: 1250px) {
   :root {
-    --card-width: 391px;
+    --card-width: 400px;
     --card-padding: 24px 16px;
   }
 
