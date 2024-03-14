@@ -42,6 +42,7 @@ function fade(element, action) {
 function selectElementByTagPrefix(p) {
   const allEls = document.body.querySelectorAll('*');
   return Array.from(allEls).find((e) => e.tagName.toLowerCase().startsWith(p.toLowerCase()));
+
 }
 
 function startSDK(data) {
@@ -69,15 +70,19 @@ function startSDK(data) {
         },
         callbacks: {
           onIntentChange: () => {
+            document.body.classList.add('editor-modal-loaded');
             window.history.pushState({ hideFrictionlessQa: true }, null, '');
-            inputElement.value = '';
-            fade(uploadContainer, 'in');
 
             return {
               containerConfig: {
                 mode: 'modal',
               },
             };
+          },
+          onCancel: () => {
+            inputElement.value = '';
+            fade(uploadContainer, 'in');
+            document.body.classList.remove('editor-modal-loaded');
           },
         },
         authOption: () => ({
@@ -290,6 +295,7 @@ export default async function decorate(block) {
       window.history.pushState({ hideFrictionlessQa: true }, null, '');
       quickActionContainer?.remove();
       selectElementByTagPrefix('cc-everywhere-container-')?.remove();
+      document.body.classList.remove('editor-modal-loaded');
       inputElement.value = '';
       await fade(uploadContainer, 'in');
     }
