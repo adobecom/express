@@ -381,7 +381,7 @@ End border style variants
 
 @media screen and (min-width: 1250px) {
   :root {
-    --card-width: 391px;
+    --card-width: 400px;
     --card-padding: 24px 16px;
   }
 
