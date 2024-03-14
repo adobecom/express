@@ -361,7 +361,6 @@ main.with-holiday-templates-banner {
 
 .template-x.horizontal.fullwidth:not(.holiday) {
     max-width: none;
-    padding-right: 16px;
     display: block;
     margin-left: auto;
 }
@@ -1626,6 +1625,8 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 .template-x.horizontal .carousel-platform {
     scroll-padding: 12px;
+    padding: 24px 15px;
+    box-sizing: border-box;
 }
 
 .template-x.horizontal.mini .carousel-platform {
