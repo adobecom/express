@@ -43,6 +43,11 @@ function fade(element, action) {
   });
 }
 
+function selectElementByTagPrefix(p) {
+  const allEls = document.body.querySelectorAll('*');
+  return Array.from(allEls).find((e) => e.tagName.toLowerCase().startsWith(p.toLowerCase()));
+}
+
 function startSDK(data) {
   const CDN_URL = 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
   loadScript(CDN_URL).then(async () => {
@@ -70,7 +75,6 @@ function startSDK(data) {
           onIntentChange: () => ({
             containerConfig: {
               mode: 'modal',
-              hideCloseButton: true,
             },
           }),
         },
@@ -176,7 +180,7 @@ function startSDKWithUnconvertedFile(file) {
     const reader = new FileReader();
 
     reader.onload = () => {
-      window.history.pushState({ hideDropzone: true }, '', '');
+      window.history.pushState({ hideFrictionlessQa: true }, '', '');
       startSDK(reader.result);
     };
 
@@ -280,8 +284,9 @@ export default async function decorate(block) {
   dropzone.append(freePlanTags);
 
   window.addEventListener('popstate', (e) => {
-    if (e.state && e.state.hideDropzone) {
-      quickActionContainer.remove();
+    if (e.state && e.state.hideFrictionlessQa) {
+      quickActionContainer?.remove();
+      selectElementByTagPrefix('cc-everywhere-container-')?.remove();
       inputElement.value = '';
       fade(uploadContainer, 'in');
     }
