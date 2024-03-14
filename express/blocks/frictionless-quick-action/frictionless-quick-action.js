@@ -23,18 +23,14 @@ function fade(element, action) {
         element.removeEventListener('transitionend', onTransitionEnd);
         element.classList.add('hidden');
       }
-      resolve(); // Resolve the promise when the transition ends
+      resolve();
     }
 
     if (action === 'in') {
       element.classList.remove('hidden');
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          element.classList.remove('transparent');
-          if (action === 'in') {
-            resolve(); // For fading in, resolve immediately after removing 'transparent'
-          }
-        });
+        element.classList.remove('transparent');
+        resolve();
       });
     } else if (action === 'out') {
       element.classList.add('transparent');
@@ -180,7 +176,7 @@ function startSDKWithUnconvertedFile(file) {
     const reader = new FileReader();
 
     reader.onload = () => {
-      window.history.pushState({ hideFrictionlessQa: true }, '', '');
+      window.history.pushState({ hideFrictionlessQa: true }, null, '');
       startSDK(reader.result);
     };
 
@@ -283,12 +279,12 @@ export default async function decorate(block) {
   const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
   dropzone.append(freePlanTags);
 
-  window.addEventListener('popstate', (e) => {
+  window.addEventListener('popstate', async (e) => {
     if (e.state && e.state.hideFrictionlessQa) {
       quickActionContainer?.remove();
       selectElementByTagPrefix('cc-everywhere-container-')?.remove();
       inputElement.value = '';
-      fade(uploadContainer, 'in');
+      await fade(uploadContainer, 'in');
     }
   }, { passive: true });
 }
