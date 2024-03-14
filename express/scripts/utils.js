@@ -1937,7 +1937,7 @@ async function buildAutoBlocks(main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase())) {
+  if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase()) && document.body.dataset.device === 'mobile') {
     const authoredRRFound = [
       '.template-list.horizontal.fullwidth.mini',
       '.link-list.noarrows',
