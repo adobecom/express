@@ -654,124 +654,6 @@ function getExtension(path) {
   return pageName.includes('.') ? pageName.split('.').pop() : '';
 }
 
-function appendHtmlToLink(link) {
-  const { useDotHtml } = getConfig();
-  if (!useDotHtml) return;
-  const href = link.getAttribute('href');
-  if (!href?.length) return;
-
-  const { autoBlocks = [], htmlExclude = [] } = getConfig();
-
-  const HAS_EXTENSION = /\..*$/;
-  let url = { pathname: href };
-
-  try {
-    url = new URL(href, PAGE_URL);
-  } catch (e) {
-    /* do nothing */
-  }
-
-  if (!(href.startsWith('/') || href.startsWith(PAGE_URL.origin))
-    || url.pathname?.endsWith('/')
-    || href === PAGE_URL.origin
-    || HAS_EXTENSION.test(href.split('/').pop())
-    || htmlExclude?.some((excludeRe) => excludeRe.test(href))) {
-    return;
-  }
-
-  const relativeAutoBlocks = autoBlocks
-    .map((b) => Object.values(b)[0])
-    .filter((b) => b.startsWith('/'));
-  const isAutoblockLink = relativeAutoBlocks.some((block) => href.includes(block));
-  if (isAutoblockLink) return;
-
-  try {
-    const linkUrl = new URL(href.startsWith('http') ? href : `${PAGE_URL.origin}${href}`);
-    if (linkUrl.pathname && !linkUrl.pathname.endsWith('.html')) {
-      linkUrl.pathname = `${linkUrl.pathname}.html`;
-      link.setAttribute('href', href.startsWith('/')
-        ? `${linkUrl.pathname}${linkUrl.search}${linkUrl.hash}`
-        : linkUrl.href);
-    }
-  } catch (e) {
-    window.lana?.log(`Error while attempting to append '.html' to ${link}: ${e}`);
-  }
-}
-
-/**
- * Decorates all sections in a container element.
- * @param {Element} el The container element
- * @param {Boolean} isDoc Is document or fragment
- */
-async function decorateSections(el, isDoc) {
-  // fixme: our decorateSections gets main while in Milo it gets area.
-  //  For us, the selector never changes. That's why isDoc always needs to be false.
-  // eslint-disable-next-line no-param-reassign
-  isDoc = false;
-  const selector = isDoc ? 'body > main > div' : ':scope > div';
-  return [...el.querySelectorAll(selector)].map((section, idx) => {
-    /* process section metadata */
-    const sectionMeta = section.querySelector('div.section-metadata');
-    if (sectionMeta) {
-      const meta = readBlockConfig(sectionMeta);
-      const keys = Object.keys(meta);
-      keys.forEach((key) => {
-        if (key === 'style') {
-          section.classList.add(...meta.style.split(', ').map(toClassName));
-        } else if (key === 'anchor') {
-          section.id = toClassName(meta.anchor);
-        } else if (key === 'background') {
-          section.style.background = meta.background;
-        } else {
-          section.dataset[key] = meta[key];
-        }
-      });
-      sectionMeta.remove();
-    }
-
-    const links = decorateLinks(section);
-
-    const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
-
-    section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
-    section.dataset.status = 'decorated';
-    section.dataset.idx = idx;
-
-    let defaultContentWrapper;
-    [...section.children].forEach((child) => {
-      const isDivTag = child.tagName === 'DIV';
-      if (isDivTag) {
-        defaultContentWrapper = undefined;
-      } else {
-        if (!defaultContentWrapper) {
-          defaultContentWrapper = document.createElement('div');
-          defaultContentWrapper.classList.add('default-content-wrapper');
-          section.insertBefore(defaultContentWrapper, child);
-        }
-        defaultContentWrapper.append(child);
-      }
-    });
-    blocks.forEach(async (block) => {
-      await decorateBlock(block);
-    });
-    const blockLinks = [...blocks].reduce((blkLinks, block) => {
-      links.filter((link) => block.contains(link))
-        .forEach((link) => {
-          if (link.classList.contains('link-block')) {
-            blkLinks.autoBlocks.push(link);
-          }
-        });
-      return blkLinks;
-    }, { autoBlocks: [] });
-
-    return {
-      el: section,
-      blocks: [...links, ...blocks],
-      preloadLinks: blockLinks.autoBlocks,
-    };
-  });
-}
-
 /**
  * Updates all section status in a container element.
  * @param {Element} main The container element
@@ -2421,6 +2303,130 @@ export function registerPerformanceLogger() {
     // no output
   }
 }
+
+
+/*
+START COMMON FUNCTIONS 
+*/
+
+function appendHtmlToLink(link) {
+  const { useDotHtml } = getConfig();
+  if (!useDotHtml) return;
+  const href = link.getAttribute('href');
+  if (!href?.length) return;
+
+  const { autoBlocks = [], htmlExclude = [] } = getConfig();
+
+  const HAS_EXTENSION = /\..*$/;
+  let url = { pathname: href };
+
+  try {
+    url = new URL(href, PAGE_URL);
+  } catch (e) {
+    /* do nothing */
+  }
+
+  if (!(href.startsWith('/') || href.startsWith(PAGE_URL.origin))
+    || url.pathname?.endsWith('/')
+    || href === PAGE_URL.origin
+    || HAS_EXTENSION.test(href.split('/').pop())
+    || htmlExclude?.some((excludeRe) => excludeRe.test(href))) {
+    return;
+  }
+
+  const relativeAutoBlocks = autoBlocks
+    .map((b) => Object.values(b)[0])
+    .filter((b) => b.startsWith('/'));
+  const isAutoblockLink = relativeAutoBlocks.some((block) => href.includes(block));
+  if (isAutoblockLink) return;
+
+  try {
+    const linkUrl = new URL(href.startsWith('http') ? href : `${PAGE_URL.origin}${href}`);
+    if (linkUrl.pathname && !linkUrl.pathname.endsWith('.html')) {
+      linkUrl.pathname = `${linkUrl.pathname}.html`;
+      link.setAttribute('href', href.startsWith('/')
+        ? `${linkUrl.pathname}${linkUrl.search}${linkUrl.hash}`
+        : linkUrl.href);
+    }
+  } catch (e) {
+    window.lana?.log(`Error while attempting to append '.html' to ${link}: ${e}`);
+  }
+}
+
+/**
+ * Decorates all sections in a container element.
+ * @param {Element} el The container element
+ * @param {Boolean} isDoc Is document or fragment
+ */
+async function decorateSections(el, isDoc) {
+  // fixme: our decorateSections gets main while in Milo it gets area.
+  //  For us, the selector never changes. That's why isDoc always needs to be false.
+  // eslint-disable-next-line no-param-reassign
+  isDoc = false;
+  const selector = isDoc ? 'body > main > div' : ':scope > div';
+  return [...el.querySelectorAll(selector)].map((section, idx) => {
+    /* process section metadata */
+    const sectionMeta = section.querySelector('div.section-metadata');
+    if (sectionMeta) {
+      const meta = readBlockConfig(sectionMeta);
+      const keys = Object.keys(meta);
+      keys.forEach((key) => {
+        if (key === 'style') {
+          section.classList.add(...meta.style.split(', ').map(toClassName));
+        } else if (key === 'anchor') {
+          section.id = toClassName(meta.anchor);
+        } else if (key === 'background') {
+          section.style.background = meta.background;
+        } else {
+          section.dataset[key] = meta[key];
+        }
+      });
+      sectionMeta.remove();
+    }
+
+    const links = decorateLinks(section);
+
+    const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
+
+    section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
+    section.dataset.status = 'decorated';
+    section.dataset.idx = idx;
+
+    let defaultContentWrapper;
+    [...section.children].forEach((child) => {
+      const isDivTag = child.tagName === 'DIV';
+      if (isDivTag) {
+        defaultContentWrapper = undefined;
+      } else {
+        if (!defaultContentWrapper) {
+          defaultContentWrapper = document.createElement('div');
+          defaultContentWrapper.classList.add('default-content-wrapper');
+          section.insertBefore(defaultContentWrapper, child);
+        }
+        defaultContentWrapper.append(child);
+      }
+    });
+    blocks.forEach(async (block) => {
+      await decorateBlock(block);
+    });
+    const blockLinks = [...blocks].reduce((blkLinks, block) => {
+      links.filter((link) => block.contains(link))
+        .forEach((link) => {
+          if (link.classList.contains('link-block')) {
+            blkLinks.autoBlocks.push(link);
+          }
+        });
+      return blkLinks;
+    }, { autoBlocks: [] });
+
+    return {
+      el: section,
+      blocks: [...links, ...blocks],
+      preloadLinks: blockLinks.autoBlocks,
+    };
+  });
+}
+
 
 export function createIntersectionObserver({
   el, callback, once = true, options = {},
