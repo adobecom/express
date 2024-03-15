@@ -79,9 +79,7 @@ function startSDK(data) {
             };
           },
           onCancel: () => {
-            inputElement.value = '';
-            fade(uploadContainer, 'in');
-            document.body.classList.remove('editor-modal-loaded');
+            window.history.back();
           },
         },
         authOption: () => ({
