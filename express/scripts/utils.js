@@ -294,8 +294,6 @@ export function toClassName(name) {
     : '';
 }
 
-
-
 /* Seems to be minified in its own file in Milo */
 
 export function getIcon(icons, alt, size = 44) {
@@ -421,7 +419,6 @@ export function getIconElement(icons, size, alt, additionalClassName) {
   return ($div.firstElementChild);
 }
 
-
 // Get lottie animation HTML - remember to lazyLoadLottiePlayer() to see it.
 export function getLottie(name, src, loop = true, autoplay = true, control = false, hover = false) {
   return (`<lottie-player class="lottie lottie-${name}" src="${src}" background="transparent" speed="1" ${(loop) ? 'loop ' : ''}${(autoplay) ? 'autoplay ' : ''}${(control) ? 'controls ' : ''}${(hover) ? 'hover ' : ''}></lottie-player>`);
@@ -529,7 +526,7 @@ export function linkPicture($picture) {
   }
 }
 
-/* Only used in 3 blocks, consider declaring locally */ 
+/* Only used in 3 blocks, consider declaring locally */
 export function linkImage($elem) {
   const $a = $elem.querySelector('a');
   if ($a) {
@@ -610,7 +607,6 @@ export function removeIrrelevantSections(main) {
     }
   });
 }
-
 
 /**
  * Updates all section status in a container element.
@@ -1017,7 +1013,7 @@ export function toCamelCase(name) {
  * Gets the experiment name, if any for the page based on env, useragent, queyr params
  * @returns {string} experimentid
  */
-/* 
+/*
   Experiment Section, consider moving into own file.
 */
 export function getExperiment() {
@@ -1600,7 +1596,6 @@ function displayOldLinkWarning() {
   }
 }
 
-
 /* Not found in Milo */
 function setHelixEnv(name, overrides) {
   if (name) {
@@ -1705,7 +1700,6 @@ function decoratePictures(main) {
   });
 }
 
-
 /* Animation, not present in Milo */
 
 export function addAnimationToggle(target) {
@@ -1724,7 +1718,6 @@ export function addAnimationToggle(target) {
     });
   }, true);
 }
-
 
 /* Japan specific functions */
 
@@ -1844,7 +1837,7 @@ function decorateLegalCopy(main) {
 }
 
 /**
- * loads everything that doesn't need to be delayed. 
+ * loads everything that doesn't need to be delayed.
  */
 
 /*
@@ -1866,8 +1859,7 @@ async function loadLazy(main) {
   ]);
 }
 
-
-/* How does Milo do this? */ 
+/* How does Milo do this? */
 
 export function getMobileOperatingSystem() {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -1955,9 +1947,8 @@ export function registerPerformanceLogger() {
   }
 }
 
-
 /*
-START COMMON FUNCTIONS 
+START COMMON FUNCTIONS
 */
 
 function appendHtmlToLink(link) {
@@ -2077,7 +2068,6 @@ async function decorateSections(el, isDoc) {
     };
   });
 }
-
 
 export function createIntersectionObserver({
   el, callback, once = true, options = {},
@@ -2377,7 +2367,6 @@ function hideBody() {
   }
 }
 
-
 export function decorateLinks(el) {
   decorateImageLinks(el);
   const anchors = el.getElementsByTagName('a');
@@ -2552,7 +2541,6 @@ export function localizeLink(
   }
 }
 
-
 /**
  * Decorates a block.
  * @param {Element} block The block element
@@ -2675,7 +2663,6 @@ export async function loadSections(sections, isDoc) {
   return areaBlocks;
 }
 
-
 function loadIMS() {
   window.adobeid = {
     client_id: sessionStorage.getItem('imsclient'),
@@ -2690,7 +2677,6 @@ function loadIMS() {
     window.adobeid.environment = 'stg1';
   }
 }
-
 
 /**
  * Decorates the main element.
@@ -2723,7 +2709,6 @@ function splitSections(main) {
     }
   });
 }
-
 
 /**
  * Loads JS and CSS for a block.
@@ -2822,23 +2807,21 @@ async function loadMartech() {
   }
 }
 
-
-
-export function isInTextNode () {};
-export function loadDelayed  () {};
-export function parseEncodedConfig () {};
-export function scrollToHashedElement () {};
-function checkForPageMods () {};
-function decorateContent () {};
-function decorateDefaults () {};
-function decorateDocumentExtras () {};
-function decorateFooterPromo () {};
-function decorateHeader () {};
-function decorateIcons () {};
-function decorateMeta () {};
-function decoratePlaceholders () {};
-function decorateSection () {};
-function documentPostSectionLoading () {};
-function loadTemplate () {};
-function processSection () {};
-function setupMiloObj () {};
+export function isInTextNode() {}
+export function loadDelayed() {}
+export function parseEncodedConfig() {}
+export function scrollToHashedElement() {}
+function checkForPageMods() {}
+function decorateContent() {}
+function decorateDefaults() {}
+function decorateDocumentExtras() {}
+function decorateFooterPromo() {}
+function decorateHeader() {}
+function decorateIcons() {}
+function decorateMeta() {}
+function decoratePlaceholders() {}
+function decorateSection() {}
+function documentPostSectionLoading() {}
+function loadTemplate() {}
+function processSection() {}
+function setupMiloObj() {}
