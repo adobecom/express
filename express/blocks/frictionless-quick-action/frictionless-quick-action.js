@@ -287,14 +287,14 @@ export default async function decorate(block) {
   const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
   dropzone.append(freePlanTags);
 
-  window.addEventListener('popstate', async (e) => {
+  window.addEventListener('popstate', (e) => {
     if (e.state && e.state.hideFrictionlessQa) {
       window.history.pushState({ hideFrictionlessQa: true }, null, '');
       quickActionContainer?.remove();
       selectElementByTagPrefix('cc-everywhere-container-')?.remove();
       document.body.classList.remove('editor-modal-loaded');
       inputElement.value = '';
-      await fade(uploadContainer, 'in');
+      fade(uploadContainer, 'in');
     }
   }, { passive: true });
 }
