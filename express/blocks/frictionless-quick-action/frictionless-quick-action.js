@@ -70,8 +70,7 @@ function startSDK(data) {
         callbacks: {
           onIntentChange: () => {
             document.body.classList.add('editor-modal-loaded');
-            window.history.pushState({ hideFrictionlessQa: true }, null, '');
-
+            window.history.pushState({ hideFrictionlessQa: true }, '', '');
             return {
               containerConfig: {
                 mode: 'modal',
@@ -182,9 +181,8 @@ function startSDKWithUnconvertedFile(file) {
   const maxSize = 17 * 1024 * 1024; // 17 MB in bytes
   if (validImageTypes.includes(file.type) && file.size <= maxSize) {
     const reader = new FileReader();
-
     reader.onloadend = () => {
-      window.history.pushState({ hideFrictionlessQa: true }, null, '');
+      window.history.pushState({ hideFrictionlessQa: true }, '', '');
       startSDK(reader.result);
     };
 
@@ -288,10 +286,13 @@ export default async function decorate(block) {
   dropzone.append(freePlanTags);
 
   window.addEventListener('popstate', (e) => {
-    if (e.state && e.state.hideFrictionlessQa) {
-      window.history.pushState({ hideFrictionlessQa: true }, null, '');
+    const editorModal = selectElementByTagPrefix('cc-everywhere-container-');
+    const correctState = e.state?.hideFrictionlessQa;
+    const embedElsFound = quickActionContainer || editorModal;
+    window.history.pushState({ hideFrictionlessQa: true }, '', '');
+    if (correctState || embedElsFound) {
       quickActionContainer?.remove();
-      selectElementByTagPrefix('cc-everywhere-container-')?.remove();
+      editorModal?.remove();
       document.body.classList.remove('editor-modal-loaded');
       inputElement.value = '';
       fade(uploadContainer, 'in');
