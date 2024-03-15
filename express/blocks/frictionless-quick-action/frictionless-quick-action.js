@@ -185,7 +185,7 @@ function startSDKWithUnconvertedFile(file) {
   if (validImageTypes.includes(file.type) && file.size <= maxSize) {
     const reader = new FileReader();
 
-    reader.onload = () => {
+    reader.onloadend = () => {
       window.history.pushState({ hideFrictionlessQa: true }, null, '');
       startSDK(reader.result);
     };
