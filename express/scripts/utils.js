@@ -1,3 +1,6 @@
+/* eslint no-use-before-define: 0 */ // --> OFF
+/* eslint no-unreachable: 0 */ // --> OFF
+
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
   { fragment: '/express/fragments/' },
@@ -38,12 +41,6 @@ const LANGSTORE = 'langstore';
 
 const PAGE_URL = new URL(window.location.href);
 
-export function getMetadata(name) {
-  const attr = name && name.includes(':') ? 'property' : 'name';
-  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
-  return ($meta && $meta.content) || '';
-}
-
 function getEnv(conf) {
   const { host } = window.location;
   const query = PAGE_URL.searchParams.get('env');
@@ -59,27 +56,6 @@ function getEnv(conf) {
   }
   return { ...ENVS.prod, consumer: conf.prod };
   /* c8 ignore stop */
-}
-
-export function getLocale(locales, pathname = window.location.pathname) {
-  if (!locales) {
-    return { ietf: 'en-US', tk: 'hah7vzn.css', prefix: '' };
-  }
-  const split = pathname.split('/');
-  const localeString = split[1];
-  const locale = locales[localeString] || locales[''];
-  if (localeString === LANGSTORE) {
-    locale.prefix = `/${localeString}/${split[2]}`;
-    if (
-      Object.values(locales)
-        .find((loc) => loc.ietf?.startsWith(split[2]))?.dir === 'rtl'
-    ) locale.dir = 'rtl';
-    return locale;
-  }
-  const isUS = locale.ietf === 'en-US';
-  locale.prefix = isUS ? '' : `/${localeString}`;
-  locale.region = isUS ? 'us' : localeString.split('_')[0];
-  return locale;
 }
 
 export const [setConfig, updateConfig, getConfig] = (() => {
@@ -306,27 +282,6 @@ export function toClassName(name) {
   return name && typeof name === 'string'
     ? name.trim().toLowerCase().replace(/[^0-9a-z]/gi, '-')
     : '';
-}
-
-export function createTag(tag, attributes, html) {
-  const el = document.createElement(tag);
-  if (html) {
-    if (html instanceof HTMLElement
-      || html instanceof SVGElement
-      || html instanceof DocumentFragment) {
-      el.append(html);
-    } else if (Array.isArray(html)) {
-      el.append(...html);
-    } else {
-      el.insertAdjacentHTML('beforeend', html);
-    }
-  }
-  if (attributes) {
-    Object.entries(attributes).forEach(([key, val]) => {
-      el.setAttribute(key, val);
-    });
-  }
-  return el;
 }
 
 // Get lottie animation HTML - remember to lazyLoadLottiePlayer() to see it.
@@ -694,73 +649,9 @@ export async function decorateBlock(block) {
   }
 }
 
-export function decorateSVG(a) {
-  const { textContent, href } = a;
-  if (!(textContent.includes('.svg') || href.includes('.svg'))) return a;
-  try {
-    // Mine for URL and alt text
-    const splitText = textContent.split('|');
-    const textUrl = new URL(splitText.shift().trim());
-    const altText = splitText.join('|').trim();
-
-    // Relative link checking
-    const hrefUrl = a.href.startsWith('/')
-      ? new URL(`${window.location.origin}${a.href}`)
-      : new URL(a.href);
-
-    const src = textUrl.hostname.includes('.hlx.') ? textUrl.pathname : textUrl;
-
-    const img = createTag('img', { loading: 'lazy', src });
-    if (altText) img.alt = altText;
-    const pic = createTag('picture', null, img);
-
-    if (textUrl.pathname === hrefUrl.pathname) {
-      a.parentElement.replaceChild(pic, a);
-      return pic;
-    }
-    a.textContent = '';
-    a.append(pic);
-    return a;
-  } catch (e) {
-    window.lana.log(`Failed to create SVG: ${e.message}`);
-    return a;
-  }
-}
-
 function getExtension(path) {
   const pageName = path.split('/').pop();
   return pageName.includes('.') ? pageName.split('.').pop() : '';
-}
-
-export function localizeLink(
-  href,
-  originHostName = window.location.hostname,
-  overrideDomain = false,
-) {
-  try {
-    const url = new URL(href);
-    const relative = url.hostname === originHostName;
-    const processedHref = relative ? href.replace(url.origin, '') : href;
-    const { hash } = url;
-    // TODO remove this special logic for uk & in after coordinating with Pankaj & Mili
-    if (hash.includes('#_dnt') || window.location.href.includes('/uk/express/learn/blog') || window.location.href.includes('/in/express/learn/blog')) return processedHref.replace('#_dnt', '');
-    const path = url.pathname;
-    const extension = getExtension(path);
-    const allowedExts = ['', 'html', 'json'];
-    if (!allowedExts.includes(extension)) return processedHref;
-    const { locale, locales, prodDomains } = getConfig();
-    if (!locale || !locales) return processedHref;
-    const isLocalizable = relative || (prodDomains && prodDomains.includes(url.hostname))
-      || overrideDomain;
-    if (!isLocalizable) return processedHref;
-    const isLocalizedLink = path.startsWith(`/${LANGSTORE}`) || Object.keys(locales)
-      .some((loc) => loc !== '' && (path.startsWith(`/${loc}/`) || path.endsWith(`/${loc}`)));
-    if (isLocalizedLink) return processedHref;
-    const urlPath = `${locale.prefix}${path}${url.search}${hash}`;
-    return relative ? urlPath : `${url.origin}${urlPath}`;
-  } catch (error) {
-    return href;
-  }
 }
 
 function appendHtmlToLink(link) {
@@ -805,120 +696,6 @@ function appendHtmlToLink(link) {
   } catch (e) {
     window.lana?.log(`Error while attempting to append '.html' to ${link}: ${e}`);
   }
-}
-
-function decorateImageLinks(el) {
-  const images = el.querySelectorAll('img[alt*="|"]');
-  if (!images.length) return;
-  [...images].forEach((img) => {
-    const [source, alt, icon] = img.alt.split('|');
-    try {
-      const url = new URL(source.trim());
-      const href = url.hostname.includes('.hlx.') ? `${url.pathname}${url.hash}` : url.href;
-      if (alt?.trim().length) img.alt = alt.trim();
-      const pic = img.closest('picture');
-      const picParent = pic.parentElement;
-      const aTag = createTag('a', { href, class: 'image-link' });
-      picParent.insertBefore(aTag, pic);
-      if (icon) {
-        import('./image-video-link.js').then((mod) => mod.default(picParent, aTag, icon));
-      } else {
-        aTag.append(pic);
-      }
-    } catch (e) {
-      window.lana.log(`Error: ${e.message} '${source.trim()}'`);
-    }
-  });
-}
-
-export function decorateAutoBlock(a) {
-  const config = getConfig();
-  const { hostname } = window.location;
-  let url;
-  try {
-    url = new URL(a.href);
-  } catch (e) {
-    window.lana?.log(`Cannot make URL from decorateAutoBlock - ${a?.href}: ${e.toString()}`);
-    return false;
-  }
-
-  const href = hostname === url.hostname
-    ? `${url.pathname}${url.search}${url.hash}`
-    : a.href;
-
-  return config.autoBlocks.find((candidate) => {
-    const key = Object.keys(candidate)[0];
-    const match = href.includes(candidate[key]);
-    if (!match) return false;
-
-    if (key === 'pdf-viewer' && !a.textContent.includes('.pdf')) {
-      a.target = '_blank';
-      return false;
-    }
-
-    if (key === 'fragment') {
-      if (a.href === window.location.href) {
-        return false;
-      }
-
-      const isInlineFrag = url.hash.includes('#_inline');
-      if (url.hash === '' || isInlineFrag) {
-        const { parentElement } = a;
-        const { nodeName, innerHTML } = parentElement;
-        const noText = innerHTML === a.outerHTML;
-        if (noText && nodeName === 'P') {
-          const div = createTag('div', null, a);
-          parentElement.parentElement.replaceChild(div, parentElement);
-        }
-      }
-
-      // previewing a fragment page with mp4 video
-      if (a.textContent.match('media_.*.mp4')) {
-        a.className = 'video link-block';
-        return false;
-      }
-
-      // Modals
-      if (url.hash !== '' && !isInlineFrag) {
-        a.dataset.modalPath = url.pathname;
-        a.dataset.modalHash = url.hash;
-        a.href = url.hash;
-        a.className = `modal link-block ${[...a.classList].join(' ')}`;
-        return true;
-      }
-    }
-
-    // slack uploaded mp4s
-    if (key === 'video' && !a.textContent.match('media_.*.mp4')) {
-      return false;
-    }
-
-    a.className = `${key} link-block`;
-    return true;
-  });
-}
-
-export function decorateLinks(el) {
-  decorateImageLinks(el);
-  const anchors = el.getElementsByTagName('a');
-  return [...anchors].reduce((rdx, a) => {
-    appendHtmlToLink(a);
-    a.href = localizeLink(a.href);
-    decorateSVG(a);
-    if (a.href.includes('#_blank')) {
-      a.setAttribute('target', '_blank');
-      a.href = a.href.replace('#_blank', '');
-    }
-    if (a.href.includes('#_dnb')) {
-      a.href = a.href.replace('#_dnb', '');
-    } else {
-      const autoBlock = decorateAutoBlock(a);
-      if (autoBlock) {
-        rdx.push(a);
-      }
-    }
-    return rdx;
-  }, []);
 }
 
 /**
@@ -1142,34 +919,7 @@ function decorateHeaderAndFooter() {
   } else footer.remove();
 }
 
-export function loadLink(href, {
-  as,
-  callback,
-  crossorigin,
-  rel,
-} = {}) {
-  let link = document.head.querySelector(`link[href="${href}"]`);
-  if (!link) {
-    link = document.createElement('link');
-    link.setAttribute('rel', rel);
-    if (as) link.setAttribute('as', as);
-    if (crossorigin) link.setAttribute('crossorigin', crossorigin);
-    link.setAttribute('href', href);
-    if (callback) {
-      link.onload = (e) => callback(e.type);
-      link.onerror = (e) => callback(e.type);
-    }
-    document.head.appendChild(link);
-  } else if (callback) {
-    callback('noop');
-  }
-  return link;
-}
-
-export function loadStyle(href, callback) {
-  return loadLink(href, { rel: 'stylesheet', callback });
-}
-
+ex;
 function resolveFragments() {
   Array.from(document.querySelectorAll('main > div div'))
     .filter(($cell) => $cell.childElementCount === 0)
@@ -2427,38 +2177,6 @@ function decorateLegalCopy(main) {
   });
 }
 
-export function loadLana(options = {}) {
-  if (window.lana) return;
-
-  const lanaError = (e) => {
-    window.lana.log(e.reason || e.error || e.message, {
-      errorType: 'i',
-    });
-  };
-
-  window.lana = {
-    log: async (...args) => {
-      await import('./lana.js');
-      window.removeEventListener('error', lanaError);
-      window.removeEventListener('unhandledrejection', lanaError);
-      return window.lana.log(...args);
-    },
-    debug: false,
-    options,
-  };
-
-  window.addEventListener('error', lanaError);
-  window.addEventListener('unhandledrejection', lanaError);
-}
-
-function removeMetadata() {
-  document.head.querySelectorAll('meta').forEach((meta) => {
-    if (meta.content && meta.content.includes('--none--')) {
-      meta.remove();
-    }
-  });
-}
-
 /**
  * loads everything that doesn't need to be delayed.
  */
@@ -2651,21 +2369,6 @@ export function titleCase(str) {
   return splitStr.join(' ');
 }
 
-export function createIntersectionObserver({
-  el, callback, once = true, options = {},
-}) {
-  const io = new IntersectionObserver((entries, observer) => {
-    entries.forEach(async (entry) => {
-      if (entry.isIntersecting) {
-        if (once) observer.unobserve(entry.target);
-        callback(entry.target, entry);
-      }
-    });
-  }, options);
-  io.observe(el);
-  return io;
-}
-
 /*
  * lighthouse performance instrumentation helper
  * (needs a refactor)
@@ -2718,3 +2421,323 @@ export function registerPerformanceLogger() {
     // no output
   }
 }
+
+export function createIntersectionObserver({
+  el, callback, once = true, options = {},
+}) {
+  const io = new IntersectionObserver((entries, observer) => {
+    entries.forEach(async (entry) => {
+      if (entry.isIntersecting) {
+        if (once) observer.unobserve(entry.target);
+        callback(entry.target, entry);
+      }
+    });
+  }, options);
+  io.observe(el);
+  return io;
+}
+
+export function createTag(tag, attributes, html) {
+  const el = document.createElement(tag);
+  if (html) {
+    if (html instanceof HTMLElement
+      || html instanceof SVGElement
+      || html instanceof DocumentFragment) {
+      el.append(html);
+    } else if (Array.isArray(html)) {
+      el.append(...html);
+    } else {
+      el.insertAdjacentHTML('beforeend', html);
+    }
+  }
+  if (attributes) {
+    Object.entries(attributes).forEach(([key, val]) => {
+      el.setAttribute(key, val);
+    });
+  }
+  return el;
+}
+
+export function decorateAutoBlock(a) {
+  const config = getConfig();
+  const { hostname } = window.location;
+  let url;
+  try {
+    url = new URL(a.href);
+  } catch (e) {
+    window.lana?.log(`Cannot make URL from decorateAutoBlock - ${a?.href}: ${e.toString()}`);
+    return false;
+  }
+
+  const href = hostname === url.hostname
+    ? `${url.pathname}${url.search}${url.hash}`
+    : a.href;
+
+  return config.autoBlocks.find((candidate) => {
+    const key = Object.keys(candidate)[0];
+    const match = href.includes(candidate[key]);
+    if (!match) return false;
+
+    if (key === 'pdf-viewer' && !a.textContent.includes('.pdf')) {
+      a.target = '_blank';
+      return false;
+    }
+
+    if (key === 'fragment') {
+      if (a.href === window.location.href) {
+        return false;
+      }
+
+      const isInlineFrag = url.hash.includes('#_inline');
+      if (url.hash === '' || isInlineFrag) {
+        const { parentElement } = a;
+        const { nodeName, innerHTML } = parentElement;
+        const noText = innerHTML === a.outerHTML;
+        if (noText && nodeName === 'P') {
+          const div = createTag('div', null, a);
+          parentElement.parentElement.replaceChild(div, parentElement);
+        }
+      }
+
+      // previewing a fragment page with mp4 video
+      if (a.textContent.match('media_.*.mp4')) {
+        a.className = 'video link-block';
+        return false;
+      }
+
+      // Modals
+      if (url.hash !== '' && !isInlineFrag) {
+        a.dataset.modalPath = url.pathname;
+        a.dataset.modalHash = url.hash;
+        a.href = url.hash;
+        a.className = `modal link-block ${[...a.classList].join(' ')}`;
+        return true;
+      }
+    }
+
+    // slack uploaded mp4s
+    if (key === 'video' && !a.textContent.match('media_.*.mp4')) {
+      return false;
+    }
+
+    a.className = `${key} link-block`;
+    return true;
+  });
+}
+
+function decorateImageLinks(el) {
+  const images = el.querySelectorAll('img[alt*="|"]');
+  if (!images.length) return;
+  [...images].forEach((img) => {
+    const [source, alt, icon] = img.alt.split('|');
+    try {
+      const url = new URL(source.trim());
+      const href = url.hostname.includes('.hlx.') ? `${url.pathname}${url.hash}` : url.href;
+      if (alt?.trim().length) img.alt = alt.trim();
+      const pic = img.closest('picture');
+      const picParent = pic.parentElement;
+      const aTag = createTag('a', { href, class: 'image-link' });
+      picParent.insertBefore(aTag, pic);
+      if (icon) {
+        import('./image-video-link.js').then((mod) => mod.default(picParent, aTag, icon));
+      } else {
+        aTag.append(pic);
+      }
+    } catch (e) {
+      window.lana.log(`Error: ${e.message} '${source.trim()}'`);
+    }
+  });
+}
+
+export function decorateLinks(el) {
+  decorateImageLinks(el);
+  const anchors = el.getElementsByTagName('a');
+  return [...anchors].reduce((rdx, a) => {
+    appendHtmlToLink(a);
+    a.href = localizeLink(a.href);
+    decorateSVG(a);
+    if (a.href.includes('#_blank')) {
+      a.setAttribute('target', '_blank');
+      a.href = a.href.replace('#_blank', '');
+    }
+    if (a.href.includes('#_dnb')) {
+      a.href = a.href.replace('#_dnb', '');
+    } else {
+      const autoBlock = decorateAutoBlock(a);
+      if (autoBlock) {
+        rdx.push(a);
+      }
+    }
+    return rdx;
+  }, []);
+}
+
+export function decorateSVG(a) {
+  const { textContent, href } = a;
+  if (!(textContent.includes('.svg') || href.includes('.svg'))) return a;
+  try {
+    // Mine for URL and alt text
+    const splitText = textContent.split('|');
+    const textUrl = new URL(splitText.shift().trim());
+    const altText = splitText.join('|').trim();
+
+    // Relative link checking
+    const hrefUrl = a.href.startsWith('/')
+      ? new URL(`${window.location.origin}${a.href}`)
+      : new URL(a.href);
+
+    const src = textUrl.hostname.includes('.hlx.') ? textUrl.pathname : textUrl;
+
+    const img = createTag('img', { loading: 'lazy', src });
+    if (altText) img.alt = altText;
+    const pic = createTag('picture', null, img);
+
+    if (textUrl.pathname === hrefUrl.pathname) {
+      a.parentElement.replaceChild(pic, a);
+      return pic;
+    }
+    a.textContent = '';
+    a.append(pic);
+    return a;
+  } catch (e) {
+    window.lana.log(`Failed to create SVG: ${e.message}`);
+    return a;
+  }
+}
+
+export function getLocale(locales, pathname = window.location.pathname) {
+  if (!locales) {
+    return { ietf: 'en-US', tk: 'hah7vzn.css', prefix: '' };
+  }
+  const split = pathname.split('/');
+  const localeString = split[1];
+  const locale = locales[localeString] || locales[''];
+  if (localeString === LANGSTORE) {
+    locale.prefix = `/${localeString}/${split[2]}`;
+    if (
+      Object.values(locales)
+        .find((loc) => loc.ietf?.startsWith(split[2]))?.dir === 'rtl'
+    ) locale.dir = 'rtl';
+    return locale;
+  }
+  const isUS = locale.ietf === 'en-US';
+  locale.prefix = isUS ? '' : `/${localeString}`;
+  locale.region = isUS ? 'us' : localeString.split('_')[0];
+  return locale;
+}
+
+export function getMetadata(name) {
+  const attr = name && name.includes(':') ? 'property' : 'name';
+  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
+  return ($meta && $meta.content) || '';
+}
+
+export function loadLana(options = {}) {
+  if (window.lana) return;
+
+  const lanaError = (e) => {
+    window.lana.log(e.reason || e.error || e.message, {
+      errorType: 'i',
+    });
+  };
+
+  window.lana = {
+    log: async (...args) => {
+      await import('./lana.js');
+      window.removeEventListener('error', lanaError);
+      window.removeEventListener('unhandledrejection', lanaError);
+      return window.lana.log(...args);
+    },
+    debug: false,
+    options,
+  };
+
+  window.addEventListener('error', lanaError);
+  window.addEventListener('unhandledrejection', lanaError);
+}
+
+function removeMetadata() {
+  document.head.querySelectorAll('meta').forEach((meta) => {
+    if (meta.content && meta.content.includes('--none--')) {
+      meta.remove();
+    }
+  });
+}
+
+export function loadLink(href, {
+  as,
+  callback,
+  crossorigin,
+  rel,
+} = {}) {
+  let link = document.head.querySelector(`link[href="${href}"]`);
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', rel);
+    if (as) link.setAttribute('as', as);
+    if (crossorigin) link.setAttribute('crossorigin', crossorigin);
+    link.setAttribute('href', href);
+    if (callback) {
+      link.onload = (e) => callback(e.type);
+      link.onerror = (e) => callback(e.type);
+    }
+    document.head.appendChild(link);
+  } else if (callback) {
+    callback('noop');
+  }
+  return link;
+}
+
+export function loadStyle(href, callback) {
+  return loadLink(href, { rel: 'stylesheet', callback });
+}
+
+export function localizeLink(
+  href,
+  originHostName = window.location.hostname,
+  overrideDomain = false,
+) {
+  try {
+    const url = new URL(href);
+    const relative = url.hostname === originHostName;
+    const processedHref = relative ? href.replace(url.origin, '') : href;
+    const { hash } = url;
+    // TODO remove this special logic for uk & in after coordinating with Pankaj & Mili
+    if (hash.includes('#_dnt') || window.location.href.includes('/uk/express/learn/blog') || window.location.href.includes('/in/express/learn/blog')) return processedHref.replace('#_dnt', '');
+    const path = url.pathname;
+    const extension = getExtension(path);
+    const allowedExts = ['', 'html', 'json'];
+    if (!allowedExts.includes(extension)) return processedHref;
+    const { locale, locales, prodDomains } = getConfig();
+    if (!locale || !locales) return processedHref;
+    const isLocalizable = relative || (prodDomains && prodDomains.includes(url.hostname))
+      || overrideDomain;
+    if (!isLocalizable) return processedHref;
+    const isLocalizedLink = path.startsWith(`/${LANGSTORE}`) || Object.keys(locales)
+      .some((loc) => loc !== '' && (path.startsWith(`/${loc}/`) || path.endsWith(`/${loc}`)));
+    if (isLocalizedLink) return processedHref;
+    const urlPath = `${locale.prefix}${path}${url.search}${hash}`;
+    return relative ? urlPath : `${url.origin}${urlPath}`;
+  } catch (error) {
+    return href;
+  }
+}
+
+export function isInTextNode () {};
+export function loadDelayed  () {};
+export function parseEncodedConfig () {};
+export function scrollToHashedElement () {};
+function checkForPageMods () {};
+function decorateContent () {};
+function decorateDefaults () {};
+function decorateDocumentExtras () {};
+function decorateFooterPromo () {};
+function decorateHeader () {};
+function decorateIcons () {};
+function decorateMeta () {};
+function decoratePlaceholders () {};
+function decorateSection () {};
+function documentPostSectionLoading () {};
+function loadTemplate () {};
+function processSection () {};
+function setupMiloObj () {};
