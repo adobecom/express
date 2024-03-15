@@ -102,6 +102,8 @@ export const [setConfig, updateConfig, getConfig] = (() => {
  * @param {Number} forceSampleRate force weight on specific RUM sampling
  */
 
+/* This is its own file in Milo */
+
 export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
   sampleRUM.defer = sampleRUM.defer || [];
   const defer = (fnname) => {
@@ -180,6 +182,8 @@ export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
   }
 }
 
+/* ONLY USED in instrument, should go back there */
+
 export function getAssetDetails(el) {
   // Get asset details
   const assetUrl = new URL(
@@ -206,6 +210,9 @@ export function getAssetDetails(el) {
  * Track assets in that appear in the viewport and add populate
  * `viewasset` events to the data layer.
  */
+
+/* part of loadLazy, can go in its own file */
+
 function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]']) {
   const assetsSelector = assetsSelectors.join(',');
 
@@ -265,6 +272,7 @@ function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]'])
   }).observe(document.body, { childList: true, subtree: true });
 }
 
+/* Seems to be part of pricing logic */
 export function addPublishDependencies(url) {
   if (!Array.isArray(url)) {
     // eslint-disable-next-line no-param-reassign
@@ -278,65 +286,17 @@ export function addPublishDependencies(url) {
   }
 }
 
+/* this function is declared locally in Milo, but widely used here. maybe find way to reduce
+  usage */
 export function toClassName(name) {
   return name && typeof name === 'string'
     ? name.trim().toLowerCase().replace(/[^0-9a-z]/gi, '-')
     : '';
 }
 
-// Get lottie animation HTML - remember to lazyLoadLottiePlayer() to see it.
-export function getLottie(name, src, loop = true, autoplay = true, control = false, hover = false) {
-  return (`<lottie-player class="lottie lottie-${name}" src="${src}" background="transparent" speed="1" ${(loop) ? 'loop ' : ''}${(autoplay) ? 'autoplay ' : ''}${(control) ? 'controls ' : ''}${(hover) ? 'hover ' : ''}></lottie-player>`);
-}
 
-// Lazy-load lottie player if you scroll to the block.
-export function lazyLoadLottiePlayer($block = null) {
-  const usp = new URLSearchParams(window.location.search);
-  const lottie = usp.get('lottie');
-  if (lottie !== 'off') {
-    const loadLottiePlayer = () => {
-      if (window['lottie-player']) return;
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.async = true;
-      script.src = '/express/scripts/lottie-player.1.5.6.js';
-      document.head.appendChild(script);
-      window['lottie-player'] = true;
-    };
-    if ($block) {
-      const addIntersectionObserver = (block) => {
-        const observer = (entries) => {
-          const entry = entries[0];
-          if (entry.isIntersecting) {
-            if (entry.intersectionRatio >= 0.25) {
-              loadLottiePlayer();
-            }
-          }
-        };
-        const options = {
-          root: null,
-          rootMargin: '0px',
-          threshold: [0.0, 0.25],
-        };
-        const intersectionObserver = new IntersectionObserver(observer, options);
-        intersectionObserver.observe(block);
-      };
-      if (document.readyState === 'complete') {
-        addIntersectionObserver($block);
-      } else {
-        window.addEventListener('load', () => {
-          addIntersectionObserver($block);
-        });
-      }
-    } else if (document.readyState === 'complete') {
-      loadLottiePlayer();
-    } else {
-      window.addEventListener('load', () => {
-        loadLottiePlayer();
-      });
-    }
-  }
-}
+
+/* Seems to be minified in its own file in Milo */
 
 export function getIcon(icons, alt, size = 44) {
   // eslint-disable-next-line no-param-reassign
@@ -461,6 +421,61 @@ export function getIconElement(icons, size, alt, additionalClassName) {
   return ($div.firstElementChild);
 }
 
+
+// Get lottie animation HTML - remember to lazyLoadLottiePlayer() to see it.
+export function getLottie(name, src, loop = true, autoplay = true, control = false, hover = false) {
+  return (`<lottie-player class="lottie lottie-${name}" src="${src}" background="transparent" speed="1" ${(loop) ? 'loop ' : ''}${(autoplay) ? 'autoplay ' : ''}${(control) ? 'controls ' : ''}${(hover) ? 'hover ' : ''}></lottie-player>`);
+}
+
+// Lazy-load lottie player if you scroll to the block.
+export function lazyLoadLottiePlayer($block = null) {
+  const usp = new URLSearchParams(window.location.search);
+  const lottie = usp.get('lottie');
+  if (lottie !== 'off') {
+    const loadLottiePlayer = () => {
+      if (window['lottie-player']) return;
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.async = true;
+      script.src = '/express/scripts/lottie-player.1.5.6.js';
+      document.head.appendChild(script);
+      window['lottie-player'] = true;
+    };
+    if ($block) {
+      const addIntersectionObserver = (block) => {
+        const observer = (entries) => {
+          const entry = entries[0];
+          if (entry.isIntersecting) {
+            if (entry.intersectionRatio >= 0.25) {
+              loadLottiePlayer();
+            }
+          }
+        };
+        const options = {
+          root: null,
+          rootMargin: '0px',
+          threshold: [0.0, 0.25],
+        };
+        const intersectionObserver = new IntersectionObserver(observer, options);
+        intersectionObserver.observe(block);
+      };
+      if (document.readyState === 'complete') {
+        addIntersectionObserver($block);
+      } else {
+        window.addEventListener('load', () => {
+          addIntersectionObserver($block);
+        });
+      }
+    } else if (document.readyState === 'complete') {
+      loadLottiePlayer();
+    } else {
+      window.addEventListener('load', () => {
+        loadLottiePlayer();
+      });
+    }
+  }
+}
+
 export function transformLinkToAnimation($a, $videoLooping = true) {
   if (!$a || !$a.href.endsWith('.mp4')) {
     return null;
@@ -500,6 +515,8 @@ export function transformLinkToAnimation($a, $videoLooping = true) {
   return $video;
 }
 
+/* Only used locally in our decorate method */
+
 export function linkPicture($picture) {
   const $nextSib = $picture.parentNode.nextElementSibling;
   if ($nextSib) {
@@ -512,6 +529,7 @@ export function linkPicture($picture) {
   }
 }
 
+/* Only used in 3 blocks, consider declaring locally */ 
 export function linkImage($elem) {
   const $a = $elem.querySelector('a');
   if ($a) {
@@ -523,6 +541,8 @@ export function linkImage($elem) {
     $parent.append($a);
   }
 }
+
+/* Major incompatability, used widely here, used in 1 block in milo */
 
 export function readBlockConfig($block) {
   const config = {};
@@ -555,11 +575,15 @@ export function readBlockConfig($block) {
   return config;
 }
 
+/* Defined in utilities.js in milo */
+
 export function yieldToMain() {
   return new Promise((r) => {
     setTimeout(r, 0);
   });
 }
+
+/* Function name not found in milo */
 
 export function removeIrrelevantSections(main) {
   if (!main) return;
@@ -587,77 +611,13 @@ export function removeIrrelevantSections(main) {
   });
 }
 
-/**
- * Decorates a block.
- * @param {Element} block The block element
- */
-export async function decorateBlock(block) {
-  const blockName = block.classList[0];
-  if (blockName) {
-    const section = block.closest('.section');
-    if (section) section.classList.add(`${[...block.classList].join('-')}-container`);
-
-    const showWith = [...block.classList].filter((c) => c.toLowerCase().startsWith('showwith'));
-    // block visibility steered over metadata
-    if (showWith.length) {
-      let blockRemove = true;
-      if (!['www.adobe.com'].includes(window.location.hostname)) {
-        let showWithSearchParam = null;
-        showWith.forEach((showWithClass) => {
-          if (!blockRemove) return;
-          const featureFlag = showWithClass.replace('showwith', '');
-          const caseInsensitiveParams = {};
-          for (const [name, value] of new URLSearchParams(window.location.search)) {
-            caseInsensitiveParams[name.toLowerCase()] = value.toLowerCase();
-          }
-          showWithSearchParam = caseInsensitiveParams[featureFlag];
-          blockRemove = showWithSearchParam ? showWithSearchParam !== 'on' : getMetadata(featureFlag.toLowerCase()) !== 'on';
-        });
-      }
-      if (blockRemove) {
-        block.remove();
-        return;
-      }
-    }
-
-    // begin CCX custom block option class handling
-    // split and add options with a dash
-    // (fullscreen-center -> fullscreen-center + fullscreen + center)
-    const extra = [];
-    block.classList.forEach((className, index) => {
-      if (index === 0) return; // block name, no split
-      const split = className.split('-');
-      if (split.length > 1) {
-        split.forEach((part) => {
-          extra.push(part);
-        });
-      }
-    });
-    block.classList.add(...extra);
-    // end CCX custom block option class handling
-
-    block.classList.add('block');
-
-    block.dataset.block = '';
-    block.setAttribute('data-block-name', blockName);
-    block.setAttribute('data-block-status', 'initialized');
-
-    if (getMetadata('sheet-powered') === 'Y') {
-      const { setBlockTheme } = await import('./content-replace.js');
-      setBlockTheme(block);
-    }
-  }
-}
-
-function getExtension(path) {
-  const pageName = path.split('/').pop();
-  return pageName.includes('.') ? pageName.split('.').pop() : '';
-}
 
 /**
  * Updates all section status in a container element.
  * @param {Element} main The container element
  */
+/* Not found in Milo */
+
 export function updateSectionsStatus(main) {
   const sections = [...main.querySelectorAll(':scope > div.section')];
   for (let i = 0; i < sections.length; i += 1) {
@@ -674,6 +634,8 @@ export function updateSectionsStatus(main) {
     }
   }
 }
+
+/* Only used in gNav and pricing, consider declaring locally */
 
 export function getCookie(cname) {
   const name = `${cname}=`;
@@ -729,12 +691,16 @@ export function getHelixEnv() {
   return env;
 }
 
+/* Not found in Milo, consider declaring locally */
+
 function convertGlobToRe(glob) {
   let reString = glob.replace(/\*\*/g, '_');
   reString = reString.replace(/\*/g, '[0-9a-z-]*');
   reString = reString.replace(/_/g, '.*');
   return (new RegExp(reString));
 }
+
+/* Not found in Milo, part of auto block code */
 
 export async function fetchRelevantRows(path) {
   if (!window.relevantRows) {
@@ -762,6 +728,8 @@ export async function fetchRelevantRows(path) {
   return null;
 }
 
+/* Not found in Milo, consider declaring locally */
+
 export function addBlockClasses($block, classNames) {
   const $rows = Array.from($block.children);
   $rows.forEach(($row) => {
@@ -777,31 +745,8 @@ export function addBlockClasses($block, classNames) {
 //     $div.classList.add(classes[i]);
 //   });
 // }
+/* Not found in Milo */
 
-function decorateHeaderAndFooter() {
-  const header = document.querySelector('header');
-
-  header.addEventListener('click', (event) => {
-    if (event.target.id === 'feds-topnav') {
-      const root = window.location.href.split('/express/')[0];
-      window.location.href = `${root}/express/`;
-    }
-  });
-
-  const headerMeta = getMetadata('header');
-  if (headerMeta !== 'off') header.innerHTML = '<div id="feds-header"></div>';
-  else header.remove();
-  const footerMeta = getMetadata('footer');
-  const footer = document.querySelector('footer');
-  if (footerMeta !== 'off') {
-    footer.innerHTML = `
-      <div id="feds-footer"></div>
-    `;
-    footer.setAttribute('data-status', 'loading');
-  } else footer.remove();
-}
-
-ex;
 function resolveFragments() {
   Array.from(document.querySelectorAll('main > div div'))
     .filter(($cell) => $cell.childElementCount === 0)
@@ -836,7 +781,7 @@ function resolveFragments() {
       }, 500);
     });
 }
-
+/* Not found in Milo */
 function decorateMarqueeColumns($main) {
   // flag first columns block in first section block as marquee
   const $firstColumnsBlock = $main.querySelector('.section:first-of-type .columns:first-of-type');
@@ -849,6 +794,8 @@ function decorateMarqueeColumns($main) {
 /**
  * scroll to hash
  */
+
+/* Found in Milo, calld scrollToHashedElement */
 
 export function scrollToHash() {
   const { hash } = window.location;
@@ -870,6 +817,9 @@ export function scrollToHash() {
  * @param {string} blockName name of the block
  * @param {any} content two dimensional array or string or object of content
  */
+
+/* Not found in Milo */
+
 export function buildBlock(blockName, content) {
   const table = Array.isArray(content) ? content : [[content]];
   const blockEl = document.createElement('div');
@@ -896,92 +846,7 @@ export function buildBlock(blockName, content) {
   return (blockEl);
 }
 
-async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
-  const cssLoaded = new Promise((resolve) => {
-    loadStyle(cssPath, resolve);
-  });
-  const scriptLoaded = new Promise((resolve) => {
-    (async () => {
-      try {
-        const { default: init } = await import(jsPath);
-        await init(block, blockName, document, eager);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, {
-          sampleRate: 1,
-          tags: 'module',
-        });
-      }
-      resolve();
-    })();
-  });
-  await Promise.all([cssLoaded, scriptLoaded]);
-}
-
-/**
- * Loads JS and CSS for a block.
- * @param {Element} block The block element
- */
-export async function loadBlock(block, eager = false) {
-  if (!(block.getAttribute('data-block-status') === 'loading' || block.getAttribute('data-block-status') === 'loaded')) {
-    block.setAttribute('data-block-status', 'loading');
-    const blockName = block.getAttribute('data-block-name') || block.classList[0];
-    let cssPath = `/express/blocks/${blockName}/${blockName}.css`;
-    let jsPath = `/express/blocks/${blockName}/${blockName}.js`;
-
-    if (window.hlx.experiment && window.hlx.experiment.run) {
-      const { experiment } = window.hlx;
-      if (experiment.selectedVariant !== 'control') {
-        const { control } = experiment.variants;
-        if (control && control.blocks && control.blocks.includes(blockName)) {
-          const blockIndex = control.blocks.indexOf(blockName);
-          const variant = experiment.variants[experiment.selectedVariant];
-          const blockPath = variant.blocks[blockIndex];
-          cssPath = `/express/experiments/${experiment.id}/${blockPath}/${blockName}.css`;
-          jsPath = `/express/experiments/${experiment.id}/${blockPath}/${blockName}.js`;
-        }
-      }
-    }
-
-    await loadAndExecute(cssPath, jsPath, block, blockName, eager);
-    block.setAttribute('data-block-status', 'loaded');
-  }
-  return block;
-}
-
-export const loadScript = (url, type) => new Promise((resolve, reject) => {
-  let script = document.querySelector(`head > script[src="${url}"]`);
-  if (!script) {
-    const { head } = document;
-    script = document.createElement('script');
-    script.setAttribute('src', url);
-    if (type) {
-      script.setAttribute('type', type);
-    }
-    head.append(script);
-  }
-
-  if (script.dataset.loaded) {
-    resolve(script);
-    return;
-  }
-
-  const onScript = (event) => {
-    script.removeEventListener('load', onScript);
-    script.removeEventListener('error', onScript);
-
-    if (event.type === 'error') {
-      reject(new Error(`error loading script: ${script.src}`));
-    } else if (event.type === 'load') {
-      script.dataset.loaded = true;
-      resolve(script);
-    }
-  };
-
-  script.addEventListener('load', onScript);
-  script.addEventListener('error', onScript);
-});
-
+/* Not found in Milo */
 export async function setTemplateTheme() {
   // todo: remove theme after we move blog to template column in metadata sheet
   const template = getMetadata('template') || getMetadata('theme');
@@ -992,7 +857,7 @@ export async function setTemplateTheme() {
     loadStyle(`/express/templates/${name}/${name}.css`, resolve);
   });
 }
-
+/* Not found in Milo */
 export async function loadTemplateScript() {
   // todo: remove theme after we move blog to template column in metadata sheet
   const template = getMetadata('template') || getMetadata('theme');
@@ -1014,7 +879,7 @@ export async function loadTemplateScript() {
  * fetches the string variables.
  * @returns {object} localized variables
  */
-
+/* Not found in Milo, part of its own script */
 export async function fetchPlaceholders() {
   const requestPlaceholders = async (url) => {
     const resp = await fetch(url);
@@ -1036,7 +901,7 @@ export async function fetchPlaceholders() {
   }
   return window.placeholders;
 }
-
+/* Not found in Milo */
 function addPromotion() {
   // check for existing promotion
   if (!document.querySelector('main .promotion')) {
@@ -1059,17 +924,7 @@ function addPromotion() {
   }
 }
 
-async function loadMartech() {
-  const usp = new URLSearchParams(window.location.search);
-  const martech = usp.get('martech');
-
-  const analyticsUrl = '/express/scripts/instrument.js';
-  if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
-    const mod = await import('./instrument.js');
-    mod.default();
-  }
-}
-
+/* Not found in Milo, part of its own script */
 function loadGnav() {
   const usp = new URLSearchParams(window.location.search);
   const gnav = usp.get('gnav') || getMetadata('gnav');
@@ -1079,39 +934,7 @@ function loadGnav() {
     loadScript(gnavUrl, 'module');
   }
 }
-
-function decoratePageStyle() {
-  const isBlog = getMetadata('theme') === 'blog' || getMetadata('template') === 'blog';
-  if (!isBlog) {
-    const $h1 = document.querySelector('main h1');
-    // check if h1 is inside a block
-    // eslint-disable-next-line no-lonely-if
-    if ($h1 && !$h1.closest('.section > div > div ')) {
-      const $heroPicture = $h1.parentElement.querySelector('picture');
-      let $heroSection;
-      const $main = document.querySelector('main');
-      if ($main.children.length === 1) {
-        $heroSection = createTag('div', { class: 'hero' });
-        const $div = createTag('div');
-        $heroSection.append($div);
-        if ($heroPicture) {
-          $div.append($heroPicture);
-        }
-        $div.append($h1);
-        $main.prepend($heroSection);
-      } else {
-        $heroSection = $h1.closest('.section');
-        $heroSection.classList.add('hero');
-        $heroSection.removeAttribute('style');
-      }
-      if ($heroPicture) {
-        $heroPicture.classList.add('hero-bg');
-      } else {
-        $heroSection.classList.add('hero-noimage');
-      }
-    }
-  }
-}
+/* Not found in Milo */
 
 /**
  * Button style applicator function
@@ -1175,6 +998,7 @@ export function decorateButtons(el = document) {
   });
 }
 
+/* Not found in Milo */
 export function checkTesting() {
   return (getMetadata('testing').toLowerCase() === 'on');
 }
@@ -1184,6 +1008,7 @@ export function checkTesting() {
  * @param {*} name The unsanitized string
  * @returns {string} The camel cased string
  */
+/* Not found in Milo */
 export function toCamelCase(name) {
   return toClassName(name).replace(/-([a-z])/g, (g) => g[1].toUpperCase());
 }
@@ -1192,6 +1017,9 @@ export function toCamelCase(name) {
  * Gets the experiment name, if any for the page based on env, useragent, queyr params
  * @returns {string} experimentid
  */
+/* 
+  Experiment Section, consider moving into own file.
+*/
 export function getExperiment() {
   let experiment = toClassName(getMetadata('experiment'));
   const { hostname } = window.location;
@@ -1233,6 +1061,7 @@ export function getExperiment() {
  * @param {string} experimentId
  * @returns {object} containing the experiment manifest
  */
+/* Not found in Milo */
 export async function getExperimentConfig(experimentId) {
   const instantExperiment = getMetadata('instant-experiment');
   if (instantExperiment) {
@@ -1315,21 +1144,6 @@ export async function getExperimentConfig(experimentId) {
   }
 }
 
-function loadIMS() {
-  window.adobeid = {
-    client_id: sessionStorage.getItem('imsclient'),
-    scope: 'AdobeID,openid',
-    locale: getConfig().locale.region,
-    environment: 'prod',
-  };
-  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
-    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
-  } else {
-    loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-    window.adobeid.environment = 'stg1';
-  }
-}
-
 async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   const promises = [import('./experiment.js')];
   const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
@@ -1375,6 +1189,11 @@ async function decorateTesting() {
  * @param {Object} el the container of the buttons to be decorated
  */
 
+/*
+End Experiment Section
+*/
+
+/* Deprecated, not found in Milo, consider deletion */
 export async function fixIcons(el = document) {
   /* backwards compatible icon handling, deprecated */
   el.querySelectorAll('svg use[href^="./_icons_"]').forEach(($use) => {
@@ -1557,7 +1376,7 @@ export async function fetchFloatingCta(path) {
   }
   return floatingBtnData;
 }
-
+/* Not found in Milo */
 async function buildAutoBlocks(main) {
   const lastDiv = main.querySelector(':scope > div:last-of-type');
 
@@ -1692,18 +1511,7 @@ async function buildAutoBlocks(main) {
   }
 }
 
-function splitSections(main) {
-  main.querySelectorAll(':scope > div > div').forEach((block) => {
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion', 'plans-comparison'];
-    // work around for splitting columns and sixcols template list
-    // add metadata condition to minimize impact on other use cases
-
-    if (blocksToSplit.includes(block.className)) {
-      unwrapBlock(block);
-    }
-  });
-}
-
+/* Not found in Milo */
 function decorateLinkedPictures($main) {
   /* thanks to word online */
   $main.querySelectorAll(':scope > picture').forEach(($picture) => {
@@ -1717,6 +1525,7 @@ function decorateLinkedPictures($main) {
  * Adds the favicon.
  * @param {string} href The favicon URL
  */
+/* Not found in Milo */
 export function addFavIcon(href) {
   const link = document.createElement('link');
   link.rel = 'icon';
@@ -1729,7 +1538,7 @@ export function addFavIcon(href) {
     document.getElementsByTagName('head')[0].appendChild(link);
   }
 }
-
+/* Not found in Milo */
 function decorateSocialIcons($main) {
   $main.querySelectorAll(':scope a').forEach(($a) => {
     const urlObject = new URL($a.href);
@@ -1781,6 +1590,8 @@ function decorateSocialIcons($main) {
   });
 }
 
+/* Not found in Milo */
+
 function displayOldLinkWarning() {
   if (window.location.hostname.includes('localhost') || window.location.hostname.includes('.hlx.page')) {
     document.querySelectorAll('main a[href^="https://spark.adobe.com/"]').forEach(($a) => {
@@ -1789,6 +1600,8 @@ function displayOldLinkWarning() {
   }
 }
 
+
+/* Not found in Milo */
 function setHelixEnv(name, overrides) {
   if (name) {
     sessionStorage.setItem('helix-env', name);
@@ -1802,6 +1615,7 @@ function setHelixEnv(name, overrides) {
     sessionStorage.removeItem('helix-env-overrides');
   }
 }
+/* Not found in Milo */
 
 function displayEnv() {
   try {
@@ -1845,6 +1659,8 @@ function displayEnv() {
  * @param {Array} breakpoints breakpoints and corresponding params (eg. width)
  */
 
+/* Not present in Milo */
+
 export function createOptimizedPicture(src, alt = '', eager = false, breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }]) {
   const url = new URL(src, window.location.href);
   const picture = document.createElement('picture');
@@ -1879,6 +1695,8 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
   return picture;
 }
 
+/* Not present in Milo, part of our decorateMain */
+
 function decoratePictures(main) {
   main.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
     const newPicture = createOptimizedPicture(img.src, img.alt, !i);
@@ -1887,51 +1705,8 @@ function decoratePictures(main) {
   });
 }
 
-/**
- * Decorates the main element.
- * @param {Element} main The main element
- * @param {Boolean} isDoc Is document or fragment
- */
-export async function decorateMain(main, isDoc) {
-  await buildAutoBlocks(main);
-  splitSections(main);
-  const sections = decorateSections(main, isDoc);
-  decorateButtons(main);
-  decorateMarqueeColumns(main);
-  await fixIcons(main);
-  decoratePictures(main);
-  decorateLinkedPictures(main);
-  decorateSocialIcons(main);
 
-  await sections;
-  return sections;
-}
-
-function unhideBody() {
-  try {
-    const id = ('alloy-prehiding');
-    document.head.removeChild(document.getElementById(id));
-  } catch (e) {
-    // nothing
-  }
-}
-
-function hideBody() {
-  const id = 'alloy-prehiding';
-  let style = document.getElementById(id);
-  if (style) {
-    return;
-  }
-  style = document.createElement('style');
-  style.id = 'alloy-prehiding';
-  style.innerHTML = '.personalization-container{opacity:0.01 !important}';
-
-  try {
-    document.head.appendChild(style);
-  } catch (e) {
-    // nothing
-  }
-}
+/* Animation, not present in Milo */
 
 export function addAnimationToggle(target) {
   target.addEventListener('click', () => {
@@ -1949,6 +1724,9 @@ export function addAnimationToggle(target) {
     });
   }, true);
 }
+
+
+/* Japan specific functions */
 
 /**
  * Searches for Japanese text in headings and applies a smart word-breaking algorithm by surrounding
@@ -1980,7 +1758,6 @@ async function wordBreakJapanese() {
     }
   });
 }
-
 /**
  * Calculate a relatively more accurate "character count" for mixed Japanese
  * + English texts, for the purpose of heading auto font sizing.
@@ -2008,6 +1785,7 @@ function getJapaneseTextCharacterCount(text) {
  * Default is "heading".
  * @param {string} selector CSS selector to select the target heading tags. Default is "h1, h2".
  */
+
 export function addHeaderSizing($block, classPrefix = 'heading', selector = 'h1, h2') {
   const headings = $block.querySelectorAll(selector);
   // Each threshold of JP should be smaller than other languages
@@ -2037,6 +1815,7 @@ export function addHeaderSizing($block, classPrefix = 'heading', selector = 'h1,
  * Call `addHeaderSizing` on default content blocks in all section blocks
  * in all Japanese pages except blog pages.
  */
+/* Not present in Milo */
 function addJapaneseSectionHeaderSizing() {
   if (getConfig().locale.region === 'jp') {
     document.querySelectorAll('body:not(.blog) .section .default-content-wrapper').forEach((el) => {
@@ -2045,10 +1824,15 @@ function addJapaneseSectionHeaderSizing() {
   }
 }
 
+/* End Japan specific functions */
+
 /**
  * Detects legal copy based on a * or † prefix and applies a smaller font size.
  * @param {Element} main The main element
  */
+
+/* Not present in Milo */
+
 function decorateLegalCopy(main) {
   const legalCopyPrefixes = ['*', '†'];
   main.querySelectorAll('p').forEach(($p) => {
@@ -2060,8 +1844,12 @@ function decorateLegalCopy(main) {
 }
 
 /**
- * loads everything that doesn't need to be delayed.
+ * loads everything that doesn't need to be delayed. 
  */
+
+/*
+  Not present in Milo, but something similar may be
+*/
 async function loadLazy(main) {
   addPromotion();
   loadStyle('/express/styles/lazy-styles.css');
@@ -2078,151 +1866,8 @@ async function loadLazy(main) {
   ]);
 }
 
-async function loadPostLCP(config) {
-  // post LCP actions go here
-  sampleRUM('lcp');
-  window.dispatchEvent(new Event('milo:LCP:loaded'));
-  if (window.hlx.martech) window.hlx.martechLoaded = loadMartech();
-  loadGnav();
-  const { default: loadFonts } = await import('./fonts.js');
-  loadFonts(config.locale, loadStyle);
-}
 
-/**
- * Loads JS and CSS for all blocks in a container element.
- * @param {Array} sections The sections loaded in main
- * @param {Boolean} isDoc if is the document or fragment
- */
-export async function loadSections(sections, isDoc) {
-  const areaBlocks = [];
-  for (const section of sections) {
-    if (section.preloadLinks.length) {
-      const preloads = section.preloadLinks.map((block) => loadBlock(block));
-      // eslint-disable-next-line no-await-in-loop
-      await Promise.all(preloads);
-    }
-    const loaded = section.blocks.map((block) => loadBlock(block));
-    areaBlocks.push(...section.blocks);
-
-    // Only move on to the next section when all blocks are loaded.
-    // eslint-disable-next-line no-await-in-loop
-    await Promise.all(loaded);
-    // Post LCP operations.
-    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP(getConfig());
-
-    // Show the section when all blocks inside are done.
-    delete section.el.dataset.status;
-    delete section.el.dataset.idx;
-  }
-
-  return areaBlocks;
-}
-
-function initSidekick() {
-  const initPlugins = async () => {
-    const { default: init } = await import('./utils/sidekick.js');
-    init();
-  };
-
-  if (document.querySelector('helix-sidekick')) {
-    initPlugins();
-  } else {
-    document.addEventListener('sidekick-ready', () => {
-      initPlugins();
-    });
-  }
-}
-
-/**
- * Decorates the page.
- */
-export async function loadArea(area = document) {
-  const isDoc = area === document;
-  const main = area.querySelector('main');
-
-  if (isDoc) {
-    decorateHeaderAndFooter();
-  }
-
-  window.hlx = window.hlx || {};
-  const params = new URLSearchParams(window.location.search);
-  const experimentParams = params.get('experiment');
-  ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
-    window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
-  });
-  window.hlx.experimentParams = experimentParams;
-  window.hlx.init = true;
-
-  await setTemplateTheme();
-
-  if (window.hlx.testing) await decorateTesting();
-
-  if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
-    const { default: replaceContent } = await import('./content-replace.js');
-    await replaceContent(main);
-  }
-
-  if (getMetadata('template-search-page') === 'Y') {
-    const { default: redirect } = await import('./template-redirect.js');
-    await redirect();
-  }
-
-  let sections = [];
-  if (main) {
-    sections = await decorateMain(main, isDoc);
-    decoratePageStyle();
-    decorateLegalCopy(main);
-    addJapaneseSectionHeaderSizing();
-    displayEnv();
-    displayOldLinkWarning();
-    wordBreakJapanese();
-
-    if (window.hlx.testing) {
-      const target = checkTesting();
-      document.querySelector('body').classList.add('personalization-container');
-      // target = true;
-      if (target) {
-        hideBody();
-        setTimeout(() => {
-          unhideBody();
-        }, 3000);
-      }
-    }
-  }
-  await loadTemplateScript();
-  await loadSections(sections, isDoc);
-  const footer = document.querySelector('footer');
-  delete footer.dataset.status;
-
-  initSidekick();
-
-  const lazy = loadLazy(main);
-
-  const buttonOff = params.get('button') === 'off';
-  if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
-    import('../../tools/preview/preview.js');
-  }
-  await lazy;
-
-  const { default: delayed } = await import('./delayed.js');
-  delayed([getConfig, getMetadata, loadScript, loadStyle]);
-
-  // milo's links featurecc
-  const config = getConfig();
-  if (config.links === 'on') {
-    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
-    import('../features/links.js').then((mod) => mod.default(path, area));
-  }
-
-  if (['on', 'yes'].includes(getMetadata('milo-analytics')?.toLowerCase()) || params.get('milo-analytics') === 'on') {
-    import('./attributes.js').then((analytics) => {
-      document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
-    });
-  }
-  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
-    decorateTrackingEvents();
-  });
-}
+/* How does Milo do this? */ 
 
 export function getMobileOperatingSystem() {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -2243,6 +1888,8 @@ export function getMobileOperatingSystem() {
   return 'unknown';
 }
 
+/* Investigate if this can be done with CSS */
+
 export function titleCase(str) {
   const splitStr = str.toLowerCase().split(' ');
   for (let i = 0; i < splitStr.length; i += 1) {
@@ -2256,12 +1903,16 @@ export function titleCase(str) {
  * (needs a refactor)
  */
 
+/* Move back to scripts.js? */
+
 export function stamp(message) {
   if (window.name.includes('performance')) {
     // eslint-disable-next-line no-console
     console.log(`${new Date() - performance.timing.navigationStart}:${message}`);
   }
 }
+
+/* Move back to scripts.js? */
 
 export function registerPerformanceLogger() {
   try {
@@ -2555,6 +2206,178 @@ function decorateImageLinks(el) {
   });
 }
 
+/**
+ * Decorates the page.
+ */
+export async function loadArea(area = document) {
+  function decoratePageStyle() {
+    const isBlog = getMetadata('theme') === 'blog' || getMetadata('template') === 'blog';
+    if (!isBlog) {
+      const $h1 = document.querySelector('main h1');
+      // check if h1 is inside a block
+      // eslint-disable-next-line no-lonely-if
+      if ($h1 && !$h1.closest('.section > div > div ')) {
+        const $heroPicture = $h1.parentElement.querySelector('picture');
+        let $heroSection;
+        const $main = document.querySelector('main');
+        if ($main.children.length === 1) {
+          $heroSection = createTag('div', { class: 'hero' });
+          const $div = createTag('div');
+          $heroSection.append($div);
+          if ($heroPicture) {
+            $div.append($heroPicture);
+          }
+          $div.append($h1);
+          $main.prepend($heroSection);
+        } else {
+          $heroSection = $h1.closest('.section');
+          $heroSection.classList.add('hero');
+          $heroSection.removeAttribute('style');
+        }
+        if ($heroPicture) {
+          $heroPicture.classList.add('hero-bg');
+        } else {
+          $heroSection.classList.add('hero-noimage');
+        }
+      }
+    }
+  }
+  function decorateHeaderAndFooter() {
+    const header = document.querySelector('header');
+
+    header.addEventListener('click', (event) => {
+      if (event.target.id === 'feds-topnav') {
+        const root = window.location.href.split('/express/')[0];
+        window.location.href = `${root}/express/`;
+      }
+    });
+
+    const headerMeta = getMetadata('header');
+    if (headerMeta !== 'off') header.innerHTML = '<div id="feds-header"></div>';
+    else header.remove();
+    const footerMeta = getMetadata('footer');
+    const footer = document.querySelector('footer');
+    if (footerMeta !== 'off') {
+      footer.innerHTML = `
+        <div id="feds-footer"></div>
+      `;
+      footer.setAttribute('data-status', 'loading');
+    } else footer.remove();
+  }
+  const isDoc = area === document;
+  const main = area.querySelector('main');
+
+  if (isDoc) {
+    decorateHeaderAndFooter();
+  }
+
+  window.hlx = window.hlx || {};
+  const params = new URLSearchParams(window.location.search);
+  const experimentParams = params.get('experiment');
+  ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
+    window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
+  });
+  window.hlx.experimentParams = experimentParams;
+  window.hlx.init = true;
+
+  await setTemplateTheme();
+
+  if (window.hlx.testing) await decorateTesting();
+
+  if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
+    const { default: replaceContent } = await import('./content-replace.js');
+    await replaceContent(main);
+  }
+
+  if (getMetadata('template-search-page') === 'Y') {
+    const { default: redirect } = await import('./template-redirect.js');
+    await redirect();
+  }
+
+  let sections = [];
+  if (main) {
+    sections = await decorateMain(main, isDoc);
+    decoratePageStyle();
+    decorateLegalCopy(main);
+    addJapaneseSectionHeaderSizing();
+    displayEnv();
+    displayOldLinkWarning();
+    wordBreakJapanese();
+
+    if (window.hlx.testing) {
+      const target = checkTesting();
+      document.querySelector('body').classList.add('personalization-container');
+      // target = true;
+      if (target) {
+        hideBody();
+        setTimeout(() => {
+          unhideBody();
+        }, 3000);
+      }
+    }
+  }
+  await loadTemplateScript();
+  await loadSections(sections, isDoc);
+  const footer = document.querySelector('footer');
+  delete footer.dataset.status;
+
+  initSidekick();
+
+  const lazy = loadLazy(main);
+
+  const buttonOff = params.get('button') === 'off';
+  if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
+    import('../../tools/preview/preview.js');
+  }
+  await lazy;
+
+  const { default: delayed } = await import('./delayed.js');
+  delayed([getConfig, getMetadata, loadScript, loadStyle]);
+
+  // milo's links featurecc
+  const config = getConfig();
+  if (config.links === 'on') {
+    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
+    import('../features/links.js').then((mod) => mod.default(path, area));
+  }
+
+  if (['on', 'yes'].includes(getMetadata('milo-analytics')?.toLowerCase()) || params.get('milo-analytics') === 'on') {
+    import('./attributes.js').then((analytics) => {
+      document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
+    });
+  }
+  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
+    decorateTrackingEvents();
+  });
+}
+
+function unhideBody() {
+  try {
+    const id = ('alloy-prehiding');
+    document.head.removeChild(document.getElementById(id));
+  } catch (e) {
+    // nothing
+  }
+}
+
+function hideBody() {
+  const id = 'alloy-prehiding';
+  let style = document.getElementById(id);
+  if (style) {
+    return;
+  }
+  style = document.createElement('style');
+  style.id = 'alloy-prehiding';
+  style.innerHTML = '.personalization-container{opacity:0.01 !important}';
+
+  try {
+    document.head.appendChild(style);
+  } catch (e) {
+    // nothing
+  }
+}
+
+
 export function decorateLinks(el) {
   decorateImageLinks(el);
   const anchors = el.getElementsByTagName('a');
@@ -2728,6 +2551,278 @@ export function localizeLink(
     return href;
   }
 }
+
+
+/**
+ * Decorates a block.
+ * @param {Element} block The block element
+ */
+export async function decorateBlock(block) {
+  const blockName = block.classList[0];
+  if (blockName) {
+    const section = block.closest('.section');
+    if (section) section.classList.add(`${[...block.classList].join('-')}-container`);
+
+    const showWith = [...block.classList].filter((c) => c.toLowerCase().startsWith('showwith'));
+    // block visibility steered over metadata
+    if (showWith.length) {
+      let blockRemove = true;
+      if (!['www.adobe.com'].includes(window.location.hostname)) {
+        let showWithSearchParam = null;
+        showWith.forEach((showWithClass) => {
+          if (!blockRemove) return;
+          const featureFlag = showWithClass.replace('showwith', '');
+          const caseInsensitiveParams = {};
+          for (const [name, value] of new URLSearchParams(window.location.search)) {
+            caseInsensitiveParams[name.toLowerCase()] = value.toLowerCase();
+          }
+          showWithSearchParam = caseInsensitiveParams[featureFlag];
+          blockRemove = showWithSearchParam ? showWithSearchParam !== 'on' : getMetadata(featureFlag.toLowerCase()) !== 'on';
+        });
+      }
+      if (blockRemove) {
+        block.remove();
+        return;
+      }
+    }
+
+    // begin CCX custom block option class handling
+    // split and add options with a dash
+    // (fullscreen-center -> fullscreen-center + fullscreen + center)
+    const extra = [];
+    block.classList.forEach((className, index) => {
+      if (index === 0) return; // block name, no split
+      const split = className.split('-');
+      if (split.length > 1) {
+        split.forEach((part) => {
+          extra.push(part);
+        });
+      }
+    });
+    block.classList.add(...extra);
+    // end CCX custom block option class handling
+
+    block.classList.add('block');
+
+    block.dataset.block = '';
+    block.setAttribute('data-block-name', blockName);
+    block.setAttribute('data-block-status', 'initialized');
+
+    if (getMetadata('sheet-powered') === 'Y') {
+      const { setBlockTheme } = await import('./content-replace.js');
+      setBlockTheme(block);
+    }
+  }
+}
+
+function getExtension(path) {
+  const pageName = path.split('/').pop();
+  return pageName.includes('.') ? pageName.split('.').pop() : '';
+}
+
+function initSidekick() {
+  const initPlugins = async () => {
+    const { default: init } = await import('./utils/sidekick.js');
+    init();
+  };
+
+  if (document.querySelector('helix-sidekick')) {
+    initPlugins();
+  } else {
+    document.addEventListener('sidekick-ready', () => {
+      initPlugins();
+    });
+  }
+}
+
+async function loadPostLCP(config) {
+  // post LCP actions go here
+  sampleRUM('lcp');
+  window.dispatchEvent(new Event('milo:LCP:loaded'));
+  if (window.hlx.martech) window.hlx.martechLoaded = loadMartech();
+  loadGnav();
+  const { default: loadFonts } = await import('./fonts.js');
+  loadFonts(config.locale, loadStyle);
+}
+
+/**
+ * Loads JS and CSS for all blocks in a container element.
+ * @param {Array} sections The sections loaded in main
+ * @param {Boolean} isDoc if is the document or fragment
+ */
+export async function loadSections(sections, isDoc) {
+  const areaBlocks = [];
+  for (const section of sections) {
+    if (section.preloadLinks.length) {
+      const preloads = section.preloadLinks.map((block) => loadBlock(block));
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.all(preloads);
+    }
+    const loaded = section.blocks.map((block) => loadBlock(block));
+    areaBlocks.push(...section.blocks);
+
+    // Only move on to the next section when all blocks are loaded.
+    // eslint-disable-next-line no-await-in-loop
+    await Promise.all(loaded);
+    // Post LCP operations.
+    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP(getConfig());
+
+    // Show the section when all blocks inside are done.
+    delete section.el.dataset.status;
+    delete section.el.dataset.idx;
+  }
+
+  return areaBlocks;
+}
+
+
+function loadIMS() {
+  window.adobeid = {
+    client_id: sessionStorage.getItem('imsclient'),
+    scope: 'AdobeID,openid',
+    locale: getConfig().locale.region,
+    environment: 'prod',
+  };
+  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
+    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+  } else {
+    loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
+    window.adobeid.environment = 'stg1';
+  }
+}
+
+
+/**
+ * Decorates the main element.
+ * @param {Element} main The main element
+ * @param {Boolean} isDoc Is document or fragment
+ */
+export async function decorateMain(main, isDoc) {
+  await buildAutoBlocks(main);
+  splitSections(main);
+  const sections = decorateSections(main, isDoc);
+  decorateButtons(main);
+  decorateMarqueeColumns(main);
+  await fixIcons(main);
+  decoratePictures(main);
+  decorateLinkedPictures(main);
+  decorateSocialIcons(main);
+
+  await sections;
+  return sections;
+}
+
+function splitSections(main) {
+  main.querySelectorAll(':scope > div > div').forEach((block) => {
+    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion', 'plans-comparison'];
+    // work around for splitting columns and sixcols template list
+    // add metadata condition to minimize impact on other use cases
+
+    if (blocksToSplit.includes(block.className)) {
+      unwrapBlock(block);
+    }
+  });
+}
+
+
+/**
+ * Loads JS and CSS for a block.
+ * @param {Element} block The block element
+ */
+export async function loadBlock(block, eager = false) {
+  async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
+    const cssLoaded = new Promise((resolve) => {
+      loadStyle(cssPath, resolve);
+    });
+    const scriptLoaded = new Promise((resolve) => {
+      (async () => {
+        try {
+          const { default: init } = await import(jsPath);
+          await init(block, blockName, document, eager);
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, {
+            sampleRate: 1,
+            tags: 'module',
+          });
+        }
+        resolve();
+      })();
+    });
+    await Promise.all([cssLoaded, scriptLoaded]);
+  }
+
+  if (!(block.getAttribute('data-block-status') === 'loading' || block.getAttribute('data-block-status') === 'loaded')) {
+    block.setAttribute('data-block-status', 'loading');
+    const blockName = block.getAttribute('data-block-name') || block.classList[0];
+    let cssPath = `/express/blocks/${blockName}/${blockName}.css`;
+    let jsPath = `/express/blocks/${blockName}/${blockName}.js`;
+
+    if (window.hlx.experiment && window.hlx.experiment.run) {
+      const { experiment } = window.hlx;
+      if (experiment.selectedVariant !== 'control') {
+        const { control } = experiment.variants;
+        if (control && control.blocks && control.blocks.includes(blockName)) {
+          const blockIndex = control.blocks.indexOf(blockName);
+          const variant = experiment.variants[experiment.selectedVariant];
+          const blockPath = variant.blocks[blockIndex];
+          cssPath = `/express/experiments/${experiment.id}/${blockPath}/${blockName}.css`;
+          jsPath = `/express/experiments/${experiment.id}/${blockPath}/${blockName}.js`;
+        }
+      }
+    }
+
+    await loadAndExecute(cssPath, jsPath, block, blockName, eager);
+    block.setAttribute('data-block-status', 'loaded');
+  }
+  return block;
+}
+
+export const loadScript = (url, type) => new Promise((resolve, reject) => {
+  let script = document.querySelector(`head > script[src="${url}"]`);
+  if (!script) {
+    const { head } = document;
+    script = document.createElement('script');
+    script.setAttribute('src', url);
+    if (type) {
+      script.setAttribute('type', type);
+    }
+    head.append(script);
+  }
+
+  if (script.dataset.loaded) {
+    resolve(script);
+    return;
+  }
+
+  const onScript = (event) => {
+    script.removeEventListener('load', onScript);
+    script.removeEventListener('error', onScript);
+
+    if (event.type === 'error') {
+      reject(new Error(`error loading script: ${script.src}`));
+    } else if (event.type === 'load') {
+      script.dataset.loaded = true;
+      resolve(script);
+    }
+  };
+
+  script.addEventListener('load', onScript);
+  script.addEventListener('error', onScript);
+});
+
+async function loadMartech() {
+  const usp = new URLSearchParams(window.location.search);
+  const martech = usp.get('martech');
+
+  const analyticsUrl = '/express/scripts/instrument.js';
+  if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
+    const mod = await import('./instrument.js');
+    mod.default();
+  }
+}
+
+
 
 export function isInTextNode () {};
 export function loadDelayed  () {};
