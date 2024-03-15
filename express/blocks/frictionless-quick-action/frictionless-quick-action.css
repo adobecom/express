@@ -96,7 +96,7 @@ body.editor-modal-loaded header {
 
 .frictionless-quick-action.block .dropzone h4 {
     margin-top: 0;
-    padding-top: 39px;
+    padding: 40px 24px 0 24px;
 }
 
 .frictionless-quick-action.block .dropzone p:last-of-type {

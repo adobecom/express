@@ -44,7 +44,7 @@ function selectElementByTagPrefix(p) {
   return Array.from(allEls).find((e) => e.tagName.toLowerCase().startsWith(p.toLowerCase()));
 }
 
-function startSDK(data) {
+function startSDK(data = '') {
   const CDN_URL = 'https://dev.cc-embed.adobe.com/sdk/prbuilds/1p/PR-1410/CCEverywhere.js';
   loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
@@ -169,7 +169,7 @@ function startSDK(data) {
         ccEverywhere.quickAction.removeBackground(docConfig, appConfig, exportConfig, contConfig);
         break;
       case 'generate-qr-code':
-        ccEverywhere.quickAction.generateQRCode(docConfig, appConfig, exportConfig, contConfig);
+        ccEverywhere.quickAction.generateQRCode({}, appConfig, exportConfig, contConfig);
         break;
       default: break;
     }
@@ -241,7 +241,11 @@ export default async function decorate(block) {
 
   dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();
-    uploadFile();
+    if (quickAction === 'generate-qr-code') {
+      startSDK();
+    } else {
+      uploadFile();
+    }
   });
 
   function preventDefaults(e) {
