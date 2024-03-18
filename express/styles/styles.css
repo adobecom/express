@@ -1229,3 +1229,9 @@ main > div[class="section section-wrapper fullscreen-marquee-image-container"] +
 main > div[class="section section-wrapper columns-container"][id^="column-"] {
   padding: 0;
 }
+
+/* FIXME: hacky behavior to fight for space with Jarvis */
+body.has-floating-panel #adbMsgClientWrapper .adbmsgAuthoredBotPopUpContainer.outwardAnimate {
+  bottom: 110px!important;
+  right: 40px!important;
+}
