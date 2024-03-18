@@ -124,6 +124,11 @@ function startSDK(data = '') {
       parentElementId: `${quickAction}-container`,
       backgroundColor: 'transparent',
       hideCloseButton: true,
+      minSize: {
+        width: 1112,
+        height: 620,
+        unit: 'px',
+      },
     };
 
     const docConfig = {
