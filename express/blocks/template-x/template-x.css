@@ -257,7 +257,7 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     break-inside: avoid;
     text-decoration: unset;
     position: relative;
-    border-radius: 7px;
+    border-radius: 14px;
 }
 
 .template-x .template:focus {
@@ -372,6 +372,10 @@ main.with-holiday-templates-banner {
     min-height: 200px;
     width: max-content;
     margin: 24px 12px;
+}
+
+.template:focus-within {
+    border: 2px var(--color-info-accent) solid !important
 }
 
 .template-x.horizontal .template .still-wrapper img,

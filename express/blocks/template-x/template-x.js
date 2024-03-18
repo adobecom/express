@@ -314,7 +314,7 @@ async function decorateNewTemplates(block, props, options = { reDrawMasonry: fal
   const loadMore = block.parentElement.querySelector('.load-more');
 
   props.templates = props.templates.concat(newTemplates);
-  populateTemplates(block, props, newTemplates);
+   populateTemplates(block, props, newTemplates);
 
   const newCells = Array.from(block.querySelectorAll('.template:not(.appear)'));
 
