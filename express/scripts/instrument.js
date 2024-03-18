@@ -542,15 +542,6 @@ function decorateAnalyticsEvents() {
     }
   });
 
-  // track non-click interactions
-  // BlockMediator triggered
-  import('./block-mediator.min.js').then((resp) => {
-    const { default: BlockMediator } = resp;
-    BlockMediator.subscribe('billing-plan', ({ newValue }) => {
-      sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:toggle:${newValue}`);
-    });
-  });
-
   if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
     import('./block-mediator.min.js').then((resp) => {
       const { default: BlockMediator } = resp;
