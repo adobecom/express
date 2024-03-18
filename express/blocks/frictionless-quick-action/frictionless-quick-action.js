@@ -52,6 +52,10 @@ function startSDK(data = '') {
     }
     if (!ccEverywhere) {
       let { ietf } = getConfig().locale;
+      // for testing
+      const urlParams = new URLSearchParams(window.location.search);
+      const country = urlParams.get('country');
+      if (country) ietf = getConfig().locales[country]?.ietf;
       if (ietf === 'zh-Hant-TW') ietf = 'tw-TW';
       else if (ietf === 'zh-Hans-CN') ietf = 'cn-CN';
       let env = getConfig().env.name;
