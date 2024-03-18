@@ -1,6 +1,8 @@
+/* global _satellite */
 /* eslint-disable no-underscore-dangle */
-import { fetchPlaceholders, getConfig } from '../../scripts/utils.js';
-import { memoize } from '../../scripts/hofs.js';
+import { fetchPlaceholders, getConfig } from './utils.js';
+import { memoize } from './hofs.js';
+import BlockMediator from './block-mediator.min.js';
 
 // supported by content api
 const supportedLanguages = [
@@ -32,12 +34,15 @@ function extractFilterTerms(input) {
       .trim()
       .toLowerCase());
 }
+
 function extractLangs(locales) {
   return locales.toLowerCase().split(' or ').map((l) => l.trim());
 }
+
 function extractRegions(locales) {
   return extractLangs(locales).map((l) => (l === 'en' ? 'ZZ' : l.toUpperCase()));
 }
+
 function formatFilterString(filters) {
   const {
     animated,
@@ -83,12 +88,117 @@ function formatFilterString(filters) {
   return str;
 }
 
+export function generateSearchId() {
+  // todo: follow up with Linh on ID generation rules. Also refer to wiki: https://wiki.corp.adobe.com/pages/viewpage.action?pageId=2833614476
+  return Math.floor(100000 + Math.random() * 900000);
+}
+
+export function gatherPageImpression(searchProps) {
+  const { filters } = searchProps;
+  const usp = new URLSearchParams(window.location.search);
+
+  let statusFilter = 'all';
+  if (filters.premium && filters.premium !== 'all') {
+    statusFilter = filters.premium.toLowerCase() === 'false' ? 'free' : 'premium';
+  }
+
+  let typeFilter = 'all';
+  if (filters.animated && filters.animated !== 'all') {
+    typeFilter = filters.animated.toLowerCase() === 'false' ? 'still' : 'animted';
+  }
+
+  const impressionEventPayload = {
+    category: 'templates',
+    location: 'seo',
+    collection: usp.get('tasksx') || filters.tasks || 'all-templates',
+    collection_path: window.location.pathname,
+    type_filter: typeFilter,
+    status_filter: statusFilter,
+  };
+
+  return impressionEventPayload;
+}
+
+export function updateImpressionCache(newVals) {
+  BlockMediator.set('templateSearchSpecs', {
+    ...BlockMediator.get('templateSearchSpecs'),
+    ...newVals,
+  });
+}
+
+export function removeOptionalImpressionFields(eventType) {
+  const impression = BlockMediator.get('templateSearchSpecs');
+
+  if (eventType === 'search-inspire') {
+    delete impression.id;
+    delete impression.keyword_rank;
+    delete impression.prefix_query;
+
+    if (impression.search_type === 'adjust-filter') {
+      delete impression.suggestion_list_shown;
+    }
+  }
+
+  if (eventType === 'view-search-results') {
+    delete impression.id;
+    delete impression.keyword_rank;
+    delete impression.prefix_query;
+    delete impression.suggestion_list_shown;
+  }
+
+  if (eventType === 'select-template') {
+    delete impression.keyword_rank;
+    delete impression.prefix_query;
+    delete impression.suggestion_list_shown;
+  }
+  BlockMediator.set('templateSearchSpecs', impression);
+}
+
+// trackSearch action logs a new search ID each time if an existing one isn't provided.
+export function trackSearch(eventName, searchID = generateSearchId()) {
+  updateImpressionCache({
+    event_name: eventName,
+    search_id: searchID,
+  });
+
+  const impression = BlockMediator.get('templateSearchSpecs');
+  if (!window.marketingtech) return;
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: eventName,
+          linkClicks: {
+            value: 1,
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        digitalData: {
+          page: {
+            pageInfo: impression,
+          },
+        },
+      },
+    },
+  });
+  // todo: also send the search ID to a separate event. Ask Linh Nguyen.
+}
+
 const memoizedFetch = memoize(
   (url, headers) => fetch(url, headers).then((r) => (r.ok ? r.json() : null)), { ttl: 30 * 1000 },
 );
 
 async function fetchSearchUrl({
-  limit, start, filters, sort, q, collectionId,
+  limit,
+  start,
+  filters,
+  sort,
+  q,
+  collectionId,
 }) {
   const base = 'https://www.adobe.com/express-search-api-v3';
   const collectionIdParam = `collectionId=${collectionId}`;

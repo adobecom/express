@@ -1,5 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { createTag, getIconElement, getMetadata } from '../../scripts/utils.js';
+import { trackSearch, updateImpressionCache, removeOptionalImpressionFields } from '../../scripts/template-search-api-v3.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function containsVideo(pages) {
   return pages.some((page) => !!page?.rendition?.video?.thumbnail?.componentId);
@@ -321,6 +323,19 @@ function renderHoverWrapper(template, placeholders) {
 
   const cta = renderCTA(placeholders, template.customLinks.branchUrl);
   btnContainer.append(cta);
+
+  cta.addEventListener('click', () => {
+    updateImpressionCache({
+      id: template.id,
+      status: template.licensingCategory,
+      task: getMetadata('tasksx') || getMetadata('tasks') || '',
+      search_keyword: getMetadata('q') || getMetadata('topics') || '',
+      collection: getMetadata('tasksx') || getMetadata('tasks') || '',
+      collection_path: window.location.pathname,
+    });
+    removeOptionalImpressionFields('select-template');
+    trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
+  }, { passive: true });
 
   return btnContainer;
 }
