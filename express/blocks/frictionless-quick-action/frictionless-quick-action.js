@@ -71,20 +71,6 @@ function startSDK(data = '') {
           locale: ietf,
           env,
         },
-        callbacks: {
-          onIntentChange: () => {
-            document.body.classList.add('editor-modal-loaded');
-            window.history.pushState({ hideFrictionlessQa: true }, '', '');
-            return {
-              containerConfig: {
-                mode: 'modal',
-              },
-            };
-          },
-          onCancel: () => {
-            window.history.back();
-          },
-        },
         authOption: () => ({
           mode: 'delayed',
         }),
@@ -151,6 +137,20 @@ function startSDK(data = '') {
     const appConfig = {
       metaData: { isFrictionlessQa: 'true' },
       receiveQuickActionErrors: false,
+      callbacks: {
+        onIntentChange: () => {
+          document.body.classList.add('editor-modal-loaded');
+          window.history.pushState({ hideFrictionlessQa: true }, '', '');
+          return {
+            containerConfig: {
+              mode: 'modal',
+            },
+          };
+        },
+        onCancel: () => {
+          window.history.back();
+        },
+      },
     };
 
     switch (quickAction) {
