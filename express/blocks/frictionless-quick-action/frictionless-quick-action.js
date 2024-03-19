@@ -167,6 +167,7 @@ function startSDK(data = '') {
         ccEverywhere.quickAction.convertToPNG(docConfig, appConfig, exportConfig, contConfig);
         break;
       case 'convert-to-svg':
+        exportConfig.pop();
         ccEverywhere.quickAction.convertToSVG(docConfig, appConfig, exportConfig, contConfig);
         break;
       case 'crop-image':
