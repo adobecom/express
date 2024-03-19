@@ -23,6 +23,10 @@
   gap: 4px;
 }
 
+.billing-radio :focus-within {
+  border: 2px var(--color-info-accent) solid !important
+}
+
 .billing-radio span {
   width: 16px;
   height: 16px;

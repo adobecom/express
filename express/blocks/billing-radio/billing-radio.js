@@ -16,8 +16,10 @@ export default function init(el) {
   if (BlockMediator.get(BILLING_PLAN) === undefined) BlockMediator.set(BILLING_PLAN, 0);
   plans.forEach((plan, planIndex) => {
     const button = createTag('button', {
-      class: planIndex === (BlockMediator.get(BILLING_PLAN) || 0) ? 'checked' : '',
-    }, plan);
+      id : plan,
+      class: planIndex === (BlockMediator.get(BILLING_PLAN) || 0) ? 'checked' : '' 
+    });
+    button.append(createTag('label', {for : plan}, plan));
     button.prepend(createTag('span'));
     button.addEventListener('click', () => {
       if (planIndex === BlockMediator.get(BILLING_PLAN)) return;
