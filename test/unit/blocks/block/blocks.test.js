@@ -95,7 +95,7 @@ describe('Block tests', () => {
       let sectionMode = false;
       if (block.classList.contains('section')) {
         // input file contains section, look for block inside it
-        block = block.querySelector(':scope > div > div');
+        block = block.querySelector(':scope div.block');
         sectionMode = true;
       }
 
@@ -108,7 +108,7 @@ describe('Block tests', () => {
 
       let current = block;
       if (sectionMode) {
-        current = block.parentElement.parentElement;
+        current = block.closest('.section');
       }
 
       const finalise = () => {

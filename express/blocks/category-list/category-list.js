@@ -1,5 +1,5 @@
 import { normalizeHeadings } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import buildCarousel from '../shared/carousel.js';
 
 // category-list-wrapper's style is defined in template-list/template-list.css
