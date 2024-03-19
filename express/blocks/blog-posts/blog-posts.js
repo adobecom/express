@@ -1,5 +1,6 @@
 /* eslint-disable import/named, import/extensions */
 
+import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createOptimizedPicture,
   createTag,
@@ -335,6 +336,7 @@ function checkStructure(element, querySelectors) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'blog-posts');
   const config = getBlogPostsConfig(block);
 
   // wrap p in parent section
