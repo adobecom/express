@@ -64,6 +64,7 @@ function startSDK(data = '') {
 
       const ccEverywhereConfig = {
         hostInfo: {
+          // TODO: replace with MarvelWeb3 or AdobeExpressWeb when ready
           clientId: 'b20f1d10b99b4ad892a856478f87cec3',
           appName: 'express',
         },
