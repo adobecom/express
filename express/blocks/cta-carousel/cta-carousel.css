@@ -48,6 +48,10 @@
     position: relative;
 }
 
+.cta-carousel .card:focus-within {
+    border: 2px var(--color-info-accent) solid !important
+}
+
 .cta-carousel .card.coming-soon {
     opacity: 0.5;
     pointer-events: none;
