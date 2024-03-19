@@ -1231,7 +1231,7 @@ main > div[class="section section-wrapper columns-container"][id^="column-"] {
 }
 
 /* FIXME: hacky behavior to fight for space with Jarvis */
-body.has-floating-panel #adbMsgClientWrapper .adbmsgAuthoredBotPopUpContainer.outwardAnimate {
-  bottom: 110px!important;
-  right: 40px!important;
+body.has-floating-panel #adbMsgClientWrapper .adbmsgAuthoredBotPopUpContainer.outwardAnimate,
+body.has-floating-panel #adbMsgClientWrapper #adbmsgCta {
+  bottom: 140px!important;
 }
