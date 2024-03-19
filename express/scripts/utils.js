@@ -2321,7 +2321,7 @@ export function addAnimationToggle(target) {
     if (e.key !== 'Enter' && e.keyCode !== 32 && e.key !== ' ') {
       return;
     }
-    e.preventDefault()
+    e.preventDefault();
     const videos = target.querySelectorAll('video');
     const paused = videos[0] ? videos[0].paused : false;
     videos.forEach((video) => {
