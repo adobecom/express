@@ -10,7 +10,7 @@ export function decorateTextWithTag(textSource, options = {}) {
     baseClass,
     tagClass,
   } = options;
-  const text = createTag(baseT || 'label', { class: baseClass || '', for : textSource });
+  const text = createTag(baseT || 'label', { class: baseClass || '', for: textSource });
   const tagText = textSource.match(/\[(.*?)]/);
 
   if (tagText) {
