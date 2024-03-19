@@ -375,7 +375,7 @@ main.with-holiday-templates-banner {
 }
 
 .template:focus-within {
-    border: 2px var(--color-info-accent) solid !important;
+    border: 2px var(--color-info-accent) solid;
 }
 
 .template-x.horizontal .template .still-wrapper img,

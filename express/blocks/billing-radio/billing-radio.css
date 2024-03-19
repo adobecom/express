@@ -24,7 +24,7 @@
 }
 
 .billing-radio :focus-within {
-  border: 2px var(--color-info-accent) solid !important;
+  border: 2px var(--color-info-accent) solid;
 }
 
 .billing-radio span {
