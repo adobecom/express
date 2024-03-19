@@ -2325,6 +2325,7 @@ export function addAnimationToggle(target) {
     if (e.key !== 'Enter' && e.keyCode !== 32 && e.key !== ' ') {
       return;
     }
+    e.preventDefault();
     toggleVideo(target);
   }, true);
 }
