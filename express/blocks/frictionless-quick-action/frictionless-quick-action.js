@@ -17,26 +17,17 @@ let quickActionContainer;
 let uploadContainer;
 
 function fade(element, action) {
-  return new Promise((resolve) => {
-    function onTransitionEnd() {
-      if (action === 'out') {
-        element.removeEventListener('transitionend', onTransitionEnd);
-        element.classList.add('hidden');
-      }
-      resolve();
-    }
-
-    if (action === 'in') {
-      element.classList.remove('hidden');
-      requestAnimationFrame(() => {
-        element.classList.remove('transparent');
-        resolve();
-      });
-    } else if (action === 'out') {
-      element.classList.add('transparent');
-      element.addEventListener('transitionend', onTransitionEnd);
-    }
-  });
+  if (action === 'in') {
+    element.classList.remove('hidden');
+    setTimeout(() => {
+      element.classList.remove('transparent');
+    }, 10);
+  } else if (action === 'out') {
+    element.classList.add('transparent');
+    setTimeout(() => {
+      element.classList.add('hidden');
+    }, 200);
+  }
 }
 
 function selectElementByTagPrefix(p) {
@@ -118,7 +109,7 @@ function startSDK(data = '') {
     fqaBlock.append(quickActionContainer);
     const divs = fqaBlock.querySelectorAll(':scope > div');
     if (divs[1]) [, uploadContainer] = divs;
-    await fade(uploadContainer, 'out');
+    fade(uploadContainer, 'out');
 
     const contConfig = {
       mode: 'inline',
@@ -155,7 +146,6 @@ function startSDK(data = '') {
         },
         onCancel: () => {
           window.history.back();
-          fade(uploadContainer, 'in');
         },
       },
     };
