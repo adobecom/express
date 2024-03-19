@@ -531,6 +531,7 @@ export function transformLinkToAnimation($a, $videoLooping = true) {
   const $innerDiv = $a.closest('div');
   $innerDiv.prepend($video);
   $innerDiv.classList.add('hero-animation-overlay');
+  $video.setAttribute("tabindex",0)
   $a.replaceWith($video);
   // autoplay animation
   $video.addEventListener('canplay', () => {
@@ -2303,6 +2304,23 @@ function hideBody() {
 
 export function addAnimationToggle(target) {
   target.addEventListener('click', () => {
+    const videos = target.querySelectorAll('video');
+    const paused = videos[0] ? videos[0].paused : false;
+    videos.forEach((video) => {
+      if (paused) {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // ignore
+          });
+        }
+      } else video.pause();
+    });
+  }, true);
+  target.addEventListener('keypress', (e) => { 
+    if (e.key !== 'Enter' && e.key !== "Space") {
+      return;
+    }
     const videos = target.querySelectorAll('video');
     const paused = videos[0] ? videos[0].paused : false;
     videos.forEach((video) => {
