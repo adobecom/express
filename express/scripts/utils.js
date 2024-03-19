@@ -2302,38 +2302,30 @@ function hideBody() {
   }
 }
 
+export function toggleVideo(target) {
+  const videos = target.querySelectorAll('video');
+  const paused = videos[0] ? videos[0].paused : false;
+  videos.forEach((video) => {
+    if (paused) {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // ignore
+        });
+      }
+    } else video.pause();
+  });
+}
+
 export function addAnimationToggle(target) {
   target.addEventListener('click', () => {
-    const videos = target.querySelectorAll('video');
-    const paused = videos[0] ? videos[0].paused : false;
-    videos.forEach((video) => {
-      if (paused) {
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            // ignore
-          });
-        }
-      } else video.pause();
-    });
+    toggleVideo(target);
   }, true);
   target.addEventListener('keypress', (e) => {
     if (e.key !== 'Enter' && e.keyCode !== 32 && e.key !== ' ') {
       return;
     }
-    e.preventDefault();
-    const videos = target.querySelectorAll('video');
-    const paused = videos[0] ? videos[0].paused : false;
-    videos.forEach((video) => {
-      if (paused) {
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            // ignore
-          });
-        }
-      } else video.pause();
-    });
+    toggleVideo(target);
   }, true);
 }
 
