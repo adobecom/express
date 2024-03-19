@@ -155,6 +155,7 @@ function startSDK(data = '') {
         },
         onCancel: () => {
           window.history.back();
+          fade(uploadContainer, 'in');
         },
       },
     };
