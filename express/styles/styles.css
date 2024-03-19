@@ -675,7 +675,7 @@ main .hero a.button:any-link {
   border-radius: 22px;
 }
 
-main .section div .block p.legal-copy {
+main .section .block p.legal-copy {
   font-size: var(--body-font-size-xs);
   line-height: 1.5;
 }
@@ -965,6 +965,7 @@ main .free-plan-widget .plan-widget-tag img.icon.icon-checkmark {
     margin: 0;
     display: flex;
     align-items: center;
+    /* todo: investigate why */
     z-index: 4;
   }
 
@@ -1230,4 +1231,22 @@ main .block .app-store-aTag .app-store-wrapper {
 
 #feds-topnav .feds-login {
   border: none
+}
+
+/* temporary fixes for section padding */
+
+main > div[class="section section-wrapper sticky-promo-bar-loadinbody-rounded-container firefly-card-container"],
+main > div[class="section section-wrapper template-x-container link-list-noarrows-container collapsible-card-container floating-button-container"],
+main > div[class="section section-wrapper fullscreen-marquee-image-container"] + div[class="section section-wrapper template-x-container link-list-noarrows-container collapsible-card-container"] {
+  padding-top: 0;
+}
+
+main > div[class="section section-wrapper columns-container"][id^="column-"] {
+  padding: 0;
+}
+
+/* FIXME: hacky behavior to fight for space with Jarvis */
+body.has-floating-panel #adbMsgClientWrapper .adbmsgAuthoredBotPopUpContainer.outwardAnimate,
+body.has-floating-panel #adbMsgClientWrapper #adbmsgCta {
+  bottom: 140px!important;
 }

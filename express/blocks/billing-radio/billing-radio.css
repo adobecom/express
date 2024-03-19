@@ -8,25 +8,30 @@
   font-size: var(--body-font-size-s);
   height: 32px;
 }
-.billing-radio label {
+.billing-radio button {
+  border: none;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+
+  font-size: var(--body-font-size-xs);
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: var(--body-font-size-xs);
+  gap: 4px;
 }
-.billing-radio label,
-.billing-radio label * {
-  cursor: pointer;
-}
-.billing-radio input {
-  appearance: none;
-  border-radius: 50%;
-  border: 2px solid #292929;
-  transition: 0.2s all linear;
-  margin: 0;
+
+.billing-radio span {
   width: 16px;
   height: 16px;
+  border-radius: 50%;
+  transition: 0.2s all linear;
+  border: 2px solid #292929;
+  box-sizing: border-box;
 }
-.billing-radio input:checked {
-  border: 6px solid #292929;
+
+.billing-radio .checked span {
+  border-width: 6px;
 }

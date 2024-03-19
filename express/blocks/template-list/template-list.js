@@ -6,8 +6,10 @@ import {
   createTag,
   decorateMain,
   fetchPlaceholders,
-  fetchPlainBlockFromFragment,
-  fetchRelevantRows, fixIcons, getConfig,
+  fetchBlockFragDecorated,
+  fetchRelevantRows,
+  fixIcons,
+  getConfig,
   getIconElement,
   getLottie,
   getMetadata,
@@ -16,6 +18,7 @@ import {
   sampleRUM,
   toClassName,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import { Masonry } from '../shared/masonry.js';
 
@@ -1859,7 +1862,7 @@ async function replaceRRTemplateList($block, props) {
     props.viewAllLink = relevantRowsData.viewAllLink || null;
 
     if (relevantRowsData.manualTemplates === 'Y') {
-      const $sectionFromFragment = await fetchPlainBlockFromFragment(`/express/fragments/relevant-rows/${relevantRowsData.templateFragment}`, 'template-list');
+      const $sectionFromFragment = await fetchBlockFragDecorated(`/express/fragments/relevant-rows/${relevantRowsData.templateFragment}`, 'template-list');
       const $newBlock = $sectionFromFragment.querySelector('.template-list');
 
       if ($newBlock) {
@@ -1942,6 +1945,8 @@ function constructProps() {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'template-list');
+
   const props = constructProps();
   if ($block.classList.contains('spreadsheet-powered')) {
     await replaceRRTemplateList($block, props);

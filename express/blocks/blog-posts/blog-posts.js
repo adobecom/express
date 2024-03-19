@@ -1,5 +1,6 @@
 /* eslint-disable import/named, import/extensions */
 
+import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createOptimizedPicture,
   createTag,
@@ -117,21 +118,22 @@ function filterBlogPosts(config, index) {
   return result;
 }
 
-function getBlogPostsConfig($block) {
+// Given a block element, construct a config object from all the links that children of the block.
+function getBlogPostsConfig(block) {
   let config = {};
 
-  const $rows = [...$block.children];
-  const $firstRow = [...$rows[0].children];
+  const rows = [...block.children];
+  const firstRow = [...rows[0].children];
 
-  if ($rows.length === 1 && $firstRow.length === 1) {
+  if (rows.length === 1 && firstRow.length === 1) {
     /* handle links */
-    const links = [...$block.querySelectorAll('a')].map(($a) => $a.href);
+    const links = [...block.querySelectorAll('a')].map((a) => a.href);
     config = {
       featured: links,
       featuredOnly: true,
     };
   } else {
-    config = readBlockConfig($block);
+    config = readBlockConfig(block);
   }
   return config;
 }
@@ -174,7 +176,6 @@ async function filterAllBlogPostsOnPage() {
 
 async function getFilteredResults(config) {
   const results = await filterAllBlogPostsOnPage();
-
   const configStr = JSON.stringify(config);
   let matchingResult = {};
   results.forEach((res) => {
@@ -185,42 +186,8 @@ async function getFilteredResults(config) {
   return (matchingResult);
 }
 
-const loadImage = (img) => new Promise((resolve) => {
-  if (img.complete && img.naturalHeight !== 0) resolve();
-  else {
-    img.onload = () => {
-      resolve();
-    };
-  }
-});
-
-function isInViewport(element) {
-  const rect = element.getBoundingClientRect();
-  return (
-    rect.top >= 0
-    && rect.left >= 0
-    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-    && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  );
-}
-
-async function decorateBlogPosts($blogPosts, config, offset = 0) {
-  const posts = await getFilteredResults(config);
-
-  const isHero = config.featured && config.featured.length === 1;
-
-  const limit = config['page-size'] || 12;
-
-  let $cards = $blogPosts.querySelector('.blog-cards');
-  if (!$cards) {
-    $blogPosts.innerHTML = '';
-    $cards = createTag('div', { class: 'blog-cards' });
-    $blogPosts.appendChild($cards);
-  }
-
-  const pageEnd = offset + limit;
-  let count = 0;
-  const images = [];
+// Translates the Read More string into the local language
+async function getReadMoreString() {
   const placeholders = await fetchPlaceholders();
   let readMoreString = placeholders['read-more'];
   if (readMoreString === undefined || readMoreString === '') {
@@ -234,76 +201,129 @@ async function decorateBlogPosts($blogPosts, config, offset = 0) {
     };
     readMoreString = readMore[locale] || '&nbsp;&nbsp;&nbsp;&rightarrow;&nbsp;&nbsp;&nbsp;';
   }
+  return readMoreString;
+}
 
-  for (let i = offset; i < posts.length && count < limit; i += 1) {
-    const post = posts[i];
-    const path = post.path.split('.')[0];
-    const {
-      title, teaser, image,
-    } = post;
-    const publicationDate = new Date(post.date * 1000);
-    const language = getConfig().locale.ietf;
-    const dateString = publicationDate.toLocaleDateString(language, {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      timeZone: 'UTC',
-    });
+// Given a post, get all the required parameters from it to construct a card or hero card
+function getCardParameters(post, dateFormatter) {
+  const path = post.path.split('.')[0];
+  const {
+    title, teaser, image,
+  } = post;
+  const publicationDate = new Date(post.date * 1000);
+  const dateString = dateFormatter.format(publicationDate);
+  const filteredTitle = title.replace(/(\s?)(｜|\|)(\s?Adobe\sExpress\s?)$/g, '');
+  const imagePath = image.split('?')[0].split('_')[1];
+  return {
+    path, title, teaser, dateString, filteredTitle, imagePath,
+  };
+}
 
-    const filteredTitle = title.replace(/(\s?)(｜|\|)(\s?Adobe\sExpress\s?)$/g, '');
-    const imagePath = image.split('?')[0].split('_')[1];
-    const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
-    const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
-    let pictureTag = cardPicture.outerHTML;
-    if (isHero) {
-      pictureTag = heroPicture.outerHTML;
-    }
-    const $card = createTag('a', {
-      class: `${isHero ? 'blog-hero-card' : 'blog-card'}`,
-      href: path,
-    });
-    if (isHero) {
-      $card.innerHTML = `<div class="blog-card-image">
-      ${pictureTag}
-      </div>
-      <div class="blog-hero-card-body">
-        <h3 class="blog-card-title">${filteredTitle}</h3>
-        <p class="blog-card-teaser">${teaser}</p>
-        <p class="blog-card-date">${dateString}</p>
-        <p class="blog-card-cta button-container">
-          <a href="${path}" title="${readMoreString}" class="button accent">${readMoreString}</a></p>
-      </div>`;
-      $blogPosts.prepend($card);
-    } else {
-      $card.innerHTML = `<div class="blog-card-image">
+// For configs with a single featuredd post, get a hero sized card
+async function getHeroCard(post, dateFormatter) {
+  const readMoreString = await getReadMoreString();
+  const {
+    path, title, teaser, dateString, filteredTitle, imagePath,
+  } = getCardParameters(post, dateFormatter);
+  const heroPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false);
+  const card = createTag('a', {
+    class: 'blog-hero-card',
+    href: path,
+  });
+  const pictureTag = heroPicture.outerHTML;
+  card.innerHTML = `<div class="blog-card-image">
+    ${pictureTag}
+    </div>
+    <div class="blog-hero-card-body">
+      <h3 class="blog-card-title">${filteredTitle}</h3>
+      <p class="blog-card-teaser">${teaser}</p>
+      <p class="blog-card-date">${dateString}</p>
+      <p class="blog-card-cta button-container">
+        <a href="${path}" title="${readMoreString}" class="button accent">${readMoreString}</a></p>
+    </div>`;
+  return card;
+}
+// For configs with more than one post, get regular cards
+function getCard(post, dateFormatter) {
+  const {
+    path, title, teaser, dateString, filteredTitle, imagePath,
+  } = getCardParameters(post, dateFormatter);
+  const cardPicture = createOptimizedPicture(`./media_${imagePath}?format=webply&optimize=medium&width=750`, title, false, [{ width: '750' }]);
+  const card = createTag('a', {
+    class: 'blog-card',
+    href: path,
+  });
+  const pictureTag = cardPicture.outerHTML;
+  card.innerHTML = `<div class="blog-card-image">
         ${pictureTag}
         </div>
         <h3 class="blog-card-title">${filteredTitle}</h3>
         <p class="blog-card-teaser">${teaser}</p>
         <p class="blog-card-date">${dateString}</p>`;
-      $cards.append($card);
-    }
-    images.push($card.querySelector('img'));
-    count += 1;
-  }
-  if (posts.length > pageEnd && config['load-more']) {
-    const $loadMore = createTag('a', { class: 'load-more button secondary', href: '#' });
-    $loadMore.innerHTML = config['load-more'];
-    $blogPosts.append($loadMore);
-    $loadMore.addEventListener('click', (event) => {
-      event.preventDefault();
-      $loadMore.remove();
-      decorateBlogPosts($blogPosts, config, pageEnd);
-    });
+  return card;
+}
+// Cached language and dateFormatter since creating a Dateformatter is an expensive operation
+let language;
+let dateFormatter;
+
+function getDateFormatter(newLanguage) {
+  language = newLanguage;
+  dateFormatter = Intl.DateTimeFormat(language, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+// Given a blog post element and a config, append all posts defined in the config to blogPosts
+async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
+  const posts = await getFilteredResults(config);
+  // If a blog config has only one featured item, then build the item as a hero card.
+  const isHero = config.featured && config.featured.length === 1;
+
+  const limit = config['page-size'] || 12;
+
+  let cards = blogPostsElements.querySelector('.blog-cards');
+  if (!cards) {
+    blogPostsElements.innerHTML = '';
+    cards = createTag('div', { class: 'blog-cards' });
+    blogPostsElements.appendChild(cards);
   }
 
-  if (images.length) {
-    const section = $blogPosts.closest('.section');
-    section.style.display = 'block';
-    const filteredImages = images.filter((i) => isInViewport(i));
-    const imagePromises = filteredImages.map((img) => loadImage(img));
-    await Promise.all(imagePromises);
-    delete section.style.display;
+  const pageEnd = offset + limit;
+  let count = 0;
+  const images = [];
+
+  const newLanguage = getConfig().locale.ietf;
+  if (!dateFormatter || newLanguage !== language) {
+    getDateFormatter(newLanguage);
+  }
+
+  if (isHero) {
+    const card = await getHeroCard(posts[0], dateFormatter);
+    blogPostsElements.prepend(card);
+    images.push(card.querySelector('img'));
+    count = 1;
+  } else {
+    for (let i = offset; i < posts.length && count < limit; i += 1) {
+      const post = posts[i];
+      const card = getCard(post, dateFormatter);
+      cards.append(card);
+      images.push(card.querySelector('img'));
+      count += 1;
+    }
+  }
+
+  if (posts.length > pageEnd && config['load-more']) {
+    const loadMore = createTag('a', { class: 'load-more button secondary', href: '#' });
+    loadMore.innerHTML = config['load-more'];
+    blogPostsElements.append(loadMore);
+    loadMore.addEventListener('click', (event) => {
+      event.preventDefault();
+      loadMore.remove();
+      decorateBlogPosts(blogPostsElements, config, pageEnd);
+    });
   }
 }
 
@@ -315,18 +335,19 @@ function checkStructure(element, querySelectors) {
   return matched;
 }
 
-export default async function decorate($block) {
-  const config = getBlogPostsConfig($block);
+export default async function decorate(block) {
+  addTempWrapper(block, 'blog-posts');
+  const config = getBlogPostsConfig(block);
 
   // wrap p in parent section
-  if (checkStructure($block.parentNode, ['h2 + p + p + div.blog-posts', 'h2 + p + div.blog-posts', 'h2 + div.blog-posts'])) {
+  if (checkStructure(block.parentNode, ['h2 + p + p + div.blog-posts', 'h2 + p + div.blog-posts', 'h2 + div.blog-posts'])) {
     const wrapper = createTag('div', { class: 'blog-posts-decoration' });
-    $block.parentNode.insertBefore(wrapper, $block);
-    const allP = $block.parentNode.querySelectorAll(':scope > p');
+    block.parentNode.insertBefore(wrapper, block);
+    const allP = block.parentNode.querySelectorAll(':scope > p');
     allP.forEach((p) => {
       wrapper.appendChild(p);
     });
   }
 
-  await decorateBlogPosts($block, config);
+  await decorateBlogPosts(block, config);
 }

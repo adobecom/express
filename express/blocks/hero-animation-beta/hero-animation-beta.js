@@ -5,6 +5,7 @@ import {
   addHeaderSizing, getConfig,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import {
   isVideoLink,
@@ -138,6 +139,8 @@ function transformToVideoLink($cell, $a) {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'hero-animation-beta');
+
   const possibleBreakpoints = animationBreakPointSettings.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const $section = $block.closest('.section');

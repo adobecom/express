@@ -3,6 +3,7 @@
  * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Tab_Role
  */
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
 
@@ -114,6 +115,8 @@ const handlePillSize = (pill) => {
 };
 
 const init = (block) => {
+  addTempWrapper(block, 'tabs-ax');
+
   // to avoid hero style conflicts
   block.closest('.hero.hero-noimage')?.classList?.remove('hero', 'hero-noimage');
   const rootElem = block.closest('.fragment') || document;
@@ -179,6 +182,12 @@ const init = (block) => {
       tabContentContainer.append(tabListContent);
     });
     tabListItems[0].parentElement.remove();
+  }
+
+  // as of now tabs-ax is used above the fold and it's usually h1 default wrapper before it
+  // TODO: develop consistent padding/margin patterns for block/section
+  if (parentSection.previousElementSibling.classList.contains('hero', 'hero-noimage')) {
+    parentSection.previousElementSibling.style.paddingTop = '0';
   }
 
   // Tab Sections
