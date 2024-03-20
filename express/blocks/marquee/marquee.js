@@ -113,7 +113,7 @@ function decorateToggleContext(ct, placeholders) {
 
 async function buildReduceMotionSwitch(block) {
   if (!block.querySelector('.reduce-motion-wrapper')) {
-    const reduceMotionIconWrapper = createTag('div', { class: 'reduce-motion-wrapper' });
+    const reduceMotionIconWrapper = createTag('div', { class: 'reduce-motion-wrapper', tabIndex: '0' });
     const videoWrapper = block.querySelector('.background-wrapper');
     const video = videoWrapper.querySelector('video');
 
