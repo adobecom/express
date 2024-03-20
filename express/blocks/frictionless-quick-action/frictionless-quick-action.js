@@ -35,26 +35,6 @@ function selectElementByTagPrefix(p) {
   return Array.from(allEls).find((e) => e.tagName.toLowerCase().startsWith(p.toLowerCase()));
 }
 
-// function initEditorModalObserver() {
-//   const config = { attributes: false, childList: true, subtree: false };
-//   const observer = new MutationObserver((mutationList, self) => {
-//     for (const mutation of mutationList) {
-//       if (mutation.type === 'childList') {
-//         const editorModal = selectElementByTagPrefix('cc-everywhere-container-');
-//         if (!editorModal) {
-//           quickActionContainer?.remove();
-//           document.body.classList.remove('editor-modal-loaded');
-//           inputElement.value = '';
-//           fade(uploadContainer, 'in');
-//           self.disconnect();
-//         }
-//       }
-//     }
-//   });
-
-//   observer.observe(document.body, config);
-// }
-
 function startSDK(data = '') {
   const CDN_URL = 'https://dev.cc-embed.adobe.com/sdk/prbuilds/1p/PR-1410/CCEverywhere.js';
   loadScript(CDN_URL).then(async () => {
@@ -91,7 +71,7 @@ function startSDK(data = '') {
       ccEverywhere = await window.CCEverywhere.initialize(...Object.values(ccEverywhereConfig));
     }
 
-    // We might need the button labels from the placeholders sheet if the SDK default doens't work.
+    // TODO: need the button labels from the placeholders sheet if the SDK default doens't work.
     const exportConfig = [
       {
         id: 'download-button',
@@ -157,9 +137,12 @@ function startSDK(data = '') {
       receiveQuickActionErrors: false,
       callbacks: {
         onIntentChange: () => {
+          quickActionContainer?.remove();
+          fade(uploadContainer, 'in');
+          // TODO: remove next line once we can configure z-index of the embed container
+          // Subhadeep is working on it
           document.body.classList.add('editor-modal-loaded');
           window.history.pushState({ hideFrictionlessQa: true }, '', '');
-          // initEditorModalObserver();
           return {
             containerConfig: {
               mode: 'modal',

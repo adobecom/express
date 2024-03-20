@@ -1,3 +1,4 @@
+/* TODO: remove after z-index configuration is supported */
 body.editor-modal-loaded header {
     z-index: 0;
 }
