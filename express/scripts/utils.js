@@ -524,10 +524,17 @@ export function transformLinkToAnimation($a, $videoLooping = true) {
   }
   // replace anchor with video element
   const videoUrl = new URL($a.href);
-  const helixId = videoUrl.hostname.includes('hlx.blob.core') ? videoUrl.pathname.split('/')[2] : videoUrl.pathname.split('media_')[1].split('.')[0];
-  const videoHref = `./media_${helixId}.mp4`;
+
+  const isLegacy = videoUrl.hostname.includes('hlx.blob.core') || videoUrl.pathname.includes('media_');
   const $video = createTag('video', attribs);
-  $video.innerHTML = `<source src="${videoHref}" type="video/mp4">`;
+  if (isLegacy) {
+    const helixId = videoUrl.hostname.includes('hlx.blob.core') ? videoUrl.pathname.split('/')[2] : videoUrl.pathname.split('media_')[1].split('.')[0];
+    const videoHref = `./media_${helixId}.mp4`;
+    $video.innerHTML = `<source src="${videoHref}" type="video/mp4">`;
+  } else {
+    $video.innerHTML = `<source src="${videoUrl}" type="video/mp4">`;
+  }
+
   const $innerDiv = $a.closest('div');
   $innerDiv.prepend($video);
   $innerDiv.classList.add('hero-animation-overlay');
