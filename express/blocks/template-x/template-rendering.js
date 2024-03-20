@@ -94,10 +94,28 @@ async function getVideoUrls(renditionLinkHref, componentLinkHref, page) {
   }
 }
 
+async function share(branchUrl, tooltip, timeoutId) {
+  await navigator.clipboard.writeText(branchUrl);
+  tooltip.classList.add('display-tooltip');
+
+  const rect = tooltip.getBoundingClientRect();
+  const tooltipRightEdgePos = rect.left + rect.width;
+  if (tooltipRightEdgePos > window.innerWidth) {
+    tooltip.classList.add('flipped');
+  }
+
+  clearTimeout(timeoutId);
+  return setTimeout(() => {
+    tooltip.classList.remove('display-tooltip');
+    tooltip.classList.remove('flipped');
+  }, 2500);
+}
+
 function renderShareWrapper(branchUrl, placeholders) {
   const text = placeholders['tag-copied'] ?? 'Copied to clipboard';
   const wrapper = createTag('div', { class: 'share-icon-wrapper' });
   const shareIcon = getIconElement('share-arrow');
+  shareIcon.setAttribute('tabindex', 0);
   const tooltip = createTag('div', {
     class: 'shared-tooltip',
     'aria-label': text,
@@ -106,22 +124,15 @@ function renderShareWrapper(branchUrl, placeholders) {
   });
   let timeoutId = null;
   shareIcon.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(branchUrl);
-    tooltip.classList.add('display-tooltip');
-
-    const rect = tooltip.getBoundingClientRect();
-    const tooltipRightEdgePos = rect.left + rect.width;
-    if (tooltipRightEdgePos > window.innerWidth) {
-      tooltip.classList.add('flipped');
-    }
-
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      tooltip.classList.remove('display-tooltip');
-      tooltip.classList.remove('flipped');
-    }, 2500);
+    timeoutId = share(branchUrl, tooltip, timeoutId);
   });
 
+  shareIcon.addEventListener('keypress', async (e) => {
+    if (e.key !== 'Enter') {
+      return;
+    }
+    timeoutId = share(branchUrl, tooltip, timeoutId);
+  });
   const checkmarkIcon = getIconElement('checkmark-green');
   tooltip.append(checkmarkIcon);
   tooltip.append(text);
@@ -267,6 +278,7 @@ async function renderRotatingMedias(wrapper,
 
   if (img) {
     img.addEventListener('imgended', () => {
+      console.log('abc');
       if (pageIterator.all().length > 1) {
         pageIterator.next();
         playMedia();
@@ -321,7 +333,7 @@ function renderHoverWrapper(template, placeholders) {
 
   const cta = renderCTA(placeholders, template.customLinks.branchUrl);
   btnContainer.append(cta);
-
+  cta.addEventListener('focusin', enterHandler);
   return btnContainer;
 }
 

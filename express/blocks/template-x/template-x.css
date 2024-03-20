@@ -378,6 +378,11 @@ main.with-holiday-templates-banner {
     border: 2px var(--color-info-accent) solid;
 }
 
+.button-container:focus-within{
+    visibility: visible;
+    opacity: 20 !important;
+}
+
 .template-x.horizontal .template .still-wrapper img,
 .template-x.horizontal .template .still-wrapper video {
     height: 200px;
