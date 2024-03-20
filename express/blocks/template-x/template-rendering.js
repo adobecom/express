@@ -278,7 +278,6 @@ async function renderRotatingMedias(wrapper,
 
   if (img) {
     img.addEventListener('imgended', () => {
-      console.log('abc');
       if (pageIterator.all().length > 1) {
         pageIterator.next();
         playMedia();
@@ -312,6 +311,7 @@ function renderMediaWrapper(template, placeholders) {
     if (!renderedMedia) {
       renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
       mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
+      mediaWrapper.querySelector('.icon')?.focus();
     }
     renderedMedia.hover();
   };
@@ -319,13 +319,28 @@ function renderMediaWrapper(template, placeholders) {
     if (renderedMedia) renderedMedia.cleanup();
   };
 
-  return { mediaWrapper, enterHandler, leaveHandler };
+  const focusHandler = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!renderedMedia) {
+      renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
+      mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
+      mediaWrapper.querySelector('.icon')?.focus();
+      renderedMedia.hover();
+    }
+  };
+
+  return {
+    mediaWrapper, enterHandler, leaveHandler, focusHandler,
+  };
 }
 
 function renderHoverWrapper(template, placeholders) {
   const btnContainer = createTag('div', { class: 'button-container' });
 
-  const { mediaWrapper, enterHandler, leaveHandler } = renderMediaWrapper(template, placeholders);
+  const {
+    mediaWrapper, enterHandler, leaveHandler, focusHandler,
+  } = renderMediaWrapper(template, placeholders);
 
   btnContainer.append(mediaWrapper);
   btnContainer.addEventListener('mouseenter', enterHandler);
@@ -333,7 +348,7 @@ function renderHoverWrapper(template, placeholders) {
 
   const cta = renderCTA(placeholders, template.customLinks.branchUrl);
   btnContainer.append(cta);
-  cta.addEventListener('focusin', enterHandler);
+  cta.addEventListener('focusin', focusHandler);
   return btnContainer;
 }
 
