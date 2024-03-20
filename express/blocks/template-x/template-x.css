@@ -374,10 +374,6 @@ main.with-holiday-templates-banner {
     margin: 24px 12px;
 }
 
-.template:focus-within {
-    border: 2px var(--color-info-accent) solid;
-}
-
 .button-container:focus-within{
     visibility: visible;
     opacity: 20 !important;
