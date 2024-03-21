@@ -36,6 +36,7 @@ function selectElementByTagPrefix(p) {
 }
 
 function startSDK(data = '') {
+  // TODO: use https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js for production
   const CDN_URL = 'https://dev.cc-embed.adobe.com/sdk/prbuilds/1p/PR-1410/CCEverywhere.js';
   loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
