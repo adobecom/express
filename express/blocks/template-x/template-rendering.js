@@ -347,7 +347,7 @@ async function renderHoverWrapper(template, placeholders) {
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
-  let isEligible = document.body.dataset.device === 'desktop';
+  let isEligible = document.body.dataset.device === 'desktop' || !['yes', 'true', 'Y', 'on'].includes(getMetadata('mobile-benchmark'));
 
   if (!isEligible) {
     const eligibility = BlockMediator.get('mobileBetaEligibility');
