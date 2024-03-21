@@ -140,26 +140,20 @@ function startSDK(data = '') {
         onIntentChange: () => {
           quickActionContainer?.remove();
           fade(uploadContainer, 'in');
-          // TODO: remove next line once we can configure z-index of the embed container
-          // Subhadeep is working on it
-          if (!urlParams.get('new_zindex')) {
-            document.body.classList.add('editor-modal-loaded');
-          }
+          document.body.classList.add('editor-modal-loaded');
           window.history.pushState({ hideFrictionlessQa: true }, '', '');
           return {
             containerConfig: {
               mode: 'modal',
+              zIndex: 999,
             },
           };
         },
+        onCancel: () => {
+          window.history.back();
+        },
       },
     };
-    if (!urlParams.get('new_zindex')) {
-      appConfig.callbacks.onCancel = () => {
-        console.log('Frictionless QA cancelled. window.history.back() should be called now to reset the UX.');
-        window.history.back();
-      };
-    }
 
     switch (quickAction) {
       case 'convert-to-jpg':
