@@ -123,7 +123,6 @@ function handleSection(sectionParams) {
     if (nextRow) nextRow.classList.add('table-start-row');
   } else if (isToggle) {
     const toggleIconTag = createTag('span', { class: 'icon expand', 'aria-expanded': 'false' });
-
     row.querySelector('.toggle-content').prepend(toggleIconTag);
     row.classList.add('collapsed');
     let prevRow = previousRow;
@@ -176,8 +175,11 @@ const assignEvents = (tableEl) => {
     btn.classList.add('point-cursor');
     btn.addEventListener('click', () => handleToggleMore(btn));
     btn.addEventListener('keydown', (e) => {
-      e.preventDefault();
-      if (e.key === 'Enter' || e.key === ' ') handleToggleMore(btn);
+
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleToggleMore(btn);
+      }
     });
   });
 
@@ -232,15 +234,16 @@ export default async function init(el) {
         col.dataset.colIndex = cdx + 1;
         col.classList.add('col', `col-${cdx + 1}`);
         col.setAttribute('role', 'cell');
-        if (col.innerHTML) col.tabIndex = 0;
       });
       if (sectionItem % 2 === 0 && cols.length > 1) row.classList.add('shaded');
+    } else {
+      row.setAttribute('tabindex', 0);
     }
 
     const nextRow = rows[index + 1];
     if (index > 0 && !isToggle && cols.length > 1
       && (!nextRow || Array.from(nextRow.children).length <= 1)) {
-      const toggleRow = createTag('button', { class: 'toggle-row', tabIndex: 0 });
+      const toggleRow = createTag('button', { class: 'toggle-row' });
       if (!isAdditional) toggleRow.classList.add('desktop-hide');
 
       const viewAllText = placeholders['view-all-features'] ?? 'View all features';
