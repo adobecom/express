@@ -175,7 +175,6 @@ const assignEvents = (tableEl) => {
     btn.classList.add('point-cursor');
     btn.addEventListener('click', () => handleToggleMore(btn));
     btn.addEventListener('keydown', (e) => {
-
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         handleToggleMore(btn);
