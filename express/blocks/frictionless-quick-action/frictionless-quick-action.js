@@ -36,18 +36,9 @@ function selectElementByTagPrefix(p) {
 }
 
 function startSDK(data = '') {
-  // TODO: use https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js for production
-  let CDN_URL = 'https://dev.cc-embed.adobe.com/sdk/prbuilds/1p/PR-1410/CCEverywhere.js';
-  let clientId = 'b20f1d10b99b4ad892a856478f87cec3';
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('client_id')) {
-    clientId = urlParams.get('client_id');
-  }
-  // &client_id=b20f1d10b99b4ad892a856478f87cec3&cdn_url=https://dev.cc-embed.adobe.com/sdk/prbuilds/1p/PR-1410/CCEverywhere.js
-  // &client_id=MarvelWeb3&cdn_url=https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js
-  if (urlParams.get('cdn_url')) {
-    CDN_URL = urlParams.get('cdn_url');
-  }
+  const CDN_URL = urlParams.get('client_id') || 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
+  const clientId = urlParams.get('cdn_url') || 'MarvelWeb3';
 
   loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
@@ -66,7 +57,6 @@ function startSDK(data = '') {
 
       const ccEverywhereConfig = {
         hostInfo: {
-          // TODO: replace with MarvelWeb3 or AdobeExpressWeb when ready
           clientId,
           appName: 'express',
         },
