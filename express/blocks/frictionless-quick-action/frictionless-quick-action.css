@@ -1,3 +1,8 @@
+/* TODO: remove after z-index configuration is supported */
+body.editor-modal-loaded header {
+    z-index: 0;
+}
+
 .frictionless-quick-action-wrapper, .frictionless-quick-action.block {
     max-width: none !important;
 }
