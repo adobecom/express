@@ -107,7 +107,7 @@
 .frictionless-quick-action.block .dropzone .button-container {
     display: flex;
     justify-content: center;
-    margin: 8px;
+    margin-top: 0px;
 }
 
 .frictionless-quick-action.block .dropzone .button {
