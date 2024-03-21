@@ -37,11 +37,14 @@ function selectElementByTagPrefix(p) {
 
 function startSDK(data = '') {
   // TODO: use https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js for production
-  const CDN_URL = 'https://dev.cc-embed.adobe.com/sdk/prbuilds/1p/PR-1410/CCEverywhere.js';
+  let CDN_URL = 'https://dev.cc-embed.adobe.com/sdk/prbuilds/1p/PR-1410/CCEverywhere.js';
   let clientId = 'b20f1d10b99b4ad892a856478f87cec3';
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('clientId')) {
-    clientId = urlParams.get('clientId');
+  if (urlParams.get('client_id')) {
+    clientId = urlParams.get('client_id');
+  }
+  if (urlParams.get('cdn_url')) {
+    CDN_URL = urlParams.get('cdn_url');
   }
 
   loadScript(CDN_URL).then(async () => {
