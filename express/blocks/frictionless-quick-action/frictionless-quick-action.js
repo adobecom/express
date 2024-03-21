@@ -37,10 +37,8 @@ function selectElementByTagPrefix(p) {
 
 function startSDK(data = '') {
   const urlParams = new URLSearchParams(window.location.search);
-  const exp = /['"<>?.;{}]/gm;
-
-  const CDN_URL = (!exp.test(urlParams.get('cdn_url')) && urlParams.get('cdn_url')) || 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
-  const clientId = (!exp.test(urlParams.get('client_id')) && urlParams.get('client_id')) || 'MarvelWeb3';
+  const CDN_URL = 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
+  const clientId = 'MarvelWeb3';
 
   loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
