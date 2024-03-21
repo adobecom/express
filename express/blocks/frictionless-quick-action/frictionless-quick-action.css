@@ -9,6 +9,11 @@
 
 .frictionless-quick-action.block h1 {
     font-size: 2.8125rem;
+    font-weight: var(--heading-font-weight);
+    line-height: var(--heading-line-height);
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    margin: 0;
 }
 
 .frictionless-quick-action.block h1+p {
@@ -99,9 +104,17 @@
     font-size: .6875rem;
     margin: 0;
 }
+.frictionless-quick-action.block .dropzone .button-container {
+    display: flex;
+    justify-content: center;
+    margin: 8px;
+}
 
 .frictionless-quick-action.block .dropzone .button {
-    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    border-radius: 50px;
 }
 
 .frictionless-quick-action.block > div:nth-child(2) > div:nth-child(2) > p:last-of-type {

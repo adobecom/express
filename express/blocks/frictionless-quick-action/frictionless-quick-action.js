@@ -1,6 +1,8 @@
 import {
   createTag,
   getConfig,
+  getLottie,
+  lazyLoadLottiePlayer,
   loadScript,
   transformLinkToAnimation,
 } from '../../scripts/utils.js';
@@ -245,6 +247,16 @@ export default async function decorate(block) {
   dropzone.before(actionColumn);
   dropzoneContainer.append(dropzone);
   actionColumn.append(dropzoneContainer, gtcText);
+
+  const span = cta.querySelector(':scope span');
+  if (span) {
+    const lottieUpload = [...span.classList].filter((c) => c === 'icon-lottie-arrow-up');
+    if (lottieUpload.length) {
+      span.remove();
+      cta.innerHTML = getLottie('lottie-arrow-up', '/express/icons/arrow-up-lottie.json') + cta.innerHTML;
+      lazyLoadLottiePlayer();
+    }
+  }
 
   dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();

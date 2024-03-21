@@ -40,7 +40,7 @@ describe('Frictionless Quick Action Block', () => {
     expect(dropzoneTitle.textContent).to.be.equal('Drag and drop an image or browse to upload.');
     const lottie = dropzone.querySelector(':scope lottie-player');
     expect(lottie).to.not.be.null;
-    const freePlanTexts = dropzone.querySelectorAll(':scope .free-plan-container');
+    const freePlanTexts = dropzone.querySelectorAll(':scope .plan-widget-tag');
     expect(freePlanTexts.length).to.be.equal(2);
 
     window.fetch = ogFetch;
