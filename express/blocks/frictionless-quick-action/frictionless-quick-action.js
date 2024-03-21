@@ -1,8 +1,6 @@
 import {
   createTag,
   getConfig,
-  getLottie,
-  lazyLoadLottiePlayer,
   loadScript,
   transformLinkToAnimation,
 } from '../../scripts/utils.js';
@@ -39,8 +37,10 @@ function selectElementByTagPrefix(p) {
 
 function startSDK(data = '') {
   const urlParams = new URLSearchParams(window.location.search);
-  const CDN_URL = urlParams.get('client_id') || 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
-  const clientId = urlParams.get('cdn_url') || 'MarvelWeb3';
+  const exp = /['"<>?.;{}]/gm;
+
+  const CDN_URL = (!exp.test(urlParams.get('cdn_url')) && urlParams.get('cdn_url')) || 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
+  const clientId = (!exp.test(urlParams.get('client_id')) && urlParams.get('client_id')) || 'MarvelWeb3';
 
   loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
@@ -247,16 +247,6 @@ export default async function decorate(block) {
   dropzone.before(actionColumn);
   dropzoneContainer.append(dropzone);
   actionColumn.append(dropzoneContainer, gtcText);
-
-  const span = cta.querySelector(':scope span');
-  if (span) {
-    const lottieUpload = [...span.classList].filter((c) => c === 'icon-lottie-arrow-up');
-    if (lottieUpload.length) {
-      span.remove();
-      cta.innerHTML = getLottie('lottie-arrow-up', '/express/icons/arrow-up-lottie.json') + cta.innerHTML;
-      lazyLoadLottiePlayer();
-    }
-  }
 
   dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();
