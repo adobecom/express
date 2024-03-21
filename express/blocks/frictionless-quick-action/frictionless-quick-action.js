@@ -155,7 +155,7 @@ function startSDK(data = '') {
       },
     };
     if (!urlParams.get('new_zindex')) {
-      appConfig.onCancel = () => {
+      appConfig.callbacks.onCancel = () => {
         console.log('Frictionless QA cancelled. window.history.back() should be called now to reset the UX.');
         window.history.back();
       };
