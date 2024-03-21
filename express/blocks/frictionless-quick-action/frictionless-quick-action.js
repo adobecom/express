@@ -142,7 +142,9 @@ function startSDK(data = '') {
           fade(uploadContainer, 'in');
           // TODO: remove next line once we can configure z-index of the embed container
           // Subhadeep is working on it
-          document.body.classList.add('editor-modal-loaded');
+          if (urlParams.get('old_zindex')) {
+            document.body.classList.add('editor-modal-loaded');
+          }
           window.history.pushState({ hideFrictionlessQa: true }, '', '');
           return {
             containerConfig: {
@@ -150,12 +152,14 @@ function startSDK(data = '') {
             },
           };
         },
-        onCancel: () => {
-          console.log('Frictionless QA cancelled. window.history.back() should be called now to reset the UX.');
-          window.history.back();
-        },
       },
     };
+    if (urlParams.get('old_zindex')) {
+      appConfig.onCancel = () => {
+        console.log('Frictionless QA cancelled. window.history.back() should be called now to reset the UX.');
+        window.history.back();
+      };
+    }
 
     switch (quickAction) {
       case 'convert-to-jpg':
