@@ -191,12 +191,8 @@ main .browse-by-category.card .browse-by-category-card-title {
 }
 
 @media (min-width: 900px) {
-  main .section .browse-by-category {
-    max-width: none;
-  }
-
   main .browse-by-category .browse-by-category-heading-section {
     flex-direction: row;
-    padding: 0;
+    padding: 0 0 0 20px;
   }
 }
