@@ -30,18 +30,12 @@ export default function decorate($block) {
     if (knownIcons.includes(iconString)) {
       iconString = getIcon(layout.icon);
     }
-    $layout.innerHTML = `<div class="layout-inside">
+    $layout.innerHTML = `<a class="layout-inside" href=${layout.link || ''}>
       <div class="layout-content">
         <div class="layout-icon">${iconString}</div>  
         <div class="layout-description">${layout.name} - ${layout.res}</div>
       </div>
-    </div>`;
-
-    if (layout.link) {
-      $layout.addEventListener('click', () => {
-        window.location.href = layout.link;
-      });
-    }
+    </a>`;
 
     $block.append($layout);
   });
