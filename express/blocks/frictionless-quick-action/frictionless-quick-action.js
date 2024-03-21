@@ -43,6 +43,8 @@ function startSDK(data = '') {
   if (urlParams.get('client_id')) {
     clientId = urlParams.get('client_id');
   }
+  // &client_id=b20f1d10b99b4ad892a856478f87cec3&cdn_url=https://dev.cc-embed.adobe.com/sdk/prbuilds/1p/PR-1410/CCEverywhere.js
+  // &client_id=MarvelWeb3&cdn_url=https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js
   if (urlParams.get('cdn_url')) {
     CDN_URL = urlParams.get('cdn_url');
   }
@@ -60,7 +62,7 @@ function startSDK(data = '') {
       else if (ietf === 'zh-Hans-CN') ietf = 'cn-CN';
       let env = getConfig().env.name;
       if (env === 'local') env = 'dev';
-      if (env === 'stage') env = 'preprod';
+      if (env === 'stage') env = 'stage';
 
       const ccEverywhereConfig = {
         hostInfo: {
