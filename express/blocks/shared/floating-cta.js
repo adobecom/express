@@ -333,7 +333,7 @@ export async function collectFloatingButtonData() {
     scrollState: 'withLottie',
     showAppStoreBadge: true,
     useLottieArrow: true,
-    delay: 3,
+    delay: 0,
     tools: [],
     appStore: {},
     mainCta: {},
@@ -458,13 +458,15 @@ export function buildToolBoxStructure(wrapper, data) {
     appStoreBadge.href = data.appStore.href ? data.appStore.href : data.tools[0].anchor.href;
   }
 
-  wrapper.classList.add('initial-load');
-  wrapper.classList.add('clamped');
-  if (wrapper.classList.contains('closed')) {
-    toolBox.classList.add('hidden');
-  } else {
-    wrapper.classList.add('toolbox-opened');
-    floatingButton.classList.add('toolbox-opened');
+  if (data.delay > 0) {
+    wrapper.classList.add('initial-load');
+    wrapper.classList.add('clamped');
+    if (wrapper.classList.contains('closed')) {
+      toolBox.classList.add('hidden');
+    } else {
+      wrapper.classList.add('toolbox-opened');
+      floatingButton.classList.add('toolbox-opened');
+    }
   }
 }
 
@@ -476,11 +478,13 @@ export function initToolBox(wrapper, data, toggleFunction) {
   const notch = wrapper.querySelector('.notch');
   const background = wrapper.querySelector('.toolbox-background');
 
-  setTimeout(() => {
-    if (wrapper.classList.contains('initial-load')) {
-      toggleFunction(wrapper, lottie, data, false);
-    }
-  }, data.delay * 1000);
+  if (data.delay > 0) {
+    setTimeout(() => {
+      if (wrapper.classList.contains('initial-load')) {
+        toggleFunction(wrapper, lottie, data, false);
+      }
+    }, data.delay * 1000);
+  }
 
   cta.addEventListener('click', (e) => {
     if (!wrapper.classList.contains('toolbox-opened')) {
