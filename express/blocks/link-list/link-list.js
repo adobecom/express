@@ -28,10 +28,10 @@ async function loadSpreadsheetData(block, relevantRowsData) {
 }
 
 const formatBlockLinks = (links) => {
-  const formattedURL = 'https://adobesparkpost.app.link/c4bWARQhWAb?category=templates&q=fun';
+  const formattedURL = 'https://adobesparkpost.app.link/c4bWARQhWAb?category=templates&q=fun&searchCategory=templates';
   links.forEach((p) => {
     const a = p.querySelector('a');
-    a.href = `${formattedURL}&searchCategory=${a.title}`;
+    a.href = `${formattedURL}&search=${a.title}`;
   });
 };
 
