@@ -27,7 +27,19 @@ async function loadSpreadsheetData(block, relevantRowsData) {
   }
 }
 
+const formatBlockLinks = (links) => {
+  const formattedURL = 'https://adobesparkpost.app.link/c4bWARQhWAb?category=templates&q=fun&searchCategory=templates';
+  links.forEach((p) => {
+    const a = p.querySelector('a');
+    a.href = `${formattedURL}&search=${a.title}`;
+  });
+};
+
 export default async function decorate(block) {
+  let variant = 'default';
+  if (block.classList.contains('linked')) {
+    variant = 'linked';
+  }
   addTempWrapper(block, 'link-list');
 
   const options = {};
@@ -67,6 +79,9 @@ export default async function decorate(block) {
       link.classList.add('medium');
       link.classList.remove('accent');
     });
+    if (variant === 'linked') {
+      formatBlockLinks(links);
+    }
 
     const platformEl = document.createElement('div');
     platformEl.classList.add('link-list-platform');
