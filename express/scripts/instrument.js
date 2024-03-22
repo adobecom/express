@@ -162,6 +162,9 @@ export async function trackBranchParameters($links) {
     if ($a.href && $a.href.match('adobesparkpost.app.link')) {
       const btnUrl = new URL($a.href);
       const urlParams = btnUrl.searchParams;
+      if (urlParams.has('acomx-ignore-overwrite')) {
+        return;
+      }
       const placement = getPlacement($a);
 
       if (templateSearchTag

@@ -34,7 +34,7 @@ const formatBlockLinks = (links, variant) => {
   if (!links || variant !== SMART_VARIANT) {
     return;
   }
-  const formattedURL = 'https://adobesparkpost.app.link/c4bWARQhWAb?category=template&searchCategory=templates';
+  const formattedURL = 'https://adobesparkpost.app.link/c4bWARQhWAb?acomx-ignore-overwrite=true&category=template&searchCategory=templates';
   links.forEach((p) => {
     const a = p.querySelector('a');
     a.href = `${formattedURL}&q=${a.title}`;
