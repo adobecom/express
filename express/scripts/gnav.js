@@ -185,7 +185,7 @@ async function loadFEDS() {
   window.addEventListener('feds.events.experience.loaded', async () => {
     document.querySelector('body').classList.add('feds-loaded');
 
-    if (['no', 'f', 'false', 'n', 'off'].includes(getMetadata('gnav-retract').toLowerCase())) {
+    if (['no', 'f', 'false', 'n', 'off'].includes(getMetadata('gnav-retract')?.toLowerCase())) {
       window.feds.components.NavBar.disableRetractability();
     }
 
@@ -271,7 +271,7 @@ async function loadFEDS() {
 if (!window.hlx || window.hlx.gnav) {
   await loadIMS();
   loadFEDS();
-  if (!['off', 'no'].includes(getMetadata('google-yolo').toLowerCase())) {
+  if (!['off', 'no'].includes(getMetadata('google-yolo')?.toLowerCase())) {
     setTimeout(() => {
       import('./google-yolo.js').then((mod) => {
         mod.default();

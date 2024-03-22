@@ -109,7 +109,7 @@ export async function getDataWithId() {
         filters: [
           {
             categories: [
-              getMetadata('ckgid'),
+              getMetadata('ckgid') || '',
             ],
           },
         ],

@@ -1909,9 +1909,9 @@ function constructProps() {
   const smScreen = window.matchMedia('(max-width: 900px)');
   const mdScreen = window.matchMedia('(min-width: 901px) and (max-width: 1200px)');
   const bgScreen = window.matchMedia('(max-width: 1440px)');
-  const ratioSeparator = getMetadata('placeholder-format').includes(':') ? ':' : 'x';
+  const ratioSeparator = getMetadata('placeholder-format')?.includes(':') ? ':' : 'x';
   const ratioFromMetadata = getMetadata('placeholder-format')
-    .split(ratioSeparator)
+    ?.split(ratioSeparator)
     .map((str) => parseInt(str, 10));
 
   return {

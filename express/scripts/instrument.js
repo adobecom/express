@@ -143,11 +143,11 @@ export async function trackBranchParameters($links) {
   const { experiment } = window.hlx;
   const { referrer } = window.document;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
-  const templateSearchTag = getMetadata('branch-search-term') || getMetadata('short-title');
-  const canvasHeight = getMetadata('branch-canvas-height');
-  const canvasWidth = getMetadata('branch-canvas-width');
-  const canvasUnit = getMetadata('branch-canvas-unit');
-  const sceneline = getMetadata('branch-sceneline');
+  const templateSearchTag = getMetadata('branch-search-term') || getMetadata('short-title') || '';
+  const canvasHeight = getMetadata('branch-canvas-height') || '';
+  const canvasWidth = getMetadata('branch-canvas-width') || '';
+  const canvasUnit = getMetadata('branch-canvas-unit') || '';
+  const sceneline = getMetadata('branch-sceneline') || '';
   const pageUrl = window.location.pathname;
   const sdid = rootUrlParameters.get('sdid');
   const mv = rootUrlParameters.get('mv');
@@ -542,7 +542,7 @@ function decorateAnalyticsEvents() {
     }
   });
 
-  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
+  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')?.toLowerCase()) && document.body.dataset.device === 'mobile') {
     import('./block-mediator.min.js').then((resp) => {
       const { default: BlockMediator } = resp;
       const eligibility = BlockMediator.get('mobileBetaEligibility');

@@ -47,7 +47,7 @@ export default async function decorate(block) {
   });
 
   if (block.classList.contains('loadinbody')) {
-    if (['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating')) && ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
+    if (['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating')) && ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')?.toLowerCase()) && document.body.dataset.device === 'mobile') {
       const eligibility = BlockMediator.get('mobileBetaEligibility');
       if (eligibility) {
         if (eligibility.deviceSupport) {

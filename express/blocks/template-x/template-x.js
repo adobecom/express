@@ -116,7 +116,7 @@ async function formatHeadingPlaceholder(props) {
     toolBarHeading = toolBarHeading
       .replace('{{quantity}}', props.fallbackMsg ? '0' : templateCount)
       .replace('{{Type}}', titleCase(getMetadata('short-title') || getMetadata('q') || getMetadata('topics')))
-      .replace('{{type}}', getMetadata('short-title') || getMetadata('q') || getMetadata('topics'));
+      ?.replace('{{type}}', getMetadata('short-title') || getMetadata('q') || getMetadata('topics'));
     if (region === 'fr') {
       toolBarHeading.split(' ').forEach((word, index, words) => {
         if (index + 1 < words.length) {
@@ -1372,9 +1372,9 @@ function importSearchBar(block, blockMediator) {
           const placeholders = await fetchPlaceholders();
           const taskMap = placeholders['task-name-mapping'] ? JSON.parse(placeholders['task-name-mapping']) : {};
 
-          const format = getMetadata('placeholder-format');
+          const format = getMetadata('placeholder-format') || '';
           let currentTasks = '';
-          let searchInput = searchBar.value.toLowerCase() || getMetadata('topics');
+          let searchInput = searchBar.value.toLowerCase() || getMetadata('topics') || '';
 
           const tasksFoundInInput = Object.entries(taskMap)
             .filter((task) => task[1].some((word) => {

@@ -97,7 +97,7 @@ async function updateLinkList(container, linkPill, list) {
   const rightTrigger = container.querySelector('.carousel-right-trigger');
   container.innerHTML = '';
 
-  const taskMeta = getMetadata('tasks');
+  const taskMeta = getMetadata('tasks') || '';
   const currentTasks = taskMeta ? taskMeta.replace(/[$@%"]/g, '') : ' ';
   const currentTasksX = getMetadata('tasks-x') || '';
 
@@ -124,7 +124,7 @@ async function updateLinkList(container, linkPill, list) {
         if (clone) pageLinks.push(clone);
       } else {
         // fixme: we need single page search UX
-        const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}`;
+        const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format') || ''}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}`;
         const pageData = {
           url: `${prefix}/express/templates/search?${searchParams}`,
           'short-title': d.displayValue,
@@ -150,7 +150,7 @@ async function updateLinkList(container, linkPill, list) {
           linkListData.push({
             childSibling: row['child-siblings'],
             shortTitle: getMetadata('short-title'),
-            tasks: getMetadata('tasks'),
+            tasks: getMetadata('tasks') || '',
           });
         }
       });

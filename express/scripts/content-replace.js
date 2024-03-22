@@ -162,14 +162,14 @@ async function updateNonBladeContent(main) {
   if (templateList) {
     await replaceDefaultPlaceholders(templateList, {
       link: getMetadata('create-link') || '/',
-      tasks: getMetadata('tasks'),
+      tasks: getMetadata('tasks') || '',
     });
   }
 
   if (templateX) {
     await replaceDefaultPlaceholders(templateX, {
       link: getMetadata('create-link-x') || getMetadata('create-link') || '/',
-      tasks: getMetadata('tasks-x'),
+      tasks: getMetadata('tasks-x') || '',
     });
   }
 

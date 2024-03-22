@@ -112,12 +112,12 @@ function initSearchFunction(block) {
     const taskMap = placeholders['task-name-mapping'] ? JSON.parse(placeholders['task-name-mapping']) : {};
     const taskXMap = placeholders['x-task-name-mapping'] ? JSON.parse(placeholders['x-task-name-mapping']) : {};
 
-    const format = getMetadata('placeholder-format');
+    const format = getMetadata('placeholder-format') || '';
     const currentTasks = {
       xCore: '',
       content: '',
     };
-    let searchInput = searchBar.value || getMetadata('topics');
+    let searchInput = searchBar.value || getMetadata('topics') || '';
 
     const tasksFoundInInput = findTask(taskMap);
     const tasksXFoundInInput = findTask(taskXMap);

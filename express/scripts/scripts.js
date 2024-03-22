@@ -146,8 +146,8 @@ const listenAlloy = () => {
     sessionStorage.setItem('imsclient', 'MarvelWeb3');
   }
 
-  const isMobileGating = ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile';
-  const rushGating = ['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating').toLowerCase());
+  const isMobileGating = ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')?.toLowerCase()) && document.body.dataset.device === 'mobile';
+  const rushGating = ['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating')?.toLowerCase());
   const runGating = () => {
     import('./mobile-beta-gating.js').then(async (gatingScript) => {
       gatingScript.default();

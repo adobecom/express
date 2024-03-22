@@ -38,10 +38,10 @@ const LANGSTORE = 'langstore';
 
 const PAGE_URL = new URL(window.location.href);
 
-export function getMetadata(name) {
+export function getMetadata(name, doc = document) {
   const attr = name && name.includes(':') ? 'property' : 'name';
-  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
-  return ($meta && $meta.content) || '';
+  const meta = doc.head.querySelector(`meta[${attr}="${name}"]`);
+  return meta && meta.content;
 }
 
 function getEnv(conf) {
@@ -1552,7 +1552,7 @@ export function decorateButtons(el = document) {
 }
 
 export function checkTesting() {
-  return (getMetadata('testing').toLowerCase() === 'on');
+  return (getMetadata('testing')?.toLowerCase() === 'on');
 }
 
 /**
@@ -1708,7 +1708,7 @@ function loadIMS() {
 
 async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   const promises = [import('./experiment.js')];
-  const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
+  const aepaudiencedevice = getMetadata('aepaudiencedevice')?.toLowerCase();
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
     loadIMS();
     // rush instrument-martech-launch-alloy
@@ -1938,14 +1938,14 @@ async function buildAutoBlocks(main) {
   const lastDiv = main.querySelector(':scope > div:last-of-type');
 
   // Load the branch.io banner autoblock...
-  if (['yes', 'true', 'on'].includes(getMetadata('show-banner').toLowerCase())) {
+  if (['yes', 'true', 'on'].includes(getMetadata('show-banner')?.toLowerCase())) {
     const branchio = buildBlock('branch-io', '');
     if (lastDiv) {
       lastDiv.append(branchio);
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase()) && document.body.dataset.device === 'mobile') {
+  if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows')?.toLowerCase()) && document.body.dataset.device === 'mobile') {
     const authoredRRFound = [
       '.template-list.horizontal.fullwidth.mini',
       '.link-list.noarrows',
@@ -1966,7 +1966,7 @@ async function buildAutoBlocks(main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-plans-comparison').toLowerCase())) {
+  if (['yes', 'true', 'on'].includes(getMetadata('show-plans-comparison')?.toLowerCase())) {
     const $plansComparison = buildBlock('plans-comparison', '');
     if (lastDiv) {
       lastDiv.append($plansComparison);
@@ -2050,7 +2050,7 @@ async function buildAutoBlocks(main) {
         });
       }
     }
-  } else if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase())) {
+  } else if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta')?.toLowerCase())) {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {

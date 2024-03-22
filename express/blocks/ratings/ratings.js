@@ -66,7 +66,7 @@ export default async function decorate($block) {
       '@type': 'Product',
       '@context': 'https://schema.org',
       name: document.title,
-      description: getMetadata('description'),
+      description: getMetadata('description') || '',
       aggregateRating: { '@type': 'AggregateRating', ratingValue: ratingAverage, ratingCount: ratingTotal },
     });
     document.head.appendChild(script);
