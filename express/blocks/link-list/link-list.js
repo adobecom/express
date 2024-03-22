@@ -61,7 +61,6 @@ export default async function decorate(block) {
   }
   addTempWrapper(block, 'link-list');
   const placeholders = await fetchPlaceholders();
-  console.log(placeholders)
   const options = {};
 
   if (block.classList.contains('spreadsheet-powered')) {
