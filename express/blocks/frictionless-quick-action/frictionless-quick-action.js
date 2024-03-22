@@ -208,9 +208,7 @@ function startSDKWithUnconvertedFile(file) {
 
 function uploadFile() {
   if (!inputElement) {
-    inputElement = document.createElement('input');
-    inputElement.type = 'file';
-    inputElement.accept = imageInputAccept;
+    inputElement = createTag('input', { type: 'file', accept: imageInputAccept });
   }
   // Trigger the file selector when the button is clicked
   inputElement.click();
