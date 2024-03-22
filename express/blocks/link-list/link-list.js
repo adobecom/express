@@ -1,4 +1,5 @@
 import {
+  fetchPlaceholders,
   fetchRelevantRows,
   normalizeHeadings,
 } from '../../scripts/utils.js';
@@ -30,11 +31,11 @@ async function loadSpreadsheetData(block, relevantRowsData) {
   }
 }
 
-const formatBlockLinks = (links, variant) => {
+const formatBlockLinks = (links, variant, baseURL) => {
   if (!links || variant !== SMART_VARIANT) {
     return;
   }
-  const formattedURL = 'https://adobesparkpost.app.link/c4bWARQhWAb?acomx-ignore-overwrite=true&category=template&searchCategory=templates';
+  const formattedURL = `${baseURL}?acomx-dno=true&category=template&searchCategory=templates`;
   links.forEach((p) => {
     const a = p.querySelector('a');
     a.href = `${formattedURL}&q=${a.title}`;
@@ -59,7 +60,8 @@ export default async function decorate(block) {
     variant = SMART_VARIANT;
   }
   addTempWrapper(block, 'link-list');
-
+  const placeholders = await fetchPlaceholders();
+  console.log(placeholders)
   const options = {};
 
   if (block.classList.contains('spreadsheet-powered')) {
@@ -106,5 +108,5 @@ export default async function decorate(block) {
     await updateAsyncBlocks();
   }
 
-  formatBlockLinks(links, variant);
+  formatBlockLinks(links, variant, placeholders['search-branch-links']);
 }
