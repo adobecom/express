@@ -271,11 +271,13 @@ async function loadFEDS() {
 if (!window.hlx || window.hlx.gnav) {
   await loadIMS();
   loadFEDS();
-  setTimeout(() => {
-    import('./google-yolo.js').then((mod) => {
-      mod.default();
-    });
-  }, 4000);
+  if (!['off', 'no'].includes(getMetadata('google-yolo').toLowerCase())) {
+    setTimeout(() => {
+      import('./google-yolo.js').then((mod) => {
+        mod.default();
+      });
+    }, 4000);
+  }
 }
 /* Core Web Vitals RUM collection */
 
