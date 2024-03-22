@@ -317,7 +317,7 @@ async function buildSearchDropdown(block) {
     suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
     suggestionsContainer.append(suggestionsTitle, suggestionsList);
 
-    const freePlanTags = await buildFreePlanWidget('branded');
+    const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded' });
 
     freePlanContainer.append(freePlanTags);
     dropdownContainer.append(trendsContainer, suggestionsContainer, freePlanContainer);
