@@ -27,11 +27,26 @@ async function loadSpreadsheetData(block, relevantRowsData) {
   }
 }
 
-const formatBlockLinks = (links) => {
-  const formattedURL = 'https://adobesparkpost.app.link/c4bWARQhWAb?category=templates&q=fun&searchCategory=templates';
+const formatBlockLinks = (links, variant) => {
+  if (!links || variant !== 'linked') {
+    return;
+  }
+  const formattedURL = 'https://adobesparkpost.app.link/c4bWARQhWAb?category=template&searchCategory=templates';
   links.forEach((p) => {
     const a = p.querySelector('a');
-    a.href = `${formattedURL}&search=${a.title}`;
+    a.href = `${formattedURL}&q=${a.title}`;
+  });
+};
+
+const toggleLinksHighlight = (links, variant) => {
+  if (variant === 'linked') {
+    return;
+  }
+  links.forEach((l) => {
+    const a = l.querySelector(':scope > a');
+    if (a) {
+      l.classList.toggle('active', a.href === window.location.href);
+    }
   });
 };
 
@@ -43,15 +58,6 @@ export default async function decorate(block) {
   addTempWrapper(block, 'link-list');
 
   const options = {};
-  const toggleLinksHighlight = (links) => {
-    links.forEach((l) => {
-      const a = l.querySelector(':scope > a');
-
-      if (a) {
-        l.classList.toggle('active', a.href === window.location.href);
-      }
-    });
-  };
 
   if (block.classList.contains('spreadsheet-powered')) {
     const relevantRowsData = await fetchRelevantRows(window.location.pathname);
@@ -79,25 +85,23 @@ export default async function decorate(block) {
       link.classList.add('medium');
       link.classList.remove('accent');
     });
-  //  if (variant === 'linked') {
-      formatBlockLinks(links);
-  //  }
-
     const platformEl = document.createElement('div');
     platformEl.classList.add('link-list-platform');
     await buildCarousel('p.button-container', block, options);
   }
 
   if (block.classList.contains('shaded')) {
-    toggleLinksHighlight(links);
+    toggleLinksHighlight(links, variant);
   }
 
   window.addEventListener('popstate', () => {
-    toggleLinksHighlight(links);
+    toggleLinksHighlight(links, variant);
   });
 
   if (window.location.href.includes('/express/templates/')) {
     const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
     await updateAsyncBlocks();
   }
+
+  formatBlockLinks(links, variant);
 }
