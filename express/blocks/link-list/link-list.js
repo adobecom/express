@@ -6,6 +6,9 @@ import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
+const DEFAULT_VARIANT = 'default';
+const SMART_VARIANT = 'smart';
+
 async function loadSpreadsheetData(block, relevantRowsData) {
   const defaultContainer = block.querySelector('.button-container');
   const defaultContainerParent = defaultContainer.parentElement;
@@ -28,7 +31,7 @@ async function loadSpreadsheetData(block, relevantRowsData) {
 }
 
 const formatBlockLinks = (links, variant) => {
-  if (!links || variant !== 'linked') {
+  if (!links || variant !== SMART_VARIANT) {
     return;
   }
   const formattedURL = 'https://adobesparkpost.app.link/c4bWARQhWAb?category=template&searchCategory=templates';
@@ -39,7 +42,7 @@ const formatBlockLinks = (links, variant) => {
 };
 
 const toggleLinksHighlight = (links, variant) => {
-  if (variant === 'linked') {
+  if (variant === SMART_VARIANT) {
     return;
   }
   links.forEach((l) => {
@@ -51,9 +54,9 @@ const toggleLinksHighlight = (links, variant) => {
 };
 
 export default async function decorate(block) {
-  let variant = 'default';
-  if (block.classList.contains('linked')) {
-    variant = 'linked';
+  let variant = DEFAULT_VARIANT;
+  if (block.classList.contains(SMART_VARIANT)) {
+    variant = SMART_VARIANT;
   }
   addTempWrapper(block, 'link-list');
 
