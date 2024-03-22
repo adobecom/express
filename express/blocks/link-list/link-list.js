@@ -79,9 +79,9 @@ export default async function decorate(block) {
       link.classList.add('medium');
       link.classList.remove('accent');
     });
-    if (variant === 'linked') {
+  //  if (variant === 'linked') {
       formatBlockLinks(links);
-    }
+  //  }
 
     const platformEl = document.createElement('div');
     platformEl.classList.add('link-list-platform');
