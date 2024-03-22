@@ -271,7 +271,7 @@ async function loadFEDS() {
 if (!window.hlx || window.hlx.gnav) {
   await loadIMS();
   loadFEDS();
-  if (!['off', 'no'].includes(getMetadata('google-yolo'))) {
+  if (!['off', 'no'].includes(getMetadata('google-yolo').toLowerCase())) {
     setTimeout(() => {
       import('./google-yolo.js').then((mod) => {
         mod.default();
