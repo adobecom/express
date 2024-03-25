@@ -153,6 +153,8 @@ export async function trackBranchParameters($links) {
     sceneline,
     taskId,
     assetCollection,
+    branchCategory,
+    branchSearchCategory,
     sdid,
     mv,
     mv2,
@@ -167,8 +169,10 @@ export async function trackBranchParameters($links) {
     getMetadata('branch-canvas-width'),
     getMetadata('branch-canvas-unit'),
     getMetadata('branch-sceneline'),
-    getMetadata('task-id'),
-    getMetadata('asset-collection'),
+    getMetadata('branch-task-id'),
+    getMetadata('branch-asset-collection'),
+    getMetadata('branch-category'),
+    getMetadata('branch-search-category'),
     params.get('sdid'),
     params.get('mv'),
     params.get('mv2'),
@@ -186,11 +190,16 @@ export async function trackBranchParameters($links) {
       const urlParams = btnUrl.searchParams;
       const placement = getPlacement($a);
 
-      if (templateSearchTag && isSearchBranchLink) {
-        urlParams.set('q', templateSearchTag);
-        urlParams.set('category', 'templates');
+      if (isSearchBranchLink) {
+        urlParams.set('category', branchCategory || 'templates');
         urlParams.set('taskId', taskId);
         urlParams.set('assetCollection', assetCollection);
+
+        if (branchSearchCategory) {
+          urlParams.set('searchCategory', branchSearchCategory);
+        } else if (templateSearchTag) {
+          urlParams.set('q', templateSearchTag);
+        }
       }
 
       if (referrer) {
