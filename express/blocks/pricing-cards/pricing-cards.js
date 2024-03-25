@@ -1,6 +1,6 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
-import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
+import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
 import {
   formatDynamicCartLink,
@@ -300,7 +300,6 @@ function decorateCard({
 // less thrashing by separating get and set
 async function syncMinHeights(...groups) {
   const maxHeights = groups.map((els) => els.reduce((max, e) => Math.max(max, e.offsetHeight), 0));
-  await yieldToMain();
   maxHeights.forEach((maxHeight, i) => groups[i].forEach((el) => {
     el.style.minHeight = `${maxHeight}px`;
   }));
