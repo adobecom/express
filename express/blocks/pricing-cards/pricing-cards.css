@@ -307,6 +307,7 @@ End border style variants
   padding: 16px 0px;
   border-bottom: 1px solid var(--Palette-gray-100, #E9E9E9);
   margin: 0 0 24px 0;
+  box-sizing: border-box;
 }
 
 .pricing-cards .card-feature-list p strong {

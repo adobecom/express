@@ -297,6 +297,15 @@ function decorateCard({
   return cardWrapper;
 }
 
+// less thrashing by separating get and set
+function syncMinHeights(...groups) {
+  groups
+    .map((els) => els.reduce((max, el) => Math.max(max, el.offsetHeight), 0))
+    .forEach((maxHeight, i) => groups[i].forEach((el) => {
+      el.style.minHeight = `${maxHeight}px`;
+    }));
+}
+
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
   // For backwards compatability with old versions of the pricing card
@@ -317,21 +326,27 @@ export default async function init(el) {
   cards
     .map((card) => decorateCard(card, el, placeholders, legacyVersion))
     .forEach((card) => cardsContainer.append(card));
-  const maxMCTACnt = cards.reduce((max, card) => Math.max(max, card.mCtaGroup.querySelectorAll('a').length), 0);
-  if (maxMCTACnt > 1) {
-    cards.forEach(({ mCtaGroup }) => {
-      mCtaGroup.classList.add(`min-height-${maxMCTACnt}`);
-    });
-  }
-  const maxYCTACnt = cards.reduce((max, card) => Math.max(max, card.yCtaGroup.querySelectorAll('a').length), 0);
-  if (maxYCTACnt > 1) {
-    cards.forEach(({ yCtaGroup }) => {
-      yCtaGroup.classList.add(`min-height-${maxYCTACnt}`);
-    });
-  }
+
   const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter((a) => a.title.includes(SALES_NUMBERS));
   if (phoneNumberTags.length > 0) {
     await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
   }
   el.prepend(cardsContainer);
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        syncMinHeights(
+          cards.map(({ header }) => header),
+          cards.map(({ explain }) => explain),
+          cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
+          cards.map(({ featureList }) => featureList.querySelector('p')),
+          cards.map(({ featureList }) => featureList),
+          cards.map(({ compare }) => compare),
+        );
+        observer.disconnect();
+      }
+    });
+  });
+  observer.observe(el);
 }
