@@ -32,7 +32,7 @@ async function loadSpreadsheetData(block, relevantRowsData) {
 }
 
 const formatBlockLinks = (links, variant, baseURL) => {
-  if (!links || variant !== SMART_VARIANT) {
+  if (!links || variant !== SMART_VARIANT || !baseURL) {
     return;
   }
   const formattedURL = `${baseURL}?acomx-dno=true&category=template&searchCategory=templates`;
