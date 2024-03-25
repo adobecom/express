@@ -391,10 +391,6 @@ End border style variants
     grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
   }
 
-  .pricing-cards .card-explain {
-    display: block;
-  }
-
   .pricing-cards .pricing-section {
     gap: 24px;
   }
