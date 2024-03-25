@@ -162,6 +162,12 @@ export async function trackBranchParameters($links) {
     if ($a.href && $a.href.match('adobesparkpost.app.link')) {
       const btnUrl = new URL($a.href);
       const urlParams = btnUrl.searchParams;
+      if (urlParams.has('acomx-dno')) {
+        urlParams.delete('acomx-dno');
+        btnUrl.search = urlParams.toString();
+        $a.href = decodeURIComponent(btnUrl.toString());
+        return;
+      }
       const placement = getPlacement($a);
 
       if (templateSearchTag
