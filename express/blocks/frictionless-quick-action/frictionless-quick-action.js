@@ -51,9 +51,6 @@ function startSDK(data = '') {
       if (country) ietf = getConfig().locales[country]?.ietf;
       if (ietf === 'zh-Hant-TW') ietf = 'tw-TW';
       else if (ietf === 'zh-Hans-CN') ietf = 'cn-CN';
-      let env = getConfig().env.name;
-      if (env === 'local') env = 'dev';
-      if (env === 'stage') env = 'stage';
 
       const ccEverywhereConfig = {
         hostInfo: {
@@ -62,7 +59,6 @@ function startSDK(data = '') {
         },
         configParams: {
           locale: ietf.replace('-', '_'),
-          env,
         },
         authOption: () => ({
           mode: 'delayed',
