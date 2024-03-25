@@ -141,6 +141,15 @@ End border style variants
   margin-top: 44px;
 }
 
+.pricing-cards .card-border:lang(ja){
+  margin-top: 50px;
+}
+
+.pricing-cards .card-border:lang(zh-Hant){
+  margin-top: 47px;
+}
+
+
 .pricing-cards .card-border .hide {
   display: none;
 }
