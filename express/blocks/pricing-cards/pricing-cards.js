@@ -299,10 +299,12 @@ function decorateCard({
 
 // less thrashing by separating get and set
 async function syncMinHeights(...groups) {
-  const maxHeights = groups.map((els) => els.reduce((max, e) => Math.max(max, e.offsetHeight), 0));
+  const maxHeights = groups.map((els) => els
+    .filter((e) => !!e)
+    .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
   await yieldToMain();
-  maxHeights.forEach((maxHeight, i) => groups[i].forEach((el) => {
-    el.style.minHeight = `${maxHeight}px`;
+  maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
+    if (e) e.style.minHeight = `${maxHeight}px`;
   }));
 }
 
