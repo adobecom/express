@@ -177,10 +177,6 @@ End border style variants
   padding-right: 6px;
 }
 
-.pricing-cards .card-explain {
-  display: none;
-}
-
 .pricing-cards .card-offer {
   position: absolute;
   right: 8px;
