@@ -138,29 +138,55 @@ export function textToName(text) {
 export async function trackBranchParameters($links) {
   const placeholders = await fetchPlaceholders();
   const rootUrl = new URL(window.location.href);
-  const rootUrlParameters = rootUrl.searchParams;
+  const params = rootUrl.searchParams;
+  const pageUrl = window.location.pathname;
 
   const { experiment } = window.hlx;
   const { referrer } = window.document;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
-  const templateSearchTag = getMetadata('branch-search-term') || getMetadata('short-title');
-  const canvasHeight = getMetadata('branch-canvas-height');
-  const canvasWidth = getMetadata('branch-canvas-width');
-  const canvasUnit = getMetadata('branch-canvas-unit');
-  const sceneline = getMetadata('branch-sceneline');
-  const pageUrl = window.location.pathname;
-  const sdid = rootUrlParameters.get('sdid');
-  const mv = rootUrlParameters.get('mv');
-  const mv2 = rootUrlParameters.get('mv2');
-  const sKwcId = rootUrlParameters.get('s_kwcid');
-  const efId = rootUrlParameters.get('ef_id');
-  const promoId = rootUrlParameters.get('promoid');
-  const trackingId = rootUrlParameters.get('trackingid');
-  const cgen = rootUrlParameters.get('cgen');
+
+  const [
+    templateSearchTag,
+    canvasHeight,
+    canvasWidth,
+    canvasUnit,
+    sceneline,
+    taskId,
+    assetCollection,
+    branchCategory,
+    branchSearchCategory,
+    sdid,
+    mv,
+    mv2,
+    sKwcId,
+    efId,
+    promoId,
+    trackingId,
+    cgen,
+  ] = [
+    getMetadata('branch-search-term'),
+    getMetadata('branch-canvas-height'),
+    getMetadata('branch-canvas-width'),
+    getMetadata('branch-canvas-unit'),
+    getMetadata('branch-sceneline'),
+    getMetadata('branch-task-id'),
+    getMetadata('branch-asset-collection'),
+    getMetadata('branch-category'),
+    getMetadata('branch-search-category'),
+    params.get('sdid'),
+    params.get('mv'),
+    params.get('mv2'),
+    params.get('s_kwcid'),
+    params.get('ef_id'),
+    params.get('promoid'),
+    params.get('trackingid'),
+    params.get('cgen'),
+  ];
 
   $links.forEach(($a) => {
     if ($a.href && $a.href.match('adobesparkpost.app.link')) {
       const btnUrl = new URL($a.href);
+      const isSearchBranchLink = placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`);
       const urlParams = btnUrl.searchParams;
       if (urlParams.has('acomx-dno')) {
         urlParams.delete('acomx-dno');
@@ -170,10 +196,16 @@ export async function trackBranchParameters($links) {
       }
       const placement = getPlacement($a);
 
-      if (templateSearchTag
-          && placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
-        urlParams.set('q', templateSearchTag);
-        urlParams.set('category', 'templates');
+      if (isSearchBranchLink) {
+        urlParams.set('category', branchCategory || 'templates');
+        urlParams.set('taskId', taskId);
+        urlParams.set('assetCollection', assetCollection);
+
+        if (branchSearchCategory) {
+          urlParams.set('searchCategory', branchSearchCategory);
+        } else if (templateSearchTag) {
+          urlParams.set('q', templateSearchTag);
+        }
       }
 
       if (referrer) {
