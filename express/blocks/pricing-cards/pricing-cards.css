@@ -138,15 +138,7 @@ End border style variants
 */
 
 .pricing-cards .card-border {
-  margin-top: 44px;
-}
-
-.pricing-cards .card-border:lang(ja){
-  margin-top: 50px;
-}
-
-.pricing-cards .card-border:lang(zh-Hant){
-  margin-top: 47px;
+  margin-top: calc(24px + 1.5rem);
 }
 
 
