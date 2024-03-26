@@ -8,8 +8,7 @@ import {
   getConfig,
 } from './utils.js';
 
-import {
-  getCookie} from "./utils/location-utilties.js";
+import { getCookie } from './utils/location-utilities.js';
 
 const isHomepage = window.location.pathname.endsWith('/express/');
 

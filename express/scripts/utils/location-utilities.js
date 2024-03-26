@@ -1,6 +1,4 @@
-import { getLibs } from '../utils.js';
-
-const { getConfig } = await import(`${getLibs()}/utils/utils.js`);
+import { getConfig } from '../utils.js';
 
 export function getCookie(cname) {
   const name = `${cname}=`;
@@ -18,10 +16,9 @@ export function getCookie(cname) {
   return '';
 }
 
-
 export function normCountry(country) {
-    return (country.toLowerCase() === 'uk' ? 'gb' : country.toLowerCase()).split('_')[0];
-  }
+  return (country.toLowerCase() === 'uk' ? 'gb' : country.toLowerCase()).split('_')[0];
+}
 
 export async function getCountry() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -52,24 +49,24 @@ export async function getCountry() {
 }
 
 export const formatSalesPhoneNumber = (() => {
-    let numbersMap;
-    return async (tags, placeholder = '') => {
-      if (tags.length <= 0) return;
-  
-      if (!numbersMap) {
-        numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
-      }
-  
-      if (!numbersMap?.data) return;
-      const country = await getCountry(true) || 'us';
-      tags.forEach((a) => {
-        const r = numbersMap.data.find((d) => d.country === country);
-  
-        const decodedNum = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
-  
-        a.textContent = placeholder ? a.textContent.replace(placeholder, decodedNum) : decodedNum;
-        a.setAttribute('title', placeholder ? a.getAttribute('title').replace(placeholder, decodedNum) : decodedNum);
-        a.href = `tel:${decodedNum}`;
-      });
-    };
-  })();
+  let numbersMap;
+  return async (tags, placeholder = '') => {
+    if (tags.length <= 0) return;
+
+    if (!numbersMap) {
+      numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
+    }
+
+    if (!numbersMap?.data) return;
+    const country = await getCountry(true) || 'us';
+    tags.forEach((a) => {
+      const r = numbersMap.data.find((d) => d.country === country);
+
+      const decodedNum = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
+
+      a.textContent = placeholder ? a.textContent.replace(placeholder, decodedNum) : decodedNum;
+      a.setAttribute('title', placeholder ? a.getAttribute('title').replace(placeholder, decodedNum) : decodedNum);
+      a.href = `tel:${decodedNum}`;
+    });
+  };
+})();

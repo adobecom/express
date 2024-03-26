@@ -1,10 +1,10 @@
-import { 
+import {
   getHelixEnv,
   createTag, getConfig,
 } from '../utils.js';
 import {
-  getCookie, normCountry, getCountry
-} from "./location-utilties.js"
+  getCountry,
+} from './location-utilities.js';
 
 const currencies = {
   ar: 'ARS',
@@ -209,7 +209,6 @@ export function shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremi
   offerIdSuppressMap.set(key, suppressOfferEyeBrowText);
   return suppressOfferEyeBrowText;
 }
-
 
 export async function formatPrice(price, currency) {
   if (price === '') return null;
