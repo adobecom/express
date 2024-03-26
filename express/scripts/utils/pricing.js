@@ -229,6 +229,8 @@ export function shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremi
   if (isPremiumCard) {
     if (isSpecialEyebrowText) {
       suppressOfferEyeBrowText = !(savePer !== '' && offerTextContent.includes('{{savePercentage}}'));
+    } else if (isPremiumCard === '84EA7C85DEB6D5260ACE527CB41FDF0B') {
+      suppressOfferEyeBrowText = false;
     } else {
       suppressOfferEyeBrowText = true;
     }
