@@ -4,9 +4,9 @@ import {
   sampleRUM,
   getCookie,
   getMetadata,
-  fetchPlaceholders,
-  loadStyle,
   getConfig,
+  createTag,
+  loadStyle,
 } from './utils.js';
 
 const isHomepage = window.location.pathname.endsWith('/express/');
@@ -62,42 +62,34 @@ async function loadIMS() {
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export async function buildBreadCrumbArray(prefix) {
-  if (isHomepage || getMetadata('breadcrumbs') !== 'on') {
+export async function buildBreadcrumbs() {
+  const baseFrag = getMetadata('breadcrumbs-base');
+  if (isHomepage || getMetadata('breadcrumbs') !== 'on' || !baseFrag) {
     return null;
   }
 
-  const placeholders = await fetchPlaceholders();
-  const validSecondPathSegments = ['create', 'feature'];
-  const pathSegments = window.location.pathname
-    .split('/')
-    .filter((e) => e !== '')
-    .filter((e) => e !== prefix);
-  const localePath = prefix === '' ? '' : `${prefix}/`;
-  const secondPathSegment = pathSegments[1].toLowerCase();
-  const pagesShortNameElement = document.head.querySelector('meta[name="short-title"]');
-  const pagesShortName = pagesShortNameElement?.getAttribute('content') ?? null;
-  const replacedCategory = placeholders[`breadcrumbs-${secondPathSegment}`]?.toLowerCase();
+  const baseRes = await fetch(`${baseFrag}.plain.html`);
+  if (!baseRes.ok) return null;
 
-  if (!pagesShortName
-    || pathSegments.length <= 2
-    || !replacedCategory
-    || !validSecondPathSegments.includes(replacedCategory)
-    || prefix !== '') { // Remove this line once locale translations are complete
-    return null;
+  const base = createTag('div');
+  base.innerHTML = await baseRes.text();
+  const baseBreadcrumbs = base.querySelectorAll('.breadcrumbs ul > li > a');
+
+  if (baseBreadcrumbs.length < 2) return null;
+
+  const breadCrumbList = Array.from(baseBreadcrumbs).map((a) => (
+    {
+      title: a.textContent.trim(),
+      url: a.href,
+    }
+  ));
+
+  const lastBreadcrumb = getMetadata('short-title') || getMetadata('breadcrumbs-page-title');
+  const lastBaseUrl = new URL(baseBreadcrumbs[baseBreadcrumbs.length - 1].href);
+  if (lastBreadcrumb && window.location.pathname !== lastBaseUrl.pathname) {
+    breadCrumbList.push({ title: lastBreadcrumb, url: window.location.href });
   }
 
-  const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
-  const buildBreadCrumb = (path, name, parentPath = '') => (
-    { title: capitalize(name), url: `${parentPath}/${path}` }
-  );
-  const secondBreadCrumb = buildBreadCrumb(secondPathSegment, capitalize(replacedCategory), `${localePath}/express`);
-  const breadCrumbList = [secondBreadCrumb];
-
-  if (pathSegments.length >= 3) {
-    const thirdBreadCrumb = buildBreadCrumb(pagesShortName, pagesShortName, secondBreadCrumb.url);
-    breadCrumbList.push(thirdBreadCrumb);
-  }
   return breadCrumbList;
 }
 
@@ -177,8 +169,8 @@ async function loadFEDS() {
     },
     jarvis: {},
     breadcrumbs: {
-      showLogo: true,
-      links: await buildBreadCrumbArray(prefix),
+      showLogo: false,
+      links: await buildBreadcrumbs(),
     },
   };
 
