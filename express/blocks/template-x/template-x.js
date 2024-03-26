@@ -1456,13 +1456,9 @@ function renderFallbackMsgWrapper(block, { fallbackMsg }) {
   }
 }
 
-async function buildTemplateList(block, props, type = []) {
-  if (type?.length > 0) {
-    type.forEach((typeName) => {
-      block.parentElement.classList.add(typeName);
-      block.classList.add(typeName);
-    });
-  }
+async function buildTemplateList(block, props) {
+  const blockInnerWrapper = createTag('div', { class: 'template-x-inner-wrapper' });
+  block.append(blockInnerWrapper);
 
   if (!props.templateStats) {
     await processContentRow(block, props);
@@ -1473,8 +1469,6 @@ async function buildTemplateList(block, props, type = []) {
   if (templates?.length > 0) {
     props.fallbackMsg = fallbackMsg;
     renderFallbackMsgWrapper(block, props);
-    const blockInnerWrapper = createTag('div', { class: 'template-x-inner-wrapper' });
-    block.append(blockInnerWrapper);
     props.templates = props.templates.concat(templates);
     props.templates.forEach((template) => {
       blockInnerWrapper.append(template);
@@ -1596,7 +1590,7 @@ async function buildTemplateList(block, props, type = []) {
   }
 }
 
-function determineTemplateXType(props) {
+function determineTemplateXType(block, props) {
   // todo: build layers of aspects based on props conditions - i.e. orientation -> style -> use case
   const type = [];
 
@@ -1612,7 +1606,12 @@ function determineTemplateXType(props) {
   // use case aspect
   if (props.holidayBlock) type.push('holiday');
 
-  return type;
+  if (type?.length > 0) {
+    type.forEach((typeName) => {
+      block.parentElement.classList.add(typeName);
+      block.classList.add(typeName);
+    });
+  }
 }
 
 export default function decorate(block) {
@@ -1620,5 +1619,6 @@ export default function decorate(block) {
 
   const props = constructProps(block);
   block.innerHTML = '';
-  buildTemplateList(block, props, determineTemplateXType(props));
+  determineTemplateXType(block, props);
+  buildTemplateList(block, props);
 }

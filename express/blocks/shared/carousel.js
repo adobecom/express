@@ -168,7 +168,11 @@ export function onCarouselCSSLoad(selector, parent, options) {
       if (!entry.isIntersecting) return;
 
       if (opts.centerAlign) correctCenterAlignment(scrollable);
-      if (opts.startPosition === 'right') moveCarousel(-scrollable.scrollWidth);
+      if (opts.startPosition === 'right') {
+        moveCarousel(-scrollable.scrollWidth);
+      } else {
+        moveCarousel(scrollable.scrollWidth);
+      }
       if (!opts.infinityScrollEnabled) initToggleTriggers(container);
 
       observer.unobserve(scrollable);

@@ -123,6 +123,11 @@ main .template-x.sixcols .masonry-col, main .template-x.fullwidth .masonry-col {
 .template-x.horizontal .template-x-inner-wrapper {
     margin-top: 0;
     transition: opacity 0.2s;
+    min-height: 123px;
+}
+
+.template-x.horizontal.mini .template-x-inner-wrapper {
+    min-height: 164px;
 }
 
 .template-x.fullwidth.holiday .template-x-inner-wrapper {
@@ -1663,7 +1668,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x.mini {
-    min-height: 184px;
+    min-height: unset;
 }
 
 .template-x-horizontal-fullwidth-mini-container .template-x .template-title {
