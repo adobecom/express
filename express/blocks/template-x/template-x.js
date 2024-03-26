@@ -1615,10 +1615,10 @@ function determineTemplateXType(props) {
   return type;
 }
 
-export default async function decorate(block) {
+export default function decorate(block) {
   addTempWrapper(block, 'template-x');
 
   const props = constructProps(block);
   block.innerHTML = '';
-  await buildTemplateList(block, props, determineTemplateXType(props));
+  buildTemplateList(block, props, determineTemplateXType(props));
 }
