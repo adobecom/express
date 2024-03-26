@@ -1483,8 +1483,7 @@ async function buildTemplateList(block, props, type = []) {
     await decorateTemplates(block, props);
   } else {
     window.lana.log(`failed to load templates with props: ${JSON.stringify(props)}`, { tags: 'templates-api' });
-    const placeholders = await fetchPlaceholders();
-    block.textContent = placeholders['template-x-error'] || '';
+    block.textContent = getConfig().env.name === 'prod' ? '' : 'Error loading templates, please refresh the page or try again later.';
   }
 
   if (templates && props.tabs) {
