@@ -333,6 +333,7 @@ export default async function init(el) {
   if (phoneNumberTags.length > 0) {
     await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
   }
+  el.classList.add('no-visible');
   el.prepend(cardsContainer);
 
   const observer = new IntersectionObserver((entries) => {
@@ -347,6 +348,7 @@ export default async function init(el) {
           cards.map(({ featureList }) => featureList),
           cards.map(({ compare }) => compare),
         );
+        el.classList.remove('no-visible');
       }
     });
   });
