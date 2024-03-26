@@ -935,6 +935,21 @@ main .block.center .free-plan-widget {
   margin: 32px auto;
 }
 
+main .free-plan-widget .plan-widget-tag {
+  display: flex;
+  align-items: center;
+}
+
+main .free-plan-widget .plan-widget-tag img.icon.icon-checkmark {
+  background-color: #33AB84;
+  display: block;
+  border-radius: 50%;
+  height: 8px;
+  width: 8px;
+  padding: 3px;
+  margin-right: 4px;
+}
+
 @media (min-width: 900px) {
   main .block .button-container.free-plan-container {
     width: max-content;

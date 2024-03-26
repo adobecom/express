@@ -177,10 +177,6 @@ End border style variants
   padding-right: 6px;
 }
 
-.pricing-cards .card-explain {
-  display: none;
-}
-
 .pricing-cards .card-offer {
   position: absolute;
   right: 8px;
@@ -393,10 +389,6 @@ End border style variants
     width: var(2 * --card-width);
     margin: auto;
     grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
-  }
-
-  .pricing-cards .card-explain {
-    display: block;
   }
 
   .pricing-cards .pricing-section {

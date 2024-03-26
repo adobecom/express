@@ -45,6 +45,6 @@ export default async function decorate($block) {
     }
   });
 
-  const freePlanTags = await buildFreePlanWidget('branded');
+  const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded' });
   $block.insertAdjacentElement('afterend', freePlanTags);
 }
