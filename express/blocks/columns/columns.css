@@ -1,4 +1,4 @@
-main .columns.columns-marquee {
+main .section:first-of-type .columns:first-of-type {
   min-height: unset;
 }
 
@@ -221,11 +221,11 @@ main .columns .icon.icon-check {
   width: 22px;
 }
 
-main .columns.columns-marquee .brand.icon {
+main .section:first-of-type .columns:first-of-type .brand.icon {
   display: none;
 }
 
-main .columns.columns-marquee .brand.icon {
+main .section:first-of-type .columns:first-of-type .brand.icon {
   display: unset;
   height: 32px;
   width: auto;
@@ -506,7 +506,7 @@ main .columns .column.column-picture {
   padding-right: 8px;
 }
 
-main .columns.columns-marquee:not(.center):not(.fullsize) .brand.icon {
+main .section:first-of-type .columns:first-of-type:not(.center):not(.fullsize) .brand.icon {
   transform: none;
   left: 0;
   padding-left: 32px;
@@ -673,7 +673,7 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
 }
 
 @media (min-width: 900px) {
-  body main .columns.columns-marquee:not(.center):not(.fullsize) .brand.icon {
+  body main .section:first-of-type .columns:first-of-type:not(.center):not(.fullsize) .brand.icon {
     padding-left: 0;
   }
 
@@ -767,14 +767,14 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     text-align: left;
   }
 
-  main .columns.columns-marquee .brand.icon {
+  main .section:first-of-type .columns:first-of-type .brand.icon {
     position: unset;
     top: unset;
     left: unset;
     transform: unset;
   }
 
-  main .columns.columns-marquee:not(.center):not(.fullsize) .brand.icon {
+  main .section:first-of-type .columns:first-of-type:not(.center):not(.fullsize) .brand.icon {
     padding-left: 0;
   }
 
