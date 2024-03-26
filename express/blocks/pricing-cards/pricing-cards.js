@@ -41,9 +41,9 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
 
   priceRow.append(basePrice, price, priceSuffix);
 
+  
+
   fetchPlanOnePlans(priceEl?.href).then((response) => {
-    let specialPromoPercentageEyeBrowTextReplaced = false;
-    let pricingCardPercentageEyeBrowTextReplaced = false;
     const parentP = priceEl.parentElement;
     price.innerHTML = response.formatted;
     basePrice.innerHTML = response.formattedBP || '';
@@ -67,27 +67,25 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
         return (key.includes('vat') && !response.showVat) ? '' : placeholders[key] || '';
       }).join(' ');
       priceSuffix.textContent = priceSuffixContent;
-    }
-    const isPremiumCard = response.ooAvailable || false;
+    };
+
     const savePercentElem = pricingArea.querySelector('.card-offer');
-    if (savePercentElem && !pricingCardPercentageEyeBrowTextReplaced) {
+    if (savePercentElem) {
       const offerTextContent = savePercentElem.textContent;
-      if (shallSuppressOfferEyebrowText(response.savePer, offerTextContent, isPremiumCard,
+      if (shallSuppressOfferEyebrowText(response.savePer, offerTextContent, response.ooAvailable,
         false, response.offerId)) {
         savePercentElem.remove();
       } else {
         savePercentElem.innerHTML = savePercentElem.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
-        pricingCardPercentageEyeBrowTextReplaced = true;
       }
     }
 
-    if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced && specialPromo.textContent.includes(`{{${SAVE_PERCENTAGE}}}`)) {
+    if (specialPromo && specialPromo.textContent.includes(`{{${SAVE_PERCENTAGE}}}`)) {
       const offerTextContent = specialPromo.textContent;
-
       const shouldSuppress = shallSuppressOfferEyebrowText(
         response.savePer,
         offerTextContent,
-        isPremiumCard,
+        response.ooAvailable,
         true,
         response.offerId,
       );
@@ -95,7 +93,6 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
         suppressOfferEyebrow(specialPromo, legacyVersion);
       } else {
         specialPromo.innerHTML = specialPromo.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
-        specialPromoPercentageEyeBrowTextReplaced = true;
       }
     }
   });
