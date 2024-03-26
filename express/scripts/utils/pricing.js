@@ -216,21 +216,13 @@ export async function getCountry(ignoreCookie = false) {
   return normCountry(configCountry);
 }
  
-
-export function shallSuppressOfferEyebrowText(savePer, offerTextContent, ooAvailable,
-  isSpecialEyebrowText, offerId) {
-  if (offerId == null || offerId === undefined) return true;
-  let suppressOfferEyeBrowText = false;
-  if (ooAvailable) {
-    if (isSpecialEyebrowText) {
-      suppressOfferEyeBrowText = savePer === '' && !offerTextContent;
-    } else {
-      suppressOfferEyeBrowText = true;
-    }
-  } else if (offerTextContent) {
-    suppressOfferEyeBrowText = savePer === '';
+export function shallSuppressOfferEyebrowText(response, existingPromo, offerTextContent) {
+  const {ooAvailable, offerId} = response;
+  if (!offerId || !offerId || !offerTextContent) return true;
+  if (ooAvailable && existingPromo) {
+    return true;
   }
-  return suppressOfferEyeBrowText;
+  return false;
 }
 
 export const formatSalesPhoneNumber = (() => {

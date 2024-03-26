@@ -15,21 +15,7 @@ const BILLING_PLAN = 'billing-plan';
 const SAVE_PERCENTAGE = 'savePercentage';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
 
-function suppressOfferEyebrow(specialPromo, legacyVersion) {
-  if (specialPromo.parentElement) {
-    if (legacyVersion) {
-      specialPromo.parentElement.classList.remove('special-promo');
-      specialPromo.remove();
-    } else {
-      specialPromo.className = 'hide';
-      specialPromo.parentElement.className = '';
-      specialPromo.parentElement.classList.add('card-border');
-      specialPromo.remove();
-    }
-  }
-}
-
-function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, legacyVersion) {
+function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo) {
   const priceRow = createTag('div', { class: 'pricing-row' });
   const priceEl = pricingArea.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
@@ -40,8 +26,6 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
   const priceSuffix = createTag('div', { class: 'pricing-row-suf' });
 
   priceRow.append(basePrice, price, priceSuffix);
-
-  
 
   fetchPlanOnePlans(priceEl?.href).then((response) => {
     const parentP = priceEl.parentElement;
@@ -71,9 +55,7 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
 
     const savePercentElem = pricingArea.querySelector('.card-offer');
     if (savePercentElem) {
-      const offerTextContent = savePercentElem.textContent;
-      if (shallSuppressOfferEyebrowText(response.savePer, offerTextContent, response.ooAvailable,
-        false, response.offerId)) {
+      if (shallSuppressOfferEyebrowText(response, specialPromo, savePercentElem.textContent)) {
         savePercentElem.remove();
       } else {
         savePercentElem.innerHTML = savePercentElem.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
@@ -81,19 +63,7 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
     }
 
     if (specialPromo && specialPromo.textContent.includes(`{{${SAVE_PERCENTAGE}}}`)) {
-      const offerTextContent = specialPromo.textContent;
-      const shouldSuppress = shallSuppressOfferEyebrowText(
-        response.savePer,
-        offerTextContent,
-        response.ooAvailable,
-        true,
-        response.offerId,
-      );
-      if (shouldSuppress) {
-        suppressOfferEyebrow(specialPromo, legacyVersion);
-      } else {
-        specialPromo.innerHTML = specialPromo.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
-      }
+      specialPromo.innerHTML = specialPromo.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
     }
   });
 
