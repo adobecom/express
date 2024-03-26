@@ -2,13 +2,15 @@
 /* eslint-disable no-underscore-dangle */
 
 import {
-  addPublishDependencies,
   createTag,
   fetchPlaceholders,
   getHelixEnv,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
+import {
+  addPublishDependencies
+} from '../../scripts/franklin-utils.js';
 
 function replaceUrlParam(url, paramName, paramValue) {
   const params = url.searchParams;

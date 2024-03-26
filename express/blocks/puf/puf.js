@@ -1,6 +1,9 @@
 import buildCarousel from '../shared/carousel.js';
-import { addPublishDependencies, createTag, getMetadata } from '../../scripts/utils.js';
+import { createTag, getMetadata } from '../../scripts/utils.js';
 import { buildUrl, fetchPlan } from '../../scripts/utils/pricing.js';
+import {
+  addPublishDependencies
+} from '../../scripts/franklin-utils.js';
 
 let invisContainer;
 let parent;

@@ -1,12 +1,14 @@
 /* eslint-disable no-underscore-dangle */
 
 import {
-  addPublishDependencies,
   createTag,
   getHelixEnv,
   getIcon,
 } from '../../scripts/utils.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
+import {
+  addPublishDependencies
+} from '../../scripts/franklin-utils.js';
 
 function replaceUrlParam(url, paramName, paramValue) {
   const params = url.searchParams;

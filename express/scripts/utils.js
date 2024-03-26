@@ -272,20 +272,6 @@ function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]'])
   }).observe(document.body, { childList: true, subtree: true });
 }
 
-/* Seems to be part of pricing logic */
-export function addPublishDependencies(url) {
-  if (!Array.isArray(url)) {
-    // eslint-disable-next-line no-param-reassign
-    url = [url];
-  }
-  window.hlx = window.hlx || {};
-  if (window.hlx.dependencies && Array.isArray(window.hlx.dependencies)) {
-    window.hlx.dependencies.concat(url);
-  } else {
-    window.hlx.dependencies = url;
-  }
-}
-
 /* this function is declared locally in Milo, but widely used here. maybe find way to reduce
   usage */
 export function toClassName(name) {
