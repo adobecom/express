@@ -2,12 +2,14 @@ import {
   loadScript,
   getHelixEnv,
   sampleRUM,
-  getCookie,
   getMetadata,
   fetchPlaceholders,
   loadStyle,
   getConfig,
 } from './utils.js';
+
+import {
+  getCookie} from "./utils/location-utilties.js";
 
 const isHomepage = window.location.pathname.endsWith('/express/');
 

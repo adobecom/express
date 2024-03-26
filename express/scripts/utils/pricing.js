@@ -1,8 +1,10 @@
-import {
-  getCookie,
+import { 
   getHelixEnv,
   createTag, getConfig,
 } from '../utils.js';
+import {
+  getCookie, normCountry, getCountry
+} from "./location-utilties.js"
 
 const currencies = {
   ar: 'ARS',
@@ -183,39 +185,6 @@ function getCurrencyDisplay(currency) {
   return 'symbol';
 }
 
-export function normCountry(country) {
-  return (country.toLowerCase() === 'uk' ? 'gb' : country.toLowerCase()).split('_')[0];
-}
-
-// urlparam > cookie > sessionStorage > feds > api > config
-export async function getCountry(ignoreCookie = false) {
-  const urlParams = new URLSearchParams(window.location.search);
-  let countryCode = urlParams.get('country') || (!ignoreCookie && getCookie('international'));
-  if (countryCode) {
-    return normCountry(countryCode);
-  }
-  countryCode = sessionStorage.getItem('visitorCountry');
-  if (countryCode) return countryCode;
-
-  const fedsUserGeo = window.feds?.data?.location?.country;
-  if (fedsUserGeo) {
-    const normalized = normCountry(fedsUserGeo);
-    sessionStorage.setItem('visitorCountry', normalized);
-    return normalized;
-  }
-
-  const resp = await fetch('https://geo2.adobe.com/json/');
-  if (resp.ok) {
-    const { country } = await resp.json();
-    const normalized = normCountry(country);
-    sessionStorage.setItem('visitorCountry', normalized);
-    return normalized;
-  }
-
-  const configCountry = getConfig().locale.region;
-  return normCountry(configCountry);
-}
-
 const offerIdSuppressMap = new Map();
 
 export function shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremiumCard,
@@ -241,28 +210,6 @@ export function shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremi
   return suppressOfferEyeBrowText;
 }
 
-export const formatSalesPhoneNumber = (() => {
-  let numbersMap;
-  return async (tags, placeholder = '') => {
-    if (tags.length <= 0) return;
-
-    if (!numbersMap) {
-      numbersMap = await fetch('/express/system/business-sales-numbers.json').then((r) => r.json());
-    }
-
-    if (!numbersMap?.data) return;
-    const country = await getCountry(true) || 'us';
-    tags.forEach((a) => {
-      const r = numbersMap.data.find((d) => d.country === country);
-
-      const decodedNum = r ? decodeURI(r.number.trim()) : decodeURI(a.href.replace('tel:', '').trim());
-
-      a.textContent = placeholder ? a.textContent.replace(placeholder, decodedNum) : decodedNum;
-      a.setAttribute('title', placeholder ? a.getAttribute('title').replace(placeholder, decodedNum) : decodedNum);
-      a.href = `tel:${decodedNum}`;
-    });
-  };
-})();
 
 export async function formatPrice(price, currency) {
   if (price === '') return null;

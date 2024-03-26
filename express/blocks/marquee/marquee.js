@@ -430,7 +430,7 @@ export default async function decorate(block) {
 
   const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
   if (phoneNumberTags.length > 0) {
-    const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');
+    const { formatSalesPhoneNumber } = await import('../../scripts/utils/location-utilities.js');
     await formatSalesPhoneNumber(phoneNumberTags);
   }
 

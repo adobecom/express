@@ -4,10 +4,11 @@ import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
 import {
   formatDynamicCartLink,
-  formatSalesPhoneNumber,
+  
   shallSuppressOfferEyebrowText,
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
+import {formatSalesPhoneNumber} from '../../scripts/utils/location-utilties.js';
 
 const blockKeys = ['header', 'borderParams', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
