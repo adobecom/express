@@ -216,4 +216,7 @@ export default async function decorate(block) {
   block.append(bottomCont);
 
   initBlockInteraction(block, props);
+
+  // FIXME: hacky behavior to fight for space with Jarvis:
+  document.body.classList.add('has-floating-panel');
 }

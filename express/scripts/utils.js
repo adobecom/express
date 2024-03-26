@@ -491,13 +491,21 @@ export function transformLinkToAnimation($a, $videoLooping = true) {
   }
   // replace anchor with video element
   const videoUrl = new URL($a.href);
-  const helixId = videoUrl.hostname.includes('hlx.blob.core') ? videoUrl.pathname.split('/')[2] : videoUrl.pathname.split('media_')[1].split('.')[0];
-  const videoHref = `./media_${helixId}.mp4`;
+
+  const isLegacy = videoUrl.hostname.includes('hlx.blob.core') || videoUrl.pathname.includes('media_');
   const $video = createTag('video', attribs);
-  $video.innerHTML = `<source src="${videoHref}" type="video/mp4">`;
+  if (isLegacy) {
+    const helixId = videoUrl.hostname.includes('hlx.blob.core') ? videoUrl.pathname.split('/')[2] : videoUrl.pathname.split('media_')[1].split('.')[0];
+    const videoHref = `./media_${helixId}.mp4`;
+    $video.innerHTML = `<source src="${videoHref}" type="video/mp4">`;
+  } else {
+    $video.innerHTML = `<source src="${videoUrl}" type="video/mp4">`;
+  }
+
   const $innerDiv = $a.closest('div');
   $innerDiv.prepend($video);
   $innerDiv.classList.add('hero-animation-overlay');
+  $video.setAttribute('tabindex', 0);
   $a.replaceWith($video);
   // autoplay animation
   $video.addEventListener('canplay', () => {
@@ -1702,20 +1710,31 @@ function decoratePictures(main) {
 
 /* Animation, not present in Milo */
 
+export function toggleVideo(target) {
+  const videos = target.querySelectorAll('video');
+  const paused = videos[0] ? videos[0].paused : false;
+  videos.forEach((video) => {
+    if (paused) {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // ignore
+        });
+      }
+    } else video.pause();
+  });
+}
+
 export function addAnimationToggle(target) {
   target.addEventListener('click', () => {
-    const videos = target.querySelectorAll('video');
-    const paused = videos[0] ? videos[0].paused : false;
-    videos.forEach((video) => {
-      if (paused) {
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            // ignore
-          });
-        }
-      } else video.pause();
-    });
+    toggleVideo(target);
+  }, true);
+  target.addEventListener('keypress', (e) => {
+    if (e.key !== 'Enter' && e.keyCode !== 32 && e.key !== ' ') {
+      return;
+    }
+    e.preventDefault();
+    toggleVideo(target);
   }, true);
 }
 
@@ -2327,7 +2346,7 @@ export async function loadArea(area = document) {
   // milo's links featurecc
   const config = getConfig();
   if (config.links === 'on') {
-    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
+    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/express/seo/links.json'}`;
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 

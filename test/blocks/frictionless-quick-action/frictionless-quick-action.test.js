@@ -38,9 +38,7 @@ describe('Frictionless Quick Action Block', () => {
     const dropzone = block.querySelector('div:nth-child(2) > div:nth-child(2) .dropzone');
     const dropzoneTitle = dropzone.querySelector(':scope > h4');
     expect(dropzoneTitle.textContent).to.be.equal('Drag and drop an image or browse to upload.');
-    const lottie = dropzone.querySelector(':scope lottie-player');
-    expect(lottie).to.not.be.null;
-    const freePlanTexts = dropzone.querySelectorAll(':scope .free-plan-container');
+    const freePlanTexts = dropzone.querySelectorAll(':scope .plan-widget-tag');
     expect(freePlanTexts.length).to.be.equal(2);
 
     window.fetch = ogFetch;
@@ -55,11 +53,12 @@ describe('Frictionless Quick Action Block', () => {
     dataTransfer.items.add(file);
 
     const event = new DragEvent('drop', { dataTransfer });
-    const callback = function (mutationsList, observer) {
+    const callback = function cb(mutationsList, observer) {
       for (const mutation of mutationsList) {
         if (mutation.type === 'childList') {
           mutation.addedNodes.forEach((node) => {
             if (node.nodeName === 'SCRIPT') {
+              // eslint-disable-next-line no-console
               console.log('A new script tag was added:', node);
               const script = document.querySelector('head > script[src="https://sdk.cc-embed.adobe.com/v3/CCEverywhere.js"]');
               expect(script).to.not.be.null;

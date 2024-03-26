@@ -76,6 +76,10 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     white-space: nowrap;
 }
 
+main .template-x.sixcols .masonry-col, main .template-x.fullwidth .masonry-col {
+    max-width: 175px;
+}
+
 .template-x.horizontal .template-tabs button.template-tab-button:first-of-type {
     margin-left: 0;
 }
@@ -202,6 +206,10 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     font-size: var(--body-font-size-m);
 }
 
+.template-x.horizontal.mini .template-title.horizontal p {
+    margin-bottom: 0;
+}
+
 .template-x-wrapper .template-link,
 .template-x-wrapper .template-title-link {
     text-decoration: none;
@@ -257,7 +265,7 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     break-inside: avoid;
     text-decoration: unset;
     position: relative;
-    border-radius: 7px;
+    border-radius: 14px;
 }
 
 .template-x .template:focus {
@@ -353,7 +361,6 @@ main.with-holiday-templates-banner {
 
 .template-x.horizontal.fullwidth:not(.holiday) {
     max-width: none;
-    padding-right: 16px;
     display: block;
     margin-left: auto;
 }
@@ -372,6 +379,11 @@ main.with-holiday-templates-banner {
     min-height: 200px;
     width: max-content;
     margin: 24px 12px;
+}
+
+.button-container:focus-within{
+    visibility: visible;
+    opacity: 20 !important;
 }
 
 .template-x.horizontal .template .still-wrapper img,
@@ -403,30 +415,34 @@ main.with-holiday-templates-banner {
     margin: 0 4px;
 }
 
-.template-x.horizontal.mini .template.placeholder {
-    height: 100px;
-    width: 60px;
-    margin: 0 4px 0 12px;
+.template-x.horizontal.mini .template:nth-of-type(2):not(.placeholder) .button-container {
+    left: calc(50% + 16px);
 }
 
-.template-x.horizontal.mini .template.placeholder > div:first-of-type {
+.template-x.horizontal.mini a.template.placeholder {
+    height: 100px;
+    width: 60px;
+    margin: 0 12px 0 4px;
+}
+
+.template-x.horizontal.mini a.template.placeholder > div:first-of-type {
     height: unset;
     width: unset;
     display: block;
     padding-top: 16px;
 }
 
-.template-x.horizontal.mini .template.placeholder svg {
+.template-x.horizontal.mini a.template.placeholder svg {
     height: 18px;
     width: 18px;
 }
 
-.template-x.horizontal.mini .template.placeholder .template-link {
+.template-x.horizontal.mini a.template.placeholder .template-link {
     font-size: var(--body-font-size-xs);
 }
 
-.template-x.horizontal.mini .template img,
-.template-x.horizontal.mini .template video {
+.template-x.horizontal.mini .template .still-wrapper img:not(.icon),
+.template-x.horizontal.mini .template .still-wrapper video {
     object-fit: cover;
     height: 100px;
 }
@@ -472,6 +488,7 @@ main.with-holiday-templates-banner {
 .template-x.fullwidth .template:not(.placeholder) .button-container {
     position: absolute;
     width: 120%;
+    max-width: 90vw;
     border-radius: 20px;
     min-height: 120%;
     top: 50%;
@@ -499,6 +516,11 @@ main.with-holiday-templates-banner {
     box-sizing: border-box;
     height: calc(100% + 40px);
     width: calc(100% + 24px);
+}
+
+.template-x.horizontal.mini .template:not(.placeholder) .button-container {
+    height: calc(100% + 56px);
+    width: calc(100% + 40px);
 }
 
 .template-x.horizontal .template:not(.placeholder) .template-link,
@@ -585,7 +607,6 @@ main.with-holiday-templates-banner {
     margin: 21px auto;
     max-width: 80%;
     max-height: 30vh;
-    min-height: 120px;
     z-index: 0;
 }
 
@@ -602,10 +623,12 @@ main.with-holiday-templates-banner {
 }
 
 .template-x .template.placeholder div:nth-of-type(2) {
-    margin: 0;
     position: absolute;
-    padding: 0 20px;
+    padding-top: 10px;
+    max-width: 64%;
     bottom: 10%;
+    min-height: 28px;
+    background: linear-gradient(rgb(255 255 255 / 0%) 0%, rgb(255 255 255) 24%);
 }
 
 .template-x .template.placeholder .template-link {
@@ -649,7 +672,6 @@ main.with-holiday-templates-banner {
     height: 22px;
 }
 
-
 .template-x .template.placeholder .template-link::after {
     display: none;
 }
@@ -662,10 +684,6 @@ main.with-holiday-templates-banner {
 .template-x .template.placeholder.wide > div:first-of-type > svg {
     width: 24px;
     height: 24px;
-}
-
-.template-x .template.placeholder div:nth-of-type(2) {
-    min-height: 28px;
 }
 
 .template-x-inner-wrapper.flex-masonry .template {
@@ -1606,9 +1624,19 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     margin-right: 0;
 }
 
+.template-x.horizontal.mini .carousel-container {
+    margin-bottom: 0;
+}
+
 .template-x.horizontal .carousel-platform {
     scroll-padding: 12px;
+    padding: 24px 15px;
+    box-sizing: border-box;
 }
+
+.template-x.horizontal.mini .carousel-platform {
+    padding: 32px;
+} 
 
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
     transform: translate3d(0, 0, 0);
@@ -2008,7 +2036,9 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x .template .button-container a {
+    max-width: 100%;
     margin: 6px 6px 0;
+    box-sizing: border-box;
     display: block;
     white-space: nowrap;
     overflow: hidden;
@@ -2017,6 +2047,11 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 .template-x.horizontal .template .button-container a {
     min-height: 16px;
+}
+
+.template-x.horizontal.mini .template .button-container a {
+    font-size: var(--body-font-size-xs);
+    padding: 2px 6px 4px;
 }
 
 .template-x .template .button-container .media-wrapper .icon-share-arrow {
@@ -2108,7 +2143,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 nav ol.templates-breadcrumbs {
     list-style: none;
-    margin: 0;
+    margin: 0 0 0 16px;
     padding: 0;
     display: flex;
 }
@@ -2295,11 +2330,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         max-width: 748px;
     }
 
-    .template-x.sixcols > .template-x-inner-wrapper > .masonry-col,
-    .template-x.fullwidth > .template-x-inner-wrapper > .masonry-col {
-        max-width: 187px;
-    }
-
     .template-x .template-title.with-link.horizontal {
         display: flex;
         justify-content: space-between;
@@ -2325,7 +2355,7 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
 
     .template-x.sixcols > .template-x-inner-wrapper > .masonry-col,
     .template-x.fullwidth > .template-x-inner-wrapper > .masonry-col {
-        max-width: 187px;
+        max-width: 180px;
     }
 
     .template-x.fullwidth.md-view > .template-x-inner-wrapper > .masonry-col {
