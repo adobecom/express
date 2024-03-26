@@ -57,6 +57,7 @@ End legacy CSS
 }
 
 .pricing-cards .card {
+  background-color: var(--color-white);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -75,11 +76,6 @@ End legacy CSS
 Border style variants
 */
 
-.pricing-cards .gradient-promo .card {
-  background-color: white;
-  margin-bottom: 2px;
-}
-
 .pricing-cards .gradient-promo>div:first-of-type {
   margin-left: 4px;
   color: var(--color-white);
@@ -90,7 +86,7 @@ Border style variants
 .pricing-cards .gradient-promo {
   background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
   padding: 12px 2px 4px 2px;
-  border-radius: 16px;
+  border-radius: 10px;
   overflow: hidden;
   background: var(--color-white);
   margin-top: 0px !important;
@@ -102,7 +98,8 @@ Border style variants
 
 
 .pricing-cards .special-promo {
-  border: 1px solid #FFE600;
+  border: 2px solid #FFE600;
+  padding-bottom: 1px;
 }
 
 .pricing-cards .card-border.special-promo{
@@ -178,10 +175,6 @@ End border style variants
   width: 14px;
   height: 14px;
   padding-right: 6px;
-}
-
-.pricing-cards .card-explain {
-  display: none;
 }
 
 .pricing-cards .card-offer {
@@ -276,7 +269,19 @@ End border style variants
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
 }
+
+.pricing-cards-wrapper + .default-content-wrapper .button-container {
+  margin-top : -40px;
+  
+}
+.pricing-cards-wrapper + .default-content-wrapper .button-container .button{
+  padding: 13px 1.5em 14px 1.5em;
+  border-radius: 27px;
+  font-size: var(--body-font-size-m);
+}
+
 
 /** pricing styles end **/
 
@@ -372,7 +377,7 @@ End border style variants
 
 @media screen and (min-width: 1250px) {
   :root {
-    --card-width: 391px;
+    --card-width: 400px;
     --card-padding: 24px 16px;
   }
 
@@ -384,10 +389,6 @@ End border style variants
     width: var(2 * --card-width);
     margin: auto;
     grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
-  }
-
-  .pricing-cards .card-explain {
-    display: block;
   }
 
   .pricing-cards .pricing-section {

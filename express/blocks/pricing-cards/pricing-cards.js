@@ -3,7 +3,7 @@ import BlockMediator from '../../scripts/block-mediator.min.js';
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
 import {
-  buildUrl,
+  formatDynamicCartLink,
   formatSalesPhoneNumber,
   shallSuppressOfferEyebrowText,
   fetchPlanOnePlans,
@@ -134,11 +134,7 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo,
     if (a.parentNode.tagName.toLowerCase() === 'p') {
       a.parentNode.remove();
     }
-    fetchPlanOnePlans(a.href).then(({
-      url, country, language, offerId,
-    }) => {
-      a.href = buildUrl(url, country, language, offerId);
-    });
+    formatDynamicCartLink(a);
     ctaGroup.append(a);
   });
   pricingSection.append(pricingArea);
@@ -181,8 +177,8 @@ function decorateLegacyHeader(header, card) {
     h2.append(h2Text.replace(`(${cfg})`, '').trim());
     if (/^\d/.test(cfg)) {
       const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
-      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
       headCntDiv.textContent = cfg;
+      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
       header.append(headCntDiv);
     } else {
       specialPromo = createTag('div');
@@ -206,11 +202,6 @@ function decorateHeader(header, borderParams, card, cardBorder) {
   header.classList.add('card-header');
   const specialPromo = readBraces(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
-  if (premiumIcon) h2.append(premiumIcon);
-
-  header.querySelectorAll('p').forEach((p) => {
-    if (p.innerHTML.trim() === '') p.remove();
-  });
 
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
@@ -222,6 +213,10 @@ function decorateHeader(header, borderParams, card, cardBorder) {
     headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
     header.append(headCntDiv);
   }
+  if (premiumIcon) h2.append(premiumIcon);
+  header.querySelectorAll('p').forEach((p) => {
+    if (p.innerHTML.trim() === '') p.remove();
+  });
   card.append(header);
   cardBorder.append(card);
   return { cardWrapper: cardBorder, specialPromo };
