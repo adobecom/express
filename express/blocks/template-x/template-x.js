@@ -12,8 +12,9 @@ import {
   sampleRUM,
   titleCase,
   toClassName,
-  transformLinkToAnimation,
 } from '../../scripts/utils.js';
+import {
+  transformLinkToAnimation} from "../../scripts/utils/media.js";
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { Masonry } from '../shared/masonry.js';
 import buildCarousel from '../shared/carousel.js';

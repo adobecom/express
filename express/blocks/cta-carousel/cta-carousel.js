@@ -1,6 +1,7 @@
-import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../scripts/utils.js';
+import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
-
+import {
+  transformLinkToAnimation} from "../../scripts/utils/media.js";
 import buildCarousel from '../shared/carousel.js';
 
 export function decorateTextWithTag(textSource, options = {}) {

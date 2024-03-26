@@ -2,10 +2,11 @@ import {
   createOptimizedPicture,
   createTag,
   fetchPlaceholders,
-  transformLinkToAnimation,
 } from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
-
+import {
+  transformLinkToAnimation} from "../../scripts/utils/media.js";
+  
 function buildContent(content) {
   const contentLink = content.querySelector('a');
   let formattedContent = content;

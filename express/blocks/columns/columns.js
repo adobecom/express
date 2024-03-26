@@ -1,13 +1,14 @@
 import {
   linkImage,
   createTag,
-  transformLinkToAnimation,
   addAnimationToggle,
   toClassName,
   getIconElement,
   addHeaderSizing,
   getMetadata,
 } from '../../scripts/utils.js';
+import {
+  transformLinkToAnimation} from "../../scripts/utils/media.js";
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';

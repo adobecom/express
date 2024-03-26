@@ -2,10 +2,10 @@ import {
   createTag,
   getConfig,
   loadScript,
-  transformLinkToAnimation,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
-
+import {
+  transformLinkToAnimation} from "../../scripts/utils/media.js";
 const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 const imageInputAccept = '.png, .jpeg, .jpg';
 let inputElement;

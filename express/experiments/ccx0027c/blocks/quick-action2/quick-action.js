@@ -1,6 +1,8 @@
 import {
-  readBlockConfig, transformLinkToAnimation, lazyLoadLottiePlayer, getLottie,
+  readBlockConfig,lazyLoadLottiePlayer, getLottie,
 } from '../../../../scripts/utils.js';
+import {
+  transformLinkToAnimation} from "../../scripts/utils/media.js";
 import { CCXQuickActionElement, ELEMENT_NAME } from '../../../../blocks/quick-action/shared.js';
 
 const REMOVE_BACKGROUND_ELEMENT = 'cclqt-remove-background';

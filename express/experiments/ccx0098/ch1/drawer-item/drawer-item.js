@@ -6,9 +6,9 @@ import {
   getLottie,
   getMobileOperatingSystem,
   createTag,
-  transformLinkToAnimation,
 } from '../../../../scripts/utils.js';
-
+import {
+  transformLinkToAnimation} from "../../scripts/utils/media.js";
 function createIndicators(payload, carousel) {
   const count = parseInt(payload.drawerItemContainer.dataset.itemLoadedCount, 10);
   let eventName = '';

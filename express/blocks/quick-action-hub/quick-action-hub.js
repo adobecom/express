@@ -1,10 +1,10 @@
 import {
   createTag,
-  transformLinkToAnimation,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
-
+import {
+  transformLinkToAnimation} from "../../scripts/utils/media.js";
 export default function decorate($block) {
   addTempWrapper($block, 'quick-action-hub');
   const $rows = Array.from($block.children);
