@@ -1483,8 +1483,8 @@ async function buildTemplateList(block, props, type = []) {
     await decorateTemplates(block, props);
   } else {
     window.lana.log(`failed to load templates with props: ${JSON.stringify(props)}`, { tags: 'templates-api' });
-    // fixme: better error message.
-    block.innerHTML = 'Oops. Our templates delivery got stolen. Please try refresh the page.';
+    const placeholders = await fetchPlaceholders();
+    block.textContent = placeholders['template-x-error'] || '';
   }
 
   if (templates && props.tabs) {
