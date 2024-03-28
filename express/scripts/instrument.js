@@ -151,7 +151,7 @@ export async function trackBranchParameters($links) {
     canvasWidth,
     canvasUnit,
     sceneline,
-    taskId,
+    taskID,
     assetCollection,
     branchCategory,
     branchSearchCategory,
@@ -198,7 +198,7 @@ export async function trackBranchParameters($links) {
 
       if (isSearchBranchLink) {
         urlParams.set('category', branchCategory || 'templates');
-        urlParams.set('taskId', taskId);
+        urlParams.set('taskID', taskID);
         urlParams.set('assetCollection', assetCollection);
 
         if (branchSearchCategory) {
