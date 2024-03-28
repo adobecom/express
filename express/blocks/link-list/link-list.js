@@ -35,7 +35,7 @@ const formatBlockLinks = (links, variant, baseURL) => {
   if (!links || variant !== SMART_VARIANT || !baseURL) {
     return;
   }
-  const formattedURL = `${baseURL}?acomx-dno=true&category=template`;
+  const formattedURL = `${baseURL}?acomx-dno=true&category=templates`;
   links.forEach((p) => {
     const a = p.querySelector('a');
     a.href = `${formattedURL}&q=${a.title}`;
