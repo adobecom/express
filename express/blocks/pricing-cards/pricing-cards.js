@@ -1,6 +1,6 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
-import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
+import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
 
 import {
   formatDynamicCartLink,
@@ -297,6 +297,17 @@ function decorateCard({
   return cardWrapper;
 }
 
+// less thrashing by separating get and set
+async function syncMinHeights(...groups) {
+  const maxHeights = groups.map((els) => els
+    .filter((e) => !!e)
+    .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
+  await yieldToMain();
+  maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
+    if (e) e.style.minHeight = `${maxHeight}px`;
+  }));
+}
+
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
   // For backwards compatability with old versions of the pricing card
@@ -317,21 +328,29 @@ export default async function init(el) {
   cards
     .map((card) => decorateCard(card, el, placeholders, legacyVersion))
     .forEach((card) => cardsContainer.append(card));
-  const maxMCTACnt = cards.reduce((max, card) => Math.max(max, card.mCtaGroup.querySelectorAll('a').length), 0);
-  if (maxMCTACnt > 1) {
-    cards.forEach(({ mCtaGroup }) => {
-      mCtaGroup.classList.add(`min-height-${maxMCTACnt}`);
-    });
-  }
-  const maxYCTACnt = cards.reduce((max, card) => Math.max(max, card.yCtaGroup.querySelectorAll('a').length), 0);
-  if (maxYCTACnt > 1) {
-    cards.forEach(({ yCtaGroup }) => {
-      yCtaGroup.classList.add(`min-height-${maxYCTACnt}`);
-    });
-  }
+
   const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter((a) => a.title.includes(SALES_NUMBERS));
   if (phoneNumberTags.length > 0) {
     await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
   }
+  el.classList.add('no-visible');
   el.prepend(cardsContainer);
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        observer.disconnect();
+        syncMinHeights(
+          cards.map(({ header }) => header),
+          cards.map(({ explain }) => explain),
+          cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
+          cards.map(({ featureList }) => featureList.querySelector('p')),
+          cards.map(({ featureList }) => featureList),
+          cards.map(({ compare }) => compare),
+        );
+        el.classList.remove('no-visible');
+      }
+    });
+  });
+  observer.observe(el);
 }

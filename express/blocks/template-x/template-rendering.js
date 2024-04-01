@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { createTag, getIconElement, getMetadata } from '../../scripts/utils.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function containsVideo(pages) {
   return pages.some((page) => !!page?.rendition?.video?.thumbnail?.componentId);
@@ -335,7 +336,7 @@ function renderMediaWrapper(template, placeholders) {
   };
 }
 
-function renderHoverWrapper(template, placeholders) {
+async function renderHoverWrapper(template, placeholders) {
   const btnContainer = createTag('div', { class: 'button-container' });
 
   const {
@@ -346,9 +347,28 @@ function renderHoverWrapper(template, placeholders) {
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
-  const cta = renderCTA(placeholders, template.customLinks.branchUrl);
-  btnContainer.append(cta);
-  cta.addEventListener('focusin', focusHandler);
+  let isEligible = document.body.dataset.device === 'desktop' || !['yes', 'true', 'Y', 'on'].includes(getMetadata('mobile-benchmark'));
+
+  if (!isEligible) {
+    const eligibility = BlockMediator.get('mobileBetaEligibility');
+    if (eligibility) {
+      isEligible = eligibility.deviceSupport;
+    } else {
+      isEligible = await new Promise((resolve) => {
+        const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
+          resolve(e.newValue.deviceSupport);
+          unsub();
+        });
+      });
+    }
+  }
+
+  if (isEligible) {
+    const cta = renderCTA(placeholders, template.customLinks.branchUrl);
+    btnContainer.append(cta);
+    cta.addEventListener('focusin', focusHandler);
+  }
+
   return btnContainer;
 }
 
@@ -409,10 +429,10 @@ function renderStillWrapper(template, placeholders) {
   return stillWrapper;
 }
 
-export default function renderTemplate(template, placeholders) {
+export default async function renderTemplate(template, placeholders) {
   const tmpltEl = createTag('div');
   tmpltEl.append(renderStillWrapper(template, placeholders));
-  tmpltEl.append(renderHoverWrapper(template, placeholders));
+  tmpltEl.append(await renderHoverWrapper(template, placeholders));
 
   return tmpltEl;
 }
