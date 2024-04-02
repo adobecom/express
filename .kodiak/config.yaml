@@ -11,8 +11,6 @@ notifications:
         include:
           risk_rating: R5
       fields:
-        assignee:
-          name: jinglhua
         customfield_11800: MWPW-145743 #epic link
         customfield_12900: 
           value: Express Dev
