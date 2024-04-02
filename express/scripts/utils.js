@@ -643,12 +643,13 @@ export function removeIrrelevantSections(main) {
     }
   });
 
-  // remove main CTA on mobile for floating CTA to cover
-  if (document.body.dataset.device === 'mobile' && isValAffirmative(getMetadata('show-floating-cta'))) {
+  // floating CTA vs page CTA with same text or link logics
+  if (isValAffirmative(getMetadata('show-floating-cta'))) {
     const sameUrlCTAs = Array.from(main.querySelectorAll('a:any-link'))
       .filter((a) => {
-        const textToTarget = getMetadata('mobile-cta-text')?.trim() || getMetadata('main-cta-text')?.trim();
-        const linkToTarget = getMetadata('mobile-cta-link')?.trim() || getMetadata('main-cta-link')?.trim();
+        const { device } = document.body.dataset;
+        const textToTarget = getMetadata(`${device}-cta-text`)?.trim() || getMetadata('main-cta-text')?.trim();
+        const linkToTarget = getMetadata(`${device}-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
 
         if (!textToTarget && !linkToTarget) return false;
 
