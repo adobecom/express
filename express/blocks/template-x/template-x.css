@@ -410,6 +410,7 @@ main.with-holiday-templates-banner {
 
 .template-x.horizontal.mini .template {
     min-height: unset;
+    min-width: 64px;
     max-height: 100px;
     max-width: 200px;
     margin: 0 4px;
@@ -445,6 +446,7 @@ main.with-holiday-templates-banner {
 .template-x.horizontal.mini .template .still-wrapper video {
     object-fit: cover;
     height: 100px;
+    width: 100%;
 }
 
 .template-x.horizontal.mini .template .icon-free-badge {
