@@ -1965,6 +1965,8 @@ async function buildAutoBlocks(main) {
   }
 
   async function loadFloatingCTA(BlockMediator, decorated) {
+    if (!isValAffirmative(getMetadata('floating-cta-live')) && getEnv(getConfig()).name === 'prod') return;
+
     const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
     const device = document.body.dataset?.device;
     const blockName = getMetadata(`${device}-floating-cta`);
@@ -2007,7 +2009,7 @@ async function buildAutoBlocks(main) {
         });
       }
     }
-  } else if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase())) {
+  } else if (isValAffirmative(getMetadata('show-floating-cta').toLowerCase())) {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {

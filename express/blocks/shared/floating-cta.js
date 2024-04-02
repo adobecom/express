@@ -312,7 +312,7 @@ export function collectFloatingButtonData() {
     showAppStoreBadge: isValAffirmative(getMetadata('show-floating-cta-app-store-badge')),
     toolsToStash: getMetadata('ctas-above-divider'),
     useLottieArrow: isValAffirmative(getMetadata('use-floating-cta-lottie-arrow')),
-    delay: getMetadata('floating-cta-delay') || 0,
+    delay: getMetadata('floating-cta-drawer-delay') || 0,
     tools: [],
     mainCta: {
       desktopHref: getMetadata('desktop-floating-cta-link'),
@@ -323,6 +323,7 @@ export function collectFloatingButtonData() {
       text: getMetadata('main-cta-text'),
     },
     bubbleSheet: getMetadata('floating-cta-bubble-sheet'),
+    live: getMetadata('floating-cta-live'),
   };
 
   for (let i = 1; i < 7; i += 1) {
