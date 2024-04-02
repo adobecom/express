@@ -21,6 +21,8 @@ notifications:
           - rea01581
           - all42238
           - all66020
+          - cod87753
+          - apganapa
         labels:
           - "OriginatingProcess=Kodiak"
           - "security"
