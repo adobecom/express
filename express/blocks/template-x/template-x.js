@@ -1616,7 +1616,7 @@ function determineTemplateXType(props) {
 }
 
 export default async function decorate(block) {
-  addTempWrapper(block, 'template-x');
+  if (!block.parentElement.classList.contains('template-x-wrapper')) addTempWrapper(block, 'template-x');
 
   const props = constructProps(block);
   block.innerHTML = '';
