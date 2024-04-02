@@ -1078,13 +1078,6 @@ export function getHelixEnv() {
   return env;
 }
 
-function convertGlobToRe(glob) {
-  let reString = glob.replace(/\*\*/g, '_');
-  reString = reString.replace(/\*/g, '[0-9a-z-]*');
-  reString = reString.replace(/_/g, '.*');
-  return (new RegExp(reString));
-}
-
 export async function fetchRelevantRows(path) {
   if (!window.relevantRows) {
     try {
@@ -1875,65 +1868,6 @@ export async function fetchBlockFragDecorated(url, blockName) {
   }
 }
 
-export async function fetchFloatingCta(path) {
-  const env = getHelixEnv();
-  const dev = new URLSearchParams(window.location.search).get('dev');
-  const { experiment, experimentParams } = window.hlx;
-  const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
-  let spreadsheet;
-  let floatingBtnData;
-
-  async function fetchFloatingBtnData(sheet) {
-    if (!window.floatingCta) {
-      try {
-        const { prefix } = getConfig().locale;
-        const resp = await fetch(`${prefix}${sheet}`);
-        window.floatingCta = resp.ok ? (await resp.json()).data : [];
-      } catch {
-        const resp = await fetch(sheet);
-        window.floatingCta = resp.ok ? (await resp.json()).data : [];
-      }
-    }
-
-    if (window.floatingCta.length) {
-      const candidates = window.floatingCta.filter((p) => {
-        const pathMatch = p.path.includes('*') ? path.match(convertGlobToRe(p.path)) : path === p.path;
-
-        if (experiment && path !== 'default') {
-          return (pathMatch)
-            && p.expID === experiment.id
-            && p.challengerID === experiment.selectedVariant;
-        } else {
-          return pathMatch;
-        }
-      }).sort((a, b) => b.path.length - a.path.length);
-
-      if (env && env.name === 'stage') {
-        return candidates[0] || null;
-      }
-
-      return candidates[0] && candidates[0].live !== 'N' ? candidates[0] : null;
-    }
-    return null;
-  }
-
-  if (['yes', 'true', 'on'].includes(dev) && env && env.name === 'stage') {
-    spreadsheet = '/express/floating-cta-dev.json?limit=100000';
-  } else {
-    spreadsheet = '/express/floating-cta.json?limit=100000';
-  }
-
-  if (experimentStatus === 'active' || experimentParams) {
-    const expSheet = '/express/experiments/floating-cta-experiments.json?limit=100000';
-    floatingBtnData = await fetchFloatingBtnData(expSheet);
-  }
-
-  if (!floatingBtnData) {
-    floatingBtnData = await fetchFloatingBtnData(spreadsheet);
-  }
-  return floatingBtnData;
-}
-
 async function buildAutoBlocks(main) {
   const lastDiv = main.querySelector(':scope > div:last-of-type');
 
@@ -2005,16 +1939,13 @@ async function buildAutoBlocks(main) {
   }
 
   async function loadFloatingCTA(BlockMediator, decorated) {
-    const floatingCTAData = await fetchFloatingCta(window.location.pathname);
     const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
     const device = document.body.dataset?.device;
-    const blockNameWithVariants = floatingCTAData?.[device] ? floatingCTAData?.[device].split(' ') : [];
-    const blockName = blockNameWithVariants.shift();
+    const blockName = getMetadata(`${device}-floating-cta`);
 
-    if (validButtonVersion.includes(blockName) && lastDiv) {
+    if (blockName && validButtonVersion.includes(blockName) && lastDiv) {
       const button = buildBlock(blockName, device);
-      button.classList.add('spreadsheet-powered');
-      blockNameWithVariants.forEach((variant) => button.classList.add(variant));
+      button.classList.add('metadata-powered');
       lastDiv.append(button);
       if (!decorated) {
         await decorateBlock(button);

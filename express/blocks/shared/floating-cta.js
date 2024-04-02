@@ -1,12 +1,12 @@
 import {
   createTag,
-  fetchFloatingCta,
   fetchPlaceholders,
   getIconElement,
   getLottie,
   getMobileOperatingSystem,
   lazyLoadLottiePlayer,
   loadStyle,
+  getMetadata,
 } from '../../scripts/utils.js';
 
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -135,7 +135,7 @@ function buildLottieArrow(wrapper, floatingBtn, data) {
   return lottieScrollButton;
 }
 
-export async function createFloatingButton(block, audience, data) {
+export function createFloatingButton(block, audience, data) {
   const aTag = makeCTAFromSheet(block, data);
   const main = document.querySelector('main');
   loadStyle('/express/blocks/shared/floating-cta.css');
@@ -318,94 +318,38 @@ function isValAffirmative(value) {
   return !['no', 'N', 'false', 'off'].includes(value) || ['yes', 'Y', 'true', 'on'].includes(value);
 }
 
-export async function collectFloatingButtonData() {
-  const defaultButton = await fetchFloatingCta('default');
-  const pageButton = await fetchFloatingCta(window.location.pathname);
-  const dataArray = [];
-
-  const objectKeys = Object.keys(defaultButton);
-  objectKeys.forEach((key) => {
-    if (['path', 'live'].includes(key)) return;
-    dataArray.push([key, pageButton?.[key] || defaultButton[key]]);
-  });
-
+export function collectFloatingButtonData() {
   const data = {
     scrollState: 'withLottie',
-    showAppStoreBadge: true,
-    useLottieArrow: true,
-    delay: 0,
+    showAppStoreBadge: isValAffirmative(getMetadata('show-floating-cta-app-store-badge')),
+    toolsToStash: getMetadata('ctas-above-divider'),
+    useLottieArrow: isValAffirmative(getMetadata('use-floating-cta-lottie-arrow')),
+    delay: getMetadata('floating-cta-delay') || 0,
     tools: [],
-    appStore: {},
-    mainCta: {},
+    mainCta: {
+      desktopHref: getMetadata('desktop-floating-cta-link'),
+      desktopText: getMetadata('mobile-floating-cta-text'),
+      mobieHref: getMetadata('mweb-floating-cta-link'),
+      mobieText: getMetadata('mweb-floating-cta-text'),
+      href: getMetadata('main-cta-link'),
+      text: getMetadata('main-cta-text'),
+    },
+    bubbleSheet: getMetadata('floating-cta-bubble-sheet'),
   };
 
-  dataArray.forEach((col, index, array) => {
-    const key = col[0];
-    const value = col[1];
-
-    if (key === 'delay') {
-      data.delay = value;
+  for (let i = 1; i < 7; i += 1) {
+    if (getMetadata(`cta-${i}-icon`)) {
+      const href = getMetadata(`cta-${i}-link`);
+      const text = getMetadata(`cta-${i}-text`);
+      const icon = getIconElement(getMetadata(`cta-${i}-icon`));
+      const aTag = createTag('a', { title: text, href });
+      aTag.textContent = text;
+      data.tools.push({
+        icon,
+        anchor: aTag,
+      });
     }
-
-    if (key === 'desktop cta link') {
-      data.mainCta.desktopHref = value;
-    }
-
-    if (key === 'mobile cta link') {
-      data.mainCta.mobileHref = value;
-    }
-
-    if (key === 'desktop cta text') {
-      data.mainCta.desktopText = value;
-    }
-
-    if (key === 'mobile cta text') {
-      data.mainCta.mobileText = value;
-    }
-
-    if (key === 'main cta link') {
-      data.mainCta.href = value;
-    }
-
-    if (key === 'main cta text') {
-      data.mainCta.text = value;
-    }
-
-    if (key === 'ctas above divider') {
-      data.toolsToStash = value;
-    }
-
-    if (key === 'panel fragment') {
-      data.panelFragment = value;
-    }
-
-    if (key === 'bubble sheet') {
-      data.bubbleSheet = value;
-    }
-
-    if (key === 'use lottie arrow') {
-      data.useLottieArrow = isValAffirmative(value);
-    }
-
-    // only effective on multifunction button
-    if (key === 'show app store badge') {
-      data.showAppStoreBadge = isValAffirmative(value);
-    }
-
-    for (let i = 1; i < 7; i += 1) {
-      if (key === `cta ${i} icon`) {
-        const [, href] = array[index + 1];
-        const [, text] = array[index + 2];
-        const icon = getIconElement(value);
-        const aTag = createTag('a', { title: text, href });
-        aTag.textContent = text;
-        data.tools.push({
-          icon,
-          anchor: aTag,
-        });
-      }
-    }
-  });
+  }
 
   return data;
 }
@@ -455,7 +399,7 @@ export function buildToolBoxStructure(wrapper, data) {
   if (data.showAppStoreBadge) {
     const appStoreBadge = decorateBadge();
     toolBox.append(appStoreBadge);
-    appStoreBadge.href = data.appStore.href ? data.appStore.href : data.tools[0].anchor.href;
+    appStoreBadge.href = data.tools[0].anchor.href;
   }
 
   if (data.delay > 0) {
