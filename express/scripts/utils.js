@@ -289,6 +289,10 @@ function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]'])
   }).observe(document.body, { childList: true, subtree: true });
 }
 
+export function isValAffirmative(value) {
+  return !['no', 'N', 'false', 'off'].includes(value) || ['yes', 'Y', 'true', 'on'].includes(value);
+}
+
 export function addPublishDependencies(url) {
   if (!Array.isArray(url)) {
     // eslint-disable-next-line no-param-reassign
@@ -638,6 +642,27 @@ export function removeIrrelevantSections(main) {
       if (sectionRemove) section.remove();
     }
   });
+
+  // remove main CTA on mobile for floating CTA to cover
+  if (document.body.dataset.device === 'mobile' && isValAffirmative(getMetadata('show-floating-cta'))) {
+    const sameUrlCTAs = Array.from(main.querySelectorAll('a:any-link'))
+      .filter((a) => {
+        const textToTarget = getMetadata('mobile-cta-text')?.trim() || getMetadata('main-cta-text')?.trim();
+        const linkToTarget = getMetadata('mobile-cta-link')?.trim() || getMetadata('main-cta-link')?.trim();
+
+        if (!textToTarget && !linkToTarget) return false;
+
+        const sameText = a.textContent.trim() === textToTarget;
+        const samePathname = new URL(a.href).pathname === new URL(linkToTarget)?.pathname;
+        const isNotInFloatingCta = !a.closest('.block')?.classList.contains('floating-button');
+
+        return (sameText || samePathname) && isNotInFloatingCta;
+      });
+
+    sameUrlCTAs.forEach((cta) => {
+      cta.classList.add('same-as-floating-button-CTA');
+    });
+  }
 }
 
 /**

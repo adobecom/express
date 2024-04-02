@@ -7,6 +7,7 @@ import {
   lazyLoadLottiePlayer,
   loadStyle,
   getMetadata,
+  isValAffirmative,
 } from '../../scripts/utils.js';
 
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -168,15 +169,6 @@ export function createFloatingButton(block, audience, data) {
 
   new ResizeObserver(outputsize).observe(floatButtonLink);
 
-  // Hide CTAs with same url & text as the Floating CTA && is NOT a Floating CTA (in mobile/tablet)
-  const sameUrlCTAs = Array.from(main.querySelectorAll('a.button:any-link'))
-    .filter((a) => (a.textContent.trim() === aTag.textContent.trim()
-    || new URL(a.href).pathname === new URL(aTag.href).pathname)
-      && !a.parentElement.parentElement.classList.contains('floating-button'));
-  sameUrlCTAs.forEach((cta) => {
-    cta.classList.add('same-as-floating-button-CTA');
-  });
-
   const floatButtonWrapperOld = aTag.closest('.floating-button-wrapper');
   const floatButtonWrapper = createTag('div', { class: 'floating-button-wrapper' });
   const floatButton = createTag('div', {
@@ -312,10 +304,6 @@ export function createFloatingButton(block, audience, data) {
   }
 
   return floatButtonWrapper;
-}
-
-function isValAffirmative(value) {
-  return !['no', 'N', 'false', 'off'].includes(value) || ['yes', 'Y', 'true', 'on'].includes(value);
 }
 
 export function collectFloatingButtonData() {
