@@ -98,6 +98,12 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
         specialPromoPercentageEyeBrowTextReplaced = true;
       }
     }
+    if (!isPremiumCard && specialPromo.parentElement.classList.contains('special-promo')) {
+      specialPromo.parentElement.classList.remove('special-promo');
+      if (specialPromo.parentElement.firstChild.innerHTML !== '') {
+        specialPromo.parentElement.firstChild.remove();
+      }
+    }
   });
 
   priceParent?.remove();
