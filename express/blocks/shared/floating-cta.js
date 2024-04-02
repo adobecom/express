@@ -338,10 +338,14 @@ export function collectFloatingButtonData() {
   };
 
   for (let i = 1; i < 7; i += 1) {
-    if (getMetadata(`cta-${i}-icon`)) {
-      const href = getMetadata(`cta-${i}-link`);
-      const text = getMetadata(`cta-${i}-text`);
-      const icon = getIconElement(getMetadata(`cta-${i}-icon`));
+    const completeSet = {
+      href: getMetadata(`cta-${i}-link`),
+      text: getMetadata(`cta-${i}-text`),
+      icon: getIconElement(getMetadata(`cta-${i}-icon`)),
+    };
+
+    if (Object.values(completeSet).every((val) => !!val)) {
+      const { href, text, icon } = completeSet;
       const aTag = createTag('a', { title: text, href });
       aTag.textContent = text;
       data.tools.push({
