@@ -1250,7 +1250,6 @@ function decorateHoliday(block, props) {
 async function decorateTemplates(block, props) {
   const impression = gatherPageImpression(props);
   updateImpressionCache(impression);
-  const { prefix } = getConfig().locale;
   const innerWrapper = block.querySelector('.template-x-inner-wrapper');
 
   let rows = block.children.length;
@@ -1461,23 +1460,6 @@ function importSearchBar(block, blockMediator) {
             search_keyword: searchBar.value,
             search_type: 'autocomplete',
           });
-          await onSearchSubmit();
-        };
-
-        const onSearchSubmit = async () => {
-          searchBar.disabled = true;
-          sampleRUM('search', {
-            source: block.dataset.blockName,
-            target: searchBar.value,
-          }, 1);
-          await redirectSearch();
-        };
-
-        const handleSubmitInteraction = async (item) => {
-          if (item.query !== searchBar.value) {
-            searchBar.value = item.query;
-            searchBar.dispatchEvent(new Event('input'));
-          }
           await onSearchSubmit();
         };
 

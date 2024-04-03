@@ -368,20 +368,20 @@ async function renderHoverWrapper(template, placeholders) {
     const cta = renderCTA(placeholders, template.customLinks.branchUrl);
     btnContainer.append(cta);
     cta.addEventListener('focusin', focusHandler);
-  }
 
-  cta.addEventListener('click', () => {
-    updateImpressionCache({
-      id: template.id,
-      status: template.licensingCategory,
-      task: getMetadata('tasksx') || getMetadata('tasks') || '',
-      search_keyword: getMetadata('q') || getMetadata('topics') || '',
-      collection: getMetadata('tasksx') || getMetadata('tasks') || '',
-      collection_path: window.location.pathname,
-    });
-    removeOptionalImpressionFields('select-template');
-    trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
-  }, { passive: true });
+    cta.addEventListener('click', () => {
+      updateImpressionCache({
+        id: template.id,
+        status: template.licensingCategory,
+        task: getMetadata('tasksx') || getMetadata('tasks') || '',
+        search_keyword: getMetadata('q') || getMetadata('topics') || '',
+        collection: getMetadata('tasksx') || getMetadata('tasks') || '',
+        collection_path: window.location.pathname,
+      });
+      removeOptionalImpressionFields('select-template');
+      trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
+    }, { passive: true });
+  }
 
   return btnContainer;
 }
