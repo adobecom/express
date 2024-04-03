@@ -59,7 +59,7 @@ function startSDK(data = '') {
         },
         configParams: {
           locale: ietf.replace('-', '_'),
-          env: urlParams.get('env') === 'stage' ? 'stage' : 'prod',
+          env: urlParams.get('hzenv') === 'stage' ? 'stage' : 'prod',
         },
         authOption: () => ({
           mode: 'delayed',
