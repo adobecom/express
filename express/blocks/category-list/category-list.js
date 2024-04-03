@@ -1,7 +1,12 @@
 import { normalizeHeadings } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import buildCarousel from '../shared/carousel.js';
 
+// category-list-wrapper's style is defined in template-list/template-list.css
+
 export default function decorate(block) {
+  addTempWrapper(block, 'cateogry-list');
+
   normalizeHeadings(block, ['h3']);
   const links = [...block.querySelectorAll('p.button-container')];
   if (links.length) {

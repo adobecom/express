@@ -1,4 +1,5 @@
 import { createTag, fetchPlaceholders, transformLinkToAnimation } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -9,7 +10,7 @@ export function decorateTextWithTag(textSource, options = {}) {
     baseClass,
     tagClass,
   } = options;
-  const text = createTag(baseT || 'p', { class: baseClass || '' });
+  const text = createTag(baseT || 'label', { class: baseClass || '', for: textSource });
   const tagText = textSource.match(/\[(.*?)]/);
 
   if (tagText) {
@@ -160,6 +161,7 @@ async function decorateCards(block, payload) {
         const a = cta.ctaLinks[0];
         a.removeAttribute('title');
         a.setAttribute('aria-label', `quick action: ${cta.text.toLowerCase().trim()}`);
+        a.setAttribute('id', cta.text);
         a.textContent = '';
         a.classList.add('clickable-overlay');
       }
@@ -186,7 +188,7 @@ async function decorateCards(block, payload) {
     }
 
     if (cta.subtext && !hasGenAIEl) {
-      const subtext = createTag('p', { class: 'subtext' });
+      const subtext = createTag('label', { class: 'subtext' });
       subtext.textContent = cta.subtext;
       textWrapper.append(subtext);
     }
@@ -229,11 +231,12 @@ function constructPayload(block) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'cta-carousel');
+
   const payload = constructPayload(block);
 
   decorateHeading(block, payload);
   decorateCards(block, payload).then(async () => {
     await buildCarousel('', block.querySelector('.cta-carousel-cards'));
-    document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
   });
 }

@@ -1,4 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 function decorateList(block) {
   const list = [];
@@ -34,6 +35,7 @@ function decorateList(block) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'list');
   decorateList(block);
 
   const pricingLinks = block.querySelectorAll('a[title^="{{pricing"]');

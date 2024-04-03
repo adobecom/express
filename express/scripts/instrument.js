@@ -2,21 +2,60 @@
 
 import {
   loadScript,
+  getConfig,
+  checkTesting,
   getAssetDetails,
   getMetadata,
-  checkTesting,
   fetchPlaceholders,
-  getConfig,
 } from './utils.js';
 
-// this saves on file size when this file gets minified...
+const usp = new URLSearchParams(window.location.search);
+const martech = usp.get('martech');
 const w = window;
 const d = document;
 const loc = w.location;
 const { pathname } = loc;
-const usp = new URLSearchParams(window.location.search);
-const martech = usp.get('martech');
 let sparkLandingPageType;
+
+// alloy feature flag
+let martechURL;
+if (
+  (window.spark && window.spark.hostname === 'www.stage.adobe.com')
+  || martech === 'alloy-qa'
+) {
+  martechURL = 'https://www.adobe.com/marketingtech/main.standard.qa.js';
+} else {
+  martechURL = 'https://www.adobe.com/marketingtech/main.standard.min.js';
+}
+
+window.marketingtech = {
+  adobe: {
+    launch: {
+      url: (
+        (
+          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
+          || martech === 'alloy-qa'
+        )
+          ? 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-2c94beadc94f-development.js'
+          : 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-5dd5dd2177e6.min.js'
+      ),
+    },
+    alloy: {
+      edgeConfigId: (
+        (
+          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
+          || martech === 'alloy-qa'
+        )
+          ? '8d2805dd-85bf-4748-82eb-f99fdad117a6'
+          : '2cba807b-7430-41ae-9aac-db2b0da742d5'
+      ),
+    },
+    target: checkTesting(),
+    audienceManager: true,
+  },
+};
+// w.targetGlobalSettings = w.targetGlobalSettings || {};
+// w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
 
 function getPlacement(btn) {
   const parentBlock = btn.closest('.block');
@@ -44,7 +83,7 @@ function getPlacement(btn) {
   return placement;
 }
 
-const set = (path, value) => {
+function set(path, value) {
   const obj = w.alloy_all;
   const newPath = `data._adobe_corpnew.digitalData.${path}`;
   const segs = newPath.split('.');
@@ -61,41 +100,112 @@ const set = (path, value) => {
   // set the value
   temp[segs[i]] = value;
   return obj;
-};
+}
 
-async function trackBranchParameters($links) {
+export function sendEventToAdobeAnaltics(eventName) {
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: eventName,
+          linkClicks: {
+            value: 1,
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        digitalData: {
+          primaryEvent: {
+            eventInfo: {
+              eventName,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+export function textToName(text) {
+  const splits = text.toLowerCase().split(' ');
+  const camelCase = splits.map((s, i) => (i ? s.charAt(0).toUpperCase() + s.substr(1) : s)).join('');
+  return (camelCase);
+}
+
+export async function trackBranchParameters($links) {
   const placeholders = await fetchPlaceholders();
   const rootUrl = new URL(window.location.href);
-  const rootUrlParameters = rootUrl.searchParams;
+  const params = rootUrl.searchParams;
+  const pageUrl = window.location.pathname;
 
   const { experiment } = window.hlx;
   const { referrer } = window.document;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
-  const templateSearchTag = getMetadata('branch-search-term') || getMetadata('short-title');
-  const canvasHeight = getMetadata('branch-canvas-height');
-  const canvasWidth = getMetadata('branch-canvas-width');
-  const canvasUnit = getMetadata('branch-canvas-unit');
-  const sceneline = getMetadata('branch-sceneline');
-  const pageUrl = window.location.pathname;
-  const sdid = rootUrlParameters.get('sdid');
-  const mv = rootUrlParameters.get('mv');
-  const mv2 = rootUrlParameters.get('mv2');
-  const sKwcId = rootUrlParameters.get('s_kwcid');
-  const efId = rootUrlParameters.get('ef_id');
-  const promoId = rootUrlParameters.get('promoid');
-  const trackingId = rootUrlParameters.get('trackingid');
-  const cgen = rootUrlParameters.get('cgen');
+
+  const [
+    templateSearchTag,
+    canvasHeight,
+    canvasWidth,
+    canvasUnit,
+    sceneline,
+    taskID,
+    assetCollection,
+    branchCategory,
+    branchSearchCategory,
+    sdid,
+    mv,
+    mv2,
+    sKwcId,
+    efId,
+    promoId,
+    trackingId,
+    cgen,
+  ] = [
+    getMetadata('branch-search-term'),
+    getMetadata('branch-canvas-height'),
+    getMetadata('branch-canvas-width'),
+    getMetadata('branch-canvas-unit'),
+    getMetadata('branch-sceneline'),
+    getMetadata('branch-task-id'),
+    getMetadata('branch-asset-collection'),
+    getMetadata('branch-category'),
+    getMetadata('branch-search-category'),
+    params.get('sdid'),
+    params.get('mv'),
+    params.get('mv2'),
+    params.get('s_kwcid'),
+    params.get('ef_id'),
+    params.get('promoid'),
+    params.get('trackingid'),
+    params.get('cgen'),
+  ];
 
   $links.forEach(($a) => {
     if ($a.href && $a.href.match('adobesparkpost.app.link')) {
       const btnUrl = new URL($a.href);
+      const isSearchBranchLink = placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`);
       const urlParams = btnUrl.searchParams;
+      if (urlParams.has('acomx-dno')) {
+        urlParams.delete('acomx-dno');
+        btnUrl.search = urlParams.toString();
+        $a.href = decodeURIComponent(btnUrl.toString());
+        return;
+      }
       const placement = getPlacement($a);
 
-      if (templateSearchTag
-        && placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
-        urlParams.set('q', templateSearchTag);
-        urlParams.set('category', 'templates');
+      if (isSearchBranchLink) {
+        urlParams.set('category', branchCategory || 'templates');
+        urlParams.set('taskID', taskID);
+        urlParams.set('assetCollection', assetCollection);
+
+        if (branchSearchCategory) {
+          urlParams.set('searchCategory', branchSearchCategory);
+        } else if (templateSearchTag) {
+          urlParams.set('q', templateSearchTag);
+        }
       }
 
       if (referrer) {
@@ -176,112 +286,45 @@ async function trackBranchParameters($links) {
   });
 }
 
-// alloy feature flag
-let martechURL;
-if (
-  (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-  || martech === 'alloy-qa'
-) {
-  martechURL = 'https://www.adobe.com/marketingtech/main.standard.qa.js';
-} else {
-  martechURL = 'https://www.adobe.com/marketingtech/main.standard.min.js';
-}
-
-w.marketingtech = {
-  adobe: {
-    launch: {
-      url: (
-        (
-          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-          || martech === 'alloy-qa'
-        )
-          ? 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-2c94beadc94f-development.js'
-          : 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-5dd5dd2177e6.min.js'
-      ),
-    },
-    alloy: {
-      edgeConfigId: (
-        (
-          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-          || martech === 'alloy-qa'
-        )
-          ? '8d2805dd-85bf-4748-82eb-f99fdad117a6'
-          : '2cba807b-7430-41ae-9aac-db2b0da742d5'
-      ),
-    },
-    target: checkTesting(),
-    audienceManager: true,
-  },
-};
-// w.targetGlobalSettings = w.targetGlobalSettings || {};
-// w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
-
-function sendEventToAdobeAnaltics(eventName) {
-  _satellite.track('event', {
-    xdm: {},
-    data: {
-      eventType: 'web.webinteraction.linkClicks',
-      web: {
-        webInteraction: {
-          name: eventName,
-          linkClicks: {
-            value: 1,
-          },
-          type: 'other',
-        },
-      },
-      _adobe_corpnew: {
-        digitalData: {
-          primaryEvent: {
-            eventInfo: {
-              eventName,
-            },
-          },
-        },
-      },
-    },
-  });
-}
-
-function textToName(text) {
-  const splits = text.toLowerCase().split(' ');
-  const camelCase = splits.map((s, i) => (i ? s.charAt(0).toUpperCase() + s.substr(1) : s)).join('');
-  return (camelCase);
-}
-
-function appendLinkText(eventName, a) {
-  let img;
-  let alt;
-
+export function appendLinkText(eventName, a) {
   if (!a) return eventName;
 
   if (a.getAttribute('title')?.trim()) {
     return eventName + textToName(a.getAttribute('title').trim());
-  } else if (a.getAttribute('aria-label')?.trim()) {
-    return eventName + textToName(a.getAttribute('aria-label').trim());
-  } else if (a.textContent?.trim()) {
-    return eventName + textToName(a.textContent.trim());
-  } else {
-    img = a.querySelector('img');
-    alt = img && img.getAttribute('alt');
-    if (alt) {
-      return eventName + textToName(alt);
-    } else {
-      return eventName;
-    }
   }
+
+  if (a.getAttribute('aria-label')?.trim()) {
+    return eventName + textToName(a.getAttribute('aria-label').trim());
+  }
+
+  if (a.textContent?.trim()) {
+    return eventName + textToName(a.textContent.trim());
+  }
+
+  const img = a.querySelector('img');
+  const alt = img?.getAttribute('alt');
+  if (alt) {
+    return eventName + textToName(alt);
+  }
+
+  if (a.className) {
+    return eventName + textToName(a.className);
+  }
+
+  return eventName;
 }
 
-function trackButtonClick(a) {
+export function trackButtonClick(a) {
   let adobeEventName = 'adobe.com:express:cta:';
   let hemingwayAssetId;
   let hemingwayAssetPath;
   let hemingwayAssetPosition;
 
   const hemingwayAsset = a.querySelector('picture,video,audio,img')
-    || a.closest('[class*="-container"],[class*="-wrapper"]')?.querySelector('picture,video,audio,img');
+      || a.closest('[class*="-container"],[class*="-wrapper"]')?.querySelector('picture,video,audio,img');
   const block = a.closest('.block');
-  if (hemingwayAsset && block) {
+  const urlConstructable = a.href || a.currentSrc || a.src;
+  if (hemingwayAsset && block && urlConstructable) {
     const { assetId, assetPath } = getAssetDetails(hemingwayAsset);
     hemingwayAssetPath = assetPath;
     hemingwayAssetId = assetId;
@@ -347,12 +390,8 @@ function trackButtonClick(a) {
   } else if (sparkLandingPageType === 'express-your-brand') {
     adobeEventName = appendLinkText(`${adobeEventName}learn:${sparkLandingPageType}:`, a);
   } else if (sparkLandingPageType === 'pricing') {
-    // edu link
-    if (a.pathname.includes('/edu')) {
-      adobeEventName += 'pricing:education:Click';
-      // business enterprise link
-    } else if (a.pathname.includes('business/enterprise')) {
-      adobeEventName += 'pricing:enterprise:Click';
+    if (a.tagName !== 'A') {
+      adobeEventName += `pricing:pricing:${a.textContent.trim()}:Click`;
       // Creative cloud learn more
     } else if (a.parentElement.id === 'adobe-spark-is-a-part-of-most-creative-cloud-paid-plans-learn-more') {
       adobeEventName += 'pricing:creativeCloud:learnMore';
@@ -377,7 +416,7 @@ function trackButtonClick(a) {
     adobeEventName = 'quickAction:downloadPressed';
   } else if (a.closest('ccl-quick-action') && (a.getAttribute('data-action') === 'Editor')) {
     adobeEventName = 'quickAction:openInEditorPressed';
-  // ToC clicks
+    // ToC clicks
   } else if (a.closest('.toc-container')) {
     if (a.classList.contains('toc-toggle')) {
       adobeEventName += 'toc:toggle:Click';
@@ -394,7 +433,7 @@ function trackButtonClick(a) {
     adobeEventName = appendLinkText(adobeEventName, a);
   } else if (a.closest('.tabs-ax .tab-list-container')) {
     adobeEventName += `${a.closest('.tabs-ax')?.id}:${a.id}`;
-  // Default clicks
+    // Default clicks
   } else {
     adobeEventName = appendLinkText(adobeEventName, a);
   }
@@ -462,45 +501,6 @@ function trackButtonClick(a) {
     },
   });
 }
-
-// Frictionless Quick Actions tracking events
-
-function handleQuickActionEvents(el) {
-  let frictionLessQuctionActionsTrackingEnabled = false;
-  sendEventToAdobeAnaltics('quickAction:uploadPageViewed');
-  el[0].addEventListener('ccl-quick-action-complete', () => {
-    if (frictionLessQuctionActionsTrackingEnabled) {
-      return;
-    }
-    sendEventToAdobeAnaltics('quickAction:assetUploaded');
-    sendEventToAdobeAnaltics('project:editorDisplayed');
-    const $links = d.querySelectorAll('ccl-quick-action a');
-    // for tracking all of the links
-    $links.forEach(($a) => {
-      $a.addEventListener('click', () => {
-        trackButtonClick($a);
-      });
-    });
-    frictionLessQuctionActionsTrackingEnabled = true;
-  });
-}
-
-const cclQuickAction = d.getElementsByTagName('ccl-quick-action');
-if (cclQuickAction.length) {
-  handleQuickActionEvents(cclQuickAction);
-} else {
-  d.addEventListener('ccl-quick-action-rendered', (e) => {
-    if (e.target.tagName === 'CCL-QUICK-ACTION') {
-      handleQuickActionEvents(d.getElementsByTagName('ccl-quick-action'));
-    }
-  });
-}
-
-d.addEventListener('click', (e) => {
-  if (e.target.id === 'mock-file-input') {
-    sendEventToAdobeAnaltics('adobe.com:express:cta:uploadYourPhoto');
-  }
-});
 
 function trackVideoAnalytics(parameters) {
   const {
@@ -574,117 +574,29 @@ function decorateAnalyticsEvents() {
     sendEventToAdobeAnaltics(`adobe.com:express:cta:learn:columns:${e.detail.parameters.videoId}:videoClosed`);
   });
 
-  // track non-click interactions
-  // BlockMediator triggered
-  import('./block-mediator.min.js').then((resp) => {
-    const { default: BlockMediator } = resp;
-    BlockMediator.subscribe('billing-plan', ({ newValue }) => {
-      sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:toggle:${newValue}`);
-    });
-  });
-}
-
-export default function decorateInteractionTrackingEvents() {
-  const $links = d.querySelectorAll('main a');
-
-  // for adding branch parameters to branch links
-  trackBranchParameters($links);
-
-  // for tracking the faq
-  d.querySelectorAll('main .faq-accordion').forEach(($a) => {
-    $a.addEventListener('click', () => {
-      trackButtonClick($a);
-    });
+  d.addEventListener('click', (e) => {
+    if (e.target.id === 'mock-file-input') {
+      sendEventToAdobeAnaltics('adobe.com:express:cta:uploadYourPhoto');
+    }
   });
 
-  // for tracking the content toggle buttons
-  d.querySelectorAll('main .content-toggle button').forEach(($button) => {
-    $button.addEventListener('click', () => {
-      trackButtonClick($button);
-    });
-  });
-
-  // for tracking the choose your path links
-  d.querySelectorAll('main .choose-your-path div.choose-your-path-slide').forEach(($slide) => {
-    $slide.addEventListener('click', () => {
-      trackButtonClick($slide);
-    });
-  });
-
-  // for tracking just the sticky banner close button
-  const $button = d.querySelector('.sticky-promo-bar button.close');
-  if ($button) {
-    $button.addEventListener('click', () => {
-      sendEventToAdobeAnaltics('adobe.com:express:cta:startYourFreeTrial:close');
-    });
-  }
-
-  // for tracking just the commitment type dropdown on the pricing block
-  const $pricingDropdown = d.querySelector('.pricing-plan-dropdown');
-  if ($pricingDropdown) {
-    $pricingDropdown.addEventListener('change', () => {
-      sendEventToAdobeAnaltics('adobe.com:express:pricing:commitmentType:selected');
-    });
-  }
-
-  // Tracking any video column blocks.
-  const $columnVideos = d.querySelectorAll('.column-video');
-  if ($columnVideos.length) {
-    $columnVideos.forEach(($columnVideo) => {
-      const $parent = $columnVideo.closest('.columns');
-      const $a = $parent.querySelector('a');
-      const adobeEventName = appendLinkText(`adobe.com:express:cta:learn:columns:${sparkLandingPageType}:`, $a);
-
-      $parent.addEventListener('click', (e) => {
-        e.stopPropagation();
-        sendEventToAdobeAnaltics(adobeEventName);
-      });
-    });
-  }
-
-  const toggleBar = d.querySelector('.toggle-bar.block');
-  if (toggleBar) {
-    const tgBtns = toggleBar.querySelectorAll('button.toggle-bar-button');
-
-    tgBtns.forEach((btn) => {
-      const textEl = btn.querySelector('.text-wrapper');
-      let texts = [];
-
-      if (textEl) {
-        let child = textEl.firstChild;
-        while (child) {
-          if (child.nodeType === 3) {
-            texts.push(child.data);
-          }
-          child = child.nextSibling;
-        }
+  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
+    import('./block-mediator.min.js').then((resp) => {
+      const { default: BlockMediator } = resp;
+      const eligibility = BlockMediator.get('mobileBetaEligibility');
+      if (eligibility) {
+        sendEventToAdobeAnaltics(`betaEligibility:${eligibility.deviceSupport}`);
+      } else {
+        const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
+          sendEventToAdobeAnaltics(`betaEligibility:${e.newValue.deviceSupport}`);
+          unsub();
+        });
       }
-
-      texts = texts.join('') || textEl.textContent.trim();
-      const eventName = `adobe.com:express:homepage:intentToggle:${textToName(texts)}`;
-      btn.addEventListener('click', () => {
-        sendEventToAdobeAnaltics(eventName);
-      });
     });
   }
-
-  // for tracking the tab-ax tabs
-  d.querySelectorAll('main .tabs-ax .tab-list-container button[role="tab"]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      trackButtonClick(btn);
-    });
-  });
-
-  d.querySelectorAll('main .pricing-table .toggle-content').forEach((toggle) => {
-    toggle.addEventListener('click', () => {
-      const buttonEl = toggle.querySelector('span[role="button"]');
-      const action = buttonEl && buttonEl.getAttribute('aria-expanded') === 'true' ? 'closed' : 'opened';
-      sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:tableToggle:${action || ''}`);
-    });
-  });
 }
 
-const martechLoadedCB = () => {
+function martechLoadedCB() {
   /* eslint-disable no-underscore-dangle */
   //------------------------------------------------------------------------------------
   // gathering the data
@@ -699,7 +611,7 @@ const martechLoadedCB = () => {
 
   let category = getMetadata('category');
   if (!category && (pathname.includes('/create/')
-    || pathname.includes('/feature/'))) {
+      || pathname.includes('/feature/'))) {
     category = 'design';
     if (pathname.includes('/image')) category = 'photo';
     if (pathname.includes('/video')) category = 'video';
@@ -708,33 +620,33 @@ const martechLoadedCB = () => {
   // home
   if (
     pathname === '/express'
-    || pathname === '/express/'
+      || pathname === '/express/'
   ) {
     sparkLandingPageType = 'home';
     // seo
   } else if (
     pathname === '/express/create'
-    || pathname.includes('/create/')
-    || pathname === '/express/make'
-    || pathname.includes('/make/')
-    || pathname === '/express/feature'
-    || pathname.includes('/feature/')
-    || pathname === '/express/discover'
-    || pathname.includes('/discover/')
+      || pathname.includes('/create/')
+      || pathname === '/express/make'
+      || pathname.includes('/make/')
+      || pathname === '/express/feature'
+      || pathname.includes('/feature/')
+      || pathname === '/express/discover'
+      || pathname.includes('/discover/')
   ) {
     sparkLandingPageType = 'seo';
     // learn
   } else if (
     pathname === '/express/tools'
-    || pathname.includes('/tools/')
+      || pathname.includes('/tools/')
   ) {
     sparkLandingPageType = 'quickAction';
   } else if (
     pathname === '/express/learn'
-    || (
-      pathname.includes('/learn/')
-      && !pathname.includes('/blog/')
-    )
+      || (
+        pathname.includes('/learn/')
+        && !pathname.includes('/blog/')
+      )
   ) {
     if (pathname.includes('/express-your-brand')) {
       sparkLandingPageType = 'express-your-brand';
@@ -744,7 +656,7 @@ const martechLoadedCB = () => {
     // blog
   } else if (
     pathname === '/express/learn/blog'
-    || pathname.includes('/learn/blog/')
+      || pathname.includes('/learn/blog/')
   ) {
     sparkLandingPageType = 'blog';
     // pricing
@@ -802,7 +714,7 @@ const martechLoadedCB = () => {
   // Fire the displayPurchasePanel event if it is the pricing site
   if (
     sparkLandingPageType === 'pricing'
-    && sparkTouchpoint
+      && sparkTouchpoint
   ) {
     sendEventToAdobeAnaltics('displayPurchasePanel');
   }
@@ -854,7 +766,6 @@ const martechLoadedCB = () => {
   }
 
   decorateAnalyticsEvents();
-  decorateInteractionTrackingEvents();
   initHemingway();
 
   const ENABLE_PRICING_MODAL_AUDIENCE = 'enablePricingModal';
@@ -917,6 +828,9 @@ const martechLoadedCB = () => {
   }
 
   __satelliteLoadedCallback(getAudiences);
-};
+}
 
-loadScript(martechURL).then(martechLoadedCB);
+export default async function initMartech() {
+  await loadScript(martechURL);
+  return martechLoadedCB();
+}

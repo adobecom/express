@@ -5,6 +5,7 @@ import {
   getIconElement,
   getMetadata,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import { removeOptionalImpressionFields, trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
 import buildCarousel from '../shared/carousel.js';
@@ -63,6 +64,7 @@ function initSearchFunction(block) {
 
   searchBar.addEventListener('click', (e) => {
     e.stopPropagation();
+    searchBar.scrollIntoView({ behavior: 'smooth' });
     searchDropdown.classList.remove('hidden');
   }, { passive: true });
 
@@ -344,7 +346,7 @@ async function buildSearchDropdown(block) {
     suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
     suggestionsContainer.append(suggestionsTitle, suggestionsList);
 
-    const freePlanTags = await buildFreePlanWidget('branded');
+    const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
 
     freePlanContainer.append(freePlanTags);
     dropdownContainer.append(trendsContainer, suggestionsContainer, freePlanContainer);
@@ -372,11 +374,7 @@ function decorateLinkList(block) {
 }
 
 export default async function decorate(block) {
-  // desktop-only block
-  if (document.body.dataset?.device !== 'desktop') {
-    block.remove();
-    return;
-  }
+  addTempWrapper(block, 'search-marquee');
   decorateBackground(block);
   await decorateSearchFunctions(block);
   await buildSearchDropdown(block);

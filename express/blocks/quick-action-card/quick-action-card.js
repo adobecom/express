@@ -2,11 +2,12 @@ import {
   createTag,
   getMobileOperatingSystem,
   getIconElement,
-  fetchPlainBlockFromFragment,
+  fetchBlockFragDecorated,
   fixIcons,
   readBlockConfig,
   toClassName,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -95,7 +96,7 @@ function buildStandardPayload(block, payload) {
 
 async function buildBlockFromFragment($block) {
   const fragmentName = $block.querySelector('div').textContent.trim();
-  const section = await fetchPlainBlockFromFragment(`/express/fragments/quick-action-card/${fragmentName}`, 'quick-action-card');
+  const section = await fetchBlockFragDecorated(`/express/fragments/quick-action-card/${fragmentName}`, 'quick-action-card');
   if (!section) {
     return false;
   }
@@ -122,6 +123,8 @@ async function buildBlockFromFragment($block) {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'quick-action-card');
+
   const payload = {
     userAgent: getMobileOperatingSystem(),
     heading: '',

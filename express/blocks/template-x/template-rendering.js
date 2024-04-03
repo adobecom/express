@@ -96,10 +96,28 @@ async function getVideoUrls(renditionLinkHref, componentLinkHref, page) {
   }
 }
 
+async function share(branchUrl, tooltip, timeoutId) {
+  await navigator.clipboard.writeText(branchUrl);
+  tooltip.classList.add('display-tooltip');
+
+  const rect = tooltip.getBoundingClientRect();
+  const tooltipRightEdgePos = rect.left + rect.width;
+  if (tooltipRightEdgePos > window.innerWidth) {
+    tooltip.classList.add('flipped');
+  }
+
+  clearTimeout(timeoutId);
+  return setTimeout(() => {
+    tooltip.classList.remove('display-tooltip');
+    tooltip.classList.remove('flipped');
+  }, 2500);
+}
+
 function renderShareWrapper(branchUrl, placeholders) {
   const text = placeholders['tag-copied'] ?? 'Copied to clipboard';
   const wrapper = createTag('div', { class: 'share-icon-wrapper' });
   const shareIcon = getIconElement('share-arrow');
+  shareIcon.setAttribute('tabindex', 0);
   const tooltip = createTag('div', {
     class: 'shared-tooltip',
     'aria-label': text,
@@ -108,22 +126,15 @@ function renderShareWrapper(branchUrl, placeholders) {
   });
   let timeoutId = null;
   shareIcon.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(branchUrl);
-    tooltip.classList.add('display-tooltip');
-
-    const rect = tooltip.getBoundingClientRect();
-    const tooltipRightEdgePos = rect.left + rect.width;
-    if (tooltipRightEdgePos > window.innerWidth) {
-      tooltip.classList.add('flipped');
-    }
-
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      tooltip.classList.remove('display-tooltip');
-      tooltip.classList.remove('flipped');
-    }, 2500);
+    timeoutId = share(branchUrl, tooltip, timeoutId);
   });
 
+  shareIcon.addEventListener('keypress', async (e) => {
+    if (e.key !== 'Enter') {
+      return;
+    }
+    timeoutId = share(branchUrl, tooltip, timeoutId);
+  });
   const checkmarkIcon = getIconElement('checkmark-green');
   tooltip.append(checkmarkIcon);
   tooltip.append(text);
@@ -302,6 +313,7 @@ function renderMediaWrapper(template, placeholders) {
     if (!renderedMedia) {
       renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
       mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
+      mediaWrapper.querySelector('.icon')?.focus();
     }
     renderedMedia.hover();
   };
@@ -309,20 +321,54 @@ function renderMediaWrapper(template, placeholders) {
     if (renderedMedia) renderedMedia.cleanup();
   };
 
-  return { mediaWrapper, enterHandler, leaveHandler };
+  const focusHandler = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!renderedMedia) {
+      renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
+      mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
+      mediaWrapper.querySelector('.icon')?.focus();
+      renderedMedia.hover();
+    }
+  };
+
+  return {
+    mediaWrapper, enterHandler, leaveHandler, focusHandler,
+  };
 }
 
-function renderHoverWrapper(template, placeholders) {
+async function renderHoverWrapper(template, placeholders) {
   const btnContainer = createTag('div', { class: 'button-container' });
 
-  const { mediaWrapper, enterHandler, leaveHandler } = renderMediaWrapper(template, placeholders);
+  const {
+    mediaWrapper, enterHandler, leaveHandler, focusHandler,
+  } = renderMediaWrapper(template, placeholders);
 
   btnContainer.append(mediaWrapper);
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
-  const cta = renderCTA(placeholders, template.customLinks.branchUrl);
-  btnContainer.append(cta);
+  let isEligible = document.body.dataset.device === 'desktop' || !['yes', 'true', 'Y', 'on'].includes(getMetadata('mobile-benchmark'));
+
+  if (!isEligible) {
+    const eligibility = BlockMediator.get('mobileBetaEligibility');
+    if (eligibility) {
+      isEligible = eligibility.deviceSupport;
+    } else {
+      isEligible = await new Promise((resolve) => {
+        const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
+          resolve(e.newValue.deviceSupport);
+          unsub();
+        });
+      });
+    }
+  }
+
+  if (isEligible) {
+    const cta = renderCTA(placeholders, template.customLinks.branchUrl);
+    btnContainer.append(cta);
+    cta.addEventListener('focusin', focusHandler);
+  }
 
   cta.addEventListener('click', () => {
     updateImpressionCache({
@@ -397,10 +443,10 @@ function renderStillWrapper(template, placeholders) {
   return stillWrapper;
 }
 
-export default function renderTemplate(template, placeholders) {
+export default async function renderTemplate(template, placeholders) {
   const tmpltEl = createTag('div');
   tmpltEl.append(renderStillWrapper(template, placeholders));
-  tmpltEl.append(renderHoverWrapper(template, placeholders));
+  tmpltEl.append(await renderHoverWrapper(template, placeholders));
 
   return tmpltEl;
 }

@@ -6,7 +6,7 @@ import {
   getIconElement,
   loadStyle,
 } from '../../scripts/utils.js';
-import BlockMediator from '../../scripts/block-mediator.js';
+import { getProfile, getDestination } from '../../scripts/express-delayed.js';
 
 const OPT_OUT_KEY = 'no-direct-path-to-product';
 
@@ -76,7 +76,7 @@ export default async function loadLoginUserAutoRedirect() {
     progressBg.append(progressBar);
     noticeWrapper.append(noticeText, noticeBtn);
     container.append(headerWrapper, progressBg);
-    const profile = window.adobeProfile?.getUserProfile();
+    const profile = getProfile();
     if (profile) {
       container.append(buildProfileWrapper(profile));
     }
@@ -98,16 +98,9 @@ export default async function loadLoginUserAutoRedirect() {
   const initRedirect = (container) => {
     container.classList.add('done');
 
-    const primaryCtaUrl = BlockMediator.get('primaryCtaUrl')
-      || document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA')?.href;
-
     track(`${adobeEventName}:redirect`);
 
-    if (primaryCtaUrl) {
-      window.location.assign(primaryCtaUrl);
-    } else {
-      window.assign('https://new.express.adobe.com');
-    }
+    window.location.assign(getDestination());
   };
 
   const optOutCounter = localStorage.getItem(OPT_OUT_KEY);

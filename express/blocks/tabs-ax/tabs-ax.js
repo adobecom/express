@@ -3,6 +3,7 @@
  * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Tab_Role
  */
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
 
@@ -114,6 +115,8 @@ const handlePillSize = (pill) => {
 };
 
 const init = (block) => {
+  addTempWrapper(block, 'tabs-ax');
+
   // to avoid hero style conflicts
   block.closest('.hero.hero-noimage')?.classList?.remove('hero', 'hero-noimage');
   const rootElem = block.closest('.fragment') || document;
@@ -170,7 +173,6 @@ const init = (block) => {
         id: `tab-panel-${tabId}-${tabName}`,
         role: 'tabpanel',
         class: 'tabpanel',
-        tabindex: '0',
         'aria-labelledby': `tab-${tabId}-${tabName}`,
       };
       const tabListContent = createTag('div', tabContentAttributes);

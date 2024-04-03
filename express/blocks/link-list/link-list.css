@@ -119,7 +119,7 @@ main .link-list-wrapper .link-list.noarrows {
   margin-top: 0;
 }
 
-main .link-list-wrapper .link-list.noarrows > div > div > p:first-of-type {
+main .link-list-wrapper .link-list.noarrows > div:first-of-type > div > p:first-of-type {
   font-weight: 800;
   font-size: 16px;
   margin: 0 12px 4px 12px;

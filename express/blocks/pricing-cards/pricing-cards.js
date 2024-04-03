@@ -1,8 +1,9 @@
+import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
-import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
+import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
 
 import {
-  buildUrl,
+  formatDynamicCartLink,
   formatSalesPhoneNumber,
   shallSuppressOfferEyebrowText,
   fetchPlanOnePlans,
@@ -18,6 +19,7 @@ function suppressOfferEyebrow(specialPromo, legacyVersion) {
   if (specialPromo.parentElement) {
     if (legacyVersion) {
       specialPromo.parentElement.classList.remove('special-promo');
+      specialPromo.remove();
     } else {
       specialPromo.className = 'hide';
       specialPromo.parentElement.className = '';
@@ -79,17 +81,27 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
       }
     }
 
-    if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced) {
+    if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced && specialPromo.textContent.includes(`{{${SAVE_PERCENTAGE}}}`)) {
       const offerTextContent = specialPromo.textContent;
 
-      const shouldSuppress = shallSuppressOfferEyebrowText(response.savePer, offerTextContent,
-
-        isPremiumCard, true, response.offerId);
+      const shouldSuppress = shallSuppressOfferEyebrowText(
+        response.savePer,
+        offerTextContent,
+        isPremiumCard,
+        true,
+        response.offerId,
+      );
       if (shouldSuppress) {
         suppressOfferEyebrow(specialPromo, legacyVersion);
       } else {
         specialPromo.innerHTML = specialPromo.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
         specialPromoPercentageEyeBrowTextReplaced = true;
+      }
+    }
+    if (!isPremiumCard && specialPromo.parentElement.classList.contains('special-promo')) {
+      specialPromo.parentElement.classList.remove('special-promo');
+      if (specialPromo.parentElement.firstChild.innerHTML !== '') {
+        specialPromo.parentElement.firstChild.remove();
       }
     }
   });
@@ -128,11 +140,7 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo,
     if (a.parentNode.tagName.toLowerCase() === 'p') {
       a.parentNode.remove();
     }
-    fetchPlanOnePlans(a.href).then(({
-      url, country, language, offerId,
-    }) => {
-      a.href = buildUrl(url, country, language, offerId);
-    });
+    formatDynamicCartLink(a);
     ctaGroup.append(a);
   });
   pricingSection.append(pricingArea);
@@ -175,8 +183,8 @@ function decorateLegacyHeader(header, card) {
     h2.append(h2Text.replace(`(${cfg})`, '').trim());
     if (/^\d/.test(cfg)) {
       const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
-      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
       headCntDiv.textContent = cfg;
+      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
       header.append(headCntDiv);
     } else {
       specialPromo = createTag('div');
@@ -200,11 +208,6 @@ function decorateHeader(header, borderParams, card, cardBorder) {
   header.classList.add('card-header');
   const specialPromo = readBraces(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
-  if (premiumIcon) h2.append(premiumIcon);
-
-  header.querySelectorAll('p').forEach((p) => {
-    if (p.innerHTML.trim() === '') p.remove();
-  });
 
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
@@ -216,6 +219,10 @@ function decorateHeader(header, borderParams, card, cardBorder) {
     headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
     header.append(headCntDiv);
   }
+  if (premiumIcon) h2.append(premiumIcon);
+  header.querySelectorAll('p').forEach((p) => {
+    if (p.innerHTML.trim() === '') p.remove();
+  });
   card.append(header);
   cardBorder.append(card);
   return { cardWrapper: cardBorder, specialPromo };
@@ -296,7 +303,19 @@ function decorateCard({
   return cardWrapper;
 }
 
+// less thrashing by separating get and set
+async function syncMinHeights(...groups) {
+  const maxHeights = groups.map((els) => els
+    .filter((e) => !!e)
+    .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
+  await yieldToMain();
+  maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
+    if (e) e.style.minHeight = `${maxHeight}px`;
+  }));
+}
+
 export default async function init(el) {
+  addTempWrapper(el, 'pricing-cards');
   // For backwards compatability with old versions of the pricing card
   const legacyVersion = el.querySelectorAll(':scope > div').length < 10;
   const currentKeys = [...blockKeys];
@@ -315,21 +334,29 @@ export default async function init(el) {
   cards
     .map((card) => decorateCard(card, el, placeholders, legacyVersion))
     .forEach((card) => cardsContainer.append(card));
-  const maxMCTACnt = cards.reduce((max, card) => Math.max(max, card.mCtaGroup.querySelectorAll('a').length), 0);
-  if (maxMCTACnt > 1) {
-    cards.forEach(({ mCtaGroup }) => {
-      mCtaGroup.classList.add(`min-height-${maxMCTACnt}`);
-    });
-  }
-  const maxYCTACnt = cards.reduce((max, card) => Math.max(max, card.yCtaGroup.querySelectorAll('a').length), 0);
-  if (maxYCTACnt > 1) {
-    cards.forEach(({ yCtaGroup }) => {
-      yCtaGroup.classList.add(`min-height-${maxYCTACnt}`);
-    });
-  }
+
   const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter((a) => a.title.includes(SALES_NUMBERS));
   if (phoneNumberTags.length > 0) {
     await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
   }
+  el.classList.add('no-visible');
   el.prepend(cardsContainer);
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        observer.disconnect();
+        syncMinHeights(
+          cards.map(({ header }) => header),
+          cards.map(({ explain }) => explain),
+          cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
+          cards.map(({ featureList }) => featureList.querySelector('p')),
+          cards.map(({ featureList }) => featureList),
+          cards.map(({ compare }) => compare),
+        );
+        el.classList.remove('no-visible');
+      }
+    });
+  });
+  observer.observe(el);
 }

@@ -183,38 +183,37 @@ function getCurrencyDisplay(currency) {
   return 'symbol';
 }
 
-export function updateCountryCode(country) {
-  let updatedCountry = country;
-  if (country === 'uk') {
-    updatedCountry = 'gb';
-  }
-  return updatedCountry.split('_')[0];
+export function normCountry(country) {
+  return (country.toLowerCase() === 'uk' ? 'gb' : country.toLowerCase()).split('_')[0];
 }
 
-export async function getCountry() {
+// urlparam > cookie > sessionStorage > feds > api > config
+export async function getCountry(ignoreCookie = false) {
   const urlParams = new URLSearchParams(window.location.search);
-  let countryCode = urlParams.get('country') || getCookie('international');
+  let countryCode = urlParams.get('country') || (!ignoreCookie && getCookie('international'));
   if (countryCode) {
-    return updateCountryCode(countryCode.toLowerCase());
+    return normCountry(countryCode);
   }
   countryCode = sessionStorage.getItem('visitorCountry');
   if (countryCode) return countryCode;
 
   const fedsUserGeo = window.feds?.data?.location?.country;
   if (fedsUserGeo) {
-    sessionStorage.setItem('visitorCountry', fedsUserGeo.toLowerCase());
-    return updateCountryCode(fedsUserGeo);
+    const normalized = normCountry(fedsUserGeo);
+    sessionStorage.setItem('visitorCountry', normalized);
+    return normalized;
   }
 
   const resp = await fetch('https://geo2.adobe.com/json/');
   if (resp.ok) {
     const { country } = await resp.json();
-    sessionStorage.setItem('visitorCountry', country.toLowerCase());
-    return updateCountryCode(country);
+    const normalized = normCountry(country);
+    sessionStorage.setItem('visitorCountry', normalized);
+    return normalized;
   }
 
   const configCountry = getConfig().locale.region;
-  return updateCountryCode(configCountry);
+  return normCountry(configCountry);
 }
 
 const offerIdSuppressMap = new Map();
@@ -230,6 +229,8 @@ export function shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremi
   if (isPremiumCard) {
     if (isSpecialEyebrowText) {
       suppressOfferEyeBrowText = !(savePer !== '' && offerTextContent.includes('{{savePercentage}}'));
+    } else if (isPremiumCard === '84EA7C85DEB6D5260ACE527CB41FDF0B' || isPremiumCard === '2D84772E931C704E05CAD34D43BE1746') {
+      suppressOfferEyeBrowText = false;
     } else {
       suppressOfferEyeBrowText = true;
     }
@@ -250,7 +251,7 @@ export const formatSalesPhoneNumber = (() => {
     }
 
     if (!numbersMap?.data) return;
-    const country = await getCountry() || 'us';
+    const country = await getCountry(true) || 'us';
     tags.forEach((a) => {
       const r = numbersMap.data.find((d) => d.country === country);
 
@@ -392,7 +393,6 @@ export async function fetchPlanOnePlans(planUrl) {
   }
 
   let plan = window.pricingPlans[planUrl];
-
   if (!plan) {
     plan = {};
     const link = new URL(planUrl);
@@ -429,7 +429,6 @@ export async function fetchPlanOnePlans(planUrl) {
     }
 
     const offer = await getOfferOnePlans(plan.offerId);
-
     if (offer) {
       plan.currency = offer.currency;
       plan.price = offer.unitPrice;
@@ -461,7 +460,6 @@ export async function fetchPlanOnePlans(planUrl) {
 
     window.pricingPlans[planUrl] = plan;
   }
-
   return plan;
 }
 
@@ -542,6 +540,27 @@ export async function fetchPlan(planUrl) {
   }
 
   return plan;
+}
+
+export async function formatDynamicCartLink(a, plan) {
+  try {
+    const pattern = new RegExp(/.*commerce.*adobe\.com.*/gm);
+    if (pattern.test(a.href)) {
+      let response;
+      if (!plan) {
+        response = await fetchPlanOnePlans(a.href);
+      } else {
+        response = plan;
+      }
+      const newTrialHref = buildUrl(response.url, response.country,
+        response.language, response.offerId);
+      a.href = newTrialHref;
+    }
+  } catch (error) {
+    window.lana.log('Failed to fetch prices for page plan');
+    window.lana.log(error);
+  }
+  return a;
 }
 
 export function decoratePricing(block) {

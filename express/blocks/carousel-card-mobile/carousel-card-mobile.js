@@ -1,9 +1,12 @@
 import { createTag, fetchRelevantRows } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import buildPaginatedCarousel from '../shared/paginated-carousel.js';
 import { buildAppStoreBadge } from '../shared/app-store-badge.js';
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'carousel-card-mobile');
+
   const payload = {
     carouselArray: [],
     other: [],
@@ -42,6 +45,6 @@ export default async function decorate($block) {
     }
   });
 
-  const freePlanTags = await buildFreePlanWidget('branded');
+  const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded' });
   $block.insertAdjacentElement('afterend', freePlanTags);
 }
