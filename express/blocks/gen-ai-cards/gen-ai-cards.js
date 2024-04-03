@@ -66,12 +66,10 @@ function handleGenAISubmit(form, link) {
   const input = form.querySelector('input');
   if (input.value.trim() === '') return;
   const genAILink = link.replace(genAIPlaceholder, encodeURI(input.value).replaceAll(' ', '+'));
-  if (genAILink) {
-    windowHelper.redirect(genAILink);
-  }
+  if (genAILink) windowHelper.redirect(genAILink);
 }
 
-function buildGenAIForm(block, { ctaLinks, subtext }) {
+function buildGenAIForm({ ctaLinks, subtext }) {
   const genAIForm = createTag('form', { class: 'gen-ai-input-form' });
   const genAIInput = createTag('input', {
     placeholder: subtext || '',
@@ -146,7 +144,7 @@ async function decorateCards(block, { actions }) {
 
     if (ctaLinks.length > 0) {
       if (hasGenAIForm) {
-        const genAIForm = buildGenAIForm(block, cta);
+        const genAIForm = buildGenAIForm(cta);
         card.classList.add('gen-ai-action');
         card.append(genAIForm);
         linksWrapper.remove();
