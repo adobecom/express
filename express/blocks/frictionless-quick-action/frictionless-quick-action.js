@@ -242,6 +242,7 @@ export default async function decorate(block) {
     } else {
       uploadFile();
     }
+    document.body.dataset.suppressfloatingcta = 'true';
   });
 
   function preventDefaults(e) {
@@ -274,6 +275,7 @@ export default async function decorate(block) {
     const { files } = dt;
 
     [...files].forEach(startSDKWithUnconvertedFile);
+    document.body.dataset.suppressfloatingcta = 'true';
   }, false);
 
   const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
@@ -296,6 +298,7 @@ export default async function decorate(block) {
       document.body.classList.remove('editor-modal-loaded');
       inputElement.value = '';
       fade(uploadContainer, 'in');
+      document.body.dataset.suppressfloatingcta = 'false';
     }
   }, { passive: true });
 }
