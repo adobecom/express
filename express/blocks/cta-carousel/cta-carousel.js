@@ -59,12 +59,10 @@ function handleGenAISubmit(form, link) {
 
   btn.disabled = true;
   const genAILink = link.replace('%7B%7Bprompt-text%7D%7D', encodeURI(input.value).replaceAll(' ', '+'));
-  if (genAILink !== '') {
-    window.location.assign(genAILink);
-  }
+  if (genAILink !== '') window.location.assign(genAILink);
 }
 
-function buildGenAIForm(block, ctaObj) {
+function buildGenAIForm(ctaObj) {
   const genAIForm = createTag('form', { class: 'gen-ai-input-form' });
   const formWrapper = createTag('div', { class: 'gen-ai-form-wrapper' });
   const genAIInput = createTag('textarea', {
@@ -152,7 +150,7 @@ async function decorateCards(block, payload) {
     if (cta.ctaLinks.length > 0) {
       if (hasGenAIEl) {
         card.classList.add('gen-ai-action');
-        const el = block.classList.contains('upload') ? buildGenAIUpload(cta, card) : buildGenAIForm(block, cta);
+        const el = block.classList.contains('upload') ? buildGenAIUpload(cta, card) : buildGenAIForm(cta);
         cardSleeve.append(el);
         linksWrapper.remove();
       }
