@@ -17,7 +17,7 @@ div[class='section section-wrapper floating-panel-container'] {
     box-sizing: border-box;
     transition: bottom 0.4s;
     transform-style: preserve-3d;
-    z-index: 1;
+    z-index: 5;
 }
 
 .block.floating-panel:after {
@@ -30,18 +30,19 @@ div[class='section section-wrapper floating-panel-container'] {
     position: fixed;
     background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.95) 70%, rgba(255,255,255,1) 78%);
     z-index: -1;
+    pointer-events: none;
 }
-
 
 .block.floating-panel.expanded {
     color: var(--color-black);
+    z-index: 10000000;
 }
 
 .block.floating-panel .bottom-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: var(--color-black);
+    background: var(--color-gray-800);
     padding: 0 24px 24px 24px;
     border-radius: 0 0 20px 20px;
     max-height: 56px;
@@ -54,10 +55,9 @@ div[class='section section-wrapper floating-panel-container'] {
     flex-direction: column;
     align-items: flex-end;
     overflow: hidden;
-    background: #F8F8F8;
     padding: 24px 24px 0 24px;
     border-radius: 20px 20px 0 0;
-    background: var(--color-black);
+    background: var(--color-gray-800);
     color: var(--color-gray-800);
     transition: max-height 0.6s ease, background-color 0.2s ease, padding 0.6s ease;
 }

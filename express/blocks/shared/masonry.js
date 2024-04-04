@@ -1,6 +1,6 @@
 import { createTag } from '../../scripts/utils.js';
 
-// todo: remove this.needBackwardCompatibility() when template-list is deprecated
+// todo: remove this.isTemplateList() when template-list is deprecated
 function nodeIsBefore(node, otherNode) {
   // eslint-disable-next-line no-bitwise
   const forward = node.compareDocumentPosition(otherNode)
@@ -21,13 +21,13 @@ export class Masonry {
     this.fillToHeight = 0;
   }
 
-  needBackwardCompatibility() {
+  isTemplateList() {
     return this.wrapper.classList.contains('template-list');
   }
 
   // set up fresh grid if necessary
   setupColumns() {
-    const block = this.needBackwardCompatibility() ? this.wrapper : this.wrapper.parentElement;
+    const block = this.isTemplateList() ? this.wrapper : this.wrapper.parentElement;
     let result = 1;
     let colWidth = 264;
     if (block.classList.contains('sixcols')) {
@@ -61,19 +61,19 @@ export class Masonry {
       }
 
       if (block.classList.contains('lg-view')) {
-        colWidth = 364;
+        colWidth = 328;
       }
     } else {
       if (block.classList.contains('sm-view')) {
-        colWidth = 120;
+        colWidth = 108;
       }
 
       if (block.classList.contains('md-view')) {
-        colWidth = 172;
+        colWidth = 164;
       }
 
       if (block.classList.contains('lg-view')) {
-        colWidth = 340;
+        colWidth = 320;
       }
     }
     const usp = new URLSearchParams(window.location.search);
@@ -174,7 +174,7 @@ export class Masonry {
     const $btnC = cell.querySelector(':scope > div:nth-of-type(2)');
     if ($btnC) $btnC.classList.add('button-container');
 
-    if (this.needBackwardCompatibility()) {
+    if (this.isTemplateList()) {
       /* set tab index and event listeners */
       if (this.cells[0] === cell) {
         /* first cell focus handler */
@@ -253,7 +253,7 @@ export class Masonry {
         return;
       }
 
-      if (this.needBackwardCompatibility()) {
+      if (this.isTemplateList()) {
         const video = cell.querySelector('video');
         if (video && video.readyState === 0) {
           video.addEventListener('loadedmetadata', () => {
@@ -271,10 +271,10 @@ export class Masonry {
     if (workList.length > 0) {
       // draw rest
       this.draw(workList);
-    } else if (this.needBackwardCompatibility()) {
-      this.wrapper.classList.add('template-list-complete');
+    } else if (this.wrapper.classList.contains('block')) {
+      this.wrapper.classList.add(`${this.wrapper.dataset.blockName}-complete`);
     } else {
-      this.wrapper.parentElement.classList.add('template-x-complete');
+      this.wrapper.closest('block')?.classList.add(`${this.wrapper.dataset.blockName}-complete`);
     }
   }
 }

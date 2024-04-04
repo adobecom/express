@@ -9,7 +9,7 @@ import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 import {
   fetchPlanOnePlans,
-  buildUrl,
+  formatDynamicCartLink,
 } from '../../scripts/utils/pricing.js';
 
 const breakpointConfig = [
@@ -31,20 +31,6 @@ const breakpointConfig = [
   },
 ];
 
-async function handleDynamicCheckoutCTA(primaryBtn) {
-  try {
-    const response = await fetchPlanOnePlans(primaryBtn?.href);
-    const newTrialHref = buildUrl(response.url, response.country,
-      response.language, response.offerId);
-    if (newTrialHref) {
-      primaryBtn.href = newTrialHref;
-    }
-  } catch (error) {
-    window.lana.log('Failed to fetch prices for page plan');
-    window.lana.log(error);
-  }
-  return primaryBtn;
-}
 // Transforms a {{pricing}} tag into human readable format.
 async function handlePrice(block) {
   const priceEl = block.querySelector('[title="{{pricing}}"]');
@@ -127,7 +113,7 @@ function decorateToggleContext(ct, placeholders) {
 
 async function buildReduceMotionSwitch(block) {
   if (!block.querySelector('.reduce-motion-wrapper')) {
-    const reduceMotionIconWrapper = createTag('div', { class: 'reduce-motion-wrapper' });
+    const reduceMotionIconWrapper = createTag('div', { class: 'reduce-motion-wrapper', tabIndex: '0' });
     const videoWrapper = block.querySelector('.background-wrapper');
     const video = videoWrapper.querySelector('video');
 
@@ -364,7 +350,7 @@ async function handleContent(div, block, animations) {
     buttonAsLink?.classList.remove('button');
     primaryBtn?.classList.add('primaryCTA');
 
-    handleDynamicCheckoutCTA(primaryBtn);
+    formatDynamicCartLink(primaryBtn);
 
     BlockMediator.set('primaryCtaUrl', primaryBtn?.href);
     secondaryButton?.classList.add('secondary');

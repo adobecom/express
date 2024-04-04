@@ -524,13 +524,21 @@ export function transformLinkToAnimation($a, $videoLooping = true) {
   }
   // replace anchor with video element
   const videoUrl = new URL($a.href);
-  const helixId = videoUrl.hostname.includes('hlx.blob.core') ? videoUrl.pathname.split('/')[2] : videoUrl.pathname.split('media_')[1].split('.')[0];
-  const videoHref = `./media_${helixId}.mp4`;
+
+  const isLegacy = videoUrl.hostname.includes('hlx.blob.core') || videoUrl.pathname.includes('media_');
   const $video = createTag('video', attribs);
-  $video.innerHTML = `<source src="${videoHref}" type="video/mp4">`;
+  if (isLegacy) {
+    const helixId = videoUrl.hostname.includes('hlx.blob.core') ? videoUrl.pathname.split('/')[2] : videoUrl.pathname.split('media_')[1].split('.')[0];
+    const videoHref = `./media_${helixId}.mp4`;
+    $video.innerHTML = `<source src="${videoHref}" type="video/mp4">`;
+  } else {
+    $video.innerHTML = `<source src="${videoUrl}" type="video/mp4">`;
+  }
+
   const $innerDiv = $a.closest('div');
   $innerDiv.prepend($video);
   $innerDiv.classList.add('hero-animation-overlay');
+  $video.setAttribute('tabindex', 0);
   $a.replaceWith($video);
   // autoplay animation
   $video.addEventListener('canplay', () => {
@@ -1812,7 +1820,7 @@ export function normalizeHeadings(block, allowedHeadings) {
   });
 }
 
-export async function fetchPlainBlockFromFragment(url, blockName) {
+export async function fetchBlockFragDecorated(url, blockName) {
   const location = new URL(window.location);
   const { prefix } = getConfig().locale;
   const fragmentUrl = `${location.origin}${prefix}${url}`;
@@ -1897,8 +1905,8 @@ export async function fetchFloatingCta(path) {
   return floatingBtnData;
 }
 
-async function buildAutoBlocks($main) {
-  const lastDiv = $main.querySelector(':scope > div:last-of-type');
+async function buildAutoBlocks(main) {
+  const lastDiv = main.querySelector(':scope > div:last-of-type');
 
   // Load the branch.io banner autoblock...
   if (['yes', 'true', 'on'].includes(getMetadata('show-banner').toLowerCase())) {
@@ -1908,12 +1916,12 @@ async function buildAutoBlocks($main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase())) {
+  if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase()) && document.body.dataset.device === 'mobile') {
     const authoredRRFound = [
       '.template-list.horizontal.fullwidth.mini',
       '.link-list.noarrows',
       '.collapsible-card',
-    ].every((block) => $main.querySelector(block));
+    ].every((block) => main.querySelector(block));
 
     if (!authoredRRFound && !window.relevantRowsLoaded) {
       const relevantRowsData = await fetchRelevantRows(window.location.pathname);
@@ -1923,7 +1931,7 @@ async function buildAutoBlocks($main) {
         const fragment = buildBlock('fragment', '/express/fragments/relevant-rows-default-v2');
         relevantRowsSection.dataset.audience = 'mobile';
         relevantRowsSection.append(fragment);
-        $main.prepend(relevantRowsSection);
+        main.prepend(relevantRowsSection);
         window.relevantRowsLoaded = true;
       }
     }
@@ -1938,10 +1946,32 @@ async function buildAutoBlocks($main) {
 
   async function loadPromoFrag() {
     if (document.querySelector('.sticky-promo-bar')) return;
-    const fragment = await fetchPlainBlockFromFragment(`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`, 'sticky-promo-bar');
-    if (!fragment) return;
-    $main.append(fragment);
-    const block = fragment?.querySelector('.sticky-promo-bar.block');
+
+    let promoFrag;
+    const location = new URL(window.location);
+    const { prefix } = getConfig().locale;
+    const fragmentUrl = `${location.origin}${prefix}${`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`}`;
+    const path = new URL(fragmentUrl).pathname.split('.')[0];
+    const resp = await fetch(`${path}.plain.html`);
+    if (resp.status === 404) {
+      return;
+    } else {
+      const html = await resp.text();
+      const htmlHolder = createTag('div');
+      htmlHolder.innerHTML = html;
+      promoFrag = htmlHolder.querySelector(':scope > div');
+      promoFrag.classList.add('section', 'section-wrapper');
+
+      if (!promoFrag) return;
+
+      const img = promoFrag.querySelector('img');
+      if (img) {
+        img.setAttribute('loading', 'lazy');
+      }
+    }
+
+    main.append(promoFrag);
+    const block = promoFrag?.querySelector('.sticky-promo-bar:not(.block)');
     if (block) await loadBlock(block);
   }
 
@@ -2237,20 +2267,31 @@ function hideBody() {
   }
 }
 
+export function toggleVideo(target) {
+  const videos = target.querySelectorAll('video');
+  const paused = videos[0] ? videos[0].paused : false;
+  videos.forEach((video) => {
+    if (paused) {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // ignore
+        });
+      }
+    } else video.pause();
+  });
+}
+
 export function addAnimationToggle(target) {
   target.addEventListener('click', () => {
-    const videos = target.querySelectorAll('video');
-    const paused = videos[0] ? videos[0].paused : false;
-    videos.forEach((video) => {
-      if (paused) {
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            // ignore
-          });
-        }
-      } else video.pause();
-    });
+    toggleVideo(target);
+  }, true);
+  target.addEventListener('keypress', (e) => {
+    if (e.key !== 'Enter' && e.keyCode !== 32 && e.key !== ' ') {
+      return;
+    }
+    e.preventDefault();
+    toggleVideo(target);
   }, true);
 }
 
@@ -2546,7 +2587,7 @@ export async function loadArea(area = document) {
   // milo's links featurecc
   const config = getConfig();
   if (config.links === 'on') {
-    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
+    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/express/seo/links.json'}`;
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 

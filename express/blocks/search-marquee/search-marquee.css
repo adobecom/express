@@ -22,6 +22,15 @@ main .search-marquee {
     align-items: center;
 }
 
+main .search-marquee > div:first-of-type h1 {
+    font-size: var(--heading-font-size-l);
+}
+
+main .search-marquee > div:first-of-type p {
+    font-size: var(--body-font-size-m);
+    max-width: 640px;
+}
+
 main .search-marquee .search-marquee-bg {
     position: absolute;
     left: 0;
@@ -73,7 +82,7 @@ main .search-marquee .search-dropdown-container .trends-container ul {
 main .search-marquee .search-dropdown-container .suggestions-container ul {
     padding-left: 0;
     list-style: none;
-    max-height: 216px;
+    max-height: 164px;
     overflow: auto;
     margin: 0 0 16px -8px;
 }
@@ -100,18 +109,19 @@ main .search-marquee .search-dropdown-container .trends-container .trends-wrappe
     color: var(--color-black);
 }
 
-main .search-marquee .search-dropdown-container .suggestions-container {
-    min-width: 300px;
-}
-
 main .search-marquee .search-dropdown-container .free-plans-container .free-plan-widget {
     width: 100%;
     border-radius: 0 0 12px 12px;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
     margin: 0;
     justify-content: center;
+}
+
+main .search-marquee .search-dropdown-container .free-plans-container .free-plan-widget .plan-widget-tag {
+    font-size: var(--body-font-size-s);
 }
 
 main .search-marquee .search-bar-wrapper {
@@ -124,6 +134,7 @@ main .search-marquee .search-bar-wrapper {
 }
 
 main .search-marquee .search-bar-wrapper .search-bar {
+    scroll-margin: 65px;
     box-sizing: border-box;
     margin: 0;
     font-family: var(--body-font-family);
@@ -216,8 +227,21 @@ main .search-marquee .hidden {
     display: none;
 }
 
-@media (min-width: 600px) {
-    main .search-marquee .search-dropdown-container .free-plans-container .free-plan-widget {
-        flex-direction: row;
+@media (min-width: 900px) {
+    main .search-marquee > div:first-of-type h1 {
+        font-size: var(--heading-font-size-xl);
+    }
+    
+    main .search-marquee > div:first-of-type p {
+        font-size: var(--body-font-size-l);
+        max-width: 900px;
+    }
+
+    main .search-marquee .search-dropdown-container .free-plans-container .free-plan-widget .plan-widget-tag {
+        font-size: var(--body-font-size-m);
+    }
+
+    main .search-marquee .search-dropdown-container .suggestions-container ul {
+        max-height: 216px;
     }
 }

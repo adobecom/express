@@ -1,4 +1,3 @@
-/* eslint-disable max-statements-per-line */
 import { html, signal, useEffect } from '../../../scripts/libs/htm-preact.js';
 
 const NOT_FOUND = { preview: { lastModified: 'Not found' }, live: { lastModified: 'Not found' } };
@@ -21,10 +20,7 @@ async function getStatus(url) {
   const live = json.live.lastModified || 'Never';
   const edit = json.edit.url;
   return {
-    url,
-    edit,
-    preview,
-    live,
+    url, edit, preview, live,
   };
 }
 
@@ -53,10 +49,7 @@ function getUrl(el) {
 function findLinks(selector) {
   return [...document.body.querySelectorAll(selector)]
     .map((el) => ({
-      url: getUrl(el),
-      edit: null,
-      preview: 'Fetching',
-      live: 'Fetching',
+      url: getUrl(el), edit: null, preview: 'Fetching', live: 'Fetching',
     }));
 }
 
@@ -66,10 +59,7 @@ async function setContent() {
   content.value = {
     page: {
       items: [{
-        url: new URL(window.location.href),
-        edit: null,
-        preview: 'Fetching',
-        live: 'Fetching',
+        url: new URL(window.location.href), edit: null, preview: 'Fetching', live: 'Fetching',
       }],
     },
     fragments: { items: findLinks('main .fragment, a[data-modal-path]') },
@@ -104,6 +94,7 @@ function toggleSelect(checked) {
   const copy = { ...content.value };
   Object.keys(copy).forEach((key) => {
     if (copy[key].closed) return;
+    // eslint-disable-next-line max-statements-per-line
     copy[key].items.forEach((item) => { item.checked = !checked; });
   });
   content.value = copy;
@@ -174,6 +165,7 @@ function ContentGroup({ name, group }) {
 }
 
 export default function General() {
+  // eslint-disable-next-line max-statements-per-line
   useEffect(() => { setContent(); }, []);
 
   const checked = Object.keys(content.value)

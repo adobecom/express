@@ -41,9 +41,10 @@ async function getReplacementsFromSearch() {
   }
   const tasksPair = Object.entries(categories).find((cat) => cat[1] === tasks);
   const xTasksPair = Object.entries(xCategories).find((cat) => cat[1] === tasksx);
-  const sanitizedTasks = tasks === "''" ? '' : tasks;
-  const sanitizedTopics = topics === "''" ? '' : topics;
-  const sanitizedQuery = q === "''" ? '' : q;
+  const exp = /['"<>?.;{}]/gm;
+  const sanitizedTasks = tasks?.match(exp) ? '' : tasks;
+  const sanitizedTopics = topics?.match(exp) ? '' : topics;
+  const sanitizedQuery = q?.match(exp) ? '' : q;
 
   let translatedTasks;
   if (document.body.dataset.device === 'desktop') {

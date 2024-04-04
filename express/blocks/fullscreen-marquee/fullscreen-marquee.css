@@ -13,7 +13,6 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-
 }
 
 .section > .fullscreen-marquee {
@@ -46,7 +45,6 @@
 }
 
 .fullscreen-marquee .fullscreen-marquee-heading .button-container {
-  display: flex;
   align-items: center;
   display: none;
 }
@@ -270,13 +268,14 @@
   .fullscreen-marquee .fullscreen-marquee-heading h1 {
     font-size: 80px;
     line-height: 90px;
+    text-align: center;
   }
 
   .fullscreen-marquee .fullscreen-marquee-heading p {
     font-size: var(--body-font-size-l);
     line-height: 30px;
+    text-align: center;
   }
-  
 
   .fullscreen-marquee .fullscreen-marquee-heading .button-container {
     display: flex;
