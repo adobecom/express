@@ -171,8 +171,8 @@ export async function createFloatingButton(block, audience, data) {
   // Hide CTAs with same url & text as the Floating CTA && is NOT a Floating CTA (in mobile/tablet)
   const sameUrlCTAs = Array.from(main.querySelectorAll('a.button:any-link'))
     .filter((a) => (a.textContent.trim() === aTag.textContent.trim()
-      || new URL(a.pathname) === new URL(aTag.pathname))
-      && !a.parentElement.parentElement.classList.contains('floating-button') && !a.classList.contains("floating-cta-ignore"));
+      || new URL(a.href).pathname === new URL(aTag.href).pathname)
+      && !a.parentElement.parentElement.classList.contains('floating-button') && !a.classList.contains('floating-cta-ignore'));
   sameUrlCTAs.forEach((cta) => {
     cta.classList.add('same-as-floating-button-CTA');
   });
