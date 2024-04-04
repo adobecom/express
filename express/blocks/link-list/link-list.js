@@ -32,13 +32,8 @@ async function loadSpreadsheetData(block, relevantRowsData) {
 }
 
 const formatBlockLinks = (links, variant, baseURL) => {
-  if (variant !== SMART_VARIANT) {
-    return;
-  }
-
-  if (!links || !baseURL) {
-    return;
-  }
+  if (variant !== SMART_VARIANT) return;
+  if (!links || !baseURL) return;
 
   const formattedURL = `${baseURL}?acomx-dno=true&category=templates`;
   links.forEach((p) => {
@@ -49,9 +44,7 @@ const formatBlockLinks = (links, variant, baseURL) => {
 };
 
 const toggleLinksHighlight = (links, variant) => {
-  if (variant === SMART_VARIANT) {
-    return;
-  }
+  if (variant === SMART_VARIANT) return;
   links.forEach((l) => {
     const a = l.querySelector(':scope > a');
     if (a) {
