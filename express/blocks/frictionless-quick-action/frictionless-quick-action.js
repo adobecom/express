@@ -58,7 +58,7 @@ function startSDK(data = '') {
           appName: 'express',
         },
         configParams: {
-          locale: ietf.replace('-', '_'),
+          locale: ietf?.replace('-', '_'),
           env: urlParams.get('hzenv') === 'stage' ? 'stage' : 'prod',
         },
         authOption: () => ({
