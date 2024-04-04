@@ -44,7 +44,7 @@ const formatBlockLinks = (links, variant, baseURL) => {
   links.forEach((p) => {
     const a = p.querySelector('a');
     a.href = `${formattedURL}&q=${a.title}`;
-    a.classList.add("floating-cta-ignore")
+    a.classList.add('floating-cta-ignore');
   });
 };
 
