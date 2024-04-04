@@ -32,7 +32,6 @@ async function loadSpreadsheetData(block, relevantRowsData) {
 }
 
 const formatBlockLinks = (links, variant, baseURL) => {
-  console.log(variant)
   if (variant !== SMART_VARIANT) {
     return;
   }
