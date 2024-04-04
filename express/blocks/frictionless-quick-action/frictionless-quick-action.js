@@ -241,7 +241,7 @@ function track(name) {
       },
     });
   } catch (e) {
-    window.lana.log(e);
+    window.lana?.log(e);
   }
 }
 
