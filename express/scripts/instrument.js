@@ -711,7 +711,7 @@ function martechLoadedCB() {
   // Fire the landing:viewedPage event
   sendEventToAdobeAnaltics('landing:viewedPage');
 
-  if (getMetadata('quickaction-upload-page') === 'on') {
+  if (d.querySelector('div.frictionless-quick-action')) {
     sendEventToAdobeAnaltics('view-quickaction-upload-page');
   }
 
