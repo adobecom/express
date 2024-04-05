@@ -143,20 +143,21 @@ const populateCheckboxes = (qaWidgetForm, payload, index) => {
 const buildQAWidget = (index, payload) => {
   const progress = createTag('div', { class: 'qa-progress' }, `Page ${index + 1} / ${payload.length}`);
   const closeBtn = createTag('a', { class: 'qa-widget-close' }, '✕');
+  const buttonContainer = createTag('div', { class: 'qa-widget-buttons-container' });
+  const newTabBtn = createTag('button', { class: 'qa-widget-new-tab' }, 'Open in new tab');
   const qaWidget = createTag('div', { class: 'qa-widget' });
   const qaWidgetForm = createTag('form', { class: 'qa-widget-form' });
 
   populateCheckboxes(qaWidgetForm, payload, index);
 
   const noteArea = createTag('textarea', {
-    style: 'height: 88px; width: 200px;',
     placeholder: 'Leave your notes here',
   });
-  qaWidgetForm.append(noteArea);
+  qaWidgetForm.append(noteArea, buttonContainer);
 
   if (payload[index + 1]) {
     const nextBtn = createTag('button', { class: 'button', type: 'submit' }, 'Next');
-    qaWidgetForm.append(nextBtn);
+    buttonContainer.append(nextBtn);
     qaWidgetForm.addEventListener('submit', (e) => {
       e.preventDefault();
       updateSessionStorageChecks(payload[index], qaWidgetForm);
@@ -164,7 +165,7 @@ const buildQAWidget = (index, payload) => {
     });
   } else {
     const completeBtn = createTag('button', { class: 'button', type: 'submit' }, 'Done');
-    qaWidgetForm.append(completeBtn);
+    buttonContainer.append(completeBtn);
     qaWidgetForm.addEventListener('submit', (e) => {
       e.preventDefault();
       updateSessionStorageChecks(payload[index], qaWidgetForm);
@@ -173,9 +174,16 @@ const buildQAWidget = (index, payload) => {
     });
   }
 
+  buttonContainer.append(newTabBtn);
+
   closeBtn.addEventListener('click', () => {
     resetQAProgress(qaWidget);
   }, { passive: true });
+
+  newTabBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.open(window.location.origin + window.location.pathname);
+  });
 
   qaWidget.append(closeBtn, progress, qaWidgetForm);
   document.body.append(qaWidget);
@@ -283,7 +291,7 @@ const launchStorySelector = async () => {
   });
 };
 
-export default async function initQAGuide() {
+export default async function initQAGuide(preflightCallback) {
   loadStyle('/express/scripts/features/qa-guide/qa-guide.css');
   const index = getQAIndex();
 
@@ -299,6 +307,7 @@ export default async function initQAGuide() {
     if (!pages.length) return;
 
     const payload = buildPayload(pages);
+    payload.preflightCallback = preflightCallback;
     buildQAWidget(index, payload);
   }
 }

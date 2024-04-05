@@ -21,6 +21,13 @@
     max-height: 400px;
 }
 
+.qa-widget .qa-widget-buttons-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 8px;
+}
+
 .qa-widget button {
     align-items: center;
     border-radius: 16px;
@@ -40,7 +47,6 @@
     padding: 0 14px;
     transition: background-color .13s ease-out, border-color .13s ease-out;
     white-space: nowrap;
-    margin-top: 8px;
     width: auto;
 }
 
@@ -59,6 +65,11 @@
 .qa-widget .qa-progress {
     margin-bottom: 8px;
 }
+
+.qa-widget .qa-widget-form {
+    position: relative;
+}
+
 .qa-widget .qa-widget-form .checkboxes-container {
     max-height: 180px;
     overflow: auto;
@@ -114,6 +125,11 @@
 .qa-widget .qa-widget-form > textarea {
     margin: 8px 0;
     padding: 8px;
+    width: 360px;
+    min-height: 80px;
+    max-height: 400px;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .qa-guide-story-selector {
