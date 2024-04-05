@@ -1,3 +1,4 @@
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import {
   createTag,
   getIcon,
@@ -6,6 +7,8 @@ import {
 } from '../../scripts/utils.js';
 
 export default function decorate($block) {
+  addTempWrapper($block, 'quick-action-cards');
+
   const $cards = Array.from($block.querySelectorAll(':scope>div'));
   const chevron = getIcon('chevron');
   $cards.forEach(($card) => {

@@ -1,7 +1,10 @@
 // eslint-disable-next-line import/no-unresolved
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import { createTag } from '../../scripts/utils.js';
 
 export default function decorate($block) {
+  addTempWrapper($block, 'quotes');
+
   $block.querySelectorAll(':scope>div').forEach(($card) => {
     $card.classList.add('quote');
     if ($card.children.length > 1) {

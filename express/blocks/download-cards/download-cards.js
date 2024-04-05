@@ -1,4 +1,5 @@
 import { createTag, readBlockConfig } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import { prependDownloadIcon } from '../hero-3d/hero-3d.js';
 
 /**
@@ -85,6 +86,8 @@ function groupButtons($block) {
  * @param {HTMLDivElement} $block
  */
 export default async function decorate($block) {
+  addTempWrapper($block, 'download-cards');
+
   const conf = readBlockConfig($block);
   $block.querySelectorAll(':scope > div').forEach(($row) => {
     if ($row.childElementCount === 2) {

@@ -1,4 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import { isVideoLink } from '../shared/video.js';
 
 function renderImageOrVideo(media) {
@@ -83,6 +84,8 @@ const getGradient = (rows) => {
 };
 
 export default function decorate(block) {
+  addTempWrapper(block, 'feature-grid-desktop');
+
   const inputRows = block.querySelectorAll(':scope > div > div');
   block.innerHTML = '';
   const rows = Array.from(inputRows);

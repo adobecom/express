@@ -72,8 +72,21 @@ const eagerLoad = (img) => {
   img?.setAttribute('fetchpriority', 'high');
 };
 
+(function handleSplit() {
+  const { userAgent } = navigator;
+  document.body.dataset.device = userAgent.includes('Mobile') ? 'mobile' : 'desktop';
+  if (getMetadata('quickaction-upload-page') !== 'on') return;
+  const fqaMeta = createTag('meta', { content: 'on' });
+  if (document.body.dataset.device === 'mobile'
+    || (/Safari/.test(userAgent) && !/Chrome|CriOS|FxiOS|Edg|OPR|Opera|OPiOS|Vivaldi|YaBrowser|Avast|VivoBrowser|GSA/.test(userAgent))) {
+    fqaMeta.setAttribute('name', 'fqa-off');
+  } else {
+    fqaMeta.setAttribute('name', 'fqa-on');
+  }
+  document.head.append(fqaMeta);
+}());
+
 (function loadLCPImage() {
-  document.body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
   const main = document.body.querySelector('main');
   removeIrrelevantSections(main);
   const firstDiv = main.querySelector('div:nth-child(1) > div');

@@ -5,6 +5,7 @@ import {
   addHeaderSizing, getConfig,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 import {
@@ -23,7 +24,7 @@ const animationBreakPointSettings = [
   },
   {
     typeHint: 'desktop',
-    minWidth: 400,
+    minWidth: 430,
   },
   {
     typeHint: 'hd',
@@ -138,6 +139,8 @@ function transformToVideoLink($cell, $a) {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'hero-animation');
+
   const possibleBreakpoints = animationBreakPointSettings.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const $section = $block.closest('.section');

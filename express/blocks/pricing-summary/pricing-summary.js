@@ -1,8 +1,9 @@
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import buildCarousel from '../shared/carousel.js';
 import { createTag } from '../../scripts/utils.js';
 
 import {
-  fetchPlan, buildUrl, shallSuppressOfferEyebrowText,
+  fetchPlan, shallSuppressOfferEyebrowText, formatDynamicCartLink,
 } from '../../scripts/utils/pricing.js';
 
 function handleHeader(column) {
@@ -33,7 +34,7 @@ function handlePrice(block, column, eyeBrow) {
   pricePlan.append(priceWrapper, plan);
 
   fetchPlan(priceEl?.href).then(({
-    url, country, language, offerId, formatted, formattedBP, suffix, savePer, ooAvailable,
+    offerId, formatted, formattedBP, suffix, savePer, ooAvailable,
   }) => {
     const parentP = priceEl.parentElement;
     price.innerHTML = formatted;
@@ -53,7 +54,7 @@ function handlePrice(block, column, eyeBrow) {
     }
 
     const planCTA = column.querySelector(':scope > .button-container:last-of-type a.button');
-    if (planCTA) planCTA.href = buildUrl(url, country, language, offerId);
+    if (planCTA) formatDynamicCartLink(planCTA);
 
     if (eyeBrow !== null) {
       const isPremiumCard = ooAvailable || false;
@@ -187,6 +188,8 @@ function alignContent(block) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'pricing-summary');
+
   const pricingContainer = block.classList.contains('feature') ? block.children[2] : block.children[1];
   const featureColumns = block.classList.contains('feature') ? Array.from(block.children[3].children) : null;
   const eyeBrows = block.classList.contains('feature') ? Array.from(block.children[1].children) : null;

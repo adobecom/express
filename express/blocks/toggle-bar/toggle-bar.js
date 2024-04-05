@@ -1,4 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 function decorateButton(block, toggle) {
   const button = createTag('button', { class: 'toggle-bar-button' });
@@ -133,6 +134,8 @@ function initStickyBehavior(block, props) {
 }
 
 export default function decorate(block) {
+  addTempWrapper(block, 'toggle-bar');
+
   const props = { activeTab: '', activeSection: null };
   const enclosingMain = block.closest('main');
   if (enclosingMain) {

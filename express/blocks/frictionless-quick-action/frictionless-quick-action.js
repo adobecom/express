@@ -1,89 +1,206 @@
 import {
   createTag,
-  fetchPlaceholders,
   getConfig,
-  getLottie,
-  lazyLoadLottiePlayer,
   loadScript,
   transformLinkToAnimation,
 } from '../../scripts/utils.js';
+import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
+const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 const imageInputAccept = '.png, .jpeg, .jpg';
 let inputElement;
 let quickAction;
+let fqaBlock;
+let error;
 let ccEverywhere;
+let quickActionContainer;
+let uploadContainer;
 
-function startSDK(data) {
-  loadScript('https://sdk.cc-embed.adobe.com/v3/CCEverywhere.js').then(async () => {
+function fade(element, action) {
+  if (action === 'in') {
+    element.classList.remove('hidden');
+    setTimeout(() => {
+      element.classList.remove('transparent');
+    }, 10);
+  } else if (action === 'out') {
+    element.classList.add('transparent');
+    setTimeout(() => {
+      element.classList.add('hidden');
+    }, 200);
+  }
+}
+
+function selectElementByTagPrefix(p) {
+  const allEls = document.body.querySelectorAll(':scope > *');
+  return Array.from(allEls).find((e) => e.tagName.toLowerCase().startsWith(p.toLowerCase()));
+}
+
+function startSDK(data = '') {
+  const urlParams = new URLSearchParams(window.location.search);
+  const CDN_URL = 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
+  const clientId = 'MarvelWeb3';
+
+  loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
       return;
     }
     if (!ccEverywhere) {
       let { ietf } = getConfig().locale;
+      // for testing
+      const country = urlParams.get('country');
+      if (country) ietf = getConfig().locales[country]?.ietf;
       if (ietf === 'zh-Hant-TW') ietf = 'tw-TW';
       else if (ietf === 'zh-Hans-CN') ietf = 'cn-CN';
-      let env = getConfig().env.name;
-      if (env === 'local') env = 'dev';
-      if (env === 'stage') env = 'preprod';
-      ccEverywhere = await window.CCEverywhere.initialize({
-        clientId: 'b20f1d10b99b4ad892a856478f87cec3',
-        appName: 'express',
-      }, {
-        loginMode: 'delayed',
-        locale: ietf,
-        env,
-      });
+
+      const ccEverywhereConfig = {
+        hostInfo: {
+          clientId,
+          appName: 'express',
+        },
+        configParams: {
+          locale: ietf?.replace('-', '_'),
+          env: urlParams.get('hzenv') === 'stage' ? 'stage' : 'prod',
+        },
+        authOption: () => ({
+          mode: 'delayed',
+        }),
+      };
+
+      ccEverywhere = await window.CCEverywhere.initialize(...Object.values(ccEverywhereConfig));
     }
 
-    const exportOptions = [
+    // TODO: need the button labels from the placeholders sheet if the SDK default doens't work.
+    const exportConfig = [
       {
-        target: 'Download',
         id: 'download-button',
-        optionType: 'button',
-        buttonType: 'native',
+        // label: 'Download',
+        action: {
+          target: 'download',
+        },
+        style: {
+          uiType: 'button',
+        },
+        buttonStyle: {
+          variant: 'secondary',
+          treatment: 'fill',
+          size: 'xl',
+        },
       },
       {
-        target: 'Editor',
         id: 'edit-in-express',
-        buttonType: 'native',
-        optionType: 'button',
+        // label: 'Edit in Adobe Express for free',
+        action: {
+          target: 'express',
+        },
+        style: {
+          uiType: 'button',
+        },
+        buttonStyle: {
+          variant: 'primary',
+          treatment: 'fill',
+          size: 'xl',
+        },
       },
     ];
 
-    ccEverywhere.openQuickAction({
-      id: quickAction,
-      inputParams: {
-        asset: {
-          data,
-          dataType: 'base64',
-          type: 'image',
+    const id = `${quickAction}-container`;
+    quickActionContainer = createTag('div', { id, class: 'quick-action-container' });
+    fqaBlock.append(quickActionContainer);
+    const divs = fqaBlock.querySelectorAll(':scope > div');
+    if (divs[1]) [, uploadContainer] = divs;
+    fade(uploadContainer, 'out');
+
+    const contConfig = {
+      mode: 'inline',
+      parentElementId: `${quickAction}-container`,
+      backgroundColor: 'transparent',
+      hideCloseButton: true,
+    };
+
+    const docConfig = {
+      asset: {
+        data,
+        dataType: 'base64',
+        type: 'image',
+      },
+    };
+
+    const appConfig = {
+      metaData: { isFrictionlessQa: 'true' },
+      receiveQuickActionErrors: false,
+      callbacks: {
+        onIntentChange: () => {
+          quickActionContainer?.remove();
+          fade(uploadContainer, 'in');
+          document.body.classList.add('editor-modal-loaded');
+          window.history.pushState({ hideFrictionlessQa: true }, '', '');
+          return {
+            containerConfig: {
+              mode: 'modal',
+              zIndex: 999,
+            },
+          };
         },
-        exportOptions,
+        onCancel: () => {
+          window.history.back();
+        },
       },
-      modalParams: {
-        backgroundColor: 'rgba(0, 0, 0, 0.25)',
-      },
-    });
+    };
+
+    switch (quickAction) {
+      case 'convert-to-jpg':
+        ccEverywhere.quickAction.convertToJPEG(docConfig, appConfig, exportConfig, contConfig);
+        break;
+      case 'convert-to-png':
+        ccEverywhere.quickAction.convertToPNG(docConfig, appConfig, exportConfig, contConfig);
+        break;
+      case 'convert-to-svg':
+        exportConfig.pop();
+        ccEverywhere.quickAction.convertToSVG(docConfig, appConfig, exportConfig, contConfig);
+        break;
+      case 'crop-image':
+        ccEverywhere.quickAction.cropImage(docConfig, appConfig, exportConfig, contConfig);
+        break;
+      case 'resize-image':
+        ccEverywhere.quickAction.resizeImage(docConfig, appConfig, exportConfig, contConfig);
+        break;
+      case 'remove-background':
+        ccEverywhere.quickAction.removeBackground(docConfig, appConfig, exportConfig, contConfig);
+        break;
+      case 'generate-qr-code':
+        ccEverywhere.quickAction.generateQRCode({}, appConfig, exportConfig, contConfig);
+        break;
+      default: break;
+    }
   });
 }
 
 function startSDKWithUnconvertedFile(file) {
   if (!file) return;
-  const reader = new FileReader();
+  const maxSize = 17 * 1024 * 1024; // 17 MB in bytes
+  if (validImageTypes.includes(file.type) && file.size <= maxSize) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      window.history.pushState({ hideFrictionlessQa: true }, '', '');
+      startSDK(reader.result);
+    };
 
-  reader.onloadend = function () {
-    startSDK(reader.result);
-  };
+    // Read the file as a data URL (Base64)
+    reader.readAsDataURL(file);
+  } else if (!error) {
+    let invalidInputError;
+    if (!validImageTypes.includes(file.type)) invalidInputError = 'invalid image type. Please make sure your image format is one of the following: "image/png", "image/jpeg", "image/jpg"';
+    else if (file.size > maxSize) invalidInputError = 'your image file is too large';
 
-  // Read the file as a data URL (Base64)
-  reader.readAsDataURL(file);
+    error = createTag('p', {}, invalidInputError);
+    const dropzoneButton = fqaBlock.querySelector(':scope .dropzone a.button');
+    dropzoneButton?.before(error);
+  }
 }
 
 function uploadFile() {
   if (!inputElement) {
-    inputElement = document.createElement('input');
-    inputElement.type = 'file';
-    inputElement.accept = imageInputAccept;
+    inputElement = createTag('input', { type: 'file', accept: imageInputAccept });
   }
   // Trigger the file selector when the button is clicked
   inputElement.click();
@@ -95,81 +212,94 @@ function uploadFile() {
   };
 }
 
-function createFreePlanContainer(text) {
-  const icon = createTag('img', { class: 'icon icon-checkmark', src: '/express/icons/checkmark.svg', alt: 'checkmark' });
-  const iconContainer = createTag('div', { class: 'free-plan-icon-container' }, icon);
-  const container = createTag('div', { class: 'free-plan-container' }, text);
-  container.prepend(iconContainer);
-  return container;
-}
-
 export default async function decorate(block) {
+  // cache block element for the
+  fqaBlock = block;
+
   const rows = Array.from(block.children);
   const actionAndAnimationRow = rows[1].children;
   const animationContainer = actionAndAnimationRow[0];
   const animation = animationContainer.querySelector('a');
-  if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
   const dropzone = actionAndAnimationRow[1];
-  dropzone.classList.add('dropzone');
   const dropzoneBackground = createTag('div', { class: 'dropzone-bg' });
-  dropzone.prepend(dropzoneBackground);
   const cta = dropzone.querySelector('a.button');
-  if (cta) cta.classList.add('xlarge');
   const gtcText = dropzone.querySelector('p:last-child');
   const actionColumn = createTag('div');
   const dropzoneContainer = createTag('div', { class: 'dropzone-container' });
-  dropzone.parentElement.insertBefore(actionColumn, dropzone);
-  dropzoneContainer.append(dropzone);
-  actionColumn.append(dropzoneContainer);
-  actionColumn.append(gtcText);
 
-  const span = cta.querySelector(':scope span');
-  if (span) {
-    const lottieUpload = [...span.classList].filter((c) => c === 'icon-lottie-arrow-up');
-    if (lottieUpload.length) {
-      span.remove();
-      cta.innerHTML = getLottie('lottie-arrow-up', '/express/icons/arrow-up-lottie.json') + cta.innerHTML;
-      lazyLoadLottiePlayer();
-    }
-  }
+  if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
+  if (cta) cta.classList.add('xlarge');
+  dropzone.classList.add('dropzone');
+
+  dropzone.prepend(dropzoneBackground);
+  dropzone.before(actionColumn);
+  dropzoneContainer.append(dropzone);
+  actionColumn.append(dropzoneContainer, gtcText);
 
   dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();
-    uploadFile();
+    if (quickAction === 'generate-qr-code') {
+      startSDK();
+    } else {
+      uploadFile();
+    }
+    document.body.dataset.suppressfloatingcta = 'true';
   });
 
   function preventDefaults(e) {
     e.preventDefault();
+    e.stopPropagation();
   }
+
+  function highlight() {
+    dropzoneContainer.classList.add('highlight');
+  }
+
+  function unhighlight() {
+    dropzoneContainer.classList.remove('highlight');
+  }
+
   ['dragenter', 'dragover'].forEach((eventName) => {
-    dropzoneContainer.addEventListener(eventName, () => dropzoneContainer.classList.add('highlight'), false);
+    dropzoneContainer.addEventListener(eventName, highlight, false);
   });
+
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
     dropzoneContainer.addEventListener(eventName, preventDefaults, false);
   });
+
   ['dragleave', 'drop'].forEach((eventName) => {
-    dropzoneContainer.addEventListener(eventName, () => dropzoneContainer.classList.remove('highlight'), false);
+    dropzoneContainer.addEventListener(eventName, unhighlight, false);
   });
 
   dropzoneContainer.addEventListener('drop', (e) => {
     const dt = e.dataTransfer;
     const { files } = dt;
-    if (files.length) startSDKWithUnconvertedFile(files[0]);
+
+    [...files].forEach(startSDKWithUnconvertedFile);
+    document.body.dataset.suppressfloatingcta = 'true';
   }, false);
 
   const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
   if (quickActionRow[0]) {
-    quickAction = quickActionRow[0].children[1]?.textContent.toLowerCase().trim();
+    quickAction = quickActionRow[0].children[1]?.textContent;
     quickActionRow[0].remove();
   }
 
-  const placeholderPromise = fetchPlaceholders().then((placeholders) => {
-    for (let i = 1; i < 3; i += 1) {
-      const tagText = placeholders[`free-plan-check-${i}`];
-      const freePlan = createFreePlanContainer(tagText);
-      dropzone.append(freePlan);
-    }
-  });
+  const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
+  dropzone.append(freePlanTags);
 
-  await placeholderPromise;
+  window.addEventListener('popstate', (e) => {
+    const editorModal = selectElementByTagPrefix('cc-everywhere-container-');
+    const correctState = e.state?.hideFrictionlessQa;
+    const embedElsFound = quickActionContainer || editorModal;
+    window.history.pushState({ hideFrictionlessQa: true }, '', '');
+    if (correctState || embedElsFound) {
+      quickActionContainer?.remove();
+      editorModal?.remove();
+      document.body.classList.remove('editor-modal-loaded');
+      inputElement.value = '';
+      fade(uploadContainer, 'in');
+      document.body.dataset.suppressfloatingcta = 'false';
+    }
+  }, { passive: true });
 }

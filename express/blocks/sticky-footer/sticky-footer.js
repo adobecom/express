@@ -1,6 +1,7 @@
 import {
   createTag, fetchPlaceholders, getIcon, readBlockConfig,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 /**
  * @param {number} [rating=5]
@@ -78,6 +79,8 @@ function attachScrollHandler() {
  * @param {HTMLDivElement} $block
  */
 export default function decorate($block) {
+  addTempWrapper($block, 'sticky-footer');
+
   if (document.body.dataset.device === 'mobile') {
     $block.remove();
   }

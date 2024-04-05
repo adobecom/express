@@ -36,6 +36,10 @@ main .layouts .layout:hover {
     border-color: #1473E6;
 }
 
+main .layouts .layout:focus-within{
+  border: 3px var(--color-info-accent) solid;
+}
+
 main .layouts .layout-icon {
     font-size: 23px;
     font-weight: 900;

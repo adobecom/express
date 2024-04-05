@@ -1,9 +1,14 @@
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import {
   createFloatingButton,
   collectFloatingButtonData,
 } from '../shared/floating-cta.js';
+import {
+  formatDynamicCartLink,
+} from '../../scripts/utils/pricing.js';
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'floating-button');
   if (block.classList.contains('spreadsheet-powered')) {
     const audience = block.querySelector(':scope > div').textContent.trim();
     if (audience === 'mobile') {
@@ -21,7 +26,10 @@ export default async function decorate(block) {
 
     const blockLinks = blockWrapper.querySelectorAll('a');
     if (blockLinks && blockLinks.length > 0) {
-      const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
+      formatDynamicCartLink(blockLinks[0]);
+      const linksPopulated = new CustomEvent('linkspopulated', {
+        detail: blockLinks,
+      });
       document.dispatchEvent(linksPopulated);
     }
   } else {

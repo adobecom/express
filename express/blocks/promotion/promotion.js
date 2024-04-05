@@ -6,6 +6,7 @@ import {
   toClassName,
   createOptimizedPicture, getConfig,
 } from '../../scripts/utils.js';
+import { addTempWrapper, unwrapBlock } from '../../scripts/utils/decorate.js';
 
 const PROMOTION_FOLDER = 'express/promotions';
 
@@ -21,6 +22,9 @@ async function fetchPromotion(name) {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'promotion');
+  unwrapBlock($block, 'promotion');
+
   const name = $block.textContent.trim();
   if (!name) return;
 

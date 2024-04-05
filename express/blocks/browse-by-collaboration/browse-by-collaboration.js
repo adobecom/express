@@ -3,6 +3,7 @@
 import {
   createTag,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -42,6 +43,8 @@ export function decorateCollaborations($block, payload) {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'browse-by-collaboration');
+
   const $rows = Array.from($block.children);
   const $headingDiv = $rows.shift();
 

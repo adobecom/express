@@ -1,6 +1,9 @@
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import { fetchPlaceholders } from '../../scripts/utils.js';
 
 export default function decorate($block) {
+  addTempWrapper($block, 'submit-email');
+
   const $container = document.querySelector('.submit-email-container');
 
   // Remove submit-email block wrapping div

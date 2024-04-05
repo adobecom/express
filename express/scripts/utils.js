@@ -205,6 +205,9 @@ export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
 }
 
 export function getAssetDetails(el) {
+  if (el.tagName === 'PICTURE') {
+    return getAssetDetails(el.querySelector('img'));
+  }
   // Get asset details
   const assetUrl = new URL(
     el.href // the reference for an a/svg tag
@@ -524,13 +527,21 @@ export function transformLinkToAnimation($a, $videoLooping = true) {
   }
   // replace anchor with video element
   const videoUrl = new URL($a.href);
-  const helixId = videoUrl.hostname.includes('hlx.blob.core') ? videoUrl.pathname.split('/')[2] : videoUrl.pathname.split('media_')[1].split('.')[0];
-  const videoHref = `./media_${helixId}.mp4`;
+
+  const isLegacy = videoUrl.hostname.includes('hlx.blob.core') || videoUrl.pathname.includes('media_');
   const $video = createTag('video', attribs);
-  $video.innerHTML = `<source src="${videoHref}" type="video/mp4">`;
+  if (isLegacy) {
+    const helixId = videoUrl.hostname.includes('hlx.blob.core') ? videoUrl.pathname.split('/')[2] : videoUrl.pathname.split('media_')[1].split('.')[0];
+    const videoHref = `./media_${helixId}.mp4`;
+    $video.innerHTML = `<source src="${videoHref}" type="video/mp4">`;
+  } else {
+    $video.innerHTML = `<source src="${videoUrl}" type="video/mp4">`;
+  }
+
   const $innerDiv = $a.closest('div');
   $innerDiv.prepend($video);
   $innerDiv.classList.add('hero-animation-overlay');
+  $video.setAttribute('tabindex', 0);
   $a.replaceWith($video);
   // autoplay animation
   $video.addEventListener('canplay', () => {
@@ -683,10 +694,10 @@ export async function decorateBlock(block) {
 
     block.classList.add('block');
 
+    block.dataset.block = '';
     block.setAttribute('data-block-name', blockName);
     block.setAttribute('data-block-status', 'initialized');
-    const blockWrapper = block.parentElement;
-    blockWrapper.classList.add(`${blockName}-wrapper`);
+
     if (getMetadata('sheet-powered') === 'Y') {
       const { setBlockTheme } = await import('./content-replace.js');
       setBlockTheme(block);
@@ -722,7 +733,7 @@ export function decorateSVG(a) {
     a.append(pic);
     return a;
   } catch (e) {
-    console.log('Failed to create SVG.', e.message);
+    window.lana.log(`Failed to create SVG: ${e.message}`);
     return a;
   }
 }
@@ -826,7 +837,7 @@ function decorateImageLinks(el) {
         aTag.append(pic);
       }
     } catch (e) {
-      console.log('Error:', `${e.message} '${source.trim()}'`);
+      window.lana.log(`Error: ${e.message} '${source.trim()}'`);
     }
   });
 }
@@ -960,16 +971,19 @@ async function decorateSections(el, isDoc) {
     section.dataset.status = 'decorated';
     section.dataset.idx = idx;
 
-    let defaultContent = false;
-    let wrapper;
+    let defaultContentWrapper;
     [...section.children].forEach((child) => {
-      if (child.tagName === 'DIV' || !defaultContent) {
-        wrapper = document.createElement('div');
-        defaultContent = child.tagName !== 'DIV';
-        if (defaultContent) wrapper.classList.add('default-content-wrapper');
-        section.append(wrapper);
+      const isDivTag = child.tagName === 'DIV';
+      if (isDivTag) {
+        defaultContentWrapper = undefined;
+      } else {
+        if (!defaultContentWrapper) {
+          defaultContentWrapper = document.createElement('div');
+          defaultContentWrapper.classList.add('default-content-wrapper');
+          section.insertBefore(defaultContentWrapper, child);
+        }
+        defaultContentWrapper.append(child);
       }
-      wrapper?.append(child);
     });
     blocks.forEach(async (block) => {
       await decorateBlock(block);
@@ -1415,13 +1429,14 @@ function addPromotion() {
   }
 }
 
-function loadMartech() {
+async function loadMartech() {
   const usp = new URLSearchParams(window.location.search);
   const martech = usp.get('martech');
 
   const analyticsUrl = '/express/scripts/instrument.js';
   if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
-    loadScript(analyticsUrl, 'module');
+    const mod = await import('./instrument.js');
+    mod.default();
   }
 }
 
@@ -1691,7 +1706,7 @@ async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
     loadIMS();
     // rush instrument-martech-launch-alloy
-    promises.push(import('./instrument.js'));
+    promises.push(loadMartech());
     window.delay_preload_product = true;
   }
   const [{ runExps }] = await Promise.all(promises);
@@ -1718,9 +1733,6 @@ async function decorateTesting() {
     if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
       // eslint-disable-next-line no-console
       console.log('rushing martech');
-      import('./instrument.js').then(({ default: decorateInteractionTrackingEvents }) => {
-        decorateInteractionTrackingEvents();
-      });
     }
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -1779,35 +1791,6 @@ export async function fixIcons(el = document) {
   });
 }
 
-function unwrapBlock($block) {
-  const $section = $block.parentNode;
-  const $elems = [...$section.children];
-
-  if ($elems.length <= 1) return;
-
-  const $blockSection = createTag('div');
-  const $postBlockSection = createTag('div');
-  const $nextSection = $section.nextElementSibling;
-  $section.parentNode.insertBefore($blockSection, $nextSection);
-  $section.parentNode.insertBefore($postBlockSection, $nextSection);
-
-  let $appendTo;
-  $elems.forEach(($e) => {
-    if ($e === $block || ($e.className === 'section-metadata')) {
-      $appendTo = $blockSection;
-    }
-
-    if ($appendTo) {
-      $appendTo.appendChild($e);
-      $appendTo = $postBlockSection;
-    }
-  });
-
-  if (!$postBlockSection.hasChildNodes()) {
-    $postBlockSection.remove();
-  }
-}
-
 export function normalizeHeadings(block, allowedHeadings) {
   const allowed = allowedHeadings.map((h) => h.toLowerCase());
   block.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((tag) => {
@@ -1831,7 +1814,7 @@ export function normalizeHeadings(block, allowedHeadings) {
   });
 }
 
-export async function fetchPlainBlockFromFragment(url, blockName) {
+export async function fetchBlockFragDecorated(url, blockName) {
   const location = new URL(window.location);
   const { prefix } = getConfig().locale;
   const fragmentUrl = `${location.origin}${prefix}${url}`;
@@ -1916,8 +1899,8 @@ export async function fetchFloatingCta(path) {
   return floatingBtnData;
 }
 
-async function buildAutoBlocks($main) {
-  const lastDiv = $main.querySelector(':scope > div:last-of-type');
+async function buildAutoBlocks(main) {
+  const lastDiv = main.querySelector(':scope > div:last-of-type');
 
   // Load the branch.io banner autoblock...
   if (['yes', 'true', 'on'].includes(getMetadata('show-banner').toLowerCase())) {
@@ -1927,12 +1910,12 @@ async function buildAutoBlocks($main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase())) {
+  if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase()) && document.body.dataset.device === 'mobile') {
     const authoredRRFound = [
       '.template-list.horizontal.fullwidth.mini',
       '.link-list.noarrows',
       '.collapsible-card',
-    ].every((block) => $main.querySelector(block));
+    ].every((block) => main.querySelector(block));
 
     if (!authoredRRFound && !window.relevantRowsLoaded) {
       const relevantRowsData = await fetchRelevantRows(window.location.pathname);
@@ -1942,7 +1925,7 @@ async function buildAutoBlocks($main) {
         const fragment = buildBlock('fragment', '/express/fragments/relevant-rows-default-v2');
         relevantRowsSection.dataset.audience = 'mobile';
         relevantRowsSection.append(fragment);
-        $main.prepend(relevantRowsSection);
+        main.prepend(relevantRowsSection);
         window.relevantRowsLoaded = true;
       }
     }
@@ -1957,10 +1940,32 @@ async function buildAutoBlocks($main) {
 
   async function loadPromoFrag() {
     if (document.querySelector('.sticky-promo-bar')) return;
-    const fragment = await fetchPlainBlockFromFragment(`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`, 'sticky-promo-bar');
-    if (!fragment) return;
-    $main.append(fragment);
-    const block = fragment?.querySelector('.sticky-promo-bar.block');
+
+    let promoFrag;
+    const location = new URL(window.location);
+    const { prefix } = getConfig().locale;
+    const fragmentUrl = `${location.origin}${prefix}${`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`}`;
+    const path = new URL(fragmentUrl).pathname.split('.')[0];
+    const resp = await fetch(`${path}.plain.html`);
+    if (resp.status === 404) {
+      return;
+    } else {
+      const html = await resp.text();
+      const htmlHolder = createTag('div');
+      htmlHolder.innerHTML = html;
+      promoFrag = htmlHolder.querySelector(':scope > div');
+      promoFrag.classList.add('section', 'section-wrapper');
+
+      if (!promoFrag) return;
+
+      const img = promoFrag.querySelector('img');
+      if (img) {
+        img.setAttribute('loading', 'lazy');
+      }
+    }
+
+    main.append(promoFrag);
+    const block = promoFrag?.querySelector('.sticky-promo-bar:not(.block)');
     if (block) await loadBlock(block);
   }
 
@@ -2026,18 +2031,6 @@ async function buildAutoBlocks($main) {
       lastDiv.append(quickActionCardBlock);
     }
   }
-}
-
-function splitSections(main) {
-  main.querySelectorAll(':scope > div > div').forEach((block) => {
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion', 'plans-comparison'];
-    // work around for splitting columns and sixcols template list
-    // add metadata condition to minimize impact on other use cases
-
-    if (blocksToSplit.includes(block.className)) {
-      unwrapBlock(block);
-    }
-  });
 }
 
 function decorateLinkedPictures($main) {
@@ -2230,7 +2223,6 @@ function decoratePictures(main) {
  */
 export async function decorateMain(main, isDoc) {
   await buildAutoBlocks(main);
-  splitSections(main);
   const sections = decorateSections(main, isDoc);
   decorateButtons(main);
   await fixIcons(main);
@@ -2268,20 +2260,31 @@ function hideBody() {
   }
 }
 
+export function toggleVideo(target) {
+  const videos = target.querySelectorAll('video');
+  const paused = videos[0] ? videos[0].paused : false;
+  videos.forEach((video) => {
+    if (paused) {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // ignore
+        });
+      }
+    } else video.pause();
+  });
+}
+
 export function addAnimationToggle(target) {
   target.addEventListener('click', () => {
-    const videos = target.querySelectorAll('video');
-    const paused = videos[0] ? videos[0].paused : false;
-    videos.forEach((video) => {
-      if (paused) {
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            // ignore
-          });
-        }
-      } else video.pause();
-    });
+    toggleVideo(target);
+  }, true);
+  target.addEventListener('keypress', (e) => {
+    if (e.key !== 'Enter' && e.keyCode !== 32 && e.key !== ' ') {
+      return;
+    }
+    e.preventDefault();
+    toggleVideo(target);
   }, true);
 }
 
@@ -2449,7 +2452,7 @@ async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   window.dispatchEvent(new Event('milo:LCP:loaded'));
-  if (window.hlx.martech) loadMartech();
+  if (window.hlx.martech) window.hlx.martechLoaded = loadMartech();
   loadGnav();
   const { default: loadFonts } = await import('./fonts.js');
   loadFonts(config.locale, loadStyle);
@@ -2577,9 +2580,18 @@ export async function loadArea(area = document) {
   // milo's links featurecc
   const config = getConfig();
   if (config.links === 'on') {
-    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
+    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/express/seo/links.json'}`;
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
+
+  if (['on', 'yes'].includes(getMetadata('milo-analytics')?.toLowerCase()) || params.get('milo-analytics') === 'on') {
+    import('./attributes.js').then((analytics) => {
+      document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
+    });
+  }
+  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
+    decorateTrackingEvents();
+  });
 }
 
 export function getMobileOperatingSystem() {

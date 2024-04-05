@@ -1,3 +1,4 @@
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import {
   createTag,
   toClassName,
@@ -64,5 +65,7 @@ function decorateTutorials($block) {
 }
 
 export default function decorate($block) {
+  addTempWrapper($block, 'tutorials');
+
   decorateTutorials($block);
 }

@@ -12,9 +12,11 @@ const BlockMediator = (() => {
   const get = (name) => stores[name]?.value;
 
   /**
+   * one unhandled subscribe cb error will not block the rest
+   * instead, combined error will be thrown
    * @param {string} name
    * @param {any} value
-   * @returns {Promise<{ succeed: boolean, errors: Error[] }>}
+   * @throws {Error} if any cb throws
    */
   const set = (name, value) => {
     if (!hasStore(name)) {
@@ -22,17 +24,19 @@ const BlockMediator = (() => {
     }
     const oldValue = get(name);
     stores[name].value = value;
-    return new Promise((resolve) => {
-      const errors = [];
-      for (const cb of stores[name].callbacks) {
-        try {
-          cb({ oldValue, newValue: value });
-        } catch (e) {
-          errors.push(e);
-        }
+    const errors = [];
+    for (const cb of stores[name].callbacks) {
+      try {
+        cb({ oldValue, newValue: value });
+      } catch (e) {
+        errors.push(e);
       }
-      resolve(errors);
-    });
+    }
+    if (errors.length > 0) {
+      const combinedError = new Error(errors.map((e) => e.message).join('\n'));
+      combinedError.errors = errors;
+      throw combinedError;
+    }
   };
 
   /**

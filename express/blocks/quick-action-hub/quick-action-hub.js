@@ -3,8 +3,10 @@ import {
   transformLinkToAnimation,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 export default function decorate($block) {
+  addTempWrapper($block, 'quick-action-hub');
   const $rows = Array.from($block.children);
   const $header = $rows[0].firstElementChild;
   const $container = createTag('div', { class: 'quick-action-hub-container' });

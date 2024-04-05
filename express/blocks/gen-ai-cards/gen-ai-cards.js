@@ -1,4 +1,5 @@
 import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -204,9 +205,10 @@ function constructPayload(block) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'gen-ai-cards');
+
   const payload = constructPayload(block);
   decorateHeading(block, payload);
   await decorateCards(block, payload);
   await buildCarousel('', block.querySelector('.gen-ai-cards-cards'));
-  document.dispatchEvent(new CustomEvent('linkspopulated', { detail: block.querySelectorAll('.links-wrapper a') }));
 }

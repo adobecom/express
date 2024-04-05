@@ -1,4 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 function decorateButton($block, $toggle) {
   const $button = createTag('button', { class: 'content-toggle-button' });
@@ -71,6 +72,8 @@ function initButton($block, $sections, index) {
 }
 
 export default function decorate($block) {
+  addTempWrapper($block, 'content-toggle');
+
   const $enclosingMain = $block.closest('main');
   if ($enclosingMain) {
     const $sections = $enclosingMain.querySelectorAll('[data-toggle]');

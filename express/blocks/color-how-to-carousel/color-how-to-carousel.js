@@ -1,9 +1,8 @@
-/* eslint-disable import/named, import/extensions */
-
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
 
-function activate(block, payload, target) {
+function activate(block, target) {
   // de-activate all
   block.querySelectorAll('.tip, .tip-number')
     .forEach((item) => {
@@ -56,7 +55,7 @@ function initRotation(payload) {
             // if no next adjacent, back to first
             activeAdjacentSibling = numbers.firstElementChild;
           }
-          activate(numbers.parentElement, payload, activeAdjacentSibling);
+          activate(numbers.parentElement, activeAdjacentSibling);
         });
     }, 5000);
   }
@@ -78,7 +77,7 @@ function buildColorHowToCarousel(block, payload) {
   carousel.append(tips);
   if (payload.icon) carouselDivs.append(payload.icon);
   carouselDivs.append(payload.heading, carousel);
-  if (payload.cta) carouselDivs.append(payload.icon);
+  if (payload.cta) carouselDivs.append(payload.cta);
 
   if (includeSchema) {
     buildSchema(rows, payload);
@@ -121,7 +120,7 @@ function buildColorHowToCarousel(block, payload) {
       if (e.target.nodeName.toLowerCase() === 'span') {
         target = e.target.parentElement;
       }
-      activate(block, payload, target);
+      activate(block, target);
     });
 
     number.addEventListener('keyup', (e) => {
@@ -176,6 +175,8 @@ function getColorSVG(svgName) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'color-how-to-carousel');
+
   const payload = {
     rotationInterval: null,
     fixedImageSize: false,
@@ -244,7 +245,7 @@ export default async function decorate(block) {
 
   buildColorHowToCarousel(block, payload);
   colorizeSVG(block, payload);
-  activate(block, payload, block.querySelector('.tip-number.tip-1'));
+  activate(block, block.querySelector('.tip-number.tip-1'));
 
   const onIntersect = ([entry], observer) => {
     if (!entry.isIntersecting) return;

@@ -6,6 +6,7 @@ import {
   readBlockConfig,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 const DEFAULT_DELAY = 1000;
 const MAX_NONCONFIG_ROWS = 4;
@@ -85,6 +86,8 @@ function addScrollAnimation(block, scrollTo) {
  * @param {HTMLDivElement} block
  */
 export default async function decorate(block) {
+  addTempWrapper(block, 'hero-3d');
+
   const conf = readBlockConfig(block);
   delete conf.desktop;
   delete conf.mobile;

@@ -6,6 +6,8 @@ import {
   getIconElement,
 } from '../../scripts/utils.js';
 
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
+
 async function buildPayload() {
   const payload = {
     userAgent: getMobileOperatingSystem(),
@@ -169,6 +171,7 @@ function watchFloatingButtonState(block) {
 }
 
 export default async function decorate($block) {
+  addTempWrapper($block, 'app-banner');
   if (weekPassed()) {
     localStorage.removeItem('app-banner-optout-exp-date');
     const payload = await buildPayload();
@@ -189,12 +192,6 @@ export default async function decorate($block) {
         initScrollDirection($block);
         watchFloatingButtonState($block);
       }, 1000);
-    }
-
-    const blockLinks = $block.querySelectorAll('a');
-    if (blockLinks && blockLinks.length > 0) {
-      const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
-      document.dispatchEvent(linksPopulated);
     }
   }
 }

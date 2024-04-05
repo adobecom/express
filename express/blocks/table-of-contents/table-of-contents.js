@@ -1,5 +1,6 @@
 /* eslint-disable import/named, import/extensions */
 
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import {
   createTag,
   readBlockConfig,
@@ -7,6 +8,8 @@ import {
 } from '../../scripts/utils.js';
 
 export default function decorate($block, name, doc) {
+  addTempWrapper($block, 'table-of-contents');
+
   const config = readBlockConfig($block);
   const $headings = doc.querySelectorAll('main h2, main h3, main h4, main .table-of-contents');
   let skip = true;

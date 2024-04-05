@@ -1,7 +1,4 @@
-/* eslint-disable import/named, import/extensions */
-
 import { createTag } from '../../scripts/utils.js';
-
 import buildCarousel from '../shared/carousel.js';
 
 export function decorateHeading(block, payload) {
@@ -68,7 +65,7 @@ export default async function decorate(block) {
 
   decorateHeading(block, payload);
   decorateCategories(block, payload);
-  buildCarousel('.browse-by-category-card', block);
+  buildCarousel('.browse-by-category-card', block.querySelector('.browse-by-category-categories-wrapper') || block);
 
   if (block.classList.contains('fullwidth')) {
     const blockWrapper = block.parentNode;

@@ -1,4 +1,5 @@
 import BlockMediator from '../../scripts/block-mediator.min.js';
+import { formatDynamicCartLink } from '../../scripts/utils/pricing.js';
 
 function initScrollWatcher(block) {
   const hideOnIntersect = new IntersectionObserver((entries) => {
@@ -15,13 +16,21 @@ function initScrollWatcher(block) {
     threshold: 0,
   });
 
-  const primaryCta = BlockMediator.get('primaryCtaUrl');
-
-  const pageCta = document.querySelector(`.section a.primaryCTA[href='${primaryCta}']`, `.section. a.cta[href='${primaryCta}']`, `.section. a.button[href='${primaryCta}']`);
   const footer = document.querySelector('footer');
+  if (footer) hideOnIntersect.observe(footer);
+
+  const primaryCta = BlockMediator.get('primaryCtaUrl');
+  if (!primaryCta) return;
+
+  const primaryUrl = new URL(primaryCta);
+
+  const pageCta = Array.from(document.querySelectorAll(
+    '.section:first-of-type a.primaryCTA',
+    '.section:first-of-type a.cta',
+    '.section:first-of-type a.button',
+  )).find((a) => a.href === primaryUrl.href);
 
   if (pageCta) hideOnIntersect.observe(pageCta);
-  if (footer) hideOnIntersect.observe(footer);
 }
 
 export default async function decorate(block) {
@@ -30,7 +39,7 @@ export default async function decorate(block) {
 
   buttons.forEach((btn) => {
     const parentEl = btn.parentElement;
-
+    formatDynamicCartLink(btn);
     if (['EM', 'STRONG'].includes(parentEl.tagName)) {
       if (parentEl.tagName === 'EM') {
         btn.classList.add('primary', 'reverse');

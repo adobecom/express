@@ -1,4 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -111,6 +112,8 @@ function decorateCTA(block) {
 }
 
 export default function decorate(block) {
+  addTempWrapper(block, 'hero-color');
+
   const svgContainer = createTag('div', { class: 'svg-container' });
   block.append(svgContainer);
 

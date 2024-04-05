@@ -171,8 +171,8 @@ export async function createFloatingButton(block, audience, data) {
   // Hide CTAs with same url & text as the Floating CTA && is NOT a Floating CTA (in mobile/tablet)
   const sameUrlCTAs = Array.from(main.querySelectorAll('a.button:any-link'))
     .filter((a) => (a.textContent.trim() === aTag.textContent.trim()
-    || new URL(a.href).pathname === new URL(aTag.href).pathname)
-      && !a.parentElement.parentElement.classList.contains('floating-button'));
+      || new URL(a.href).pathname === new URL(aTag.href).pathname)
+      && !a.parentElement.parentElement.classList.contains('floating-button') && !a.classList.contains('floating-cta-ignore'));
   sameUrlCTAs.forEach((cta) => {
     cta.classList.add('same-as-floating-button-CTA');
   });
@@ -314,6 +314,10 @@ export async function createFloatingButton(block, audience, data) {
   return floatButtonWrapper;
 }
 
+function isValAffirmative(value) {
+  return !['no', 'N', 'false', 'off'].includes(value) || ['yes', 'Y', 'true', 'on'].includes(value);
+}
+
 export async function collectFloatingButtonData() {
   const defaultButton = await fetchFloatingCta('default');
   const pageButton = await fetchFloatingCta(window.location.pathname);
@@ -327,8 +331,9 @@ export async function collectFloatingButtonData() {
 
   const data = {
     scrollState: 'withLottie',
+    showAppStoreBadge: true,
     useLottieArrow: true,
-    delay: 3,
+    delay: 0,
     tools: [],
     appStore: {},
     mainCta: {},
@@ -379,7 +384,12 @@ export async function collectFloatingButtonData() {
     }
 
     if (key === 'use lottie arrow') {
-      data.useLottieArrow = !['no', 'N', 'false', 'off'].includes(value);
+      data.useLottieArrow = isValAffirmative(value);
+    }
+
+    // only effective on multifunction button
+    if (key === 'show app store badge') {
+      data.showAppStoreBadge = isValAffirmative(value);
     }
 
     for (let i = 1; i < 7; i += 1) {
@@ -424,7 +434,7 @@ export function buildToolBoxStructure(wrapper, data) {
   const toolBoxWrapper = createTag('div', { class: 'toolbox-inner-wrapper' });
   const notch = createTag('a', { class: 'notch' });
   const notchPill = createTag('div', { class: 'notch-pill' });
-  const appStoreBadge = decorateBadge();
+
   const background = createTag('div', { class: 'toolbox-background' });
   const toggleButton = createTag('a', { class: 'toggle-button' });
   const toggleIcon = getIconElement('plus-icon-22');
@@ -439,18 +449,24 @@ export function buildToolBoxStructure(wrapper, data) {
   toggleButton.append(toggleIcon);
   floatingButton.append(toggleButton);
   notch.append(notchPill);
-  toolBox.append(notch, appStoreBadge);
+  toolBox.append(notch);
   wrapper.append(toolBox, background);
 
-  appStoreBadge.href = data.appStore.href ? data.appStore.href : data.tools[0].anchor.href;
+  if (data.showAppStoreBadge) {
+    const appStoreBadge = decorateBadge();
+    toolBox.append(appStoreBadge);
+    appStoreBadge.href = data.appStore.href ? data.appStore.href : data.tools[0].anchor.href;
+  }
 
-  wrapper.classList.add('initial-load');
-  wrapper.classList.add('clamped');
-  if (wrapper.classList.contains('closed')) {
-    toolBox.classList.add('hidden');
-  } else {
-    wrapper.classList.add('toolbox-opened');
-    floatingButton.classList.add('toolbox-opened');
+  if (data.delay > 0) {
+    wrapper.classList.add('initial-load');
+    wrapper.classList.add('clamped');
+    if (wrapper.classList.contains('closed')) {
+      toolBox.classList.add('hidden');
+    } else {
+      wrapper.classList.add('toolbox-opened');
+      floatingButton.classList.add('toolbox-opened');
+    }
   }
 }
 
@@ -462,11 +478,13 @@ export function initToolBox(wrapper, data, toggleFunction) {
   const notch = wrapper.querySelector('.notch');
   const background = wrapper.querySelector('.toolbox-background');
 
-  setTimeout(() => {
-    if (wrapper.classList.contains('initial-load')) {
-      toggleFunction(wrapper, lottie, data, false);
-    }
-  }, data.delay * 1000);
+  if (data.delay > 0) {
+    setTimeout(() => {
+      if (wrapper.classList.contains('initial-load')) {
+        toggleFunction(wrapper, lottie, data, false);
+      }
+    }, data.delay * 1000);
+  }
 
   cta.addEventListener('click', (e) => {
     if (!wrapper.classList.contains('toolbox-opened')) {

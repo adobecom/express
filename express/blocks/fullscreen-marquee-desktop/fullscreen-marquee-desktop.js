@@ -4,6 +4,7 @@ import {
   fetchPlaceholders,
   transformLinkToAnimation,
 } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 function buildContent(content) {
@@ -140,6 +141,8 @@ async function buildApp(block, content) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'fullscreen-marquee-desktop');
+
   const rows = Array.from(block.children);
   const heading = rows[0] ? rows[0].querySelector('div') : null;
   const background = rows[2] ? rows[2].querySelector('picture') : null;

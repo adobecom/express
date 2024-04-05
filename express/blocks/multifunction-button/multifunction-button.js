@@ -1,3 +1,4 @@
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import {
   createTag,
 } from '../../scripts/utils.js';
@@ -92,6 +93,8 @@ export async function createMultiFunctionButton(block, data, audience) {
 }
 
 export default async function decorate(block) {
+  addTempWrapper(block, 'multifunction-button');
+
   if (block.classList.contains('spreadsheet-powered')) {
     const audience = block.querySelector(':scope > div').textContent.trim();
     if (audience === 'mobile') {
