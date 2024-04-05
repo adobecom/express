@@ -218,7 +218,9 @@ export function unwrapBlock(block, blockName) {
   if (elems.length <= 1) return;
 
   const blockSection = createTag('div');
-  blockSection.className = `section section-wrapper ${blockName}-container`;
+  blockSection.className = 'section section-wrapper';
+  const containerClassName = [...section.classList].filter((v) => v.startsWith(`${blockName}`));
+  blockSection.classList.add(...containerClassName);
   const postBlockSection = createTag('div');
   postBlockSection.className = section.className;
   postBlockSection.classList.remove(`${blockName}-container`);
