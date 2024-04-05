@@ -1,5 +1,3 @@
-/* global _satellite */
-
 import {
   createTag,
   getConfig,
@@ -214,37 +212,6 @@ function uploadFile() {
   };
 }
 
-function track(name) {
-  try {
-    _satellite?.track('event', {
-      xdm: {},
-      data: {
-        eventType: 'web.webinteraction.linkClicks',
-        web: {
-          webInteraction: {
-            name,
-            linkClicks: {
-              value: 1,
-            },
-            type: 'other',
-          },
-        },
-        _adobe_corpnew: {
-          digitalData: {
-            primaryEvent: {
-              eventInfo: {
-                eventName: name,
-              },
-            },
-          },
-        },
-      },
-    });
-  } catch (e) {
-    window.lana?.log(e);
-  }
-}
-
 export default async function decorate(block) {
   // cache block element for the
   fqaBlock = block;
@@ -335,14 +302,4 @@ export default async function decorate(block) {
       document.body.dataset.suppressfloatingcta = 'false';
     }
   }, { passive: true });
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        observer.disconnect();
-        track('view-quickaction-upload-page');
-      }
-    });
-  });
-  observer.observe(block);
 }
