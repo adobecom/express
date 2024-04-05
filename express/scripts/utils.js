@@ -205,6 +205,9 @@ export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
 }
 
 export function getAssetDetails(el) {
+  if (el.tagName === 'PICTURE') {
+    return getAssetDetails(el.querySelector('img'));
+  }
   // Get asset details
   const assetUrl = new URL(
     el.href // the reference for an a/svg tag
