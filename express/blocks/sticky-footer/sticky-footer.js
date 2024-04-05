@@ -1,7 +1,7 @@
 import {
   createTag, fetchPlaceholders, getIcon, readBlockConfig,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 /**
  * @param {number} [rating=5]
