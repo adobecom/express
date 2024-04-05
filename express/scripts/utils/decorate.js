@@ -210,7 +210,8 @@ export function addTempWrapper(block, blockName) {
   wrapper.append(block);
 }
 
-export function unwrapBlock(blockWrapper, blockName) {
+export function unwrapBlock(block, blockName) {
+  const blockWrapper = block.parentNode;
   const section = blockWrapper.parentNode;
   const elems = [...section.children];
 
