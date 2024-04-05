@@ -23,7 +23,7 @@ async function fetchPromotion(name) {
 
 export default async function decorate($block) {
   addTempWrapper($block, 'promotion');
-  unwrapBlock($block.parentNode, 'promotion');
+  unwrapBlock($block, 'promotion');
 
   const name = $block.textContent.trim();
   if (!name) return;
