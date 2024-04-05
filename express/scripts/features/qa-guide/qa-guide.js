@@ -291,7 +291,7 @@ const launchStorySelector = async () => {
   });
 };
 
-export default async function initQAGuide(preflightCallback) {
+export default async function initQAGuide() {
   loadStyle('/express/scripts/features/qa-guide/qa-guide.css');
   const index = getQAIndex();
 
@@ -307,7 +307,6 @@ export default async function initQAGuide(preflightCallback) {
     if (!pages.length) return;
 
     const payload = buildPayload(pages);
-    payload.preflightCallback = preflightCallback;
     buildQAWidget(index, payload);
   }
 }
