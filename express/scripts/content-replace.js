@@ -39,23 +39,24 @@ async function getReplacementsFromSearch() {
   if (!categories) {
     return null;
   }
-  const tasksPair = Object.entries(categories).find((cat) => cat[1] === tasks);
-  const xTasksPair = Object.entries(xCategories).find((cat) => cat[1] === tasksx);
+
   const exp = /['"<>?.;{}]/gm;
   const sanitizedTasks = tasks?.match(exp) ? '' : tasks;
+  const sanitizedTasksx = tasksx?.match(exp) ? '' : tasksx;
   const sanitizedTopics = topics?.match(exp) ? '' : topics;
   const sanitizedQuery = q?.match(exp) ? '' : q;
 
-  let translatedTasks;
-  if (document.body.dataset.device === 'desktop') {
-    translatedTasks = xTasksPair?.[1] ? xTasksPair[0].toLowerCase() : tasksx;
-  } else {
-    translatedTasks = tasksPair?.[1] ? tasksPair[0].toLowerCase() : tasks;
+  const tasksPair = Object.entries(categories).find((cat) => cat[1] === sanitizedTasks);
+  const xTasksPair = Object.entries(xCategories).find((cat) => cat[1] === sanitizedTasksx);
+
+  let translatedTasks = xTasksPair?.[1] ? xTasksPair[0].toLowerCase() : sanitizedTasksx;
+  if (!translatedTasks) {
+    translatedTasks = tasksPair?.[1] ? tasksPair[0].toLowerCase() : sanitizedTasks;
   }
   return {
     '{{queryTasks}}': sanitizedTasks || '',
     '{{QueryTasks}}': titleCase(sanitizedTasks || ''),
-    '{{queryTasksX}}': tasksx || '',
+    '{{queryTasksX}}': sanitizedTasksx || '',
     '{{translatedTasks}}': translatedTasks || '',
     '{{TranslatedTasks}}': titleCase(translatedTasks || ''),
     '{{placeholderRatio}}': phformat || '',
