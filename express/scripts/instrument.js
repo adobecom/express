@@ -102,6 +102,39 @@ function set(path, value) {
   return obj;
 }
 
+export function sendFrictionlessEventToAdobeAnaltics(eventName) {
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: eventName,
+          linkClicks: {
+            value: 1,
+          },
+          custom: {
+            qa: {
+              location: 'embed-sdk-in-seo',
+              group: 'image',
+            },
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        digitalData: {
+          primaryEvent: {
+            eventInfo: {
+              eventName,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 export function sendEventToAdobeAnaltics(eventName) {
   _satellite.track('event', {
     xdm: {},
@@ -712,7 +745,7 @@ function martechLoadedCB() {
   sendEventToAdobeAnaltics('landing:viewedPage');
 
   if (getMetadata('quickaction-upload-page') === 'on') {
-    sendEventToAdobeAnaltics('view-quickaction-upload-page');
+    sendFrictionlessEventToAdobeAnaltics('view-quickaction-upload-page');
   }
 
   // Fire the displayPurchasePanel event if it is the pricing site
