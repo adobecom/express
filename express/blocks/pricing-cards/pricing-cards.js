@@ -131,6 +131,7 @@ function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo,
   }
   ctaGroup.classList.add('card-cta-group');
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
+    a.classList.add('floating-cta-ignore');
     a.classList.add('large');
     if (i === 1) a.classList.add('secondary');
     if (a.parentNode.tagName.toLowerCase() === 'strong') {

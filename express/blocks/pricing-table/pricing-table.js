@@ -171,7 +171,8 @@ const assignEvents = (tableEl) => {
   const buttons = tableEl.querySelectorAll('.toggle-row');
   if (!buttons?.length) return;
 
-  buttons.forEach((btn) => {
+  buttons.forEach((btn) => { 
+    btn.classList.add('floating-cta-ignore');
     btn.classList.add('point-cursor');
     btn.addEventListener('click', () => handleToggleMore(btn));
     btn.addEventListener('keydown', (e) => {

@@ -78,6 +78,7 @@ async function selectPlan(card, planUrl, sendAnalyticEvent) {
       pricingCta.href = buildUrl(plan.url, plan.country, plan.language, plan.offerId);
       pricingCta.dataset.planUrl = planUrl;
       pricingCta.id = plan.stringId;
+      pricingCta.classList.add('floating-cta-ignore');
     }
   }
 

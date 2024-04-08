@@ -76,6 +76,9 @@ function handleCtas(block, column) {
   const ctas = column.querySelectorAll('a');
   const mainCTA = ctas[ctas.length - 1];
   if (!mainCTA) return null;
+  ctas.forEach((cta) => {
+    cta.classList.add('floating-cta-ignore');
+  });
 
   mainCTA.classList.add('button', 'cta', 'xlarge');
 
