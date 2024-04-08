@@ -317,6 +317,7 @@ function renderMediaWrapper(template, placeholders) {
     renderedMedia.hover();
   };
   const leaveHandler = () => {
+    document.activeElement.blur();
     if (renderedMedia) renderedMedia.cleanup();
   };
 
