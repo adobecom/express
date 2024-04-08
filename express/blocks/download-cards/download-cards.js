@@ -1,5 +1,5 @@
 import { createTag, readBlockConfig } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import { prependDownloadIcon } from '../hero-3d/hero-3d.js';
 
 /**

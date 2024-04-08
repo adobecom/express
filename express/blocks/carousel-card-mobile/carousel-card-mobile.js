@@ -1,5 +1,5 @@
 import { createTag, fetchRelevantRows } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import buildPaginatedCarousel from '../shared/paginated-carousel.js';
 import { buildAppStoreBadge } from '../shared/app-store-badge.js';
