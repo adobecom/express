@@ -329,7 +329,6 @@ function renderMediaWrapper(template, placeholders) {
     e.preventDefault();
     e.stopPropagation();
     if (!tabbingAllowed) return;
-    //  document.dispatchEvent("mouseleave")
     if (!renderedMedia) {
       renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
       mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
