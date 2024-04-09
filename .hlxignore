@@ -1,8 +1,7 @@
 .*
 *.md
+karma.config.js
 LICENSE
 package.json
 package-lock.json
 test/*
-build/*
-web-test-runner.config.mjs

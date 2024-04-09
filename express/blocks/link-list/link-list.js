@@ -3,7 +3,7 @@ import {
   fetchRelevantRows,
   normalizeHeadings,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
@@ -32,19 +32,20 @@ async function loadSpreadsheetData(block, relevantRowsData) {
 }
 
 const formatBlockLinks = (links, variant, baseURL) => {
-  if (variant !== SMART_VARIANT) return;
-  if (!links || !baseURL) return;
-
+  if (!links || variant !== SMART_VARIANT || !baseURL) {
+    return;
+  }
   const formattedURL = `${baseURL}?acomx-dno=true&category=templates`;
   links.forEach((p) => {
     const a = p.querySelector('a');
     a.href = `${formattedURL}&q=${a.title}`;
-    a.classList.add('floating-cta-ignore');
   });
 };
 
 const toggleLinksHighlight = (links, variant) => {
-  if (variant === SMART_VARIANT) return;
+  if (variant === SMART_VARIANT) {
+    return;
+  }
   links.forEach((l) => {
     const a = l.querySelector(':scope > a');
     if (a) {
