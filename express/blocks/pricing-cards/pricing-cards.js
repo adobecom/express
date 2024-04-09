@@ -1,4 +1,4 @@
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
 
