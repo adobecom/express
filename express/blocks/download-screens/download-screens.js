@@ -1,5 +1,5 @@
 import { createTag, readBlockConfig } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 const CARD_WIDTH = 157;
 const CARD_HEIGHT = 313;

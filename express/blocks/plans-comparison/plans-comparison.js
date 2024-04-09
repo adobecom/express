@@ -4,7 +4,7 @@ import {
   getIconElement,
   fetchBlockFragDecorated,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
 
 async function fetchPlan(planUrl) {
