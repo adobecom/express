@@ -5,7 +5,7 @@ import {
   addHeaderSizing, getConfig,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 import {
@@ -24,7 +24,7 @@ const animationBreakPointSettings = [
   },
   {
     typeHint: 'desktop',
-    minWidth: 430,
+    minWidth: 400,
   },
   {
     typeHint: 'hd',

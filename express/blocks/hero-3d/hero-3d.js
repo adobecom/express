@@ -6,7 +6,7 @@ import {
   readBlockConfig,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 const DEFAULT_DELAY = 1000;
 const MAX_NONCONFIG_ROWS = 4;
