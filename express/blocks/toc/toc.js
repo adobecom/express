@@ -4,7 +4,7 @@ import {
   getIconElement as genericGetIconElement,
   getMobileOperatingSystem,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 export function getToggleButton() {
   const $toggle = document.querySelector('.default-content-wrapper .button.accent');

@@ -1,4 +1,4 @@
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
 } from '../../scripts/utils.js';

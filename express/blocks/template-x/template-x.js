@@ -14,7 +14,7 @@ import {
   toClassName,
   transformLinkToAnimation,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { Masonry } from '../shared/masonry.js';
 import buildCarousel from '../shared/carousel.js';
 import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './template-search-api-v3.js';
@@ -1483,12 +1483,8 @@ async function buildTemplateList(block, props, type = []) {
     await decorateTemplates(block, props);
   } else {
     window.lana.log(`failed to load templates with props: ${JSON.stringify(props)}`, { tags: 'templates-api' });
-
-    if (getConfig().env.name === 'prod') {
-      block.remove();
-    } else {
-      block.textContent = 'Error loading templates, please refresh the page or try again later.';
-    }
+    // fixme: better error message.
+    block.innerHTML = 'Oops. Our templates delivery got stolen. Please try refresh the page.';
   }
 
   if (templates && props.tabs) {
