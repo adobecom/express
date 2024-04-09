@@ -11,16 +11,18 @@ notifications:
         include:
           risk_rating: R5
       fields:
-        assignee:
-          name: jinglhua
-        customfield_11800: MWPW-140779 #epic link
+        customfield_11800: MWPW-145743 #epic link
+        customfield_12900: 
+          value: Express Dev
         watchers:
-          - casalino
-          - jmichnow
-          - mauchley
-          - apganapa
-          - rofe
+          - dstrong
           - vhargrave
+          - jinglhua
+          - rea01581
+          - all42238
+          - all66020
+          - cod87753
+          - apganapa
         labels:
           - "OriginatingProcess=Kodiak"
           - "security"

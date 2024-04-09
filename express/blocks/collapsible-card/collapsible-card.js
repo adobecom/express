@@ -4,7 +4,7 @@ import {
   getIconElement,
   getMobileOperatingSystem,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 
 function toggleCollapsibleCard($block) {
   $block.classList.toggle('expanded');
