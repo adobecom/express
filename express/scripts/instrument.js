@@ -711,9 +711,9 @@ function martechLoadedCB() {
   // Fire the landing:viewedPage event
   sendEventToAdobeAnaltics('landing:viewedPage');
 
-  if (getMetadata('quickaction-upload-page') === 'on') {
-    sendEventToAdobeAnaltics('view-quickaction-upload-page');
-  }
+  // if (getMetadata('quickaction-upload-page') === 'on') {
+  //   sendEventToAdobeAnaltics('view-quickaction-upload-page');
+  // }
 
   // Fire the displayPurchasePanel event if it is the pricing site
   if (
