@@ -205,6 +205,9 @@ export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
 }
 
 export function getAssetDetails(el) {
+  if (el.tagName === 'PICTURE') {
+    return getAssetDetails(el.querySelector('img'));
+  }
   // Get asset details
   const assetUrl = new URL(
     el.href // the reference for an a/svg tag
@@ -1797,35 +1800,6 @@ export async function fixIcons(el = document) {
   });
 }
 
-function unwrapBlock($block) {
-  const $section = $block.parentNode;
-  const $elems = [...$section.children];
-
-  if ($elems.length <= 1) return;
-
-  const $blockSection = createTag('div');
-  const $postBlockSection = createTag('div');
-  const $nextSection = $section.nextElementSibling;
-  $section.parentNode.insertBefore($blockSection, $nextSection);
-  $section.parentNode.insertBefore($postBlockSection, $nextSection);
-
-  let $appendTo;
-  $elems.forEach(($e) => {
-    if ($e === $block || ($e.className === 'section-metadata')) {
-      $appendTo = $blockSection;
-    }
-
-    if ($appendTo) {
-      $appendTo.appendChild($e);
-      $appendTo = $postBlockSection;
-    }
-  });
-
-  if (!$postBlockSection.hasChildNodes()) {
-    $postBlockSection.remove();
-  }
-}
-
 export function normalizeHeadings(block, allowedHeadings) {
   const allowed = allowedHeadings.map((h) => h.toLowerCase());
   block.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((tag) => {
@@ -2068,18 +2042,6 @@ async function buildAutoBlocks(main) {
   }
 }
 
-function splitSections(main) {
-  main.querySelectorAll(':scope > div > div').forEach((block) => {
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion', 'plans-comparison'];
-    // work around for splitting columns and sixcols template list
-    // add metadata condition to minimize impact on other use cases
-
-    if (blocksToSplit.includes(block.className)) {
-      unwrapBlock(block);
-    }
-  });
-}
-
 function decorateLinkedPictures($main) {
   /* thanks to word online */
   $main.querySelectorAll(':scope > picture').forEach(($picture) => {
@@ -2270,7 +2232,6 @@ function decoratePictures(main) {
  */
 export async function decorateMain(main, isDoc) {
   await buildAutoBlocks(main);
-  splitSections(main);
   const sections = decorateSections(main, isDoc);
   decorateButtons(main);
   decorateMarqueeColumns(main);

@@ -1,4 +1,4 @@
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/utils/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
 
@@ -96,6 +96,12 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
       } else {
         specialPromo.innerHTML = specialPromo.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
         specialPromoPercentageEyeBrowTextReplaced = true;
+      }
+    }
+    if (!isPremiumCard && specialPromo?.parentElement?.classList?.contains('special-promo')) {
+      specialPromo.parentElement.classList.remove('special-promo');
+      if (specialPromo.parentElement.firstChild.innerHTML !== '') {
+        specialPromo.parentElement.firstChild.remove();
       }
     }
   });

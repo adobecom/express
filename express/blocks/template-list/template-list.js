@@ -17,9 +17,8 @@ import {
   linkImage,
   sampleRUM,
   toClassName,
-  unwrapBlock
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper, unwrapBlock } from '../../scripts/utils/decorate.js';
 
 import { Masonry } from '../shared/masonry.js';
 
@@ -1947,7 +1946,8 @@ function constructProps() {
 
 export default async function decorate($block) {
   addTempWrapper($block, 'template-list');
-  unwrapBlock($block.parentNode, 'template-list');
+  unwrapBlock($block, 'template-list');
+
   const props = constructProps();
   if ($block.classList.contains('spreadsheet-powered')) {
     await replaceRRTemplateList($block, props);
