@@ -6,7 +6,7 @@ import {
   getLottie,
   lazyLoadLottiePlayer,
   toClassName,
-  getMetadata, getConfig,
+  getMetadata, getConfig, getHelixEnv,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
@@ -462,8 +462,12 @@ export default async function decorate($block) {
     regenerateBlockState(actionTitle, $CTA, headingTag);
     $block.classList.add('ratings_received');
   });
-
-  const resp = await fetch(`https://www.adobe.com/reviews-api/ccx${sheet}.json`);
+  const env = getHelixEnv();
+  let url = `https://www.adobe.com/reviews-api/ccx${sheet}.json`;
+  if (env?.name === 'stage') {
+    url = `https://www.stage.adobe.com/reviews-api/ccx${sheet}.json`;
+  }
+  const resp = await fetch(url);
   if (resp.ok) {
     const response = await resp.json();
     if (response.data[0].Average) {
