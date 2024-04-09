@@ -1,6 +1,7 @@
 import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { debounce } from '../../scripts/hofs.js';
-import { decorateButtons, addTempWrapper } from '../../scripts/utils/decorate.js';
+import { decorateButtons } from '../../scripts/utils/decorate.js';
 import {
   formatDynamicCartLink,
 } from '../../scripts/utils/pricing.js';

@@ -5,7 +5,7 @@ import {
   createTag,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 export default function decorate($block) {
   addTempWrapper($block, 'icon-list');

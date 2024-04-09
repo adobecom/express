@@ -1,4 +1,4 @@
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { fetchPlaceholders } from '../../scripts/utils.js';
 
 export default function decorate($block) {
