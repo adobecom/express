@@ -438,7 +438,7 @@ export default async function renderTemplate(template, placeholders) {
     if (event.code === 'Tab' && !tabbingAllowed) {
       event.preventDefault();
     }
-  }
+  };
   const tmpltEl = createTag('div');
   tmpltEl.append(renderStillWrapper(template, placeholders));
   tmpltEl.append(await renderHoverWrapper(template, placeholders));
