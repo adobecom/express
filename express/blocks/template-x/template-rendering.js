@@ -314,7 +314,6 @@ function renderMediaWrapper(template, placeholders) {
     if (!renderedMedia) {
       renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
       mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
-      mediaWrapper.querySelector('.icon')?.focus();
     }
     renderedMedia.hover();
     tabbingAllowed = false;
@@ -332,7 +331,6 @@ function renderMediaWrapper(template, placeholders) {
     if (!renderedMedia) {
       renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
       mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
-      mediaWrapper.querySelector('.icon')?.focus();
       renderedMedia.hover();
     }
   };
@@ -371,7 +369,7 @@ async function renderHoverWrapper(template, placeholders) {
 
   if (isEligible) {
     const cta = renderCTA(placeholders, template.customLinks.branchUrl);
-    btnContainer.append(cta);
+    btnContainer.prepend(cta);
     cta.addEventListener('focusin', focusHandler);
   }
 

@@ -500,6 +500,8 @@ main.with-holiday-templates-banner {
     will-change: opacity;
     pointer-events: none;
     z-index: 1;
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 .template-x.horizontal .template:not(.placeholder) .button-container {
