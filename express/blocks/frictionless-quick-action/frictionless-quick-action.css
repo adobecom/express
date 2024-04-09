@@ -137,7 +137,6 @@
 
 .frictionless-quick-action.block > div.hidden {
     visibility: hidden;
-    position: absolute;
 }
 
 .frictionless-quick-action.block > div.transparent {
