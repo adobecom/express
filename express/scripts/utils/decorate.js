@@ -210,17 +210,14 @@ export function addTempWrapper(block, blockName) {
   wrapper.append(block);
 }
 
-export function unwrapBlock(block, blockName) {
-  const blockWrapper = block.parentNode;
+export function unwrapBlock(blockWrapper, blockName) {
   const section = blockWrapper.parentNode;
   const elems = [...section.children];
 
   if (elems.length <= 1) return;
 
   const blockSection = createTag('div');
-  blockSection.className = 'section section-wrapper';
-  const containerClassName = [...section.classList].filter((v) => v.startsWith(`${blockName}`));
-  blockSection.classList.add(...containerClassName);
+  blockSection.className = `section section-wrapper ${blockName}-container`;
   const postBlockSection = createTag('div');
   postBlockSection.className = section.className;
   postBlockSection.classList.remove(`${blockName}-container`);
