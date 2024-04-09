@@ -75,7 +75,6 @@ const eagerLoad = (img) => {
 (function handleSplit() {
   const { userAgent } = navigator;
   document.body.dataset.device = userAgent.includes('Mobile') ? 'mobile' : 'desktop';
-  if (getMetadata('quickaction-upload-page') !== 'on') return;
   const fqaMeta = createTag('meta', { content: 'on' });
   if (document.body.dataset.device === 'mobile'
     || (/Safari/.test(userAgent) && !/Chrome|CriOS|FxiOS|Edg|OPR|Opera|OPiOS|Vivaldi|YaBrowser|Avast|VivoBrowser|GSA/.test(userAgent))) {
