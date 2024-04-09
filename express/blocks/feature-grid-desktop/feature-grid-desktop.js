@@ -1,5 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { isVideoLink } from '../shared/video.js';
 
 function renderImageOrVideo(media) {

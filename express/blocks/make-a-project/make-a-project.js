@@ -1,5 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import buildCarousel from '../shared/carousel.js';
 

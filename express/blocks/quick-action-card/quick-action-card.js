@@ -7,7 +7,7 @@ import {
   readBlockConfig,
   toClassName,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
