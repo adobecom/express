@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
   fetchPlaceholders,

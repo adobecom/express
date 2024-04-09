@@ -58,8 +58,7 @@ function startSDK(data = '') {
           appName: 'express',
         },
         configParams: {
-          locale: ietf?.replace('-', '_'),
-          env: urlParams.get('hzenv') === 'stage' ? 'stage' : 'prod',
+          locale: ietf.replace('-', '_'),
         },
         authOption: () => ({
           mode: 'delayed',
@@ -115,6 +114,11 @@ function startSDK(data = '') {
       parentElementId: `${quickAction}-container`,
       backgroundColor: 'transparent',
       hideCloseButton: true,
+      minSize: {
+        width: 1112,
+        height: 620,
+        unit: 'px',
+      },
     };
 
     const docConfig = {
@@ -243,7 +247,6 @@ export default async function decorate(block) {
     } else {
       uploadFile();
     }
-    document.body.dataset.suppressfloatingcta = 'true';
   });
 
   function preventDefaults(e) {
@@ -276,7 +279,6 @@ export default async function decorate(block) {
     const { files } = dt;
 
     [...files].forEach(startSDKWithUnconvertedFile);
-    document.body.dataset.suppressfloatingcta = 'true';
   }, false);
 
   const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
@@ -299,7 +301,6 @@ export default async function decorate(block) {
       document.body.classList.remove('editor-modal-loaded');
       inputElement.value = '';
       fade(uploadContainer, 'in');
-      document.body.dataset.suppressfloatingcta = 'false';
     }
   }, { passive: true });
 }

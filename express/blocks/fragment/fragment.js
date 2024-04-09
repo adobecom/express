@@ -3,7 +3,7 @@ import {
   loadSections,
   removeIrrelevantSections,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/utils/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 /**
  * Loads a fragment.
