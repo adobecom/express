@@ -155,7 +155,7 @@ export async function trackBranchParameters($links) {
     assetCollection,
     branchCategory,
     branchSearchCategory,
-    branchTabs,
+    branchTab,
     branchAction,
     branchPrompt,
     sdid,
@@ -176,7 +176,7 @@ export async function trackBranchParameters($links) {
     getMetadata('branch-asset-collection'),
     getMetadata('branch-category'),
     getMetadata('branch-search-category'),
-    getMetadata('branch-tabs'),
+    getMetadata('branch-tab'),
     getMetadata('branch-action'),
     getMetadata('branch-prompt'),
     params.get('sdid'),
@@ -194,6 +194,9 @@ export async function trackBranchParameters($links) {
       const btnUrl = new URL($a.href);
       const isSearchBranchLink = placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`);
       const urlParams = btnUrl.searchParams;
+      const setParams = (k, v) => {
+        if (v) urlParams.set(k, v);
+      };
       if (urlParams.has('acomx-dno')) {
         urlParams.delete('acomx-dno');
         btnUrl.search = urlParams.toString();
@@ -203,47 +206,48 @@ export async function trackBranchParameters($links) {
       const placement = getPlacement($a);
 
       if (isSearchBranchLink) {
-        urlParams.set('category', branchCategory || 'templates');
-        taskID && urlParams.set('taskID', taskID);
-        assetCollection && urlParams.set('assetCollection', assetCollection);
+        setParams('category', branchCategory || 'templates');
+        setParams('taskID', taskID);
+        setParams('assetCollection', assetCollection);
 
         if (branchSearchCategory) {
-          urlParams.set('searchCategory', branchSearchCategory);
+          setParams('searchCategory', branchSearchCategory);
         } else if (templateSearchTag) {
-          urlParams.set('q', templateSearchTag);
+          setParams('q', templateSearchTag);
         }
-        branchTabs && urlParams.set('tabs', branchTabs);
-        branchAction && urlParams.set('action', branchAction);
-        branchPrompt && urlParams.set('prompt', branchPrompt);
+        setParams('tab', branchTab);
+        setParams('action', branchAction);
+        setParams('prompt', branchPrompt);
       }
 
-      referrer && urlParams.set('referrer', referrer);
-      pageUrl && urlParams.set('url', pageUrl);
-      canvasHeight && urlParams.set('height', canvasHeight);
-      canvasHeight && urlParams.set('width', canvasWidth);
-      canvasUnit && urlParams.set('unit', canvasUnit);
-      sceneline && urlParams.set('sceneline', sceneline);
-      sdid && urlParams.set('sdid', sdid);
-      mv && urlParams.set('mv', mv);
-      mv2 && urlParams.set('mv2', mv2);
-      efId && urlParams.set('efid', efId);
+      setParams('referrer', referrer);
+      setParams('url', pageUrl);
+      setParams('height', canvasHeight);
+      setParams('width', canvasWidth);
+      setParams('unit', canvasUnit);
+      setParams('sceneline', sceneline);
+      setParams('sdid', sdid);
+      setParams('mv', mv);
+      setParams('mv2', mv2);
+      setParams('efid', efId);
+      setParams('promoid', promoId);
+      setParams('trackingid', trackingId);
+      setParams('cgen', cgen);
+      setParams('placement', placement);
 
       if (sKwcId) {
         const sKwcIdParameters = sKwcId.split('!');
 
         if (typeof sKwcIdParameters[2] !== 'undefined' && sKwcIdParameters[2] === '3') {
-          urlParams.set('customer_placement', 'Google%20AdWords');
+          setParams('customer_placement', 'Google%20AdWords');
         }
 
         if (typeof sKwcIdParameters[8] !== 'undefined' && sKwcIdParameters[8] !== '') {
-          urlParams.set('keyword', sKwcIdParameters[8]);
+          setParams('keyword', sKwcIdParameters[8]);
         }
       }
-      promoId && urlParams.set('promoid', promoId);
-      trackingId && urlParams.set('trackingid', trackingId);
-      cgen && urlParams.set('cgen', cgen);
+
       experimentStatus === 'active' && urlParams.set('expid', `${experiment.id}-${experiment.selectedVariant}`);
-      placement && urlParams.set('ctaid', placement);
 
       btnUrl.search = urlParams.toString();
       $a.href = decodeURIComponent(btnUrl.toString());
