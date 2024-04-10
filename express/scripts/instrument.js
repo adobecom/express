@@ -173,6 +173,7 @@ export async function trackBranchParameters($links) {
     getMetadata('branch-asset-collection'),
     getMetadata('branch-category'),
     getMetadata('branch-search-category'),
+    getMetadata('branch-loadprintaddon'),
     params.get('sdid'),
     params.get('mv'),
     params.get('mv2'),
