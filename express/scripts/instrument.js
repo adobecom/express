@@ -247,7 +247,7 @@ export async function trackBranchParameters($links) {
         }
       }
 
-      experimentStatus === 'active' && urlParams.set('expid', `${experiment.id}-${experiment.selectedVariant}`);
+      experimentStatus === 'active' && setParams('expid', `${experiment.id}-${experiment.selectedVariant}`);
 
       btnUrl.search = urlParams.toString();
       $a.href = decodeURIComponent(btnUrl.toString());
