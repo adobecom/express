@@ -1300,7 +1300,7 @@ function importSearchBar(block, blockMediator) {
 
         const redirectSearch = async () => {
           const placeholders = await fetchPlaceholders();
-          const taskMap = placeholders['task-name-mapping'] ? JSON.parse(placeholders['task-name-mapping']) : {};
+          const taskMap = placeholders['x-task-name-mapping'] ? JSON.parse(placeholders['task-name-mapping']) : {};
 
           const format = getMetadata('placeholder-format');
           let currentTasks = '';
@@ -1483,8 +1483,12 @@ async function buildTemplateList(block, props, type = []) {
     await decorateTemplates(block, props);
   } else {
     window.lana.log(`failed to load templates with props: ${JSON.stringify(props)}`, { tags: 'templates-api' });
-    // fixme: better error message.
-    block.innerHTML = 'Oops. Our templates delivery got stolen. Please try refresh the page.';
+
+    if (getConfig().env.name === 'prod') {
+      block.remove();
+    } else {
+      block.textContent = 'Error loading templates, please refresh the page or try again later.';
+    }
   }
 
   if (templates && props.tabs) {
