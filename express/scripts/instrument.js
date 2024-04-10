@@ -195,7 +195,7 @@ export async function trackBranchParameters($links) {
       const isSearchBranchLink = placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`);
       const urlParams = btnUrl.searchParams;
       const setParams = (k, v) => {
-        if (v) urlParams.set(k, v);
+        if (v) urlParams.set(k, encodeURIComponent(v));
       };
       if (urlParams.has('acomx-dno')) {
         urlParams.delete('acomx-dno');
