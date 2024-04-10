@@ -545,6 +545,18 @@ main.with-holiday-templates-banner {
     z-index: 2;
 }
 
+.template-x .template:hover:not(.placeholder) .button-container:not(.singleton-hover),
+.template-x.horizontal .template:hover:not(.placeholder) .button-container:not(.singleton-hover),
+.template-x.horizontal .template:hover:not(.placeholder) .template-link,
+.template-x.sixcols .template:hover:not(.placeholder) .button-container:not(.singleton-hover),
+.template-x.sixcols .template:hover:not(.placeholder) .template-link,
+.template-x.fullwidth .template:hover:not(.placeholder) .button-container:not(.singleton-hover),
+.template-x.fullwidth .template:hover:not(.placeholder) .template-link {
+    opacity: 0;
+    pointer-events: initial;
+    z-index: 2;
+}
+
 .template-x.horizontal .template:not(.placeholder) .template-link,
 .template-x.sixcols .template:not(.placeholder) .template-link,
 .template-x.fullwidth .template:not(.placeholder) .template-link {
