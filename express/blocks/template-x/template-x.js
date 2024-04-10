@@ -1300,7 +1300,7 @@ function importSearchBar(block, blockMediator) {
 
         const redirectSearch = async () => {
           const placeholders = await fetchPlaceholders();
-          const taskMap = placeholders['task-name-mapping'] ? JSON.parse(placeholders['task-name-mapping']) : {};
+          const taskMap = placeholders['x-task-name-mapping'] ? JSON.parse(placeholders['task-name-mapping']) : {};
 
           const format = getMetadata('placeholder-format');
           let currentTasks = '';

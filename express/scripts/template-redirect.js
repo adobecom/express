@@ -5,11 +5,11 @@ async function existsTemplatePage(url) {
   const allTemplatesMetadata = await fetchAllTemplatesMetadata();
   return allTemplatesMetadata.some((e) => e.url === url);
 }
-
+const sanitizeExp = /['"<>?.;{}]/gm;
 export function constructTargetPath(topics, tasks, tasksx) {
-  const sanitizedTopics = topics && topics !== "''" ? `/${topics}` : '';
-  const sanitizedTasks = tasks && tasks !== "''" ? `/${tasks}` : '';
-  const sanitizedTasksX = tasksx && tasksx !== "''" ? `/${tasksx}` : '';
+  const sanitizedTopics = topics && !topics.match(sanitizeExp) && topics !== "''" ? `/${topics}` : '';
+  const sanitizedTasks = tasks && !tasks.match(sanitizeExp) && tasks !== "''" ? `/${tasks}` : '';
+  const sanitizedTasksX = tasksx && !tasksx.match(sanitizeExp) && tasksx !== "''" ? `/${tasksx}` : '';
   const slash = !(sanitizedTasks || sanitizedTasksX) && !sanitizedTopics ? '/' : '';
   const targetPath = `/express/templates${slash}${sanitizedTasks || sanitizedTasksX}${sanitizedTopics}`;
   const { prefix } = getConfig().locale;
