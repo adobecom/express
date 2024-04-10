@@ -289,8 +289,6 @@ async function renderRotatingMedias(wrapper,
   return { cleanup, hover: playMedia };
 }
 
-let tabbingAllowed = true;
-
 function renderMediaWrapper(template, placeholders) {
   const mediaWrapper = createTag('div', { class: 'media-wrapper' });
 
@@ -316,18 +314,18 @@ function renderMediaWrapper(template, placeholders) {
       mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
     }
     renderedMedia.hover();
-    tabbingAllowed = false;
+    document.activeElement.blur();
+    e.target.querySelector('a').focus({ focusVisible: true });
   };
+
   const leaveHandler = () => {
     document.activeElement.blur();
     if (renderedMedia) renderedMedia.cleanup();
-    tabbingAllowed = true;
   };
 
   const focusHandler = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!tabbingAllowed) return;
     if (!renderedMedia) {
       renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
       mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
@@ -434,11 +432,6 @@ function renderStillWrapper(template, placeholders) {
 }
 
 export default async function renderTemplate(template, placeholders) {
-  document.onkeydown = (event) => {
-    if (event.code === 'Tab' && !tabbingAllowed) {
-      event.preventDefault();
-    }
-  };
   const tmpltEl = createTag('div');
   tmpltEl.append(renderStillWrapper(template, placeholders));
   tmpltEl.append(await renderHoverWrapper(template, placeholders));
