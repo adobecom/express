@@ -211,7 +211,6 @@ export async function trackBranchParameters($links) {
         setParams('category', branchCategory || 'templates');
         setParams('taskID', taskID);
         setParams('assetCollection', assetCollection);
- 
 
         if (branchSearchCategory) {
           setParams('searchCategory', branchSearchCategory);

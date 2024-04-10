@@ -6,6 +6,14 @@ export function decorateHeading(block, payload) {
   const heading = createTag('h3', { class: 'browse-by-category-heading' });
   const viewAllButtonWrapper = createTag('p', { class: 'browse-by-category-link-wrapper' });
 
+  const subHeaderContent = payload.heading.match(/\((.+)\)/);
+  let subheaderElement;
+  if (subHeaderContent) {
+    subheaderElement = createTag('div', { class: 'browse-by-category-sub-heading' });
+    [, subheaderElement.textContent] = subHeaderContent;
+    payload.heading = payload.heading.slice(0, subHeaderContent.index);
+  }
+
   if (payload.viewAllLink.href !== '') {
     const viewAllButton = createTag('a', { class: 'browse-by-category-link', href: payload.viewAllLink.href });
     viewAllButton.textContent = payload.viewAllLink.text;
@@ -13,7 +21,9 @@ export function decorateHeading(block, payload) {
   }
 
   heading.textContent = payload.heading;
-  headingSection.append(heading, viewAllButtonWrapper);
+  headingSection.append(heading);
+  if (subheaderElement) headingSection.append(subheaderElement);
+  headingSection.append(viewAllButtonWrapper);
   block.append(headingSection);
 }
 
