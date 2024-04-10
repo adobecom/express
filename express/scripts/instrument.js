@@ -155,6 +155,9 @@ export async function trackBranchParameters($links) {
     assetCollection,
     branchCategory,
     branchSearchCategory,
+    branchTabs,
+    branchAction,
+    branchPrompt,
     sdid,
     mv,
     mv2,
@@ -173,6 +176,9 @@ export async function trackBranchParameters($links) {
     getMetadata('branch-asset-collection'),
     getMetadata('branch-category'),
     getMetadata('branch-search-category'),
+    getMetadata('branch-tabs'),
+    getMetadata('branch-action'),
+    getMetadata('branch-prompt'),
     params.get('sdid'),
     params.get('mv'),
     params.get('mv2'),
@@ -198,55 +204,29 @@ export async function trackBranchParameters($links) {
 
       if (isSearchBranchLink) {
         urlParams.set('category', branchCategory || 'templates');
-        urlParams.set('taskID', taskID);
-        urlParams.set('assetCollection', assetCollection);
+        taskID && urlParams.set('taskID', taskID);
+        assetCollection && urlParams.set('assetCollection', assetCollection);
 
         if (branchSearchCategory) {
           urlParams.set('searchCategory', branchSearchCategory);
         } else if (templateSearchTag) {
           urlParams.set('q', templateSearchTag);
         }
+        branchTabs && urlParams.set('tabs', branchTabs);
+        branchAction && urlParams.set('action', branchAction);
+        branchPrompt && urlParams.set('prompt', branchPrompt);
       }
 
-      if (referrer) {
-        urlParams.set('referrer', referrer);
-      }
-
-      if (pageUrl) {
-        urlParams.set('url', pageUrl);
-      }
-
-      if (canvasHeight) {
-        urlParams.set('height', canvasHeight);
-      }
-
-      if (canvasWidth) {
-        urlParams.set('width', canvasWidth);
-      }
-
-      if (canvasUnit) {
-        urlParams.set('unit', canvasUnit);
-      }
-
-      if (sceneline) {
-        urlParams.set('sceneline', sceneline);
-      }
-
-      if (sdid) {
-        urlParams.set('sdid', sdid);
-      }
-
-      if (mv) {
-        urlParams.set('mv', mv);
-      }
-
-      if (mv2) {
-        urlParams.set('mv2', mv2);
-      }
-
-      if (efId) {
-        urlParams.set('efid', efId);
-      }
+      referrer && urlParams.set('referrer', referrer);
+      pageUrl && urlParams.set('url', pageUrl);
+      canvasHeight && urlParams.set('height', canvasHeight);
+      canvasHeight && urlParams.set('width', canvasWidth);
+      canvasUnit && urlParams.set('unit', canvasUnit);
+      sceneline && urlParams.set('sceneline', sceneline);
+      sdid && urlParams.set('sdid', sdid);
+      mv && urlParams.set('mv', mv);
+      mv2 && urlParams.set('mv2', mv2);
+      efId && urlParams.set('efid', efId);
 
       if (sKwcId) {
         const sKwcIdParameters = sKwcId.split('!');
@@ -259,26 +239,11 @@ export async function trackBranchParameters($links) {
           urlParams.set('keyword', sKwcIdParameters[8]);
         }
       }
-
-      if (promoId) {
-        urlParams.set('promoid', promoId);
-      }
-
-      if (trackingId) {
-        urlParams.set('trackingid', trackingId);
-      }
-
-      if (cgen) {
-        urlParams.set('cgen', cgen);
-      }
-
-      if (experimentStatus === 'active') {
-        urlParams.set('expid', `${experiment.id}-${experiment.selectedVariant}`);
-      }
-
-      if (placement) {
-        urlParams.set('ctaid', placement);
-      }
+      promoId && urlParams.set('promoid', promoId);
+      trackingId && urlParams.set('trackingid', trackingId);
+      cgen && urlParams.set('cgen', cgen);
+      experimentStatus === 'active' && urlParams.set('expid', `${experiment.id}-${experiment.selectedVariant}`);
+      placement && urlParams.set('ctaid', placement);
 
       btnUrl.search = urlParams.toString();
       $a.href = decodeURIComponent(btnUrl.toString());
