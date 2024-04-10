@@ -180,7 +180,7 @@ main .floating-button-wrapper:first-of-type + .section {
     padding-top: 0;
 }
 
-main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf, .split-action .ratings) a.button.same-as-floating-button-CTA {
+main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf, .split-action) a.button.same-as-floating-button-CTA {
     display: none;
 }
 
