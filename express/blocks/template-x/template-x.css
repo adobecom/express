@@ -410,6 +410,7 @@ main.with-holiday-templates-banner {
 
 .template-x.horizontal.mini .template {
     min-height: unset;
+    min-width: 64px;
     max-height: 100px;
     max-width: 200px;
     margin: 0 4px;
@@ -445,6 +446,7 @@ main.with-holiday-templates-banner {
 .template-x.horizontal.mini .template .still-wrapper video {
     object-fit: cover;
     height: 100px;
+    width: 100%;
 }
 
 .template-x.horizontal.mini .template .icon-free-badge {
@@ -455,7 +457,7 @@ main.with-holiday-templates-banner {
     top: 4px;
 }
 
-.template-x.sixcols .template,
+.template-x.sixcols:not(.horizontal) .template,
 .template-x.fullwidth .template {
     position: relative;
     display: inline-flex;
@@ -475,8 +477,8 @@ main.with-holiday-templates-banner {
 
 .template-x.horizontal .template:not(.placeholder) img,
 .template-x.horizontal .template:not(.placeholder) video,
-.template-x.sixcols .template:not(.placeholder) img,
-.template-x.sixcols .template:not(.placeholder) video,
+.template-x.sixcols:not(.horizontal) .template:not(.placeholder) img,
+.template-x.sixcols:not(.horizontal) .template:not(.placeholder) video,
 .template-x.fullwidth .template:not(.placeholder) img,
 .template-x.fullwidth .template:not(.placeholder) video {
     transition: transform .3s ease-in-out;
@@ -484,7 +486,7 @@ main.with-holiday-templates-banner {
 }
 
 .template-x .template:not(.placeholder) .button-container,
-.template-x.sixcols .template:not(.placeholder) .button-container,
+.template-x.sixcols:not(.horizontal) .template:not(.placeholder) .button-container,
 .template-x.fullwidth .template:not(.placeholder) .button-container {
     position: absolute;
     width: 120%;
@@ -524,7 +526,7 @@ main.with-holiday-templates-banner {
 }
 
 .template-x.horizontal .template:not(.placeholder) .template-link,
-.template-x.sixcols .template:not(.placeholder) .template-link,
+.template-x.sixcols:not(.horizontal) .template:not(.placeholder) .template-link,
 .template-x.fullwidth .template:not(.placeholder) .template-link {
     opacity: 0;
     transition: opacity .4s ease-in-out .2s;
@@ -534,8 +536,8 @@ main.with-holiday-templates-banner {
 .template-x .template:hover:not(.placeholder) .button-container,
 .template-x.horizontal .template:hover:not(.placeholder) .button-container,
 .template-x.horizontal .template:hover:not(.placeholder) .template-link,
-.template-x.sixcols .template:hover:not(.placeholder) .button-container,
-.template-x.sixcols .template:hover:not(.placeholder) .template-link,
+.template-x.sixcols:not(.horizontal) .template:hover:not(.placeholder) .button-container,
+.template-x.sixcols:not(.horizontal) .template:hover:not(.placeholder) .template-link,
 .template-x.fullwidth .template:hover:not(.placeholder) .button-container,
 .template-x.fullwidth .template:hover:not(.placeholder) .template-link {
     opacity: 1;
@@ -544,7 +546,7 @@ main.with-holiday-templates-banner {
 }
 
 .template-x.horizontal .template:not(.placeholder) .template-link,
-.template-x.sixcols .template:not(.placeholder) .template-link,
+.template-x.sixcols:not(.horizontal) .template:not(.placeholder) .template-link,
 .template-x.fullwidth .template:not(.placeholder) .template-link {
     text-decoration: none;
     border-radius: 18px;
@@ -571,7 +573,7 @@ main.with-holiday-templates-banner {
 }
 
 .template-x.horizontal .template:not(.placeholder) .template-link::after,
-.template-x.sixcols .template:not(.placeholder) .template-link::after,
+.template-x.sixcols:not(.horizontal) .template:not(.placeholder) .template-link::after,
 .template-x.fullwidth .template:not(.placeholder) .template-link::after {
     display: none;
 }
@@ -595,7 +597,7 @@ main.with-holiday-templates-banner {
     margin: 0 11px;
 }
 
-.template-x.sixcols .template.placeholder,
+.template-x.sixcols:not(.horizontal) .template.placeholder,
 .template-x.fullwidth .template.placeholder {
     width: 145px;
     margin: 15px auto;
@@ -2326,7 +2328,7 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         max-width: 900px;
     }
 
-    .template-x-wrapper.sixcols {
+    .template-x-wrapper.sixcols:not(.horizontal) {
         max-width: 748px;
     }
 
@@ -2353,7 +2355,7 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         text-align: left;
     }
 
-    .template-x.sixcols > .template-x-inner-wrapper > .masonry-col,
+    .template-x.sixcols:not(.horizontal) > .template-x-inner-wrapper > .masonry-col,
     .template-x.fullwidth > .template-x-inner-wrapper > .masonry-col {
         max-width: 180px;
     }
@@ -2373,7 +2375,7 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         margin: 24px 11px 18px 11px;
     }
 
-    .template-x.sixcols .template.placeholder,
+    .template-x.sixcols:not(.horizontal) .template.placeholder,
     .template-x.fullwidth .template.placeholder {
         width: 145px;
         margin: 21px auto;
@@ -2618,7 +2620,7 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         max-width: 1200px;
     }
 
-    .template-x-wrapper.sixcols {
+    .template-x-wrapper.sixcols:not(.horizontal) {
         max-width: 1122px;
     }
 
