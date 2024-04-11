@@ -1969,8 +1969,6 @@ async function buildAutoBlocks(main) {
   }
 
   async function loadFloatingCTA(BlockMediator, decorated) {
-    if (!isValAffirmative(getMetadata('floating-cta-live')) && getEnv(getConfig()).name === 'prod') return;
-
     const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
     const device = document.body.dataset?.device;
     const blockName = getMetadata(`${device}-floating-cta`);
