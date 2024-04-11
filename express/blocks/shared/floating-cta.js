@@ -315,7 +315,7 @@ export function createFloatingButton(block, audience, data) {
 
 export function collectFloatingButtonData() {
   const metadataMap = Array.from(document.head.querySelectorAll('meta')).reduce((acc, meta) => {
-    if (meta) acc[meta.name] = meta.content || '';
+    if (meta?.name && !meta.property) acc[meta.name] = meta.content || '';
     return acc;
   }, {});
   const getMetadata = (key) => metadataMap[key]; // customized getMetadata to reduce dom queries
