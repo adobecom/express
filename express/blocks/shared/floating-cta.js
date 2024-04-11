@@ -6,7 +6,6 @@ import {
   getMobileOperatingSystem,
   lazyLoadLottiePlayer,
   loadStyle,
-  getMetadata,
   isValAffirmative,
 } from '../../scripts/utils.js';
 
@@ -315,31 +314,47 @@ export function createFloatingButton(block, audience, data) {
   return floatButtonWrapper;
 }
 
+const getMetadataBulk = () => {
+  const meta = {}
+  document.head.querySelectorAll('meta').forEach((entry) => {
+    if (entry?.content && entr?.name){
+      meta[entry.name] = entry?.content
+    }
+  })
+  return meta
+}
+
+export function getMetadataLocal(name, meta) {
+  return meta[name]
+}
+
 export function collectFloatingButtonData() {
+  
+  const cachedMeta = getMetadataBulk();
   const data = {
     scrollState: 'withLottie',
-    showAppStoreBadge: isValAffirmative(getMetadata('show-floating-cta-app-store-badge')),
-    toolsToStash: getMetadata('ctas-above-divider'),
-    useLottieArrow: isValAffirmative(getMetadata('use-floating-cta-lottie-arrow')),
-    delay: getMetadata('floating-cta-drawer-delay') || 0,
+    showAppStoreBadge: isValAffirmative(getMetadataLocal('show-floating-cta-app-store-badge')),
+    toolsToStash: getMetadataLocal('ctas-above-divider'),
+    useLottieArrow: isValAffirmative(getMetadataLocal('use-floating-cta-lottie-arrow')),
+    delay: getMetadataLocal('floating-cta-drawer-delay') || 0,
     tools: [],
     mainCta: {
-      desktopHref: getMetadata('desktop-floating-cta-link'),
-      desktopText: getMetadata('desktop-floating-cta-text'),
-      mobieHref: getMetadata('mobile-floating-cta-link'),
-      mobieText: getMetadata('mobile-floating-cta-text'),
-      href: getMetadata('main-cta-link'),
-      text: getMetadata('main-cta-text'),
+      desktopHref: getMetadataLocal('desktop-floating-cta-link'),
+      desktopText: getMetadataLocal('desktop-floating-cta-text'),
+      mobieHref: getMetadataLocal('mobile-floating-cta-link'),
+      mobieText: getMetadataLocal('mobile-floating-cta-text'),
+      href: getMetadataLocal('main-cta-link'),
+      text: getMetadataLocal('main-cta-text'),
     },
-    bubbleSheet: getMetadata('floating-cta-bubble-sheet'),
-    live: getMetadata('floating-cta-live'),
+    bubbleSheet: getMetadataLocal('floating-cta-bubble-sheet'),
+    live: getMetadataLocal('floating-cta-live'),
   };
 
   for (let i = 1; i < 7; i += 1) {
     const completeSet = {
-      href: getMetadata(`cta-${i}-link`),
-      text: getMetadata(`cta-${i}-text`),
-      icon: getIconElement(getMetadata(`cta-${i}-icon`)),
+      href: getMetadataLocal(`cta-${i}-link`),
+      text: getMetadataLocal(`cta-${i}-text`),
+      icon: getIconElement(getMetadataLocal(`cta-${i}-icon`)),
     };
 
     if (Object.values(completeSet).every((val) => !!val)) {
