@@ -320,7 +320,6 @@ function renderMediaWrapper(template, placeholders) {
     currentHoveredElement = e.target;
     currentHoveredElement?.classList.add('singleton-hover');
     document.activeElement.blur();
-    e?.target.querySelector('a').focus({ focusVisible: true });
   };
 
   const leaveHandler = () => {
