@@ -333,28 +333,28 @@ export function collectFloatingButtonData() {
   const cachedMeta = getMetadataBulk();
   const data = {
     scrollState: 'withLottie',
-    showAppStoreBadge: isValAffirmative(getMetadataLocal('show-floating-cta-app-store-badge')),
-    toolsToStash: getMetadataLocal('ctas-above-divider'),
-    useLottieArrow: isValAffirmative(getMetadataLocal('use-floating-cta-lottie-arrow')),
-    delay: getMetadataLocal('floating-cta-drawer-delay') || 0,
+    showAppStoreBadge: isValAffirmative(getMetadataLocal('show-floating-cta-app-store-badge', cachedMeta)),
+    toolsToStash: getMetadataLocal('ctas-above-divider', cachedMeta),
+    useLottieArrow: isValAffirmative(getMetadataLocal('use-floating-cta-lottie-arrow', cachedMeta)),
+    delay: getMetadataLocal('floating-cta-drawer-delay', cachedMeta) || 0,
     tools: [],
     mainCta: {
-      desktopHref: getMetadataLocal('desktop-floating-cta-link'),
-      desktopText: getMetadataLocal('desktop-floating-cta-text'),
-      mobieHref: getMetadataLocal('mobile-floating-cta-link'),
-      mobieText: getMetadataLocal('mobile-floating-cta-text'),
-      href: getMetadataLocal('main-cta-link'),
-      text: getMetadataLocal('main-cta-text'),
+      desktopHref: getMetadataLocal('desktop-floating-cta-link', cachedMeta),
+      desktopText: getMetadataLocal('desktop-floating-cta-text', cachedMeta),
+      mobieHref: getMetadataLocal('mobile-floating-cta-link', cachedMeta),
+      mobieText: getMetadataLocal('mobile-floating-cta-text', cachedMeta),
+      href: getMetadataLocal('main-cta-link', cachedMeta),
+      text: getMetadataLocal('main-cta-text', cachedMeta),
     },
-    bubbleSheet: getMetadataLocal('floating-cta-bubble-sheet'),
-    live: getMetadataLocal('floating-cta-live'),
+    bubbleSheet: getMetadataLocal('floating-cta-bubble-sheet', cachedMeta),
+    live: getMetadataLocal('floating-cta-live', cachedMeta),
   };
 
   for (let i = 1; i < 7; i += 1) {
     const completeSet = {
-      href: getMetadataLocal(`cta-${i}-link`),
-      text: getMetadataLocal(`cta-${i}-text`),
-      icon: getIconElement(getMetadataLocal(`cta-${i}-icon`)),
+      href: getMetadataLocal(`cta-${i}-link`, cachedMeta),
+      text: getMetadataLocal(`cta-${i}-text`, cachedMeta),
+      icon: getIconElement(getMetadataLocal(`cta-${i}-icon`), cachedMeta),
     };
 
     if (Object.values(completeSet).every((val) => !!val)) {
