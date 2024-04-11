@@ -325,9 +325,9 @@ export function collectFloatingButtonData() {
     tools: [],
     mainCta: {
       desktopHref: getMetadata('desktop-floating-cta-link'),
-      desktopText: getMetadata('mobile-floating-cta-text'),
-      mobieHref: getMetadata('mweb-floating-cta-link'),
-      mobieText: getMetadata('mweb-floating-cta-text'),
+      desktopText: getMetadata('desktop-floating-cta-text'),
+      mobieHref: getMetadata('mobile-floating-cta-link'),
+      mobieText: getMetadata('mobile-floating-cta-text'),
       href: getMetadata('main-cta-link'),
       text: getMetadata('main-cta-text'),
     },
