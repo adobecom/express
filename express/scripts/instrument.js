@@ -155,6 +155,7 @@ export async function trackBranchParameters($links) {
     assetCollection,
     branchCategory,
     branchSearchCategory,
+    branchLoadPrintAddon,
     branchTab,
     branchAction,
     branchPrompt,
@@ -176,6 +177,7 @@ export async function trackBranchParameters($links) {
     getMetadata('branch-asset-collection'),
     getMetadata('branch-category'),
     getMetadata('branch-search-category'),
+    getMetadata('branch-loadprintaddon'),
     getMetadata('branch-tab'),
     getMetadata('branch-action'),
     getMetadata('branch-prompt'),
@@ -215,6 +217,7 @@ export async function trackBranchParameters($links) {
         } else if (templateSearchTag) {
           setParams('q', templateSearchTag);
         }
+        if (branchLoadPrintAddon) setParams('loadPrintAddon', branchLoadPrintAddon);
         setParams('tab', branchTab);
         setParams('action', branchAction);
         setParams('prompt', branchPrompt);
