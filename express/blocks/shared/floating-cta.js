@@ -6,7 +6,6 @@ import {
   getMobileOperatingSystem,
   lazyLoadLottiePlayer,
   loadStyle,
-  getMetadata,
 } from '../../scripts/utils.js';
 
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -315,6 +314,11 @@ export function createFloatingButton(block, audience, data) {
 }
 
 export function collectFloatingButtonData() {
+  const metadataMap = Array.from(document.head.querySelectorAll('meta')).reduce((acc, meta) => {
+    if (meta) acc[meta.name] = meta.content || '';
+    return acc;
+  }, {});
+  const getMetadata = (key) => metadataMap[key]; // customized getMetadata to reduce dom queries
   const data = {
     scrollState: 'withLottie',
     showAppStoreBadge: ['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta-app-store-badge')?.toLowerCase()),
