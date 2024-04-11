@@ -21,10 +21,11 @@ export function decorateHeading(block, payload) {
   }
 
   heading.textContent = payload.heading;
-  headingSection.append(heading);
-  if (subheaderElement) headingSection.append(subheaderElement);
-  headingSection.append(viewAllButtonWrapper);
-  block.append(headingSection);
+  headingSection.append(heading, viewAllButtonWrapper);
+  const headingContainer = createTag('div')
+  headingContainer.append(headingSection)
+  if (subheaderElement) headingContainer.append(subheaderElement);
+  block.append(headingContainer);
 }
 
 export function decorateCategories(block, payload) {

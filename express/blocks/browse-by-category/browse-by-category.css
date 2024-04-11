@@ -37,12 +37,12 @@ main .browse-by-category .browse-by-category-heading-section .browse-by-category
   line-height: 30px;
 }
 
-main .browse-by-category .browse-by-category-heading-section .browse-by-category-sub-heading {
+main .browse-by-category .browse-by-category-sub-heading {
   text-align: left;
   font-size: 16px;
   line-height: 30px;
   padding-top: 5px;
-  padding-left: 2px;
+  padding-left: 22px;
 }
 
 main .browse-by-category .browse-by-category-heading-section .browse-by-category-link-wrapper {
