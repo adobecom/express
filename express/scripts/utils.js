@@ -292,10 +292,6 @@ function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]'])
   }).observe(document.body, { childList: true, subtree: true });
 }
 
-export function isValAffirmative(value) {
-  return !['no', 'N', 'false', 'off'].includes(value) || ['yes', 'Y', 'true', 'on'].includes(value);
-}
-
 export function addPublishDependencies(url) {
   if (!Array.isArray(url)) {
     // eslint-disable-next-line no-param-reassign
@@ -647,26 +643,25 @@ export function removeIrrelevantSections(main) {
   });
 
   // floating CTA vs page CTA with same text or link logics
-  if (isValAffirmative(getMetadata('show-floating-cta'))) {
-    const sameUrlCTAs = Array.from(main.querySelectorAll('a:any-link'))
-      .filter((a) => {
-        const { device } = document.body.dataset;
-        const textToTarget = getMetadata(`${device}-cta-text`)?.trim() || getMetadata('main-cta-text')?.trim();
-        const linkToTarget = getMetadata(`${device}-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
+  if (['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta')?.toLowerCase())) {
+    const { device } = document.body.dataset;
+    const textToTarget = getMetadata(`${device}-cta-text`)?.trim() || getMetadata('main-cta-text')?.trim();
+    const linkToTarget = getMetadata(`${device}-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
+    if (textToTarget || linkToTarget) {
+      const sameUrlCTAs = Array.from(main.querySelectorAll('a:any-link'))
+        .filter((a) => {
+          const sameText = a.textContent.trim() === textToTarget;
+          const samePathname = new URL(a.href).pathname === new URL(linkToTarget)?.pathname;
+          const isNotInFloatingCta = !a.closest('.block')?.classList.contains('floating-button');
+          const notFloatingCtaIgnore = !a.classList.contains('floating-cta-ignore');
 
-        if (!textToTarget && !linkToTarget) return false;
+          return (sameText || samePathname) && isNotInFloatingCta && notFloatingCtaIgnore;
+        });
 
-        const sameText = a.textContent.trim() === textToTarget;
-        const samePathname = new URL(a.href).pathname === new URL(linkToTarget)?.pathname;
-        const isNotInFloatingCta = !a.closest('.block')?.classList.contains('floating-button');
-        const notFloatingCtaIgnore = !a.classList.contains('floating-cta-ignore');
-
-        return (sameText || samePathname) && isNotInFloatingCta && notFloatingCtaIgnore;
+      sameUrlCTAs.forEach((cta) => {
+        cta.classList.add('same-as-floating-button-CTA');
       });
-
-    sameUrlCTAs.forEach((cta) => {
-      cta.classList.add('same-as-floating-button-CTA');
-    });
+    }
   }
 }
 
@@ -2011,7 +2006,7 @@ async function buildAutoBlocks(main) {
         });
       }
     }
-  } else if (isValAffirmative(getMetadata('show-floating-cta').toLowerCase())) {
+  } else if (['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta')?.toLowerCase())) {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {

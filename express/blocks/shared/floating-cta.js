@@ -7,7 +7,6 @@ import {
   lazyLoadLottiePlayer,
   loadStyle,
   getMetadata,
-  isValAffirmative,
 } from '../../scripts/utils.js';
 
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -318,9 +317,9 @@ export function createFloatingButton(block, audience, data) {
 export function collectFloatingButtonData() {
   const data = {
     scrollState: 'withLottie',
-    showAppStoreBadge: isValAffirmative(getMetadata('show-floating-cta-app-store-badge')),
+    showAppStoreBadge: ['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta-app-store-badge')?.toLowerCase()),
     toolsToStash: getMetadata('ctas-above-divider'),
-    useLottieArrow: isValAffirmative(getMetadata('use-floating-cta-lottie-arrow')),
+    useLottieArrow: ['yes', 'y', 'true', 'on'].includes(getMetadata('use-floating-cta-lottie-arrow')?.toLowerCase()),
     delay: getMetadata('floating-cta-drawer-delay') || 0,
     tools: [],
     mainCta: {
