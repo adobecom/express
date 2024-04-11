@@ -16,11 +16,11 @@ export default async function init(el) {
   let audienceIcon;
 
   if (el.classList.contains('desktop')) {
-    audienceIcon = createTag('div', { class: 'audience-icon' }, getIconElement('desktop'));
+    audienceIcon = createTag('div', { class: 'audience-icon' }, getIconElement('device-desktop'));
   }
 
   if (el.classList.contains('mobile')) {
-    audienceIcon = createTag('div', { class: 'audience-icon' }, getIconElement('ios'));
+    audienceIcon = createTag('div', { class: 'audience-icon' }, getIconElement('device-mobile'));
   }
 
   el.prepend(audienceIcon);
