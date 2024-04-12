@@ -289,6 +289,8 @@ async function renderRotatingMedias(wrapper,
   return { cleanup, hover: playMedia };
 }
 
+let currentHoveredElement;
+
 function renderMediaWrapper(template, placeholders) {
   const mediaWrapper = createTag('div', { class: 'media-wrapper' });
 
@@ -312,10 +314,14 @@ function renderMediaWrapper(template, placeholders) {
     if (!renderedMedia) {
       renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
       mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
-      mediaWrapper.querySelector('.icon')?.focus();
     }
     renderedMedia.hover();
+    currentHoveredElement?.classList.remove('singleton-hover');
+    currentHoveredElement = e.target;
+    currentHoveredElement?.classList.add('singleton-hover');
+    document.activeElement.blur();
   };
+
   const leaveHandler = () => {
     if (renderedMedia) renderedMedia.cleanup();
   };
@@ -326,9 +332,11 @@ function renderMediaWrapper(template, placeholders) {
     if (!renderedMedia) {
       renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
       mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
-      mediaWrapper.querySelector('.icon')?.focus();
       renderedMedia.hover();
     }
+    currentHoveredElement?.classList.remove('singleton-hover');
+    currentHoveredElement = e.target;
+    currentHoveredElement?.classList.add('singleton-hover');
   };
 
   return {
@@ -365,7 +373,7 @@ async function renderHoverWrapper(template, placeholders) {
 
   if (isEligible) {
     const cta = renderCTA(placeholders, template.customLinks.branchUrl);
-    btnContainer.append(cta);
+    btnContainer.prepend(cta);
     cta.addEventListener('focusin', focusHandler);
   }
 

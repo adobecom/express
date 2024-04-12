@@ -502,6 +502,8 @@ main.with-holiday-templates-banner {
     will-change: opacity;
     pointer-events: none;
     z-index: 1;
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 .template-x.horizontal .template:not(.placeholder) .button-container {
@@ -541,6 +543,18 @@ main.with-holiday-templates-banner {
 .template-x.fullwidth .template:hover:not(.placeholder) .button-container,
 .template-x.fullwidth .template:hover:not(.placeholder) .template-link {
     opacity: 1;
+    pointer-events: initial;
+    z-index: 2;
+}
+
+.template-x .template:hover:not(.placeholder) .button-container:not(.singleton-hover),
+.template-x.horizontal .template:hover:not(.placeholder) .button-container:not(.singleton-hover),
+.template-x.horizontal .template:hover:not(.placeholder) .template-link,
+.template-x.sixcols .template:hover:not(.placeholder) .button-container:not(.singleton-hover),
+.template-x.sixcols .template:hover:not(.placeholder) .template-link,
+.template-x.fullwidth .template:hover:not(.placeholder) .button-container:not(.singleton-hover),
+.template-x.fullwidth .template:hover:not(.placeholder) .template-link {
+    opacity: 0;
     pointer-events: initial;
     z-index: 2;
 }
