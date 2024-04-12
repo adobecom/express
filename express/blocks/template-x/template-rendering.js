@@ -3,7 +3,6 @@ import {
   createTag,
   getIconElement,
   getMetadata,
-  yieldToMain,
 } from '../../scripts/utils.js';
 
 function containsVideo(pages) {
@@ -420,7 +419,6 @@ function renderStillWrapper(template, placeholders) {
 export default async function renderTemplate(template, placeholders, isEligible) {
   const tmpltEl = createTag('div');
   tmpltEl.append(renderStillWrapper(template, placeholders));
-  await yieldToMain();
   tmpltEl.append(await renderHoverWrapper(template, placeholders, isEligible));
 
   return tmpltEl;
