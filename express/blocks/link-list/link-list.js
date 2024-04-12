@@ -36,7 +36,7 @@ const formatSmartBlockLinks = (links, baseURL) => {
 
   let url = baseURL;
   const multipleURLs = baseURL?.replace(/\s/g, '').split(',');
-  if (multipleURLs.length > 0) {
+  if (multipleURLs?.length > 0) {
     [url] = multipleURLs;
   } else {
     return;
