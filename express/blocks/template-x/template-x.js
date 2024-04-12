@@ -1,5 +1,3 @@
-/* eslint-disable import/named, import/extensions */
-
 import {
   createOptimizedPicture,
   createTag,

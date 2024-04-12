@@ -340,6 +340,21 @@ function renderMediaWrapper(template, placeholders) {
     mediaWrapper, enterHandler, leaveHandler, focusHandler,
   };
 }
+// temporary module sideeffect for mobile beta eligibility
+let isEligible = document.body.dataset.device === 'desktop' || !['yes', 'true', 'Y', 'on'].includes(getMetadata('mobile-benchmark'));
+if (!isEligible) {
+  const eligibility = BlockMediator.get('mobileBetaEligibility');
+  if (eligibility) {
+    isEligible = eligibility.deviceSupport;
+  } else {
+    isEligible = await new Promise((resolve) => {
+      const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
+        resolve(e.newValue.deviceSupport);
+        unsub();
+      });
+    });
+  }
+}
 
 async function renderHoverWrapper(template, placeholders) {
   const btnContainer = createTag('div', { class: 'button-container' });
@@ -351,22 +366,6 @@ async function renderHoverWrapper(template, placeholders) {
   btnContainer.append(mediaWrapper);
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
-
-  let isEligible = document.body.dataset.device === 'desktop' || !['yes', 'true', 'Y', 'on'].includes(getMetadata('mobile-benchmark'));
-
-  if (!isEligible) {
-    const eligibility = BlockMediator.get('mobileBetaEligibility');
-    if (eligibility) {
-      isEligible = eligibility.deviceSupport;
-    } else {
-      isEligible = await new Promise((resolve) => {
-        const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
-          resolve(e.newValue.deviceSupport);
-          unsub();
-        });
-      });
-    }
-  }
 
   if (isEligible) {
     const cta = renderCTA(placeholders, template.customLinks.branchUrl);
