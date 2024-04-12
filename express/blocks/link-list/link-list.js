@@ -34,7 +34,6 @@ async function loadSpreadsheetData(block, relevantRowsData) {
 const formatBlockLinks = (links, variant, baseURL) => {
   if (variant !== SMART_VARIANT) return;
   if (!links || !baseURL) return;
-
   const formattedURL = `${baseURL}?acomx-dno=true&category=templates`;
   links.forEach((p) => {
     const a = p.querySelector('a');
@@ -106,5 +105,5 @@ export default async function decorate(block) {
     await updateAsyncBlocks();
   }
 
-  formatBlockLinks(links, variant, placeholders['search-branch-links']);
+  formatBlockLinks(links, variant, placeholders['search-branch-links']?.replace(/\s/g, '').split(',')[0]);
 }
