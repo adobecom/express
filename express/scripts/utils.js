@@ -1231,15 +1231,6 @@ function resolveFragments() {
     });
 }
 
-function decorateMarqueeColumns($main) {
-  // flag first columns block in first section block as marquee
-  const $firstColumnsBlock = $main.querySelector('.section:first-of-type .columns:first-of-type');
-
-  if ($firstColumnsBlock) {
-    $firstColumnsBlock.classList.add('columns-marquee');
-  }
-}
-
 /**
  * scroll to hash
  */
@@ -2229,7 +2220,6 @@ export async function decorateMain(main, isDoc) {
   splitSections(main);
   const sections = decorateSections(main, isDoc);
   decorateButtons(main);
-  decorateMarqueeColumns(main);
   await fixIcons(main);
   decoratePictures(main);
   decorateLinkedPictures(main);

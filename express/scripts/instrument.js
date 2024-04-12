@@ -146,18 +146,19 @@ export async function trackBranchParameters($links) {
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
 
   const [
-    templateSearchTag,
+    searchTerm,
     canvasHeight,
     canvasWidth,
     canvasUnit,
     sceneline,
     taskID,
     assetCollection,
-    branchCategory,
-    branchSearchCategory,
-    branchTab,
-    branchAction,
-    branchPrompt,
+    category,
+    searchCategory,
+    loadPrintAddon,
+    tab,
+    action,
+    prompt,
     sdid,
     mv,
     mv2,
@@ -176,6 +177,7 @@ export async function trackBranchParameters($links) {
     getMetadata('branch-asset-collection'),
     getMetadata('branch-category'),
     getMetadata('branch-search-category'),
+    getMetadata('branch-loadprintaddon'),
     getMetadata('branch-tab'),
     getMetadata('branch-action'),
     getMetadata('branch-prompt'),
@@ -206,18 +208,19 @@ export async function trackBranchParameters($links) {
       const placement = getPlacement($a);
 
       if (isSearchBranchLink) {
-        setParams('category', branchCategory || 'templates');
+        setParams('category', category || 'templates');
         setParams('taskID', taskID);
         setParams('assetCollection', assetCollection);
 
-        if (branchSearchCategory) {
-          setParams('searchCategory', branchSearchCategory);
-        } else if (templateSearchTag) {
-          setParams('q', templateSearchTag);
+        if (searchCategory) {
+          setParams('searchCategory', searchCategory);
+        } else if (searchTerm) {
+          setParams('q', searchTerm);
         }
-        setParams('tab', branchTab);
-        setParams('action', branchAction);
-        setParams('prompt', branchPrompt);
+        if (loadPrintAddon) setParams('loadPrintAddon', loadPrintAddon);
+        setParams('tab', tab);
+        setParams('action', action);
+        setParams('prompt', prompt);
       }
 
       setParams('referrer', referrer);

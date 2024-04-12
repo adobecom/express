@@ -31,11 +31,18 @@ async function loadSpreadsheetData(block, relevantRowsData) {
   }
 }
 
-const formatBlockLinks = (links, variant, baseURL) => {
-  if (variant !== SMART_VARIANT) return;
+const formatSmartBlockLinks = (links, baseURL) => {
   if (!links || !baseURL) return;
 
-  const formattedURL = `${baseURL}?acomx-dno=true&category=templates`;
+  let url = baseURL;
+  const multipleURLs = baseURL?.replace(/\s/g, '').split(',');
+  if (multipleURLs?.length > 0) {
+    [url] = multipleURLs;
+  } else {
+    return;
+  }
+
+  const formattedURL = `${url}?acomx-dno=true&category=templates`;
   links.forEach((p) => {
     const a = p.querySelector('a');
     a.href = `${formattedURL}&q=${a.title}`;
@@ -105,6 +112,7 @@ export default async function decorate(block) {
     const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
     await updateAsyncBlocks();
   }
-
-  formatBlockLinks(links, variant, placeholders['search-branch-links']);
+  if (variant === SMART_VARIANT) {
+    formatSmartBlockLinks(links, placeholders['search-branch-links']);
+  }
 }
