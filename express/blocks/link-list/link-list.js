@@ -38,6 +38,8 @@ const formatSmartBlockLinks = (links, baseURL) => {
   const multipleURLs = baseURL?.replace(/\s/g, '').split(',');
   if (multipleURLs.length > 0) {
     [url] = multipleURLs;
+  } else {
+    return;
   }
 
   const formattedURL = `${url}?acomx-dno=true&category=templates`;
