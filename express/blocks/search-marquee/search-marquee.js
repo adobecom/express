@@ -254,6 +254,7 @@ function decorateBackground(block) {
     const media = mediaRow.querySelector('picture img');
     if (media) {
       media.classList.add('backgroundimg');
+      media.loading = 'eager';
       const wrapper = block.parentElement;
       if (wrapper.classList.contains('search-marquee-wrapper')) {
         wrapper.prepend(media);
