@@ -48,7 +48,7 @@
     position: relative;
 }
 
-.cta-carousel .card:focus-within {
+.cta-carousel .card:focus-within:not(.gen-a-action){
     border: 2px var(--color-info-accent) solid;
 }
 
