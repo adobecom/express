@@ -1,5 +1,10 @@
 /* eslint-disable no-underscore-dangle */
-import { createTag, getIconElement, getMetadata } from '../../scripts/utils.js';
+import {
+  createTag,
+  getIconElement,
+  getMetadata,
+  yieldToMain,
+} from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function containsVideo(pages) {
@@ -432,6 +437,7 @@ function renderStillWrapper(template, placeholders) {
 export default async function renderTemplate(template, placeholders) {
   const tmpltEl = createTag('div');
   tmpltEl.append(renderStillWrapper(template, placeholders));
+  await yieldToMain();
   tmpltEl.append(await renderHoverWrapper(template, placeholders));
 
   return tmpltEl;
