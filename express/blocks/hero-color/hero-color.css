@@ -51,8 +51,9 @@ main .hero-color .text-container p {
 }
 
 main .hero-color .text-container .button-container {
-  margin: 0;
+  margin: auto;
   text-align: left;
+  width: fit-content;
 }
 
 main .hero-color .text-container .button-container .button {
