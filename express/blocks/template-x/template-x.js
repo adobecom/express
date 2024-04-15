@@ -38,17 +38,6 @@ function handlelize(str) {
     .toLowerCase(); // To lowercase
 }
 
-async function getTemplates(response, phs, fallbackMsg, isEligible) {
-  const filtered = response.items.filter((item) => isValidTemplate(item));
-  const templates = await Promise.all(
-    filtered.map((template) => renderTemplate(template, phs, isEligible)),
-  );
-  return {
-    fallbackMsg,
-    templates,
-  };
-}
-
 async function fetchAndRenderTemplates(props) {
   import('../../scripts/mobile-beta-gating.js').then((gatingScript) => {
     gatingScript.default();
@@ -72,8 +61,13 @@ async function fetchAndRenderTemplates(props) {
 
   props.total = response.metadata.totalHits;
 
-  // eslint-disable-next-line no-return-await
-  return await getTemplates(response, placeholders, fallbackMsg, props.isEligible);
+  const templates = response.items
+    .filter((item) => isValidTemplate(item))
+    .map((template) => renderTemplate(template, placeholders, props.isEligible));
+  return {
+    fallbackMsg,
+    templates,
+  };
 }
 
 async function processContentRow(block, props) {
@@ -1620,11 +1614,7 @@ function determineTemplateXType(props) {
   return type;
 }
 
-export default async function decorate(block) {
-  addTempWrapper(block, 'template-x');
-
-  const props = constructProps(block);
-  // temporary for mobile beta eligibility
+async function getEligibility() {
   let isEligible = document.body.dataset.device === 'desktop' || !['yes', 'true', 'Y', 'on'].includes(getMetadata('mobile-benchmark'));
   if (!isEligible) {
     const eligibility = BlockMediator.get('mobileBetaEligibility');
@@ -1639,7 +1629,17 @@ export default async function decorate(block) {
       });
     }
   }
-  props.isEligible = isEligible;
+  return isEligible;
+}
+
+export default async function decorate(block) {
+  addTempWrapper(block, 'template-x');
+
+  const props = constructProps(block);
   block.innerHTML = '';
-  await buildTemplateList(block, props, determineTemplateXType(props));
+  // temporary for mobile beta eligibility
+  getEligibility().then((isEligible) => {
+    props.isEligible = isEligible;
+    buildTemplateList(block, props, determineTemplateXType(props));
+  });
 }

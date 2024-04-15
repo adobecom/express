@@ -347,7 +347,7 @@ function renderMediaWrapper(template, placeholders) {
   };
 }
 
-async function renderHoverWrapper(template, placeholders, isEligible) {
+function renderHoverWrapper(template, placeholders, isEligible) {
   const btnContainer = createTag('div', { class: 'button-container' });
 
   const {
@@ -424,10 +424,10 @@ function renderStillWrapper(template, placeholders) {
   return stillWrapper;
 }
 
-export default async function renderTemplate(template, placeholders, isEligible) {
+export default function renderTemplate(template, placeholders, isEligible) {
   const tmpltEl = createTag('div');
   tmpltEl.append(renderStillWrapper(template, placeholders));
-  tmpltEl.append(await renderHoverWrapper(template, placeholders, isEligible));
+  tmpltEl.append(renderHoverWrapper(template, placeholders, isEligible));
 
   return tmpltEl;
 }
