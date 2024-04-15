@@ -19,7 +19,6 @@ import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import renderTemplate from './template-rendering.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function wordStartsWithVowels(word) {
   return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
@@ -38,10 +37,10 @@ function handlelize(str) {
     .toLowerCase(); // To lowercase
 }
 
-async function getTemplates(response, phs, fallbackMsg, isEligible) {
+async function getTemplates(response, phs, fallbackMsg) {
   const filtered = response.items.filter((item) => isValidTemplate(item));
   const templates = await Promise.all(
-    filtered.map((template) => renderTemplate(template, phs, isEligible)),
+    filtered.map((template) => renderTemplate(template, phs)),
   );
   return {
     fallbackMsg,
@@ -73,7 +72,7 @@ async function fetchAndRenderTemplates(props) {
   props.total = response.metadata.totalHits;
 
   // eslint-disable-next-line no-return-await
-  return await getTemplates(response, placeholders, fallbackMsg, props.isEligible);
+  return await getTemplates(response, placeholders, fallbackMsg);
 }
 
 async function processContentRow(block, props) {
@@ -1624,22 +1623,6 @@ export default async function decorate(block) {
   addTempWrapper(block, 'template-x');
 
   const props = constructProps(block);
-  // temporary for mobile beta eligibility
-  let isEligible = document.body.dataset.device === 'desktop' || !['yes', 'true', 'Y', 'on'].includes(getMetadata('mobile-benchmark'));
-  if (!isEligible) {
-    const eligibility = BlockMediator.get('mobileBetaEligibility');
-    if (eligibility) {
-      isEligible = eligibility.deviceSupport;
-    } else {
-      isEligible = await new Promise((resolve) => {
-        const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
-          resolve(e.newValue.deviceSupport);
-          unsub();
-        });
-      });
-    }
-  }
-  props.isEligible = isEligible;
   block.innerHTML = '';
   await buildTemplateList(block, props, determineTemplateXType(props));
 }
