@@ -85,6 +85,10 @@ main .hero-color .hidden-svg {
   main .hero-color .text-container {
     padding: 32px;
   }
+  main .hero-color .text-container .button-container  {
+    margin: 0;
+    text-align: left;
+  }
 }
 
 @media screen and (min-width: 900px) {
