@@ -1075,8 +1075,11 @@ async function decorateToolbar(block, props) {
     tBar.append(contentWrapper, functionsWrapper, functions.mobile);
 
     initDrawer(block, props, tBar);
+    await yieldToMain();
     initFilterSort(block, props, tBar);
+    await yieldToMain();
     initViewToggle(block, props, tBar);
+    await yieldToMain();
     initToolbarShadow(block, tBar);
   }
 }
@@ -1211,6 +1214,7 @@ async function decorateTemplates(block, props) {
       }
 
       props.masonry.draw();
+      await yieldToMain();
       window.addEventListener('resize', () => {
         props.masonry.draw();
       });

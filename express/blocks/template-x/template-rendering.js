@@ -3,6 +3,7 @@ import {
   createTag,
   getIconElement,
   getMetadata,
+  yieldToMain,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -445,6 +446,6 @@ export default async function renderTemplate(template, placeholders) {
   const tmpltEl = createTag('div');
   tmpltEl.append(renderStillWrapper(template, placeholders));
   tmpltEl.append(await renderHoverWrapper(template, placeholders));
-
+  await yieldToMain();
   return tmpltEl;
 }
