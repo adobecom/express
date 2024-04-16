@@ -254,6 +254,12 @@
   margin: 0;
 }
 
+@media (max-width: 900px) {
+  main .section .free-plan-container {
+    margin : auto;
+  }
+}
+
 @media (min-width: 900px) {
   .section > .fullscreen-marquee {
     padding-bottom: 40px;
