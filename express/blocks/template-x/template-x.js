@@ -223,6 +223,10 @@ function constructProps(block) {
     }
   });
 
+  if (document.body.dataset.device === 'mobile' || block.classList.contains('mobile')) {
+    props.limit = Math.floor(props.limit / 3);
+  }
+
   return props;
 }
 
