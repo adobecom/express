@@ -11,6 +11,7 @@ import {
   titleCase,
   toClassName,
   transformLinkToAnimation,
+  yieldToMain,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { Masonry } from '../shared/masonry.js';
@@ -1194,7 +1195,7 @@ async function decorateTemplates(block, props) {
   //       +- "Edit this template"
   //
   // make copy of children to avoid modifying list while looping
-
+  await yieldToMain();
   populateTemplates(block, props, templates);
   if (props.orientation.toLowerCase() !== 'horizontal') {
     if (rows > 6 || block.classList.contains('sixcols') || block.classList.contains('fullwidth')) {
