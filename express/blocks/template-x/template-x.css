@@ -669,11 +669,11 @@ main.with-holiday-templates-banner {
 }
 
 .template-x .wide.template.placeholder.h34{
-    margin-top: 10px;
+    margin-top: 5px;
     margin-bottom: 0;
     width: 165px;
     margin-left: 5px;
-    
+    height:40px !important;   
 }
 
 .template-x .wide.template.placeholder.h34 > div:first-of-type{
@@ -681,7 +681,7 @@ main.with-holiday-templates-banner {
 }
 
 .template-x .wide.template.placeholder.h34 > div:nth-of-type(2){
-    bottom: -1%;
+    bottom: 10%;
     background: none;
 }
 
@@ -2420,10 +2420,11 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     }
 
     .template-x.sixcols:not(.horizontal) .template.placeholder.h34{
-        margin-top: 10px;
+        margin-top: 5px;
         margin-bottom: 0;
         width: 165px;
-        margin-left: 5px;      
+        margin-left: 5px; 
+        height:40px !important;     
     }
     
     .template-x.sixcols:not(.horizontal) .template.placeholder.h34 > div:first-of-type{
@@ -2431,7 +2432,7 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     }
     
     .template-x.sixcols:not(.horizontal) .template.placeholder.h34 > div:nth-of-type(2){
-        bottom: -1%;
+        bottom: 10%;
         background: none;
     }
 
