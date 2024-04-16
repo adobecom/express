@@ -121,11 +121,12 @@ async function formatHeadingPlaceholder(props) {
     toolBarHeading = props.total === 1 ? placeholders['template-search-heading-singular'] : placeholders['template-search-heading-plural'];
   }
 
+  const [shortTitle, q, topics] = [getMetadata('short-title'), getMetadata('q'), getMetadata('topics')];
   if (toolBarHeading) {
     toolBarHeading = toolBarHeading
       .replace('{{quantity}}', props.fallbackMsg ? '0' : templateCount)
-      .replace('{{Type}}', titleCase(getMetadata('short-title') || getMetadata('q') || getMetadata('topics')))
-      .replace('{{type}}', getMetadata('short-title') || getMetadata('q') || getMetadata('topics'));
+      .replace('{{Type}}', titleCase(shortTitle || q || topics))
+      .replace('{{type}}', shortTitle || q || topics);
     if (region === 'fr') {
       toolBarHeading.split(' ').forEach((word, index, words) => {
         if (index + 1 < words.length) {
@@ -1067,6 +1068,7 @@ async function decorateToolbar(block, props) {
     lgView.append(getIconElement('large_grid'));
 
     const functionsObj = makeTemplateFunctions(placeholders);
+    await yieldToMain();
     const functions = decorateFunctionsContainer(block, functionsObj, placeholders);
 
     viewsWrapper.append(smView, mdView, lgView);
@@ -1075,11 +1077,8 @@ async function decorateToolbar(block, props) {
     tBar.append(contentWrapper, functionsWrapper, functions.mobile);
 
     initDrawer(block, props, tBar);
-    await yieldToMain();
     initFilterSort(block, props, tBar);
-    await yieldToMain();
     initViewToggle(block, props, tBar);
-    await yieldToMain();
     initToolbarShadow(block, tBar);
   }
 }
@@ -1198,7 +1197,6 @@ async function decorateTemplates(block, props) {
   //       +- "Edit this template"
   //
   // make copy of children to avoid modifying list while looping
-  await yieldToMain();
   populateTemplates(block, props, templates);
   if (props.orientation.toLowerCase() !== 'horizontal') {
     if (rows > 6 || block.classList.contains('sixcols') || block.classList.contains('fullwidth')) {
@@ -1214,7 +1212,6 @@ async function decorateTemplates(block, props) {
       }
 
       props.masonry.draw();
-      await yieldToMain();
       window.addEventListener('resize', () => {
         props.masonry.draw();
       });
@@ -1474,6 +1471,7 @@ async function buildTemplateList(block, props, type = []) {
   }
 
   const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
+  await yieldToMain();
 
   if (templates?.length > 0) {
     props.fallbackMsg = fallbackMsg;

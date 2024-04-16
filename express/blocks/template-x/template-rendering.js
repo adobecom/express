@@ -3,7 +3,6 @@ import {
   createTag,
   getIconElement,
   getMetadata,
-  yieldToMain,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -24,8 +23,9 @@ function getTemplateTitle(template) {
     return `${template.moods.join(', ')} ${template.task.name}`;
   }
 
-  if (getMetadata('tasks-x')?.trim() && getMetadata('topics-x')?.trim()) {
-    return `${getMetadata('topics-x').trim()} ${getMetadata('tasks-x').trim()}`;
+  const [tasksX, topicsX] = [getMetadata('tasks-x'), getMetadata('topics-x')];
+  if (tasksX?.trim() && topicsX?.trim()) {
+    return `${topicsX.trim()} ${tasksX.trim()}`;
   }
 
   return '';
@@ -349,6 +349,7 @@ function renderMediaWrapper(template, placeholders) {
   };
 }
 
+const mobileBenchmark = getMetadata('mobile-benchmark');
 async function renderHoverWrapper(template, placeholders) {
   const btnContainer = createTag('div', { class: 'button-container' });
 
@@ -360,7 +361,8 @@ async function renderHoverWrapper(template, placeholders) {
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
-  let isEligible = document.body.dataset.device === 'desktop' || !['yes', 'true', 'Y', 'on'].includes(getMetadata('mobile-benchmark'));
+  // removing postGA
+  let isEligible = document.body.dataset.device === 'desktop' || !['yes', 'true', 'Y', 'on'].includes(mobileBenchmark);
 
   if (!isEligible) {
     const eligibility = BlockMediator.get('mobileBetaEligibility');
@@ -446,6 +448,5 @@ export default async function renderTemplate(template, placeholders) {
   const tmpltEl = createTag('div');
   tmpltEl.append(renderStillWrapper(template, placeholders));
   tmpltEl.append(await renderHoverWrapper(template, placeholders));
-  await yieldToMain();
   return tmpltEl;
 }
