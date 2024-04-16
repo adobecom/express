@@ -262,7 +262,6 @@ function populateTemplates(block, props, templates) {
       // look for options in last cell
       const overlayCell = tmplt.querySelector(':scope > div:last-of-type');
       const option = overlayCell.textContent.trim();
-      console.log(option, isPlaceholder)
       if (option) {
         if (isPlaceholder) {
           // add aspect ratio to template
@@ -271,7 +270,6 @@ function populateTemplates(block, props, templates) {
           props.placeholderFormat = ratios;
           if (block.classList.contains('horizontal')) {
             const height = block.classList.contains('mini') ? 100 : 200;
-          
             if (ratios[1]) {
               const width = (ratios[0] / ratios[1]) * height;
               tmplt.style = `width: ${width}px`;
@@ -284,7 +282,6 @@ function populateTemplates(block, props, templates) {
             if (ratios[1]) {
               const height = (ratios[1] / ratios[0]) * width;
               tmplt.style = `height: ${height - 21}px`;
-              tmplt.classList.add(`h${height - 21}`);
               if (width / height > 1.3) {
                 tmplt.classList.add('wide');
               }
@@ -1012,7 +1009,6 @@ function toggleMasonryView(block, props, button, toggleButtons) {
       placeholder.classList.add('wide');
     }
   }
-
 }
 
 function initViewToggle(block, props, toolBar) {
