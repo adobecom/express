@@ -721,7 +721,7 @@ function martechLoadedCB() {
   // Fire quick-action-viewed event if needed
   const quickActionBlock = d.querySelector('.frictionless-quick-action.block');
   if (quickActionBlock) {
-    sendFrictionlessEventToAdobeAnaltics('view-quickaction-upload-page');
+    sendFrictionlessEventToAdobeAnaltics(quickActionBlock);
   }
 
   // Fire the displayPurchasePanel event if it is the pricing site
