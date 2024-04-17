@@ -667,15 +667,13 @@ main.with-holiday-templates-banner {
 }
 
 .template-x .wide.template.placeholder.short > div:nth-of-type(2){
-    bottom: 10%;
+    margin: auto;
+    text-align: center;
+    position: initial;
     background: none;
+    bottom: 0;
+    padding: 0;
 }
-
-.template-x .wide.template.placeholder.short.bottom_22 > div:nth-of-type(2){
-    background: none;
-    bottom: 22%;
-}
-
 
 
 .template-x.sm-view .template.placeholder > div:first-of-type {
