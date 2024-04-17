@@ -283,11 +283,9 @@ function populateTemplates(block, props, templates) {
             const width = block.classList.contains('sixcols') || block.classList.contains('fullwidth') ? 165 : 200;
             if (ratios[1]) {
               const height = (ratios[1] / ratios[0]) * width;
-              tmplt.style = `height: ${height - 21}px`;
-              tmplt.classList.add(`h${height - 21}`);
-              if (width / height > 1.3) {
-                tmplt.classList.add('wide');
-              }
+              tmplt.style = `height: ${height}px`;
+              if (height < 62) tmplt.classList.add(`short`);
+              if (width / height > 1.3) tmplt.classList.add('wide');
             }
           }
         } else {
@@ -1007,7 +1005,7 @@ function toggleMasonryView(block, props, button, toggleButtons) {
 
   if (ratios[1]) {
     const height = (ratios[1] / ratios[0]) * width;
-    placeholder.style = `height: ${height - 21}px`;
+    placeholder.style = `height: ${height}px`;
     if (width / height > 1.3) {
       placeholder.classList.add('wide');
     }
