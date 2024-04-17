@@ -699,6 +699,10 @@ main.with-holiday-templates-banner {
     display: none;
 }
 
+.template-x .template.placeholder.short {
+    margin-bottom: 0px;
+}
+
 .template-x .template.placeholder.wide > div:first-of-type > img,
 .template-x .template.placeholder.wide > div:first-of-type > svg {
     width: 24px;
