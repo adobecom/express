@@ -283,7 +283,6 @@ function populateTemplates(block, props, templates) {
               const height = (ratios[1] / ratios[0]) * width;
               tmplt.style.height = `${height}px`;
               if (height < 62) tmplt.classList.add('short');
-              if (height === 55) tmplt.classList.add('bottom_22');
               if (width / height > 1.3) tmplt.classList.add('wide');
             }
           }
