@@ -719,9 +719,8 @@ function martechLoadedCB() {
   sendEventToAdobeAnaltics('landing:viewedPage');
 
   // Fire quick-action-viewed event if needed
-  const quickActionBlock = d.querySelector('frictionless-quick-action.block');
+  const quickActionBlock = d.querySelector('.frictionless-quick-action.block');
   if (quickActionBlock) {
-
     sendFrictionlessEventToAdobeAnaltics('view-quickaction-upload-page');
   }
 
