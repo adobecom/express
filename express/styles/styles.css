@@ -728,6 +728,10 @@ main .section {
   padding-top: 60px;
 }
 
+main .section[data-padding='none'] {
+  padding: 0;
+}
+
 main .section.secondary {
   background-color: var(--color-gray-100);
 }
