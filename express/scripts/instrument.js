@@ -129,6 +129,40 @@ export function sendEventToAdobeAnaltics(eventName) {
   });
 }
 
+function sendFrictionlessEventToAdobeAnaltics(eventName) {
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: eventName,
+          linkClicks: {
+            value: 1,
+          },
+          custom: {
+            qa: {
+              location: 'embed-sdk-in-seo',
+              group: 'image',
+              type: 'remove-background',
+            },
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        digitalData: {
+          primaryEvent: {
+            eventInfo: {
+              eventName,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 export function textToName(text) {
   const splits = text.toLowerCase().split(' ');
   const camelCase = splits.map((s, i) => (i ? s.charAt(0).toUpperCase() + s.substr(1) : s)).join('');
