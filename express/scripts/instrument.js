@@ -129,7 +129,8 @@ export function sendEventToAdobeAnaltics(eventName) {
   });
 }
 
-function sendFrictionlessEventToAdobeAnaltics(eventName) {
+function sendFrictionlessEventToAdobeAnaltics(block) {
+  const eventName = 'view-quickaction-upload-page';
   _satellite.track('event', {
     xdm: {},
     data: {
@@ -143,8 +144,8 @@ function sendFrictionlessEventToAdobeAnaltics(eventName) {
           custom: {
             qa: {
               location: 'embed-sdk-in-seo',
-              group: 'image',
-              type: 'remove-background',
+              group: block.dataset.frictionlessgroup ?? 'unknown',
+              type: block.dataset.frictionlesstype ?? 'unknown',
             },
           },
           type: 'other',
@@ -716,6 +717,13 @@ function martechLoadedCB() {
 
   // Fire the landing:viewedPage event
   sendEventToAdobeAnaltics('landing:viewedPage');
+
+  // Fire quick-action-viewed event if needed
+  const quickActionBlock = d.querySelector('frictionless-quick-action.block');
+  if (quickActionBlock) {
+
+    sendFrictionlessEventToAdobeAnaltics('view-quickaction-upload-page');
+  }
 
   // Fire the displayPurchasePanel event if it is the pricing site
   if (
