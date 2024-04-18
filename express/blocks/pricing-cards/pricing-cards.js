@@ -317,20 +317,20 @@ async function syncMinHeights(...groups) {
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
   // For backwards compatability with old versions of the pricing card
-  const legacyVersion = el.querySelectorAll(':scope > div').length < 10;
-  const currentKeys = [...blockKeys];
-  if (legacyVersion) {
-    currentKeys.splice(1, 1);
-  }
-  const divs = currentKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
-
-  const cards = Array.from(divs[0]).map((_, index) => currentKeys.reduce((obj, key, keyIndex) => {
-    obj[key] = divs[keyIndex][index];
-    return obj;
-  }, {}));
-  el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
-  const cardsContainer = createTag('div', { class: 'cards-container' });
-  const placeholders = await fetchPlaceholders();
+  // const legacyVersion = el.querySelectorAll(':scope > div').length < 10;
+  // const currentKeys = [...blockKeys];
+  // if (legacyVersion) {
+  //   currentKeys.splice(1, 1);
+  // }
+  // const divs = currentKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
+  //
+  // const cards = Array.from(divs[0]).map((_, index) => currentKeys.reduce((obj, key, keyIndex) => {
+  //   obj[key] = divs[keyIndex][index];
+  //   return obj;
+  // }, {}));
+  // el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
+  // const cardsContainer = createTag('div', { class: 'cards-container' });
+  // const placeholders = await fetchPlaceholders();
   // cards
   //   .map((card) => decorateCard(card, el, placeholders, legacyVersion))
   //   .forEach((card) => cardsContainer.append(card));
