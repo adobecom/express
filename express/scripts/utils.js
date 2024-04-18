@@ -967,7 +967,6 @@ async function decorateSections(el, isDoc) {
     const links = decorateLinks(section);
 
     const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
- 
 
     section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
     section.dataset.status = 'decorated';
@@ -1296,6 +1295,7 @@ async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
  * @param {Element} block The block element
  */
 export async function loadBlock(block, eager = false) {
+  console.log(block)
   if (!(block.getAttribute('data-block-status') === 'loading' || block.getAttribute('data-block-status') === 'loaded')) {
     block.setAttribute('data-block-status', 'loading');
     const blockName = block.getAttribute('data-block-name') || block.classList[0];
