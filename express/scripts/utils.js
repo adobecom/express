@@ -1295,6 +1295,7 @@ async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
  * @param {Element} block The block element
  */
 export async function loadBlock(block, eager = false) {
+  console.log('---------')
   console.log(block)
   if (!(block.getAttribute('data-block-status') === 'loading' || block.getAttribute('data-block-status') === 'loaded')) {
     block.setAttribute('data-block-status', 'loading');
@@ -1302,19 +1303,19 @@ export async function loadBlock(block, eager = false) {
     let cssPath = `/express/blocks/${blockName}/${blockName}.css`;
     let jsPath = `/express/blocks/${blockName}/${blockName}.js`;
 
-    if (window.hlx.experiment && window.hlx.experiment.run) {
-      const { experiment } = window.hlx;
-      if (experiment.selectedVariant !== 'control') {
-        const { control } = experiment.variants;
-        if (control && control.blocks && control.blocks.includes(blockName)) {
-          const blockIndex = control.blocks.indexOf(blockName);
-          const variant = experiment.variants[experiment.selectedVariant];
-          const blockPath = variant.blocks[blockIndex];
-          cssPath = `/express/experiments/${experiment.id}/${blockPath}/${blockName}.css`;
-          jsPath = `/express/experiments/${experiment.id}/${blockPath}/${blockName}.js`;
-        }
-      }
-    }
+    // if (window.hlx.experiment && window.hlx.experiment.run) {
+    //   const { experiment } = window.hlx;
+    //   if (experiment.selectedVariant !== 'control') {
+    //     const { control } = experiment.variants;
+    //     if (control && control.blocks && control.blocks.includes(blockName)) {
+    //       const blockIndex = control.blocks.indexOf(blockName);
+    //       const variant = experiment.variants[experiment.selectedVariant];
+    //       const blockPath = variant.blocks[blockIndex];
+    //       cssPath = `/express/experiments/${experiment.id}/${blockPath}/${blockName}.css`;
+    //       jsPath = `/express/experiments/${experiment.id}/${blockPath}/${blockName}.js`;
+    //     }
+    //   }
+    //}
 
     await loadAndExecute(cssPath, jsPath, block, blockName, eager);
     block.setAttribute('data-block-status', 'loaded');
