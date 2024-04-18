@@ -1276,7 +1276,7 @@ async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
     (async () => {
       try {
         const { default: init } = await import(jsPath);
-        console.log(cssPath,jsPath)
+        console.log(cssPath,jsPath, block, blockName)
         await init(block, blockName, document, eager);
       } catch (err) {
         // eslint-disable-next-line no-console
