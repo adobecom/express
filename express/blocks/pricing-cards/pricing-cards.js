@@ -323,7 +323,7 @@ export default async function init(el) {
     currentKeys.splice(1, 1);
   }
   const divs = currentKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
-
+  console.log(divs)
   const cards = Array.from(divs[0]).map((_, index) => currentKeys.reduce((obj, key, keyIndex) => {
     obj[key] = divs[keyIndex][index];
     return obj;
@@ -331,6 +331,7 @@ export default async function init(el) {
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
+  console.log(placeholders)
   cards
     .map((card) => decorateCard(card, el, placeholders, legacyVersion))
     .forEach((card) => cardsContainer.append(card));
@@ -359,4 +360,5 @@ export default async function init(el) {
     });
   });
   observer.observe(el);
+  console.log(observer)
 }
