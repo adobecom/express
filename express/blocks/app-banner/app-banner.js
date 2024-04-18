@@ -76,12 +76,12 @@ function addCloseBtn(block) {
 
 function initScrollDirection(block) {
   const $section = block.closest('.section');
-  const $floatingButton = document.querySelector('.floating-button-wrapper[data-audience="mobile"]');
   const background = $section.querySelector('.gradient-background');
   let lastScrollTop = 0;
 
   document.addEventListener('scroll', () => {
     if (!$section.classList.contains('block-removed')) {
+      const $floatingButton = document.querySelector('.floating-button-wrapper[data-audience="mobile"]');
       const { scrollTop } = document.documentElement;
       if (scrollTop < lastScrollTop) {
         block.classList.remove('appear');
@@ -95,6 +95,7 @@ function initScrollDirection(block) {
           }
         }, 600);
       } else {
+        if ($floatingButton && $floatingButton.classList.contains('toolbox-opened')) return;
         block.classList.add('show');
         if ($floatingButton && !$floatingButton.classList.contains('toolbox-opened')) {
           $floatingButton.classList.add('push-up');
@@ -141,8 +142,7 @@ function decorateBanner($block, payload) {
 }
 
 function watchFloatingButtonState(block) {
-  const $floatingButton = document.querySelector('.floating-button-wrapper[data-audience="mobile"]');
-  if ($floatingButton) {
+  function handleFloatingButton($floatingButton) {
     const config = { attributes: true, childList: false, subtree: false };
 
     const callback = (mutationList) => {
@@ -164,10 +164,28 @@ function watchFloatingButtonState(block) {
     };
 
     const observer = new MutationObserver(callback);
-
-    // Start observing the target node for configured mutations
     observer.observe($floatingButton, config);
   }
+  const callback = function (mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE
+            && node.matches('.floating-button-wrapper[data-audience="mobile"]')) {
+            handleFloatingButton(node);
+            observer.disconnect();
+          }
+        });
+      }
+    }
+  };
+  const observer = new MutationObserver(callback);
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: false,
+  });
 }
 
 export default async function decorate($block) {
