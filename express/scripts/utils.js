@@ -1269,9 +1269,12 @@ export function buildBlock(blockName, content) {
 }
 
 async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
+  console.log('================')
+  console.log(cssPath,jsPath, block, blockName)
   const cssLoaded = new Promise((resolve) => {
     loadStyle(cssPath, resolve);
   });
+  console.log(cssPath,jsPath, block, blockName)
   const scriptLoaded = new Promise((resolve) => {
     (async () => {
       try {
