@@ -143,7 +143,6 @@ function decorateBanner($block, payload) {
 
 function watchFloatingButtonState(block) {
   function handleFloatingButton($floatingButton) {
-    // Your code to handle the floating button
     const config = { attributes: true, childList: false, subtree: false };
 
     const callback = (mutationList) => {
@@ -165,18 +164,14 @@ function watchFloatingButtonState(block) {
     };
 
     const observer = new MutationObserver(callback);
-
-    // Start observing the target node for configured mutations
     observer.observe($floatingButton, config);
   }
   const callback = function (mutationsList, observer) {
     for (const mutation of mutationsList) {
       if (mutation.type === 'childList') {
         mutation.addedNodes.forEach((node) => {
-          // Check if the added node is the element we are interested in
           if (node.nodeType === Node.ELEMENT_NODE
             && node.matches('.floating-button-wrapper[data-audience="mobile"]')) {
-            // You can call any handler function here
             handleFloatingButton(node);
             observer.disconnect();
           }
