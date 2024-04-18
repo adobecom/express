@@ -161,7 +161,7 @@ function readBraces(inputString, card) {
     const [token, promoType] = matches[matches.length - 1];
     const specialPromo = createTag('div');
     [specialPromo.textContent] = inputString.split(token);
-    card.classList.add(promoType);
+    card.classList.add(promoType.replaceAll(' ', ''));
     card.append(specialPromo);
     return specialPromo;
   }
