@@ -649,6 +649,7 @@ export function removeIrrelevantSections(main) {
  */
 export async function decorateBlock(block) {
   const blockName = block.classList[0];
+  console.log(blockName)
   if (blockName) {
     const section = block.closest('.section');
     if (section) section.classList.add(`${[...block.classList].join('-')}-container`);
@@ -966,6 +967,7 @@ async function decorateSections(el, isDoc) {
     const links = decorateLinks(section);
 
     const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
+    console.log(blocks, links)
 
     section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
     section.dataset.status = 'decorated';
@@ -1563,28 +1565,29 @@ export function toCamelCase(name) {
  * @returns {string} experimentid
  */
 export function getExperiment() {
-  let experiment = toClassName(getMetadata('experiment'));
-  const { hostname } = window.location;
-  if (!(/adobe\.com/.test(hostname) || /\.hlx\.live/.test(hostname) || hostname.includes('localhost'))) {
-    experiment = '';
-    // reason = 'not prod host and not local';
-  }
-  if (window.location.hash) {
-    experiment = '';
-    // reason = 'suppressed by #';
-  }
+  return ''
+  // let experiment = toClassName(getMetadata('experiment'));
+  // const { hostname } = window.location;
+  // if (!(/adobe\.com/.test(hostname) || /\.hlx\.live/.test(hostname) || hostname.includes('localhost'))) {
+  //   experiment = '';
+  //   // reason = 'not prod host and not local';
+  // }
+  // if (window.location.hash) {
+  //   experiment = '';
+  //   // reason = 'suppressed by #';
+  // }
 
-  if (navigator.userAgent.match(/bot|crawl|spider/i)) {
-    experiment = '';
-    // reason = 'bot detected';
-  }
+  // if (navigator.userAgent.match(/bot|crawl|spider/i)) {
+  //   experiment = '';
+  //   // reason = 'bot detected';
+  // }
 
-  const usp = new URLSearchParams(window.location.search);
-  if (usp.has('experiment')) {
-    [experiment] = usp.get('experiment').split('/');
-  }
+  // const usp = new URLSearchParams(window.location.search);
+  // if (usp.has('experiment')) {
+  //   [experiment] = usp.get('experiment').split('/');
+  // }
 
-  return experiment;
+  // return experiment;
 }
 
 /**
