@@ -967,7 +967,7 @@ async function decorateSections(el, isDoc) {
     const links = decorateLinks(section);
 
     const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
-    console.log(blocks, links)
+ 
 
     section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
     section.dataset.status = 'decorated';
@@ -988,6 +988,7 @@ async function decorateSections(el, isDoc) {
       }
     });
     blocks.forEach(async (block) => {
+      console.log(block)
       await decorateBlock(block);
     });
     const blockLinks = [...blocks].reduce((blkLinks, block) => {
