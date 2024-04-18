@@ -76,12 +76,12 @@ function addCloseBtn(block) {
 
 function initScrollDirection(block) {
   const $section = block.closest('.section');
-  const $floatingButton = document.querySelector('.floating-button-wrapper[data-audience="mobile"]');
   const background = $section.querySelector('.gradient-background');
   let lastScrollTop = 0;
 
   document.addEventListener('scroll', () => {
     if (!$section.classList.contains('block-removed')) {
+      const $floatingButton = document.querySelector('.floating-button-wrapper[data-audience="mobile"]');
       const { scrollTop } = document.documentElement;
       if (scrollTop < lastScrollTop) {
         block.classList.remove('appear');
@@ -141,8 +141,8 @@ function decorateBanner($block, payload) {
 }
 
 function watchFloatingButtonState(block) {
-  const $floatingButton = document.querySelector('.floating-button-wrapper[data-audience="mobile"]');
-  if ($floatingButton) {
+  function handleFloatingButton($floatingButton) {
+    // Your code to handle the floating button
     const config = { attributes: true, childList: false, subtree: false };
 
     const callback = (mutationList) => {
@@ -168,6 +168,28 @@ function watchFloatingButtonState(block) {
     // Start observing the target node for configured mutations
     observer.observe($floatingButton, config);
   }
+  const callback = function (mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach((node) => {
+          // Check if the added node is the element we are interested in
+          if (node.nodeType === Node.ELEMENT_NODE
+            && node.matches('.floating-button-wrapper[data-audience="mobile"]')) {
+            // You can call any handler function here
+            handleFloatingButton(node);
+            observer.disconnect();
+          }
+        });
+      }
+    }
+  };
+  const observer = new MutationObserver(callback);
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: false,
+  });
 }
 
 export default async function decorate($block) {
