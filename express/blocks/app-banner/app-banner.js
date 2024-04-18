@@ -76,12 +76,12 @@ function addCloseBtn(block) {
 
 function initScrollDirection(block) {
   const $section = block.closest('.section');
-  const $floatingButton = document.querySelector('.floating-button-wrapper[data-audience="mobile"]');
   const background = $section.querySelector('.gradient-background');
   let lastScrollTop = 0;
 
   document.addEventListener('scroll', () => {
     if (!$section.classList.contains('block-removed')) {
+      const $floatingButton = document.querySelector('.floating-button-wrapper[data-audience="mobile"]');
       const { scrollTop } = document.documentElement;
       if (scrollTop < lastScrollTop) {
         block.classList.remove('appear');
