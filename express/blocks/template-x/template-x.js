@@ -224,6 +224,46 @@ function constructProps(block) {
   return props;
 }
 
+const SHORT_PLACEHOLDER_HEIGHT_CUTOFF = 80;
+const WIDE_PLACEHOLDER_RATIO_CUTOFF = 1.3;
+
+function adjustPlaceholderDimensions(block, props, tmplt, option) {
+  const sep = option.includes(':') ? ':' : 'x';
+  const ratios = option.split(sep).map((e) => +e);
+  props.placeholderFormat = ratios;
+  if (!ratios[1]) return;
+  if (block.classList.contains('horizontal')) {
+    const height = block.classList.contains('mini') ? 100 : 200;
+    const width = (ratios[0] / ratios[1]) * height;
+    tmplt.style = `width: ${width}px`;
+    if (width / height > WIDE_PLACEHOLDER_RATIO_CUTOFF) {
+      tmplt.classList.add('tall');
+    }
+  } else {
+    const width = block.classList.contains('sixcols') || block.classList.contains('fullwidth') ? 165 : 200;
+    const height = (ratios[1] / ratios[0]) * width;
+    tmplt.style.height = `${height}px`;
+    if (height < SHORT_PLACEHOLDER_HEIGHT_CUTOFF) tmplt.classList.add('short');
+    if (width / height > WIDE_PLACEHOLDER_RATIO_CUTOFF) tmplt.classList.add('wide');
+  }
+}
+
+function adjustTemplateDimensions(block, props, tmplt, isPlaceholder) {
+  const overlayCell = tmplt.querySelector(':scope > div:last-of-type');
+  const option = overlayCell.textContent.trim();
+  if (!option) return;
+  if (isPlaceholder) {
+    // add aspect ratio to template
+    adjustPlaceholderDimensions(block, props, tmplt, option)
+  } else {
+    // add icon to 1st cell
+    const $icon = getIconElement(toClassName(option));
+    $icon.setAttribute('title', option);
+    tmplt.children[0].append($icon);
+  }
+  overlayCell.remove();
+}
+
 function populateTemplates(block, props, templates) {
   for (let tmplt of templates) {
     const isPlaceholder = tmplt.querySelector(':scope > div:first-of-type > img[src*=".svg"], :scope > div:first-of-type > svg');
@@ -233,24 +273,20 @@ function populateTemplates(block, props, templates) {
 
     if (innerWrapper && linkContainer) {
       const link = linkContainer.querySelector(':scope a');
-      if (link) {
-        if (isPlaceholder) {
-          const aTag = createTag('a', {
-            href: link.href || '#',
-          });
-
-          aTag.append(...tmplt.children);
-          tmplt.remove();
-          tmplt = aTag;
-          // convert A to SPAN
-          const newLink = createTag('span', { class: 'template-link' });
-          newLink.append(link.textContent.trim());
-
-          linkContainer.innerHTML = '';
-          linkContainer.append(newLink);
-        }
-        innerWrapper.append(tmplt);
+      if (link && isPlaceholder) {
+        const aTag = createTag('a', {
+          href: link.href || '#',
+        });
+        aTag.append(...tmplt.children);
+        tmplt.remove();
+        tmplt = aTag;
+        // convert A to SPAN
+        const newLink = createTag('span', { class: 'template-link' });
+        newLink.append(link.textContent.trim());
+        linkContainer.innerHTML = '';
+        linkContainer.append(newLink);
       }
+      innerWrapper.append(tmplt);
     }
 
     if (rowWithLinkInFirstCol && !tmplt.querySelector('img')) {
@@ -260,40 +296,7 @@ function populateTemplates(block, props, templates) {
 
     if (tmplt.children.length === 3) {
       // look for options in last cell
-      const overlayCell = tmplt.querySelector(':scope > div:last-of-type');
-      const option = overlayCell.textContent.trim();
-      if (option) {
-        if (isPlaceholder) {
-          // add aspect ratio to template
-          const sep = option.includes(':') ? ':' : 'x';
-          const ratios = option.split(sep).map((e) => +e);
-          props.placeholderFormat = ratios;
-          if (block.classList.contains('horizontal')) {
-            const height = block.classList.contains('mini') ? 100 : 200;
-            if (ratios[1]) {
-              const width = (ratios[0] / ratios[1]) * height;
-              tmplt.style = `width: ${width}px`;
-              if (width / height > 1.3) {
-                tmplt.classList.add('tall');
-              }
-            }
-          } else {
-            const width = block.classList.contains('sixcols') || block.classList.contains('fullwidth') ? 165 : 200;
-            if (ratios[1]) {
-              const height = (ratios[1] / ratios[0]) * width;
-              tmplt.style.height = `${height}px`;
-              if (height < 62) tmplt.classList.add('short');
-              if (width / height > 1.3) tmplt.classList.add('wide');
-            }
-          }
-        } else {
-          // add icon to 1st cell
-          const $icon = getIconElement(toClassName(option));
-          $icon.setAttribute('title', option);
-          tmplt.children[0].append($icon);
-        }
-      }
-      overlayCell.remove();
+      adjustTemplateDimensions(block, props, tmplt, isPlaceholder);
     }
 
     if (!tmplt.querySelectorAll(':scope > div > *').length) {
@@ -301,7 +304,6 @@ function populateTemplates(block, props, templates) {
       tmplt.remove();
     }
     tmplt.classList.add('template');
-
     if (isPlaceholder) {
       tmplt.classList.add('placeholder');
     }
