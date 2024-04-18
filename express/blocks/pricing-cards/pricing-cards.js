@@ -331,9 +331,9 @@ export default async function init(el) {
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
-  cards
-    .map((card) => decorateCard(card, el, placeholders, legacyVersion))
-    .forEach((card) => cardsContainer.append(card));
+  // cards
+  //   .map((card) => decorateCard(card, el, placeholders, legacyVersion))
+  //   .forEach((card) => cardsContainer.append(card));
   //
   // const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter((a) => a.title.includes(SALES_NUMBERS));
   // if (phoneNumberTags.length > 0) {
