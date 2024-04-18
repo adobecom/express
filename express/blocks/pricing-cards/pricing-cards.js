@@ -158,10 +158,10 @@ function readBraces(inputString, card) {
   const matches = Array.from(inputString.trim().matchAll(pattern));
 
   if (matches.length > 0) {
-    let [promoType] = matches[matches.length - 1];
+    let promoType = matches[0][1];
     const specialPromo = createTag('div');
     [specialPromo.textContent] = inputString.split(`{{${promoType}}}`);
-    promoType = promoType.trim();
+    promoType = promoType.replaceAll(' ', '');
     card.classList.add(promoType);
     card.append(specialPromo);
     return specialPromo;
