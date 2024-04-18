@@ -334,29 +334,29 @@ export default async function init(el) {
   cards
     .map((card) => decorateCard(card, el, placeholders, legacyVersion))
     .forEach((card) => cardsContainer.append(card));
-
-  const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter((a) => a.title.includes(SALES_NUMBERS));
-  if (phoneNumberTags.length > 0) {
-    await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
-  }
-  el.classList.add('no-visible');
-  el.prepend(cardsContainer);
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        observer.disconnect();
-        syncMinHeights(
-          cards.map(({ header }) => header),
-          cards.map(({ explain }) => explain),
-          cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
-          cards.map(({ featureList }) => featureList.querySelector('p')),
-          cards.map(({ featureList }) => featureList),
-          cards.map(({ compare }) => compare),
-        );
-        el.classList.remove('no-visible');
-      }
-    });
-  });
-  observer.observe(el);
+  //
+  // const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter((a) => a.title.includes(SALES_NUMBERS));
+  // if (phoneNumberTags.length > 0) {
+  //   await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
+  // }
+  // el.classList.add('no-visible');
+  // el.prepend(cardsContainer);
+  //
+  // const observer = new IntersectionObserver((entries) => {
+  //   entries.forEach((entry) => {
+  //     if (entry.isIntersecting) {
+  //       observer.disconnect();
+  //       syncMinHeights(
+  //         cards.map(({ header }) => header),
+  //         cards.map(({ explain }) => explain),
+  //         cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
+  //         cards.map(({ featureList }) => featureList.querySelector('p')),
+  //         cards.map(({ featureList }) => featureList),
+  //         cards.map(({ compare }) => compare),
+  //       );
+  //       el.classList.remove('no-visible');
+  //     }
+  //   });
+  // });
+  // observer.observe(el);
 }
