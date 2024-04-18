@@ -95,6 +95,7 @@ function initScrollDirection(block) {
           }
         }, 600);
       } else {
+        if ($floatingButton && $floatingButton.classList.contains('toolbox-opened')) return;
         block.classList.add('show');
         if ($floatingButton && !$floatingButton.classList.contains('toolbox-opened')) {
           $floatingButton.classList.add('push-up');
