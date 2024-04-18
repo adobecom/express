@@ -154,7 +154,7 @@ function readBraces(inputString, card) {
   }
 
   // Pattern to find {{...}}
-  const pattern = /(?<=\{\{).*?(?=\}\})/g;
+  const pattern = /\{\{(.*?)\}\}/g;
   const matches = Array.from(inputString.trim().matchAll(pattern));
 
   if (matches.length > 0) {
