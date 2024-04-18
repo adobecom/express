@@ -315,10 +315,13 @@ async function syncMinHeights(...groups) {
 }
 
 export default async function init(el) {
+  console.log('------------------')
   addTempWrapper(el, 'pricing-cards');
   // For backwards compatability with old versions of the pricing card
   const legacyVersion = el.querySelectorAll(':scope > div').length < 10;
+  console.log(legacyVersion)
   const currentKeys = [...blockKeys];
+  console.log(currentKeys)
   if (legacyVersion) {
     currentKeys.splice(1, 1);
   }
