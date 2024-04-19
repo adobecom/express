@@ -1005,7 +1005,7 @@ function toggleMasonryView(block, props, button, toggleButtons) {
 
   if (ratios[1]) {
     const height = (ratios[1] / ratios[0]) * width;
-    placeholder.style.height = `${height}px`;
+    placeholder.style = `height: ${height - 21}px`;
     if (width / height > 1.3) {
       placeholder.classList.add('wide');
     }
