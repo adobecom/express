@@ -254,7 +254,7 @@ function adjustTemplateDimensions(block, props, tmplt, isPlaceholder) {
   if (!option) return;
   if (isPlaceholder) {
     // add aspect ratio to template
-    adjustPlaceholderDimensions(block, props, tmplt, option)
+    adjustPlaceholderDimensions(block, props, tmplt, option);
   } else {
     // add icon to 1st cell
     const $icon = getIconElement(toClassName(option));
