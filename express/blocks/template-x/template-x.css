@@ -427,13 +427,6 @@ main.with-holiday-templates-banner {
     margin: 0 12px 0 4px;
 }
 
-.template-x.horizontal.mini a.template.placeholder > div:first-of-type {
-    height: unset;
-    width: unset;
-    display: block;
-    padding-top: 16px;
-}
-
 .template-x.horizontal.mini a.template.placeholder svg {
     height: 18px;
     width: 18px;
