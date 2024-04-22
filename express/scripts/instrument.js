@@ -141,12 +141,6 @@ function sendFrictionlessEventToAdobeAnaltics(block) {
           linkClicks: {
             value: 1,
           },
-          custom: {
-            qa: {
-              group: block.dataset.frictionlessgroup ?? 'unknown',
-              type: block.dataset.frictionlesstype ?? 'unknown',
-            },
-          },
           type: 'other',
         },
       },
@@ -155,6 +149,14 @@ function sendFrictionlessEventToAdobeAnaltics(block) {
           primaryEvent: {
             eventInfo: {
               eventName,
+            },
+          },
+        },
+        sdm: {
+          custom: {
+            qa: {
+              group: block.dataset.frictionlessgroup ?? 'unknown',
+              type: block.dataset.frictionlesstype ?? 'unknown',
             },
           },
         },
