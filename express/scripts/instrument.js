@@ -153,6 +153,9 @@ function sendFrictionlessEventToAdobeAnaltics(block) {
           },
         },
         sdm: {
+          event: {
+            pagename: eventName,
+          },
           custom: {
             qa: {
               group: block.dataset.frictionlessgroup ?? 'unknown',
