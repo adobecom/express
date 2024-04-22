@@ -145,13 +145,6 @@ function sendFrictionlessEventToAdobeAnaltics(block) {
         },
       },
       _adobe_corpnew: {
-        digitalData: {
-          primaryEvent: {
-            eventInfo: {
-              eventName,
-            },
-          },
-        },
         sdm: {
           event: {
             pagename: eventName,
