@@ -258,6 +258,12 @@
   main .section .free-plan-container {
     margin : auto;
   }
+  .fullscreen-marquee .fullscreen-marquee-heading h1 {
+    text-align: center;
+  }
+  .fullscreen-marquee .fullscreen-marquee-heading h1 + p{
+    text-align: center;
+  }
 }
 
 @media (min-width: 900px) {
