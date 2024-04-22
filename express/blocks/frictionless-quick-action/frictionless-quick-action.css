@@ -96,7 +96,7 @@
     padding: 40px 24px 0 24px;
 }
 
-.frictionless-quick-action.block .dropzone p:first-of-type {
+.frictionless-quick-action.block .dropzone-bg + p {
     margin: 0;
     padding: 39px 24px 0 24px;
     font-size: var(--heading-font-size-m);
@@ -104,7 +104,7 @@
     line-height: var(--heading-line-height);
 }
 
-.frictionless-quick-action.block .dropzone p:first-of-type em {
+.frictionless-quick-action.block .dropzone-bg + p em {
     font-style: normal;
     color: var(--color-info-accent);
 }
