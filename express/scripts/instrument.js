@@ -143,7 +143,6 @@ function sendFrictionlessEventToAdobeAnaltics(block) {
           },
           custom: {
             qa: {
-              location: 'embed-sdk-in-seo',
               group: block.dataset.frictionlessgroup ?? 'unknown',
               type: block.dataset.frictionlesstype ?? 'unknown',
             },
