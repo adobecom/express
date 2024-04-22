@@ -612,12 +612,6 @@ main.with-holiday-templates-banner {
     margin: 0 11px;
 }
 
-.template-x.sixcols:not(.horizontal) .template.placeholder,
-.template-x.fullwidth .template.placeholder {
-    width: 145px;
-    margin: 15px auto;
-}
-
 .template-x.fullwidth.lg-view .template.placeholder,
 .template-x.fullwidth.md-view .template.placeholder,
 .template-x.fullwidth.sm-view .template.placeholder {
@@ -2401,12 +2395,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
 
     .template-x.horizontal.fullwidth .template:not(.placeholder) {
         margin: 24px 11px 18px 11px;
-    }
-
-    .template-x.sixcols:not(.horizontal) .template.placeholder,
-    .template-x.fullwidth .template.placeholder {
-        width: 145px;
-        margin: 21px auto;
     }
 
     .columns .template-x-inner-wrapper {
