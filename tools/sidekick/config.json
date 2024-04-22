@@ -46,7 +46,7 @@
       "containerId": "tools",
       "id": "qa-guide",
       "title": "QA Guide",
-      "environments": ["dev", "preview", "live"],
+      "environments": ["dev", "preview", "live", "prod"],
       "event": "qa-guide"
     },
     {

@@ -154,15 +154,14 @@ function readBraces(inputString, card) {
   }
 
   // Pattern to find {{...}}
-  const pattern = /(?<=\{\{).*?(?=\}\})/g;
+  const pattern = /\{\{(.*?)\}\}/g;
   const matches = Array.from(inputString.trim().matchAll(pattern));
 
   if (matches.length > 0) {
-    let [promoType] = matches[matches.length - 1];
+    const [token, promoType] = matches[matches.length - 1];
     const specialPromo = createTag('div');
-    [specialPromo.textContent] = inputString.split(`{{${promoType}}}`);
-    promoType = promoType.trim();
-    card.classList.add(promoType);
+    [specialPromo.textContent] = inputString.split(token);
+    card.classList.add(promoType.replaceAll(' ', ''));
     card.append(specialPromo);
     return specialPromo;
   }
