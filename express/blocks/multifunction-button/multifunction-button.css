@@ -56,10 +56,6 @@ main .floating-button-wrapper.multifunction.with-transition .toolbox:after {
     transition: 0.5s;
 }
 
-main .floating-button-wrapper.multifunction.with-transition.initial-load .toolbox {
-    transition: max-height 2s ease, padding 0.5s ease-in;
-}
-
 main .floating-button-wrapper.multifunction .toolbox.hidden {
     display: none;
 }
@@ -185,10 +181,6 @@ main .floating-button-wrapper.multifunction.toolbox-opened .toolbox-background {
     pointer-events: auto;
     background-color: var(--color-black);
     opacity: 0.75;
-}
-
-main .floating-button-wrapper.multifunction.with-transition.initial-load .toolbox-background {
-    transition: all 2s;
 }
 
 main .floating-button-wrapper.multifunction.floating-button--hidden .toolbox,
