@@ -9,7 +9,7 @@ function parseEncodedConfig(encodedConfig) {
   try {
     return JSON.parse(b64ToUtf8(decodeURIComponent(encodedConfig)));
   } catch (e) {
-    // console.log(e);
+    window.lana?.log(e);
   }
   return null;
 }
