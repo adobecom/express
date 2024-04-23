@@ -28,8 +28,8 @@ const loadFaas = async (a) => {
 const loadedLinks = new Set();
 
 export default async function init(a) {
-  if (loadedLinks.has(a)) return;
-  loadedLinks.add(a);
+  if (loadedLinks.has(a.href)) return;
+  loadedLinks.add(a.href);
   if (a.textContent.includes('no-lazy')) {
     loadFaas(a);
   } else {
