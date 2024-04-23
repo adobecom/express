@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { expect } from '@esm-bundle/chai';
 import sinon from 'sinon';
 import { waitFor } from '../../helpers/waitfor.js';
