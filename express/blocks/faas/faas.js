@@ -9,7 +9,7 @@ function parseEncodedConfig(encodedConfig) {
   try {
     return JSON.parse(b64ToUtf8(decodeURIComponent(encodedConfig)));
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
   return null;
 }
@@ -25,7 +25,11 @@ const loadFaas = async (a) => {
   }
 };
 
+const loadedLinks = new Set();
+
 export default async function init(a) {
+  if (loadedLinks.has(a)) return;
+  loadedLinks.add(a);
   if (a.textContent.includes('no-lazy')) {
     loadFaas(a);
   } else {
