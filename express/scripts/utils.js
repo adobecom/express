@@ -1549,6 +1549,9 @@ export function checkTesting() {
   return (getMetadata('testing').toLowerCase() === 'on');
 }
 
+export function sanitize(str) {
+  return str?.replaceAll(/[$@%'"]/g, '');
+}
 /**
  * Sanitizes a string and turns it into camel case.
  * @param {*} name The unsanitized string
