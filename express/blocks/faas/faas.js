@@ -33,6 +33,7 @@ export default async function init(a) {
       el: a,
       options: { rootMargin: `${ROOT_MARGIN}px` },
       callback: loadFaas,
+      once: true,
     });
   }
 }
