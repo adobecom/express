@@ -48,7 +48,8 @@
     margin-top: 26px;
 }
 
-.frictionless-quick-action.block video {
+.frictionless-quick-action.block video,
+.frictionless-quick-action.block img:not(.icon) {
     max-width: 444px;
 }
 
