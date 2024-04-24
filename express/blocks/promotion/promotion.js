@@ -30,8 +30,8 @@ export default async function decorate($block) {
   const html = await fetchPromotion(name);
   if (html) {
     const div = createTag('div');
-    div.innerHTML = html;
-
+    div.innerText = html;
+    
     normalizeHeadings(div, ['h2', 'h3']);
 
     const h2 = div.querySelector('h2');
