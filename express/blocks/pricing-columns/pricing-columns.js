@@ -8,6 +8,7 @@ import {
   getHelixEnv,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
+import HtmlSanitizer from '../../scripts/html-sanitizer.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
 
 function replaceUrlParam(url, paramName, paramValue) {
@@ -231,13 +232,12 @@ async function fetchPlan(planUrl) {
 
 async function selectPlan($pricingHeader, planUrl, sendAnalyticEvent) {
   const plan = await fetchPlan(planUrl);
-
-  $pricingHeader.querySelector('.pricing-columns-price').innerHTML = plan.formatted;
+  $pricingHeader.querySelector('.pricing-columns-price').innerHTML = HtmlSanitizer.SanitizeHtml(plan.formatted);
   $pricingHeader.querySelector('.pricing-columns-price').classList.add(plan.currency.toLowerCase());
   $pricingHeader.querySelector('.pricing-columns-cta').href = buildUrl(plan.url, plan.country, plan.language);
   $pricingHeader.querySelector('.pricing-columns-cta').dataset.planUrl = planUrl;
   $pricingHeader.querySelector('.pricing-columns-cta').id = plan.stringId;
-  $pricingHeader.querySelector('.pricing-columns-vat-info').innerHTML = plan.vatInfo || '';
+  $pricingHeader.querySelector('.pricing-columns-vat-info').innerHTML = HtmlSanitizer.SanitizeHtml(plan.vatInfo) || '';
 
   if (sendAnalyticEvent) {
     const adobeEventName = 'adobe.com:express:pricing:commitmentType:selected';
@@ -263,8 +263,8 @@ function decoratePlan($column) {
     }
   });
 
-  $pricingTitle.innerHTML = $elements[0].innerHTML;
-  $pricingTitleIcon.innerHTML = $elements[1].innerHTML;
+  $pricingTitle.innerHTML = HtmlSanitizer.SanitizeHtml($elements[0].innerHTML);
+  $pricingTitleIcon.innerHTML = HtmlSanitizer.SanitizeHtml($elements[1].innerHTML);
   $pricingTitle.prepend($pricingTitleIcon);
   $pricingHeader.append($pricingTitle);
 
