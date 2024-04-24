@@ -499,9 +499,9 @@ export function getIcon(icons, alt, size = 44) {
     if (alt) {
       svgWrapper.appendChild(createTag('title', { innerText: alt }));
     }
-    svgWrapper.appendChild('use', {
+    svgWrapper.appendChild(createTag('use', {
       href: `/express/icons/ccx-sheet_${sheetSize}.svg#${iconName}${sheetSize}`,
-    });
+    }));
     return svgWrapper;
   } else {
     return createTag('img', {
