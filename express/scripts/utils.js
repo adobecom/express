@@ -1547,7 +1547,7 @@ export function decorateButtons(el = document) {
       if (linkText.startsWith('{{icon-') && linkText.endsWith('}}')) {
         const $iconName = /{{icon-([\w-]+)}}/g.exec(linkText)[1];
         if ($iconName) {
-          $a.innerHTML = getIcon($iconName, `${$iconName} icon`);
+          $a.appendChild(getIcon($iconName, `${$iconName} icon`));
           $a.classList.remove('button', 'primary', 'secondary', 'accent');
           $a.title = $iconName;
         }

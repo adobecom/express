@@ -52,7 +52,6 @@ function getCurrentRatingStars(rating = 5) {
 function addCloseBtn(block) {
   const $closeBtnDiv = createTag('div', { class: 'close-btn-div' });
   const $closeBtnImg = getIconElement('close-icon');
-
   $closeBtnDiv.append($closeBtnImg);
   block.append($closeBtnDiv);
 

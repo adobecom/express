@@ -89,7 +89,7 @@ export default function decorate($block) {
       if ($links) {
         $links.forEach(($link) => {
           const iconName = $link.textContent.trim().toLowerCase();
-          $link.innerHTML = getIcon(iconName);
+          $link.appendChild(getIcon(iconName));
         });
       }
     }
