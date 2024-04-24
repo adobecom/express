@@ -492,18 +492,29 @@ export function getIcon(icons, alt, size = 44) {
     const iconName = icon;
     let sheetSize = size;
     if (size22Icons.includes(icon)) sheetSize = 22;
-    return `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-${icon}">
-      ${alt ? `<title>${alt}</title>` : ''}
-      <use href="/express/icons/ccx-sheet_${sheetSize}.svg#${iconName}${sheetSize}"></use>
-    </svg>`;
+    const svgWrapper = createTag('svg', {
+      xmlns: 'http://www.w3.org/2000/svg',
+      class: `icon icon-${icon}`,
+    });
+    if (alt) {
+      svgWrapper.appendChild(createTag('title', { innerText: alt }));
+    }
+    svgWrapper.appendChild('use', {
+      href: `/express/icons/ccx-sheet_${sheetSize}.svg#${iconName}${sheetSize}`,
+    });
+    return svgWrapper;
   } else {
-    return (`<img class="icon icon-${icon}" src="/express/icons/${icon}.svg" alt="${alt || icon}">`);
+    return createTag('img', {
+      class: `icon icon-${icon}`,
+      src: `/express/icons/${icon}.svg`,
+      alt: `${alt || icon}`,
+    });
   }
 }
 
 export function getIconElement(icons, size, alt, additionalClassName) {
   const $div = createTag('div');
-  $div.innerHTML = getIcon(icons, alt, size);
+  $div.appendChild(getIcon(icons, alt, size));
 
   if (additionalClassName) $div.firstElementChild.classList.add(additionalClassName);
   return ($div.firstElementChild);
