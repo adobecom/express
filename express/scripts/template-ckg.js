@@ -7,6 +7,8 @@ import {
   getDataWithContext,
 } from './browse-api-controller.js';
 
+import HtmlSanitizer from './html-sanitizer.js';
+
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
 
 const defaultRegex = /\/express\/templates\/default/;
@@ -49,7 +51,7 @@ async function fetchLinkList() {
 function replaceLinkPill(linkPill, data) {
   const clone = linkPill.cloneNode(true);
   if (data) {
-    clone.innerHTML = clone.innerHTML.replace('/express/templates/default', data.url);
+    clone.innerHTML = HtmlSanitizer.SanitizeHtml(clone.innerHTML.replace('/express/templates/default', data.url));
     clone.innerHTML = clone.innerHTML.replaceAll('Default', data['short-title']);
   }
   if (defaultRegex.test(clone.innerHTML)) {
@@ -119,7 +121,7 @@ async function updateLinkList(container, linkPill, list) {
         };
 
         const clone = replaceLinkPill(linkPill, pageData);
-        clone.innerHTML = clone.innerHTML.replaceAll('Default', d.displayValue);
+        clone.innerHTML = HtmlSanitizer.SanitizeHtml(clone.innerHTML.replaceAll('Default', d.displayValue))
         clone.innerHTML = clone.innerHTML.replace('/express/templates/default', d.pathname);
         if (clone) pageLinks.push(clone);
       } else {
