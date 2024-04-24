@@ -46,7 +46,7 @@ function createMockQuickAction() {
 function addLottieIcons(array, lottieIcon) {
   const lottie = getLottie(lottieIcon, LOTTIE_ICONS[lottieIcon]);
   array.forEach((el) => {
-    el.innerHTML = `${lottie}${el.innerHTML}`;
+    el.innerHTML = `${lottie.outerHTML}${el.innerHTML}`;
   });
   lazyLoadLottiePlayer();
 }

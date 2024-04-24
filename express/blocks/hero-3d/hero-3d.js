@@ -76,7 +76,7 @@ function addScrollAnimation(block, scrollTo) {
   const container = createTag('div', { class: 'scroll-animation' });
   const link = createTag('a', { href });
   container.append(link);
-  link.innerHTML = loti;
+  link.appendChild(loti);
   block.append(container);
 
   lazyLoadLottiePlayer(block);

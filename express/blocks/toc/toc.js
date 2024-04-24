@@ -127,7 +127,8 @@ export default async function decorate($block) {
 
   const iconHTML = getLottie('arrow-down', '/express/icons/arrow-down.json');
   const $toggle = getToggleButton();
-  $toggle.innerHTML = iconHTML + $toggle.innerHTML;
+
+  $toggle.innerHTML = iconHTML.outerHTML + $toggle.innerHTML;
 
   [...$block.children].forEach((div) => {
     const wrapper = div.children.item(1);
