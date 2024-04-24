@@ -90,8 +90,8 @@ async function enableMouseAnimation($block) {
   const $mouseRightLottie = createTag('div', { class: 'choose-your-path-mouse-lottie' });
   $mouseLeftContainer.textContent = placeholders['choose-your-path-cc'];
   $mouseRightContainer.textContent = placeholders['choose-your-path-express'];
-  $mouseLeftLottie.innerHTML = getLottie('mouse-arrow', '/express/blocks/choose-your-path/mouse-arrow.json');
-  $mouseRightLottie.innerHTML = getLottie('mouse-arrow', '/express/blocks/choose-your-path/mouse-arrow.json');
+  $mouseLeftLottie.appendChild(getLottie('mouse-arrow', '/express/blocks/choose-your-path/mouse-arrow.json'));
+  $mouseRightLottie.appendChild(getLottie('mouse-arrow', '/express/blocks/choose-your-path/mouse-arrow.json'));
   $mouseLeftAnimation.append($mouseLeftContainer);
   $mouseRightAnimation.append($mouseRightContainer);
   $mouseLeftAnimation.append($mouseLeftLottie);

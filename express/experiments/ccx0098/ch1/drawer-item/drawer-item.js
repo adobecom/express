@@ -143,9 +143,9 @@ function createCTA(payload, link, isSingleDownloadCTA) {
   if (payload.hasList) {
     const gradientCTALottie = createTag('div', { class: 'cta-lottie' });
     if (getMobileOperatingSystem() === 'iOS') {
-      gradientCTALottie.innerHTML = getLottie('apple-lottie', '/express/experiments/ccx0098/ch1/drawer-item/app_store_icons_apple.json');
+      gradientCTALottie.appendChild(getLottie('apple-lottie', '/express/experiments/ccx0098/ch1/drawer-item/app_store_icons_apple.json'));
     } else {
-      gradientCTALottie.innerHTML = getLottie('android-lottie', '/express/experiments/ccx0098/ch1/drawer-item/google_g_app_store.json');
+      gradientCTALottie.appendChild(getLottie('android-lottie', '/express/experiments/ccx0098/ch1/drawer-item/google_g_app_store.json'));
     }
     cta.append(...gradientCTALottie.children);
     cta.append(ctaText);
@@ -433,7 +433,7 @@ function decorateCarouselCTAList(payload) {
 function addScratchLottie(payload) {
   if (payload.hasScratchLottie && !document.querySelector('.scratch-lottie-container')) {
     const scratchLottie = createTag('div', { class: 'scratch-lottie-container' });
-    scratchLottie.innerHTML = getLottie('scratch-lottie', '/express/experiments/ccx0098/ch1/drawer-item/s2_create_0.1_from_blank.json');
+    scratchLottie.appendChild(getLottie('scratch-lottie', '/express/experiments/ccx0098/ch1/drawer-item/s2_create_0.1_from_blank.json');
     scratchLottie.style.position = 'absolute';
     const scratchIMG = document.querySelector('.drawer-item [title="Scratch"]');
     if (scratchIMG) {

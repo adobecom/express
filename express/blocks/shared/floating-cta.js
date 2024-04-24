@@ -428,7 +428,7 @@ export function buildToolBoxStructure(wrapper, data) {
 
   const floatingButton = wrapper.querySelector('.floating-button');
 
-  toggleButton.innerHTML = getLottie('plus-animation', '/express/icons/plus-animation.json');
+  toggleButton.appendChild(getLottie('plus-animation', '/express/icons/plus-animation.json'));
   toolBoxWrapper.append(boxTop, boxBottom);
   toolBox.append(toolBoxWrapper);
   toggleButton.append(toggleIcon);

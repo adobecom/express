@@ -920,7 +920,7 @@ async function decorateCategoryList(block, section, placeholders, props) {
   const $lottieArrows = createTag('a', { class: 'lottie-wrapper' });
   $mobileDrawerWrapper.append($lottieArrows);
   $inWrapper.append($categoriesMobileWrapper);
-  $lottieArrows.innerHTML = getLottie('purple-arrows', '/express/icons/purple-arrows.json');
+  $lottieArrows.appendChild(getLottie('purple-arrows', '/express/icons/purple-arrows.json'));
   lazyLoadLottiePlayer();
 
   $categoriesDesktopWrapper.classList.add('desktop-only');

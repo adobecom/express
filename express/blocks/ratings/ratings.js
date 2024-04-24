@@ -178,7 +178,7 @@ export default async function decorate($block) {
     // Countdown timer to auto-submit
     const countdown = (bool) => {
       if (bool) {
-        $timerAnimation.innerHTML = getLottie('countdown', '/express/blocks/ratings/countdown.json', false, true, false, false);
+        $timerAnimation.appendChild(getLottie('countdown', '/express/blocks/ratings/countdown.json', false, true, false, false));
         let counter = 10;
         window.ratingSubmitCountdown = setInterval(() => {
           if (counter > 0) {

@@ -177,7 +177,7 @@ export default async function decorate(block) {
     if (index === 0) {
       row.classList.add('content-container');
       const toggleButton = createTag('a', { class: 'toggle-button' });
-      toggleButton.innerHTML = getLottie('plus-animation', '/express/icons/plus-animation.json');
+      toggleButton.appendChild(getLottie('plus-animation', '/express/icons/plus-animation.json'));
       const toggleIcon = getIconElement('plus-heavy');
       toggleButton.append(toggleIcon);
       row.prepend(toggleButton);

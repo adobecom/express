@@ -333,10 +333,19 @@ export function createTag(tag, attributes, html) {
 }
 
 // Get lottie animation HTML - remember to lazyLoadLottiePlayer() to see it.
+// Get lottie animation HTML - remember to lazyLoadLottiePlayer() to see it.
 export function getLottie(name, src, loop = true, autoplay = true, control = false, hover = false) {
-  return (`<lottie-player class="lottie lottie-${name}" src="${src}" background="transparent" speed="1" ${(loop) ? 'loop ' : ''}${(autoplay) ? 'autoplay ' : ''}${(control) ? 'controls ' : ''}${(hover) ? 'hover ' : ''}></lottie-player>`);
+  return createTag('lottie-player', {
+    class: `lottie lottie-${name}`,
+    src,
+    background: 'transparent',
+    speed: 1,
+    loop: loop ? 'loop' : '',
+    autoplay: autoplay ? 'autoplay' : '',
+    control: control ? 'controls' : '',
+    hover: hover ? 'hover' : '',
+  });
 }
-
 // Lazy-load lottie player if you scroll to the block.
 export function lazyLoadLottiePlayer($block = null) {
   const usp = new URLSearchParams(window.location.search);
