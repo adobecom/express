@@ -492,16 +492,16 @@ export function getIcon(icons, alt, size = 44) {
     const iconName = icon;
     let sheetSize = size;
     if (size22Icons.includes(icon)) sheetSize = 22;
-    const svgWrapper = createTag('svg', {
-      xmlns: 'http://www.w3.org/2000/svg',
-      class: `icon icon-${icon}`,
-    });
+    const svgWrapper = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svgWrapper.classList.add('icon');
+    svgWrapper.classList.add(`icon-${icon}`);
+    svgWrapper.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/1999/xlink');
     if (alt) {
       svgWrapper.appendChild(createTag('title', { innerText: alt }));
     }
-    svgWrapper.appendChild(createTag('use', {
-      href: `/express/icons/ccx-sheet_${sheetSize}.svg#${iconName}${sheetSize}`,
-    }));
+    const u = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    u.setAttribute('href', `/express/icons/ccx-sheet_${sheetSize}.svg#${iconName}${sheetSize}`);
+    svgWrapper.appendChild(u);
     return svgWrapper;
   } else {
     return createTag('img', {
