@@ -105,7 +105,7 @@ Border style variants
 .pricing-cards .cards-container:has( .card-border.gradient-promo) {
   margin-top:48px;
 }
-.pricing-cards .cards-container:has( .gradient-promo:has(div:empty)) {
+.pricing-cards .cards-container{
   margin-top:24px;
 }
 
