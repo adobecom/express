@@ -161,6 +161,7 @@ function readBraces(inputString, card) {
     const [token, promoType] = matches[matches.length - 1];
     const specialPromo = createTag('div');
     [specialPromo.textContent] = inputString.split(token);
+    specialPromo.textContent = specialPromo.textContent.trim();
     card.classList.add(promoType.replaceAll(' ', ''));
     card.append(specialPromo);
     return specialPromo;
@@ -207,7 +208,6 @@ function decorateHeader(header, borderParams, card, cardBorder) {
   header.classList.add('card-header');
   const specialPromo = readBraces(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
-
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
   if (extractHeadCountExp.test(h2.innerText)) {
