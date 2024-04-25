@@ -327,19 +327,36 @@ export default async function decorate($block) {
       const filledStars = Math.floor(ratingRoundedHalf);
       const halfStars = (filledStars === ratingRoundedHalf) ? 0 : 1;
       const emptyStars = (halfStars === 1) ? 4 - filledStars : 5 - filledStars;
-      $stars.innerHTML = `${star.repeat(filledStars)}${starHalf.repeat(halfStars)}${starEmpty.repeat(emptyStars)}`;
+  
+      for (let i = 0; i < filledStars; i+=1) {
+        $stars.appendChild(star.cloneNode(true));
+      }
+      for (let i = 0; i < halfStars; i+=1) {
+        $stars.appendChild(starHalf.cloneNode(true));
+      }
+      for (let i = 0; i < emptyStars; i+=1) {
+        $stars.appendChild(starEmpty.cloneNode(true));
+      }
+      console.log($stars)
       const $votes = createTag('span', { class: 'rating-votes' });
-      $votes.innerHTML = `<strong>${rating} / 5</strong> - ${ratingAmount} ${votesText}`;
-      if (getConfig().locale.region === 'kr') $votes.innerHTML = `<strong>${rating} / 5</strong> - ${ratingAmount}${votesText}`;
+      const strong = document.createElement('strong');
+      strong.textContent = `${rating} / 5`;
+      $votes.appendChild(strong);
+      $votes.appendChild(document.createTextNode(` - ${ratingAmount} ${votesText}`));
+      if (getConfig().locale.region === 'kr') {
+        $votes.childNodes[0].textContent = `${rating} / 5`;
+      }
       $stars.appendChild($votes);
       if (rating > 4.2) {
         buildSchema(actionTitle);
       }
     } else {
-      $stars.innerHTML = `${star.repeat(5)}`;
+      for (let i = 0; i < 5; i+=1) {
+        $stars.appendChild(star.cloneNode(true));
+      }
     }
     return $stars;
-  }
+  }  
 
   // Decorates the rating Form and Slider HTML.
   function decorateRatingSlider(title, headingTag = 'h3') {
