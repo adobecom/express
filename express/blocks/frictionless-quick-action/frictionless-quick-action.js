@@ -212,6 +212,22 @@ function uploadFile() {
   };
 }
 
+function getQAGroup(qa) {
+  // TODO: fill up the mapping here
+  switch (qa) {
+    case 'convert-to-jpg':
+    case 'convert-to-png':
+    case 'convert-to-svg':
+    case 'crop-image':
+    case 'resize-image':
+    case 'remove-background':
+      return 'image';
+    case 'generate-qr-code':
+    default:
+      return 'image';
+  }
+}
+
 export default async function decorate(block) {
   // cache block element for the
   fqaBlock = block;
@@ -302,4 +318,7 @@ export default async function decorate(block) {
       document.body.dataset.suppressfloatingcta = 'false';
     }
   }, { passive: true });
+
+  fqaBlock.dataset.frictionlesstype = quickAction;
+  fqaBlock.dataset.frictionlessgroup = getQAGroup(quickAction);
 }
