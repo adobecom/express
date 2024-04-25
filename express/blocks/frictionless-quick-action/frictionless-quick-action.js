@@ -38,7 +38,7 @@ function selectElementByTagPrefix(p) {
 function startSDK(data = '') {
   const urlParams = new URLSearchParams(window.location.search);
   const CDN_URL = 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
-  const clientId = 'AdobeExpressWeb';
+  const clientId = 'MarvelWeb3';
 
   loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
