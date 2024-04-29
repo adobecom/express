@@ -576,9 +576,10 @@ async function buildTemplateList(block, props, type = []) {
     } else {
       block.textContent = 'Error loading templates, please refresh the page or try again later.';
     }
+    return;
   }
 
-  if (templates && props.tabs) {
+  if (props.tabs) {
     block.classList.add('tabbed');
     const tabs = props.tabs.split(',');
     const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
@@ -663,14 +664,15 @@ async function buildTemplateList(block, props, type = []) {
 
   // templates are either finished rendering or API has crashed at this point.
 
-  if (templates && props.loadMoreTemplates) {
+  if (props.loadMoreTemplates) {
     const loadMore = await decorateLoadMoreButton(block, props);
     if (loadMore) {
       updateLoadMoreButton(props, loadMore);
     }
   }
 
-  if (templates && props.toolBar) {
+
+  if (props.toolBar) {
     await decorateToolbar(block, props);
     await decorateCategoryList(block, props);
   }
@@ -686,9 +688,7 @@ async function buildTemplateList(block, props, type = []) {
   await decorateBreadcrumbs(block);
 
   if (
-    templates
-    && props.orientation
-    && props.orientation.toLowerCase() === 'horizontal'
+    props?.orientation.toLowerCase() === 'horizontal'
   ) {
     const innerWrapper = block.querySelector('.template-x-inner-wrapper');
     if (innerWrapper) {
