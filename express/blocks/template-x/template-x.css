@@ -614,6 +614,13 @@ main.with-holiday-templates-banner {
     z-index: 0;
 }
 
+.template-x.fullwidth.sm-view .template.placeholder.wide {
+    margin: 14px auto;
+    max-width: 90%;
+    max-height: 30vh;
+    z-index: 0;
+}
+
 .template-x.fullwidth.lg-view .template.placeholder {
     width: 335px;
 }
