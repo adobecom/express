@@ -93,33 +93,13 @@ Border style variants
   border-radius: 10px;
   overflow: hidden;
   background: var(--color-white);
-  margin-top:-48px;
+  margin-top: 0px !important;
   margin-left: -2px;
   margin-right: -2px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 48px;
-  
 }
 
-.pricing-cards .cards-container:has( .card-border.gradient-promo) {
-  margin-top:48px;
-}
-.pricing-cards .cards-container{
-  margin-top:24px;
-}
-
-.pricing-cards .gradient-promo:has(div:empty) {
-  margin-top: -48px;
-}
-
-.pricing-cards .gradient-promo div:empty {
-  padding: 18px;
-}
-
-.pricing-cards .card-border {
-  margin-bottom: 48px;
-}
 
 .pricing-cards .special-promo {
   border: 2px solid #FFE600;
@@ -159,7 +139,12 @@ Border style variants
 
 /*
 End border style variants
-*/ 
+*/
+
+.pricing-cards .card-border {
+  margin-top: calc(24px + 1.5rem);
+}
+
 
 .pricing-cards .card-border .hide {
   display: none;
@@ -335,9 +320,14 @@ End border style variants
   padding: 8px;
 }
 
+.pricing-cards .card-feature-list ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
 .pricing-cards .card-feature-list li {
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding: 8px;
 }
 
 .pricing-cards .card-feature-list li:first-of-type {
@@ -403,6 +393,7 @@ End border style variants
 
   .pricing-cards .cards-container:has(>.card-border:first-child:nth-last-child(3)) {
     width: calc(2 * --card-width);
+    margin: auto;
     grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
   }
 
@@ -433,8 +424,7 @@ End border style variants
   }
 
   .pricing-cards .cards-container:has(>.card:first-child:nth-last-child(3)) {
+    margin: auto;
     grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
   }
-
-  
 }
