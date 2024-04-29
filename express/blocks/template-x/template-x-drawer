@@ -1,0 +1,151 @@
+import { createTag, getConfig } from '../../scripts/utils.js';
+import { fetchTemplatesCategoryCount } from './template-search-api-v3.js';
+import { updateOptionsStatus } from './core.js';
+
+async function fetchCntSpan(props, anchor, lang) {
+  const cntSpan = createTag('span', { class: 'category-list-template-count' });
+  const cnt = await fetchTemplatesCategoryCount(props, anchor.dataset.tasks);
+  cntSpan.textContent = `(${cnt.toLocaleString(lang)})`;
+  return { cntSpan, anchor };
+}
+async function appendCategoryTemplatesCount(block, props) {
+  if (props.loadedOtherCategoryCounts) {
+    return;
+  }
+  props.loadedOtherCategoryCounts = true;
+  const categories = block.querySelectorAll('ul.category-list > li');
+  const lang = getConfig().locale.ietf;
+
+  const fetchCntSpanPromises = [...categories].map((li) =>
+    fetchCntSpan(props, li.querySelector('a'), lang)
+  );
+  const res = await Promise.all(fetchCntSpanPromises);
+
+  // append one by one to gain attention
+  for (const { cntSpan, anchor } of res) {
+    anchor.append(cntSpan);
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+}
+
+function closeDrawer(toolBar) {
+  const drawerBackground = toolBar.querySelector('.drawer-background');
+  const drawer = toolBar.querySelector('.filter-drawer-mobile');
+  const applyButton = toolBar.querySelector('.apply-filter-button-wrapper');
+
+  drawer.classList.add('retracted');
+  drawerBackground.classList.add('transparent');
+  applyButton.classList.add('transparent');
+
+  setTimeout(() => {
+    drawer.classList.add('hidden');
+    drawerBackground.classList.add('hidden');
+    applyButton.classList.add('hidden');
+  }, 500);
+}
+
+function updateLottieStatus(block) {
+  const drawer = block.querySelector('.filter-drawer-mobile');
+  const inWrapper = drawer.querySelector('.filter-drawer-mobile-inner-wrapper');
+  const lottieArrows = drawer.querySelector('.lottie-wrapper');
+  if (lottieArrows) {
+    if (
+      inWrapper.scrollHeight - inWrapper.scrollTop ===
+      inWrapper.offsetHeight
+    ) {
+      lottieArrows.style.display = 'none';
+      drawer.classList.remove('scrollable');
+    } else {
+      lottieArrows.style.removeProperty('display');
+      drawer.classList.add('scrollable');
+    }
+  }
+}
+
+export default function initDrawer(block, props, toolBar) {
+  const filterButton = toolBar.querySelector('.filter-button-mobile-wrapper');
+  const drawerBackground = toolBar.querySelector('.drawer-background');
+  const drawer = toolBar.querySelector('.filter-drawer-mobile');
+  const closeDrawerBtn = toolBar.querySelector('.close-drawer');
+  const applyButton = toolBar.querySelector('.apply-filter-button-wrapper');
+
+  const functionWrappers = drawer.querySelectorAll('.function-wrapper');
+
+  let currentFilters;
+  filterButton.addEventListener(
+    'click',
+    () => {
+      appendCategoryTemplatesCount(block, props);
+    },
+    { once: true }
+  );
+  filterButton.addEventListener(
+    'click',
+    () => {
+      currentFilters = { ...props.filters };
+      drawer.classList.remove('hidden');
+      drawerBackground.classList.remove('hidden');
+      applyButton.classList.remove('hidden');
+      updateLottieStatus(block);
+
+      setTimeout(() => {
+        drawer.classList.remove('retracted');
+        drawerBackground.classList.remove('transparent');
+        applyButton.classList.remove('transparent');
+        functionWrappers.forEach((wrapper) => {
+          const button = wrapper.querySelector('.button-wrapper');
+          if (button) {
+            button.style.maxHeight = `${button.nextElementSibling.offsetHeight}px`;
+          }
+        });
+      }, 100);
+    },
+    { passive: true }
+  );
+
+  [drawerBackground, closeDrawerBtn].forEach((el) => {
+    el.addEventListener(
+      'click',
+      async () => {
+        props.filters = { ...currentFilters };
+        closeDrawer(toolBar);
+        updateOptionsStatus(block, props, toolBar);
+      },
+      { passive: true }
+    );
+  });
+
+  drawer.classList.remove('hidden');
+  functionWrappers.forEach((wrapper) => {
+    const button = wrapper.querySelector('.button-wrapper');
+    let maxHeight;
+    if (button) {
+      const wrapperMaxHeightGrabbed = setInterval(() => {
+        if (wrapper.offsetHeight > 0) {
+          maxHeight = `${wrapper.offsetHeight}px`;
+          wrapper.style.maxHeight = maxHeight;
+          clearInterval(wrapperMaxHeightGrabbed);
+        }
+      }, 200);
+
+      button.addEventListener(
+        'click',
+        (e) => {
+          e.stopPropagation();
+          const btnWrapper = wrapper.querySelector('.button-wrapper');
+          if (btnWrapper) {
+            const minHeight = `${btnWrapper.offsetHeight - 8}px`;
+            wrapper.classList.toggle('collapsed');
+            wrapper.style.maxHeight = wrapper.classList.contains('collapsed')
+              ? minHeight
+              : maxHeight;
+          }
+        },
+        { passive: true }
+      );
+    }
+  });
+
+  drawer.classList.add('hidden');
+}
