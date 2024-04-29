@@ -320,14 +320,9 @@ End border style variants
   padding: 8px;
 }
 
-.pricing-cards .card-feature-list ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
 .pricing-cards .card-feature-list li {
-  padding: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 .pricing-cards .card-feature-list li:first-of-type {
