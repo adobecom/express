@@ -366,7 +366,7 @@ export const getOfferOnePlans = (() => {
     const customOfferId = offer.oo || offerId;
     const ooAvailable = offer.oo || false;
     const showVat = offer.showVat || false;
-    console.log(offer.y2p)
+    console.log(offer.y2p);
     return {
       country,
       currency,
