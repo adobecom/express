@@ -24,7 +24,7 @@ const animationBreakPointSettings = [
   },
   {
     typeHint: 'desktop',
-    minWidth: 430,
+    minWidth: 400,
   },
   {
     typeHint: 'hd',

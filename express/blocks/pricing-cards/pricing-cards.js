@@ -154,15 +154,14 @@ function readBraces(inputString, card) {
   }
 
   // Pattern to find {{...}}
-  const pattern = /(?<=\{\{).*?(?=\}\})/g;
+  const pattern = /\{\{(.*?)\}\}/g;
   const matches = Array.from(inputString.trim().matchAll(pattern));
 
   if (matches.length > 0) {
-    let [promoType] = matches[matches.length - 1];
+    const [token, promoType] = matches[matches.length - 1];
     const specialPromo = createTag('div');
-    [specialPromo.textContent] = inputString.split(`{{${promoType}}}`);
-    promoType = promoType.trim();
-    card.classList.add(promoType);
+    specialPromo.textContent = inputString.split(token)[0].trim();
+    card.classList.add(promoType.replaceAll(' ', ''));
     card.append(specialPromo);
     return specialPromo;
   }
@@ -208,7 +207,6 @@ function decorateHeader(header, borderParams, card, cardBorder) {
   header.classList.add('card-header');
   const specialPromo = readBraces(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
-
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
   if (extractHeadCountExp.test(h2.innerText)) {

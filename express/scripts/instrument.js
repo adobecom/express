@@ -129,6 +129,38 @@ export function sendEventToAdobeAnaltics(eventName) {
   });
 }
 
+function sendFrictionlessEventToAdobeAnaltics(block) {
+  const eventName = 'view-quickaction-upload-page';
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: eventName,
+          linkClicks: {
+            value: 1,
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        sdm: {
+          event: {
+            pagename: eventName,
+          },
+          custom: {
+            qa: {
+              group: block.dataset.frictionlessgroup ?? 'unknown',
+              type: block.dataset.frictionlesstype ?? 'unknown',
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 export function textToName(text) {
   const splits = text.toLowerCase().split(' ');
   const camelCase = splits.map((s, i) => (i ? s.charAt(0).toUpperCase() + s.substr(1) : s)).join('');
@@ -682,6 +714,12 @@ function martechLoadedCB() {
 
   // Fire the landing:viewedPage event
   sendEventToAdobeAnaltics('landing:viewedPage');
+
+  // Fire quick-action-viewed event if needed
+  const quickActionBlock = d.querySelector('.frictionless-quick-action.block');
+  if (quickActionBlock) {
+    sendFrictionlessEventToAdobeAnaltics(quickActionBlock);
+  }
 
   // Fire the displayPurchasePanel event if it is the pricing site
   if (

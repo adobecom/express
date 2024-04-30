@@ -13,18 +13,10 @@ import {
   closeToolBox,
 } from '../shared/floating-cta.js';
 
-function toggleMultifunctionToolBox(wrapper, lottie, data, userInitiated = true) {
+function toggleMultifunctionToolBox(wrapper, lottie, data) {
   wrapper.classList.add('with-transition');
-  if (userInitiated) {
-    wrapper.classList.remove('initial-load');
-  }
-  if (wrapper.classList.contains('initial-load') && wrapper.classList.contains('closed')) {
-    wrapper.classList.remove('closed');
-    return;
-  }
-
   if (wrapper.classList.contains('toolbox-opened')) {
-    openToolBox(wrapper, lottie, data, userInitiated);
+    openToolBox(wrapper, lottie, data);
   } else {
     closeToolBox(wrapper, lottie);
   }

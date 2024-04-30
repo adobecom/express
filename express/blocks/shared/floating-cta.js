@@ -23,7 +23,7 @@ export const showScrollArrow = (floatButtonWrapper, lottieScrollButton) => {
   if (lottieScrollButton) lottieScrollButton.removeAttribute('tabIndex');
 };
 
-export function openToolBox(wrapper, lottie, data, userInitiated) {
+export function openToolBox(wrapper, lottie, data) {
   const toolbox = wrapper.querySelector('.toolbox');
   const button = wrapper.querySelector('.floating-button');
 
@@ -32,23 +32,13 @@ export function openToolBox(wrapper, lottie, data, userInitiated) {
     showScrollArrow(wrapper, lottie);
   }
   wrapper.classList.remove('toolbox-opened');
-  if (userInitiated) {
-    setTimeout(() => {
-      if (!wrapper.classList.contains('toolbox-opened')) {
-        toolbox.classList.add('hidden');
-        wrapper.classList.remove('clamped');
-        button.classList.remove('toolbox-opened');
-      }
-    }, 500);
-  } else {
-    setTimeout(() => {
-      if (wrapper.classList.contains('initial-load')) {
-        toolbox.classList.add('hidden');
-        wrapper.classList.remove('clamped');
-        button.classList.remove('toolbox-opened');
-      }
-    }, 2000);
-  }
+  setTimeout(() => {
+    if (!wrapper.classList.contains('toolbox-opened')) {
+      toolbox.classList.add('hidden');
+      wrapper.classList.remove('clamped');
+      button.classList.remove('toolbox-opened');
+    }
+  }, 500);
 }
 
 export function closeToolBox(wrapper, lottie) {
@@ -406,17 +396,6 @@ export function buildToolBoxStructure(wrapper, data) {
     toolBox.append(appStoreBadge);
     appStoreBadge.href = data.tools[0].anchor.href;
   }
-
-  if (data.delay > 0) {
-    wrapper.classList.add('initial-load');
-    wrapper.classList.add('clamped');
-    if (wrapper.classList.contains('closed')) {
-      toolBox.classList.add('hidden');
-    } else {
-      wrapper.classList.add('toolbox-opened');
-      floatingButton.classList.add('toolbox-opened');
-    }
-  }
 }
 
 export function initToolBox(wrapper, data, toggleFunction) {
@@ -426,14 +405,6 @@ export function initToolBox(wrapper, data, toggleFunction) {
   const lottie = wrapper.querySelector('.floating-button-lottie');
   const notch = wrapper.querySelector('.notch');
   const background = wrapper.querySelector('.toolbox-background');
-
-  if (data.delay > 0) {
-    setTimeout(() => {
-      if (wrapper.classList.contains('initial-load')) {
-        toggleFunction(wrapper, lottie, data, false);
-      }
-    }, data.delay * 1000);
-  }
 
   cta.addEventListener('click', (e) => {
     if (!wrapper.classList.contains('toolbox-opened')) {
