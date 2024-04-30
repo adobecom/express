@@ -645,8 +645,8 @@ export function removeIrrelevantSections(main) {
   // floating CTA vs page CTA with same text or link logics
   if (['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta')?.toLowerCase())) {
     const { device } = document.body.dataset;
-    const textToTarget = getMetadata(`${device}-cta-text`)?.trim() || getMetadata('main-cta-text')?.trim();
-    const linkToTarget = getMetadata(`${device}-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
+    const textToTarget = getMetadata(`${device}-floating-cta-text`)?.trim() || getMetadata('main-cta-text')?.trim();
+    const linkToTarget = getMetadata(`${device}-floating-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
     if (textToTarget || linkToTarget) {
       const sameUrlCTAs = Array.from(main.querySelectorAll('a:any-link'))
         .filter((a) => {
