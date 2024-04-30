@@ -3,6 +3,7 @@ import {
   getConfig,
   loadScript,
   transformLinkToAnimation,
+  addAnimationToggle,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
@@ -243,7 +244,10 @@ export default async function decorate(block) {
   const actionColumn = createTag('div');
   const dropzoneContainer = createTag('div', { class: 'dropzone-container' });
 
-  if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
+  if (animation && animation.href.includes('.mp4')) {
+    transformLinkToAnimation(animation);
+    addAnimationToggle(animationContainer);
+  }
   if (cta) cta.classList.add('xlarge');
   dropzone.classList.add('dropzone');
 
