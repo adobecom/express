@@ -1,5 +1,4 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
 
 import {
@@ -10,8 +9,6 @@ import {
 } from '../../scripts/utils/pricing.js';
 
 const blockKeys = ['header', 'borderParams', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
-const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
-const BILLING_PLAN = 'billing-plan';
 const SAVE_PERCENTAGE = 'savePercentage';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
 
@@ -232,21 +229,7 @@ function decorateBasicTextSection(textElement, className, card) {
     card.append(textElement);
   }
 }
-// Subscribes to the block mediator in order to receive price updates
-// for each plan specified by authors
-function subscribeToBlockMediator(mPricingSection, yPricingSection) {
-  function reactToPlanChange({ newValue }) {
-    [mPricingSection, yPricingSection].forEach((section) => {
-      if (section.classList.contains(plans[newValue])) {
-        section.classList.remove('hide');
-      } else {
-        section.classList.add('hide');
-      }
-    });
-  }
-  reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
-  BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
-}
+
 // Links user to page where plans can be compared
 function decorateCompareSection(compare, el, card) {
   if (compare?.innerHTML.trim()) {
@@ -268,6 +251,31 @@ function decorateCompareSection(compare, el, card) {
     card.append(compare);
   }
 }
+
+function createToggle(placeholders, pricingSections) {
+  const subDesc = placeholders['subscription-type'] || 'Subscription Type:';
+  const toggleWrapper = createTag('div');
+  toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`;
+  const buttons = ['monthly', 'annual'].map((plan, i) => {
+    const button = createTag('button', {
+      class: i === 0 ? 'checked' : '',
+    });
+    button.innerHTML = `<span></span>${placeholders[plan] || ['Monthly', 'Annual'][i]}`;
+    button.addEventListener('click', () => {
+      pricingSections.forEach((section) => {
+        if (section.classList.contains(plan)) {
+          section.classList.remove('hide');
+        } else {
+          section.classList.add('hide');
+        }
+      });
+    });
+    return button;
+  });
+  toggleWrapper.append(...buttons);
+  return toggleWrapper;
+}
+
 // In legacy versions, the card element encapsulates all content
 // In new versions, the cardBorder element encapsulates all content instead
 function decorateCard({
@@ -294,8 +302,8 @@ function decorateCard({
   mPricingSection.classList.add('monthly');
   const yPricingSection = createPricingSection(placeholders, yPricingRow, yCtaGroup, null);
   yPricingSection.classList.add('yearly', 'hide');
-  card.append(mPricingSection, yPricingSection);
-  subscribeToBlockMediator(mPricingSection, yPricingSection);
+  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection]);
+  card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
   return cardWrapper;
