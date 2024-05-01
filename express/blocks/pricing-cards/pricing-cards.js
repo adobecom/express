@@ -56,15 +56,18 @@ function getPriceElementSuffix(placeholders, placeholderArr, response) {
     .join(' ');
 }
 
-function handleYear2PricingToken(pricingArea, y2p, elementSuffix) {
+function handleYear2PricingToken(pricingArea, y2p, priceSuffix) {
   try {
     const elements = pricingArea.querySelectorAll('p');
     const year2PricingToken = Array.from(elements).find(
-      (p) => p.textContent === YEAR_2_PRICING_TOKEN
+      (p) => p.textContent.includes(YEAR_2_PRICING_TOKEN)
     );
     if (!year2PricingToken) return;
     if (y2p) {
-      year2PricingToken.textContent = `${y2p} ${elementSuffix} after the first year`;
+      year2PricingToken.textContent = year2PricingToken.textContent.replace(
+        YEAR_2_PRICING_TOKEN,
+        `${y2p} ${priceSuffix}`,
+      );
     }
   } catch (e) {
     window.lana.log(e);
@@ -75,7 +78,7 @@ function handleSpecialPromo(
   specialPromo,
   isPremiumCard,
   response,
-  legacyVersion
+  legacyVersion,
 ) {
   if (specialPromo?.textContent.includes(SAVE_PERCENTAGE)) {
     const offerTextContent = specialPromo.textContent;
@@ -84,7 +87,7 @@ function handleSpecialPromo(
       offerTextContent,
       isPremiumCard,
       true,
-      response.offerId
+      response.offerId,
     );
 
     if (shouldSuppress) {
@@ -92,13 +95,13 @@ function handleSpecialPromo(
     } else {
       specialPromo.innerHTML = specialPromo.innerHTML.replace(
         SAVE_PERCENTAGE,
-        response.savePer
+        response.savePer,
       );
     }
   }
   if (
-    !isPremiumCard &&
-    specialPromo?.parentElement?.classList?.contains('special-promo')
+    !isPremiumCard
+    && specialPromo?.parentElement?.classList?.contains('special-promo')
   ) {
     specialPromo.parentElement.classList.remove('special-promo');
     if (specialPromo.parentElement.firstChild.innerHTML !== '') {
@@ -116,14 +119,14 @@ function handleSavePercentage(savePercentElem, isPremiumCard, response) {
         offerTextContent,
         isPremiumCard,
         false,
-        response.offerId
+        response.offerId,
       )
     ) {
       savePercentElem.remove();
     } else {
       savePercentElem.innerHTML = savePercentElem.innerHTML.replace(
         SAVE_PERCENTAGE,
-        response.savePer
+        response.savePer,
       );
     }
   }
@@ -161,7 +164,7 @@ function handlePrice(placeholders, pricingArea, specialPromo, legacyVersion) {
 
   const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
   const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
-  
+
   const priceRow = createTag('div', { class: 'pricing-row' });
   const price = createTag('span', { class: 'pricing-price' });
   const basePrice = createTag('span', { class: 'pricing-base-price' });
@@ -173,11 +176,11 @@ function handlePrice(placeholders, pricingArea, specialPromo, legacyVersion) {
     const priceSuffixTextContent = getPriceElementSuffix(
       placeholders,
       placeholderArr,
-      response
+      response,
     );
     const isPremiumCard = response.ooAvailable || false;
     const savePercentElem = pricingArea.querySelector('.card-offer');
-
+    console.log(response);
     handleRawPrice(price, basePrice, response);
     handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent);
     handleSavePercentage(savePercentElem, isPremiumCard, response);
@@ -197,7 +200,7 @@ function createPricingSection(
   pricingArea,
   ctaGroup,
   specialPromo,
-  legacyVersion
+  legacyVersion,
 ) {
   const pricingSection = createTag('div', { class: 'pricing-section' });
   pricingArea.classList.add('pricing-area');
@@ -264,7 +267,7 @@ function decorateLegacyHeader(header, card) {
         createTag('img', {
           src: '/express/icons/head-count.svg',
           alt: 'icon-head-count',
-        })
+        }),
       );
       header.append(headCntDiv);
     } else {
@@ -303,7 +306,7 @@ function decorateHeader(header, borderParams, card, cardBorder) {
       createTag('img', {
         src: '/express/icons/head-count.svg',
         alt: 'icon-head-count',
-      })
+      }),
     );
     header.append(headCntDiv);
   }
@@ -374,7 +377,7 @@ function decorateCard(
   },
   el,
   placeholders,
-  legacyVersion
+  legacyVersion,
 ) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
@@ -389,14 +392,14 @@ function decorateCard(
     mPricingRow,
     mCtaGroup,
     specialPromo,
-    legacyVersion
+    legacyVersion,
   );
   mPricingSection.classList.add('monthly');
   const yPricingSection = createPricingSection(
     placeholders,
     yPricingRow,
     yCtaGroup,
-    null
+    null,
   );
   yPricingSection.classList.add('yearly', 'hide');
   card.append(mPricingSection, yPricingSection);
@@ -408,15 +411,13 @@ function decorateCard(
 
 // less thrashing by separating get and set
 async function syncMinHeights(...groups) {
-  const maxHeights = groups.map((els) =>
-    els.filter((e) => !!e).reduce((max, e) => Math.max(max, e.offsetHeight), 0)
-  );
+  const maxHeights = groups.map((els) => els.filter(
+    (e) => !!e,
+  ).reduce((max, e) => Math.max(max, e.offsetHeight), 0));
   await yieldToMain();
-  maxHeights.forEach((maxHeight, i) =>
-    groups[i].forEach((e) => {
-      if (e) e.style.minHeight = `${maxHeight}px`;
-    })
-  );
+  maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
+    if (e) e.style.minHeight = `${maxHeight}px`;
+  }));
 }
 
 export default async function init(el) {
@@ -427,19 +428,13 @@ export default async function init(el) {
   if (legacyVersion) {
     currentKeys.splice(1, 1);
   }
-  const divs = currentKeys.map((_, index) =>
-    el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`)
-  );
+  const divs = currentKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
 
-  const cards = Array.from(divs[0]).map((_, index) =>
-    currentKeys.reduce((obj, key, keyIndex) => {
-      obj[key] = divs[keyIndex][index];
-      return obj;
-    }, {})
-  );
-  el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) =>
-    d.remove()
-  );
+  const cards = Array.from(divs[0]).map((_, index) => currentKeys.reduce((obj, key, keyIndex) => {
+    obj[key] = divs[keyIndex][index];
+    return obj;
+  }, {}));
+  el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
   cards
@@ -447,7 +442,7 @@ export default async function init(el) {
     .forEach((card) => cardsContainer.append(card));
 
   const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter(
-    (a) => a.title.includes(SALES_NUMBERS)
+    (a) => a.title.includes(SALES_NUMBERS),
   );
   if (phoneNumberTags.length > 0) {
     await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
@@ -464,11 +459,11 @@ export default async function init(el) {
           cards.map(({ explain }) => explain),
           cards.reduce(
             (acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup],
-            []
+            [],
           ),
           cards.map(({ featureList }) => featureList.querySelector('p')),
           cards.map(({ featureList }) => featureList),
-          cards.map(({ compare }) => compare)
+          cards.map(({ compare }) => compare),
         );
         el.classList.remove('no-visible');
       }
