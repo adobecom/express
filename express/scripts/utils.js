@@ -1703,7 +1703,7 @@ export async function getExperimentConfig(experimentId) {
 
 function loadIMS() {
   window.adobeid = {
-    client_id: sessionStorage.getItem('imsclient'),
+    client_id: 'AdobeExpressWeb',
     scope: 'AdobeID,openid',
     locale: getConfig().locale.region,
     environment: 'prod',
