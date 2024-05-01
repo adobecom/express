@@ -121,7 +121,7 @@ function handleSavePercentage(savePercentElem, isPremiumCard, response) {
         response.savePer,
         offerTextContent,
         isPremiumCard,
-        false,
+        true,
         response.offerId,
       )
     ) {
