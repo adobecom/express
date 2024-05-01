@@ -4,6 +4,7 @@ import {
   createTag,
   fetchPlaceholders,
   yieldToMain,
+  getIconElement,
 } from '../../scripts/utils.js';
 
 import {
@@ -60,7 +61,7 @@ function handleYear2PricingToken(pricingArea, y2p, priceSuffix) {
   try {
     const elements = pricingArea.querySelectorAll('p');
     const year2PricingToken = Array.from(elements).find(
-      (p) => p.textContent.includes(YEAR_2_PRICING_TOKEN)
+      (p) => p.textContent.includes(YEAR_2_PRICING_TOKEN),
     );
     if (!year2PricingToken) return;
     if (y2p) {
@@ -68,6 +69,8 @@ function handleYear2PricingToken(pricingArea, y2p, priceSuffix) {
         YEAR_2_PRICING_TOKEN,
         `${y2p} ${priceSuffix}`,
       );
+    } else {
+      year2PricingToken.textContent = '';
     }
   } catch (e) {
     window.lana.log(e);
@@ -156,6 +159,29 @@ function handleRawPrice(price, basePrice, response) {
     : price.classList.remove('price-active');
 }
 
+function handleTooltip(pricingArea) {
+  const elements = pricingArea.querySelectorAll('p');
+  const pattern = /\[\[([^]+)\]\]([^]+)\[\[\/([^]+)\]\]/g;
+  let tooltip;
+  let tooltipDiv;
+
+  Array.from(elements).forEach((p) => {
+    const res = pattern.exec(p.textContent);
+    if (res) {
+      tooltip = res;
+      tooltipDiv = p;
+    }
+  });
+  if (!tooltip) return;
+  tooltipDiv.textContent = tooltipDiv.textContent.replace(pattern, '');
+  const tooltipText = tooltip[2];
+  tooltipDiv.classList.add('tooltip');
+  const span = createTag('span', { class: 'tooltip-text' });
+  span.innerText = tooltipText;
+  const icon = getIconElement('info', 44, 'Info', 'tooltip-icon');
+  tooltipDiv.append(icon);
+  tooltipDiv.append(span);
+}
 function handlePrice(placeholders, pricingArea, specialPromo, legacyVersion) {
   const priceEl = pricingArea.querySelector(`[title="${PRICE_TOKEN}"]`);
   const pricingBtnContainer = pricingArea.querySelector('.button-container');
@@ -180,9 +206,9 @@ function handlePrice(placeholders, pricingArea, specialPromo, legacyVersion) {
     );
     const isPremiumCard = response.ooAvailable || false;
     const savePercentElem = pricingArea.querySelector('.card-offer');
-    console.log(response);
     handleRawPrice(price, basePrice, response);
     handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent);
+    handleTooltip(pricingArea);
     handleSavePercentage(savePercentElem, isPremiumCard, response);
     handleSpecialPromo(specialPromo, isPremiumCard, response, legacyVersion);
     handleYear2PricingToken(pricingArea, response.y2p, priceSuffixTextContent);

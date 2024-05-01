@@ -161,6 +161,26 @@ Border style variants
 End border style variants
 */ 
 
+.pricing-cards .tooltip-icon {
+  position: relative;
+  top : 2px;
+}
+
+.pricing-cards .tooltip-text {
+  visibility: hidden;
+  margin-left: 8px;
+  padding: 8px;
+  background-color:#5258E4;
+  color: white;
+  border-radius: 8px;
+
+
+}
+
+.pricing-cards .tooltip:hover .tooltip-text{
+  visibility: visible;
+}
+
 .pricing-cards .card-border .hide {
   display: none;
 }
@@ -262,7 +282,7 @@ End border style variants
   background: var(--color-gray-150);
   border: 1px solid #E0E2FF;
   padding: var(--card-padding);
-  height: 125px;
+  height: 150px;
 }
 
 .pricing-cards .pricing-row {
