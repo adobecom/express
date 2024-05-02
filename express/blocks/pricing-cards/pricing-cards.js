@@ -176,7 +176,7 @@ function handleTooltip(pricingArea) {
   tooltipDiv.textContent = tooltipDiv.textContent.replace(pattern, '');
   const tooltipText = tooltip[2];
   tooltipDiv.classList.add('tooltip');
-  const span = createTag('span', { class: 'tooltip-text' });
+  const span = createTag('div', { class: 'tooltip-text' });
   span.innerText = tooltipText;
   const icon = getIconElement('info', 44, 'Info', 'tooltip-icon');
   tooltipDiv.append(icon);

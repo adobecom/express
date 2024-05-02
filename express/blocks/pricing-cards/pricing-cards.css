@@ -167,18 +167,22 @@ End border style variants
 }
 
 .pricing-cards .tooltip-text {
-  visibility: hidden;
-  margin-left: 8px;
+  display: none;
+  margin-left: 20px;
   padding: 8px;
   background-color:#5258E4;
   color: white;
   border-radius: 8px;
+  position: absolute;
+  bottom: 0; left: 25%;transition: bottom 0.5s ease-in-out;
+}
 
-
+.pricing-cards .tooltip {
+  position: relative;
 }
 
 .pricing-cards .tooltip:hover .tooltip-text{
-  visibility: visible;
+  display: block;
 }
 
 .pricing-cards .card-border .hide {
