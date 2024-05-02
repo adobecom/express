@@ -348,6 +348,7 @@ export default async function init(el) {
           cards.map(({ header }) => header),
           cards.map(({ explain }) => explain),
           cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
+          [...el.querySelectorAll('.pricing-area')],
           cards.map(({ featureList }) => featureList.querySelector('p')),
           cards.map(({ featureList }) => featureList),
           cards.map(({ compare }) => compare),
