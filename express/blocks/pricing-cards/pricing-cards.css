@@ -181,7 +181,7 @@ End border style variants
   position: relative;
 }
 
-.pricing-cards .tooltip:hover .tooltip-text{
+.pricing-cards .tooltip .icon:hover ~.tooltip-text{
   display: block;
 }
 
