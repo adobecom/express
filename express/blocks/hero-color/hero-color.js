@@ -108,6 +108,7 @@ function decorateCTA(block) {
   if (!primaryCta) return;
 
   primaryCta.classList.add('primaryCta');
+  primaryCta.classList.add('suppress-on-mobile');
   BlockMediator.set('primaryCtaUrl', primaryCta.href);
 }
 
