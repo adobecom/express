@@ -457,7 +457,7 @@ export async function fetchPlanOnePlans(planUrl) {
           `<strong>${plan.prefix}${plan.rawBasePrice[0]}</strong>`,
         );
       }
-      plan.y2p = await formatPrice(offer.y2p, offer.currency);
+      plan.y2p = offer.y2p;
     }
 
     window.pricingPlans[planUrl] = plan;
