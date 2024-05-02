@@ -7,32 +7,33 @@ import {
   formatDynamicCartLink,
 } from '../../scripts/utils/pricing.js';
 
-export default async function decorate(block) {
+export default function decorate(block) {
   addTempWrapper(block, 'floating-button');
-  if (block.classList.contains('spreadsheet-powered')) {
-    const audience = block.querySelector(':scope > div').textContent.trim();
-    if (audience === 'mobile') {
-      block.closest('.section')?.remove();
-    }
+  if (!block.classList.contains('metadata-powered')) {
+    block.parentElement?.remove();
+    return;
+  }
 
-    const parentSection = block.closest('.section');
-    const data = await collectFloatingButtonData(block);
+  const audience = block.querySelector(':scope > div').textContent.trim();
+  if (audience === 'mobile') {
+    block.closest('.section')?.remove();
+  }
 
-    const blockWrapper = await createFloatingButton(
-      block,
-      parentSection ? audience : null,
-      data,
-    );
+  const parentSection = block.closest('.section');
+  const data = collectFloatingButtonData(block);
 
-    const blockLinks = blockWrapper.querySelectorAll('a');
-    if (blockLinks && blockLinks.length > 0) {
-      formatDynamicCartLink(blockLinks[0]);
-      const linksPopulated = new CustomEvent('linkspopulated', {
-        detail: blockLinks,
-      });
-      document.dispatchEvent(linksPopulated);
-    }
-  } else {
-    block.parentElement.remove();
+  const blockWrapper = createFloatingButton(
+    block,
+    parentSection ? audience : null,
+    data,
+  );
+
+  const blockLinks = blockWrapper.querySelectorAll('a');
+  if (blockLinks && blockLinks.length > 0) {
+    formatDynamicCartLink(blockLinks[0]);
+    const linksPopulated = new CustomEvent('linkspopulated', {
+      detail: blockLinks,
+    });
+    document.dispatchEvent(linksPopulated);
   }
 }

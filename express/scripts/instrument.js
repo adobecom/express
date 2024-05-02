@@ -148,6 +148,7 @@ function sendFrictionlessEventToAdobeAnaltics(block) {
         sdm: {
           event: {
             pagename: eventName,
+            url: loc.href,
           },
           custom: {
             qa: {

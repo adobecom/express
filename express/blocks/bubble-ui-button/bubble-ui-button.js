@@ -353,7 +353,7 @@ function initNotchDragAction($wrapper, data) {
   }, { passive: true });
 }
 
-async function buildBubblesToolBox($block, $wrapper, data) {
+async function buildBubblesToolBox($wrapper, data) {
   $wrapper.classList.add('bubble-ui-button');
   buildToolBoxStructure($wrapper, data);
 
@@ -377,22 +377,22 @@ async function buildBubblesToolBox($block, $wrapper, data) {
 }
 
 export async function createMultiFunctionButton($block, data, audience) {
-  const $buttonWrapper = await createFloatingButton($block, audience, data)
+  const $buttonWrapper = createFloatingButton($block, audience, data)
     .then(((result) => result));
   $buttonWrapper.classList.add('multifunction');
-  await buildBubblesToolBox($block, $buttonWrapper, data);
+  await buildBubblesToolBox($buttonWrapper, data);
 
   return $buttonWrapper;
 }
 
 export default async function decorate($block) {
-  if ($block.classList.contains('spreadsheet-powered')) {
+  if ($block.classList.contains('metadata-powered')) {
     const audience = $block.querySelector(':scope > div').textContent.trim();
     if (audience === 'mobile') {
       $block.closest('.section').remove();
     }
 
-    const data = await collectFloatingButtonData();
+    const data = collectFloatingButtonData();
     const blockWrapper = await createMultiFunctionButton($block, data, audience);
     const blockLinks = blockWrapper.querySelectorAll('a');
     if (blockLinks && blockLinks.length > 0) {
