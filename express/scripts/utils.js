@@ -1924,38 +1924,7 @@ async function buildAutoBlocks(main) {
     }
   }
 
-  async function loadPromoFrag() {
-    if (document.querySelector('.sticky-promo-bar')) return;
-
-    let promoFrag;
-    const location = new URL(window.location);
-    const { prefix } = getConfig().locale;
-    const fragmentUrl = `${location.origin}${prefix}${`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`}`;
-    const path = new URL(fragmentUrl).pathname.split('.')[0];
-    const resp = await fetch(`${path}.plain.html`);
-    if (resp.status === 404) {
-      return;
-    } else {
-      const html = await resp.text();
-      const htmlHolder = createTag('div');
-      htmlHolder.innerHTML = html;
-      promoFrag = htmlHolder.querySelector(':scope > div');
-      promoFrag.classList.add('section', 'section-wrapper');
-
-      if (!promoFrag) return;
-
-      const img = promoFrag.querySelector('img');
-      if (img) {
-        img.setAttribute('loading', 'lazy');
-      }
-    }
-
-    main.append(promoFrag);
-    const block = promoFrag?.querySelector('.sticky-promo-bar:not(.block)');
-    if (block) await loadBlock(block);
-  }
-
-  async function loadFloatingCTA(BlockMediator, decorated) {
+  async function loadFloatingCTA(BlockMediator) {
     const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
     const device = document.body.dataset?.device;
     const blockName = getMetadata(`${device}-floating-cta`);
@@ -1964,45 +1933,17 @@ async function buildAutoBlocks(main) {
       const button = buildBlock(blockName, device);
       button.classList.add('metadata-powered');
       lastDiv.append(button);
-      if (!decorated) {
-        await decorateBlock(button);
-        await loadBlock(button);
-      }
+      await decorateBlock(button);
+      await loadBlock(button);
       BlockMediator.set('floatingCtasLoaded', true);
     }
   }
 
-  if (document.body.dataset.device === 'mobile' && ['off', 'false', 'no'].includes(getMetadata('mobile-benchmark')
-    .toLowerCase())) {
-    await loadPromoFrag();
-  } else if (document.body.dataset.device === 'mobile' && ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')
-    .toLowerCase())) {
+  if (['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta')?.toLowerCase())) {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {
-      const eligibilityChecked = BlockMediator.get('mobileBetaEligibility');
-      if (eligibilityChecked) {
-        if (eligibilityChecked.deviceSupport) {
-          await loadFloatingCTA(BlockMediator, true);
-        } else {
-          await loadPromoFrag();
-        }
-      } else {
-        const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
-          if (e.newValue.deviceSupport) {
-            await loadFloatingCTA(BlockMediator, false);
-          } else {
-            await loadPromoFrag();
-          }
-          unsubscribe();
-        });
-      }
-    }
-  } else if (['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta')?.toLowerCase())) {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
-
-    if (!BlockMediator.get('floatingCtasLoaded')) {
-      await loadFloatingCTA(BlockMediator, true);
+      await loadFloatingCTA(BlockMediator);
     }
   }
 
