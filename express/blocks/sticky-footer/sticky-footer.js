@@ -1,5 +1,5 @@
 import {
-  createTag, fetchPlaceholders, getIcon, readBlockConfig,
+  createTag, fetchPlaceholders, getIconElement, readBlockConfig,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 
@@ -15,7 +15,7 @@ function createStars(rating = 5) {
   const whole = Math.floor(rHalves / 2);
   let hasHalf = rHalves % 2;
 
-  let str = '';
+  const container = [];
   for (let i = 0; i < 5; i += 1) {
     let type = 'star';
     if (i < whole) {
@@ -27,10 +27,10 @@ function createStars(rating = 5) {
       type = 'star-empty';
     }
 
-    str += getIcon(type);
+    container.append(getIconElement(type));
   }
 
-  return str;
+  return container
 }
 
 function createRatings() {
