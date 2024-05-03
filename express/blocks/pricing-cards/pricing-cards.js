@@ -29,7 +29,7 @@ function suppressOfferEyebrow(specialPromo, legacyVersion) {
   }
 }
 
-function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, legacyVersion) {
+async function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, legacyVersion) {
   const priceRow = createTag('div', { class: 'pricing-row' });
   const priceEl = pricingArea.querySelector('[title="{{pricing}}"]');
   if (!priceEl) return null;
@@ -41,87 +41,93 @@ function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, le
 
   priceRow.append(basePrice, price, priceSuffix);
 
-  fetchPlanOnePlans(priceEl?.href).then((response) => {
-    let specialPromoPercentageEyeBrowTextReplaced = false;
-    let pricingCardPercentageEyeBrowTextReplaced = false;
-    const parentP = priceEl.parentElement;
-    price.innerHTML = response.formatted;
-    basePrice.innerHTML = response.formattedBP || '';
-    if (basePrice.innerHTML !== '') {
-      price.classList.add('price-active');
-    } else {
-      price.classList.remove('price-active');
-    }
-    if (parentP.children.length > 1) {
-      Array.from(parentP.childNodes).forEach((node) => {
-        if (node === priceEl) return;
-        if (node.nodeName === '#text') {
-          priceSuffix.append(node);
-        } else {
-          priceSuffix.before(node);
-        }
-      });
-    } else {
-      const priceSuffixContent = placeholderArr.map((phText) => {
-        const key = phText.replace('{{', '').replace('}}', '');
-        return (key.includes('vat') && !response.showVat) ? '' : placeholders[key] || '';
-      }).join(' ');
-      priceSuffix.textContent = priceSuffixContent;
-    }
-    const isPremiumCard = response.ooAvailable || false;
-    const savePercentElem = pricingArea.querySelector('.card-offer');
-    if (savePercentElem && !pricingCardPercentageEyeBrowTextReplaced) {
-      const offerTextContent = savePercentElem.textContent;
-      if (shallSuppressOfferEyebrowText(response.savePer, offerTextContent, isPremiumCard,
-        false, response.offerId)) {
-        savePercentElem.remove();
+  const response = await fetchPlanOnePlans(priceEl?.href);
+  let specialPromoPercentageEyeBrowTextReplaced = false;
+  let pricingCardPercentageEyeBrowTextReplaced = false;
+  const parentP = priceEl.parentElement;
+  price.innerHTML = response.formatted;
+  basePrice.innerHTML = response.formattedBP || '';
+  if (basePrice.innerHTML !== '') {
+    price.classList.add('price-active');
+  } else {
+    price.classList.remove('price-active');
+  }
+  if (parentP.children.length > 1) {
+    Array.from(parentP.childNodes).forEach((node) => {
+      if (node === priceEl) return;
+      if (node.nodeName === '#text') {
+        priceSuffix.append(node);
       } else {
-        savePercentElem.innerHTML = savePercentElem.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
-        pricingCardPercentageEyeBrowTextReplaced = true;
+        priceSuffix.before(node);
       }
+    });
+  } else {
+    const priceSuffixContent = placeholderArr.map((phText) => {
+      const key = phText.replace('{{', '').replace('}}', '');
+      return (key.includes('vat') && !response.showVat) ? '' : placeholders[key] || '';
+    }).join(' ');
+    priceSuffix.textContent = priceSuffixContent;
+  }
+  const isPremiumCard = response.ooAvailable || false;
+  const savePercentElem = pricingArea.querySelector('.card-offer');
+  if (savePercentElem && !pricingCardPercentageEyeBrowTextReplaced) {
+    const offerTextContent = savePercentElem.textContent;
+    if (shallSuppressOfferEyebrowText(response.savePer, offerTextContent, isPremiumCard,
+      false, response.offerId)) {
+      savePercentElem.remove();
+    } else {
+      savePercentElem.innerHTML = savePercentElem.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
+      pricingCardPercentageEyeBrowTextReplaced = true;
     }
+  }
 
-    if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced && specialPromo.textContent.includes(`{{${SAVE_PERCENTAGE}}}`)) {
-      const offerTextContent = specialPromo.textContent;
+  if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced && specialPromo.textContent.includes(`{{${SAVE_PERCENTAGE}}}`)) {
+    const offerTextContent = specialPromo.textContent;
 
-      const shouldSuppress = shallSuppressOfferEyebrowText(
-        response.savePer,
-        offerTextContent,
-        isPremiumCard,
-        true,
-        response.offerId,
-      );
-      if (shouldSuppress) {
-        suppressOfferEyebrow(specialPromo, legacyVersion);
-      } else {
-        specialPromo.innerHTML = specialPromo.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
-        specialPromoPercentageEyeBrowTextReplaced = true;
-      }
+    const shouldSuppress = shallSuppressOfferEyebrowText(
+      response.savePer,
+      offerTextContent,
+      isPremiumCard,
+      true,
+      response.offerId,
+    );
+    if (shouldSuppress) {
+      suppressOfferEyebrow(specialPromo, legacyVersion);
+    } else {
+      specialPromo.innerHTML = specialPromo.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
+      specialPromoPercentageEyeBrowTextReplaced = true;
     }
-    if (!isPremiumCard && specialPromo?.parentElement?.classList?.contains('special-promo')) {
-      specialPromo.parentElement.classList.remove('special-promo');
-      if (specialPromo.parentElement.firstChild.innerHTML !== '') {
-        specialPromo.parentElement.firstChild.remove();
-      }
+  }
+  if (!isPremiumCard && specialPromo?.parentElement?.classList?.contains('special-promo')) {
+    specialPromo.parentElement.classList.remove('special-promo');
+    if (specialPromo.parentElement.firstChild.innerHTML !== '') {
+      specialPromo.parentElement.firstChild.remove();
     }
-  });
+  }
 
   priceParent?.remove();
   return priceRow;
 }
 
-function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo, legacyVersion) {
+async function createPricingSection(
+  placeholders,
+  pricingArea,
+  ctaGroup,
+  specialPromo,
+  legacyVersion,
+) {
   const pricingSection = createTag('div', { class: 'pricing-section' });
   pricingArea.classList.add('pricing-area');
   const offer = pricingArea.querySelector(':scope > p > em');
   if (offer) {
     offer.classList.add('card-offer');
+    offer.parentElement.outerHTML = offer.outerHTML;
   }
   const pricingBtnContainer = pricingArea.querySelector('.button-container');
   if (pricingBtnContainer != null) {
     const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
     const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
-    const priceRow = handlePrice(placeholders, pricingArea,
+    const priceRow = await handlePrice(placeholders, pricingArea,
       placeholderArr, specialPromo, legacyVersion);
     if (priceRow) {
       pricingArea.prepend(priceRow);
@@ -270,7 +276,7 @@ function decorateCompareSection(compare, el, card) {
 }
 // In legacy versions, the card element encapsulates all content
 // In new versions, the cardBorder element encapsulates all content instead
-function decorateCard({
+async function decorateCard({
   header,
   borderParams,
   explain,
@@ -289,10 +295,11 @@ function decorateCard({
     : decorateHeader(header, borderParams, card, cardBorder);
 
   decorateBasicTextSection(explain, 'card-explain', card);
-  const mPricingSection = createPricingSection(placeholders, mPricingRow, mCtaGroup,
-    specialPromo, legacyVersion);
+  const [mPricingSection, yPricingSection] = await Promise.all([
+    createPricingSection(placeholders, mPricingRow, mCtaGroup, specialPromo, legacyVersion),
+    createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
+  ]);
   mPricingSection.classList.add('monthly');
-  const yPricingSection = createPricingSection(placeholders, yPricingRow, yCtaGroup, null);
   yPricingSection.classList.add('yearly', 'hide');
   card.append(mPricingSection, yPricingSection);
   subscribeToBlockMediator(mPricingSection, yPricingSection);
@@ -311,6 +318,29 @@ async function syncMinHeights(...groups) {
     if (e) e.style.minHeight = `${maxHeight}px`;
   }));
 }
+// async function syncMinHeights(...inputGroups) {
+//   const groups = inputGroups.reduce((acc, group) => {
+//     if (!group.length) return acc;
+//     const map = {};
+//     group.forEach((item) => {
+//       const { top } = item.getBoundingClientRect();
+//       if (!(top in map)) map[top] = [];
+//       map[top].push(item);
+//     });
+//     return [
+//       ...acc,
+//       ...Object.values(map).reduce((newGroups, newGroup) => ([...newGroups, newGroup]), []),
+//     ];
+//   }, []);
+//   // const groups = inputGroups;
+//   const maxHeights = groups.map((els) => els
+//     .filter((e) => !!e)
+//     .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
+//   await yieldToMain();
+//   maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
+//     if (e) e.style.minHeight = `${maxHeight}px`;
+//   }));
+// }
 
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
@@ -329,9 +359,10 @@ export default async function init(el) {
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
-  cards
-    .map((card) => decorateCard(card, el, placeholders, legacyVersion))
-    .forEach((card) => cardsContainer.append(card));
+  const decoratedCards = await Promise.all(
+    cards.map((card) => decorateCard(card, el, placeholders, legacyVersion)),
+  );
+  decoratedCards.forEach((card) => cardsContainer.append(card));
 
   const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter((a) => a.title.includes(SALES_NUMBERS));
   if (phoneNumberTags.length > 0) {
@@ -340,19 +371,23 @@ export default async function init(el) {
   el.classList.add('no-visible');
   el.prepend(cardsContainer);
 
+  const doSyncHeights = () => {
+    syncMinHeights(
+      // cards.map(({ header }) => header),
+      cards.map(({ explain }) => explain),
+      cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
+      [...el.querySelectorAll('.pricing-area')],
+      cards.map(({ featureList }) => featureList.querySelector('p')),
+      cards.map(({ featureList }) => featureList),
+      cards.map(({ compare }) => compare),
+    );
+  };
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         observer.disconnect();
-        syncMinHeights(
-          cards.map(({ header }) => header),
-          cards.map(({ explain }) => explain),
-          cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
-          [...el.querySelectorAll('.pricing-area')],
-          cards.map(({ featureList }) => featureList.querySelector('p')),
-          cards.map(({ featureList }) => featureList),
-          cards.map(({ compare }) => compare),
-        );
+        doSyncHeights();
         el.classList.remove('no-visible');
       }
     });
