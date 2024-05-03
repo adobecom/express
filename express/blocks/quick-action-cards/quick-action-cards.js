@@ -1,8 +1,9 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
-  getIcon,
+  getIconElement,
   fetchPlaceholders,
+  getIconElement,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
@@ -10,7 +11,7 @@ export default function decorate($block) {
   addTempWrapper($block, 'quick-action-cards');
 
   const $cards = Array.from($block.querySelectorAll(':scope>div'));
-  const chevron = getIcon('chevron');
+  const chevron = getIconElement('chevron');
   $cards.forEach(($card) => {
     $card.classList.add('quick-action-card');
     const $cardDivs = Array.from($card.children);

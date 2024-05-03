@@ -386,7 +386,7 @@ export function lazyLoadLottiePlayer($block = null) {
   }
 }
 
-export function getIcon(icons, alt, size = 44) {
+function getIcon(icons, alt, size = 44) {
   // eslint-disable-next-line no-param-reassign
   icons = Array.isArray(icons) ? icons : [icons];
   const [defaultIcon, mobileIcon] = icons;
@@ -513,11 +513,9 @@ export function getIcon(icons, alt, size = 44) {
 }
 
 export function getIconElement(icons, size, alt, additionalClassName) {
-  const $div = createTag('div');
-  $div.appendChild(getIcon(icons, alt, size));
-
-  if (additionalClassName) $div.firstElementChild.classList.add(additionalClassName);
-  return ($div.firstElementChild);
+  const icon = getIcon(icons, alt, size);
+  if (additionalClassName) icon.className.add(additionalClassName);
+  return icon;
 }
 
 export function transformLinkToAnimation($a, $videoLooping = true) {
