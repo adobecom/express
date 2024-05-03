@@ -410,12 +410,13 @@ export default async function decorate($block) {
         <div>
           <span class="tooltip--text"></span>
           <div class="tooltip--image">
-            ${getIcon('emoji-star-struck')}
+         
           <div>
         </div>
       </div>
     `,
     );
+    $slider.querySelector('.tooltip--image').append(getIconElement('emoji-star-struck'));
     $form.insertAdjacentHTML(
       'beforeend',
       /* html */ `
