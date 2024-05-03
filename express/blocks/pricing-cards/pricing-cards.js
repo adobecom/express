@@ -254,7 +254,7 @@ function decorateCompareSection(compare, el, card) {
 
 function createToggle(placeholders, pricingSections) {
   const subDesc = placeholders['subscription-type'] || 'Subscription Type:';
-  const toggleWrapper = createTag('div');
+  const toggleWrapper = createTag('div', { class: 'billing-radio' });
   toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`;
   const buttons = ['monthly', 'annual'].map((plan, i) => {
     const button = createTag('button', {
@@ -262,6 +262,11 @@ function createToggle(placeholders, pricingSections) {
     });
     button.innerHTML = `<span></span>${placeholders[plan] || ['Monthly', 'Annual'][i]}`;
     button.addEventListener('click', () => {
+      if (button.classList.contains('checked')) return;
+      buttons.filter((b) => b !== button).forEach((b) => {
+        b.classList.remove('checked');
+      });
+      button.classList.add('checked');
       pricingSections.forEach((section) => {
         if (section.classList.contains(plan)) {
           section.classList.remove('hide');
@@ -301,7 +306,7 @@ function decorateCard({
     specialPromo, legacyVersion);
   mPricingSection.classList.add('monthly');
   const yPricingSection = createPricingSection(placeholders, yPricingRow, yCtaGroup, null);
-  yPricingSection.classList.add('yearly', 'hide');
+  yPricingSection.classList.add('annual', 'hide');
   const toggle = createToggle(placeholders, [mPricingSection, yPricingSection]);
   card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
