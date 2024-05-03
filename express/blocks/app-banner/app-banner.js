@@ -1,6 +1,5 @@
 import {
   createTag,
-  getIcon,
   getMobileOperatingSystem,
   fetchPlaceholders,
   getIconElement,
