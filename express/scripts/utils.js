@@ -1933,8 +1933,6 @@ async function buildAutoBlocks(main) {
       const button = buildBlock(blockName, device);
       button.classList.add('metadata-powered');
       lastDiv.append(button);
-      await decorateBlock(button);
-      await loadBlock(button);
       BlockMediator.set('floatingCtasLoaded', true);
     }
   }
