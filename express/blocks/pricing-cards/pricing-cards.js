@@ -160,7 +160,7 @@ function readBraces(inputString, card) {
   if (matches.length > 0) {
     const [token, promoType] = matches[matches.length - 1];
     const specialPromo = createTag('div');
-    [specialPromo.textContent] = inputString.split(token);
+    specialPromo.textContent = inputString.split(token)[0].trim();
     card.classList.add(promoType.replaceAll(' ', ''));
     card.append(specialPromo);
     return specialPromo;
@@ -207,7 +207,6 @@ function decorateHeader(header, borderParams, card, cardBorder) {
   header.classList.add('card-header');
   const specialPromo = readBraces(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
-
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
   if (extractHeadCountExp.test(h2.innerText)) {
@@ -349,6 +348,7 @@ export default async function init(el) {
           cards.map(({ header }) => header),
           cards.map(({ explain }) => explain),
           cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
+          [...el.querySelectorAll('.pricing-area')],
           cards.map(({ featureList }) => featureList.querySelector('p')),
           cards.map(({ featureList }) => featureList),
           cards.map(({ compare }) => compare),

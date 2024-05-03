@@ -3,6 +3,7 @@ import {
   getConfig,
   loadScript,
   transformLinkToAnimation,
+  addAnimationToggle,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
@@ -38,7 +39,7 @@ function selectElementByTagPrefix(p) {
 function startSDK(data = '') {
   const urlParams = new URLSearchParams(window.location.search);
   const CDN_URL = 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
-  const clientId = 'MarvelWeb3';
+  const clientId = 'AdobeExpressWeb';
 
   loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
@@ -243,7 +244,10 @@ export default async function decorate(block) {
   const actionColumn = createTag('div');
   const dropzoneContainer = createTag('div', { class: 'dropzone-container' });
 
-  if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
+  if (animation && animation.href.includes('.mp4')) {
+    transformLinkToAnimation(animation);
+    addAnimationToggle(animationContainer);
+  }
   if (cta) cta.classList.add('xlarge');
   dropzone.classList.add('dropzone');
 

@@ -64,7 +64,6 @@ async function getPathModal(path, dialog) {
 
 export async function getModal(details, custom) {
   if (!(details?.path || custom)) return null;
-
   const { id } = details || custom;
 
   const dialog = createTag('div', { class: 'dialog-modal', id });
@@ -135,11 +134,16 @@ export async function getModal(details, custom) {
   return dialog;
 }
 
+const loadedPaths = new Set();
 // Deep link-based
 export default function init(el) {
   const { modalHash } = el.dataset;
   if (window.location.hash === modalHash) {
     const details = findDetails(window.location.hash, el);
+    if (details.path) {
+      if (loadedPaths.has(details.path)) return null;
+      loadedPaths.add(details.path);
+    }
     if (details) return getModal(details);
   }
   return null;

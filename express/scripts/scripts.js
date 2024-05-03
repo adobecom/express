@@ -150,14 +150,6 @@ const listenAlloy = () => {
   loadLana({ clientId: 'express' });
   listenAlloy();
 
-  // todo remove this after IMS testing
-  const imsClient = usp.get('imsclient');
-  if (imsClient === 'new') {
-    sessionStorage.setItem('imsclient', 'AdobeExpressWeb');
-  } else if (imsClient === 'old' || !sessionStorage.getItem('imsclient')) {
-    sessionStorage.setItem('imsclient', 'MarvelWeb3');
-  }
-
   const isMobileGating = ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile';
   const rushGating = ['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating').toLowerCase());
   const runGating = () => {
