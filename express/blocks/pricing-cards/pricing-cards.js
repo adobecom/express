@@ -1,6 +1,7 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
+import { debounce } from '../../scripts/hofs.js';
 
 import {
   formatDynamicCartLink,
@@ -14,6 +15,14 @@ const plans = ['monthly', 'yearly']; // authored order should match with billing
 const BILLING_PLAN = 'billing-plan';
 const SAVE_PERCENTAGE = 'savePercentage';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
+
+const MOBILE_SIZE = 840;
+function defineDeviceByScreenSize() {
+  const screenWidth = window.innerWidth;
+  if (screenWidth >= MOBILE_SIZE) return 'DESKTOP';
+  return 'MOBILE';
+}
+let deviceBySize = defineDeviceByScreenSize();
 
 function suppressOfferEyebrow(specialPromo, legacyVersion) {
   if (specialPromo.parentElement) {
@@ -309,7 +318,7 @@ async function decorateCard({
 }
 
 // less thrashing by separating get and set
-async function syncMinHeights(...groups) {
+async function syncMinHeights(groups) {
   const maxHeights = groups.map((els) => els
     .filter((e) => !!e)
     .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
@@ -318,29 +327,6 @@ async function syncMinHeights(...groups) {
     if (e) e.style.minHeight = `${maxHeight}px`;
   }));
 }
-// async function syncMinHeights(...inputGroups) {
-//   const groups = inputGroups.reduce((acc, group) => {
-//     if (!group.length) return acc;
-//     const map = {};
-//     group.forEach((item) => {
-//       const { top } = item.getBoundingClientRect();
-//       if (!(top in map)) map[top] = [];
-//       map[top].push(item);
-//     });
-//     return [
-//       ...acc,
-//       ...Object.values(map).reduce((newGroups, newGroup) => ([...newGroups, newGroup]), []),
-//     ];
-//   }, []);
-//   // const groups = inputGroups;
-//   const maxHeights = groups.map((els) => els
-//     .filter((e) => !!e)
-//     .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
-//   await yieldToMain();
-//   maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
-//     if (e) e.style.minHeight = `${maxHeight}px`;
-//   }));
-// }
 
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
@@ -371,23 +357,36 @@ export default async function init(el) {
   el.classList.add('no-visible');
   el.prepend(cardsContainer);
 
+  const groups = [
+    cards.map(({ header }) => header),
+    cards.map(({ explain }) => explain),
+    cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
+    [...el.querySelectorAll('.pricing-area')],
+    cards.map(({ featureList }) => featureList.querySelector('p')),
+    cards.map(({ featureList }) => featureList),
+    cards.map(({ compare }) => compare),
+  ];
+  const flattenGroups = groups.flat();
   const doSyncHeights = () => {
-    syncMinHeights(
-      // cards.map(({ header }) => header),
-      cards.map(({ explain }) => explain),
-      cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
-      [...el.querySelectorAll('.pricing-area')],
-      cards.map(({ featureList }) => featureList.querySelector('p')),
-      cards.map(({ featureList }) => featureList),
-      cards.map(({ compare }) => compare),
-    );
+    syncMinHeights(groups);
   };
+  window.addEventListener('resize', debounce(() => {
+    if (deviceBySize === defineDeviceByScreenSize()) return;
+    deviceBySize = defineDeviceByScreenSize();
+    if (deviceBySize === 'MOBILE') {
+      flattenGroups.forEach((item) => {
+        item.style?.removeProperty('min-height');
+      });
+    } else {
+      doSyncHeights();
+    }
+  }, 100));
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         observer.disconnect();
-        doSyncHeights();
+        if (deviceBySize !== 'MOBILE') doSyncHeights(); // no sync on stacked mobile
         el.classList.remove('no-visible');
       }
     });

@@ -1,6 +1,6 @@
 :root {
   --card-width: 353px;
-  --card-padding: 16px 12px;
+  --card-padding: 12px;
 }
 
 .pricing-cards.no-visible {
@@ -378,19 +378,14 @@ End border style variants
 }
 
 @media screen and (min-width: 768px) {
-  :root {
-    --card-width: 362px;
-  }
-
   .pricing-cards .card-border .card-header h2 {
     margin-top: 0;
   }
 }
 
-@media screen and (min-width: 1250px) {
+@media screen and (min-width: 1277px) {
   :root {
     --card-width: 400px;
-    --card-padding: 16px;
   }
 
   .pricing-cards .cards-container:has(>.card-border:only-child) {
