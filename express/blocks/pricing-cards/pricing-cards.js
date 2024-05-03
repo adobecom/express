@@ -73,7 +73,7 @@ async function handlePrice(placeholders, pricingArea, placeholderArr, specialPro
   } else {
     const priceSuffixContent = placeholderArr.map((phText) => {
       const key = phText.replace('{{', '').replace('}}', '');
-      return (key.includes('vat') && !response.showVat) ? '' : placeholders[key] || '';
+      return (key.includes('vat') && !response.showVat) ? '' : placeholders?.[key] || '';
     }).join(' ');
     priceSuffix.textContent = priceSuffixContent;
   }
