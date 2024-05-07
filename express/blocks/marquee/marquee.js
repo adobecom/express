@@ -3,7 +3,8 @@ import {
   toClassName,
   addHeaderSizing,
   getIconElement,
-  fetchPlaceholders, getConfig,
+  fetchPlaceholders,
+  getConfig,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -67,7 +68,8 @@ function handleSubCTAText(buttonContainer) {
 function getBreakpoint(animations) {
   let breakpoint = 'default';
   breakpointConfig.forEach((bp) => {
-    if ((window.innerWidth > bp.minWidth) && animations[bp.typeHint]) breakpoint = bp.typeHint;
+    if (window.innerWidth > bp.minWidth && animations[bp.typeHint])
+      breakpoint = bp.typeHint;
   });
   return breakpoint;
 }
@@ -98,32 +100,66 @@ export function handleMediaQuery(block, mediaQuery) {
 
 function decorateToggleContext(ct, placeholders) {
   const reduceMotionIconWrapper = ct;
-  const reduceMotionTextExist = reduceMotionIconWrapper.querySelector('.play-animation-text')
-    && reduceMotionIconWrapper.querySelector('.pause-animation-text');
+  const reduceMotionTextExist =
+    reduceMotionIconWrapper.querySelector('.play-animation-text') &&
+    reduceMotionIconWrapper.querySelector('.pause-animation-text');
 
   if (!reduceMotionTextExist) {
     const play = createTag('span', { class: 'play-animation-text' });
     const pause = createTag('span', { class: 'pause-animation-text' });
-    play.textContent = placeholders ? placeholders['play-animation'] : 'play animation';
-    pause.textContent = placeholders ? placeholders['pause-animation'] : 'pause animation';
+    play.textContent = placeholders
+      ? placeholders['play-animation']
+      : 'play animation';
+    pause.textContent = placeholders
+      ? placeholders['pause-animation']
+      : 'pause animation';
 
     reduceMotionIconWrapper.prepend(play, pause);
   }
 }
 
-async function buildReduceMotionSwitch(block) {
+
+function handlePause(block) {
+  localStorage.setItem(
+    'reduceMotion',
+    localStorage.getItem('reduceMotion') === 'on' ? 'off' : 'on'
+  );
+
+  if (localStorage.getItem('reduceMotion') === 'on') {
+    block.classList.add('reduce-motion');
+    block.querySelector('video')?.pause();
+  } else {
+    block.classList.remove('reduce-motion');
+    const playPromise = block.querySelector('video')?.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // ignore
+      });
+    }
+  }
+}
+async function buildReduceMotionSwitch(block, marqueeForeground) {
   if (!block.querySelector('.reduce-motion-wrapper')) {
-    const reduceMotionIconWrapper = createTag('div', { class: 'reduce-motion-wrapper', tabIndex: '0' });
+    const reduceMotionIconWrapper = createTag('div', {
+      class: 'reduce-motion-wrapper',
+      tabIndex: '0',
+    });
     const videoWrapper = block.querySelector('.background-wrapper');
     const video = videoWrapper.querySelector('video');
 
     if (block.classList.contains('dark')) {
-      reduceMotionIconWrapper.append(getIconElement('play-video-light'), getIconElement('pause-video-light'));
+      reduceMotionIconWrapper.append(
+        getIconElement('play-video-light'),
+        getIconElement('pause-video-light')
+      );
     } else {
-      reduceMotionIconWrapper.append(getIconElement('play-video'), getIconElement('pause-video'));
+      reduceMotionIconWrapper.append(
+        getIconElement('play-video'),
+        getIconElement('pause-video')
+      );
     }
 
-    videoWrapper.append(reduceMotionIconWrapper);
+    marqueeForeground.append(reduceMotionIconWrapper);
 
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     handleMediaQuery(block, mediaQuery);
@@ -145,27 +181,32 @@ async function buildReduceMotionSwitch(block) {
         }
       }
     }
+    reduceMotionIconWrapper.addEventListener(
+      'keydown',
+      async (e) => {
+        if (!e.target.isEqualNode(document.activeElement)) return;
+        if (e.code !== 'Space') return;
+        e.preventDefault();
+        handlePause(block)
+      },
+      { passive: true }
+    );
 
-    reduceMotionIconWrapper.addEventListener('click', async () => {
-      localStorage.setItem('reduceMotion', localStorage.getItem('reduceMotion') === 'on' ? 'off' : 'on');
-
-      if (localStorage.getItem('reduceMotion') === 'on') {
-        block.classList.add('reduce-motion');
-        block.querySelector('video')?.pause();
-      } else {
-        block.classList.remove('reduce-motion');
-        const playPromise = block.querySelector('video')?.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            // ignore
-          });
-        }
-      }
-    }, { passive: true });
+    reduceMotionIconWrapper.addEventListener(
+      'click',
+      async () => {
+        handlePause(block)
+      },
+      { passive: true }
+    );
     const placeholders = await fetchPlaceholders();
-    reduceMotionIconWrapper.addEventListener('mouseenter', (e) => {
-      decorateToggleContext(e.currentTarget, placeholders);
-    }, { passive: true });
+    reduceMotionIconWrapper.addEventListener(
+      'mouseenter',
+      (e) => {
+        decorateToggleContext(e.currentTarget, placeholders);
+      },
+      { passive: true }
+    );
   }
 }
 
@@ -278,7 +319,9 @@ async function handleAnimation(div, typeHint, block, animations) {
     videoParameters = {
       loop: params.get('loop') !== 'false',
     };
-    const id = url.hostname.includes('hlx.blob.core') ? url.pathname.split('/')[2] : url.pathname.split('media_')[1].split('.')[0];
+    const id = url.hostname.includes('hlx.blob.core')
+      ? url.pathname.split('/')[2]
+      : url.pathname.split('media_')[1].split('.')[0];
     source = `./media_${id}.mp4`;
   }
   let optimizedPosterSrc;
@@ -309,13 +352,14 @@ async function handleContent(div, block, animations) {
     bg = videoWrapper;
     videoWrapper.append(video);
     div.prepend(videoWrapper);
-    video.addEventListener('canplay', () => {
-      buildReduceMotionSwitch(block);
-    });
 
-    window.addEventListener('resize', () => {
-      adjustLayout(animations, videoWrapper);
-    }, { passive: true });
+    window.addEventListener(
+      'resize',
+      () => {
+        adjustLayout(animations, videoWrapper);
+      },
+      { passive: true }
+    );
     adjustLayout(animations, videoWrapper);
   } else {
     bg = createTag('div');
@@ -328,6 +372,10 @@ async function handleContent(div, block, animations) {
   marqueeForeground.append(bg.nextElementSibling);
   div.append(marqueeForeground);
 
+  video.addEventListener('canplay', () => {
+    buildReduceMotionSwitch(block, marqueeForeground);
+  });
+
   div.querySelectorAll(':scope p:empty').forEach((p) => {
     if (p.innerHTML.trim() === '') {
       p.remove();
@@ -337,12 +385,16 @@ async function handleContent(div, block, animations) {
   // check for video link
   // eslint-disable-next-line no-await-in-loop
   const { isVideoLink } = await import('../shared/video.js');
-  const videoLink = [...div.querySelectorAll('a')].find((a) => isVideoLink(a.href));
+  const videoLink = [...div.querySelectorAll('a')].find((a) =>
+    isVideoLink(a.href)
+  );
   if (videoLink) {
     transformToVideoLink(div, videoLink);
   }
 
-  const contentButtons = [...div.querySelectorAll('a.button.accent')].filter((a) => !a.textContent.includes('{{'));
+  const contentButtons = [...div.querySelectorAll('a.button.accent')].filter(
+    (a) => !a.textContent.includes('{{')
+  );
   if (contentButtons.length) {
     const primaryBtn = contentButtons[0];
     const secondaryButton = contentButtons[1];
@@ -364,19 +416,26 @@ async function handleContent(div, block, animations) {
       buttonsWrapper.append(btnContainer);
     });
   } else {
-    const inlineButtons = [...div.querySelectorAll('p:last-of-type > a:not(.button.accent)')];
+    const inlineButtons = [
+      ...div.querySelectorAll('p:last-of-type > a:not(.button.accent)'),
+    ];
     if (inlineButtons.length) {
       const primaryCta = inlineButtons[0];
       primaryCta.classList.add('button', 'accent', 'primaryCTA', 'xlarge');
       BlockMediator.set('primaryCtaUrl', primaryCta.href);
-      primaryCta.parentElement.classList.add('buttons-wrapper', 'with-inline-ctas');
+      primaryCta.parentElement.classList.add(
+        'buttons-wrapper',
+        'with-inline-ctas'
+      );
     }
   }
 }
 
 async function handleOptions(div, typeHint, block) {
   if (typeHint === 'shadow') {
-    const shadow = (div.querySelector('picture')) ? div.querySelector('picture') : createTag('img', { src: '/express/blocks/marquee/shadow.png' });
+    const shadow = div.querySelector('picture')
+      ? div.querySelector('picture')
+      : createTag('img', { src: '/express/blocks/marquee/shadow.png' });
     div.innerHTML = '';
     div.appendChild(shadow);
     div.classList.add('hero-shadow');
@@ -384,10 +443,11 @@ async function handleOptions(div, typeHint, block) {
   if (typeHint === 'background') {
     const color = div.children[1].textContent.trim().toLowerCase();
     if (color) block.style.background = color;
-    const lightness = (
-      parseInt(color.substring(1, 2), 16)
-      + parseInt(color.substring(3, 2), 16)
-      + parseInt(color.substring(5, 2), 16)) / 3;
+    const lightness =
+      (parseInt(color.substring(1, 2), 16) +
+        parseInt(color.substring(3, 2), 16) +
+        parseInt(color.substring(5, 2), 16)) /
+      3;
     if (lightness < 200) block.classList.add('white-text');
     div.remove();
   }
@@ -403,13 +463,14 @@ export default async function decorate(block) {
     const div = rows[index];
     let rowType = 'animation';
     let typeHint;
-    if ([...div.children].length > 1) typeHint = div.children[0].textContent.trim().toLowerCase();
+    if ([...div.children].length > 1)
+      typeHint = div.children[0].textContent.trim().toLowerCase();
     if (index + 1 === rows.length) {
       rowType = 'content';
     }
     if (typeHint && possibleOptions.includes(typeHint)) {
       rowType = 'option';
-    } else if (!typeHint || (!possibleBreakpoints.includes(typeHint))) {
+    } else if (!typeHint || !possibleBreakpoints.includes(typeHint)) {
       typeHint = 'default';
     }
 
@@ -424,13 +485,19 @@ export default async function decorate(block) {
 
   const button = block.querySelector('.button');
   if (button) {
-    const { addFreePlanWidget } = await import('../../scripts/utils/free-plan.js');
+    const { addFreePlanWidget } = await import(
+      '../../scripts/utils/free-plan.js'
+    );
     await addFreePlanWidget(button.parentElement);
   }
 
-  const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
+  const phoneNumberTags = block.querySelectorAll(
+    'a[title="{{business-sales-numbers}}"]'
+  );
   if (phoneNumberTags.length > 0) {
-    const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');
+    const { formatSalesPhoneNumber } = await import(
+      '../../scripts/utils/pricing.js'
+    );
     await formatSalesPhoneNumber(phoneNumberTags);
   }
 
