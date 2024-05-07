@@ -68,8 +68,7 @@ function handleSubCTAText(buttonContainer) {
 function getBreakpoint(animations) {
   let breakpoint = 'default';
   breakpointConfig.forEach((bp) => {
-    if (window.innerWidth > bp.minWidth && animations[bp.typeHint])
-      breakpoint = bp.typeHint;
+    if (window.innerWidth > bp.minWidth && animations[bp.typeHint]) breakpoint = bp.typeHint;
   });
   return breakpoint;
 }
@@ -100,9 +99,8 @@ export function handleMediaQuery(block, mediaQuery) {
 
 function decorateToggleContext(ct, placeholders) {
   const reduceMotionIconWrapper = ct;
-  const reduceMotionTextExist =
-    reduceMotionIconWrapper.querySelector('.play-animation-text') &&
-    reduceMotionIconWrapper.querySelector('.pause-animation-text');
+  const reduceMotionTextExist = reduceMotionIconWrapper.querySelector('.play-animation-text')
+    && reduceMotionIconWrapper.querySelector('.pause-animation-text');
 
   if (!reduceMotionTextExist) {
     const play = createTag('span', { class: 'play-animation-text' });
@@ -118,11 +116,10 @@ function decorateToggleContext(ct, placeholders) {
   }
 }
 
-
 function handlePause(block) {
   localStorage.setItem(
     'reduceMotion',
-    localStorage.getItem('reduceMotion') === 'on' ? 'off' : 'on'
+    localStorage.getItem('reduceMotion') === 'on' ? 'off' : 'on',
   );
 
   if (localStorage.getItem('reduceMotion') === 'on') {
@@ -150,12 +147,12 @@ async function buildReduceMotionSwitch(block, marqueeForeground) {
     if (block.classList.contains('dark')) {
       reduceMotionIconWrapper.append(
         getIconElement('play-video-light'),
-        getIconElement('pause-video-light')
+        getIconElement('pause-video-light'),
       );
     } else {
       reduceMotionIconWrapper.append(
         getIconElement('play-video'),
-        getIconElement('pause-video')
+        getIconElement('pause-video'),
       );
     }
 
@@ -187,17 +184,17 @@ async function buildReduceMotionSwitch(block, marqueeForeground) {
         if (!e.target.isEqualNode(document.activeElement)) return;
         if (e.code !== 'Space') return;
         e.preventDefault();
-        handlePause(block)
+        handlePause(block);
       },
-      { passive: true }
+      { passive: true },
     );
 
     reduceMotionIconWrapper.addEventListener(
       'click',
       async () => {
-        handlePause(block)
+        handlePause(block);
       },
-      { passive: true }
+      { passive: true },
     );
     const placeholders = await fetchPlaceholders();
     reduceMotionIconWrapper.addEventListener(
@@ -205,7 +202,7 @@ async function buildReduceMotionSwitch(block, marqueeForeground) {
       (e) => {
         decorateToggleContext(e.currentTarget, placeholders);
       },
-      { passive: true }
+      { passive: true },
     );
   }
 }
@@ -358,7 +355,7 @@ async function handleContent(div, block, animations) {
       () => {
         adjustLayout(animations, videoWrapper);
       },
-      { passive: true }
+      { passive: true },
     );
     adjustLayout(animations, videoWrapper);
   } else {
@@ -385,15 +382,13 @@ async function handleContent(div, block, animations) {
   // check for video link
   // eslint-disable-next-line no-await-in-loop
   const { isVideoLink } = await import('../shared/video.js');
-  const videoLink = [...div.querySelectorAll('a')].find((a) =>
-    isVideoLink(a.href)
-  );
+  const videoLink = [...div.querySelectorAll('a')].find((a) => isVideoLink(a.href));
   if (videoLink) {
     transformToVideoLink(div, videoLink);
   }
 
   const contentButtons = [...div.querySelectorAll('a.button.accent')].filter(
-    (a) => !a.textContent.includes('{{')
+    (a) => !a.textContent.includes('{{'),
   );
   if (contentButtons.length) {
     const primaryBtn = contentButtons[0];
@@ -425,7 +420,7 @@ async function handleContent(div, block, animations) {
       BlockMediator.set('primaryCtaUrl', primaryCta.href);
       primaryCta.parentElement.classList.add(
         'buttons-wrapper',
-        'with-inline-ctas'
+        'with-inline-ctas',
       );
     }
   }
@@ -443,11 +438,10 @@ async function handleOptions(div, typeHint, block) {
   if (typeHint === 'background') {
     const color = div.children[1].textContent.trim().toLowerCase();
     if (color) block.style.background = color;
-    const lightness =
-      (parseInt(color.substring(1, 2), 16) +
-        parseInt(color.substring(3, 2), 16) +
-        parseInt(color.substring(5, 2), 16)) /
-      3;
+    const lightness = (parseInt(color.substring(1, 2), 16)
+        + parseInt(color.substring(3, 2), 16)
+        + parseInt(color.substring(5, 2), 16))
+      / 3;
     if (lightness < 200) block.classList.add('white-text');
     div.remove();
   }
@@ -463,8 +457,7 @@ export default async function decorate(block) {
     const div = rows[index];
     let rowType = 'animation';
     let typeHint;
-    if ([...div.children].length > 1)
-      typeHint = div.children[0].textContent.trim().toLowerCase();
+    if ([...div.children].length > 1) typeHint = div.children[0].textContent.trim().toLowerCase();
     if (index + 1 === rows.length) {
       rowType = 'content';
     }
@@ -492,7 +485,7 @@ export default async function decorate(block) {
   }
 
   const phoneNumberTags = block.querySelectorAll(
-    'a[title="{{business-sales-numbers}}"]'
+    'a[title="{{business-sales-numbers}}"]',
   );
   if (phoneNumberTags.length > 0) {
     const { formatSalesPhoneNumber } = await import(

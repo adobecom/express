@@ -382,22 +382,24 @@ function decorateCompareSection(compare, el, card) {
 
 function createToggle(placeholders, pricingSections, index) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
-  const fieldSet = createTag('div', { class: 'billing-radio-container' })
+  const fieldSet = createTag('div', { class: 'billing-radio-container' });
   const legend = createTag('div');
   legend.textContent = subDesc;
-  const group = createTag('form', { class: 'billing-radio-group' })
+  const group = createTag('form', { class: 'billing-radio-group' });
 
-  const options = ['monthly', 'annual']
-  const name = index + "-plan"
+  const options = ['monthly', 'annual'];
+  const name = `${index}-plan`;
   options.forEach((plan, i) => {
     const checked = i === 0 || undefined;
-    const value = placeholders?.[plan] || ['Monthly', 'Annual'][i]
-    const id = Date.now()
-    const radio = createTag('input', { type: 'radio', name, id, value, class: "billing-radio-item", role: 'radio' })
-    const label = createTag('label', { for: id })
-    radio.checked = checked
-    label.textContent = value
-    radio.innerText = placeholders?.[plan] || ['Monthly', 'Annual'][i]
+    const value = placeholders?.[plan] || ['Monthly', 'Annual'][i];
+    const id = name + "-" + i
+    const radio = createTag('input', {
+      type: 'radio', name, id , value, class: 'billing-radio-item', role: 'radio',
+    });
+    const label = createTag('label', { for: id });
+    radio.checked = checked;
+    label.textContent = value;
+    radio.innerText = placeholders?.[plan] || ['Monthly', 'Annual'][i];
     group.append(radio);
     group.append(label);
     radio.addEventListener('click', () => {
@@ -412,7 +414,7 @@ function createToggle(placeholders, pricingSections, index) {
   });
   fieldSet.append(legend);
   fieldSet.append(group);
-  return fieldSet
+  return fieldSet;
 }
 
 // In legacy versions, the card element encapsulates all content
@@ -482,48 +484,48 @@ export default async function init(el) {
   );
   decoratedCards.forEach((card) => cardsContainer.append(card));
 
-  // const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter(
-  //   (a) => a.title.includes(SALES_NUMBERS),
-  // );
-  // if (phoneNumberTags.length > 0) {
-  //   await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
-  // }
-  // el.classList.add('no-visible');
+  const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter(
+    (a) => a.title.includes(SALES_NUMBERS),
+  );
+  if (phoneNumberTags.length > 0) {
+    await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
+  }
+  el.classList.add('no-visible');
   el.prepend(cardsContainer);
 
-  // const groups = [
-  //   cards.map(({ header }) => header),
-  //   cards.map(({ explain }) => explain),
-  //   cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
-  //   [...el.querySelectorAll('.pricing-area')],
-  //   cards.map(({ featureList }) => featureList.querySelector('p')),
-  //   cards.map(({ featureList }) => featureList),
-  //   cards.map(({ compare }) => compare),
-  // ];
-  // const flattenGroups = groups.flat();
-  // const doSyncHeights = () => {
-  //   syncMinHeights(groups);
-  // };
-  // window.addEventListener('resize', debounce(() => {
-  //   if (deviceBySize === defineDeviceByScreenSize()) return;
-  //   deviceBySize = defineDeviceByScreenSize();
-  //   if (deviceBySize === 'MOBILE') {
-  //     flattenGroups.forEach((item) => {
-  //       item.style?.removeProperty('min-height');
-  //     });
-  //   } else {
-  //     doSyncHeights();
-  //   }
-  // }, 100));
+  const groups = [
+    cards.map(({ header }) => header),
+    cards.map(({ explain }) => explain),
+    cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
+    [...el.querySelectorAll('.pricing-area')],
+    cards.map(({ featureList }) => featureList.querySelector('p')),
+    cards.map(({ featureList }) => featureList),
+    cards.map(({ compare }) => compare),
+  ];
+  const flattenGroups = groups.flat();
+  const doSyncHeights = () => {
+    syncMinHeights(groups);
+  };
+  window.addEventListener('resize', debounce(() => {
+    if (deviceBySize === defineDeviceByScreenSize()) return;
+    deviceBySize = defineDeviceByScreenSize();
+    if (deviceBySize === 'MOBILE') {
+      flattenGroups.forEach((item) => {
+        item.style?.removeProperty('min-height');
+      });
+    } else {
+      doSyncHeights();
+    }
+  }, 100));
 
-  // const observer = new IntersectionObserver((entries) => {
-  //   entries.forEach((entry) => {
-  //     if (entry.isIntersecting) {
-  //       observer.disconnect();
-  //       if (deviceBySize !== 'MOBILE') doSyncHeights(); // no sync on stacked mobile
-  //       el.classList.remove('no-visible');
-  //     }
-  //   });
-  // });
-  // observer.observe(el);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        observer.disconnect();
+        if (deviceBySize !== 'MOBILE') doSyncHeights(); // no sync on stacked mobile
+        el.classList.remove('no-visible');
+      }
+    });
+  });
+  observer.observe(el);
 }
