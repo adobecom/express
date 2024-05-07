@@ -380,21 +380,27 @@ function decorateCompareSection(compare, el, card) {
   }
 }
 
-function createToggle(placeholders, pricingSections) {
+function createToggle(placeholders, pricingSections, index) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
-  const toggleWrapper = createTag('div', { class: 'billing-radio' });
-  toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`;
-  const buttons = ['monthly', 'annual'].map((plan, i) => {
-    const button = createTag('button', {
-      class: i === 0 ? 'checked' : '',
-    });
-    button.innerHTML = `<span></span>${placeholders?.[plan] || ['Monthly', 'Annual'][i]}`;
-    button.addEventListener('click', () => {
-      if (button.classList.contains('checked')) return;
-      buttons.filter((b) => b !== button).forEach((b) => {
-        b.classList.remove('checked');
-      });
-      button.classList.add('checked');
+  const fieldSet = createTag('div', { class: 'billing-radio-container' })
+  const legend = createTag('div');
+  legend.textContent = subDesc;
+  const group = createTag('form', { class: 'billing-radio-group' })
+
+  const options = ['monthly', 'annual']
+  const name = index + "-plan"
+  options.forEach((plan, i) => {
+    const checked = i === 0 || undefined;
+    const value = placeholders?.[plan] || ['Monthly', 'Annual'][i]
+    const id = Date.now()
+    const radio = createTag('input', { type: 'radio', name, id, value, class: "billing-radio-item", role: 'radio' })
+    const label = createTag('label', { for: id })
+    radio.checked = checked
+    label.textContent = value
+    radio.innerText = placeholders?.[plan] || ['Monthly', 'Annual'][i]
+    group.append(radio);
+    group.append(label);
+    radio.addEventListener('click', () => {
       pricingSections.forEach((section) => {
         if (section.classList.contains(plan)) {
           section.classList.remove('hide');
@@ -403,10 +409,10 @@ function createToggle(placeholders, pricingSections) {
         }
       });
     });
-    return button;
   });
-  toggleWrapper.append(...buttons);
-  return toggleWrapper;
+  fieldSet.append(legend);
+  fieldSet.append(group);
+  return fieldSet
 }
 
 // In legacy versions, the card element encapsulates all content
@@ -421,7 +427,7 @@ async function decorateCard({
   yCtaGroup,
   featureList,
   compare,
-}, el, placeholders, legacyVersion) {
+}, el, placeholders, legacyVersion, index) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
 
@@ -436,7 +442,7 @@ async function decorateCard({
   ]);
   mPricingSection.classList.add('monthly');
   yPricingSection.classList.add('annual', 'hide');
-  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection]);
+  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], index);
   card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
@@ -472,52 +478,52 @@ export default async function init(el) {
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
   const decoratedCards = await Promise.all(
-    cards.map((card) => decorateCard(card, el, placeholders, legacyVersion)),
+    cards.map((card, index) => decorateCard(card, el, placeholders, legacyVersion, index)),
   );
   decoratedCards.forEach((card) => cardsContainer.append(card));
 
-  const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter(
-    (a) => a.title.includes(SALES_NUMBERS),
-  );
-  if (phoneNumberTags.length > 0) {
-    await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
-  }
-  el.classList.add('no-visible');
+  // const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter(
+  //   (a) => a.title.includes(SALES_NUMBERS),
+  // );
+  // if (phoneNumberTags.length > 0) {
+  //   await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
+  // }
+  // el.classList.add('no-visible');
   el.prepend(cardsContainer);
 
-  const groups = [
-    cards.map(({ header }) => header),
-    cards.map(({ explain }) => explain),
-    cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
-    [...el.querySelectorAll('.pricing-area')],
-    cards.map(({ featureList }) => featureList.querySelector('p')),
-    cards.map(({ featureList }) => featureList),
-    cards.map(({ compare }) => compare),
-  ];
-  const flattenGroups = groups.flat();
-  const doSyncHeights = () => {
-    syncMinHeights(groups);
-  };
-  window.addEventListener('resize', debounce(() => {
-    if (deviceBySize === defineDeviceByScreenSize()) return;
-    deviceBySize = defineDeviceByScreenSize();
-    if (deviceBySize === 'MOBILE') {
-      flattenGroups.forEach((item) => {
-        item.style?.removeProperty('min-height');
-      });
-    } else {
-      doSyncHeights();
-    }
-  }, 100));
+  // const groups = [
+  //   cards.map(({ header }) => header),
+  //   cards.map(({ explain }) => explain),
+  //   cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
+  //   [...el.querySelectorAll('.pricing-area')],
+  //   cards.map(({ featureList }) => featureList.querySelector('p')),
+  //   cards.map(({ featureList }) => featureList),
+  //   cards.map(({ compare }) => compare),
+  // ];
+  // const flattenGroups = groups.flat();
+  // const doSyncHeights = () => {
+  //   syncMinHeights(groups);
+  // };
+  // window.addEventListener('resize', debounce(() => {
+  //   if (deviceBySize === defineDeviceByScreenSize()) return;
+  //   deviceBySize = defineDeviceByScreenSize();
+  //   if (deviceBySize === 'MOBILE') {
+  //     flattenGroups.forEach((item) => {
+  //       item.style?.removeProperty('min-height');
+  //     });
+  //   } else {
+  //     doSyncHeights();
+  //   }
+  // }, 100));
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        observer.disconnect();
-        if (deviceBySize !== 'MOBILE') doSyncHeights(); // no sync on stacked mobile
-        el.classList.remove('no-visible');
-      }
-    });
-  });
-  observer.observe(el);
+  // const observer = new IntersectionObserver((entries) => {
+  //   entries.forEach((entry) => {
+  //     if (entry.isIntersecting) {
+  //       observer.disconnect();
+  //       if (deviceBySize !== 'MOBILE') doSyncHeights(); // no sync on stacked mobile
+  //       el.classList.remove('no-visible');
+  //     }
+  //   });
+  // });
+  // observer.observe(el);
 }
