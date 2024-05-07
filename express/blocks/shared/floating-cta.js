@@ -13,8 +13,7 @@ import BlockMediator from '../../scripts/block-mediator.min.js';
 export const hideScrollArrow = (floatButtonWrapper, lottieScrollButton) => {
   floatButtonWrapper.classList.add('floating-button--scrolled');
   if (lottieScrollButton) {
-    if (document.activeElement === lottieScrollButton)
-      lottieScrollButton.blur();
+    if (document.activeElement === lottieScrollButton) lottieScrollButton.blur();
     lottieScrollButton.tabIndex = -1;
   }
 };
@@ -28,10 +27,9 @@ export function openToolBox(wrapper, lottie, data) {
   const toolbox = wrapper.querySelector('.toolbox');
   const button = wrapper.querySelector('.floating-button');
 
-  const scrollAnchor =
-    document.querySelector(
-      '.section:not(:nth-child(1)):not(:nth-child(2)) .template-list, .section:not(:nth-child(1)):not(:nth-child(2)) .layouts, .section:not(:nth-child(1)):not(:nth-child(2)) .steps-highlight-container'
-    ) ?? document.querySelector('.section:nth-child(3)');
+  const scrollAnchor = document.querySelector(
+    '.section:not(:nth-child(1)):not(:nth-child(2)) .template-list, .section:not(:nth-child(1)):not(:nth-child(2)) .layouts, .section:not(:nth-child(1)):not(:nth-child(2)) .steps-highlight-container',
+  ) ?? document.querySelector('.section:nth-child(3)');
   if (data.scrollState === 'withLottie' && scrollAnchor) {
     showScrollArrow(wrapper, lottie);
   }
@@ -63,7 +61,7 @@ export function initLottieArrow(
   lottieScrollButton,
   floatButtonWrapper,
   scrollAnchor,
-  data
+  data,
 ) {
   let clicked = false;
   lottieScrollButton.addEventListener('click', () => {
@@ -87,12 +85,11 @@ export function initLottieArrow(
     'scroll',
     () => {
       data.scrollState = floatButtonWrapper.classList.contains(
-        'floating-button--scrolled'
+        'floating-button--scrolled',
       )
         ? 'withoutLottie'
         : 'withLottie';
-      const multiFunctionButtonOpened =
-        floatButtonWrapper.classList.contains('toolbox-opened');
+      const multiFunctionButtonOpened = floatButtonWrapper.classList.contains('toolbox-opened');
       if (clicked) return;
       if (scrollAnchor.getBoundingClientRect().top < 100) {
         hideScrollArrow(floatButtonWrapper, lottieScrollButton);
@@ -100,20 +97,18 @@ export function initLottieArrow(
         showScrollArrow(floatButtonWrapper, lottieScrollButton);
       }
     },
-    { passive: true }
+    { passive: true },
   );
 }
 
 function makeCTAFromSheet(block, data) {
   const audience = block.querySelector(':scope > div').textContent.trim();
-  const audienceSpecificUrl =
-    audience && ['desktop', 'mobile'].includes(audience)
-      ? data.mainCta[`${audience}Href`]
-      : null;
-  const audienceSpecificText =
-    audience && ['desktop', 'mobile'].includes(audience)
-      ? data.mainCta[`${audience}Text`]
-      : null;
+  const audienceSpecificUrl = audience && ['desktop', 'mobile'].includes(audience)
+    ? data.mainCta[`${audience}Href`]
+    : null;
+  const audienceSpecificText = audience && ['desktop', 'mobile'].includes(audience)
+    ? data.mainCta[`${audience}Text`]
+    : null;
   const buttonContainer = createTag('div', { class: 'button-container' });
   const ctaFromSheet = createTag('a', {
     href: audienceSpecificUrl || data.mainCta.href,
@@ -130,7 +125,7 @@ function buildLottieArrow(wrapper, floatingBtn, data) {
   const lottieScrollButton = createTag(
     'button',
     { class: 'floating-button-lottie' },
-    getLottie('purple-arrows', '/express/icons/purple-arrows.json')
+    getLottie('purple-arrows', '/express/icons/purple-arrows.json'),
   );
 
   fetchPlaceholders().then((placeholders) => {
@@ -141,10 +136,9 @@ function buildLottieArrow(wrapper, floatingBtn, data) {
 
   // Floating button scroll/click events
   lazyLoadLottiePlayer();
-  const scrollAnchor =
-    document.querySelector(
-      '.section:not(:nth-child(1)):not(:nth-child(2)) .template-list, .section:not(:nth-child(1)):not(:nth-child(2)) .layouts, .section:not(:nth-child(1)):not(:nth-child(2)) .steps-highlight-container'
-    ) ?? document.querySelector('.section:nth-child(3)');
+  const scrollAnchor = document.querySelector(
+    '.section:not(:nth-child(1)):not(:nth-child(2)) .template-list, .section:not(:nth-child(1)):not(:nth-child(2)) .layouts, .section:not(:nth-child(1)):not(:nth-child(2)) .steps-highlight-container',
+  ) ?? document.querySelector('.section:nth-child(3)');
   if (!scrollAnchor) {
     hideScrollArrow(wrapper, lottieScrollButton);
   } else {
@@ -173,11 +167,9 @@ export function createFloatingButton(block, audience, data) {
     // To figure out the available vertical space for text
     const paddingTop = floatButtonLinkStyle.getPropertyValue('padding-top');
     const paddingTopInt = +paddingTop.replace('px', '');
-    const paddingBottom =
-      floatButtonLinkStyle.getPropertyValue('padding-bottom');
+    const paddingBottom = floatButtonLinkStyle.getPropertyValue('padding-bottom');
     const paddingBottomInt = +paddingBottom.replace('px', '');
-    const availableHeight =
-      floatButtonLink.offsetHeight - paddingTopInt - paddingBottomInt;
+    const availableHeight = floatButtonLink.offsetHeight - paddingTopInt - paddingBottomInt;
 
     const numberOfLines = availableHeight / lineHeightInt;
     if (numberOfLines >= 2) {
@@ -191,13 +183,12 @@ export function createFloatingButton(block, audience, data) {
 
   // Hide CTAs with same url & text as the Floating CTA && is NOT a Floating CTA (in mobile/tablet)
   const sameUrlCTAs = Array.from(
-    main.querySelectorAll('a.button:any-link')
+    main.querySelectorAll('a.button:any-link'),
   ).filter(
-    (a) =>
-      (a.textContent.trim() === aTag.textContent.trim() ||
-        new URL(a.href).pathname === new URL(aTag.href).pathname) &&
-      !a.parentElement.parentElement.classList.contains('floating-button') &&
-      !a.classList.contains('floating-cta-ignore')
+    (a) => (a.textContent.trim() === aTag.textContent.trim()
+        || new URL(a.href).pathname === new URL(aTag.href).pathname)
+      && !a.parentElement.parentElement.classList.contains('floating-button')
+      && !a.classList.contains('floating-cta-ignore'),
   );
   sameUrlCTAs.forEach((cta) => {
     cta.classList.add('same-as-floating-button-CTA');
@@ -246,15 +237,15 @@ export function createFloatingButton(block, audience, data) {
   if (promoBar) {
     const promoBarMargin = parseInt(
       window.getComputedStyle(promoBar.block).marginBottom,
-      10
+      10,
     );
     promoBarHeight = promoBarMargin + promoBar.block.offsetHeight;
   }
 
   if (
-    promoBar &&
-    promoBar.rendered &&
-    floatButtonWrapper.dataset.audience !== 'desktop'
+    promoBar
+    && promoBar.rendered
+    && floatButtonWrapper.dataset.audience !== 'desktop'
   ) {
     floatButton.style.bottom = currentBottom
       ? `${currentBottom + promoBarHeight}px`
@@ -265,8 +256,8 @@ export function createFloatingButton(block, audience, data) {
 
   BlockMediator.subscribe('promobar', (e) => {
     if (
-      !e.newValue.rendered &&
-      floatButtonWrapper.dataset.audience !== 'desktop'
+      !e.newValue.rendered
+      && floatButtonWrapper.dataset.audience !== 'desktop'
     ) {
       floatButton.style.bottom = currentBottom
         ? `${currentBottom - promoBarHeight}px`
@@ -300,7 +291,7 @@ export function createFloatingButton(block, audience, data) {
         root: null,
         rootMargin: '32px',
         threshold: 0,
-      }
+      },
     );
 
     if (document.readyState === 'complete') {
@@ -317,27 +308,27 @@ export function createFloatingButton(block, audience, data) {
       detail: {
         block: floatButtonWrapper,
       },
-    })
+    }),
   );
 
   const heroCTA = document.querySelector(
-    'a.button.same-as-floating-button-CTA'
+    'a.button.same-as-floating-button-CTA',
   );
   if (heroCTA) {
     const hideButtonWhenIntersecting = new IntersectionObserver(
       ([e]) => {
         if (
-          e.boundingClientRect.top > window.innerHeight - 40 ||
-          e.boundingClientRect.top === 0
+          e.boundingClientRect.top > window.innerHeight - 40
+          || e.boundingClientRect.top === 0
         ) {
           floatButtonWrapper.classList.remove(
-            'floating-button--below-the-fold'
+            'floating-button--below-the-fold',
           );
           floatButtonWrapper.classList.add('floating-button--above-the-fold');
         } else {
           floatButtonWrapper.classList.add('floating-button--below-the-fold');
           floatButtonWrapper.classList.remove(
-            'floating-button--above-the-fold'
+            'floating-button--above-the-fold',
           );
         }
         if (e.intersectionRatio > 0 || e.isIntersecting) {
@@ -358,7 +349,7 @@ export function createFloatingButton(block, audience, data) {
         root: null,
         rootMargin: '-40px 0px',
         threshold: 0,
-      }
+      },
     );
     if (document.readyState === 'complete') {
       hideButtonWhenIntersecting.observe(heroCTA);
@@ -375,18 +366,18 @@ export function createFloatingButton(block, audience, data) {
     const lottieScrollButton = buildLottieArrow(
       floatButtonWrapper,
       floatButton,
-      data
+      data,
     );
     document.dispatchEvent(
       new CustomEvent('linkspopulated', {
         detail: [floatButtonLink, lottieScrollButton],
-      })
+      }),
     );
   } else {
     data.scrollState = 'withoutLottie';
     floatButtonWrapper.classList.add('floating-button--scrolled');
     document.dispatchEvent(
-      new CustomEvent('linkspopulated', { detail: [floatButtonLink] })
+      new CustomEvent('linkspopulated', { detail: [floatButtonLink] }),
     );
   }
 
@@ -400,17 +391,17 @@ export function collectFloatingButtonData() {
       if (meta?.name && !meta.property) acc[meta.name] = meta.content || '';
       return acc;
     },
-    {}
+    {},
   );
   const getMetadata = (key) => metadataMap[key]; // customized getMetadata to reduce dom queries
   const data = {
     scrollState: 'withLottie',
     showAppStoreBadge: ['yes', 'y', 'true', 'on'].includes(
-      getMetadata('show-floating-cta-app-store-badge')?.toLowerCase()
+      getMetadata('show-floating-cta-app-store-badge')?.toLowerCase(),
     ),
     toolsToStash: getMetadata('ctas-above-divider'),
     useLottieArrow: ['yes', 'y', 'true', 'on'].includes(
-      getMetadata('use-floating-cta-lottie-arrow')?.toLowerCase()
+      getMetadata('use-floating-cta-lottie-arrow')?.toLowerCase(),
     ),
     delay: getMetadata('floating-cta-drawer-delay') || 0,
     tools: [],
@@ -484,7 +475,7 @@ export function buildToolBoxStructure(wrapper, data) {
 
   toggleButton.innerHTML = getLottie(
     'plus-animation',
-    '/express/icons/plus-animation.json'
+    '/express/icons/plus-animation.json',
   );
   toolBoxWrapper.append(boxTop, boxBottom);
   toolBox.append(toolBoxWrapper);
