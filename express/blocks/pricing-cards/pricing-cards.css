@@ -1,6 +1,6 @@
 :root {
   --card-width: 353px;
-  --card-padding: 16px 12px;
+  --card-padding: 12px;
 }
 
 .pricing-cards.no-visible {
@@ -233,6 +233,7 @@ End border style variants
   font-weight: 700;
   color: #5258E4;
   height: 20px;
+  font-style: normal;
 }
 
 .pricing-cards .card-offer a {
@@ -286,10 +287,10 @@ End border style variants
   background: var(--color-gray-150);
   border: 1px solid #E0E2FF;
   padding: var(--card-padding);
-}
-
-.pricing-cards .pricing-row {
-  height: 55px;
+  box-sizing: border-box;
+  displaY: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .pricing-cards .pricing-area p {
@@ -297,14 +298,8 @@ End border style variants
   font-size: var(--body-font-size-s);
 }
 
-.pricing-cards .pricing-area p em {
-  font-style: normal;
-  color: #5258E4;
-}
-
 .pricing-cards .pricing-area .pricing-row-suf {
   font-size: var(--body-font-size-xs);
-  padding-bottom: 12px;
 }
 
 .pricing-cards .pricing-area:not(:has(p)) {
@@ -407,19 +402,14 @@ End border style variants
 }
 
 @media screen and (min-width: 768px) {
-  :root {
-    --card-width: 362px;
-  }
-
   .pricing-cards .card-border .card-header h2 {
     margin-top: 0;
   }
 }
 
-@media screen and (min-width: 1250px) {
+@media screen and (min-width: 1277px) {
   :root {
     --card-width: 400px;
-    --card-padding: 24px 16px;
   }
 
   .pricing-cards .cards-container:has(>.card-border:only-child) {
