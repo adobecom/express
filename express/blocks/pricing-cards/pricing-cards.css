@@ -364,8 +364,7 @@ End border style variants
   border-width: 6px;
 }
 
-.pricing-cards .billing-radio-item[role='radio']{
-  border: none;
+.pricing-cards .billing-radio-item[role='radio']{ 
   padding: 0;
   background: none;
   color: inherit;
@@ -378,6 +377,10 @@ End border style variants
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.pricing-cards .billing-radio-item:focus{
+  outline: 5px auto var(--tabs-pill-bg-color);
 }
 
 .pricing-cards .card-cta-group {

@@ -392,7 +392,7 @@ function createToggle(placeholders, pricingSections, index) {
   options.forEach((plan, i) => {
     const checked = i === 0 || undefined;
     const value = placeholders?.[plan] || ['Monthly', 'Annual'][i];
-    const id = name + "-" + i
+    const id = `${name}-${i}`;
     const radio = createTag('input', {
       type: 'radio', name, id , value, class: 'billing-radio-item', role: 'radio',
     });
