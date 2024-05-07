@@ -3,7 +3,6 @@ import {
   createTag,
   getIconElement,
   fetchPlaceholders,
-  getIconElement,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
