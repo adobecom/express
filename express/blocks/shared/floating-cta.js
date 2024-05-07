@@ -329,10 +329,11 @@ export function collectFloatingButtonData() {
   };
 
   for (let i = 1; i < 7; i += 1) {
+    const iconMetadata = getMetadata(`cta-${i}-icon`);
     const completeSet = {
       href: getMetadata(`cta-${i}-link`),
       text: getMetadata(`cta-${i}-text`),
-      icon: getIconElement(getMetadata(`cta-${i}-icon`)),
+      icon: iconMetadata ? getIconElement(iconMetadata) : '',
     };
 
     if (Object.values(completeSet).every((val) => !!val)) {
