@@ -49,10 +49,6 @@ async function getTemplates(response, phs, fallbackMsg) {
 }
 
 async function fetchAndRenderTemplates(props) {
-  import('../../scripts/mobile-beta-gating.js').then((gatingScript) => {
-    gatingScript.default();
-  });
-
   const [placeholders, { response, fallbackMsg }] = await Promise.all(
     [fetchPlaceholders(), fetchTemplates(props)],
   );
