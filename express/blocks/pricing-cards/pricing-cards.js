@@ -61,7 +61,7 @@ function getPriceElementSuffix(placeholders, placeholderArr, response) {
       const key = phText.replace('{{', '').replace('}}', '');
       return key.includes('vat') && !response.showVat
         ? ''
-        : placeholders[key] || '';
+        : placeholders?.[key] || '';
     })
     .join(' ');
 }
