@@ -303,6 +303,7 @@ export function createFloatingButton(block, audience, data) {
   return floatButtonWrapper;
 }
 
+const CTA_ICON_COUNT = 7;
 export function collectFloatingButtonData() {
   const metadataMap = Array.from(document.head.querySelectorAll('meta')).reduce((acc, meta) => {
     if (meta?.name && !meta.property) acc[meta.name] = meta.content || '';
@@ -328,11 +329,13 @@ export function collectFloatingButtonData() {
     live: getMetadata('floating-cta-live'),
   };
 
-  for (let i = 1; i < 7; i += 1) {
+  for (let i = 1; i < CTA_ICON_COUNT; i += 1) {
+    const iconMetadata = getMetadata(`cta-${i}-icon`);
+    if (!iconMetadata) break;
     const completeSet = {
       href: getMetadata(`cta-${i}-link`),
       text: getMetadata(`cta-${i}-text`),
-      icon: getIconElement(getMetadata(`cta-${i}-icon`)),
+      icon: getIconElement(iconMetadata),
     };
 
     if (Object.values(completeSet).every((val) => !!val)) {
