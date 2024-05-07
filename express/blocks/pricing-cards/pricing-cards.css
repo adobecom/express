@@ -1,6 +1,6 @@
 :root {
   --card-width: 353px;
-  --card-padding: 16px 12px;
+  --card-padding: 12px;
 }
 
 .pricing-cards.no-visible {
@@ -161,6 +161,30 @@ Border style variants
 End border style variants
 */ 
 
+.pricing-cards .tooltip-icon {
+  position: relative;
+  top : 2px;
+}
+
+.pricing-cards .tooltip-text {
+  display: none;
+  margin-left: 20px;
+  padding: 8px;
+  background-color:#5258E4;
+  color: white;
+  border-radius: 8px;
+  position: absolute;
+  bottom: 0; left: 25%;transition: bottom 0.5s ease-in-out;
+}
+
+.pricing-cards .tooltip {
+  position: relative;
+}
+
+.pricing-cards .tooltip .icon:hover ~.tooltip-text{
+  display: block;
+}
+
 .pricing-cards .card-border .hide {
   display: none;
 }
@@ -209,6 +233,7 @@ End border style variants
   font-weight: 700;
   color: #5258E4;
   height: 20px;
+  font-style: normal;
 }
 
 .pricing-cards .card-offer a {
@@ -262,11 +287,10 @@ End border style variants
   background: var(--color-gray-150);
   border: 1px solid #E0E2FF;
   padding: var(--card-padding);
-  height: 125px;
-}
-
-.pricing-cards .pricing-row {
-  height: 55px;
+  box-sizing: border-box;
+  displaY: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .pricing-cards .pricing-area p {
@@ -274,14 +298,8 @@ End border style variants
   font-size: var(--body-font-size-s);
 }
 
-.pricing-cards .pricing-area p em {
-  font-style: normal;
-  color: #5258E4;
-}
-
 .pricing-cards .pricing-area .pricing-row-suf {
   font-size: var(--body-font-size-xs);
-  padding-bottom: 12px;
 }
 
 .pricing-cards .pricing-area:not(:has(p)) {
@@ -383,23 +401,15 @@ End border style variants
   box-sizing: border-box;
 }
 
-
-
-
 @media screen and (min-width: 768px) {
-  :root {
-    --card-width: 362px;
-  }
-
   .pricing-cards .card-border .card-header h2 {
     margin-top: 0;
   }
 }
 
-@media screen and (min-width: 1250px) {
+@media screen and (min-width: 1277px) {
   :root {
     --card-width: 400px;
-    --card-padding: 24px 16px;
   }
 
   .pricing-cards .cards-container:has(>.card-border:only-child) {
@@ -413,14 +423,6 @@ End border style variants
 
   .pricing-cards .pricing-section {
     gap: 24px;
-  }
-
-  .pricing-cards .card .card-cta-group.min-height-2 {
-    min-height: 106px;
-  }
-
-  .pricing-cards .card .card-cta-group.min-height-3 {
-    min-height: 167px;
   }
 
   .pricing-cards .card .card-header h2 {
@@ -439,7 +441,5 @@ End border style variants
 
   .pricing-cards .cards-container:has(>.card:first-child:nth-last-child(3)) {
     grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
-  }
-
-  
+  }  
 }

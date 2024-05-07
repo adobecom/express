@@ -336,6 +336,7 @@ export const getOffer = (() => {
       savePer: offer.savePer,
       ooAvailable,
       showVat,
+      y2p: await formatPrice(offer.y2p, currency),
     };
   };
 })();
@@ -365,7 +366,6 @@ export const getOfferOnePlans = (() => {
     const customOfferId = offer.oo || offerId;
     const ooAvailable = offer.oo || false;
     const showVat = offer.showVat || false;
-
     return {
       country,
       currency,
@@ -383,6 +383,7 @@ export const getOfferOnePlans = (() => {
       savePer: offer.savePer,
       ooAvailable,
       showVat,
+      y2p: await formatPrice(offer.y2p, currency),
     };
   };
 })();
@@ -456,6 +457,7 @@ export async function fetchPlanOnePlans(planUrl) {
           `<strong>${plan.prefix}${plan.rawBasePrice[0]}</strong>`,
         );
       }
+      plan.y2p = offer.y2p;
     }
 
     window.pricingPlans[planUrl] = plan;
