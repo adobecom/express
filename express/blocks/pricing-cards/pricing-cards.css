@@ -323,6 +323,46 @@ End border style variants
 
 /** pricing styles end **/
 
+.pricing-cards .billing-radio {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+  font-size: var(--body-font-size-s);
+}
+
+.pricing-cards .billing-radio button {
+  border: none;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+
+  font-size: var(--body-font-size-xs);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pricing-cards .billing-radio :focus-within {
+  border: 2px var(--color-info-accent) solid;
+}
+
+.pricing-cards .billing-radio span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transition: 0.2s all linear;
+  border: 2px solid #292929;
+  box-sizing: border-box;
+}
+
+.pricing-cards .billing-radio .checked span {
+  border-width: 6px;
+}
+
 .pricing-cards .card-cta-group {
   display: flex;
   flex-direction: column;
