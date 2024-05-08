@@ -406,14 +406,6 @@ End border style variants
     --card-width: 400px;
   }
 
-  /* .pricing-cards .cards-container:has(>.card-border:only-child) {
-    grid-template-columns: repeat(auto-fit, calc(91px + var(--card-width)));
-  }
-
-  .pricing-cards .cards-container:has(>.card-border:first-child:nth-last-child(3)) {
-    grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
-  } */
-
   .pricing-cards .card-feature-list {
     display: block;
   }
