@@ -33,14 +33,6 @@ const SALES_NUMBERS = '{{business-sales-numbers}}';
 const PRICE_TOKEN = '{{pricing}}';
 const YEAR_2_PRICING_TOKEN = '[[year-2-pricing-token]]';
 
-const MOBILE_SIZE = 825;
-function defineDeviceByScreenSize() {
-  const screenWidth = window.innerWidth;
-  if (screenWidth >= MOBILE_SIZE) return 'DESKTOP';
-  return 'MOBILE';
-}
-let deviceBySize = defineDeviceByScreenSize();
-
 function suppressOfferEyebrow(specialPromo, legacyVersion) {
   if (specialPromo.parentElement) {
     if (legacyVersion) {
@@ -475,33 +467,57 @@ export default async function init(el) {
   const groups = [
     cards.map(({ header }) => header),
     cards.map(({ explain }) => explain),
-    cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
-    [...el.querySelectorAll('.pricing-area')],
+    cards.map(({ yCtaGroup }) => yCtaGroup),
+    cards.map(({ mCtaGroup }) => mCtaGroup),
+    [...el.querySelectorAll('.monthly > .pricing-area')],
+    [...el.querySelectorAll('.yearly > .pricing-area')],
     cards.map(({ featureList }) => featureList.querySelector('p')),
     cards.map(({ featureList }) => featureList),
     cards.map(({ compare }) => compare),
   ];
-  const flattenGroups = groups.flat();
+  const decoratedCardEls = [...cardsContainer.querySelectorAll('.card')];
+  const synchedItems = groups.flat();
+  const undoSyncHeights = () => {
+    synchedItems.forEach((item) => {
+      item.style?.removeProperty('min-height');
+    });
+  };
   const doSyncHeights = () => {
-    syncMinHeights(groups);
+    // possible 2 card in row 1 and 3rd card in row 2
+    const yPositions = decoratedCardEls.map((c) => c.getBoundingClientRect().top);
+    const positionGroups = [];
+    // positionGroups -> [2,1]
+    yPositions.forEach((yPosition, i) => {
+      if (i === 0 || yPosition !== yPositions[i - 1]) {
+        positionGroups.push(1);
+      } else {
+        positionGroups[positionGroups.length - 1] += 1;
+      }
+    });
+    if (positionGroups.length === cards.length) {
+      // no sync when 1 card per row
+      undoSyncHeights();
+      return;
+    }
+    const groupsByTop = [];
+    // [[h1, h2, h3], [e1, e2, e3]] -> [[h1, h2], [h3], [e1, e2], [e3]]
+    groups.forEach((group) => {
+      let prev = 0;
+      positionGroups.forEach((positionGroup) => {
+        groupsByTop.push(group.slice(prev, prev + positionGroup));
+        prev = positionGroup;
+      });
+    });
+    syncMinHeights(groupsByTop);
   };
   window.addEventListener('resize', debounce(() => {
-    if (deviceBySize === defineDeviceByScreenSize()) return;
-    deviceBySize = defineDeviceByScreenSize();
-    if (deviceBySize === 'MOBILE') {
-      flattenGroups.forEach((item) => {
-        item.style?.removeProperty('min-height');
-      });
-    } else {
-      doSyncHeights();
-    }
+    doSyncHeights();
   }, 100));
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        observer.disconnect();
-        if (deviceBySize !== 'MOBILE') doSyncHeights(); // no sync on stacked mobile
+        doSyncHeights();
         el.classList.remove('no-visible');
       }
     });
