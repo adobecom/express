@@ -33,7 +33,7 @@ const SALES_NUMBERS = '{{business-sales-numbers}}';
 const PRICE_TOKEN = '{{pricing}}';
 const YEAR_2_PRICING_TOKEN = '[[year-2-pricing-token]]';
 
-const MOBILE_SIZE = 840;
+const MOBILE_SIZE = 825;
 function defineDeviceByScreenSize() {
   const screenWidth = window.innerWidth;
   if (screenWidth >= MOBILE_SIZE) return 'DESKTOP';
