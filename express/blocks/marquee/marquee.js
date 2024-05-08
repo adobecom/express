@@ -31,16 +31,17 @@ const breakpointConfig = [
   },
 ];
 
+const PRICE_TOKEN = '{{pricing}}';
+
 // Transforms a {{pricing}} tag into human readable format.
 async function handlePrice(block) {
-  const priceEl = block.querySelector('[title="{{pricing}}"]');
+  const priceEl = block.querySelector(`[title="${PRICE_TOKEN}"]`);
   if (!priceEl) return null;
-  priceEl.closest('p')?.classList.remove('button-container');
-  const parent = priceEl.parentElement;
+
   const newContainer = createTag('span');
+  priceEl.closest('p')?.classList.remove('button-container');
+  priceEl.after(newContainer)
   priceEl.remove();
-  parent.parentElement.append(newContainer);
-  parent.remove();
   try {
     const response = await fetchPlanOnePlans(priceEl?.href);
     newContainer.innerHTML = response.formatted;
