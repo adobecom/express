@@ -39,17 +39,8 @@ const LANGSTORE = 'langstore';
 const PAGE_URL = new URL(window.location.href);
 
 function sanitizeInput(input) {
+  if (Number.isInteger(input)) return input;
   return input.replace(/[^a-zA-Z0-9-_]/g, ''); // Simple regex to strip out potentially dangerous characters
-}
-
-function sanitizeUrl(url) {
-  try {
-    const parsedUrl = new URL(url);
-    // Further checks can be added here to validate domain, protocol, etc.
-    return parsedUrl.href;
-  } catch (error) {
-    return 'about:blank'; // Use a safe default if URL is invalid
-  }
 }
 
 export function getMetadata(name) {
@@ -401,7 +392,6 @@ export function lazyLoadLottiePlayer($block = null) {
 }
 
 function createSVGWrapper(icon, sheetSize, alt, altSrc) {
-  const iconName = icon;
   const svgWrapper = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svgWrapper.classList.add('icon');
   svgWrapper.classList.add(`icon-${icon}`);

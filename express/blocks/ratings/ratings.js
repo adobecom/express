@@ -1,7 +1,6 @@
 import {
   createTag,
   fetchPlaceholders,
-  getIcon,
   getIconElement,
   getLottie,
   lazyLoadLottiePlayer,
