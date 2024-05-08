@@ -376,12 +376,12 @@ export default async function decorate($block) {
         buildSchema(actionTitle);
       }
     } else {
-      for (let i = 0; i < 5; i+=1) {
+      for (let i = 0; i < 5; i += 1) {
         $stars.appendChild(star.cloneNode(true));
       }
     }
     return $stars;
-  }  
+  }
 
   // Decorates the rating Form and Slider HTML.
   function decorateRatingSlider(title, headingTag = 'h3') {

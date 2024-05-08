@@ -48,9 +48,9 @@ export default function decorate($block) {
     if ($top && !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes($top.tagName)) {
       $top = $block;
     }
-    const $seeMore = document.createElement('a');
+    const $seeMore = document.createElement('button');
     $seeMore.classList.add('quick-action-card--open', 'button', 'secondary');
-    const $seeLess = document.createElement('a');
+    const $seeLess = document.createElement('button');
     $seeLess.classList.add('quick-action-card--close', 'button', 'secondary');
     fetchPlaceholders().then((placeholders) => {
       $seeMore.innerText = placeholders['see-more'];
@@ -59,12 +59,12 @@ export default function decorate($block) {
       $seeLess.appendChild(chevron.cloneNode(true));
     });
 
-    $seeMore.setAttribute('href', 'javascript:void(0)');
+   // $seeMore.setAttribute('href', 'javascript:void(0)');
     $seeMore.addEventListener('click', () => {
       $block.classList.add('quick-action-cards--expanded');
     });
 
-    $seeLess.setAttribute('href', 'javascript:void(0)');
+   // $seeLess.setAttribute('href', 'javascript:void(0)');
     $seeLess.addEventListener('click', () => {
       $block.classList.remove('quick-action-cards--expanded');
       window.scrollTo(0, $top.offsetTop);

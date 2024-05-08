@@ -210,7 +210,7 @@ function decorateOtherPlans(block, otherPlans) {
     const planButton = createTag('div', { class: 'other-plan-button' });
     const planIcon = getIconElement('chevron');
     planButton.innerHTML = `${plan.title}}`;
-    planButton.append(planIcon)
+    planButton.append(planIcon);
     planButton.dataset.id = plan.id;
     planEl.append(planButton);
     const popup = createTag('div', { class: 'other-plan' });

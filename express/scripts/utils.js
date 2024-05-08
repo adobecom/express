@@ -39,7 +39,7 @@ const LANGSTORE = 'langstore';
 const PAGE_URL = new URL(window.location.href);
 
 function sanitizeInput(input) {
-  return input.replace(/[^a-zA-Z0-9-_]/g, '');  // Simple regex to strip out potentially dangerous characters
+  return input.replace(/[^a-zA-Z0-9-_]/g, ''); // Simple regex to strip out potentially dangerous characters
 }
 
 function sanitizeUrl(url) {
@@ -401,7 +401,7 @@ export function lazyLoadLottiePlayer($block = null) {
 }
 
 function createSVGWrapper(icon, sheetSize, alt, altSrc) {
-  const iconName = icon
+  const iconName = icon;
   const svgWrapper = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svgWrapper.classList.add('icon');
   svgWrapper.classList.add(`icon-${icon}`);
