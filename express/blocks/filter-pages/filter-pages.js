@@ -4,6 +4,7 @@ import {
   createTag,
   readBlockConfig,
   addPublishDependencies,
+  sanitize
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
@@ -21,7 +22,7 @@ function filterMigratedPages(filter) {
         if (!path.startsWith(' ')) path = path.substr(1);
         path = path.replace('.html', '');
         let markedUpPath = path;
-        if (filter) markedUpPath = path.split(filter).join(`<b>${filter}</b>`);
+        if (filter) markedUpPath = sanitize(path.split(filter).join(`<b>${filter}</b>`));
         const $card = createTag('div', { class: 'card' });
         $card.innerHTML = `<div class="card-image">
             <img loading="lazy" src="${page.image}">

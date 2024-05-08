@@ -23,7 +23,9 @@ async function fetchIndex(indexURL) {
 function outputPages(filteredPages, $block) {
   filteredPages.forEach((page) => {
     const p = createTag('p');
-    p.innerHTML = `<a href="${page.path}">${page.shortTitle}</a>`;
+    const a = createTag('a', {href : page.path });
+    a.innerText = page.shortTitle;
+    p.appendChild(a);
     $block.appendChild(p);
   });
 }

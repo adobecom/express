@@ -17,6 +17,7 @@ import {
   linkImage,
   sampleRUM,
   toClassName,
+  sanitize,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 
@@ -495,7 +496,7 @@ function getRedirectUrl(tasks, topics, format, allTemplatesMetadata) {
   }
 
   const searchUrlTemplate = `/express/templates/search?tasks=${tasks}&phformat=${format}&topics=${topics || "''"}`;
-  return `${window.location.origin}${prefix}${searchUrlTemplate}`;
+  return sanitize(`${window.location.origin}${prefix}${searchUrlTemplate}`);
 }
 
 async function redirectSearch($searchBar, props) {
