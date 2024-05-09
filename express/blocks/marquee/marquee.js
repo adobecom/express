@@ -376,7 +376,7 @@ async function handleContent(div, block, animations) {
   div.append(marqueeForeground);
 
   video.addEventListener('canplay', () => {
-    buildReduceMotionSwitch(block, marqueeForeground, getBreakpoint(animations));
+    buildReduceMotionSwitch(block, marqueeForeground);
   });
 
   div.querySelectorAll(':scope p:empty').forEach((p) => {
