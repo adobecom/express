@@ -6,7 +6,7 @@
  }
 
  .wayfinder.light {
-    border : 2px solid blue;
+    border : 2px solid var(--color-info-accent);
  }
 
  .wayfinder.gradient {
@@ -14,22 +14,41 @@
     color : white;
     border : 2px solid white; 
  }
- 
 
  .wayfinder .cta-row .button {
     height: fit-content;
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 10px;
-
+    background-color: black;
  }
+
  .wayfinder div p {
     margin: auto;
  }
 
+ .wayfinder .cta-row strong .button {
+    background-color:var(--color-info-accent);
+    color: white;
+    border: none;
+    padding-bottom: 8px;
+    padding-top: 8px;
+ }
+
+ .wayfinder .cta-row em .button {
+    background-color: transparent;
+    color: black; 
+ }
+
+ .wayfinder .cta-row em strong .button {
+    background-color: none;
+    border: none;
+    text-underline-offset: 5px;
+    text-decoration: underline;
+ }
 
 
- @media (min-width: 912px){
+ @media (min-width: 913px){
 
     .wayfinder {
         display: flex;
