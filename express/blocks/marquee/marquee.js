@@ -16,25 +16,25 @@ import {
 const DEFAULT_BREAKPOINT = {
   typeHint: 'default',
   minWidth: 0,
-}
+};
 
 const MOBILE_BREAKPOINT = {
   typeHint: 'mobile',
   minWidth: 0,
-}
+};
 
 const DESKTOP_BREAKPOINT = {
   typeHint: 'desktop',
   minWidth: 400,
-}
+};
 
 const HD_BREAKPOINT = {
   typeHint: 'hd',
   minWidth: 1440,
-}
+};
 
 const breakpointConfig = [
-  DEFAULT_BREAKPOINT, MOBILE_BREAKPOINT, DESKTOP_BREAKPOINT, HD_BREAKPOINT
+  DEFAULT_BREAKPOINT, MOBILE_BREAKPOINT, DESKTOP_BREAKPOINT, HD_BREAKPOINT,
 ];
 
 // Transforms a {{pricing}} tag into human readable format.
