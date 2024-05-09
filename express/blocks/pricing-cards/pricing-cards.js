@@ -373,14 +373,14 @@ function decorateCompareSection(compare, el, card) {
 
 function createToggle(placeholders, pricingSections) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
-  const toggleWrapper = createTag('div', { class: 'billing-radio' });
+  const toggleWrapper = createTag('div', { class: 'billing-toggle' });
   toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`;
   const buttons = ['monthly', 'annual'].map((plan, i) => {
     const button = createTag('button', {
       class: i === 0 ? 'checked' : '',
     });
     button.innerHTML = `<span></span>${placeholders?.[plan] || ['Monthly', 'Annual'][i]}`;
-    button.setAttribute('role', 'tab')
+    button.setAttribute('role', 'tab');
     button.addEventListener('click', () => {
       if (button.classList.contains('checked')) return;
       buttons.filter((b) => b !== button).forEach((b) => {

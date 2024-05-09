@@ -48,7 +48,7 @@ End legacy CSS
 }
 
 .pricing-cards.block {
-  padding: 0 15px 40px;
+  padding: 12px 15px 40px 15px;
 }
 
 .pricing-cards .cards-container {
@@ -328,7 +328,7 @@ End border style variants
 
 /** pricing styles end **/
 
-.pricing-cards .billing-radio {
+.pricing-cards .billing-toggle {
   display: flex;
   justify-content: center;
   gap: 12px;
@@ -336,7 +336,7 @@ End border style variants
   font-size: var(--body-font-size-s);
 }
 
-.pricing-cards .billing-radio button {
+.pricing-cards .billing-toggle button {
   border: none;
   padding: 0;
   background: none;
@@ -351,11 +351,11 @@ End border style variants
   gap: 4px;
 }
 
-.pricing-cards .billing-radio :focus-within {
+.pricing-cards .billing-toggle :focus-within {
   border: 2px var(--color-info-accent) solid;
 }
 
-.pricing-cards .billing-radio span {
+.pricing-cards .billing-toggle span {
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -364,7 +364,7 @@ End border style variants
   box-sizing: border-box;
 }
 
-.pricing-cards .billing-radio .checked span {
+.pricing-cards .billing-toggle .checked span {
   border-width: 6px;
 }
 
