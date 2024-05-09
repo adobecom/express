@@ -13,23 +13,28 @@ import {
   formatDynamicCartLink,
 } from '../../scripts/utils/pricing.js';
 
+const DEFAULT_BREAKPOINT = {
+  typeHint: 'default',
+  minWidth: 0,
+}
+
+const MOBILE_BREAKPOINT = {
+  typeHint: 'mobile',
+  minWidth: 0,
+}
+
+const DESKTOP_BREAKPOINT = {
+  typeHint: 'desktop',
+  minWidth: 400,
+}
+
+const HD_BREAKPOINT = {
+  typeHint: 'hd',
+  minWidth: 1440,
+}
+
 const breakpointConfig = [
-  {
-    typeHint: 'default',
-    minWidth: 0,
-  },
-  {
-    typeHint: 'mobile',
-    minWidth: 0,
-  },
-  {
-    typeHint: 'desktop',
-    minWidth: 400,
-  },
-  {
-    typeHint: 'hd',
-    minWidth: 1440,
-  },
+  DEFAULT_BREAKPOINT, MOBILE_BREAKPOINT, DESKTOP_BREAKPOINT, HD_BREAKPOINT
 ];
 
 // Transforms a {{pricing}} tag into human readable format.
@@ -135,7 +140,7 @@ function handlePause(block) {
     }
   }
 }
-async function buildReduceMotionSwitch(block, marqueeForeground) {
+async function buildReduceMotionSwitch(block, marqueeForeground, breakpoint) {
   if (!block.querySelector('.reduce-motion-wrapper')) {
     const reduceMotionIconWrapper = createTag('div', {
       class: 'reduce-motion-wrapper',
@@ -155,9 +160,11 @@ async function buildReduceMotionSwitch(block, marqueeForeground) {
         getIconElement('pause-video'),
       );
     }
-
-    marqueeForeground.append(reduceMotionIconWrapper);
-
+    if (window.innerWidth >= DEFAULT_BREAKPOINT.minWidth) {
+      videoWrapper.append(reduceMotionIconWrapper);
+    } else {
+      marqueeForeground.append(reduceMotionIconWrapper);
+    }
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     handleMediaQuery(block, mediaQuery);
 
@@ -369,7 +376,7 @@ async function handleContent(div, block, animations) {
   div.append(marqueeForeground);
 
   video.addEventListener('canplay', () => {
-    buildReduceMotionSwitch(block, marqueeForeground);
+    buildReduceMotionSwitch(block, marqueeForeground, getBreakpoint(animations));
   });
 
   div.querySelectorAll(':scope p:empty').forEach((p) => {
