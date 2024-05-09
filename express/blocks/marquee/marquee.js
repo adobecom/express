@@ -13,23 +13,28 @@ import {
   formatDynamicCartLink,
 } from '../../scripts/utils/pricing.js';
 
+const DEFAULT_BREAKPOINT = {
+  typeHint: 'default',
+  minWidth: 0,
+};
+
+const MOBILE_BREAKPOINT = {
+  typeHint: 'mobile',
+  minWidth: 0,
+};
+
+const DESKTOP_BREAKPOINT = {
+  typeHint: 'desktop',
+  minWidth: 400,
+};
+
+const HD_BREAKPOINT = {
+  typeHint: 'hd',
+  minWidth: 1440,
+};
+
 const breakpointConfig = [
-  {
-    typeHint: 'default',
-    minWidth: 0,
-  },
-  {
-    typeHint: 'mobile',
-    minWidth: 0,
-  },
-  {
-    typeHint: 'desktop',
-    minWidth: 400,
-  },
-  {
-    typeHint: 'hd',
-    minWidth: 1440,
-  },
+  DEFAULT_BREAKPOINT, MOBILE_BREAKPOINT, DESKTOP_BREAKPOINT, HD_BREAKPOINT,
 ];
 
 // Transforms a {{pricing}} tag into human readable format.
@@ -155,9 +160,11 @@ async function buildReduceMotionSwitch(block, marqueeForeground) {
         getIconElement('pause-video'),
       );
     }
-
-    marqueeForeground.append(reduceMotionIconWrapper);
-
+    if (window.innerWidth <= 925) {
+      videoWrapper.append(reduceMotionIconWrapper);
+    } else {
+      marqueeForeground.append(reduceMotionIconWrapper);
+    }
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     handleMediaQuery(block, mediaQuery);
 
