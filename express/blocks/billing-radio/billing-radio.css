@@ -1,4 +1,9 @@
-.billing-radio {
+
+ .billing-radio-group :focus-within {
+  border: 2px var(--color-info-accent) solid;
+}
+
+ .billing-radio-fieldset { 
   display: flex;
   justify-content: center;
   gap: 12px;
@@ -8,26 +13,27 @@
   font-size: var(--body-font-size-s);
   height: 32px;
 }
-.billing-radio button {
-  border: none;
-  padding: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  outline: inherit;
 
-  font-size: var(--body-font-size-xs);
+ .billing-radio-group {
+  gap : 4px;
   display: flex;
-  align-items: center;
-  gap: 4px;
+}
+ .billing-radio-fieldset form label {
+  font-size: 9pt;
+  height: fit-content;
+  margin: auto;
 }
 
-.billing-radio :focus-within {
-  border: 2px var(--color-info-accent) solid;
+ .billing-radio-fieldset div { 
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    align-items: center;
+    font-weight: bold;
+    font-size: var(--body-font-size-s);
 }
 
-.billing-radio span {
+ .billing-radio-group span {
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -36,6 +42,25 @@
   box-sizing: border-box;
 }
 
-.billing-radio .checked span {
+ .billing-radio-group .checked span {
   border-width: 6px;
+}
+
+ .billing-radio-item[role='radio']{ 
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  accent-color: black;
+  background-color: black ;
+  font-size: var(--body-font-size-xs);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+ .billing-radio-item:focus{
+  outline: 5px auto var(--tabs-pill-bg-color);
 }

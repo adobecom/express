@@ -11,25 +11,36 @@ export default function init(el) {
   const title = el.querySelector('strong');
   const plans = Array.from(el.querySelectorAll('ol > li')).map((li) => li.textContent.trim());
   el.innerHTML = '';
-  el.append(title);
+  const fieldSet = createTag('div', { class: 'billing-radio-fieldset' });
+  const legend = createTag('div')
+  const group = createTag('form', { class: 'billing-radio-group' });
+  legend.textContent = title.textContent;
   const buttons = [];
   if (BlockMediator.get(BILLING_PLAN) === undefined) BlockMediator.set(BILLING_PLAN, 0);
+
   plans.forEach((plan, planIndex) => {
-    const button = createTag('button', {
-      id: plan,
-      class: planIndex === (BlockMediator.get(BILLING_PLAN) || 0) ? 'checked' : '',
+    const radio = createTag('input', {
+      type: 'radio', name : BILLING_PLAN, id: plan, value: plan, class: 'billing-radio-item', role: 'radio',
     });
-    button.append(createTag('label', { for: plan }, plan));
-    button.prepend(createTag('span'));
-    button.addEventListener('click', () => {
+    const label = createTag('label', { for: plan });
+    radio.checked = BlockMediator.get(BILLING_PLAN) === planIndex ? "checked" : undefined;
+    label.textContent = plan
+    radio.innerText = plan
+    group.append(radio);
+    group.append(label);
+    radio.addEventListener('click', () => {
+      console.log(planIndex )
       if (planIndex === BlockMediator.get(BILLING_PLAN)) return;
       BlockMediator.set(BILLING_PLAN, planIndex);
     });
-    el.append(button);
-    buttons.push(button);
-  });
+    fieldSet.append(legend);
+    fieldSet.append(group);
+    buttons.push(radio)
+  })
+  el.append(fieldSet)
   BlockMediator.subscribe(BILLING_PLAN, ({ newValue, oldValue }) => {
-    buttons[oldValue || 0].classList.remove('checked');
-    buttons[newValue].classList.add('checked');
+  
+    buttons[oldValue || 0].checked = undefined
+    buttons[newValue].checked = "checked"
   });
 }
