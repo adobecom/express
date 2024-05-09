@@ -18,11 +18,6 @@ const DEFAULT_BREAKPOINT = {
   minWidth: 0,
 };
 
-const IPHONE_BREAKPOINT = {
-  typeHint: 'iphone',
-  minWidth: 375,
-};
-
 const MOBILE_BREAKPOINT = {
   typeHint: 'mobile',
   minWidth: 0,
@@ -165,7 +160,7 @@ async function buildReduceMotionSwitch(block, marqueeForeground) {
         getIconElement('pause-video'),
       );
     }
-    if (window.innerWidth >= IPHONE_BREAKPOINT.minWidth) {
+    if (window.innerWidth <= 925) {
       videoWrapper.append(reduceMotionIconWrapper);
     } else {
       marqueeForeground.append(reduceMotionIconWrapper);
