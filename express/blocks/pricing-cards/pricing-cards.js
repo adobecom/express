@@ -380,6 +380,7 @@ function createToggle(placeholders, pricingSections) {
       class: i === 0 ? 'checked' : '',
     });
     button.innerHTML = `<span></span>${placeholders?.[plan] || ['Monthly', 'Annual'][i]}`;
+    button.setAttribute('role', 'tab')
     button.addEventListener('click', () => {
       if (button.classList.contains('checked')) return;
       buttons.filter((b) => b !== button).forEach((b) => {
