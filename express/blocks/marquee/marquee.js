@@ -182,11 +182,10 @@ async function buildReduceMotionSwitch(block, marqueeForeground) {
       'keydown',
       async (e) => {
         if (!e.target.isEqualNode(document.activeElement)) return;
+        if (e.code !== 'Space' && e.code !== 'Enter') return;
         e.preventDefault();
-        if (e.code !== 'Space') return;
         handlePause(block);
       },
-      { passive: true },
     );
 
     reduceMotionIconWrapper.addEventListener(
@@ -439,8 +438,8 @@ async function handleOptions(div, typeHint, block) {
     const color = div.children[1].textContent.trim().toLowerCase();
     if (color) block.style.background = color;
     const lightness = (parseInt(color.substring(1, 2), 16)
-        + parseInt(color.substring(3, 2), 16)
-        + parseInt(color.substring(5, 2), 16))
+      + parseInt(color.substring(3, 2), 16)
+      + parseInt(color.substring(5, 2), 16))
       / 3;
     if (lightness < 200) block.classList.add('white-text');
     div.remove();
