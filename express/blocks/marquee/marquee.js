@@ -160,7 +160,7 @@ async function buildReduceMotionSwitch(block, marqueeForeground) {
         getIconElement('pause-video'),
       );
     }
-    if (window.innerWidth >= DEFAULT_BREAKPOINT.minWidth) {
+    if (window.innerWidth >= DESKTOP_BREAKPOINT.minWidth) {
       videoWrapper.append(reduceMotionIconWrapper);
     } else {
       marqueeForeground.append(reduceMotionIconWrapper);
