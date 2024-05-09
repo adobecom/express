@@ -1,0 +1,60 @@
+
+
+ .wayfinder {
+    border : 2px solid black;
+    border-radius: 20px;
+ }
+
+ .wayfinder.light {
+    border : 2px solid blue;
+ }
+
+ .wayfinder.gradient {
+    background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
+    color : white;
+    border : 2px solid white; 
+ }
+ 
+
+ .wayfinder .cta-row .button {
+    height: fit-content;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+
+ }
+ .wayfinder div p {
+    margin: auto;
+ }
+
+
+
+ @media (min-width: 912px){
+
+    .wayfinder {
+        display: flex;
+    }
+    .wayfinder div {
+        display: flex;
+        width: fit-content;
+    }
+
+    .wayfinder div:first-of-type {
+        margin-left: auto;
+    }
+
+    .wayfinder div:last-of-type {
+        margin-right: auto;
+    }
+
+    .wayfinder div div {
+        gap: 14px;
+    }
+
+    .wayfinder .cta-row {
+        display: flex;
+        margin-left: 10px;
+    }
+ 
+    
+ }
