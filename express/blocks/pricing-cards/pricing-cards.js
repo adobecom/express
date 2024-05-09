@@ -5,6 +5,7 @@ import {
   yieldToMain,
   getIconElement,
 } from '../../scripts/utils.js';
+import { debounce } from '../../scripts/hofs.js';
 
 import {
   formatDynamicCartLink,
@@ -49,7 +50,7 @@ function getPriceElementSuffix(placeholders, placeholderArr, response) {
       const key = phText.replace('{{', '').replace('}}', '');
       return key.includes('vat') && !response.showVat
         ? ''
-        : placeholders[key] || '';
+        : placeholders?.[key] || '';
     })
     .join(' ');
 }
@@ -179,7 +180,7 @@ function handleTooltip(pricingArea) {
   tooltipDiv.append(icon);
   tooltipDiv.append(span);
 }
-function handlePrice(placeholders, pricingArea, specialPromo, legacyVersion) {
+async function handlePrice(placeholders, pricingArea, specialPromo, legacyVersion) {
   const priceEl = pricingArea.querySelector(`[title="${PRICE_TOKEN}"]`);
   const pricingBtnContainer = pricingArea.querySelector('.button-container');
   if (!pricingBtnContainer) return;
@@ -195,21 +196,20 @@ function handlePrice(placeholders, pricingArea, specialPromo, legacyVersion) {
 
   priceRow.append(basePrice, price, priceSuffix);
 
-  fetchPlanOnePlans(priceEl?.href).then((response) => {
-    const priceSuffixTextContent = getPriceElementSuffix(
-      placeholders,
-      placeholderArr,
-      response,
-    );
-    const isPremiumCard = response.ooAvailable || false;
-    const savePercentElem = pricingArea.querySelector('.card-offer');
-    handleRawPrice(price, basePrice, response);
-    handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent);
-    handleTooltip(pricingArea);
-    handleSavePercentage(savePercentElem, isPremiumCard, response);
-    handleSpecialPromo(specialPromo, isPremiumCard, response, legacyVersion);
-    handleYear2PricingToken(pricingArea, response.y2p, priceSuffixTextContent);
-  });
+  const response = await fetchPlanOnePlans(priceEl?.href);
+  const priceSuffixTextContent = getPriceElementSuffix(
+    placeholders,
+    placeholderArr,
+    response,
+  );
+  const isPremiumCard = response.ooAvailable || false;
+  const savePercentElem = pricingArea.querySelector('.card-offer');
+  handleRawPrice(price, basePrice, response);
+  handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent);
+  handleTooltip(pricingArea);
+  handleSavePercentage(savePercentElem, isPremiumCard, response);
+  handleSpecialPromo(specialPromo, isPremiumCard, response, legacyVersion);
+  handleYear2PricingToken(pricingArea, response.y2p, priceSuffixTextContent);
 
   priceEl?.parentNode?.remove();
   if (!priceRow) return;
@@ -218,7 +218,7 @@ function handlePrice(placeholders, pricingArea, specialPromo, legacyVersion) {
   pricingSuffixTextElem?.remove();
 }
 
-function createPricingSection(
+async function createPricingSection(
   placeholders,
   pricingArea,
   ctaGroup,
@@ -230,8 +230,9 @@ function createPricingSection(
   const offer = pricingArea.querySelector(':scope > p > em');
   if (offer) {
     offer.classList.add('card-offer');
+    offer.parentElement.outerHTML = offer.outerHTML;
   }
-  handlePrice(placeholders, pricingArea, specialPromo, legacyVersion);
+  await handlePrice(placeholders, pricingArea, specialPromo, legacyVersion);
   ctaGroup.classList.add('card-cta-group');
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
@@ -403,22 +404,17 @@ function createToggle(placeholders, pricingSections) {
 
 // In legacy versions, the card element encapsulates all content
 // In new versions, the cardBorder element encapsulates all content instead
-function decorateCard(
-  {
-    header,
-    borderParams,
-    explain,
-    mPricingRow,
-    mCtaGroup,
-    yPricingRow,
-    yCtaGroup,
-    featureList,
-    compare,
-  },
-  el,
-  placeholders,
-  legacyVersion,
-) {
+async function decorateCard({
+  header,
+  borderParams,
+  explain,
+  mPricingRow,
+  mCtaGroup,
+  yPricingRow,
+  yCtaGroup,
+  featureList,
+  compare,
+}, el, placeholders, legacyVersion) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
 
@@ -427,20 +423,11 @@ function decorateCard(
     : decorateHeader(header, borderParams, card, cardBorder);
 
   decorateBasicTextSection(explain, 'card-explain', card);
-  const mPricingSection = createPricingSection(
-    placeholders,
-    mPricingRow,
-    mCtaGroup,
-    specialPromo,
-    legacyVersion,
-  );
+  const [mPricingSection, yPricingSection] = await Promise.all([
+    createPricingSection(placeholders, mPricingRow, mCtaGroup, specialPromo, legacyVersion),
+    createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
+  ]);
   mPricingSection.classList.add('monthly');
-  const yPricingSection = createPricingSection(
-    placeholders,
-    yPricingRow,
-    yCtaGroup,
-    null,
-  );
   yPricingSection.classList.add('annual', 'hide');
   const toggle = createToggle(placeholders, [mPricingSection, yPricingSection]);
   card.append(toggle, mPricingSection, yPricingSection);
@@ -450,10 +437,10 @@ function decorateCard(
 }
 
 // less thrashing by separating get and set
-async function syncMinHeights(...groups) {
-  const maxHeights = groups.map((els) => els.filter(
-    (e) => !!e,
-  ).reduce((max, e) => Math.max(max, e.offsetHeight), 0));
+async function syncMinHeights(groups) {
+  const maxHeights = groups.map((els) => els
+    .filter((e) => !!e)
+    .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
   await yieldToMain();
   maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
     if (e) e.style.minHeight = `${maxHeight}px`;
@@ -477,9 +464,10 @@ export default async function init(el) {
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
-  cards
-    .map((card) => decorateCard(card, el, placeholders, legacyVersion))
-    .forEach((card) => cardsContainer.append(card));
+  const decoratedCards = await Promise.all(
+    cards.map((card) => decorateCard(card, el, placeholders, legacyVersion)),
+  );
+  decoratedCards.forEach((card) => cardsContainer.append(card));
 
   const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter(
     (a) => a.title.includes(SALES_NUMBERS),
@@ -490,19 +478,60 @@ export default async function init(el) {
   el.classList.add('no-visible');
   el.prepend(cardsContainer);
 
+  const groups = [
+    cards.map(({ header }) => header),
+    cards.map(({ explain }) => explain),
+    cards.map(({ yCtaGroup }) => yCtaGroup),
+    cards.map(({ mCtaGroup }) => mCtaGroup),
+    [...el.querySelectorAll('.monthly > .pricing-area')],
+    [...el.querySelectorAll('.yearly > .pricing-area')],
+    cards.map(({ featureList }) => featureList.querySelector('p')),
+    cards.map(({ featureList }) => featureList),
+    cards.map(({ compare }) => compare),
+  ];
+  const decoratedCardEls = [...cardsContainer.querySelectorAll('.card')];
+  const synchedItems = groups.flat();
+  const undoSyncHeights = () => {
+    synchedItems.forEach((item) => {
+      item.style?.removeProperty('min-height');
+    });
+  };
+  const doSyncHeights = () => {
+    // possible 2 card in row 1 and 3rd card in row 2
+    const yPositions = decoratedCardEls.map((c) => c.getBoundingClientRect().top);
+    const positionGroups = [];
+    // positionGroups -> [2,1]
+    yPositions.forEach((yPosition, i) => {
+      if (i === 0 || yPosition !== yPositions[i - 1]) {
+        positionGroups.push(1);
+      } else {
+        positionGroups[positionGroups.length - 1] += 1;
+      }
+    });
+    if (positionGroups.length === cards.length) {
+      // no sync when 1 card per row
+      undoSyncHeights();
+      return;
+    }
+    const groupsByTop = [];
+    // [[h1, h2, h3], [e1, e2, e3]] -> [[h1, h2], [h3], [e1, e2], [e3]]
+    groups.forEach((group) => {
+      let prev = 0;
+      positionGroups.forEach((positionGroup) => {
+        groupsByTop.push(group.slice(prev, prev + positionGroup));
+        prev = positionGroup;
+      });
+    });
+    syncMinHeights(groupsByTop);
+  };
+  window.addEventListener('resize', debounce(() => {
+    doSyncHeights();
+  }, 100));
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        observer.disconnect();
-        syncMinHeights(
-          cards.map(({ header }) => header),
-          cards.map(({ explain }) => explain),
-          cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
-          [...el.querySelectorAll('.pricing-area')],
-          cards.map(({ featureList }) => featureList.querySelector('p')),
-          cards.map(({ featureList }) => featureList),
-          cards.map(({ compare }) => compare),
-        );
+        doSyncHeights();
         el.classList.remove('no-visible');
       }
     });
