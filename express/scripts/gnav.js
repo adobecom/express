@@ -156,6 +156,8 @@ async function loadFEDS() {
         showRegionPicker();
       },
     },
+    universalNav: true,
+    universalNavComponents: 'appswitcher, notifications, profile',
     locale: (prefix === '' ? 'en' : prefix),
     content: {
       experience: getMetadata('gnav') || fedsExp,
