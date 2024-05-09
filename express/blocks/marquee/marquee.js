@@ -140,7 +140,7 @@ function handlePause(block) {
     }
   }
 }
-async function buildReduceMotionSwitch(block, marqueeForeground, breakpoint) {
+async function buildReduceMotionSwitch(block, marqueeForeground) {
   if (!block.querySelector('.reduce-motion-wrapper')) {
     const reduceMotionIconWrapper = createTag('div', {
       class: 'reduce-motion-wrapper',
