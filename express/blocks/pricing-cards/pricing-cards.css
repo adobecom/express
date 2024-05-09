@@ -332,7 +332,7 @@ End border style variants
 }
 
 .pricing-cards .billing-toggle button {
-  border: none;
+  border: 2px transparent solid;
   padding: 0;
   background: none;
   color: inherit;
@@ -347,7 +347,7 @@ End border style variants
 }
 
 .pricing-cards .billing-toggle :focus-within {
-  border: 2px var(--color-info-accent) solid;
+  border-color: var(--color-info-accent);
 }
 
 .pricing-cards .billing-toggle span {
