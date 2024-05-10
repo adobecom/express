@@ -196,6 +196,8 @@ body.no-desktop-brand-header header {
   z-index: 9;
   position: absolute;
   white-space: nowrap;
+  background-color: white;
+  border-radius: 10px;
   right: 16px;
   bottom: 16px;
   height: 24px;
