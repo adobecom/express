@@ -3,6 +3,7 @@
  .wayfinder {
     border : 2px solid black;
     border-radius: 20px;
+    padding: 10px;;
  }
 
  .wayfinder.light {
@@ -21,7 +22,7 @@
     margin-right: 5px;
     margin-bottom: 10px;
     background-color: black;
-    border-color: transparent;
+    border-color: black;
  }
 
  .wayfinder div p {
@@ -48,33 +49,37 @@
     text-decoration: underline;
  }
 
-
- @media (min-width: 913px){
+ @media (min-width: 1024px){
 
     .wayfinder {
         display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .wayfinder div {
         display: flex;
-        width: fit-content;
-    }
-
-    .wayfinder div:first-of-type {
-        margin-left: auto;
-    }
-
-    .wayfinder div:last-of-type {
-        margin-right: auto;
+        width: fit-content; 
+        flex: 1;
     }
 
     .wayfinder div div {
-        gap: 14px;
+      gap: 5px;
     }
 
     .wayfinder .cta-row {
         display: flex;
-        margin-left: 10px;
+        margin-left: 10px; 
     }
  
     
  }
+
+
+ @media (min-width: 1200px){
+   .wayfinder div {
+      display: flex;
+      width: fit-content;   
+      flex: none;
+  }
+ }
+ 
