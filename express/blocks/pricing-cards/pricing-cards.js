@@ -481,10 +481,8 @@ export default async function init(el) {
   const groups = [
     cards.map(({ header }) => header),
     cards.map(({ explain }) => explain),
-    cards.map(({ yCtaGroup }) => yCtaGroup),
-    cards.map(({ mCtaGroup }) => mCtaGroup),
-    [...el.querySelectorAll('.monthly > .pricing-area')],
-    [...el.querySelectorAll('.yearly > .pricing-area')],
+    cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
+    [...el.querySelectorAll('.pricing-area')],
     cards.map(({ featureList }) => featureList.querySelector('p')),
     cards.map(({ featureList }) => featureList),
     cards.map(({ compare }) => compare),
@@ -514,13 +512,14 @@ export default async function init(el) {
       return;
     }
     const groupsByTop = [];
-    // [[h1, h2, h3], [e1, e2, e3]] -> [[h1, h2], [h3], [e1, e2], [e3]]
+    // [[h1, h2, h3], [e1, e2, e3], [m1,y1,m2,y2,m3,y3]] + [2,1]
+    // -> [[h1, h2], [h3], [e1, e2], [e3], [m1, m2, y1, y2], [m3, y3]]
     groups.forEach((group) => {
-      let prev = 0;
-      positionGroups.forEach((positionGroup) => {
-        groupsByTop.push(group.slice(prev, prev + positionGroup));
-        prev = positionGroup;
-      });
+      for (let prev = 0, i = 0; i < positionGroups.length; i += 1) {
+        const span = positionGroups[i] * (group.length / cards.length);
+        groupsByTop.push(group.slice(prev, prev + span));
+        prev += span;
+      }
     });
     syncMinHeights(groupsByTop);
   };
