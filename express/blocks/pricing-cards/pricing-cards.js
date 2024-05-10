@@ -486,7 +486,8 @@ export default async function init(el) {
     const positionGroups = [];
     // positionGroups -> [2,1]
     yPositions.forEach((yPosition, i) => {
-      if (i === 0 || yPosition !== yPositions[i - 1]) {
+      // accounting for pixel lineup issues
+      if (i === 0 || Math.abs(yPosition - yPositions[i - 1]) > 6) {
         positionGroups.push(1);
       } else {
         positionGroups[positionGroups.length - 1] += 1;
