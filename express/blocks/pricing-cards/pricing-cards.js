@@ -475,6 +475,10 @@ export default async function init(el) {
   ];
   const decoratedCardEls = [...cardsContainer.querySelectorAll('.card')];
   const synchedItems = groups.flat();
+  synchedItems.forEach((item) => {
+    // elements with js-controlled heights need border-box
+    if (item) item.style.boxSizing = 'border-box';
+  });
   const undoSyncHeights = () => {
     synchedItems.forEach((item) => {
       item.style?.removeProperty('min-height');
@@ -486,7 +490,8 @@ export default async function init(el) {
     const positionGroups = [];
     // positionGroups -> [2,1]
     yPositions.forEach((yPosition, i) => {
-      if (i === 0 || yPosition !== yPositions[i - 1]) {
+      // accounting for pixel lineup issues
+      if (i === 0 || Math.abs(yPosition - yPositions[i - 1]) > 6) {
         positionGroups.push(1);
       } else {
         positionGroups[positionGroups.length - 1] += 1;
