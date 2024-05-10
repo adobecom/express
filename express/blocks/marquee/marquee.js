@@ -182,7 +182,7 @@ async function buildReduceMotionSwitch(block, marqueeForeground) {
       'keydown',
       async (e) => {
         if (!e.target.isEqualNode(document.activeElement)) return;
-        if (e.code !== 'Space' && e.code !== 'Enter') return;
+        if (e.code !== 'Space') return;
         e.preventDefault();
         handlePause(block);
       },
