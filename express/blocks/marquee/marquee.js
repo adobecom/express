@@ -40,7 +40,7 @@ async function handlePrice(block) {
 
   const newContainer = createTag('span');
   priceEl.closest('p')?.classList.remove('button-container');
-  priceEl.after(newContainer)
+  priceEl.after(newContainer);
   priceEl.remove();
   try {
     const response = await fetchPlanOnePlans(priceEl?.href);
