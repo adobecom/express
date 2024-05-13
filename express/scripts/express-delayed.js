@@ -118,7 +118,17 @@ async function canPEP() {
   if (!placeholders.cancel || !placeholders['pep-header'] || !placeholders['pep-cancel']) return false;
   const segments = getSegmentsFromAlloyResponse(await window.alloyLoader);
   if (!pepSegment.replace(/\s/g, '').split(',').some((pepSeg) => segments.includes(pepSeg))) return false;
-  return !!(window.adobeIMS?.isSignedInUser());
+
+  return new Promise((resolve) => {
+    if (window.feds?.utilities?.imslib) {
+      const { imslib } = window.feds.utilities;
+      imslib.onReady().then(() => {
+        resolve(imslib.isSignedInUser());
+      }).catch(() => resolve(false));
+    } else {
+      resolve(false);
+    }
+  });
 }
 
 const PEP_DELAY = 3000;
