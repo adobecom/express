@@ -1,5 +1,4 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 import {
   createTag,
   fetchPlaceholders,
@@ -26,8 +25,6 @@ const blockKeys = [
   'featureList',
   'compare',
 ];
-const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
-const BILLING_PLAN = 'billing-plan';
 const SAVE_PERCENTAGE = '{{savePercentage}}';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
 const PRICE_TOKEN = '{{pricing}}';
@@ -360,21 +357,7 @@ function decorateBasicTextSection(textElement, className, card) {
     card.append(textElement);
   }
 }
-// Subscribes to the block mediator in order to receive price updates
-// for each plan specified by authors
-function subscribeToBlockMediator(mPricingSection, yPricingSection) {
-  function reactToPlanChange({ newValue }) {
-    [mPricingSection, yPricingSection].forEach((section) => {
-      if (section.classList.contains(plans[newValue])) {
-        section.classList.remove('hide');
-      } else {
-        section.classList.add('hide');
-      }
-    });
-  }
-  reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
-  BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
-}
+
 // Links user to page where plans can be compared
 function decorateCompareSection(compare, el, card) {
   if (compare?.innerHTML.trim()) {
@@ -396,6 +379,44 @@ function decorateCompareSection(compare, el, card) {
     card.append(compare);
   }
 }
+
+function createToggle(placeholders, pricingSections, index) {
+  const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
+  const fieldSet = createTag('div', { class: 'billing-radio-container' });
+  const legend = createTag('div');
+  legend.textContent = subDesc;
+  const group = createTag('form', { class: 'billing-radio-group' });
+
+  const options = ['monthly', 'annual'];
+  const name = `${index}-plan`;
+  options.forEach((plan, i) => {
+    const checked = i === 0 || undefined;
+    const value = placeholders?.[plan] || ['Monthly', 'Annual'][i];
+    const id = `${name}-${i}`;
+    const radio = createTag('input', {
+      type: 'radio', name, id , value, class: 'billing-radio-item', role: 'radio',
+    });
+    const label = createTag('label', { for: id });
+    radio.checked = checked;
+    label.textContent = value;
+    radio.innerText = placeholders?.[plan] || ['Monthly', 'Annual'][i];
+    group.append(radio);
+    group.append(label);
+    radio.addEventListener('click', () => {
+      pricingSections.forEach((section) => {
+        if (section.classList.contains(plan)) {
+          section.classList.remove('hide');
+        } else {
+          section.classList.add('hide');
+        }
+      });
+    });
+  });
+  fieldSet.append(legend);
+  fieldSet.append(group);
+  return fieldSet;
+}
+
 // In legacy versions, the card element encapsulates all content
 // In new versions, the cardBorder element encapsulates all content instead
 async function decorateCard({
@@ -408,7 +429,7 @@ async function decorateCard({
   yCtaGroup,
   featureList,
   compare,
-}, el, placeholders, legacyVersion) {
+}, el, placeholders, legacyVersion, index) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
 
@@ -422,9 +443,9 @@ async function decorateCard({
     createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
   ]);
   mPricingSection.classList.add('monthly');
-  yPricingSection.classList.add('yearly', 'hide');
-  card.append(mPricingSection, yPricingSection);
-  subscribeToBlockMediator(mPricingSection, yPricingSection);
+  yPricingSection.classList.add('annual', 'hide');
+  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], index);
+  card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
   return cardWrapper;
@@ -459,7 +480,7 @@ export default async function init(el) {
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
   const decoratedCards = await Promise.all(
-    cards.map((card) => decorateCard(card, el, placeholders, legacyVersion)),
+    cards.map((card, index) => decorateCard(card, el, placeholders, legacyVersion, index)),
   );
   decoratedCards.forEach((card) => cardsContainer.append(card));
 

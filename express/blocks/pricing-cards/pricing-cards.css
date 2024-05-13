@@ -323,6 +323,66 @@ End border style variants
 
 /** pricing styles end **/
 
+
+.pricing-cards .billing-radio-group :focus-within {
+  border: 2px var(--color-info-accent) solid;
+}
+
+.pricing-cards .billing-radio-container {
+  display: flex;
+}
+
+.pricing-cards .billing-radio-group {
+  gap : 4px;
+  display: flex;
+}
+.pricing-cards .billing-radio-container form label {
+  font-size: 9pt;
+  height: fit-content;
+  margin: auto;
+}
+
+.pricing-cards .billing-radio-container div { 
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    align-items: center;
+    font-weight: bold;
+    font-size: var(--body-font-size-s);
+}
+
+.pricing-cards .billing-radio-group span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transition: 0.2s all linear;
+  border: 2px solid #292929;
+  box-sizing: border-box;
+}
+
+.pricing-cards .billing-radio-group .checked span {
+  border-width: 6px;
+}
+
+.pricing-cards .billing-radio-item[role='radio']{ 
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  accent-color: black;
+  background-color: black ;
+  font-size: var(--body-font-size-xs);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pricing-cards .billing-radio-item:focus{
+  outline: 5px auto var(--tabs-pill-bg-color);
+}
+
 .pricing-cards .card-cta-group {
   display: flex;
   flex-direction: column;
