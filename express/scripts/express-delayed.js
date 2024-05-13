@@ -118,7 +118,6 @@ async function canPEP() {
   if (!placeholders.cancel || !placeholders['pep-header'] || !placeholders['pep-cancel']) return false;
   const segments = getSegmentsFromAlloyResponse(await window.alloyLoader);
   if (!pepSegment.replace(/\s/g, '').split(',').some((pepSeg) => segments.includes(pepSeg))) return false;
-  console.log('is signed in user:', window.adobeIMS.isSignedInUser());
   return !!(window.adobeIMS?.isSignedInUser());
 }
 
