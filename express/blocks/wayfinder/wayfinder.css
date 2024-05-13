@@ -6,6 +6,7 @@
     padding: 10px;
     margin-left: 10px;
     margin-right: 10px;
+    padding-bottom: 0px;
  }
 
  .wayfinder.light {
@@ -20,15 +21,14 @@
 
  .wayfinder .cta-row .button {
     height: fit-content;
-    margin-left: 5px;
-    margin-right: 5px;
-    margin-bottom: 10px;
+    margin: 8px;
     background-color: black;
     border-color: black;
  }
 
  .wayfinder div p {
     margin: auto;
+    font-size: 12pt;
  }
 
  .wayfinder .cta-row strong .button {
@@ -41,16 +41,30 @@
 
  .wayfinder .cta-row em .button {
     background-color: transparent;
-    color: black; 
+    color: black;
+
  }
 
  .wayfinder .cta-row em strong .button {
     background-color: none;
     border: none;
     text-underline-offset: 5px;
+    margin-left: 0px;
+    margin-right: 0px;
     text-decoration: underline;
+    padding-left: 8px;
+    padding-right: 8px;
  }
 
+ .wayfinder .cta-row { 
+   overflow-x: scroll;
+}
+
+.wayfinder .cta-row > div {
+   display: flex;
+   width: max-content;
+   margin: auto;
+}
  @media (min-width: 1025px){
 
     .wayfinder {
@@ -58,20 +72,18 @@
         justify-content: center;
         align-items: center;
     }
-    .wayfinder div {
-        display: flex;
-        width: fit-content; 
-        flex: 1;
-    }
+ 
 
-    .wayfinder div div {
-      gap: 5px;
+    .wayfinder .text-row div {
+      gap: 16px;
     }
 
     .wayfinder .cta-row {
-        display: flex;
-        margin-left: 10px; 
-    }
+      display: flex;
+      margin-left: 10px; 
+      overflow-x: scroll;
+   }
+
  
     
  }
