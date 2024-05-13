@@ -3,7 +3,9 @@
  .wayfinder {
     border : 2px solid black;
     border-radius: 20px;
-    padding: 10px;;
+    padding: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
  }
 
  .wayfinder.light {
@@ -49,7 +51,7 @@
     text-decoration: underline;
  }
 
- @media (min-width: 1024px){
+ @media (min-width: 1025px){
 
     .wayfinder {
         display: flex;
