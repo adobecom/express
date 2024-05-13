@@ -33,33 +33,79 @@ function getSegmentsFromAlloyResponse(response) {
   return ids;
 }
 
-export function getProfile() {
-  const { feds, adobeProfile, fedsConfig } = window;
-  if (fedsConfig?.universalNav) {
-    return feds?.services?.universalnav?.interface?.adobeProfile?.getUserProfile()
-    || adobeProfile?.getUserProfile();
-  }
-  return feds?.services?.profile?.interface?.adobeProfile?.getUserProfile()
-    || adobeProfile?.getUserProfile();
-}
+export async function getProfile() {
+  const { imslib } = window.feds.utilities;
+  return new Promise((res) => {
+    imslib.onReady().then(() => {
+      if (!imslib.isSignedInUser()) res(null);
+      if (window.fedsConfig.universalNav === true) {
+        // Using Universal Navigation
+        // The new Profile Menu does not send an event when the method or data are available
+        const imsDataPromise = imslib.getProfile();
+        const profileDataPromise = new Promise((resolve) => {
+          // The new Profile Menu will expose adobeProfile.getUserProfile, but there is no
+          // event or callback to inform us that the profile has rendered and the method
+          // is available
+          // We have to build a polling mechanism to see when the method is available
+          let interval;
+          const setDefault = () => resolve({});
+          const onReady = () => window.adobeProfile?.getUserProfile()
+            .then(resolve).catch(setDefault);
+          const isProfileMethodAvailable = () => typeof window.adobeProfile?.getUserProfile === 'function';
+          if (isProfileMethodAvailable()) {
+            onReady();
+          } else {
+            const timeout = setTimeout(() => {
+              clearInterval(interval);
+              setDefault();
+            }, 5000);
 
-async function isSignedIn() {
-  if (getProfile()) return true;
-  if (window.feds.events?.profile_data) return false; // data ready -> not signed in
-  let resolve;
-  const resolved = new Promise((r) => {
-    resolve = r;
+            interval = setInterval(() => {
+              if (isProfileMethodAvailable()) {
+                clearTimeout(timeout);
+                clearInterval(interval);
+                onReady();
+              }
+            }, 150);
+          }
+        });
+        Promise.all([imsDataPromise, profileDataPromise])
+          .then(([imsData, profileData]) => {
+            res({
+              avatar: profileData?.avatar,
+              display_name: imsData?.displayName,
+              email: imsData?.email,
+              enterpriseAdmin: undefined,
+              first_name: imsData?.first_name,
+              id: imsData?.userId,
+              last_name: imsData?.last_name,
+              name_id: undefined,
+              teamAdmin: undefined,
+            });
+          })
+          .catch(() => {
+            res(null);
+          });
+      } else {
+        // Using old Profile Menu
+        const getProfileData = () => window.adobeProfile?.getUserProfile();
+        if (window.feds.events?.profile_data === true) {
+          // Profile data has been loaded
+          res(getProfileData());
+        } else {
+          // Profile data is not available yet
+          const eventDriven = () => {
+            window.removeEventListener('feds.events.profile_data.loaded', eventDriven);
+            res(getProfileData());
+          };
+          window.addEventListener('feds.events.profile_data.loaded', eventDriven);// You might want to remove th});
+        }
+      }
+    }).catch(() => {
+      res(null);
+      // IMS timeout, the "sign in" CTA will not be displayed
+    });
   });
-  window.addEventListener('feds.events.profile_data.loaded', () => {
-    resolve();
-  }, { once: true });
-  // if not ready, abort
-  await Promise.race([resolved, new Promise((r) => setTimeout(r, 5000))]);
-  if (getProfile() === null) {
-    // retry after 1s
-    await new Promise((r) => setTimeout(r, 1000));
-  }
-  return getProfile();
 }
 
 // product entry prompt
@@ -72,7 +118,8 @@ async function canPEP() {
   if (!placeholders.cancel || !placeholders['pep-header'] || !placeholders['pep-cancel']) return false;
   const segments = getSegmentsFromAlloyResponse(await window.alloyLoader);
   if (!pepSegment.replace(/\s/g, '').split(',').some((pepSeg) => segments.includes(pepSeg))) return false;
-  return !!(await isSignedIn());
+  console.log('is signed in user:', window.adobeIMS.isSignedInUser());
+  return !!(window.adobeIMS?.isSignedInUser());
 }
 
 const PEP_DELAY = 3000;

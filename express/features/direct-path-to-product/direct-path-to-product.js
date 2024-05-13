@@ -61,7 +61,7 @@ export default async function loadLoginUserAutoRedirect() {
     }),
   ]);
 
-  const buildRedirectAlert = () => {
+  const buildRedirectAlert = async () => {
     const container = createTag('div', { class: 'pep-container' });
     const headerWrapper = createTag('div', { class: 'pep-header' });
     const headerIcon = createTag('div', { class: 'pep-header-icon' }, getIconElement('cc-express'));
@@ -76,23 +76,26 @@ export default async function loadLoginUserAutoRedirect() {
     progressBg.append(progressBar);
     noticeWrapper.append(noticeText, noticeBtn);
     container.append(headerWrapper, progressBg);
-    const profile = getProfile();
-    if (profile) {
-      container.append(buildProfileWrapper(profile));
-    }
-    container.append(noticeWrapper);
+    return new Promise((resolve) => {
+      getProfile().then((profile) => {
+        if (profile) {
+          container.append(buildProfileWrapper(profile));
+        }
+        container.append(noticeWrapper);
 
-    const header = document.querySelector('header');
-    header.append(container);
+        const header = document.querySelector('header');
+        header.append(container);
 
-    noticeBtn.addEventListener('click', () => {
-      track(`${adobeEventName}:cancel`);
-      container.remove();
-      followThrough = false;
-      localStorage.setItem(OPT_OUT_KEY, '3');
+        noticeBtn.addEventListener('click', () => {
+          track(`${adobeEventName}:cancel`);
+          container.remove();
+          followThrough = false;
+          localStorage.setItem(OPT_OUT_KEY, '3');
+        });
+
+        resolve(container);
+      });
     });
-
-    return container;
   };
 
   const initRedirect = (container) => {
@@ -109,9 +112,10 @@ export default async function loadLoginUserAutoRedirect() {
     const counterNumber = parseInt(optOutCounter, 10);
     localStorage.setItem(OPT_OUT_KEY, (counterNumber - 1).toString());
   } else {
-    const container = buildRedirectAlert();
-    setTimeout(() => {
-      if (followThrough) initRedirect(container);
-    }, 4000);
+    buildRedirectAlert.then((container) => {
+      setTimeout(() => {
+        if (followThrough) initRedirect(container);
+      }, 4000);
+    });
   }
 }
