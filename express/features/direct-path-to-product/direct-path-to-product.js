@@ -112,7 +112,7 @@ export default async function loadLoginUserAutoRedirect() {
     const counterNumber = parseInt(optOutCounter, 10);
     localStorage.setItem(OPT_OUT_KEY, (counterNumber - 1).toString());
   } else {
-    buildRedirectAlert.then((container) => {
+    buildRedirectAlert().then((container) => {
       setTimeout(() => {
         if (followThrough) initRedirect(container);
       }, 4000);
