@@ -42,6 +42,9 @@ if (jarvisVisibleMeta && ['mobile', 'desktop', 'on'].includes(jarvisVisibleMeta)
   (jarvisVisibleMeta === 'mobile' && !desktopViewport) || (jarvisVisibleMeta === 'desktop' && desktopViewport))) jarvisImmediatelyVisible = true;
 
 const config = {
+  local: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
+  stage: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
+  prod: { express: 'new.express.adobe.com', commerce: 'commerce.adobe.com' },
   locales,
   codeRoot: '/express/',
   jarvis: {

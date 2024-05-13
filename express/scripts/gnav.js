@@ -51,13 +51,12 @@ async function loadIMS() {
     client_id: 'AdobeExpressWeb',
     scope: 'AdobeID,openid',
     locale: getConfig().locale.region,
-    environment: 'prod',
+    environment: getConfig().env.ims,
   };
-  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
-    await loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+  if (getConfig().env.ims === 'stg1') {
+    loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
   } else {
-    await loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-    window.adobeid.environment = 'stg1';
+    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
   }
 }
 
@@ -167,11 +166,11 @@ async function loadFEDS() {
         const sparkLang = config.locale.ietf;
         const sparkPrefix = sparkLang === 'en-US' ? '' : `/${sparkLang}`;
         let sparkLoginUrl = `https://express.adobe.com${sparkPrefix}/sp/`;
-        const env = getHelixEnv();
-        if (env && env.spark) {
-          sparkLoginUrl = sparkLoginUrl.replace('express.adobe.com', env.spark);
+        const productURL = getConfig()[getConfig().env.name]?.express;
+        if (productURL) {
+          sparkLoginUrl = sparkLoginUrl.replace('express.adobe.com', productURL);
         }
-        if (isHomepage) {
+        if (isHomepage && getConfig().env.ims === 'prod') {
           sparkLoginUrl = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
         }
         window.location.href = sparkLoginUrl;
