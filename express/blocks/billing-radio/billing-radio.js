@@ -69,9 +69,7 @@ export default function init(el) {
         BlockMediator.set(BILLING_PLAN, currentIndex);
         break;
       case 'Tab':
-        console.log(el, el.nextElementSibling);
         el.nextElementSibling.focus();
-
         break;
       default:
         break;
