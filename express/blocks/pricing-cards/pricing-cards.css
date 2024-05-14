@@ -169,15 +169,29 @@ End border style variants
 
 .pricing-cards .tooltip-text {
   display: none;
-  margin-left: 20px;
+  margin-bottom: -15px;
   padding: 8px;
-  background-color:#5258E4;
+  background-color: #292929;
   color: white;
   border-radius: 8px;
   position: absolute;
-  bottom: 0; left: 25%;transition: bottom 0.5s ease-in-out;
+  bottom: 100%;
+  left: 0;
+  width: 46%;
+  transition: bottom 0.5s ease-in-out;
 }
-
+.pricing-cards .tooltip-text::after {
+  content: '';
+  position: absolute;
+  bottom: -5px; /* Adjust as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid black; /* Match background-color of .tooltip-text */
+}
 .pricing-cards .tooltip {
   position: relative;
 }
