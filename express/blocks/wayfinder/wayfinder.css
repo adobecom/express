@@ -9,12 +9,17 @@
     padding-bottom: 0px;
  }
 
+ .wayfinder.dark {
+   background-color: black;
+   color: white;
+ }
+
  .wayfinder.light {
     border : 2px solid var(--color-info-accent);
  }
 
  .wayfinder.gradient {
-    background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
+   background: linear-gradient(90.93deg, #AA5EF6 0.23%, #EF67F0 39.65%, #FF4FED 59.89%, #F69634 108.11%);
     color : white;
     border : 2px solid white; 
  }
@@ -22,9 +27,17 @@
  .wayfinder .cta-row .button {
     height: fit-content;
     margin: 8px;
+    margin-top: 12px;
     background-color: black;
     border-color: black;
  }
+
+ .wayfinder.dark .cta-row .button {
+   height: fit-content;
+   margin: 8px;
+   color: white;
+   border-color: white
+}
 
  .wayfinder div p {
     margin: auto;
@@ -59,6 +72,10 @@
 
  .wayfinder .cta-row { 
    overflow-x: scroll;
+}
+
+.wayfinder .cta-row::-webkit-scrollbar{
+   display: none;
 }
 
 .wayfinder .cta-row > div {
