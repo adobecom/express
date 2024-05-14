@@ -167,24 +167,26 @@ End border style variants
   top : 2px;
 }
 
-.pricing-cards .tooltip-text {
+.pricing-cards .tooltip-text { 
   display: none;
-  margin-bottom: -15px;
-  padding: 8px;
-  background-color: #292929;
-  color: white;
-  border-radius: 8px;
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  width: 46%;
-  transition: bottom 0.5s ease-in-out;
+     padding: 8px;
+     background-color: #292929;
+     color: white;
+     border-radius: 8px;
+     position: absolute;
+     bottom: 100%;
+     min-width: 200px;
+     left: -95px;
+     width: fit-content; 
+     margin-bottom: 5px;
+     transition: bottom 0.5s
 }
+
 .pricing-cards .tooltip-text::after {
   content: '';
   position: absolute;
   bottom: -5px; /* Adjust as needed */
-  left: 50%;
+  left: 47.5%;
   transform: translateX(-50%);
   width: 0;
   height: 0;
@@ -192,7 +194,17 @@ End border style variants
   border-right: 5px solid transparent;
   border-top: 5px solid black; /* Match background-color of .tooltip-text */
 }
+ 
 .pricing-cards .tooltip {
+  position: relative;
+  display: inline;
+}
+
+.pricing-cards .tooltip::after {
+  display: inline;
+}
+
+.pricing-cards .tooltip span {
   position: relative;
 }
 

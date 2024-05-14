@@ -180,8 +180,12 @@ function handleTooltip(pricingArea) {
   const span = createTag('div', { class: 'tooltip-text' });
   span.innerText = tooltipText;
   const icon = getIconElement('info', 44, 'Info', 'tooltip-icon');
-  tooltipDiv.append(icon);
-  tooltipDiv.append(span);
+  icon.append(span)
+  const iconWrapper = createTag('span')
+  iconWrapper.append(icon)
+  iconWrapper.append(span)
+  tooltipDiv.append(iconWrapper);
+
 }
 async function handlePrice(placeholders, pricingArea, specialPromo, legacyVersion) {
   const priceEl = pricingArea.querySelector(`[title="${PRICE_TOKEN}"]`);
