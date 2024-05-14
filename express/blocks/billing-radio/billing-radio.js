@@ -14,7 +14,7 @@ export default function init(el) {
   el.setAttribute('aria-labelledby', 'radio-group-label');
   el.append(title);
   const label = el.children[0];
-  label.setAttribute('id', "radio-group-label");
+  label.setAttribute('id', 'radio-group-label');
   const buttons = [];
   if (BlockMediator.get(BILLING_PLAN) === undefined) BlockMediator.set(BILLING_PLAN, 0);
   plans.forEach((plan, planIndex) => {
@@ -23,7 +23,7 @@ export default function init(el) {
       id: plan,
       class: checked ? 'checked' : '',
     });
-    button.setAttribute('aria-checked', checked ? true : false);
+    button.setAttribute('aria-checked', !!checked);
     button.append(createTag('label', { for: plan }, plan));
     button.setAttribute('role', 'radio');
     button.prepend(createTag('span'));
@@ -32,8 +32,8 @@ export default function init(el) {
         BlockMediator.set(BILLING_PLAN, planIndex);
       }
     });
-    if (planIndex > 0){
-      button.setAttribute('tabindex' ,-1)
+    if (planIndex > 0) {
+      button.setAttribute('tabindex', -1);
     }
     el.append(button);
     buttons.push(button);
@@ -69,8 +69,8 @@ export default function init(el) {
         BlockMediator.set(BILLING_PLAN, currentIndex);
         break;
       case 'Tab':
-        console.log(el, el.nextElementSibling)
-          el.nextElementSibling.focus()
+        console.log(el, el.nextElementSibling);
+        el.nextElementSibling.focus();
 
         break;
       default:
