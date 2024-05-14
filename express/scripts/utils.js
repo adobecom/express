@@ -1711,13 +1711,12 @@ function loadIMS() {
     client_id: 'AdobeExpressWeb',
     scope: 'AdobeID,openid',
     locale: getConfig().locale.region,
-    environment: 'prod',
+    environment: getConfig().env.ims,
   };
-  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
-    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
-  } else {
+  if (getConfig().env.ims === 'stg1') {
     loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-    window.adobeid.environment = 'stg1';
+  } else {
+    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
   }
 }
 
