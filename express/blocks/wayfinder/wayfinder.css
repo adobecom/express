@@ -37,8 +37,6 @@
 }
 
 .wayfinder.dark .cta-row .button {
-  height: fit-content;
-  margin: 8px;
   color: white;
   border-color: white;
 }
