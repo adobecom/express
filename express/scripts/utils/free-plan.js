@@ -2,8 +2,6 @@ import {
   fetchPlaceholders,
   createTag,
   getMetadata,
-  getLottie,
-  lazyLoadLottiePlayer,
   getIconElement,
 } from '../utils.js';
 
@@ -47,7 +45,6 @@ export async function addFreePlanWidget(elem) {
   const freePlanMeta = getMetadata('show-free-plan').toLowerCase();
 
   if (!freePlanMeta || ['no', 'false', 'n', 'off'].includes(freePlanMeta)) return;
-  const placeholders = await fetchPlaceholders();
   let widget;
 
   if (elem && ['yes', 'true', 'y', 'on', 'branded'].includes(freePlanMeta)) {
