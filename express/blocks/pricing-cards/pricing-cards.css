@@ -94,20 +94,21 @@ Border style variants
   border-radius: 10px;
   overflow: hidden;
   background: var(--color-white);
-  margin-top:-48px;
+  margin-top: -48px;
   margin-left: -2px;
   margin-right: -2px;
   display: flex;
   flex-direction: column;
   margin-bottom: 48px;
-  
+
 }
 
-.pricing-cards .cards-container:has( .card-border.gradient-promo) {
-  margin-top:48px;
+.pricing-cards .cards-container:has(.card-border.gradient-promo) {
+  margin-top: 48px;
 }
-.pricing-cards .cards-container{
-  margin-top:24px;
+
+.pricing-cards .cards-container {
+  margin-top: 24px;
 }
 
 .pricing-cards .gradient-promo:has(div:empty) {
@@ -127,7 +128,7 @@ Border style variants
   padding-bottom: 1px;
 }
 
-.pricing-cards .card-border.special-promo{
+.pricing-cards .card-border.special-promo {
   border-radius: 4px;
 }
 
@@ -160,41 +161,43 @@ Border style variants
 
 /*
 End border style variants
-*/ 
+*/
 
 .pricing-cards .tooltip-icon {
   position: relative;
-  top : 2px;
+  top: 2px;
 }
 
-.pricing-cards .tooltip-text { 
+.pricing-cards .tooltip-text {
   display: none;
-     padding: 8px;
-     background-color: #292929;
-     color: white;
-     border-radius: 8px;
-     position: absolute;
-     bottom: 100%;
-     min-width: 200px;
-     left: -95px;
-     width: fit-content; 
-     margin-bottom: 5px;
-     transition: bottom 0.5s
+  padding: 8px;
+  background-color: #292929;
+  color: white;
+  border-radius: 8px;
+  position: absolute;
+  bottom: 100%;
+  min-width: 200px;
+  left: -95px;
+  width: fit-content;
+  margin-bottom: 5px;
+  transition: bottom 0.5s
 }
 
 .pricing-cards .tooltip-text::after {
   content: '';
   position: absolute;
-  bottom: -5px; /* Adjust as needed */
+  bottom: -5px;
+  /* Adjust as needed */
   left: 47.5%;
   transform: translateX(-50%);
   width: 0;
   height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 5px solid black; /* Match background-color of .tooltip-text */
+  border-top: 5px solid black;
+  /* Match background-color of .tooltip-text */
 }
- 
+
 .pricing-cards .tooltip {
   position: relative;
   display: inline;
@@ -208,7 +211,7 @@ End border style variants
   position: relative;
 }
 
-.pricing-cards .tooltip .icon:hover ~.tooltip-text{
+.pricing-cards .tooltip .icon:hover~.tooltip-text {
   display: block;
 }
 
@@ -336,11 +339,12 @@ End border style variants
   text-align: center;
 }
 
-.pricing-cards-wrapper + .default-content-wrapper .button-container {
-  margin-top : -40px;
-  
+.pricing-cards-wrapper+.default-content-wrapper .button-container {
+  margin-top: -40px;
+
 }
-.pricing-cards-wrapper + .default-content-wrapper .button-container .button{
+
+.pricing-cards-wrapper+.default-content-wrapper .button-container .button {
   padding: 13px 1.5em 14px 1.5em;
   border-radius: 27px;
   font-size: var(--body-font-size-m);
