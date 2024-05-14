@@ -20,7 +20,7 @@
 
  .wayfinder.gradient {
    background: linear-gradient(90.93deg, #AA5EF6 0.23%, #EF67F0 39.65%, #FF4FED 59.89%, #F69634 108.11%);
-    color : white;
+    color : black;
     border : 2px solid white; 
  }
 
@@ -31,6 +31,8 @@
     background-color: black;
     border-color: black;
  }
+
+ 
 
  .wayfinder.dark .cta-row .button {
    height: fit-content;
