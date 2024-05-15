@@ -176,7 +176,7 @@ End border style variants
   position: absolute;
   bottom: 100%;
   min-width: 200px;
-  left: -95px;
+  left: -105px;
   width: fit-content;
   margin-bottom: 5px;
   transition: bottom 0.5s
@@ -185,16 +185,13 @@ End border style variants
 .pricing-cards .tooltip-text::after {
   content: '';
   position: absolute;
-  bottom: -5px;
-  /* Adjust as needed */
-  left: 47.5%;
-  transform: translateX(-50%);
+  bottom: -5px; 
+  left: 50%;
   width: 0;
   height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
   border-top: 5px solid black;
-  /* Match background-color of .tooltip-text */
 }
 
 .pricing-cards .tooltip {
