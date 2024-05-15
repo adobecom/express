@@ -358,7 +358,6 @@ export default async function decorate($block) {
       const filledStars = Math.floor(ratingRoundedHalf);
       const halfStars = filledStars === ratingRoundedHalf ? 0 : 1;
       const emptyStars = halfStars === 1 ? 4 - filledStars : 5 - filledStars;
-      console.log(filledStars, halfStars, emptyStars);
       populateStars(filledStars, 'star', $stars);
       populateStars(halfStars, 'star-half', $stars);
       populateStars(emptyStars, 'star-empty', $stars);
