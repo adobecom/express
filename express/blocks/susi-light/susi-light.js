@@ -2,13 +2,13 @@
 // WIP
 import { createTag, loadScript } from '../../scripts/utils.js';
 
-const CDN_URL = 'https://auth-light.identity.adobe.com/sentry/wrapper.js';
+const CDN_URL = 'https://auth-light.identity-stage.adobe.com/sentry/wrapper.js';
 
 const authParams = {
   dt: false,
   locale: 'en-us',
   redirect_uri: 'https://express.adobe.com/sp/', // FIXME:
-  response_type: '', // FIXME:
+  response_type: 'code', // FIXME:
   client_id: 'AdobeExpressWeb',
   scope: 'AdobeID,openid',
 };
@@ -26,7 +26,13 @@ const onToken = (e) => {
 const onError = (e) => {
   console.log('on error');
 };
-export default function init(el) {
+// needed as the script uses an IIFE for now
+function deleteScript() {
+  const script = document.querySelector(`head > script[src="${CDN_URL}"]`);
+  // script.addEventListener('load', script.remove());
+  script.remove();
+}
+export default async function init(el) {
   el.innerHTML = '';
   const susi = createTag('susi-sentry-light', {
     popup: isPopup,
@@ -40,5 +46,7 @@ export default function init(el) {
   susi.addEventListener('on-error', onError);
 
   el.append(susi);
-  return loadScript(CDN_URL);
+  await loadScript(CDN_URL);
+  // clean up for next call
+  deleteScript();
 }
