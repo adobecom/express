@@ -654,7 +654,9 @@ export function removeIrrelevantSections(main) {
             const sameText = a.textContent.trim() === textToTarget;
             const samePathname = new URL(a.href).pathname === new URL(linkToTarget)?.pathname;
             const isNotInFloatingCta = !a.closest('.block')?.classList.contains('floating-button');
-            return (sameText || samePathname) && isNotInFloatingCta;
+            const notFloatingCtaIgnore = !a.classList.contains('floating-cta-ignore');
+
+            return (sameText || samePathname) && isNotInFloatingCta && notFloatingCtaIgnore;
           } catch (err) {
             window.lana?.log(err);
             return false;
