@@ -161,7 +161,7 @@ export function createFloatingButton(block, audience, data) {
   const sameUrlCTAs = Array.from(main.querySelectorAll('a.button:any-link'))
     .filter((a) => (a.textContent.trim() === aTag.textContent.trim()
       || new URL(a.href).pathname === new URL(aTag.href).pathname)
-      && !a.parentElement.parentElement.classList.contains('floating-button') && !a.classList.contains('floating-cta-ignore'));
+      && !a.parentElement.parentElement.classList.contains('floating-button'));
   sameUrlCTAs.forEach((cta) => {
     cta.classList.add('same-as-floating-button-CTA');
   });
