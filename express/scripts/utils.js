@@ -655,7 +655,7 @@ export function removeIrrelevantSections(main) {
             const currURL = new URL(a.href);
             const sameText = a.textContent.trim() === textToTarget;
             const samePathname = currURL.pathname === linkToTargetURL?.pathname;
-            const sameHash = currURL.hash === linkToTargetURL?.pathname;
+            const sameHash = currURL.hash === linkToTargetURL?.hash;
             const isNotInFloatingCta = !a.closest('.block')?.classList.contains('floating-button');
             const notFloatingCtaIgnore = !a.classList.contains('floating-cta-ignore');
 
