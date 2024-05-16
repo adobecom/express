@@ -24,9 +24,50 @@ import {
 } from './template-x-ui.js';
 
 function camelize(str) {
-  return str
-    .replace(/^\w|[A-Z]|\b\w/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase()))
-    .replace(/\s+/g, '');
+  return str.replace(/^\w|[A-Z]|\b\w/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase())).replace(/\s+/g, '');
+}
+
+function handlelize(str) {
+  return str.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
+    .replace(/(\W+|\s+)/g, '-') // Replace space and other characters by hyphen
+    .replace(/--+/g, '-') // Replaces multiple hyphens by one hyphen
+    .replace(/(^-+|-+$)/g, '') // Remove extra hyphens from beginning or end of the string
+    .toLowerCase(); // To lowercase
+}
+
+async function getTemplates(response, phs, fallbackMsg) {
+  const filtered = response.items.filter((item) => isValidTemplate(item));
+  const templates = await Promise.all(
+    filtered.map((template) => renderTemplate(template, phs)),
+  );
+  return {
+    fallbackMsg,
+    templates,
+  };
+}
+
+async function fetchAndRenderTemplates(props) {
+  const [placeholders, { response, fallbackMsg }] = await Promise.all(
+    [fetchPlaceholders(), fetchTemplates(props)],
+  );
+  if (!response || !response.items || !Array.isArray(response.items)) {
+    return { templates: null };
+  }
+
+  if ('_links' in response) {
+    // eslint-disable-next-line no-underscore-dangle
+    const nextQuery = response._links.next.href;
+    const starts = new URLSearchParams(nextQuery).get('start').split(',');
+    props.start = starts.join(',');
+  } else {
+    props.start = '';
+  }
+
+  props.total = response.metadata.totalHits;
+
+  // eslint-disable-next-line no-return-await
+  return await getTemplates(response, placeholders, fallbackMsg);
 }
 
 async function processContentRow(block, props) {
@@ -508,11 +549,8 @@ function wordExistsInString(word, inputString) {
   return regexPattern.test(inputString);
 }
 
-async function getTaskNameInMapping(text) {
-  const placeholders = await fetchPlaceholders();
-  const taskMap = placeholders['x-task-name-mapping']
-    ? JSON.parse(placeholders['x-task-name-mapping'])
-    : {};
+function getTaskNameInMapping(text, placeholders) {
+  const taskMap = placeholders['x-task-name-mapping'] ? JSON.parse(placeholders['x-task-name-mapping']) : {};
   return Object.entries(taskMap)
     .filter((task) => task[1].some((word) => {
       const searchValue = text.toLowerCase();
@@ -589,69 +627,61 @@ async function buildTemplateList(block, props, type = []) {
     const tabsWrapper = createTag('div', { class: 'template-tabs' });
     const tabBtns = [];
 
-    const promises = [];
-
-    for (const tab of tabs) {
-      promises.push(getTaskNameInMapping(tab));
-    }
-
-    const tasksFoundInInput = await Promise.all(promises);
-    if (tasksFoundInInput.length === tabs.length) {
-      tasksFoundInInput.forEach((taskObj, index) => {
-        if (taskObj.length === 0) return;
+    const placeholders = await fetchPlaceholders();
+    const collectionRegex = /(.+?)\s*\((.+?)\)/;
+    const tabConfigs = tabs.map((tab) => {
+      const match = collectionRegex.exec(tab.trim());
+      if (match) {
+        return { tab: match[1], collectionId: match[2] };
+      }
+      return { tab, collectionId: props.collectionId };
+    });
+    const taskNames = tabConfigs.map(({ tab }) => getTaskNameInMapping(tab, placeholders));
+    if (taskNames.length === tabs.length) {
+      taskNames.filter(({ length }) => length).forEach(([[task]], index) => {
         const tabBtn = createTag('button', { class: 'template-tab-button' });
-        tabBtn.textContent = tabs[index];
+        tabBtn.textContent = tabConfigs[index].tab;
         tabsWrapper.append(tabBtn);
         tabBtns.push(tabBtn);
-
-        const [[task]] = taskObj;
 
         if (props.filters.tasks === task) {
           tabBtn.classList.add('active');
         }
 
-        tabBtn.addEventListener(
-          'click',
-          async () => {
-            templatesWrapper.style.opacity = 0;
+        tabBtn.addEventListener('click', async () => {
+          templatesWrapper.style.opacity = 0;
+          const {
+            templates: newTemplates,
+            fallbackMsg: newFallbackMsg,
+          } = await fetchAndRenderTemplates({
+            ...props,
+            start: '',
+            filters: {
+              ...props.filters,
+              tasks: task,
+            },
+            collectionId: tabConfigs[index].collectionId,
+          });
+          if (newTemplates?.length > 0) {
+            props.fallbackMsg = newFallbackMsg;
+            renderFallbackMsgWrapper(block, props);
 
-            if (tasksFoundInInput) {
-              const {
-                templates: newTemplates,
-                fallbackMsg: newFallbackMsg,
-              } = await fetchAndRenderTemplates({
-                ...props,
-                start: '',
-                filters: {
-                  ...props.filters,
-                  tasks: task,
-                },
-              });
-              if (newTemplates?.length > 0) {
-                props.fallbackMsg = newFallbackMsg;
-                renderFallbackMsgWrapper(block, props);
+            templatesWrapper.innerHTML = '';
+            props.templates = newTemplates;
+            props.templates.forEach((template) => {
+              templatesWrapper.append(template);
+            });
 
-                templatesWrapper.innerHTML = '';
-                props.templates = newTemplates;
-                props.templates.forEach((template) => {
-                  templatesWrapper.append(template);
-                });
+            await decorateTemplates(block, props);
+            buildCarousel(':scope > .template', templatesWrapper);
+            templatesWrapper.style.opacity = 1;
+          }
 
-                await decorateTemplates(block, props);
-                buildCarousel(':scope > .template', templatesWrapper);
-                templatesWrapper.style.opacity = 1;
-              }
-
-              tabsWrapper
-                .querySelectorAll('.template-tab-button')
-                .forEach((btn) => {
-                  if (btn !== tabBtn) btn.classList.remove('active');
-                });
-              tabBtn.classList.add('active');
-            }
-          },
-          { passive: true },
-        );
+          tabsWrapper.querySelectorAll('.template-tab-button').forEach((btn) => {
+            if (btn !== tabBtn) btn.classList.remove('active');
+          });
+          tabBtn.classList.add('active');
+        }, { passive: true });
       });
 
       document.dispatchEvent(
