@@ -42,6 +42,9 @@ if (jarvisVisibleMeta && ['mobile', 'desktop', 'on'].includes(jarvisVisibleMeta)
   (jarvisVisibleMeta === 'mobile' && !desktopViewport) || (jarvisVisibleMeta === 'desktop' && desktopViewport))) jarvisImmediatelyVisible = true;
 
 const config = {
+  local: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
+  stage: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
+  prod: { express: 'new.express.adobe.com', commerce: 'commerce.adobe.com' },
   locales,
   codeRoot: '/express/',
   jarvis: {
@@ -150,19 +153,7 @@ const listenAlloy = () => {
   loadLana({ clientId: 'express' });
   listenAlloy();
 
-  const isMobileGating = ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile';
-  const rushGating = ['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating').toLowerCase());
-  const runGating = () => {
-    import('./mobile-beta-gating.js').then(async (gatingScript) => {
-      gatingScript.default();
-    });
-  };
-
-  isMobileGating && rushGating && runGating();
-
   await loadArea();
-
-  isMobileGating && !rushGating && runGating();
 
   import('./express-delayed.js').then((mod) => {
     mod.default();
