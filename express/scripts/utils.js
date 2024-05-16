@@ -2561,10 +2561,6 @@ export async function loadArea(area = document) {
 
   const lazy = loadLazy(main);
 
-  const buttonOff = params.get('button') === 'off';
-  if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
-    import('../../tools/preview/preview.js');
-  }
   await lazy;
 
   const { default: delayed } = await import('./delayed.js');
