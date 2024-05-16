@@ -1711,13 +1711,12 @@ function loadIMS() {
     client_id: 'AdobeExpressWeb',
     scope: 'AdobeID,openid',
     locale: getConfig().locale.region,
-    environment: 'prod',
+    environment: getConfig().env.ims,
   };
-  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
-    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
-  } else {
+  if (getConfig().env.ims === 'stg1') {
     loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-    window.adobeid.environment = 'stg1';
+  } else {
+    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
   }
 }
 
@@ -1922,13 +1921,6 @@ async function buildAutoBlocks(main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-plans-comparison').toLowerCase())) {
-    const $plansComparison = buildBlock('plans-comparison', '');
-    if (lastDiv) {
-      lastDiv.append($plansComparison);
-    }
-  }
-
   async function loadFloatingCTA(BlockMediator) {
     const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
     const device = document.body.dataset?.device;
@@ -1962,7 +1954,7 @@ async function buildAutoBlocks(main) {
 
 function splitSections(main) {
   main.querySelectorAll(':scope > div > div').forEach((block) => {
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion', 'plans-comparison'];
+    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion'];
     // work around for splitting columns and sixcols template list
     // add metadata condition to minimize impact on other use cases
 

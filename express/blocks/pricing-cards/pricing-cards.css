@@ -34,7 +34,8 @@ Legacy CSS for cards and special promo
 .pricing-cards .card .card-header h2 {
   font-weight: var(--heading-font-weight);
   line-height: var(--heading-line-height);
-  font-size: var(--body-font-size-l);
+  font-size: 1.75rem;
+  margin-top: 0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -304,7 +305,6 @@ End border style variants
 
 .pricing-cards .pricing-area:not(:has(p)) {
   font-size: 22px;
-  display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -461,45 +461,12 @@ End border style variants
   box-sizing: border-box;
 }
 
-@media screen and (min-width: 768px) {
-  .pricing-cards .card-border .card-header h2 {
-    margin-top: 0;
-  }
-}
-
-@media screen and (min-width: 1277px) {
+@media screen and (min-width: 900px) {
   :root {
     --card-width: 400px;
-  }
-
-  .pricing-cards .cards-container:has(>.card-border:only-child) {
-    grid-template-columns: repeat(auto-fit, calc(91px + var(--card-width)));
-  }
-
-  .pricing-cards .cards-container:has(>.card-border:first-child:nth-last-child(3)) {
-    width: calc(2 * --card-width);
-    grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
-  }
-
-  .pricing-cards .pricing-section {
-    gap: 24px;
-  }
-
-  .pricing-cards .card .card-header h2 {
-    font-size: 1.75rem;
-    margin-top: 0px;
   }
 
   .pricing-cards .card-feature-list {
     display: block;
   }
-
-  /* Legacy styles */
-  .pricing-cards .cards-container:has(>.card:only-child) {
-    grid-template-columns: repeat(auto-fit, calc(91px + var(--card-width)));
-  }
-
-  .pricing-cards .cards-container:has(>.card:first-child:nth-last-child(3)) {
-    grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
-  }  
 }

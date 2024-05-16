@@ -30,14 +30,6 @@ const SALES_NUMBERS = '{{business-sales-numbers}}';
 const PRICE_TOKEN = '{{pricing}}';
 const YEAR_2_PRICING_TOKEN = '[[year-2-pricing-token]]';
 
-const MOBILE_SIZE = 840;
-function defineDeviceByScreenSize() {
-  const screenWidth = window.innerWidth;
-  if (screenWidth >= MOBILE_SIZE) return 'DESKTOP';
-  return 'MOBILE';
-}
-let deviceBySize = defineDeviceByScreenSize();
-
 function suppressOfferEyebrow(specialPromo, legacyVersion) {
   if (specialPromo.parentElement) {
     if (legacyVersion) {
@@ -502,27 +494,55 @@ export default async function init(el) {
     cards.map(({ featureList }) => featureList),
     cards.map(({ compare }) => compare),
   ];
-  const flattenGroups = groups.flat();
+  const decoratedCardEls = [...cardsContainer.querySelectorAll('.card')];
+  const synchedItems = groups.flat();
+  synchedItems.forEach((item) => {
+    // elements with js-controlled heights need border-box
+    if (item) item.style.boxSizing = 'border-box';
+  });
+  const undoSyncHeights = () => {
+    synchedItems.forEach((item) => {
+      item.style?.removeProperty('min-height');
+    });
+  };
   const doSyncHeights = () => {
-    syncMinHeights(groups);
+    // possible 2 card in row 1 and 3rd card in row 2
+    const yPositions = decoratedCardEls.map((c) => c.getBoundingClientRect().top);
+    const positionGroups = [];
+    // positionGroups -> [2,1]
+    yPositions.forEach((yPosition, i) => {
+      // accounting for pixel lineup issues
+      if (i === 0 || Math.abs(yPosition - yPositions[i - 1]) > 6) {
+        positionGroups.push(1);
+      } else {
+        positionGroups[positionGroups.length - 1] += 1;
+      }
+    });
+    if (positionGroups.length === cards.length) {
+      // no sync when 1 card per row
+      undoSyncHeights();
+      return;
+    }
+    const groupsByTop = [];
+    // [[h1, h2, h3], [e1, e2, e3], [m1,y1,m2,y2,m3,y3]] + [2,1]
+    // -> [[h1, h2], [h3], [e1, e2], [e3], [m1, m2, y1, y2], [m3, y3]]
+    groups.forEach((group) => {
+      for (let prev = 0, i = 0; i < positionGroups.length; i += 1) {
+        const span = positionGroups[i] * (group.length / cards.length);
+        groupsByTop.push(group.slice(prev, prev + span));
+        prev += span;
+      }
+    });
+    syncMinHeights(groupsByTop);
   };
   window.addEventListener('resize', debounce(() => {
-    if (deviceBySize === defineDeviceByScreenSize()) return;
-    deviceBySize = defineDeviceByScreenSize();
-    if (deviceBySize === 'MOBILE') {
-      flattenGroups.forEach((item) => {
-        item.style?.removeProperty('min-height');
-      });
-    } else {
-      doSyncHeights();
-    }
+    doSyncHeights();
   }, 100));
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        observer.disconnect();
-        if (deviceBySize !== 'MOBILE') doSyncHeights(); // no sync on stacked mobile
+        doSyncHeights();
         el.classList.remove('no-visible');
       }
     });
