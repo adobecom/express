@@ -648,15 +648,19 @@ export function removeIrrelevantSections(main) {
     const textToTarget = getMetadata(`${device}-floating-cta-text`)?.trim() || getMetadata('main-cta-text')?.trim();
     const linkToTarget = getMetadata(`${device}-floating-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
     if (textToTarget || linkToTarget) {
+      const linkToTargetURL = new URL(linkToTarget);
       const sameUrlCTAs = Array.from(main.querySelectorAll('a:any-link'))
         .filter((a) => {
           try {
+            const currURL = new URL(a.href);
             const sameText = a.textContent.trim() === textToTarget;
-            const samePathname = new URL(a.href).pathname === new URL(linkToTarget)?.pathname;
+            const samePathname = currURL.pathname === linkToTargetURL?.pathname;
+            const sameHash = currURL.hash === linkToTargetURL?.pathname;
             const isNotInFloatingCta = !a.closest('.block')?.classList.contains('floating-button');
             const notFloatingCtaIgnore = !a.classList.contains('floating-cta-ignore');
 
-            return (sameText || samePathname) && isNotInFloatingCta && notFloatingCtaIgnore;
+            return (sameText || (samePathname && sameHash))
+              && isNotInFloatingCta && notFloatingCtaIgnore;
           } catch (err) {
             window.lana?.log(err);
             return false;
