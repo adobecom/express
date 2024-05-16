@@ -1713,6 +1713,20 @@ export async function getExperimentConfig(experimentId) {
   }
 }
 
+function loadIMS() {
+  window.adobeid = {
+    client_id: 'AdobeExpressWeb',
+    scope: 'AdobeID,openid',
+    locale: getConfig().locale.region,
+    environment: getConfig().env.ims,
+  };
+  if (getConfig().env.ims === 'stg1') {
+    loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
+  } else {
+    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+  }
+}
+
 /**
  * Icon loader using altText
  * @param {Object} el the container of the buttons to be decorated
@@ -2383,7 +2397,12 @@ export const AUDIENCES = {
   desktop: () => window.innerWidth >= 600,
   'new-visitor': () => !localStorage.getItem('franklin-visitor-returning'),
   'returning-visitor': () => !!localStorage.getItem('franklin-visitor-returning'),
-  ccentitled: async () => {
+  'ccentitled-desktop': async () => {
+    if (window.innerWidth < 600) return false;
+    // rush instrument-martech-launch-alloy
+    loadIMS();
+    loadMartech();
+    window.delay_preload_product = true;
     const res = await window.alloyLoader;
     const segments = getSegmentsFromAlloyResponse(res);
     return segments.includes(getCCEntitledUsersSegmentId());
