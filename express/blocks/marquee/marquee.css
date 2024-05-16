@@ -218,6 +218,8 @@ body.no-desktop-brand-header header {
 .marquee .reduce-motion-wrapper .icon {
   height: 100%;
   width: 100%;
+  background-color: white;
+  border-radius: 8px;
 }
 
 .marquee.reduce-motion .reduce-motion-wrapper .icon:nth-of-type(1),
