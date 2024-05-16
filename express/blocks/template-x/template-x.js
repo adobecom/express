@@ -27,49 +27,6 @@ function camelize(str) {
   return str.replace(/^\w|[A-Z]|\b\w/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase())).replace(/\s+/g, '');
 }
 
-function handlelize(str) {
-  return str.normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove accents
-    .replace(/(\W+|\s+)/g, '-') // Replace space and other characters by hyphen
-    .replace(/--+/g, '-') // Replaces multiple hyphens by one hyphen
-    .replace(/(^-+|-+$)/g, '') // Remove extra hyphens from beginning or end of the string
-    .toLowerCase(); // To lowercase
-}
-
-async function getTemplates(response, phs, fallbackMsg) {
-  const filtered = response.items.filter((item) => isValidTemplate(item));
-  const templates = await Promise.all(
-    filtered.map((template) => renderTemplate(template, phs)),
-  );
-  return {
-    fallbackMsg,
-    templates,
-  };
-}
-
-async function fetchAndRenderTemplates(props) {
-  const [placeholders, { response, fallbackMsg }] = await Promise.all(
-    [fetchPlaceholders(), fetchTemplates(props)],
-  );
-  if (!response || !response.items || !Array.isArray(response.items)) {
-    return { templates: null };
-  }
-
-  if ('_links' in response) {
-    // eslint-disable-next-line no-underscore-dangle
-    const nextQuery = response._links.next.href;
-    const starts = new URLSearchParams(nextQuery).get('start').split(',');
-    props.start = starts.join(',');
-  } else {
-    props.start = '';
-  }
-
-  props.total = response.metadata.totalHits;
-
-  // eslint-disable-next-line no-return-await
-  return await getTemplates(response, placeholders, fallbackMsg);
-}
-
 async function processContentRow(block, props) {
   const templateTitle = createTag('div', { class: 'template-title' });
   const textWrapper = createTag('div', { class: 'text-wrapper' });
@@ -700,7 +657,6 @@ async function buildTemplateList(block, props, type = []) {
       updateLoadMoreButton(props, loadMore);
     }
   }
-
 
   if (props.toolBar) {
     await decorateToolbar(block, props);

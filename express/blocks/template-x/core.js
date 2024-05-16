@@ -257,3 +257,12 @@ export async function redrawTemplates(block, existingProps, props, toolBar) {
     });
   }
 }
+
+async function decorateBreadcrumbs(block) {
+  // breadcrumbs are desktop-only
+  if (document.body.dataset.device !== 'desktop') return;
+  const { default: getBreadcrumbs } = await import('./breadcrumbs.js');
+  const breadcrumbs = await getBreadcrumbs();
+  if (breadcrumbs) block.prepend(breadcrumbs);
+}
+
