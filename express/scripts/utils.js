@@ -1713,60 +1713,6 @@ export async function getExperimentConfig(experimentId) {
   }
 }
 
-function loadIMS() {
-  window.adobeid = {
-    client_id: 'AdobeExpressWeb',
-    scope: 'AdobeID,openid',
-    locale: getConfig().locale.region,
-    environment: getConfig().env.ims,
-  };
-  if (getConfig().env.ims === 'stg1') {
-    loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-  } else {
-    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
-  }
-}
-
-async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
-  const promises = [import('./experiment.js')];
-  const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
-  if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
-    loadIMS();
-    // rush instrument-martech-launch-alloy
-    promises.push(loadMartech());
-    window.delay_preload_product = true;
-  }
-  const [{ runExps }] = await Promise.all(promises);
-  await runExps(config, forcedExperiment, forcedVariant);
-}
-
-/**
- * checks if a test is active on this page and if so executes the test
- */
-async function decorateTesting() {
-  try {
-    const usp = new URLSearchParams(window.location.search);
-
-    const experiment = getExperiment();
-    const [forcedExperiment, forcedVariant] = usp.get('experiment') ? usp.get('experiment').split('/') : [];
-
-    if (experiment) {
-      const config = await getExperimentConfig(experiment);
-      if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
-        await loadAndRunExp(config, forcedExperiment, forcedVariant);
-      }
-    }
-    const martech = usp.get('martech');
-    if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
-      // eslint-disable-next-line no-console
-      console.log('rushing martech');
-    }
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log('error testing', e);
-  }
-}
-
 /**
  * Icon loader using altText
  * @param {Object} el the container of the buttons to be decorated
@@ -2369,6 +2315,82 @@ function removeMetadata() {
 }
 
 /**
+ * Gets all the metadata elements that are in the given scope.
+ * @param {String} scope The scope/prefix for the metadata
+ * @returns an array of HTMLElement nodes that match the given scope
+ */
+export function getAllMetadata(scope) {
+  return [...document.head.querySelectorAll(`meta[property^="${scope}:"],meta[name^="${scope}-"]`)]
+    .reduce((res, meta) => {
+      const id = toClassName(meta.name
+        ? meta.name.substring(scope.length + 1)
+        : meta.getAttribute('property').split(':')[1]);
+      res[id] = meta.getAttribute('content');
+      return res;
+    }, {});
+}
+
+async function loadCSS(href) {
+  return new Promise((resolve, reject) => {
+    if (!document.querySelector(`head > link[href="${href}"]`)) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      link.onload = resolve;
+      link.onerror = reject;
+      document.head.append(link);
+    } else {
+      resolve();
+    }
+  });
+}
+
+const pluginContext = {
+  getAllMetadata,
+  getMetadata,
+  loadCSS,
+  loadScript,
+  sampleRUM,
+  toCamelCase,
+  toClassName,
+};
+
+function getCCEntitledUsersSegmentId() {
+  const { name } = getHelixEnv();
+  if (name === 'prod') {
+    return '2a537e84-b35f-4158-8935-170c22b8ae87';
+  }
+  return 'bf632803-4412-463d-83c5-757dda3224ee';
+}
+
+function getSegmentsFromAlloyResponse(response) {
+  const segments = [];
+  if (response && response.destinations) {
+    Object.values(response.destinations).forEach((destination) => {
+      if (destination.segments) {
+        Object.values(destination.segments).forEach((segment) => {
+          segments.push(segment.id);
+        });
+      }
+    });
+  }
+  return segments;
+}
+
+// Define the custom audiences mapping for experience decisioning
+export const AUDIENCES = {
+  mobile: () => window.innerWidth < 600,
+  desktop: () => window.innerWidth >= 600,
+  'new-visitor': () => !localStorage.getItem('franklin-visitor-returning'),
+  'returning-visitor': () => !!localStorage.getItem('franklin-visitor-returning'),
+  ccentitled: async () => {
+    const res = await window.alloyLoader;
+    const segments = getSegmentsFromAlloyResponse(res);
+    return segments.includes(getCCEntitledUsersSegmentId());
+  },
+};
+
+/**
  * loads everything that doesn't need to be delayed.
  */
 async function loadLazy(main) {
@@ -2385,6 +2407,12 @@ async function loadLazy(main) {
     'img[src*="/media_"]',
     'img[src*="https://design-assets.adobeprojectm.com/"]',
   ]);
+  if ((getMetadata('experiment')
+    || Object.keys(getAllMetadata('campaign')).length
+    || Object.keys(getAllMetadata('audience')).length)) {
+    const { loadLazy: runLazy } = await import('../plugins/experimentation/src/index.js');
+    await runLazy(document, { audiences: AUDIENCES }, pluginContext);
+  }
 }
 
 async function loadPostLCP(config) {
@@ -2464,7 +2492,14 @@ export async function loadArea(area = document) {
 
   await setTemplateTheme();
 
-  if (window.hlx.testing) await decorateTesting();
+  if (getMetadata('experiment')
+    || Object.keys(getAllMetadata('campaign')).length
+    || Object.keys(getAllMetadata('audience')).length) {
+    const { loadEager: runEager } = await import('../plugins/experimentation/src/index.js');
+    await runEager(document, { audiences: AUDIENCES }, pluginContext);
+  }
+
+  // if (window.hlx.testing) await decorateTesting();
 
   if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
     const { default: replaceContent } = await import('./content-replace.js');

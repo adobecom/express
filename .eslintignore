@@ -4,4 +4,4 @@ tools/templates/fraction.min.js
 express/scripts/*.min.js
 express/scripts/ued/ued-0.2.0.js
 express/scripts/libs/*.js
-plugins/*
+express/plugins/*
