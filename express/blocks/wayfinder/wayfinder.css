@@ -46,9 +46,9 @@ main .wayfinder.block.dark .cta-row .button {
   border-color: white;
 }
 
-main .wayfinder.block div p {
+main .wayfinder.block .text-row{
   margin: auto;
-  font-size: 12pt;
+  font-size: 16px;
 }
 
 main .wayfinder.block .cta-row strong .button {
@@ -80,7 +80,6 @@ main .wayfinder.block .cta-row {
   overflow-x: scroll;
   margin-left: 10px;
   margin-right: 10px;
-  padding-top: 10px;
 }
 
 main .wayfinder.block .cta-row::-webkit-scrollbar {
