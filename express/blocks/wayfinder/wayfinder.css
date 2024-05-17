@@ -35,8 +35,7 @@ main .wayfinder.block.gradient {
 
 main .wayfinder.block .cta-row .button {
   height: fit-content;
-  margin: 8px;
-  margin-top: 12px;
+  margin: 8px; 
   background-color: black;
   border-color: black;
 }
