@@ -161,11 +161,7 @@ async function buildReduceMotionSwitch(block, marqueeForeground) {
         getIconElement('pause-video'),
       );
     }
-    if (window.innerWidth <= 925) {
-      videoWrapper.append(reduceMotionIconWrapper);
-    } else {
-      marqueeForeground.append(reduceMotionIconWrapper);
-    }
+    videoWrapper.append(reduceMotionIconWrapper);
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     handleMediaQuery(block, mediaQuery);
 
