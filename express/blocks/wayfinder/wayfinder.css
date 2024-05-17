@@ -2,7 +2,7 @@
 main .wayfinder.block {
   border: 2px solid black;
   border-radius: 20px;
-  padding: 10px;
+  padding: 16px 20px 12px 20px;
   margin-left: 10px;
   margin-right: 10px;
   padding-bottom: 0px;
