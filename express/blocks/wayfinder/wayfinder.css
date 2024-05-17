@@ -1,5 +1,5 @@
 
-main .wayfinder.block {
+ .wayfinder.block {
   border: 2px solid black;
   border-radius: 20px;
   padding: 16px 20px 12px 20px;
@@ -8,20 +8,20 @@ main .wayfinder.block {
   
 }
 
-main .section .wayfinder.block {
+ .section .wayfinder.block {
   margin-top: -60px;
 }
 
-main .wayfinder.block.dark {
+ .wayfinder.block.dark {
   background-color: black;
   color: white;
 }
 
-main .wayfinder.block.light {
+ .wayfinder.block.light {
   border: 2px solid var(--color-info-accent);
 }
 
-main .wayfinder.block.gradient {
+ .wayfinder.block.gradient {
   background: linear-gradient(
     90.93deg,
     #aa5ef6 0.23%,
@@ -33,24 +33,24 @@ main .wayfinder.block.gradient {
   border: 2px solid white;
 }
 
-main .wayfinder.block .cta-row .button {
+ .wayfinder.block .cta-row .button {
   height: fit-content;
   margin: 8px; 
   background-color: black;
   border-color: black;
 }
 
-main .wayfinder.block.dark .cta-row .button {
+ .wayfinder.block.dark .cta-row .button {
   color: white;
   border-color: white;
 }
 
-main .wayfinder.block .text-row{
+ .wayfinder.block .text-row{
   margin: auto;
   font-size: 16px;
 }
 
-main .wayfinder.block .cta-row strong .button {
+ .wayfinder.block .cta-row strong .button {
   background-color: var(--color-info-accent);
   color: white;
   border: none;
@@ -58,12 +58,12 @@ main .wayfinder.block .cta-row strong .button {
   padding-top: 8px;
 }
 
-main .wayfinder.block .cta-row em .button {
+ .wayfinder.block .cta-row em .button {
   background-color: transparent;
   color: black;
 }
 
-main .wayfinder.block .cta-row em strong .button {
+ .wayfinder.block .cta-row em strong .button {
   background-color: none;
   border: none;
   text-underline-offset: 5px;
@@ -75,24 +75,24 @@ main .wayfinder.block .cta-row em strong .button {
   margin-top: 11px;
 }
 
-main .wayfinder.block .cta-row {
+ .wayfinder.block .cta-row {
   overflow-x: scroll;
   margin-left: 10px;
   margin-right: 10px;
 }
 
-main .wayfinder.block .cta-row::-webkit-scrollbar {
+ .wayfinder.block .cta-row::-webkit-scrollbar {
   display: none;
 }
 
-main .wayfinder.block .cta-row > div {
+ .wayfinder.block .cta-row > div {
   display: flex;
   width: max-content;
   margin: auto;
 } 
 
 @media (min-width: 540px) {
-  main .wayfinder.block {
+   .wayfinder.block {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -101,21 +101,21 @@ main .wayfinder.block .cta-row > div {
     padding: 10px;
   
   }
-  main .section .wayfinder.block {
+   .section .wayfinder.block {
     margin-top: -30px;
   }
 
-  main .wayfinder.block .text-row {
+   .wayfinder.block .text-row {
     margin: initial;
     font-size: 18px;
   }
 
-  main .wayfinder.block .text-row div {
+   .wayfinder.block .text-row div {
 
     gap: 16px;
   }
 
-  main .wayfinder.block .cta-row {
+   .wayfinder.block .cta-row {
     display: flex;
     margin-left: 10px;
     overflow-x: scroll;
@@ -123,7 +123,7 @@ main .wayfinder.block .cta-row > div {
 }
 
 @media (min-width: 1200px) {
-  main .wayfinder.block div {
+   .wayfinder.block div {
     display: flex;
     width: fit-content;
     flex: none;
