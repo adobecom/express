@@ -107,6 +107,7 @@ main .wayfinder.block .cta-row > div {
 
   main .wayfinder.block .text-row {
     margin: initial;
+    font-size: 18px;
   }
 
   main .wayfinder.block .text-row div {
