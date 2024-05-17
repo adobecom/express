@@ -86,14 +86,16 @@ main .wayfinder.block .cta-row > div {
   display: flex;
   width: max-content;
   margin: auto;
-}
+} 
 
-@media (min-width: 1025px) {
+@media (min-width: 540px) {
   main .wayfinder.block {
     display: flex;
     justify-content: center;
     align-items: center;
     padding-bottom: 10px;
+    margin: auto;
+    max-width: 90%;
   }
 
   main .wayfinder.block .text-row div {
