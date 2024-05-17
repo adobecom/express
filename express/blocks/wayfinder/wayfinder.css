@@ -105,7 +105,12 @@ main .wayfinder.block .cta-row > div {
     margin-top: auto;
   }
 
+  main .wayfinder.block .text-row {
+    margin: initial;
+  }
+
   main .wayfinder.block .text-row div {
+
     gap: 16px;
   }
 
