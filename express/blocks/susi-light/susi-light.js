@@ -2,7 +2,7 @@
 // WIP
 import { createTag, loadScript } from '../../scripts/utils.js';
 
-const CDN_URL = 'https://auth-light.identity-stage.adobe.com/sentry/wrapper.js';
+const CDN_URL = 'https://auth-light.identity.adobe.com/sentry/wrapper.js';
 
 const authParams = {
   dt: false,
@@ -25,6 +25,7 @@ const onToken = (e) => {
 };
 const onError = (e) => {
   console.log('on error');
+  console.log(e);
 };
 // needed as the script uses an IIFE for now
 function deleteScript() {
