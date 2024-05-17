@@ -162,11 +162,6 @@ async function buildReduceMotionSwitch(block, marqueeForeground) {
       );
     }
     videoWrapper.append(reduceMotionIconWrapper);
-    if (window.innerWidth <= 925) {
-      
-    } else {
-      
-    }
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     handleMediaQuery(block, mediaQuery);
 
