@@ -80,6 +80,7 @@ main .wayfinder.block .cta-row {
   overflow-x: scroll;
   margin-left: 10px;
   margin-right: 10px;
+  padding-top: 10px;
 }
 
 main .wayfinder.block .cta-row::-webkit-scrollbar {
