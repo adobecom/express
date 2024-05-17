@@ -648,15 +648,19 @@ export function removeIrrelevantSections(main) {
     const textToTarget = getMetadata(`${device}-floating-cta-text`)?.trim() || getMetadata('main-cta-text')?.trim();
     const linkToTarget = getMetadata(`${device}-floating-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
     if (textToTarget || linkToTarget) {
+      const linkToTargetURL = new URL(linkToTarget);
       const sameUrlCTAs = Array.from(main.querySelectorAll('a:any-link'))
         .filter((a) => {
           try {
+            const currURL = new URL(a.href);
             const sameText = a.textContent.trim() === textToTarget;
-            const samePathname = new URL(a.href).pathname === new URL(linkToTarget)?.pathname;
+            const samePathname = currURL.pathname === linkToTargetURL?.pathname;
+            const sameHash = currURL.hash === linkToTargetURL?.hash;
             const isNotInFloatingCta = !a.closest('.block')?.classList.contains('floating-button');
             const notFloatingCtaIgnore = !a.classList.contains('floating-cta-ignore');
 
-            return (sameText || samePathname) && isNotInFloatingCta && notFloatingCtaIgnore;
+            return (sameText || (samePathname && sameHash))
+              && isNotInFloatingCta && notFloatingCtaIgnore;
           } catch (err) {
             window.lana?.log(err);
             return false;
@@ -1711,13 +1715,12 @@ function loadIMS() {
     client_id: 'AdobeExpressWeb',
     scope: 'AdobeID,openid',
     locale: getConfig().locale.region,
-    environment: 'prod',
+    environment: getConfig().env.ims,
   };
-  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
-    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
-  } else {
+  if (getConfig().env.ims === 'stg1') {
     loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-    window.adobeid.environment = 'stg1';
+  } else {
+    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
   }
 }
 
@@ -1922,13 +1925,6 @@ async function buildAutoBlocks(main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-plans-comparison').toLowerCase())) {
-    const $plansComparison = buildBlock('plans-comparison', '');
-    if (lastDiv) {
-      lastDiv.append($plansComparison);
-    }
-  }
-
   async function loadFloatingCTA(BlockMediator) {
     const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
     const device = document.body.dataset?.device;
@@ -1962,7 +1958,7 @@ async function buildAutoBlocks(main) {
 
 function splitSections(main) {
   main.querySelectorAll(':scope > div > div').forEach((block) => {
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion', 'plans-comparison'];
+    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion'];
     // work around for splitting columns and sixcols template list
     // add metadata condition to minimize impact on other use cases
 
@@ -2524,11 +2520,10 @@ export async function loadArea(area = document) {
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 
-  if (['on', 'yes'].includes(getMetadata('milo-analytics')?.toLowerCase()) || params.get('milo-analytics') === 'on') {
-    import('./attributes.js').then((analytics) => {
-      document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
-    });
-  }
+  import('./attributes.js').then((analytics) => {
+    document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
+  });
+
   window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
     decorateTrackingEvents();
   });

@@ -1429,8 +1429,7 @@ function wordExistsInString(word, inputString) {
   return regexPattern.test(inputString);
 }
 
-async function getTaskNameInMapping(text) {
-  const placeholders = await fetchPlaceholders();
+function getTaskNameInMapping(text, placeholders) {
   const taskMap = placeholders['x-task-name-mapping'] ? JSON.parse(placeholders['x-task-name-mapping']) : {};
   return Object.entries(taskMap)
     .filter((task) => task[1].some((word) => {
@@ -1496,22 +1495,22 @@ async function buildTemplateList(block, props, type = []) {
     const tabsWrapper = createTag('div', { class: 'template-tabs' });
     const tabBtns = [];
 
-    const promises = [];
-
-    for (const tab of tabs) {
-      promises.push(getTaskNameInMapping(tab));
-    }
-
-    const tasksFoundInInput = await Promise.all(promises);
-    if (tasksFoundInInput.length === tabs.length) {
-      tasksFoundInInput.forEach((taskObj, index) => {
-        if (taskObj.length === 0) return;
+    const placeholders = await fetchPlaceholders();
+    const collectionRegex = /(.+?)\s*\((.+?)\)/;
+    const tabConfigs = tabs.map((tab) => {
+      const match = collectionRegex.exec(tab.trim());
+      if (match) {
+        return { tab: match[1], collectionId: match[2] };
+      }
+      return { tab, collectionId: props.collectionId };
+    });
+    const taskNames = tabConfigs.map(({ tab }) => getTaskNameInMapping(tab, placeholders));
+    if (taskNames.length === tabs.length) {
+      taskNames.filter(({ length }) => length).forEach(([[task]], index) => {
         const tabBtn = createTag('button', { class: 'template-tab-button' });
-        tabBtn.textContent = tabs[index];
+        tabBtn.textContent = tabConfigs[index].tab;
         tabsWrapper.append(tabBtn);
         tabBtns.push(tabBtn);
-
-        const [[task]] = taskObj;
 
         if (props.filters.tasks === task) {
           tabBtn.classList.add('active');
@@ -1519,39 +1518,37 @@ async function buildTemplateList(block, props, type = []) {
 
         tabBtn.addEventListener('click', async () => {
           templatesWrapper.style.opacity = 0;
+          const {
+            templates: newTemplates,
+            fallbackMsg: newFallbackMsg,
+          } = await fetchAndRenderTemplates({
+            ...props,
+            start: '',
+            filters: {
+              ...props.filters,
+              tasks: task,
+            },
+            collectionId: tabConfigs[index].collectionId,
+          });
+          if (newTemplates?.length > 0) {
+            props.fallbackMsg = newFallbackMsg;
+            renderFallbackMsgWrapper(block, props);
 
-          if (tasksFoundInInput) {
-            const {
-              templates: newTemplates,
-              fallbackMsg: newFallbackMsg,
-            } = await fetchAndRenderTemplates({
-              ...props,
-              start: '',
-              filters: {
-                ...props.filters,
-                tasks: task,
-              },
+            templatesWrapper.innerHTML = '';
+            props.templates = newTemplates;
+            props.templates.forEach((template) => {
+              templatesWrapper.append(template);
             });
-            if (newTemplates?.length > 0) {
-              props.fallbackMsg = newFallbackMsg;
-              renderFallbackMsgWrapper(block, props);
 
-              templatesWrapper.innerHTML = '';
-              props.templates = newTemplates;
-              props.templates.forEach((template) => {
-                templatesWrapper.append(template);
-              });
-
-              await decorateTemplates(block, props);
-              buildCarousel(':scope > .template', templatesWrapper);
-              templatesWrapper.style.opacity = 1;
-            }
-
-            tabsWrapper.querySelectorAll('.template-tab-button').forEach((btn) => {
-              if (btn !== tabBtn) btn.classList.remove('active');
-            });
-            tabBtn.classList.add('active');
+            await decorateTemplates(block, props);
+            buildCarousel(':scope > .template', templatesWrapper);
+            templatesWrapper.style.opacity = 1;
           }
+
+          tabsWrapper.querySelectorAll('.template-tab-button').forEach((btn) => {
+            if (btn !== tabBtn) btn.classList.remove('active');
+          });
+          tabBtn.classList.add('active');
         }, { passive: true });
       });
 
