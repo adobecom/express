@@ -6,6 +6,7 @@ main .wayfinder.block {
   margin-left: 10px;
   margin-right: 10px;
   padding-bottom: 0px;
+  margin-top: -60px;
 }
 
 main .wayfinder.block.dark {
