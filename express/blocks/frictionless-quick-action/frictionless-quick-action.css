@@ -48,14 +48,9 @@
     margin-top: 26px;
 }
 
-.frictionless-quick-action.block video {
+.frictionless-quick-action.block video,
+.frictionless-quick-action.block img:not(.icon) {
     max-width: 444px;
-}
-
-/* TODO: remove after authoring removes h4 */
-.frictionless-quick-action.block h4 em {
-    font-style: normal;
-    color: var(--color-info-accent);
 }
 
 .frictionless-quick-action.block .dropzone-container {
@@ -88,12 +83,6 @@
     height: 100%;
     width: 100%;
     position: relative;
-}
-
-/* TODO: remove after authoring removes h4 */
-.frictionless-quick-action.block .dropzone h4 {
-    margin-top: 0;
-    padding: 40px 24px 0 24px;
 }
 
 .frictionless-quick-action.block .dropzone-bg + p {

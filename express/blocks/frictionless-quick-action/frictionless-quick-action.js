@@ -3,11 +3,17 @@ import {
   getConfig,
   loadScript,
   transformLinkToAnimation,
+  addAnimationToggle,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 const imageInputAccept = '.png, .jpeg, .jpg';
+const sizeLimits = {
+  image: 40 * 1024 * 1024,
+  video: 1024 * 1024 * 1024,
+};
+// only allows 1 qa per page?
 let inputElement;
 let quickAction;
 let fqaBlock;
@@ -38,7 +44,7 @@ function selectElementByTagPrefix(p) {
 function startSDK(data = '') {
   const urlParams = new URLSearchParams(window.location.search);
   const CDN_URL = 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
-  const clientId = 'MarvelWeb3';
+  const clientId = 'AdobeExpressWeb';
 
   loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
@@ -175,9 +181,27 @@ function startSDK(data = '') {
   });
 }
 
+function getQAGroup() {
+  if ([
+    'convert-to-jpg',
+    'convert-to-png',
+    'convert-to-svg',
+    'crop-image',
+    'resize-image',
+    'remove-background',
+    'generate-qr-code',
+  ].includes(quickAction)) {
+    return 'image';
+  }
+  // update list of video qas here
+  if ([].includes(quickAction)) return 'video';
+  // fallback to image until we have real video QA
+  return 'image';
+}
+
 function startSDKWithUnconvertedFile(file) {
   if (!file) return;
-  const maxSize = 17 * 1024 * 1024; // 17 MB in bytes
+  const maxSize = sizeLimits[getQAGroup()] ?? 40 * 1024 * 1024;
   if (validImageTypes.includes(file.type) && file.size <= maxSize) {
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -212,22 +236,6 @@ function uploadFile() {
   };
 }
 
-function getQAGroup(qa) {
-  // TODO: fill up the mapping here
-  switch (qa) {
-    case 'convert-to-jpg':
-    case 'convert-to-png':
-    case 'convert-to-svg':
-    case 'crop-image':
-    case 'resize-image':
-    case 'remove-background':
-      return 'image';
-    case 'generate-qr-code':
-    default:
-      return 'image';
-  }
-}
-
 export default async function decorate(block) {
   // cache block element for the
   fqaBlock = block;
@@ -243,7 +251,10 @@ export default async function decorate(block) {
   const actionColumn = createTag('div');
   const dropzoneContainer = createTag('div', { class: 'dropzone-container' });
 
-  if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
+  if (animation && animation.href.includes('.mp4')) {
+    transformLinkToAnimation(animation);
+    addAnimationToggle(animationContainer);
+  }
   if (cta) cta.classList.add('xlarge');
   dropzone.classList.add('dropzone');
 
