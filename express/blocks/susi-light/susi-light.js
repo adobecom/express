@@ -24,30 +24,21 @@ const onToken = (e) => {
   console.log('on token');
 };
 const onError = (e) => {
-  console.log('on error');
-  console.log(e);
+  console.log('on error:', e);
 };
-// needed as the script uses an IIFE for now
-function deleteScript() {
-  const script = document.querySelector(`head > script[src="${CDN_URL}"]`);
-  // script.addEventListener('load', script.remove());
-  script.remove();
-}
+
 export default async function init(el) {
   el.innerHTML = '';
+  // await loadScript(CDN_URL);
   const susi = createTag('susi-sentry-light', {
     popup: isPopup,
     variant,
   });
   susi.authParams = authParams;
   susi.config = config;
-  susi.innerHTML = '';
   susi.addEventListener('redirect', onRedirect);
   susi.addEventListener('on-token', onToken);
   susi.addEventListener('on-error', onError);
-
   el.append(susi);
   await loadScript(CDN_URL);
-  // clean up for next call
-  deleteScript();
 }
