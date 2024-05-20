@@ -1,7 +1,6 @@
 import buildCarousel from '../carousel/carousel.js';
 
 import {
-  getIcon,
   getIconElement,
   getLottie,
   getMobileOperatingSystem,
@@ -154,8 +153,8 @@ function createCTA(payload, link, isSingleDownloadCTA) {
     const widget = createTag('div', { class: 'cta-download-details' });
     const ctaDownloadBadgeContainer = createTag('div', { class: 'cta-download-badge-container' });
     const ctaDownloadBadge = createTag('div', { class: 'cta-download-badge' });
-    const checkmark1 = getIcon('D861F3-check');
-    const checkmark2 = getIcon('F263B0-check');
+    const checkmark1 = getIconElement('D861F3-check').outerHTML;
+    const checkmark2 = getIconElement('F263B0-check').outerHTML;
     widget.innerHTML = `
       <div>${checkmark1}<div>Free use forever</div></div>
       <div>${checkmark2}<div>No credit card required</div></div>
