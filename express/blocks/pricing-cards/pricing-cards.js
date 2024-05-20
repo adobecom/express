@@ -1,6 +1,12 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
-import { createTag, fetchPlaceholders, yieldToMain } from '../../scripts/utils.js';
+import {
+  createTag,
+  fetchPlaceholders,
+  yieldToMain,
+  getIconElement,
+} from '../../scripts/utils.js';
+import { debounce } from '../../scripts/hofs.js';
 
 import {
   formatDynamicCartLink,
@@ -9,11 +15,23 @@ import {
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
-const blockKeys = ['header', 'borderParams', 'explain', 'mPricingRow', 'mCtaGroup', 'yPricingRow', 'yCtaGroup', 'featureList', 'compare'];
+const blockKeys = [
+  'header',
+  'borderParams',
+  'explain',
+  'mPricingRow',
+  'mCtaGroup',
+  'yPricingRow',
+  'yCtaGroup',
+  'featureList',
+  'compare',
+];
 const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
 const BILLING_PLAN = 'billing-plan';
-const SAVE_PERCENTAGE = 'savePercentage';
+const SAVE_PERCENTAGE = '{{savePercentage}}';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
+const PRICE_TOKEN = '{{pricing}}';
+const YEAR_2_PRICING_TOKEN = '[[year-2-pricing-token]]';
 
 function suppressOfferEyebrow(specialPromo, legacyVersion) {
   if (specialPromo.parentElement) {
@@ -29,106 +47,195 @@ function suppressOfferEyebrow(specialPromo, legacyVersion) {
   }
 }
 
-function handlePrice(placeholders, pricingArea, placeholderArr, specialPromo, legacyVersion) {
-  const priceRow = createTag('div', { class: 'pricing-row' });
-  const priceEl = pricingArea.querySelector('[title="{{pricing}}"]');
-  if (!priceEl) return null;
-  const priceParent = priceEl?.parentNode;
+function getPriceElementSuffix(placeholders, placeholderArr, response) {
+  return placeholderArr
+    .map((phText) => {
+      const key = phText.replace('{{', '').replace('}}', '');
+      return key.includes('vat') && !response.showVat
+        ? ''
+        : placeholders?.[key] || '';
+    })
+    .join(' ');
+}
 
+function handleYear2PricingToken(pricingArea, y2p, priceSuffix) {
+  try {
+    const elements = pricingArea.querySelectorAll('p');
+    const year2PricingToken = Array.from(elements).find(
+      (p) => p.textContent.includes(YEAR_2_PRICING_TOKEN),
+    );
+    if (!year2PricingToken) return;
+    if (y2p) {
+      year2PricingToken.textContent = year2PricingToken.textContent.replace(
+        YEAR_2_PRICING_TOKEN,
+        `${y2p} ${priceSuffix}`,
+      );
+    } else {
+      year2PricingToken.textContent = '';
+    }
+  } catch (e) {
+    window.lana.log(e);
+  }
+}
+
+function handleSpecialPromo(
+  specialPromo,
+  isPremiumCard,
+  response,
+  legacyVersion,
+) {
+  if (specialPromo?.textContent.includes(SAVE_PERCENTAGE)) {
+    const offerTextContent = specialPromo.textContent;
+    const shouldSuppress = shallSuppressOfferEyebrowText(
+      response.savePer,
+      offerTextContent,
+      isPremiumCard,
+      true,
+      response.offerId,
+    );
+
+    if (shouldSuppress) {
+      suppressOfferEyebrow(specialPromo, legacyVersion);
+    } else {
+      specialPromo.innerHTML = specialPromo.innerHTML.replace(
+        SAVE_PERCENTAGE,
+        response.savePer,
+      );
+    }
+  }
+  if (
+    !isPremiumCard
+    && specialPromo?.parentElement?.classList?.contains('special-promo')
+  ) {
+    specialPromo.parentElement.classList.remove('special-promo');
+    if (specialPromo.parentElement.firstChild.innerHTML !== '') {
+      specialPromo.parentElement.firstChild.remove();
+    }
+  }
+}
+
+function handleSavePercentage(savePercentElem, isPremiumCard, response) {
+  if (savePercentElem) {
+    const offerTextContent = savePercentElem.textContent;
+    if (
+      shallSuppressOfferEyebrowText(
+        response.savePer,
+        offerTextContent,
+        isPremiumCard,
+        true,
+        response.offerId,
+      )
+    ) {
+      savePercentElem.remove();
+    } else {
+      savePercentElem.innerHTML = savePercentElem.innerHTML.replace(
+        SAVE_PERCENTAGE,
+        response.savePer,
+      );
+    }
+  }
+}
+
+function handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent) {
+  const parentP = priceEl.parentElement;
+  if (parentP.children.length > 1) {
+    Array.from(parentP.childNodes).forEach((node) => {
+      if (node === priceEl) return;
+      if (node.nodeName === '#text') {
+        priceSuffix.append(node);
+      } else {
+        priceSuffix.before(node);
+      }
+    });
+  } else {
+    priceSuffix.textContent = priceSuffixTextContent;
+  }
+}
+
+function handleRawPrice(price, basePrice, response) {
+  price.innerHTML = response.formatted;
+  basePrice.innerHTML = response.formattedBP || '';
+  basePrice.innerHTML !== ''
+    ? price.classList.add('price-active')
+    : price.classList.remove('price-active');
+}
+
+function handleTooltip(pricingArea) {
+  const elements = pricingArea.querySelectorAll('p');
+  const pattern = /\[\[([^]+)\]\]([^]+)\[\[\/([^]+)\]\]/g;
+  let tooltip;
+  let tooltipDiv;
+
+  Array.from(elements).forEach((p) => {
+    const res = pattern.exec(p.textContent);
+    if (res) {
+      tooltip = res;
+      tooltipDiv = p;
+    }
+  });
+  if (!tooltip) return;
+  tooltipDiv.textContent = tooltipDiv.textContent.replace(pattern, '');
+  const tooltipText = tooltip[2];
+  tooltipDiv.classList.add('tooltip');
+  const span = createTag('div', { class: 'tooltip-text' });
+  span.innerText = tooltipText;
+  const icon = getIconElement('info', 44, 'Info', 'tooltip-icon');
+  tooltipDiv.append(icon);
+  tooltipDiv.append(span);
+}
+async function handlePrice(placeholders, pricingArea, specialPromo, legacyVersion) {
+  const priceEl = pricingArea.querySelector(`[title="${PRICE_TOKEN}"]`);
+  const pricingBtnContainer = pricingArea.querySelector('.button-container');
+  if (!pricingBtnContainer) return;
+  if (!priceEl) return;
+
+  const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
+  const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
+
+  const priceRow = createTag('div', { class: 'pricing-row' });
   const price = createTag('span', { class: 'pricing-price' });
   const basePrice = createTag('span', { class: 'pricing-base-price' });
   const priceSuffix = createTag('div', { class: 'pricing-row-suf' });
 
   priceRow.append(basePrice, price, priceSuffix);
 
-  fetchPlanOnePlans(priceEl?.href).then((response) => {
-    let specialPromoPercentageEyeBrowTextReplaced = false;
-    let pricingCardPercentageEyeBrowTextReplaced = false;
-    const parentP = priceEl.parentElement;
-    price.innerHTML = response.formatted;
-    basePrice.innerHTML = response.formattedBP || '';
-    if (basePrice.innerHTML !== '') {
-      price.classList.add('price-active');
-    } else {
-      price.classList.remove('price-active');
-    }
-    if (parentP.children.length > 1) {
-      Array.from(parentP.childNodes).forEach((node) => {
-        if (node === priceEl) return;
-        if (node.nodeName === '#text') {
-          priceSuffix.append(node);
-        } else {
-          priceSuffix.before(node);
-        }
-      });
-    } else {
-      const priceSuffixContent = placeholderArr.map((phText) => {
-        const key = phText.replace('{{', '').replace('}}', '');
-        return (key.includes('vat') && !response.showVat) ? '' : placeholders[key] || '';
-      }).join(' ');
-      priceSuffix.textContent = priceSuffixContent;
-    }
-    const isPremiumCard = response.ooAvailable || false;
-    const savePercentElem = pricingArea.querySelector('.card-offer');
-    if (savePercentElem && !pricingCardPercentageEyeBrowTextReplaced) {
-      const offerTextContent = savePercentElem.textContent;
-      if (shallSuppressOfferEyebrowText(response.savePer, offerTextContent, isPremiumCard,
-        false, response.offerId)) {
-        savePercentElem.remove();
-      } else {
-        savePercentElem.innerHTML = savePercentElem.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
-        pricingCardPercentageEyeBrowTextReplaced = true;
-      }
-    }
+  const response = await fetchPlanOnePlans(priceEl?.href);
+  const priceSuffixTextContent = getPriceElementSuffix(
+    placeholders,
+    placeholderArr,
+    response,
+  );
+  const isPremiumCard = response.ooAvailable || false;
+  const savePercentElem = pricingArea.querySelector('.card-offer');
+  handleRawPrice(price, basePrice, response);
+  handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent);
+  handleTooltip(pricingArea);
+  handleSavePercentage(savePercentElem, isPremiumCard, response);
+  handleSpecialPromo(specialPromo, isPremiumCard, response, legacyVersion);
+  handleYear2PricingToken(pricingArea, response.y2p, priceSuffixTextContent);
 
-    if (specialPromo && !specialPromoPercentageEyeBrowTextReplaced && specialPromo.textContent.includes(`{{${SAVE_PERCENTAGE}}}`)) {
-      const offerTextContent = specialPromo.textContent;
-
-      const shouldSuppress = shallSuppressOfferEyebrowText(
-        response.savePer,
-        offerTextContent,
-        isPremiumCard,
-        true,
-        response.offerId,
-      );
-      if (shouldSuppress) {
-        suppressOfferEyebrow(specialPromo, legacyVersion);
-      } else {
-        specialPromo.innerHTML = specialPromo.innerHTML.replace(`{{${SAVE_PERCENTAGE}}}`, response.savePer);
-        specialPromoPercentageEyeBrowTextReplaced = true;
-      }
-    }
-    if (!isPremiumCard && specialPromo?.parentElement?.classList?.contains('special-promo')) {
-      specialPromo.parentElement.classList.remove('special-promo');
-      if (specialPromo.parentElement.firstChild.innerHTML !== '') {
-        specialPromo.parentElement.firstChild.remove();
-      }
-    }
-  });
-
-  priceParent?.remove();
-  return priceRow;
+  priceEl?.parentNode?.remove();
+  if (!priceRow) return;
+  pricingArea.prepend(priceRow);
+  pricingBtnContainer?.remove();
+  pricingSuffixTextElem?.remove();
 }
 
-function createPricingSection(placeholders, pricingArea, ctaGroup, specialPromo, legacyVersion) {
+async function createPricingSection(
+  placeholders,
+  pricingArea,
+  ctaGroup,
+  specialPromo,
+  legacyVersion,
+) {
   const pricingSection = createTag('div', { class: 'pricing-section' });
   pricingArea.classList.add('pricing-area');
   const offer = pricingArea.querySelector(':scope > p > em');
   if (offer) {
     offer.classList.add('card-offer');
+    offer.parentElement.outerHTML = offer.outerHTML;
   }
-  const pricingBtnContainer = pricingArea.querySelector('.button-container');
-  if (pricingBtnContainer != null) {
-    const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
-    const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
-    const priceRow = handlePrice(placeholders, pricingArea,
-      placeholderArr, specialPromo, legacyVersion);
-    if (priceRow) {
-      pricingArea.prepend(priceRow);
-      pricingBtnContainer?.remove();
-      pricingSuffixTextElem?.remove();
-    }
-  }
+  await handlePrice(placeholders, pricingArea, specialPromo, legacyVersion);
   ctaGroup.classList.add('card-cta-group');
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
@@ -160,7 +267,7 @@ function readBraces(inputString, card) {
   if (matches.length > 0) {
     const [token, promoType] = matches[matches.length - 1];
     const specialPromo = createTag('div');
-    [specialPromo.textContent] = inputString.split(token);
+    specialPromo.textContent = inputString.split(token)[0].trim();
     card.classList.add(promoType.replaceAll(' ', ''));
     card.append(specialPromo);
     return specialPromo;
@@ -183,7 +290,12 @@ function decorateLegacyHeader(header, card) {
     if (/^\d/.test(cfg)) {
       const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
       headCntDiv.textContent = cfg;
-      headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
+      headCntDiv.prepend(
+        createTag('img', {
+          src: '/express/icons/head-count.svg',
+          alt: 'icon-head-count',
+        }),
+      );
       header.append(headCntDiv);
     } else {
       specialPromo = createTag('div');
@@ -207,15 +319,22 @@ function decorateHeader(header, borderParams, card, cardBorder) {
   header.classList.add('card-header');
   const specialPromo = readBraces(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
-
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
   if (extractHeadCountExp.test(h2.innerText)) {
     const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
-    const headCount = h2.innerText.match(extractHeadCountExp)[0].replace(')', '').replace('(', '');
+    const headCount = h2.innerText
+      .match(extractHeadCountExp)[0]
+      .replace(')', '')
+      .replace('(', '');
     [h2.innerText] = h2.innerText.split(extractHeadCountExp);
     headCntDiv.textContent = headCount;
-    headCntDiv.prepend(createTag('img', { src: '/express/icons/head-count.svg', alt: 'icon-head-count' }));
+    headCntDiv.prepend(
+      createTag('img', {
+        src: '/express/icons/head-count.svg',
+        alt: 'icon-head-count',
+      }),
+    );
     header.append(headCntDiv);
   }
   if (premiumIcon) h2.append(premiumIcon);
@@ -271,7 +390,7 @@ function decorateCompareSection(compare, el, card) {
 }
 // In legacy versions, the card element encapsulates all content
 // In new versions, the cardBorder element encapsulates all content instead
-function decorateCard({
+async function decorateCard({
   header,
   borderParams,
   explain,
@@ -290,10 +409,11 @@ function decorateCard({
     : decorateHeader(header, borderParams, card, cardBorder);
 
   decorateBasicTextSection(explain, 'card-explain', card);
-  const mPricingSection = createPricingSection(placeholders, mPricingRow, mCtaGroup,
-    specialPromo, legacyVersion);
+  const [mPricingSection, yPricingSection] = await Promise.all([
+    createPricingSection(placeholders, mPricingRow, mCtaGroup, specialPromo, legacyVersion),
+    createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
+  ]);
   mPricingSection.classList.add('monthly');
-  const yPricingSection = createPricingSection(placeholders, yPricingRow, yCtaGroup, null);
   yPricingSection.classList.add('yearly', 'hide');
   card.append(mPricingSection, yPricingSection);
   subscribeToBlockMediator(mPricingSection, yPricingSection);
@@ -303,7 +423,7 @@ function decorateCard({
 }
 
 // less thrashing by separating get and set
-async function syncMinHeights(...groups) {
+async function syncMinHeights(groups) {
   const maxHeights = groups.map((els) => els
     .filter((e) => !!e)
     .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
@@ -330,29 +450,78 @@ export default async function init(el) {
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
-  cards
-    .map((card) => decorateCard(card, el, placeholders, legacyVersion))
-    .forEach((card) => cardsContainer.append(card));
+  const decoratedCards = await Promise.all(
+    cards.map((card) => decorateCard(card, el, placeholders, legacyVersion)),
+  );
+  decoratedCards.forEach((card) => cardsContainer.append(card));
 
-  const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter((a) => a.title.includes(SALES_NUMBERS));
+  const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter(
+    (a) => a.title.includes(SALES_NUMBERS),
+  );
   if (phoneNumberTags.length > 0) {
     await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
   }
   el.classList.add('no-visible');
   el.prepend(cardsContainer);
 
+  const groups = [
+    cards.map(({ header }) => header),
+    cards.map(({ explain }) => explain),
+    cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
+    [...el.querySelectorAll('.pricing-area')],
+    cards.map(({ featureList }) => featureList.querySelector('p')),
+    cards.map(({ featureList }) => featureList),
+    cards.map(({ compare }) => compare),
+  ];
+  const decoratedCardEls = [...cardsContainer.querySelectorAll('.card')];
+  const synchedItems = groups.flat();
+  synchedItems.forEach((item) => {
+    // elements with js-controlled heights need border-box
+    if (item) item.style.boxSizing = 'border-box';
+  });
+  const undoSyncHeights = () => {
+    synchedItems.forEach((item) => {
+      item.style?.removeProperty('min-height');
+    });
+  };
+  const doSyncHeights = () => {
+    // possible 2 card in row 1 and 3rd card in row 2
+    const yPositions = decoratedCardEls.map((c) => c.getBoundingClientRect().top);
+    const positionGroups = [];
+    // positionGroups -> [2,1]
+    yPositions.forEach((yPosition, i) => {
+      // accounting for pixel lineup issues
+      if (i === 0 || Math.abs(yPosition - yPositions[i - 1]) > 6) {
+        positionGroups.push(1);
+      } else {
+        positionGroups[positionGroups.length - 1] += 1;
+      }
+    });
+    if (positionGroups.length === cards.length) {
+      // no sync when 1 card per row
+      undoSyncHeights();
+      return;
+    }
+    const groupsByTop = [];
+    // [[h1, h2, h3], [e1, e2, e3], [m1,y1,m2,y2,m3,y3]] + [2,1]
+    // -> [[h1, h2], [h3], [e1, e2], [e3], [m1, m2, y1, y2], [m3, y3]]
+    groups.forEach((group) => {
+      for (let prev = 0, i = 0; i < positionGroups.length; i += 1) {
+        const span = positionGroups[i] * (group.length / cards.length);
+        groupsByTop.push(group.slice(prev, prev + span));
+        prev += span;
+      }
+    });
+    syncMinHeights(groupsByTop);
+  };
+  window.addEventListener('resize', debounce(() => {
+    doSyncHeights();
+  }, 100));
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        observer.disconnect();
-        syncMinHeights(
-          cards.map(({ header }) => header),
-          cards.map(({ explain }) => explain),
-          cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
-          cards.map(({ featureList }) => featureList.querySelector('p')),
-          cards.map(({ featureList }) => featureList),
-          cards.map(({ compare }) => compare),
-        );
+        doSyncHeights();
         el.classList.remove('no-visible');
       }
     });

@@ -129,6 +129,39 @@ export function sendEventToAdobeAnaltics(eventName) {
   });
 }
 
+function sendFrictionlessEventToAdobeAnaltics(block) {
+  const eventName = 'view-quickaction-upload-page';
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: eventName,
+          linkClicks: {
+            value: 1,
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        sdm: {
+          event: {
+            pagename: eventName,
+            url: loc.href,
+          },
+          custom: {
+            qa: {
+              group: block.dataset.frictionlessgroup ?? 'unknown',
+              type: block.dataset.frictionlesstype ?? 'unknown',
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 export function textToName(text) {
   const splits = text.toLowerCase().split(' ');
   const camelCase = splits.map((s, i) => (i ? s.charAt(0).toUpperCase() + s.substr(1) : s)).join('');
@@ -191,9 +224,10 @@ export async function trackBranchParameters($links) {
     params.get('cgen'),
   ];
 
-  $links.forEach(($a) => {
-    if ($a.href && $a.href.match('adobesparkpost.app.link')) {
-      const btnUrl = new URL($a.href);
+  $links.forEach((a) => {
+    if (a.href && a.href.match('adobesparkpost.app.link')) {
+      a.rel = 'nofollow';
+      const btnUrl = new URL(a.href);
       const isSearchBranchLink = placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`);
       const urlParams = btnUrl.searchParams;
       const setParams = (k, v) => {
@@ -202,10 +236,10 @@ export async function trackBranchParameters($links) {
       if (urlParams.has('acomx-dno')) {
         urlParams.delete('acomx-dno');
         btnUrl.search = urlParams.toString();
-        $a.href = decodeURIComponent(btnUrl.toString());
+        a.href = decodeURIComponent(btnUrl.toString());
         return;
       }
-      const placement = getPlacement($a);
+      const placement = getPlacement(a);
 
       if (isSearchBranchLink) {
         setParams('category', category || 'templates');
@@ -253,7 +287,7 @@ export async function trackBranchParameters($links) {
       experimentStatus === 'active' && setParams('expid', `${experiment.id}-${experiment.selectedVariant}`);
 
       btnUrl.search = urlParams.toString();
-      $a.href = decodeURIComponent(btnUrl.toString());
+      a.href = decodeURIComponent(btnUrl.toString());
     }
   });
 }
@@ -551,21 +585,6 @@ function decorateAnalyticsEvents() {
       sendEventToAdobeAnaltics('adobe.com:express:cta:uploadYourPhoto');
     }
   });
-
-  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
-    import('./block-mediator.min.js').then((resp) => {
-      const { default: BlockMediator } = resp;
-      const eligibility = BlockMediator.get('mobileBetaEligibility');
-      if (eligibility) {
-        sendEventToAdobeAnaltics(`betaEligibility:${eligibility.deviceSupport}`);
-      } else {
-        const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
-          sendEventToAdobeAnaltics(`betaEligibility:${e.newValue.deviceSupport}`);
-          unsub();
-        });
-      }
-    });
-  }
 }
 
 function martechLoadedCB() {
@@ -682,6 +701,12 @@ function martechLoadedCB() {
 
   // Fire the landing:viewedPage event
   sendEventToAdobeAnaltics('landing:viewedPage');
+
+  // Fire quick-action-viewed event if needed
+  const quickActionBlock = d.querySelector('.frictionless-quick-action.block');
+  if (quickActionBlock) {
+    sendFrictionlessEventToAdobeAnaltics(quickActionBlock);
+  }
 
   // Fire the displayPurchasePanel event if it is the pricing site
   if (

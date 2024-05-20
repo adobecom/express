@@ -49,10 +49,6 @@ async function getTemplates(response, phs, fallbackMsg) {
 }
 
 async function fetchAndRenderTemplates(props) {
-  import('../../scripts/mobile-beta-gating.js').then((gatingScript) => {
-    gatingScript.default();
-  });
-
   const [placeholders, { response, fallbackMsg }] = await Promise.all(
     [fetchPlaceholders(), fetchTemplates(props)],
   );
@@ -224,6 +220,46 @@ function constructProps(block) {
   return props;
 }
 
+const SHORT_PLACEHOLDER_HEIGHT_CUTOFF = 80;
+const WIDE_PLACEHOLDER_RATIO_CUTOFF = 1.3;
+
+function adjustPlaceholderDimensions(block, props, tmplt, option) {
+  const sep = option.includes(':') ? ':' : 'x';
+  const ratios = option.split(sep).map((e) => +e);
+  props.placeholderFormat = ratios;
+  if (!ratios[1]) return;
+  if (block.classList.contains('horizontal')) {
+    const height = block.classList.contains('mini') ? 100 : 200;
+    const width = (ratios[0] / ratios[1]) * height;
+    tmplt.style = `width: ${width}px`;
+    if (width / height > WIDE_PLACEHOLDER_RATIO_CUTOFF) {
+      tmplt.classList.add('tall');
+    }
+  } else {
+    const width = block.classList.contains('sixcols') || block.classList.contains('fullwidth') ? 165 : 200;
+    const height = (ratios[1] / ratios[0]) * width;
+    tmplt.style.height = `${height}px`;
+    if (height < SHORT_PLACEHOLDER_HEIGHT_CUTOFF) tmplt.classList.add('short');
+    if (width / height > WIDE_PLACEHOLDER_RATIO_CUTOFF) tmplt.classList.add('wide');
+  }
+}
+
+function adjustTemplateDimensions(block, props, tmplt, isPlaceholder) {
+  const overlayCell = tmplt.querySelector(':scope > div:last-of-type');
+  const option = overlayCell.textContent.trim();
+  if (!option) return;
+  if (isPlaceholder) {
+    // add aspect ratio to template
+    adjustPlaceholderDimensions(block, props, tmplt, option);
+  } else {
+    // add icon to 1st cell
+    const $icon = getIconElement(toClassName(option));
+    $icon.setAttribute('title', option);
+    tmplt.children[0].append($icon);
+  }
+  overlayCell.remove();
+}
+
 function populateTemplates(block, props, templates) {
   for (let tmplt of templates) {
     const isPlaceholder = tmplt.querySelector(':scope > div:first-of-type > img[src*=".svg"], :scope > div:first-of-type > svg');
@@ -233,24 +269,20 @@ function populateTemplates(block, props, templates) {
 
     if (innerWrapper && linkContainer) {
       const link = linkContainer.querySelector(':scope a');
-      if (link) {
-        if (isPlaceholder) {
-          const aTag = createTag('a', {
-            href: link.href || '#',
-          });
-
-          aTag.append(...tmplt.children);
-          tmplt.remove();
-          tmplt = aTag;
-          // convert A to SPAN
-          const newLink = createTag('span', { class: 'template-link' });
-          newLink.append(link.textContent.trim());
-
-          linkContainer.innerHTML = '';
-          linkContainer.append(newLink);
-        }
-        innerWrapper.append(tmplt);
+      if (link && isPlaceholder) {
+        const aTag = createTag('a', {
+          href: link.href || '#',
+        });
+        aTag.append(...tmplt.children);
+        tmplt.remove();
+        tmplt = aTag;
+        // convert A to SPAN
+        const newLink = createTag('span', { class: 'template-link' });
+        newLink.append(link.textContent.trim());
+        linkContainer.innerHTML = '';
+        linkContainer.append(newLink);
       }
+      innerWrapper.append(tmplt);
     }
 
     if (rowWithLinkInFirstCol && !tmplt.querySelector('img')) {
@@ -260,41 +292,7 @@ function populateTemplates(block, props, templates) {
 
     if (tmplt.children.length === 3) {
       // look for options in last cell
-      const overlayCell = tmplt.querySelector(':scope > div:last-of-type');
-      const option = overlayCell.textContent.trim();
-      if (option) {
-        if (isPlaceholder) {
-          // add aspect ratio to template
-          const sep = option.includes(':') ? ':' : 'x';
-          const ratios = option.split(sep).map((e) => +e);
-          props.placeholderFormat = ratios;
-          if (block.classList.contains('horizontal')) {
-            const height = block.classList.contains('mini') ? 100 : 200;
-            if (ratios[1]) {
-              const width = (ratios[0] / ratios[1]) * height;
-              tmplt.style = `width: ${width}px`;
-              if (width / height > 1.3) {
-                tmplt.classList.add('tall');
-              }
-            }
-          } else {
-            const width = block.classList.contains('sixcols') || block.classList.contains('fullwidth') ? 165 : 200;
-            if (ratios[1]) {
-              const height = (ratios[1] / ratios[0]) * width;
-              tmplt.style = `height: ${height - 21}px`;
-              if (width / height > 1.3) {
-                tmplt.classList.add('wide');
-              }
-            }
-          }
-        } else {
-          // add icon to 1st cell
-          const $icon = getIconElement(toClassName(option));
-          $icon.setAttribute('title', option);
-          tmplt.children[0].append($icon);
-        }
-      }
-      overlayCell.remove();
+      adjustTemplateDimensions(block, props, tmplt, isPlaceholder);
     }
 
     if (!tmplt.querySelectorAll(':scope > div > *').length) {
@@ -302,7 +300,6 @@ function populateTemplates(block, props, templates) {
       tmplt.remove();
     }
     tmplt.classList.add('template');
-
     if (isPlaceholder) {
       tmplt.classList.add('placeholder');
     }
@@ -1432,8 +1429,7 @@ function wordExistsInString(word, inputString) {
   return regexPattern.test(inputString);
 }
 
-async function getTaskNameInMapping(text) {
-  const placeholders = await fetchPlaceholders();
+function getTaskNameInMapping(text, placeholders) {
   const taskMap = placeholders['x-task-name-mapping'] ? JSON.parse(placeholders['x-task-name-mapping']) : {};
   return Object.entries(taskMap)
     .filter((task) => task[1].some((word) => {
@@ -1499,22 +1495,22 @@ async function buildTemplateList(block, props, type = []) {
     const tabsWrapper = createTag('div', { class: 'template-tabs' });
     const tabBtns = [];
 
-    const promises = [];
-
-    for (const tab of tabs) {
-      promises.push(getTaskNameInMapping(tab));
-    }
-
-    const tasksFoundInInput = await Promise.all(promises);
-    if (tasksFoundInInput.length === tabs.length) {
-      tasksFoundInInput.forEach((taskObj, index) => {
-        if (taskObj.length === 0) return;
+    const placeholders = await fetchPlaceholders();
+    const collectionRegex = /(.+?)\s*\((.+?)\)/;
+    const tabConfigs = tabs.map((tab) => {
+      const match = collectionRegex.exec(tab.trim());
+      if (match) {
+        return { tab: match[1], collectionId: match[2] };
+      }
+      return { tab, collectionId: props.collectionId };
+    });
+    const taskNames = tabConfigs.map(({ tab }) => getTaskNameInMapping(tab, placeholders));
+    if (taskNames.length === tabs.length) {
+      taskNames.filter(({ length }) => length).forEach(([[task]], index) => {
         const tabBtn = createTag('button', { class: 'template-tab-button' });
-        tabBtn.textContent = tabs[index];
+        tabBtn.textContent = tabConfigs[index].tab;
         tabsWrapper.append(tabBtn);
         tabBtns.push(tabBtn);
-
-        const [[task]] = taskObj;
 
         if (props.filters.tasks === task) {
           tabBtn.classList.add('active');
@@ -1522,39 +1518,37 @@ async function buildTemplateList(block, props, type = []) {
 
         tabBtn.addEventListener('click', async () => {
           templatesWrapper.style.opacity = 0;
+          const {
+            templates: newTemplates,
+            fallbackMsg: newFallbackMsg,
+          } = await fetchAndRenderTemplates({
+            ...props,
+            start: '',
+            filters: {
+              ...props.filters,
+              tasks: task,
+            },
+            collectionId: tabConfigs[index].collectionId,
+          });
+          if (newTemplates?.length > 0) {
+            props.fallbackMsg = newFallbackMsg;
+            renderFallbackMsgWrapper(block, props);
 
-          if (tasksFoundInInput) {
-            const {
-              templates: newTemplates,
-              fallbackMsg: newFallbackMsg,
-            } = await fetchAndRenderTemplates({
-              ...props,
-              start: '',
-              filters: {
-                ...props.filters,
-                tasks: task,
-              },
+            templatesWrapper.innerHTML = '';
+            props.templates = newTemplates;
+            props.templates.forEach((template) => {
+              templatesWrapper.append(template);
             });
-            if (newTemplates?.length > 0) {
-              props.fallbackMsg = newFallbackMsg;
-              renderFallbackMsgWrapper(block, props);
 
-              templatesWrapper.innerHTML = '';
-              props.templates = newTemplates;
-              props.templates.forEach((template) => {
-                templatesWrapper.append(template);
-              });
-
-              await decorateTemplates(block, props);
-              buildCarousel(':scope > .template', templatesWrapper);
-              templatesWrapper.style.opacity = 1;
-            }
-
-            tabsWrapper.querySelectorAll('.template-tab-button').forEach((btn) => {
-              if (btn !== tabBtn) btn.classList.remove('active');
-            });
-            tabBtn.classList.add('active');
+            await decorateTemplates(block, props);
+            buildCarousel(':scope > .template', templatesWrapper);
+            templatesWrapper.style.opacity = 1;
           }
+
+          tabsWrapper.querySelectorAll('.template-tab-button').forEach((btn) => {
+            if (btn !== tabBtn) btn.classList.remove('active');
+          });
+          tabBtn.classList.add('active');
         }, { passive: true });
       });
 
