@@ -23,15 +23,6 @@ if (isHomepage && getConfig().env.ims === 'prod') {
 }
 let imsLibProm;
 
-// TODO remove all this when we go live with the unav
-const usp = new URLSearchParams(window.location.search);
-const unav = usp.get('unav')?.toLowerCase();
-if (unav === 'on' || unav === 'true') {
-  sessionStorage.setItem('unav', 'true');
-} else if (unav === 'off' || unav === 'false') {
-  sessionStorage.removeItem('unav');
-}
-
 async function checkRedirect(location, geoLookup) {
   const splits = location.pathname.split('/express/');
   splits[0] = '';
@@ -70,7 +61,7 @@ async function checkGeo(userGeo, userLocale, geoCheckForce) {
 async function loadIMS() {
   window.adobeid = {
     client_id: 'AdobeExpressWeb',
-    scope: `AdobeID,openid${sessionStorage.getItem('unav') === 'true' ? ',pps.read,firefly_api,additional_info.roles,read_organizations' : ''}`,
+    scope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
     locale: getConfig().locale.region,
     environment: getConfig().env.ims,
   };
@@ -176,7 +167,7 @@ async function loadFEDS() {
         showRegionPicker();
       },
     },
-    universalNav: sessionStorage.getItem('unav') === 'true',
+    universalNav: getConfig().locale.prefix === '',
     universalNavComponents: 'appswitcher, notifications, profile',
     locale: (prefix === '' ? 'en' : prefix),
     content: {
