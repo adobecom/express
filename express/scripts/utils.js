@@ -16,7 +16,7 @@ const ENVS = {
     adobeIO: 'cc-collab-stage.adobe.io',
     adminconsole: 'stage.adminconsole.adobe.com',
     account: 'stage.account.adobe.com',
-    edgeConfigId: '8d2805dd-85bf-4748-82eb-f99fdad117a6',
+    edgeConfigId: '72b074a6-76d2-43de-a210-124acc734f1c',
     pdfViewerClientId: '600a4521c23d4c7eb9c7b039bee534a0',
   },
   prod: {
@@ -25,7 +25,7 @@ const ENVS = {
     adobeIO: 'cc-collab.adobe.io',
     adminconsole: 'adminconsole.adobe.com',
     account: 'account.adobe.com',
-    edgeConfigId: '2cba807b-7430-41ae-9aac-db2b0da742d5',
+    edgeConfigId: '913eac4d-900b-45e8-9ee7-306216765cd2',
     pdfViewerClientId: '3c0a5ddf2cc04d3198d9e48efc390fa9',
   },
 };
