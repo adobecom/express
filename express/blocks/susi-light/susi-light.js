@@ -7,7 +7,7 @@ const CDN_URL = 'https://auth-light.identity.adobe.com/sentry/wrapper.js';
 const authParams = {
   dt: false,
   locale: 'en-us',
-  redirect_uri: 'https://express.adobe.com/sp/', // FIXME:
+  redirect_uri: 'https://new.express.adobe.com/', // FIXME:
   response_type: 'code', // FIXME:
   client_id: 'AdobeExpressWeb',
   scope: 'AdobeID,openid',
