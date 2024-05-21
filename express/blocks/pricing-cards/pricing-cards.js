@@ -400,7 +400,8 @@ async function decorateCard({
   ]);
   mPricingSection.classList.add('monthly');
   yPricingSection.classList.add('annual', 'hide');
-  const groupID = `${Date.now()}:${header.textContent.trim()}`;
+  const groupID = `${Date.now()}:${header.textContent.replace(/\s/g,'').trim()}`;
+  console.log(groupID)
   const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID);
   card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
