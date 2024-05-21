@@ -1713,7 +1713,7 @@ export async function getExperimentConfig(experimentId) {
 function loadIMS() {
   window.adobeid = {
     client_id: 'AdobeExpressWeb',
-    scope: 'AdobeID,openid',
+    scope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
     locale: getConfig().locale.region,
     environment: getConfig().env.ims,
   };
