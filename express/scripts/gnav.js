@@ -11,6 +11,18 @@ import {
 
 const isHomepage = window.location.pathname.endsWith('/express/');
 
+const sparkLang = getConfig().locale.ietf;
+const sparkPrefix = sparkLang === 'en-US' ? '' : `/${sparkLang}`;
+let expressLoginURL = `https://express.adobe.com${sparkPrefix}/sp/`;
+const productURL = getConfig()[getConfig().env.name]?.express;
+if (productURL) {
+  expressLoginURL = expressLoginURL.replace('express.adobe.com', productURL);
+}
+if (isHomepage && getConfig().env.ims === 'prod') {
+  expressLoginURL = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
+}
+let imsLibProm;
+
 async function checkRedirect(location, geoLookup) {
   const splits = location.pathname.split('/express/');
   splits[0] = '';
@@ -49,15 +61,14 @@ async function checkGeo(userGeo, userLocale, geoCheckForce) {
 async function loadIMS() {
   window.adobeid = {
     client_id: 'AdobeExpressWeb',
-    scope: 'AdobeID,openid',
+    scope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
     locale: getConfig().locale.region,
-    environment: 'prod',
+    environment: getConfig().env.ims,
   };
-  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
-    await loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+  if (getConfig().env.ims === 'stg1') {
+    return loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
   } else {
-    await loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-    window.adobeid.environment = 'stg1';
+    return loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
   }
 }
 
@@ -156,23 +167,15 @@ async function loadFEDS() {
         showRegionPicker();
       },
     },
+    universalNav: getConfig().locale.prefix === '',
+    universalNavComponents: 'appswitcher, notifications, profile',
     locale: (prefix === '' ? 'en' : prefix),
     content: {
       experience: getMetadata('gnav') || fedsExp,
     },
     profile: {
       customSignIn: () => {
-        const sparkLang = config.locale.ietf;
-        const sparkPrefix = sparkLang === 'en-US' ? '' : `/${sparkLang}`;
-        let sparkLoginUrl = `https://express.adobe.com${sparkPrefix}/sp/`;
-        const env = getHelixEnv();
-        if (env && env.spark) {
-          sparkLoginUrl = sparkLoginUrl.replace('express.adobe.com', env.spark);
-        }
-        if (isHomepage) {
-          sparkLoginUrl = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
-        }
-        window.location.href = sparkLoginUrl;
+        window.location.href = expressLoginURL;
       },
     },
     jarvis: {},
@@ -245,6 +248,12 @@ async function loadFEDS() {
   }
   loadScript(`${domain}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).then((script) => {
     script.id = 'feds-script';
+    const { imslib } = window.feds.utilities;
+    Promise.all([imslib.onReady(), imsLibProm]).then(() => {
+      if (!imslib.isSignedInUser() && window.adobeIMS && window.adobeIMS.adobeIdData) {
+        window.adobeIMS.adobeIdData.redirect_uri = expressLoginURL;
+      }
+    });
   });
   setTimeout(() => {
     const acom = '7a5eb705-95ed-4cc4-a11d-0cc5760e93db';
@@ -269,7 +278,7 @@ async function loadFEDS() {
 }
 
 if (!window.hlx || window.hlx.gnav) {
-  await loadIMS();
+  imsLibProm = loadIMS();
   loadFEDS();
   if (!['off', 'no'].includes(getMetadata('google-yolo').toLowerCase())) {
     setTimeout(() => {
