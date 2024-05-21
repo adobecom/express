@@ -9,11 +9,11 @@ import buildCarousel from '../shared/carousel.js';
 
 import {
   fetchAndRenderTemplates, populateTemplates, decorateBreadcrumbs
-} from './core.js';
+} from '../template-x/core.js';
 
 import {
   decorateHoliday,
-} from './template-x-ui.js';
+} from '../template-x/template-x-ui.js';
 
 /*
   Template X Horizontal. Assumes a single row of templates.
@@ -158,14 +158,7 @@ function renderFallbackMsgWrapper(block, { fallbackMsg }) {
   }
 }
 
-async function buildTemplateList(block, props, type = []) {
-  if (type?.length > 0) {
-    type.forEach((typeName) => {
-      block.parentElement.classList.add(typeName);
-      block.classList.add(typeName);
-    });
-  }
-
+async function buildTemplateList(block, props) {
   await processContentRow(block, props);
   const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
 
@@ -224,5 +217,5 @@ export default async function decorate(block) {
   addTempWrapper(block, 'template-x');
   const props = constructProps(block);
   block.innerHTML = '';
-  await buildTemplateList(block, props, determineTemplateXType(props));
+  await buildTemplateList(block, props);
 }

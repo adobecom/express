@@ -16,7 +16,9 @@ export function updateLoadMoreButton(props, loadMore) {
 }
 
 async function getTemplates(response, phs, fallbackMsg) {
+  console.log(response.items)
   const filtered = response.items.filter((item) => isValidTemplate(item));
+  console.log(filtered)
   const templates = await Promise.all(
     filtered.map((template) => renderTemplate(template, phs)),
   );
@@ -27,10 +29,6 @@ async function getTemplates(response, phs, fallbackMsg) {
 }
 
 export async function fetchAndRenderTemplates(props) {
-  import('../../scripts/mobile-beta-gating.js').then((gatingScript) => {
-    gatingScript.default();
-  });
-
   const [placeholders, { response, fallbackMsg }] = await Promise.all([
     fetchPlaceholders(),
     fetchTemplates(props),
@@ -49,7 +47,7 @@ export async function fetchAndRenderTemplates(props) {
   }
 
   props.total = response.metadata.totalHits;
-
+  console.log(props)
   // eslint-disable-next-line no-return-await
   return await getTemplates(response, placeholders, fallbackMsg);
 }
@@ -258,7 +256,7 @@ export async function redrawTemplates(block, existingProps, props, toolBar) {
   }
 }
 
-async function decorateBreadcrumbs(block) {
+export async function decorateBreadcrumbs(block) {
   // breadcrumbs are desktop-only
   if (document.body.dataset.device !== 'desktop') return;
   const { default: getBreadcrumbs } = await import('./breadcrumbs.js');
