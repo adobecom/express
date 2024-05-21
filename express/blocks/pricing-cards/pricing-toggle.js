@@ -11,7 +11,7 @@ function toggleOther(pricingSections, buttons, planIndex) {
     b.classList.remove('checked');
     b.setAttribute('aria-checked', 'false');
   });
-  const plan = button.getAttribute('id');
+  const plan = button.getAttribute('plan');
   button.classList.add('checked');
   button.setAttribute('aria-checked', 'true');
   pricingSections.forEach((section) => {
@@ -69,18 +69,19 @@ export default function createToggle(placeholders, pricingSections, groupID) {
   const groupLabel = toggleWrapper.children[0];
   groupLabel.setAttribute('id', groupID);
   const buttons = PLANS.map((plan, i) => {
+    const buttonID = `${groupID}:${plan}`;
     const defaultChecked = i === 0;
     const button = createTag('button', {
       class: defaultChecked ? 'checked' : '',
-      id: plan,
+      id: buttonID,
+      plan,
       tabIndex: defaultChecked ? '' : -1,
     });
-    const buttonID = `${groupID}:${plan}`;
     button.appendChild(createTag('span'));
     button.setAttribute('aria-checked', defaultChecked);
     button.setAttribute('aria-labeledby', buttonID);
     const label = plan[0].toUpperCase() + plan.slice(1).toLowerCase();
-    button.append(createTag('div', { id: buttonID }, label));
+    button.append(createTag('div', { id: `${buttonID}:radio` }, label));
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
       toggleOther(pricingSections, buttons, i);
