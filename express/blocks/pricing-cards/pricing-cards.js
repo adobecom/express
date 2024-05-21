@@ -389,7 +389,6 @@ async function decorateCard({
 }, el, placeholders, legacyVersion) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
-
   const { specialPromo, cardWrapper } = legacyVersion
     ? decorateLegacyHeader(header, card)
     : decorateHeader(header, borderParams, card, cardBorder);
@@ -401,7 +400,8 @@ async function decorateCard({
   ]);
   mPricingSection.classList.add('monthly');
   yPricingSection.classList.add('annual', 'hide');
-  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection]);
+  const groupID = `${Date.now()}:${header.textContent.trim()}`;
+  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID);
   card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
