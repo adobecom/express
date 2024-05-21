@@ -14,6 +14,8 @@ import {
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
+import createToggle from './pricing-toggle.js';
+
 const blockKeys = [
   'header',
   'borderParams',
@@ -370,36 +372,6 @@ function decorateCompareSection(compare, el, card) {
     }
     card.append(compare);
   }
-}
-
-function createToggle(placeholders, pricingSections) {
-  const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
-  const toggleWrapper = createTag('div', { class: 'billing-toggle' });
-  toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`;
-  const buttons = ['monthly', 'annual'].map((plan, i) => {
-    const button = createTag('button', {
-      class: i === 0 ? 'checked' : '',
-    });
-    button.innerHTML = `<span></span>${placeholders?.[plan] || ['Monthly', 'Annual'][i]}`;
-    button.setAttribute('role', 'tab');
-    button.addEventListener('click', () => {
-      if (button.classList.contains('checked')) return;
-      buttons.filter((b) => b !== button).forEach((b) => {
-        b.classList.remove('checked');
-      });
-      button.classList.add('checked');
-      pricingSections.forEach((section) => {
-        if (section.classList.contains(plan)) {
-          section.classList.remove('hide');
-        } else {
-          section.classList.add('hide');
-        }
-      });
-    });
-    return button;
-  });
-  toggleWrapper.append(...buttons);
-  return toggleWrapper;
 }
 
 // In legacy versions, the card element encapsulates all content
