@@ -1,13 +1,12 @@
 /* eslint-disable no-unused-vars */
 // WIP
-import { createTag, loadScript } from '../../scripts/utils.js';
+import { createTag, loadScript, getConfig } from '../../scripts/utils.js';
 
 const CDN_URL = 'https://auth-light.identity-stage.adobe.com/sentry/wrapper.js';
 
 const authParams = {
   dt: false,
-  locale: 'en-us',
-  redirect_uri: 'https://new.express.adobe.com/', // FIXME:
+  locale: getConfig().locale.ietf.toLowerCase(),
   response_type: 'code', // FIXME:
   client_id: 'AdobeExpressWeb',
   // client_id: 'sentry-test-edu',
@@ -17,7 +16,7 @@ const config = {
   consentProfile: 'free', // FIXME:
 };
 const isPopup = true; // FIXME:
-const variant = 'edu-express'; // FIXME:
+const variant = 'edu-express';
 const onRedirect = (e) => {
   console.log('on redirect');
 };
@@ -29,6 +28,7 @@ const onError = (e) => {
 };
 
 export default async function init(el) {
+  const redirectUri = el.querySelector('div > div')?.textContent?.trim().toLowerCase() ?? '';
   el.innerHTML = '';
   // await loadScript(CDN_URL);
   const susi = createTag('susi-sentry-light', {
@@ -36,6 +36,7 @@ export default async function init(el) {
     variant,
   });
   susi.authParams = authParams;
+  susi.authParams.redirect_uri = redirectUri ? encodeURIComponent(redirectUri) : 'https://new.express.adobe.com/';
   susi.config = config;
   susi.stage = 'true';
   susi.setAttribute('stage', 'true');
