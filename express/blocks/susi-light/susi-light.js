@@ -9,8 +9,8 @@ const authParams = {
   locale: 'en-us',
   redirect_uri: 'https://new.express.adobe.com/', // FIXME:
   response_type: 'code', // FIXME:
-  // client_id: 'AdobeExpressWeb',
-  client_id: 'sentry-test-edu',
+  client_id: 'AdobeExpressWeb',
+  // client_id: 'sentry-test-edu',
   scope: 'AdobeID,openid',
 };
 const config = {
