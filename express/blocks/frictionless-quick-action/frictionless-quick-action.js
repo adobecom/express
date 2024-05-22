@@ -7,12 +7,6 @@ import {
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
-const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-const imageInputAccept = '.png, .jpeg, .jpg';
-const sizeLimits = {
-  image: 40 * 1024 * 1024,
-  video: 1024 * 1024 * 1024,
-};
 // only allows 1 qa per page?
 let inputElement;
 let quickAction;
@@ -21,6 +15,45 @@ let error;
 let ccEverywhere;
 let quickActionContainer;
 let uploadContainer;
+
+const JPG = 'jpg';
+const JPEG = 'jpeg';
+const PNG = 'png';
+export const getBaseImgCfg = (...types) => ({
+  group: 'image',
+  max_size: 40 * 1024 * 1024,
+  input_check: (input) => types.map((type) => `image/${type}`).includes(input),
+});
+export const getBaseVideoCfg = (...types) => ({
+  group: 'video',
+  max_size: 1024 * 1024 * 1024,
+  accept: types.map((type) => `.${type}`).join(', '),
+  input_check: (input) => types.map((type) => `video/${type}`).includes(input),
+});
+const QA_CONFIGS = {
+  'convert-to-jpg': {
+    ...getBaseImgCfg(PNG),
+  },
+  'convert-to-png': {
+    ...getBaseImgCfg(JPG, JPEG),
+  },
+  'convert-to-svg': {
+    ...getBaseImgCfg(JPG, JPEG, PNG),
+  },
+  'crop-image': {
+    ...getBaseImgCfg(JPG, JPEG, PNG),
+  },
+  'resize-image': {
+    ...getBaseImgCfg(JPG, JPEG, PNG),
+  },
+  'remove-background': {
+    ...getBaseImgCfg(JPG, JPEG, PNG),
+  },
+  'generate-qr-code': {
+    ...getBaseImgCfg(JPG, JPEG, PNG),
+    input_check: () => true,
+  },
+};
 
 function fade(element, action) {
   if (action === 'in') {
@@ -181,28 +214,10 @@ function startSDK(data = '') {
   });
 }
 
-function getQAGroup() {
-  if ([
-    'convert-to-jpg',
-    'convert-to-png',
-    'convert-to-svg',
-    'crop-image',
-    'resize-image',
-    'remove-background',
-    'generate-qr-code',
-  ].includes(quickAction)) {
-    return 'image';
-  }
-  // update list of video qas here
-  if ([].includes(quickAction)) return 'video';
-  // fallback to image until we have real video QA
-  return 'image';
-}
-
 function startSDKWithUnconvertedFile(file) {
   if (!file) return;
-  const maxSize = sizeLimits[getQAGroup()] ?? 40 * 1024 * 1024;
-  if (validImageTypes.includes(file.type) && file.size <= maxSize) {
+  const maxSize = QA_CONFIGS[quickAction].max_size ?? 40 * 1024 * 1024;
+  if (QA_CONFIGS[quickAction].input_check(file.type) && file.size <= maxSize) {
     const reader = new FileReader();
     reader.onloadend = () => {
       window.history.pushState({ hideFrictionlessQa: true }, '', '');
@@ -213,7 +228,7 @@ function startSDKWithUnconvertedFile(file) {
     reader.readAsDataURL(file);
   } else if (!error) {
     let invalidInputError;
-    if (!validImageTypes.includes(file.type)) invalidInputError = 'invalid image type. Please make sure your image format is one of the following: "image/png", "image/jpeg", "image/jpg"';
+    if (!QA_CONFIGS[quickAction].input_check(file.type)) invalidInputError = 'invalid image type. Please make sure your image format is one of the following: "image/png", "image/jpeg", "image/jpg"';
     else if (file.size > maxSize) invalidInputError = 'your image file is too large';
 
     error = createTag('p', {}, invalidInputError);
@@ -224,7 +239,7 @@ function startSDKWithUnconvertedFile(file) {
 
 function uploadFile() {
   if (!inputElement) {
-    inputElement = createTag('input', { type: 'file', accept: imageInputAccept });
+    inputElement = createTag('input', { type: 'file', accept: QA_CONFIGS[quickAction].accept });
   }
   // Trigger the file selector when the button is clicked
   inputElement.click();
@@ -331,5 +346,5 @@ export default async function decorate(block) {
   }, { passive: true });
 
   fqaBlock.dataset.frictionlesstype = quickAction;
-  fqaBlock.dataset.frictionlessgroup = getQAGroup(quickAction);
+  fqaBlock.dataset.frictionlessgroup = QA_CONFIGS[quickAction].group;
 }
