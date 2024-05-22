@@ -352,5 +352,5 @@ export default async function decorate(block) {
   }, { passive: true });
 
   fqaBlock.dataset.frictionlesstype = quickAction;
-  fqaBlock.dataset.frictionlessgroup = QA_CONFIGS[quickAction].group;
+  fqaBlock.dataset.frictionlessgroup = QA_CONFIGS[quickAction].group ?? 'image';
 }
