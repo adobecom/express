@@ -2,14 +2,15 @@
 // WIP
 import { createTag, loadScript } from '../../scripts/utils.js';
 
-const CDN_URL = 'https://auth-light.identity.adobe.com/sentry/wrapper.js';
+const CDN_URL = 'https://auth-light.identity-stage.adobe.com/sentry/wrapper.js';
 
 const authParams = {
   dt: false,
   locale: 'en-us',
   redirect_uri: 'https://new.express.adobe.com/', // FIXME:
   response_type: 'code', // FIXME:
-  client_id: 'AdobeExpressWeb',
+  // client_id: 'AdobeExpressWeb',
+  client_id: 'sentry-test',
   scope: 'AdobeID,openid',
 };
 const config = {
@@ -36,6 +37,8 @@ export default async function init(el) {
   });
   susi.authParams = authParams;
   susi.config = config;
+  susi.stage = 'true';
+  susi.setAttribute('stage', 'true');
   susi.addEventListener('redirect', onRedirect);
   susi.addEventListener('on-token', onToken);
   susi.addEventListener('on-error', onError);
