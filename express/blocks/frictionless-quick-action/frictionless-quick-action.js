@@ -4,6 +4,7 @@ import {
   loadScript,
   transformLinkToAnimation,
   addAnimationToggle,
+  fetchPlaceholders,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
@@ -74,147 +75,146 @@ function selectElementByTagPrefix(p) {
   return Array.from(allEls).find((e) => e.tagName.toLowerCase().startsWith(p.toLowerCase()));
 }
 
-function startSDK(data = '') {
+async function startSDK(data = '') {
   const urlParams = new URLSearchParams(window.location.search);
   const CDN_URL = 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
   const clientId = 'AdobeExpressWeb';
 
-  loadScript(CDN_URL).then(async () => {
-    if (!window.CCEverywhere) {
-      return;
-    }
-    if (!ccEverywhere) {
-      let { ietf } = getConfig().locale;
-      // for testing
-      const country = urlParams.get('country');
-      if (country) ietf = getConfig().locales[country]?.ietf;
-      if (ietf === 'zh-Hant-TW') ietf = 'tw-TW';
-      else if (ietf === 'zh-Hans-CN') ietf = 'cn-CN';
+  await loadScript(CDN_URL);
+  if (!window.CCEverywhere) {
+    return;
+  }
+  if (!ccEverywhere) {
+    let { ietf } = getConfig().locale;
+    // for testing
+    const country = urlParams.get('country');
+    if (country) ietf = getConfig().locales[country]?.ietf;
+    if (ietf === 'zh-Hant-TW') ietf = 'tw-TW';
+    else if (ietf === 'zh-Hans-CN') ietf = 'cn-CN';
 
-      const ccEverywhereConfig = {
-        hostInfo: {
-          clientId,
-          appName: 'express',
-        },
-        configParams: {
-          locale: ietf?.replace('-', '_'),
-          env: urlParams.get('hzenv') === 'stage' ? 'stage' : 'prod',
-        },
-        authOption: () => ({
-          mode: 'delayed',
-        }),
-      };
-
-      ccEverywhere = await window.CCEverywhere.initialize(...Object.values(ccEverywhereConfig));
-    }
-
-    // TODO: need the button labels from the placeholders sheet if the SDK default doens't work.
-    const exportConfig = [
-      {
-        id: 'download-button',
-        // label: 'Download',
-        action: {
-          target: 'download',
-        },
-        style: {
-          uiType: 'button',
-        },
-        buttonStyle: {
-          variant: 'secondary',
-          treatment: 'fill',
-          size: 'xl',
-        },
+    const ccEverywhereConfig = {
+      hostInfo: {
+        clientId,
+        appName: 'express',
       },
-      {
-        id: 'edit-in-express',
-        // label: 'Edit in Adobe Express for free',
-        action: {
-          target: 'express',
-        },
-        style: {
-          uiType: 'button',
-        },
-        buttonStyle: {
-          variant: 'primary',
-          treatment: 'fill',
-          size: 'xl',
-        },
+      configParams: {
+        locale: ietf?.replace('-', '_'),
+        env: urlParams.get('hzenv') === 'stage' ? 'stage' : 'prod',
       },
-    ];
-
-    const id = `${quickAction}-container`;
-    quickActionContainer = createTag('div', { id, class: 'quick-action-container' });
-    fqaBlock.append(quickActionContainer);
-    const divs = fqaBlock.querySelectorAll(':scope > div');
-    if (divs[1]) [, uploadContainer] = divs;
-    fade(uploadContainer, 'out');
-
-    const contConfig = {
-      mode: 'inline',
-      parentElementId: `${quickAction}-container`,
-      backgroundColor: 'transparent',
-      hideCloseButton: true,
+      authOption: () => ({
+        mode: 'delayed',
+      }),
     };
 
-    const docConfig = {
-      asset: {
-        data,
-        dataType: 'base64',
-        type: 'image',
-      },
-    };
+    ccEverywhere = await window.CCEverywhere.initialize(...Object.values(ccEverywhereConfig));
+  }
 
-    const appConfig = {
-      metaData: { isFrictionlessQa: 'true' },
-      receiveQuickActionErrors: false,
-      callbacks: {
-        onIntentChange: () => {
-          quickActionContainer?.remove();
-          fade(uploadContainer, 'in');
-          document.body.classList.add('editor-modal-loaded');
-          window.history.pushState({ hideFrictionlessQa: true }, '', '');
-          return {
-            containerConfig: {
-              mode: 'modal',
-              zIndex: 999,
-            },
-          };
-        },
-        onCancel: () => {
-          window.history.back();
-        },
+  // TODO: need the button labels from the placeholders sheet if the SDK default doens't work.
+  const exportConfig = [
+    {
+      id: 'download-button',
+      // label: 'Download',
+      action: {
+        target: 'download',
       },
-    };
+      style: {
+        uiType: 'button',
+      },
+      buttonStyle: {
+        variant: 'secondary',
+        treatment: 'fill',
+        size: 'xl',
+      },
+    },
+    {
+      id: 'edit-in-express',
+      // label: 'Edit in Adobe Express for free',
+      action: {
+        target: 'express',
+      },
+      style: {
+        uiType: 'button',
+      },
+      buttonStyle: {
+        variant: 'primary',
+        treatment: 'fill',
+        size: 'xl',
+      },
+    },
+  ];
 
-    switch (quickAction) {
-      case 'convert-to-jpg':
-        ccEverywhere.quickAction.convertToJPEG(docConfig, appConfig, exportConfig, contConfig);
-        break;
-      case 'convert-to-png':
-        ccEverywhere.quickAction.convertToPNG(docConfig, appConfig, exportConfig, contConfig);
-        break;
-      case 'convert-to-svg':
-        exportConfig.pop();
-        ccEverywhere.quickAction.convertToSVG(docConfig, appConfig, exportConfig, contConfig);
-        break;
-      case 'crop-image':
-        ccEverywhere.quickAction.cropImage(docConfig, appConfig, exportConfig, contConfig);
-        break;
-      case 'resize-image':
-        ccEverywhere.quickAction.resizeImage(docConfig, appConfig, exportConfig, contConfig);
-        break;
-      case 'remove-background':
-        ccEverywhere.quickAction.removeBackground(docConfig, appConfig, exportConfig, contConfig);
-        break;
-      case 'generate-qr-code':
-        ccEverywhere.quickAction.generateQRCode({}, appConfig, exportConfig, contConfig);
-        break;
-      default: break;
-    }
-  });
+  const id = `${quickAction}-container`;
+  quickActionContainer = createTag('div', { id, class: 'quick-action-container' });
+  fqaBlock.append(quickActionContainer);
+  const divs = fqaBlock.querySelectorAll(':scope > div');
+  if (divs[1]) [, uploadContainer] = divs;
+  fade(uploadContainer, 'out');
+
+  const contConfig = {
+    mode: 'inline',
+    parentElementId: `${quickAction}-container`,
+    backgroundColor: 'transparent',
+    hideCloseButton: true,
+  };
+
+  const docConfig = {
+    asset: {
+      data,
+      dataType: 'base64',
+      type: 'image',
+    },
+  };
+
+  const appConfig = {
+    metaData: { isFrictionlessQa: 'true' },
+    receiveQuickActionErrors: false,
+    callbacks: {
+      onIntentChange: () => {
+        quickActionContainer?.remove();
+        fade(uploadContainer, 'in');
+        document.body.classList.add('editor-modal-loaded');
+        window.history.pushState({ hideFrictionlessQa: true }, '', '');
+        return {
+          containerConfig: {
+            mode: 'modal',
+            zIndex: 999,
+          },
+        };
+      },
+      onCancel: () => {
+        window.history.back();
+      },
+    },
+  };
+
+  switch (quickAction) {
+    case 'convert-to-jpg':
+      ccEverywhere.quickAction.convertToJPEG(docConfig, appConfig, exportConfig, contConfig);
+      break;
+    case 'convert-to-png':
+      ccEverywhere.quickAction.convertToPNG(docConfig, appConfig, exportConfig, contConfig);
+      break;
+    case 'convert-to-svg':
+      exportConfig.pop();
+      ccEverywhere.quickAction.convertToSVG(docConfig, appConfig, exportConfig, contConfig);
+      break;
+    case 'crop-image':
+      ccEverywhere.quickAction.cropImage(docConfig, appConfig, exportConfig, contConfig);
+      break;
+    case 'resize-image':
+      ccEverywhere.quickAction.resizeImage(docConfig, appConfig, exportConfig, contConfig);
+      break;
+    case 'remove-background':
+      ccEverywhere.quickAction.removeBackground(docConfig, appConfig, exportConfig, contConfig);
+      break;
+    case 'generate-qr-code':
+      ccEverywhere.quickAction.generateQRCode({}, appConfig, exportConfig, contConfig);
+      break;
+    default: break;
+  }
 }
 
-function startSDKWithUnconvertedFile(file) {
+async function startSDKWithUnconvertedFile(file) {
   if (!file) return;
   const maxSize = QA_CONFIGS[quickAction].max_size ?? 40 * 1024 * 1024;
   if (QA_CONFIGS[quickAction].input_check(file.type) && file.size <= maxSize) {
@@ -227,11 +227,16 @@ function startSDKWithUnconvertedFile(file) {
     // Read the file as a data URL (Base64)
     reader.readAsDataURL(file);
   } else if (!error) {
+    const placeholders = await fetchPlaceholders();
     let invalidInputError;
-    if (!QA_CONFIGS[quickAction].input_check(file.type)) invalidInputError = 'invalid image type. Please make sure your image format is one of the following: "image/png", "image/jpeg", "image/jpg"';
-    else if (file.size > maxSize) invalidInputError = 'your image file is too large';
+    // FIXME: localize & placehold these messages
+    if (!QA_CONFIGS[quickAction].input_check(file.type)) {
+      invalidInputError = placeholders['fqa-too-large'] ?? 'invalid file type. Please make sure your file format is one of the following: "image/png", "image/jpeg", "image/jpg"';
+    } else if (file.size > maxSize) {
+      invalidInputError = placeholders['fqa-too-large'] ?? 'your file is too large';
+    }
 
-    error = createTag('p', {}, invalidInputError);
+    error = createTag('p', { class: 'input-error' }, invalidInputError);
     const dropzoneButton = fqaBlock.querySelector(':scope .dropzone a.button');
     dropzoneButton?.before(error);
   }
@@ -313,11 +318,11 @@ export default async function decorate(block) {
     dropzoneContainer.addEventListener(eventName, unhighlight, false);
   });
 
-  dropzoneContainer.addEventListener('drop', (e) => {
+  dropzoneContainer.addEventListener('drop', async (e) => {
     const dt = e.dataTransfer;
     const { files } = dt;
 
-    [...files].forEach(startSDKWithUnconvertedFile);
+    await Promise.all([...files].map((file) => startSDKWithUnconvertedFile(file)));
     document.body.dataset.suppressfloatingcta = 'true';
   }, false);
 
@@ -338,6 +343,7 @@ export default async function decorate(block) {
     if (correctState || embedElsFound) {
       quickActionContainer?.remove();
       editorModal?.remove();
+      error?.remove();
       document.body.classList.remove('editor-modal-loaded');
       inputElement.value = '';
       fade(uploadContainer, 'in');
