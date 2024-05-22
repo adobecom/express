@@ -10,7 +10,7 @@ const authParams = {
   redirect_uri: 'https://new.express.adobe.com/', // FIXME:
   response_type: 'code', // FIXME:
   // client_id: 'AdobeExpressWeb',
-  client_id: 'sentry-test',
+  client_id: 'sentry-test-edu',
   scope: 'AdobeID,openid',
 };
 const config = {
