@@ -8,8 +8,8 @@ const authParams = {
   dt: false,
   locale: getConfig().locale.ietf.toLowerCase(),
   response_type: 'code', // FIXME:
-  client_id: 'AdobeExpressWeb',
-  // client_id: 'sentry-test-edu',
+  // client_id: 'AdobeExpressWeb',
+  client_id: 'sentry-test-edu',
   scope: 'AdobeID,openid',
 };
 const config = {
@@ -28,6 +28,12 @@ const onError = (e) => {
 };
 
 export default async function init(el) {
+  // const preload = createTag('meta', {
+  //   name: 'susi-sentry-preload',
+  //   content: 'edu-express',
+  //   'data-locale': getConfig().locale.ietf.toLowerCase(),
+  // });
+  // document.head.appendChild(preload);
   const redirectUri = el.querySelector('div > div')?.textContent?.trim().toLowerCase() ?? '';
   el.innerHTML = '';
   // await loadScript(CDN_URL);
