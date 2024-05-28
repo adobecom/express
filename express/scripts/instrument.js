@@ -41,7 +41,14 @@ window.marketingtech = {
       ),
     },
     alloy: {
-      edgeConfigId: getConfig().env.edgeConfigId,
+      edgeConfigId: (
+        (
+          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
+          || martech === 'alloy-qa'
+        )
+          ? '8d2805dd-85bf-4748-82eb-f99fdad117a6'
+          : '2cba807b-7430-41ae-9aac-db2b0da742d5'
+      ),
     },
     target: checkTesting(),
     audienceManager: true,
