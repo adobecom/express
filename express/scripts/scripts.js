@@ -53,6 +53,8 @@ const config = {
     onDemand: !jarvisImmediatelyVisible,
   },
   links: 'on',
+  imsClientId: 'AdobeExpressWeb',
+  imsScope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
 };
 
 window.RUM_GENERATION = 'ccx-gen-4-experiment-high-sample-rate';

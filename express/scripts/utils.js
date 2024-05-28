@@ -1731,18 +1731,47 @@ export async function getExperimentConfig(experimentId) {
   }
 }
 
+let imsLoaded;
 function loadIMS() {
-  window.adobeid = {
-    client_id: 'AdobeExpressWeb',
-    scope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
-    locale: getConfig().locale.region,
-    environment: getConfig().env.ims,
-  };
-  if (getConfig().env.ims === 'stg1') {
-    loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-  } else {
-    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
-  }
+  imsLoaded = imsLoaded || new Promise((resolve, reject) => {
+    const {
+      locale, imsClientId, imsScope, env, adobeid,
+    } = getConfig();
+    if (!imsClientId) {
+      reject(new Error('Missing IMS Client ID'));
+      return;
+    }
+    const [unavMeta, ahomeMeta] = [getMetadata('universal-nav')?.trim(), getMetadata('adobe-home-redirect')];
+    const defaultScope = `AdobeID,openid,gnav${unavMeta && unavMeta !== 'off' ? ',pps.read,firefly_api,additional_info.roles,read_organizations' : ''}`;
+    const timeout = setTimeout(() => reject(new Error('IMS timeout')), 5000);
+    window.adobeid = {
+      client_id: imsClientId,
+      scope: imsScope || defaultScope,
+      locale: locale?.ietf?.replace('-', '_') || 'en_US',
+      redirect_uri: ahomeMeta === 'on'
+        ? `https://www${env.name !== 'prod' ? '.stage' : ''}.adobe.com${locale.prefix}` : undefined,
+      autoValidateToken: true,
+      environment: env.ims,
+      useLocalStorage: false,
+      onReady: () => {
+        resolve();
+        clearTimeout(timeout);
+      },
+      onError: reject,
+      ...adobeid,
+    };
+    if (getConfig().env.ims === 'stg1') {
+      loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
+    } else {
+      loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+    }
+  }).then(() => {
+    if (!window.adobeIMS?.isSignedInUser()) {
+      getConfig().entitlements([]);
+    }
+  });
+
+  return imsLoaded;
 }
 
 async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
@@ -2405,6 +2434,93 @@ async function loadLazy(main) {
   ]);
 }
 
+const getMepValue = (val) => {
+  const valMap = { on: true, off: false, gnav: 'gnav' };
+  const finalVal = val?.toLowerCase().trim();
+  if (finalVal in valMap) return valMap[finalVal];
+  return finalVal;
+};
+
+export const getMepEnablement = (mdKey, paramKey = false) => {
+  const paramValue = PAGE_URL.searchParams.get(paramKey || mdKey);
+  if (paramValue) return getMepValue(paramValue);
+  const mdValue = getMetadata(mdKey);
+  if (!mdValue) return false;
+  return getMepValue(mdValue);
+};
+
+export const combineMepSources = async (persEnabled, promoEnabled, mepParam) => {
+  let persManifests = [];
+
+  if (persEnabled) {
+    persManifests = persEnabled.toLowerCase()
+      .split(/,|(\s+)|(\\n)/g)
+      .filter((path) => path?.trim())
+      .map((manifestPath) => ({ manifestPath }));
+  }
+
+  if (promoEnabled) {
+    const { default: getPromoManifests } = await import('../features/personalization/promo-utils.js');
+    persManifests = persManifests.concat(getPromoManifests(promoEnabled, PAGE_URL.searchParams));
+  }
+
+  if (mepParam && mepParam !== 'off') {
+    const persManifestPaths = persManifests.map((manifest) => {
+      const { manifestPath } = manifest;
+      if (manifestPath.startsWith('/')) return manifestPath;
+      try {
+        const url = new URL(manifestPath);
+        return url.pathname;
+      } catch (e) {
+        return manifestPath;
+      }
+    });
+
+    mepParam.split('---').forEach((manifestPair) => {
+      const manifestPath = manifestPair.trim().toLowerCase().split('--')[0];
+      if (!persManifestPaths.includes(manifestPath)) {
+        persManifests.push({ manifestPath });
+      }
+    });
+  }
+  return persManifests;
+};
+
+async function checkForPageMods() {
+  const { mep: mepParam } = Object.fromEntries(PAGE_URL.searchParams);
+  if (mepParam === 'off') return;
+  const persEnabled = getMepEnablement('personalization');
+  const promoEnabled = getMepEnablement('manifestnames', 'promo');
+  const targetEnabled = getMepEnablement('target');
+  const mepEnabled = persEnabled || targetEnabled || promoEnabled || mepParam;
+  if (!mepEnabled) return;
+
+  const config = getConfig();
+  config.mep = { targetEnabled };
+  loadLink(
+    `${config.base}/features/personalization/personalization.js`,
+    { as: 'script', rel: 'modulepreload' },
+  );
+
+  const persManifests = await combineMepSources(persEnabled, promoEnabled, mepParam);
+  if (targetEnabled === true) {
+    await loadMartech({ persEnabled: true, persManifests, targetEnabled });
+    return;
+  }
+  if (!persManifests.length) return;
+
+  loadIMS()
+    .then(() => {
+      if (window.adobeIMS.isSignedInUser()) loadMartech();
+    })
+    .catch((e) => { console.log('Unable to load IMS:', e); });
+
+  const { preloadManifests, applyPers } = await import('../features/personalization/personalization.js');
+  const manifests = preloadManifests({ persManifests }, { getConfig, loadLink });
+
+  await applyPers(manifests);
+}
+
 async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
@@ -2468,6 +2584,7 @@ export async function loadArea(area = document) {
   const main = area.querySelector('main');
 
   if (isDoc) {
+    await checkForPageMods();
     decorateHeaderAndFooter();
   }
 
