@@ -23,6 +23,15 @@ if (isHomepage && getConfig().env.ims === 'prod') {
 }
 let imsLibProm;
 
+// TODO remove all this when we go live with the unav
+const usp = new URLSearchParams(window.location.search);
+const unav = usp.get('unav')?.toLowerCase();
+if (unav === 'on' || unav === 'true') {
+  sessionStorage.setItem('unav', 'true');
+} else if (unav === 'off' || unav === 'false') {
+  sessionStorage.removeItem('unav');
+}
+
 async function checkRedirect(location, geoLookup) {
   const splits = location.pathname.split('/express/');
   splits[0] = '';
@@ -167,7 +176,7 @@ async function loadFEDS() {
         showRegionPicker();
       },
     },
-    universalNav: true,
+    universalNav: getConfig().locale.prefix === '' || sessionStorage.getItem('unav') === 'true',
     universalNavComponents: 'appswitcher, notifications, profile',
     locale: (prefix === '' ? 'en' : prefix),
     content: {
