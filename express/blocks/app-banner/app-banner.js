@@ -1,6 +1,5 @@
 import {
   createTag,
-  getIcon,
   getMobileOperatingSystem,
   fetchPlaceholders,
   getIconElement,
@@ -31,10 +30,13 @@ async function buildPayload() {
 // Returns true if a week has passed or the banner has not been closed yet
 const weekPassed = () => new Date().getTime() > localStorage.getItem('app-banner-optout-exp-date');
 
+function populateStars(count, star, parent) {
+  for (let i = 0; i < count; i += 1) {
+    parent.appendChild(getIconElement(star));
+  }
+}
+
 function getCurrentRatingStars(rating = 5) {
-  const star = getIcon('star', 'Full star');
-  const starHalf = getIcon('star-half', 'Half star');
-  const starEmpty = getIcon('star-empty', 'Empty star');
   const stars = createTag('span', { class: 'rating-stars' });
   let newRating = rating;
   if (newRating > 5) newRating = 5;
@@ -43,7 +45,9 @@ function getCurrentRatingStars(rating = 5) {
   const filledStars = Math.floor(newRatingRoundedHalf);
   const halfStars = (filledStars === newRatingRoundedHalf) ? 0 : 1;
   const emptyStars = (halfStars === 1) ? 4 - filledStars : 5 - filledStars;
-  stars.innerHTML = `${star.repeat(filledStars)}${starHalf.repeat(halfStars)}${starEmpty.repeat(emptyStars)}`;
+  populateStars(filledStars, 'star', stars);
+  populateStars(halfStars, 'star-half', stars);
+  populateStars(emptyStars, 'star-empty', stars);
   const votes = createTag('span', { class: 'rating-votes' });
   stars.appendChild(votes);
   return stars;
@@ -52,7 +56,6 @@ function getCurrentRatingStars(rating = 5) {
 function addCloseBtn(block) {
   const $closeBtnDiv = createTag('div', { class: 'close-btn-div' });
   const $closeBtnImg = getIconElement('close-icon');
-
   $closeBtnDiv.append($closeBtnImg);
   block.append($closeBtnDiv);
 
@@ -76,12 +79,12 @@ function addCloseBtn(block) {
 
 function initScrollDirection(block) {
   const $section = block.closest('.section');
-  const $floatingButton = document.querySelector('.floating-button-wrapper[data-audience="mobile"]');
   const background = $section.querySelector('.gradient-background');
   let lastScrollTop = 0;
 
   document.addEventListener('scroll', () => {
     if (!$section.classList.contains('block-removed')) {
+      const $floatingButton = document.querySelector('.floating-button-wrapper[data-audience="mobile"]');
       const { scrollTop } = document.documentElement;
       if (scrollTop < lastScrollTop) {
         block.classList.remove('appear');
@@ -95,6 +98,7 @@ function initScrollDirection(block) {
           }
         }, 600);
       } else {
+        if ($floatingButton && $floatingButton.classList.contains('toolbox-opened')) return;
         block.classList.add('show');
         if ($floatingButton && !$floatingButton.classList.contains('toolbox-opened')) {
           $floatingButton.classList.add('push-up');
@@ -141,8 +145,7 @@ function decorateBanner($block, payload) {
 }
 
 function watchFloatingButtonState(block) {
-  const $floatingButton = document.querySelector('.floating-button-wrapper[data-audience="mobile"]');
-  if ($floatingButton) {
+  function handleFloatingButton($floatingButton) {
     const config = { attributes: true, childList: false, subtree: false };
 
     const callback = (mutationList) => {
@@ -164,10 +167,28 @@ function watchFloatingButtonState(block) {
     };
 
     const observer = new MutationObserver(callback);
-
-    // Start observing the target node for configured mutations
     observer.observe($floatingButton, config);
   }
+  const callback = function (mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE
+            && node.matches('.floating-button-wrapper[data-audience="mobile"]')) {
+            handleFloatingButton(node);
+            observer.disconnect();
+          }
+        });
+      }
+    }
+  };
+  const observer = new MutationObserver(callback);
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: false,
+  });
 }
 
 export default async function decorate($block) {

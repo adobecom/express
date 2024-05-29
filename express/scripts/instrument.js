@@ -129,6 +129,39 @@ export function sendEventToAdobeAnaltics(eventName) {
   });
 }
 
+function sendFrictionlessEventToAdobeAnaltics(block) {
+  const eventName = 'view-quickaction-upload-page';
+  _satellite.track('event', {
+    xdm: {},
+    data: {
+      eventType: 'web.webinteraction.linkClicks',
+      web: {
+        webInteraction: {
+          name: eventName,
+          linkClicks: {
+            value: 1,
+          },
+          type: 'other',
+        },
+      },
+      _adobe_corpnew: {
+        sdm: {
+          event: {
+            pagename: eventName,
+            url: loc.href,
+          },
+          custom: {
+            qa: {
+              group: block.dataset.frictionlessgroup ?? 'unknown',
+              type: block.dataset.frictionlesstype ?? 'unknown',
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 export function textToName(text) {
   const splits = text.toLowerCase().split(' ');
   const camelCase = splits.map((s, i) => (i ? s.charAt(0).toUpperCase() + s.substr(1) : s)).join('');
@@ -146,15 +179,19 @@ export async function trackBranchParameters($links) {
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
 
   const [
-    templateSearchTag,
+    searchTerm,
     canvasHeight,
     canvasWidth,
     canvasUnit,
     sceneline,
     taskID,
     assetCollection,
-    branchCategory,
-    branchSearchCategory,
+    category,
+    searchCategory,
+    loadPrintAddon,
+    tab,
+    action,
+    prompt,
     sdid,
     mv,
     mv2,
@@ -173,6 +210,10 @@ export async function trackBranchParameters($links) {
     getMetadata('branch-asset-collection'),
     getMetadata('branch-category'),
     getMetadata('branch-search-category'),
+    getMetadata('branch-loadprintaddon'),
+    getMetadata('branch-tab'),
+    getMetadata('branch-action'),
+    getMetadata('branch-prompt'),
     params.get('sdid'),
     params.get('mv'),
     params.get('mv2'),
@@ -183,105 +224,70 @@ export async function trackBranchParameters($links) {
     params.get('cgen'),
   ];
 
-  $links.forEach(($a) => {
-    if ($a.href && $a.href.match('adobesparkpost.app.link')) {
-      const btnUrl = new URL($a.href);
+  $links.forEach((a) => {
+    if (a.href && a.href.match('adobesparkpost.app.link')) {
+      a.rel = 'nofollow';
+      const btnUrl = new URL(a.href);
       const isSearchBranchLink = placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`);
       const urlParams = btnUrl.searchParams;
+      const setParams = (k, v) => {
+        if (v) urlParams.set(k, encodeURIComponent(v));
+      };
       if (urlParams.has('acomx-dno')) {
         urlParams.delete('acomx-dno');
         btnUrl.search = urlParams.toString();
-        $a.href = decodeURIComponent(btnUrl.toString());
+        a.href = decodeURIComponent(btnUrl.toString());
         return;
       }
-      const placement = getPlacement($a);
+      const placement = getPlacement(a);
 
       if (isSearchBranchLink) {
-        urlParams.set('category', branchCategory || 'templates');
-        urlParams.set('taskID', taskID);
-        urlParams.set('assetCollection', assetCollection);
+        setParams('category', category || 'templates');
+        setParams('taskID', taskID);
+        setParams('assetCollection', assetCollection);
 
-        if (branchSearchCategory) {
-          urlParams.set('searchCategory', branchSearchCategory);
-        } else if (templateSearchTag) {
-          urlParams.set('q', templateSearchTag);
+        if (searchCategory) {
+          setParams('searchCategory', searchCategory);
+        } else if (searchTerm) {
+          setParams('q', searchTerm);
         }
+        if (loadPrintAddon) setParams('loadPrintAddon', loadPrintAddon);
+        setParams('tab', tab);
+        setParams('action', action);
+        setParams('prompt', prompt);
       }
 
-      if (referrer) {
-        urlParams.set('referrer', referrer);
-      }
-
-      if (pageUrl) {
-        urlParams.set('url', pageUrl);
-      }
-
-      if (canvasHeight) {
-        urlParams.set('height', canvasHeight);
-      }
-
-      if (canvasWidth) {
-        urlParams.set('width', canvasWidth);
-      }
-
-      if (canvasUnit) {
-        urlParams.set('unit', canvasUnit);
-      }
-
-      if (sceneline) {
-        urlParams.set('sceneline', sceneline);
-      }
-
-      if (sdid) {
-        urlParams.set('sdid', sdid);
-      }
-
-      if (mv) {
-        urlParams.set('mv', mv);
-      }
-
-      if (mv2) {
-        urlParams.set('mv2', mv2);
-      }
-
-      if (efId) {
-        urlParams.set('efid', efId);
-      }
+      setParams('referrer', referrer);
+      setParams('url', pageUrl);
+      setParams('height', canvasHeight);
+      setParams('width', canvasWidth);
+      setParams('unit', canvasUnit);
+      setParams('sceneline', sceneline);
+      setParams('sdid', sdid);
+      setParams('mv', mv);
+      setParams('mv2', mv2);
+      setParams('efid', efId);
+      setParams('promoid', promoId);
+      setParams('trackingid', trackingId);
+      setParams('cgen', cgen);
+      setParams('placement', placement);
 
       if (sKwcId) {
         const sKwcIdParameters = sKwcId.split('!');
 
         if (typeof sKwcIdParameters[2] !== 'undefined' && sKwcIdParameters[2] === '3') {
-          urlParams.set('customer_placement', 'Google%20AdWords');
+          setParams('customer_placement', 'Google%20AdWords');
         }
 
         if (typeof sKwcIdParameters[8] !== 'undefined' && sKwcIdParameters[8] !== '') {
-          urlParams.set('keyword', sKwcIdParameters[8]);
+          setParams('keyword', sKwcIdParameters[8]);
         }
       }
 
-      if (promoId) {
-        urlParams.set('promoid', promoId);
-      }
-
-      if (trackingId) {
-        urlParams.set('trackingid', trackingId);
-      }
-
-      if (cgen) {
-        urlParams.set('cgen', cgen);
-      }
-
-      if (experimentStatus === 'active') {
-        urlParams.set('expid', `${experiment.id}-${experiment.selectedVariant}`);
-      }
-
-      if (placement) {
-        urlParams.set('ctaid', placement);
-      }
+      experimentStatus === 'active' && setParams('expid', `${experiment.id}-${experiment.selectedVariant}`);
 
       btnUrl.search = urlParams.toString();
-      $a.href = decodeURIComponent(btnUrl.toString());
+      a.href = decodeURIComponent(btnUrl.toString());
     }
   });
 }
@@ -579,21 +585,6 @@ function decorateAnalyticsEvents() {
       sendEventToAdobeAnaltics('adobe.com:express:cta:uploadYourPhoto');
     }
   });
-
-  if (['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
-    import('./block-mediator.min.js').then((resp) => {
-      const { default: BlockMediator } = resp;
-      const eligibility = BlockMediator.get('mobileBetaEligibility');
-      if (eligibility) {
-        sendEventToAdobeAnaltics(`betaEligibility:${eligibility.deviceSupport}`);
-      } else {
-        const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
-          sendEventToAdobeAnaltics(`betaEligibility:${e.newValue.deviceSupport}`);
-          unsub();
-        });
-      }
-    });
-  }
 }
 
 function martechLoadedCB() {
@@ -710,6 +701,12 @@ function martechLoadedCB() {
 
   // Fire the landing:viewedPage event
   sendEventToAdobeAnaltics('landing:viewedPage');
+
+  // Fire quick-action-viewed event if needed
+  const quickActionBlock = d.querySelector('.frictionless-quick-action.block');
+  if (quickActionBlock) {
+    sendFrictionlessEventToAdobeAnaltics(quickActionBlock);
+  }
 
   // Fire the displayPurchasePanel event if it is the pricing site
   if (

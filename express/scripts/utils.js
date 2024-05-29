@@ -38,6 +38,11 @@ const LANGSTORE = 'langstore';
 
 const PAGE_URL = new URL(window.location.href);
 
+function sanitizeInput(input) {
+  if (Number.isInteger(input)) return input;
+  return input.replace(/[^a-zA-Z0-9-_]/g, ''); // Simple regex to strip out potentially dangerous characters
+}
+
 export function getMetadata(name) {
   const attr = name && name.includes(':') ? 'property' : 'name';
   const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
@@ -205,6 +210,9 @@ export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
 }
 
 export function getAssetDetails(el) {
+  if (el.tagName === 'PICTURE') {
+    return getAssetDetails(el.querySelector('img'));
+  }
   // Get asset details
   const assetUrl = new URL(
     el.href // the reference for an a/svg tag
@@ -383,7 +391,26 @@ export function lazyLoadLottiePlayer($block = null) {
   }
 }
 
-export function getIcon(icons, alt, size = 44) {
+function createSVGWrapper(icon, sheetSize, alt, altSrc) {
+  const svgWrapper = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svgWrapper.classList.add('icon');
+  svgWrapper.classList.add(`icon-${icon}`);
+  svgWrapper.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/1999/xlink');
+  if (alt) {
+    svgWrapper.appendChild(createTag('title', { innerText: alt }));
+  }
+  const u = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  if (altSrc) {
+    u.setAttribute('href', altSrc);
+  } else {
+    u.setAttribute('href', `/express/icons/ccx-sheet_${sanitizeInput(sheetSize)}.svg#${
+      sanitizeInput(icon)}${sanitizeInput(sheetSize)}`);
+  }
+  svgWrapper.appendChild(u);
+  return svgWrapper;
+}
+
+function getIcon(icons, alt, size = 44, altSrc) {
   // eslint-disable-next-line no-param-reassign
   icons = Array.isArray(icons) ? icons : [icons];
   const [defaultIcon, mobileIcon] = icons;
@@ -485,25 +512,23 @@ export function getIcon(icons, alt, size = 44) {
     'pricingpremium',
   ];
 
-  if (symbols.includes(icon)) {
-    const iconName = icon;
+  if (symbols.includes(icon) || altSrc) {
     let sheetSize = size;
     if (size22Icons.includes(icon)) sheetSize = 22;
-    return `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-${icon}">
-      ${alt ? `<title>${alt}</title>` : ''}
-      <use href="/express/icons/ccx-sheet_${sheetSize}.svg#${iconName}${sheetSize}"></use>
-    </svg>`;
+    return createSVGWrapper(icon, sheetSize, alt, altSrc);
   } else {
-    return (`<img class="icon icon-${icon}" src="/express/icons/${icon}.svg" alt="${alt || icon}">`);
+    return createTag('img', {
+      class: `icon icon-${icon}`,
+      src: altSrc || `/express/icons/${icon}.svg`,
+      alt: `${alt || icon}`,
+    });
   }
 }
 
-export function getIconElement(icons, size, alt, additionalClassName) {
-  const $div = createTag('div');
-  $div.innerHTML = getIcon(icons, alt, size);
-
-  if (additionalClassName) $div.firstElementChild.classList.add(additionalClassName);
-  return ($div.firstElementChild);
+export function getIconElement(icons, size, alt, additionalClassName, altSrc) {
+  const icon = getIcon(icons, alt, size, altSrc);
+  if (additionalClassName) icon.className.add(additionalClassName);
+  return icon;
 }
 
 export function transformLinkToAnimation($a, $videoLooping = true) {
@@ -638,6 +663,37 @@ export function removeIrrelevantSections(main) {
       if (sectionRemove) section.remove();
     }
   });
+
+  // floating CTA vs page CTA with same text or link logics
+  if (['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta')?.toLowerCase())) {
+    const { device } = document.body.dataset;
+    const textToTarget = getMetadata(`${device}-floating-cta-text`)?.trim() || getMetadata('main-cta-text')?.trim();
+    const linkToTarget = getMetadata(`${device}-floating-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
+    if (textToTarget || linkToTarget) {
+      const linkToTargetURL = new URL(linkToTarget);
+      const sameUrlCTAs = Array.from(main.querySelectorAll('a:any-link'))
+        .filter((a) => {
+          try {
+            const currURL = new URL(a.href);
+            const sameText = a.textContent.trim() === textToTarget;
+            const samePathname = currURL.pathname === linkToTargetURL?.pathname;
+            const sameHash = currURL.hash === linkToTargetURL?.hash;
+            const isNotInFloatingCta = !a.closest('.block')?.classList.contains('floating-button');
+            const notFloatingCtaIgnore = !a.classList.contains('floating-cta-ignore');
+
+            return (sameText || (samePathname && sameHash))
+              && isNotInFloatingCta && notFloatingCtaIgnore;
+          } catch (err) {
+            window.lana?.log(err);
+            return false;
+          }
+        });
+
+      sameUrlCTAs.forEach((cta) => {
+        cta.classList.add('same-as-floating-button-CTA');
+      });
+    }
+  }
 }
 
 /**
@@ -1078,13 +1134,6 @@ export function getHelixEnv() {
   return env;
 }
 
-function convertGlobToRe(glob) {
-  let reString = glob.replace(/\*\*/g, '_');
-  reString = reString.replace(/\*/g, '[0-9a-z-]*');
-  reString = reString.replace(/_/g, '.*');
-  return (new RegExp(reString));
-}
-
 export async function fetchRelevantRows(path) {
   if (!window.relevantRows) {
     try {
@@ -1211,15 +1260,6 @@ function resolveFragments() {
         $fragment.remove();
       }, 500);
     });
-}
-
-function decorateMarqueeColumns($main) {
-  // flag first columns block in first section block as marquee
-  const $firstColumnsBlock = $main.querySelector('.section:first-of-type .columns:first-of-type');
-
-  if ($firstColumnsBlock) {
-    $firstColumnsBlock.classList.add('columns-marquee');
-  }
 }
 
 /**
@@ -1398,7 +1438,8 @@ export async function fetchPlaceholders() {
       const json = await resp.json();
       window.placeholders = {};
       json.data.forEach((placeholder) => {
-        window.placeholders[toClassName(placeholder.Key)] = placeholder.Text;
+        if (placeholder.value) window.placeholders[placeholder.key] = placeholder.value;
+        else if (placeholder.Text) window.placeholders[placeholder.Key] = placeholder.Text;
       });
     }
   };
@@ -1542,7 +1583,7 @@ export function decorateButtons(el = document) {
       if (linkText.startsWith('{{icon-') && linkText.endsWith('}}')) {
         const $iconName = /{{icon-([\w-]+)}}/g.exec(linkText)[1];
         if ($iconName) {
-          $a.innerHTML = getIcon($iconName, `${$iconName} icon`);
+          $a.appendChild(getIcon($iconName, `${$iconName} icon`));
           $a.classList.remove('button', 'primary', 'secondary', 'accent');
           $a.title = $iconName;
         }
@@ -1693,16 +1734,15 @@ export async function getExperimentConfig(experimentId) {
 
 function loadIMS() {
   window.adobeid = {
-    client_id: sessionStorage.getItem('imsclient'),
-    scope: 'AdobeID,openid',
+    client_id: 'AdobeExpressWeb',
+    scope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
     locale: getConfig().locale.region,
-    environment: 'prod',
+    environment: getConfig().env.ims,
   };
-  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
-    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
-  } else {
+  if (getConfig().env.ims === 'stg1') {
     loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-    window.adobeid.environment = 'stg1';
+  } else {
+    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
   }
 }
 
@@ -1875,65 +1915,6 @@ export async function fetchBlockFragDecorated(url, blockName) {
   }
 }
 
-export async function fetchFloatingCta(path) {
-  const env = getHelixEnv();
-  const dev = new URLSearchParams(window.location.search).get('dev');
-  const { experiment, experimentParams } = window.hlx;
-  const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
-  let spreadsheet;
-  let floatingBtnData;
-
-  async function fetchFloatingBtnData(sheet) {
-    if (!window.floatingCta) {
-      try {
-        const { prefix } = getConfig().locale;
-        const resp = await fetch(`${prefix}${sheet}`);
-        window.floatingCta = resp.ok ? (await resp.json()).data : [];
-      } catch {
-        const resp = await fetch(sheet);
-        window.floatingCta = resp.ok ? (await resp.json()).data : [];
-      }
-    }
-
-    if (window.floatingCta.length) {
-      const candidates = window.floatingCta.filter((p) => {
-        const pathMatch = p.path.includes('*') ? path.match(convertGlobToRe(p.path)) : path === p.path;
-
-        if (experiment && path !== 'default') {
-          return (pathMatch)
-            && p.expID === experiment.id
-            && p.challengerID === experiment.selectedVariant;
-        } else {
-          return pathMatch;
-        }
-      }).sort((a, b) => b.path.length - a.path.length);
-
-      if (env && env.name === 'stage') {
-        return candidates[0] || null;
-      }
-
-      return candidates[0] && candidates[0].live !== 'N' ? candidates[0] : null;
-    }
-    return null;
-  }
-
-  if (['yes', 'true', 'on'].includes(dev) && env && env.name === 'stage') {
-    spreadsheet = '/express/floating-cta-dev.json?limit=100000';
-  } else {
-    spreadsheet = '/express/floating-cta.json?limit=100000';
-  }
-
-  if (experimentStatus === 'active' || experimentParams) {
-    const expSheet = '/express/experiments/floating-cta-experiments.json?limit=100000';
-    floatingBtnData = await fetchFloatingBtnData(expSheet);
-  }
-
-  if (!floatingBtnData) {
-    floatingBtnData = await fetchFloatingBtnData(spreadsheet);
-  }
-  return floatingBtnData;
-}
-
 async function buildAutoBlocks(main) {
   const lastDiv = main.querySelector(':scope > div:last-of-type');
 
@@ -1966,95 +1947,24 @@ async function buildAutoBlocks(main) {
     }
   }
 
-  if (['yes', 'true', 'on'].includes(getMetadata('show-plans-comparison').toLowerCase())) {
-    const $plansComparison = buildBlock('plans-comparison', '');
-    if (lastDiv) {
-      lastDiv.append($plansComparison);
-    }
-  }
-
-  async function loadPromoFrag() {
-    if (document.querySelector('.sticky-promo-bar')) return;
-
-    let promoFrag;
-    const location = new URL(window.location);
-    const { prefix } = getConfig().locale;
-    const fragmentUrl = `${location.origin}${prefix}${`/express/fragments/${getMetadata('ineligible-promo-frag') || 'rejected-beta-promo-bar'}`}`;
-    const path = new URL(fragmentUrl).pathname.split('.')[0];
-    const resp = await fetch(`${path}.plain.html`);
-    if (resp.status === 404) {
-      return;
-    } else {
-      const html = await resp.text();
-      const htmlHolder = createTag('div');
-      htmlHolder.innerHTML = html;
-      promoFrag = htmlHolder.querySelector(':scope > div');
-      promoFrag.classList.add('section', 'section-wrapper');
-
-      if (!promoFrag) return;
-
-      const img = promoFrag.querySelector('img');
-      if (img) {
-        img.setAttribute('loading', 'lazy');
-      }
-    }
-
-    main.append(promoFrag);
-    const block = promoFrag?.querySelector('.sticky-promo-bar:not(.block)');
-    if (block) await loadBlock(block);
-  }
-
-  async function loadFloatingCTA(BlockMediator, decorated) {
-    const floatingCTAData = await fetchFloatingCta(window.location.pathname);
+  async function loadFloatingCTA(BlockMediator) {
     const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
     const device = document.body.dataset?.device;
-    const blockNameWithVariants = floatingCTAData?.[device] ? floatingCTAData?.[device].split(' ') : [];
-    const blockName = blockNameWithVariants.shift();
+    const blockName = getMetadata(`${device}-floating-cta`);
 
-    if (validButtonVersion.includes(blockName) && lastDiv) {
+    if (blockName && validButtonVersion.includes(blockName) && lastDiv) {
       const button = buildBlock(blockName, device);
-      button.classList.add('spreadsheet-powered');
-      blockNameWithVariants.forEach((variant) => button.classList.add(variant));
+      button.classList.add('metadata-powered');
       lastDiv.append(button);
-      if (!decorated) {
-        await decorateBlock(button);
-        await loadBlock(button);
-      }
       BlockMediator.set('floatingCtasLoaded', true);
     }
   }
 
-  if (document.body.dataset.device === 'mobile' && ['off', 'false', 'no'].includes(getMetadata('mobile-benchmark')
-    .toLowerCase())) {
-    await loadPromoFrag();
-  } else if (document.body.dataset.device === 'mobile' && ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark')
-    .toLowerCase())) {
+  if (['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta')?.toLowerCase())) {
     const { default: BlockMediator } = await import('./block-mediator.min.js');
 
     if (!BlockMediator.get('floatingCtasLoaded')) {
-      const eligibilityChecked = BlockMediator.get('mobileBetaEligibility');
-      if (eligibilityChecked) {
-        if (eligibilityChecked.deviceSupport) {
-          await loadFloatingCTA(BlockMediator, true);
-        } else {
-          await loadPromoFrag();
-        }
-      } else {
-        const unsubscribe = BlockMediator.subscribe('mobileBetaEligibility', async (e) => {
-          if (e.newValue.deviceSupport) {
-            await loadFloatingCTA(BlockMediator, false);
-          } else {
-            await loadPromoFrag();
-          }
-          unsubscribe();
-        });
-      }
-    }
-  } else if (['yes', 'true', 'on'].includes(getMetadata('show-floating-cta').toLowerCase())) {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
-
-    if (!BlockMediator.get('floatingCtasLoaded')) {
-      await loadFloatingCTA(BlockMediator, true);
+      await loadFloatingCTA(BlockMediator);
     }
   }
 
@@ -2070,7 +1980,7 @@ async function buildAutoBlocks(main) {
 
 function splitSections(main) {
   main.querySelectorAll(':scope > div > div').forEach((block) => {
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion', 'plans-comparison'];
+    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion'];
     // work around for splitting columns and sixcols template list
     // add metadata condition to minimize impact on other use cases
 
@@ -2273,7 +2183,6 @@ export async function decorateMain(main, isDoc) {
   splitSections(main);
   const sections = decorateSections(main, isDoc);
   decorateButtons(main);
-  decorateMarqueeColumns(main);
   await fixIcons(main);
   decoratePictures(main);
   decorateLinkedPictures(main);
@@ -2633,11 +2542,10 @@ export async function loadArea(area = document) {
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 
-  if (['on', 'yes'].includes(getMetadata('milo-analytics')?.toLowerCase()) || params.get('milo-analytics') === 'on') {
-    import('./attributes.js').then((analytics) => {
-      document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
-    });
-  }
+  import('./attributes.js').then((analytics) => {
+    document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
+  });
+
   window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
     decorateTrackingEvents();
   });

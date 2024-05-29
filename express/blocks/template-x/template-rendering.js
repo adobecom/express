@@ -125,11 +125,11 @@ function renderShareWrapper(branchUrl, placeholders) {
     tabindex: '-1',
   });
   let timeoutId = null;
-  shareIcon.addEventListener('click', async () => {
+  shareIcon.addEventListener('click', () => {
     timeoutId = share(branchUrl, tooltip, timeoutId);
   });
 
-  shareIcon.addEventListener('keypress', async (e) => {
+  shareIcon.addEventListener('keypress', (e) => {
     if (e.key !== 'Enter') {
       return;
     }
@@ -290,6 +290,8 @@ async function renderRotatingMedias(wrapper,
   return { cleanup, hover: playMedia };
 }
 
+let currentHoveredElement;
+
 function renderMediaWrapper(template, placeholders) {
   const mediaWrapper = createTag('div', { class: 'media-wrapper' });
 
@@ -313,10 +315,14 @@ function renderMediaWrapper(template, placeholders) {
     if (!renderedMedia) {
       renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
       mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
-      mediaWrapper.querySelector('.icon')?.focus();
     }
     renderedMedia.hover();
+    currentHoveredElement?.classList.remove('singleton-hover');
+    currentHoveredElement = e.target;
+    currentHoveredElement?.classList.add('singleton-hover');
+    document.activeElement.blur();
   };
+
   const leaveHandler = () => {
     if (renderedMedia) renderedMedia.cleanup();
   };
@@ -327,9 +333,11 @@ function renderMediaWrapper(template, placeholders) {
     if (!renderedMedia) {
       renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
       mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
-      mediaWrapper.querySelector('.icon')?.focus();
       renderedMedia.hover();
     }
+    currentHoveredElement?.classList.remove('singleton-hover');
+    currentHoveredElement = e.target;
+    currentHoveredElement?.classList.add('singleton-hover');
   };
 
   return {
@@ -337,7 +345,7 @@ function renderMediaWrapper(template, placeholders) {
   };
 }
 
-async function renderHoverWrapper(template, placeholders) {
+function renderHoverWrapper(template, placeholders) {
   const btnContainer = createTag('div', { class: 'button-container' });
 
   const {
@@ -348,40 +356,22 @@ async function renderHoverWrapper(template, placeholders) {
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
-  let isEligible = document.body.dataset.device === 'desktop' || !['yes', 'true', 'Y', 'on'].includes(getMetadata('mobile-benchmark'));
+  const cta = renderCTA(placeholders, template.customLinks.branchUrl);
+  btnContainer.prepend(cta);
+  cta.addEventListener('focusin', focusHandler);
 
-  if (!isEligible) {
-    const eligibility = BlockMediator.get('mobileBetaEligibility');
-    if (eligibility) {
-      isEligible = eligibility.deviceSupport;
-    } else {
-      isEligible = await new Promise((resolve) => {
-        const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
-          resolve(e.newValue.deviceSupport);
-          unsub();
-        });
-      });
-    }
-  }
-
-  if (isEligible) {
-    const cta = renderCTA(placeholders, template.customLinks.branchUrl);
-    btnContainer.append(cta);
-    cta.addEventListener('focusin', focusHandler);
-
-    cta.addEventListener('click', () => {
-      updateImpressionCache({
-        id: template.id,
-        status: template.licensingCategory,
-        task: getMetadata('tasksx') || getMetadata('tasks') || '',
-        search_keyword: getMetadata('q') || getMetadata('topics') || '',
-        collection: getMetadata('tasksx') || getMetadata('tasks') || '',
-        collection_path: window.location.pathname,
-      });
-      removeOptionalImpressionFields('select-template');
-      trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
-    }, { passive: true });
-  }
+  cta.addEventListener('click', () => {
+    updateImpressionCache({
+      id: template.id,
+      status: template.licensingCategory,
+      task: getMetadata('tasksx') || getMetadata('tasks') || '',
+      search_keyword: getMetadata('q') || getMetadata('topics') || '',
+      collection: getMetadata('tasksx') || getMetadata('tasks') || '',
+      collection_path: window.location.pathname,
+    });
+    removeOptionalImpressionFields('select-template');
+    trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
+  }, { passive: true });
 
   return btnContainer;
 }
@@ -443,10 +433,10 @@ function renderStillWrapper(template, placeholders) {
   return stillWrapper;
 }
 
-export default async function renderTemplate(template, placeholders) {
+export default function renderTemplate(template, placeholders) {
   const tmpltEl = createTag('div');
   tmpltEl.append(renderStillWrapper(template, placeholders));
-  tmpltEl.append(await renderHoverWrapper(template, placeholders));
+  tmpltEl.append(renderHoverWrapper(template, placeholders));
 
   return tmpltEl;
 }

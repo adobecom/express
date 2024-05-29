@@ -3,11 +3,17 @@ import {
   getConfig,
   loadScript,
   transformLinkToAnimation,
+  addAnimationToggle,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 const imageInputAccept = '.png, .jpeg, .jpg';
+const sizeLimits = {
+  image: 40 * 1024 * 1024,
+  video: 1024 * 1024 * 1024,
+};
+// only allows 1 qa per page?
 let inputElement;
 let quickAction;
 let fqaBlock;
@@ -38,7 +44,7 @@ function selectElementByTagPrefix(p) {
 function startSDK(data = '') {
   const urlParams = new URLSearchParams(window.location.search);
   const CDN_URL = 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
-  const clientId = 'MarvelWeb3';
+  const clientId = 'AdobeExpressWeb';
 
   loadScript(CDN_URL).then(async () => {
     if (!window.CCEverywhere) {
@@ -58,7 +64,8 @@ function startSDK(data = '') {
           appName: 'express',
         },
         configParams: {
-          locale: ietf.replace('-', '_'),
+          locale: ietf?.replace('-', '_'),
+          env: urlParams.get('hzenv') === 'stage' ? 'stage' : 'prod',
         },
         authOption: () => ({
           mode: 'delayed',
@@ -114,11 +121,6 @@ function startSDK(data = '') {
       parentElementId: `${quickAction}-container`,
       backgroundColor: 'transparent',
       hideCloseButton: true,
-      minSize: {
-        width: 1112,
-        height: 620,
-        unit: 'px',
-      },
     };
 
     const docConfig = {
@@ -179,9 +181,27 @@ function startSDK(data = '') {
   });
 }
 
+function getQAGroup() {
+  if ([
+    'convert-to-jpg',
+    'convert-to-png',
+    'convert-to-svg',
+    'crop-image',
+    'resize-image',
+    'remove-background',
+    'generate-qr-code',
+  ].includes(quickAction)) {
+    return 'image';
+  }
+  // update list of video qas here
+  if ([].includes(quickAction)) return 'video';
+  // fallback to image until we have real video QA
+  return 'image';
+}
+
 function startSDKWithUnconvertedFile(file) {
   if (!file) return;
-  const maxSize = 17 * 1024 * 1024; // 17 MB in bytes
+  const maxSize = sizeLimits[getQAGroup()] ?? 40 * 1024 * 1024;
   if (validImageTypes.includes(file.type) && file.size <= maxSize) {
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -231,7 +251,10 @@ export default async function decorate(block) {
   const actionColumn = createTag('div');
   const dropzoneContainer = createTag('div', { class: 'dropzone-container' });
 
-  if (animation && animation.href.includes('.mp4')) transformLinkToAnimation(animation);
+  if (animation && animation.href.includes('.mp4')) {
+    transformLinkToAnimation(animation);
+    addAnimationToggle(animationContainer);
+  }
   if (cta) cta.classList.add('xlarge');
   dropzone.classList.add('dropzone');
 
@@ -247,6 +270,7 @@ export default async function decorate(block) {
     } else {
       uploadFile();
     }
+    document.body.dataset.suppressfloatingcta = 'true';
   });
 
   function preventDefaults(e) {
@@ -279,6 +303,7 @@ export default async function decorate(block) {
     const { files } = dt;
 
     [...files].forEach(startSDKWithUnconvertedFile);
+    document.body.dataset.suppressfloatingcta = 'true';
   }, false);
 
   const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
@@ -301,6 +326,10 @@ export default async function decorate(block) {
       document.body.classList.remove('editor-modal-loaded');
       inputElement.value = '';
       fade(uploadContainer, 'in');
+      document.body.dataset.suppressfloatingcta = 'false';
     }
   }, { passive: true });
+
+  fqaBlock.dataset.frictionlesstype = quickAction;
+  fqaBlock.dataset.frictionlessgroup = getQAGroup(quickAction);
 }

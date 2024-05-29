@@ -9,7 +9,7 @@ function parseEncodedConfig(encodedConfig) {
   try {
     return JSON.parse(b64ToUtf8(decodeURIComponent(encodedConfig)));
   } catch (e) {
-    console.log(e);
+    window.lana?.log(e);
   }
   return null;
 }
@@ -33,6 +33,7 @@ export default async function init(a) {
       el: a,
       options: { rootMargin: `${ROOT_MARGIN}px` },
       callback: loadFaas,
+      once: true,
     });
   }
 }

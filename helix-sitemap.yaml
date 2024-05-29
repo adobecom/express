@@ -83,7 +83,7 @@ sitemaps:
       norway:
         source: /no/express/query-index.json
         destination: /no/express/sitemap.xml
-        hreflang: nb
+        hreflang: no
         alternate: /no/{path}
       sweden:
         source: /se/express/query-index.json

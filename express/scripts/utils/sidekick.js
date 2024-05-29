@@ -28,7 +28,6 @@ export default function init() {
 
   const launchQAGuide = async () => {
     const { default: initQAGuide } = await import('../features/qa-guide/qa-guide.js');
-
     initQAGuide();
   };
 
@@ -37,7 +36,6 @@ export default function init() {
   // Auto plugins
   autoWidgetByUSP('qaprogress', () => {
     launchQAGuide();
-    preflightListener();
   });
 
   // Add plugin listeners here
