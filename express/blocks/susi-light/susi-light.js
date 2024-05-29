@@ -41,12 +41,12 @@ export default async function init(el) {
     popup: isPopup,
     variant,
   });
-  susi.variant = variant;
   susi.authParams = authParams;
   susi.authParams.redirect_uri = redirectUri ? encodeURIComponent(redirectUri) : 'https://new.express.adobe.com/';
   susi.config = config;
   susi.stage = 'true';
   susi.setAttribute('stage', 'true');
+  susi.variant = variant;
   susi.addEventListener('redirect', onRedirect);
   susi.addEventListener('on-token', onToken);
   susi.addEventListener('on-error', onError);
