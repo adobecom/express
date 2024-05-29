@@ -167,7 +167,7 @@ async function loadFEDS() {
         showRegionPicker();
       },
     },
-    universalNav: getConfig().locale.prefix === '',
+    universalNav: true,
     universalNavComponents: 'appswitcher, notifications, profile',
     locale: (prefix === '' ? 'en' : prefix),
     content: {
