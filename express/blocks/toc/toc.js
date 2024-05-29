@@ -23,10 +23,22 @@ export function getCloseButton() {
   return $close;
 }
 
-function getTocIcon(icons, alt) {
+function getIcon(icons, alt) {
+  // eslint-disable-next-line no-param-reassign
+  icons = Array.isArray(icons) ? icons : [icons];
   const [defaultIcon, mobileIcon] = icons;
   const icon = (mobileIcon && window.innerWidth < 600) ? mobileIcon : defaultIcon;
-  return genericGetIconElement(icon, undefined, alt, undefined, `/express/blocks/toc/toc-sprite.svg#${icon}`);
+  const iconName = icon;
+  return `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-${icon}">
+    ${alt ? `<title>${alt}</title>` : ''}
+    <use href="/express/blocks/toc/toc-sprite.svg#${iconName}"></use>
+  </svg>`;
+}
+
+export function getIconElement(icons, alt) {
+  const $div = document.createElement('div');
+  $div.innerHTML = getIcon(icons, alt);
+  return ($div.firstChild);
 }
 
 export async function fixIcons($block = document) {
@@ -46,7 +58,7 @@ export async function fixIcons($block = document) {
       .map((i) => (i ? toClassName(i.split(':')[1].trim()) : null));
 
     const $picture = $img.closest('picture');
-    const $icon = getTocIcon([icon, mobileIcon], alt);
+    const $icon = getIconElement([icon, mobileIcon], alt);
     $picture.parentElement.replaceChild($icon, $picture);
   });
 }
@@ -138,7 +150,7 @@ export default async function decorate($block) {
     }
   });
 
-  const $closeIcon = getTocIcon(['close'], 'Icon: Close');
+  const $closeIcon = getIconElement(['close'], 'Icon: Close');
   const $close = getCloseButton();
   $close.innerHTML = $closeIcon.outerHTML + $close.innerHTML;
   $block.append($close);

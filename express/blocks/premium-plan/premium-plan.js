@@ -1,6 +1,6 @@
 import {
   createTag,
-  getIconElement,
+  getIcon,
   // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
@@ -89,7 +89,7 @@ export default function decorate($block) {
       if ($links) {
         $links.forEach(($link) => {
           const iconName = $link.textContent.trim().toLowerCase();
-          $link.append(getIconElement(iconName));
+          $link.innerHTML = getIcon(iconName);
         });
       }
     }
