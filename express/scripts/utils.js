@@ -2594,44 +2594,6 @@ function initSidekick() {
   }
 }
 
-// eslint-disable-next-line no-unused-vars
-async function processSection(section, config, isDoc) {
-  const inlineFrags = [...section.el.querySelectorAll('a[href*="#_inline"]')];
-  if (inlineFrags.length) {
-    const { default: loadInlineFrags } = await import('../blocks/fragment/fragment.js');
-    const fragPromises = inlineFrags.map((link) => loadInlineFrags(link));
-    await Promise.all(fragPromises);
-    // await decoratePlaceholders(section.el, config); // FIXME: exists in milo
-    const newlyDecoratedSection = decorateSection(section.el, section.idx);
-    section.blocks = newlyDecoratedSection.blocks;
-    section.preloadLinks = newlyDecoratedSection.preloadLinks;
-  }
-
-  if (section.preloadLinks.length) {
-    const preloads = section.preloadLinks.map((block) => loadBlock(block));
-    await Promise.all(preloads);
-  }
-
-  const loaded = section.blocks.map((block) => loadBlock(block));
-
-  // await decorateIcons(section.el, config); // FIXME: exists in milo
-
-  // Only move on to the next section when all blocks are loaded.
-  await Promise.all(loaded);
-
-  // Show the section when all blocks inside are done.
-  delete section.el.dataset.status;
-
-  // FIXME: here in milo
-  // if (isDoc && section.el.dataset.idx === '0') {
-  //   await loadPostLCP(config);
-  // }
-
-  delete section.el.dataset.idx;
-
-  return section.blocks;
-}
-
 /**
  * Decorates the page.
  */
@@ -2669,17 +2631,7 @@ export async function loadArea(area = document) {
 
   let sections = [];
   if (main) {
-    const areaBlocks = [];
     sections = await decorateMain(main, isDoc);
-    for (const section of sections) {
-      // eslint-disable-next-line no-await-in-loop
-      const sectionBlocks = await processSection(section, getConfig(), isDoc);
-      areaBlocks.push(...sectionBlocks);
-
-      areaBlocks.forEach((block) => {
-        if (!block.className.includes('metadata')) block.dataset.block = '';
-      });
-    }
     decoratePageStyle();
     decorateLegalCopy(main);
     addJapaneseSectionHeaderSizing();

@@ -28,12 +28,23 @@ async function loadFragment(path) {
   return null;
 }
 
-export default async function decorate(block) {
+export default async function decorate(el) {
+  let block = el;
   addTempWrapper(block, 'fragment');
 
-  let link = block.querySelector('a');
-  if (!link && block.tagName === 'A') link = block;
-  const path = link ? link.getAttribute('href') : block.textContent.trim();
+  const link = block.querySelector('a');
+  let path;
+  if (link) {
+    path = link.getAttribute('href');
+  } else if (block.tagName === 'A') {
+    // auto link-block fragment
+    path = block.getAttribute('href');
+    if (block.closest('.block.fragment')) {
+      block = block.closest('.block.fragment');
+    }
+  } else {
+    path = block.textContent.trim();
+  }
   const fragment = await loadFragment(path);
 
   if (fragment) {
