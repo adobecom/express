@@ -38,11 +38,6 @@ const LANGSTORE = 'langstore';
 
 const PAGE_URL = new URL(window.location.href);
 
-function sanitizeInput(input) {
-  if (Number.isInteger(input)) return input;
-  return input.replace(/[^a-zA-Z0-9-_]/g, ''); // Simple regex to strip out potentially dangerous characters
-}
-
 export function getMetadata(name) {
   const attr = name && name.includes(':') ? 'property' : 'name';
   const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
@@ -391,26 +386,7 @@ export function lazyLoadLottiePlayer($block = null) {
   }
 }
 
-function createSVGWrapper(icon, sheetSize, alt, altSrc) {
-  const svgWrapper = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svgWrapper.classList.add('icon');
-  svgWrapper.classList.add(`icon-${icon}`);
-  svgWrapper.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/1999/xlink');
-  if (alt) {
-    svgWrapper.appendChild(createTag('title', { innerText: alt }));
-  }
-  const u = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-  if (altSrc) {
-    u.setAttribute('href', altSrc);
-  } else {
-    u.setAttribute('href', `/express/icons/ccx-sheet_${sanitizeInput(sheetSize)}.svg#${
-      sanitizeInput(icon)}${sanitizeInput(sheetSize)}`);
-  }
-  svgWrapper.appendChild(u);
-  return svgWrapper;
-}
-
-function getIcon(icons, alt, size = 44, altSrc) {
+export function getIcon(icons, alt, size = 44) {
   // eslint-disable-next-line no-param-reassign
   icons = Array.isArray(icons) ? icons : [icons];
   const [defaultIcon, mobileIcon] = icons;
@@ -512,23 +488,25 @@ function getIcon(icons, alt, size = 44, altSrc) {
     'pricingpremium',
   ];
 
-  if (symbols.includes(icon) || altSrc) {
+  if (symbols.includes(icon)) {
+    const iconName = icon;
     let sheetSize = size;
     if (size22Icons.includes(icon)) sheetSize = 22;
-    return createSVGWrapper(icon, sheetSize, alt, altSrc);
+    return `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-${icon}">
+      ${alt ? `<title>${alt}</title>` : ''}
+      <use href="/express/icons/ccx-sheet_${sheetSize}.svg#${iconName}${sheetSize}"></use>
+    </svg>`;
   } else {
-    return createTag('img', {
-      class: `icon icon-${icon}`,
-      src: altSrc || `/express/icons/${icon}.svg`,
-      alt: `${alt || icon}`,
-    });
+    return (`<img class="icon icon-${icon}" src="/express/icons/${icon}.svg" alt="${alt || icon}">`);
   }
 }
 
-export function getIconElement(icons, size, alt, additionalClassName, altSrc) {
-  const icon = getIcon(icons, alt, size, altSrc);
-  if (additionalClassName) icon.className.add(additionalClassName);
-  return icon;
+export function getIconElement(icons, size, alt, additionalClassName) {
+  const $div = createTag('div');
+  $div.innerHTML = getIcon(icons, alt, size);
+
+  if (additionalClassName) $div.firstElementChild.classList.add(additionalClassName);
+  return ($div.firstElementChild);
 }
 
 export function transformLinkToAnimation($a, $videoLooping = true) {
@@ -1583,7 +1561,7 @@ export function decorateButtons(el = document) {
       if (linkText.startsWith('{{icon-') && linkText.endsWith('}}')) {
         const $iconName = /{{icon-([\w-]+)}}/g.exec(linkText)[1];
         if ($iconName) {
-          $a.appendChild(getIcon($iconName, `${$iconName} icon`));
+          $a.innerHTML = getIcon($iconName, `${$iconName} icon`);
           $a.classList.remove('button', 'primary', 'secondary', 'accent');
           $a.title = $iconName;
         }

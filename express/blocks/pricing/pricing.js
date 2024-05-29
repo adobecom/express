@@ -4,7 +4,7 @@ import {
   addPublishDependencies,
   createTag,
   getHelixEnv,
-  getIconElement,
+  getIcon,
 } from '../../scripts/utils.js';
 import { getOffer } from '../../scripts/utils/pricing.js';
 
@@ -208,9 +208,8 @@ function decorateOtherPlans(block, otherPlans) {
   otherPlans.forEach((plan) => {
     const planEl = createTag('div', { class: 'other-plan' });
     const planButton = createTag('div', { class: 'other-plan-button' });
-    const planIcon = getIconElement('chevron');
-    planButton.innerHTML = `${plan.title}}`;
-    planButton.append(planIcon);
+    const planIcon = getIcon('chevron');
+    planButton.innerHTML = `${plan.title} ${planIcon}`;
     planButton.dataset.id = plan.id;
     planEl.append(planButton);
     const popup = createTag('div', { class: 'other-plan' });
