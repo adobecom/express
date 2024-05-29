@@ -432,7 +432,7 @@ function decorateCarouselCTAList(payload) {
 function addScratchLottie(payload) {
   if (payload.hasScratchLottie && !document.querySelector('.scratch-lottie-container')) {
     const scratchLottie = createTag('div', { class: 'scratch-lottie-container' });
-    scratchLottie.appendChild(getLottie('scratch-lottie', '/express/experiments/ccx0098/ch1/drawer-item/s2_create_0.1_from_blank.json');
+    scratchLottie.appendChild(getLottie('scratch-lottie', '/express/experiments/ccx0098/ch1/drawer-item/s2_create_0.1_from_blank.json'));
     scratchLottie.style.position = 'absolute';
     const scratchIMG = document.querySelector('.drawer-item [title="Scratch"]');
     if (scratchIMG) {
