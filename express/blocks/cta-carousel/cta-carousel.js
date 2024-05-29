@@ -58,8 +58,8 @@ function handleGenAISubmit(form, link) {
   const input = form.querySelector('.gen-ai-input');
 
   btn.disabled = true;
- 
-  let promptToken = '{{prompt-text}}'
+
+  let promptToken = '{{prompt-text}}';
   const legacyPromptToken = '%7B%7Bprompt-text%7D%7D';
   if (link.indexOf(legacyPromptToken) > -1) {
     promptToken = legacyPromptToken;
