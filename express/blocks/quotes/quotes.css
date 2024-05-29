@@ -34,12 +34,8 @@ main .quotes .quote .content::before {
   font-weight: 900;
 }
 
-main .quotes .quote .author {
-  display: flex;
+main .quotes .quote .author { 
   margin-top: 16px;
-  width: 100%;
-  flex-direction: row;
-  flex-wrap: nowrap;
   align-items: center;
   align-self: baseline;
 }
