@@ -36,7 +36,7 @@ export default async function init(el) {
   // document.head.appendChild(preload);
   const redirectUri = el.querySelector('div > div')?.textContent?.trim().toLowerCase() ?? '';
   el.innerHTML = '';
-  // await loadScript(CDN_URL);
+  await loadScript(CDN_URL);
   const susi = createTag('susi-sentry-light', {
     popup: isPopup,
     variant,
@@ -46,9 +46,9 @@ export default async function init(el) {
   susi.config = config;
   susi.stage = 'true';
   susi.setAttribute('stage', 'true');
+  susi.variant = variant;
   susi.addEventListener('redirect', onRedirect);
   susi.addEventListener('on-token', onToken);
   susi.addEventListener('on-error', onError);
   el.append(susi);
-  await loadScript(CDN_URL);
 }
