@@ -17,6 +17,7 @@ const STAGE_ENTITLEMENTS = {
   'cbe1d7ab-db7d-49cb-969e-a6a2bbe8c660': 'firefly-signup-source',
   '49033b54-1c02-4640-840d-3c5fd6174992': 'firefly-web-usage',
   '96adf81f-97ca-4943-81ff-c41fbe8f3af7': 'acrobat-web-usage',
+  '4181424b-506b-43ae-b871-dc79f54527a0': 'express-pep',
 };
 
 export default STAGE_ENTITLEMENTS;

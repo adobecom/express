@@ -31,7 +31,8 @@ async function loadFragment(path) {
 export default async function decorate(block) {
   addTempWrapper(block, 'fragment');
 
-  const link = block.querySelector('a');
+  let link = block.querySelector('a');
+  if (!link && block.tagName === 'A') link = block;
   const path = link ? link.getAttribute('href') : block.textContent.trim();
   const fragment = await loadFragment(path);
 

@@ -49,6 +49,20 @@ export function getMetadata(name) {
   return ($meta && $meta.content) || '';
 }
 
+const handleEntitlements = (() => {
+  let entResolve;
+  const entPromise = new Promise((resolve) => {
+    entResolve = resolve;
+  });
+
+  return (resolveVal) => {
+    if (resolveVal !== undefined) {
+      entResolve(resolveVal);
+    }
+    return entPromise;
+  };
+})();
+
 function getEnv(conf) {
   const { host } = window.location;
   const query = PAGE_URL.searchParams.get('env');
@@ -116,6 +130,8 @@ export const [setConfig, updateConfig, getConfig] = (() => {
       config.locale.contentRoot = `${origin}${config.locale.prefix}${config.contentRoot ?? ''}`;
       config.useDotHtml = !PAGE_URL.origin.includes('.hlx.')
         && (conf.useDotHtml ?? PAGE_URL.pathname.endsWith('.html'));
+      config.entitlements = handleEntitlements;
+      config.consumerEntitlements = conf.entitlements || [];
       return config;
     },
     // eslint-disable-next-line no-return-assign
@@ -984,6 +1000,68 @@ export function decorateLinks(el) {
   }, []);
 }
 
+function decorateSection(section, idx) {
+  /* process section metadata */
+  const sectionMeta = section.querySelector('div.section-metadata');
+  if (sectionMeta) {
+    const meta = readBlockConfig(sectionMeta);
+    const keys = Object.keys(meta);
+    keys.forEach((key) => {
+      if (key === 'style') {
+        section.classList.add(...meta.style.split(', ').map(toClassName));
+      } else if (key === 'anchor') {
+        section.id = toClassName(meta.anchor);
+      } else if (key === 'background') {
+        section.style.background = meta.background;
+      } else {
+        section.dataset[key] = meta[key];
+      }
+    });
+    sectionMeta.remove();
+  }
+
+  const links = decorateLinks(section);
+
+  const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
+
+  section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
+  section.dataset.status = 'decorated';
+  section.dataset.idx = idx;
+
+  let defaultContentWrapper;
+  [...section.children].forEach((child) => {
+    const isDivTag = child.tagName === 'DIV';
+    if (isDivTag) {
+      defaultContentWrapper = undefined;
+    } else {
+      if (!defaultContentWrapper) {
+        defaultContentWrapper = document.createElement('div');
+        defaultContentWrapper.classList.add('default-content-wrapper');
+        section.insertBefore(defaultContentWrapper, child);
+      }
+      defaultContentWrapper.append(child);
+    }
+  });
+  blocks.forEach(async (block) => {
+    await decorateBlock(block);
+  });
+  const blockLinks = [...blocks].reduce((blkLinks, block) => {
+    links.filter((link) => block.contains(link))
+      .forEach((link) => {
+        if (link.classList.contains('link-block')) {
+          blkLinks.autoBlocks.push(link);
+        }
+      });
+    return blkLinks;
+  }, { autoBlocks: [] });
+
+  return {
+    el: section,
+    blocks: [...links, ...blocks],
+    preloadLinks: blockLinks.autoBlocks,
+  };
+}
+
 /**
  * Decorates all sections in a container element.
  * @param {Element} el The container element
@@ -995,67 +1073,7 @@ async function decorateSections(el, isDoc) {
   // eslint-disable-next-line no-param-reassign
   isDoc = false;
   const selector = isDoc ? 'body > main > div' : ':scope > div';
-  return [...el.querySelectorAll(selector)].map((section, idx) => {
-    /* process section metadata */
-    const sectionMeta = section.querySelector('div.section-metadata');
-    if (sectionMeta) {
-      const meta = readBlockConfig(sectionMeta);
-      const keys = Object.keys(meta);
-      keys.forEach((key) => {
-        if (key === 'style') {
-          section.classList.add(...meta.style.split(', ').map(toClassName));
-        } else if (key === 'anchor') {
-          section.id = toClassName(meta.anchor);
-        } else if (key === 'background') {
-          section.style.background = meta.background;
-        } else {
-          section.dataset[key] = meta[key];
-        }
-      });
-      sectionMeta.remove();
-    }
-
-    const links = decorateLinks(section);
-
-    const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
-
-    section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
-    section.dataset.status = 'decorated';
-    section.dataset.idx = idx;
-
-    let defaultContentWrapper;
-    [...section.children].forEach((child) => {
-      const isDivTag = child.tagName === 'DIV';
-      if (isDivTag) {
-        defaultContentWrapper = undefined;
-      } else {
-        if (!defaultContentWrapper) {
-          defaultContentWrapper = document.createElement('div');
-          defaultContentWrapper.classList.add('default-content-wrapper');
-          section.insertBefore(defaultContentWrapper, child);
-        }
-        defaultContentWrapper.append(child);
-      }
-    });
-    blocks.forEach(async (block) => {
-      await decorateBlock(block);
-    });
-    const blockLinks = [...blocks].reduce((blkLinks, block) => {
-      links.filter((link) => block.contains(link))
-        .forEach((link) => {
-          if (link.classList.contains('link-block')) {
-            blkLinks.autoBlocks.push(link);
-          }
-        });
-      return blkLinks;
-    }, { autoBlocks: [] });
-
-    return {
-      el: section,
-      blocks: [...links, ...blocks],
-      preloadLinks: blockLinks.autoBlocks,
-    };
-  });
+  return [...el.querySelectorAll(selector)].map(decorateSection);
 }
 
 /**
@@ -2576,6 +2594,44 @@ function initSidekick() {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
+async function processSection(section, config, isDoc) {
+  const inlineFrags = [...section.el.querySelectorAll('a[href*="#_inline"]')];
+  if (inlineFrags.length) {
+    const { default: loadInlineFrags } = await import('../blocks/fragment/fragment.js');
+    const fragPromises = inlineFrags.map((link) => loadInlineFrags(link));
+    await Promise.all(fragPromises);
+    // await decoratePlaceholders(section.el, config); // FIXME: exists in milo
+    const newlyDecoratedSection = decorateSection(section.el, section.idx);
+    section.blocks = newlyDecoratedSection.blocks;
+    section.preloadLinks = newlyDecoratedSection.preloadLinks;
+  }
+
+  if (section.preloadLinks.length) {
+    const preloads = section.preloadLinks.map((block) => loadBlock(block));
+    await Promise.all(preloads);
+  }
+
+  const loaded = section.blocks.map((block) => loadBlock(block));
+
+  // await decorateIcons(section.el, config); // FIXME: exists in milo
+
+  // Only move on to the next section when all blocks are loaded.
+  await Promise.all(loaded);
+
+  // Show the section when all blocks inside are done.
+  delete section.el.dataset.status;
+
+  // FIXME: here in milo
+  // if (isDoc && section.el.dataset.idx === '0') {
+  //   await loadPostLCP(config);
+  // }
+
+  delete section.el.dataset.idx;
+
+  return section.blocks;
+}
+
 /**
  * Decorates the page.
  */
@@ -2613,7 +2669,17 @@ export async function loadArea(area = document) {
 
   let sections = [];
   if (main) {
+    const areaBlocks = [];
     sections = await decorateMain(main, isDoc);
+    for (const section of sections) {
+      // eslint-disable-next-line no-await-in-loop
+      const sectionBlocks = await processSection(section, getConfig(), isDoc);
+      areaBlocks.push(...sectionBlocks);
+
+      areaBlocks.forEach((block) => {
+        if (!block.className.includes('metadata')) block.dataset.block = '';
+      });
+    }
     decoratePageStyle();
     decorateLegalCopy(main);
     addJapaneseSectionHeaderSizing();
