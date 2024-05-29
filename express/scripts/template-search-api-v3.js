@@ -163,28 +163,32 @@ export function trackSearch(eventName, searchID = generateSearchId()) {
 
   const impression = BlockMediator.get('templateSearchSpecs');
   if (!window.marketingtech) return;
-  _satellite.track('event', {
-    xdm: {},
-    data: {
-      eventType: 'web.webinteraction.linkClicks',
-      web: {
-        webInteraction: {
-          name: eventName,
-          linkClicks: {
-            value: 1,
-          },
-          type: 'other',
-        },
-      },
-      _adobe_corpnew: {
-        digitalData: {
-          page: {
-            pageInfo: impression,
+  setTimeout(() => {
+    _satellite.track('event', {
+      xdm: {},
+      data: {
+        eventType: 'web.webinteraction.linkClicks',
+        web: {
+          webInteraction: {
+            name: eventName,
+            linkClicks: {
+              value: 1,
+            },
+            type: 'other',
           },
         },
+        _adobe_corpnew: {
+          digitalData: {
+            page: {
+              pageInfo: impression,
+            },
+          },
+        },
       },
-    },
-  });
+    });
+    // eslint-disable-next-line no-console
+    console.log('check network tab now!');
+  }, 10000);
   // todo: also send the search ID to a separate event. Ask Linh Nguyen.
 }
 
