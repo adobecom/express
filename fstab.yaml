@@ -13,6 +13,7 @@ folders:
   /kr/express/templates/: /kr/express/templates/default
   /nl/express/templates/: /nl/express/templates/default
   /tw/express/templates/: /tw/express/templates/default
+  /uk/express/templates/: /uk/express/templates/default
   /express/colors/: /express/colors/default
   /br/express/colors/: /br/express/colors/default
   /cn/express/colors/: /cn/express/colors/default
