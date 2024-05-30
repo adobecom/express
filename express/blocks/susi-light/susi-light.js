@@ -1,6 +1,11 @@
 /* eslint-disable no-unused-vars */
 // WIP
-import { createTag, loadScript, getConfig } from '../../scripts/utils.js';
+import {
+  createTag,
+  loadScript,
+  getConfig,
+  // getMetadata,
+} from '../../scripts/utils.js';
 
 const CDN_URL = 'https://auth-light.identity-stage.adobe.com/sentry/wrapper.js';
 
@@ -37,15 +42,12 @@ export default async function init(el) {
   const redirectUri = el.querySelector('div > div')?.textContent?.trim().toLowerCase() ?? '';
   el.innerHTML = '';
   await loadScript(CDN_URL);
-  const susi = createTag('susi-sentry-light', {
-    popup: isPopup,
-    variant,
-  });
+  const susi = createTag('susi-sentry-light');
   susi.authParams = authParams;
   susi.authParams.redirect_uri = redirectUri ? encodeURIComponent(redirectUri) : 'https://new.express.adobe.com/';
   susi.config = config;
   susi.stage = 'true';
-  susi.setAttribute('stage', 'true');
+  susi.popup = 'true';
   susi.variant = variant;
   susi.addEventListener('redirect', onRedirect);
   susi.addEventListener('on-token', onToken);
