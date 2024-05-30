@@ -33,12 +33,6 @@ const onError = (e) => {
 };
 
 export default async function init(el) {
-  // const preload = createTag('meta', {
-  //   name: 'susi-sentry-preload',
-  //   content: 'edu-express',
-  //   'data-locale': getConfig().locale.ietf.toLowerCase(),
-  // });
-  // document.head.appendChild(preload);
   const redirectUri = el.querySelector('div > div')?.textContent?.trim().toLowerCase() ?? '';
   el.innerHTML = '';
   await loadScript(CDN_URL);
