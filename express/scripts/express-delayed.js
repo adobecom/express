@@ -109,7 +109,7 @@ export async function getProfile() {
   });
 }
 
-const branchLinkOrigins = ['https://adobesparkpost.app.link/', 'https://adobesparkpost-web.app.link/'];
+const branchLinkOrigins = ['https://adobesparkpost.app.link', 'https://adobesparkpost-web.app.link'];
 function isBranchLink(url) {
   return branchLinkOrigins.includes(new URL(url).origin);
 }
