@@ -109,12 +109,17 @@ export async function getProfile() {
   });
 }
 
+const branchLinkOrigins = ['https://adobesparkpost.app.link/', 'https://adobesparkpost-web.app.link/'];
+function isBranchLink(url) {
+  return branchLinkOrigins.includes(new URL(url).origin);
+}
 // product entry prompt
 async function canPEP() {
   if (document.body.dataset.device !== 'desktop') return false;
   const pepSegment = getMetadata('pep-segment');
   if (!pepSegment) return false;
-  if (!getDestination()) return false;
+  const destination = getDestination();
+  if (!destination || !isBranchLink(destination)) return false;
   const placeholders = await fetchPlaceholders();
   if (!placeholders.cancel || !placeholders['pep-header'] || !placeholders['pep-cancel']) return false;
   const segments = getSegmentsFromAlloyResponse(await window.alloyLoader);
