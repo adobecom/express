@@ -518,7 +518,6 @@ export default async function decorate($block) {
     ?? $rows[0].querySelector('h4');
   const headingTag = $heading ? $heading.tagName : 'h3';
   const $CTA = $rows[0].querySelector('a');
-  if ($CTA) $CTA.classList.add('xlarge', 'floating-cta-ignore');
   const $sheet = $rows[1].firstElementChild;
   actionTitle = $heading ? $heading.textContent.trim() : defaultTitle;
   sheet = $sheet.textContent.trim();
