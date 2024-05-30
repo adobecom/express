@@ -170,6 +170,7 @@ End border style variants
 .pricing-cards .tooltip-text {
   display: none;
   padding: 8px;
+  z-index: 10;
   background-color: #292929;
   color: white;
   border-radius: 8px;
