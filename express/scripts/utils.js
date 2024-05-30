@@ -527,7 +527,7 @@ function getIcon(icons, alt, size = 44, altSrc) {
 
 export function getIconElement(icons, size, alt, additionalClassName, altSrc) {
   const icon = getIcon(icons, alt, size, altSrc);
-  if (additionalClassName) icon.className.add(additionalClassName);
+  if (additionalClassName) icon.classList.add(additionalClassName);
   return icon;
 }
 
