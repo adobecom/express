@@ -2,7 +2,7 @@ import {
   createTag,
 } from '../../scripts/utils.js';
 
-const PLANS = ['monthly', 'annual'];
+
 
 function toggleOther(pricingSections, buttons, planIndex) {
   const button = buttons[planIndex];
@@ -62,6 +62,7 @@ function onKeyDown(e, pricingSections, buttons, toggleWrapper) {
 
 export default function createToggle(placeholders, pricingSections, groupID) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
+  const PLANS = [ placeholders?.['monthly'] || 'Monthly',  placeholders?.['annual'] || 'Annual']; 
   const toggleWrapper = createTag('div', { class: 'billing-toggle' });
   toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`;
   toggleWrapper.setAttribute('role', 'radiogroup');
