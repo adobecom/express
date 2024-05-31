@@ -34,6 +34,8 @@ ENVS.local = {
   name: 'local',
 };
 
+export const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
+
 const LANGSTORE = 'langstore';
 
 const PAGE_URL = new URL(window.location.href);
@@ -1000,51 +1002,63 @@ export function decorateLinks(el) {
   }, []);
 }
 
-function decorateSection(section, idx) {
-  /* process section metadata */
-  const sectionMeta = section.querySelector('div.section-metadata');
-  if (sectionMeta) {
-    const meta = readBlockConfig(sectionMeta);
-    const keys = Object.keys(meta);
-    keys.forEach((key) => {
-      if (key === 'style') {
-        section.classList.add(...meta.style.split(', ').map(toClassName));
-      } else if (key === 'anchor') {
-        section.id = toClassName(meta.anchor);
-      } else if (key === 'background') {
-        section.style.background = meta.background;
-      } else {
-        section.dataset[key] = meta[key];
-      }
-    });
-    sectionMeta.remove();
-  }
-
-  const links = decorateLinks(section);
-
-  const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
-
-  section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
-  section.dataset.status = 'decorated';
-  section.dataset.idx = idx;
-
-  let defaultContentWrapper;
-  [...section.children].forEach((child) => {
-    const isDivTag = child.tagName === 'DIV';
-    if (isDivTag) {
-      defaultContentWrapper = undefined;
+function decorateContent(el) {
+  const children = [el];
+  let child = el;
+  while (child) {
+    child = child.nextElementSibling;
+    if (child && child.nodeName !== 'DIV') {
+      children.push(child);
     } else {
-      if (!defaultContentWrapper) {
-        defaultContentWrapper = document.createElement('div');
-        defaultContentWrapper.classList.add('default-content-wrapper');
-        section.insertBefore(defaultContentWrapper, child);
-      }
-      defaultContentWrapper.append(child);
+      break;
+    }
+  }
+  const block = document.createElement('div');
+  block.className = 'content';
+  block.append(...children);
+  block.dataset.block = '';
+  return block;
+}
+
+export function decorateDefaults(el) {
+  const firstChild = ':scope > *:not(div):first-child';
+  const afterBlock = ':scope > div + *:not(div)';
+  const children = el.querySelectorAll(`${firstChild}, ${afterBlock}`);
+  children.forEach((child) => {
+    const prev = child.previousElementSibling;
+    const content = decorateContent(child);
+    if (prev) {
+      prev.insertAdjacentElement('afterend', content);
+    } else {
+      el.insertAdjacentElement('afterbegin', content);
     }
   });
-  blocks.forEach(async (block) => {
-    await decorateBlock(block);
-  });
+}
+
+export function filterDuplicatedLinkBlocks(blocks) {
+  if (!blocks?.length) return [];
+  const uniqueModalKeys = new Set();
+  const uniqueBlocks = [];
+  for (const obj of blocks) {
+    if (obj.className.includes('modal')) {
+      const key = `${obj.dataset.modalHash}-${obj.dataset.modalPath}`;
+      if (!uniqueModalKeys.has(key)) {
+        uniqueModalKeys.add(key);
+        uniqueBlocks.push(obj);
+      }
+    } else {
+      uniqueBlocks.push(obj);
+    }
+  }
+  return uniqueBlocks;
+}
+
+// TODO: different from milo as it doesnot inline consumer blocks
+function decorateSection(section, idx) {
+  let links = decorateLinks(section);
+  decorateDefaults(section);
+  const blocks = section.querySelectorAll(':scope > div[class]:not(.content)');
+
   const blockLinks = [...blocks].reduce((blkLinks, block) => {
     links.filter((link) => block.contains(link))
       .forEach((link) => {
@@ -1053,12 +1067,20 @@ function decorateSection(section, idx) {
         }
       });
     return blkLinks;
-  }, { autoBlocks: [] });
+  }, { inlineFrags: [], autoBlocks: [] });
 
+  const embeddedLinks = [...blockLinks.inlineFrags, ...blockLinks.autoBlocks];
+  if (embeddedLinks.length) {
+    links = links.filter((link) => !embeddedLinks.includes(link));
+  }
+  section.className = 'section';
+  section.dataset.status = 'decorated';
+  section.dataset.idx = idx;
   return {
-    el: section,
     blocks: [...links, ...blocks],
-    preloadLinks: blockLinks.autoBlocks,
+    el: section,
+    idx,
+    preloadLinks: filterDuplicatedLinkBlocks(blockLinks.autoBlocks),
   };
 }
 
@@ -1279,23 +1301,22 @@ function resolveFragments() {
     });
 }
 
-/**
- * scroll to hash
- */
-
-export function scrollToHash() {
-  const { hash } = window.location;
-  if (hash) {
-    const elem = document.querySelector(hash);
-    if (elem) {
-      setTimeout(() => {
-        elem.scrollIntoView({
-          block: 'start',
-          behavior: 'smooth',
-        });
-      }, 500);
-    }
+export function scrollToHashedElement(hash) {
+  if (!hash) return;
+  const elementId = decodeURIComponent(hash).slice(1);
+  let targetElement;
+  try {
+    targetElement = document.querySelector(`#${elementId}:not(.dialog-modal)`);
+  } catch (e) {
+    window.lana?.log(`Could not query element because of invalid hash - ${elementId}: ${e.toString()}`);
   }
+  if (!targetElement) return;
+  const bufferHeight = document.querySelector('.global-navigation')?.offsetHeight || 0;
+  const topOffset = targetElement.getBoundingClientRect().top + window.pageYOffset;
+  window.scrollTo({
+    top: topOffset - bufferHeight,
+    behavior: 'smooth',
+  });
 }
 
 /**
@@ -1553,7 +1574,7 @@ function decoratePageStyle() {
  */
 
 export function decorateButtons(el = document) {
-  // FIXME: Different function from Milo.
+  // FIXME: Different function from milo.
   const noButtonBlocks = ['template-list', 'icon-list'];
   el.querySelectorAll(':scope a:not(.faas.link-block, .fragment.link-block)').forEach(($a) => {
     const originalHref = $a.href;
@@ -2433,25 +2454,6 @@ function removeMetadata() {
   });
 }
 
-/**
- * loads everything that doesn't need to be delayed.
- */
-async function loadLazy(main) {
-  addPromotion();
-  loadStyle('/express/styles/lazy-styles.css');
-  scrollToHash();
-  resolveFragments();
-  removeMetadata();
-  addFavIcon('/express/icons/cc-express.svg');
-  sampleRUM('lazy');
-  sampleRUM.observe(document.querySelectorAll('main picture > img'));
-  sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
-  trackViewedAssetsInDataLayer([
-    'img[src*="/media_"]',
-    'img[src*="https://design-assets.adobeprojectm.com/"]',
-  ]);
-}
-
 const getMepValue = (val) => {
   const valMap = { on: true, off: false, gnav: 'gnav' };
   const finalVal = val?.toLowerCase().trim();
@@ -2531,6 +2533,7 @@ async function checkForPageMods() {
     .then(() => {
       if (window.adobeIMS.isSignedInUser()) loadMartech();
     })
+    // eslint-disable-next-line no-console
     .catch((e) => { console.log('Unable to load IMS:', e); });
 
   const { preloadManifests, applyPers } = await import('../features/personalization/personalization.js');
@@ -2549,36 +2552,6 @@ async function loadPostLCP(config) {
   loadFonts(config.locale, loadStyle);
 }
 
-/**
- * Loads JS and CSS for all blocks in a container element.
- * @param {Array} sections The sections loaded in main
- * @param {Boolean} isDoc if is the document or fragment
- */
-export async function loadSections(sections, isDoc) {
-  const areaBlocks = [];
-  for (const section of sections) {
-    if (section.preloadLinks.length) {
-      const preloads = section.preloadLinks.map((block) => loadBlock(block));
-      // eslint-disable-next-line no-await-in-loop
-      await Promise.all(preloads);
-    }
-    const loaded = section.blocks.map((block) => loadBlock(block));
-    areaBlocks.push(...section.blocks);
-
-    // Only move on to the next section when all blocks are loaded.
-    // eslint-disable-next-line no-await-in-loop
-    await Promise.all(loaded);
-    // Post LCP operations.
-    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP(getConfig());
-
-    // Show the section when all blocks inside are done.
-    delete section.el.dataset.status;
-    delete section.el.dataset.idx;
-  }
-
-  return areaBlocks;
-}
-
 function initSidekick() {
   const initPlugins = async () => {
     const { default: init } = await import('./utils/sidekick.js');
@@ -2594,9 +2567,131 @@ function initSidekick() {
   }
 }
 
-/**
- * Decorates the page.
- */
+export async function loadDeferred(area, blocks, config) {
+  const event = new Event(MILO_EVENTS.DEFERRED);
+  area.dispatchEvent(event);
+
+  if (area !== document) {
+    return;
+  }
+
+  config.resolveDeferred?.(true);
+
+  if (config.links === 'on') {
+    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
+    import('../features/links.js').then((mod) => mod.default(path, area));
+  }
+
+  addJapaneseSectionHeaderSizing();
+  wordBreakJapanese();
+
+  sampleRUM('lazy');
+  sampleRUM.observe(blocks);
+  sampleRUM.observe(area.querySelectorAll('picture > img'));
+}
+
+async function documentPostSectionLoading(config) {
+  // TODO: different from milo
+  addFavIcon('/express/icons/cc-express.svg');
+  if (config.experiment?.selectedVariant?.scripts?.length) {
+    config.experiment.selectedVariant.scripts.forEach((script) => loadScript(script));
+  }
+  initSidekick();
+
+  const { default: delayed } = await import('./delayed.js');
+  delayed([getConfig, getMetadata, loadScript, loadStyle]);
+
+  import('./attributes.js').then((analytics) => {
+    document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
+  });
+
+  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
+    decorateTrackingEvents();
+  });
+
+  document.body.appendChild(createTag('div', { id: 'page-load-ok-milo', style: 'display: none;' }));
+}
+
+async function processSection(section, config, isDoc) {
+  const inlineFrags = [...section.el.querySelectorAll('a[href*="#_inline"]')];
+  if (inlineFrags.length) {
+    const { default: loadInlineFrags } = await import('../blocks/fragment/fragment.js');
+    const fragPromises = inlineFrags.map((link) => loadInlineFrags(link));
+    await Promise.all(fragPromises);
+    // await decoratePlaceholders(section.el, config);
+    const newlyDecoratedSection = decorateSection(section.el, section.idx);
+    section.blocks = newlyDecoratedSection.blocks;
+    section.preloadLinks = newlyDecoratedSection.preloadLinks;
+  }
+
+  if (section.preloadLinks.length) {
+    const preloads = section.preloadLinks.map((block) => loadBlock(block));
+    await Promise.all(preloads);
+  }
+
+  const loaded = section.blocks.map((block) => loadBlock(block));
+
+  // await decorateIcons(section.el, config);
+
+  // Only move on to the next section when all blocks are loaded.
+  await Promise.all(loaded);
+
+  // Show the section when all blocks inside are done.
+  delete section.el.dataset.status;
+
+  if (isDoc && section.el.dataset.idx === '0') {
+    await loadPostLCP(config);
+  }
+
+  delete section.el.dataset.idx;
+
+  return section.blocks;
+}
+
+// logic in express but not in milo
+async function decorateExpressPage(main) {
+  if (main) {
+    decoratePageStyle();
+    decorateLegalCopy(main);
+    displayEnv();
+    displayOldLinkWarning();
+
+    // TODO: done by martech in milo
+    if (window.hlx.testing) {
+      const target = checkTesting();
+      document.querySelector('body').classList.add('personalization-container');
+      // target = true;
+      if (target) {
+        hideBody();
+        setTimeout(() => {
+          unhideBody();
+        }, 3000);
+      }
+    }
+  }
+  await loadTemplateScript();
+  const footer = document.querySelector('footer');
+  delete footer.dataset.status;
+
+  addPromotion();
+  loadStyle('/express/styles/lazy-styles.css');
+
+  // TODO: check if can deprecate support for these 2 patterns
+  resolveFragments();
+  removeMetadata();
+
+  trackViewedAssetsInDataLayer([
+    'img[src*="/media_"]',
+    'img[src*="https://design-assets.adobeprojectm.com/"]',
+  ]);
+
+  const params = new URLSearchParams(window.location.search);
+  const buttonOff = params.get('button') === 'off';
+  if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
+    import('../../tools/preview/preview.js');
+  }
+}
+
 export async function loadArea(area = document) {
   const isDoc = area === document;
   const main = area.querySelector('main');
@@ -2605,6 +2700,7 @@ export async function loadArea(area = document) {
     await checkForPageMods();
     decorateHeaderAndFooter();
   }
+  const config = getConfig();
 
   window.hlx = window.hlx || {};
   const params = new URLSearchParams(window.location.search);
@@ -2629,60 +2725,30 @@ export async function loadArea(area = document) {
     await redirect();
   }
 
-  let sections = [];
-  if (main) {
-    sections = await decorateMain(main, isDoc);
-    decoratePageStyle();
-    decorateLegalCopy(main);
-    addJapaneseSectionHeaderSizing();
-    displayEnv();
-    displayOldLinkWarning();
-    wordBreakJapanese();
+  const sections = decorateSections(main, isDoc);
 
-    if (window.hlx.testing) {
-      const target = checkTesting();
-      document.querySelector('body').classList.add('personalization-container');
-      // target = true;
-      if (target) {
-        hideBody();
-        setTimeout(() => {
-          unhideBody();
-        }, 3000);
-      }
-    }
-  }
-  await loadTemplateScript();
-  await loadSections(sections, isDoc);
-  const footer = document.querySelector('footer');
-  delete footer.dataset.status;
+  const areaBlocks = [];
+  for (const section of sections) {
+    // eslint-disable-next-line no-await-in-loop
+    const sectionBlocks = await processSection(section, config, isDoc);
+    areaBlocks.push(...sectionBlocks);
 
-  initSidekick();
-
-  const lazy = loadLazy(main);
-
-  const buttonOff = params.get('button') === 'off';
-  if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
-    import('../../tools/preview/preview.js');
-  }
-  await lazy;
-
-  const { default: delayed } = await import('./delayed.js');
-  delayed([getConfig, getMetadata, loadScript, loadStyle]);
-
-  // milo's links featurecc
-  const config = getConfig();
-  if (config.links === 'on') {
-    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/express/seo/links.json'}`;
-    import('../features/links.js').then((mod) => mod.default(path, area));
+    areaBlocks.forEach((block) => {
+      if (!block.className.includes('metadata')) block.dataset.block = '';
+    });
   }
 
-  import('./attributes.js').then((analytics) => {
-    document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
-  });
+  // await decorateMain(main, isDoc);
+  await decorateExpressPage(main);
 
-  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
-    decorateTrackingEvents();
-  });
+  const currentHash = window.location.hash;
+  if (currentHash) {
+    scrollToHashedElement(currentHash);
+  }
+
+  if (isDoc) await documentPostSectionLoading(config);
+
+  await loadDeferred(area, areaBlocks, config);
 }
 
 export function getMobileOperatingSystem() {
