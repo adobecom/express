@@ -80,7 +80,7 @@ export default function createToggle(placeholders, pricingSections, groupID) {
     button.appendChild(createTag('span'));
     button.setAttribute('aria-checked', defaultChecked);
     button.setAttribute('aria-labeledby', buttonID);
-    const label = placeholders[plan];
+    const label = placeholders?.[plan] || plan[0].toUpperCase() + plan.slice(1).toLowerCase();
     button.append(createTag('div', { id: `${buttonID}:radio` }, label));
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
