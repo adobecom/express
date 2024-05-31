@@ -2,7 +2,7 @@ import {
   createTag,
 } from '../../scripts/utils.js';
 
-
+const PLANS = ['monthly', 'annually'];
 
 function toggleOther(pricingSections, buttons, planIndex) {
   const button = buttons[planIndex];
@@ -62,9 +62,8 @@ function onKeyDown(e, pricingSections, buttons, toggleWrapper) {
 
 export default function createToggle(placeholders, pricingSections, groupID) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
-  const PLANS = [ placeholders?.['monthly'] || 'Monthly',  placeholders?.['annual'] || 'Annual']; 
   const toggleWrapper = createTag('div', { class: 'billing-toggle' });
-  toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`;
+  toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`; 
   toggleWrapper.setAttribute('role', 'radiogroup');
   toggleWrapper.setAttribute('aria-labelledby', groupID);
   const groupLabel = toggleWrapper.children[0];
@@ -81,7 +80,7 @@ export default function createToggle(placeholders, pricingSections, groupID) {
     button.appendChild(createTag('span'));
     button.setAttribute('aria-checked', defaultChecked);
     button.setAttribute('aria-labeledby', buttonID);
-    const label = plan[0].toUpperCase() + plan.slice(1).toLowerCase();
+    const label = placeholders[plan]
     button.append(createTag('div', { id: `${buttonID}:radio` }, label));
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
