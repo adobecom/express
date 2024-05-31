@@ -49,7 +49,7 @@ End legacy CSS
 }
 
 .pricing-cards.block {
-  padding: 0 15px 40px;
+  padding: 12px 15px 40px 15px;
 }
 
 .pricing-cards .cards-container {
@@ -348,6 +348,46 @@ End border style variants
 
 
 /** pricing styles end **/
+
+.pricing-cards .billing-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+  font-size: var(--body-font-size-s);
+}
+
+.pricing-cards .billing-toggle button {
+  border: 2px transparent solid;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+
+  font-size: var(--body-font-size-xs);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pricing-cards .billing-toggle :focus-within {
+  border-color: var(--color-info-accent);
+}
+
+.pricing-cards .billing-toggle span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transition: 0.2s all linear;
+  border: 2px solid #292929;
+  box-sizing: border-box;
+}
+
+.pricing-cards .billing-toggle .checked span {
+  border-width: 6px;
+}
 
 .pricing-cards .card-cta-group {
   display: flex;

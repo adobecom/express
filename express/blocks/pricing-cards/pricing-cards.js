@@ -1,5 +1,4 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 import {
   createTag,
   fetchPlaceholders,
@@ -15,6 +14,8 @@ import {
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
+import createToggle from './pricing-toggle.js';
+
 const blockKeys = [
   'header',
   'borderParams',
@@ -26,8 +27,6 @@ const blockKeys = [
   'featureList',
   'compare',
 ];
-const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
-const BILLING_PLAN = 'billing-plan';
 const SAVE_PERCENTAGE = '{{savePercentage}}';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
 const PRICE_TOKEN = '{{pricing}}';
@@ -355,21 +354,7 @@ function decorateBasicTextSection(textElement, className, card) {
     card.append(textElement);
   }
 }
-// Subscribes to the block mediator in order to receive price updates
-// for each plan specified by authors
-function subscribeToBlockMediator(mPricingSection, yPricingSection) {
-  function reactToPlanChange({ newValue }) {
-    [mPricingSection, yPricingSection].forEach((section) => {
-      if (section.classList.contains(plans[newValue])) {
-        section.classList.remove('hide');
-      } else {
-        section.classList.add('hide');
-      }
-    });
-  }
-  reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
-  BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
-}
+
 // Links user to page where plans can be compared
 function decorateCompareSection(compare, el, card) {
   if (compare?.innerHTML.trim()) {
@@ -391,6 +376,7 @@ function decorateCompareSection(compare, el, card) {
     card.append(compare);
   }
 }
+
 // In legacy versions, the card element encapsulates all content
 // In new versions, the cardBorder element encapsulates all content instead
 async function decorateCard({
@@ -406,7 +392,6 @@ async function decorateCard({
 }, el, placeholders, legacyVersion) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
-
   const { specialPromo, cardWrapper } = legacyVersion
     ? decorateLegacyHeader(header, card)
     : decorateHeader(header, borderParams, card, cardBorder);
@@ -417,9 +402,10 @@ async function decorateCard({
     createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
   ]);
   mPricingSection.classList.add('monthly');
-  yPricingSection.classList.add('yearly', 'hide');
-  card.append(mPricingSection, yPricingSection);
-  subscribeToBlockMediator(mPricingSection, yPricingSection);
+  yPricingSection.classList.add('annually', 'hide');
+  const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
+  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID);
+  card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
   return cardWrapper;

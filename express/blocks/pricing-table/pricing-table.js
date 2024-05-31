@@ -5,10 +5,6 @@ import { decorateButtons } from '../../scripts/utils/decorate.js';
 import {
   formatDynamicCartLink,
 } from '../../scripts/utils/pricing.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
-
-const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
-const BILLING_PLAN = 'billing-plan';
 
 const MOBILE_SIZE = 981;
 function defineDeviceByScreenSize() {
@@ -62,19 +58,8 @@ function handleHeading(headingRow, headingCols) {
 
     if (buttons.length > 1) {
       buttons.forEach((btn, index) => {
-        btn.classList.add(plans[index]);
+        if (index > 0) btn.remove();
       });
-      const reactToPlanChange = ({ newValue }) => {
-        buttons.forEach((btn) => {
-          if (btn.classList.contains(plans[newValue])) {
-            btn.classList.remove('hide');
-          } else {
-            btn.classList.add('hide');
-          }
-        });
-      };
-      reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
-      BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
     }
 
     const div = document.createElement('div');
