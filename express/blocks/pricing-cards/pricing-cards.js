@@ -174,8 +174,8 @@ function handleTooltip(pricingArea) {
     }
   });
   if (!tooltip) return;
- 
-  tooltipDiv.innerHTML  = tooltipDiv.innerHTML.replace(pattern, '');
+
+  tooltipDiv.innerHTML = tooltipDiv.innerHTML.replace(pattern, '');
   const tooltipText = tooltip[2];
   tooltipDiv.classList.add('tooltip');
   const span = createTag('div', { class: 'tooltip-text' });
