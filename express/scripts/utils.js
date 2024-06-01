@@ -1091,7 +1091,7 @@ function decorateSection(section, idx) {
   if (embeddedLinks.length) {
     links = links.filter((link) => !embeddedLinks.includes(link));
   }
-  section.className = 'section';
+  section.className = 'section section-wrapper'; // TODO: section-wrapper backcomp
   section.dataset.status = 'decorated';
   section.dataset.idx = idx;
   return {
