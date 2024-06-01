@@ -776,10 +776,6 @@ main .section>div {
   padding: 0;
 }
 
-main .section>div:not(.fragment) {
-  /* max-width: unset; */
-}
-
 main .section>div:empty {
   padding: 0;
 }
@@ -859,17 +855,11 @@ body[data-device="mobile"] main [data-audience="mobile"][data-section-status="lo
   main .section>div {
     max-width: 830px;
   }
-  main .section>div:not(.fragment) {
-    /* max-width: unset; */
-  }
 }
 
 @media (min-width:1200px) {
   main .section>div {
     max-width: 1024px;
-  }
-  main .section>div:not(.fragment) {
-    /* max-width: unset; */
   }
 }
 
