@@ -1,3 +1,4 @@
+/* eslint-disable max-statements-per-line */
 import { createTag } from '../../scripts/utils.js';
 import { getMetadata, getDelayTime } from './section-metadata.js';
 
@@ -46,8 +47,8 @@ export default async function handleStickySection(sticky, section) {
   const main = document.querySelector('main');
   switch (sticky) {
     case 'sticky-top': {
-      const { debounce } = await import('../../utils/action.js');
-      window.addEventListener('resize', debounce(() => handleTopHeight(section)));
+      const { debounce } = await import('../../scripts/hofs.js');
+      window.addEventListener('resize', debounce(() => handleTopHeight(section), 300));
       main.prepend(section);
       break;
     }
