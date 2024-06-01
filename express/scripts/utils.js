@@ -973,8 +973,7 @@ export function decorateAutoBlock(a) {
     if (key === 'video' && !a.textContent.match('media_.*.mp4')) {
       return false;
     }
-
-    a.className = `${key} link-block`;
+    a.className = `${key} ${a.classList.contains('ax-old-fragment') && 'ax-old-fragment '}link-block`;
     return true;
   });
 }
@@ -2073,11 +2072,11 @@ function splitSections(main) {
   });
 }
 
-function decorateLinkedPictures($main) {
+function decorateLinkedPictures(el) {
   /* thanks to word online */
-  $main.querySelectorAll(':scope > picture').forEach(($picture) => {
-    if (!$picture.closest('div.block')) {
-      linkPicture($picture);
+  el.querySelectorAll(':scope > picture').forEach((picture) => {
+    if (!picture.closest('div.block')) {
+      linkPicture(picture);
     }
   });
 }
@@ -2696,6 +2695,7 @@ function fragmentBlocksToLinks(area) {
     const fragLink = blk.querySelector('a');
     if (fragLink) {
       blk.parentElement.replaceChild(fragLink, blk);
+      fragLink.classList.add('ax-old-fragment');
     }
   });
 }
@@ -2706,24 +2706,20 @@ export async function loadArea(area = document) {
   if (isDoc) {
     await checkForPageMods();
     decorateHeaderAndFooter();
+    window.hlx = window.hlx || {};
+    const params = new URLSearchParams(window.location.search);
+    const experimentParams = params.get('experiment');
+    ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
+      window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
+    });
+    window.hlx.experimentParams = experimentParams;
+    window.hlx.init = true;
+    await setTemplateTheme();
+    if (window.hlx.testing) await decorateTesting();
   }
   const config = getConfig();
 
-  window.hlx = window.hlx || {};
-  const params = new URLSearchParams(window.location.search);
-  const experimentParams = params.get('experiment');
-  ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
-    window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
-  });
-  window.hlx.experimentParams = experimentParams;
-  window.hlx.init = true;
-
-  await setTemplateTheme();
-
-  if (window.hlx.testing) await decorateTesting();
-
   fragmentBlocksToLinks(area);
-
   const main = area.querySelector('main');
 
   if (isDoc) {
@@ -2742,9 +2738,7 @@ export async function loadArea(area = document) {
   decorateButtons(area);
   await fixIcons(area);
   decoratePictures(area);
-  if (isDoc) {
-    decorateLinkedPictures(main);
-  }
+  decorateLinkedPictures(area);
   decorateSocialIcons(area);
 
   const sections = decorateSections(area, isDoc);
