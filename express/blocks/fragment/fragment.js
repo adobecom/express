@@ -156,6 +156,11 @@ export default async function init(a) {
       lastSection.after(sec);
       lastSection = sec;
     });
+    if (fragment.parentElement !== blockSection) {
+      fragment.parentElement.remove();
+    } else {
+      fragment.remove();
+    }
   }
 }
 
