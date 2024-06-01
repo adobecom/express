@@ -765,9 +765,9 @@ export async function decorateBlock(block) {
 
     block.classList.add('block');
 
-    block.dataset.block = '';
-    block.setAttribute('data-block-name', blockName);
-    block.setAttribute('data-block-status', 'initialized');
+    // block.dataset.block = '';
+    // block.setAttribute('data-block-name', blockName);
+    // block.setAttribute('data-block-status', 'initialized');
 
     if (getMetadata('sheet-powered') === 'Y') {
       const { setBlockTheme } = await import('./content-replace.js');
@@ -1057,6 +1057,25 @@ export function filterDuplicatedLinkBlocks(blocks) {
 function decorateSection(section, idx) {
   let links = decorateLinks(section);
   decorateDefaults(section);
+  // TODO: not in milo
+  /* process section metadata */
+  const sectionMeta = section.querySelector('div.section-metadata');
+  if (sectionMeta) {
+    const meta = readBlockConfig(sectionMeta);
+    const keys = Object.keys(meta);
+    keys.forEach((key) => {
+      if (key === 'style') {
+        section.classList.add(...meta.style.split(', ').map(toClassName));
+      } else if (key === 'anchor') {
+        section.id = toClassName(meta.anchor);
+      } else if (key === 'background') {
+        section.style.background = meta.background;
+      } else {
+        section.dataset[key] = meta[key];
+      }
+    });
+    sectionMeta.remove();
+  }
   const blocks = section.querySelectorAll(':scope > div[class]:not(.content)');
 
   const blockLinks = [...blocks].reduce((blkLinks, block) => {
@@ -1089,11 +1108,7 @@ function decorateSection(section, idx) {
  * @param {Element} el The container element
  * @param {Boolean} isDoc Is document or fragment
  */
-async function decorateSections(el, isDoc) {
-  // fixme: our decorateSections gets main while in Milo it gets area.
-  //  For us, the selector never changes. That's why isDoc always needs to be false.
-  // eslint-disable-next-line no-param-reassign
-  isDoc = false;
+function decorateSections(el, isDoc) {
   const selector = isDoc ? 'body > main > div' : ':scope > div';
   return [...el.querySelectorAll(selector)].map(decorateSection);
 }
@@ -1377,6 +1392,8 @@ async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
  * @param {Element} block The block element
  */
 export async function loadBlock(block, eager = false) {
+  // TODO: different from milo as we have legacy decorateBlock()
+  await decorateBlock(block);
   if (!(block.getAttribute('data-block-status') === 'loading' || block.getAttribute('data-block-status') === 'loaded')) {
     block.setAttribute('data-block-status', 'loading');
     const blockName = block.getAttribute('data-block-name') || block.classList[0];
@@ -1574,7 +1591,6 @@ function decoratePageStyle() {
  */
 
 export function decorateButtons(el = document) {
-  // FIXME: Different function from milo.
   const noButtonBlocks = ['template-list', 'icon-list'];
   el.querySelectorAll(':scope a:not(.faas.link-block, .fragment.link-block)').forEach(($a) => {
     const originalHref = $a.href;
@@ -2083,8 +2099,8 @@ export function addFavIcon(href) {
   }
 }
 
-function decorateSocialIcons($main) {
-  $main.querySelectorAll(':scope a').forEach(($a) => {
+function decorateSocialIcons(el) {
+  el.querySelectorAll(':scope a').forEach(($a) => {
     const urlObject = new URL($a.href);
 
     if (urlObject.hash === '#embed-video') return;
@@ -2232,33 +2248,15 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
   return picture;
 }
 
-function decoratePictures(main) {
-  main.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
+function decoratePictures(el) {
+  el.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
     const newPicture = createOptimizedPicture(img.src, img.alt, !i);
     const picture = img.closest('picture');
     if (picture) picture.parentElement.replaceChild(newPicture, picture);
   });
 }
 
-/**
- * Decorates the main element.
- * @param {Element} main The main element
- * @param {Boolean} isDoc Is document or fragment
- */
-export async function decorateMain(main, isDoc) {
-  await buildAutoBlocks(main);
-  splitSections(main);
-  const sections = decorateSections(main, isDoc);
-  decorateButtons(main);
-  await fixIcons(main);
-  decoratePictures(main);
-  decorateLinkedPictures(main);
-  decorateSocialIcons(main);
-
-  await sections;
-  return sections;
-}
-
+// eslint-disable-next-line no-unused-vars
 function unhideBody() {
   try {
     const id = ('alloy-prehiding');
@@ -2268,6 +2266,7 @@ function unhideBody() {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 function hideBody() {
   const id = 'alloy-prehiding';
   let style = document.getElementById(id);
@@ -2658,15 +2657,15 @@ async function decorateExpressPage(main) {
 
     // TODO: done by martech in milo
     if (window.hlx.testing) {
-      const target = checkTesting();
+      // const target = checkTesting();
       document.querySelector('body').classList.add('personalization-container');
       // target = true;
-      if (target) {
-        hideBody();
-        setTimeout(() => {
-          unhideBody();
-        }, 3000);
-      }
+      // if (target) {
+      //   hideBody();
+      //   setTimeout(() => {
+      //     unhideBody();
+      //   }, 3000);
+      // }
     }
   }
   await loadTemplateScript();
@@ -2692,9 +2691,17 @@ async function decorateExpressPage(main) {
   }
 }
 
+function fragmentBlocksToLinks(area) {
+  area.querySelectorAll('div.fragment').forEach((blk) => {
+    const fragLink = blk.querySelector('a');
+    if (fragLink) {
+      blk.parentElement.replaceChild(fragLink, blk);
+    }
+  });
+}
+
 export async function loadArea(area = document) {
   const isDoc = area === document;
-  const main = area.querySelector('main');
 
   if (isDoc) {
     await checkForPageMods();
@@ -2715,17 +2722,32 @@ export async function loadArea(area = document) {
 
   if (window.hlx.testing) await decorateTesting();
 
-  if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
-    const { default: replaceContent } = await import('./content-replace.js');
-    await replaceContent(main);
-  }
+  fragmentBlocksToLinks(area);
 
-  if (getMetadata('template-search-page') === 'Y') {
-    const { default: redirect } = await import('./template-redirect.js');
-    await redirect();
-  }
+  const main = area.querySelector('main');
 
-  const sections = decorateSections(main, isDoc);
+  if (isDoc) {
+    if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
+      const { default: replaceContent } = await import('./content-replace.js');
+      await replaceContent(main);
+    }
+
+    if (getMetadata('template-search-page') === 'Y') {
+      const { default: redirect } = await import('./template-redirect.js');
+      await redirect();
+    }
+    await buildAutoBlocks(main);
+    splitSections(main);
+  }
+  decorateButtons(area);
+  await fixIcons(area);
+  decoratePictures(area);
+  if (isDoc) {
+    decorateLinkedPictures(main);
+  }
+  decorateSocialIcons(area);
+
+  const sections = decorateSections(area, isDoc);
 
   const areaBlocks = [];
   for (const section of sections) {
@@ -2738,8 +2760,9 @@ export async function loadArea(area = document) {
     });
   }
 
-  // await decorateMain(main, isDoc);
-  await decorateExpressPage(main);
+  if (isDoc) {
+    await decorateExpressPage(main);
+  }
 
   const currentHash = window.location.hash;
   if (currentHash) {

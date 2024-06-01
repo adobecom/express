@@ -776,6 +776,10 @@ main .section>div {
   padding: 0;
 }
 
+main .section>div:not(.fragment) {
+  /* max-width: unset; */
+}
+
 main .section>div:empty {
   padding: 0;
 }
@@ -855,11 +859,17 @@ body[data-device="mobile"] main [data-audience="mobile"][data-section-status="lo
   main .section>div {
     max-width: 830px;
   }
+  main .section>div:not(.fragment) {
+    /* max-width: unset; */
+  }
 }
 
 @media (min-width:1200px) {
   main .section>div {
     max-width: 1024px;
+  }
+  main .section>div:not(.fragment) {
+    /* max-width: unset; */
   }
 }
 
@@ -867,8 +877,7 @@ body[data-device="mobile"] main [data-audience="mobile"][data-section-status="lo
 /* jank protection for async blocks/sections */
 
 main .pricing,
-main .hero-animation,
-main .fragment {
+main .hero-animation {
   opacity: 0;
   height: 100vh;
   transition: opacity 100ms;
