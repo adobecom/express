@@ -46,7 +46,7 @@ const config = {
   stage: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
   prod: { express: 'new.express.adobe.com', commerce: 'commerce.adobe.com' },
   locales,
-  codeRoot: '/express/',
+  codeRoot: '/express',
   jarvis: {
     id: 'Acom_Express',
     version: '1.0',

@@ -1565,9 +1565,10 @@ export function loadIms() {
       loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
     }
   }).then(() => {
-    if (!window.adobeIMS?.isSignedInUser()) {
-      getConfig().entitlements([]);
-    }
+    // TODO: express checks entitlements for signed out users
+    // if (!window.adobeIMS?.isSignedInUser()) {
+    //   getConfig().entitlements([]);
+    // }
   });
 
   return imsLoaded;
@@ -2525,7 +2526,8 @@ async function checkForPageMods() {
 
   loadIms()
     .then(() => {
-      if (window.adobeIMS.isSignedInUser()) loadMiloMartech();
+      // if (window.adobeIMS.isSignedInUser()) loadMiloMartech();
+      loadMiloMartech(); // TODO: we need XLG segments even for signed out users
     })
     // eslint-disable-next-line no-console
     .catch((e) => { console.log('Unable to load IMS:', e); });
