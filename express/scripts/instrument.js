@@ -3,59 +3,16 @@
 import {
   loadScript,
   getConfig,
-  checkTesting,
   getAssetDetails,
   getMetadata,
   fetchPlaceholders,
 } from './utils.js';
 
-const usp = new URLSearchParams(window.location.search);
-const martech = usp.get('martech');
 const w = window;
 const d = document;
 const loc = w.location;
 const { pathname } = loc;
 let sparkLandingPageType;
-
-// alloy feature flag
-let martechURL;
-if (
-  (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-  || martech === 'alloy-qa'
-) {
-  martechURL = 'https://www.adobe.com/marketingtech/main.standard.qa.js';
-} else {
-  martechURL = 'https://www.adobe.com/marketingtech/main.standard.min.js';
-}
-
-window.marketingtech = {
-  adobe: {
-    launch: {
-      url: (
-        (
-          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-          || martech === 'alloy-qa'
-        )
-          ? 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-2c94beadc94f-development.js'
-          : 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-5dd5dd2177e6.min.js'
-      ),
-    },
-    alloy: {
-      edgeConfigId: (
-        (
-          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-          || martech === 'alloy-qa'
-        )
-          ? '8d2805dd-85bf-4748-82eb-f99fdad117a6'
-          : '2cba807b-7430-41ae-9aac-db2b0da742d5'
-      ),
-    },
-    target: checkTesting(),
-    audienceManager: true,
-  },
-};
-// w.targetGlobalSettings = w.targetGlobalSettings || {};
-// w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
 
 function getPlacement(btn) {
   const parentBlock = btn.closest('.block');
@@ -587,7 +544,7 @@ function decorateAnalyticsEvents() {
   });
 }
 
-function martechLoadedCB() {
+export function martechLoadedCB() {
   /* eslint-disable no-underscore-dangle */
   //------------------------------------------------------------------------------------
   // gathering the data
@@ -597,8 +554,6 @@ function martechLoadedCB() {
   const pathSegments = pathname.substr(1).split('/');
   if (locale !== '') pathSegments.shift();
   const pageName = `adobe.com:${pathSegments.join(':')}`;
-
-  const language = document.documentElement.getAttribute('lang');
 
   let category = getMetadata('category');
   if (!category && (pathname.includes('/create/')
@@ -675,7 +630,7 @@ function martechLoadedCB() {
   // set some global and persistent data layer properties
   //----------------------------------------------------------------------------
   set('page.pageInfo.pageName', pageName);
-  set('page.pageInfo.language', language);
+  // set('page.pageInfo.language', language); // TODO: already done in milo martech.js
   set('page.pageInfo.siteSection', 'adobe.com:express');
   set('page.pageInfo.category', category);
 
@@ -825,9 +780,4 @@ function martechLoadedCB() {
   }
 
   __satelliteLoadedCallback(getAudiences);
-}
-
-export default async function initMartech() {
-  await loadScript(martechURL);
-  return martechLoadedCB();
 }

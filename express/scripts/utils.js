@@ -1530,6 +1530,73 @@ function addPromotion() {
   }
 }
 
+let imsLoaded;
+export function loadIms() {
+  imsLoaded = imsLoaded || new Promise((resolve, reject) => {
+    const {
+      locale, imsClientId, imsScope, env, adobeid,
+    } = getConfig();
+    if (!imsClientId) {
+      reject(new Error('Missing IMS Client ID'));
+      return;
+    }
+    const [unavMeta, ahomeMeta] = [getMetadata('universal-nav')?.trim(), getMetadata('adobe-home-redirect')];
+    const defaultScope = `AdobeID,openid,gnav${unavMeta && unavMeta !== 'off' ? ',pps.read,firefly_api,additional_info.roles,read_organizations' : ''}`;
+    const timeout = setTimeout(() => reject(new Error('IMS timeout')), 5000);
+    window.adobeid = {
+      client_id: imsClientId,
+      scope: imsScope || defaultScope,
+      locale: locale?.ietf?.replace('-', '_') || 'en_US',
+      redirect_uri: ahomeMeta === 'on'
+        ? `https://www${env.name !== 'prod' ? '.stage' : ''}.adobe.com${locale.prefix}` : undefined,
+      autoValidateToken: true,
+      environment: env.ims,
+      useLocalStorage: false,
+      onReady: () => {
+        resolve();
+        clearTimeout(timeout);
+      },
+      onError: reject,
+      ...adobeid,
+    };
+    if (getConfig().env.ims === 'stg1') {
+      loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
+    } else {
+      loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+    }
+  }).then(() => {
+    if (!window.adobeIMS?.isSignedInUser()) {
+      getConfig().entitlements([]);
+    }
+  });
+
+  return imsLoaded;
+}
+
+export async function loadMiloMartech({
+  persEnabled = false,
+  persManifests = [],
+  postLCP = false,
+} = {}) {
+  // eslint-disable-next-line no-underscore-dangle
+  if (window.marketingtech?.adobe?.launch && window._satellite) {
+    return true;
+  }
+
+  const query = PAGE_URL.searchParams.get('martech');
+  if (query === 'off' || getMetadata('martech') === 'off') {
+    return false;
+  }
+
+  window.targetGlobalSettings = { bodyHidingEnabled: false };
+  loadIms().catch(() => {});
+
+  const { default: initMartech } = await import('./martech.js');
+  await initMartech({ persEnabled, persManifests, postLCP });
+
+  return true;
+}
+
 async function loadMartech() {
   const usp = new URLSearchParams(window.location.search);
   const martech = usp.get('martech');
@@ -1785,54 +1852,11 @@ export async function getExperimentConfig(experimentId) {
   }
 }
 
-let imsLoaded;
-function loadIMS() {
-  imsLoaded = imsLoaded || new Promise((resolve, reject) => {
-    const {
-      locale, imsClientId, imsScope, env, adobeid,
-    } = getConfig();
-    if (!imsClientId) {
-      reject(new Error('Missing IMS Client ID'));
-      return;
-    }
-    const [unavMeta, ahomeMeta] = [getMetadata('universal-nav')?.trim(), getMetadata('adobe-home-redirect')];
-    const defaultScope = `AdobeID,openid,gnav${unavMeta && unavMeta !== 'off' ? ',pps.read,firefly_api,additional_info.roles,read_organizations' : ''}`;
-    const timeout = setTimeout(() => reject(new Error('IMS timeout')), 5000);
-    window.adobeid = {
-      client_id: imsClientId,
-      scope: imsScope || defaultScope,
-      locale: locale?.ietf?.replace('-', '_') || 'en_US',
-      redirect_uri: ahomeMeta === 'on'
-        ? `https://www${env.name !== 'prod' ? '.stage' : ''}.adobe.com${locale.prefix}` : undefined,
-      autoValidateToken: true,
-      environment: env.ims,
-      useLocalStorage: false,
-      onReady: () => {
-        resolve();
-        clearTimeout(timeout);
-      },
-      onError: reject,
-      ...adobeid,
-    };
-    if (getConfig().env.ims === 'stg1') {
-      loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-    } else {
-      loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
-    }
-  }).then(() => {
-    if (!window.adobeIMS?.isSignedInUser()) {
-      getConfig().entitlements([]);
-    }
-  });
-
-  return imsLoaded;
-}
-
 async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   const promises = [import('./experiment.js')];
   const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
-    loadIMS();
+    loadIms();
     // rush instrument-martech-launch-alloy
     promises.push(loadMartech());
     window.delay_preload_product = true;
@@ -2494,14 +2518,14 @@ async function checkForPageMods() {
 
   const persManifests = await combineMepSources(persEnabled, promoEnabled, mepParam);
   if (targetEnabled === true) {
-    await loadMartech({ persEnabled: true, persManifests, targetEnabled });
+    await loadMiloMartech({ persEnabled: true, persManifests, targetEnabled });
     return;
   }
   if (!persManifests.length) return;
 
-  loadIMS()
+  loadIms()
     .then(() => {
-      if (window.adobeIMS.isSignedInUser()) loadMartech();
+      if (window.adobeIMS.isSignedInUser()) loadMiloMartech();
     })
     // eslint-disable-next-line no-console
     .catch((e) => { console.log('Unable to load IMS:', e); });
@@ -2516,7 +2540,7 @@ async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   window.dispatchEvent(new Event('milo:LCP:loaded'));
-  if (window.hlx.martech) window.hlx.martechLoaded = loadMartech();
+  if (window.hlx.martech) window.hlx.martechLoaded = loadMiloMartech();
   loadGnav();
   const { default: loadFonts } = await import('./fonts.js');
   loadFonts(config.locale, loadStyle);
@@ -2576,7 +2600,7 @@ async function documentPostSectionLoading(config) {
   });
 
   window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
-    decorateTrackingEvents();
+    decorateTrackingEvents(); // TODO: legacy express link tracking
   });
 
   document.body.appendChild(createTag('div', { id: 'page-load-ok-milo', style: 'display: none;' }));
