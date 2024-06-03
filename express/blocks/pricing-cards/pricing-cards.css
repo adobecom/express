@@ -49,7 +49,7 @@ End legacy CSS
 }
 
 .pricing-cards.block {
-  padding: 0 15px 40px;
+  padding: 12px 15px 40px 15px;
 }
 
 .pricing-cards .cards-container {
@@ -92,22 +92,22 @@ Border style variants
   background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
   padding: 12px 2px 4px 2px;
   border-radius: 10px;
-  overflow: hidden;
   background: var(--color-white);
-  margin-top:-48px;
+  margin-top: -48px;
   margin-left: -2px;
   margin-right: -2px;
   display: flex;
   flex-direction: column;
   margin-bottom: 48px;
-  
+
 }
 
-.pricing-cards .cards-container:has( .card-border.gradient-promo) {
-  margin-top:48px;
+.pricing-cards .cards-container:has(.card-border.gradient-promo) {
+  margin-top: 48px;
 }
-.pricing-cards .cards-container{
-  margin-top:24px;
+
+.pricing-cards .cards-container {
+  margin-top: 24px;
 }
 
 .pricing-cards .gradient-promo:has(div:empty) {
@@ -127,7 +127,7 @@ Border style variants
   padding-bottom: 1px;
 }
 
-.pricing-cards .card-border.special-promo{
+.pricing-cards .card-border.special-promo {
   border-radius: 4px;
 }
 
@@ -160,29 +160,55 @@ Border style variants
 
 /*
 End border style variants
-*/ 
+*/
 
 .pricing-cards .tooltip-icon {
   position: relative;
-  top : 2px;
+  top: 2px;
 }
 
 .pricing-cards .tooltip-text {
   display: none;
-  margin-left: 20px;
   padding: 8px;
-  background-color:#5258E4;
+  z-index: 10;
+  background-color: #292929;
   color: white;
   border-radius: 8px;
   position: absolute;
-  bottom: 0; left: 25%;transition: bottom 0.5s ease-in-out;
+  bottom: 100%;
+  min-width: 200px;
+  left: -105px;
+  width: fit-content;
+  margin-bottom: 19px;
+  transition: bottom 0.5s
+}
+
+.pricing-cards .tooltip-text::after {
+  content: '';
+  position: absolute;
+  bottom: -5px; 
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid black;
 }
 
 .pricing-cards .tooltip {
   position: relative;
+  display: inline;
 }
 
-.pricing-cards .tooltip .icon:hover ~.tooltip-text{
+.pricing-cards .tooltip::after {
+  display: inline;
+}
+
+.pricing-cards .tooltip span {
+  position: relative;
+}
+
+.pricing-cards .tooltip .icon:hover~.tooltip-text {
   display: block;
 }
 
@@ -310,11 +336,12 @@ End border style variants
   text-align: center;
 }
 
-.pricing-cards-wrapper + .default-content-wrapper .button-container {
-  margin-top : -40px;
-  
+.pricing-cards-wrapper+.default-content-wrapper .button-container {
+  margin-top: -40px;
+
 }
-.pricing-cards-wrapper + .default-content-wrapper .button-container .button{
+
+.pricing-cards-wrapper+.default-content-wrapper .button-container .button {
   padding: 13px 1.5em 14px 1.5em;
   border-radius: 27px;
   font-size: var(--body-font-size-m);
@@ -322,6 +349,46 @@ End border style variants
 
 
 /** pricing styles end **/
+
+.pricing-cards .billing-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+  font-size: var(--body-font-size-s);
+}
+
+.pricing-cards .billing-toggle button {
+  border: 2px transparent solid;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+
+  font-size: var(--body-font-size-xs);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pricing-cards .billing-toggle :focus-within {
+  border-color: var(--color-info-accent);
+}
+
+.pricing-cards .billing-toggle span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transition: 0.2s all linear;
+  border: 2px solid #292929;
+  box-sizing: border-box;
+}
+
+.pricing-cards .billing-toggle .checked span {
+  border-width: 6px;
+}
 
 .pricing-cards .card-cta-group {
   display: flex;
