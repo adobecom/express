@@ -8,6 +8,7 @@ folders:
   /de/express/templates/: /de/express/templates/default
   /es/express/templates/: /es/express/templates/default
   /fr/express/templates/: /fr/express/templates/default
+  /in/express/templates/: /in/express/templates/default
   /it/express/templates/: /it/express/templates/default
   /jp/express/templates/: /jp/express/templates/default
   /kr/express/templates/: /kr/express/templates/default
