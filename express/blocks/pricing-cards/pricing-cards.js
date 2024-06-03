@@ -27,6 +27,7 @@ const blockKeys = [
   'featureList',
   'compare',
 ];
+
 const SAVE_PERCENTAGE = '{{savePercentage}}';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
 const PRICE_TOKEN = '{{pricing}}';
@@ -269,10 +270,11 @@ function readBraces(inputString, card) {
 
   if (matches.length > 0) {
     const [token, promoType] = matches[matches.length - 1];
-    const specialPromo = createTag('div');
+    const specialPromo = createTag('div', {class : 'promo-tag'});
     specialPromo.textContent = inputString.split(token)[0].trim();
     card.classList.add(promoType.replaceAll(' ', ''));
     card.append(specialPromo);
+    
     return specialPromo;
   }
   return null;
@@ -316,11 +318,11 @@ function decorateLegacyHeader(header, card) {
   return { specialPromo, cardWrapper: card };
 }
 
-function decorateHeader(header, borderParams, card, cardBorder) {
+function decorateHeader(header, borderParams, card) {
   const h2 = header.querySelector('h2');
   // The raw text extracted from the word doc
   header.classList.add('card-header');
-  const specialPromo = readBraces(borderParams?.innerText, cardBorder);
+  const specialPromo = readBraces(borderParams?.innerText, card);
   const premiumIcon = header.querySelector('img');
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
@@ -344,9 +346,8 @@ function decorateHeader(header, borderParams, card, cardBorder) {
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
   });
-  card.append(header);
-  cardBorder.append(card);
-  return { cardWrapper: cardBorder, specialPromo };
+  card.append(header); 
+  return { cardWrapper: card, specialPromo };
 }
 
 function decorateBasicTextSection(textElement, className, card) {
@@ -391,11 +392,10 @@ async function decorateCard({
   featureList,
   compare,
 }, el, placeholders, legacyVersion) {
-  const card = createTag('div', { class: 'card' });
-  const cardBorder = createTag('div', { class: 'card-border' });
+  const card = createTag('div', { class: 'card card-border' });
   const { specialPromo, cardWrapper } = legacyVersion
     ? decorateLegacyHeader(header, card)
-    : decorateHeader(header, borderParams, card, cardBorder);
+    : decorateHeader(header, borderParams, card);
 
   decorateBasicTextSection(explain, 'card-explain', card);
   const [mPricingSection, yPricingSection] = await Promise.all([
@@ -454,64 +454,9 @@ export default async function init(el) {
   el.classList.add('no-visible');
   el.prepend(cardsContainer);
 
-  const groups = [
-    cards.map(({ header }) => header),
-    cards.map(({ explain }) => explain),
-    cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
-    [...el.querySelectorAll('.pricing-area')],
-    cards.map(({ featureList }) => featureList.querySelector('p')),
-    cards.map(({ featureList }) => featureList),
-    cards.map(({ compare }) => compare),
-  ];
-  const decoratedCardEls = [...cardsContainer.querySelectorAll('.card')];
-  const synchedItems = groups.flat();
-  synchedItems.forEach((item) => {
-    // elements with js-controlled heights need border-box
-    if (item) item.style.boxSizing = 'border-box';
-  });
-  const undoSyncHeights = () => {
-    synchedItems.forEach((item) => {
-      item.style?.removeProperty('min-height');
-    });
-  };
-  const doSyncHeights = () => {
-    // possible 2 card in row 1 and 3rd card in row 2
-    const yPositions = decoratedCardEls.map((c) => c.getBoundingClientRect().top);
-    const positionGroups = [];
-    // positionGroups -> [2,1]
-    yPositions.forEach((yPosition, i) => {
-      // accounting for pixel lineup issues
-      if (i === 0 || Math.abs(yPosition - yPositions[i - 1]) > 6) {
-        positionGroups.push(1);
-      } else {
-        positionGroups[positionGroups.length - 1] += 1;
-      }
-    });
-    if (positionGroups.length === cards.length) {
-      // no sync when 1 card per row
-      undoSyncHeights();
-      return;
-    }
-    const groupsByTop = [];
-    // [[h1, h2, h3], [e1, e2, e3], [m1,y1,m2,y2,m3,y3]] + [2,1]
-    // -> [[h1, h2], [h3], [e1, e2], [e3], [m1, m2, y1, y2], [m3, y3]]
-    groups.forEach((group) => {
-      for (let prev = 0, i = 0; i < positionGroups.length; i += 1) {
-        const span = positionGroups[i] * (group.length / cards.length);
-        groupsByTop.push(group.slice(prev, prev + span));
-        prev += span;
-      }
-    });
-    syncMinHeights(groupsByTop);
-  };
-  window.addEventListener('resize', debounce(() => {
-    doSyncHeights();
-  }, 100));
-
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        doSyncHeights();
         el.classList.remove('no-visible');
       }
     });

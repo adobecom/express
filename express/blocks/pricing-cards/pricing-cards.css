@@ -50,30 +50,45 @@ End legacy CSS
 
 .pricing-cards.block {
   padding: 12px 15px 40px 15px;
-}
+} 
 
 .pricing-cards .cards-container {
-  display: grid;
+  /* display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
   grid-template-rows: repeat(auto-fit, minmax(311px, 1fr));
   justify-content: center;
-  gap: 16px;
+  gap: 16px; */
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 90%; 
+  margin-left: auto;
+  margin-right: auto; 
 }
 
 .pricing-cards .card {
   background-color: var(--color-white);
-  position: relative;
-  display: flex;
+  position: relative; 
   flex-direction: column;
   align-items: center;
   border-radius: 8px;
   width: 100%;
-  padding: var(--card-padding);
-  gap: 16px;
+  padding: var(--card-padding); 
   text-align: left;
   box-sizing: border-box;
   height: 100%;
   border: 1px solid #C6C6C6;
+  display: grid;
+  grid-template-rows:  50px .2fr 40px 1fr 3fr 70px; 
+}
+
+.pricing-cards .card:has(> .promo-tag) {
+  grid-template-rows: 0px 50px .2fr 40px 1fr 3fr 70px;
+}
+
+.pricing-cards .card > div {
+  height: 100%;
 }
 
 /*
@@ -89,7 +104,7 @@ Border style variants
 }
 
 .pricing-cards .gradient-promo {
-  background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
+  /* background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
   padding: 12px 2px 4px 2px;
   border-radius: 10px;
   background: var(--color-white);
@@ -98,7 +113,7 @@ Border style variants
   margin-right: -2px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 48px;
+  margin-bottom: 48px; */
 
 }
 
@@ -302,6 +317,7 @@ End border style variants
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 16px;
 }
 
 .pricing-cards .pricing-section.hide {
@@ -318,6 +334,7 @@ End border style variants
   displaY: flex;
   flex-direction: column;
   gap: 16px;
+  flex-grow: 1;
 }
 
 .pricing-cards .pricing-area p {
