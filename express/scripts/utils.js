@@ -2255,34 +2255,6 @@ function decoratePictures(el) {
   });
 }
 
-// eslint-disable-next-line no-unused-vars
-function unhideBody() {
-  try {
-    const id = ('alloy-prehiding');
-    document.head.removeChild(document.getElementById(id));
-  } catch (e) {
-    // nothing
-  }
-}
-
-// eslint-disable-next-line no-unused-vars
-function hideBody() {
-  const id = 'alloy-prehiding';
-  let style = document.getElementById(id);
-  if (style) {
-    return;
-  }
-  style = document.createElement('style');
-  style.id = 'alloy-prehiding';
-  style.innerHTML = '.personalization-container{opacity:0.01 !important}';
-
-  try {
-    document.head.appendChild(style);
-  } catch (e) {
-    // nothing
-  }
-}
-
 export function toggleVideo(target) {
   const videos = target.querySelectorAll('video');
   const paused = videos[0] ? videos[0].paused : false;
@@ -2653,19 +2625,6 @@ async function decorateExpressPage(main) {
     decorateLegalCopy(main);
     displayEnv();
     displayOldLinkWarning();
-
-    // TODO: done by martech in milo
-    if (window.hlx.testing) {
-      // const target = checkTesting();
-      document.querySelector('body').classList.add('personalization-container');
-      // target = true;
-      // if (target) {
-      //   hideBody();
-      //   setTimeout(() => {
-      //     unhideBody();
-      //   }, 3000);
-      // }
-    }
   }
   await loadTemplateScript();
   const footer = document.querySelector('footer');
