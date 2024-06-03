@@ -83,10 +83,7 @@ End legacy CSS
   grid-template-rows:  50px .2fr 40px 1fr 3fr 70px; 
 }
 
-.pricing-cards .card:has(> .promo-tag) {
-  grid-template-rows: 0px 50px .2fr 40px 1fr 3fr 70px;
-}
-
+ 
 .pricing-cards .card > div {
   height: 100%;
 }
@@ -104,7 +101,7 @@ Border style variants
 }
 
 .pricing-cards .gradient-promo {
-  /* background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
+   background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
   padding: 12px 2px 4px 2px;
   border-radius: 10px;
   background: var(--color-white);
@@ -113,7 +110,7 @@ Border style variants
   margin-right: -2px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 48px; */
+  margin-bottom: 48px;  
 
 }
 
