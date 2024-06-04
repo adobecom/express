@@ -1,3 +1,5 @@
+import HtmlSanitizer from './html-sanitizer.js';
+
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
   { fragment: '/express/fragments/' },
@@ -1892,7 +1894,7 @@ export async function fetchBlockFragDecorated(url, blockName) {
   const location = new URL(window.location);
   const { prefix } = getConfig().locale;
   const fragmentUrl = `${location.origin}${prefix}${url}`;
-
+  const htmlSantizer = new HtmlSanitizer();
   const path = new URL(fragmentUrl).pathname.split('.')[0];
   const resp = await fetch(`${path}.plain.html`);
   if (resp.status === 404) {
@@ -1900,7 +1902,7 @@ export async function fetchBlockFragDecorated(url, blockName) {
   } else {
     const html = await resp.text();
     const section = createTag('div');
-    section.innerHTML = html;
+    section.innerHTML = htmlSantizer.SanitizeHtml(html);
     section.className = `section section-wrapper ${blockName}-container`;
     const block = section.querySelector(`.${blockName}`);
     block.dataset.blockName = blockName;
