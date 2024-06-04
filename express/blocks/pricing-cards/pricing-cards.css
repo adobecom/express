@@ -53,19 +53,14 @@ End legacy CSS
 } 
 
 .pricing-cards .cards-container {
-  /* display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
-  grid-template-rows: repeat(auto-fit, minmax(311px, 1fr));
-  justify-content: center;
-  gap: 16px; */
-
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: grid; 
   gap: 10px;
   width: 90%; 
   margin-left: auto;
   margin-right: auto; 
 }
+
+ 
 
 .pricing-cards .card {
   background-color: var(--color-white);

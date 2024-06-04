@@ -318,11 +318,11 @@ function decorateLegacyHeader(header, card) {
   return { specialPromo, cardWrapper: card };
 }
 
-function decorateHeader(header, borderParams, card) {
+function decorateHeader(header, borderParams, card, cardBorder) {
   const h2 = header.querySelector('h2');
   // The raw text extracted from the word doc
   header.classList.add('card-header');
-  const specialPromo = readBraces(borderParams?.innerText, card);
+  const specialPromo = readBraces(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
@@ -346,8 +346,9 @@ function decorateHeader(header, borderParams, card) {
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
   });
-  card.append(header); 
-  return { cardWrapper: card, specialPromo };
+  card.append(header);
+  cardBorder.append(card);
+  return { cardWrapper: cardBorder, specialPromo };
 }
 
 function decorateBasicTextSection(textElement, className, card) {
@@ -392,10 +393,11 @@ async function decorateCard({
   featureList,
   compare,
 }, el, placeholders, legacyVersion) {
-  const card = createTag('div', { class: 'card card-border' });
+  const card = createTag('div', { class: 'card' });
+  const cardBorder = createTag('div', { class: 'card-border' });
   const { specialPromo, cardWrapper } = legacyVersion
     ? decorateLegacyHeader(header, card)
-    : decorateHeader(header, borderParams, card);
+    : decorateHeader(header, borderParams, card, cardBorder);
 
   decorateBasicTextSection(explain, 'card-explain', card);
   const [mPricingSection, yPricingSection] = await Promise.all([

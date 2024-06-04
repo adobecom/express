@@ -141,6 +141,7 @@ function handlePause(block) {
     }
   }
 }
+
 async function buildReduceMotionSwitch(block, marqueeForeground) {
   if (!block.querySelector('.reduce-motion-wrapper')) {
     const reduceMotionIconWrapper = createTag('div', {
