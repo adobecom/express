@@ -7,21 +7,21 @@ import {
   // getMetadata,
 } from '../../scripts/utils.js';
 
-const CDN_URL = 'https://auth-light.identity-stage.adobe.com/sentry/wrapper.js';
-
 const authParams = {
   dt: false,
   locale: getConfig().locale.ietf.toLowerCase(),
-  response_type: 'code', // FIXME:
+  response_type: 'code', // FIXME: to be finalized
   // client_id: 'AdobeExpressWeb',
   client_id: 'sentry-test-edu',
   scope: 'AdobeID,openid',
 };
 const config = {
-  consentProfile: 'free', // FIXME:
+  consentProfile: 'free', // FIXME: to be finalized
 };
-const isPopup = true; // FIXME:
+const isPopup = true; // FIXME: to be finalized
 const variant = 'edu-express';
+const isStage = getConfig().env.name !== 'prod';
+const CDN_URL = `https://auth-light.identity${isStage ? '-stage' : ''}.adobe.com/sentry/wrapper.js`;
 const onRedirect = (e) => {
   console.log('on redirect');
 };
@@ -40,7 +40,7 @@ export default async function init(el) {
   susi.authParams = authParams;
   susi.authParams.redirect_uri = redirectUri ? encodeURIComponent(redirectUri) : 'https://new.express.adobe.com/';
   susi.config = config;
-  susi.stage = 'true';
+  if (isStage) susi.stage = 'true';
   susi.popup = 'true';
   susi.variant = variant;
   susi.addEventListener('redirect', onRedirect);
