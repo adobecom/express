@@ -157,7 +157,7 @@ function constructProps(block) {
     headingTitle: null,
     headingSlug: null,
     viewAllLink: null,
-    holidayIcon: null,
+    holidayIcon: 'yes',
     backgroundColor: '#000B1D',
     backgroundAnimation: null,
     textColor: '#FFFFFF',
@@ -1077,7 +1077,7 @@ async function decorateToolbar(block, props) {
   }
 }
 
-function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
+function initExpandCollapseToolbar(block, templateTitle, toggle) {
   const onToggle = () => {
     block.classList.toggle('expanded');
 
@@ -1095,22 +1095,23 @@ function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
       }
     }
   };
+  const templateImages = block.querySelectorAll('.template')
 
-  const chev = block.querySelector('.toggle-button-chev');
-  templateTitle.addEventListener('click', () => onToggle());
-  chev.addEventListener('click', (e) => {
-    e.stopPropagation();
-    onToggle();
-  });
+  templateImages.forEach((template) => {
+    template.addEventListener('click', (e) => {
+      e.stopPropagation()
+    })
+  })
 
-  toggle.addEventListener('click', () => onToggle());
-  link.addEventListener('click', (e) => e.stopPropagation());
-
-  setTimeout(() => {
-    if (!block.matches(':hover')) {
-      onToggle();
+  toggle.addEventListener('click', () => onToggle())
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.block') || (
+      block.classList.contains('expanded')
+    )) {
+      onToggle()
+      return
     }
-  }, 3000);
+  });
 }
 
 function decorateHoliday(block, props) {
@@ -1136,7 +1137,7 @@ function decorateHoliday(block, props) {
   }
 
   if (templateXSection && templateXSection.querySelectorAll('div.block').length === 1) main.classList.add('with-holiday-templates-banner');
-  block.classList.add('expanded', props.textColor);
+  block.classList.add(props.textColor);
   toggleBar.classList.add('toggle-bar');
   topElements.append(heading);
   toggle.append(link, toggleChev);
@@ -1152,7 +1153,7 @@ function decorateHoliday(block, props) {
     toggleBar.append(toggle);
   }
 
-  initExpandCollapseToolbar(block, templateTitle, toggle, link);
+  initExpandCollapseToolbar(block, templateTitle, toggle);
 }
 
 async function decorateTemplates(block, props) {
@@ -1589,7 +1590,7 @@ async function buildTemplateList(block, props, type = []) {
     }
   }
 
-  if (props.holidayBlock) {
+  if (true) {
     decorateHoliday(block, props);
   }
 }
