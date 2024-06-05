@@ -1077,7 +1077,7 @@ async function decorateToolbar(block, props) {
   }
 }
 
-function initExpandCollapseToolbar(block, templateTitle, toggle) {
+function initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev) {
   const onToggle = () => {
     block.classList.toggle('expanded');
 
@@ -1102,7 +1102,7 @@ function initExpandCollapseToolbar(block, templateTitle, toggle) {
       e.stopPropagation()
     })
   })
-
+  toggleChev.addEventListener('click', onToggle)
   toggle.addEventListener('click', () => onToggle())
   document.addEventListener('click', (e) => {
     if (e.target.closest('.block') || (
@@ -1112,6 +1112,13 @@ function initExpandCollapseToolbar(block, templateTitle, toggle) {
       return
     }
   });
+
+  setTimeout(() => {
+    if ( block.classList.contains('auto-expand')) {
+      onToggle();
+    }
+  }, 3000);
+
 }
 
 function decorateHoliday(block, props) {
@@ -1153,7 +1160,7 @@ function decorateHoliday(block, props) {
     toggleBar.append(toggle);
   }
 
-  initExpandCollapseToolbar(block, templateTitle, toggle);
+  initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev);
 }
 
 async function decorateTemplates(block, props) {
