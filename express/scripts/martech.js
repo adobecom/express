@@ -192,9 +192,7 @@ const loadMartechFiles = async (config, url, edgeConfigId) => {
   filesLoadedPromise = async () => {
     loadIms()
       .then(() => {
-        // if (window.adobeIMS.isSignedInUser()) setupEntitlementCallback();
-        // TODO: express checks entitlements for signed out users
-        setupEntitlementCallback();
+        if (window.adobeIMS.isSignedInUser() || getMetadata('xlg-entitlements')) setupEntitlementCallback();
       })
       .catch(() => {});
 
