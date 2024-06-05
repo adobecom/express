@@ -1105,7 +1105,7 @@ function initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev) {
   toggleChev.addEventListener('click', onToggle)
   toggle.addEventListener('click', () => onToggle())
   document.addEventListener('click', (e) => {
-    if (e.target.closest('.template-x') || (
+    if (e.target.closest('.template-x.holiday') || (
       block.classList.contains('expanded')
     )) {
       onToggle()
