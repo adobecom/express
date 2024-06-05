@@ -18,15 +18,17 @@ const authParams = {
 const config = {
   consentProfile: 'free', // FIXME: to be finalized
 };
-const isPopup = true; // FIXME: to be finalized
+// const isPopup = true; // FIXME: to be finalized
 const variant = 'edu-express';
 const isStage = getConfig().env.name !== 'prod';
 const CDN_URL = `https://auth-light.identity${isStage ? '-stage' : ''}.adobe.com/sentry/wrapper.js`;
 const onRedirect = (e) => {
-  console.log('on redirect');
+  console.log('on redirect', e, e.detail);
+  console.log('redirecting to: ', e.detail);
+  window.location.assign(e.detail);
 };
 const onToken = (e) => {
-  console.log('on token');
+  console.log('on token', e);
 };
 const onError = (e) => {
   console.log('on error:', e);
@@ -41,7 +43,7 @@ export default async function init(el) {
   susi.authParams.redirect_uri = redirectUri ? encodeURIComponent(redirectUri) : 'https://new.express.adobe.com/';
   susi.config = config;
   if (isStage) susi.stage = 'true';
-  susi.popup = 'true';
+  // susi.popup = 'true';
   susi.variant = variant;
   susi.addEventListener('redirect', onRedirect);
   susi.addEventListener('on-token', onToken);
