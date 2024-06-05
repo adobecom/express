@@ -16,6 +16,66 @@ const d = document;
 const loc = w.location;
 const { pathname } = loc;
 let sparkLandingPageType;
+// home
+if (
+  pathname === '/express'
+  || pathname === '/express/'
+) {
+  sparkLandingPageType = 'home';
+  // seo
+} else if (
+  pathname === '/express/create'
+  || pathname.includes('/create/')
+  || pathname === '/express/make'
+  || pathname.includes('/make/')
+  || pathname === '/express/feature'
+  || pathname.includes('/feature/')
+  || pathname === '/express/discover'
+  || pathname.includes('/discover/')
+) {
+  sparkLandingPageType = 'seo';
+  // learn
+} else if (
+  pathname === '/express/tools'
+  || pathname.includes('/tools/')
+) {
+  sparkLandingPageType = 'quickAction';
+} else if (
+  pathname === '/express/learn'
+  || (
+    pathname.includes('/learn/')
+    && !pathname.includes('/blog/')
+  )
+) {
+  if (pathname.includes('/express-your-brand')) {
+    sparkLandingPageType = 'express-your-brand';
+  } else {
+    sparkLandingPageType = 'learn';
+  }
+  // blog
+} else if (
+  pathname === '/express/learn/blog'
+  || pathname.includes('/learn/blog/')
+) {
+  sparkLandingPageType = 'blog';
+  // pricing
+} else if (
+  pathname.includes('/pricing')
+) {
+  sparkLandingPageType = 'pricing';
+  // edu
+} else if (
+  pathname.includes('/education/')
+) {
+  sparkLandingPageType = 'edu';
+  // other
+} else if (
+  pathname.includes('/express-your-fandom')
+) {
+  sparkLandingPageType = 'express-your-fandom';
+} else {
+  sparkLandingPageType = 'other';
+}
 
 // alloy feature flag
 let martechURL;
@@ -56,6 +116,10 @@ window.marketingtech = {
 };
 // w.targetGlobalSettings = w.targetGlobalSettings || {};
 // w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
+
+export function getExpressLandingPageType() {
+  return sparkLandingPageType;
+}
 
 function getPlacement(btn) {
   const parentBlock = btn.closest('.block');
@@ -129,7 +193,7 @@ export function sendEventToAdobeAnaltics(eventName) {
   });
 }
 
-function sendFrictionlessEventToAdobeAnaltics(block) {
+export function sendFrictionlessEventToAdobeAnaltics(block) {
   const eventName = 'view-quickaction-upload-page';
   _satellite.track('event', {
     xdm: {},
@@ -608,66 +672,6 @@ function martechLoadedCB() {
     if (pathname.includes('/video')) category = 'video';
   }
 
-  // home
-  if (
-    pathname === '/express'
-      || pathname === '/express/'
-  ) {
-    sparkLandingPageType = 'home';
-    // seo
-  } else if (
-    pathname === '/express/create'
-      || pathname.includes('/create/')
-      || pathname === '/express/make'
-      || pathname.includes('/make/')
-      || pathname === '/express/feature'
-      || pathname.includes('/feature/')
-      || pathname === '/express/discover'
-      || pathname.includes('/discover/')
-  ) {
-    sparkLandingPageType = 'seo';
-    // learn
-  } else if (
-    pathname === '/express/tools'
-      || pathname.includes('/tools/')
-  ) {
-    sparkLandingPageType = 'quickAction';
-  } else if (
-    pathname === '/express/learn'
-      || (
-        pathname.includes('/learn/')
-        && !pathname.includes('/blog/')
-      )
-  ) {
-    if (pathname.includes('/express-your-brand')) {
-      sparkLandingPageType = 'express-your-brand';
-    } else {
-      sparkLandingPageType = 'learn';
-    }
-    // blog
-  } else if (
-    pathname === '/express/learn/blog'
-      || pathname.includes('/learn/blog/')
-  ) {
-    sparkLandingPageType = 'blog';
-    // pricing
-  } else if (
-    pathname.includes('/pricing')
-  ) {
-    sparkLandingPageType = 'pricing';
-    // edu
-  } else if (
-    pathname.includes('/education/')
-  ) {
-    sparkLandingPageType = 'edu';
-    // other
-  } else if (
-    pathname.includes('/express-your-fandom')
-  ) {
-    sparkLandingPageType = 'express-your-fandom';
-  } else {
-    sparkLandingPageType = 'other';
-  }
   const url = new URL(loc.href);
   const sparkTouchpoint = url.searchParams.get('touchpointName');
 
@@ -701,12 +705,6 @@ function martechLoadedCB() {
 
   // Fire the landing:viewedPage event
   sendEventToAdobeAnaltics('landing:viewedPage');
-
-  // Fire quick-action-viewed event if needed
-  const quickActionBlock = d.querySelector('.frictionless-quick-action.block');
-  if (quickActionBlock) {
-    sendFrictionlessEventToAdobeAnaltics(quickActionBlock);
-  }
 
   // Fire the displayPurchasePanel event if it is the pricing site
   if (
@@ -828,6 +826,10 @@ function martechLoadedCB() {
 }
 
 export default async function initMartech() {
+  const $links = d.querySelectorAll('main a');
+  // for adding branch parameters to branch links
+  await trackBranchParameters($links);
+
   await loadScript(martechURL);
   return martechLoadedCB();
 }

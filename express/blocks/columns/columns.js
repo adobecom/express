@@ -18,6 +18,11 @@ import {
   isVideoLink,
 } from '../shared/video.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
+import {
+  appendLinkText,
+  getExpressLandingPageType,
+  sendEventToAdobeAnaltics,
+} from '../../scripts/instrument.js';
 
 function transformToVideoColumn(cell, aTag, block) {
   const parent = cell.parentElement;
@@ -362,5 +367,20 @@ export default async function decorate(block) {
   if (phoneNumberTags.length > 0) {
     const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');
     await formatSalesPhoneNumber(phoneNumberTags);
+  }
+
+  // Tracking any video column blocks.
+  const columnVideos = block.querySelectorAll('.column-video');
+  if (columnVideos.length) {
+    columnVideos.forEach((columnVideo) => {
+      const parent = columnVideo.closest('.columns');
+      const a = parent.querySelector('a');
+      const adobeEventName = appendLinkText(`adobe.com:express:cta:learn:columns:${getExpressLandingPageType()}:`, a);
+
+      parent.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sendEventToAdobeAnaltics(adobeEventName);
+      });
+    });
   }
 }

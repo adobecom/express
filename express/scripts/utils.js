@@ -2544,10 +2544,6 @@ export async function loadArea(area = document) {
   import('./attributes.js').then((analytics) => {
     document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
   });
-
-  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
-    decorateTrackingEvents();
-  });
 }
 
 export function getMobileOperatingSystem() {
