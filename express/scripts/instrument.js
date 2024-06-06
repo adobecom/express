@@ -169,35 +169,45 @@ export function sendEventToAnalytics(eventName) {
 
 export function sendFrictionlessEventToAdobeAnaltics(block) {
   const eventName = 'view-quickaction-upload-page';
-  _satellite.track('event', {
-    xdm: {},
-    data: {
-      eventType: 'web.webinteraction.linkClicks',
-      web: {
-        webInteraction: {
-          name: eventName,
-          linkClicks: {
-            value: 1,
+  const fireEvent = () => {
+    _satellite.track('event', {
+      xdm: {},
+      data: {
+        eventType: 'web.webinteraction.linkClicks',
+        web: {
+          webInteraction: {
+            name: eventName,
+            linkClicks: {
+              value: 1,
+            },
+            type: 'other',
           },
-          type: 'other',
         },
-      },
-      _adobe_corpnew: {
-        sdm: {
-          event: {
-            pagename: eventName,
-            url: loc.href,
-          },
-          custom: {
-            qa: {
-              group: block.dataset.frictionlessgroup ?? 'unknown',
-              type: block.dataset.frictionlesstype ?? 'unknown',
+        _adobe_corpnew: {
+          sdm: {
+            event: {
+              pagename: eventName,
+              url: loc.href,
+            },
+            custom: {
+              qa: {
+                group: block.dataset.frictionlessgroup ?? 'unknown',
+                type: block.dataset.frictionlesstype ?? 'unknown',
+              },
             },
           },
         },
       },
-    },
-  });
+    });
+  };
+  // eslint-disable-next-line no-underscore-dangle
+  if (window._satellite?.track) {
+    fireEvent();
+  } else {
+    window.addEventListener('alloy_sendEvent', () => {
+      fireEvent();
+    }, { once: true });
+  }
 }
 
 export function textToName(text) {
