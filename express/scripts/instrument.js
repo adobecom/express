@@ -12,10 +12,12 @@ import trackBranchParameters from './branchlinks.js';
 const usp = new URLSearchParams(window.location.search);
 const martech = usp.get('martech');
 const w = window;
+if (!w.alloy_all) w.alloy_all = {};
 const d = document;
 const loc = w.location;
 const { pathname } = loc;
 let sparkLandingPageType;
+let sparkTouchpoint;
 // home
 if (
   pathname === '/express'
@@ -138,6 +140,52 @@ function set(path, value) {
   // set the value
   temp[segs[i]] = value;
   return obj;
+}
+
+function setDataAnalyticsAttributesForMartech() {
+  /* eslint-disable no-underscore-dangle */
+  //------------------------------------------------------------------------------------
+  // gathering the data
+  //------------------------------------------------------------------------------------
+
+  const locale = getConfig().locale.prefix;
+  const pathSegments = pathname.substr(1).split('/');
+  if (locale !== '') pathSegments.shift();
+  const pageName = `adobe.com:${pathSegments.join(':')}`;
+
+  const language = document.documentElement.getAttribute('lang');
+
+  let category = getMetadata('category');
+  if (!category && (pathname.includes('/create/')
+    || pathname.includes('/feature/'))) {
+    category = 'design';
+    if (pathname.includes('/image')) category = 'photo';
+    if (pathname.includes('/video')) category = 'video';
+  }
+
+  const url = new URL(loc.href);
+  sparkTouchpoint = url.searchParams.get('touchpointName');
+
+  //----------------------------------------------------------------------------
+  // set some global and persistent data layer properties
+  //----------------------------------------------------------------------------
+  set('page.pageInfo.pageName', pageName);
+  set('page.pageInfo.language', language);
+  set('page.pageInfo.siteSection', 'adobe.com:express');
+  set('page.pageInfo.category', category);
+
+  //----------------------------------------------------------------------------
+  // spark specific global and persistent data layer properties
+  //----------------------------------------------------------------------------
+  set('page.pageInfo.pageurl', loc.href);
+  set('page.pageInfo.namespace', 'express');
+
+  /* set experiment and variant information */
+  if (window.hlx.experiment) {
+    const { experiment } = window.hlx;
+    set('adobe.experienceCloud.target.info.primarytest.testinfo.campaignid', experiment.id);
+    set('adobe.experienceCloud.target.info.primarytest.testinfo.offerid', experiment.selectedVariant);
+  }
 }
 
 function safelyFireAnalyticsEvent(event) {
@@ -522,49 +570,6 @@ function decorateAnalyticsEvents() {
 }
 
 function martechLoadedCB() {
-  /* eslint-disable no-underscore-dangle */
-  //------------------------------------------------------------------------------------
-  // gathering the data
-  //------------------------------------------------------------------------------------
-
-  const locale = getConfig().locale.prefix;
-  const pathSegments = pathname.substr(1).split('/');
-  if (locale !== '') pathSegments.shift();
-  const pageName = `adobe.com:${pathSegments.join(':')}`;
-
-  const language = document.documentElement.getAttribute('lang');
-
-  let category = getMetadata('category');
-  if (!category && (pathname.includes('/create/')
-    || pathname.includes('/feature/'))) {
-    category = 'design';
-    if (pathname.includes('/image')) category = 'photo';
-    if (pathname.includes('/video')) category = 'video';
-  }
-
-  const url = new URL(loc.href);
-  const sparkTouchpoint = url.searchParams.get('touchpointName');
-
-  //----------------------------------------------------------------------------
-  // set some global and persistent data layer properties
-  //----------------------------------------------------------------------------
-  set('page.pageInfo.pageName', pageName);
-  set('page.pageInfo.language', language);
-  set('page.pageInfo.siteSection', 'adobe.com:express');
-  set('page.pageInfo.category', category);
-
-  //----------------------------------------------------------------------------
-  // spark specific global and persistent data layer properties
-  //----------------------------------------------------------------------------
-  set('page.pageInfo.pageurl', loc.href);
-  set('page.pageInfo.namespace', 'express');
-
-  /* set experiment and variant information */
-  if (window.hlx.experiment) {
-    const { experiment } = window.hlx;
-    set('adobe.experienceCloud.target.info.primarytest.testinfo.campaignid', experiment.id);
-    set('adobe.experienceCloud.target.info.primarytest.testinfo.offerid', experiment.selectedVariant);
-  }
   //------------------------------------------------------------------------------------
   // Fire extra spark events
   //------------------------------------------------------------------------------------
@@ -695,6 +700,7 @@ function martechLoadedCB() {
 }
 
 export default async function initMartech() {
+  setDataAnalyticsAttributesForMartech();
   await loadScript(martechURL);
   return martechLoadedCB();
 }
