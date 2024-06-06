@@ -27,6 +27,7 @@ const blockKeys = [
   'featureList',
   'compare',
 ];
+
 const SAVE_PERCENTAGE = '{{savePercentage}}';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
 const PRICE_TOKEN = '{{pricing}}';
@@ -159,6 +160,23 @@ function handleRawPrice(price, basePrice, response) {
     : price.classList.remove('price-active');
 }
 
+function adjustElementPosition() { 
+  const element = document.querySelector('.tooltip-text');
+  const rect = element.getBoundingClientRect(); 
+  if (rect.right > window.innerWidth) {
+    element.classList.remove('overflow-left')
+    element.classList.add('overflow-right')
+  } else if (rect.left < 0) { 
+    element.classList.remove('overflow-right')
+    element.classList.add('overflow-left') 
+  } else {
+    element.classList.remove('overflow-right')
+    element.classList.remove('overflow-left')
+  }
+}
+
+
+
 function handleTooltip(pricingArea) {
   const elements = pricingArea.querySelectorAll('p');
   const pattern = /\[\[([^]+)\]\]([^]+)\[\[\/([^]+)\]\]/g;
@@ -269,51 +287,14 @@ function readBraces(inputString, card) {
 
   if (matches.length > 0) {
     const [token, promoType] = matches[matches.length - 1];
-    const specialPromo = createTag('div');
+    const specialPromo = createTag('div', { class: 'promo-tag' });
     specialPromo.textContent = inputString.split(token)[0].trim();
     card.classList.add(promoType.replaceAll(' ', ''));
     card.append(specialPromo);
+
     return specialPromo;
   }
   return null;
-}
-// Function for decorating a legacy header / promo.
-function decorateLegacyHeader(header, card) {
-  header.classList.add('card-header');
-  const h2 = header.querySelector('h2');
-  const h2Text = h2.textContent.trim();
-  h2.innerHTML = '';
-  const headerConfig = /\((.+)\)/.exec(h2Text);
-  const premiumIcon = header.querySelector('img');
-  let specialPromo;
-  if (premiumIcon) h2.append(premiumIcon);
-  if (headerConfig) {
-    const cfg = headerConfig[1];
-    h2.append(h2Text.replace(`(${cfg})`, '').trim());
-    if (/^\d/.test(cfg)) {
-      const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
-      headCntDiv.textContent = cfg;
-      headCntDiv.prepend(
-        createTag('img', {
-          src: '/express/icons/head-count.svg',
-          alt: 'icon-head-count',
-        }),
-      );
-      header.append(headCntDiv);
-    } else {
-      specialPromo = createTag('div');
-      specialPromo.textContent = cfg;
-      card.classList.add('special-promo');
-      card.append(specialPromo);
-    }
-  } else {
-    h2.append(h2Text);
-  }
-  header.querySelectorAll('p').forEach((p) => {
-    if (p.innerHTML.trim() === '') p.remove();
-  });
-  card.append(header);
-  return { specialPromo, cardWrapper: card };
 }
 
 function decorateHeader(header, borderParams, card, cardBorder) {
@@ -393,9 +374,7 @@ async function decorateCard({
 }, el, placeholders, legacyVersion) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
-  const { specialPromo, cardWrapper } = legacyVersion
-    ? decorateLegacyHeader(header, card)
-    : decorateHeader(header, borderParams, card, cardBorder);
+  const { specialPromo, cardWrapper } = decorateHeader(header, borderParams, card, cardBorder);
 
   decorateBasicTextSection(explain, 'card-explain', card);
   const [mPricingSection, yPricingSection] = await Promise.all([
@@ -410,17 +389,6 @@ async function decorateCard({
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
   return cardWrapper;
-}
-
-// less thrashing by separating get and set
-async function syncMinHeights(groups) {
-  const maxHeights = groups.map((els) => els
-    .filter((e) => !!e)
-    .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
-  await yieldToMain();
-  maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
-    if (e) e.style.minHeight = `${maxHeight}px`;
-  }));
 }
 
 export default async function init(el) {
@@ -438,6 +406,7 @@ export default async function init(el) {
     return obj;
   }, {}));
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
+
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
   const decoratedCards = await Promise.all(
@@ -449,72 +418,25 @@ export default async function init(el) {
     (a) => a.title.includes(SALES_NUMBERS),
   );
   if (phoneNumberTags.length > 0) {
-    await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
+    await formatSalesPhoneNumber(cardsContainer, SALES_NUMBERS);
   }
+
   el.classList.add('no-visible');
   el.prepend(cardsContainer);
-
-  const groups = [
-    cards.map(({ header }) => header),
-    cards.map(({ explain }) => explain),
-    cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
-    [...el.querySelectorAll('.pricing-area')],
-    cards.map(({ featureList }) => featureList.querySelector('p')),
-    cards.map(({ featureList }) => featureList),
-    cards.map(({ compare }) => compare),
-  ];
-  const decoratedCardEls = [...cardsContainer.querySelectorAll('.card')];
-  const synchedItems = groups.flat();
-  synchedItems.forEach((item) => {
-    // elements with js-controlled heights need border-box
-    if (item) item.style.boxSizing = 'border-box';
-  });
-  const undoSyncHeights = () => {
-    synchedItems.forEach((item) => {
-      item.style?.removeProperty('min-height');
-    });
-  };
-  const doSyncHeights = () => {
-    // possible 2 card in row 1 and 3rd card in row 2
-    const yPositions = decoratedCardEls.map((c) => c.getBoundingClientRect().top);
-    const positionGroups = [];
-    // positionGroups -> [2,1]
-    yPositions.forEach((yPosition, i) => {
-      // accounting for pixel lineup issues
-      if (i === 0 || Math.abs(yPosition - yPositions[i - 1]) > 6) {
-        positionGroups.push(1);
-      } else {
-        positionGroups[positionGroups.length - 1] += 1;
-      }
-    });
-    if (positionGroups.length === cards.length) {
-      // no sync when 1 card per row
-      undoSyncHeights();
-      return;
-    }
-    const groupsByTop = [];
-    // [[h1, h2, h3], [e1, e2, e3], [m1,y1,m2,y2,m3,y3]] + [2,1]
-    // -> [[h1, h2], [h3], [e1, e2], [e3], [m1, m2, y1, y2], [m3, y3]]
-    groups.forEach((group) => {
-      for (let prev = 0, i = 0; i < positionGroups.length; i += 1) {
-        const span = positionGroups[i] * (group.length / cards.length);
-        groupsByTop.push(group.slice(prev, prev + span));
-        prev += span;
-      }
-    });
-    syncMinHeights(groupsByTop);
-  };
-  window.addEventListener('resize', debounce(() => {
-    doSyncHeights();
-  }, 100));
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        doSyncHeights();
         el.classList.remove('no-visible');
       }
     });
   });
   observer.observe(el);
+
+  setTimeout(() => {
+    adjustElementPosition()
+    window.addEventListener('resize', adjustElementPosition);
+    window.addEventListener('load', adjustElementPosition);
+  }, (1000))
+
 }
