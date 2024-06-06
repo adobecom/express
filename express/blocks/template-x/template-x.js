@@ -1095,30 +1095,28 @@ function initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev) {
       }
     }
   };
-  const templateImages = block.querySelectorAll('.template')
+  const templateImages = block.querySelectorAll('.template');
 
   templateImages.forEach((template) => {
     template.addEventListener('click', (e) => {
-      e.stopPropagation()
-    })
-  })
-  toggleChev.addEventListener('click', onToggle)
-  toggle.addEventListener('click', () => onToggle())
+      e.stopPropagation();
+    });
+  });
+  toggleChev.addEventListener('click', onToggle);
+  toggle.addEventListener('click', () => onToggle());
   document.addEventListener('click', (e) => {
     if (e.target.closest('.template-x.holiday') || (
       block.classList.contains('expanded')
     )) {
-      onToggle()
-      return
+      onToggle();
     }
   });
 
   setTimeout(() => {
-    if ( block.classList.contains('auto-expand')) {
+    if (block.classList.contains('auto-expand')) {
       onToggle();
     }
   }, 3000);
-
 }
 
 function decorateHoliday(block, props) {
