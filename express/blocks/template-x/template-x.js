@@ -1597,7 +1597,7 @@ async function buildTemplateList(block, props, type = []) {
     }
   }
 
-  if (true) {
+  if (props.holidayBlock) {
     decorateHoliday(block, props);
   }
 }
