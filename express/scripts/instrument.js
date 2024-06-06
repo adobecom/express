@@ -6,8 +6,8 @@ import {
   checkTesting,
   getAssetDetails,
   getMetadata,
-  fetchPlaceholders,
 } from './utils.js';
+import trackBranchParameters from './branchlinks.js';
 
 const usp = new URLSearchParams(window.location.search);
 const martech = usp.get('martech');
@@ -121,32 +121,6 @@ export function getExpressLandingPageType() {
   return sparkLandingPageType;
 }
 
-function getPlacement(btn) {
-  const parentBlock = btn.closest('.block');
-  let placement = 'outside-blocks';
-
-  if (parentBlock) {
-    const blockName = parentBlock.dataset.blockName || parentBlock.classList[0];
-    const sameBlocks = btn.closest('main')?.querySelectorAll(`.${blockName}`);
-
-    if (sameBlocks && sameBlocks.length > 1) {
-      sameBlocks.forEach((b, i) => {
-        if (b === parentBlock) {
-          placement = `${blockName}-${i + 1}`;
-        }
-      });
-    } else {
-      placement = blockName;
-    }
-
-    if (['template-list', 'template-x'].includes(blockName) && btn.classList.contains('placeholder')) {
-      placement = 'blank-template-cta';
-    }
-  }
-
-  return placement;
-}
-
 function set(path, value) {
   const obj = w.alloy_all;
   const newPath = `data._adobe_corpnew.digitalData.${path}`;
@@ -166,7 +140,7 @@ function set(path, value) {
   return obj;
 }
 
-export function sendEventToAdobeAnaltics(eventName) {
+export function sendEventToAnalytics(eventName) {
   _satellite.track('event', {
     xdm: {},
     data: {
@@ -230,130 +204,6 @@ export function textToName(text) {
   const splits = text.toLowerCase().split(' ');
   const camelCase = splits.map((s, i) => (i ? s.charAt(0).toUpperCase() + s.substr(1) : s)).join('');
   return (camelCase);
-}
-
-export async function trackBranchParameters($links) {
-  const placeholders = await fetchPlaceholders();
-  const rootUrl = new URL(window.location.href);
-  const params = rootUrl.searchParams;
-  const pageUrl = window.location.pathname;
-
-  const { experiment } = window.hlx;
-  const { referrer } = window.document;
-  const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
-
-  const [
-    searchTerm,
-    canvasHeight,
-    canvasWidth,
-    canvasUnit,
-    sceneline,
-    taskID,
-    assetCollection,
-    category,
-    searchCategory,
-    loadPrintAddon,
-    tab,
-    action,
-    prompt,
-    sdid,
-    mv,
-    mv2,
-    sKwcId,
-    efId,
-    promoId,
-    trackingId,
-    cgen,
-  ] = [
-    getMetadata('branch-search-term'),
-    getMetadata('branch-canvas-height'),
-    getMetadata('branch-canvas-width'),
-    getMetadata('branch-canvas-unit'),
-    getMetadata('branch-sceneline'),
-    getMetadata('branch-task-id'),
-    getMetadata('branch-asset-collection'),
-    getMetadata('branch-category'),
-    getMetadata('branch-search-category'),
-    getMetadata('branch-loadprintaddon'),
-    getMetadata('branch-tab'),
-    getMetadata('branch-action'),
-    getMetadata('branch-prompt'),
-    params.get('sdid'),
-    params.get('mv'),
-    params.get('mv2'),
-    params.get('s_kwcid'),
-    params.get('ef_id'),
-    params.get('promoid'),
-    params.get('trackingid'),
-    params.get('cgen'),
-  ];
-
-  $links.forEach((a) => {
-    if (a.href && a.href.match('adobesparkpost.app.link')) {
-      a.rel = 'nofollow';
-      const btnUrl = new URL(a.href);
-      const isSearchBranchLink = placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`);
-      const urlParams = btnUrl.searchParams;
-      const setParams = (k, v) => {
-        if (v) urlParams.set(k, encodeURIComponent(v));
-      };
-      if (urlParams.has('acomx-dno')) {
-        urlParams.delete('acomx-dno');
-        btnUrl.search = urlParams.toString();
-        a.href = decodeURIComponent(btnUrl.toString());
-        return;
-      }
-      const placement = getPlacement(a);
-
-      if (isSearchBranchLink) {
-        setParams('category', category || 'templates');
-        setParams('taskID', taskID);
-        setParams('assetCollection', assetCollection);
-
-        if (searchCategory) {
-          setParams('searchCategory', searchCategory);
-        } else if (searchTerm) {
-          setParams('q', searchTerm);
-        }
-        if (loadPrintAddon) setParams('loadPrintAddon', loadPrintAddon);
-        setParams('tab', tab);
-        setParams('action', action);
-        setParams('prompt', prompt);
-      }
-
-      setParams('referrer', referrer);
-      setParams('url', pageUrl);
-      setParams('height', canvasHeight);
-      setParams('width', canvasWidth);
-      setParams('unit', canvasUnit);
-      setParams('sceneline', sceneline);
-      setParams('sdid', sdid);
-      setParams('mv', mv);
-      setParams('mv2', mv2);
-      setParams('efid', efId);
-      setParams('promoid', promoId);
-      setParams('trackingid', trackingId);
-      setParams('cgen', cgen);
-      setParams('placement', placement);
-
-      if (sKwcId) {
-        const sKwcIdParameters = sKwcId.split('!');
-
-        if (typeof sKwcIdParameters[2] !== 'undefined' && sKwcIdParameters[2] === '3') {
-          setParams('customer_placement', 'Google%20AdWords');
-        }
-
-        if (typeof sKwcIdParameters[8] !== 'undefined' && sKwcIdParameters[8] !== '') {
-          setParams('keyword', sKwcIdParameters[8]);
-        }
-      }
-
-      experimentStatus === 'active' && setParams('expid', `${experiment.id}-${experiment.selectedVariant}`);
-
-      btnUrl.search = urlParams.toString();
-      a.href = decodeURIComponent(btnUrl.toString());
-    }
-  });
 }
 
 export function appendLinkText(eventName, a) {
@@ -622,7 +472,7 @@ function decorateAnalyticsEvents() {
 
   // Tracking any link or links that is added after page loaded.
   d.addEventListener('linkspopulated', async (e) => {
-    await trackBranchParameters(e.detail);
+    trackBranchParameters(e.detail);
     e.detail.forEach(($link) => {
       $link.addEventListener('click', () => {
         trackButtonClick($link);
@@ -631,7 +481,7 @@ function decorateAnalyticsEvents() {
   });
 
   d.addEventListener('pricingdropdown', () => {
-    sendEventToAdobeAnaltics('adobe.com:express:pricing:bundleType:selected');
+    sendEventToAnalytics('adobe.com:express:pricing:bundleType:selected');
   });
 
   // tracking videos loaded asynchronously.
@@ -641,12 +491,12 @@ function decorateAnalyticsEvents() {
   });
 
   d.addEventListener('videoclosed', (e) => {
-    sendEventToAdobeAnaltics(`adobe.com:express:cta:learn:columns:${e.detail.parameters.videoId}:videoClosed`);
+    sendEventToAnalytics(`adobe.com:express:cta:learn:columns:${e.detail.parameters.videoId}:videoClosed`);
   });
 
   d.addEventListener('click', (e) => {
     if (e.target.id === 'mock-file-input') {
-      sendEventToAdobeAnaltics('adobe.com:express:cta:uploadYourPhoto');
+      sendEventToAnalytics('adobe.com:express:cta:uploadYourPhoto');
     }
   });
 }
@@ -701,17 +551,17 @@ function martechLoadedCB() {
   //------------------------------------------------------------------------------------
 
   // Fire the viewedPage event
-  sendEventToAdobeAnaltics('viewedPage');
+  sendEventToAnalytics('viewedPage');
 
   // Fire the landing:viewedPage event
-  sendEventToAdobeAnaltics('landing:viewedPage');
+  sendEventToAnalytics('landing:viewedPage');
 
   // Fire the displayPurchasePanel event if it is the pricing site
   if (
     sparkLandingPageType === 'pricing'
       && sparkTouchpoint
   ) {
-    sendEventToAdobeAnaltics('displayPurchasePanel');
+    sendEventToAnalytics('displayPurchasePanel');
   }
 
   const processed = {};
@@ -799,7 +649,7 @@ function martechLoadedCB() {
           audiences.push(ENABLE_PRICING_MODAL_AUDIENCE);
           segments.push(RETURNING_VISITOR_SEGMENT_ID);
 
-          sendEventToAdobeAnaltics('pricingModalUserInSegment');
+          sendEventToAnalytics('pricingModalUserInSegment');
         }
 
         QUICK_ACTION_SEGMENTS.forEach((QUICK_ACTION_SEGMENT) => {
@@ -826,10 +676,6 @@ function martechLoadedCB() {
 }
 
 export default async function initMartech() {
-  const $links = d.querySelectorAll('main a');
-  // for adding branch parameters to branch links
-  await trackBranchParameters($links);
-
   await loadScript(martechURL);
   return martechLoadedCB();
 }

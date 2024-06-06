@@ -1,6 +1,6 @@
 import { createTag } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
-import { sendEventToAdobeAnaltics, textToName } from '../../scripts/instrument.js';
+import { sendEventToAnalytics, textToName } from '../../scripts/instrument.js';
 
 function decorateButton(block, toggle) {
   const button = createTag('button', { class: 'toggle-bar-button' });
@@ -43,7 +43,7 @@ function decorateButton(block, toggle) {
   texts = texts.join('') || textWrapper.textContent.trim();
   const eventName = `adobe.com:express:homepage:intentToggle:${textToName(texts)}`;
   button.addEventListener('click', () => {
-    sendEventToAdobeAnaltics(eventName);
+    sendEventToAnalytics(eventName);
   });
 }
 
@@ -177,10 +177,4 @@ export default function decorate(block) {
       initStickyBehavior(block, props);
     }
   }
-
-  const tgBtns = toggleBar.querySelectorAll('button.toggle-bar-button');
-
-  tgBtns.forEach((btn) => {
-
-  });
 }

@@ -1,6 +1,6 @@
 import { createTag } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
-import { sendEventToAdobeAnaltics } from '../../scripts/instrument.js';
+import { sendEventToAnalytics } from '../../scripts/instrument.js';
 
 function initScrollInteraction(block) {
   const inBodyBanner = block.cloneNode(true);
@@ -45,7 +45,7 @@ export default async function decorate(block) {
       block,
       rendered: false,
     });
-    sendEventToAdobeAnaltics('adobe.com:express:cta:startYourFreeTrial:close');
+    sendEventToAnalytics('adobe.com:express:cta:startYourFreeTrial:close');
   });
 
   if (block.classList.contains('loadinbody')) {

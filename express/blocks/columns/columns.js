@@ -21,7 +21,7 @@ import BlockMediator from '../../scripts/block-mediator.min.js';
 import {
   appendLinkText,
   getExpressLandingPageType,
-  sendEventToAdobeAnaltics,
+  sendEventToAnalytics,
 } from '../../scripts/instrument.js';
 
 function transformToVideoColumn(cell, aTag, block) {
@@ -379,7 +379,7 @@ export default async function decorate(block) {
 
       parent.addEventListener('click', (e) => {
         e.stopPropagation();
-        sendEventToAdobeAnaltics(adobeEventName);
+        sendEventToAnalytics(adobeEventName);
       });
     });
   }

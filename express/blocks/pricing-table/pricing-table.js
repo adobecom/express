@@ -5,7 +5,7 @@ import { decorateButtons } from '../../scripts/utils/decorate.js';
 import {
   formatDynamicCartLink,
 } from '../../scripts/utils/pricing.js';
-import { sendEventToAdobeAnaltics } from '../../scripts/instrument.js';
+import { sendEventToAnalytics } from '../../scripts/instrument.js';
 
 const MOBILE_SIZE = 981;
 function defineDeviceByScreenSize() {
@@ -237,7 +237,7 @@ export default async function init(el) {
       toggleOverflowContent.addEventListener('click', () => {
         const buttonEl = toggleOverflowContent.querySelector('span.expand');
         const action = buttonEl && buttonEl.getAttribute('aria-expanded') === 'true' ? 'closed' : 'opened';
-        sendEventToAdobeAnaltics(`adobe.com:express:cta:pricing:tableToggle:${action || ''}`);
+        sendEventToAnalytics(`adobe.com:express:cta:pricing:tableToggle:${action || ''}`);
       });
       toggleRow.append(toggleOverflowContent);
 
