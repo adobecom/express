@@ -157,7 +157,7 @@ function constructProps(block) {
     headingTitle: null,
     headingSlug: null,
     viewAllLink: null,
-    holidayIcon: 'yes',
+    holidayIcon: null,
     backgroundColor: '#000B1D',
     backgroundAnimation: null,
     textColor: '#FFFFFF',
