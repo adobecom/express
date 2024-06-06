@@ -58,6 +58,7 @@ End legacy CSS
   width: 90%; 
   margin-left: auto;
   margin-right: auto; 
+  grid-template-columns: repeat(3, 1fr);
 }
 
  
