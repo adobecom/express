@@ -14,7 +14,7 @@ import {
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
-import createToggle, {  determineIfFreePlan} from './pricing-toggle.js';
+import createToggle, { determineIfFreePlan } from './pricing-toggle.js';
 
 const blockKeys = [
   'header',
@@ -518,5 +518,5 @@ export default async function init(el) {
     });
   });
   observer.observe(el);
-  determineIfFreePlan(cardsContainer)
+  determineIfFreePlan(cardsContainer);
 }

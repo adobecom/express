@@ -63,15 +63,15 @@ function onKeyDown(e, pricingSections, buttons, toggleWrapper) {
 export function determineIfFreePlan(cardContainer) {
   const cards = Array.from(cardContainer.querySelectorAll('.card'));
   let disableAllToggles = true;
-  let freePlanStatus = [];
- 
+  const freePlanStatus = [];
+
   for (const card of cards) {
     let isFreePlan = true;
     const pricingSections = card.querySelectorAll('.pricing-section');
 
     for (const section of pricingSections) {
       const price = section.querySelector('.pricing-price > strong')?.textContent;
-      if (price && parseInt(price) > 0) {
+      if (price && parseInt(price, 10) > 0) {
         isFreePlan = false;
         disableAllToggles = false;
         break;
@@ -79,7 +79,7 @@ export function determineIfFreePlan(cardContainer) {
     }
     freePlanStatus.push(isFreePlan);
   }
- 
+
   freePlanStatus.forEach((isFreePlan, index) => {
     if (isFreePlan) {
       const billingToggle = cards[index].querySelector('.billing-toggle');
@@ -92,7 +92,6 @@ export function determineIfFreePlan(cardContainer) {
     }
   });
 }
-
 
 export default function createToggle(placeholders, pricingSections, groupID) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
