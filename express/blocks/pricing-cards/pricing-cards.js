@@ -534,9 +534,8 @@ export default async function init(el) {
   observer.observe(el);
 
   setTimeout(() => {
-    adjustElementPosition()
+    adjustElementPosition();
     window.addEventListener('resize', adjustElementPosition);
     window.addEventListener('load', adjustElementPosition);
-  }, (1000))
-
+  }, (1000));
 }
