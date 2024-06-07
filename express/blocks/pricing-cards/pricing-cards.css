@@ -350,6 +350,15 @@ End border style variants
 
 /** pricing styles end **/
 
+.pricing-cards .billing-toggle.suppressed-billing-toggle {
+  opacity: 0;
+  height: 0px;
+}
+.pricing-cards .billing-toggle.dummy-billing-toggle {
+  height: 20px;
+}
+
+
 .pricing-cards .billing-toggle {
   display: flex;
   justify-content: center;

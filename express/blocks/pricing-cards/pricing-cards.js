@@ -14,7 +14,7 @@ import {
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
-import createToggle from './pricing-toggle.js';
+import createToggle, {  determineIfFreePlan} from './pricing-toggle.js';
 
 const blockKeys = [
   'header',
@@ -208,6 +208,7 @@ async function handlePrice(placeholders, pricingArea, specialPromo, legacyVersio
     placeholderArr,
     response,
   );
+
   const isPremiumCard = response.ooAvailable || false;
   const savePercentElem = pricingArea.querySelector('.card-offer');
   handleRawPrice(price, basePrice, response);
@@ -517,4 +518,5 @@ export default async function init(el) {
     });
   });
   observer.observe(el);
+  determineIfFreePlan(cardsContainer)
 }
