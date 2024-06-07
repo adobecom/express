@@ -763,7 +763,7 @@ function martechLoadedCB() {
   }
 
   decorateAnalyticsEvents();
-  initHemingway();
+  if (usp.get('hemingway') !== 'off') initHemingway();
 
   const ENABLE_PRICING_MODAL_AUDIENCE = 'enablePricingModal';
   const RETURNING_VISITOR_SEGMENT_ID = 23153796;
