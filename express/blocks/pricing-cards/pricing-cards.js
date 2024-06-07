@@ -2,10 +2,8 @@ import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
   fetchPlaceholders,
-  yieldToMain,
   getIconElement,
-} from '../../scripts/utils.js';
-import { debounce } from '../../scripts/hofs.js';
+} from '../../scripts/utils.js'; 
 
 import {
   formatDynamicCartLink,
@@ -160,22 +158,20 @@ function handleRawPrice(price, basePrice, response) {
     : price.classList.remove('price-active');
 }
 
-function adjustElementPosition() { 
+function adjustElementPosition() {
   const element = document.querySelector('.tooltip-text');
-  const rect = element.getBoundingClientRect(); 
+  const rect = element.getBoundingClientRect();
   if (rect.right > window.innerWidth) {
-    element.classList.remove('overflow-left')
-    element.classList.add('overflow-right')
-  } else if (rect.left < 0) { 
-    element.classList.remove('overflow-right')
-    element.classList.add('overflow-left') 
+    element.classList.remove('overflow-left');
+    element.classList.add('overflow-right');
+  } else if (rect.left < 0) {
+    element.classList.remove('overflow-right');
+    element.classList.add('overflow-left');
   } else {
-    element.classList.remove('overflow-right')
-    element.classList.remove('overflow-left')
+    element.classList.remove('overflow-right');
+    element.classList.remove('overflow-left');
   }
 }
-
-
 
 function handleTooltip(pricingArea) {
   const elements = pricingArea.querySelectorAll('p');
@@ -434,9 +430,8 @@ export default async function init(el) {
   observer.observe(el);
 
   setTimeout(() => {
-    adjustElementPosition()
+    adjustElementPosition();
     window.addEventListener('resize', adjustElementPosition);
     window.addEventListener('load', adjustElementPosition);
-  }, (1000))
-
+  }, (1000));
 }
