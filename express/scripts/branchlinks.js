@@ -103,6 +103,10 @@ export default async function trackBranchParameters(links) {
         setParams('category', category || 'templates');
         setParams('taskID', taskID);
         setParams('assetCollection', assetCollection);
+        setParams('height', canvasHeight);
+        setParams('width', canvasWidth);
+        setParams('unit', canvasUnit);
+        setParams('sceneline', sceneline);
 
         if (searchCategory) {
           setParams('searchCategory', searchCategory);
@@ -117,10 +121,6 @@ export default async function trackBranchParameters(links) {
 
       setParams('referrer', referrer);
       setParams('url', pageUrl);
-      setParams('height', canvasHeight);
-      setParams('width', canvasWidth);
-      setParams('unit', canvasUnit);
-      setParams('sceneline', sceneline);
       setParams('sdid', sdid);
       setParams('mv', mv);
       setParams('mv2', mv2);
