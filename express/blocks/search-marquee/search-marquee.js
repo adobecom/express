@@ -156,11 +156,6 @@ function initSearchFunction(block) {
       targetLocation = `${window.location.origin}${prefix}${searchUrlTemplate}`;
     }
 
-    if (new URLSearchParams(window.location.search).get('tracking_debug')) {
-      // eslint-disable-next-line no-console
-      console.log('skipping redirect');
-      return;
-    }
     window.location.assign(targetLocation);
   };
 
