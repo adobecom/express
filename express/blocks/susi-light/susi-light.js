@@ -17,7 +17,8 @@ const config = {
   consentProfile: 'free', // FIXME: to be finalized
 };
 const variant = 'edu-express';
-const isStage = getConfig().env.name !== 'prod';
+const usp = new URLSearchParams(window.location.search);
+const isStage = usp.get('env') !== 'prod' || getConfig().env.name !== 'prod';
 const CDN_URL = `https://auth-light.identity${isStage ? '-stage' : ''}.adobe.com/sentry/wrapper.js`;
 const onRedirect = (e) => {
   // eslint-disable-next-line no-console
