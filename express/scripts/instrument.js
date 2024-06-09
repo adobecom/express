@@ -7,6 +7,7 @@ import {
   getAssetDetails,
   getMetadata,
   fetchPlaceholders,
+  toCamelCase
 } from './utils.js';
 
 const usp = new URLSearchParams(window.location.search);
@@ -232,6 +233,22 @@ export function textToName(text) {
   return (camelCase);
 }
 
+const setBasicBranchMetadata = new Set([
+  "search-term",
+  "canvas-height",
+  "canvas-width",
+  "canvas-unit",
+  "sceneline",
+  "task-id",
+  "asset-collection",
+  "category",
+  "search-category",
+  "loadprintaddon",
+  "tab",
+  "action",
+  "prompt",
+]);
+
 export async function trackBranchParameters($links) {
   const placeholders = await fetchPlaceholders();
   const rootUrl = new URL(window.location.href);
@@ -241,6 +258,9 @@ export async function trackBranchParameters($links) {
   const { experiment } = window.hlx;
   const { referrer } = window.document;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
+
+  const listBranchMetadataNodes = [...document.head.querySelectorAll("meta[name*=branch-]")];
+  const listAdditionalBranchMetadataNodes = listBranchMetadataNodes.filter(e => !setBasicBranchMetadata.has(e.name.replace(/^branch-/, '')));
 
   const [
     searchTerm,
@@ -326,6 +346,12 @@ export async function trackBranchParameters($links) {
       setParams('height', canvasHeight);
       setParams('width', canvasWidth);
       setParams('unit', canvasUnit);
+
+      for (const {name, content} of listAdditionalBranchMetadataNodes) {
+        const paramName = toCamelCase(name.replace(/^branch-/, ''));
+        setParams(paramName, content);
+      }
+
       setParams('sceneline', sceneline);
       setParams('sdid', sdid);
       setParams('mv', mv);
