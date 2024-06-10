@@ -7,7 +7,7 @@ import {
   getAssetDetails,
   getMetadata,
   fetchPlaceholders,
-  toCamelCase
+  toCamelCase,
 } from './utils.js';
 
 const usp = new URLSearchParams(window.location.search);
@@ -170,19 +170,19 @@ export function textToName(text) {
 }
 
 const setBasicBranchMetadata = new Set([
-  "search-term",
-  "canvas-height",
-  "canvas-width",
-  "canvas-unit",
-  "sceneline",
-  "task-id",
-  "asset-collection",
-  "category",
-  "search-category",
-  "loadprintaddon",
-  "tab",
-  "action",
-  "prompt",
+  'search-term',
+  'canvas-height',
+  'canvas-width',
+  'canvas-unit',
+  'sceneline',
+  'task-id',
+  'asset-collection',
+  'category',
+  'search-category',
+  'loadprintaddon',
+  'tab',
+  'action',
+  'prompt',
 ]);
 
 export async function trackBranchParameters($links) {
