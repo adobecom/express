@@ -371,6 +371,11 @@ End border style variants
 
 /** pricing styles end **/
 
+.pricing-cards .billing-toggle.suppressed-billing-toggle {
+  visibility: hidden;
+  
+} 
+
 .pricing-cards .billing-toggle {
   display: flex;
   justify-content: center;
