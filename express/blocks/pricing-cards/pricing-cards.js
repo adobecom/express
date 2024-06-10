@@ -528,14 +528,11 @@ export default async function init(el) {
       if (entry.isIntersecting) {
         doSyncHeights();
         el.classList.remove('no-visible');
+        adjustElementPosition();
+        window.addEventListener('resize', adjustElementPosition);
       }
     });
   });
   observer.observe(el);
-
-  setTimeout(() => {
-    adjustElementPosition();
-    window.addEventListener('resize', adjustElementPosition);
-    window.addEventListener('load', adjustElementPosition);
-  }, (1000));
+ 
 }
