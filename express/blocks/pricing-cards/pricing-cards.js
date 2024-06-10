@@ -161,7 +161,7 @@ function handleRawPrice(price, basePrice, response) {
 
 function adjustElementPosition() {
   const element = document.querySelector('.tooltip-text');
-  if (! element) return;
+  if (!element) return;
   const rect = element.getBoundingClientRect();
   if (rect.right > window.innerWidth) {
     element.classList.remove('overflow-left');
