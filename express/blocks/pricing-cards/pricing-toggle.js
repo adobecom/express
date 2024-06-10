@@ -59,6 +59,33 @@ function onKeyDown(e, pricingSections, buttons, toggleWrapper) {
       break;
   }
 }
+export function tagFreePlan(cardContainer) {
+  const cards = Array.from(cardContainer.querySelectorAll('.card'));
+  let disableAllToggles = true;
+  const freePlanStatus = [];
+
+  for (const card of cards) {
+    let isFreePlan = true;
+    const pricingSections = card.querySelectorAll('.pricing-section');
+    for (const section of pricingSections) {
+      const price = section.querySelector('.pricing-price > strong')?.textContent;
+      if (price && parseInt(price, 10) > 0) {
+        isFreePlan = false;
+        disableAllToggles = false;
+        break;
+      }
+    }
+    freePlanStatus.push(isFreePlan ? card.querySelector('.billing-toggle') : undefined);
+  }
+
+  freePlanStatus.forEach((billingToggle) => {
+    if (disableAllToggles) {
+      billingToggle.remove();
+    } else if (billingToggle) {
+      billingToggle.classList.add('suppressed-billing-toggle');
+    }
+  });
+}
 
 export default function createToggle(placeholders, pricingSections, groupID) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
