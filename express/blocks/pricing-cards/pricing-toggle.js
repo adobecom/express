@@ -78,9 +78,9 @@ export function tagFreePlan(cardContainer) {
     freePlanStatus.push(isFreePlan ? card.querySelector('.billing-toggle') : undefined);
   }
 
-  freePlanStatus.forEach((billingToggle ) => {
+  freePlanStatus.forEach((billingToggle) => {
     if (disableAllToggles) {
-      billingToggle.remove()
+      billingToggle.remove();
     } else if (billingToggle) {
       billingToggle.classList.add('suppressed-billing-toggle');
     }
