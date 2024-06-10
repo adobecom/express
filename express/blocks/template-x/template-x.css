@@ -236,9 +236,7 @@ main .template-x.sixcols .masonry-col, main .template-x.fullwidth .masonry-col {
     transform-origin: 75% 75%;
     transform: rotate( -45deg );
     content: "";
-    margin-top: 5px;
-    margin-left: 5px;
-    margin-right: 2.25px;
+    margin: none;
     transition: transform 0.2s;
 }
 
@@ -1817,7 +1815,8 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     overflow: hidden;
     width: 100%;
     background: var(--color-black);
-    min-height: 72px
+    min-height: 72px;
+    cursor: pointer;
 }
 
 .template-x.horizontal.holiday.animated {
