@@ -67,7 +67,6 @@ export function tagFreePlan(cardContainer) {
   for (const card of cards) {
     let isFreePlan = true;
     const pricingSections = card.querySelectorAll('.pricing-section');
-
     for (const section of pricingSections) {
       const price = section.querySelector('.pricing-price > strong')?.textContent;
       if (price && parseInt(price, 10) > 0) {
@@ -76,18 +75,14 @@ export function tagFreePlan(cardContainer) {
         break;
       }
     }
-    freePlanStatus.push(isFreePlan);
+    freePlanStatus.push(isFreePlan ? card.querySelector('.billing-toggle') : undefined);
   }
 
-  freePlanStatus.forEach((isFreePlan, index) => {
-    if (isFreePlan) {
-      const billingToggle = cards[index].querySelector('.billing-toggle');
-      if (billingToggle) {
-        billingToggle.classList.add('suppressed-billing-toggle');
-        if (!disableAllToggles) {
-          billingToggle.classList.add('dummy-billing-toggle');
-        }
-      }
+  freePlanStatus.forEach((billingToggle ) => {
+    if (disableAllToggles) {
+      billingToggle.remove()
+    } else if (billingToggle) {
+      billingToggle.classList.add('suppressed-billing-toggle');
     }
   });
 }
