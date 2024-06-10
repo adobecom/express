@@ -351,8 +351,7 @@ End border style variants
 /** pricing styles end **/
 
 .pricing-cards .billing-toggle.suppressed-billing-toggle {
-  opacity: 0;
-  pointer-events: none; 
+  visibility: hidden;
   height: 0px;
 }
 .pricing-cards .billing-toggle.dummy-billing-toggle {
