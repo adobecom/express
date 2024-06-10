@@ -59,7 +59,7 @@ function onKeyDown(e, pricingSections, buttons, toggleWrapper) {
       break;
   }
 }
-export function determineIfFreePlan(cardContainer) {
+export function tagFreePlan(cardContainer) {
   const cards = Array.from(cardContainer.querySelectorAll('.card'));
   let disableAllToggles = true;
   const freePlanStatus = [];
