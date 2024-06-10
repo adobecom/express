@@ -1,4 +1,3 @@
-/* jshint -W065 */
 import {
   createTag,
 } from '../../scripts/utils.js';
