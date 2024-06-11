@@ -1,4 +1,4 @@
-import { fetchPlaceholders, getCachedMetadata, toCamelCase, } from './utils.js';
+import { fetchPlaceholders, getCachedMetadata, toCamelCase } from './utils.js';
 
 function getPlacement(btn) {
   const parentBlock = btn.closest('.block');
