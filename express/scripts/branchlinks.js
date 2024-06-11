@@ -78,28 +78,28 @@ export default async function trackBranchParameters(links) {
     trackingId,
     cgen,
   ] = [
-      getCachedMetadata('branch-search-term'),
-      getCachedMetadata('branch-canvas-height'),
-      getCachedMetadata('branch-canvas-width'),
-      getCachedMetadata('branch-canvas-unit'),
-      getCachedMetadata('branch-sceneline'),
-      getCachedMetadata('branch-task-id'),
-      getCachedMetadata('branch-asset-collection'),
-      getCachedMetadata('branch-category'),
-      getCachedMetadata('branch-search-category'),
-      getCachedMetadata('branch-loadprintaddon'),
-      getCachedMetadata('branch-tab'),
-      getCachedMetadata('branch-action'),
-      getCachedMetadata('branch-prompt'),
-      params.get('sdid'),
-      params.get('mv'),
-      params.get('mv2'),
-      params.get('s_kwcid'),
-      params.get('ef_id'),
-      params.get('promoid'),
-      params.get('trackingid'),
-      params.get('cgen'),
-    ];
+    getCachedMetadata('branch-search-term'),
+    getCachedMetadata('branch-canvas-height'),
+    getCachedMetadata('branch-canvas-width'),
+    getCachedMetadata('branch-canvas-unit'),
+    getCachedMetadata('branch-sceneline'),
+    getCachedMetadata('branch-task-id'),
+    getCachedMetadata('branch-asset-collection'),
+    getCachedMetadata('branch-category'),
+    getCachedMetadata('branch-search-category'),
+    getCachedMetadata('branch-loadprintaddon'),
+    getCachedMetadata('branch-tab'),
+    getCachedMetadata('branch-action'),
+    getCachedMetadata('branch-prompt'),
+    params.get('sdid'),
+    params.get('mv'),
+    params.get('mv2'),
+    params.get('s_kwcid'),
+    params.get('ef_id'),
+    params.get('promoid'),
+    params.get('trackingid'),
+    params.get('cgen'),
+  ];
 
   links.forEach((a) => {
     if (a.href && a.href.match(/adobesparkpost(-web)?\.app\.link/)) {
@@ -142,7 +142,7 @@ export default async function trackBranchParameters(links) {
         const paramName = toCamelCase(name.replace(/^branch-/, ''));
         setParams(paramName, content);
       }
-      
+
       setParams('referrer', referrer);
       setParams('url', pageUrl);
       setParams('sdid', sdid);
