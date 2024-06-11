@@ -6,7 +6,6 @@ import {
   checkTesting,
   getAssetDetails,
   getMetadata,
-  toCamelCase,
 } from './utils.js';
 import trackBranchParameters from './branchlinks.js';
 
@@ -271,22 +270,6 @@ export function textToName(text) {
   const camelCase = splits.map((s, i) => (i ? s.charAt(0).toUpperCase() + s.substr(1) : s)).join('');
   return (camelCase);
 }
-
-const setBasicBranchMetadata = new Set([
-  'search-term',
-  'canvas-height',
-  'canvas-width',
-  'canvas-unit',
-  'sceneline',
-  'task-id',
-  'asset-collection',
-  'category',
-  'search-category',
-  'loadprintaddon',
-  'tab',
-  'action',
-  'prompt',
-]);
 
 export function appendLinkText(eventName, a) {
   if (!a) return eventName;

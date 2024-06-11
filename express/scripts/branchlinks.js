@@ -1,4 +1,4 @@
-import { fetchPlaceholders, getCachedMetadata } from './utils.js';
+import { fetchPlaceholders, getCachedMetadata, toCamelCase, } from './utils.js';
 
 function getPlacement(btn) {
   const parentBlock = btn.closest('.block');
@@ -26,6 +26,22 @@ function getPlacement(btn) {
   return placement;
 }
 
+const setBasicBranchMetadata = new Set([
+  'search-term',
+  'canvas-height',
+  'canvas-width',
+  'canvas-unit',
+  'sceneline',
+  'task-id',
+  'asset-collection',
+  'category',
+  'search-category',
+  'loadprintaddon',
+  'tab',
+  'action',
+  'prompt',
+]);
+
 export default async function trackBranchParameters(links) {
   const placeholders = await fetchPlaceholders();
   const rootUrl = new URL(window.location.href);
@@ -35,6 +51,9 @@ export default async function trackBranchParameters(links) {
   const { experiment } = window.hlx;
   const { referrer } = window.document;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
+
+  const listBranchMetadataNodes = [...document.head.querySelectorAll('meta[name^=branch-]')];
+  const listAdditionalBranchMetadataNodes = listBranchMetadataNodes.filter((e) => !setBasicBranchMetadata.has(e.name.replace(/^branch-/, '')));
 
   const [
     searchTerm,
@@ -59,28 +78,28 @@ export default async function trackBranchParameters(links) {
     trackingId,
     cgen,
   ] = [
-    getCachedMetadata('branch-search-term'),
-    getCachedMetadata('branch-canvas-height'),
-    getCachedMetadata('branch-canvas-width'),
-    getCachedMetadata('branch-canvas-unit'),
-    getCachedMetadata('branch-sceneline'),
-    getCachedMetadata('branch-task-id'),
-    getCachedMetadata('branch-asset-collection'),
-    getCachedMetadata('branch-category'),
-    getCachedMetadata('branch-search-category'),
-    getCachedMetadata('branch-loadprintaddon'),
-    getCachedMetadata('branch-tab'),
-    getCachedMetadata('branch-action'),
-    getCachedMetadata('branch-prompt'),
-    params.get('sdid'),
-    params.get('mv'),
-    params.get('mv2'),
-    params.get('s_kwcid'),
-    params.get('ef_id'),
-    params.get('promoid'),
-    params.get('trackingid'),
-    params.get('cgen'),
-  ];
+      getCachedMetadata('branch-search-term'),
+      getCachedMetadata('branch-canvas-height'),
+      getCachedMetadata('branch-canvas-width'),
+      getCachedMetadata('branch-canvas-unit'),
+      getCachedMetadata('branch-sceneline'),
+      getCachedMetadata('branch-task-id'),
+      getCachedMetadata('branch-asset-collection'),
+      getCachedMetadata('branch-category'),
+      getCachedMetadata('branch-search-category'),
+      getCachedMetadata('branch-loadprintaddon'),
+      getCachedMetadata('branch-tab'),
+      getCachedMetadata('branch-action'),
+      getCachedMetadata('branch-prompt'),
+      params.get('sdid'),
+      params.get('mv'),
+      params.get('mv2'),
+      params.get('s_kwcid'),
+      params.get('ef_id'),
+      params.get('promoid'),
+      params.get('trackingid'),
+      params.get('cgen'),
+    ];
 
   links.forEach((a) => {
     if (a.href && a.href.match(/adobesparkpost(-web)?\.app\.link/)) {
@@ -119,6 +138,11 @@ export default async function trackBranchParameters(links) {
         setParams('prompt', prompt);
       }
 
+      for (const { name, content } of listAdditionalBranchMetadataNodes) {
+        const paramName = toCamelCase(name.replace(/^branch-/, ''));
+        setParams(paramName, content);
+      }
+      
       setParams('referrer', referrer);
       setParams('url', pageUrl);
       setParams('sdid', sdid);
