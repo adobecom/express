@@ -544,8 +544,4 @@ export default async function init(el) {
   tagFreePlan(cardsContainer);
   window.addEventListener('resize', adjustElementPosition);
   window.addEventListener('load', adjustElementPosition);
-  setTimeout(() => {
-   
-   
-  }, (100))
 }
