@@ -161,9 +161,9 @@ function handleRawPrice(price, basePrice, response) {
 
 function adjustElementPosition() {
   const elements = document.querySelectorAll('.tooltip-text');
- 
+
   if (elements.length === 0) return;
-  for (let element of elements) {
+  for (const element of elements) {
     const rect = element.getBoundingClientRect();
     if (rect.right > window.innerWidth) {
       element.classList.remove('overflow-left');
@@ -176,7 +176,6 @@ function adjustElementPosition() {
       element.classList.remove('overflow-left');
     }
   }
- 
 }
 
 function handleTooltip(pricingArea) {
@@ -426,7 +425,8 @@ async function decorateCard({
   mPricingSection.classList.add('monthly');
   yPricingSection.classList.add('annually', 'hide');
   const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
-  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID, adjustElementPosition);
+  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID,
+    adjustElementPosition);
   card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
@@ -538,7 +538,6 @@ export default async function init(el) {
     });
     adjustElementPosition();
   });
-
 
   observer.observe(el);
   tagFreePlan(cardsContainer);
