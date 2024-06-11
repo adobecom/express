@@ -535,12 +535,13 @@ export default async function init(el) {
         doSyncHeights();
         el.classList.remove('no-visible');
       }
+      adjustElementPosition();
     });
-    adjustElementPosition();
+
   });
 
   observer.observe(el);
   tagFreePlan(cardsContainer);
+
   window.addEventListener('resize', adjustElementPosition);
-  window.addEventListener('load', adjustElementPosition);
 }
