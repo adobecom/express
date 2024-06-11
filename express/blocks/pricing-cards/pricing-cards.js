@@ -535,7 +535,6 @@ export default async function init(el) {
         doSyncHeights();
         el.classList.remove('no-visible');
         adjustElementPosition();
-        window.addEventListener('resize', adjustElementPosition);
       }
     });
     adjustElementPosition();
