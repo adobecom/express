@@ -151,6 +151,7 @@ async function updateLinkList(container, linkPill, list) {
         const a = clone.querySelector(':scope > a');
         updateImpressionCache({
           keyword_filter: d.displayValue,
+          content_category: 'templates',
         });
         trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
       });

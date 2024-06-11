@@ -642,6 +642,7 @@ async function decorateCategoryList(block, props) {
         category_filter: a.dataset.tasks,
         collection: a.dataset.topics,
         collection_path: window.location.pathname,
+        content_category: 'templates',
       });
       removeOptionalImpressionFields('search-inspire');
       trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
@@ -660,6 +661,7 @@ async function decorateCategoryList(block, props) {
         search_keyword: a.dataset.tasks,
         collection: a.dataset.topics,
         collection_path: window.location.pathname,
+        content_category: 'templates',
       });
       removeOptionalImpressionFields('search-inspire');
       trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
@@ -971,6 +973,7 @@ async function initFilterSort(block, props, toolBar) {
                 search_keyword: 'change filters, no keyword found',
                 sort_type: sortObj.orderType,
                 sort_order: sortObj.orderDirection,
+                content_category: 'templates',
               },
             });
             removeOptionalImpressionFields('search-inspire');
@@ -1001,6 +1004,7 @@ async function initFilterSort(block, props, toolBar) {
               search_keyword: 'change filters, no keyword found',
               sort_type: sortObj.orderType,
               sort_order: sortObj.orderDirection,
+              content_category: 'templates',
             },
           });
           removeOptionalImpressionFields('search-inspire');
@@ -1315,6 +1319,7 @@ async function decorateTemplates(block, props) {
   updateImpressionCache({
     search_keyword: getMetadata('q') || getMetadata('topics-x'),
     result_count: props.total,
+    content_category: 'templates',
   });
   if (searchId) trackSearch('view-search-results', searchId);
 
@@ -1417,7 +1422,7 @@ function importSearchBar(block, blockMediator) {
             [[currentTasks]] = tasksFoundInInput;
           }
 
-          updateImpressionCache({ collection: currentTasks || 'all-templates' });
+          updateImpressionCache({ collection: currentTasks || 'all-templates', content_category: 'templates' });
           trackSearch('search-inspire');
 
           const { prefix } = getConfig().locale;
