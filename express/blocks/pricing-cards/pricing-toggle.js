@@ -87,7 +87,7 @@ export function tagFreePlan(cardContainer) {
   });
 }
 
-export default function createToggle(placeholders, pricingSections, groupID) {
+export default function createToggle(placeholders, pricingSections, groupID, adjustElementPosition) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
   const toggleWrapper = createTag('div', { class: 'billing-toggle' });
   toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`;
@@ -112,6 +112,7 @@ export default function createToggle(placeholders, pricingSections, groupID) {
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
       toggleOther(pricingSections, buttons, i);
+      adjustElementPosition()
     });
     return button;
   });
