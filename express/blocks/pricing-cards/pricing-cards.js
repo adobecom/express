@@ -159,6 +159,22 @@ function handleRawPrice(price, basePrice, response) {
     : price.classList.remove('price-active');
 }
 
+function adjustElementPosition() {
+  const element = document.querySelector('.tooltip-text');
+  if (!element) return;
+  const rect = element.getBoundingClientRect();
+  if (rect.right > window.innerWidth) {
+    element.classList.remove('overflow-left');
+    element.classList.add('overflow-right');
+  } else if (rect.left < 0) {
+    element.classList.remove('overflow-right');
+    element.classList.add('overflow-left');
+  } else {
+    element.classList.remove('overflow-right');
+    element.classList.remove('overflow-left');
+  }
+}
+
 function handleTooltip(pricingArea) {
   const elements = pricingArea.querySelectorAll('p');
   const pattern = /\[\[([^]+)\]\]([^]+)\[\[\/([^]+)\]\]/g;
@@ -514,6 +530,8 @@ export default async function init(el) {
       if (entry.isIntersecting) {
         doSyncHeights();
         el.classList.remove('no-visible');
+        adjustElementPosition();
+        window.addEventListener('resize', adjustElementPosition);
       }
     });
   });
