@@ -6,7 +6,6 @@ import {
   checkTesting,
   getAssetDetails,
   getMetadata,
-  fetchPlaceholders,
   toCamelCase,
 } from './utils.js';
 
