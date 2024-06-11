@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-underscore-dangle */
 // WIP
 import {
   createTag,
@@ -22,7 +22,6 @@ const isStage = usp.get('env') !== 'prod' || getConfig().env.name !== 'prod';
 const CDN_URL = `https://auth-light.identity${isStage ? '-stage' : ''}.adobe.com/sentry/wrapper.js`;
 const onRedirect = (e) => {
   // eslint-disable-next-line no-console
-  console.log('on redirect to', e.detail);
   window.location.assign(e.detail);
 };
 const onToken = (e) => {
@@ -31,6 +30,52 @@ const onToken = (e) => {
 };
 const onError = (e) => {
   window.lana?.log('on error:', e);
+};
+
+function safelyFireAnalyticsEvent(event) {
+  if (window._satellite?.track) {
+    event();
+  } else {
+    window.addEventListener('alloy_sendEvent', () => {
+      event();
+    }, { once: true });
+  }
+}
+
+function sendEventToAnalytics(type, eventName) {
+  const fireEvent = () => {
+    window._satellite.track('event', {
+      xdm: {},
+      data: {
+        eventType: 'web.webinteraction.linkClicks',
+        web: {
+          webInteraction: {
+            name: eventName,
+            linkClicks: {
+              value: 1,
+            },
+            type,
+          },
+        },
+        _adobe_corpnew: {
+          digitalData: {
+            primaryEvent: {
+              eventInfo: {
+                eventName,
+              },
+            },
+          },
+        },
+      },
+    });
+  };
+  safelyFireAnalyticsEvent(fireEvent);
+}
+
+// TODO: add UT for analytcis
+const onAnalytics = (e) => {
+  const { type, event } = e.detail;
+  sendEventToAnalytics(type, event);
 };
 
 export default async function init(el) {
@@ -46,5 +91,6 @@ export default async function init(el) {
   susi.addEventListener('redirect', onRedirect);
   susi.addEventListener('on-token', onToken);
   susi.addEventListener('on-error', onError);
+  susi.addEventListener('on-analytics', onAnalytics);
   el.append(susi);
 }
