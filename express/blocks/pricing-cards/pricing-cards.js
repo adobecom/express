@@ -537,7 +537,6 @@ export default async function init(el) {
       }
       adjustElementPosition();
     });
-
   });
 
   observer.observe(el);
