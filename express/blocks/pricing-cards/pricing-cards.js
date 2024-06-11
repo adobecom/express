@@ -160,18 +160,21 @@ function handleRawPrice(price, basePrice, response) {
 }
 
 function adjustElementPosition() {
-  const element = document.querySelector('.tooltip-text');
-  if (!element) return;
-  const rect = element.getBoundingClientRect();
-  if (rect.right > window.innerWidth) {
-    element.classList.remove('overflow-left');
-    element.classList.add('overflow-right');
-  } else if (rect.left < 0) {
-    element.classList.remove('overflow-right');
-    element.classList.add('overflow-left');
-  } else {
-    element.classList.remove('overflow-right');
-    element.classList.remove('overflow-left');
+  const elements = document.querySelectorAll('.tooltip-text');
+
+  if (elements.length === 0) return;
+  for (const element of elements) {
+    const rect = element.getBoundingClientRect();
+    if (rect.right > window.innerWidth) {
+      element.classList.remove('overflow-left');
+      element.classList.add('overflow-right');
+    } else if (rect.left < 0) {
+      element.classList.remove('overflow-right');
+      element.classList.add('overflow-left');
+    } else {
+      element.classList.remove('overflow-right');
+      element.classList.remove('overflow-left');
+    }
   }
 }
 
@@ -422,7 +425,8 @@ async function decorateCard({
   mPricingSection.classList.add('monthly');
   yPricingSection.classList.add('annually', 'hide');
   const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
-  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID);
+  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID,
+    adjustElementPosition);
   card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
@@ -530,11 +534,13 @@ export default async function init(el) {
       if (entry.isIntersecting) {
         doSyncHeights();
         el.classList.remove('no-visible');
-        adjustElementPosition();
-        window.addEventListener('resize', adjustElementPosition);
       }
+      adjustElementPosition();
     });
   });
+
   observer.observe(el);
   tagFreePlan(cardsContainer);
+
+  window.addEventListener('resize', adjustElementPosition);
 }
