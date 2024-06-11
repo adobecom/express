@@ -4,6 +4,7 @@
  */
 import { createTag } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
+import { trackButtonClick } from '../../scripts/instrument.js';
 
 const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
 
@@ -88,6 +89,7 @@ function initTabs(elm, config, rootElem) {
   if (config) configTabs(config, rootElem);
   tabs.forEach((tab) => {
     tab.addEventListener('click', ({ target: { id: tabId } }) => {
+      trackButtonClick(tab);
       const url = new URL(window.location.href);
       url.searchParams.set('tab', tabId.substring(tabId.lastIndexOf('-') + 1));
       url.hash = '';
