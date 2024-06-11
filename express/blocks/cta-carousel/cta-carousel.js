@@ -169,9 +169,9 @@ async function decorateCards(block, payload) {
         a.textContent = '';
         a.classList.add('clickable-overlay');
       }
-
+      const searchBranchLinks = placeholders['search-branch-links']?.replace(/\s/g, '')?.split(',');
       cta.ctaLinks.forEach((a) => {
-        if (a.href && a.href.match('adobesparkpost.app.link')) {
+        if (a.href && searchBranchLinks.includes(a.href)) {
           const btnUrl = new URL(a.href);
           if (placeholders?.['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
             btnUrl.searchParams.set('q', cta.text);
