@@ -382,6 +382,7 @@ End border style variants
   gap: 12px;
   align-items: center;
   font-size: var(--body-font-size-s);
+  margin-bottom: 4px;
 }
 
 .pricing-cards .billing-toggle button {
