@@ -530,11 +530,12 @@ export default async function init(el) {
       if (entry.isIntersecting) {
         doSyncHeights();
         el.classList.remove('no-visible');
-        adjustElementPosition();
+       
         window.addEventListener('resize', adjustElementPosition);
       }
     });
   });
+  adjustElementPosition();
   observer.observe(el);
   tagFreePlan(cardsContainer);
 }
