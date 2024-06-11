@@ -14,7 +14,7 @@ import {
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
-import createToggle from './pricing-toggle.js';
+import createToggle, { tagFreePlan } from './pricing-toggle.js';
 
 const blockKeys = [
   'header',
@@ -159,6 +159,25 @@ function handleRawPrice(price, basePrice, response) {
     : price.classList.remove('price-active');
 }
 
+function adjustElementPosition() {
+  const elements = document.querySelectorAll('.tooltip-text');
+
+  if (elements.length === 0) return;
+  for (const element of elements) {
+    const rect = element.getBoundingClientRect();
+    if (rect.right > window.innerWidth) {
+      element.classList.remove('overflow-left');
+      element.classList.add('overflow-right');
+    } else if (rect.left < 0) {
+      element.classList.remove('overflow-right');
+      element.classList.add('overflow-left');
+    } else {
+      element.classList.remove('overflow-right');
+      element.classList.remove('overflow-left');
+    }
+  }
+}
+
 function handleTooltip(pricingArea) {
   const elements = pricingArea.querySelectorAll('p');
   const pattern = /\[\[([^]+)\]\]([^]+)\[\[\/([^]+)\]\]/g;
@@ -208,6 +227,7 @@ async function handlePrice(placeholders, pricingArea, specialPromo, legacyVersio
     placeholderArr,
     response,
   );
+
   const isPremiumCard = response.ooAvailable || false;
   const savePercentElem = pricingArea.querySelector('.card-offer');
   handleRawPrice(price, basePrice, response);
@@ -405,7 +425,8 @@ async function decorateCard({
   mPricingSection.classList.add('monthly');
   yPricingSection.classList.add('annually', 'hide');
   const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
-  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID);
+  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID,
+    adjustElementPosition);
   card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
@@ -514,7 +535,12 @@ export default async function init(el) {
         doSyncHeights();
         el.classList.remove('no-visible');
       }
+      adjustElementPosition();
     });
   });
+
   observer.observe(el);
+  tagFreePlan(cardsContainer);
+
+  window.addEventListener('resize', adjustElementPosition);
 }
