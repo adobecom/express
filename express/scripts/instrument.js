@@ -195,7 +195,7 @@ export async function trackBranchParameters($links) {
   const { referrer } = window.document;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
 
-  const listBranchMetadataNodes = [...document.head.querySelectorAll('meta[name*=branch-]')];
+  const listBranchMetadataNodes = [...document.head.querySelectorAll('meta[name^=branch-]')];
   const listAdditionalBranchMetadataNodes = listBranchMetadataNodes.filter((e) => !setBasicBranchMetadata.has(e.name.replace(/^branch-/, '')));
 
   const [
