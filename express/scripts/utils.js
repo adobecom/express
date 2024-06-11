@@ -9,6 +9,8 @@ const DO_NOT_INLINE = [
   'z-pattern',
 ];
 
+const cachedMetadata = [];
+
 const ENVS = {
   stage: {
     name: 'stage',
@@ -64,6 +66,10 @@ const handleEntitlements = (() => {
     return entPromise;
   };
 })();
+export function getCachedMetadata(name) {
+  if (cachedMetadata[name] === undefined) cachedMetadata[name] = getMetadata(name);
+  return cachedMetadata[name];
+}
 
 function getEnv(conf) {
   const { host } = window.location;
@@ -1603,8 +1609,8 @@ async function loadMartech() {
 
   const analyticsUrl = '/express/scripts/instrument.js';
   if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
-    const mod = await import('./instrument.js');
-    mod.default();
+    const { martechLoadedCB } = await import('./instrument.js');
+    martechLoadedCB();
   }
 }
 
@@ -2599,10 +2605,6 @@ async function documentPostSectionLoading(config) {
     document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
   });
 
-  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
-    decorateTrackingEvents(); // TODO: legacy express link tracking
-  });
-
   document.body.appendChild(createTag('div', { id: 'page-load-ok-milo', style: 'display: none;' }));
 }
 
@@ -2725,6 +2727,12 @@ export async function loadArea(area = document) {
   decorateSocialIcons(area);
 
   const sections = decorateSections(area, isDoc);
+
+  // appending express-specific branch parameters
+  const links = isDoc ? area.querySelectorAll('main a[href*="adobesparkpost"]') : area.querySelectorAll(':scope a[href*="adobesparkpost"]');
+  if (links.length) {
+    import('./branchlinks.js').then((mod) => mod.default(links));
+  }
 
   const areaBlocks = [];
   for (const section of sections) {

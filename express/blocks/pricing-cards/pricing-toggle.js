@@ -59,8 +59,37 @@ function onKeyDown(e, pricingSections, buttons, toggleWrapper) {
       break;
   }
 }
+export function tagFreePlan(cardContainer) {
+  const cards = Array.from(cardContainer.querySelectorAll('.card'));
+  let disableAllToggles = true;
+  const freePlanStatus = [];
 
-export default function createToggle(placeholders, pricingSections, groupID) {
+  for (const card of cards) {
+    let isFreePlan = true;
+    const pricingSections = card.querySelectorAll('.pricing-section');
+    for (const section of pricingSections) {
+      const price = section.querySelector('.pricing-price > strong')?.textContent;
+      if (price && parseInt(price, 10) > 0) {
+        isFreePlan = false;
+        disableAllToggles = false;
+        break;
+      }
+    }
+    freePlanStatus.push(isFreePlan ? card.querySelector('.billing-toggle') : undefined);
+  }
+
+  freePlanStatus.forEach((billingToggle) => {
+    if (disableAllToggles) {
+      billingToggle.remove();
+    } else if (billingToggle) {
+      billingToggle.classList.add('suppressed-billing-toggle');
+    }
+  });
+}
+
+export default function createToggle(
+  placeholders, pricingSections, groupID, adjElemPos,
+) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
   const toggleWrapper = createTag('div', { class: 'billing-toggle' });
   toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`;
@@ -85,6 +114,7 @@ export default function createToggle(placeholders, pricingSections, groupID) {
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
       toggleOther(pricingSections, buttons, i);
+      adjElemPos();
     });
     return button;
   });

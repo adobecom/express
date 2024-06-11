@@ -4,6 +4,7 @@
  */
 import { createTag, MILO_EVENTS } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
+import { trackButtonClick } from '../../scripts/instrument.js';
 
 const isElementInContainerView = (targetEl) => {
   const rect = targetEl.getBoundingClientRect();
@@ -86,6 +87,7 @@ function initTabs(elm, config, rootElem) {
   if (config) configTabs(config, rootElem);
   tabs.forEach((tab) => {
     tab.addEventListener('click', ({ target: { id: tabId } }) => {
+      trackButtonClick(tab);
       const url = new URL(window.location.href);
       url.searchParams.set('tab', tabId.substring(tabId.lastIndexOf('-') + 1));
       url.hash = '';
