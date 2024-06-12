@@ -1,4 +1,9 @@
-import { fetchPlaceholders, getCachedMetadata, toCamelCase } from './utils.js';
+import {
+  fetchPlaceholders,
+  getCachedMetadata,
+  toCamelCase,
+  getConfig,
+} from './utils.js';
 
 function getPlacement(btn) {
   const parentBlock = btn.closest('.block');
@@ -153,6 +158,7 @@ export default async function trackBranchParameters(links) {
       setParams('trackingid', trackingId);
       setParams('cgen', cgen);
       setParams('placement', placement);
+      setParams('locale', getConfig().locale.ietf);
 
       if (sKwcId) {
         const sKwcIdParameters = sKwcId.split('!');
