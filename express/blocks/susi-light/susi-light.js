@@ -24,6 +24,7 @@ const authParams = {
 };
 const onRedirect = (e) => {
   // eslint-disable-next-line no-console
+  console.log('redirecting to:', e.detail);
   window.location.assign(e.detail);
 };
 const onToken = (e) => {
