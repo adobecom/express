@@ -279,44 +279,6 @@ function readBraces(inputString, card) {
   }
   return null;
 }
-// Function for decorating a legacy header / promo.
-function decorateLegacyHeader(header, card) {
-  header.classList.add('card-header');
-  const h2 = header.querySelector('h2');
-  const h2Text = h2.textContent.trim();
-  h2.innerHTML = '';
-  const headerConfig = /\((.+)\)/.exec(h2Text);
-  const premiumIcon = header.querySelector('img');
-  let specialPromo;
-  if (premiumIcon) h2.append(premiumIcon);
-  if (headerConfig) {
-    const cfg = headerConfig[1];
-    h2.append(h2Text.replace(`(${cfg})`, '').trim());
-    if (/^\d/.test(cfg)) {
-      const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
-      headCntDiv.textContent = cfg;
-      headCntDiv.prepend(
-        createTag('img', {
-          src: '/express/icons/head-count.svg',
-          alt: 'icon-head-count',
-        }),
-      );
-      header.append(headCntDiv);
-    } else {
-      specialPromo = createTag('div');
-      specialPromo.textContent = cfg;
-      card.classList.add('special-promo');
-      card.append(specialPromo);
-    }
-  } else {
-    h2.append(h2Text);
-  }
-  header.querySelectorAll('p').forEach((p) => {
-    if (p.innerHTML.trim() === '') p.remove();
-  });
-  card.append(header);
-  return { specialPromo, cardWrapper: card };
-}
 
 function decorateHeader(header, borderParams, card, cardBorder) {
   const h2 = header.querySelector('h2');
@@ -395,9 +357,7 @@ async function decorateCard({
 }, el, placeholders, legacyVersion) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
-  const { specialPromo, cardWrapper } = legacyVersion
-    ? decorateLegacyHeader(header, card)
-    : decorateHeader(header, borderParams, card, cardBorder);
+  const { specialPromo, cardWrapper } = decorateHeader(header, borderParams, card, cardBorder);
 
   decorateBasicTextSection(explain, 'card-explain', card);
   const [mPricingSection, yPricingSection] = await Promise.all([
@@ -412,17 +372,6 @@ async function decorateCard({
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
   return cardWrapper;
-}
-
-// less thrashing by separating get and set
-async function syncMinHeights(groups) {
-  const maxHeights = groups.map((els) => els
-    .filter((e) => !!e)
-    .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
-  await yieldToMain();
-  maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
-    if (e) e.style.minHeight = `${maxHeight}px`;
-  }));
 }
 
 export default async function init(el) {
