@@ -6,13 +6,6 @@ import {
   getConfig,
 } from '../../scripts/utils.js';
 
-const authParams = {
-  dt: false,
-  locale: getConfig().locale.ietf.toLowerCase(),
-  response_type: 'code', // FIXME: to be finalized
-  client_id: 'AdobeExpressWeb',
-  scope: 'AdobeID,openid',
-};
 const config = {
   consentProfile: 'free', // FIXME: to be finalized
 };
@@ -20,6 +13,15 @@ const variant = 'edu-express';
 const usp = new URLSearchParams(window.location.search);
 const isStage = usp.get('env') !== 'prod' || getConfig().env.name !== 'prod';
 const CDN_URL = `https://auth-light.identity${isStage ? '-stage' : ''}.adobe.com/sentry/wrapper.js`;
+// eslint-disable-next-line camelcase
+const client_id = usp.get('test_id') === 'on' ? 'sentry-test-edu' : 'AdobeExpressWeb';
+const authParams = {
+  dt: false,
+  locale: getConfig().locale.ietf.toLowerCase(),
+  response_type: 'code', // FIXME: to be finalized
+  client_id,
+  scope: 'AdobeID,openid',
+};
 const onRedirect = (e) => {
   // eslint-disable-next-line no-console
   window.location.assign(e.detail);
@@ -62,6 +64,7 @@ function sendEventToAnalytics(type, eventName) {
             primaryEvent: {
               eventInfo: {
                 eventName,
+                client_id,
               },
             },
           },
