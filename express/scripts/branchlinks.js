@@ -1,4 +1,4 @@
-import { fetchPlaceholders, getCachedMetadata } from './utils.js';
+import { fetchPlaceholders, getCachedMetadata, toCamelCase } from './utils.js';
 
 function getPlacement(btn) {
   const parentBlock = btn.closest('.block');
@@ -26,6 +26,22 @@ function getPlacement(btn) {
   return placement;
 }
 
+const setBasicBranchMetadata = new Set([
+  'search-term',
+  'canvas-height',
+  'canvas-width',
+  'canvas-unit',
+  'sceneline',
+  'task-id',
+  'asset-collection',
+  'category',
+  'search-category',
+  'load-print-addon',
+  'tab',
+  'action',
+  'prompt',
+]);
+
 export default async function trackBranchParameters(links) {
   const placeholders = await fetchPlaceholders();
   const rootUrl = new URL(window.location.href);
@@ -35,6 +51,9 @@ export default async function trackBranchParameters(links) {
   const { experiment } = window.hlx;
   const { referrer } = window.document;
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
+
+  const listBranchMetadataNodes = [...document.head.querySelectorAll('meta[name^=branch-]')];
+  const listAdditionalBranchMetadataNodes = listBranchMetadataNodes.filter((e) => !setBasicBranchMetadata.has(e.name.replace(/^branch-/, '')));
 
   const [
     searchTerm,
@@ -68,7 +87,7 @@ export default async function trackBranchParameters(links) {
     getCachedMetadata('branch-asset-collection'),
     getCachedMetadata('branch-category'),
     getCachedMetadata('branch-search-category'),
-    getCachedMetadata('branch-loadprintaddon'),
+    getCachedMetadata('branch-load-print-addon'),
     getCachedMetadata('branch-tab'),
     getCachedMetadata('branch-action'),
     getCachedMetadata('branch-prompt'),
@@ -117,6 +136,11 @@ export default async function trackBranchParameters(links) {
         setParams('tab', tab);
         setParams('action', action);
         setParams('prompt', prompt);
+      }
+
+      for (const { name, content } of listAdditionalBranchMetadataNodes) {
+        const paramName = toCamelCase(name.replace(/^branch-/, ''));
+        setParams(paramName, content);
       }
 
       setParams('referrer', referrer);
