@@ -109,7 +109,6 @@ export function gatherPageImpression(searchProps) {
 
   const impressionEventPayload = {
     category: 'templates',
-    custom_ui_location: 'seo',
     collection: usp.get('tasksx') || filters.tasks || 'all-templates',
     collection_path: window.location.pathname,
     type_filter: typeFilter,
