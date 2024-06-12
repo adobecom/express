@@ -9,6 +9,8 @@ const DO_NOT_INLINE = [
   'z-pattern',
 ];
 
+const cachedMetadata = [];
+
 const ENVS = {
   stage: {
     name: 'stage',
@@ -47,6 +49,11 @@ export function getMetadata(name) {
   const attr = name && name.includes(':') ? 'property' : 'name';
   const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
   return ($meta && $meta.content) || '';
+}
+
+export function getCachedMetadata(name) {
+  if (cachedMetadata[name] === undefined) cachedMetadata[name] = getMetadata(name);
+  return cachedMetadata[name];
 }
 
 function getEnv(conf) {
@@ -2177,6 +2184,7 @@ function decoratePictures(main) {
  * @param {Element} main The main element
  * @param {Boolean} isDoc Is document or fragment
  */
+
 export async function decorateMain(main, isDoc) {
   await buildAutoBlocks(main);
   splitSections(main);
@@ -2495,6 +2503,7 @@ export async function loadArea(area = document) {
   }
 
   let sections = [];
+  // for adding branch parameters to branch links
   if (main) {
     sections = await decorateMain(main, isDoc);
     decoratePageStyle();
@@ -2516,6 +2525,11 @@ export async function loadArea(area = document) {
       }
     }
   }
+  const links = isDoc ? area.querySelectorAll('main a[href*="adobesparkpost"]') : area.querySelectorAll(':scope a[href*="adobesparkpost"]');
+  if (links.length) {
+    import('./branchlinks.js').then((mod) => mod.default(links));
+  }
+
   await loadTemplateScript();
   await loadSections(sections, isDoc);
   const footer = document.querySelector('footer');
@@ -2543,10 +2557,6 @@ export async function loadArea(area = document) {
 
   import('./attributes.js').then((analytics) => {
     document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
-  });
-
-  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
-    decorateTrackingEvents();
   });
 }
 

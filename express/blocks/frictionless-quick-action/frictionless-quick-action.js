@@ -6,6 +6,7 @@ import {
   addAnimationToggle,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
+import { sendFrictionlessEventToAdobeAnaltics } from '../../scripts/instrument.js';
 
 const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 const imageInputAccept = '.png, .jpeg, .jpg';
@@ -332,4 +333,6 @@ export default async function decorate(block) {
 
   fqaBlock.dataset.frictionlesstype = quickAction;
   fqaBlock.dataset.frictionlessgroup = getQAGroup(quickAction);
+
+  sendFrictionlessEventToAdobeAnaltics(block);
 }
