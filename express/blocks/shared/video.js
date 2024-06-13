@@ -179,7 +179,8 @@ export function isVideoLink(url) {
   return url.includes('youtube.com/watch')
     || url.includes('youtu.be/')
     || url.includes('vimeo')
-    || /.*\/media_.*(mp4|webm|m3u8)$/.test(new URL(url).pathname);
+    || /.*\/media_.*(mp4|webm|m3u8)$/.test(new URL(url).pathname)
+    || url.includes('images-tv.adobe.com');
 }
 
 export function hideVideoModal(push) {
