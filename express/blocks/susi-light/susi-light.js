@@ -21,6 +21,10 @@ const authParams = {
   response_type: 'code', // FIXME: to be finalized
   client_id,
   scope: 'AdobeID,openid',
+  state: {
+    source: 'atc',
+    role: 'teacher',
+  },
 };
 const onRedirect = (e) => {
   // eslint-disable-next-line no-console
