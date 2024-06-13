@@ -84,12 +84,22 @@ const onAnalytics = (e) => {
 };
 
 export default async function init(el) {
-  const redirectUri = el.querySelector('div > div')?.textContent?.trim().toLowerCase() ?? '';
+  const input = el.querySelector('div > div')?.textContent?.trim().toLowerCase();
+  let destURL;
+  try {
+    destURL = new URL(input);
+  } catch (err) {
+    window.lana?.log(`invalid redirect uri authored for susi-light: ${input}`);
+    destURL = new URL('https://express.adobe.com');
+  }
+  if (isStage && destURL.hostname === 'express.adobe.com') {
+    destURL.hostname = 'stage.projectx.corp.adobe.com';
+  }
   el.innerHTML = '';
   await loadScript(CDN_URL);
   const susi = createTag('susi-sentry-light');
   susi.authParams = authParams;
-  susi.authParams.redirect_uri = redirectUri ?? 'https://new.express.adobe.com/';
+  susi.authParams.redirect_uri = destURL.toString();
   susi.config = config;
   if (isStage) susi.stage = 'true';
   susi.variant = variant;
