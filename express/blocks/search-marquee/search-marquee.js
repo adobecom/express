@@ -143,7 +143,7 @@ function initSearchFunction(block) {
     const pathMatchX = (e) => e.url === targetPathX;
     let targetLocation;
 
-    updateImpressionCache({ collection: currentTasks.content || 'all-templates' });
+    updateImpressionCache({ collection: currentTasks.content || 'all-templates', content_category: 'templates' });
     trackSearch('search-inspire');
 
     const searchId = BlockMediator.get('templateSearchSpecs').search_id;
