@@ -349,11 +349,11 @@ async function decorateLoadMoreButton(block, props) {
     loadMoreButton.classList.add('disabled');
     const scrollPosition = window.scrollY;
     await decorateNewTemplates(block, props);
-    window.scrollTo({
-      top: scrollPosition,
-      left: 0,
-      behavior: 'smooth',
-    });
+    // window.scrollTo({
+    //   top: scrollPosition,
+    //   left: 0,
+    //   behavior: 'smooth',
+    // });
     loadMoreButton.classList.remove('disabled');
   });
 
@@ -1255,7 +1255,12 @@ function importSearchBar(block, blockMediator) {
 
         const searchDropdown = searchWrapper.querySelector('.search-dropdown-container');
         const searchForm = searchWrapper.querySelector('.search-form');
+      
         const searchBar = searchWrapper.querySelector('input.search-bar');
+        searchBar.addEventListener("onfocus", (event) => {
+          event.stopPropagation()
+          return false
+        })
         const clearBtn = searchWrapper.querySelector('.icon-search-clear');
         const trendsContainer = searchWrapper.querySelector('.trends-container');
         const suggestionsContainer = searchWrapper.querySelector('.suggestions-container');
