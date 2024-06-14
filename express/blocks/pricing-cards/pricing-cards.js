@@ -260,7 +260,7 @@ function decorateHeader(header, card) {
   const premiumIcon = header.querySelector('img');
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
-  if (! extractHeadCountExp.test(h2.innerText)) {
+  if (extractHeadCountExp.test(h2.innerText)) {
     const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
     const headCount = h2.innerText
       .match(extractHeadCountExp)[0]
@@ -332,8 +332,8 @@ async function decorateCard({
   decorateBasicTextSection(explain, 'card-explain', card);
 
   const [mPricingSection, yPricingSection] = await Promise.all([
-    createPricingSection(card, placeholders, mPricingRow, mCtaGroup, null, true),
-    createPricingSection(card, placeholders, yPricingRow, yCtaGroup, null),
+    createPricingSection( placeholders, mPricingRow, mCtaGroup, null, true),
+    createPricingSection(  placeholders, yPricingRow, yCtaGroup, null),
   ]);
 
   const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
