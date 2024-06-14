@@ -253,6 +253,7 @@ async function createPricingSection(
   legacyVersion,
 ) {
   const pricingSection = createTag('div', { class: 'pricing-section' });
+
   pricingArea.classList.add('pricing-area');
   const offer = pricingArea.querySelector(':scope > p > em');
   if (offer) {
@@ -260,6 +261,7 @@ async function createPricingSection(
     offer.parentElement.outerHTML = offer.outerHTML;
   }
   await handlePrice(placeholders, pricingArea, specialPromo, legacyVersion);
+
   ctaGroup.classList.add('card-cta-group');
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
@@ -274,6 +276,7 @@ async function createPricingSection(
     formatDynamicCartLink(a);
     ctaGroup.append(a);
   });
+  
   pricingSection.append(pricingArea);
   pricingSection.append(ctaGroup);
   return pricingSection;
@@ -397,19 +400,14 @@ async function decorateCard({
 
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
-  // For backwards compatability with old versions of the pricing card
-  const legacyVersion = el.querySelectorAll(':scope > div').length < 10;
-  const currentKeys = [...blockKeys];
-  if (legacyVersion) {
-    currentKeys.splice(1, 1);
-  }
-  const divs = currentKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
-
-  const cards = Array.from(divs[0]).map((_, index) => currentKeys.reduce((obj, key, keyIndex) => {
+ 
+  const divs = blockKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
+  const cards = Array.from(divs[0]).map((_, index) => blockKeys.reduce((obj, key, keyIndex) => {
     obj[key] = divs[keyIndex][index];
     return obj;
   }, {}));
   el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
+
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
   const decoratedCards = await Promise.all(

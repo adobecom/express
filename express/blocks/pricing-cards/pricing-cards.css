@@ -85,7 +85,6 @@ End legacy CSS
   display: grid;
   grid-template-rows:  50px .2fr 40px 1fr 3fr 70px; 
 }
-
  
 .pricing-cards .card > div {
   height: 100%;
@@ -390,8 +389,12 @@ End border style variants
 
 .pricing-cards .billing-toggle.suppressed-billing-toggle {
   visibility: hidden;
-  
 } 
+
+.billing-radio-hidden {
+  opacity: 0;
+  height: 0px;
+}
 
 .pricing-cards .billing-toggle {
   display: flex;

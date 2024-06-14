@@ -80,7 +80,7 @@ export function tagFreePlan(cardContainer) {
 
   freePlanStatus.forEach((billingToggle) => {
     if (disableAllToggles) {
-      billingToggle.remove();
+      billingToggle.classList.add("billing-radio-hidden")
     } else if (billingToggle) {
       billingToggle.classList.add('suppressed-billing-toggle');
     }
