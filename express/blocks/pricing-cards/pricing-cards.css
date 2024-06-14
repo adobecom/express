@@ -52,7 +52,7 @@ End legacy CSS
   padding: 12px 15px 40px 15px;
 } 
 
-.pricing-cards .cards-container {
+/* .pricing-cards .cards-container {
   display: grid; 
   gap: 10px;
   width: fit-content;
@@ -67,7 +67,7 @@ End legacy CSS
 }
 .pricing-cards .cards-container:has(div:nth-last-child(2)) {
   grid-template-columns: repeat(2, 391px);
-}
+} */
  
 
 .pricing-cards .card {
@@ -83,7 +83,7 @@ End legacy CSS
   height: 100%;
   border: 1px solid #C6C6C6;
   display: grid;
-  grid-template-rows:  50px .2fr 40px 1fr 3fr 70px; 
+  gap: 12px;
 }
  
 .pricing-cards .card > div {
@@ -515,7 +515,8 @@ End border style variants
   box-sizing: border-box;
 }
 
-@media screen and (min-width: 900px) {
+
+@media screen and (min-width: 768px) {
   :root {
     --card-width: 400px;
   }
@@ -523,4 +524,33 @@ End border style variants
   .pricing-cards .card-feature-list {
     display: block;
   }
+ 
+
+  .pricing-cards .cards-container {
+    display: grid; 
+    gap: 10px;
+    width: fit-content;
+    margin-left: auto;
+  
+    margin-right: auto; 
+   
+  }
+  
+
+  .pricing-cards .cards-container:has(div:nth-last-child(2):first-child) {
+    grid-template-columns: repeat(2, 391px);
+  }
+  .pricing-cards .cards-container:has(div:only-child) {
+    grid-template-columns: repeat(1, 391px);
+  }
+  .pricing-cards .card {
+    grid-template-rows:  50px .2fr 40px 1fr 3fr 70px; 
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .pricing-cards .cards-container:has(div:nth-last-child(3):first-child ~ .card:nth-last-child(2)){
+    grid-template-columns: repeat(3, 391px);
+  }
+
 }

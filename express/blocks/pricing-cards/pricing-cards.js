@@ -1,11 +1,8 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
-  fetchPlaceholders,
-  yieldToMain,
-  getIconElement,
-} from '../../scripts/utils.js';
-import { debounce } from '../../scripts/hofs.js';
+  fetchPlaceholders, 
+} from '../../scripts/utils.js'; 
 
 import {
   formatDynamicCartLink,
@@ -15,6 +12,7 @@ import {
 } from '../../scripts/utils/pricing.js';
 
 import createToggle, { tagFreePlan } from './pricing-toggle.js';
+import { handleTooltip } from './pricing-tooltip.js';
 
 const blockKeys = [
   'header',
@@ -33,17 +31,12 @@ const SALES_NUMBERS = '{{business-sales-numbers}}';
 const PRICE_TOKEN = '{{pricing}}';
 const YEAR_2_PRICING_TOKEN = '[[year-2-pricing-token]]';
 
-function suppressOfferEyebrow(specialPromo, legacyVersion) {
+function suppressOfferEyebrow(specialPromo) {
   if (specialPromo.parentElement) {
-    if (legacyVersion) {
-      specialPromo.parentElement.classList.remove('special-promo');
-      specialPromo.remove();
-    } else {
-      specialPromo.className = 'hide';
-      specialPromo.parentElement.className = '';
-      specialPromo.parentElement.classList.add('card-border');
-      specialPromo.remove();
-    }
+    specialPromo.className = 'hide';
+    specialPromo.parentElement.className = '';
+    specialPromo.parentElement.classList.add('card-border');
+    specialPromo.remove();
   }
 }
 
@@ -82,7 +75,6 @@ function handleSpecialPromo(
   specialPromo,
   isPremiumCard,
   response,
-  legacyVersion,
 ) {
   if (specialPromo?.textContent.includes(SAVE_PERCENTAGE)) {
     const offerTextContent = specialPromo.textContent;
@@ -95,7 +87,7 @@ function handleSpecialPromo(
     );
 
     if (shouldSuppress) {
-      suppressOfferEyebrow(specialPromo, legacyVersion);
+      suppressOfferEyebrow(specialPromo);
     } else {
       specialPromo.innerHTML = specialPromo.innerHTML.replace(
         SAVE_PERCENTAGE,
@@ -160,53 +152,23 @@ function handleRawPrice(price, basePrice, response) {
     : price.classList.remove('price-active');
 }
 
-function adjustElementPosition() {
-  const elements = document.querySelectorAll('.tooltip-text');
 
-  if (elements.length === 0) return;
-  for (const element of elements) {
-    const rect = element.getBoundingClientRect();
-    if (rect.right > window.innerWidth) {
-      element.classList.remove('overflow-left');
-      element.classList.add('overflow-right');
-    } else if (rect.left < 0) {
-      element.classList.remove('overflow-right');
-      element.classList.add('overflow-left');
-    } else {
-      element.classList.remove('overflow-right');
-      element.classList.remove('overflow-left');
-    }
+async function createPricingSection(
+  placeholders,
+  pricingArea,
+  ctaGroup,
+  specialPromo,
+  isMonthly = false
+) {
+  const pricingSection = createTag('div', { class: 'pricing-section' });
+  pricingArea.classList.add('pricing-area');
+
+  const offer = pricingArea.querySelector(':scope > p > em');
+  if (offer) {
+    offer.classList.add('card-offer');
+    offer.parentElement.outerHTML = offer.outerHTML;
   }
-}
 
-function handleTooltip(pricingArea) {
-  const elements = pricingArea.querySelectorAll('p');
-  const pattern = /\[\[([^]+)\]\]([^]+)\[\[\/([^]+)\]\]/g;
-  let tooltip;
-  let tooltipDiv;
-
-  Array.from(elements).forEach((p) => {
-    const res = pattern.exec(p.textContent);
-    if (res) {
-      tooltip = res;
-      tooltipDiv = p;
-    }
-  });
-  if (!tooltip) return;
-
-  tooltipDiv.innerHTML = tooltipDiv.innerHTML.replace(pattern, '');
-  const tooltipText = tooltip[2];
-  tooltipDiv.classList.add('tooltip');
-  const span = createTag('div', { class: 'tooltip-text' });
-  span.innerText = tooltipText;
-  const icon = getIconElement('info', 44, 'Info', 'tooltip-icon');
-  icon.append(span);
-  const iconWrapper = createTag('span');
-  iconWrapper.append(icon);
-  iconWrapper.append(span);
-  tooltipDiv.append(iconWrapper);
-}
-async function handlePrice(placeholders, pricingArea, specialPromo, legacyVersion) {
   const priceEl = pricingArea.querySelector(`[title="${PRICE_TOKEN}"]`);
   const pricingBtnContainer = pricingArea.querySelector('.button-container');
   if (!pricingBtnContainer) return;
@@ -235,7 +197,7 @@ async function handlePrice(placeholders, pricingArea, specialPromo, legacyVersio
   handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent);
   handleTooltip(pricingArea);
   handleSavePercentage(savePercentElem, isPremiumCard, response);
-  handleSpecialPromo(specialPromo, isPremiumCard, response, legacyVersion);
+  handleSpecialPromo(specialPromo, isPremiumCard, response);
   handleYear2PricingToken(pricingArea, response.y2p, priceSuffixTextContent);
 
   priceEl?.parentNode?.remove();
@@ -243,24 +205,6 @@ async function handlePrice(placeholders, pricingArea, specialPromo, legacyVersio
   pricingArea.prepend(priceRow);
   pricingBtnContainer?.remove();
   pricingSuffixTextElem?.remove();
-}
-
-async function createPricingSection(
-  placeholders,
-  pricingArea,
-  ctaGroup,
-  specialPromo,
-  legacyVersion,
-) {
-  const pricingSection = createTag('div', { class: 'pricing-section' });
-
-  pricingArea.classList.add('pricing-area');
-  const offer = pricingArea.querySelector(':scope > p > em');
-  if (offer) {
-    offer.classList.add('card-offer');
-    offer.parentElement.outerHTML = offer.outerHTML;
-  }
-  await handlePrice(placeholders, pricingArea, specialPromo, legacyVersion);
 
   ctaGroup.classList.add('card-cta-group');
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
@@ -276,13 +220,19 @@ async function createPricingSection(
     formatDynamicCartLink(a);
     ctaGroup.append(a);
   });
-  
+
+  if (isMonthly) {
+    pricingSection.classList.add('monthly');
+  } else {
+    pricingSection.classList.add('annually', 'hide');
+  }
+
   pricingSection.append(pricingArea);
   pricingSection.append(ctaGroup);
   return pricingSection;
 }
 
-function readBraces(inputString, card) {
+function decorateSpecialPromo(inputString, card) {
   if (!inputString) {
     return null;
   }
@@ -293,25 +243,24 @@ function readBraces(inputString, card) {
 
   if (matches.length > 0) {
     const [token, promoType] = matches[matches.length - 1];
-    const specialPromo = createTag('div', {class : 'promo-tag'});
+    const specialPromo = createTag('div', { class: 'promo-tag' });
     specialPromo.textContent = inputString.split(token)[0].trim();
     card.classList.add(promoType.replaceAll(' ', ''));
     card.append(specialPromo);
-    
+
     return specialPromo;
   }
   return null;
 }
 
-function decorateHeader(header, borderParams, card, cardBorder) {
+function decorateHeader(header, card) {
   const h2 = header.querySelector('h2');
   // The raw text extracted from the word doc
   header.classList.add('card-header');
-  const specialPromo = readBraces(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
-  if (extractHeadCountExp.test(h2.innerText)) {
+  if (! extractHeadCountExp.test(h2.innerText)) {
     const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
     const headCount = h2.innerText
       .match(extractHeadCountExp)[0]
@@ -332,37 +281,34 @@ function decorateHeader(header, borderParams, card, cardBorder) {
     if (p.innerHTML.trim() === '') p.remove();
   });
   card.append(header);
-  cardBorder.append(card);
-  return { cardWrapper: cardBorder, specialPromo };
 }
 
 function decorateBasicTextSection(textElement, className, card) {
-  if (textElement.innerHTML.trim()) {
-    textElement.classList.add(className);
-    card.append(textElement);
-  }
+  if (!textElement.innerHTML.trim()) return
+  textElement.classList.add(className);
+  card.append(textElement);
 }
 
 // Links user to page where plans can be compared
 function decorateCompareSection(compare, el, card) {
-  if (compare?.innerHTML.trim()) {
-    compare.classList.add('card-compare');
-    compare.querySelector('a')?.classList.remove('button', 'accent');
-    // in a tab, update url
-    const closestTab = el.closest('div.tabpanel');
-    if (closestTab) {
-      try {
-        const tabId = parseInt(closestTab.id.split('-').pop(), 10);
-        const compareLink = compare.querySelector('a');
-        const url = new URL(compareLink.href);
-        url.searchParams.set('tab', tabId);
-        compareLink.href = url.href;
-      } catch (e) {
-        // ignore
-      }
+  if (!compare?.innerHTML.trim()) return
+  compare.classList.add('card-compare');
+  compare.querySelector('a')?.classList.remove('button', 'accent');
+  // in a tab, update url
+  const closestTab = el.closest('div.tabpanel');
+  if (closestTab) {
+    try {
+      const tabId = parseInt(closestTab.id.split('-').pop(), 10);
+      const compareLink = compare.querySelector('a');
+      const url = new URL(compareLink.href);
+      url.searchParams.set('tab', tabId);
+      compareLink.href = url.href;
+    } catch (e) {
+      lana.log(e)
     }
-    card.append(compare);
   }
+  card.append(compare);
+
 }
 
 // In legacy versions, the card element encapsulates all content
@@ -377,30 +323,41 @@ async function decorateCard({
   yCtaGroup,
   featureList,
   compare,
-}, el, placeholders, legacyVersion) {
+}, el, placeholders) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
-  const { specialPromo, cardWrapper } = decorateHeader(header, borderParams, card, cardBorder);
-
+  cardBorder.append(card)
+  console.log(borderParams)
+  decorateHeader(header, card);
   decorateBasicTextSection(explain, 'card-explain', card);
+
   const [mPricingSection, yPricingSection] = await Promise.all([
-    createPricingSection(placeholders, mPricingRow, mCtaGroup, specialPromo, legacyVersion),
-    createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
+    createPricingSection(card, placeholders, mPricingRow, mCtaGroup, null, true),
+    createPricingSection(card, placeholders, yPricingRow, yCtaGroup, null),
   ]);
-  mPricingSection.classList.add('monthly');
-  yPricingSection.classList.add('annually', 'hide');
+
   const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
-  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID,
-    adjustElementPosition);
+  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID)
   card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
-  return cardWrapper;
+  return cardBorder
+}
+
+async function handlePhoneNumber(cardsContainer) {
+
+  const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter(
+    (a) => a.title.includes(SALES_NUMBERS),
+  );
+  if (phoneNumberTags.length > 0) {
+    await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
+  }
+
 }
 
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
- 
+
   const divs = blockKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
   const cards = Array.from(divs[0]).map((_, index) => blockKeys.reduce((obj, key, keyIndex) => {
     obj[key] = divs[keyIndex][index];
@@ -411,16 +368,13 @@ export default async function init(el) {
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
   const decoratedCards = await Promise.all(
-    cards.map((card) => decorateCard(card, el, placeholders, legacyVersion)),
+
+    cards.map((card) => decorateCard(card, el, placeholders)),
   );
   decoratedCards.forEach((card) => cardsContainer.append(card));
 
-  const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter(
-    (a) => a.title.includes(SALES_NUMBERS),
-  );
-  if (phoneNumberTags.length > 0) {
-    await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
-  }
+  await handlePhoneNumber(cardsContainer)
+
   el.classList.add('no-visible');
   el.prepend(cardsContainer);
 
@@ -429,12 +383,9 @@ export default async function init(el) {
       if (entry.isIntersecting) {
         el.classList.remove('no-visible');
       }
-      adjustElementPosition();
     });
   });
 
   observer.observe(el);
   tagFreePlan(cardsContainer);
-
-  window.addEventListener('resize', adjustElementPosition);
 }
