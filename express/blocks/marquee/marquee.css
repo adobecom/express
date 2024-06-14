@@ -461,8 +461,3 @@ body.no-desktop-brand-header header {
 :lang(ja) .marquee h1.heading-x-long {
   font-size: var(--heading-font-size-m);
 }
-
-
-.marquee {
-    border: 10px solid red !important
-}
