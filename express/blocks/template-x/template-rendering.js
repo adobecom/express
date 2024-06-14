@@ -362,7 +362,7 @@ function renderHoverWrapper(template, placeholders) {
 
   cta.addEventListener('click', () => {
     updateImpressionCache({
-      id: template.id,
+      content_id: template.id,
       status: template.licensingCategory,
       task: getMetadata('tasksx') || getMetadata('tasks') || '',
       search_keyword: getMetadata('q') || getMetadata('topics') || '',

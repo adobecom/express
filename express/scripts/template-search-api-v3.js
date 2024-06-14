@@ -130,7 +130,7 @@ export function removeOptionalImpressionFields(eventType) {
   const impression = BlockMediator.get('templateSearchSpecs');
 
   if (eventType === 'search-inspire') {
-    delete impression.id;
+    delete impression.content_id;
     delete impression.keyword_rank;
     delete impression.prefix_query;
 
@@ -140,7 +140,7 @@ export function removeOptionalImpressionFields(eventType) {
   }
 
   if (eventType === 'view-search-results') {
-    delete impression.id;
+    delete impression.content_id;
     delete impression.keyword_rank;
     delete impression.prefix_query;
     delete impression.suggestion_list_shown;
