@@ -55,12 +55,19 @@ End legacy CSS
 .pricing-cards .cards-container {
   display: grid; 
   gap: 10px;
-  width: 90%; 
+  width: fit-content;
   margin-left: auto;
+
   margin-right: auto; 
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 391px);
 }
 
+.pricing-cards .cards-container:has(div:only-child) {
+  grid-template-columns: repeat(1, 391px);
+}
+.pricing-cards .cards-container:has(div:nth-last-child(2)) {
+  grid-template-columns: repeat(2, 391px);
+}
  
 
 .pricing-cards .card {
