@@ -143,8 +143,8 @@ export default async function init(a) {
   a.parentElement.replaceChild(fragment, a);
 
   await loadArea(fragment);
-  if (a.classList.contains('ax-old-fragment')) {
-    // TODO: backward compatability: unlike milo, old ax fragments unfold themselves
+  // TODO: backward compatability: unlike milo, old ax fragments unfold themselves
+  if (a.classList.contains('ax-old-fragment') || fragment.getAttribute('data-manifest-id')) {
     const fragmentSections = [...fragment.querySelectorAll(':scope > div')];
     const blockSection = fragment.closest('.section');
     // merge fragment's first section with current section
