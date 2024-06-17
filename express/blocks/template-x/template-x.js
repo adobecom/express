@@ -1262,13 +1262,14 @@ function importSearchBar(block, blockMediator) {
 
         searchBar.addEventListener('click', (event) => {
           event.stopPropagation();
+          event.preventDefault()
           console.log('click')
           console.log(event)
           searchWrapper.classList.remove('collapsed');
           setTimeout(() => {
             searchDropdown.classList.remove('hidden');
           }, 500);
-        }, { passive: true });
+        } );
 
         searchBar.addEventListener('keyup', () => {
           if (searchBar.value !== '') {
