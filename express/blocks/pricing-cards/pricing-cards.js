@@ -160,51 +160,54 @@ async function createPricingSection(
   specialPromo,
   isMonthly = false
 ) {
-  const pricingSection = createTag('div', { class: 'pricing-section' });
   pricingArea.classList.add('pricing-area');
+
+  const pricingSection = createTag('div', { class: 'pricing-section' });
+  pricingSection.append(pricingArea);
+  pricingSection.append(ctaGroup);
 
   const offer = pricingArea.querySelector(':scope > p > em');
   if (offer) {
     offer.classList.add('card-offer');
     offer.parentElement.outerHTML = offer.outerHTML;
   }
-
+ 
   const priceEl = pricingArea.querySelector(`[title="${PRICE_TOKEN}"]`);
   const pricingBtnContainer = pricingArea.querySelector('.button-container');
-  if (!pricingBtnContainer) return;
-  if (!priceEl) return;
 
-  const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
-  const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
+  if (pricingBtnContainer && priceEl){ 
+    const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
+    const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
+    
+    const priceRow = createTag('div', { class: 'pricing-row' });
+    const price = createTag('span', { class: 'pricing-price' });
+    const basePrice = createTag('span', { class: 'pricing-base-price' });
+    const priceSuffix = createTag('div', { class: 'pricing-row-suf' }); 
+    const response = await fetchPlanOnePlans(priceEl?.href);
+    const priceSuffixTextContent = getPriceElementSuffix(
+      placeholders,
+      placeholderArr,
+      response,
+    );
+    const isPremiumCard = response.ooAvailable || false;
+    const savePercentElem = pricingArea.querySelector('.card-offer');
+    
+    handleRawPrice(price, basePrice, response);
+    handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent);
+    handleTooltip(pricingArea);
+    handleSavePercentage(savePercentElem, isPremiumCard, response);
+    handleSpecialPromo(specialPromo, isPremiumCard, response);
+    handleYear2PricingToken(pricingArea, response.y2p, priceSuffixTextContent);
 
-  const priceRow = createTag('div', { class: 'pricing-row' });
-  const price = createTag('span', { class: 'pricing-price' });
-  const basePrice = createTag('span', { class: 'pricing-base-price' });
-  const priceSuffix = createTag('div', { class: 'pricing-row-suf' });
+    priceRow.append(basePrice, price, priceSuffix);
+    pricingArea.prepend(priceRow);
+    priceEl?.parentNode?.remove();
+    pricingSuffixTextElem?.remove();
+    pricingBtnContainer?.remove();
+  }
+  
 
-  priceRow.append(basePrice, price, priceSuffix);
 
-  const response = await fetchPlanOnePlans(priceEl?.href);
-  const priceSuffixTextContent = getPriceElementSuffix(
-    placeholders,
-    placeholderArr,
-    response,
-  );
-
-  const isPremiumCard = response.ooAvailable || false;
-  const savePercentElem = pricingArea.querySelector('.card-offer');
-  handleRawPrice(price, basePrice, response);
-  handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent);
-  handleTooltip(pricingArea);
-  handleSavePercentage(savePercentElem, isPremiumCard, response);
-  handleSpecialPromo(specialPromo, isPremiumCard, response);
-  handleYear2PricingToken(pricingArea, response.y2p, priceSuffixTextContent);
-
-  priceEl?.parentNode?.remove();
-  if (!priceRow) return;
-  pricingArea.prepend(priceRow);
-  pricingBtnContainer?.remove();
-  pricingSuffixTextElem?.remove();
 
   ctaGroup.classList.add('card-cta-group');
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
@@ -226,9 +229,8 @@ async function createPricingSection(
   } else {
     pricingSection.classList.add('annually', 'hide');
   }
+  console.log(pricingArea) 
 
-  pricingSection.append(pricingArea);
-  pricingSection.append(ctaGroup);
   return pricingSection;
 }
 
@@ -311,8 +313,6 @@ function decorateCompareSection(compare, el, card) {
 
 }
 
-// In legacy versions, the card element encapsulates all content
-// In new versions, the cardBorder element encapsulates all content instead
 async function decorateCard({
   header,
   borderParams,
@@ -368,7 +368,6 @@ export default async function init(el) {
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
   const decoratedCards = await Promise.all(
-
     cards.map((card) => decorateCard(card, el, placeholders)),
   );
   decoratedCards.forEach((card) => cardsContainer.append(card));
@@ -387,5 +386,6 @@ export default async function init(el) {
   });
 
   observer.observe(el);
+
   tagFreePlan(cardsContainer);
 }

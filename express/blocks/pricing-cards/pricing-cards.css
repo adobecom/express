@@ -531,26 +531,31 @@ End border style variants
     gap: 10px;
     width: fit-content;
     margin-left: auto;
-  
     margin-right: auto; 
    
   }
-  
 
+      
+  .pricing-cards .cards-container:has(div:nth-last-child(3):first-child){
+    grid-template-columns: repeat(3, 391px);
+  }
   .pricing-cards .cards-container:has(div:nth-last-child(2):first-child) {
     grid-template-columns: repeat(2, 391px);
   }
   .pricing-cards .cards-container:has(div:only-child) {
     grid-template-columns: repeat(1, 391px);
   }
+
+
   .pricing-cards .card {
     grid-template-rows:  50px .2fr 40px 1fr 3fr 70px; 
   }
 }
 
 @media screen and (min-width: 1200px) {
-  .pricing-cards .cards-container:has(div:nth-last-child(3):first-child ~ .card:nth-last-child(2)){
+     
+  .pricing-cards .cards-container:has(div:nth-last-child(3):first-child){
     grid-template-columns: repeat(3, 391px);
-  }
+  } 
 
 }
