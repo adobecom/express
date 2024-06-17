@@ -1579,7 +1579,7 @@ export function loadIms() {
   return imsLoaded;
 }
 
-export async function loadMiloMartech({
+export async function loadMartech({
   persEnabled = false,
   persManifests = [],
   postLCP = false,
@@ -1603,7 +1603,7 @@ export async function loadMiloMartech({
   return true;
 }
 
-async function loadMartech() {
+async function loadLegacyMartech() {
   const usp = new URLSearchParams(window.location.search);
   const martech = usp.get('martech');
 
@@ -1864,7 +1864,7 @@ async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
     loadIms();
     // rush instrument-martech-launch-alloy
-    promises.push(loadMartech());
+    promises.push(loadLegacyMartech());
     window.delay_preload_product = true;
   }
   const [{ runExps }] = await Promise.all(promises);
@@ -2524,14 +2524,14 @@ async function checkForPageMods() {
 
   const persManifests = await combineMepSources(persEnabled, promoEnabled, mepParam);
   if (targetEnabled === true) {
-    await loadMiloMartech({ persEnabled: true, persManifests, targetEnabled });
+    await loadMartech({ persEnabled: true, persManifests, targetEnabled });
     return;
   }
   if (!persManifests.length) return;
 
   loadIms()
     .then(() => {
-      if (window.adobeIMS.isSignedInUser() || getMetadata('xlg-entitlements')) loadMiloMartech();
+      if (window.adobeIMS.isSignedInUser() || getMetadata('xlg-entitlements')) loadMartech();
     })
     // eslint-disable-next-line no-console
     .catch((e) => { console.log('Unable to load IMS:', e); });
@@ -2546,10 +2546,18 @@ async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   window.dispatchEvent(new Event('milo:LCP:loaded'));
-  if (window.hlx.martech) window.hlx.martechLoaded = loadMiloMartech();
+  if (config.mep?.targetEnabled === 'gnav') {
+    await loadMartech({ persEnabled: true, postLCP: true });
+  } else {
+    loadMartech();
+  }
   loadGnav();
   const { default: loadFonts } = await import('./fonts.js');
   loadFonts(config.locale, loadStyle);
+  if (config.mep?.preview) {
+    import('../features/personalization/preview.js')
+      .then(({ default: decoratePreviewMode }) => decoratePreviewMode());
+  }
 }
 
 function initSidekick() {
