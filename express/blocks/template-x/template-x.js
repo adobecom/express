@@ -1290,12 +1290,19 @@ function importSearchBar(block, blockMediator) {
         });
 
 
-        searchBar.addEventListener('touchstart', (event) => {
-          console.log('touch start')
-          console.log(event)
-          window.scrollBy(0, -100);
-       //   event.preventDefault()
-        })
+        searchBar.addEventListener('touchstart',  (event) => {
+          const { target } = event;
+          if (target !== searchWrapper && !searchWrapper.contains(target)) {
+            searchWrapper.classList.add('collapsed');
+            searchDropdown.classList.add('hidden');
+            searchBar.value = '';
+            suggestionsList.innerHTML = '';
+            trendsContainer.classList.remove('hidden');
+            suggestionsContainer.classList.add('hidden');
+            clearBtn.style.display = 'none';
+           
+          }
+        }, { passive: true });
 
         document.addEventListener('click', (event) => {
           const { target } = event;
