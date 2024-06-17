@@ -104,18 +104,18 @@ function initGNavObserver(block) {
     const config = { attributes: true, childList: false, subtree: false };
 
     const callback = (mutationList) => {
-      for (const mutation of mutationList) {
-        if (mutation.type === 'attributes') {
-          if (gNav.classList.contains('feds-header-wrapper--scrolled')
-            && !gNav.classList.contains('feds-header-wrapper--retracted')
-            && block.classList.contains('sticking')
-            && !block.classList.contains('hidden')) {
-            block.classList.add('bumped-by-gnav');
-          } else {
-            block.classList.remove('bumped-by-gnav');
-          }
-        }
-      }
+      // for (const mutation of mutationList) {
+      //   if (mutation.type === 'attributes') {
+      //     if (gNav.classList.contains('feds-header-wrapper--scrolled')
+      //       && !gNav.classList.contains('feds-header-wrapper--retracted')
+      //       && block.classList.contains('sticking')
+      //       && !block.classList.contains('hidden')) {
+      //       block.classList.add('bumped-by-gnav');
+      //     } else {
+      //       block.classList.remove('bumped-by-gnav');
+      //     }
+      //   }
+      // }
     };
 
     const observer = new MutationObserver(callback);

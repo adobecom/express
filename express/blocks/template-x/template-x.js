@@ -1261,13 +1261,13 @@ function importSearchBar(block, blockMediator) {
         const suggestionsList = searchWrapper.querySelector('.suggestions-list');
 
 
-        window.addEventListener('scroll', preventDefault, {passive : false})
+       // window.addEventListener('scroll', preventDefault, {passive : false})
         searchBar.addEventListener('click', (event) => {
          
           // event.stopPropagation();
           // event.preventDefault()
-          // console.log('click')
-          // console.log(event)
+          console.log('click')
+          console.log(event)
           
           searchWrapper.classList.remove('collapsed');
           
