@@ -1297,6 +1297,7 @@ function importSearchBar(block, blockMediator) {
             trendsContainer.classList.remove('hidden');
             suggestionsContainer.classList.add('hidden');
             clearBtn.style.display = 'none';
+            window.scrollBy(0, -100);
           }
         }, { passive: true });
 
