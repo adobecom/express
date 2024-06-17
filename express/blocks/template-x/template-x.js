@@ -1260,6 +1260,8 @@ function importSearchBar(block, blockMediator) {
         const suggestionsContainer = searchWrapper.querySelector('.suggestions-container');
         const suggestionsList = searchWrapper.querySelector('.suggestions-list');
 
+
+        window.addEventListener('scroll', preventDefault, {passive : false})
         searchBar.addEventListener('click', (event) => {
           event.stopPropagation();
           event.preventDefault()
