@@ -1287,6 +1287,11 @@ function importSearchBar(block, blockMediator) {
           }
         });
 
+
+        searchBar.addEventListener('touchstart', (event) => {
+          event.preventDefault()
+        })
+
         document.addEventListener('click', (event) => {
           const { target } = event;
           if (target !== searchWrapper && !searchWrapper.contains(target)) {
