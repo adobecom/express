@@ -1293,7 +1293,7 @@ function importSearchBar(block, blockMediator) {
         searchBar.addEventListener('touchstart', (event) => {
           console.log('touch start')
           console.log(event)
-          event.preventDefault()
+       //   event.preventDefault()
         })
 
         document.addEventListener('click', (event) => {
