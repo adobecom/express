@@ -1432,15 +1432,20 @@ function importSearchBar(block, blockMediator) {
           const { inputHandler } = useInputAutocomplete(
             suggestionsListUIUpdateCB, { throttleDelay: 300, debounceDelay: 500, limit: 7 },
           );
+          console.log('input')
           searchBar.addEventListener('input', inputHandler);
         });
       }
 
       if (e.newValue.loadSearchBar && existingStickySearchBar) {
+        console.log('show')
+        console.log(existingStickySearchBar)
         existingStickySearchBar.classList.add('show');
       }
 
       if (!e.newValue.loadSearchBar && existingStickySearchBar) {
+        console.log('[hide')
+        console.log(existingStickySearchBar)
         existingStickySearchBar.classList.remove('show');
       }
     }
