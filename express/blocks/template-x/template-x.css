@@ -2182,6 +2182,9 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
 }
 
 @media (max-width: 600px) {
+    .template-x .toolbar-wrapper { 
+        z-index: 99; 
+    }
     .template-x-wrapper.horizontal {
         margin-left: 0;
         margin-right: 0;
