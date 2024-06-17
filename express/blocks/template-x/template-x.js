@@ -1264,10 +1264,10 @@ function importSearchBar(block, blockMediator) {
         window.addEventListener('scroll', preventDefault, {passive : false})
         searchBar.addEventListener('click', (event) => {
          
-          event.stopPropagation();
-          event.preventDefault()
-          console.log('click')
-          console.log(event)
+          // event.stopPropagation();
+          // event.preventDefault()
+          // console.log('click')
+          // console.log(event)
           
           searchWrapper.classList.remove('collapsed');
           
