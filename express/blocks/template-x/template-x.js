@@ -1265,7 +1265,7 @@ function importSearchBar(block, blockMediator) {
           event.preventDefault()
           console.log('click')
           console.log(event)
-          // searchWrapper.classList.remove('collapsed');
+          searchWrapper.classList.remove('collapsed');
           // setTimeout(() => {
           //   searchDropdown.classList.remove('hidden');
           // }, 500);
