@@ -1261,9 +1261,9 @@ function importSearchBar(block, blockMediator) {
         const suggestionsList = searchWrapper.querySelector('.suggestions-list');
 
 
-        
+        window.addEventListener('scroll', preventDefault, {passive : false})
         searchBar.addEventListener('click', (event) => {
-          window.addEventListener('scroll', preventDefault, {passive : false})
+         
           event.stopPropagation();
           event.preventDefault()
           console.log('click')
@@ -1273,7 +1273,7 @@ function importSearchBar(block, blockMediator) {
           
           setTimeout(() => {
             searchDropdown.classList.remove('hidden');
-            window.removeEventListener('scroll', preventDefault, {passive : false})
+           
           }, 500);
         } );
 
