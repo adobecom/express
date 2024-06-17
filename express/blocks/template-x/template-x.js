@@ -1267,12 +1267,9 @@ function importSearchBar(block, blockMediator) {
           event.preventDefault()
           console.log('click')
           console.log(event)
-          searchWrapper.blur()
-          window.scrollBy(0, -150);
           searchWrapper.classList.remove('collapsed');
           setTimeout(() => {
             searchDropdown.classList.remove('hidden');
-            window.scrollBy(0, -150);
           }, 500);
         } );
 
