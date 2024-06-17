@@ -1262,6 +1262,8 @@ function importSearchBar(block, blockMediator) {
 
         searchBar.addEventListener('click', (event) => {
           event.stopPropagation();
+          console.log('click')
+          console.log(event)
           searchWrapper.classList.remove('collapsed');
           setTimeout(() => {
             searchDropdown.classList.remove('hidden');
@@ -1289,6 +1291,8 @@ function importSearchBar(block, blockMediator) {
 
 
         searchBar.addEventListener('touchstart', (event) => {
+          console.log('touch start')
+          console.log(event)
           event.preventDefault()
         })
 
