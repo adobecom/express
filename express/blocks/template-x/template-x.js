@@ -1293,6 +1293,7 @@ function importSearchBar(block, blockMediator) {
         searchBar.addEventListener('touchstart', (event) => {
           console.log('touch start')
           console.log(event)
+          window.scrollBy(0, -100);
        //   event.preventDefault()
         })
 
@@ -1306,7 +1307,7 @@ function importSearchBar(block, blockMediator) {
             trendsContainer.classList.remove('hidden');
             suggestionsContainer.classList.add('hidden');
             clearBtn.style.display = 'none';
-            window.scrollBy(0, -100);
+           
           }
         }, { passive: true });
 
