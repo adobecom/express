@@ -347,13 +347,7 @@ async function decorateLoadMoreButton(block, props) {
 
   loadMoreButton.addEventListener('click', async () => {
     loadMoreButton.classList.add('disabled');
-    const scrollPosition = window.scrollY;
-    await decorateNewTemplates(block, props);
-    // window.scrollTo({
-    //   top: scrollPosition,
-    //   left: 0,
-    //   behavior: 'smooth',
-    // });
+    await decorateNewTemplates(block, props); 
     loadMoreButton.classList.remove('disabled');
   });
 
