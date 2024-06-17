@@ -300,3 +300,6 @@ if (!window.hlx || window.hlx.gnav) {
 /* Core Web Vitals RUM collection */
 
 sampleRUM('cwv');
+
+/* collect browser preferred language in RUM */
+sampleRUM('lang', { source: document.documentElement.lang, target: navigator.languages.join(',') });
