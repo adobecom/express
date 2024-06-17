@@ -347,7 +347,13 @@ async function decorateLoadMoreButton(block, props) {
 
   loadMoreButton.addEventListener('click', async () => {
     loadMoreButton.classList.add('disabled');
-    await decorateNewTemplates(block, props); 
+    const scrollPosition = window.scrollY;
+    await decorateNewTemplates(block, props);
+    window.scrollTo({
+      top: scrollPosition,
+      left: 0,
+      behavior: 'smooth',
+    });
     loadMoreButton.classList.remove('disabled');
   });
 
@@ -1249,33 +1255,19 @@ function importSearchBar(block, blockMediator) {
 
         const searchDropdown = searchWrapper.querySelector('.search-dropdown-container');
         const searchForm = searchWrapper.querySelector('.search-form');
-      
         const searchBar = searchWrapper.querySelector('input.search-bar');
-        searchBar.addEventListener("onfocus", (event) => {
-          event.stopPropagation()
-          return false
-        })
         const clearBtn = searchWrapper.querySelector('.icon-search-clear');
         const trendsContainer = searchWrapper.querySelector('.trends-container');
         const suggestionsContainer = searchWrapper.querySelector('.suggestions-container');
         const suggestionsList = searchWrapper.querySelector('.suggestions-list');
 
-
-       // window.addEventListener('scroll', preventDefault, {passive : false})
         searchBar.addEventListener('click', (event) => {
-         
-          // event.stopPropagation();
-          // event.preventDefault()
-          console.log('click')
-          console.log(event)
-          
+          event.stopPropagation();
           searchWrapper.classList.remove('collapsed');
-          
           setTimeout(() => {
             searchDropdown.classList.remove('hidden');
-           
           }, 500);
-        } );
+        }, { passive: true });
 
         searchBar.addEventListener('keyup', () => {
           if (searchBar.value !== '') {
@@ -1296,21 +1288,6 @@ function importSearchBar(block, blockMediator) {
           }
         });
 
-
-        searchBar.addEventListener('touchstart',  (event) => {
-          const { target } = event;
-          if (target !== searchWrapper && !searchWrapper.contains(target)) {
-            searchWrapper.classList.add('collapsed');
-            searchDropdown.classList.add('hidden');
-            searchBar.value = '';
-            suggestionsList.innerHTML = '';
-            trendsContainer.classList.remove('hidden');
-            suggestionsContainer.classList.add('hidden');
-            clearBtn.style.display = 'none';
-           
-          }
-        }, { passive: true });
-
         document.addEventListener('click', (event) => {
           const { target } = event;
           if (target !== searchWrapper && !searchWrapper.contains(target)) {
@@ -1321,7 +1298,6 @@ function importSearchBar(block, blockMediator) {
             trendsContainer.classList.remove('hidden');
             suggestionsContainer.classList.add('hidden');
             clearBtn.style.display = 'none';
-           
           }
         }, { passive: true });
 
@@ -1438,20 +1414,15 @@ function importSearchBar(block, blockMediator) {
           const { inputHandler } = useInputAutocomplete(
             suggestionsListUIUpdateCB, { throttleDelay: 300, debounceDelay: 500, limit: 7 },
           );
-          console.log('input')
           searchBar.addEventListener('input', inputHandler);
         });
       }
 
       if (e.newValue.loadSearchBar && existingStickySearchBar) {
-        console.log('show')
-        console.log(existingStickySearchBar)
         existingStickySearchBar.classList.add('show');
       }
 
       if (!e.newValue.loadSearchBar && existingStickySearchBar) {
-        console.log('[hide')
-        console.log(existingStickySearchBar)
         existingStickySearchBar.classList.remove('show');
       }
     }
