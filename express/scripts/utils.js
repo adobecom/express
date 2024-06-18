@@ -2547,6 +2547,7 @@ async function loadPostLCP(config) {
     loadMartech();
   }
   loadGnav();
+  await setTemplateTheme();
   const { default: loadFonts } = await import('./fonts.js');
   loadFonts(config.locale, loadStyle);
   if (config.mep?.preview) {
@@ -2702,7 +2703,6 @@ export async function loadArea(area = document) {
     });
     window.hlx.experimentParams = experimentParams;
     window.hlx.init = true;
-    await setTemplateTheme();
     if (window.hlx.testing) await decorateTesting();
   }
   const config = getConfig();
