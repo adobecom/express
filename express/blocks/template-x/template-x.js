@@ -1102,9 +1102,14 @@ function initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev) {
       e.stopPropagation();
     });
   });
+
   toggleChev.addEventListener('click', onToggle);
   toggle.addEventListener('click', () => onToggle());
   document.addEventListener('click', (e) => {
+
+    if (e.target.closest('.carousel-fader-right') || e.target.closest('.carousel-fader-left')) {
+      return
+    }
     if (e.target.closest('.template-x.holiday') || (
       block.classList.contains('expanded')
     )) {
