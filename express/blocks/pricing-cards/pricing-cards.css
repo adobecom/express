@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --card-width: 353px;
   --card-padding: 12px;
 }
@@ -6,10 +6,6 @@
 .pricing-cards.no-visible {
   visibility: hidden;
 }
-
-/*
-Legacy CSS for cards and special promo
-*/
 
 .pricing-cards .card.special-promo {
   border: 1px solid #FFE600;
@@ -40,10 +36,7 @@ Legacy CSS for cards and special promo
   align-items: center;
   gap: 8px;
 }
-
-/*
-End legacy CSS
-*/
+ 
 .pricing-cards-container>div.pricing-cards-wrapper {
   max-width: none;
 }
@@ -51,24 +44,6 @@ End legacy CSS
 .pricing-cards.block {
   padding: 12px 15px 40px 15px;
 } 
-
-/* .pricing-cards .cards-container {
-  display: grid; 
-  gap: 10px;
-  width: fit-content;
-  margin-left: auto;
-
-  margin-right: auto; 
-  grid-template-columns: repeat(3, 391px);
-}
-
-.pricing-cards .cards-container:has(div:only-child) {
-  grid-template-columns: repeat(1, 391px);
-}
-.pricing-cards .cards-container:has(div:nth-last-child(2)) {
-  grid-template-columns: repeat(2, 391px);
-} */
- 
 
 .pricing-cards .card {
   background-color: var(--color-white);
@@ -89,10 +64,6 @@ End legacy CSS
 .pricing-cards .card > div {
   height: 100%;
 }
-
-/*
-Border style variants
-*/
 
 .pricing-cards .gradient-promo>div:first-of-type {
   margin-left: 4px;
@@ -171,10 +142,6 @@ Border style variants
   position: relative;
   top: -20px;
 }
-
-/*
-End border style variants
-*/
 
 .pricing-cards .tooltip-icon {
   position: relative;
@@ -301,8 +268,7 @@ End border style variants
 .pricing-cards .card-offer a {
   text-decoration: underline;
 }
-
-/** pricing styles start **/
+ 
 .pricing-cards .pricing-row {
   max-width: 330px;
 }
@@ -384,8 +350,6 @@ End border style variants
   font-size: var(--body-font-size-m);
 }
 
-
-/** pricing styles end **/
 
 .pricing-cards .billing-toggle.suppressed-billing-toggle {
   visibility: hidden;
@@ -550,6 +514,11 @@ End border style variants
   .pricing-cards .card {
     grid-template-rows:  50px .2fr 40px 1fr 3fr 70px; 
   }
+
+  .pricing-cards .card .pricing-section {
+  
+    grid-template-columns: 1fr 100px;
+  }
 }
 
 @media screen and (min-width: 1200px) {
@@ -558,4 +527,110 @@ End border style variants
     grid-template-columns: repeat(3, 391px);
   } 
 
+} */
+
+/* 
+.pricing-cards .cards-container {
+  display: grid; 
+  gap: 10px;
+  width: fit-content;
+  margin-left: auto;
+
+  padding: 10px;
+  margin-right: auto; 
+  grid-template-columns: repeat(3, 391px);
+} */
+
+
+.pricing-cards {
+
+  padding: 10px;
 }
+
+.pricing-cards > div:first-of-type > div {
+  border-radius: 16px; 
+  border-top:  40px solid #C6C6C6;
+  
+}
+
+.pricing-cards > div:last-of-type > div {
+  border-radius: 8px; 
+  border-bottom:  1px solid #C6C6C6;
+
+}
+
+.pricing-cards > div {
+  display: flex;
+  padding-left: 10px;
+  padding-right: 10px;
+
+}
+
+
+
+.pricing-cards > div > div {
+  width: 440px;
+
+  position: relative;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  
+  z-index: 1;
+  border-right: 4px solid #C6C6C6;
+  border-left:  4px solid  #C6C6C6;
+  background-color: white;
+/*   
+  border-image: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) 1;
+    */
+}
+ 
+.pricing-cards > div > div::before {
+  position: absolute;
+  z-index: -2;
+  content: '';
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
+}
+
+.pricing-cards > div:first-of-type > div::before {
+  position: absolute;
+  z-index: -2;
+  border-radius: 16px;
+  content: '';
+  top: -40px;
+  left: 0;
+  pointer-events: none;
+  width: 100%;
+  height: calc(100% + 80px);
+  background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
+}
+
+
+.pricing-cards > div > div::after {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  top: 0px;
+  left: 10px;
+  pointer-events: none;
+  width: calc(100% - 20px);
+  height: 100%;
+  background: white;
+}
+  
+ 
+/* 
+
+ linear-gradient(90deg,red, red, white), 
+.pricing-cards .cards-container:has(div:only-child) {
+  grid-template-columns: repeat(1, 391px);
+}
+.pricing-cards .cards-container:has(div:nth-last-child(2)) {
+  grid-template-columns: repeat(2, 391px);
+}  */

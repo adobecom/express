@@ -355,37 +355,60 @@ async function handlePhoneNumber(cardsContainer) {
 
 }
 
+
+function calculateBoundingBox(block) { 
+  const elem1 = block.querySelector(".pricing-cards > div:first-of-type").getBoundingClientRect();
+  const elem2 =block.querySelector(".pricing-cards > div:last-of-type").getBoundingClientRect();
+
+  const top = Math.min(elem1.top, elem2.top);
+  const left = Math.min(elem1.left, elem2.left);
+  const bottom = Math.max(elem1.bottom, elem2.bottom);
+  const right = Math.max(elem1.right, elem2.right);
+
+  const width = right - left;
+  const height = bottom - top;
+  console.log(elem1, elem2)
+  const boundingBox = createTag('div', {id : 'boundingBox'})
+  boundingBox.style.top = `${top}px`;
+  boundingBox.style.left = `${left}px`;
+  boundingBox.style.width = `${width}px`;
+  boundingBox.style.height = `${height}px`;
+  boundingBox.classList.add('combined-bounding-box');
+
+  block.append(boundingBox)
+}
+
+
 export default async function init(el) {
-  addTempWrapper(el, 'pricing-cards');
+  addTempWrapper(el, 'pricing-cards'); 
+  // const divs = blockKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
+  // const cards = Array.from(divs[0]).map((_, index) => blockKeys.reduce((obj, key, keyIndex) => {
+  //   obj[key] = divs[keyIndex][index];
+  //   return obj;
+  // }, {}));
+  // el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
 
-  const divs = blockKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
-  const cards = Array.from(divs[0]).map((_, index) => blockKeys.reduce((obj, key, keyIndex) => {
-    obj[key] = divs[keyIndex][index];
-    return obj;
-  }, {}));
-  el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
+  // const cardsContainer = createTag('div', { class: 'cards-container' });
+  // const placeholders = await fetchPlaceholders();
+  // const decoratedCards = await Promise.all(
+  //   cards.map((card) => decorateCard(card, el, placeholders)),
+  // );
+  // decoratedCards.forEach((card) => cardsContainer.append(card));
 
-  const cardsContainer = createTag('div', { class: 'cards-container' });
-  const placeholders = await fetchPlaceholders();
-  const decoratedCards = await Promise.all(
-    cards.map((card) => decorateCard(card, el, placeholders)),
-  );
-  decoratedCards.forEach((card) => cardsContainer.append(card));
+  // await handlePhoneNumber(cardsContainer)
 
-  await handlePhoneNumber(cardsContainer)
+  // el.classList.add('no-visible');
+  // el.prepend(cardsContainer);
 
-  el.classList.add('no-visible');
-  el.prepend(cardsContainer);
+  // const observer = new IntersectionObserver((entries) => {
+  //   entries.forEach((entry) => {
+  //     if (entry.isIntersecting) {
+  //       el.classList.remove('no-visible');
+  //     }
+  //   });
+  // });
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        el.classList.remove('no-visible');
-      }
-    });
-  });
+  // observer.observe(el);
 
-  observer.observe(el);
-
-  tagFreePlan(cardsContainer);
+  // tagFreePlan(cardsContainer);
 }
