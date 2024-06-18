@@ -1737,11 +1737,6 @@ export function toCamelCase(name) {
  */
 export function getExperiment() {
   let experiment = toClassName(getMetadata('experiment'));
-  const { hostname } = window.location;
-  if (!(/adobe\.com/.test(hostname) || /\.hlx\.live/.test(hostname) || hostname.includes('localhost'))) {
-    experiment = '';
-    // reason = 'not prod host and not local';
-  }
   if (window.location.hash) {
     experiment = '';
     // reason = 'suppressed by #';
