@@ -21,7 +21,6 @@ const authParams = {
   response_type: 'code', // FIXME: to be finalized
   client_id,
   scope: 'AdobeID,openid',
-  // state: '?source=atc&role=teacher',
 };
 const onRedirect = (e) => {
   // eslint-disable-next-line no-console
@@ -92,7 +91,7 @@ export default async function init(el) {
     window.lana?.log(`invalid redirect uri authored for susi-light: ${input}`);
     destURL = new URL('https://express.adobe.com');
   }
-  if (isStage && destURL.hostname === 'express.adobe.com') {
+  if (isStage && ['new.express.adobe.com', 'express.adobe.com'].includes(destURL.hostname)) {
     destURL.hostname = 'stage.projectx.corp.adobe.com';
   }
   el.innerHTML = '';
