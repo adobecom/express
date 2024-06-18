@@ -5,6 +5,7 @@ import {
   fetchPlaceholders,
   getLottie,
 } from '../../scripts/utils.js';
+import { trackButtonClick } from '../../scripts/instrument.js';
 
 function getWidth() {
   return Math.max(
@@ -168,6 +169,10 @@ export default function decorate($block) {
     }
 
     $slides.push($slide);
+    // for tracking the choose your path links
+    $slide.addEventListener('click', () => {
+      trackButtonClick($slide);
+    });
   });
 
   Array.from($rows[1].children).forEach(($backgroundContainer, index) => {

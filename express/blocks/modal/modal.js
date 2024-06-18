@@ -72,7 +72,13 @@ export async function getModal(details, custom) {
   if (custom) getCustomModal(custom, dialog);
   if (details) await getPathModal(details.path, dialog);
 
-  const close = createTag('button', { class: 'dialog-close', 'aria-label': 'Close' });
+  const localeModal = id?.includes('locale-modal') ? 'localeModal' : 'milo';
+  const analyticsEventName = window.location.hash ? window.location.hash.replace('#', '') : localeModal;
+  const close = createTag('button', {
+    class: 'dialog-close',
+    'aria-label': 'Close',
+    'daa-ll': `${analyticsEventName}:modalClose:buttonClose`,
+  });
   close.append(getIconElement('close-button-x'));
 
   const focusVisible = { focusVisible: true };
