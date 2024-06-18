@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-// WIP
 import {
   createTag,
   loadScript,
@@ -7,18 +6,18 @@ import {
 } from '../../scripts/utils.js';
 
 const config = {
-  consentProfile: 'free', // FIXME: to be finalized
+  consentProfile: 'free',
 };
 const variant = 'edu-express';
 const usp = new URLSearchParams(window.location.search);
 const isStage = usp.get('env') !== 'prod' || getConfig().env.name !== 'prod';
 const CDN_URL = `https://auth-light.identity${isStage ? '-stage' : ''}.adobe.com/sentry/wrapper.js`;
 // eslint-disable-next-line camelcase
-const client_id = usp.get('test_id') === 'on' ? 'sentry-test-edu' : 'AdobeExpressWeb';
+const client_id = 'AdobeExpressWeb';
 const authParams = {
   dt: false,
   locale: getConfig().locale.ietf.toLowerCase(),
-  response_type: 'code', // FIXME: to be finalized
+  response_type: 'code',
   client_id,
   scope: 'AdobeID,openid',
 };
@@ -27,26 +26,12 @@ const onRedirect = (e) => {
   console.log('redirecting to:', e.detail);
   window.location.assign(e.detail);
 };
-const onToken = (e) => {
-  // eslint-disable-next-line no-console
-  console.log('susi on token', e); // FIXME: to be removed
-};
 const onError = (e) => {
   window.lana?.log('on error:', e);
 };
 
-function safelyFireAnalyticsEvent(event) {
-  if (window._satellite?.track) {
-    event();
-  } else {
-    window.addEventListener('alloy_sendEvent', () => {
-      event();
-    }, { once: true });
-  }
-}
-
 function sendEventToAnalytics(type, eventName) {
-  const fireEvent = () => {
+  const sendEvent = () => {
     window._satellite.track('event', {
       xdm: {},
       data: {
@@ -73,10 +58,16 @@ function sendEventToAnalytics(type, eventName) {
       },
     });
   };
-  safelyFireAnalyticsEvent(fireEvent);
+  if (window._satellite?.track) {
+    sendEvent();
+  } else {
+    window.addEventListener('alloy_sendEvent', () => {
+      sendEvent();
+    }, { once: true });
+  }
 }
 
-// TODO: add UT for analytcis
+// TODO: analytcis requirements
 const onAnalytics = (e) => {
   const { type, event } = e.detail;
   sendEventToAnalytics(type, event);
@@ -88,8 +79,8 @@ export default async function init(el) {
   try {
     destURL = new URL(input);
   } catch (err) {
-    window.lana?.log(`invalid redirect uri authored for susi-light: ${input}`);
-    destURL = new URL('https://express.adobe.com');
+    window.lana?.log(`invalid redirect uri for susi-light: ${input}`);
+    destURL = new URL('https://new.express.adobe.com');
   }
   if (isStage && ['new.express.adobe.com', 'express.adobe.com'].includes(destURL.hostname)) {
     destURL.hostname = 'stage.projectx.corp.adobe.com';
@@ -103,7 +94,6 @@ export default async function init(el) {
   if (isStage) susi.stage = 'true';
   susi.variant = variant;
   susi.addEventListener('redirect', onRedirect);
-  susi.addEventListener('on-token', onToken);
   susi.addEventListener('on-error', onError);
   susi.addEventListener('on-analytics', onAnalytics);
   el.append(susi);
