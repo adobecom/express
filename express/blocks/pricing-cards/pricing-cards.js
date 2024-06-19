@@ -246,44 +246,49 @@ function decorateHeader(header) {
   }); 
 }
 
-function decorateSpecialPromo(cardIndex,card, rows) {
+function decorateSpecialPromo(card,source) {
   const pattern = /\{\{(.*?)\}\}/g;
-  const matches = Array.from(card.textContent.matchAll(pattern));
+  const matches = Array.from(source.textContent.matchAll(pattern));
   if (matches.length > 0) {
     const [token, promoType] = matches[matches.length - 1];
-    for (let row of rows) {
-      row.children[cardIndex]?.classList.add(promoType.replaceAll(' ', ''));
-    }
+    card.classList.add(promoType.replaceAll(' ', ''));
   }
-
 } 
 
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
   const placeholders = await fetchPlaceholders();
   const rows = Array.from(el.querySelectorAll(":scope > div"))
-  console.log(rows)
   const cardCount = rows[0].children.length
+  const cards = []
   for (let i = 0; i < cardCount; i += 1) {
-    decorateSpecialPromo(i,rows[0].children[i], rows)
-    decorateHeader( rows[1].children[i])
+    const card = createTag('div', {class : 'card'})
+    decorateSpecialPromo(card,rows[0].children[0])
+    decorateHeader( rows[1].children[0])
 
     const [[m1, m2],[a1, a2]] = await Promise.all([
-      createPricingSection(placeholders, rows[3].children[i], rows[4].children[i], null, true),
-      createPricingSection(placeholders, rows[5].children[i], rows[6].children[i], null),
+      createPricingSection(placeholders, rows[3].children[0], rows[4].children[0], null, true),
+      createPricingSection(placeholders, rows[5].children[0], rows[6].children[0], null),
     ]);
-    
-    rows[3].children[i].innerHTML = ''
-    rows[3].children[i].appendChild(m1) 
-    rows[3].children[i].appendChild(a1)
-    rows[4].children[i].innerHTML = ''
-    rows[4].children[i].appendChild(m2)
-    rows[4].children[i].appendChild(a2)
-    console.log(rows[4].children[i].getBoundingClientRect())
+    rows[3].children[0].innerHTML = ''
+    rows[3].children[0].appendChild(m1) 
+    rows[3].children[0].appendChild(a1)
+    rows[4].children[0].innerHTML = ''
+    rows[4].children[0].appendChild(m2)
+    rows[4].children[0].appendChild(a2)
     const groupID = `${Date.now()}`; 
     const toggle = createToggle(placeholders, [m1, m2,a1,a2], groupID)
-    rows[2].children[i].appendChild(toggle)
-    rows[7].children[i].classList.add('card-feature-list')
+
+    rows[2].children[0].appendChild(toggle)
+    rows[7].children[0].classList.add('card-feature-list')
+    for (let j = 0; j < rows.length - 1;j += 1) {
+      card.appendChild(rows[j].children[0])
+    }
+    cards.push(card)
+  }
+  el.innerHTML = ''
+  for (let card of cards){
+    el.appendChild(card)
   }
 
   const observer = new IntersectionObserver((entries) => {
