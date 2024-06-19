@@ -2171,14 +2171,6 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
   return picture;
 }
 
-function decoratePictures(main) {
-  main.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
-    const newPicture = createOptimizedPicture(img.src, img.alt, !i);
-    const picture = img.closest('picture');
-    if (picture) picture.parentElement.replaceChild(newPicture, picture);
-  });
-}
-
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -2191,7 +2183,6 @@ export async function decorateMain(main, isDoc) {
   const sections = decorateSections(main, isDoc);
   decorateButtons(main);
   await fixIcons(main);
-  decoratePictures(main);
   decorateLinkedPictures(main);
   decorateSocialIcons(main);
 

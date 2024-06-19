@@ -45,7 +45,7 @@ export default async function decorate($block) {
     const heroPicture = div.querySelector('picture');
     if (heroPicture) {
       const img = heroPicture.querySelector('img');
-      const newPicture = createOptimizedPicture(img.src, img.alt, false);
+      const newPicture = createOptimizedPicture(img.src, img.alt, false, [{ width: '1200' }]);
       const p = heroPicture.parentNode;
       p.replaceChild(newPicture, heroPicture);
 
