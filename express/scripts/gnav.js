@@ -293,4 +293,5 @@ if (!window.hlx || window.hlx.gnav) {
 sampleRUM('cwv');
 
 /* collect browser preferred language in RUM */
-sampleRUM('lang', { source: document.documentElement.lang, target: navigator.languages.join(',') });
+sampleRUM('audiences', { source: 'page-language', target: document.documentElement.lang });
+sampleRUM('audiences', { source: 'preferred-languages', target: navigator.languages.join(',') });
