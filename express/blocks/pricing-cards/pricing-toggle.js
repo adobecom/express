@@ -14,7 +14,7 @@ function toggleOther(pricingSections, buttons, planIndex) {
   const plan = button.getAttribute('plan');
   button.classList.add('checked');
   button.setAttribute('aria-checked', 'true');
-  pricingSections.forEach((section) => {
+  pricingSections.forEach((section) => { 
     if (section.classList.contains(plan)) {
       section.classList.remove('hide');
     } else {
@@ -113,8 +113,7 @@ export default function createToggle(
     button.append(createTag('div', { id: `${buttonID}:radio` }, label));
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
-      toggleOther(pricingSections, buttons, i);
-      adjElemPos();
+      toggleOther(pricingSections, buttons, i); 
     });
     return button;
   });

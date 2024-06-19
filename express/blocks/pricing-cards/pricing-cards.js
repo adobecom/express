@@ -1,8 +1,8 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
-  fetchPlaceholders, 
-} from '../../scripts/utils.js'; 
+  fetchPlaceholders,
+} from '../../scripts/utils.js';
 
 import {
   formatDynamicCartLink,
@@ -14,17 +14,6 @@ import {
 import createToggle, { tagFreePlan } from './pricing-toggle.js';
 import { handleTooltip } from './pricing-tooltip.js';
 
-const blockKeys = [
-  'header',
-  'borderParams',
-  'explain',
-  'mPricingRow',
-  'mCtaGroup',
-  'yPricingRow',
-  'yCtaGroup',
-  'featureList',
-  'compare',
-];
 
 const SAVE_PERCENTAGE = '{{savePercentage}}';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
@@ -152,37 +141,36 @@ function handleRawPrice(price, basePrice, response) {
     : price.classList.remove('price-active');
 }
 
-
 async function createPricingSection(
   placeholders,
-  pricingArea,
+  pricingSection,
   ctaGroup,
   specialPromo,
   isMonthly = false
-) {
-  pricingArea.classList.add('pricing-area');
+) { 
+  const pricingArea = createTag('div', {class: 'pricing-area'}) 
+  while (pricingSection?.firstChild) {
+      pricingArea.appendChild(pricingSection.firstChild);
+  }
 
-  const pricingSection = createTag('div', { class: 'pricing-section' });
-  pricingSection.append(pricingArea);
-  pricingSection.append(ctaGroup);
 
   const offer = pricingArea.querySelector(':scope > p > em');
   if (offer) {
     offer.classList.add('card-offer');
     offer.parentElement.outerHTML = offer.outerHTML;
   }
- 
+
   const priceEl = pricingArea.querySelector(`[title="${PRICE_TOKEN}"]`);
   const pricingBtnContainer = pricingArea.querySelector('.button-container');
 
-  if (pricingBtnContainer && priceEl){ 
+  if (pricingBtnContainer && priceEl) {
     const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
     const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
-    
+
     const priceRow = createTag('div', { class: 'pricing-row' });
     const price = createTag('span', { class: 'pricing-price' });
     const basePrice = createTag('span', { class: 'pricing-base-price' });
-    const priceSuffix = createTag('div', { class: 'pricing-row-suf' }); 
+    const priceSuffix = createTag('div', { class: 'pricing-row-suf' });
     const response = await fetchPlanOnePlans(priceEl?.href);
     const priceSuffixTextContent = getPriceElementSuffix(
       placeholders,
@@ -191,7 +179,7 @@ async function createPricingSection(
     );
     const isPremiumCard = response.ooAvailable || false;
     const savePercentElem = pricingArea.querySelector('.card-offer');
-    
+
     handleRawPrice(price, basePrice, response);
     handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent);
     handleTooltip(pricingArea);
@@ -205,11 +193,7 @@ async function createPricingSection(
     pricingSuffixTextElem?.remove();
     pricingBtnContainer?.remove();
   }
-  
-
-
-
-  ctaGroup.classList.add('card-cta-group');
+  const ctaArea = createTag('div', {class : 'card-cta-group'}) 
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
     if (i === 1) a.classList.add('secondary');
@@ -221,74 +205,17 @@ async function createPricingSection(
       a.parentNode.remove();
     }
     formatDynamicCartLink(a);
-    ctaGroup.append(a);
+    ctaArea.append(a);
   });
 
   if (isMonthly) {
-    pricingSection.classList.add('monthly');
+    pricingArea.classList.add('monthly');
+    ctaArea.classList.add('monthly')
   } else {
-    pricingSection.classList.add('annually', 'hide');
-  }
-  console.log(pricingArea) 
-
-  return pricingSection;
-}
-
-function decorateSpecialPromo(inputString, card) {
-  if (!inputString) {
-    return null;
-  }
-
-  // Pattern to find {{...}}
-  const pattern = /\{\{(.*?)\}\}/g;
-  const matches = Array.from(inputString.trim().matchAll(pattern));
-
-  if (matches.length > 0) {
-    const [token, promoType] = matches[matches.length - 1];
-    const specialPromo = createTag('div', { class: 'promo-tag' });
-    specialPromo.textContent = inputString.split(token)[0].trim();
-    card.classList.add(promoType.replaceAll(' ', ''));
-    card.append(specialPromo);
-
-    return specialPromo;
-  }
-  return null;
-}
-
-function decorateHeader(header, card) {
-  const h2 = header.querySelector('h2');
-  // The raw text extracted from the word doc
-  header.classList.add('card-header');
-  const premiumIcon = header.querySelector('img');
-  // Finds the headcount, removes it from the original string and creates an icon with the hc
-  const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
-  if (extractHeadCountExp.test(h2.innerText)) {
-    const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
-    const headCount = h2.innerText
-      .match(extractHeadCountExp)[0]
-      .replace(')', '')
-      .replace('(', '');
-    [h2.innerText] = h2.innerText.split(extractHeadCountExp);
-    headCntDiv.textContent = headCount;
-    headCntDiv.prepend(
-      createTag('img', {
-        src: '/express/icons/head-count.svg',
-        alt: 'icon-head-count',
-      }),
-    );
-    header.append(headCntDiv);
-  }
-  if (premiumIcon) h2.append(premiumIcon);
-  header.querySelectorAll('p').forEach((p) => {
-    if (p.innerHTML.trim() === '') p.remove();
-  });
-  card.append(header);
-}
-
-function decorateBasicTextSection(textElement, className, card) {
-  if (!textElement.innerHTML.trim()) return
-  textElement.classList.add(className);
-  card.append(textElement);
+    pricingArea.classList.add('annually', 'hide');
+    ctaArea.classList.add('annually', 'hide')
+  } 
+  return [pricingArea, ctaArea]
 }
 
 // Links user to page where plans can be compared
@@ -311,104 +238,84 @@ function decorateCompareSection(compare, el, card) {
   }
   card.append(compare);
 
+} 
+ 
+function decorateHeader(header) { 
+  const h2 = header.querySelector('h2')
+  header.classList.add('card-header');
+  const premiumIcon = header.querySelector('img');
+  // Finds the headcount, removes it from the original string and creates an icon with the hc
+  const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
+  if (extractHeadCountExp.test(h2?.innerText)) {
+    const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
+    const headCount = h2.innerText
+      .match(extractHeadCountExp)[0]
+      .replace(')', '')
+      .replace('(', '');
+    [h2.innerText] = h2.innerText.split(extractHeadCountExp);
+    headCntDiv.textContent = headCount;
+    headCntDiv.prepend(
+      createTag('img', {
+        src: '/express/icons/head-count.svg',
+        alt: 'icon-head-count',
+      }),
+    );
+    header.append(headCntDiv);
+  }
+  if (premiumIcon) h2.append(premiumIcon);
+  header.querySelectorAll('p').forEach((p) => {
+    if (p.innerHTML.trim() === '') p.remove();
+  }); 
 }
 
-async function decorateCard({
-  header,
-  borderParams,
-  explain,
-  mPricingRow,
-  mCtaGroup,
-  yPricingRow,
-  yCtaGroup,
-  featureList,
-  compare,
-}, el, placeholders) {
-  const card = createTag('div', { class: 'card' });
-  const cardBorder = createTag('div', { class: 'card-border' });
-  cardBorder.append(card)
-  console.log(borderParams)
-  decorateHeader(header, card);
-  decorateBasicTextSection(explain, 'card-explain', card);
-
-  const [mPricingSection, yPricingSection] = await Promise.all([
-    createPricingSection( placeholders, mPricingRow, mCtaGroup, null, true),
-    createPricingSection(  placeholders, yPricingRow, yCtaGroup, null),
-  ]);
-
-  const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
-  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID)
-  card.append(toggle, mPricingSection, yPricingSection);
-  decorateBasicTextSection(featureList, 'card-feature-list', card);
-  decorateCompareSection(compare, el, card);
-  return cardBorder
-}
-
-async function handlePhoneNumber(cardsContainer) {
-
-  const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter(
-    (a) => a.title.includes(SALES_NUMBERS),
-  );
-  if (phoneNumberTags.length > 0) {
-    await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
+function decorateSpecialPromo(cardIndex,card, rows) {
+  const pattern = /\{\{(.*?)\}\}/g;
+  const matches = Array.from(card.textContent.matchAll(pattern));
+  if (matches.length > 0) {
+    const [token, promoType] = matches[matches.length - 1];
+    for (let row of rows) {
+      row.children[cardIndex]?.classList.add(promoType.replaceAll(' ', ''));
+    }
   }
 
-}
-
-
-function calculateBoundingBox(block) { 
-  const elem1 = block.querySelector(".pricing-cards > div:first-of-type").getBoundingClientRect();
-  const elem2 =block.querySelector(".pricing-cards > div:last-of-type").getBoundingClientRect();
-
-  const top = Math.min(elem1.top, elem2.top);
-  const left = Math.min(elem1.left, elem2.left);
-  const bottom = Math.max(elem1.bottom, elem2.bottom);
-  const right = Math.max(elem1.right, elem2.right);
-
-  const width = right - left;
-  const height = bottom - top;
-  console.log(elem1, elem2)
-  const boundingBox = createTag('div', {id : 'boundingBox'})
-  boundingBox.style.top = `${top}px`;
-  boundingBox.style.left = `${left}px`;
-  boundingBox.style.width = `${width}px`;
-  boundingBox.style.height = `${height}px`;
-  boundingBox.classList.add('combined-bounding-box');
-
-  block.append(boundingBox)
-}
-
+} 
 
 export default async function init(el) {
-  addTempWrapper(el, 'pricing-cards'); 
-  // const divs = blockKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
-  // const cards = Array.from(divs[0]).map((_, index) => blockKeys.reduce((obj, key, keyIndex) => {
-  //   obj[key] = divs[keyIndex][index];
-  //   return obj;
-  // }, {}));
-  // el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
+  addTempWrapper(el, 'pricing-cards');
+  const placeholders = await fetchPlaceholders();
+  const rows = Array.from(el.querySelectorAll(":scope > div"))
+  console.log(rows)
+  const cardCount = rows[0].children.length
+  for (let i = 0; i < cardCount; i += 1) {
+    decorateSpecialPromo(i,rows[0].children[i], rows)
+    decorateHeader( rows[1].children[i])
 
-  // const cardsContainer = createTag('div', { class: 'cards-container' });
-  // const placeholders = await fetchPlaceholders();
-  // const decoratedCards = await Promise.all(
-  //   cards.map((card) => decorateCard(card, el, placeholders)),
-  // );
-  // decoratedCards.forEach((card) => cardsContainer.append(card));
+    const [[m1, m2],[a1, a2]] = await Promise.all([
+      createPricingSection(placeholders, rows[3].children[i], rows[4].children[i], null, true),
+      createPricingSection(placeholders, rows[5].children[i], rows[6].children[i], null),
+    ]);
+    
+    rows[3].children[i].innerHTML = ''
+    rows[3].children[i].appendChild(m1) 
+    rows[3].children[i].appendChild(a1)
+    rows[4].children[i].innerHTML = ''
+    rows[4].children[i].appendChild(m2)
+    rows[4].children[i].appendChild(a2)
+    const groupID = `${Date.now()}`; 
+    const toggle = createToggle(placeholders, [m1, m2,a1,a2], groupID)
+    rows[2].children[i].appendChild(toggle)
 
-  // await handlePhoneNumber(cardsContainer)
 
-  // el.classList.add('no-visible');
-  // el.prepend(cardsContainer);
+    rows[7].children[i].classList.add('card-feature-list')
+  }
 
-  // const observer = new IntersectionObserver((entries) => {
-  //   entries.forEach((entry) => {
-  //     if (entry.isIntersecting) {
-  //       el.classList.remove('no-visible');
-  //     }
-  //   });
-  // });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        el.classList.remove('no-visible');
+      }
+    });
+  });
 
-  // observer.observe(el);
-
-  // tagFreePlan(cardsContainer);
+  observer.observe(el);
 }
