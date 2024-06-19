@@ -21,6 +21,11 @@ if (productURL) {
 if (isHomepage && getConfig().env.ims === 'prod') {
   expressLoginURL = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
 }
+const gnavLoginUrl = getMetadata('gnav-login-url');
+if (gnavLoginUrl) {
+  expressLoginURL = gnavLoginUrl;
+}
+const gnavNoProfile = getMetadata('gnav-no-profile');
 let imsLibProm;
 
 async function checkRedirect(location, geoLookup) {
@@ -168,7 +173,7 @@ async function loadFEDS() {
       },
     },
     universalNav: true,
-    universalNavComponents: 'appswitcher, notifications, profile',
+    universalNavComponents: `appswitcher, notifications${gnavNoProfile ? '' : ', profile'}`,
     locale: (prefix === '' ? 'en' : prefix),
     content: {
       experience: getMetadata('gnav') || fedsExp,
