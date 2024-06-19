@@ -2085,8 +2085,9 @@ async function buildAutoBlocks(main) {
   }
 }
 
-function splitSections(main) {
-  main.querySelectorAll(':scope > div > div').forEach((block) => {
+function splitSections(area) {
+  const blocks = area.querySelectorAll(`:scope${area === document ? ' main' : ''} > div > div`);
+  blocks.forEach((block) => {
     const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion'];
     // work around for splitting columns and sixcols template list
     // add metadata condition to minimize impact on other use cases
@@ -2721,8 +2722,8 @@ export async function loadArea(area = document) {
       await redirect();
     }
     await buildAutoBlocks(main);
-    splitSections(main);
   }
+  splitSections(area);
   decorateButtons(area);
   await fixIcons(area);
   decoratePictures(area);
