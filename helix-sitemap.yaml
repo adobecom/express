@@ -202,7 +202,7 @@ sitemaps:
       unitedkingdom:
         source: /uk/express/templates/default/metadata.json?sheet=sitemap
         destination: /uk/express/templates/sitemap.xml
-        hreflang: en-UK
+        hreflang: en-GB
         alternate: /uk/{path}
   
   colors:
