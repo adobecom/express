@@ -218,28 +218,6 @@ async function createPricingSection(
   return [pricingArea, ctaArea]
 }
 
-// Links user to page where plans can be compared
-function decorateCompareSection(compare, el, card) {
-  if (!compare?.innerHTML.trim()) return
-  compare.classList.add('card-compare');
-  compare.querySelector('a')?.classList.remove('button', 'accent');
-  // in a tab, update url
-  const closestTab = el.closest('div.tabpanel');
-  if (closestTab) {
-    try {
-      const tabId = parseInt(closestTab.id.split('-').pop(), 10);
-      const compareLink = compare.querySelector('a');
-      const url = new URL(compareLink.href);
-      url.searchParams.set('tab', tabId);
-      compareLink.href = url.href;
-    } catch (e) {
-      lana.log(e)
-    }
-  }
-  card.append(compare);
-
-} 
- 
 function decorateHeader(header) { 
   const h2 = header.querySelector('h2')
   header.classList.add('card-header');
@@ -301,11 +279,10 @@ export default async function init(el) {
     rows[4].children[i].innerHTML = ''
     rows[4].children[i].appendChild(m2)
     rows[4].children[i].appendChild(a2)
+    console.log(rows[4].children[i].getBoundingClientRect())
     const groupID = `${Date.now()}`; 
     const toggle = createToggle(placeholders, [m1, m2,a1,a2], groupID)
     rows[2].children[i].appendChild(toggle)
-
-
     rows[7].children[i].classList.add('card-feature-list')
   }
 

@@ -244,22 +244,53 @@
 }
 
 .pricing-cards {
-
+  width: min-content;
+  margin: auto;
   padding: 10px;
 }
 
-.pricing-cards > div:first-of-type > div {
-  border-radius: 16px; 
-  border-bottom:  3px solid #C6C6C6;
-  
-}
+/* .
 
 .pricing-cards > div:first-of-type > div.gradient-promo { 
-  border-top:  40px solid #C6C6C6;
-  
+ 
 }
 
- 
+
+
+
+  */
+
+
+  /** Promo Eyebrow **/
+
+.pricing-cards > div:first-of-type > div {
+  
+    border-bottom:  2px solid #C6C6C6; 
+    border-left: 2px solid transparent;
+    border-right: 2px solid transparent;
+  }
+
+  .pricing-cards > div:first-of-type > div.gradient-promo {
+    border-top:  48px solid #C6C6C6;
+    border-left: 2px solid #C6C6C6; 
+    border-right: 2px solid #C6C6C6; 
+    -webkit-mask-image: radial-gradient(circle, white 100%, black 0); 
+    mask-image: radial-gradient(circle, white 100%, black 0);
+    border-radius: 20px 20px 0px 0px;
+    height: 36px;
+    top: 40px;
+  }
+.pricing-cards > div:first-of-type > div > p {
+  position: relative;
+  top: -70px;
+  color: white;
+}
+
+.pricing-cards > div:first-of-type > div {
+  position: relative; 
+   
+}
+
 
 .pricing-cards > div {
   display: flex;
@@ -272,7 +303,6 @@
 
 .pricing-cards > div > div {
   width: 440px;
-
   position: relative;
   margin-left: 10px;
   margin-right: 10px;
@@ -280,8 +310,8 @@
   padding-right: 10px;
   
   z-index: 1;
-  border-right: 3px solid  #C6C6C6;
-  border-left:  3px solid  #C6C6C6;
+  border-right: 2px solid  #C6C6C6;
+  border-left:  2px solid  #C6C6C6;
   background-color: white; 
 }
 
@@ -289,24 +319,8 @@
   border-image: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) 1;
 }
 
-.pricing-cards > div:first-of-type > div {
-  -webkit-mask-image: radial-gradient(circle, white 100%, black 0); 
-  mask-image: radial-gradient(circle, white 100%, black 0);
-  border-radius: 20px 20px 0px 0px;
-}
 
 
-/** Promo Eyebrow **/
-.pricing-cards > div:first-of-type > div > p {
-  position: relative;
-  top: -64px;
-  color: white;
-}
-
-.pricing-cards > div:first-of-type > div {
-  position: relative;
-  height: 0px;
-}
 
 /** Header **/
 .pricing-cards .card-header {
@@ -400,7 +414,7 @@
 
 
 .pricing-cards > div:nth-last-of-type(2) > div { 
-  border:3px solid  #C6C6C6;
+  border:2px solid  #C6C6C6;
   border-top: 0; 
   border-radius: 0px 0px 4px 4px;
 }
