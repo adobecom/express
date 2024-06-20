@@ -10,7 +10,7 @@ const config = {
 };
 const variant = 'edu-express';
 const usp = new URLSearchParams(window.location.search);
-const isStage = usp.get('env') !== 'prod' || getConfig().env.name !== 'prod';
+const isStage = (usp.get('env') && usp.get('env') !== 'prod') || getConfig().env.name !== 'prod';
 // eslint-disable-next-line camelcase
 const client_id = 'AdobeExpressWeb';
 const authParams = {
