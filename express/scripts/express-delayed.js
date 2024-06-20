@@ -144,10 +144,11 @@ async function preloadSUSILight() {
   const config = getConfig();
   if (!getMetadata('preload-susi-light')) return;
   const { loadWrapper } = await import('../blocks/susi-light/susi-light.js');
-  await loadWrapper();
+  // await loadWrapper();
   // preloading model as susi-light is generally used in modals
   import('../blocks/modal/modal.js');
   import('../blocks/modal/modal.css');
+  await Promise.all(import('../blocks/modal/modal.js'), import('../blocks/modal/modal.css'), loadWrapper());
   const preloadTag = createTag('meta', {
     name: 'susi-sentry-preload',
     content: 'edu-express',
