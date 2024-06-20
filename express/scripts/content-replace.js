@@ -199,11 +199,11 @@ function validatePage() {
   }
 
   if (title && title.innerText.match(/{{(.*?)}}/)) {
-    window.location.replace('/404');
+    window.location.replace('/express/404');
   }
 
   if (env && env.name !== 'stage' && window.location.pathname.endsWith('/express/templates/default')) {
-    window.location.replace('/404');
+    window.location.replace('/express/404');
   }
 }
 

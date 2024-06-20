@@ -127,7 +127,9 @@
 		const eduWithExpressPrefix = '/express/edu'
 		const adobeDomain = 'www.adobe.com';
 		const protocol = 'https://';
-	
+		const referrer = doc.referrer;
+
+		if (referrer.includes('templates/')) console.log(`referrer is from templates. Should attempt to redirect to US counterpart of ${referrer}`)
 		const { hostname, href, pathname, port, search } = win.location;
 		if (hostname === 'localhost')  return;
 
