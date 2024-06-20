@@ -3,7 +3,6 @@ import {
   createTag,
   getMetadata,
   getConfig,
-  loadStyle,
 } from './utils.js';
 import BlockMediator from './block-mediator.js';
 
@@ -146,9 +145,6 @@ async function preloadSUSILight() {
   if (!getMetadata('preload-susi-light')) return;
   const { loadWrapper } = await import('../blocks/susi-light/susi-light.js');
   await loadWrapper();
-  // preloading model as susi-light is generally used in modals
-  loadStyle('../blocks/modal/modal.css');
-  import('../blocks/modal/modal.js');
   const preloadTag = createTag('meta', {
     name: 'susi-sentry-preload',
     content: 'edu-express',
