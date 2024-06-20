@@ -169,7 +169,8 @@ async function loadFEDS() {
     },
     universalNav: true,
     universalNavComponents: 'appswitcher, notifications, profile',
-    locale: (prefix === '' ? 'en' : prefix),
+    // eslint-disable-next-line no-nested-ternary
+    locale: (prefix === '' ? 'en' : prefix === 'uk' ? 'gb' : prefix),
     content: {
       experience: getMetadata('gnav') || fedsExp,
     },

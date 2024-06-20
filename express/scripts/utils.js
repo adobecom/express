@@ -90,7 +90,7 @@ export function getLocale(locales, pathname = window.location.pathname) {
   }
   const isUS = locale.ietf === 'en-US';
   locale.prefix = isUS ? '' : `/${localeString}`;
-  locale.region = isUS ? 'us' : localeString.split('_')[0];
+  if (!locale.region) locale.region = isUS ? 'us' : localeString.split('_')[0];
   return locale;
 }
 
