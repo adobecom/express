@@ -65,7 +65,7 @@ function handleYear2PricingToken(pricingArea, y2p, priceSuffix) {
     );
     if (!year2PricingToken) return;
     if (y2p) {
-      year2PricingToken.textContent = year2PricingToken.textContent.replace(
+      year2PricingToken.innerHTML = year2PricingToken.innerHTML.replace(
         YEAR_2_PRICING_TOKEN,
         `${y2p} ${priceSuffix}`,
       );
