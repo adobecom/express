@@ -11,7 +11,6 @@ const config = {
 const variant = 'edu-express';
 const usp = new URLSearchParams(window.location.search);
 const isStage = usp.get('env') !== 'prod' || getConfig().env.name !== 'prod';
-const CDN_URL = `https://auth-light.identity${isStage ? '-stage' : ''}.adobe.com/sentry/wrapper.js`;
 // eslint-disable-next-line camelcase
 const client_id = 'AdobeExpressWeb';
 const authParams = {
@@ -73,6 +72,11 @@ const onAnalytics = (e) => {
   sendEventToAnalytics(type, event);
 };
 
+export function loadWrapper() {
+  const CDN_URL = `https://auth-light.identity${isStage ? '-stage' : ''}.adobe.com/sentry/wrapper.js`;
+  return loadScript(CDN_URL);
+}
+
 export default async function init(el) {
   const input = el.querySelector('div > div')?.textContent?.trim().toLowerCase();
   let destURL;
@@ -86,7 +90,7 @@ export default async function init(el) {
     destURL.hostname = 'stage.projectx.corp.adobe.com';
   }
   el.innerHTML = '';
-  await loadScript(CDN_URL);
+  await loadWrapper();
   const susi = createTag('susi-sentry-light');
   susi.authParams = authParams;
   susi.authParams.redirect_uri = destURL.toString();
