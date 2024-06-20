@@ -1924,14 +1924,6 @@ export async function fetchBlockFragDecorated(url, blockName) {
 async function buildAutoBlocks(main) {
   const lastDiv = main.querySelector(':scope > div:last-of-type');
 
-  // Load the branch.io banner autoblock...
-  if (['yes', 'true', 'on'].includes(getMetadata('show-banner').toLowerCase())) {
-    const branchio = buildBlock('branch-io', '');
-    if (lastDiv) {
-      lastDiv.append(branchio);
-    }
-  }
-
   if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase()) && document.body.dataset.device === 'mobile') {
     const authoredRRFound = [
       '.template-list.horizontal.fullwidth.mini',
