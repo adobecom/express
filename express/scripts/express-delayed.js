@@ -150,8 +150,9 @@ function preloadSUSILight() {
       document.head.append(preloadTag);
     });
   loadStyle('/express/blocks/susi-light/susi-light.css');
-  loadLink('/express/blocks/fragment/fragment.js', { rel: 'preload', as: 'script', crossorigin: 'anonymous' });
-  loadLink('/express/icons/close-button-x.svg', { rel: 'preload', as: 'icon', crossorigin: 'anonymous' });
+  loadLink('/express/blocks/fragment/fragment.js', { rel: 'preload', as: 'script' });
+  loadLink('/express/icons/close-button-x.svg', { rel: 'preload', as: 'image' });
+  loadLink('/express/icons/cc-express.svg', { rel: 'preload', as: 'image' });
 }
 
 /**
