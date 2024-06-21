@@ -1742,7 +1742,7 @@ function loadIMS() {
   window.adobeid = {
     client_id: 'AdobeExpressWeb',
     scope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
-    locale: getConfig().locale.region,
+    locale: getConfig().locale?.ietf?.replace('-', '_') || 'en_US',
     environment: getConfig().env.ims,
   };
   if (getConfig().env.ims === 'stg1') {

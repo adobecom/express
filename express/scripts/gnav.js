@@ -11,12 +11,12 @@ import {
 
 const isHomepage = window.location.pathname.endsWith('/express/');
 
-const sparkLang = getConfig().locale.ietf;
-const sparkPrefix = sparkLang === 'en-US' ? '' : `/${sparkLang}`;
-let expressLoginURL = `https://express.adobe.com${sparkPrefix}/sp/`;
+let sparkLang = getConfig().locale.ietf;
+if (sparkLang === 'en-GB') sparkLang = 'en-US';
+let expressLoginURL = `https://new.express.adobe.com?locale=${sparkLang}`;
 const productURL = getConfig()[getConfig().env.name]?.express;
 if (productURL) {
-  expressLoginURL = expressLoginURL.replace('express.adobe.com', productURL);
+  expressLoginURL = expressLoginURL.replace('new.express.adobe.com', productURL);
 }
 if (isHomepage && getConfig().env.ims === 'prod') {
   expressLoginURL = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
@@ -62,7 +62,7 @@ async function loadIMS() {
   window.adobeid = {
     client_id: 'AdobeExpressWeb',
     scope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
-    locale: getConfig().locale.region,
+    locale: getConfig().locale?.ietf?.replace('-', '_') || 'en_US',
     environment: getConfig().env.ims,
   };
   if (getConfig().env.ims === 'stg1') {
