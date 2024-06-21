@@ -232,7 +232,7 @@ End border style variants
 
 .pricing-cards .tooltip .icon:hover~.tooltip-text {
   opacity: 1;
-  pointer-events: inherit;
+  pointer-events: visible;
 }
 
 .pricing-cards .card-border .hide {
