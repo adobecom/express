@@ -11,8 +11,7 @@ import {
 
 const isHomepage = window.location.pathname.endsWith('/express/');
 
-let sparkLang = getConfig().locale.ietf;
-if (sparkLang === 'en-GB') sparkLang = 'en-US';
+const sparkLang = getConfig().locale.ietf;
 let expressLoginURL = `https://new.express.adobe.com?locale=${sparkLang}`;
 const productURL = getConfig()[getConfig().env.name]?.express;
 if (productURL) {
