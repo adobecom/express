@@ -3,6 +3,8 @@ import {
   createTag,
   getMetadata,
   getConfig,
+  loadStyle,
+  loadLink,
 } from './utils.js';
 import BlockMediator from './block-mediator.js';
 
@@ -10,15 +12,6 @@ export function getDestination() {
   const pepDestinationMeta = getMetadata('pep-destination');
   return pepDestinationMeta || BlockMediator.get('primaryCtaUrl')
     || document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA')?.href;
-}
-
-function loadExpressProduct() {
-  if (!window.hlx.preload_product) return;
-  if (document.body.dataset.device === 'mobile') return;
-  const path = ['www.adobe.com'].includes(window.location.hostname)
-    ? 'https://new.express.adobe.com/static/preload.html' : 'https://stage.projectx.corp.adobe.com/static/preload.html';
-  const iframe = createTag('iframe', { src: path, style: 'display:none' });
-  document.body.append(iframe);
 }
 
 function getSegmentsFromAlloyResponse(response) {
@@ -140,11 +133,9 @@ async function canPEP() {
 
 const PEP_DELAY = 3000;
 
-async function preloadSUSILight() {
+function preloadSUSILight() {
   const config = getConfig();
   if (!getMetadata('preload-susi-light')) return;
-  const { loadWrapper } = await import('../blocks/susi-light/susi-light.js');
-  await loadWrapper();
   const preloadTag = createTag('meta', {
     name: 'susi-sentry-preload',
     content: 'edu-express',
@@ -153,19 +144,26 @@ async function preloadSUSILight() {
   if (config.env.name !== 'prod') {
     preloadTag.setAttribute('data-stage', 'true');
   }
-  document.head.append(preloadTag);
+  import('../blocks/susi-light/susi-light.js')
+    .then((mod) => mod.loadWrapper())
+    .then(() => {
+      document.head.append(preloadTag);
+    });
+  loadStyle('/express/blocks/susi-light/susi-light.css');
+  loadLink('/express/blocks/fragment/fragment.js', { rel: 'preload', as: 'script', crossorigin: 'anonymous' });
+  loadLink('/express/icons/close-button-x.svg', { rel: 'preload', as: 'icon', crossorigin: 'anonymous' });
 }
 
 /**
  * Executes everything that happens a lot later, without impacting the user experience.
  */
-export default async function loadDelayed(DELAY = 15000) {
+export default async function loadDelayed() {
   try {
     preloadSUSILight();
     if (await canPEP()) {
       const { default: loadLoginUserAutoRedirect } = await import('../features/direct-path-to-product/direct-path-to-product.js');
       return new Promise((resolve) => {
-        // TODO: not preloading product this early to protect desktop CWV
+        // TODO: not preloading product to protect desktop CWV
         // until we see significant proof of preloading improving product load time
         // loadExpressProduct();
         setTimeout(() => {
@@ -174,13 +172,7 @@ export default async function loadDelayed(DELAY = 15000) {
         }, PEP_DELAY);
       });
     }
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        loadExpressProduct();
-        resolve();
-      }, window.delay_preload_product ? DELAY * 2 : DELAY);
-    });
+    return null;
   } catch (err) {
     window.lana?.log(`Express-Delayed Error: ${err}`);
     return null;
