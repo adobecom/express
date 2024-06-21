@@ -2313,20 +2313,20 @@ export function addAnimationToggle(target) {
  * Searches for Japanese text in headings and applies a smart word-breaking algorithm by surrounding
  * semantic blocks with spans. This allows browsers to break japanese sentences correctly.
  */
-async function wordBreakJapanese() {
+async function wordBreakJapanese(area) {
   if (getConfig().locale.region !== 'jp') {
     return;
   }
   const { loadDefaultJapaneseParser } = await import('./budoux-index-ja.min.js');
   const parser = loadDefaultJapaneseParser();
-  document.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
+  area.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
     el.classList.add('budoux');
     parser.applyElement(el);
   });
 
   const BalancedWordWrapper = (await import('./bw2.js')).default;
   const bw2 = new BalancedWordWrapper();
-  document.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
+  area.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
     // apply balanced word wrap to headings
     if (typeof window.requestIdleCallback === 'function') {
       window.requestIdleCallback(() => {
@@ -2396,9 +2396,9 @@ export function addHeaderSizing($block, classPrefix = 'heading', selector = 'h1,
  * Call `addHeaderSizing` on default content blocks in all section blocks
  * in all Japanese pages except blog pages.
  */
-function addJapaneseSectionHeaderSizing() {
+function addJapaneseSectionHeaderSizing(area) {
   if (getConfig().locale.region === 'jp') {
-    document.querySelectorAll('body:not(.blog) .section .default-content-wrapper').forEach((el) => {
+    area.querySelectorAll('body:not(.blog) .section .default-content-wrapper').forEach((el) => {
       addHeaderSizing(el);
     });
   }
@@ -2408,9 +2408,9 @@ function addJapaneseSectionHeaderSizing() {
  * Detects legal copy based on a * or † prefix and applies a smaller font size.
  * @param {Element} main The main element
  */
-function decorateLegalCopy(main) {
+function decorateLegalCopy(area) {
   const legalCopyPrefixes = ['*', '†'];
-  main.querySelectorAll('p').forEach(($p) => {
+  area.querySelectorAll('p').forEach(($p) => {
     const pText = $p.textContent.trim() ? $p.textContent.trim().charAt(0) : '';
     if (pText && legalCopyPrefixes.includes(pText)) {
       $p.classList.add('legal-copy');
@@ -2587,9 +2587,6 @@ export async function loadDeferred(area, blocks, config) {
     import('../features/links.js').then((mod) => mod.default(path, area));
   }
 
-  addJapaneseSectionHeaderSizing();
-  wordBreakJapanese();
-
   sampleRUM('lazy');
   sampleRUM.observe(blocks);
   sampleRUM.observe(area.querySelectorAll('picture > img'));
@@ -2652,8 +2649,6 @@ async function processSection(section, config, isDoc) {
 // logic in express but not in milo
 async function decorateExpressPage(main) {
   if (main) {
-    decoratePageStyle();
-    decorateLegalCopy(main);
     displayEnv();
     displayOldLinkWarning();
   }
@@ -2693,8 +2688,17 @@ function fragmentBlocksToLinks(area) {
 export async function loadArea(area = document) {
   const isDoc = area === document;
 
+  const main = area.querySelector('main');
   if (isDoc) {
     await checkForPageMods();
+    if (getMetadata('template-search-page') === 'Y') {
+      const { default: redirect } = await import('./template-redirect.js');
+      await redirect();
+    }
+    if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
+      const { default: replaceContent } = await import('./content-replace.js');
+      await replaceContent(main);
+    }
     decorateHeaderAndFooter();
     window.hlx = window.hlx || {};
     const params = new URLSearchParams(window.location.search);
@@ -2705,24 +2709,12 @@ export async function loadArea(area = document) {
     window.hlx.experimentParams = experimentParams;
     window.hlx.init = true;
     if (window.hlx.testing) await decorateTesting();
+    await buildAutoBlocks(main);
   }
   const config = getConfig();
 
   fragmentBlocksToLinks(area);
-  const main = area.querySelector('main');
 
-  if (isDoc) {
-    if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
-      const { default: replaceContent } = await import('./content-replace.js');
-      await replaceContent(main);
-    }
-
-    if (getMetadata('template-search-page') === 'Y') {
-      const { default: redirect } = await import('./template-redirect.js');
-      await redirect();
-    }
-    await buildAutoBlocks(main);
-  }
   splitSections(area);
   decorateButtons(area);
   await fixIcons(area);
@@ -2731,6 +2723,10 @@ export async function loadArea(area = document) {
   decorateSocialIcons(area);
 
   const sections = decorateSections(area, isDoc);
+  if (isDoc) decoratePageStyle();
+  decorateLegalCopy(area);
+  addJapaneseSectionHeaderSizing(area);
+  wordBreakJapanese(area);
 
   // appending express-specific branch parameters
   const links = isDoc ? area.querySelectorAll('main a[href*="adobesparkpost"]') : area.querySelectorAll(':scope a[href*="adobesparkpost"]');
@@ -2749,9 +2745,7 @@ export async function loadArea(area = document) {
     });
   }
 
-  if (isDoc) {
-    await decorateExpressPage(main);
-  }
+  if (isDoc) await decorateExpressPage(main);
 
   const currentHash = window.location.hash;
   if (currentHash) {
