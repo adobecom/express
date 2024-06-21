@@ -12,10 +12,11 @@ import {
 const isHomepage = window.location.pathname.endsWith('/express/');
 
 const sparkLang = getConfig().locale.ietf;
-let expressLoginURL = `https://new.express.adobe.com?locale=${sparkLang}`;
+const sparkPrefix = sparkLang === 'en-US' ? '' : `/${sparkLang}`;
+let expressLoginURL = `https://express.adobe.com${sparkPrefix}/sp/`;
 const productURL = getConfig()[getConfig().env.name]?.express;
 if (productURL) {
-  expressLoginURL = expressLoginURL.replace('new.express.adobe.com', productURL);
+  expressLoginURL = expressLoginURL.replace('express.adobe.com', productURL);
 }
 if (isHomepage && getConfig().env.ims === 'prod') {
   expressLoginURL = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
