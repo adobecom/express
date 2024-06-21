@@ -150,7 +150,7 @@ function preloadSUSILight() {
       document.head.append(preloadTag);
     });
   loadStyle('/express/blocks/susi-light/susi-light.css');
-  loadLink('/express/blocks/fragment/fragment.js', { rel: 'preload', as: 'script' });
+  import('../blocks/fragment/fragment.js');
   loadLink('/express/icons/close-button-x.svg', { rel: 'preload', as: 'image' });
   loadLink('/express/icons/cc-express.svg', { rel: 'preload', as: 'image' });
 }
