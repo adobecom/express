@@ -1915,7 +1915,7 @@ export async function fixIcons(el = document) {
         const $block = $picture.closest('.block');
         let size = 44;
         if ($block) {
-          const blockName = $block.getAttribute('data-block-name');
+          const blockName = $block.getAttribute('data-block-name') || $block.classList[0];
           // use small icons in .columns (except for .columns.offer)
           if (blockName === 'columns') {
             size = $block.classList.contains('offer') ? 44 : 22;
