@@ -1603,17 +1603,6 @@ export async function loadMartech({
   return true;
 }
 
-async function loadLegacyMartech() {
-  const usp = new URLSearchParams(window.location.search);
-  const martech = usp.get('martech');
-
-  const analyticsUrl = '/express/scripts/instrument.js';
-  if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
-    const { martechLoadedCB } = await import('./instrument.js');
-    martechLoadedCB();
-  }
-}
-
 function loadGnav() {
   const usp = new URLSearchParams(window.location.search);
   const gnav = usp.get('gnav') || getMetadata('gnav');
@@ -1859,7 +1848,7 @@ async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
     loadIms();
     // rush instrument-martech-launch-alloy
-    promises.push(loadLegacyMartech());
+    promises.push(loadMartech());
     window.delay_preload_product = true;
   }
   const [{ runExps }] = await Promise.all(promises);
