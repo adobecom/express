@@ -588,54 +588,7 @@ function martechLoadedCB() {
     sendEventToAnalytics('displayPurchasePanel');
   }
 
-  const processed = {};
-  function initHemingway() {
-    // poll the dataLayer every 2 seconds
-    setInterval(() => {
-      // loop through each of the events in the dataLayer
-      window?.dataLayer?.forEach((evt) => {
-        // don't continue if it has already been processed
-        if (processed[evt.assetId]) {
-          return;
-        }
-        // mark as processed
-        processed[evt.assetId] = 1;
-        // track a new event
-        _satellite.track('event', {
-          data: {
-            eventType: 'web.webinteraction.linkClicks',
-            web: {
-              webInteraction: {
-                name: 'assetView',
-                linkClicks: {
-                  value: 1,
-                },
-                type: 'other',
-              },
-            },
-            _adobe_corpnew: {
-              digitalData: {
-                primaryEvent: {
-                  eventInfo: {
-                    eventName: 'assetView',
-                  },
-                },
-                asset: {
-                  assetInfo: {
-                    assetId: evt.assetId,
-                    assetPath: evt.assetPath,
-                  },
-                },
-              },
-            },
-          },
-        });
-      });
-    }, 2000);
-  }
-
   decorateAnalyticsEvents();
-  initHemingway();
 
   const ENABLE_PRICING_MODAL_AUDIENCE = 'enablePricingModal';
   const RETURNING_VISITOR_SEGMENT_ID = 23153796;
