@@ -979,7 +979,7 @@ export function decorateAutoBlock(a) {
     if (key === 'video' && !a.textContent.match('media_.*.mp4')) {
       return false;
     }
-    a.className = `${key} ${a.classList.contains('ax-old-fragment') && 'ax-old-fragment '}link-block`;
+    a.className = `${key} link-block`;
     return true;
   });
 }
@@ -2667,7 +2667,7 @@ function fragmentBlocksToLinks(area) {
     const fragLink = blk.querySelector('a');
     if (fragLink) {
       blk.parentElement.replaceChild(fragLink, blk);
-      fragLink.classList.add('ax-old-fragment');
+      fragLink.setAttribute('ax-old-fragment', 'on');
     }
   });
 }

@@ -144,7 +144,7 @@ export default async function init(a) {
 
   await loadArea(fragment);
   // TODO: backward compatability: unlike milo, old ax fragments unfold themselves
-  if (a.classList.contains('ax-old-fragment') || fragment.getAttribute('data-manifest-id')) {
+  if (a.getAttribute('ax-old-fragment') || fragment.getAttribute('data-manifest-id')) {
     const fragmentSections = [...fragment.querySelectorAll(':scope > div')];
     const blockSection = fragment.closest('.section');
     // merge fragment's first section with current section
