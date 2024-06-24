@@ -2700,14 +2700,6 @@ export async function loadArea(area = document) {
       await replaceContent(main);
     }
     decorateHeaderAndFooter();
-    window.hlx = window.hlx || {};
-    const params = new URLSearchParams(window.location.search);
-    const experimentParams = params.get('experiment');
-    ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
-      window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
-    });
-    window.hlx.experimentParams = experimentParams;
-    window.hlx.init = true;
     if (window.hlx.testing) await decorateTesting();
     await buildAutoBlocks(main);
   }

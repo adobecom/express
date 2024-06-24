@@ -142,6 +142,14 @@ const listenAlloy = () => {
 
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
+  window.hlx = window.hlx || {};
+  const params = new URLSearchParams(window.location.search);
+  const experimentParams = params.get('experiment');
+  ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
+    window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
+  });
+  window.hlx.experimentParams = experimentParams;
+  window.hlx.init = true;
   setConfig(config);
 
   if (getMetadata('hide-breadcrumbs') !== 'true' && !getMetadata('breadcrumbs') && !window.location.pathname.endsWith('/express/')) {
