@@ -1846,10 +1846,8 @@ async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   const promises = [import('./experiment.js')];
   const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
-    loadIms();
-    // rush instrument-martech-launch-alloy
+    // rush martech-launch-alloy
     promises.push(loadMartech());
-    window.delay_preload_product = true;
   }
   const [{ runExps }] = await Promise.all(promises);
   await runExps(config, forcedExperiment, forcedVariant);
