@@ -162,7 +162,9 @@ const listenAlloy = () => {
   showNotifications();
   loadLana({ clientId: 'express' });
   listenAlloy();
-
+  import('./instrument.js').then((mod) => {
+    mod.default();
+  });
   await loadArea();
 
   import('./express-delayed.js').then((mod) => {

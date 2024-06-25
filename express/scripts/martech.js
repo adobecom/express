@@ -220,9 +220,6 @@ const loadMartechFiles = async (config, url, edgeConfigId) => {
     await loadScript(`https://www.adobe.com/marketingtech/${martechPath}`);
     // eslint-disable-next-line no-underscore-dangle
     window._satellite.track('pageload');
-
-    const { martechLoadedCB } = await import('./instrument.js');
-    await martechLoadedCB();
   };
 
   await filesLoadedPromise();

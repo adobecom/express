@@ -526,7 +526,7 @@ function decorateAnalyticsEvents() {
   });
 }
 
-export function martechLoadedCB() {
+export default function martechLoadedCB() {
   setDataAnalyticsAttributesForMartech();
 
   //------------------------------------------------------------------------------------
