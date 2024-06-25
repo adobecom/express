@@ -1573,6 +1573,12 @@ export function loadIms() {
   }).then(() => {
     if (!window.adobeIMS?.isSignedInUser() && !getMetadata('xlg-entitlements')) {
       getConfig().entitlements([]);
+    } else {
+      setTimeout(async () => {
+        if (!(await window.alloyLoader)) {
+          getConfig().entitlements([]);
+        }
+      }, 3000);
     }
   });
 

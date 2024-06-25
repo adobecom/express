@@ -134,10 +134,10 @@ const listenAlloy = () => {
   }, { once: true });
   setTimeout(() => {
     if (!loaded) {
-      window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`);
+      window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`, { sampleRate: 0.01 });
       resolver();
     }
-  }, 5000);
+  }, 3000);
 };
 
 (async function loadPage() {
