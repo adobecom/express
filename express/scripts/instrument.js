@@ -608,5 +608,11 @@ export default function martechLoadedCB() {
     getSegments(data?.identity?.ECID || null);
   }
 
-  __satelliteLoadedCallback(getAudiences);
+  if (window.__satelliteLoadedCallback) {
+    __satelliteLoadedCallback(getAudiences);
+  } else {
+    window.addEventListener('alloy_sendEvent', () => {
+      __satelliteLoadedCallback(getAudiences);
+    }, { once: true });
+  }
 }
