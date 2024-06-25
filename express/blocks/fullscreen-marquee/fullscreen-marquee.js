@@ -47,7 +47,7 @@ async function buildApp(block, content) {
   const appFrame = createTag('div', { class: 'fullscreen-marquee-app-frame' });
   const app = createTag('div', { class: 'fullscreen-marquee-app' });
   const contentContainer = createTag('div', { class: 'fullscreen-marquee-app-content-container' });
-  const cta = block.querySelector('p a');
+
   let appImage;
   let editor;
   let variant;
@@ -115,23 +115,31 @@ async function buildApp(block, content) {
   appFrame.append(app);
   appFrame.append(appBackground);
   app.append(editor);
-
-  if (cta) {
-    cta.classList.add('xlarge');
-
-    const highlightCta = cta.cloneNode(true);
-    const appHighlight = createTag('a', {
-      class: 'fullscreen-marquee-app-frame-highlight',
-      href: cta.href,
-    });
-
-    await addFreePlanWidget(cta.parentElement);
-
-    appHighlight.append(highlightCta);
-    appFrame.append(appHighlight);
-  }
-
+  addMarqueeCenterCTA(block, appFrame)
   return appFrame;
+}
+
+// Adds the first CTA to the middle of the marquee image
+async function addMarqueeCenterCTA(block, appFrame) {
+  const buttons = block.querySelectorAll('p a');
+  if (buttons.length === 0) return;
+  for (let cta of buttons){
+    cta.classList.add('xlarge')
+  }
+  const cta = buttons[0] 
+
+  const highlightCta = cta.cloneNode(true);
+  const appHighlight = createTag('a', {
+    class: 'fullscreen-marquee-app-frame-highlight',
+    href: cta.href,
+  });
+
+  await addFreePlanWidget(cta.parentElement);
+
+  appHighlight.append(highlightCta);
+  appFrame.append(appHighlight);
+
+
 }
 
 export default async function decorate(block) {
