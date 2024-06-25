@@ -150,7 +150,7 @@ async function loadFEDS() {
 
   let fedsExp;
   if (prefix === '') {
-    fedsExp = 'cc-mega-menu/ax-gnav-x';
+    fedsExp = 'acom/cc-mega-menu/ax-gnav-x';
   } else if (prefix === 'gb' || prefix === 'uk' || prefix === 'in') {
     fedsExp = 'adobe-express/ax-gnav-x';
   } else {
