@@ -236,9 +236,8 @@
 }
 
 .block.fullscreen-marquee .button-container.free-plan-container {
-  flex-direction: row;
-  width: auto;
-  justify-content: left;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .block.fullscreen-marquee .button-container.free-plan-container a.button {
