@@ -24,13 +24,6 @@
   padding-bottom: 160px;
 }
 
-.fullscreen-marquee .fullscreen-marquee-heading {
-  /* display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center; */
-}
-
 .fullscreen-marquee .fullscreen-marquee-heading h1 {
   font-size: var(--heading-font-size-l);
   text-align: left;
