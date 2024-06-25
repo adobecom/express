@@ -216,94 +216,6 @@ export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
   }
 }
 
-export function getAssetDetails(el) {
-  if (el.tagName === 'PICTURE') {
-    return getAssetDetails(el.querySelector('img'));
-  }
-  // Get asset details
-  const assetUrl = new URL(
-    el.href // the reference for an a/svg tag
-    || el.currentSrc // the active source in a picture/video/audio element
-    || el.src,
-  ); // the source for an image/video/iframe
-  const match = assetUrl.href.match(/media_([a-f0-9]+)\.\w+/);
-  let assetId;
-  if (match) {
-    [, assetId] = match;
-  } else if (assetUrl.origin.endsWith('.adobeprojectm.com')) {
-    [assetId] = assetUrl.pathname.split('/').splice(-2, 1);
-  } else {
-    assetId = `${assetUrl.pathname}`;
-  }
-  return {
-    assetId,
-    assetPath: assetUrl.href,
-  };
-}
-
-/**
- * Track assets in that appear in the viewport and add populate
- * `viewasset` events to the data layer.
- */
-function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]']) {
-  const assetsSelector = assetsSelectors.join(',');
-
-  const viewAssetObserver = new IntersectionObserver((entries) => {
-    entries
-      .filter((entry) => entry.isIntersecting)
-      .forEach((entry) => {
-        const el = entry.target;
-
-        // observe only once
-        viewAssetObserver.unobserve(el);
-
-        // Get asset details
-        const { assetId, assetPath } = getAssetDetails(el);
-        const details = {
-          event: 'viewasset',
-          assetId,
-          assetPath,
-        };
-
-        // Add experiment details
-        const { id, selectedVariant } = (window.hlx.experiment || {});
-        if (selectedVariant) {
-          details.experiment = id;
-          details.variant = selectedVariant;
-        }
-
-        window.dataLayer.push(details);
-      });
-  }, { threshold: 0.25 });
-
-  // Observe all assets in the DOM
-  document.querySelectorAll(assetsSelector).forEach((el) => {
-    viewAssetObserver.observe(el);
-  });
-
-  // Observe all assets added async
-  new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.removedNodes.forEach((n) => {
-        if (n.nodeType === Node.TEXT_NODE) {
-          return;
-        }
-        n.querySelectorAll(assetsSelector).forEach((asset) => {
-          viewAssetObserver.unobserve(asset);
-        });
-      });
-      mutation.addedNodes.forEach((n) => {
-        if (n.nodeType === Node.TEXT_NODE) {
-          return;
-        }
-        n.querySelectorAll(assetsSelector).forEach((asset) => {
-          viewAssetObserver.observe(asset);
-        });
-      });
-    });
-  }).observe(document.body, { childList: true, subtree: true });
-}
-
 export function addPublishDependencies(url) {
   if (!Array.isArray(url)) {
     // eslint-disable-next-line no-param-reassign
@@ -2407,10 +2319,6 @@ async function loadLazy(main) {
   sampleRUM('lazy');
   sampleRUM.observe(document.querySelectorAll('main picture > img'));
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
-  trackViewedAssetsInDataLayer([
-    'img[src*="/media_"]',
-    'img[src*="https://design-assets.adobeprojectm.com/"]',
-  ]);
 }
 
 async function loadPostLCP(config) {
