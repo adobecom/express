@@ -1,5 +1,9 @@
-import { decorateBlockBg, decorateBlockText, getBlockSize, decorateTextOverrides } from '../../scripts/utils/decorate.js';
-import { createTag, loadStyle, getConfig, loadBlock } from  '../../scripts/utils.js';
+import {
+  decorateBlockBg, decorateBlockText, getBlockSize, decorateTextOverrides,
+} from '../../scripts/utils/decorate.js';
+import {
+  createTag, loadStyle, getConfig, loadBlock,
+} from '../../scripts/utils.js';
 
 // size: [heading, body, ...detail]
 const blockTypeSizes = {
