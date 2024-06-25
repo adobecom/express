@@ -348,6 +348,15 @@ async function handleAnimation(div, typeHint, block, animations) {
   div.remove();
 }
 
+function injectExpressLogo(block, foreground) {
+  if (block.classList.contains('no-logo')) return;
+  const prefix = getConfig().locale.prefix.replaceAll('/', '');
+  if (prefix !== '') return;
+  const logo = getIconElement('adobe-express-logo');
+  logo.classList.add('express-logo');
+  foreground.prepend(logo);
+}
+
 async function handleContent(div, block, animations) {
   const videoWrapper = createTag('div', { class: 'background-wrapper' });
   const video = createAnimation(animations);
@@ -372,6 +381,7 @@ async function handleContent(div, block, animations) {
   }
 
   const marqueeForeground = createTag('div', { class: 'marquee-foreground' });
+  injectExpressLogo(block, marqueeForeground);
   bg.nextElementSibling.classList.add('content-wrapper');
   marqueeForeground.append(bg.nextElementSibling);
   div.append(marqueeForeground);

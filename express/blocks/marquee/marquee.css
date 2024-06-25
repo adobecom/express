@@ -49,6 +49,11 @@ body.no-desktop-brand-header header {
   width: unset;
 }
 
+.marquee .express-logo {
+  width: 168px;
+  height: 30px;
+}
+
 .marquee .marquee-foreground > :first-child {
   margin-top: 0;
 }
