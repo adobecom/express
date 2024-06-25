@@ -332,13 +332,7 @@
   .text-block.icon-inline .foreground>.tablet-up {
     display: none;
   }
-}
-
-/*
-
-Franklin section style adapters, remove during Milo Migration
-*/
-
+} 
 
 .section.two-up:has(.text),
 .section.three-up:has(.text),
@@ -358,18 +352,11 @@ Franklin section style adapters, remove during Milo Migration
   .section:has(.text).three-up {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  .section.two-up:has(.text.franklin),
-  .section.three-up:has(.text.franklin),
-  .section.four-up:has(.text.franklin),
-  .section.five-up:has(.text.franklin) {
-    --spacing-m: 80px;
-    --grid-margins-width: 80px;
-    gap: 80px;
-    padding: 80px;
-    padding-left: 160px;
-    padding-right: 160px;
-  }
 }
+
+/* 
+Franklin specific styles
+*/
 
 .text.franklin .foreground div {
   gap: 16px
@@ -382,7 +369,7 @@ Franklin section style adapters, remove during Milo Migration
   gap: 16px;
   margin-top: 10px;
 }
- 
+
 .section.two-up:has(.text.franklin),
 .section.three-up:has(.text.franklin),
 .section.four-up:has(.text.franklin),
@@ -392,7 +379,17 @@ Franklin section style adapters, remove during Milo Migration
   padding-bottom: 80px;
 }
 
-/* 
-Franklin specific styles
+@media screen and (min-width: 1200px) {
 
-*/
+  .section.two-up:has(.text.franklin),
+  .section.three-up:has(.text.franklin),
+  .section.four-up:has(.text.franklin),
+  .section.five-up:has(.text.franklin) {
+    --spacing-m: 80px;
+    --grid-margins-width: 80px;
+    gap: 80px;
+    padding: 80px;
+    padding-left: 160px;
+    padding-right: 160px;
+  }
+}
