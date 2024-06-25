@@ -585,18 +585,6 @@ export function transformLinkToAnimation($a, $videoLooping = true) {
   return $video;
 }
 
-export function linkPicture($picture) {
-  const $nextSib = $picture.parentNode.nextElementSibling;
-  if ($nextSib) {
-    const $a = $nextSib.querySelector('a');
-    if ($a && $a.textContent.trim().startsWith('https://')) {
-      $a.innerHTML = '';
-      $a.className = '';
-      $a.appendChild($picture);
-    }
-  }
-}
-
 export function linkImage($elem) {
   const $a = $elem.querySelector('a');
   if ($a) {
@@ -1996,15 +1984,6 @@ function splitSections(main) {
   });
 }
 
-function decorateLinkedPictures($main) {
-  /* thanks to word online */
-  $main.querySelectorAll(':scope > picture').forEach(($picture) => {
-    if (!$picture.closest('div.block')) {
-      linkPicture($picture);
-    }
-  });
-}
-
 /**
  * Adds the favicon.
  * @param {string} href The favicon URL
@@ -2192,7 +2171,6 @@ export async function decorateMain(main, isDoc) {
   decorateButtons(main);
   await fixIcons(main);
   decoratePictures(main);
-  decorateLinkedPictures(main);
   decorateSocialIcons(main);
 
   await sections;
