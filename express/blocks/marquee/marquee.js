@@ -381,9 +381,10 @@ async function handleContent(div, block, animations) {
   }
 
   const marqueeForeground = createTag('div', { class: 'marquee-foreground' });
-  injectExpressLogo(block, marqueeForeground);
-  bg.nextElementSibling.classList.add('content-wrapper');
-  marqueeForeground.append(bg.nextElementSibling);
+  const contentWrapper = bg.nextElementSibling;
+  contentWrapper.classList.add('content-wrapper');
+  marqueeForeground.append(contentWrapper);
+  injectExpressLogo(block, contentWrapper);
   div.append(marqueeForeground);
 
   video.addEventListener('canplay', () => {
