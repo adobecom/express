@@ -44,7 +44,7 @@ if (jarvisVisibleMeta && ['mobile', 'desktop', 'on'].includes(jarvisVisibleMeta)
 const config = {
   local: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
   stage: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
-  prod: { express: 'new.express.adobe.com', commerce: 'commerce.adobe.com' },
+  prod: { express: 'express.adobe.com', commerce: 'commerce.adobe.com' },
   locales,
   codeRoot: '/express/',
   jarvis: {

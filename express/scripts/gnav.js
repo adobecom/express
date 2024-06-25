@@ -62,7 +62,7 @@ async function loadIMS() {
   window.adobeid = {
     client_id: 'AdobeExpressWeb',
     scope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
-    locale: getConfig().locale.region,
+    locale: getConfig().locale?.ietf?.replace('-', '_') || 'en_US',
     environment: getConfig().env.ims,
   };
   if (getConfig().env.ims === 'stg1') {
@@ -167,7 +167,7 @@ async function loadFEDS() {
         showRegionPicker();
       },
     },
-    universalNav: getConfig().locale.prefix === '',
+    universalNav: true,
     universalNavComponents: 'appswitcher, notifications, profile',
     locale: (prefix === '' ? 'en' : prefix),
     content: {
@@ -291,3 +291,7 @@ if (!window.hlx || window.hlx.gnav) {
 /* Core Web Vitals RUM collection */
 
 sampleRUM('cwv');
+
+/* collect browser preferred language in RUM */
+sampleRUM('audiences', { source: 'page-language', target: document.documentElement.lang });
+sampleRUM('audiences', { source: 'preferred-languages', target: navigator.languages.join(',') });

@@ -9,6 +9,8 @@ const DO_NOT_INLINE = [
   'z-pattern',
 ];
 
+const cachedMetadata = [];
+
 const ENVS = {
   stage: {
     name: 'stage',
@@ -47,6 +49,11 @@ export function getMetadata(name) {
   const attr = name && name.includes(':') ? 'property' : 'name';
   const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
   return ($meta && $meta.content) || '';
+}
+
+export function getCachedMetadata(name) {
+  if (cachedMetadata[name] === undefined) cachedMetadata[name] = getMetadata(name);
+  return cachedMetadata[name];
 }
 
 function getEnv(conf) {
@@ -527,7 +534,7 @@ function getIcon(icons, alt, size = 44, altSrc) {
 
 export function getIconElement(icons, size, alt, additionalClassName, altSrc) {
   const icon = getIcon(icons, alt, size, altSrc);
-  if (additionalClassName) icon.className.add(additionalClassName);
+  if (additionalClassName) icon.classList.add(additionalClassName);
   return icon;
 }
 
@@ -806,8 +813,7 @@ export function localizeLink(
     const relative = url.hostname === originHostName;
     const processedHref = relative ? href.replace(url.origin, '') : href;
     const { hash } = url;
-    // TODO remove this special logic for uk & in after coordinating with Pankaj & Mili
-    if (hash.includes('#_dnt') || window.location.href.includes('/uk/express/learn/blog') || window.location.href.includes('/in/express/learn/blog')) return processedHref.replace('#_dnt', '');
+    if (hash.includes('#_dnt')) return processedHref.replace('#_dnt', '');
     const path = url.pathname;
     const extension = getExtension(path);
     const allowedExts = ['', 'html', 'json'];
@@ -1736,7 +1742,7 @@ function loadIMS() {
   window.adobeid = {
     client_id: 'AdobeExpressWeb',
     scope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
-    locale: getConfig().locale.region,
+    locale: getConfig().locale?.ietf?.replace('-', '_') || 'en_US',
     environment: getConfig().env.ims,
   };
   if (getConfig().env.ims === 'stg1') {
@@ -2178,6 +2184,7 @@ function decoratePictures(main) {
  * @param {Element} main The main element
  * @param {Boolean} isDoc Is document or fragment
  */
+
 export async function decorateMain(main, isDoc) {
   await buildAutoBlocks(main);
   splitSections(main);
@@ -2496,6 +2503,7 @@ export async function loadArea(area = document) {
   }
 
   let sections = [];
+  // for adding branch parameters to branch links
   if (main) {
     sections = await decorateMain(main, isDoc);
     decoratePageStyle();
@@ -2517,6 +2525,11 @@ export async function loadArea(area = document) {
       }
     }
   }
+  const links = isDoc ? area.querySelectorAll('main a[href*="adobesparkpost"]') : area.querySelectorAll(':scope a[href*="adobesparkpost"]');
+  if (links.length) {
+    import('./branchlinks.js').then((mod) => mod.default(links));
+  }
+
   await loadTemplateScript();
   await loadSections(sections, isDoc);
   const footer = document.querySelector('footer');
@@ -2544,10 +2557,6 @@ export async function loadArea(area = document) {
 
   import('./attributes.js').then((analytics) => {
     document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
-  });
-
-  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
-    decorateTrackingEvents();
   });
 }
 

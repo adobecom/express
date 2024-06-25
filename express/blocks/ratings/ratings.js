@@ -428,9 +428,9 @@ export default async function decorate($block) {
       <div class="slider-bottom">
         <div class="vertical-line"><button type="button" aria-label="1" class="stars one-star"></button></div>
         <div class="vertical-line"><button type="button" aria-label="2" class="stars two-stars"></button></div>
-        <div class="vertical-line"><button type="button" aria-label="3" class="stars three-stars"> </button></div>
-        <div class="vertical-line"><button type="button" aria-label="4" class="stars four-stars">$ </button></div>
-        <div class="vertical-line"><button type="button" aria-label="5" class="stars five-stars"> </button></div>
+        <div class="vertical-line"><button type="button" aria-label="3" class="stars three-stars"></button></div>
+        <div class="vertical-line"><button type="button" aria-label="4" class="stars four-stars"></button></div>
+        <div class="vertical-line"><button type="button" aria-label="5" class="stars five-stars"></button></div>
       </div>
       <div class="slider-comment">
         <label for="comment"></label>
@@ -518,7 +518,6 @@ export default async function decorate($block) {
     ?? $rows[0].querySelector('h4');
   const headingTag = $heading ? $heading.tagName : 'h3';
   const $CTA = $rows[0].querySelector('a');
-  if ($CTA) $CTA.classList.add('xlarge', 'floating-cta-ignore');
   const $sheet = $rows[1].firstElementChild;
   actionTitle = $heading ? $heading.textContent.trim() : defaultTitle;
   sheet = $sheet.textContent.trim();

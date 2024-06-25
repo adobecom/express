@@ -1170,7 +1170,7 @@ async function decorateToolbar(block, props) {
   }
 }
 
-function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
+function initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev) {
   const onToggle = () => {
     block.classList.toggle('expanded');
 
@@ -1188,19 +1188,29 @@ function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
       }
     }
   };
+  const templateImages = block.querySelectorAll('.template');
 
-  const chev = block.querySelector('.toggle-button-chev');
-  templateTitle.addEventListener('click', () => onToggle());
-  chev.addEventListener('click', (e) => {
-    e.stopPropagation();
-    onToggle();
+  templateImages.forEach((template) => {
+    template.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
   });
 
+  toggleChev.addEventListener('click', onToggle);
   toggle.addEventListener('click', () => onToggle());
-  link.addEventListener('click', (e) => e.stopPropagation());
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.carousel-fader-right') || e.target.closest('.carousel-fader-left')) {
+      return;
+    }
+    if (e.target.closest('.template-x.holiday') || (
+      block.classList.contains('expanded')
+    )) {
+      onToggle();
+    }
+  });
 
   setTimeout(() => {
-    if (!block.matches(':hover')) {
+    if (block.classList.contains('auto-expand')) {
       onToggle();
     }
   }, 3000);
@@ -1229,7 +1239,7 @@ function decorateHoliday(block, props) {
   }
 
   if (templateXSection && templateXSection.querySelectorAll('div.block').length === 1) main.classList.add('with-holiday-templates-banner');
-  block.classList.add('expanded', props.textColor);
+  block.classList.add(props.textColor);
   toggleBar.classList.add('toggle-bar');
   topElements.append(heading);
   toggle.append(link, toggleChev);
@@ -1245,7 +1255,7 @@ function decorateHoliday(block, props) {
     toggleBar.append(toggle);
   }
 
-  initExpandCollapseToolbar(block, templateTitle, toggle, link);
+  initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev);
 }
 
 async function decorateTemplates(block, props) {

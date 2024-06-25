@@ -1,5 +1,4 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
 import {
   createTag,
   fetchPlaceholders,
@@ -15,6 +14,8 @@ import {
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
+import createToggle, { tagFreePlan } from './pricing-toggle.js';
+
 const blockKeys = [
   'header',
   'borderParams',
@@ -26,8 +27,6 @@ const blockKeys = [
   'featureList',
   'compare',
 ];
-const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
-const BILLING_PLAN = 'billing-plan';
 const SAVE_PERCENTAGE = '{{savePercentage}}';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
 const PRICE_TOKEN = '{{pricing}}';
@@ -66,7 +65,7 @@ function handleYear2PricingToken(pricingArea, y2p, priceSuffix) {
     );
     if (!year2PricingToken) return;
     if (y2p) {
-      year2PricingToken.textContent = year2PricingToken.textContent.replace(
+      year2PricingToken.innerHTML = year2PricingToken.innerHTML.replace(
         YEAR_2_PRICING_TOKEN,
         `${y2p} ${priceSuffix}`,
       );
@@ -160,6 +159,25 @@ function handleRawPrice(price, basePrice, response) {
     : price.classList.remove('price-active');
 }
 
+function adjustElementPosition() {
+  const elements = document.querySelectorAll('.tooltip-text');
+
+  if (elements.length === 0) return;
+  for (const element of elements) {
+    const rect = element.getBoundingClientRect();
+    if (rect.right > window.innerWidth) {
+      element.classList.remove('overflow-left');
+      element.classList.add('overflow-right');
+    } else if (rect.left < 0) {
+      element.classList.remove('overflow-right');
+      element.classList.add('overflow-left');
+    } else {
+      element.classList.remove('overflow-right');
+      element.classList.remove('overflow-left');
+    }
+  }
+}
+
 function handleTooltip(pricingArea) {
   const elements = pricingArea.querySelectorAll('p');
   const pattern = /\[\[([^]+)\]\]([^]+)\[\[\/([^]+)\]\]/g;
@@ -174,7 +192,8 @@ function handleTooltip(pricingArea) {
     }
   });
   if (!tooltip) return;
-  tooltipDiv.textContent = tooltipDiv.textContent.replace(pattern, '');
+
+  tooltipDiv.innerHTML = tooltipDiv.innerHTML.replace(pattern, '');
   const tooltipText = tooltip[2];
   tooltipDiv.classList.add('tooltip');
   const span = createTag('div', { class: 'tooltip-text' });
@@ -208,6 +227,7 @@ async function handlePrice(placeholders, pricingArea, specialPromo, legacyVersio
     placeholderArr,
     response,
   );
+
   const isPremiumCard = response.ooAvailable || false;
   const savePercentElem = pricingArea.querySelector('.card-offer');
   handleRawPrice(price, basePrice, response);
@@ -355,21 +375,7 @@ function decorateBasicTextSection(textElement, className, card) {
     card.append(textElement);
   }
 }
-// Subscribes to the block mediator in order to receive price updates
-// for each plan specified by authors
-function subscribeToBlockMediator(mPricingSection, yPricingSection) {
-  function reactToPlanChange({ newValue }) {
-    [mPricingSection, yPricingSection].forEach((section) => {
-      if (section.classList.contains(plans[newValue])) {
-        section.classList.remove('hide');
-      } else {
-        section.classList.add('hide');
-      }
-    });
-  }
-  reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
-  BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
-}
+
 // Links user to page where plans can be compared
 function decorateCompareSection(compare, el, card) {
   if (compare?.innerHTML.trim()) {
@@ -391,6 +397,7 @@ function decorateCompareSection(compare, el, card) {
     card.append(compare);
   }
 }
+
 // In legacy versions, the card element encapsulates all content
 // In new versions, the cardBorder element encapsulates all content instead
 async function decorateCard({
@@ -406,7 +413,6 @@ async function decorateCard({
 }, el, placeholders, legacyVersion) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
-
   const { specialPromo, cardWrapper } = legacyVersion
     ? decorateLegacyHeader(header, card)
     : decorateHeader(header, borderParams, card, cardBorder);
@@ -417,9 +423,11 @@ async function decorateCard({
     createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
   ]);
   mPricingSection.classList.add('monthly');
-  yPricingSection.classList.add('yearly', 'hide');
-  card.append(mPricingSection, yPricingSection);
-  subscribeToBlockMediator(mPricingSection, yPricingSection);
+  yPricingSection.classList.add('annually', 'hide');
+  const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
+  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID,
+    adjustElementPosition);
+  card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
   return cardWrapper;
@@ -527,7 +535,12 @@ export default async function init(el) {
         doSyncHeights();
         el.classList.remove('no-visible');
       }
+      adjustElementPosition();
     });
   });
+
   observer.observe(el);
+  tagFreePlan(cardsContainer);
+
+  window.addEventListener('resize', adjustElementPosition);
 }

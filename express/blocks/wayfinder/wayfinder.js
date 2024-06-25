@@ -4,6 +4,5 @@ export default function decorate(el) {
   rows[1].classList.add('cta-row');
   rows[1].querySelectorAll('a').forEach((a) => {
     a.classList.add('button');
-    a.classList.add('floating-cta-ignore');
   });
 }
