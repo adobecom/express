@@ -135,16 +135,14 @@ async function loadFEDS() {
   window.addEventListener('adobePrivacy:PrivacyReject', handleConsentSettings);
   window.addEventListener('adobePrivacy:PrivacyCustom', handleConsentSettings);
 
-  const isMegaNav = window.location.pathname.startsWith('/express')
-    || window.location.pathname.startsWith('/in/express')
-    || window.location.pathname.startsWith('/uk/express')
-    || window.location.pathname.startsWith('/education')
-    || window.location.pathname.startsWith('/in/education')
-    || window.location.pathname.startsWith('/uk/education')
-    || window.location.pathname.startsWith('/drafts');
-  const fedsExp = isMegaNav
-    ? 'adobe-express/ax-gnav-x'
-    : 'adobe-express/ax-gnav-x-row';
+  let fedsExp;
+  if (prefix === '') {
+    fedsExp = 'acom/cc-mega-menu/ax-gnav-x';
+  } else if (prefix === 'gb' || prefix === 'uk' || prefix === 'in') {
+    fedsExp = 'adobe-express/ax-gnav-x';
+  } else {
+    fedsExp = 'adobe-express/ax-gnav-x-row';
+  }
 
   window.fedsConfig = {
     ...(window.fedsConfig || {}),

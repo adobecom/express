@@ -3,7 +3,6 @@
 import {
   loadScript,
   getConfig,
-  getAssetDetails,
   getMetadata,
 } from './utils.js';
 import trackBranchParameters from './branchlinks.js';
@@ -259,23 +258,6 @@ export function appendLinkText(eventName, a) {
 export function trackButtonClick(a) {
   const fireEvent = () => {
     let adobeEventName = 'adobe.com:express:cta:';
-    let hemingwayAssetId;
-    let hemingwayAssetPath;
-    let hemingwayAssetPosition;
-
-    const hemingwayAsset = a.querySelector('picture,video,audio,img')
-      || a.closest('[class*="-container"],[class*="-wrapper"]')?.querySelector('picture,video,audio,img');
-    const block = a.closest('.block');
-    const urlConstructable = a.href || a.currentSrc || a.src;
-    if (hemingwayAsset && block && urlConstructable) {
-      const { assetId, assetPath } = getAssetDetails(hemingwayAsset);
-      hemingwayAssetPath = assetPath;
-      hemingwayAssetId = assetId;
-
-      const siblings = [...block
-        .querySelectorAll(`.${a.className.split(' ').join('.')}`)];
-      hemingwayAssetPosition = siblings.indexOf(a);
-    }
 
     const $templateContainer = a.closest('.template-list');
     const $tutorialContainer = a.closest('.tutorial-card');
@@ -428,17 +410,6 @@ export function trackButtonClick(a) {
                 eventName: adobeEventName,
               },
             },
-            ...(hemingwayAsset
-              ? {
-                asset: {
-                  assetInfo: {
-                    assetId: hemingwayAssetId,
-                    assetPath: hemingwayAssetPath,
-                    assetPosition: hemingwayAssetPosition,
-                  },
-                },
-              }
-              : {}),
           },
         },
       },
