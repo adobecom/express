@@ -50,8 +50,12 @@ body.no-desktop-brand-header header {
 }
 
 .marquee .express-logo {
-  width: 168px;
+  width: unset;
   height: 30px;
+}
+
+.marquee.no-logo .express-logo {
+  display: none;
 }
 
 .marquee .marquee-foreground > :first-child {
