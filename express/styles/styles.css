@@ -483,6 +483,7 @@ main a:any-link {
 
 main img {
   max-width: 100%;
+  height: auto;
 }
 
 main .section {
@@ -982,7 +983,7 @@ main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .
   main .block .free-plan-widget .plan-widget-tag {
     text-align: left;
   }
-  
+
   main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf, .link-list, .wayfinder, .ratings) a.button.same-as-floating-button-CTA {
     display: inline-block;
   }
