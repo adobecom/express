@@ -54,8 +54,8 @@ body.no-desktop-brand-header header {
   height: 30px;
 }
 
-.marquee.no-logo .express-logo {
-  display: none;
+.marquee .express-logo.eyebrow-margin {
+  margin-bottom: 16px;
 }
 
 .marquee .marquee-foreground > :first-child {
