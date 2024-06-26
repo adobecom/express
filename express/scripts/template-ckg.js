@@ -115,10 +115,10 @@ async function updateLinkList(container, linkPill, list) {
     list.forEach((d) => {
       const { prefix } = getConfig().locale;
       const topics = getMetadata('topics') !== '" "' ? `${getMetadata('topics')?.replace(/[$@%"]/g, '')}` : '';
-      const topicsQuery = `${topics} ${d.displayValue.toLowerCase()}`.split(' ')
-        .filter((item, i, allItems) => i === allItems.indexOf(item))
+      const topicsQuery = `${topics} ${d.displayValue.toLowerCase()}`
+        .split(' ')
         .join(' ')
-        .replace(currentTasks, '')
+        .replace(currentTasks === ' ' ? '' : currentTasks, '')
         .replace(currentTasksX, '')
         .trim();
 
