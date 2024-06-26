@@ -349,20 +349,20 @@ async function handleAnimation(div, typeHint, block, animations) {
   div.remove();
 }
 
-const LOGO_NAME = 'adobe-express-logo';
-const LOGO_WHITE_NAME = 'adobe-express-logo-white';
+const LOGO = 'adobe-express-logo';
+const LOGO_WHITE = 'adobe-express-logo-white';
 function injectExpressLogo(block, wrapper) {
   if (!['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) return;
-  const logo = getIconElement(block.classList.contains('dark') && window.innerWidth >= 900 ? LOGO_WHITE_NAME : LOGO_NAME);
   const mediaQuery = window.matchMedia('(min-width: 900px)');
+  const logo = getIconElement(block.classList.contains('dark') && mediaQuery.matches ? LOGO_WHITE : LOGO);
   mediaQuery.addEventListener('change', (e) => {
     if (!block.classList.contains('dark')) return;
     if (e.matches) {
-      logo.src = logo.src.replace(`${LOGO_NAME}.svg`, `${LOGO_WHITE_NAME}.svg`);
-      logo.alt = logo.alt.replace(LOGO_NAME, LOGO_WHITE_NAME);
+      logo.src = logo.src.replace(`${LOGO}.svg`, `${LOGO_WHITE}.svg`);
+      logo.alt = logo.alt.replace(LOGO, LOGO_WHITE);
     } else {
-      logo.src = logo.src.replace(`${LOGO_WHITE_NAME}.svg`, `${LOGO_NAME}.svg`);
-      logo.alt = logo.alt.replace(LOGO_WHITE_NAME, LOGO_NAME);
+      logo.src = logo.src.replace(`${LOGO_WHITE}.svg`, `${LOGO}.svg`);
+      logo.alt = logo.alt.replace(LOGO_WHITE, LOGO);
     }
   });
   logo.classList.add('express-logo');
