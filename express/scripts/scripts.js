@@ -7,7 +7,6 @@ import {
   stamp,
   registerPerformanceLogger,
   setConfig,
-  loadStyle,
   createTag,
   getConfig,
 } from './utils.js';
@@ -101,16 +100,12 @@ const eagerLoad = (img) => {
   }
 }());
 
-const showNotifications = () => {
-  const url = new URL(window.location.href);
-  const notification = url.searchParams.get('notification');
-  if (notification) {
+const loadExpressMartechSettings = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('martech') !== 'off' || getMetadata('martech') === 'off') {
     const handler = () => {
-      loadStyle('/express/features/notification/notification.css', () => {
-        import('../features/notification/notification.js').then((mod) => {
-          mod.default(notification);
-          window.removeEventListener('milo:LCP:loaded', handler);
-        });
+      import('./instrument.js').then((mod) => {
+        mod.default();
       });
     };
     window.addEventListener('milo:LCP:loaded', handler);
@@ -159,12 +154,9 @@ const listenAlloy = () => {
       if (breadcrumbs && breadcrumbs.length) document.body.classList.add('breadcrumbs-spacing');
     });
   } else if (getMetadata('breadcrumbs') === 'on' && !!getMetadata('breadcrumbs-base') && (!!getMetadata('short-title') || !!getMetadata('breadcrumbs-page-title'))) document.body.classList.add('breadcrumbs-spacing');
-  showNotifications();
+  loadExpressMartechSettings();
   loadLana({ clientId: 'express' });
   listenAlloy();
-  import('./instrument.js').then((mod) => {
-    mod.default();
-  });
   await loadArea();
 
   import('./express-delayed.js').then((mod) => {
