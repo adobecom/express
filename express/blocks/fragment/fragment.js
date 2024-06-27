@@ -70,6 +70,33 @@ export async function customFetch({ resource, withCacheRules }) {
   return fetch(resource, options);
 }
 
+function legacyFragUnfold(fragment, a) {
+  if (a.getAttribute('ax-old-fragment') || fragment.getAttribute('data-manifest-id')) {
+    const fragmentSections = [...fragment.querySelectorAll(':scope > div')];
+    const firstFragSection = fragmentSections[0];
+    const blockSection = fragment.closest('.section');
+    // merge fragment's first section with current section
+    for (const child of blockSection.childNodes) {
+      if (child.contains(fragment) || child === fragment) {
+        child.after(...firstFragSection.childNodes);
+        break;
+      }
+    }
+    blockSection.classList.add(...firstFragSection.classList);
+    let lastSection = blockSection;
+    // unfold rest
+    fragmentSections.slice(1).forEach((sec) => {
+      lastSection.after(sec);
+      lastSection = sec;
+    });
+    if (fragment.parentElement !== blockSection) {
+      fragment.parentElement.remove();
+    } else {
+      fragment.remove();
+    }
+  }
+}
+
 export default async function init(a) {
   const { decorateArea, mep } = getConfig();
   let relHref = localizeLink(a.href);
@@ -144,24 +171,7 @@ export default async function init(a) {
 
   await loadArea(fragment);
   // TODO: backward compatability: unlike milo, old ax fragments unfold themselves
-  if (a.getAttribute('ax-old-fragment') || fragment.getAttribute('data-manifest-id')) {
-    const fragmentSections = [...fragment.querySelectorAll(':scope > div')];
-    const blockSection = fragment.closest('.section');
-    // merge fragment's first section with current section
-    blockSection.classList.add(...fragmentSections[0].classList);
-    blockSection.append(...fragmentSections[0].childNodes);
-    let lastSection = blockSection;
-    // unfold rest
-    fragmentSections.slice(1).forEach((sec) => {
-      lastSection.after(sec);
-      lastSection = sec;
-    });
-    if (fragment.parentElement !== blockSection) {
-      fragment.parentElement.remove();
-    } else {
-      fragment.remove();
-    }
-  }
+  legacyFragUnfold(fragment, a);
 }
 
 class Node {
