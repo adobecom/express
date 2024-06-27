@@ -990,7 +990,7 @@ function decorateSection(section, idx) {
     });
     sectionMeta.remove();
   }
-  const blocks = section.querySelectorAll(':scope > div[class]:not(.content)');
+  const blocks = section.querySelectorAll(':scope > div[class]:not(.default-content-wrapper)');
 
   const blockLinks = [...blocks].reduce((blkLinks, block) => {
     links.filter((link) => block.contains(link))
