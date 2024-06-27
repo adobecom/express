@@ -5,6 +5,8 @@ div[data-audience="mobile"].section.section-wrapper.template-x-container {
     padding-top: 0;
 }
 
+
+
 /* holiday special positioning */
 main.with-holiday-templates-banner > div[class='section section-wrapper template-x-container'] {
     position: absolute;
@@ -21,6 +23,10 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
 
 .template-x > .default-content-wrapper {
     padding: 0 15px;
+}
+
+.template-x.top-padding {
+    padding-top: 40px;
 }
 
 .template-x .default-content-wrapper h2,
