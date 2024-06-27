@@ -153,6 +153,17 @@ function cleanPayload(impression, eventType) {
   return impression;
 }
 
+function safelyFireAnalyticsEvent(event) {
+  // eslint-disable-next-line no-underscore-dangle
+  if (window._satellite?.track) {
+    event();
+  } else {
+    window.addEventListener('alloy_sendEvent', () => {
+      event();
+    }, { once: true });
+  }
+}
+
 // trackSearch action logs a new search ID each time if an existing one isn't provided.
 export function trackSearch(eventName, searchID = generateSearchId()) {
   updateImpressionCache({
@@ -162,29 +173,31 @@ export function trackSearch(eventName, searchID = generateSearchId()) {
 
   // eslint-disable-next-line no-undef
   const impression = cleanPayload(structuredClone(BlockMediator.get('templateSearchSpecs')), eventName);
-  if (!window.marketingtech) return;
-  _satellite.track('event', {
-    xdm: {},
-    data: {
-      eventType: 'web.webinteraction.linkClicks',
-      web: {
-        webInteraction: {
-          name: eventName,
-          linkClicks: {
-            value: 1,
-          },
-          type: 'other',
-        },
-      },
-      _adobe_corpnew: {
-        digitalData: {
-          page: {
-            pageInfo: impression,
+  function fireEvent() {
+    _satellite.track('event', {
+      xdm: {},
+      data: {
+        eventType: 'web.webinteraction.linkClicks',
+        web: {
+          webInteraction: {
+            name: eventName,
+            linkClicks: {
+              value: 1,
+            },
+            type: 'other',
           },
         },
+        _adobe_corpnew: {
+          digitalData: {
+            page: {
+              pageInfo: impression,
+            },
+          },
+        },
       },
-    },
-  });
+    });
+  }
+  safelyFireAnalyticsEvent(fireEvent);
   // todo: also send the search ID to a separate event. Ask Linh Nguyen.
 }
 
