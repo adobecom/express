@@ -19,7 +19,6 @@ import {
   isValidTemplate,
   fetchTemplatesCategoryCount,
   gatherPageImpression,
-  removeOptionalImpressionFields,
   trackSearch,
   updateImpressionCache,
   generateSearchId,
@@ -644,7 +643,6 @@ async function decorateCategoryList(block, props) {
         collection_path: window.location.pathname,
         content_category: 'templates',
       });
-      removeOptionalImpressionFields('search-inspire');
       trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
     }, { passive: true });
   });
@@ -663,7 +661,6 @@ async function decorateCategoryList(block, props) {
         collection_path: window.location.pathname,
         content_category: 'templates',
       });
-      removeOptionalImpressionFields('search-inspire');
       trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
     }, { passive: true });
   });
@@ -976,7 +973,6 @@ async function initFilterSort(block, props, toolBar) {
                 content_category: 'templates',
               },
             });
-            removeOptionalImpressionFields('search-inspire');
             trackSearch('search-inspire');
             await redrawTemplates(block, props, toolBar);
             trackSearch('view-search-results', BlockMediator.get('templateSearchSpecs').search_id);
@@ -1007,7 +1003,6 @@ async function initFilterSort(block, props, toolBar) {
               content_category: 'templates',
             },
           });
-          removeOptionalImpressionFields('search-inspire');
           trackSearch('search-inspire');
           await redrawTemplates(block, props, toolBar);
         }
@@ -1485,7 +1480,6 @@ function importSearchBar(block, blockMediator) {
             search_type: 'direct',
             search_keyword: searchBar.value,
           });
-          removeOptionalImpressionFields('search-inspire');
           await onSearchSubmit();
         });
 

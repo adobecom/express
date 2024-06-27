@@ -126,13 +126,12 @@ export function updateImpressionCache(newVals) {
   });
 }
 
-export function removeOptionalImpressionFields(eventType) {
-  const impression = BlockMediator.get('templateSearchSpecs');
-
+function cleanPayload(impression, eventType) {
   if (eventType === 'search-inspire') {
     delete impression.content_id;
     delete impression.keyword_rank;
     delete impression.prefix_query;
+    delete impression.result_count;
 
     if (impression.search_type === 'adjust-filter') {
       delete impression.suggestion_list_shown;
@@ -151,7 +150,7 @@ export function removeOptionalImpressionFields(eventType) {
     delete impression.prefix_query;
     delete impression.suggestion_list_shown;
   }
-  BlockMediator.set('templateSearchSpecs', impression);
+  return impression;
 }
 
 // trackSearch action logs a new search ID each time if an existing one isn't provided.
@@ -161,7 +160,8 @@ export function trackSearch(eventName, searchID = generateSearchId()) {
     search_id: searchID,
   });
 
-  const impression = BlockMediator.get('templateSearchSpecs');
+  // eslint-disable-next-line no-undef
+  const impression = cleanPayload(structuredClone(BlockMediator.get('templateSearchSpecs')), eventName);
   if (!window.marketingtech) return;
   _satellite.track('event', {
     xdm: {},

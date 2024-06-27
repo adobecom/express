@@ -7,7 +7,7 @@ import {
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
-import { removeOptionalImpressionFields, trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
+import { trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
 import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -184,7 +184,6 @@ function initSearchFunction(block) {
 
   searchForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    removeOptionalImpressionFields('search-inspire');
     updateImpressionCache({
       status_filter: 'free',
       type_filter: 'all',
