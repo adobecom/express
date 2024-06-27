@@ -927,7 +927,8 @@ function decorateContent(el) {
     }
   }
   const block = document.createElement('div');
-  block.className = 'content';
+  // FIXME: in Milo, this className is 'content'
+  block.className = 'default-content-wrapper';
   block.append(...children);
   block.dataset.block = '';
   return block;
