@@ -7,7 +7,6 @@ import {
   stamp,
   registerPerformanceLogger,
   setConfig,
-  loadStyle,
   createTag,
   getConfig,
 } from './utils.js';
@@ -46,13 +45,15 @@ const config = {
   stage: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
   prod: { express: 'express.adobe.com', commerce: 'commerce.adobe.com' },
   locales,
-  codeRoot: '/express/',
+  codeRoot: '/express',
   jarvis: {
     id: 'Acom_Express',
     version: '1.0',
     onDemand: !jarvisImmediatelyVisible,
   },
   links: 'on',
+  imsClientId: 'AdobeExpressWeb',
+  imsScope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
 };
 
 window.RUM_GENERATION = 'ccx-gen-4-experiment-high-sample-rate';
@@ -99,16 +100,12 @@ const eagerLoad = (img) => {
   }
 }());
 
-const showNotifications = () => {
-  const url = new URL(window.location.href);
-  const notification = url.searchParams.get('notification');
-  if (notification) {
+const loadExpressMartechSettings = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('martech') !== 'off' || getMetadata('martech') === 'off') {
     const handler = () => {
-      loadStyle('/express/features/notification/notification.css', () => {
-        import('../features/notification/notification.js').then((mod) => {
-          mod.default(notification);
-          window.removeEventListener('milo:LCP:loaded', handler);
-        });
+      import('./instrument.js').then((mod) => {
+        mod.default();
       });
     };
     window.addEventListener('milo:LCP:loaded', handler);
@@ -132,14 +129,22 @@ const listenAlloy = () => {
   }, { once: true });
   setTimeout(() => {
     if (!loaded) {
-      window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`);
+      window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`, { sampleRate: 0.01 });
       resolver();
     }
-  }, 5000);
+  }, 3000);
 };
 
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
+  window.hlx = window.hlx || {};
+  const params = new URLSearchParams(window.location.search);
+  const experimentParams = params.get('experiment');
+  ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
+    window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
+  });
+  window.hlx.experimentParams = experimentParams;
+  window.hlx.init = true;
   setConfig(config);
 
   if (getMetadata('hide-breadcrumbs') !== 'true' && !getMetadata('breadcrumbs') && !window.location.pathname.endsWith('/express/')) {
@@ -149,10 +154,9 @@ const listenAlloy = () => {
       if (breadcrumbs && breadcrumbs.length) document.body.classList.add('breadcrumbs-spacing');
     });
   } else if (getMetadata('breadcrumbs') === 'on' && !!getMetadata('breadcrumbs-base') && (!!getMetadata('short-title') || !!getMetadata('breadcrumbs-page-title'))) document.body.classList.add('breadcrumbs-spacing');
-  showNotifications();
+  loadExpressMartechSettings();
   loadLana({ clientId: 'express' });
   listenAlloy();
-
   await loadArea();
 
   import('./express-delayed.js').then((mod) => {
