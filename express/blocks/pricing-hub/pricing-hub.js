@@ -362,7 +362,7 @@ function decorateMidSection($block) {
   const $midSectionAnimation = createTag('span', { class: 'pricing-hub-lottie' });
 
   $midSection.classList.add('pricing-hub-midsection');
-  $midSectionAnimation.innerHTML = getLottie('purple-arrows', '/express/blocks/pricing-hub/purple-arrows.json');
+  $midSectionAnimation.appendChild(getLottie('purple-arrows', '/express/blocks/pricing-hub/purple-arrows.json'));
   $midSectionHeader.append($midSectionAnimation);
   lazyLoadLottiePlayer();
 }
