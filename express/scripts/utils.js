@@ -2556,7 +2556,7 @@ async function decorateExpressPage(main) {
   }
   await loadTemplateScript();
   const footer = document.querySelector('footer');
-  delete footer.dataset.status;
+  if (footer && footer.dataset) delete footer.dataset.status;
 
   addPromotion();
   loadStyle('/express/styles/lazy-styles.css');
