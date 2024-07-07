@@ -185,9 +185,17 @@ async function fetchTemplatesNoToolbar(props) {
   if (prefLangRes.items?.length >= limit) return { response: prefLangRes };
 
   const backupLangRes = await backupLangPromise;
-  const mergedItems = [...prefLangRes.items, ...backupLangRes.items]
-    .sort((a, b) => a.id.localeCompare(b.id))
-    .filter((item, i, items) => !i || item.id !== items[i - 1].id) // dedup
+  const dedup = (items) => {
+    const [set, arr] = [new Set(), []];
+    items.forEach((item) => {
+      if (!set.has(item.id)) {
+        set.add(item.id);
+        arr.push(item);
+      }
+    });
+    return arr;
+  };
+  const mergedItems = dedup([...prefLangRes.items, ...backupLangRes.items])
     .slice(0, limit);
   return {
     response: {
