@@ -1,6 +1,8 @@
 import { createTag } from '../../scripts/utils.js';
 import { isVideoLink } from '../shared/video.js';
 
+
+
 function renderImageOrVideo(media) {
   let updatedMedia;
   if (media.tagName.toUpperCase() === 'PICTURE') {
@@ -23,11 +25,15 @@ function renderGridNode({
   title,
   subText,
   cta,
-}, index) {
+}, index,color) {
   const gridItem = createTag('a', { class: `grid-item item-${index + 1}` });
   const updatedMedia = renderImageOrVideo(media);
   gridItem.href = cta?.href;
-
+  if (color){
+    console.log('------')
+    console.log(color)
+    gridItem.style = `background-image:${color}`
+  }
   if (title) gridItem.append(title);
   if (subText) gridItem.append(subText);
   if (cta) {
@@ -44,40 +50,55 @@ function renderGridNode({
   return gridItem;
 }
 
-const decorateLoadMoreSection = (block, loadMoreInfo) => {
+const properties = ["button-text", "card-image", "button-image", "button-color", "card-color"]
+
+const extractProperties = (block) => {
+  let rows = Array.from(block.querySelectorAll(':scope > div')) 
+
+  let allProperties = {}  
+  rows.filter((row) =>  { 
+    if( row?.children?.length === 2 && properties.includes(row?.children[0]?.textContent.toLowerCase())){
+     allProperties[row.children[0].textContent.toLowerCase()] = row.children[1].textContent
+      block.removeChild(row)
+    }
+  }) 
+  return allProperties
+}
+
+const decorateLoadMoreSection = (block, text,color) => {
   const loadMoreWrapper = createTag('div', { class: 'load-more-div' });
   const loadMoreButton = createTag('button', { class: 'load-more-button' });
   const loadMoreText = createTag('span', { class: 'load-more-text' });
   const toggleChev = createTag('div', { class: 'load-more-chev' });
-
-  [loadMoreText.textContent] = loadMoreInfo.text;
-  loadMoreButton.append(loadMoreText, toggleChev);
+ 
+  loadMoreButton.append("Load More", toggleChev); 
   loadMoreWrapper.append(loadMoreButton);
-  block.append(loadMoreWrapper);
-
+  block.append(loadMoreWrapper); 
   loadMoreButton.addEventListener('click', () => {
     block.classList.toggle('expanded');
     if (block.classList.contains('expanded')) {
-      [, loadMoreText.textContent] = loadMoreInfo.text;
+      [, loadMoreText.textContent] = text || "Load More"
     } else {
-      [loadMoreText.textContent] = loadMoreInfo.text;
+      [loadMoreText.textContent] =text || "Load More"
     }
   });
+  console.log(text,color)
+  if (color){
+    loadMoreButton.style = "background-image:" + color;
+  }
 };
-
-function getLoadMoreText(rows) {
-  const loadMoreText = rows.pop().textContent.split('|').map((item) => item.trim());
-  const loadMore = { text: loadMoreText };
-  return loadMore;
-}
+ 
 
 export default function decorate(block) {
+  const properties = extractProperties(block)
+
   const inputRows = block.querySelectorAll(':scope > div > div');
+
   block.innerHTML = '';
   const rows = Array.from(inputRows);
-  const heading = rows.shift();
-  const loadMoreSection = rows.length > 4 ? getLoadMoreText(rows) : null;
-  const gridProps = rows.map((row) => {
+  const heading = rows.shift(); 
+  
+  const gridProps = rows.map((row) => { 
     const subText = row.querySelector('p');
     const media = row.querySelector('p:last-of-type > a, p:last-of-type > picture');
     const title = row.querySelector('h2');
@@ -89,15 +110,9 @@ export default function decorate(block) {
       cta,
     };
   });
-
-  if (gridProps.length > 12) {
-    throw new Error(
-      `Authoring issue: Feature Grid Fixed block should have 12 children. Received: ${gridProps.length}`,
-    );
-  }
-
+  console.log(properties)
   const gridContainer = createTag('div', { class: 'grid-container' });
-  const gridItems = gridProps.map((props, index) => renderGridNode(props, index));
+  const gridItems = gridProps.map((props, index) => renderGridNode(props, index, properties['card-image'] || properties['card-color']));
   heading.classList.add('heading');
 
   gridItems.forEach((gridItem) => {
@@ -105,8 +120,9 @@ export default function decorate(block) {
   });
 
   block.append(heading, gridContainer);
-
-  if (gridProps.length > 4) {
-    decorateLoadMoreSection(block, loadMoreSection);
+  if (rows.length > 4){
+    decorateLoadMoreSection(block, properties['button-text'], properties['button-image'] || properties['button-color']);
   }
+ 
+  
 }
