@@ -46,6 +46,7 @@ const config = {
   prod: { express: 'express.adobe.com', commerce: 'commerce.adobe.com' },
   locales,
   codeRoot: '/express',
+  contentRoot: '/express',
   jarvis: {
     id: 'Acom_Express',
     version: '1.0',
