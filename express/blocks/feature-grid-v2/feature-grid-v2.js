@@ -28,8 +28,6 @@ function renderGridNode({
   const updatedMedia = renderImageOrVideo(media);
   gridItem.href = cta?.href;
   if (color) {
-    console.log('------');
-    console.log(color);
     gridItem.style = `background-image:${color}`;
   }
   if (title) gridItem.append(title);
@@ -86,7 +84,6 @@ const decorateLoadMoreSection = (block, text, color) => {
       [loadMoreText.textContent] = text || 'Load More';
     }
   });
-  console.log(text, color);
   if (color) {
     loadMoreButton.style = `background-image:${color}`;
   }
