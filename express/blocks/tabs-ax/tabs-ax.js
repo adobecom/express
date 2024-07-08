@@ -2,11 +2,9 @@
  * tabs - consonant v6
  * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Tab_Role
  */
-import { createTag } from '../../scripts/utils.js';
+import { createTag, MILO_EVENTS } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { trackButtonClick } from '../../scripts/instrument.js';
-
-const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
 
 const isElementInContainerView = (targetEl) => {
   const rect = targetEl.getBoundingClientRect();
