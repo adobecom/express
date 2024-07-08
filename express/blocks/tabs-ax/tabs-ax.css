@@ -12,21 +12,6 @@
   --tabs-pill-bg-color-hover: #dadada;
   --tabs-pill-bg-color-active: #c6c6c6;
   --tabs-pill-text-color: #131313;
-
-  /* @TODO REMOVE IMPORTS DIRECTLY FROM MILO STYLE.CSS */
-
-  /* Spacing */
-  --spacing-xxs: 8px;
-  --spacing-xs: 16px;
-  --spacing-s: 24px;
-  --spacing-m: 32px;
-  --spacing-l: 40px;
-  --spacing-xl: 48px;
-  --spacing-xxl: 56px;
-  --spacing-xxxl: 80px;
-
-  /* grid sizes */
-  --grid-container-width: 83.4%;
 }
 
 :root .dark {

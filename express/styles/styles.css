@@ -86,6 +86,19 @@
   --grid-margins-width-10: calc((100vw - (var(--grid-column-width) * 10)) / 2);
   --grid-margins-width-8: calc((100vw - (var(--grid-column-width) * 8)) / 2);
   --grid-margins-width-6: calc((100vw - (var(--grid-column-width) * 6)) / 2);
+
+  /* Spacing (imported from Milo) */
+  --spacing-xxs: 8px;
+  --spacing-xs: 16px;
+  --spacing-s: 24px;
+  --spacing-m: 32px;
+  --spacing-l: 40px;
+  --spacing-xl: 48px;
+  --spacing-xxl: 56px;
+  --spacing-xxxl: 80px;
+
+  /* grid sizes */
+  --grid-container-width: 83.4%;
 }
 
 @media (min-width: 900px) {
