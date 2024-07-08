@@ -78,6 +78,14 @@
   /* 28px */
   --heading-font-size-s: 1.375rem;
   /* 22px */
+
+  /* grid sizes (imported from Milo) */
+  --grid-container-width: 83.4%;
+  --grid-column-width: calc(var(--grid-container-width) / 12);
+  --grid-margins-width: calc((100vw - var(--grid-container-width)) / 2);
+  --grid-margins-width-10: calc((100vw - (var(--grid-column-width) * 10)) / 2);
+  --grid-margins-width-8: calc((100vw - (var(--grid-column-width) * 8)) / 2);
+  --grid-margins-width-6: calc((100vw - (var(--grid-column-width) * 6)) / 2);
 }
 
 @media (min-width: 900px) {
@@ -1263,4 +1271,48 @@ main > div[class="section section-wrapper columns-container"][id^="column-"] {
 body.has-floating-panel #adbMsgClientWrapper .adbmsgAuthoredBotPopUpContainer.outwardAnimate,
 body.has-floating-panel #adbMsgClientWrapper #adbmsgCta {
   bottom: 140px!important;
+}
+ 
+.section.masonry-layout .grid-span-1 {
+  grid-column: span 1;
+}
+
+.section.masonry-layout .grid-span-2 {
+  grid-column: span 2;
+}
+
+.section.masonry-layout .grid-span-3 {
+  grid-column: span 3;
+}
+
+.section.masonry-layout .grid-span-4 {
+  grid-column: span 4;
+}
+
+.section.masonry-layout .grid-span-5 {
+  grid-column: span 5;
+}
+
+.section.masonry-layout .grid-span-6 {
+  grid-column: span 6;
+}
+
+.section.masonry-layout .grid-span-7 {
+  grid-column: span 7;
+}
+
+.section.masonry-layout .grid-span-8 {
+  grid-column: span 8;
+}
+
+.section.masonry-layout .grid-span-9 {
+  grid-column: span 9;
+}
+
+.section.masonry-layout .grid-span-10 {
+  grid-column: span 10;
+}
+
+.section.masonry-layout .grid-span-11 {
+  grid-column: span 11;
 }
