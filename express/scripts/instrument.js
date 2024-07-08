@@ -3,14 +3,10 @@
 import {
   loadScript,
   getConfig,
-  checkTesting,
-  getAssetDetails,
   getMetadata,
 } from './utils.js';
 import trackBranchParameters from './branchlinks.js';
 
-const usp = new URLSearchParams(window.location.search);
-const martech = usp.get('martech');
 const w = window;
 if (!w.alloy_all) w.alloy_all = {};
 const d = document;
@@ -78,46 +74,6 @@ if (
 } else {
   sparkLandingPageType = 'other';
 }
-
-// alloy feature flag
-let martechURL;
-if (
-  (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-  || martech === 'alloy-qa'
-) {
-  martechURL = 'https://www.adobe.com/marketingtech/main.standard.qa.js';
-} else {
-  martechURL = 'https://www.adobe.com/marketingtech/main.standard.min.js';
-}
-
-window.marketingtech = {
-  adobe: {
-    launch: {
-      url: (
-        (
-          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-          || martech === 'alloy-qa'
-        )
-          ? 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-2c94beadc94f-development.js'
-          : 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-5dd5dd2177e6.min.js'
-      ),
-    },
-    alloy: {
-      edgeConfigId: (
-        (
-          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-          || martech === 'alloy-qa'
-        )
-          ? '8d2805dd-85bf-4748-82eb-f99fdad117a6'
-          : '2cba807b-7430-41ae-9aac-db2b0da742d5'
-      ),
-    },
-    target: checkTesting(),
-    audienceManager: true,
-  },
-};
-// w.targetGlobalSettings = w.targetGlobalSettings || {};
-// w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
 
 export function getExpressLandingPageType() {
   return sparkLandingPageType;
@@ -302,23 +258,6 @@ export function appendLinkText(eventName, a) {
 export function trackButtonClick(a) {
   const fireEvent = () => {
     let adobeEventName = 'adobe.com:express:cta:';
-    let hemingwayAssetId;
-    let hemingwayAssetPath;
-    let hemingwayAssetPosition;
-
-    const hemingwayAsset = a.querySelector('picture,video,audio,img')
-      || a.closest('[class*="-container"],[class*="-wrapper"]')?.querySelector('picture,video,audio,img');
-    const block = a.closest('.block');
-    const urlConstructable = a.href || a.currentSrc || a.src;
-    if (hemingwayAsset && block && urlConstructable) {
-      const { assetId, assetPath } = getAssetDetails(hemingwayAsset);
-      hemingwayAssetPath = assetPath;
-      hemingwayAssetId = assetId;
-
-      const siblings = [...block
-        .querySelectorAll(`.${a.className.split(' ').join('.')}`)];
-      hemingwayAssetPosition = siblings.indexOf(a);
-    }
 
     const $templateContainer = a.closest('.template-list');
     const $tutorialContainer = a.closest('.tutorial-card');
@@ -471,17 +410,6 @@ export function trackButtonClick(a) {
                 eventName: adobeEventName,
               },
             },
-            ...(hemingwayAsset
-              ? {
-                asset: {
-                  assetInfo: {
-                    assetId: hemingwayAssetId,
-                    assetPath: hemingwayAssetPath,
-                    assetPosition: hemingwayAssetPosition,
-                  },
-                },
-              }
-              : {}),
           },
         },
       },
@@ -569,7 +497,9 @@ function decorateAnalyticsEvents() {
   });
 }
 
-function martechLoadedCB() {
+export default function martechLoadedCB() {
+  setDataAnalyticsAttributesForMartech();
+
   //------------------------------------------------------------------------------------
   // Fire extra spark events
   //------------------------------------------------------------------------------------
@@ -588,54 +518,7 @@ function martechLoadedCB() {
     sendEventToAnalytics('displayPurchasePanel');
   }
 
-  const processed = {};
-  function initHemingway() {
-    // poll the dataLayer every 2 seconds
-    setInterval(() => {
-      // loop through each of the events in the dataLayer
-      window?.dataLayer?.forEach((evt) => {
-        // don't continue if it has already been processed
-        if (processed[evt.assetId]) {
-          return;
-        }
-        // mark as processed
-        processed[evt.assetId] = 1;
-        // track a new event
-        _satellite.track('event', {
-          data: {
-            eventType: 'web.webinteraction.linkClicks',
-            web: {
-              webInteraction: {
-                name: 'assetView',
-                linkClicks: {
-                  value: 1,
-                },
-                type: 'other',
-              },
-            },
-            _adobe_corpnew: {
-              digitalData: {
-                primaryEvent: {
-                  eventInfo: {
-                    eventName: 'assetView',
-                  },
-                },
-                asset: {
-                  assetInfo: {
-                    assetId: evt.assetId,
-                    assetPath: evt.assetPath,
-                  },
-                },
-              },
-            },
-          },
-        });
-      });
-    }, 2000);
-  }
-
   decorateAnalyticsEvents();
-  initHemingway();
 
   const ENABLE_PRICING_MODAL_AUDIENCE = 'enablePricingModal';
   const RETURNING_VISITOR_SEGMENT_ID = 23153796;
@@ -696,11 +579,11 @@ function martechLoadedCB() {
     getSegments(data?.identity?.ECID || null);
   }
 
-  __satelliteLoadedCallback(getAudiences);
-}
-
-export default async function initMartech() {
-  setDataAnalyticsAttributesForMartech();
-  await loadScript(martechURL);
-  return martechLoadedCB();
+  if (window.__satelliteLoadedCallback) {
+    __satelliteLoadedCallback(getAudiences);
+  } else {
+    window.addEventListener('alloy_sendEvent', () => {
+      __satelliteLoadedCallback(getAudiences);
+    }, { once: true });
+  }
 }
