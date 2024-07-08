@@ -96,6 +96,37 @@
   --spacing-xl: 48px;
   --spacing-xxl: 56px;
   --spacing-xxxl: 80px;
+
+  /* grid sizes */
+  --grid-container-width: 83.4%;
+
+    /* Tab Colors */
+  --tabs-active-color: #1473e6;
+  --tabs-border-color: #d8d8d8;
+  --tabs-border-hover-color: #acacac;
+  --tabs-text-color: #7e7e7e;
+  --tabs-active-text-color: #2C2C2C;
+  --tabs-bg-color: #f1f1f1;
+  --tabs-active-bg-color: #fff;
+  --tabs-list-bg-gradient: linear-gradient(rgb(255 255 255 / 0%) 60%, rgb(245 245 245 / 80%));
+  --tabs-pill-bg-color: #e1e1e1;
+  --tabs-pill-bg-color-hover: #dadada;
+  --tabs-pill-bg-color-active: #c6c6c6;
+  --tabs-pill-text-color: #131313;
+
+}
+
+:root .dark {
+  --tabs-border-color: rgb(56 56 56);
+  --tabs-text-color: #cdcdcd;
+  --tabs-active-text-color: #fff;
+  --tabs-bg-color: #1a1a1a;
+  --tabs-active-bg-color: #111;
+  --tabs-list-bg-gradient: linear-gradient(rgb(0 0 0 / 0%) 60%, rgb(0 0 0 / 80%));
+  --tabs-pill-bg-color: #555;
+  --tabs-pill-bg-color-hover: #666;
+  --tabs-pill-bg-color-active: #444;
+  --tabs-pill-text-color: #fff;
 }
 
 @media (min-width: 900px) {
