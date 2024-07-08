@@ -23,6 +23,14 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     padding: 0 15px;
 }
 
+.template-x.top-padding {
+    padding-top: 40px;
+}
+
+.template-x.bottom-padding {
+    padding-bottom: 40px;
+}
+
 .template-x .default-content-wrapper h2,
 .template-x .default-content-wrapper p {
     margin: 0;

@@ -4,7 +4,7 @@ import {
   addAnimationToggle,
   createOptimizedPicture,
   createTag,
-  decorateMain,
+  loadArea,
   fetchPlaceholders,
   fetchBlockFragDecorated,
   fetchRelevantRows,
@@ -255,7 +255,7 @@ async function fetchBlueprint(pathname) {
   const body = await resp.text();
   const $main = createTag('main');
   $main.innerHTML = body;
-  await decorateMain($main);
+  await loadArea($main);
 
   window.spark.$blueprint = $main;
   return ($main);
