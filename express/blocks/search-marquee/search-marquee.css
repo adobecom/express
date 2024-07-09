@@ -50,7 +50,7 @@ main .search-marquee .search-dropdown-container {
     width: 100%;
     box-sizing: border-box;
     left: 0;
-    z-index: 3;
+    z-index: 12;
 }
 
 main .search-marquee .search-dropdown-container .dropdown-title {
@@ -59,7 +59,7 @@ main .search-marquee .search-dropdown-container .dropdown-title {
     color: var(--color-gray-500);
 }
 
-main .search-marquee .search-dropdown-container .trends-container,
+main . .trends-container,
 main .search-marquee .search-dropdown-container .suggestions-container {
     padding: 20px 28px 0;
     text-align: left;
