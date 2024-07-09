@@ -838,7 +838,7 @@ main.with-holiday-templates-banner {
     width: 100%;
     box-sizing: border-box;
     left: 0;
-    z-index: 3;
+    z-index: 12;
 }
 
 main .template-x .search-dropdown-container .dropdown-title {
