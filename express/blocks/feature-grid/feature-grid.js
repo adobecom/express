@@ -23,7 +23,7 @@ function renderGridNode({
   title,
   subText,
   cta,
-}, index) {
+}, index, colorProperties) {
   const gridItem = createTag('a', { class: `grid-item item-${index + 1}` });
   const updatedMedia = renderImageOrVideo(media);
   gridItem.href = cta?.href;
@@ -35,7 +35,13 @@ function renderGridNode({
     cta.classList.remove('button');
     gridItem.append(cta);
   }
+  if (colorProperties['card-image']){
+    gridItem.style = `background-image:${color}`;
+  }
 
+  if (colorProperties['card-color']){
+    gridItem.style = `background-color:${color}`;
+  }
   if (index < 4) {
     gridItem.append(updatedMedia);
   } else {
@@ -71,11 +77,35 @@ function getLoadMoreText(rows) {
   return loadMore;
 }
 
+
+const blockProperties = ['card-image','card-color'];
+
+const extractProperties = (block) => {
+  const rows = Array.from(block.querySelectorAll(':scope > div'));
+
+  const allProperties = {};
+
+  rows.forEach((row) => {
+    if (row?.children?.length !== 2) {
+      return;
+    }
+    const key = row?.children[0].textContent;
+    const value = row?.children[1].textContent;
+    if (key && value && blockProperties.includes(key?.toLowerCase())) {
+      allProperties[key.toLowerCase()] = value;
+      block.removeChild(row);
+    }
+  });
+  return allProperties;
+};
+
 export default function decorate(block) {
   const inputRows = block.querySelectorAll(':scope > div > div');
   block.innerHTML = '';
   const rows = Array.from(inputRows);
   const heading = rows.shift();
+  const colorProperties = extractProperties(block)
+
   const loadMoreSection = rows.length > 4 ? getLoadMoreText(rows) : null;
   const gridProps = rows.map((row) => {
     const subText = row.querySelector('p');
@@ -97,7 +127,7 @@ export default function decorate(block) {
   }
 
   const gridContainer = createTag('div', { class: 'grid-container' });
-  const gridItems = gridProps.map((props, index) => renderGridNode(props, index));
+  const gridItems = gridProps.map((props, index) => renderGridNode(props, index, colorProperties));
   heading.classList.add('heading');
 
   gridItems.forEach((gridItem) => {
