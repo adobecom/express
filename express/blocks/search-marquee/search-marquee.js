@@ -33,9 +33,7 @@ function cycleThroughSuggestions(block, targetIndex = 0) {
   if (suggestions.length > 0) suggestions[targetIndex].focus();
 }
 
-function initSearchFunction(block) {
-  const searchBarWrapper = block.querySelector('.search-bar-wrapper');
-
+function initSearchFunction(block, searchBarWrapper) {
   const searchDropdown = searchBarWrapper.querySelector('.search-dropdown-container');
   const searchForm = searchBarWrapper.querySelector('.search-form');
   const searchBar = searchBarWrapper.querySelector('input.search-bar');
@@ -246,6 +244,7 @@ async function decorateSearchFunctions(block) {
   searchBarWrapper.append(searchForm);
 
   block.append(searchBarWrapper);
+  return searchBarWrapper;
 }
 
 function decorateBackground(block) {
@@ -269,65 +268,62 @@ function decorateBackground(block) {
   }
 }
 
-async function buildSearchDropdown(block) {
+async function buildSearchDropdown(block, searchBarWrapper) {
   const placeholders = await fetchPlaceholders();
+  if (!searchBarWrapper) return;
+  const dropdownContainer = createTag('div', { class: 'search-dropdown-container hidden' });
+  const trendsContainer = createTag('div', { class: 'trends-container' });
+  const suggestionsContainer = createTag('div', { class: 'suggestions-container hidden' });
+  const suggestionsTitle = createTag('p', { class: 'dropdown-title' });
+  const suggestionsList = createTag('ul', { class: 'suggestions-list' });
+  const freePlanContainer = createTag('div', { class: 'free-plans-container' });
 
-  const searchBarWrapper = block.querySelector('.search-bar-wrapper');
-  if (searchBarWrapper) {
-    const dropdownContainer = createTag('div', { class: 'search-dropdown-container hidden' });
-    const trendsContainer = createTag('div', { class: 'trends-container' });
-    const suggestionsContainer = createTag('div', { class: 'suggestions-container hidden' });
-    const suggestionsTitle = createTag('p', { class: 'dropdown-title' });
-    const suggestionsList = createTag('ul', { class: 'suggestions-list' });
-    const freePlanContainer = createTag('div', { class: 'free-plans-container' });
+  const fromScratchLink = block.querySelector('a');
+  const trendsTitle = placeholders['search-trends-title'];
+  let trends;
+  if (placeholders['search-trends']) trends = JSON.parse(placeholders['search-trends']);
 
-    const fromScratchLink = block.querySelector('a');
-    const trendsTitle = placeholders['search-trends-title'];
-    let trends;
-    if (placeholders['search-trends']) trends = JSON.parse(placeholders['search-trends']);
-
-    if (fromScratchLink) {
-      const linkDiv = fromScratchLink.parentElement.parentElement;
-      const templateFreeAccentIcon = getIconElement('template-free-accent');
-      templateFreeAccentIcon.loading = 'lazy';
-      const arrowRightIcon = getIconElement('arrow-right');
-      arrowRightIcon.loading = 'lazy';
-      fromScratchLink.prepend(templateFreeAccentIcon);
-      fromScratchLink.append(arrowRightIcon);
-      fromScratchLink.classList.remove('button');
-      fromScratchLink.classList.add('from-scratch-link');
-      fromScratchLink.href = getMetadata('search-marquee-from-scratch-link') || '/';
-      trendsContainer.append(fromScratchLink);
-      linkDiv.remove();
-    }
-
-    if (trendsTitle) {
-      const trendsTitleEl = createTag('p', { class: 'dropdown-title' });
-      trendsTitleEl.textContent = trendsTitle;
-      trendsContainer.append(trendsTitleEl);
-    }
-
-    if (trends) {
-      const trendsWrapper = createTag('ul', { class: 'trends-wrapper' });
-      for (const [key, value] of Object.entries(trends)) {
-        const trendLinkWrapper = createTag('li');
-        const trendLink = createTag('a', { class: 'trend-link', href: value });
-        trendLink.textContent = key;
-        trendLinkWrapper.append(trendLink);
-        trendsWrapper.append(trendLinkWrapper);
-      }
-      trendsContainer.append(trendsWrapper);
-    }
-
-    suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
-    suggestionsContainer.append(suggestionsTitle, suggestionsList);
-
-    const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
-
-    freePlanContainer.append(freePlanTags);
-    dropdownContainer.append(trendsContainer, suggestionsContainer, freePlanContainer);
-    searchBarWrapper.append(dropdownContainer);
+  if (fromScratchLink) {
+    const linkDiv = fromScratchLink.parentElement.parentElement;
+    const templateFreeAccentIcon = getIconElement('template-free-accent');
+    templateFreeAccentIcon.loading = 'lazy';
+    const arrowRightIcon = getIconElement('arrow-right');
+    arrowRightIcon.loading = 'lazy';
+    fromScratchLink.prepend(templateFreeAccentIcon);
+    fromScratchLink.append(arrowRightIcon);
+    fromScratchLink.classList.remove('button');
+    fromScratchLink.classList.add('from-scratch-link');
+    fromScratchLink.href = getMetadata('search-marquee-from-scratch-link') || '/';
+    trendsContainer.append(fromScratchLink);
+    linkDiv.remove();
   }
+
+  if (trendsTitle) {
+    const trendsTitleEl = createTag('p', { class: 'dropdown-title' });
+    trendsTitleEl.textContent = trendsTitle;
+    trendsContainer.append(trendsTitleEl);
+  }
+
+  if (trends) {
+    const trendsWrapper = createTag('ul', { class: 'trends-wrapper' });
+    for (const [key, value] of Object.entries(trends)) {
+      const trendLinkWrapper = createTag('li');
+      const trendLink = createTag('a', { class: 'trend-link', href: value });
+      trendLink.textContent = key;
+      trendLinkWrapper.append(trendLink);
+      trendsWrapper.append(trendLinkWrapper);
+    }
+    trendsContainer.append(trendsWrapper);
+  }
+
+  suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
+  suggestionsContainer.append(suggestionsTitle, suggestionsList);
+
+  const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
+
+  freePlanContainer.append(freePlanTags);
+  dropdownContainer.append(trendsContainer, suggestionsContainer, freePlanContainer);
+  searchBarWrapper.append(dropdownContainer);
 }
 
 function decorateLinkList(block) {
@@ -349,21 +345,27 @@ function decorateLinkList(block) {
   }
 }
 
-export default async function decorate(block) {
-  addTempWrapper(block, 'search-marquee');
-  decorateBackground(block);
-  await decorateSearchFunctions(block);
-  await buildSearchDropdown(block);
-  initSearchFunction(block);
-  decorateLinkList(block);
-
+async function lazyWork(block) {
   const blockLinks = block.querySelectorAll('a');
   if (blockLinks && blockLinks.length > 0) {
     const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
     document.dispatchEvent(linksPopulated);
   }
   if (window.location.href.includes('/express/templates/')) {
+    // import('../../scripts/template-ckg.js').then(({ default: updateAsyncBlocks }) => {
+    //   updateAsyncBlocks();
+    // });
     const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
     updateAsyncBlocks();
   }
+}
+
+export default async function decorate(block) {
+  addTempWrapper(block, 'search-marquee');
+  decorateBackground(block);
+  const searchBarWrapper = await decorateSearchFunctions(block);
+  await buildSearchDropdown(block, searchBarWrapper);
+  initSearchFunction(block, searchBarWrapper);
+  decorateLinkList(block);
+  lazyWork(block);
 }
