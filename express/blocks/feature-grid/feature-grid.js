@@ -35,13 +35,12 @@ function renderGridNode({
     cta.classList.remove('button');
     gridItem.append(cta);
   }
-  if (colorProperties['card-image']){
+  if (colorProperties['card-image']) {
     gridItem.style = `background-image:${colorProperties['card-image']}`;
   }
 
-  if (colorProperties['card-color']){
+  if (colorProperties['card-color']) {
     gridItem.style = `background-color:${colorProperties['card-color']}; background-image:none`;
-
   }
   if (index < 4) {
     gridItem.append(updatedMedia);
@@ -67,7 +66,7 @@ const decorateLoadMoreSection = (block, loadMoreInfo) => {
     if (block.classList.contains('expanded')) {
       [, loadMoreText.textContent] = loadMoreInfo.text;
     } else {
-      [loadMoreText.textContent] =  loadMoreInfo.text;
+      [loadMoreText.textContent] = loadMoreInfo.text;
     }
   });
 };
@@ -78,8 +77,7 @@ function getLoadMoreText(rows) {
   return loadMore;
 }
 
-
-const blockProperties = ['card-image','card-color'];
+const blockProperties = ['card-image', 'card-color'];
 
 const extractProperties = (block) => {
   const rows = Array.from(block.querySelectorAll(':scope > div'));
@@ -90,7 +88,7 @@ const extractProperties = (block) => {
     if (row?.children?.length !== 2) {
       return;
     }
-    console.log(row)
+    console.log(row);
     const key = row?.children[0].textContent;
     const value = row?.children[1].textContent;
     if (key && value && blockProperties.includes(key?.toLowerCase())) {
@@ -102,13 +100,13 @@ const extractProperties = (block) => {
 };
 
 export default function decorate(block) {
-  const colorProperties = extractProperties(block)
+  const colorProperties = extractProperties(block);
   const inputRows = block.querySelectorAll(':scope > div > div');
   block.innerHTML = '';
   const rows = Array.from(inputRows);
   const heading = rows.shift();
 
-  console.log(colorProperties)
+  console.log(colorProperties);
   const loadMoreSection = rows.length > 4 ? getLoadMoreText(rows) : null;
   const gridProps = rows.map((row) => {
     const subText = row.querySelector('p');
@@ -122,7 +120,6 @@ export default function decorate(block) {
       cta,
     };
   });
- 
 
   const gridContainer = createTag('div', { class: 'grid-container' });
   const gridItems = gridProps.map((props, index) => renderGridNode(props, index, colorProperties));
