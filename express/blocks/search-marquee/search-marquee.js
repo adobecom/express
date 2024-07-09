@@ -243,7 +243,8 @@ async function decorateSearchFunctions(block) {
   searchBarWrapper.append(searchIcon, searchClearIcon);
   searchBarWrapper.append(searchForm);
 
-  block.append(searchBarWrapper);
+  // block.append(searchBarWrapper);
+  block.insertBefore(searchBarWrapper, block.querySelector('div:nth-child(2)'));
   return searchBarWrapper;
 }
 
@@ -326,8 +327,8 @@ async function buildSearchDropdown(block, searchBarWrapper) {
   searchBarWrapper.append(dropdownContainer);
 }
 
-function decorateLinkList(block) {
-  const carouselItemsWrapper = block.querySelector(':scope > div:nth-of-type(2) > div');
+async function decorateLinkList(block) {
+  const carouselItemsWrapper = block.querySelector(':scope > div:last-of-type > div');
   if (carouselItemsWrapper) {
     const showLinkList = getMetadata('show-search-marquee-link-list');
     if ((showLinkList && !['yes', 'true', 'on', 'Y'].includes(showLinkList))
@@ -336,16 +337,19 @@ function decorateLinkList(block) {
       || window.location.pathname.endsWith('/express/templates')) {
       carouselItemsWrapper.remove();
     } else {
-      buildCarousel(':scope > p', carouselItemsWrapper).then(() => {
-        const carousel = carouselItemsWrapper.querySelector('.carousel-container');
-        block.append(carousel);
-        carouselItemsWrapper.parentElement.remove();
-      });
+      await buildCarousel(':scope > p', carouselItemsWrapper);
+      const carousel = carouselItemsWrapper.querySelector('.carousel-container');
+      block.append(carousel);
+      carouselItemsWrapper.parentElement.remove();
     }
   }
 }
 
 async function lazyWork(block) {
+  const searchBarWrapper = await decorateSearchFunctions(block);
+  await buildSearchDropdown(block, searchBarWrapper);
+  initSearchFunction(block, searchBarWrapper);
+  await decorateLinkList(block);
   const blockLinks = block.querySelectorAll('a');
   if (blockLinks && blockLinks.length > 0) {
     const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
@@ -363,9 +367,8 @@ async function lazyWork(block) {
 export default async function decorate(block) {
   addTempWrapper(block, 'search-marquee');
   decorateBackground(block);
-  const searchBarWrapper = await decorateSearchFunctions(block);
-  await buildSearchDropdown(block, searchBarWrapper);
-  initSearchFunction(block, searchBarWrapper);
-  decorateLinkList(block);
+  const carouselWrapper = block.querySelector(':scope > div:last-of-type');
+  carouselWrapper.style.maxHeight = '90px'; // prevent cls: 32 top margin + 58 pills
+  carouselWrapper.style.visibility = 'hidden'; // will be removed by carousel
   lazyWork(block);
 }
