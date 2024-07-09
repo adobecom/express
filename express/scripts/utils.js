@@ -573,7 +573,7 @@ export function removeIrrelevantSections(main) {
       // section meant for different device
       let sectionRemove = !!(sectionMeta.audience
         && sectionMeta.audience.toLowerCase() !== document.body.dataset?.device);
-       
+
       // section visibility steered over metadata
       if (!sectionRemove && sectionMeta.showwith !== undefined) {
         let showWithSearchParam = null;
@@ -976,7 +976,7 @@ function decorateSection(section, idx) {
         section.dataset[key] = meta[key];
       }
     });
-    sectionMeta.style = "display:none;"
+    sectionMeta.style = 'display:none;';
   }
   const blocks = section.querySelectorAll(':scope > div[class]:not(.default-content-wrapper)');
 
