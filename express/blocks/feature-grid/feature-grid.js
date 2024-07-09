@@ -36,11 +36,12 @@ function renderGridNode({
     gridItem.append(cta);
   }
   if (colorProperties['card-image']){
-    gridItem.style = `background-image:${color}`;
+    gridItem.style = `background-image:${colorProperties['card-image']}`;
   }
 
   if (colorProperties['card-color']){
-    gridItem.style = `background-color:${color}`;
+    gridItem.style = `background-color:${colorProperties['card-color']}; background-image:none`;
+
   }
   if (index < 4) {
     gridItem.append(updatedMedia);
@@ -66,7 +67,7 @@ const decorateLoadMoreSection = (block, loadMoreInfo) => {
     if (block.classList.contains('expanded')) {
       [, loadMoreText.textContent] = loadMoreInfo.text;
     } else {
-      [loadMoreText.textContent] = loadMoreInfo.text;
+      [loadMoreText.textContent] =  loadMoreInfo.text;
     }
   });
 };
@@ -89,6 +90,7 @@ const extractProperties = (block) => {
     if (row?.children?.length !== 2) {
       return;
     }
+    console.log(row)
     const key = row?.children[0].textContent;
     const value = row?.children[1].textContent;
     if (key && value && blockProperties.includes(key?.toLowerCase())) {
@@ -100,12 +102,13 @@ const extractProperties = (block) => {
 };
 
 export default function decorate(block) {
+  const colorProperties = extractProperties(block)
   const inputRows = block.querySelectorAll(':scope > div > div');
   block.innerHTML = '';
   const rows = Array.from(inputRows);
   const heading = rows.shift();
-  const colorProperties = extractProperties(block)
 
+  console.log(colorProperties)
   const loadMoreSection = rows.length > 4 ? getLoadMoreText(rows) : null;
   const gridProps = rows.map((row) => {
     const subText = row.querySelector('p');
@@ -119,12 +122,7 @@ export default function decorate(block) {
       cta,
     };
   });
-
-  if (gridProps.length > 12) {
-    throw new Error(
-      `Authoring issue: Feature Grid Fixed block should have 12 children. Received: ${gridProps.length}`,
-    );
-  }
+ 
 
   const gridContainer = createTag('div', { class: 'grid-container' });
   const gridItems = gridProps.map((props, index) => renderGridNode(props, index, colorProperties));
