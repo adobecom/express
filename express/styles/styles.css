@@ -78,6 +78,55 @@
   /* 28px */
   --heading-font-size-s: 1.375rem;
   /* 22px */
+
+  /* grid sizes (imported from Milo) */
+  --grid-container-width: 83.4%;
+  --grid-column-width: calc(var(--grid-container-width) / 12);
+  --grid-margins-width: calc((100vw - var(--grid-container-width)) / 2);
+  --grid-margins-width-10: calc((100vw - (var(--grid-column-width) * 10)) / 2);
+  --grid-margins-width-8: calc((100vw - (var(--grid-column-width) * 8)) / 2);
+  --grid-margins-width-6: calc((100vw - (var(--grid-column-width) * 6)) / 2);
+
+  /* Spacing (imported from Milo) */
+  --spacing-xxs: 8px;
+  --spacing-xs: 16px;
+  --spacing-s: 24px;
+  --spacing-m: 32px;
+  --spacing-l: 40px;
+  --spacing-xl: 48px;
+  --spacing-xxl: 56px;
+  --spacing-xxxl: 80px;
+
+  /* grid sizes */
+  --grid-container-width: 83.4%;
+
+    /* Tab Colors */
+  --tabs-active-color: #1473e6;
+  --tabs-border-color: #d8d8d8;
+  --tabs-border-hover-color: #acacac;
+  --tabs-text-color: #7e7e7e;
+  --tabs-active-text-color: #2C2C2C;
+  --tabs-bg-color: #f1f1f1;
+  --tabs-active-bg-color: #fff;
+  --tabs-list-bg-gradient: linear-gradient(rgb(255 255 255 / 0%) 60%, rgb(245 245 245 / 80%));
+  --tabs-pill-bg-color: #e1e1e1;
+  --tabs-pill-bg-color-hover: #dadada;
+  --tabs-pill-bg-color-active: #c6c6c6;
+  --tabs-pill-text-color: #131313;
+
+}
+
+:root .dark {
+  --tabs-border-color: rgb(56 56 56);
+  --tabs-text-color: #cdcdcd;
+  --tabs-active-text-color: #fff;
+  --tabs-bg-color: #1a1a1a;
+  --tabs-active-bg-color: #111;
+  --tabs-list-bg-gradient: linear-gradient(rgb(0 0 0 / 0%) 60%, rgb(0 0 0 / 80%));
+  --tabs-pill-bg-color: #555;
+  --tabs-pill-bg-color-hover: #666;
+  --tabs-pill-bg-color-active: #444;
+  --tabs-pill-text-color: #fff;
 }
 
 @media (min-width: 900px) {
