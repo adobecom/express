@@ -112,6 +112,15 @@ main .columns .column-picture {
   margin: 15px 0;
 }
 
+main .columns.width-1-columns .column.column-picture {
+  width: fit-content;
+}
+
+main .columns.width-1-columns > div {
+  padding: 20px 0px;
+}
+
+
 main .columns h1{
   font-size: var(--heading-font-size-xxl);
   line-height: 1.06;
