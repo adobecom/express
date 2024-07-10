@@ -241,7 +241,6 @@ async function decorateSearchFunctions(block) {
   searchBarWrapper.append(searchIcon, searchClearIcon);
   searchBarWrapper.append(searchForm);
 
-  // block.append(searchBarWrapper);
   block.insertBefore(searchBarWrapper, block.querySelector('div:nth-child(2)'));
   return searchBarWrapper;
 }
@@ -364,7 +363,7 @@ async function lazyWork(block) {
 export default async function decorate(block) {
   addTempWrapper(block, 'search-marquee');
   decorateBackground(block);
-  // preventing css. will be removed by carousel
+  // preventing css. will be removed by buildCarousel
   block.querySelector(':scope > div:nth-child(2) a').style.cssText = 'height: 41px; visibility: hidden;';
   block.querySelector(':scope > div:last-of-type').style.cssText = 'max-height: 90px; visibility: hidden;';
   lazyWork(block);
