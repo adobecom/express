@@ -483,6 +483,7 @@ main a:any-link {
 
 main img {
   max-width: 100%;
+  height: auto;
 }
 
 main .section {
@@ -568,59 +569,59 @@ main .section:last-of-type>.default-content-wrapper {
 }
 
 /* hero */
-main .section.hero {
+main .section#hero {
   color: var(--color-white);
   position: relative;
   padding: 120px 15px;
 }
 
-main .hero.hero-noimage {
+main #hero.hero-noimage {
   color: var(--body-color);
   padding-top: 64px;
   padding-bottom: 0;
 }
 
-main .hero.hero-noimage+.section {
+main #hero.hero-noimage+.section {
   padding-top: 0;
 }
 
-main .hero.hero-noimage>div {
+main #hero.hero-noimage>div {
   max-width: 1024px;
 }
 
-main .hero.hero-noimage a.button:any-link {
+main #hero.hero-noimage a.button:any-link {
   color: white;
 }
 
-main .hero.hero-noimage a:any-link {
+main #hero.hero-noimage a:any-link {
   color: black;
 }
 
-main .hero h1 {
+main #hero h1 {
   font-size: var(--heading-font-size-xl);
   line-height: var(--heading-line-height);
   text-align: center;
   margin: 0;
 }
 
-main .hero h2 {
+main #hero h2 {
   font-size: var(--body-font-size-xl);
   font-weight: var(--body-font-weight);
   margin: 32px 32px;
 }
 
-main .hero h5 {
+main #hero h5 {
   font-size: var(--body-font-size-l);
   font-weight: var(--body-font-weight);
   margin: auto;
   margin-top: 32px;
 }
 
-main .hero.hero-noimage p {
+main #hero.hero-noimage p {
   font-size: var(--body-font-size-s);
 }
 
-main .hero a.button:any-link {
+main #hero a.button:any-link {
   text-shadow: none;
 }
 
@@ -630,7 +631,7 @@ main .icon {
   color: currentColor;
 }
 
-main .hero .icon {
+main #hero .icon {
   height: 2em;
   width: 2em;
 }
@@ -645,7 +646,7 @@ main .banner .icon.icon-facebook {
   fill: #1877f2;
 }
 
-main .hero .hero-bg {
+main #hero .hero-bg {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -655,7 +656,7 @@ main .hero .hero-bg {
   z-index: -1;
 }
 
-main .hero .hero-bg img {
+main #hero .hero-bg img {
   height: 100%;
   width: 100%;
   object-fit: cover;
@@ -981,7 +982,7 @@ main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .
   main .block .free-plan-widget .plan-widget-tag {
     text-align: left;
   }
-  
+
   main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf, .link-list, .wayfinder, .ratings) a.button.same-as-floating-button-CTA {
     display: inline-block;
   }
