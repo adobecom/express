@@ -662,16 +662,16 @@ main #hero .hero-bg img {
   object-fit: cover;
 }
 
-main .hero>div {
+main #hero>div {
   padding: 0;
   margin: auto;
 }
 
-main .hero a:any-link {
+main #hero a:any-link {
   color: currentColor;
 }
 
-main .hero a.button:any-link {
+main #hero a.button:any-link {
   padding: 10px 1.5em 10px 1.5em;
   border-radius: 22px;
 }
@@ -682,7 +682,7 @@ main .section .block p.legal-copy {
 }
 
 @media (min-width:600px) {
-  main .hero h5 {
+  main #hero h5 {
     font-size: 22px;
     font-weight: 400;
     max-width: 672px;
@@ -690,8 +690,8 @@ main .section .block p.legal-copy {
     margin-top: 32px;
   }
 
-  main .hero h2,
-  main .hero p {
+  main #hero h2,
+  main #hero p {
     font-size: var(--body-font-size-xl);
     line-height: var(--body-line-height);
     text-align: center;
@@ -700,25 +700,25 @@ main .section .block p.legal-copy {
 }
 
 @media (min-width:900px) {
-  main .hero {
+  main #hero {
     padding-left: 50px;
     padding-right: 50px;
   }
 
-  main .hero h2,
-  main .hero p {
+  main #hero h2,
+  main #hero p {
     font-size: var(--body-font-size-xxl);
     margin: 24px 50px 0 50px;
   }
 }
 
 @media (min-width:1200px) {
-  main .hero h1 {
+  main #hero h1 {
     font-size: var(--heading-font-size-xxl);
     margin: 0;
   }
 
-  main .hero .columns>div>div {
+  main #hero .columns>div>div {
     margin: 8px;
   }
 }
@@ -838,7 +838,7 @@ main .section p.button-container {
   margin-bottom: 0;
 }
 
-main .section .hero {
+main .section #hero {
   color: initial;
 }
 
@@ -1130,7 +1130,7 @@ wbr.wbr-off {
 /* progressive section appearance */
 main .section[data-section-status='loading'],
 main .section[data-section-status='initialized'],
-main .hero[data-status='loading'],
+main #hero[data-status='loading'],
 main > div,
 main .section[data-status='decorated'] {
   display: none;
@@ -1138,7 +1138,7 @@ main .section[data-status='decorated'] {
 
 main > .section,
 .fragment > .section,
-main > .hero {
+main > #hero {
   display: block;
   position: relative;
 }
