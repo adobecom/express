@@ -7,7 +7,7 @@ import {
   sampleRUM,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
-// import { addTempWrapper } from '../../scripts/decorate.js';
+import { addTempWrapper } from '../../scripts/decorate.js';
 
 function handlelize(str) {
   return str.normalize('NFD')
@@ -362,8 +362,7 @@ async function lazyWork(block) {
 }
 
 export default async function decorate(block) {
-  window['ax-legacy'].addTempWrapper(block, 'search-marquee');
-  // addTempWrapper(block, 'search-marquee');
+  addTempWrapper(block, 'search-marquee');
   decorateBackground(block);
   // preventing css. will be removed by carousel
   block.querySelector(':scope > div:nth-child(2) a').style.cssText = 'height: 41px; visibility: hidden;';
