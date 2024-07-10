@@ -88,6 +88,7 @@ export default async function decorate($block) {
 
     // "production" mode: check for localStorage
     const ccxActionRatings = localStorage.getItem('ccxActionRatings');
+    console.log("ccxActionRatings", ccxActionRatings)
     return ccxActionRatings && ccxActionRatings.includes(sheet);
   }
 
@@ -121,6 +122,7 @@ export default async function decorate($block) {
   }
 
   function submitRating(rating, comment) {
+    console.log("POSTING 01")
     const segments = BlockMediator.get('segments');
     const content = {
       data: [
@@ -147,6 +149,7 @@ export default async function decorate($block) {
       ],
     };
 
+    console.log("POSTING", JSON.stringify(content, null, 4))
     fetch(`https://www.adobe.com/reviews-api/ccx${sheet}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -154,7 +157,7 @@ export default async function decorate($block) {
     });
 
     let ccxActionRatings = localStorage.getItem('ccxActionRatings') ?? '';
-
+console.log("SUBMIT ccxActionRatings, sheet", ccxActionRatings, sheet)
     if (!ccxActionRatings.includes(sheet)) {
       ccxActionRatings = ccxActionRatings.length > 0 ? sheet : `,${sheet}`;
     }
@@ -524,6 +527,8 @@ export default async function decorate($block) {
   sheetCamelCase = sheet
     .replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase()))
     .replace(/\s+|-+|\/+/g, '');
+
+    console.log("SHEET, SHEETCAMEL", sheet, sheetCamelCase)
   $block.innerHTML = '';
   lazyLoadLottiePlayer($block);
 
@@ -542,9 +547,14 @@ export default async function decorate($block) {
   if (env?.name === 'stage') {
     url = `https://www.stage.adobe.com/reviews-api/ccx${sheet}.json`;
   }
+
+  console.log("GET DATA 01", url)
+
   const resp = await fetch(url);
   if (resp.ok) {
     const response = await resp.json();
+
+    console.log("GET DATA", response)
     if (response.data[0].Average) {
       ratingAverage = parseFloat(response.data[0].Average).toFixed(2);
     }

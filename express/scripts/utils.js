@@ -1457,6 +1457,8 @@ export async function fetchPlaceholders() {
       await requestPlaceholders('/express/placeholders.json');
     }
   }
+  console.log("window.placeholders", window.placeholders);
+  
   return window.placeholders;
 }
 
