@@ -1,7 +1,7 @@
 main .browse-by-category.fullwidth {
+  margin: 0;
   padding: 0 28px;
-  max-width: 1440px;
-  margin: auto;
+  max-width: fit-content;
 }
 
 main .browse-by-category {
@@ -196,6 +196,15 @@ main .browse-by-category.card .browse-by-category-card-title {
   line-height: 24px;
   font-weight: 700;
   align-self: start;
+}
+
+@media (min-width: 1440px) {
+  main .section>.browse-by-category {
+    padding: 0 28px;
+    max-width: 1440px;
+    margin: auto;
+  }
+
 }
 
 @media (min-width: 900px) {
