@@ -356,9 +356,6 @@ async function lazyWork(block) {
     document.dispatchEvent(linksPopulated);
   }
   if (window.location.href.includes('/express/templates/')) {
-    // import('../../scripts/template-ckg.js').then(({ default: updateAsyncBlocks }) => {
-    //   updateAsyncBlocks();
-    // });
     const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
     updateAsyncBlocks();
   }
@@ -371,5 +368,18 @@ export default async function decorate(block) {
   carouselWrapper.style.maxHeight = '90px'; // prevent cls: 32 top margin + 58 pills
   carouselWrapper.style.visibility = 'hidden'; // will be removed by carousel
   await yieldToMain();
-  lazyWork(block);
+  // lazyWork(block);
+  const searchBarWrapper = await decorateSearchFunctions(block);
+  await buildSearchDropdown(block, searchBarWrapper);
+  initSearchFunction(block, searchBarWrapper);
+  await decorateLinkList(block);
+  const blockLinks = block.querySelectorAll('a');
+  if (blockLinks && blockLinks.length > 0) {
+    const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
+    document.dispatchEvent(linksPopulated);
+  }
+  if (window.location.href.includes('/express/templates/')) {
+    const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
+    updateAsyncBlocks();
+  }
 }
