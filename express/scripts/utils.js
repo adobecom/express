@@ -965,9 +965,12 @@ function decorateSection(section, idx) {
   if (sectionMeta) {
     const meta = readBlockConfig(sectionMeta);
     const keys = Object.keys(meta);
+
+    let removeSectionMeta = true;
     keys.forEach((key) => {
       if (key === 'style') {
         section.classList.add(...meta.style.split(', ').map(toClassName));
+        removeSectionMeta = false;
       } else if (key === 'anchor') {
         section.id = toClassName(meta.anchor);
       } else if (key === 'background') {
@@ -976,7 +979,12 @@ function decorateSection(section, idx) {
         section.dataset[key] = meta[key];
       }
     });
-    sectionMeta.remove();
+
+    if (removeSectionMeta) {
+      sectionMeta.remove();
+    } else {
+      sectionMeta.style.display = 'none';
+    }
   }
   const blocks = section.querySelectorAll(':scope > div[class]:not(.default-content-wrapper)');
 
