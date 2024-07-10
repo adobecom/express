@@ -5,6 +5,7 @@ import { createTag } from '../../scripts/utils.js';
  * @param {HTMLDivElement} $block
  */
 export default function decorate($block) {
+  console.log("EXISTING CARD");
   $block.querySelectorAll(':scope>div').forEach(($card) => {
     $card.classList.add('card');
     const $cardDivs = [...$card.children];
