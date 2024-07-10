@@ -90,6 +90,16 @@ const eagerLoad = (img) => {
   document.head.append(fqaMeta);
 }());
 
+window['ax-legacy'] = {
+  addTempWrapper: (block, blockName) => {
+    const wrapper = document.createElement('div');
+    const parent = block.parentElement;
+    wrapper.classList.add(`${blockName}-wrapper`);
+    parent.insertBefore(wrapper, block);
+    wrapper.append(block);
+  },
+};
+
 (function loadLCPImage() {
   const main = document.body.querySelector('main');
   removeIrrelevantSections(main);

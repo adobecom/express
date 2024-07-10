@@ -5,11 +5,6 @@ import {
   getMetadata,
   sampleRUM,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
-
-import buildCarousel from '../shared/carousel.js';
-import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function handlelize(str) {
@@ -136,6 +131,7 @@ function initSearchFunction(block, searchBarWrapper) {
     const taskXUrl = `/${handlelize(currentTasks.content.toLowerCase())}`;
     const targetPath = `${prefix}/express/templates${taskUrl}${topicUrl}`;
     const targetPathX = `${prefix}/express/templates${taskXUrl}${topicUrl}`;
+    const { default: fetchAllTemplatesMetadata } = await import('../../scripts/all-templates-metadata.js');
     const allTemplatesMetadata = await fetchAllTemplatesMetadata();
     const pathMatch = (e) => e.url === targetPath;
     const pathMatchX = (e) => e.url === targetPathX;
@@ -320,6 +316,7 @@ async function buildSearchDropdown(block, searchBarWrapper) {
   suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
   suggestionsContainer.append(suggestionsTitle, suggestionsList);
 
+  const { buildFreePlanWidget } = await import('../../scripts/utils/free-plan.js');
   const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
 
   freePlanContainer.append(freePlanTags);
@@ -337,6 +334,7 @@ async function decorateLinkList(block) {
       || window.location.pathname.endsWith('/express/templates')) {
       carouselItemsWrapper.remove();
     } else {
+      const { default: buildCarousel } = await import('../shared/carousel.js');
       await buildCarousel(':scope > p', carouselItemsWrapper);
       const carousel = carouselItemsWrapper.querySelector('.carousel-container');
       block.append(carousel);
@@ -365,7 +363,7 @@ async function lazyWork(block) {
 }
 
 export default async function decorate(block) {
-  addTempWrapper(block, 'search-marquee');
+  window['ax-legacy'].addTempWrapper(block, 'search-marquee');
   decorateBackground(block);
   const carouselWrapper = block.querySelector(':scope > div:last-of-type');
   carouselWrapper.style.maxHeight = '90px'; // prevent cls: 32 top margin + 58 pills
