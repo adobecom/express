@@ -5,7 +5,6 @@ import {
   getIconElement,
   getMetadata,
   sampleRUM,
-  yieldToMain,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -367,19 +366,8 @@ export default async function decorate(block) {
   const carouselWrapper = block.querySelector(':scope > div:last-of-type');
   carouselWrapper.style.maxHeight = '90px'; // prevent cls: 32 top margin + 58 pills
   carouselWrapper.style.visibility = 'hidden'; // will be removed by carousel
-  await yieldToMain();
+  setTimeout(() => {
+    lazyWork(block);
+  }, 2000);
   // lazyWork(block);
-  const searchBarWrapper = await decorateSearchFunctions(block);
-  await buildSearchDropdown(block, searchBarWrapper);
-  initSearchFunction(block, searchBarWrapper);
-  await decorateLinkList(block);
-  const blockLinks = block.querySelectorAll('a');
-  if (blockLinks && blockLinks.length > 0) {
-    const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
-    document.dispatchEvent(linksPopulated);
-  }
-  if (window.location.href.includes('/express/templates/')) {
-    const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
-    updateAsyncBlocks();
-  }
 }
