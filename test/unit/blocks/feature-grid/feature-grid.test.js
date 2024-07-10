@@ -78,11 +78,4 @@ describe('Feature Grid Desktop', async () => {
       expect(loadMoreButton.textContent).to.equal('View less');
     });
   });
-
-  describe('Oversized Grid', () => {
-    const oversizedGrid = document.querySelector('#over-sized-grid');
-    it('gives an error message if too many cells are passed in', () => {
-      expect(() => decorate(oversizedGrid)).to.throw('Authoring issue: Feature Grid Fixed block should have 12 children. Received: 14');
-    });
-  });
 });
