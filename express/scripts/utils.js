@@ -1389,24 +1389,31 @@ export async function loadTemplateScript() {
  */
 
 export async function fetchPlaceholders() {
+  if (window.placeholders) return window.placeholders;
+  let resolver;
+  window.placeholders = new Promise((res) => {
+    resolver = res;
+  });
   const requestPlaceholders = async (url) => {
     const resp = await fetch(url);
     if (resp.ok) {
       const json = await resp.json();
-      window.placeholders = {};
+      const placeholders = {};
       json.data.forEach((placeholder) => {
-        if (placeholder.value) window.placeholders[placeholder.key] = placeholder.value;
-        else if (placeholder.Text) window.placeholders[placeholder.Key] = placeholder.Text;
+        if (placeholder.value) placeholders[placeholder.key] = placeholder.value;
+        else if (placeholder.Text) placeholders[placeholder.Key] = placeholder.Text;
       });
+      return placeholders;
     }
+    return null;
   };
-  if (!window.placeholders) {
-    try {
-      const { prefix } = getConfig().locale;
-      await requestPlaceholders(`${prefix}/express/placeholders.json`);
-    } catch {
-      await requestPlaceholders('/express/placeholders.json');
-    }
+  try {
+    const { prefix } = getConfig().locale;
+    const placeholders = await requestPlaceholders(`${prefix}/express/placeholders.json`);
+    if (!placeholders) throw new Error(`placeholders req failed in prefix: ${prefix}`);
+    resolver(placeholders);
+  } catch {
+    resolver(await requestPlaceholders('/express/placeholders.json') || {});
   }
   return window.placeholders;
 }
