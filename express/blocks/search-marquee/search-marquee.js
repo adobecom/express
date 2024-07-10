@@ -1,9 +1,11 @@
 import {
   createTag,
-  fetchPlaceholders, getConfig,
+  fetchPlaceholders,
+  getConfig,
   getIconElement,
   getMetadata,
   sampleRUM,
+  yieldToMain,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -368,5 +370,6 @@ export default async function decorate(block) {
   const carouselWrapper = block.querySelector(':scope > div:last-of-type');
   carouselWrapper.style.maxHeight = '90px'; // prevent cls: 32 top margin + 58 pills
   carouselWrapper.style.visibility = 'hidden'; // will be removed by carousel
+  await yieldToMain();
   lazyWork(block);
 }
