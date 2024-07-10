@@ -7,6 +7,7 @@ import {
   sampleRUM,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
+// import { addTempWrapper } from '../../scripts/decorate.js';
 
 function handlelize(str) {
   return str.normalize('NFD')
@@ -362,12 +363,10 @@ async function lazyWork(block) {
 
 export default async function decorate(block) {
   window['ax-legacy'].addTempWrapper(block, 'search-marquee');
+  // addTempWrapper(block, 'search-marquee');
   decorateBackground(block);
-  const carouselWrapper = block.querySelector(':scope > div:last-of-type');
-  carouselWrapper.style.maxHeight = '90px'; // prevent cls: 32 top margin + 58 pills
-  carouselWrapper.style.visibility = 'hidden'; // will be removed by carousel
-  setTimeout(() => {
-    lazyWork(block);
-  }, 2000);
-  // lazyWork(block);
+  // preventing css. will be removed by carousel
+  block.querySelector(':scope > div:nth-child(2) a').style.cssText = 'height: 41px; visibility: hidden;';
+  block.querySelector(':scope > div:last-of-type').style.cssText = 'max-height: 90px; visibility: hidden;';
+  lazyWork(block);
 }
