@@ -1522,6 +1522,7 @@ async function decorateHeroLCP() {
       }
     }
   } else if (template === 'blog' && h1 && getMetadata('author') && getMetadata('publication-date')) {
+    loadStyle(`${getConfig().codeRoot}/templates/blog/blog.css`);
     document.body.style.visibility = 'hidden';
     const heroSection = createTag('div', { id: 'hero' });
     const main = document.querySelector('main');
@@ -2391,7 +2392,7 @@ export async function loadTemplate() {
   const { miloLibs, codeRoot } = getConfig();
   const base = miloLibs && MILO_TEMPLATES.includes(name) ? miloLibs : codeRoot;
   const styleLoaded = new Promise((resolve) => {
-    loadStyle(`${base}/templates/${name}/${name}.css`, resolve);
+    setTimeout(() => loadStyle(`${base}/templates/${name}/${name}.css`, resolve), 3000);
   });
   const scriptLoaded = new Promise((resolve) => {
     (async () => {
