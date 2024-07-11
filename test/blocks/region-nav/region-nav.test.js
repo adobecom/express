@@ -34,7 +34,7 @@ describe('Region Nav Block', () => {
     init(block);
     const links = document.body.querySelectorAll('a');
     const path = window.location.href.replace(origin, '');
-    expect(links[0].href).to.be.equal(`${origin}/es${path}&notification=pageDidNotExist`);
+    expect(links[0].href).to.be.equal(`${origin}/es${path}`);
     expect(links[links.length - 1].href).to.be.equal(`${origin}/kr${path}`);
     window.location.hash = '';
   });
