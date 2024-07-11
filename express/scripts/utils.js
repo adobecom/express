@@ -1493,7 +1493,7 @@ function loadGnav() {
   }
 }
 
-async function decorateHeroLCP() {
+function decorateHeroLCP() {
   const template = getMetadata('template');
   const h1 = document.querySelector('main h1');
   if (template !== 'blog') {
@@ -2565,7 +2565,7 @@ export async function loadArea(area = document) {
     decorateHeaderAndFooter();
     if (window.hlx.testing) await decorateTesting();
     await buildAutoBlocks(main);
-    await decorateHeroLCP();
+    decorateHeroLCP();
   }
   const config = getConfig();
 
