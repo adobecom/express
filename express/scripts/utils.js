@@ -963,16 +963,13 @@ function decorateSection(section, idx) {
   /* process section metadata */
   const sectionMeta = section.querySelector('div.section-metadata');
 
-
-
   if (sectionMeta) {
     /* Remove this after checking that keeping section metadata alive
-    universally does not cause problems */ 
-    let keepSectionMeta = sectionMeta.classList.contains('keep');
+    universally does not cause problems */
+    const keepSectionMeta = meta['keep-section-metadata'];
     const meta = readBlockConfig(sectionMeta);
     const keys = Object.keys(meta);
 
-    
     keys.forEach((key) => {
       if (key === 'style') {
         section.classList.add(...meta.style.split(', ').map(toClassName));
@@ -982,7 +979,7 @@ function decorateSection(section, idx) {
         section.style.background = meta.background;
       } else {
         section.dataset[key] = meta[key];
-      } 
+      }
     });
 
     if (keepSectionMeta) {
