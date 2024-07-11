@@ -119,8 +119,10 @@ const init = (block) => {
 
   // to avoid hero style conflicts
   const hero = block.closest('#hero.hero-noimage');
-  hero?.classList?.remove('hero-noimage');
-  hero.removeAttribute('id');
+  if (hero) {
+    hero.classList.remove('hero-noimage');
+    hero.removeAttribute('id');
+  }
   const rootElem = block.closest('.fragment') || document;
   const rows = block.querySelectorAll(':scope > div');
   const parentSection = block.closest('.section');
