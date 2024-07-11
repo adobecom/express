@@ -118,7 +118,11 @@ const init = (block) => {
   addTempWrapper(block, 'tabs-ax');
 
   // to avoid hero style conflicts
-  block.closest('.hero.hero-noimage')?.classList?.remove('hero', 'hero-noimage');
+  const hero = block.closest('#hero.hero-noimage');
+  if (hero) {
+    hero.classList.remove('hero-noimage');
+    hero.removeAttribute('id');
+  }
   const rootElem = block.closest('.fragment') || document;
   const rows = block.querySelectorAll(':scope > div');
   const parentSection = block.closest('.section');

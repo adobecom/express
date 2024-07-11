@@ -1,3 +1,8 @@
+const MILO_TEMPLATES = [
+  '404',
+  'featured-story',
+];
+
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
   { fragment: '/express/fragments/' },
@@ -1355,34 +1360,6 @@ export const loadScript = (url, type) => new Promise((resolve, reject) => {
   script.addEventListener('error', onScript);
 });
 
-export async function setTemplateTheme() {
-  // todo: remove theme after we move blog to template column in metadata sheet
-  const template = getMetadata('template') || getMetadata('theme');
-  if (!template || template?.toLowerCase() === 'no brand header') return;
-  const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
-  document.body.classList.add(name);
-  await new Promise((resolve) => {
-    loadStyle(`/express/templates/${name}/${name}.css`, resolve);
-  });
-}
-
-export async function loadTemplateScript() {
-  // todo: remove theme after we move blog to template column in metadata sheet
-  const template = getMetadata('template') || getMetadata('theme');
-  if (!template || template?.toLowerCase() === 'no brand header') return;
-  const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
-  await new Promise((resolve) => {
-    (async () => {
-      try {
-        await import(`/express/templates/${name}/${name}.js`);
-      } catch (err) {
-        window.lana.log(`failed to load template module for ${name}`, err);
-      }
-      resolve();
-    })();
-  });
-}
-
 /**
  * fetches the string variables.
  * @returns {object} localized variables
@@ -1516,34 +1493,32 @@ function loadGnav() {
   }
 }
 
-function decoratePageStyle() {
-  const isBlog = getMetadata('theme') === 'blog' || getMetadata('template') === 'blog';
-  if (!isBlog) {
-    const $h1 = document.querySelector('main h1');
-    // check if h1 is inside a block
-    // eslint-disable-next-line no-lonely-if
-    if ($h1 && !$h1.closest('.section > div > div ')) {
-      const $heroPicture = $h1.parentElement.querySelector('picture');
-      let $heroSection;
-      const $main = document.querySelector('main');
-      if ($main.children.length === 1) {
-        $heroSection = createTag('div', { class: 'hero' });
-        const $div = createTag('div');
-        $heroSection.append($div);
-        if ($heroPicture) {
-          $div.append($heroPicture);
+async function decorateHeroLCP() {
+  if (getMetadata('template') !== 'blog') {
+    const h1 = document.querySelector('main h1');
+    if (h1 && !h1.closest('main > div > div')) {
+      const heroPicture = h1.parentElement.querySelector('picture');
+      let heroSection;
+      const main = document.querySelector('main');
+      if (main.children.length === 1) {
+        heroSection = document.createElement('div');
+        heroSection.id = 'hero';
+        const div = document.createElement('div');
+        heroSection.append(div);
+        if (heroPicture) {
+          div.append(heroPicture);
         }
-        $div.append($h1);
-        $main.prepend($heroSection);
+        div.append(h1);
+        main.prepend(heroSection);
       } else {
-        $heroSection = $h1.closest('.section');
-        $heroSection.classList.add('hero');
-        $heroSection.removeAttribute('style');
+        heroSection = h1.closest('main > div');
+        heroSection.id = 'hero';
+        heroSection.removeAttribute('style');
       }
-      if ($heroPicture) {
-        $heroPicture.classList.add('hero-bg');
+      if (heroPicture) {
+        heroPicture.classList.add('hero-bg');
       } else {
-        $heroSection.classList.add('hero-noimage');
+        heroSection.classList.add('hero-noimage');
       }
     }
   }
@@ -2146,14 +2121,6 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
   return picture;
 }
 
-function decoratePictures(el) {
-  el.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
-    const newPicture = createOptimizedPicture(img.src, img.alt, !i);
-    const picture = img.closest('picture');
-    if (picture) picture.parentElement.replaceChild(newPicture, picture);
-  });
-}
-
 export function toggleVideo(target) {
   const videos = target.querySelectorAll('video');
   const paused = videos[0] ? videos[0].paused : false;
@@ -2411,6 +2378,29 @@ async function checkForPageMods() {
   await applyPers(manifests);
 }
 
+export async function loadTemplate() {
+  const template = getMetadata('template');
+  if (!template) return;
+  const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
+  document.body.classList.add(name);
+  const { miloLibs, codeRoot } = getConfig();
+  const base = miloLibs && MILO_TEMPLATES.includes(name) ? miloLibs : codeRoot;
+  const styleLoaded = new Promise((resolve) => {
+    loadStyle(`${base}/templates/${name}/${name}.css`, resolve);
+  });
+  const scriptLoaded = new Promise((resolve) => {
+    (async () => {
+      try {
+        await import(`${base}/templates/${name}/${name}.js`);
+      } catch (err) {
+        console.log(`failed to load module for ${name}`, err);
+      }
+      resolve();
+    })();
+  });
+  await Promise.all([styleLoaded, scriptLoaded]);
+}
+
 async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
@@ -2421,7 +2411,7 @@ async function loadPostLCP(config) {
     loadMartech();
   }
   loadGnav();
-  await setTemplateTheme();
+  loadTemplate();
   const { default: loadFonts } = await import('./fonts.js');
   loadFonts(config.locale, loadStyle);
   if (config.mep?.preview) {
@@ -2525,7 +2515,6 @@ async function decorateExpressPage(main) {
     displayEnv();
     displayOldLinkWarning();
   }
-  await loadTemplateScript();
   const footer = document.querySelector('footer');
   if (footer && footer.dataset) delete footer.dataset.status;
 
@@ -2570,6 +2559,7 @@ export async function loadArea(area = document) {
     decorateHeaderAndFooter();
     if (window.hlx.testing) await decorateTesting();
     await buildAutoBlocks(main);
+    await decorateHeroLCP();
   }
   const config = getConfig();
 
@@ -2578,11 +2568,9 @@ export async function loadArea(area = document) {
   splitSections(area);
   decorateButtons(area);
   await fixIcons(area);
-  decoratePictures(area);
   decorateSocialIcons(area);
 
   const sections = decorateSections(area, isDoc);
-  if (isDoc) decoratePageStyle();
   decorateLegalCopy(area);
   addJapaneseSectionHeaderSizing(area);
   wordBreakJapanese(area);
