@@ -93,7 +93,7 @@ export default async function decorateBlogPage() {
   const date = getMetadata('publication-date');
   if ($h1 && author && date) {
     const $heroPicture = $h1.parentElement.querySelector('picture');
-    const heroSection = createTag('div', { id: 'hero' });
+    const heroSection = document.querySelector('#hero');
     heroSection.setAttribute('data-status', 'loading');
     const $div = createTag('div');
     heroSection.append($div);

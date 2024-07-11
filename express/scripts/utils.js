@@ -1501,9 +1501,8 @@ async function decorateHeroLCP() {
       let heroSection;
       const main = document.querySelector('main');
       if (main.children.length === 1) {
-        heroSection = document.createElement('div');
-        heroSection.id = 'hero';
-        const div = document.createElement('div');
+        heroSection = createTag('div', { id: 'hero' });
+        const div = createTag('div');
         heroSection.append(div);
         if (heroPicture) {
           div.append(heroPicture);
@@ -1521,6 +1520,10 @@ async function decorateHeroLCP() {
         heroSection.classList.add('hero-noimage');
       }
     }
+  } else if (getMetadata('template') === 'blog') {
+    const heroSection = createTag('div', { id: 'hero' });
+    const main = document.querySelector('main');
+    main.prepend(heroSection);
   }
 }
 
