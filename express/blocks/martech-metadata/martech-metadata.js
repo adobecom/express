@@ -10,6 +10,16 @@ export const getMetadata = (el, config) => [...el.childNodes].reduce((rdx, row) 
   return rdx;
 }, {});
 
+export const getSectionMetadata = (el) => [...el.childNodes].reduce((rdx, row) => {
+  if (row.children) {
+    const key = row.children[0].textContent.trim().toLowerCase();
+    const content = row.children[1];
+    const text = content.textContent.trim().toLowerCase();
+    if (key && content) rdx[key] = { content, text };
+  }
+  return rdx;
+}, {});
+
 export default function init(el) {
   const config = getConfig();
   const { locale, ietf = locale?.ietf, analyticLocalization } = config;
