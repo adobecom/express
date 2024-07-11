@@ -1022,4 +1022,42 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
   main .columns h1.columns-heading-x-long {
     font-size: var(--heading-font-size-l);
   }
+
+  main .columns.slim > div {
+    padding: 0px;
+  }
+  
+  main .columns.slim> .column {
+    padding: 20px !important;
+  }
 }
+
+
+main .columns.centered > div p:first-of-type {
+  margin-top: 0px;
+}
+
+main .columns.centered {
+  text-align: center;
+}
+main .columns.centered > div {
+ align-items: flex-start;
+}
+
+
+main .columns.centered .column > div{
+  text-align: center;
+}
+
+main .columns.slim > div {
+  padding: 0px;
+}
+
+main .columns.slim .column {
+  padding: 20px !important;
+}
+
+main .columns .column:has(a:only-of-type) {
+  text-align: center;
+}
+
