@@ -970,14 +970,16 @@ function decorateSection(section, idx) {
     keys.forEach((key) => {
       if (key === 'style') {
         section.classList.add(...meta.style.split(', ').map(toClassName));
-        removeSectionMeta = false;
+        
       } else if (key === 'anchor') {
         section.id = toClassName(meta.anchor);
       } else if (key === 'background') {
         section.style.background = meta.background;
+      } else if (key === 'keep-section-meta'){
+        removeSectionMeta = false
       } else {
         section.dataset[key] = meta[key];
-      }
+      } 
     });
 
     if (removeSectionMeta) {
