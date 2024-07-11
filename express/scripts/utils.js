@@ -966,7 +966,7 @@ function decorateSection(section, idx) {
   if (sectionMeta) {
     /* Remove this after checking that keeping section metadata alive
     universally does not cause problems */
-    let keepSectionMeta =false;
+    let keepSectionMeta = false;
     const meta = readBlockConfig(sectionMeta);
     const keys = Object.keys(meta);
 
@@ -979,7 +979,7 @@ function decorateSection(section, idx) {
         section.style.background = meta.background;
       } else if (key === 'keep-section-metadata') {
         keepSectionMeta = true;
-      }else {
+      } else {
         section.dataset[key] = meta[key];
       }
     });
