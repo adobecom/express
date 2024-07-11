@@ -1130,7 +1130,6 @@ wbr.wbr-off {
 /* progressive section appearance */
 main .section[data-section-status='loading'],
 main .section[data-section-status='initialized'],
-main #hero[data-status='loading'],
 main > div,
 main .section[data-status='decorated'] {
   display: none;

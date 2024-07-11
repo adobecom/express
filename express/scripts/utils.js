@@ -1522,6 +1522,7 @@ async function decorateHeroLCP() {
       }
     }
   } else if (template === 'blog' && h1 && getMetadata('author') && getMetadata('publication-date')) {
+    document.body.style.visibility = 'hidden';
     const heroSection = createTag('div', { id: 'hero' });
     const main = document.querySelector('main');
     main.prepend(heroSection);

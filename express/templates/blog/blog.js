@@ -94,7 +94,6 @@ export default async function decorateBlogPage() {
   if ($h1 && author && date) {
     const $heroPicture = $h1.parentElement.querySelector('picture');
     const heroSection = document.querySelector('#hero');
-    heroSection.setAttribute('data-status', 'loading');
     const $div = createTag('div');
     heroSection.append($div);
     $div.append($h1);
@@ -176,11 +175,13 @@ export default async function decorateBlogPage() {
     if ($heroPicture) {
       const img = $heroPicture.querySelector('img');
       await loadImage(img).then(() => {
-        delete heroSection.dataset.status;
+        document.body.style.visibility = 'visible';
       });
     } else {
-      delete heroSection.dataset.status;
+      document.body.style.visibility = 'visible';
     }
+  } else {
+    document.body.style.visibility = 'visible';
   }
 
   const pictures = document.querySelectorAll('main div.section > div > picture');
