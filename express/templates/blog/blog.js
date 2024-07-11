@@ -4,41 +4,9 @@ import {
   createTag,
   toClassName,
   getMetadata,
-  loadBlock,
   createOptimizedPicture,
   getConfig,
 } from '../../scripts/utils.js';
-
-/**
- * Builds a block DOM Element from a two dimensional array
- * @param {string} blockName name of the block
- * @param {any} content two dimensional array or string or object of content
- */
-function buildBlock(blockName, content) {
-  const table = Array.isArray(content) ? content : [[content]];
-  const blockEl = document.createElement('div');
-  // build image block nested div structure
-  blockEl.classList.add(blockName);
-  table.forEach((row) => {
-    const rowEl = document.createElement('div');
-    row.forEach((col) => {
-      const colEl = document.createElement('div');
-      const vals = col.elems ? col.elems : [col];
-      vals.forEach((val) => {
-        if (val) {
-          if (typeof val === 'string') {
-            colEl.innerHTML += val;
-          } else {
-            colEl.appendChild(val);
-          }
-        }
-      });
-      rowEl.appendChild(colEl);
-    });
-    blockEl.appendChild(rowEl);
-  });
-  return (blockEl);
-}
 
 async function fetchAuthorImage($image, author) {
   const resp = await fetch(`/express/learn/blog/authors/${toClassName(author)}.plain.html`);
@@ -197,12 +165,7 @@ export default async function decorateBlogPage() {
   */
 
   const section = createTag('div', { class: '.section' });
-  const block = buildBlock('tags', '');
-  block.classList.add('block');
-  block.setAttribute('data-block-name', 'tags');
-  section.appendChild(block);
   $main.appendChild(section);
-  loadBlock(block);
 }
 
 await decorateBlogPage();
