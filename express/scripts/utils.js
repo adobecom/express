@@ -963,11 +963,12 @@ function decorateSection(section, idx) {
   /* process section metadata */
   const sectionMeta = section.querySelector('div.section-metadata');
 
-  /* Remove this after checking that keeping section metadata alive
-  universally does not cause problems */ 
-  let keepSectionMeta = sectionMeta.classList.contains('keep');
+
 
   if (sectionMeta) {
+    /* Remove this after checking that keeping section metadata alive
+    universally does not cause problems */ 
+    let keepSectionMeta = sectionMeta.classList.contains('keep');
     const meta = readBlockConfig(sectionMeta);
     const keys = Object.keys(meta);
 
