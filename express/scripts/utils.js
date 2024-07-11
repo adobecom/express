@@ -1494,8 +1494,9 @@ function loadGnav() {
 }
 
 async function decorateHeroLCP() {
-  if (getMetadata('template') !== 'blog') {
-    const h1 = document.querySelector('main h1');
+  const template = getMetadata('template');
+  const h1 = document.querySelector('main h1');
+  if (template !== 'blog') {
     if (h1 && !h1.closest('main > div > div')) {
       const heroPicture = h1.parentElement.querySelector('picture');
       let heroSection;
@@ -1520,7 +1521,7 @@ async function decorateHeroLCP() {
         heroSection.classList.add('hero-noimage');
       }
     }
-  } else if (getMetadata('template') === 'blog') {
+  } else if (template === 'blog' && h1 && getMetadata('author') && getMetadata('publication-date')) {
     const heroSection = createTag('div', { id: 'hero' });
     const main = document.querySelector('main');
     main.prepend(heroSection);
