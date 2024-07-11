@@ -962,30 +962,32 @@ function decorateSection(section, idx) {
   // TODO: not in milo
   /* process section metadata */
   const sectionMeta = section.querySelector('div.section-metadata');
+
+  /* Remove this after checking that keeping section metadata alive
+  universally does not cause problems */ 
+  let keepSectionMeta = sectionMeta.classList.contains('keep');
+
   if (sectionMeta) {
     const meta = readBlockConfig(sectionMeta);
     const keys = Object.keys(meta);
 
-    let removeSectionMeta = true;
+    
     keys.forEach((key) => {
       if (key === 'style') {
         section.classList.add(...meta.style.split(', ').map(toClassName));
-        
       } else if (key === 'anchor') {
         section.id = toClassName(meta.anchor);
       } else if (key === 'background') {
         section.style.background = meta.background;
-      } else if (key === 'keep-section-meta'){
-        removeSectionMeta = false
       } else {
         section.dataset[key] = meta[key];
       } 
     });
 
-    if (removeSectionMeta) {
-      sectionMeta.remove();
-    } else {
+    if (keepSectionMeta) {
       sectionMeta.style.display = 'none';
+    } else {
+      sectionMeta.remove();
     }
   }
   const blocks = section.querySelectorAll(':scope > div[class]:not(.default-content-wrapper)');
