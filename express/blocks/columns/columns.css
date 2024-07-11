@@ -1049,11 +1049,11 @@ main .columns.centered .column > div{
   text-align: center;
 }
 
-main .columns.slim > div {
+main .columns.slim-padding > div {
   padding: 0px;
 }
 
-main .columns.slim .column {
+main .columns.slim-padding .column {
   padding: 20px !important;
 }
 
