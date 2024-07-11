@@ -7,7 +7,6 @@ import {
   sampleRUM,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
 
 function handlelize(str) {
   return str.normalize('NFD')
@@ -222,8 +221,7 @@ function initSearchFunction(block, searchBarWrapper) {
   });
 }
 
-async function decorateSearchFunctions(block) {
-  const placeholders = await fetchPlaceholders();
+function decorateSearchFunctions(block, placeholders) {
   const searchBarWrapper = createTag('div', { class: 'search-bar-wrapper' });
   const searchForm = createTag('form', { class: 'search-form' });
   const searchBar = createTag('input', {
@@ -241,12 +239,12 @@ async function decorateSearchFunctions(block) {
   searchBarWrapper.append(searchIcon, searchClearIcon);
   searchBarWrapper.append(searchForm);
 
-  block.insertBefore(searchBarWrapper, block.querySelector('div:nth-child(2)'));
+  block.insertBefore(searchBarWrapper, block.querySelector('div:nth-of-type(2)'));
   return searchBarWrapper;
 }
 
 function decorateBackground(block) {
-  const mediaRow = block.querySelector('div:nth-child(2)');
+  const mediaRow = block.querySelector('div:nth-of-type(2)');
   if (mediaRow) {
     let media = mediaRow.querySelector('picture img');
     if (!media) {
@@ -266,15 +264,13 @@ function decorateBackground(block) {
   }
 }
 
-async function buildSearchDropdown(block, searchBarWrapper) {
-  const placeholders = await fetchPlaceholders();
+function buildSearchDropdown(block, searchBarWrapper, placeholders) {
   if (!searchBarWrapper) return;
   const dropdownContainer = createTag('div', { class: 'search-dropdown-container hidden' });
   const trendsContainer = createTag('div', { class: 'trends-container' });
   const suggestionsContainer = createTag('div', { class: 'suggestions-container hidden' });
   const suggestionsTitle = createTag('p', { class: 'dropdown-title' });
   const suggestionsList = createTag('ul', { class: 'suggestions-list' });
-  const freePlanContainer = createTag('div', { class: 'free-plans-container' });
 
   const fromScratchLink = block.querySelector('a');
   const trendsTitle = placeholders['search-trends-title'];
@@ -317,15 +313,20 @@ async function buildSearchDropdown(block, searchBarWrapper) {
   suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
   suggestionsContainer.append(suggestionsTitle, suggestionsList);
 
-  const { buildFreePlanWidget } = await import('../../scripts/utils/free-plan.js');
-  const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
-
-  freePlanContainer.append(freePlanTags);
-  dropdownContainer.append(trendsContainer, suggestionsContainer, freePlanContainer);
+  import('../../scripts/utils/free-plan.js')
+    .then(({ buildFreePlanWidget }) => buildFreePlanWidget({ typeKey: 'branded', checkmarks: true }))
+    .then((freePlanTags) => {
+      const freePlanContainer = createTag('div', { class: 'free-plans-container' });
+      freePlanContainer.append(freePlanTags);
+      dropdownContainer.append(freePlanContainer);
+    });
+  dropdownContainer.append(trendsContainer, suggestionsContainer);
   searchBarWrapper.append(dropdownContainer);
 }
 
 async function decorateLinkList(block) {
+  // preventing css. will be removed by buildCarousel
+  block.querySelector(':scope > div:last-of-type').style.cssText = 'max-height: 90px; visibility: hidden;';
   const carouselItemsWrapper = block.querySelector(':scope > div:last-of-type > div');
   if (carouselItemsWrapper) {
     const showLinkList = getMetadata('show-search-marquee-link-list');
@@ -342,13 +343,6 @@ async function decorateLinkList(block) {
       carouselItemsWrapper.parentElement.remove();
     }
   }
-}
-
-async function lazyWork(block) {
-  const searchBarWrapper = await decorateSearchFunctions(block);
-  await buildSearchDropdown(block, searchBarWrapper);
-  initSearchFunction(block, searchBarWrapper);
-  await decorateLinkList(block);
   const blockLinks = block.querySelectorAll('a');
   if (blockLinks && blockLinks.length > 0) {
     const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
@@ -361,10 +355,10 @@ async function lazyWork(block) {
 }
 
 export default async function decorate(block) {
-  addTempWrapper(block, 'search-marquee');
   decorateBackground(block);
-  // preventing css. will be removed by buildCarousel
-  block.querySelector(':scope > div:nth-child(2) a').style.cssText = 'height: 41px; visibility: hidden;';
-  block.querySelector(':scope > div:last-of-type').style.cssText = 'max-height: 90px; visibility: hidden;';
-  lazyWork(block);
+  const placeholders = await fetchPlaceholders();
+  const searchBarWrapper = decorateSearchFunctions(block, placeholders);
+  buildSearchDropdown(block, searchBarWrapper, placeholders);
+  initSearchFunction(block, searchBarWrapper);
+  decorateLinkList(block);
 }
