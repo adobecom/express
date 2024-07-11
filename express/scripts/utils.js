@@ -1493,17 +1493,17 @@ function loadGnav() {
   }
 }
 
-async function decorateHeroLCP() {
-  if (getMetadata('template') !== 'blog') {
-    const h1 = document.querySelector('main h1');
+function decorateHeroLCP() {
+  const template = getMetadata('template');
+  const h1 = document.querySelector('main h1');
+  if (template !== 'blog') {
     if (h1 && !h1.closest('main > div > div')) {
       const heroPicture = h1.parentElement.querySelector('picture');
       let heroSection;
       const main = document.querySelector('main');
       if (main.children.length === 1) {
-        heroSection = document.createElement('div');
-        heroSection.id = 'hero';
-        const div = document.createElement('div');
+        heroSection = createTag('div', { id: 'hero' });
+        const div = createTag('div');
         heroSection.append(div);
         if (heroPicture) {
           div.append(heroPicture);
@@ -1521,6 +1521,12 @@ async function decorateHeroLCP() {
         heroSection.classList.add('hero-noimage');
       }
     }
+  } else if (template === 'blog' && h1 && getMetadata('author') && getMetadata('publication-date')) {
+    loadStyle(`${getConfig().codeRoot}/templates/blog/blog.css`);
+    document.body.style.visibility = 'hidden';
+    const heroSection = createTag('div', { id: 'hero' });
+    const main = document.querySelector('main');
+    main.prepend(heroSection);
   }
 }
 
@@ -1532,6 +1538,7 @@ async function decorateHeroLCP() {
 export function decorateButtons(el = document) {
   const noButtonBlocks = ['template-list', 'icon-list'];
   el.querySelectorAll(':scope a:not(.faas.link-block, .fragment.link-block)').forEach(($a) => {
+    if ($a.closest('div.section > .text') && !($a.parentElement.tagName === 'STRONG' || $a.querySelector(':scope > strong'))) return;
     const originalHref = $a.href;
     const linkText = $a.textContent.trim();
     if ($a.children.length > 0) {
@@ -2559,7 +2566,7 @@ export async function loadArea(area = document) {
     decorateHeaderAndFooter();
     if (window.hlx.testing) await decorateTesting();
     await buildAutoBlocks(main);
-    await decorateHeroLCP();
+    decorateHeroLCP();
   }
   const config = getConfig();
 
