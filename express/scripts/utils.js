@@ -1497,8 +1497,29 @@ async function decorateHeroLCP() {
   if (getMetadata('template') !== 'blog') {
     const h1 = document.querySelector('main h1');
     if (h1 && !h1.closest('main > div > div')) {
-      const { decorateHeroSection } = await import('./decorate.js');
-      decorateHeroSection(h1);
+      const heroPicture = h1.parentElement.querySelector('picture');
+      let heroSection;
+      const main = document.querySelector('main');
+      if (main.children.length === 1) {
+        heroSection = document.createElement('div');
+        heroSection.id = 'hero';
+        const div = document.createElement('div');
+        heroSection.append(div);
+        if (heroPicture) {
+          div.append(heroPicture);
+        }
+        div.append(h1);
+        main.prepend(heroSection);
+      } else {
+        heroSection = h1.closest('main > div');
+        heroSection.id = 'hero';
+        heroSection.removeAttribute('style');
+      }
+      if (heroPicture) {
+        heroPicture.classList.add('hero-bg');
+      } else {
+        heroSection.classList.add('hero-noimage');
+      }
     }
   }
 }
