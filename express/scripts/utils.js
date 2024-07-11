@@ -1538,6 +1538,7 @@ function decorateHeroLCP() {
 export function decorateButtons(el = document) {
   const noButtonBlocks = ['template-list', 'icon-list'];
   el.querySelectorAll(':scope a:not(.faas.link-block, .fragment.link-block)').forEach(($a) => {
+    if ($a.closest('div.section > .text') && !($a.parentElement.tagName === 'STRONG' || $a.querySelector(':scope > strong'))) return;
     const originalHref = $a.href;
     const linkText = $a.textContent.trim();
     if ($a.children.length > 0) {
@@ -2392,7 +2393,7 @@ export async function loadTemplate() {
   const { miloLibs, codeRoot } = getConfig();
   const base = miloLibs && MILO_TEMPLATES.includes(name) ? miloLibs : codeRoot;
   const styleLoaded = new Promise((resolve) => {
-    setTimeout(() => loadStyle(`${base}/templates/${name}/${name}.css`, resolve), 3000);
+    loadStyle(`${base}/templates/${name}/${name}.css`, resolve);
   });
   const scriptLoaded = new Promise((resolve) => {
     (async () => {
