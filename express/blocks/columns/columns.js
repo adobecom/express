@@ -144,9 +144,39 @@ const handleVideos = (cell, a, block, thumbnail) => {
   });
 };
 
+const transposeDom = (block) => {
+  if (! block.classList.contains('transpose')) return
+  if  ('ontouchstart' in window && navigator.maxTouchPoints > 0){
+    const rows = Array.from(block.querySelectorAll('.columns > div'))
+    const columns = Array.from(block.querySelectorAll('.columns > div > div'))
+    const columnCount = columns.length
+    const newRows = [] 
+    const l = columnCount
+    let x = 0
+    let y = 0
+    let newRow = createTag('div')
+    for (let i = 0; i < l; i++) { 
+      newRow.appendChild(rows[x].children[y])
+      x += 1
+      if (x === rows.length){
+        x = 0
+        newRows.push(newRow)
+        newRow = createTag('div')
+      }
+    }
+  
+    block.innerHTML = ''
+    for (let row of newRows){
+      console.log(newRow)
+      block.appendChild(row)
+    }
+  } 
+}
+
 export default async function decorate(block) {
   addTempWrapper(block, 'columns');
-
+  
+  transposeDom(block)
   const rows = Array.from(block.children);
 
   let numCols = 0;
