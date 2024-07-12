@@ -6,7 +6,10 @@ const { default: decorate } = await import('../../../../express/blocks/search-ma
 document.body.innerHTML = await readFile({ path: './mocks/body.html' });
 describe('Search Marquee', () => {
   const block = document.querySelector('.search-marquee');
-  decorate(block);
+  before(async () => {
+    window.isTestEnv = true;
+    await decorate(block);
+  });
   it('has a hero h1', () => {
     expect(block.querySelector('div:first-of-type h1#hero-title')).to.exist;
   });
@@ -30,27 +33,24 @@ describe('Search Marquee', () => {
     expect(input.placeholder).to.exist;
   });
 
-  it('has a search form', () => {
-    expect(true).to.be.true;
+  it('has search dropdown hidden when loaded', () => {
+    const dropdownContainer = block.querySelector('.search-dropdown-container');
+    const trendsContainer = dropdownContainer.querySelector('.trends-container');
+    const suggestionsContainer = dropdownContainer.querySelector('.suggestions-container');
+    expect(dropdownContainer.classList.contains('hidden')).to.be.true;
+    expect(trendsContainer).to.exist;
+    expect(suggestionsContainer).to.exist;
   });
 
-  it('has a search dropdown when clicked', () => {
-    expect(true).to.be.true;
+  it('shows trends when first clicked', () => {
+    const dropdownContainer = block.querySelector('.search-dropdown-container');
+    const trendsContainer = dropdownContainer.querySelector('.trends-container');
+    const suggestionsContainer = dropdownContainer.querySelector('.suggestions-container');
+    const input = block.querySelector('form input');
+    input.click();
+    expect(dropdownContainer.classList.contains('hidden')).to.be.false;
+    expect(suggestionsContainer.classList.contains('hidden')).to.be.true;
+    expect(trendsContainer.classList.contains('hidden')).to.be.false;
   });
-
-  it('shows trendy searches', () => {
-    expect(true).to.be.true;
-  });
-
-  it('has autocomplete in search dropdown', () => {
-    expect(true).to.be.true;
-  });
-
-  it('has a carousel for CKG pills', () => {
-    expect(true).to.be.true;
-  });
-
-  it('removes raw divs when carousel is being built', () => {
-    expect(true).to.be.true;
-  });
+  // TODO: add tests for freePlans, CKG Pills, and search interactions
 });
