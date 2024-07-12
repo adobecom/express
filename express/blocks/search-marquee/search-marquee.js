@@ -254,12 +254,7 @@ function decorateBackground(block) {
     media.classList.add('backgroundimg');
     media.loading = 'eager';
     media.setAttribute('fetchpriority', 'high');
-    const wrapper = block.parentElement;
-    if (wrapper.classList.contains('search-marquee-wrapper')) {
-      wrapper.prepend(media);
-    } else {
-      block.prepend(media);
-    }
+    block.prepend(media);
     mediaRow.remove();
   }
 }
