@@ -1053,7 +1053,7 @@ main .columns.slim-padding > div {
 }
 
 main .columns.slim-padding .column {
-  padding: 20px !important;
+  padding: 20px;
 }
 
 main .columns .column:has(a:only-of-type) {
