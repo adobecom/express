@@ -1040,6 +1040,14 @@ main .columns.center > div {
  align-items: flex-start;
 }
 
+main .columns .column:has(a:only-of-type) {
+  text-align: center;
+}
+
+main .columns.slim-button  a.button {
+  padding: 5px 19.5px;
+}
+
 main .columns.center .column > div{
   text-align: center;
 }
@@ -1052,7 +1060,4 @@ main .columns.slim-padding .column {
   padding: 20px;
 }
 
-main .columns .column:has(a:only-of-type) {
-  text-align: center;
-}
 
