@@ -4,7 +4,7 @@ import {
   addAnimationToggle,
   createOptimizedPicture,
   createTag,
-  decorateMain,
+  loadArea,
   fetchPlaceholders,
   fetchBlockFragDecorated,
   fetchRelevantRows,
@@ -255,7 +255,7 @@ async function fetchBlueprint(pathname) {
   const body = await resp.text();
   const $main = createTag('main');
   $main.innerHTML = body;
-  await decorateMain($main);
+  await loadArea($main);
 
   window.spark.$blueprint = $main;
   return ($main);
@@ -1646,8 +1646,8 @@ export async function decorateTemplateList($block, props) {
     if (!$heroPicture && $blueprint) {
       const $bpHeroImage = $blueprint.querySelector('div:first-of-type img');
       if ($bpHeroImage) {
-        const $heroSection = document.querySelector('main .hero');
-        const $heroDiv = document.querySelector('main .hero > div');
+        const $heroSection = document.querySelector('main #hero');
+        const $heroDiv = document.querySelector('main #hero > div');
 
         if ($heroSection && !$heroDiv) {
           const $p = createTag('p');
