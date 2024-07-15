@@ -129,10 +129,10 @@ function handleEvent(prefix, link, valueInMap) {
   fetchUrl(link.href, { method: 'HEAD' }).catch(() => {
     if (prefix === 'uk' || prefix === 'in') {
       fetchUrl(link.href.replace(`${prefix}/`, '/')).catch(() => {
-        window.location.assign('/express/');
+        window.location.assign('/express/?notification=pageDidNotExist');
       });
     } else {
-      window.location.assign(`/${valueInMap ?? prefix}/express/`);
+      window.location.assign(`/${valueInMap ?? prefix}/express/?notification=pageDidNotExist`);
     }
   });
 }
@@ -160,6 +160,11 @@ function decorateLink(link, path) {
     if (href.endsWith('/')) href = href.slice(0, -1);
   }
   link.href = `${href}${path}`;
+  if (valueInMap || valueInMap === '') {
+    const url = new URL(link.href);
+    url.searchParams.append('notification', 'pageDidNotExist');
+    link.href = url.href;
+  }
   link.addEventListener('click', (e) => {
     /* c8 ignore next 2 */
     e.preventDefault();
