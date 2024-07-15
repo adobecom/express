@@ -7,7 +7,6 @@ import {
   fetchPlaceholders,
   loadStyle,
   getConfig,
-  loadIms,
 } from './utils.js';
 
 const isHomepage = window.location.pathname.endsWith('/express/');
@@ -57,6 +56,20 @@ async function checkGeo(userGeo, userLocale, geoCheckForce) {
 
   const region = geoCheckForce ? await geoLookup() : getCookie('international') || await geoLookup();
   return checkRedirect(window.location, region);
+}
+
+async function loadIMS() {
+  window.adobeid = {
+    client_id: 'AdobeExpressWeb',
+    scope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
+    locale: getConfig().locale?.ietf?.replace('-', '_') || 'en_US',
+    environment: getConfig().env.ims,
+  };
+  if (getConfig().env.ims === 'stg1') {
+    return loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
+  } else {
+    return loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+  }
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -263,7 +276,7 @@ async function loadFEDS() {
 }
 
 if (!window.hlx || window.hlx.gnav) {
-  imsLibProm = loadIms();
+  imsLibProm = loadIMS();
   loadFEDS();
   if (!['off', 'no'].includes(getMetadata('google-yolo').toLowerCase())) {
     setTimeout(() => {
