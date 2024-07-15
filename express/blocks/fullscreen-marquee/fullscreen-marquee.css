@@ -15,10 +15,12 @@
   overflow: hidden;
 }
 
-.section > .fullscreen-marquee {
+.section > .fullscreen-marquee:not(.narrow) {
   padding: 16px;
   max-width: none;
 }
+
+ 
 
 .fullscreen-marquee.has-background {
   padding-bottom: 160px;

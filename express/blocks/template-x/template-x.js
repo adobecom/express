@@ -226,6 +226,7 @@ const WIDE_PLACEHOLDER_RATIO_CUTOFF = 1.3;
 function adjustPlaceholderDimensions(block, props, tmplt, option) {
   const sep = option.includes(':') ? ':' : 'x';
   const ratios = option.split(sep).map((e) => +e);
+  console.log(block.classList)
   props.placeholderFormat = ratios;
   if (!ratios[1]) return;
   if (block.classList.contains('horizontal')) {
@@ -1612,6 +1613,7 @@ function determineTemplateXType(props) {
   if (props.orientation && props.orientation.toLowerCase() === 'horizontal') type.push('horizontal');
 
   // style aspect
+  console.log(props.width)
   if (props.width && props.width.toLowerCase() === 'full') type.push('fullwidth');
   if (props.width && props.width.toLowerCase() === 'sixcols') type.push('sixcols');
   if (props.width && props.width.toLowerCase() === 'fourcols') type.push('fourcols');

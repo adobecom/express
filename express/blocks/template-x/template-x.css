@@ -2824,3 +2824,8 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         padding-top: 0;
     }
 }
+
+
+.template-x-wrapper.sixcols:has(.narrow) {
+    max-width: 748px;
+}
