@@ -2,11 +2,9 @@
  * tabs - consonant v6
  * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Tab_Role
  */
-import { createTag } from '../../scripts/utils.js';
+import { createTag, MILO_EVENTS } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { trackButtonClick } from '../../scripts/instrument.js';
-
-const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
 
 const isElementInContainerView = (targetEl) => {
   const rect = targetEl.getBoundingClientRect();
@@ -120,7 +118,11 @@ const init = (block) => {
   addTempWrapper(block, 'tabs-ax');
 
   // to avoid hero style conflicts
-  block.closest('.hero.hero-noimage')?.classList?.remove('hero', 'hero-noimage');
+  const hero = block.closest('#hero.hero-noimage');
+  if (hero) {
+    hero.classList.remove('hero-noimage');
+    hero.removeAttribute('id');
+  }
   const rootElem = block.closest('.fragment') || document;
   const rows = block.querySelectorAll(':scope > div');
   const parentSection = block.closest('.section');
