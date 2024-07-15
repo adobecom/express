@@ -3,13 +3,10 @@
 import {
   loadScript,
   getConfig,
-  checkTesting,
   getMetadata,
 } from './utils.js';
 import trackBranchParameters from './branchlinks.js';
 
-const usp = new URLSearchParams(window.location.search);
-const martech = usp.get('martech');
 const w = window;
 if (!w.alloy_all) w.alloy_all = {};
 const d = document;
@@ -77,46 +74,6 @@ if (
 } else {
   sparkLandingPageType = 'other';
 }
-
-// alloy feature flag
-let martechURL;
-if (
-  (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-  || martech === 'alloy-qa'
-) {
-  martechURL = 'https://www.adobe.com/marketingtech/main.standard.qa.js';
-} else {
-  martechURL = 'https://www.adobe.com/marketingtech/main.standard.min.js';
-}
-
-window.marketingtech = {
-  adobe: {
-    launch: {
-      url: (
-        (
-          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-          || martech === 'alloy-qa'
-        )
-          ? 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-2c94beadc94f-development.js'
-          : 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-5dd5dd2177e6.min.js'
-      ),
-    },
-    alloy: {
-      edgeConfigId: (
-        (
-          (window.spark && window.spark.hostname === 'www.stage.adobe.com')
-          || martech === 'alloy-qa'
-        )
-          ? '8d2805dd-85bf-4748-82eb-f99fdad117a6'
-          : '2cba807b-7430-41ae-9aac-db2b0da742d5'
-      ),
-    },
-    target: checkTesting(),
-    audienceManager: true,
-  },
-};
-// w.targetGlobalSettings = w.targetGlobalSettings || {};
-// w.targetGlobalSettings.bodyHidingEnabled = checkTesting();
 
 export function getExpressLandingPageType() {
   return sparkLandingPageType;
@@ -350,7 +307,7 @@ export function trackButtonClick(a) {
     } else if (a.closest('.faq')) {
       adobeEventName = appendLinkText(`${adobeEventName}faq:`, a);
       // CTA in the hero
-    } else if (a.closest('.hero')) {
+    } else if (a.closest('#hero')) {
       adobeEventName = appendLinkText(`${adobeEventName}hero:`, a);
       // Click in the pricing block
     } else if (sparkLandingPageType === 'express-your-fandom') {
@@ -540,7 +497,9 @@ function decorateAnalyticsEvents() {
   });
 }
 
-function martechLoadedCB() {
+export default function martechLoadedCB() {
+  setDataAnalyticsAttributesForMartech();
+
   //------------------------------------------------------------------------------------
   // Fire extra spark events
   //------------------------------------------------------------------------------------
@@ -620,11 +579,11 @@ function martechLoadedCB() {
     getSegments(data?.identity?.ECID || null);
   }
 
-  __satelliteLoadedCallback(getAudiences);
-}
-
-export default async function initMartech() {
-  setDataAnalyticsAttributesForMartech();
-  await loadScript(martechURL);
-  return martechLoadedCB();
+  if (window.__satelliteLoadedCallback) {
+    __satelliteLoadedCallback(getAudiences);
+  } else {
+    window.addEventListener('alloy_sendEvent', () => {
+      __satelliteLoadedCallback(getAudiences);
+    }, { once: true });
+  }
 }
