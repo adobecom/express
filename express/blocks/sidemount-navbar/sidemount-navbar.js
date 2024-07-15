@@ -1,4 +1,5 @@
 import { getIconElement } from "../../scripts/utils.js";
+import { getLottie } from "../../scripts/utils.js";
 
 const OFFSET_HEIGHT = 1000
 const MEDIAN_HEIGHT = 1300
@@ -21,9 +22,11 @@ function removeButtonStyles (block) {
 }
 
 function decorateHeader (block) {
-    const header = Array.from(block.querySelectorAll(":scope > div"))[0]
-    const iconHTML = getLottie('arrow-down', '/express/icons/arrow-down.json');
-    header.innerHTML = iconHTML + header.innerHTML
+    const header = Array.from(block.querySelectorAll(":scope > div "))[0]
+    const icon=  getIconElement('arrow-right')
+    header.prepend(icon)
+    header.classList.add('header')
+
 }
 
 export default function decorate(block) {
@@ -50,5 +53,5 @@ export default function decorate(block) {
     checkScroll();
     addSectionIDs(block)
     removeButtonStyles(block)
-    decorateHeader(block)
+    decorateHeader(block) 
 }
