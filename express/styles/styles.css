@@ -483,6 +483,7 @@ main a:any-link {
 
 main img {
   max-width: 100%;
+  height: auto;
 }
 
 main .section {
@@ -568,59 +569,59 @@ main .section:last-of-type>.default-content-wrapper {
 }
 
 /* hero */
-main .section.hero {
+main .section#hero {
   color: var(--color-white);
   position: relative;
   padding: 120px 15px;
 }
 
-main .hero.hero-noimage {
+main #hero.hero-noimage {
   color: var(--body-color);
   padding-top: 64px;
   padding-bottom: 0;
 }
 
-main .hero.hero-noimage+.section {
+main #hero.hero-noimage+.section {
   padding-top: 0;
 }
 
-main .hero.hero-noimage>div {
+main #hero.hero-noimage>div {
   max-width: 1024px;
 }
 
-main .hero.hero-noimage a.button:any-link {
+main #hero.hero-noimage a.button:any-link {
   color: white;
 }
 
-main .hero.hero-noimage a:any-link {
+main #hero.hero-noimage a:any-link {
   color: black;
 }
 
-main .hero h1 {
+main #hero h1 {
   font-size: var(--heading-font-size-xl);
   line-height: var(--heading-line-height);
   text-align: center;
   margin: 0;
 }
 
-main .hero h2 {
+main #hero h2 {
   font-size: var(--body-font-size-xl);
   font-weight: var(--body-font-weight);
   margin: 32px 32px;
 }
 
-main .hero h5 {
+main #hero h5 {
   font-size: var(--body-font-size-l);
   font-weight: var(--body-font-weight);
   margin: auto;
   margin-top: 32px;
 }
 
-main .hero.hero-noimage p {
+main #hero.hero-noimage p {
   font-size: var(--body-font-size-s);
 }
 
-main .hero a.button:any-link {
+main #hero a.button:any-link {
   text-shadow: none;
 }
 
@@ -630,7 +631,7 @@ main .icon {
   color: currentColor;
 }
 
-main .hero .icon {
+main #hero .icon {
   height: 2em;
   width: 2em;
 }
@@ -645,7 +646,7 @@ main .banner .icon.icon-facebook {
   fill: #1877f2;
 }
 
-main .hero .hero-bg {
+main #hero .hero-bg {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -655,22 +656,22 @@ main .hero .hero-bg {
   z-index: -1;
 }
 
-main .hero .hero-bg img {
+main #hero .hero-bg img {
   height: 100%;
   width: 100%;
   object-fit: cover;
 }
 
-main .hero>div {
+main #hero>div {
   padding: 0;
   margin: auto;
 }
 
-main .hero a:any-link {
+main #hero a:any-link {
   color: currentColor;
 }
 
-main .hero a.button:any-link {
+main #hero a.button:any-link {
   padding: 10px 1.5em 10px 1.5em;
   border-radius: 22px;
 }
@@ -681,7 +682,7 @@ main .section .block p.legal-copy {
 }
 
 @media (min-width:600px) {
-  main .hero h5 {
+  main #hero h5 {
     font-size: 22px;
     font-weight: 400;
     max-width: 672px;
@@ -689,8 +690,8 @@ main .section .block p.legal-copy {
     margin-top: 32px;
   }
 
-  main .hero h2,
-  main .hero p {
+  main #hero h2,
+  main #hero p {
     font-size: var(--body-font-size-xl);
     line-height: var(--body-line-height);
     text-align: center;
@@ -699,25 +700,25 @@ main .section .block p.legal-copy {
 }
 
 @media (min-width:900px) {
-  main .hero {
+  main #hero {
     padding-left: 50px;
     padding-right: 50px;
   }
 
-  main .hero h2,
-  main .hero p {
+  main #hero h2,
+  main #hero p {
     font-size: var(--body-font-size-xxl);
     margin: 24px 50px 0 50px;
   }
 }
 
 @media (min-width:1200px) {
-  main .hero h1 {
+  main #hero h1 {
     font-size: var(--heading-font-size-xxl);
     margin: 0;
   }
 
-  main .hero .columns>div>div {
+  main #hero .columns>div>div {
     margin: 8px;
   }
 }
@@ -837,7 +838,7 @@ main .section p.button-container {
   margin-bottom: 0;
 }
 
-main .section .hero {
+main .section #hero {
   color: initial;
 }
 
@@ -867,8 +868,7 @@ body[data-device="mobile"] main [data-audience="mobile"][data-section-status="lo
 /* jank protection for async blocks/sections */
 
 main .pricing,
-main .hero-animation,
-main .fragment {
+main .hero-animation {
   opacity: 0;
   height: 100vh;
   transition: opacity 100ms;
@@ -982,7 +982,7 @@ main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .
   main .block .free-plan-widget .plan-widget-tag {
     text-align: left;
   }
-  
+
   main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf, .link-list, .wayfinder, .ratings) a.button.same-as-floating-button-CTA {
     display: inline-block;
   }
@@ -1130,7 +1130,6 @@ wbr.wbr-off {
 /* progressive section appearance */
 main .section[data-section-status='loading'],
 main .section[data-section-status='initialized'],
-main .hero[data-status='loading'],
 main > div,
 main .section[data-status='decorated'] {
   display: none;
@@ -1138,46 +1137,46 @@ main .section[data-status='decorated'] {
 
 main > .section,
 .fragment > .section,
-main > .hero {
+main > #hero {
   display: block;
   position: relative;
 }
 
 /* Japanese font sizing styles */
-:lang(ja) main h1.heading-long {
+:lang(ja) main h1.heading-long, :lang(ja) main #hero h1.heading-long {
   font-size: var(--heading-font-size-xl);
 }
 
-:lang(ja) main h1.heading-very-long {
+:lang(ja) main h1.heading-very-long, :lang(ja) main #hero h1.heading-very-long {
   font-size: var(--heading-font-size-l);
 }
 
-:lang(ja) main h1.heading-x-long {
+:lang(ja) main h1.heading-x-long, :lang(ja) main #hero h1.heading-x-long {
   font-size: var(--heading-font-size-l);
 }
 
-:lang(ja) main h2.heading-long {
+:lang(ja) main h2.heading-long, :lang(ja) main #hero h2.heading-long {
   font-size: var(--heading-font-size-l);
 }
 
-:lang(ja) main h2.heading-very-long {
+:lang(ja) main h2.heading-very-long, :lang(ja) main #hero h2.heading-very-long {
   font-size: var(--heading-font-size-l);
 }
 
-:lang(ja) main h2.heading-x-long {
+:lang(ja) main h2.heading-x-long, :lang(ja) main #hero h2.heading-x-long {
   font-size: var(--heading-font-size-m);
 }
 
 @media (max-width: 600px) {
-  :lang(ja) main h2.heading-long {
+  :lang(ja) main h2.heading-long, :lang(ja) main #hero h2.heading-long {
     font-size: var(--heading-font-size-l);
   }
 
-  :lang(ja) main h2.heading-very-long {
+  :lang(ja) main h2.heading-very-long, :lang(ja) main #hero h2.heading-very-long {
     font-size: var(--heading-font-size-m);
   }
 
-  :lang(ja) main h2.heading-x-long {
+  :lang(ja) main h2.heading-x-long, :lang(ja) main #hero h2.heading-x-long {
     font-size: var(--heading-font-size-m);
   }
 }
