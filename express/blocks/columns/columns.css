@@ -1032,10 +1032,6 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     align-items: flex-start;
    }
 }
- 
-main .columns.center > div p:first-of-type {
-  margin-top: 0px;
-}
 
 main .columns.center {
   text-align: center;
