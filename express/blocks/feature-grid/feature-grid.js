@@ -81,14 +81,11 @@ const blockProperties = ['card-image', 'card-color'];
 
 const extractProperties = (block) => {
   const rows = Array.from(block.querySelectorAll(':scope > div'));
-
   const allProperties = {};
-
   rows.forEach((row) => {
     if (row?.children?.length !== 2) {
       return;
     }
-    console.log(row);
     const key = row?.children[0].textContent;
     const value = row?.children[1].textContent;
     if (key && value && blockProperties.includes(key?.toLowerCase())) {
@@ -105,8 +102,6 @@ export default function decorate(block) {
   block.innerHTML = '';
   const rows = Array.from(inputRows);
   const heading = rows.shift();
-
-  console.log(colorProperties);
   const loadMoreSection = rows.length > 4 ? getLoadMoreText(rows) : null;
   const gridProps = rows.map((row) => {
     const subText = row.querySelector('p');
