@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /* eslint-disable no-underscore-dangle */
 // eslint-disable-next-line object-curly-newline
 import { createTag, getMetadata, localizeLink, loadStyle, getConfig } from '../../scripts/utils.js';
@@ -238,17 +237,11 @@ export function delayedModal(el) {
   return true;
 }
 
-const loadedPaths = new Set();
 // Deep link-based
 export default function init(el) {
   const { modalHash } = el.dataset;
   if (delayedModal(el) || window.location.hash !== modalHash || document.querySelector(`div.dialog-modal${modalHash}`)) return null;
   const details = findDetails(window.location.hash, el);
-  if (details.path) {
-    // TODO: diff in Milo. Depends on AX authoring fix to deprecate
-    if (loadedPaths.has(details.path)) return null;
-    loadedPaths.add(details.path);
-  }
   return details ? getModal(details) : null;
 }
 
