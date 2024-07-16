@@ -1,9 +1,10 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
-
+import {decorateButtons } from '../../../../express/scripts/utils/decorate.js';
 const { default: decorate } = await import(
   '../../../../express/blocks/fullscreen-marquee/fullscreen-marquee.js'
 );
+ 
 const testBody = await readFile({ path: './mocks/body.html' });
 
 describe('Fullscreen Marquee', () => {
@@ -73,4 +74,12 @@ describe('Fullscreen Marquee', () => {
     const bg = block.querySelector('.fullscreen-marquee-background');
     expect(bg.style.opacity !== '').to.be.true;
   });
+
+  it('should only have 1 CTA in the header', async () => {
+    document.body.dataset.device = 'desktop';
+    const block = document.querySelector('.fullscreen-marquee.double-cta');
+    await decorate(block); 
+    expect(Array.from(block.querySelectorAll("p a")).filter(a => a.classList.contains('hyperlink')).length === 1)
+    expect(Array.from(block.querySelectorAll("p a")).filter(a => a.classList.contains('button')).length === 1)
+  })
 });
