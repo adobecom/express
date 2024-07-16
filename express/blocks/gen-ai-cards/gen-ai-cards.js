@@ -3,7 +3,7 @@ import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
 
-const genAIPlaceholder = '%7B%7Bprompt-text%7D%7D';
+const promptTokenRegex = new RegExp('(%7B%7B|{{)prompt-text(%7D%7D|}})');
 
 export function decorateTextWithTag(textSource, options = {}) {
   const {
@@ -65,7 +65,7 @@ export const windowHelper = {
 function handleGenAISubmit(form, link) {
   const input = form.querySelector('input');
   if (input.value.trim() === '') return;
-  const genAILink = link.replace(genAIPlaceholder, encodeURI(input.value).replaceAll(' ', '+'));
+  const genAILink = link.replace(promptTokenRegex, encodeURI(input.value).replaceAll(' ', '+'));
   if (genAILink) windowHelper.redirect(genAILink);
 }
 
@@ -140,7 +140,7 @@ async function decorateCards(block, { actions }) {
       }
     }
 
-    const hasGenAIForm = (new RegExp(genAIPlaceholder).test(ctaLinks?.[0]?.href));
+    const hasGenAIForm = promptTokenRegex.test(ctaLinks?.[0]?.href);
 
     if (ctaLinks.length > 0) {
       if (hasGenAIForm) {
