@@ -11,7 +11,7 @@ import {
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
-import createToggle, { tagFreePlan } from './pricing-toggle.js';
+import createToggle  from './pricing-toggle.js';
 import { handleTooltip } from './pricing-tooltip.js';
 
 
@@ -147,10 +147,10 @@ async function createPricingSection(
   ctaGroup,
   specialPromo,
   isMonthly = false
-) { 
-  const pricingArea = createTag('div', {class: 'pricing-area'}) 
+) {
+  const pricingArea = createTag('div', { class: 'pricing-area' })
   while (pricingSection?.firstChild) {
-      pricingArea.appendChild(pricingSection.firstChild);
+    pricingArea.appendChild(pricingSection.firstChild);
   }
 
 
@@ -193,7 +193,7 @@ async function createPricingSection(
     pricingSuffixTextElem?.remove();
     pricingBtnContainer?.remove();
   }
-  const ctaArea = createTag('div', {class : 'card-cta-group'}) 
+  const ctaArea = createTag('div', { class: 'card-cta-group' })
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
     if (i === 1) a.classList.add('secondary');
@@ -205,6 +205,9 @@ async function createPricingSection(
       a.parentNode.remove();
     }
     formatDynamicCartLink(a);
+    if (a.textContent.includes(SALES_NUMBERS)){
+      formatSalesPhoneNumber([a], SALES_NUMBERS)
+    }
     ctaArea.append(a);
   });
 
@@ -214,11 +217,11 @@ async function createPricingSection(
   } else {
     pricingArea.classList.add('annually', 'hide');
     ctaArea.classList.add('annually', 'hide')
-  } 
+  }
   return [pricingArea, ctaArea]
 }
 
-function decorateHeader(header) { 
+function decorateHeader(header, planExplanation) {
   const h2 = header.querySelector('h2')
   header.classList.add('card-header');
   const premiumIcon = header.querySelector('img');
@@ -243,17 +246,28 @@ function decorateHeader(header) {
   if (premiumIcon) h2.append(premiumIcon);
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
-  }); 
+  });
+  planExplanation.classList.add('plan-explanation')
 }
 
-function decorateSpecialPromo(card,source) {
+function decorateCardBorder(card, source) {
+  if (!source?.textContent) {
+    const newHeader = createTag('div', { class: 'promo-eyebrow-text' })
+    card.appendChild(newHeader)
+    return
+  }
   const pattern = /\{\{(.*?)\}\}/g;
-  const matches = Array.from(source.textContent.matchAll(pattern));
+  const matches = Array.from(source.textContent?.matchAll(pattern));
+  const a = "" + source?.textContent;
   if (matches.length > 0) {
     const [token, promoType] = matches[matches.length - 1];
     card.classList.add(promoType.replaceAll(' ', ''));
+    const newHeader = createTag('div', { class: 'promo-eyebrow-text' })
+    newHeader.textContent = source.textContent.replace(pattern, '')
+    card.appendChild(newHeader)
   }
-} 
+  source.classList.add('none')
+}
 
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
@@ -261,42 +275,80 @@ export default async function init(el) {
   const rows = Array.from(el.querySelectorAll(":scope > div"))
   const cardCount = rows[0].children.length
   const cards = []
-  for (let i = 0; i < cardCount; i += 1) {
-    const card = createTag('div', {class : 'card'})
-    decorateSpecialPromo(card,rows[0].children[0])
-    decorateHeader( rows[1].children[0])
 
-    const [[m1, m2],[a1, a2]] = await Promise.all([
-      createPricingSection(placeholders, rows[3].children[0], rows[4].children[0], null, true),
-      createPricingSection(placeholders, rows[5].children[0], rows[6].children[0], null),
+
+
+  const syncHeights = () => {
+    if (window.screen.width < 600) return
+    const rowCount = el.children[0].children.length 
+    for (let j = 0; j < rowCount; j++) {
+      let maxHeight = 0
+      for (let i = 0; i < cardCount; i++) {
+        const cell = el.children[i].children[j]
+        if (cell.classList.contains('card-header') || cell.classList.contains('promo-eyebrow-text')) continue;
+        const dimensions = cell.getBoundingClientRect()
+        if (dimensions.height > 0) {
+          cell.style = "height:" + dimensions.height +  "px"
+        }
+        if (dimensions.height > maxHeight) { 
+          maxHeight = dimensions.height
+        }
+      }
+      for (let i = 0; i < cardCount; i++) {
+        if (maxHeight === 0) continue;
+        const cell = el.children[i].children[j]
+        cell.style = "height:" + maxHeight + "px"
+      }
+    }
+  };
+ 
+
+  
+  for (let i = 0; i < cardCount; i += 1) {
+    const card = createTag('div', { class: 'card' })
+    decorateCardBorder(card, rows[1].children[0])
+    decorateHeader(rows[0].children[0], rows[2].children[0])
+
+    const [[m1, m2], [a1, a2]] = await Promise.all([
+      createPricingSection(placeholders, rows[3].children[0], rows[4].children[0], rows[0].children[0], true),
+      createPricingSection(placeholders, rows[5].children[0], rows[6].children[0], rows[0].children[0]),
     ]);
     rows[3].children[0].innerHTML = ''
-    rows[3].children[0].appendChild(m1) 
+    rows[3].children[0].appendChild(m1)
     rows[3].children[0].appendChild(a1)
     rows[4].children[0].innerHTML = ''
     rows[4].children[0].appendChild(m2)
     rows[4].children[0].appendChild(a2)
-    const groupID = `${Date.now()}`; 
-    const toggle = createToggle(placeholders, [m1, m2,a1,a2], groupID)
 
-    rows[2].children[0].appendChild(toggle)
+    const groupID = `${Date.now()}`;
+    const toggle = createToggle(placeholders, [m1, m2, a1, a2], groupID,syncHeights)
+    rows[3].children[0].insertBefore(toggle,rows[3].children[0].children[0])
     rows[7].children[0].classList.add('card-feature-list')
-    for (let j = 0; j < rows.length - 1;j += 1) {
+
+
+
+    for (let j = 0; j < rows.length - 1; j += 1) {
       card.appendChild(rows[j].children[0])
     }
     cards.push(card)
   }
   el.innerHTML = ''
-  for (let card of cards){
+  for (let card of cards) {
     el.appendChild(card)
   }
+ 
+  document.addEventListener('load', () => {
+    syncHeights();
+  }, 100);
 
   const observer = new IntersectionObserver((entries) => {
+    syncHeights();
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         el.classList.remove('no-visible');
       }
     });
+
   });
 
   observer.observe(el);

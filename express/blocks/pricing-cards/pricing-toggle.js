@@ -59,44 +59,26 @@ function onKeyDown(e, pricingSections, buttons, toggleWrapper) {
       break;
   }
 }
-export function tagFreePlan(cardContainer) {
-  const cards = Array.from(cardContainer.querySelectorAll('.card'));
-  let disableAllToggles = true;
-  const freePlanStatus = [];
-
-  for (const card of cards) {
-    let isFreePlan = true;
-    const pricingSections = card.querySelectorAll('.pricing-section');
-    for (const section of pricingSections) {
-      const price = section.querySelector('.pricing-price > strong')?.textContent;
-      if (price && parseInt(price, 10) > 0) {
-        isFreePlan = false;
-        disableAllToggles = false;
-        break;
-      }
-    }
-    freePlanStatus.push(isFreePlan ? card.querySelector('.billing-toggle') : undefined);
-  }
-
-  freePlanStatus.forEach((billingToggle) => {
-    if (disableAllToggles) {
-      billingToggle.classList.add("billing-radio-hidden")
-    } else if (billingToggle) {
-      billingToggle.classList.add('suppressed-billing-toggle');
-    }
-  });
-}
 
 export default function createToggle(
-  placeholders, pricingSections, groupID, adjElemPos,
+  placeholders, pricingSections, groupID, adjustElementPosition,
 ) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
   const toggleWrapper = createTag('div', { class: 'billing-toggle' });
+
+  const price = pricingSections[0].querySelector('.pricing-price > strong')?.textContent;
+  if (price && parseInt(price, 10) === 0) {
+    toggleWrapper.classList.add('hidden')
+  }
+
+
   toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`;
   toggleWrapper.setAttribute('role', 'radiogroup');
   toggleWrapper.setAttribute('aria-labelledby', groupID);
   const groupLabel = toggleWrapper.children[0];
   groupLabel.setAttribute('id', groupID);
+
+
   const buttons = PLANS.map((plan, i) => {
     const buttonID = `${groupID}:${plan}`;
     const defaultChecked = i === 0;
@@ -114,12 +96,14 @@ export default function createToggle(
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
       toggleOther(pricingSections, buttons, i); 
+      adjustElementPosition()
     });
     return button;
   });
 
   toggleWrapper.addEventListener('keydown', (e) => {
     onKeyDown(e, pricingSections, buttons, toggleWrapper);
+    adjustElementPosition()
   });
 
   toggleWrapper.append(...buttons);
