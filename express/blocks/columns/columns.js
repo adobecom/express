@@ -7,7 +7,6 @@ import {
   getIconElement,
   addHeaderSizing,
   getMetadata,
-  isPhone,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
