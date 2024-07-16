@@ -190,11 +190,15 @@ export async function getModal(details, custom) {
   }
 
   const iframe = dialog.querySelector('iframe');
-  // TODO: different from milo as we are not using commerce-frame
   if (iframe) {
-    /* Initially iframe height is set to 0% in CSS for the height auto adjustment feature.
-    For modals without the 'commerce-frame' class height auto adjustment is not applicable */
-    iframe.style.height = '100%';
+    if (dialog.classList.contains('commerce-frame')) {
+      const { default: enableCommerceFrameFeatures } = await import('./modal.merch.js');
+      await enableCommerceFrameFeatures({ dialog, iframe });
+    } else {
+      /* Initially iframe height is set to 0% in CSS for the height auto adjustment feature.
+      For modals without the 'commerce-frame' class height auto adjustment is not applicable */
+      iframe.style.height = '100%';
+    }
   }
 
   return dialog;
