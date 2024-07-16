@@ -266,11 +266,11 @@ export const formatSalesPhoneNumber = (() => {
 
 export async function formatPrice(price, currency) {
   if (price === '') return null;
-
   const customSymbols = {
     SAR: 'SR',
     CA: 'CAD',
     EGP: 'LE',
+    ARS: 'Ar$',
   };
   const locale = ['USD', 'TWD'].includes(currency)
     ? 'en-GB' // use en-GB for intl $ symbol formatting
@@ -346,11 +346,13 @@ export const getOfferOnePlans = (() => {
   return async (offerId) => {
     let country = await getCountry();
     if (!country) country = 'us';
+
     let currency = getCurrency(country);
     if (!currency) {
       country = 'us';
       currency = 'USD';
     }
+
     if (!json) {
       const resp = await fetch('/express/system/offers-one.json?limit=5000');
       if (!resp.ok) return {};
@@ -430,6 +432,7 @@ export async function fetchPlanOnePlans(planUrl) {
     }
 
     const offer = await getOfferOnePlans(plan.offerId);
+
     if (offer) {
       plan.currency = offer.currency;
       plan.price = offer.unitPrice;
@@ -459,7 +462,6 @@ export async function fetchPlanOnePlans(planUrl) {
       }
       plan.y2p = offer.y2p;
     }
-
     window.pricingPlans[planUrl] = plan;
   }
   return plan;
