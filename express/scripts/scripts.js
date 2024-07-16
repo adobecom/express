@@ -168,3 +168,5 @@ const listenAlloy = () => {
 stamp('start');
 
 if (window.name.includes('performance')) registerPerformanceLogger();
+
+// this line is added as commit 1
