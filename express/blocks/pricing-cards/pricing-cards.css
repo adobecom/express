@@ -3,6 +3,10 @@
   --card-padding: 12px;
 }
 
+main .section:has(.pricing-cards)>div {
+    max-width: unset;
+}
+
 .pricing-cards-container>div.pricing-cards-wrapper {
   max-width: none;
 }
@@ -67,13 +71,7 @@
   right: 0;
   bottom: 0;
 }
-
  
-
-.pricing-cards .card > div {
-  transition: height 0.5s ease; 
-}
-
 /** Header **/
 .pricing-cards .card-header {
   align-self: stretch;
@@ -165,6 +163,11 @@
   justify-content: center;
   align-items: center;
   text-align: center;
+}
+
+.pricing-cards .pricing-area-wrapper {
+    display:  flex;
+    flex-direction: column;
 }
 
 

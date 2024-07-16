@@ -258,7 +258,6 @@ function decorateCardBorder(card, source) {
   }
   const pattern = /\{\{(.*?)\}\}/g;
   const matches = Array.from(source.textContent?.matchAll(pattern));
-  const a = "" + source?.textContent;
   if (matches.length > 0) {
     const [token, promoType] = matches[matches.length - 1];
     card.classList.add(promoType.replaceAll(' ', ''));
@@ -269,36 +268,38 @@ function decorateCardBorder(card, source) {
   source.classList.add('none')
 }
 
+const syncHeights = (el,rowCount, cardCount) => {
+  if (window.screen.width < 600) return 
+
+  for (let j = 0; j < rowCount; j++) {
+    let maxHeight = 0
+    for (let i = 0; i < cardCount; i++) {
+      console.log(i,j)
+      const cell = el.children[i].children[j]
+      if (cell.classList.contains('card-header') || cell.classList.contains('promo-eyebrow-text')) continue;
+      const dimensions = cell.getBoundingClientRect()
+      if (dimensions.height > 0) {
+        cell.style = "height:" + dimensions.height +  "px"
+      }
+      if (dimensions.height > maxHeight) { 
+        maxHeight = dimensions.height
+      }
+    }
+    for (let i = 0; i < cardCount; i++) {
+      if (maxHeight === 0) continue;
+      const cell = el.children[i].children[j]
+      cell.style = "height:" + maxHeight + "px"
+    }
+  }
+};
+
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
   const placeholders = await fetchPlaceholders();
   const rows = Array.from(el.querySelectorAll(":scope > div"))
+  const rowCount =rows.length
   const cardCount = rows[0].children.length
   const cards = []
-
-  const syncHeights = () => {
-    if (window.screen.width < 600) return
-    const rowCount = el.children[0].children.length 
-    for (let j = 0; j < rowCount; j++) {
-      let maxHeight = 0
-      for (let i = 0; i < cardCount; i++) {
-        const cell = el.children[i].children[j]
-        if (cell.classList.contains('card-header') || cell.classList.contains('promo-eyebrow-text')) continue;
-        const dimensions = cell.getBoundingClientRect()
-        if (dimensions.height > 0) {
-          cell.style = "height:" + dimensions.height +  "px"
-        }
-        if (dimensions.height > maxHeight) { 
-          maxHeight = dimensions.height
-        }
-      }
-      for (let i = 0; i < cardCount; i++) {
-        if (maxHeight === 0) continue;
-        const cell = el.children[i].children[j]
-        cell.style = "height:" + maxHeight + "px"
-      }
-    }
-  };
 
   for (let i = 0; i < cardCount; i += 1) {
     const card = createTag('div', { class: 'card' })
@@ -309,16 +310,17 @@ export default async function init(el) {
       createPricingSection(placeholders, rows[3].children[0], rows[4].children[0], rows[0].children[0], true),
       createPricingSection(placeholders, rows[5].children[0], rows[6].children[0], rows[0].children[0]),
     ]);
-
+    rows[3].children[0].classList.add("pricing-area-wrapper")
     rows[3].children[0].innerHTML = ''
     rows[3].children[0].appendChild(m1)
     rows[3].children[0].appendChild(a1)
+    rows[4].children[0].classList.add("pricing-area-wrapper")
     rows[4].children[0].innerHTML = ''
     rows[4].children[0].appendChild(m2)
     rows[4].children[0].appendChild(a2)
 
     const groupID = `${Date.now()}`;
-    const toggle = createToggle(placeholders, [m1, m2, a1, a2], groupID,syncHeights)
+    const toggle = createToggle(placeholders, [m1, m2, a1, a2], groupID, () => syncHeights(el,rowCount, cardCount));
     rows[3].children[0].insertBefore(toggle,rows[3].children[0].children[0])
     rows[7].children[0].classList.add('card-feature-list')
 
@@ -333,11 +335,11 @@ export default async function init(el) {
   }
  
   document.addEventListener('load', () => {
-    syncHeights();
+    syncHeights(el,rowCount, cardCount);
   }, 100);
 
   const observer = new IntersectionObserver((entries) => {
-    syncHeights();
+    syncHeights(el,rowCount, cardCount);
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         el.classList.remove('no-visible');
