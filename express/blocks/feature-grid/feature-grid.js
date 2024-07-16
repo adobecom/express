@@ -77,22 +77,17 @@ function getLoadMoreText(rows) {
   return loadMore;
 }
 
-const blockProperties = ['card-image', 'card-color'];
-
 const extractProperties = (block) => {
-  const rows = Array.from(block.querySelectorAll(':scope > div'));
+  const possibleColorRow = Array.from(block.querySelectorAll(':scope > div'))[1];
+  const content = possibleColorRow?.innerText.trim();
   const allProperties = {};
-  rows.forEach((row) => {
-    if (row?.children?.length !== 2) {
-      return;
-    }
-    const key = row?.children[0].textContent;
-    const value = row?.children[1].textContent;
-    if (key && value && blockProperties.includes(key?.toLowerCase())) {
-      allProperties[key.toLowerCase()] = value;
-      block.removeChild(row);
-    }
-  });
+  if (content.charAt(0) === ('#')) {
+    allProperties['card-color'] = content;
+    possibleColorRow.remove();
+  } else if (content.includes('linear-gradient')) {
+    allProperties['card-image'] = content;
+    block.removeChild(possibleColorRow);
+  }
   return allProperties;
 };
 
