@@ -276,8 +276,6 @@ export default async function init(el) {
   const cardCount = rows[0].children.length
   const cards = []
 
-
-
   const syncHeights = () => {
     if (window.screen.width < 600) return
     const rowCount = el.children[0].children.length 
@@ -301,9 +299,7 @@ export default async function init(el) {
       }
     }
   };
- 
 
-  
   for (let i = 0; i < cardCount; i += 1) {
     const card = createTag('div', { class: 'card' })
     decorateCardBorder(card, rows[1].children[0])
@@ -313,6 +309,7 @@ export default async function init(el) {
       createPricingSection(placeholders, rows[3].children[0], rows[4].children[0], rows[0].children[0], true),
       createPricingSection(placeholders, rows[5].children[0], rows[6].children[0], rows[0].children[0]),
     ]);
+
     rows[3].children[0].innerHTML = ''
     rows[3].children[0].appendChild(m1)
     rows[3].children[0].appendChild(a1)
@@ -324,8 +321,6 @@ export default async function init(el) {
     const toggle = createToggle(placeholders, [m1, m2, a1, a2], groupID,syncHeights)
     rows[3].children[0].insertBefore(toggle,rows[3].children[0].children[0])
     rows[7].children[0].classList.add('card-feature-list')
-
-
 
     for (let j = 0; j < rows.length - 1; j += 1) {
       card.appendChild(rows[j].children[0])
@@ -348,7 +343,6 @@ export default async function init(el) {
         el.classList.remove('no-visible');
       }
     });
-
   });
 
   observer.observe(el);
