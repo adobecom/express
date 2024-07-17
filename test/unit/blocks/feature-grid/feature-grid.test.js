@@ -33,8 +33,12 @@ describe('Feature Grid Desktop', async () => {
         expect(cell.querySelector('p')).to.exist;
         expect(cell.querySelector('.cta')).to.exist;
         expect(cell.querySelector('img, video')).to.exist;
+        
+        const backgroundColor = window.getComputedStyle(cell).getPropertyValue('background-color');
+        expect(backgroundColor).to.equal('rgb(255, 255, 255)');
       });
     });
+ 
   });
 
   describe('Full Grid', () => {
@@ -64,6 +68,9 @@ describe('Feature Grid Desktop', async () => {
         expect(cell.querySelector('p')).to.exist;
         expect(cell.querySelector('.cta')).to.exist;
         expect(cell.querySelector('img, video')).to.exist;
+
+        const backgroundImage = window.getComputedStyle(cell).getPropertyValue('background-image');
+        expect(backgroundImage).to.not.equal('none');
       });
     });
 
