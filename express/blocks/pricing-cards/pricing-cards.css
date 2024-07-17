@@ -1,8 +1,11 @@
 :root {
   --card-width: 353px;
-  --card-padding: 16px 12px;
+  --card-padding: 12px;
 }
 
+.pricing-cards.no-visible {
+  visibility: hidden;
+}
 
 /*
 Legacy CSS for cards and special promo
@@ -31,7 +34,8 @@ Legacy CSS for cards and special promo
 .pricing-cards .card .card-header h2 {
   font-weight: var(--heading-font-weight);
   line-height: var(--heading-line-height);
-  font-size: var(--body-font-size-l);
+  font-size: 1.75rem;
+  margin-top: 0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -45,7 +49,7 @@ End legacy CSS
 }
 
 .pricing-cards.block {
-  padding: 0 15px 40px;
+  padding: 12px 15px 40px 15px;
 }
 
 .pricing-cards .cards-container {
@@ -76,36 +80,54 @@ End legacy CSS
 Border style variants
 */
 
-.pricing-cards .gradient-promo .card {
-  margin-bottom: 2px;
-}
-
 .pricing-cards .gradient-promo>div:first-of-type {
   margin-left: 4px;
   color: var(--color-white);
   font-weight: 400;
   padding-bottom: 12px;
+  line-height: 1.5rem;
 }
 
 .pricing-cards .gradient-promo {
   background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) !important;
   padding: 12px 2px 4px 2px;
-  border-radius: 16px;
-  overflow: hidden;
+  border-radius: 10px;
   background: var(--color-white);
-  margin-top: 0px !important;
+  margin-top: -48px;
   margin-left: -2px;
   margin-right: -2px;
   display: flex;
   flex-direction: column;
+  margin-bottom: 48px;
+
 }
 
+.pricing-cards .cards-container:has(.card-border.gradient-promo) {
+  margin-top: 48px;
+}
+
+.pricing-cards .cards-container {
+  margin-top: 24px;
+}
+
+.pricing-cards .gradient-promo:has(div:empty) {
+  margin-top: -48px;
+}
+
+.pricing-cards .gradient-promo div:empty {
+  padding: 18px;
+}
+
+.pricing-cards .card-border {
+  margin-bottom: 48px;
+}
 
 .pricing-cards .special-promo {
-  border: 1px solid #FFE600;
+  border: 2px solid #FFE600;
+  padding-bottom: 1px;
 }
 
-.pricing-cards .card-border.special-promo{
+.pricing-cards .card-border.special-promo {
   border-radius: 4px;
 }
 
@@ -140,8 +162,77 @@ Border style variants
 End border style variants
 */
 
-.pricing-cards .card-border {
-  margin-top: 44px;
+.pricing-cards .tooltip-icon {
+  position: relative;
+  top: 2px;
+}
+.pricing-cards .tooltip-text.overflow-left {
+  right: inherit;
+  left: -20px;
+
+}
+.pricing-cards .tooltip-text.overflow-right {
+  left: inherit;
+  right: -20px;
+
+}
+.pricing-cards .tooltip-text {
+  pointer-events: none;
+  opacity: 0;
+  padding: 8px;
+  z-index: 10;
+  background-color: #292929;
+  color: white;
+  border-radius: 8px;
+  position: absolute;
+  bottom: 100%;
+  min-width: 200px;
+  left: -105px;
+  width: fit-content;
+  margin-bottom: 19px;
+  transition: bottom 0.5s;
+  width: 100%;
+}
+
+.pricing-cards .tooltip-text::after {
+  content: '';
+  position: absolute;
+  bottom: -5px; 
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid black;
+  
+}
+
+.pricing-cards .tooltip-text.overflow-left::after {
+  right: inherit;
+  left: 20px;
+}
+
+.pricing-cards .tooltip-text.overflow-right::after {
+  left: inherit;
+  right: 20px;
+}
+
+.pricing-cards .tooltip {
+  position: relative;
+  display: inline;
+}
+
+.pricing-cards .tooltip::after {
+  display: inline;
+}
+
+.pricing-cards .tooltip span {
+  position: relative;
+}
+
+.pricing-cards .tooltip .icon:hover~.tooltip-text {
+  opacity: 1;
+  pointer-events: visible;
 }
 
 .pricing-cards .card-border .hide {
@@ -180,10 +271,6 @@ End border style variants
   padding-right: 6px;
 }
 
-.pricing-cards .card-explain {
-  display: none;
-}
-
 .pricing-cards .card-offer {
   position: absolute;
   right: 8px;
@@ -196,6 +283,7 @@ End border style variants
   font-weight: 700;
   color: #5258E4;
   height: 20px;
+  font-style: normal;
 }
 
 .pricing-cards .card-offer a {
@@ -249,11 +337,10 @@ End border style variants
   background: var(--color-gray-150);
   border: 1px solid #E0E2FF;
   padding: var(--card-padding);
-  height: 125px;
-}
-
-.pricing-cards .pricing-row {
-  height: 55px;
+  box-sizing: border-box;
+  displaY: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .pricing-cards .pricing-area p {
@@ -261,29 +348,23 @@ End border style variants
   font-size: var(--body-font-size-s);
 }
 
-.pricing-cards .pricing-area p em {
-  font-style: normal;
-  color: #5258E4;
-}
-
 .pricing-cards .pricing-area .pricing-row-suf {
   font-size: var(--body-font-size-xs);
-  padding-bottom: 12px;
 }
 
 .pricing-cards .pricing-area:not(:has(p)) {
   font-size: 22px;
-  display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
 }
 
-.pricing-cards-wrapper + .default-content-wrapper .button-container {
-  margin-top : -40px;
-  
+.pricing-cards-wrapper+.default-content-wrapper .button-container {
+  margin-top: -40px;
+
 }
-.pricing-cards-wrapper + .default-content-wrapper .button-container .button{
+
+.pricing-cards-wrapper+.default-content-wrapper .button-container .button {
   padding: 13px 1.5em 14px 1.5em;
   border-radius: 27px;
   font-size: var(--body-font-size-m);
@@ -291,6 +372,52 @@ End border style variants
 
 
 /** pricing styles end **/
+
+.pricing-cards .billing-toggle.suppressed-billing-toggle {
+  visibility: hidden;
+  
+} 
+
+.pricing-cards .billing-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+  font-size: var(--body-font-size-s);
+  margin-bottom: 4px;
+}
+
+.pricing-cards .billing-toggle button {
+  border: 2px transparent solid;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+
+  font-size: var(--body-font-size-xs);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pricing-cards .billing-toggle :focus-within {
+  border-color: var(--color-info-accent);
+}
+
+.pricing-cards .billing-toggle span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transition: 0.2s all linear;
+  border: 2px solid #292929;
+  box-sizing: border-box;
+}
+
+.pricing-cards .billing-toggle .checked span {
+  border-width: 6px;
+}
 
 .pricing-cards .card-cta-group {
   display: flex;
@@ -314,6 +441,7 @@ End border style variants
   padding: 16px 0px;
   border-bottom: 1px solid var(--Palette-gray-100, #E9E9E9);
   margin: 0 0 24px 0;
+  box-sizing: border-box;
 }
 
 .pricing-cards .card-feature-list p strong {
@@ -369,67 +497,12 @@ End border style variants
   box-sizing: border-box;
 }
 
-
-
-
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 900px) {
   :root {
-    --card-width: 362px;
-  }
-
-  .pricing-cards .card-border .card-header h2 {
-    margin-top: 0;
-  }
-}
-
-@media screen and (min-width: 1250px) {
-  :root {
-    --card-width: 391px;
-    --card-padding: 24px 16px;
-  }
-
-  .pricing-cards .cards-container:has(>.card-border:only-child) {
-    grid-template-columns: repeat(auto-fit, calc(91px + var(--card-width)));
-  }
-
-  .pricing-cards .cards-container:has(>.card-border:first-child:nth-last-child(3)) {
-    width: var(2 * --card-width);
-    margin: auto;
-    grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
-  }
-
-  .pricing-cards .card-explain {
-    display: block;
-  }
-
-  .pricing-cards .pricing-section {
-    gap: 24px;
-  }
-
-  .pricing-cards .card .card-cta-group.min-height-2 {
-    min-height: 106px;
-  }
-
-  .pricing-cards .card .card-cta-group.min-height-3 {
-    min-height: 167px;
-  }
-
-  .pricing-cards .card .card-header h2 {
-    font-size: 1.75rem;
-    margin-top: 0px;
+    --card-width: 400px;
   }
 
   .pricing-cards .card-feature-list {
     display: block;
-  }
-
-  /* Legacy styles */
-  .pricing-cards .cards-container:has(>.card:only-child) {
-    grid-template-columns: repeat(auto-fit, calc(91px + var(--card-width)));
-  }
-
-  .pricing-cards .cards-container:has(>.card:first-child:nth-last-child(3)) {
-    margin: auto;
-    grid-template-columns: repeat(auto-fit, minmax(var(--card-width), calc((1200px - 32px) / 3)));
   }
 }

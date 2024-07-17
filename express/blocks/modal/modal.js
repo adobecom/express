@@ -64,7 +64,6 @@ async function getPathModal(path, dialog) {
 
 export async function getModal(details, custom) {
   if (!(details?.path || custom)) return null;
-
   const { id } = details || custom;
 
   const dialog = createTag('div', { class: 'dialog-modal', id });
@@ -73,7 +72,13 @@ export async function getModal(details, custom) {
   if (custom) getCustomModal(custom, dialog);
   if (details) await getPathModal(details.path, dialog);
 
-  const close = createTag('button', { class: 'dialog-close', 'aria-label': 'Close' });
+  const localeModal = id?.includes('locale-modal') ? 'localeModal' : 'milo';
+  const analyticsEventName = window.location.hash ? window.location.hash.replace('#', '') : localeModal;
+  const close = createTag('button', {
+    class: 'dialog-close',
+    'aria-label': 'Close',
+    'daa-ll': `${analyticsEventName}:modalClose:buttonClose`,
+  });
   close.append(getIconElement('close-button-x'));
 
   const focusVisible = { focusVisible: true };
@@ -135,11 +140,16 @@ export async function getModal(details, custom) {
   return dialog;
 }
 
+const loadedPaths = new Set();
 // Deep link-based
 export default function init(el) {
   const { modalHash } = el.dataset;
   if (window.location.hash === modalHash) {
     const details = findDetails(window.location.hash, el);
+    if (details.path) {
+      if (loadedPaths.has(details.path)) return null;
+      loadedPaths.add(details.path);
+    }
     if (details) return getModal(details);
   }
   return null;

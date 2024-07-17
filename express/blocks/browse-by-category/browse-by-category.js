@@ -1,14 +1,18 @@
-/* eslint-disable import/named, import/extensions */
-
 import { createTag } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-
 import buildCarousel from '../shared/carousel.js';
 
 export function decorateHeading(block, payload) {
   const headingSection = createTag('div', { class: 'browse-by-category-heading-section' });
   const heading = createTag('h3', { class: 'browse-by-category-heading' });
   const viewAllButtonWrapper = createTag('p', { class: 'browse-by-category-link-wrapper' });
+
+  const subHeaderContent = payload.heading.match(/\((.+)\)/);
+  let subheaderElement;
+  if (subHeaderContent) {
+    subheaderElement = createTag('div', { class: 'browse-by-category-sub-heading' });
+    [, subheaderElement.textContent] = subHeaderContent;
+    payload.heading = payload.heading.slice(0, subHeaderContent.index);
+  }
 
   if (payload.viewAllLink.href !== '') {
     const viewAllButton = createTag('a', { class: 'browse-by-category-link', href: payload.viewAllLink.href });
@@ -17,7 +21,12 @@ export function decorateHeading(block, payload) {
   }
 
   heading.textContent = payload.heading;
-  headingSection.append(heading, viewAllButtonWrapper);
+  headingSection.append(heading);
+  const headingContainer = createTag('div');
+  headingContainer.append(heading);
+  if (subheaderElement) headingContainer.append(subheaderElement);
+  headingSection.append(headingContainer, viewAllButtonWrapper);
+
   block.append(headingSection);
 }
 
@@ -30,10 +39,11 @@ export function decorateCategories(block, payload) {
     const categoryImageShadowWrapper = createTag('div', { class: 'browse-by-category-image-shadow-wrapper' });
     const categoryImageShadow = createTag('div', { class: 'browse-by-category-image-shadow' });
     const categoryImage = categoryCard.image;
-    const categoryTitle = createTag('h4', { class: 'browse-by-category-card-title' });
+    const categoryTitle = createTag('p', { class: 'browse-by-category-card-title' });
     const categoryAnchor = createTag('a', { class: 'browse-by-category-card-link' });
 
     categoryTitle.textContent = categoryCard.text;
+    categoryAnchor.title = categoryCard.text;
     categoryAnchor.href = categoryCard.link;
     categoryImageShadowWrapper.append(categoryImageShadow, categoryImage);
     categoryImageWrapper.append(categoryImageShadowWrapper);
@@ -45,8 +55,6 @@ export function decorateCategories(block, payload) {
 }
 
 export default async function decorate(block) {
-  addTempWrapper(block, 'browse-by-category');
-
   const rows = Array.from(block.children);
   const headingDiv = rows.shift();
 
@@ -71,7 +79,7 @@ export default async function decorate(block) {
 
   decorateHeading(block, payload);
   decorateCategories(block, payload);
-  buildCarousel('.browse-by-category-card', block);
+  buildCarousel('.browse-by-category-card', block.querySelector('.browse-by-category-categories-wrapper') || block);
 
   if (block.classList.contains('fullwidth')) {
     const blockWrapper = block.parentNode;

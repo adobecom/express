@@ -19,15 +19,15 @@ function buildContent(content) {
 
     if (contentImage) {
       formattedContent = contentImage;
+      const img = formattedContent.querySelector('img');
+      if (img) {
+        img.removeAttribute('width');
+        img.removeAttribute('height');
+      }
     }
   }
 
   return formattedContent;
-}
-
-function buildHeading(block, heading) {
-  heading.classList.add('fullscreen-marquee-heading');
-  return heading;
 }
 
 function buildBackground(block, background) {
@@ -47,12 +47,33 @@ function buildBackground(block, background) {
   return background;
 }
 
+// Adds the first CTA to the middle of the marquee image
+async function addMarqueeCenterCTA(block, appFrame) {
+  const buttons = block.querySelectorAll('p a');
+  if (buttons.length === 0) return;
+  for (const cta of buttons) {
+    cta.classList.add('xlarge');
+  }
+  const cta = buttons[0];
+
+  const highlightCta = cta.cloneNode(true);
+  const appHighlight = createTag('a', {
+    class: 'fullscreen-marquee-app-frame-highlight',
+    href: cta.href,
+  });
+
+  await addFreePlanWidget(cta.parentElement);
+
+  appHighlight.append(highlightCta);
+  appFrame.append(appHighlight);
+}
+
 async function buildApp(block, content) {
   const appBackground = createTag('div', { class: 'fullscreen-marquee-app-background' });
   const appFrame = createTag('div', { class: 'fullscreen-marquee-app-frame' });
   const app = createTag('div', { class: 'fullscreen-marquee-app' });
   const contentContainer = createTag('div', { class: 'fullscreen-marquee-app-content-container' });
-  const cta = block.querySelector('p a');
+
   let appImage;
   let editor;
   let variant;
@@ -120,22 +141,7 @@ async function buildApp(block, content) {
   appFrame.append(app);
   appFrame.append(appBackground);
   app.append(editor);
-
-  if (cta) {
-    cta.classList.add('xlarge');
-
-    const highlightCta = cta.cloneNode(true);
-    const appHighlight = createTag('a', {
-      class: 'fullscreen-marquee-app-frame-highlight',
-      href: cta.href,
-    });
-
-    await addFreePlanWidget(cta.parentElement);
-
-    appHighlight.append(highlightCta);
-    appFrame.append(appHighlight);
-  }
-
+  addMarqueeCenterCTA(block, appFrame);
   return appFrame;
 }
 
@@ -157,7 +163,8 @@ export default async function decorate(block) {
   }
 
   if (heading) {
-    block.append(buildHeading(block, heading));
+    heading.classList.add('fullscreen-marquee-heading');
+    block.append(heading);
   }
 
   if (content && document.body.dataset.device === 'desktop') {

@@ -1,8 +1,8 @@
 import {
   toClassName,
-  getIcon,
   addBlockClasses,
   createTag,
+  getIconElement,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
@@ -22,7 +22,8 @@ export default function decorate($block) {
       if ($row.children && $row.children[1] && !$row.querySelector('img, svg')) {
         const iconName = toClassName($row.children[0].textContent.trim());
         if (iconName && !iconName.startsWith('-')) {
-          $row.children[0].innerHTML = iconName ? getIcon(iconName) : '';
+          $row.children[0].textContent = '';
+          $row.children[0].append(getIconElement(iconName) || '');
         }
       }
     });

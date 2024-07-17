@@ -91,6 +91,15 @@ main .link-list.centered .carousel-platform p.button-container:first-child {
   margin-left: unset;
 }
 
+main .link-list.centered .carousel-platform {
+  margin: auto;
+}
+
+main .link-list.centered div:first-child h3 {
+  width: fit-content;
+  margin: auto auto 20px auto;
+}
+
 /* fullwidth variant */
 
 main .section.link-list-fullwidth-container > div.link-list-wrapper {
@@ -119,7 +128,7 @@ main .link-list-wrapper .link-list.noarrows {
   margin-top: 0;
 }
 
-main .link-list-wrapper .link-list.noarrows > div > div > p:first-of-type {
+main .link-list-wrapper .link-list.noarrows > div:first-of-type > div > p:first-of-type {
   font-weight: 800;
   font-size: 16px;
   margin: 0 12px 4px 12px;

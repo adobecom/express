@@ -1,6 +1,7 @@
-main .browse-by-category-wrapper.fullwidth {
-  margin: 0;
-  max-width: fit-content;
+main .browse-by-category.fullwidth {
+  padding: 0 28px;
+  max-width: 1440px;
+  margin: auto;
 }
 
 main .browse-by-category {
@@ -25,8 +26,6 @@ main .browse-by-category .browse-by-category-heading-section {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  padding-left: 28px;
-  padding-right: 28px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 10px;
@@ -36,6 +35,14 @@ main .browse-by-category .browse-by-category-heading-section .browse-by-category
   text-align: left;
   font-size: 28px;
   line-height: 30px;
+}
+
+main .browse-by-category .browse-by-category-sub-heading {
+  text-align: left;
+  font-size: 16px;
+  line-height: 30px;
+  padding-top: 5px;
+  padding-left: 2px;
 }
 
 main .browse-by-category .browse-by-category-heading-section .browse-by-category-link-wrapper {
@@ -192,16 +199,8 @@ main .browse-by-category.card .browse-by-category-card-title {
 }
 
 @media (min-width: 900px) {
-  main .section .browse-by-category-wrapper {
-    padding: 0 28px;
-  }
-
-  main .section .browse-by-category-wrapper {
-    max-width: none;
-  }
-
   main .browse-by-category .browse-by-category-heading-section {
     flex-direction: row;
-    padding: 0;
+    padding: 0 0 0 20px;
   }
 }

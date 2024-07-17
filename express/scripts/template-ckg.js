@@ -46,11 +46,21 @@ async function fetchLinkList() {
   }
 }
 
+const searchRegex = /\/search\?/;
+function isSearch(pathname) {
+  return searchRegex.test(pathname);
+}
+
 function replaceLinkPill(linkPill, data) {
   const clone = linkPill.cloneNode(true);
   if (data) {
     clone.innerHTML = clone.innerHTML.replace('/express/templates/default', data.url);
     clone.innerHTML = clone.innerHTML.replaceAll('Default', data['short-title']);
+  }
+  if (isSearch(data.url)) {
+    clone.querySelectorAll('a').forEach((a) => {
+      a.rel = 'nofollow';
+    });
   }
   if (defaultRegex.test(clone.innerHTML)) {
     return null;
@@ -112,7 +122,7 @@ async function updateLinkList(container, linkPill, list) {
         .replace(currentTasksX, '')
         .trim();
 
-      if (!new URL(`https://www.adobe.com${d.pathname}`).search) {
+      if (!isSearch(d.pathname)) {
         const pageData = {
           url: d.pathname,
           'short-title': d.displayValue,
@@ -259,7 +269,7 @@ export default async function updateAsyncBlocks() {
   hideAsyncBlocks();
   // TODO: integrate memoization
   const showSearchMarqueeLinkList = getMetadata('show-search-marquee-link-list');
-  if (document.body.dataset.device === 'desktop' && (!showSearchMarqueeLinkList || ['yes', 'true', 'on', 'Y'].includes(showSearchMarqueeLinkList))) {
+  if (!showSearchMarqueeLinkList || ['yes', 'true', 'on', 'Y'].includes(showSearchMarqueeLinkList)) {
     lazyLoadSearchMarqueeLinklist();
   }
   lazyLoadLinklist();

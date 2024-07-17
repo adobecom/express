@@ -7,9 +7,22 @@ import {
   fetchPlaceholders,
   loadStyle,
   getConfig,
+  loadIms,
 } from './utils.js';
 
 const isHomepage = window.location.pathname.endsWith('/express/');
+
+const sparkLang = getConfig().locale.ietf;
+const sparkPrefix = sparkLang === 'en-US' ? '' : `/${sparkLang}`;
+let expressLoginURL = `https://express.adobe.com${sparkPrefix}/sp/`;
+const productURL = getConfig()[getConfig().env.name]?.express;
+if (productURL) {
+  expressLoginURL = expressLoginURL.replace('express.adobe.com', productURL);
+}
+if (isHomepage && getConfig().env.ims === 'prod') {
+  expressLoginURL = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
+}
+let imsLibProm;
 
 async function checkRedirect(location, geoLookup) {
   const splits = location.pathname.split('/express/');
@@ -44,21 +57,6 @@ async function checkGeo(userGeo, userLocale, geoCheckForce) {
 
   const region = geoCheckForce ? await geoLookup() : getCookie('international') || await geoLookup();
   return checkRedirect(window.location, region);
-}
-
-async function loadIMS() {
-  window.adobeid = {
-    client_id: sessionStorage.getItem('imsclient'),
-    scope: 'AdobeID,openid',
-    locale: getConfig().locale.region,
-    environment: 'prod',
-  };
-  if (!['www.stage.adobe.com'].includes(window.location.hostname)) {
-    await loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
-  } else {
-    await loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-    window.adobeid.environment = 'stg1';
-  }
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -137,16 +135,14 @@ async function loadFEDS() {
   window.addEventListener('adobePrivacy:PrivacyReject', handleConsentSettings);
   window.addEventListener('adobePrivacy:PrivacyCustom', handleConsentSettings);
 
-  const isMegaNav = window.location.pathname.startsWith('/express')
-    || window.location.pathname.startsWith('/in/express')
-    || window.location.pathname.startsWith('/uk/express')
-    || window.location.pathname.startsWith('/education')
-    || window.location.pathname.startsWith('/in/education')
-    || window.location.pathname.startsWith('/uk/education')
-    || window.location.pathname.startsWith('/drafts');
-  const fedsExp = isMegaNav
-    ? 'adobe-express/ax-gnav-x'
-    : 'adobe-express/ax-gnav-x-row';
+  let fedsExp;
+  if (prefix === '') {
+    fedsExp = 'acom/cc-mega-menu/ax-gnav-x';
+  } else if (prefix === 'gb' || prefix === 'uk' || prefix === 'in') {
+    fedsExp = 'adobe-express/ax-gnav-x';
+  } else {
+    fedsExp = 'adobe-express/ax-gnav-x-row';
+  }
 
   window.fedsConfig = {
     ...(window.fedsConfig || {}),
@@ -156,23 +152,15 @@ async function loadFEDS() {
         showRegionPicker();
       },
     },
+    universalNav: true,
+    universalNavComponents: 'appswitcher, notifications, profile',
     locale: (prefix === '' ? 'en' : prefix),
     content: {
       experience: getMetadata('gnav') || fedsExp,
     },
     profile: {
       customSignIn: () => {
-        const sparkLang = config.locale.ietf;
-        const sparkPrefix = sparkLang === 'en-US' ? '' : `/${sparkLang}`;
-        let sparkLoginUrl = `https://express.adobe.com${sparkPrefix}/sp/`;
-        const env = getHelixEnv();
-        if (env && env.spark) {
-          sparkLoginUrl = sparkLoginUrl.replace('express.adobe.com', env.spark);
-        }
-        if (isHomepage) {
-          sparkLoginUrl = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
-        }
-        window.location.href = sparkLoginUrl;
+        window.location.href = expressLoginURL;
       },
     },
     jarvis: {},
@@ -245,6 +233,12 @@ async function loadFEDS() {
   }
   loadScript(`${domain}/etc.clientlibs/globalnav/clientlibs/base/feds.js`).then((script) => {
     script.id = 'feds-script';
+    const { imslib } = window.feds.utilities;
+    Promise.all([imslib.onReady(), imsLibProm]).then(() => {
+      if (!imslib.isSignedInUser() && window.adobeIMS && window.adobeIMS.adobeIdData) {
+        window.adobeIMS.adobeIdData.redirect_uri = expressLoginURL;
+      }
+    });
   });
   setTimeout(() => {
     const acom = '7a5eb705-95ed-4cc4-a11d-0cc5760e93db';
@@ -269,14 +263,20 @@ async function loadFEDS() {
 }
 
 if (!window.hlx || window.hlx.gnav) {
-  await loadIMS();
+  imsLibProm = loadIms();
   loadFEDS();
-  setTimeout(() => {
-    import('./google-yolo.js').then((mod) => {
-      mod.default();
-    });
-  }, 4000);
+  if (!['off', 'no'].includes(getMetadata('google-yolo').toLowerCase())) {
+    setTimeout(() => {
+      import('./google-yolo.js').then((mod) => {
+        mod.default();
+      });
+    }, 4000);
+  }
 }
 /* Core Web Vitals RUM collection */
 
 sampleRUM('cwv');
+
+/* collect browser preferred language in RUM */
+sampleRUM('audiences', { source: 'page-language', target: document.documentElement.lang });
+sampleRUM('audiences', { source: 'preferred-languages', target: navigator.languages.join(',') });

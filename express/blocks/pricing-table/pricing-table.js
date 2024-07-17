@@ -5,10 +5,7 @@ import { decorateButtons } from '../../scripts/utils/decorate.js';
 import {
   formatDynamicCartLink,
 } from '../../scripts/utils/pricing.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
-
-const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
-const BILLING_PLAN = 'billing-plan';
+import { sendEventToAnalytics } from '../../scripts/instrument.js';
 
 const MOBILE_SIZE = 981;
 function defineDeviceByScreenSize() {
@@ -62,19 +59,8 @@ function handleHeading(headingRow, headingCols) {
 
     if (buttons.length > 1) {
       buttons.forEach((btn, index) => {
-        btn.classList.add(plans[index]);
+        if (index > 0) btn.remove();
       });
-      const reactToPlanChange = ({ newValue }) => {
-        buttons.forEach((btn) => {
-          if (btn.classList.contains(plans[newValue])) {
-            btn.classList.remove('hide');
-          } else {
-            btn.classList.add('hide');
-          }
-        });
-      };
-      reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
-      BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
     }
 
     const div = document.createElement('div');
@@ -123,7 +109,6 @@ function handleSection(sectionParams) {
     if (nextRow) nextRow.classList.add('table-start-row');
   } else if (isToggle) {
     const toggleIconTag = createTag('span', { class: 'icon expand', 'aria-expanded': 'false' });
-
     row.querySelector('.toggle-content').prepend(toggleIconTag);
     row.classList.add('collapsed');
     let prevRow = previousRow;
@@ -176,8 +161,10 @@ const assignEvents = (tableEl) => {
     btn.classList.add('point-cursor');
     btn.addEventListener('click', () => handleToggleMore(btn));
     btn.addEventListener('keydown', (e) => {
-      e.preventDefault();
-      if (e.key === 'Enter' || e.key === ' ') handleToggleMore(btn);
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleToggleMore(btn);
+      }
     });
   });
 
@@ -232,19 +219,26 @@ export default async function init(el) {
         col.dataset.colIndex = cdx + 1;
         col.classList.add('col', `col-${cdx + 1}`);
         col.setAttribute('role', 'cell');
-        if (col.innerHTML) col.tabIndex = 0;
       });
       if (sectionItem % 2 === 0 && cols.length > 1) row.classList.add('shaded');
+    } else {
+      row.setAttribute('tabindex', 0);
     }
 
     const nextRow = rows[index + 1];
     if (index > 0 && !isToggle && cols.length > 1
       && (!nextRow || Array.from(nextRow.children).length <= 1)) {
-      const toggleRow = createTag('button', { class: 'toggle-row', tabIndex: 0 });
+      const toggleRow = createTag('button', { class: 'toggle-row' });
       if (!isAdditional) toggleRow.classList.add('desktop-hide');
 
       const viewAllText = placeholders['view-all-features'] ?? 'View all features';
       const toggleOverflowContent = createTag('div', { class: 'toggle-content col', role: 'cell', 'aria-label': viewAllText }, viewAllText);
+
+      toggleOverflowContent.addEventListener('click', () => {
+        const buttonEl = toggleOverflowContent.querySelector('span.expand');
+        const action = buttonEl && buttonEl.getAttribute('aria-expanded') === 'true' ? 'closed' : 'opened';
+        sendEventToAnalytics(`adobe.com:express:cta:pricing:tableToggle:${action || ''}`);
+      });
       toggleRow.append(toggleOverflowContent);
 
       if (nextRow) {

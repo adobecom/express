@@ -20,6 +20,11 @@ function buildContent(content) {
 
     if (contentImage) {
       formattedContent = contentImage;
+      const img = formattedContent.querySelector('img');
+      if (img) {
+        img.removeAttribute('width');
+        img.removeAttribute('height');
+      }
     }
   }
 

@@ -188,9 +188,9 @@ export function normCountry(country) {
 }
 
 // urlparam > cookie > sessionStorage > feds > api > config
-export async function getCountry() {
+export async function getCountry(ignoreCookie = false) {
   const urlParams = new URLSearchParams(window.location.search);
-  let countryCode = urlParams.get('country') || getCookie('international');
+  let countryCode = urlParams.get('country') || (!ignoreCookie && getCookie('international'));
   if (countryCode) {
     return normCountry(countryCode);
   }
@@ -229,6 +229,8 @@ export function shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremi
   if (isPremiumCard) {
     if (isSpecialEyebrowText) {
       suppressOfferEyeBrowText = !(savePer !== '' && offerTextContent.includes('{{savePercentage}}'));
+    } else if (isPremiumCard === '84EA7C85DEB6D5260ACE527CB41FDF0B' || isPremiumCard === '2D84772E931C704E05CAD34D43BE1746') {
+      suppressOfferEyeBrowText = false;
     } else {
       suppressOfferEyeBrowText = true;
     }
@@ -249,7 +251,7 @@ export const formatSalesPhoneNumber = (() => {
     }
 
     if (!numbersMap?.data) return;
-    const country = await getCountry() || 'us';
+    const country = await getCountry(true) || 'us';
     tags.forEach((a) => {
       const r = numbersMap.data.find((d) => d.country === country);
 
@@ -264,11 +266,11 @@ export const formatSalesPhoneNumber = (() => {
 
 export async function formatPrice(price, currency) {
   if (price === '') return null;
-
   const customSymbols = {
     SAR: 'SR',
     CA: 'CAD',
     EGP: 'LE',
+    ARS: 'Ar$',
   };
   const locale = ['USD', 'TWD'].includes(currency)
     ? 'en-GB' // use en-GB for intl $ symbol formatting
@@ -334,6 +336,7 @@ export const getOffer = (() => {
       savePer: offer.savePer,
       ooAvailable,
       showVat,
+      y2p: await formatPrice(offer.y2p, currency),
     };
   };
 })();
@@ -343,11 +346,13 @@ export const getOfferOnePlans = (() => {
   return async (offerId) => {
     let country = await getCountry();
     if (!country) country = 'us';
+
     let currency = getCurrency(country);
     if (!currency) {
       country = 'us';
       currency = 'USD';
     }
+
     if (!json) {
       const resp = await fetch('/express/system/offers-one.json?limit=5000');
       if (!resp.ok) return {};
@@ -363,7 +368,6 @@ export const getOfferOnePlans = (() => {
     const customOfferId = offer.oo || offerId;
     const ooAvailable = offer.oo || false;
     const showVat = offer.showVat || false;
-
     return {
       country,
       currency,
@@ -381,6 +385,7 @@ export const getOfferOnePlans = (() => {
       savePer: offer.savePer,
       ooAvailable,
       showVat,
+      y2p: await formatPrice(offer.y2p, currency),
     };
   };
 })();
@@ -404,7 +409,7 @@ export async function fetchPlanOnePlans(planUrl) {
     plan.symbol = '$';
 
     // TODO: Remove '/sp/ once confirmed with stakeholders
-    const allowedHosts = ['new.express.adobe.com', 'express.adobe.com', 'adobesparkpost.app.link'];
+    const allowedHosts = ['new.express.adobe.com', 'express.adobe.com', 'adobesparkpost.app.link', 'adobesparkpost-web.app.link'];
     const { host } = new URL(planUrl);
     if (allowedHosts.includes(host) || planUrl.includes('/sp/')) {
       plan.offerId = 'FREE0';
@@ -427,6 +432,7 @@ export async function fetchPlanOnePlans(planUrl) {
     }
 
     const offer = await getOfferOnePlans(plan.offerId);
+
     if (offer) {
       plan.currency = offer.currency;
       plan.price = offer.unitPrice;
@@ -454,8 +460,8 @@ export async function fetchPlanOnePlans(planUrl) {
           `<strong>${plan.prefix}${plan.rawBasePrice[0]}</strong>`,
         );
       }
+      plan.y2p = offer.y2p;
     }
-
     window.pricingPlans[planUrl] = plan;
   }
   return plan;
@@ -481,7 +487,7 @@ export async function fetchPlan(planUrl) {
     plan.symbol = '$';
 
     // TODO: Remove '/sp/ once confirmed with stakeholders
-    const allowedHosts = ['new.express.adobe.com', 'express.adobe.com', 'adobesparkpost.app.link'];
+    const allowedHosts = ['new.express.adobe.com', 'express.adobe.com', 'adobesparkpost.app.link', 'adobesparkpost-web.app.link'];
     const { host } = new URL(planUrl);
     if (allowedHosts.includes(host) || planUrl.includes('/sp/')) {
       plan.offerId = 'FREE0';

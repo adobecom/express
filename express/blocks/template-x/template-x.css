@@ -1,6 +1,7 @@
 /* templates pages spacial styling */
 div[class='section section-wrapper template-x-container'],
-div[class='section section-wrapper browse-by-category-card-fullwidth-container template-x-container'] {
+div[class='section section-wrapper browse-by-category-card-fullwidth-container template-x-container'],
+div[data-audience="mobile"].section.section-wrapper.template-x-container {
     padding-top: 0;
 }
 
@@ -20,6 +21,14 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
 
 .template-x > .default-content-wrapper {
     padding: 0 15px;
+}
+
+.template-x.top-padding {
+    padding-top: 40px;
+}
+
+.template-x.bottom-padding {
+    padding-bottom: 40px;
 }
 
 .template-x .default-content-wrapper h2,
@@ -74,6 +83,10 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     font-size: var(--body-font-size-s);
     border-bottom: 2px solid transparent;
     white-space: nowrap;
+}
+
+main .template-x.sixcols .masonry-col, main .template-x.fullwidth .masonry-col {
+    max-width: 175px;
 }
 
 .template-x.horizontal .template-tabs button.template-tab-button:first-of-type {
@@ -202,6 +215,10 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     font-size: var(--body-font-size-m);
 }
 
+.template-x.horizontal.mini .template-title.horizontal p {
+    margin-bottom: 0;
+}
+
 .template-x-wrapper .template-link,
 .template-x-wrapper .template-title-link {
     text-decoration: none;
@@ -227,9 +244,7 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     transform-origin: 75% 75%;
     transform: rotate( -45deg );
     content: "";
-    margin-top: 5px;
-    margin-left: 5px;
-    margin-right: 2.25px;
+    margin: none;
     transition: transform 0.2s;
 }
 
@@ -257,7 +272,7 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     break-inside: avoid;
     text-decoration: unset;
     position: relative;
-    border-radius: 7px;
+    border-radius: 14px;
 }
 
 .template-x .template:focus {
@@ -353,7 +368,6 @@ main.with-holiday-templates-banner {
 
 .template-x.horizontal.fullwidth:not(.holiday) {
     max-width: none;
-    padding-right: 16px;
     display: block;
     margin-left: auto;
 }
@@ -372,6 +386,11 @@ main.with-holiday-templates-banner {
     min-height: 200px;
     width: max-content;
     margin: 24px 12px;
+}
+
+.button-container:focus-within{
+    visibility: visible;
+    opacity: 20 !important;
 }
 
 .template-x.horizontal .template .still-wrapper img,
@@ -398,37 +417,36 @@ main.with-holiday-templates-banner {
 
 .template-x.horizontal.mini .template {
     min-height: unset;
+    min-width: 80px;
     max-height: 100px;
     max-width: 200px;
     margin: 0 4px;
 }
 
-.template-x.horizontal.mini .template.placeholder {
+.template-x.horizontal.mini .template:nth-of-type(2):not(.placeholder) .button-container {
+    left: calc(50% + 16px);
+}
+
+.template-x.horizontal.mini a.template.placeholder {
     height: 100px;
     width: 60px;
-    margin: 0 4px 0 12px;
+    margin: 0 12px 0 4px;
 }
 
-.template-x.horizontal.mini .template.placeholder > div:first-of-type {
-    height: unset;
-    width: unset;
-    display: block;
-    padding-top: 16px;
-}
-
-.template-x.horizontal.mini .template.placeholder svg {
+.template-x.horizontal.mini a.template.placeholder svg {
     height: 18px;
     width: 18px;
 }
 
-.template-x.horizontal.mini .template.placeholder .template-link {
+.template-x.horizontal.mini a.template.placeholder .template-link {
     font-size: var(--body-font-size-xs);
 }
 
-.template-x.horizontal.mini .template img,
-.template-x.horizontal.mini .template video {
+.template-x.horizontal.mini .template .still-wrapper img:not(.icon),
+.template-x.horizontal.mini .template .still-wrapper video {
     object-fit: cover;
     height: 100px;
+    width: 100%;
 }
 
 .template-x.horizontal.mini .template .icon-free-badge {
@@ -439,7 +457,7 @@ main.with-holiday-templates-banner {
     top: 4px;
 }
 
-.template-x.sixcols .template,
+.template-x.sixcols:not(.horizontal) .template,
 .template-x.fullwidth .template {
     position: relative;
     display: inline-flex;
@@ -459,8 +477,8 @@ main.with-holiday-templates-banner {
 
 .template-x.horizontal .template:not(.placeholder) img,
 .template-x.horizontal .template:not(.placeholder) video,
-.template-x.sixcols .template:not(.placeholder) img,
-.template-x.sixcols .template:not(.placeholder) video,
+.template-x.sixcols:not(.horizontal) .template:not(.placeholder) img,
+.template-x.sixcols:not(.horizontal) .template:not(.placeholder) video,
 .template-x.fullwidth .template:not(.placeholder) img,
 .template-x.fullwidth .template:not(.placeholder) video {
     transition: transform .3s ease-in-out;
@@ -468,10 +486,11 @@ main.with-holiday-templates-banner {
 }
 
 .template-x .template:not(.placeholder) .button-container,
-.template-x.sixcols .template:not(.placeholder) .button-container,
+.template-x.sixcols:not(.horizontal) .template:not(.placeholder) .button-container,
 .template-x.fullwidth .template:not(.placeholder) .button-container {
     position: absolute;
     width: 120%;
+    max-width: 90vw;
     border-radius: 20px;
     min-height: 120%;
     top: 50%;
@@ -483,6 +502,8 @@ main.with-holiday-templates-banner {
     will-change: opacity;
     pointer-events: none;
     z-index: 1;
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 .template-x.horizontal .template:not(.placeholder) .button-container {
@@ -501,8 +522,13 @@ main.with-holiday-templates-banner {
     width: calc(100% + 24px);
 }
 
+.template-x.horizontal.mini .template:not(.placeholder) .button-container {
+    height: calc(100% + 56px);
+    width: calc(100% + 40px);
+}
+
 .template-x.horizontal .template:not(.placeholder) .template-link,
-.template-x.sixcols .template:not(.placeholder) .template-link,
+.template-x.sixcols:not(.horizontal) .template:not(.placeholder) .template-link,
 .template-x.fullwidth .template:not(.placeholder) .template-link {
     opacity: 0;
     transition: opacity .4s ease-in-out .2s;
@@ -512,8 +538,8 @@ main.with-holiday-templates-banner {
 .template-x .template:hover:not(.placeholder) .button-container,
 .template-x.horizontal .template:hover:not(.placeholder) .button-container,
 .template-x.horizontal .template:hover:not(.placeholder) .template-link,
-.template-x.sixcols .template:hover:not(.placeholder) .button-container,
-.template-x.sixcols .template:hover:not(.placeholder) .template-link,
+.template-x.sixcols:not(.horizontal) .template:hover:not(.placeholder) .button-container,
+.template-x.sixcols:not(.horizontal) .template:hover:not(.placeholder) .template-link,
 .template-x.fullwidth .template:hover:not(.placeholder) .button-container,
 .template-x.fullwidth .template:hover:not(.placeholder) .template-link {
     opacity: 1;
@@ -521,8 +547,20 @@ main.with-holiday-templates-banner {
     z-index: 2;
 }
 
+.template-x .template:hover:not(.placeholder) .button-container:not(.singleton-hover),
+.template-x.horizontal .template:hover:not(.placeholder) .button-container:not(.singleton-hover),
+.template-x.horizontal .template:hover:not(.placeholder) .template-link,
+.template-x.sixcols .template:hover:not(.placeholder) .button-container:not(.singleton-hover),
+.template-x.sixcols .template:hover:not(.placeholder) .template-link,
+.template-x.fullwidth .template:hover:not(.placeholder) .button-container:not(.singleton-hover),
+.template-x.fullwidth .template:hover:not(.placeholder) .template-link {
+    opacity: 0;
+    pointer-events: initial;
+    z-index: 2;
+}
+
 .template-x.horizontal .template:not(.placeholder) .template-link,
-.template-x.sixcols .template:not(.placeholder) .template-link,
+.template-x.sixcols:not(.horizontal) .template:not(.placeholder) .template-link,
 .template-x.fullwidth .template:not(.placeholder) .template-link {
     text-decoration: none;
     border-radius: 18px;
@@ -549,7 +587,7 @@ main.with-holiday-templates-banner {
 }
 
 .template-x.horizontal .template:not(.placeholder) .template-link::after,
-.template-x.sixcols .template:not(.placeholder) .template-link::after,
+.template-x.sixcols:not(.horizontal) .template:not(.placeholder) .template-link::after,
 .template-x.fullwidth .template:not(.placeholder) .template-link::after {
     display: none;
 }
@@ -573,19 +611,12 @@ main.with-holiday-templates-banner {
     margin: 0 11px;
 }
 
-.template-x.sixcols .template.placeholder,
-.template-x.fullwidth .template.placeholder {
-    width: 145px;
-    margin: 15px auto;
-}
-
 .template-x.fullwidth.lg-view .template.placeholder,
 .template-x.fullwidth.md-view .template.placeholder,
 .template-x.fullwidth.sm-view .template.placeholder {
     margin: 21px auto;
     max-width: 80%;
     max-height: 30vh;
-    min-height: 120px;
     z-index: 0;
 }
 
@@ -602,10 +633,12 @@ main.with-holiday-templates-banner {
 }
 
 .template-x .template.placeholder div:nth-of-type(2) {
-    margin: 0;
     position: absolute;
-    padding: 0 20px;
+    padding-top: 10px;
+    max-width: 64%;
     bottom: 10%;
+    min-height: 28px;
+    background: linear-gradient(rgb(255 255 255 / 0%) 0%, rgb(255 255 255) 24%);
 }
 
 .template-x .template.placeholder .template-link {
@@ -619,10 +652,23 @@ main.with-holiday-templates-banner {
 
 .template-x .template.placeholder > div:first-of-type {
     width: 100%;
-    height: 95%;
+    height: 80%;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.template-x .wide.template.placeholder.short > div:first-of-type{
+    display: none;
+}
+
+.template-x .wide.template.placeholder.short > div:nth-of-type(2){
+    margin: auto;
+    text-align: center;
+    position: initial;
+    background: none;
+    bottom: 0;
+    padding: 0;
 }
 
 .template-x.sm-view .template.placeholder > div:first-of-type {
@@ -649,7 +695,6 @@ main.with-holiday-templates-banner {
     height: 22px;
 }
 
-
 .template-x .template.placeholder .template-link::after {
     display: none;
 }
@@ -662,10 +707,6 @@ main.with-holiday-templates-banner {
 .template-x .template.placeholder.wide > div:first-of-type > svg {
     width: 24px;
     height: 24px;
-}
-
-.template-x .template.placeholder div:nth-of-type(2) {
-    min-height: 28px;
 }
 
 .template-x-inner-wrapper.flex-masonry .template {
@@ -1606,9 +1647,19 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     margin-right: 0;
 }
 
+.template-x.horizontal.mini .carousel-container {
+    margin-bottom: 0;
+}
+
 .template-x.horizontal .carousel-platform {
     scroll-padding: 12px;
+    padding: 24px 15px;
+    box-sizing: border-box;
 }
+
+.template-x.horizontal.mini .carousel-platform {
+    padding: 32px;
+} 
 
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
     transform: translate3d(0, 0, 0);
@@ -1772,7 +1823,8 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     overflow: hidden;
     width: 100%;
     background: var(--color-black);
-    min-height: 72px
+    min-height: 72px;
+    cursor: pointer;
 }
 
 .template-x.horizontal.holiday.animated {
@@ -1906,7 +1958,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 .template-x.holiday .carousel-container .carousel-platform {
     scroll-padding: initial;
-    max-height: 200px;
+    max-height: 250px;
     padding: 20px 0 24px;
 }
 
@@ -2008,7 +2060,9 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x .template .button-container a {
+    max-width: 100%;
     margin: 6px 6px 0;
+    box-sizing: border-box;
     display: block;
     white-space: nowrap;
     overflow: hidden;
@@ -2017,6 +2071,11 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 .template-x.horizontal .template .button-container a {
     min-height: 16px;
+}
+
+.template-x.horizontal.mini .template .button-container a {
+    font-size: var(--body-font-size-xs);
+    padding: 2px 6px 4px;
 }
 
 .template-x .template .button-container .media-wrapper .icon-share-arrow {
@@ -2108,7 +2167,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 nav ol.templates-breadcrumbs {
     list-style: none;
-    margin: 0;
+    margin: 0 0 0 16px;
     padding: 0;
     display: flex;
 }
@@ -2131,6 +2190,9 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
 }
 
 @media (max-width: 600px) {
+    .template-x .toolbar-wrapper { 
+        z-index: 11; 
+    }
     .template-x-wrapper.horizontal {
         margin-left: 0;
         margin-right: 0;
@@ -2291,13 +2353,8 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         max-width: 900px;
     }
 
-    .template-x-wrapper.sixcols {
+    .template-x-wrapper.sixcols:not(.horizontal) {
         max-width: 748px;
-    }
-
-    .template-x.sixcols > .template-x-inner-wrapper > .masonry-col,
-    .template-x.fullwidth > .template-x-inner-wrapper > .masonry-col {
-        max-width: 187px;
     }
 
     .template-x .template-title.with-link.horizontal {
@@ -2323,9 +2380,9 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         text-align: left;
     }
 
-    .template-x.sixcols > .template-x-inner-wrapper > .masonry-col,
+    .template-x.sixcols:not(.horizontal) > .template-x-inner-wrapper > .masonry-col,
     .template-x.fullwidth > .template-x-inner-wrapper > .masonry-col {
-        max-width: 187px;
+        max-width: 180px;
     }
 
     .template-x.fullwidth.md-view > .template-x-inner-wrapper > .masonry-col {
@@ -2341,12 +2398,6 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
 
     .template-x.horizontal.fullwidth .template:not(.placeholder) {
         margin: 24px 11px 18px 11px;
-    }
-
-    .template-x.sixcols .template.placeholder,
-    .template-x.fullwidth .template.placeholder {
-        width: 145px;
-        margin: 21px auto;
     }
 
     .columns .template-x-inner-wrapper {
@@ -2588,7 +2639,7 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         max-width: 1200px;
     }
 
-    .template-x-wrapper.sixcols {
+    .template-x-wrapper.sixcols:not(.horizontal) {
         max-width: 1122px;
     }
 

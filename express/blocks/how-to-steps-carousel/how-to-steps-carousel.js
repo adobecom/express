@@ -270,6 +270,7 @@ export default async function decorate(block) {
     const placeholderImgUrl = createTag('div');
     const placeholders = await fetchPlaceholders();
     const url = placeholders['how-to-steps-carousel-image-app'];
+    const alt = block.querySelector('picture > img').getAttribute('alt');
     const eagerLoad = document.querySelector('.block') === block;
     const backgroundPic = createOptimizedPicture(url, 'template in express', eagerLoad);
     const backgroundPicImg = backgroundPic.querySelector('img', { alt: 'template in express' });
@@ -284,6 +285,8 @@ export default async function decorate(block) {
 
     templateImg.style.visibility = 'hidden';
     templateImg.style.position = 'absolute';
+    templateImg.removeAttribute('width');
+    templateImg.removeAttribute('height');
     backgroundPicImg.style.width = `${canvasWidth}px`;
     if (window.screen.width < 600) backgroundPicImg.style.height = `${window.screen.width * 0.536}px`;
     picture = backgroundPic;
@@ -304,6 +307,7 @@ export default async function decorate(block) {
             const blobUrl = URL.createObjectURL(blob);
             img.src = blobUrl;
             backgroundPic.append(img);
+            img.alt = alt;
             backgroundPicImg.remove();
             setPictureHeight(block, true);
           });

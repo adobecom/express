@@ -13,18 +13,10 @@ import {
   closeToolBox,
 } from '../shared/floating-cta.js';
 
-function toggleMultifunctionToolBox(wrapper, lottie, data, userInitiated = true) {
+function toggleMultifunctionToolBox(wrapper, lottie, data) {
   wrapper.classList.add('with-transition');
-  if (userInitiated) {
-    wrapper.classList.remove('initial-load');
-  }
-  if (wrapper.classList.contains('initial-load') && wrapper.classList.contains('closed')) {
-    wrapper.classList.remove('closed');
-    return;
-  }
-
   if (wrapper.classList.contains('toolbox-opened')) {
-    openToolBox(wrapper, lottie, data, userInitiated);
+    openToolBox(wrapper, lottie, data);
   } else {
     closeToolBox(wrapper, lottie);
   }
@@ -83,9 +75,8 @@ function buildMultifunctionToolBox(wrapper, data) {
   initNotchDragAction(wrapper, data);
 }
 
-export async function createMultiFunctionButton(block, data, audience) {
-  const buttonWrapper = await createFloatingButton(block, audience, data)
-    .then(((result) => result));
+export function createMultiFunctionButton(block, data, audience) {
+  const buttonWrapper = createFloatingButton(block, audience, data);
   buttonWrapper.classList.add('multifunction');
   buildMultifunctionToolBox(buttonWrapper, data);
 
@@ -95,20 +86,18 @@ export async function createMultiFunctionButton(block, data, audience) {
 export default async function decorate(block) {
   addTempWrapper(block, 'multifunction-button');
 
-  if (block.classList.contains('spreadsheet-powered')) {
-    const audience = block.querySelector(':scope > div').textContent.trim();
-    if (audience === 'mobile') {
-      block.closest('.section').remove();
-    }
+  if (!block.classList.contains('metadata-powered')) return;
 
-    collectFloatingButtonData().then((data) => {
-      createMultiFunctionButton(block, data, audience).then((blockWrapper) => {
-        const blockLinks = blockWrapper.querySelectorAll('a');
-        if (blockLinks && blockLinks.length > 0) {
-          const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
-          document.dispatchEvent(linksPopulated);
-        }
-      });
-    });
+  const audience = block.querySelector(':scope > div').textContent.trim();
+  if (audience === 'mobile') {
+    block.closest('.section').remove();
+  }
+
+  const data = collectFloatingButtonData();
+  const blockWrapper = createMultiFunctionButton(block, data, audience);
+  const blockLinks = blockWrapper.querySelectorAll('a');
+  if (blockLinks && blockLinks.length > 0) {
+    const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
+    document.dispatchEvent(linksPopulated);
   }
 }

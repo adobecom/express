@@ -1,6 +1,6 @@
 import {
   fetchPlaceholders,
-  getHelixEnv,
+  getConfig,
   getMetadata,
   titleCase,
   yieldToMain,
@@ -39,22 +39,24 @@ async function getReplacementsFromSearch() {
   if (!categories) {
     return null;
   }
-  const tasksPair = Object.entries(categories).find((cat) => cat[1] === tasks);
-  const xTasksPair = Object.entries(xCategories).find((cat) => cat[1] === tasksx);
-  const sanitizedTasks = tasks === "''" ? '' : tasks;
-  const sanitizedTopics = topics === "''" ? '' : topics;
-  const sanitizedQuery = q === "''" ? '' : q;
 
-  let translatedTasks;
-  if (document.body.dataset.device === 'desktop') {
-    translatedTasks = xTasksPair?.[1] ? xTasksPair[0].toLowerCase() : tasksx;
-  } else {
-    translatedTasks = tasksPair?.[1] ? tasksPair[0].toLowerCase() : tasks;
+  const exp = /['"<>?.;{}]/gm;
+  const sanitizedTasks = tasks?.match(exp) ? '' : tasks;
+  const sanitizedTasksx = tasksx?.match(exp) ? '' : tasksx;
+  const sanitizedTopics = topics?.match(exp) ? '' : topics;
+  const sanitizedQuery = q?.match(exp) ? '' : q;
+
+  const tasksPair = Object.entries(categories).find((cat) => cat[1] === sanitizedTasks);
+  const xTasksPair = Object.entries(xCategories).find((cat) => cat[1] === sanitizedTasksx);
+
+  let translatedTasks = xTasksPair?.[1] ? xTasksPair[0].toLowerCase() : sanitizedTasksx;
+  if (!translatedTasks) {
+    translatedTasks = tasksPair?.[1] ? tasksPair[0].toLowerCase() : sanitizedTasks;
   }
   return {
     '{{queryTasks}}': sanitizedTasks || '',
     '{{QueryTasks}}': titleCase(sanitizedTasks || ''),
-    '{{queryTasksX}}': tasksx || '',
+    '{{queryTasksX}}': sanitizedTasksx || '',
     '{{translatedTasks}}': translatedTasks || '',
     '{{TranslatedTasks}}': titleCase(translatedTasks || ''),
     '{{placeholderRatio}}': phformat || '',
@@ -189,19 +191,24 @@ async function updateNonBladeContent(main) {
   }
 }
 
-function validatePage() {
-  const env = getHelixEnv();
+async function validatePage() {
+  const { env } = getConfig();
   const title = document.querySelector('title');
-  if ((env && env.name !== 'stage') && getMetadata('live') === 'N') {
-    window.location.replace('/express/templates/');
-  }
 
-  if (title && title.innerText.match(/{{(.*?)}}/)) {
-    window.location.replace('/404');
-  }
+  const path = window.location.pathname.replace(`${getConfig().locale.prefix}/express/`, '');
+  const pageNotFound = (env && env.name === 'prod' && getMetadata('live') === 'N') || (title && title.innerText.match(/{{(.*?)}}/));
 
-  if (env && env.name !== 'stage' && window.location.pathname.endsWith('/express/templates/default')) {
-    window.location.replace('/404');
+  if (pageNotFound && !!getConfig().locale.prefix) {
+    window.location.replace(`/express/${path}`);
+  } else if (pageNotFound || (env && env.name === 'prod' && window.location.pathname.endsWith('/express/templates/default'))) {
+    const errorPage = await fetch('/express/404');
+    const html = await errorPage.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const newHTMLContent = doc.documentElement.outerHTML;
+    document.open();
+    document.write(newHTMLContent);
+    document.close();
   }
 }
 

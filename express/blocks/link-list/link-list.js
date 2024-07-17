@@ -1,10 +1,14 @@
 import {
+  fetchPlaceholders,
   fetchRelevantRows,
   normalizeHeadings,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 
 import buildCarousel from '../shared/carousel.js';
+
+const DEFAULT_VARIANT = 'default';
+const SMART_VARIANT = 'smart';
 
 async function loadSpreadsheetData(block, relevantRowsData) {
   const defaultContainer = block.querySelector('.button-container');
@@ -27,19 +31,42 @@ async function loadSpreadsheetData(block, relevantRowsData) {
   }
 }
 
+const formatSmartBlockLinks = (links, baseURL) => {
+  if (!links || !baseURL) return;
+
+  let url = baseURL;
+  const multipleURLs = baseURL?.replace(/\s/g, '').split(',');
+  if (multipleURLs?.length > 0) {
+    [url] = multipleURLs;
+  } else {
+    return;
+  }
+
+  const formattedURL = `${url}?acomx-dno=true&category=templates`;
+  links.forEach((p) => {
+    const a = p.querySelector('a');
+    a.href = `${formattedURL}&q=${a.title}`;
+  });
+};
+
+const toggleLinksHighlight = (links, variant) => {
+  if (variant === SMART_VARIANT) return;
+  links.forEach((l) => {
+    const a = l.querySelector(':scope > a');
+    if (a) {
+      l.classList.toggle('active', a.href === window.location.href);
+    }
+  });
+};
+
 export default async function decorate(block) {
+  let variant = DEFAULT_VARIANT;
+  if (block.classList.contains(SMART_VARIANT)) {
+    variant = SMART_VARIANT;
+  }
   addTempWrapper(block, 'link-list');
-
+  const placeholders = await fetchPlaceholders();
   const options = {};
-  const toggleLinksHighlight = (links) => {
-    links.forEach((l) => {
-      const a = l.querySelector(':scope > a');
-
-      if (a) {
-        l.classList.toggle('active', a.href === window.location.href);
-      }
-    });
-  };
 
   if (block.classList.contains('spreadsheet-powered')) {
     const relevantRowsData = await fetchRelevantRows(window.location.pathname);
@@ -63,26 +90,27 @@ export default async function decorate(block) {
       if (!block.classList.contains('shaded')) {
         link.classList.add('secondary');
       }
-
       link.classList.add('medium');
       link.classList.remove('accent');
     });
-
     const platformEl = document.createElement('div');
     platformEl.classList.add('link-list-platform');
     await buildCarousel('p.button-container', block, options);
   }
 
   if (block.classList.contains('shaded')) {
-    toggleLinksHighlight(links);
+    toggleLinksHighlight(links, variant);
   }
 
   window.addEventListener('popstate', () => {
-    toggleLinksHighlight(links);
+    toggleLinksHighlight(links, variant);
   });
 
   if (window.location.href.includes('/express/templates/')) {
     const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
     await updateAsyncBlocks();
+  }
+  if (variant === SMART_VARIANT) {
+    formatSmartBlockLinks(links, placeholders['search-branch-links']);
   }
 }

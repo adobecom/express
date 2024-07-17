@@ -10,7 +10,7 @@ export function decorateTextWithTag(textSource, options = {}) {
     baseClass,
     tagClass,
   } = options;
-  const text = createTag(baseT || 'p', { class: baseClass || '' });
+  const text = createTag(baseT || 'label', { class: baseClass || '', for: textSource });
   const tagText = textSource.match(/\[(.*?)]/);
 
   if (tagText) {
@@ -58,7 +58,13 @@ function handleGenAISubmit(form, link) {
   const input = form.querySelector('.gen-ai-input');
 
   btn.disabled = true;
-  const genAILink = link.replace('%7B%7Bprompt-text%7D%7D', encodeURI(input.value).replaceAll(' ', '+'));
+
+  let promptToken = '{{prompt-text}}';
+  const legacyPromptToken = '%7B%7Bprompt-text%7D%7D';
+  if (link.indexOf(legacyPromptToken) > -1) {
+    promptToken = legacyPromptToken;
+  }
+  const genAILink = link.replace(promptToken, encodeURI(input.value).replaceAll(' ', '+'));
   if (genAILink !== '') window.location.assign(genAILink);
 }
 
@@ -159,12 +165,13 @@ async function decorateCards(block, payload) {
         const a = cta.ctaLinks[0];
         a.removeAttribute('title');
         a.setAttribute('aria-label', `quick action: ${cta.text.toLowerCase().trim()}`);
+        a.setAttribute('id', cta.text);
         a.textContent = '';
         a.classList.add('clickable-overlay');
       }
-
+      const searchBranchLinks = placeholders['search-branch-links']?.replace(/\s/g, '')?.split(',');
       cta.ctaLinks.forEach((a) => {
-        if (a.href && a.href.match('adobesparkpost.app.link')) {
+        if (a.href && searchBranchLinks.includes(a.href)) {
           const btnUrl = new URL(a.href);
           if (placeholders?.['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
             btnUrl.searchParams.set('q', cta.text);
@@ -185,7 +192,7 @@ async function decorateCards(block, payload) {
     }
 
     if (cta.subtext && !hasGenAIEl) {
-      const subtext = createTag('p', { class: 'subtext' });
+      const subtext = createTag('label', { class: 'subtext' });
       subtext.textContent = cta.subtext;
       textWrapper.append(subtext);
     }

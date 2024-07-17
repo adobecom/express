@@ -7,7 +7,6 @@ import {
   stamp,
   registerPerformanceLogger,
   setConfig,
-  loadStyle,
   createTag,
   getConfig,
 } from './utils.js';
@@ -42,14 +41,20 @@ if (jarvisVisibleMeta && ['mobile', 'desktop', 'on'].includes(jarvisVisibleMeta)
   (jarvisVisibleMeta === 'mobile' && !desktopViewport) || (jarvisVisibleMeta === 'desktop' && desktopViewport))) jarvisImmediatelyVisible = true;
 
 const config = {
+  local: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
+  stage: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
+  prod: { express: 'express.adobe.com', commerce: 'commerce.adobe.com' },
   locales,
-  codeRoot: '/express/',
+  codeRoot: '/express',
+  contentRoot: '/express',
   jarvis: {
     id: 'Acom_Express',
     version: '1.0',
     onDemand: !jarvisImmediatelyVisible,
   },
   links: 'on',
+  imsClientId: 'AdobeExpressWeb',
+  imsScope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
 };
 
 window.RUM_GENERATION = 'ccx-gen-4-experiment-high-sample-rate';
@@ -72,8 +77,20 @@ const eagerLoad = (img) => {
   img?.setAttribute('fetchpriority', 'high');
 };
 
+(function handleSplit() {
+  const { userAgent } = navigator;
+  document.body.dataset.device = userAgent.includes('Mobile') ? 'mobile' : 'desktop';
+  const fqaMeta = createTag('meta', { content: 'on' });
+  if (document.body.dataset.device === 'mobile'
+    || (/Safari/.test(userAgent) && !/Chrome|CriOS|FxiOS|Edg|OPR|Opera|OPiOS|Vivaldi|YaBrowser|Avast|VivoBrowser|GSA/.test(userAgent))) {
+    fqaMeta.setAttribute('name', 'fqa-off');
+  } else {
+    fqaMeta.setAttribute('name', 'fqa-on');
+  }
+  document.head.append(fqaMeta);
+}());
+
 (function loadLCPImage() {
-  document.body.dataset.device = navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop';
   const main = document.body.querySelector('main');
   removeIrrelevantSections(main);
   const firstDiv = main.querySelector('div:nth-child(1) > div');
@@ -84,16 +101,12 @@ const eagerLoad = (img) => {
   }
 }());
 
-const showNotifications = () => {
-  const url = new URL(window.location.href);
-  const notification = url.searchParams.get('notification');
-  if (notification) {
+const loadExpressMartechSettings = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('martech') !== 'off' || getMetadata('martech') === 'off') {
     const handler = () => {
-      loadStyle('/express/features/notification/notification.css', () => {
-        import('../features/notification/notification.js').then((mod) => {
-          mod.default(notification);
-          window.removeEventListener('milo:LCP:loaded', handler);
-        });
+      import('./instrument.js').then((mod) => {
+        mod.default();
       });
     };
     window.addEventListener('milo:LCP:loaded', handler);
@@ -117,14 +130,22 @@ const listenAlloy = () => {
   }, { once: true });
   setTimeout(() => {
     if (!loaded) {
-      window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`);
+      window.lana.log(`Alloy failed to load, waited ${performance.now() - t1}`, { sampleRate: 0.01 });
       resolver();
     }
-  }, 5000);
+  }, 3000);
 };
 
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
+  window.hlx = window.hlx || {};
+  const params = new URLSearchParams(window.location.search);
+  const experimentParams = params.get('experiment');
+  ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
+    window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
+  });
+  window.hlx.experimentParams = experimentParams;
+  window.hlx.init = true;
   setConfig(config);
 
   if (getMetadata('hide-breadcrumbs') !== 'true' && !getMetadata('breadcrumbs') && !window.location.pathname.endsWith('/express/')) {
@@ -134,31 +155,10 @@ const listenAlloy = () => {
       if (breadcrumbs && breadcrumbs.length) document.body.classList.add('breadcrumbs-spacing');
     });
   } else if (getMetadata('breadcrumbs') === 'on' && !!getMetadata('breadcrumbs-base') && (!!getMetadata('short-title') || !!getMetadata('breadcrumbs-page-title'))) document.body.classList.add('breadcrumbs-spacing');
-  showNotifications();
+  loadExpressMartechSettings();
   loadLana({ clientId: 'express' });
   listenAlloy();
-
-  // todo remove this after IMS testing
-  const imsClient = usp.get('imsclient');
-  if (imsClient === 'new') {
-    sessionStorage.setItem('imsclient', 'AdobeExpressWeb');
-  } else if (imsClient === 'old' || !sessionStorage.getItem('imsclient')) {
-    sessionStorage.setItem('imsclient', 'MarvelWeb3');
-  }
-
-  const isMobileGating = ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile';
-  const rushGating = ['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating').toLowerCase());
-  const runGating = () => {
-    import('./mobile-beta-gating.js').then(async (gatingScript) => {
-      gatingScript.default();
-    });
-  };
-
-  isMobileGating && rushGating && runGating();
-
   await loadArea();
-
-  isMobileGating && !rushGating && runGating();
 
   import('./express-delayed.js').then((mod) => {
     mod.default();

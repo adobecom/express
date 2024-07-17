@@ -1,5 +1,9 @@
 /* eslint-disable no-underscore-dangle */
-import { createTag, getIconElement, getMetadata } from '../../scripts/utils.js';
+import {
+  createTag,
+  getIconElement,
+  getMetadata,
+} from '../../scripts/utils.js';
 
 function containsVideo(pages) {
   return pages.some((page) => !!page?.rendition?.video?.thumbnail?.componentId);
@@ -94,10 +98,28 @@ async function getVideoUrls(renditionLinkHref, componentLinkHref, page) {
   }
 }
 
+async function share(branchUrl, tooltip, timeoutId) {
+  await navigator.clipboard.writeText(branchUrl);
+  tooltip.classList.add('display-tooltip');
+
+  const rect = tooltip.getBoundingClientRect();
+  const tooltipRightEdgePos = rect.left + rect.width;
+  if (tooltipRightEdgePos > window.innerWidth) {
+    tooltip.classList.add('flipped');
+  }
+
+  clearTimeout(timeoutId);
+  return setTimeout(() => {
+    tooltip.classList.remove('display-tooltip');
+    tooltip.classList.remove('flipped');
+  }, 2500);
+}
+
 function renderShareWrapper(branchUrl, placeholders) {
   const text = placeholders['tag-copied'] ?? 'Copied to clipboard';
   const wrapper = createTag('div', { class: 'share-icon-wrapper' });
   const shareIcon = getIconElement('share-arrow');
+  shareIcon.setAttribute('tabindex', 0);
   const tooltip = createTag('div', {
     class: 'shared-tooltip',
     'aria-label': text,
@@ -105,23 +127,16 @@ function renderShareWrapper(branchUrl, placeholders) {
     tabindex: '-1',
   });
   let timeoutId = null;
-  shareIcon.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(branchUrl);
-    tooltip.classList.add('display-tooltip');
-
-    const rect = tooltip.getBoundingClientRect();
-    const tooltipRightEdgePos = rect.left + rect.width;
-    if (tooltipRightEdgePos > window.innerWidth) {
-      tooltip.classList.add('flipped');
-    }
-
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      tooltip.classList.remove('display-tooltip');
-      tooltip.classList.remove('flipped');
-    }, 2500);
+  shareIcon.addEventListener('click', () => {
+    timeoutId = share(branchUrl, tooltip, timeoutId);
   });
 
+  shareIcon.addEventListener('keypress', (e) => {
+    if (e.key !== 'Enter') {
+      return;
+    }
+    timeoutId = share(branchUrl, tooltip, timeoutId);
+  });
   const checkmarkIcon = getIconElement('checkmark-green');
   tooltip.append(checkmarkIcon);
   tooltip.append(text);
@@ -277,6 +292,8 @@ async function renderRotatingMedias(wrapper,
   return { cleanup, hover: playMedia };
 }
 
+let currentHoveredElement;
+
 function renderMediaWrapper(template, placeholders) {
   const mediaWrapper = createTag('div', { class: 'media-wrapper' });
 
@@ -302,25 +319,48 @@ function renderMediaWrapper(template, placeholders) {
       mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
     }
     renderedMedia.hover();
+    currentHoveredElement?.classList.remove('singleton-hover');
+    currentHoveredElement = e.target;
+    currentHoveredElement?.classList.add('singleton-hover');
+    document.activeElement.blur();
   };
+
   const leaveHandler = () => {
     if (renderedMedia) renderedMedia.cleanup();
   };
 
-  return { mediaWrapper, enterHandler, leaveHandler };
+  const focusHandler = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!renderedMedia) {
+      renderedMedia = await renderRotatingMedias(mediaWrapper, template.pages, templateInfo);
+      mediaWrapper.append(renderShareWrapper(branchUrl, placeholders));
+      renderedMedia.hover();
+    }
+    currentHoveredElement?.classList.remove('singleton-hover');
+    currentHoveredElement = e.target;
+    currentHoveredElement?.classList.add('singleton-hover');
+  };
+
+  return {
+    mediaWrapper, enterHandler, leaveHandler, focusHandler,
+  };
 }
 
 function renderHoverWrapper(template, placeholders) {
   const btnContainer = createTag('div', { class: 'button-container' });
 
-  const { mediaWrapper, enterHandler, leaveHandler } = renderMediaWrapper(template, placeholders);
+  const {
+    mediaWrapper, enterHandler, leaveHandler, focusHandler,
+  } = renderMediaWrapper(template, placeholders);
 
   btnContainer.append(mediaWrapper);
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
   const cta = renderCTA(placeholders, template.customLinks.branchUrl);
-  btnContainer.append(cta);
+  btnContainer.prepend(cta);
+  cta.addEventListener('focusin', focusHandler);
 
   return btnContainer;
 }

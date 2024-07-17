@@ -1,5 +1,6 @@
-import { createTag, getMetadata } from '../../scripts/utils.js';
+import { createTag } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
+import { sendEventToAnalytics } from '../../scripts/instrument.js';
 
 function initScrollInteraction(block) {
   const inBodyBanner = block.cloneNode(true);
@@ -44,31 +45,10 @@ export default async function decorate(block) {
       block,
       rendered: false,
     });
+    sendEventToAnalytics('adobe.com:express:cta:startYourFreeTrial:close');
   });
 
   if (block.classList.contains('loadinbody')) {
-    if (['yes', 'on', 'true'].includes(getMetadata('rush-beta-gating')) && ['yes', 'true', 'on'].includes(getMetadata('mobile-benchmark').toLowerCase()) && document.body.dataset.device === 'mobile') {
-      const eligibility = BlockMediator.get('mobileBetaEligibility');
-      if (eligibility) {
-        if (eligibility.deviceSupport) {
-          block.remove();
-          return;
-        }
-      } else {
-        const eligible = await new Promise((resolve) => {
-          const unsub = BlockMediator.subscribe('mobileBetaEligibility', (e) => {
-            resolve(e.newValue.deviceSupport);
-            unsub();
-          });
-        });
-
-        if (eligible) {
-          block.remove();
-          return;
-        }
-      }
-    }
-
     setTimeout(() => {
       initScrollInteraction(block);
     });

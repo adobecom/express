@@ -64,6 +64,7 @@ function initSearchFunction(block) {
 
   searchBar.addEventListener('click', (e) => {
     e.stopPropagation();
+    searchBar.scrollIntoView({ behavior: 'smooth' });
     searchDropdown.classList.remove('hidden');
   }, { passive: true });
 
@@ -117,7 +118,7 @@ function initSearchFunction(block) {
       xCore: '',
       content: '',
     };
-    let searchInput = searchBar.value || getMetadata('topics');
+    let searchInput = searchBar.value?.toLowerCase() || getMetadata('topics');
 
     const tasksFoundInInput = findTask(taskMap);
     const tasksXFoundInInput = findTask(taskXMap);
@@ -250,15 +251,19 @@ async function decorateSearchFunctions(block) {
 function decorateBackground(block) {
   const mediaRow = block.querySelector('div:nth-child(2)');
   if (mediaRow) {
-    const media = mediaRow.querySelector('picture img');
-    if (media) {
-      media.classList.add('backgroundimg');
-      const wrapper = block.parentElement;
-      if (wrapper.classList.contains('search-marquee-wrapper')) {
-        wrapper.prepend(media);
-      } else {
-        block.prepend(media);
-      }
+    let media = mediaRow.querySelector('picture img');
+    if (!media) {
+      media = createTag('img');
+      media.src = mediaRow.querySelector('a')?.href;
+    }
+    media.classList.add('backgroundimg');
+    media.loading = 'eager';
+    media.setAttribute('fetchpriority', 'high');
+    const wrapper = block.parentElement;
+    if (wrapper.classList.contains('search-marquee-wrapper')) {
+      wrapper.prepend(media);
+    } else {
+      block.prepend(media);
     }
     mediaRow.remove();
   }
@@ -317,7 +322,7 @@ async function buildSearchDropdown(block) {
     suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
     suggestionsContainer.append(suggestionsTitle, suggestionsList);
 
-    const freePlanTags = await buildFreePlanWidget('branded');
+    const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
 
     freePlanContainer.append(freePlanTags);
     dropdownContainer.append(trendsContainer, suggestionsContainer, freePlanContainer);
@@ -346,13 +351,12 @@ function decorateLinkList(block) {
 
 export default async function decorate(block) {
   addTempWrapper(block, 'search-marquee');
-
-  // desktop-only block
-  if (document.body.dataset?.device !== 'desktop') {
-    block.remove();
-    return;
-  }
   decorateBackground(block);
+  if (['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
+    const logo = getIconElement('adobe-express-logo');
+    logo.classList.add('express-logo');
+    block.prepend(logo);
+  }
   await decorateSearchFunctions(block);
   await buildSearchDropdown(block);
   initSearchFunction(block);
