@@ -88,26 +88,22 @@ export default async function loadLoginUserAutoRedirect() {
     progressBg.append(progressBar);
     noticeWrapper.append(noticeText, noticeBtn);
     container.append(headerWrapper, progressBg);
-    return new Promise((resolve) => {
-      getProfile().then((profile) => {
-        if (profile) {
-          container.append(buildProfileWrapper(profile));
-        }
-        container.append(noticeWrapper);
+    const profile = await getProfile();
+    if (profile) {
+      container.append(buildProfileWrapper(profile));
+    }
+    container.append(noticeWrapper);
 
-        const header = document.querySelector('header');
-        header.append(container);
+    const header = document.querySelector('header');
+    header.append(container);
 
-        noticeBtn.addEventListener('click', () => {
-          track(`${adobeEventName}:cancel`);
-          container.remove();
-          cancel = true;
-          localStorage.setItem(OPT_OUT_KEY, '3');
-        });
-
-        resolve(container);
-      });
+    noticeBtn.addEventListener('click', () => {
+      track(`${adobeEventName}:cancel`);
+      container.remove();
+      cancel = true;
+      localStorage.setItem(OPT_OUT_KEY, '3');
     });
+    return container;
   };
 
   const optOutCounter = localStorage.getItem(OPT_OUT_KEY);
