@@ -146,13 +146,13 @@ async function buildApp(block, content) {
 }
 
 function decorateMultipleCTAs(block) {
-  const links = Array.from(block.querySelectorAll('a')).slice(1)
+  const links = Array.from(block.querySelectorAll('a')).slice(1);
   links
     .forEach((link) => {
       if (link.classList.contains('button') && link.closest('em')) {
-        link.classList.remove('button')
-        link.classList.add('hyperlink')
-      }  
+        link.classList.remove('button');
+        link.classList.add('hyperlink');
+      }
     });
 }
 
@@ -181,5 +181,5 @@ export default async function decorate(block) {
   if (content && document.body.dataset.device === 'desktop') {
     block.append(await buildApp(block, content));
   }
-  decorateMultipleCTAs(block)
+  decorateMultipleCTAs(block);
 }
