@@ -307,7 +307,7 @@ export function trackButtonClick(a) {
     } else if (a.closest('.faq')) {
       adobeEventName = appendLinkText(`${adobeEventName}faq:`, a);
       // CTA in the hero
-    } else if (a.closest('.hero')) {
+    } else if (a.closest('#hero')) {
       adobeEventName = appendLinkText(`${adobeEventName}hero:`, a);
       // Click in the pricing block
     } else if (sparkLandingPageType === 'express-your-fandom') {

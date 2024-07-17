@@ -4,20 +4,34 @@ import { memoize } from '../../scripts/hofs.js';
 
 // supported by content api
 const supportedLanguages = [
-  'en-US',
-  'fr-FR',
-  'de-DE',
-  'it-IT',
+  'ar-SA',
+  'cs-CZ',
   'da-DK',
+  'de-DE',
   'es-ES',
+  'el-GR',
+  'en-US',
   'fi-FI',
+  'fil-PH',
+  'fr-FR',
+  'hi-IN',
+  'id-ID',
+  'it-IT',
+  'i-DEFAULT',
   'ja-JP',
   'ko-KR',
+  'MS-MY',
   'nb-NO',
   'nl-NL',
+  'pl-PL',
   'pt-BR',
+  'ro-RO',
+  'ru-RU',
   'sv-SE',
   'th-TH',
+  'tr-TR',
+  'uk-UA',
+  'vi-VN',
   'zh-Hant-TW',
   'zh-Hans-CN',
 ];
@@ -171,7 +185,18 @@ async function fetchTemplatesNoToolbar(props) {
   if (prefLangRes.items?.length >= limit) return { response: prefLangRes };
 
   const backupLangRes = await backupLangPromise;
-  const mergedItems = [...prefLangRes.items, ...backupLangRes.items].slice(0, limit);
+  const dedup = (items) => {
+    const [set, arr] = [new Set(), []];
+    items.forEach((item) => {
+      if (!set.has(item.id)) {
+        set.add(item.id);
+        arr.push(item);
+      }
+    });
+    return arr;
+  };
+  const mergedItems = dedup([...prefLangRes.items, ...backupLangRes.items])
+    .slice(0, limit);
   return {
     response: {
       metadata: {
