@@ -964,9 +964,6 @@ function decorateSection(section, idx) {
   const sectionMeta = section.querySelector('div.section-metadata');
 
   if (sectionMeta) {
-    /* Remove this after checking that keeping section metadata alive
-    universally does not cause problems */
-    let keepSectionMeta = false;
     const meta = readBlockConfig(sectionMeta);
     const keys = Object.keys(meta);
 
@@ -977,18 +974,11 @@ function decorateSection(section, idx) {
         section.id = toClassName(meta.anchor);
       } else if (key === 'background') {
         section.style.background = meta.background;
-      } else if (key === 'keep-section-metadata') {
-        keepSectionMeta = true;
       } else {
         section.dataset[key] = meta[key];
       }
     });
-
-    if (keepSectionMeta) {
-      sectionMeta.style.display = 'none';
-    } else {
-      sectionMeta.remove();
-    }
+    sectionMeta.style.display = 'none';
   }
   const blocks = section.querySelectorAll(':scope > div[class]:not(.default-content-wrapper)');
 
