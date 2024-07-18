@@ -36,7 +36,7 @@ function renderGridNode({
     gridItem.append(cta);
   }
   if (colorProperties['card-image']) {
-    gridItem.style = `background-image:${colorProperties['card-image']}`;
+    gridItem.style = `background-image:${colorProperties['card-image']}; background-size: auto;`;
   }
 
   if (colorProperties['card-color']) {
