@@ -23,7 +23,7 @@ function renderGridNode({
   title,
   subText,
   cta,
-}, index) {
+}, index, colorProperties) {
   const gridItem = createTag('a', { class: `grid-item item-${index + 1}` });
   const updatedMedia = renderImageOrVideo(media);
   gridItem.href = cta?.href;
@@ -35,7 +35,13 @@ function renderGridNode({
     cta.classList.remove('button');
     gridItem.append(cta);
   }
+  if (colorProperties['card-image']) {
+    gridItem.style = `background-image:${colorProperties['card-image']}; background-size: auto;`;
+  }
 
+  if (colorProperties['card-color']) {
+    gridItem.style = `background-color:${colorProperties['card-color']}; background-image:none`;
+  }
   if (index < 4) {
     gridItem.append(updatedMedia);
   } else {
@@ -71,7 +77,22 @@ function getLoadMoreText(rows) {
   return loadMore;
 }
 
+const extractProperties = (block) => {
+  const possibleColorRow = Array.from(block.querySelectorAll(':scope > div'))[1];
+  const content = possibleColorRow?.innerText.trim();
+  const allProperties = {};
+  if (content.charAt(0) === ('#')) {
+    allProperties['card-color'] = content;
+    possibleColorRow.remove();
+  } else if (content.includes('linear-gradient')) {
+    allProperties['card-image'] = content;
+    block.removeChild(possibleColorRow);
+  }
+  return allProperties;
+};
+
 export default function decorate(block) {
+  const colorProperties = extractProperties(block);
   const inputRows = block.querySelectorAll(':scope > div > div');
   block.innerHTML = '';
   const rows = Array.from(inputRows);
@@ -90,14 +111,8 @@ export default function decorate(block) {
     };
   });
 
-  if (gridProps.length > 12) {
-    throw new Error(
-      `Authoring issue: Feature Grid Fixed block should have 12 children. Received: ${gridProps.length}`,
-    );
-  }
-
   const gridContainer = createTag('div', { class: 'grid-container' });
-  const gridItems = gridProps.map((props, index) => renderGridNode(props, index));
+  const gridItems = gridProps.map((props, index) => renderGridNode(props, index, colorProperties));
   heading.classList.add('heading');
 
   gridItems.forEach((gridItem) => {
