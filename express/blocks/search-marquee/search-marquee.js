@@ -379,6 +379,11 @@ function decorateLinkList(block) {
 export default async function decorate(block) {
   addTempWrapper(block, 'search-marquee');
   decorateBackground(block);
+  if (['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
+    const logo = getIconElement('adobe-express-logo');
+    logo.classList.add('express-logo');
+    block.prepend(logo);
+  }
   await decorateSearchFunctions(block);
   await buildSearchDropdown(block);
   initSearchFunction(block);

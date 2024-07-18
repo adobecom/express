@@ -19,6 +19,11 @@ function buildContent(content) {
 
     if (contentImage) {
       formattedContent = contentImage;
+      const img = formattedContent.querySelector('img');
+      if (img) {
+        img.removeAttribute('width');
+        img.removeAttribute('height');
+      }
     }
   }
 
@@ -140,6 +145,17 @@ async function buildApp(block, content) {
   return appFrame;
 }
 
+function decorateMultipleCTAs(block) {
+  const links = Array.from(block.querySelectorAll('a')).slice(1);
+  links
+    .forEach((link) => {
+      if (link.classList.contains('button') && link.closest('em')) {
+        link.classList.remove('button');
+        link.classList.add('hyperlink');
+      }
+    });
+}
+
 export default async function decorate(block) {
   const rows = Array.from(block.children);
   const heading = rows[0] ? rows[0].querySelector('div') : null;
@@ -165,4 +181,5 @@ export default async function decorate(block) {
   if (content && document.body.dataset.device === 'desktop') {
     block.append(await buildApp(block, content));
   }
+  decorateMultipleCTAs(block);
 }

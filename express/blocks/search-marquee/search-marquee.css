@@ -22,6 +22,12 @@ main .search-marquee {
     align-items: center;
 }
 
+.search-marquee .express-logo {
+    width: unset;
+    height: 30px;
+    padding-bottom: 8px;
+}
+
 main .search-marquee > div:first-of-type h1 {
     font-size: var(--heading-font-size-l);
 }
