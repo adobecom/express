@@ -951,11 +951,11 @@ main .free-plan-widget .plan-widget-tag img.icon.icon-checkmark {
 }
 
 /* floating-cta main CTA suppression */
-body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"][data-section-status="loaded"] .same-as-floating-button-CTA {
+body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"][data-section-status="loaded"] .same-fcta {
   display: block;
 }
 
-main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf, .split-action, .link-list, .wayfinder, .ratings) a.button.same-as-floating-button-CTA {
+main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf, .split-action, .link-list, .wayfinder, .ratings) a.button.same-fcta {
   display: none;
 }
 
@@ -983,7 +983,7 @@ main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .
     text-align: left;
   }
 
-  main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf, .link-list, .wayfinder, .ratings) a.button.same-as-floating-button-CTA {
+  main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf, .link-list, .wayfinder, .ratings) a.button.same-fcta {
     display: inline-block;
   }
 }

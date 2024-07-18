@@ -165,7 +165,7 @@ export function createFloatingButton(block, audience, data) {
       || (new URL(a.href).pathname === aTagURL.pathname && new URL(a.href).hash === aTagURL.hash))
       && !a.parentElement.parentElement.classList.contains('floating-button'));
   sameUrlCTAs.forEach((cta) => {
-    cta.classList.add('same-as-floating-button-CTA');
+    cta.classList.add('same-fcta');
   });
 
   const floatButtonWrapperOld = aTag.closest('.floating-button-wrapper');
@@ -256,7 +256,7 @@ export function createFloatingButton(block, audience, data) {
     },
   }));
 
-  const heroCTA = document.querySelector('a.button.same-as-floating-button-CTA');
+  const heroCTA = document.querySelector('a.button.same-fcta');
   if (heroCTA) {
     const hideButtonWhenIntersecting = new IntersectionObserver(([e]) => {
       if (e.boundingClientRect.top > window.innerHeight - 40 || e.boundingClientRect.top === 0) {

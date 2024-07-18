@@ -619,7 +619,7 @@ export function removeIrrelevantSections(main) {
         });
 
       sameUrlCTAs.forEach((cta) => {
-        cta.classList.add('same-as-floating-button-CTA');
+        cta.classList.add('same-fcta');
       });
     }
   }
@@ -662,8 +662,9 @@ export async function decorateBlock(block) {
     // split and add options with a dash
     // (fullscreen-center -> fullscreen-center + fullscreen + center)
     const extra = [];
+    const skipList = ['same-fcta'];
     block.classList.forEach((className, index) => {
-      if (index === 0) return; // block name, no split
+      if (index === 0 || skipList.includes(className)) return; // block name or skip, no split
       const split = className.split('-');
       if (split.length > 1) {
         split.forEach((part) => {
