@@ -13,6 +13,7 @@ const CLOSE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="2
 
 let isDelayedModal = false;
 let prevHash = '';
+const dialogLoadingSet = new Set();
 
 export function findDetails(hash, el) {
   const id = hash.replace('#', '');
@@ -107,6 +108,7 @@ export async function getModal(details, custom) {
   if (!(details?.path || custom)) return null;
   const { id } = details || custom;
 
+  dialogLoadingSet.add(id);
   const dialog = createTag('div', { class: 'dialog-modal', id });
   const loadedEvent = new Event('milo:modal:loaded');
 
@@ -174,6 +176,7 @@ export async function getModal(details, custom) {
 
   dialog.append(close);
   document.body.append(dialog);
+  dialogLoadingSet.delete(id);
   firstFocusable.focus({ preventScroll: true, ...focusVisible });
   window.dispatchEvent(loadedEvent);
 
@@ -241,6 +244,7 @@ export function delayedModal(el) {
 export default function init(el) {
   const { modalHash } = el.dataset;
   if (delayedModal(el) || window.location.hash !== modalHash || document.querySelector(`div.dialog-modal${modalHash}`)) return null;
+  if (dialogLoadingSet.has(modalHash.replace('#', ''))) return null;
   const details = findDetails(window.location.hash, el);
   return details ? getModal(details) : null;
 }
