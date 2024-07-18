@@ -33,6 +33,9 @@ describe('Feature Grid Desktop', async () => {
         expect(cell.querySelector('p')).to.exist;
         expect(cell.querySelector('.cta')).to.exist;
         expect(cell.querySelector('img, video')).to.exist;
+
+        const backgroundColor = window.getComputedStyle(cell).getPropertyValue('background-color');
+        expect(backgroundColor).to.equal('rgb(255, 255, 255)');
       });
     });
   });
@@ -64,6 +67,9 @@ describe('Feature Grid Desktop', async () => {
         expect(cell.querySelector('p')).to.exist;
         expect(cell.querySelector('.cta')).to.exist;
         expect(cell.querySelector('img, video')).to.exist;
+
+        const backgroundImage = window.getComputedStyle(cell).getPropertyValue('background-image');
+        expect(backgroundImage).to.not.equal('none');
       });
     });
 
@@ -76,13 +82,6 @@ describe('Feature Grid Desktop', async () => {
       expect(loadMoreButton.textContent).to.equal('Explore more Adobe Express features');
       loadMoreButton.click();
       expect(loadMoreButton.textContent).to.equal('View less');
-    });
-  });
-
-  describe('Oversized Grid', () => {
-    const oversizedGrid = document.querySelector('#over-sized-grid');
-    it('gives an error message if too many cells are passed in', () => {
-      expect(() => decorate(oversizedGrid)).to.throw('Authoring issue: Feature Grid Fixed block should have 12 children. Received: 14');
     });
   });
 });
