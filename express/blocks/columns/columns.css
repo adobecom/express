@@ -1024,7 +1024,7 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     font-size: var(--heading-font-size-l);
   }
  
-  main .columns.center > div {
+  main .columns.extra-wide > div {
     align-items: flex-start;
    }
 
