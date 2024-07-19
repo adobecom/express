@@ -1031,6 +1031,10 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
   main .columns.center > div {
     align-items: flex-start;
    }
+
+  main .section>div:has(.columns.extra-wide) {
+    max-width: 1440px; 
+  }
 }
 
 main .columns.center {
@@ -1060,8 +1064,4 @@ main .columns.slim-padding .column {
   padding: 20px;
 }
 
-
-main .section>div:has(.columns.extra-wide) {
-  max-width: 1440px; 
-}
 
