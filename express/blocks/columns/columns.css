@@ -1032,8 +1032,8 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     align-items: flex-start;
    }
 
-  main .section>div:has(.columns.extra-wide) {
-    max-width: 1440px; 
+  main .section > div:has( .columns.extra-wide ) {
+    max-width: unset;
   }
 }
 
