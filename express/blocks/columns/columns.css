@@ -1061,3 +1061,7 @@ main .columns.slim-padding .column {
 }
 
 
+main .section>div:has(.columns.extra-wide) {
+  max-width: 1440px; 
+}
+
