@@ -1927,6 +1927,7 @@ async function buildAutoBlocks(main) {
       const button = buildBlock(blockName, device);
       button.classList.add('metadata-powered');
       lastDiv.append(button);
+      decorateLinks(lastDiv);
       BlockMediator.set('floatingCtasLoaded', true);
     }
   }

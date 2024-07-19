@@ -6,7 +6,6 @@ import {
   getMobileOperatingSystem,
   lazyLoadLottiePlayer,
   loadStyle,
-  decorateLinks,
 } from '../../scripts/utils.js';
 
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -303,7 +302,6 @@ export function createFloatingButton(block, audience, data) {
     document.dispatchEvent(new CustomEvent('linkspopulated', { detail: [floatButtonLink] }));
   }
 
-  decorateLinks(floatButtonWrapper);
   return floatButtonWrapper;
 }
 
