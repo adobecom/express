@@ -692,10 +692,6 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
       word-break: auto-phrase;
   }
 
-  main .center .column {
-    width: fit-content;
-    margin: auto;
-  }
 }
 
 @media (min-width: 900px) and (max-width: 1200px) {
@@ -1065,4 +1061,7 @@ main .columns.slim-padding .column {
   padding: 20px;
 }
 
-
+main .extra-wide .column {
+  width: fit-content;
+  margin: auto;
+}
