@@ -1894,61 +1894,6 @@ export async function fetchBlockFragDecorated(url, blockName) {
   }
 }
 
-async function buildAutoBlocks(main) {
-  const lastDiv = main.querySelector(':scope > div:last-of-type');
-
-  if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase()) && document.body.dataset.device === 'mobile') {
-    const authoredRRFound = [
-      '.template-list.horizontal.fullwidth.mini',
-      '.link-list.noarrows',
-      '.collapsible-card',
-    ].every((block) => main.querySelector(block));
-
-    if (!authoredRRFound && !window.relevantRowsLoaded) {
-      const relevantRowsData = await fetchRelevantRows(window.location.pathname);
-
-      if (relevantRowsData) {
-        const relevantRowsSection = createTag('div');
-        const fragment = buildBlock('fragment', '/express/fragments/relevant-rows-default-v2');
-        relevantRowsSection.dataset.audience = 'mobile';
-        relevantRowsSection.append(fragment);
-        main.prepend(relevantRowsSection);
-        window.relevantRowsLoaded = true;
-      }
-    }
-  }
-
-  async function loadFloatingCTA(BlockMediator) {
-    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
-    const device = document.body.dataset?.device;
-    const blockName = getMetadata(`${device}-floating-cta`);
-
-    if (blockName && validButtonVersion.includes(blockName) && lastDiv) {
-      const button = buildBlock(blockName, device);
-      button.classList.add('metadata-powered');
-      lastDiv.append(button);
-      BlockMediator.set('floatingCtasLoaded', true);
-    }
-  }
-
-  if (['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta')?.toLowerCase())) {
-    const { default: BlockMediator } = await import('./block-mediator.min.js');
-
-    if (!BlockMediator.get('floatingCtasLoaded')) {
-      await loadFloatingCTA(BlockMediator);
-    }
-  }
-
-  if (getMetadata('show-quick-action-card') && !['no', 'false', 'off'].includes(getMetadata('show-quick-action-card').toLowerCase())) {
-    const fragmentName = getMetadata('show-quick-action-card').toLowerCase();
-    const quickActionCardBlock = buildBlock('quick-action-card', fragmentName);
-    quickActionCardBlock.classList.add('spreadsheet-powered');
-    if (lastDiv) {
-      lastDiv.append(quickActionCardBlock);
-    }
-  }
-}
-
 function splitSections(area) {
   const blocks = area.querySelectorAll(`:scope${area === document ? ' main' : ''} > div > div`);
   blocks.forEach((block) => {
@@ -2514,6 +2459,62 @@ async function processSection(section, config, isDoc) {
   delete section.el.dataset.idx;
 
   return section.blocks;
+}
+
+async function buildAutoBlocks(main) {
+  const lastDiv = main.querySelector(':scope > div:last-of-type');
+
+  if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase()) && document.body.dataset.device === 'mobile') {
+    const authoredRRFound = [
+      '.template-list.horizontal.fullwidth.mini',
+      '.link-list.noarrows',
+      '.collapsible-card',
+    ].every((block) => main.querySelector(block));
+
+    if (!authoredRRFound && !window.relevantRowsLoaded) {
+      const relevantRowsData = await fetchRelevantRows(window.location.pathname);
+
+      if (relevantRowsData) {
+        const relevantRowsSection = createTag('div');
+        const fragment = buildBlock('fragment', '/express/fragments/relevant-rows-default-v2');
+        relevantRowsSection.dataset.audience = 'mobile';
+        relevantRowsSection.append(fragment);
+        main.prepend(relevantRowsSection);
+        window.relevantRowsLoaded = true;
+      }
+    }
+  }
+
+  async function loadFloatingCTA(BlockMediator) {
+    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+    const device = document.body.dataset?.device;
+    const blockName = getMetadata(`${device}-floating-cta`);
+
+    if (blockName && validButtonVersion.includes(blockName) && lastDiv) {
+      const button = buildBlock(blockName, device);
+      button.classList.add('metadata-powered');
+      lastDiv.append(button);
+      BlockMediator.set('floatingCtasLoaded', true);
+      await processSection(decorateSection(lastDiv), getConfig(), true);
+    }
+  }
+
+  if (['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta')?.toLowerCase())) {
+    const { default: BlockMediator } = await import('./block-mediator.min.js');
+
+    if (!BlockMediator.get('floatingCtasLoaded')) {
+      await loadFloatingCTA(BlockMediator);
+    }
+  }
+
+  if (getMetadata('show-quick-action-card') && !['no', 'false', 'off'].includes(getMetadata('show-quick-action-card').toLowerCase())) {
+    const fragmentName = getMetadata('show-quick-action-card').toLowerCase();
+    const quickActionCardBlock = buildBlock('quick-action-card', fragmentName);
+    quickActionCardBlock.classList.add('spreadsheet-powered');
+    if (lastDiv) {
+      lastDiv.append(quickActionCardBlock);
+    }
+  }
 }
 
 // logic in express but not in milo
