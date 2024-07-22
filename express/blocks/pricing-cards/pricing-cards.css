@@ -481,39 +481,12 @@ main .section:has(.pricing-cards)>div {
 }
 
 
-
-@media (max-width: 600px) {
-  .pricing-cards {
-    flex-wrap: wrap;
-    gap: 10px;
-    min-width: none;
-  }
-
-  .pricing-cards .card {
-    width: 360px;
-    margin: auto;
-  }
-}
-
-@media (min-width: 1400px) {
-  .pricing-cards {
-    margin: auto;
-    padding: 10px;
-    display: flex;
-    flex-direction: row; 
-    width: max-content;
-    flex-wrap: wrap;
-    gap: 16px;
-  } 
-}
-
-
-
 .pricing-cards .card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-height: 1200px;
+  border-radius: 10px;
 }
 
 .pricing-cards .card > *{
@@ -552,3 +525,61 @@ main .section:has(.pricing-cards)>div {
 .pricing-cards:has(.billing-toggle:not(.hidden)) .billing-toggle.hidden{
   height: unset;
 }
+
+@media (max-width: 600px) {
+  .pricing-cards {
+    flex-wrap: wrap;
+    gap: 10px;
+    min-width: none;
+  }
+
+  .pricing-cards .card {
+    width: 320px;
+    margin: auto;
+  }
+
+  .pricing-cards .card {
+    min-height: unset;
+  }
+  
+  .pricing-cards .card-feature-list {
+    display: none;
+    min-height: 0px;
+  }
+
+  .pricing-cards .card .card-feature-list {
+    min-height: unset;
+  }
+  
+  .pricing-cards .card-cta-group {
+    min-height: unset;
+  }
+  
+  .pricing-cards .pricing-area-wrapper {
+    min-height: unset;
+    margin-bottom: 20px;
+  }
+
+  .pricing-cards .billing-toggle.hidden {
+    display: none;
+  }
+
+
+  .pricing-cards .compare-all {
+    margin-bottom: 20px;;
+  }
+}
+
+@media (min-width: 1400px) {
+  .pricing-cards {
+    margin: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: row; 
+    width: max-content;
+    flex-wrap: wrap;
+    gap: 16px;
+  } 
+}
+
+

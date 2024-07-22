@@ -298,6 +298,7 @@ export default async function init(el) {
     const toggle = createToggle(placeholders, [m1, m2, a1, a2], groupID);
     rows[3].children[0].insertBefore(toggle,rows[3].children[0].children[0])
     rows[7].children[0].classList.add('card-feature-list')
+    rows[8].children[0].classList.add('compare-all')
 
     for (let j = 0; j < rows.length - 1; j += 1) {
       card.appendChild(rows[j].children[0])
