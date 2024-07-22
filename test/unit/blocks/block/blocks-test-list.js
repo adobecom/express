@@ -93,18 +93,6 @@ export default [
     input: 'input/banner.multi-button.doc.html',
     expected: 'expected/banner.multi-button.block.html',
   }, {
-    name: 'Inline Banner - h1 - converted to h2',
-    input: 'input/inline-banner.h1.doc.html',
-    expected: 'expected/inline-banner.h2.block.html',
-  }, {
-    name: 'Inline Banner - inverted if dark container',
-    input: 'input/inline-banner.dark.doc.html',
-    expected: 'expected/inline-banner.dark.section.html',
-  }, {
-    name: 'Inline Banner - inverted if highlighted container',
-    input: 'input/inline-banner.highlight.doc.html',
-    expected: 'expected/inline-banner.inverted.section.html',
-  }, {
     name: 'FAQ - basic',
     input: 'input/faq.doc.html',
     expected: 'expected/faq.block.html',

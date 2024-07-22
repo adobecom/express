@@ -1952,7 +1952,7 @@ async function buildAutoBlocks(main) {
 function splitSections(area) {
   const blocks = area.querySelectorAll(`:scope${area === document ? ' main' : ''} > div > div`);
   blocks.forEach((block) => {
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion'];
+    const blocksToSplit = ['template-list', 'banner', 'promotion'];
     // work around for splitting columns and sixcols template list
     // add metadata condition to minimize impact on other use cases
 
