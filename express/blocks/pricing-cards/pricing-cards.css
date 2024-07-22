@@ -11,6 +11,7 @@ main .section:has(.pricing-cards)>div {
   max-width: none;
 }
 
+
 .pricing-cards {
   margin: auto;
   padding: 10px;
@@ -21,6 +22,10 @@ main .section:has(.pricing-cards)>div {
   gap: 16px;
 } 
 
+.pricing-cards .card > div {
+    transition: height 0.5s ease; 
+  }
+  
 .pricing-cards>.card>.plan-explanation {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -145,7 +150,7 @@ main .section:has(.pricing-cards)>div {
   gap: 16px;
   flex-grow: 1;
   margin-top: 20px;
-  min-height: 150px; 
+  min-height: 200px; 
   text-align: left; 
 } 
 
@@ -196,6 +201,7 @@ main .section:has(.pricing-cards)>div {
 .pricing-cards .billing-toggle.hidden {
   opacity: 0;
   pointer-events: none;
+  height: 0px;
 }
 
 .pricing-cards .card-offer {
@@ -499,4 +505,50 @@ main .section:has(.pricing-cards)>div {
     flex-wrap: wrap;
     gap: 16px;
   } 
+}
+
+
+
+.pricing-cards .card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 1200px;
+}
+
+.pricing-cards .card > *{
+  flex-grow: 0;
+}
+
+.pricing-cards .card > div:nth-child(n+4){
+  flex-grow: 1;
+}
+
+.pricing-cards .card > div:last-child {
+  margin-top: auto; /* Push the last item to the bottom */
+  flex-grow: 0;
+}
+
+.pricing-cards .card .plan-explanation {
+  min-height: 60px;
+}
+
+.pricing-cards .card .card-feature-list {
+  min-height: 800px;;
+}
+
+.pricing-cards .card-cta-group {
+  min-height: 90px;
+}
+
+.pricing-cards .pricing-area-wrapper {
+  min-height: 200px;
+}
+
+.pricing-cards .pricing-area-wrapper:has(.hide) {
+  min-height: 0px;
+}
+
+.pricing-cards:has(.billing-toggle:not(.hidden)) .billing-toggle.hidden{
+  height: unset;
 }

@@ -268,31 +268,6 @@ function decorateCardBorder(card, source) {
   source.classList.add('none')
 }
 
-const syncHeights = (el,rowCount, cardCount) => {
-  if (window.screen.width < 600) return 
-
-  for (let j = 0; j < rowCount; j++) {
-    let maxHeight = 0
-    for (let i = 0; i < cardCount; i++) {
-      console.log(i,j)
-      const cell = el.children[i].children[j]
-      if (cell.classList.contains('card-header') || cell.classList.contains('promo-eyebrow-text')) continue;
-      const dimensions = cell.getBoundingClientRect()
-      if (dimensions.height > 0) {
-        cell.style = "height:" + dimensions.height +  "px"
-      }
-      if (dimensions.height > maxHeight) { 
-        maxHeight = dimensions.height
-      }
-    }
-    for (let i = 0; i < cardCount; i++) {
-      if (maxHeight === 0) continue;
-      const cell = el.children[i].children[j]
-      cell.style = "height:" + maxHeight + "px"
-    }
-  }
-};
-
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
   const placeholders = await fetchPlaceholders();
@@ -320,7 +295,7 @@ export default async function init(el) {
     rows[4].children[0].appendChild(a2)
 
     const groupID = `${Date.now()}`;
-    const toggle = createToggle(placeholders, [m1, m2, a1, a2], groupID, () => syncHeights(el,rowCount, cardCount));
+    const toggle = createToggle(placeholders, [m1, m2, a1, a2], groupID);
     rows[3].children[0].insertBefore(toggle,rows[3].children[0].children[0])
     rows[7].children[0].classList.add('card-feature-list')
 
@@ -333,19 +308,6 @@ export default async function init(el) {
   for (let card of cards) {
     el.appendChild(card)
   }
- 
-  document.addEventListener('load', () => {
-    syncHeights(el,rowCount, cardCount);
-  }, 100);
-
-  const observer = new IntersectionObserver((entries) => {
-    syncHeights(el,rowCount, cardCount);
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        el.classList.remove('no-visible');
-      }
-    });
-  });
-
+  
   observer.observe(el);
 }
