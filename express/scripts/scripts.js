@@ -136,6 +136,37 @@ const listenAlloy = () => {
   }, 3000);
 };
 
+(function replaceHyphensInTextNodes() {
+  // replace hyphens in text nodes with non-breaking hyphens
+  function replaceHyphensInElement(element) {
+    const treeWalker = document.createTreeWalker(
+      element,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode(node) {
+          // Ignore script and style elements
+          if (node.parentNode.nodeName !== 'SCRIPT' && node.parentNode.nodeName !== 'STYLE') {
+            return NodeFilter.FILTER_ACCEPT;
+          }
+          return NodeFilter.FILTER_REJECT;
+        },
+      },
+      false,
+    );
+
+    let currentNode = treeWalker.nextNode();
+    while (currentNode) {
+      // Replace hyphen with non-breaking hyphen
+      currentNode.nodeValue = currentNode.nodeValue.replace(/-/g, '\u2011');
+      currentNode = treeWalker.nextNode();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    replaceHyphensInElement(document.body);
+  });
+}());
+
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   window.hlx = window.hlx || {};
