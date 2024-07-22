@@ -144,7 +144,7 @@ const listenAlloy = () => {
       NodeFilter.SHOW_TEXT,
       {
         acceptNode(node) {
-          // Ignore script and style elements
+          // ignore script and style elements
           if (node.parentNode.nodeName !== 'SCRIPT' && node.parentNode.nodeName !== 'STYLE') {
             return NodeFilter.FILTER_ACCEPT;
           }
@@ -156,12 +156,13 @@ const listenAlloy = () => {
 
     let currentNode = treeWalker.nextNode();
     while (currentNode) {
-      // Replace hyphen with non-breaking hyphen
+      // replace hyphen with non-breaking hyphen
       currentNode.nodeValue = currentNode.nodeValue.replace(/-/g, '\u2011');
       currentNode = treeWalker.nextNode();
     }
   }
 
+  // apply replacements once DOM is fully loaded
   document.addEventListener('DOMContentLoaded', () => {
     replaceHyphensInElement(document.body);
   });
