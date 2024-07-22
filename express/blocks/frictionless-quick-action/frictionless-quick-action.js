@@ -24,6 +24,7 @@ const PNG = 'png';
 export const getBaseImgCfg = (...types) => ({
   group: 'image',
   max_size: 40 * 1024 * 1024,
+  accept: types.map((type) => `.${type}`).join(', '),
   input_check: (input) => { console.log("=== TYPES 01", types); return types.map((type) => `image/${type}`).includes(input) },
 });
 
@@ -240,7 +241,7 @@ async function startSDKWithUnconvertedFile(file) {
     let invalidInputError;
     // FIXME: localize & placehold these messages
     if (!QA_CONFIGS[quickAction].input_check(file.type)) {
-      invalidInputError = placeholders['fqa-wrong-image-type'] ?? 'Invalid file type. Please make sure your file format is one of the following: "image/png", "image/jpeg", "image/jpg"';
+      invalidInputError = `${placeholders['fqa-wrong-image-type'] ?? 'Invalid file type. Please make sure your file format is one of the following:'} ${QA_CONFIGS[quickAction].accept}`;
     } else if (file.size > maxSize) {
       invalidInputError = placeholders['fqa-too-large'] ?? 'Your file is too large';
     }
