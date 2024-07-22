@@ -1035,10 +1035,19 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
   main .columns.extra-wide .button-container{
     margin-top: 0;
   } 
+
+
 }
 
 main .columns.extra-wide {
   text-align: center;
+}
+
+main .columns.extra-wide .column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 250px;
 }
 
 main .columns.extra-wide > div {
