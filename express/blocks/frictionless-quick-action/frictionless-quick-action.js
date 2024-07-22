@@ -217,6 +217,8 @@ async function startSDK(data = '') {
 async function startSDKWithUnconvertedFile(file) {
   if (!file) return;
   const maxSize = QA_CONFIGS[quickAction].max_size ?? 40 * 1024 * 1024;
+
+  console.log("IN startSDKWithUnconvertedFile", file.type, file.size, file )
   if (QA_CONFIGS[quickAction].input_check(file.type) && file.size <= maxSize) {
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -238,6 +240,7 @@ async function startSDKWithUnconvertedFile(file) {
 
     error = createTag('p', { class: 'input-error' }, invalidInputError);
     const dropzoneButton = fqaBlock.querySelector(':scope .dropzone a.button');
+    console.log("dropzoneButton", dropzoneButton)
     dropzoneButton?.before(error);
   }
 }
