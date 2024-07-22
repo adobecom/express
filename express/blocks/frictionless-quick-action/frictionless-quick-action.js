@@ -338,6 +338,7 @@ export default async function decorate(block) {
 
   const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
   if (quickActionRow[0]) {
+    console.log("=== quickActionRow", quickActionRow, quickActionRow[0])
     quickAction = quickActionRow[0].children[1]?.textContent;
     quickActionRow[0].remove();
   }
