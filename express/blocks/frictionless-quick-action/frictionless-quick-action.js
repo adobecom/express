@@ -24,14 +24,14 @@ const PNG = 'png';
 export const getBaseImgCfg = (...types) => ({
   group: 'image',
   max_size: 40 * 1024 * 1024,
-  accept: types.map((type) => `.${type}`).join(', '),
+  accept: types.map((type) => `${type}`).join(', ').replace(/.*, /, ' or '),
   input_check: (input) => { console.log("=== TYPES 01", types); return types.map((type) => `image/${type}`).includes(input) },
 });
 
 export const getBaseVideoCfg = (...types) => ({
   group: 'video',
   max_size: 1024 * 1024 * 1024,
-  accept: types.map((type) => `.${type}`).join(', '),
+  accept: types.map((type) => `${type}`).join(', '),
   input_check: (input) => { console.log("=== TYPES 02", types); return types.map((type) => `video/${type}`).includes(input) },
 });
 
