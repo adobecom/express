@@ -23,13 +23,13 @@ const PNG = 'png';
 export const getBaseImgCfg = (...types) => ({
   group: 'image',
   max_size: 40 * 1024 * 1024,
-  input_check: (input) => types.map((type) => `image/${type}`).includes(input),
+  input_check: (input) => { console.log("=== TYPES 01", types); return types.map((type) => `image/${type}`).includes(input) },
 });
 export const getBaseVideoCfg = (...types) => ({
   group: 'video',
   max_size: 1024 * 1024 * 1024,
   accept: types.map((type) => `.${type}`).join(', '),
-  input_check: (input) => types.map((type) => `video/${type}`).includes(input),
+  input_check: (input) => { console.log("=== TYPES 02", types); return types.map((type) => `video/${type}`).includes(input) },
 });
 const QA_CONFIGS = {
   'convert-to-jpg': {
@@ -218,7 +218,10 @@ async function startSDKWithUnconvertedFile(file) {
   if (!file) return;
   const maxSize = QA_CONFIGS[quickAction].max_size ?? 40 * 1024 * 1024;
 
-  console.log("IN startSDKWithUnconvertedFile", file.type, file.size, file )
+  console.log("=== IN startSDKWithUnconvertedFile", file.type, file.size, file )
+
+  console.log("=== AND QA_CONFIGS[quickAction].input_check(file.type) is", JSON.stringify(QA_CONFIGS[quickAction].input_check(file.type)), QA_CONFIGS[quickAction].input_check);
+
   if (QA_CONFIGS[quickAction].input_check(file.type) && file.size <= maxSize) {
     const reader = new FileReader();
     reader.onloadend = () => {
