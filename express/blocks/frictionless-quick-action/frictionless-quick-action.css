@@ -107,6 +107,13 @@
     margin-bottom: 0;
 }
 
+.frictionless-quick-action.block .input-error {
+    padding: 0 3.12rem 0.63rem;
+    color: red;
+    /* color: red;
+    background: #FCECCE; */
+}
+
 .frictionless-quick-action.block > div:nth-child(2) > div:nth-child(2) > p:last-of-type {
     margin: 15px 0 0;
     font-size: 0.75rem;

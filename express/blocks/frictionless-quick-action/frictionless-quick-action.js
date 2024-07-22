@@ -231,9 +231,9 @@ async function startSDKWithUnconvertedFile(file) {
     let invalidInputError;
     // FIXME: localize & placehold these messages
     if (!QA_CONFIGS[quickAction].input_check(file.type)) {
-      invalidInputError = placeholders['fqa-too-large'] ?? 'invalid file type. Please make sure your file format is one of the following: "image/png", "image/jpeg", "image/jpg"';
+      invalidInputError = placeholders['fqa-wrong-image-type'] ?? 'Invalid file type. Please make sure your file format is one of the following: "image/png", "image/jpeg", "image/jpg" longer longer longer longer longer ';
     } else if (file.size > maxSize) {
-      invalidInputError = placeholders['fqa-too-large'] ?? 'your file is too large';
+      invalidInputError = placeholders['fqa-too-large'] ?? 'Your file is too large';
     }
 
     error = createTag('p', { class: 'input-error' }, invalidInputError);
