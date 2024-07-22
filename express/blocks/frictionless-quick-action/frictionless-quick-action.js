@@ -20,17 +20,20 @@ let uploadContainer;
 const JPG = 'jpg';
 const JPEG = 'jpeg';
 const PNG = 'png';
+
 export const getBaseImgCfg = (...types) => ({
   group: 'image',
   max_size: 40 * 1024 * 1024,
   input_check: (input) => { console.log("=== TYPES 01", types); return types.map((type) => `image/${type}`).includes(input) },
 });
+
 export const getBaseVideoCfg = (...types) => ({
   group: 'video',
   max_size: 1024 * 1024 * 1024,
   accept: types.map((type) => `.${type}`).join(', '),
   input_check: (input) => { console.log("=== TYPES 02", types); return types.map((type) => `video/${type}`).includes(input) },
 });
+
 const QA_CONFIGS = {
   'convert-to-jpg': {
     ...getBaseImgCfg(PNG),
@@ -143,6 +146,7 @@ async function startSDK(data = '') {
     },
   ];
 
+  console.log("=== quickAction is", quickAction)
   const id = `${quickAction}-container`;
   quickActionContainer = createTag('div', { id, class: 'quick-action-container' });
   fqaBlock.append(quickActionContainer);
