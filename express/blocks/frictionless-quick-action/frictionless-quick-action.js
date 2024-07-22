@@ -24,7 +24,7 @@ const PNG = 'png';
 export const getBaseImgCfg = (...types) => ({
   group: 'image',
   max_size: 40 * 1024 * 1024,
-  accept: types.map((type) => `${type}`).join(', ').replace(/.*, /, ' or '),
+  accept: types.map((type) => `${type}`).join(', ').replace(/(.*), /, '$1 or '),
   input_check: (input) => { console.log("=== TYPES 01", types); return types.map((type) => `image/${type}`).includes(input) },
 });
 
