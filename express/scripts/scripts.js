@@ -137,14 +137,14 @@ const listenAlloy = () => {
 };
 
 (function replaceHyphensInTextNodes() {
-  // replace hyphens in text nodes with non-breaking hyphens
+  // Function to replace hyphens in text nodes with non-breaking hyphens
   function replaceHyphensInElement(element) {
     const treeWalker = document.createTreeWalker(
       element,
       NodeFilter.SHOW_TEXT,
       {
         acceptNode(node) {
-          // ignore script and style elements
+          // Ignore script and style elements
           if (node.parentNode.nodeName !== 'SCRIPT' && node.parentNode.nodeName !== 'STYLE') {
             return NodeFilter.FILTER_ACCEPT;
           }
@@ -156,15 +156,31 @@ const listenAlloy = () => {
 
     let currentNode = treeWalker.nextNode();
     while (currentNode) {
-      // replace hyphen with non-breaking hyphen
+      // Replace hyphen with non-breaking hyphen
       currentNode.nodeValue = currentNode.nodeValue.replace(/-/g, '\u2011');
       currentNode = treeWalker.nextNode();
     }
   }
 
-  // apply replacements once DOM is fully loaded
+  // Apply replacements once DOM is fully loaded
   document.addEventListener('DOMContentLoaded', () => {
     replaceHyphensInElement(document.body);
+
+    // Observe the document body for dynamically added content
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            replaceHyphensInElement(node);
+          }
+        });
+      });
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
   });
 }());
 
