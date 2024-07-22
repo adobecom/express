@@ -1029,8 +1029,12 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
    }
 
   main .section > div:has( .columns.extra-wide ) {
-    max-width: unset;
-  }
+    max-width: 1440px;
+    margin-top: -60px;
+  } 
+  main .columns.extra-wide .button-container{
+    margin-top: 0;
+  } 
 }
 
 main .columns.extra-wide {
