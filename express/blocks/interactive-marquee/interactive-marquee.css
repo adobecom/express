@@ -2,11 +2,18 @@ main .section:has(.interactive-marquee) > div {
     max-width: unset;
 }
 
+main .section.section:has(.interactive-marquee) p {
+    margin: initial;
+}
+
 main .interactive-marquee .container {
     width: var(--grid-container-width);
     margin: 0 auto;
     text-align: initial;
+    --text-color: #2c2c2c;
 }
+
+
 
 @media (min-width: 1440px) {
     main .interactive-marquee .container {
