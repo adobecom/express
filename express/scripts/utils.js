@@ -2549,6 +2549,16 @@ function fragmentBlocksToLinks(area) {
   });
 }
 
+function replaceHyphensInText(area) {
+  document.addEventListener('DOMContentLoaded', () => {
+    [...area.querySelectorAll('h1, h2, h3, h4, h5, h6')]
+      .filter((header) => header.innerHTML.includes('-'))
+      .forEach((header) => {
+        header.innerHTML = header.innerHTML.replace(/-/g, '\u2011');
+      });
+  });
+}
+
 export async function loadArea(area = document) {
   const isDoc = area === document;
 
@@ -2574,6 +2584,7 @@ export async function loadArea(area = document) {
 
   splitSections(area);
   decorateButtons(area);
+  replaceHyphensInText(area);
   await fixIcons(area);
   decorateSocialIcons(area);
 
