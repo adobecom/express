@@ -108,8 +108,10 @@
 }
 
 .frictionless-quick-action.block .input-error {
-    padding: 0 3.12rem 0.63rem;
+    padding: 0 3.12rem;
     color: red;
+    position: relative;
+    top: -3px;
     /* color: red;
     background: #FCECCE; */
 }
