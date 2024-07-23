@@ -366,3 +366,10 @@ main .hero-animation.wide .free-plan-widget {
 :lang(ja) main .hero-animation h1.heading-x-long {
   font-size: var(--heading-font-size-m);
 }
+
+
+main .hero-animation {
+  opacity: 0;
+  height: 100vh;
+  transition: opacity 100ms;
+}

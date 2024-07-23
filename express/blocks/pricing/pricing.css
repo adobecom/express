@@ -234,3 +234,10 @@ main .pricing .pricing-right .pricing-iconlist .pricing-iconlist-description > p
         width: 100%;
     }
 }
+
+
+main .pricing {
+    opacity: 0;
+    height: 100vh;
+    transition: opacity 100ms;
+}
