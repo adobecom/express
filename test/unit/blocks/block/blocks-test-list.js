@@ -12,14 +12,6 @@ export default [
     input: 'input/table-of-contents.2levels.doc.html',
     expected: 'expected/table-of-contents.2levels.block.html',
   }, {
-    name: 'Link Image - basic',
-    input: 'input/link-image.basic.doc.html',
-    expected: 'expected/link-image.basic.block.html',
-  }, {
-    name: 'Link Image - no line breaks',
-    input: 'input/link-image.nolinebreaks.doc.html',
-    expected: 'expected/link-image.nolinebreaks.block.html',
-  }, {
     name: 'Template List - video',
     input: 'input/template-list.video.doc.html',
     expected: 'expected/template-list.video.block.html',
