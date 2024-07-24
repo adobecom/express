@@ -11,6 +11,8 @@ import {
   getConfig,
 } from './utils.js';
 
+// ID * Launching Aug 22www.adobe.com/id/express
+
 const locales = {
   '': { ietf: 'en-US', tk: 'jdq5hay.css' },
   br: { ietf: 'pt-BR', tk: 'inq1xob.css' },
@@ -45,6 +47,8 @@ const config = {
   stage: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
   prod: { express: 'express.adobe.com', commerce: 'commerce.adobe.com' },
   locales,
+  geoRouting: 'on',
+  fallbackRouting: 'on',
   codeRoot: '/express',
   contentRoot: '/express',
   jarvis: {
