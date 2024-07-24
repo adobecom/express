@@ -1,0 +1,81 @@
+main .section.banner-standout-container,
+main .section.banner-standout-compact-container {
+  background-color: white;
+   /* var(--color-info-accent); */
+}
+
+main .section.banner-standout-container,
+main .section.banner-standout-light-container {
+  padding: 80px 15px;
+}
+
+main .section.banner-standout-compact-container {
+  padding: 40px 15px;
+}
+
+main .section.banner-standout-container > div {
+  padding: 0;
+}
+
+main .banner-standout {
+  padding: 0;
+  margin: 0 auto;
+  color: var(--color-white);
+}
+
+main .banner-standout.light {
+  color: white;
+  /* var(--color-black); */
+}
+
+main .banner-standout.compact p {
+  margin: 24px;
+}
+
+main .banner-standout.compact p.button-container {
+  margin-bottom: 0;
+}
+
+main .banner-standout.compact p.button-container ~ p {
+  margin-top: 0;
+}
+
+main .banner-standout h2, main .banner-standout h3 {
+  color: var(--color-white);
+}
+
+main .banner-standout h2 {
+  margin-top: 0;
+}
+
+main .banner-standout.light h2, main .banner-standout.light h3 {
+  color: var(--color-black);
+}
+
+main .banner-standout a:any-link {
+  color: var(--color-white);
+}
+
+main .banner-standout.light a:any-link {
+  color: var(--color-black);
+}
+
+main .banner-standout .icon {
+  height: 72px;
+  width: 72px;
+}
+
+main .banner-standout.multi-button .button-container {
+  display: inline-block;
+}
+
+main .banner-standout p:last-of-type {
+  margin-bottom: 0;
+}
+
+@media (min-width:900px) {
+  main .section.banner-standout-container {
+    padding-left: 56px;
+    padding-right: 56px;
+  }
+}
