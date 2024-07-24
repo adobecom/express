@@ -1,4 +1,4 @@
-.generate-btn {
+main .interactive-marquee.horizontal-masonry .generate-btn {
     background-color: #6495ED;
     color: white;
     border: none;
@@ -8,42 +8,111 @@
     cursor: pointer;
 }
 
-
-.try-it-section {
-    text-align: center;
+main .interactive-marquee.dark {
+    color: black;
 }
 
-.try-it-text {
+
+main .interactive-marquee.horizontal-masonry .enticement-text {
     position: absolute;
-    left: 0;
-    top: -40px;
-    font-size: 24px;
+    left: 0; 
+    font-size: 36px;
+color: black;
     font-weight: bold;
 }
 
-.curved-arrow {
+main .interactive-marquee.horizontal-masonry .enticement-arrow {
     position: absolute;
     left: -60px;
     top: -20px;
-    width: 50px;
-    height: auto;
+    width: 50px; 
     transform: rotate(45deg);
 }
 
-
-.input-container {
+main .interactive-marquee.horizontal-masonry .enticement-container { 
+    margin-top: 80px;   ;
+    margin-bottom: 15px;;
     position: relative;
-    width: 100%;
-    max-width: 610px;
-    /* Increased by 10px to account for the larger input */
-    margin: 40px auto;
-    padding: 15px;
 }
 
 
-input[type="text"] {
-    width: 300px;
+main .interactive-marquee.horizontal-masonry input[type="text"] {
+    width: calc(100% - 60px);
+    height: 35px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 20px;
+    margin-left: 40px;
+}
+
+main .interactive-marquee.horizontal-masonry .generate-small-btn {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    right: 90px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+main .interactive-marquee.horizontal-masonry .generate-small-btn::before {
+    content: "\1F504"; /* Unicode for a refresh icon, you can replace this with an actual icon */
+    margin-right: 5px;
+}
+
+main .interactive-marquee.horizontal-masonry .con-button {
+    margin-left: 0px;
+    padding-top: 4px;
+    padding-bottom: 3px;
+
+}
+
+@media (max-width: 768px) {
+    main .interactive-marquee.horizontal-masonry .generate-small-btn {
+        background-color: #333;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        right: 10px;
+        position: absolute;
+        top: 10px
+    }
+
+    .enticement-arrow {
+        display: none;
+    }
+
+    .enticement-text {
+        display: none;
+    }
+
+    .image-container {
+        display: none;
+    }
+
+    .image-container:first-of-type {
+        display: block;
+        width: 343px;
+        height: 100%;
+    }
+
+    main .interactive-marquee .media-container .image-container img  {
+        height: unset;
+    }
+    main .interactive-marquee.interactive-marquee.horizontal-masonry .media-container {
+        max-height:  unset;
+    }
+    main .interactive-marquee .media-container .image-container::after {
+        display: block;
+    }
+
+    main .interactive-marquee.horizontal-masonry input[type="text"] {
+        margin-left: unset;
+        width: calc(100% - 20px);
+    }
 }

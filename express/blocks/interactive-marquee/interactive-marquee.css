@@ -6,6 +6,10 @@ main .section.section:has(.interactive-marquee) p {
     margin: initial;
 }
 
+main .interactive-marquee.horizontal-masonry .asset{
+    top: unset;
+}
+
 main .interactive-marquee .container {
     width: var(--grid-container-width);
     margin: 0 auto;
@@ -13,17 +17,20 @@ main .interactive-marquee .container {
     --text-color: #2c2c2c;
 }
 
-
-
 main .interactive-marquee .media-container {
     display: flex;
-    max-width: 576px;
-    ;
+    max-width: 600px;
+    max-height: 400px;
+    overflow-y: hidden;
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: space-between;
 }
 
+main .interactive-marquee.quad .media-container {
+    max-height: 420px;
+}
+ 
 main .interactive-marquee .media-container .link {
     position: absolute;
     top: 0px;
@@ -38,28 +45,35 @@ main .interactive-marquee .media-container .overlay {
     width: 150px;
     padding: 10px;
     display: none;
+    color: white;
+}
+
+main .interactive-marquee .media-container .prompt-title {
+    display: none;
 }
 
 main .interactive-marquee .media-container .image-container:hover {
-   
+    display: block;
 }
 
 main .interactive-marquee .media-container .image-container:hover::after {
     content: '';
     position: absolute;
     top: 0;
-    left: 0; 
-    background-color: black;;
+    left: 0;
+    background-color: black;
+    ;
     background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
-   
+
     transition: opacity 0.3s;
     z-index: 2;
     height: 100%;
     width: 100%;
-    border-radius: 16px;;
+    border-radius: 16px;
+    ;
 
 }
 
@@ -67,6 +81,16 @@ main .interactive-marquee .media-container p.image-container {
     position: relative;
     margin-bottom: 20px;
     border-radius: 16px;
+    height: 180px;
+
+}
+
+main .interactive-marquee.quad .media-container p.image-container {
+    position: relative;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    height: 200px;
+
 }
 
 main .interactive-marquee .media-container .image-container:hover .overlay {
@@ -74,11 +98,88 @@ main .interactive-marquee .media-container .image-container:hover .overlay {
     z-index: 3;
 }
 
-main .interactive-marquee .media-container .image-container img {
-    border-radius: 16px;;
+main .interactive-marquee.quad .media-container {
+    max-width: 420px;
 }
+
+main .interactive-marquee.quad .media-container .image-container {}
+
+
+
+main .interactive-marquee .media-container .image-container img {
+    border-radius: 16px;
+    object-fit: cover;
+    height: 100%;
+    object-position: center;
+    width: 100%;
+}
+
+main .interactive-marquee.horizontal-masonry .interactive-container {
+    display: flex;
+    flex-direction: column;
+    position: unset;
+    height: unset;
+
+}
+
+
+
 @media (min-width: 1440px) {
     main .interactive-marquee .container {
         --grid-container-width: 1200px;
     }
+}
+
+
+
+@media (max-width: 768px) {
+    main .interactive-marquee .con-button {
+        display: none;
+    }
+
+    main .interactive-marquee.horizontal-masonry .interactive-container {
+        display: flex;
+        flex-direction: column-reverse;
+        height: unset;
+        margin-top: -60px;;
+    }
+
+    main .interactive-marquee.horizontal-masonry .container {
+        flex-direction: column-reverse;
+        ;
+    }
+
+    main .interactive-marquee .media-container .image-container:hover::after {
+        display: none;
+    }
+
+    main .interactive-marquee .media-container p.overlay {
+         
+        content: ''; 
+        position: absolute;  
+        display: flex;
+        flex-direction: column; 
+        justify-content: center;
+        transition: opacity 0.3s;
+        z-index: 2; 
+        border-radius: 16px;
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 15px 20px; 
+        bottom: -375px;
+        height: 50px;
+        width: 240px;
+        margin: auto;
+        left: 12px;
+        color: #333;
+        font-size: 16px;  
+    }
+
+    .prompt-title {
+        color: #888;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+ 
 }

@@ -1,28 +1,33 @@
 import { createTag } from '../../scripts/utils.js'
 
-const enticementHTML = `<div class="input-container">
-<span class="try-it-text">Try it</span>
-<img src="path-to-curved-arrow.png" alt="Curved arrow" class="curved-arrow">
-<input type="text" placeholder="Describe the image you want to create...">
-<button class="generate-small-btn">Generate</button>
-</div>
-`
+function createEnticement (enticementDetail,enticementIcon, mode) { 
+  const enticementDiv = createTag('div', { class: 'enticement-container' });
+  const svgImage = createTag('img', { class: 'enticement-arrow', alt: '' });
+  let arrowText = enticementDetail
+  svgImage.src = enticementIcon 
+  const enticementText = createTag('span', { class: 'enticement-text' }, arrowText.trim());
+  const input = createTag('input', {type : 'text', placeholder: "Describe the image you want to create..."})
+  const button = createTag('button', {class : 'generate-small-btn' })
+  button.textContent = 'Generate'
+  enticementDiv.append(enticementText, svgImage, input, button);
+  if (mode === 'light') enticementText.classList.add('light');
+  return enticementDiv;
+}
 
 export default async function setHorizontalMasonry(el) {
 
   const args = el.querySelectorAll('.interactive-container > .asset > p')
   const container = el.querySelector('.interactive-container .asset')
   container.classList.add('media-container')
-  console.log(args)
 
+  const enticementElement = args[0].querySelector('a')
   const enticementMode = el.classList.contains('light') ? 'light' : 'dark'; 
-  const enticementText = args[0].textContent.trim();
-  const enticementIcon = args[0].href; 
+  const enticementText = enticementElement.textContent.trim();
+  const enticementIcon = enticementElement.href; 
+  console.log(enticementText, enticementIcon, enticementElement)
   args[0].remove()
 
-  const enticementDiv = createTag('div')
-  enticementDiv.innerHTML = enticementHTML
-  el.querySelector('.interactive-container').appendChild(enticementDiv)
+  el.querySelector('.interactive-container').appendChild(createEnticement(enticementText, enticementIcon, enticementMode))
   for (let i = 1; i < args.length; i += 4) {
     let divider = args[i]
     divider.remove()
@@ -30,6 +35,9 @@ export default async function setHorizontalMasonry(el) {
     link.classList.add('link')
     let prompt = args[i + 2]
     prompt.classList.add("overlay")
+    const title = createTag('div', {class : 'prompt-title'})
+    title.textContent = "Prompt used"
+    prompt.prepend(title)
     let image = args[i + 3]
     image.classList.add('image-container')
     image.appendChild(prompt)

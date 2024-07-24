@@ -128,6 +128,34 @@
   --color-info-accent-hover: #4646C6;
   --color-info-accent-down: #3D3DB4;
   --color-info-accent-light: #DEDEF9;
+
+  --spacing-xxs: 8px;
+  --spacing-xs: 16px;
+  --spacing-s: 24px;
+  --spacing-m: 32px;
+  --spacing-l: 40px;
+  --spacing-xl: 48px;
+  --spacing-xxl: 56px;
+  --spacing-xxxl: 80px;
+
+    /* Headings (Consonant) */
+    --type-heading-all-weight: 700;
+    --type-heading-xxxl-size: calc(var(--font-size-multiplier, 1) * 44px);
+    --type-heading-xxxl-lh: 55px;
+    --type-heading-xxl-size: calc(var(--font-size-multiplier, 1) * 36px);
+    --type-heading-xxl-lh: 45px;
+    --type-heading-xl-size: calc(var(--font-size-multiplier, 1) * 28px);
+    --type-heading-xl-lh: 35px;
+    --type-heading-l-size: calc(var(--font-size-multiplier, 1) * 24px);
+    --type-heading-l-lh: 30px;
+    --type-heading-m-size: calc(var(--font-size-multiplier, 1) * 20px);
+    --type-heading-m-lh: 25px;
+    --type-heading-s-size: calc(var(--font-size-multiplier, 1) * 18px);
+    --type-heading-s-lh: 22.5px;
+    --type-heading-xs-size: calc(var(--font-size-multiplier, 1) * 16px);
+    --type-heading-xs-lh: 20px;
+    --type-heading-xxs-size: calc(var(--font-size-multiplier, 1) * 14px);
+    --type-heading-xxs-lh: 18px;
 }
 
 @media (min-width: 900px) {

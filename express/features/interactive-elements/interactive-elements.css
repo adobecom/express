@@ -41,8 +41,7 @@
     background: #111111;
   }
   
-  .enticement-arrow {
-    display: none;
+  .enticement-arrow { 
     width: 49px;
     height: 73px;
     position: absolute;
