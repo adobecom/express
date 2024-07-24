@@ -1,6 +1,12 @@
 import { normalizeHeadings } from '../../scripts/utils.js';
 
 export default async function decorate(block) {
+
+  console.log("=== block.classList is", block.classList)
+  if (block.classList.contains('hihi')) {
+    console.log("GOOD it contains hihi")
+  }
+
   // normalizeHeadings(block, ['h2', 'h3']);
   const buttons = block.querySelectorAll('a.button');
   if (buttons.length > 1) {
