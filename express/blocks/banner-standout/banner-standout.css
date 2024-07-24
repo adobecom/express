@@ -43,7 +43,9 @@ main .banner-standout.compact p.button-container ~ p {
 }
 
 main .banner-standout h2, main .banner-standout h3 {
-  color: var(--color-white);
+  background-color: white;
+  color: black;
+  /* color: var(--color-white); */
 }
 
 main .banner-standout h2 {
