@@ -20,7 +20,9 @@ main .section.banner-standout-container > div {
 main .banner-standout {
   padding: 0;
   margin: 0 auto;
-  color: var(--color-white);
+  background-color: white;
+  color: black;
+  /* var(--color-white); */
 }
 
 main .banner-standout.light {
