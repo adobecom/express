@@ -115,6 +115,7 @@ export default async function init(el) {
       break;
     }
     case el.classList.contains('horizontal-masonry'): {
+      loadStyle('/express/features/horizontal-masonry/horizontal-masonry.css')
       loadStyle('/express/blocks/interactive-marquee/milo-marquee.css');
       loadStyle('/express/features/interactive-elements/interactive-elements.css');
       loadStyle('/express/features/firefly/firefly-interactive.css');
