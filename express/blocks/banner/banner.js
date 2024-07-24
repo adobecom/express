@@ -1,7 +1,7 @@
 import { normalizeHeadings } from '../../scripts/utils.js';
 
 export default async function decorate(block) {
-  normalizeHeadings(block, ['h2', 'h3']);
+  // normalizeHeadings(block, ['h2', 'h3']);
   const buttons = block.querySelectorAll('a.button');
   if (buttons.length > 1) {
     block.classList.add('multi-button');
