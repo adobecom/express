@@ -1,4 +1,4 @@
-main .section:has(.interactive-marquee) > div {
+main .section:has(.interactive-marquee)>div {
     max-width: unset;
 }
 
@@ -15,8 +15,70 @@ main .interactive-marquee .container {
 
 
 
+main .interactive-marquee .media-container {
+    display: flex;
+    max-width: 576px;
+    ;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+main .interactive-marquee .media-container .link {
+    position: absolute;
+    top: 0px;
+    width: 150px;
+    padding: 10px;
+    display: none;
+}
+
+main .interactive-marquee .media-container .overlay {
+    position: absolute;
+    top: 0px;
+    width: 150px;
+    padding: 10px;
+    display: none;
+}
+
+main .interactive-marquee .media-container .image-container:hover {
+   
+}
+
+main .interactive-marquee .media-container .image-container:hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0; 
+    background-color: black;;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+    transition: opacity 0.3s;
+    z-index: 2;
+    height: 100%;
+    width: 100%;
+    border-radius: 16px;;
+
+}
+
+main .interactive-marquee .media-container p.image-container {
+    position: relative;
+    margin-bottom: 20px;
+    border-radius: 16px;
+}
+
+main .interactive-marquee .media-container .image-container:hover .overlay {
+    display: block;
+    z-index: 3;
+}
+
+main .interactive-marquee .media-container .image-container img {
+    border-radius: 16px;;
+}
 @media (min-width: 1440px) {
     main .interactive-marquee .container {
-      --grid-container-width: 1200px;
+        --grid-container-width: 1200px;
     }
-  }
+}

@@ -155,8 +155,6 @@ export default async function setInteractiveFirefly(el) {
  
   const { createSelectorTray, createEnticement, createPromptField } = await import('../interactive-elements/interactive-elements.js');
   // Set Enticement
-  console.log('--------')
-  console.log(allAnchorTag[0])
   const enticementText = allAnchorTag[0].textContent.trim();
   const enticementIcon = allAnchorTag[0].href;
   const enticementDiv = await createEnticement(`${enticementText}|${enticementIcon}`, enticementMode);

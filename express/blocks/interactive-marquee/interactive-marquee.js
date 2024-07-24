@@ -1,4 +1,4 @@
-import {setLibs, getLibs } from '../../scripts/utils.js';
+import {setLibs, getLibs, createTag } from '../../scripts/utils.js';
 
 // [headingSize, bodySize, detailSize, titlesize]
 const typeSizes = ['xxl', 'xl', 'l', 'xs'];
@@ -80,6 +80,8 @@ function interactiveInit(el, decorateButtons, decorateBlockBg, createTag) {
   extendButtonsClass(text);
 }
 
+
+
 export default async function init(el) {
   const miloLibs = setLibs('/libs');
   const { decorateButtons, decorateBlockBg } = await import(`${miloLibs}/utils/decorate.js`);
@@ -110,6 +112,15 @@ export default async function init(el) {
       } catch (err) {
         window.lana?.log(`Failed to load firefly masonry: ${err}`);
       }
+      break;
+    }
+    case el.classList.contains('horizontal-masonry'): {
+      loadStyle('/express/blocks/interactive-marquee/milo-marquee.css');
+      loadStyle('/express/features/interactive-elements/interactive-elements.css');
+      loadStyle('/express/features/firefly/firefly-interactive.css');
+      interactiveInit(el, decorateButtons, decorateBlockBg, createTag);
+      const { default: setHorizontalMasonry } = await import('../../features/horizontal-masonry/horizontal-masonry.js');
+      await setHorizontalMasonry (el);
       break;
     }
     case el.classList.contains('firefly'): {
