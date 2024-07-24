@@ -190,7 +190,7 @@ function buildContent(currentPage, locale, geoData, locales) {
   });
   img.addEventListener(
     'error',
-    () => (img.src = `${config.miloLibs || config.codeRoot}/features/georoutingv2/img/globe-grid.png`),
+    () => (img.src = `${config.miloLibs || config.codeRoot}/features/georoutingv3/img/globe-grid.png`),
     { once: true },
   );
   img.src = `${config.miloLibs || config.codeRoot}/img/georouting/${flagFile}`;
@@ -260,7 +260,7 @@ async function showModal(details) {
   const promises = [
     tabs ? loadBlock(tabs) : null,
     tabs ? loadStyle(`${miloLibs || codeRoot}/blocks/section-metadata/section-metadata.css`) : null,
-    new Promise((resolve) => { loadStyle(`${miloLibs || codeRoot}/features/georoutingv2/georoutingv2.css`, resolve); }),
+    new Promise((resolve) => { loadStyle(`${miloLibs || codeRoot}/features/georoutingv3/georoutingv3.css`, resolve); }),
   ];
   await Promise.all(promises);
   // eslint-disable-next-line import/no-cycle
@@ -289,9 +289,9 @@ export default async function loadGeoRouting(
   loadStyle = loadStyleFunc;
 
   const urls = [
-    `${config.contentRoot ?? ''}/georoutingv2.json`,
+    `${config.contentRoot ?? ''}/georoutingv3.json`,
     `${config.contentRoot ?? ''}/georouting.json`,
-    `${getFederatedContentRoot()}/federal/georouting/georoutingv2.json`,
+    `${getFederatedContentRoot()}/federal/georouting/georoutingv3.json`,
   ];
   let resp;
   for (const url of urls) {
