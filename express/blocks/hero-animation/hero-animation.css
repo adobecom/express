@@ -367,9 +367,4 @@ main .hero-animation.wide .free-plan-widget {
   font-size: var(--heading-font-size-m);
 }
 
-
-main .hero-animation {
-  opacity: 0;
-  height: 100vh;
-  transition: opacity 100ms;
-}
+ 
