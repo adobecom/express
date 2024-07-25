@@ -99,10 +99,24 @@ main .banner-standout-container .button-container a.button {
 main .banner-standout-container .banner-standout-text {
   /* font-size: 72px; */
   /* background: -webkit-linear-gradient(red, orange); */
-  background: linear-gradient(red, orange);
+
+
+  /* background: linear-gradient(135deg, red 10%, orange 90%); */
+
+  background: linear-gradient(red 33%, orange 67%);
+
+  /* background: linear-gradient(red, orange); */
+
   font-weight: 900;
+
+  /* -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; */
+
   -webkit-background-clip: text;
+
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+}
 }
 
 @media (min-width:900px) {
