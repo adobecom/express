@@ -89,6 +89,12 @@ export default async function init(el) {
   if (isStage && ['new.express.adobe.com', 'express.adobe.com'].includes(destURL.hostname)) {
     destURL.hostname = 'stage.projectx.corp.adobe.com';
   }
+  const goDest = () => window.location.assign(destURL.toString());
+  if (window.feds?.utilities?.imslib) {
+    const { imslib } = window.feds.utilities;
+    imslib.isReady() && imslib.isSignedInUser() && goDest();
+    imslib.onReady().then(() => imslib.isSignedInUser() && goDest());
+  }
   el.innerHTML = '';
   await loadWrapper();
   const susi = createTag('susi-sentry-light');
