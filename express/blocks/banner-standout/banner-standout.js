@@ -2,6 +2,15 @@ import { normalizeHeadings } from '../../scripts/utils.js';
 
 export default async function decorate(block) {
 
+  const isBannerLightVariant = block.classList.contains('light');
+  const isBannerStandoutVariant = block.classList.contains('standout');
+
+  console.log("=== Variant", {
+    isBannerLightVariant,
+    isBannerStandoutVariant
+  });
+  
+
   console.log("=== block.classList is", block.classList)
   if (block.classList.contains('hihi')) {
     console.log("GOOD it contains hihi")
