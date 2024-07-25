@@ -75,7 +75,7 @@ main .banner p:last-of-type {
 
 main .banner-standout-container {
   background-color: white;
-  color: #333;
+  color: #2A2A2A;
   padding: 33px;
   /* outline: 3px dotted orange; */
    /* #07f; */
@@ -84,6 +84,10 @@ main .banner-standout-container {
 
 main .banner-standout-container  h2 {
   color: #333
+}
+
+main .banner-standout-container .button-container a.button {
+  background-color: #2A2A2A !important;    /* FIX THIS */
 }
 
 @media (min-width:900px) {
