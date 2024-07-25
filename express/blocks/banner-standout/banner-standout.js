@@ -2,45 +2,47 @@ import { normalizeHeadings } from '../../scripts/utils.js';
 
 export default async function decorate(block) {
 
-  const isBannerLightVariant = block.classList.contains('light');
-  const isBannerStandoutVariant = block.classList.contains('standout');
+  console.log("=== in banner-standout, block is", block);
 
-  console.log("=== Variant", {
-    isBannerLightVariant,
-    isBannerStandoutVariant
-  });
+  // const isBannerLightVariant = block.classList.contains('light');
+  // const isBannerStandoutVariant = block.classList.contains('standout');
+
+  // console.log("=== Variant", {
+  //   isBannerLightVariant,
+  //   isBannerStandoutVariant
+  // });
 
 
-  console.log("=== block.classList is", block.classList)
-  if (block.classList.contains('hihi')) {
-    console.log("GOOD it contains hihi")
-    console.log("GOOD it contains hihi hmmm")
-  }
+  // console.log("=== block.classList is", block.classList)
+  // if (block.classList.contains('hihi')) {
+  //   console.log("GOOD it contains hihi")
+  //   console.log("GOOD it contains hihi hmmm")
+  // }
 
-  // normalizeHeadings(block, ['h2', 'h3']);
-  const buttons = block.querySelectorAll('a.button');
-  if (buttons.length > 1) {
-    block.classList.add('multi-button');
-  }
-  // button on dark background
-  buttons.forEach(($button) => {
-    $button.classList.remove('primary');
-    $button.classList.remove('secondary');
+  // // normalizeHeadings(block, ['h2', 'h3']);
+  // const buttons = block.querySelectorAll('a.button');
+  // if (buttons.length > 1) {
+  //   block.classList.add('multi-button');
+  // }
+  // // button on dark background
+  // buttons.forEach(($button) => {
+  //   $button.classList.remove('primary');
+  //   $button.classList.remove('secondary');
 
-    if (block.classList.contains('light')) {
-      $button.classList.remove('accent');
-      $button.classList.add('large', 'primary', 'reverse');
-    } else {
-      $button.classList.add('accent', 'dark');
-      if (block.classList.contains('multi-button')) {
-        $button.classList.add('reverse');
-      }
-    }
-  });
+  //   if (block.classList.contains('light')) {
+  //     $button.classList.remove('accent');
+  //     $button.classList.add('large', 'primary', 'reverse');
+  //   } else {
+  //     $button.classList.add('accent', 'dark');
+  //     if (block.classList.contains('multi-button')) {
+  //       $button.classList.add('reverse');
+  //     }
+  //   }
+  // });
 
-  const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
-  if (phoneNumberTags.length > 0) {
-    const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');
-    await formatSalesPhoneNumber(phoneNumberTags);
-  }
+  // const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
+  // if (phoneNumberTags.length > 0) {
+  //   const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');
+  //   await formatSalesPhoneNumber(phoneNumberTags);
+  // }
 }
