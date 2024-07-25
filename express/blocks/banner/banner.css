@@ -103,7 +103,18 @@ main .banner-standout-container .banner-standout-text {
 
   /* background: linear-gradient(135deg, red 10%, orange 90%); */
 
+  /* background: linear-gradient(red 33%, orange 67%); */
+
+  /* background: linear-gradient(#E75FcF 33%, #F19759 67%); */
+
+  /* background: linear-gradient(#E75FcF 50%, #F19759 50%); */
+
+  /* background: linear-gradient(#E75FcF, #F19759); */
+
   background: linear-gradient(red 33%, orange 67%);
+
+
+
 
   /* background: linear-gradient(red, orange); */
 
