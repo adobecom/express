@@ -9,11 +9,12 @@ export default async function decorate(block) {
     isBannerLightVariant,
     isBannerStandoutVariant
   });
-  
+
 
   console.log("=== block.classList is", block.classList)
   if (block.classList.contains('hihi')) {
     console.log("GOOD it contains hihi")
+    console.log("GOOD it contains hihi hmmm")
   }
 
   // normalizeHeadings(block, ['h2', 'h3']);
