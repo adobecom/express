@@ -82,6 +82,12 @@ main .banner-standout-container {
   border-radius: 12px;
 }
 
+main .banner-standout-message-container {
+  /* margin: 0 128px; */
+  margin: 0 auto;
+  width: 45%;
+}
+
 main .banner-standout-container  h2 {
   color: #333
 }

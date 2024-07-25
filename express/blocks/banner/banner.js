@@ -49,9 +49,15 @@ export default async function decorate(block) {
     class: "banner-standout-container"
   });
 
+  const standoutMessageContainer = createTag('div', {
+    class: "banner-standout-message-container"
+  });
+
+  standoutContainer.append(standoutMessageContainer)
+
   for (const child of block.children) {
     console.log("====== CHILD", child, child.tagName);
-    standoutContainer.append(child)
+    standoutMessageContainer.append(child)
   }
 
   // block.replaceChildren();
