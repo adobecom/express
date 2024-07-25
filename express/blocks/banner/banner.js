@@ -5,13 +5,22 @@ export default async function decorate(block) {
   const isBannerStandoutVariant = block.classList.contains('standout');
 
 
-  // console.log("=== in banner, block is", block);
+  console.log("=== in banner, block is", block);
 
   console.log("=== in banner, Variant", {
     isBannerLightVariant,
     isBannerStandoutVariant
   });
   
+
+  // const standoutContainer = document.createElement('div');
+  const standoutContainer = document.createTag('div', {
+    class: "banner-standout-container"
+  });
+
+  standoutContainer.append(block);
+
+
   // normalizeHeadings(block, ['h2', 'h3']);
   const buttons = block.querySelectorAll('a.button');
   if (buttons.length > 1) {
@@ -38,4 +47,6 @@ export default async function decorate(block) {
     const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');
     await formatSalesPhoneNumber(phoneNumberTags);
   }
+
+  return standoutContainer;
 }
