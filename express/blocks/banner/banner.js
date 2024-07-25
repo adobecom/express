@@ -4,6 +4,9 @@ export default async function decorate(block) {
   const isBannerLightVariant = block.classList.contains('light');
   const isBannerStandoutVariant = block.classList.contains('standout');
 
+
+  console.log("=== in banner, block is", block);
+
   console.log("=== in banner, Variant", {
     isBannerLightVariant,
     isBannerStandoutVariant
