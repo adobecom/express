@@ -18,29 +18,24 @@ export function focusOnInput(media, createTag, inputfield = null) {
   input.addEventListener('click', () => { document.querySelector('.blinking-cursor')?.remove(); });
 }
 
-export function eventOnGenerate(generateButton, media, fireflyfeature = '') {
+function eventOnGenerate(generateButton, media, fireflyfeature = '') {
   const btnConfigs = {
     TextToImage: ['SubmitTextToImage', 'SubmitTextToImageUserContent', 'goToFirefly'],
     TextEffects: ['SubmitTextEffects', 'SubmitTextEffectsUserContent', 'goToFireflyEffects'],
   };
-  console.log(generateButton)
   generateButton.addEventListener('click', async (e) => {
     const userprompt = media.querySelector('.prompt-text')?.value;
     const placeholderprompt = media.querySelector('.prompt-text')?.getAttribute('placeholder');
     const prompt = userprompt || placeholderprompt;
     let className = '';
-    console.log("abc")
-    console.log(userprompt)
     if (fireflyfeature === '') {
       const selected = media.querySelector('.selected');
       className = selected.getAttribute('class').split(' ')[1].trim();
     } else className = fireflyfeature;
-    console.log(className)
     if (Object.keys(btnConfigs).includes(className)) {
       const btnConfig = btnConfigs[className];
       const dall = userprompt === '' ? btnConfig[0] : btnConfig[1];
       e.target.setAttribute('daa-ll', dall);
-      console.log(btnConfig)
       const { default: signIn } = await import('./firefly-susi.js');
       signIn(prompt, btnConfig[2]);
     }

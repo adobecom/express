@@ -1,19 +1,17 @@
 import { createTag, getIconElement } from '../../scripts/utils.js'
-import { eventOnGenerate } from '../firefly/firefly-interactive.js';
 
 function createEnticement (enticementDetail,enticementIcon, mode) { 
   const enticementDiv = createTag('div', { class: 'enticement-container' });
   const svgImage = getIconElement('enticement-arrow',60)
   let arrowText = enticementDetail 
   const enticementText = createTag('span', { class: 'enticement-text' }, arrowText.trim());
-  const input = createTag('input', {type : 'text', class: 'prompt-text', placeholder: "Describe the image you want to create..."})
+  const input = createTag('input', {type : 'text', placeholder: "Describe the image you want to create..."})
   const buttonContainer = createTag('span', {class : 'button-container'})
   const button = createTag('button', {class : 'generate-small-btn' }) 
   buttonContainer.append(  button)
   button.textContent = 'Generate'
   enticementDiv.append(enticementText, svgImage, input, buttonContainer);
   if (mode === 'light') enticementText.classList.add('light');
-  eventOnGenerate(button, enticementDiv,'TextToImage')
   return enticementDiv;
 }
 
