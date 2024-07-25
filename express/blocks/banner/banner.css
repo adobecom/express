@@ -73,6 +73,17 @@ main .banner p:last-of-type {
   margin-bottom: 0;
 }
 
+main .banner-standout-container {
+  background-color: offwhite;
+  color: black;
+  padding: 21px;
+  border: 3px dotted #07f;
+}
+
+main .banner-standout-container  h2 {
+  color: black
+}
+
 @media (min-width:900px) {
   main .section.banner-container {
     padding-left: 56px;

@@ -1,4 +1,4 @@
-import { normalizeHeadings } from '../../scripts/utils.js';
+import { normalizeHeadings, createTag } from '../../scripts/utils.js';
 
 export default async function decorate(block) {
   const isBannerLightVariant = block.classList.contains('light');
@@ -7,6 +7,10 @@ export default async function decorate(block) {
 
   console.log("=== in banner, block is", block);
 
+  for (const child of block.children) {
+    console.log("====== CHILD", child, child.tagName);
+  }
+
   console.log("=== in banner, Variant", {
     isBannerLightVariant,
     isBannerStandoutVariant
@@ -14,11 +18,26 @@ export default async function decorate(block) {
   
 
   // const standoutContainer = document.createElement('div');
-  const standoutContainer = document.createTag('div', {
+  const standoutContainer = createTag('div', {
     class: "banner-standout-container"
   });
 
-  standoutContainer.append(block);
+  for (const child of block.children) {
+    console.log("====== CHILD", child, child.tagName);
+    standoutContainer.append(child)
+  }
+
+  block.replaceChildren();
+  block.append(standoutContainer)
+
+  // standoutContainer.append(block);
+
+  // standoutContainer.innerHTML = "haha 1";
+  // block.append(standoutContainer)
+
+  // const firstChildOfBlock = block.
+
+  // block.replaceChild(standoutContainer)
 
 
   // normalizeHeadings(block, ['h2', 'h3']);
@@ -48,5 +67,6 @@ export default async function decorate(block) {
     await formatSalesPhoneNumber(phoneNumberTags);
   }
 
-  return standoutContainer;
+  console.log("=== Before returning")
+  // return standoutContainer;
 }
