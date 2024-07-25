@@ -1,6 +1,14 @@
 import { normalizeHeadings } from '../../scripts/utils.js';
 
 export default async function decorate(block) {
+  const isBannerLightVariant = block.classList.contains('light');
+  const isBannerStandoutVariant = block.classList.contains('standout');
+
+  console.log("===", {
+    isBannerLightVariant,
+    isBannerStandoutVariant
+  })
+  
   // normalizeHeadings(block, ['h2', 'h3']);
   const buttons = block.querySelectorAll('a.button');
   if (buttons.length > 1) {
