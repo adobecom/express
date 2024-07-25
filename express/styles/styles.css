@@ -137,7 +137,7 @@
   --spacing-xl: 48px;
   --spacing-xxl: 56px;
   --spacing-xxxl: 80px;
-
+ 
     /* Headings (Consonant) */
     --type-heading-all-weight: 700;
     --type-heading-xxxl-size: calc(var(--font-size-multiplier, 1) * 44px);
@@ -156,6 +156,7 @@
     --type-heading-xs-lh: 20px;
     --type-heading-xxs-size: calc(var(--font-size-multiplier, 1) * 14px);
     --type-heading-xxs-lh: 18px;
+  
 }
 
 @media (min-width: 900px) {

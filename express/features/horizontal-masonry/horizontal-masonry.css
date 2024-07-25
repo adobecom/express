@@ -241,9 +241,21 @@ main .interactive-marquee.horizontal-masonry.quad .media-container {
     max-width: 420px;
 }
 
-main .interactive-marquee.quad .media-container p.image-container {}
+main .interactive-marquee.horizontal-masonry.wide .media-container {
+    max-width: unset;
+ 
+}
 
+main .interactive-marquee.horizontal-masonry .media-container p.image-container {
+    flex: 0 0 calc(33% - 10px);
+}
 
+main .interactive-marquee.horizontal-masonry.wide .media-container p.image-container {
+    flex: 0 0 calc(50% - 10px);
+}
+main .interactive-marquee.horizontal-masonry.quad .media-container p.image-container {
+    flex: 0 0 calc(50% - 10px);
+}
 
 main .interactive-marquee.horizontal-masonry .media-container p.image-container img {
     border-radius: 16px;
@@ -373,6 +385,17 @@ main .interactive-marquee.horizontal-masonry.no-search .enticement-container {
     main .interactive-marquee.horizontal-masonry input[type="text"] {
         margin-left: unset;
         width: calc(100% - 20px);
+    }
+
+    main .interactive-marquee.horizontal-masonry .media-container p.image-container {
+        flex: unset
+    }
+    
+    main .interactive-marquee.horizontal-masonry.wide .media-container p.image-container {
+        flex: unset
+    }
+    main .interactive-marquee.horizontal-masonry.quad .media-container p.image-container {
+        flex: unset
     }
 }
 
