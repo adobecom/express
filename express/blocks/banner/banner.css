@@ -1,6 +1,7 @@
 main .section.banner-container,
 main .section.banner-compact-container {
-  background-color: var(--color-info-accent);
+  background-color: #07f;
+  /* background-color: var(--color-info-accent); */
 }
 
 main .section.banner-container,
