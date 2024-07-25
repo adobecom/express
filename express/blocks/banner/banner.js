@@ -54,8 +54,11 @@ export default async function decorate(block) {
     standoutContainer.append(child)
   }
 
-  block.replaceChildren();
-  block.append(standoutContainer)
+  // block.replaceChildren();
+  // block.append(standoutContainer)
+
+  block.replaceChildren(standoutContainer);
+
 
   // standoutContainer.append(block);
 
