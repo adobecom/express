@@ -89,9 +89,7 @@ export default async function init(el) {
   switch (true) {
     case el.classList.contains('horizontal-masonry'): {
       loadStyle('/express/features/horizontal-masonry/horizontal-masonry.css')
-      loadStyle('/express/blocks/interactive-marquee/milo-marquee.css');
-      loadStyle('/express/features/interactive-elements/interactive-elements.css');
-      loadStyle('/express/features/firefly/firefly-interactive.css');
+      loadStyle('/express/blocks/interactive-marquee/milo-marquee.css'); 
       interactiveInit(el, decorateButtons, decorateBlockBg, createTag);
       const { default: setHorizontalMasonry } = await import('../../features/horizontal-masonry/horizontal-masonry.js');
       await setHorizontalMasonry (el);
