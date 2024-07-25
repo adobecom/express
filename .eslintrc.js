@@ -9,6 +9,9 @@ module.exports = {
     // allow reassigning param
     'no-param-reassign': [2, { props: false }],
     'linebreak-style': ['error', 'unix'],
+    'no-await-in-loop': 0,
+    'no-return-assign': 'off',
+    'max-statements-per-line': ['error', { max: 2 }],
     'import/extensions': ['error', {
       js: 'always',
     }],

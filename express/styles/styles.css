@@ -37,6 +37,14 @@
   --gradient-highlight-horizontal: linear-gradient(90deg, #ff4dd2, #7c84fc);
   --gradient-highlight-diagonal: linear-gradient(45deg, #7c84fc, #ff4dd2);
 
+  /* georouting modal */
+  --link-color-dark: #1473E6;
+  --link-hover-color-dark: #0d66d0;
+  --color-accent: var(--link-color-dark);
+  --color-accent-hover: var(--link-hover-color-dark);
+  --color-accent-down: #095aba;
+  --color-accent-focus-ring: #378ef0;
+
   /* header */
   --header-height: 65px;
   --breadcrumbs-height: 43px;
@@ -115,6 +123,77 @@ body.no-scroll {
   overflow-y: hidden;
   touch-action: none;
 }
+
+/* georouting modal button */
+.con-button {
+  background-color: transparent;
+  border-radius: 16px;
+  border: 2px solid var(--text-color);
+  color: var(--text-color);
+  display: inline-block;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 16px;
+  padding: 5px 14px;
+  text-decoration: none;
+}
+
+.con-button:hover {
+  background-color: var(--color-black);
+  border-color: var(--color-black);
+  color: var(--color-white);
+  text-decoration: none;
+}
+
+.l-button .con-button,
+.con-button.button-l {
+  border-radius: 20px;
+  font-size: 17px;
+  line-height: 20px;
+  min-height: 21px;
+  padding: 7px 18px 8px;
+}
+
+.con-button.blue {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+.con-button.blue:hover,
+.con-button.blue:active {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  color: var(--color-white);
+}
+
+.con-button.fill {
+  background: var(--text-color);
+  border-color: var(--text-color);
+  color: var(--color-white);
+}
+
+.con-button.fill:hover,
+.con-button.fill:active {
+  background: var(--color-black);
+  border-color: var(--color-black);
+}
+
+.l-button .con-button,
+.con-button.button-l {
+  border-radius: 20px;
+  font-size: 17px;
+  line-height: 20px;
+  min-height: 21px;
+  padding: 7px 18px 8px;
+}
+
+.button-l .con-button,
+.con-button.button-l { margin-left: 12px; }
+
+/* georouting modal span */
+span.icon.margin-inline-end { margin-inline-end: 8px; }
 
 /* gnav */
 body > header {
