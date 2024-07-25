@@ -10,13 +10,12 @@ export const windowHelper = {
 };
 
 function handleGenAISubmit(form, link) {
-  console.log('----')
   const input = form.querySelector('input');
   if (input.value.trim() === '') return;
   const genAILink = link.replace(promptTokenRegex, encodeURI(input.value).replaceAll(' ', '+'));
-  
-  console.log(genAILink)
-  // if (genAILink) windowHelper.redirect(genAILink);
+  const urlObj = new URL(genAILink);
+  urlObj.searchParams.delete('referrer');
+  if (genAILink) windowHelper.redirect(urlObj.toString());
 }
 
 function createEnticement (enticementDetail,enticementLink, mode) { 
@@ -24,7 +23,7 @@ function createEnticement (enticementDetail,enticementLink, mode) {
   const svgImage = getIconElement('enticement-arrow',60)
   let arrowText = enticementDetail 
   const enticementText = createTag('span', { class: 'enticement-text' }, arrowText.trim());
-  const input = createTag('input', {type : 'text', placeholder: "Describe the image you want to create..."})
+  const input = createTag('input', {type : 'text', placeholder: "Describe your image..."})
   const buttonContainer = createTag('span', {class : 'button-container'})
   const button = createTag('button', {class : 'generate-small-btn' }) 
   buttonContainer.append(  button)
@@ -35,8 +34,21 @@ function createEnticement (enticementDetail,enticementLink, mode) {
   return enticementDiv;
 }
 
-export default async function setHorizontalMasonry(el) {
+function createPromptLinkElement (promptLink) {
+ 
+  const icon = getIconElement('external-link', 22)
+  icon.classList.add('link')
+  icon.addEventListener('click', () => {
+    let link = promptLink.querySelector('a').href
+    const urlObj = new URL(link);
+    urlObj.searchParams.delete('referrer');
+    windowHelper.redirect(urlObj.toString())
+  })
+  return icon
+}
 
+export default async function setHorizontalMasonry(el) {
+  
   const args = el.querySelectorAll('.interactive-container > .asset > p')
   const container = el.querySelector('.interactive-container .asset')
   container.classList.add('media-container')
@@ -52,7 +64,6 @@ export default async function setHorizontalMasonry(el) {
     let divider = args[i]
     divider.remove()
     let link = args[i + 1]
-    link.classList.add('link')
     let prompt = args[i + 2]
     prompt.classList.add("overlay")
     const title = createTag('div', {class : 'prompt-title'})
@@ -61,6 +72,7 @@ export default async function setHorizontalMasonry(el) {
     let image = args[i + 3]
     image.classList.add('image-container')
     image.appendChild(prompt)
-    image.appendChild(link)
+    image.appendChild(createPromptLinkElement(link))
+    link.remove()
   }
 }
