@@ -65,7 +65,15 @@ export default async function decorate(block) {
 
   block.replaceChildren(standoutContainer);
 
+  const arrBoldText = [...standoutContainer.querySelectorAll(":scope strong")];
+  console.log("=== arrBoldText", arrBoldText)
 
+  const arrGlobalBoldText = document.querySelectorAll("strong");
+  console.log("=== arrGlobalBoldText", arrBoldText)
+
+  for (const el of arrBoldText) {
+    el.classList.add("banner-standout-text")
+  }
   // standoutContainer.append(block);
 
   // standoutContainer.innerHTML = "haha 1";

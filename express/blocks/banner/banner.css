@@ -96,6 +96,15 @@ main .banner-standout-container .button-container a.button {
   background-color: #2A2A2A !important;    /* FIX THIS */
 }
 
+main .banner-standout-container .banner-standout-text {
+  /* font-size: 72px; */
+  /* background: -webkit-linear-gradient(red, orange); */
+  background: linear-gradient(red, orange);
+  font-weight: 900;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 @media (min-width:900px) {
   main .section.banner-container {
     padding-left: 56px;
