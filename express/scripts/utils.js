@@ -2582,7 +2582,7 @@ export async function loadArea(area = document) {
 
   splitSections(area);
   decorateButtons(area);
-  replaceHyphensInText(area);
+  // replaceHyphensInText(area);
   await fixIcons(area);
   decorateSocialIcons(area);
 
