@@ -87,33 +87,6 @@ export default async function init(el) {
   const { decorateButtons, decorateBlockBg } = await import(`${miloLibs}/utils/decorate.js`);
   const { createTag, loadStyle } = await import(`${miloLibs}/utils/utils.js`);
   switch (true) {
-    case el.classList.contains('changebg'): {
-      const { default: changeBg } = await import('../../features/changeBg/changeBg.js');
-      changeBg(el);
-      break;
-    }
-    case el.classList.contains('genfill'): {
-      loadStyle('/express/blocks/interactive-marquee/milo-marquee.css');
-      loadStyle('/express/features/genfill/genfill-interactive.css');
-      interactiveInit(el, decorateButtons, decorateBlockBg, createTag);
-      const { default: decorateGenfill } = await import('../../features/genfill/genfill-interactive.js');
-      await decorateGenfill(el, { createTag });
-      break;
-    }
-    case el.classList.contains('ff-masonry'): {
-      try {
-        const stylePromise = new Promise((resolve) => {
-          loadStyle('/express/features/firefly/firefly-masonry.css', resolve);
-        });
-        await stylePromise;
-        interactiveInit(el, decorateButtons, decorateBlockBg, createTag);
-        const { default: setMultiImageMarquee } = await import('../../features/firefly/firefly-masonry.js');
-        await setMultiImageMarquee(el);
-      } catch (err) {
-        window.lana?.log(`Failed to load firefly masonry: ${err}`);
-      }
-      break;
-    }
     case el.classList.contains('horizontal-masonry'): {
       loadStyle('/express/features/horizontal-masonry/horizontal-masonry.css')
       loadStyle('/express/blocks/interactive-marquee/milo-marquee.css');
@@ -124,18 +97,8 @@ export default async function init(el) {
       await setHorizontalMasonry (el);
       break;
     }
-    case el.classList.contains('firefly'): {
-      loadStyle('/express/blocks/interactive-marquee/milo-marquee.css');
-      loadStyle('/express/features/interactive-elements/interactive-elements.css');
-      loadStyle('/express/features/firefly/firefly-interactive.css');
-      interactiveInit(el, decorateButtons, decorateBlockBg, createTag);
-      const { default: setInteractiveFirefly } = await import('../../features/firefly/firefly-interactive.js');
-      await setInteractiveFirefly(el);
-      break;
-    }
     default:
-      loadStyle('/express/blocks/interactive-marquee/milo-marquee.css');
-      interactiveInit(el, decorateButtons, decorateBlockBg, createTag);
+      alert('Using interactive-marquee on Express requires horizontal-masonry.')
       break;
   }
 }
