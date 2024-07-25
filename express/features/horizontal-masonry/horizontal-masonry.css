@@ -21,12 +21,15 @@ color: black;
     font-weight: bold;
 }
 
-main .interactive-marquee.horizontal-masonry .enticement-arrow {
+main .interactive-marquee.horizontal-masonry .icon-enticement-arrow {
     position: absolute;
-    left: -60px;
-    top: -20px;
-    width: 50px; 
-    transform: rotate(45deg);
+    left: -30px;
+    top: -10px;
+    width: 50px;
+    filter: brightness(1) invert(1);
+    width: 60px;
+    height: 60px;
+    transform: rotate(-15deg);
 }
 
 main .interactive-marquee.horizontal-masonry .enticement-container { 
@@ -59,8 +62,19 @@ main .interactive-marquee.horizontal-masonry .generate-small-btn {
 }
 
 main .interactive-marquee.horizontal-masonry .generate-small-btn::before {
-    content: "\1F504"; /* Unicode for a refresh icon, you can replace this with an actual icon */
-    margin-right: 5px;
+    content:'';
+    filter: brightness(0) invert(1);
+    background-image: url(/express/icons/adobe-firefly.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-top: -10px; 
+    position: relative;
+    top: 4px;
+    left: -4px;
 }
 
 main .interactive-marquee.horizontal-masonry .con-button {
