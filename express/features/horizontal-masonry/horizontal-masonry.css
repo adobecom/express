@@ -110,10 +110,15 @@ main .interactive-marquee.horizontal-masonry .container {
 main .interactive-marquee.horizontal-masonry .media-container {
     display: flex;
     max-width: 600px;
+   
     max-height: 400px;
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: space-between;
+}
+
+main .interactive-marquee.horizontal-masonry.tall .media-container {
+    max-width: 480px;
 }
 
 main .interactive-marquee.horizontal-masonry.quad .media-container {
@@ -142,9 +147,6 @@ main .interactive-marquee.horizontal-masonry .foreground h1>em {
     font-style: normal;
     background: linear-gradient(320deg, #7C84F3, #FF4DD2, #FF993B, #FF4DD2, #7C84F3, #FF4DD2, #FF993B);
     background-size: 400% 400%;
-    -webkit-animation: buttonGradient 45s ease infinite;
-    -moz-animation: buttonGradient 45s ease infinite;
-    animation: buttonGradient 45s ease infinite;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
