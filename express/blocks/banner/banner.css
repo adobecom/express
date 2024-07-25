@@ -19,7 +19,8 @@ main .section.banner-container > div {
 main .banner {
   padding: 0;
   margin: 0 auto;
-  color: var(--color-white);
+  color: black;
+  /* color: var(--color-white); */
 }
 
 main .banner.light {
