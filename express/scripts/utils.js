@@ -1454,6 +1454,8 @@ export function loadIms() {
         }
       }, 3000);
     }
+  }).catch(() => {
+    getConfig().entitlements([]);
   });
 
   return imsLoaded;
