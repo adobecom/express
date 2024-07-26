@@ -2735,7 +2735,7 @@ export const [setLibs, getLibs] = (() => {
         libs = 'http://localhost:6456/libs';
         return libs;
       }
-      if (branch.indexOf('--') > -1) {
+      if (branch.indexOf('--') > -1){
         libs = `https://${branch}.hlx.live/libs`;
         return libs;
       }
