@@ -2563,6 +2563,7 @@ export async function loadArea(area = document) {
   const main = area.querySelector('main');
   if (isDoc) {
     await checkForPageMods();
+    removeIrrelevantSections(main);
     if (getMetadata('template-search-page') === 'Y') {
       const { default: redirect } = await import('./template-redirect.js');
       await redirect();
