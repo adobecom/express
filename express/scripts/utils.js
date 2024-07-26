@@ -2741,6 +2741,6 @@ export const [setLibs, getLibs] = (() => {
         }
       libs = `https://${branch}--milo--adobecom.hlx.live/libs`;
       return libs;
-    }, () => libs,
+      }, () => libs,
   ];
 })();
