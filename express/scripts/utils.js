@@ -1445,7 +1445,7 @@ export function loadIms() {
       loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
     }
   }).then(() => {
-    if (!window.adobeIMS?.isSignedInUser() && !getMetadata('xlg-entitlements')) {
+    if (!window.adobeIMS?.isSignedInUser() && getMetadata('xlg-entitlements') !== 'on') {
       getConfig().entitlements([]);
     } else {
       setTimeout(async () => {
