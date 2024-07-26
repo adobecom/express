@@ -28,6 +28,7 @@ export default async function decorate(block) {
   // try with class / variant (hihi1, hi2, standout3 hmm)
 
 
+  console.log("=== block.classList", block.classList)
   const isBannerLightVariant = block.classList.contains('light');
   const isBannerStandoutVariant = block.classList.contains('standout');
 
@@ -86,7 +87,7 @@ export default async function decorate(block) {
   }
 
 
-  // normalizeHeadings(block, ['h2', 'h3']);
+  normalizeHeadings(block, ['h2', 'h3']);
   const buttons = block.querySelectorAll('a.button');
   if (buttons.length > 1) {
     block.classList.add('multi-button');
