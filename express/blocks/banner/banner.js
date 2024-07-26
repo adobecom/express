@@ -42,46 +42,48 @@ export default async function decorate(block) {
     isBannerLightVariant,
     isBannerStandoutVariant
   });
-  
 
-  // const standoutContainer = document.createElement('div');
-  const standoutContainer = createTag('div', {
-    class: "banner-standout-container"
-  });
+  if (true || isBannerStandoutVariant) {
+    // const standoutContainer = document.createElement('div');
+    const standoutContainer = createTag('div', {
+      class: "banner-standout-container"
+    });
 
-  const standoutMessageContainer = createTag('div', {
-    class: "banner-standout-message-container"
-  });
+    const standoutMessageContainer = createTag('div', {
+      class: "banner-standout-message-container"
+    });
 
-  standoutContainer.append(standoutMessageContainer)
+    standoutContainer.append(standoutMessageContainer)
 
-  for (const child of block.children) {
-    console.log("====== CHILD", child, child.tagName);
-    standoutMessageContainer.append(child)
+    for (const child of block.children) {
+      console.log("====== CHILD", child, child.tagName);
+      standoutMessageContainer.append(child)
+    }
+
+    // block.replaceChildren();
+    // block.append(standoutContainer)
+
+    block.replaceChildren(standoutContainer);
+
+    const arrBoldText = [...standoutContainer.querySelectorAll(":scope strong")];
+    console.log("=== arrBoldText", arrBoldText)
+
+    const arrGlobalBoldText = document.querySelectorAll("strong");
+    console.log("=== arrGlobalBoldText", arrBoldText)
+
+    for (const el of arrBoldText) {
+      el.classList.add("banner-standout-text")
+    }
+    // standoutContainer.append(block);
+
+    // standoutContainer.innerHTML = "haha 1";
+    // block.append(standoutContainer)
+
+    // const firstChildOfBlock = block.
+
+    // block.replaceChild(standoutContainer)
+
   }
-
-  // block.replaceChildren();
-  // block.append(standoutContainer)
-
-  block.replaceChildren(standoutContainer);
-
-  const arrBoldText = [...standoutContainer.querySelectorAll(":scope strong")];
-  console.log("=== arrBoldText", arrBoldText)
-
-  const arrGlobalBoldText = document.querySelectorAll("strong");
-  console.log("=== arrGlobalBoldText", arrBoldText)
-
-  for (const el of arrBoldText) {
-    el.classList.add("banner-standout-text")
-  }
-  // standoutContainer.append(block);
-
-  // standoutContainer.innerHTML = "haha 1";
-  // block.append(standoutContainer)
-
-  // const firstChildOfBlock = block.
-
-  // block.replaceChild(standoutContainer)
 
 
   // normalizeHeadings(block, ['h2', 'h3']);
