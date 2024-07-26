@@ -2741,9 +2741,9 @@ export const [setLibs, getLibs] = (() => {
       if (branch.indexOf('--') > -1) {
         libs = `https://${branch}.hlx.live/libs`;
         return libs;
-        }
+      }
       libs = `https://${branch}--milo--adobecom.hlx.live/libs`;
       return libs;
-      }, () => libs,
+    }, () => libs,
   ];
 })();
