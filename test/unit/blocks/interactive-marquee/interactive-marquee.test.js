@@ -1,9 +1,9 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
+import { setLibs } from '../../../../express/scripts/utils.js';
+import init from '../../../../express/blocks/interactive-marquee/interactive-marquee.js';
 
 document.body.innerHTML = await readFile({ path: './mocks/body.html' });
-import { setLibs, loadBlock } from '../../../../express/scripts/utils.js';
-import init from '../../../../express/blocks/interactive-marquee/interactive-marquee.js';
 
 describe('interactive marquee', () => {
   const im = document.querySelector('.interactive-marquee');

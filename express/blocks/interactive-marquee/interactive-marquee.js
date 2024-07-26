@@ -1,4 +1,4 @@
-import {setLibs, getLibs, createTag } from '../../scripts/utils.js';
+import { setLibs } from '../../scripts/utils.js';
 
 // [headingSize, bodySize, detailSize, titlesize]
 const typeSizes = ['xxl', 'xl', 'l', 'xs'];
@@ -31,7 +31,9 @@ function decorateText(el, createTag) {
 function extendButtonsClass(text) {
   const buttons = text.querySelectorAll('.con-button');
   if (buttons.length === 0) return;
-  buttons.forEach((button) => { button.classList.add('button-justified-mobile'); });
+  buttons.forEach((button) => {
+    button.classList.add('button-justified-mobile');
+  });
 }
 
 function interactiveInit(el, decorateButtons, decorateBlockBg, createTag) {
@@ -67,23 +69,21 @@ function interactiveInit(el, decorateButtons, decorateBlockBg, createTag) {
   extendButtonsClass(text);
 }
 
-
-
 export default async function init(el) {
   const miloLibs = setLibs('/libs');
   const { decorateButtons, decorateBlockBg } = await import(`${miloLibs}/utils/decorate.js`);
   const { createTag, loadStyle } = await import(`${miloLibs}/utils/utils.js`);
   switch (true) {
     case el.classList.contains('horizontal-masonry'): {
-      loadStyle('/express/features/horizontal-masonry/horizontal-masonry.css')
-      loadStyle('/express/blocks/interactive-marquee/milo-marquee.css'); 
+      loadStyle('/express/features/horizontal-masonry/horizontal-masonry.css');
+      loadStyle('/express/blocks/interactive-marquee/milo-marquee.css');
       interactiveInit(el, decorateButtons, decorateBlockBg, createTag);
       const { default: setHorizontalMasonry } = await import('../../features/horizontal-masonry/horizontal-masonry.js');
-      await setHorizontalMasonry (el);
+      await setHorizontalMasonry(el);
       break;
     }
     default:
-      alert('Using interactive-marquee on Express requires horizontal-masonry.')
+      alert('Using interactive-marquee on Express requires horizontal-masonry.');
       break;
   }
 }

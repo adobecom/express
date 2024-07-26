@@ -2719,12 +2719,10 @@ export const [setLibs, getLibs] = (() => {
   let libs;
   return [
     (prodLibs, force = false) => {
-      console.log(force)
       if (force) {
         libs = prodLibs;
         return libs;
       }
-      console.log('fdsfsd')
       const { hostname } = window.location;
       if (!hostname.includes('hlx.page')
         && !hostname.includes('hlx.live')
@@ -2733,13 +2731,16 @@ export const [setLibs, getLibs] = (() => {
         return libs;
       }
       const branch = new URLSearchParams(window.location.search).get('milolibs') || 'main';
-      console.log(branch)
-      if (branch === 'local') { libs = 'http://localhost:6456/libs'; return libs; }
-      if (branch.indexOf('--') > -1) { libs = `https://${branch}.hlx.live/libs`; return libs; }
+      if (branch === 'local') {
+        libs = 'http://localhost:6456/libs';
+        return libs;
+      }
+      if (branch.indexOf('--') > -1) { 
+        libs = `https://${branch}.hlx.live/libs`; 
+        return libs;
+      }
       libs = `https://${branch}--milo--adobecom.hlx.live/libs`;
       return libs;
     }, () => libs,
   ];
 })();
-
-
