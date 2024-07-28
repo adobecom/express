@@ -9,14 +9,15 @@ export default function decorate(block) {
   const includeSchema = block.classList.contains('schema');
   const cards = [...block.querySelectorAll(':scope > div')];
   const mediaQuery = window.matchMedia('(min-width: 900px)');
-  if (mediaQuery.matches) {
+  // if (mediaQuery.matches) {
     
-  }
+  // }
   cards.forEach((div, index) => {
     div.classList.add('card');
     const content = div.querySelector('div');
-    const tipNumber = createTag('div', { class: 'tip-number' });
-    tipNumber.append(createTag('span', {}, index + 1));
+    const tipNumber = createTag('div', { class: 'number' });
+    tipNumber.append(createTag('span', { class: 'number-txt' }, index + 1));
+    tipNumber.append(createTag('div', { class: 'number-bg' }));
     content.prepend(tipNumber);
     content.classList.add('content');
   });
