@@ -22,7 +22,6 @@ export default async function decorate(block) {
     }
   }
 
-
   normalizeHeadings(block, ['h2', 'h3']);
   const buttons = block.querySelectorAll('a.button');
   if (buttons.length > 1) {
