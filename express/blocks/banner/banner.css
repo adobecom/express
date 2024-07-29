@@ -77,9 +77,6 @@ main .banner p:last-of-type {
 }
 
 main .banner .standout-container {
-  /* margin: 33px; */
-  /* width:90%;
-  max-width:90%; */
   background-color: var(--body-background-color);
   color: var(--body-color);
   padding: 33px 28%;
