@@ -221,6 +221,7 @@ main .interactive-marquee.horizontal-masonry .media-container p.image-container 
     position: relative;
     margin-bottom: 20px;
     border-radius: 16px;
+    height: 180px;
 
 }
 
