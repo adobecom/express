@@ -87,6 +87,7 @@ main .interactive-container.interactive-marquee.horizontal-masonry .enticement-c
     font-style: italic;
 }
 
+
 /* Enticement container styles */
 main .interactive-marquee.horizontal-masonry .enticement-container {
     margin-top: 80px;
@@ -252,6 +253,10 @@ main .interactive-marquee.horizontal-masonry.wide .media-container p.image-conta
 
 main .interactive-marquee.horizontal-masonry.no-search .enticement-container {
     display: none;
+}
+
+main .interactive-marquee.horizontal-masonry.no-search  .interactive-container {
+    margin-top: unset;
 }
 
 /* Responsive styles */
