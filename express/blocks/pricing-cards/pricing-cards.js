@@ -272,7 +272,6 @@ export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
   const placeholders = await fetchPlaceholders();
   const rows = Array.from(el.querySelectorAll(":scope > div"))
-  const rowCount =rows.length
   const cardCount = rows[0].children.length
   const cards = []
 
