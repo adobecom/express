@@ -73,7 +73,7 @@ main .banner p:last-of-type {
   margin-bottom: 0;
 }
 
-main .banner-standout-container {
+main .banner .standout-container {
   background-color: white;
   color: #2A2A2A;
   padding: 33px;
@@ -82,21 +82,21 @@ main .banner-standout-container {
   border-radius: 12px;
 }
 
-main .banner-standout-message-container {
+main .banner .standout-container .message-container {
   /* margin: 0 128px; */
   margin: 0 auto;
   width: 45%;
 }
 
-main .banner-standout-container  h2 {
+main .banner .standout-container  h2 {
   color: #333
 }
 
-main .banner-standout-container .button-container a.button {
+main .banner .standout-container .button-container a.button {
   background-color: #2A2A2A !important;    /* FIX THIS */
 }
 
-main .banner-standout-container .banner-standout-text {
+main .banner .standout-container .banner-standout-text {
   /* font-size: 72px; */
   /* background: -webkit-linear-gradient(red, orange); */
 
@@ -142,7 +142,7 @@ main .banner-standout-container .banner-standout-text {
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-}
+
 
 @media (min-width:900px) {
   main .section.banner-container {

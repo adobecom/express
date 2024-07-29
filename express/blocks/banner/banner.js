@@ -44,10 +44,10 @@ export default async function decorate(block) {
     isBannerStandoutVariant
   });
 
-  if (true || isBannerStandoutVariant) {
+  if (isBannerStandoutVariant) {
     // const standoutContainer = document.createElement('div');
     const standoutContainer = createTag('div', {
-      class: "banner-standout-container"
+      class: "standout-container"
     });
 
     const standoutMessageContainer = createTag('div', {
