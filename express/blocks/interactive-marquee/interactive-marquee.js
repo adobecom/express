@@ -1,4 +1,4 @@
-import { setLibs  } from '../../scripts/utils.js';
+import { setLibs } from '../../scripts/utils.js';
 
 // [headingSize, bodySize, detailSize, titlesize]
 const typeSizes = ['xxl', 'xl', 'l', 'xs'];
@@ -69,7 +69,7 @@ function interactiveInit(el, decorateButtons, decorateBlockBg, createTag) {
 
 export default async function init(el) {
   const miloLibs = setLibs('/libs');
-  const { decorateButtons,decorateBlockBg } = await import(`${miloLibs}/utils/decorate.js`);
+  const { decorateButtons, decorateBlockBg } = await import(`${miloLibs}/utils/decorate.js`);
   const { createTag, loadStyle } = await import(`${miloLibs}/utils/utils.js`);
   if (!el.classList.contains('horizontal-masonry')) {
     alert('Using interactive-marquee on Express requires using the horizontal-masonry class.');
