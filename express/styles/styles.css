@@ -953,7 +953,6 @@ body[data-device="mobile"] main [data-audience="mobile"][data-section-status="lo
 
 
 /* jank protection for async blocks/sections */
-
 main .pricing,
 main .hero-animation {
   opacity: 0;
