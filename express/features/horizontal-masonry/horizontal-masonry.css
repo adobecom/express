@@ -28,7 +28,7 @@ main .interactive-marquee.horizontal-masonry .icon-enticement-arrow {
     filter: brightness(1) invert(1);
     width: 70px;
     height: 70px;
-    transform: rotate(-40d);
+    transform: rotate(-40deg);
 }
 
 main .interactive-marquee.horizontal-masonry .enticement-container {
