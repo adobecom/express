@@ -24,8 +24,8 @@ main .section.banner-container > div {
 main .banner {
   padding: 0;
   margin: 0 auto;
-  color: black;
-  /* color: var(--color-white); */
+  /* color: black; */
+  color: var(--color-white);
 }
 
 main .banner.light {
@@ -87,19 +87,11 @@ main .banner .standout-container {
   /* margin: 32px 0 */
 }
 
-main .banner .standout-container .message-container {
-  /* margin: 0 128px; */
-  margin: 0 auto;
-  width: 45%;
-}
-
 main .banner .standout-container  h2 {
   color: #333
 }
 
-main .banner .standout-container .button-container a.button {
-  background-color: #2A2A2A !important;    /* FIX THIS */
-}
+
 
 main .banner .standout-container .standout-text {
   /* font-size: 72px; */

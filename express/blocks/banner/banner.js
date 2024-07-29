@@ -47,7 +47,7 @@ export default async function decorate(block) {
   if (isBannerStandoutVariant) {
 
     console.log("DOING THE STANDOUT VARIANT")
-    
+
     // const standoutContainer = document.createElement('div');
     const standoutContainer = createTag('div', {
       class: "standout-container"
@@ -100,7 +100,10 @@ export default async function decorate(block) {
     $button.classList.remove('primary');
     $button.classList.remove('secondary');
 
-    if (block.classList.contains('light')) {
+    if (isBannerStandoutVariant) {
+      $button.classList.remove('accent');
+      $button.classList.add('large', 'primary');
+    } else if (isBannerLightVariant) {
       $button.classList.remove('accent');
       $button.classList.add('large', 'primary', 'reverse');
     } else {
