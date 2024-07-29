@@ -568,9 +568,10 @@ export function yieldToMain() {
   });
 }
 
-export function removeIrrelevantSections(main) {
-  if (!main) return;
-  main.querySelectorAll(':scope > div').forEach((section) => {
+export function removeIrrelevantSections(area) {
+  if (!area) return;
+  const selector = area === document ? 'body > main > div' : ':scope > div';
+  area.querySelectorAll(selector).forEach((section) => {
     const sectionMetaBlock = section.querySelector('div.section-metadata');
     if (sectionMetaBlock) {
       const sectionMeta = readBlockConfig(sectionMetaBlock);
@@ -2237,6 +2238,10 @@ export function addHeaderSizing($block, classPrefix = 'heading', selector = 'h1,
       if (length >= size.threshold) h.classList.add(`${classPrefix}-${size.name}`);
     });
   });
+}
+
+export function decorateArea(area = document) {
+  removeIrrelevantSections(area);
 }
 
 /**

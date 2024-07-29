@@ -9,6 +9,7 @@ import {
   setConfig,
   createTag,
   getConfig,
+  decorateArea,
 } from './utils.js';
 
 const locales = {
@@ -53,6 +54,7 @@ const config = {
     onDemand: !jarvisImmediatelyVisible,
   },
   links: 'on',
+  decorateArea,
   imsClientId: 'AdobeExpressWeb',
   imsScope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
 };
@@ -90,9 +92,10 @@ const eagerLoad = (img) => {
   document.head.append(fqaMeta);
 }());
 
+decorateArea();
+
 (function loadLCPImage() {
   const main = document.body.querySelector('main');
-  removeIrrelevantSections(main);
   const firstDiv = main.querySelector('div:nth-child(1) > div');
   if (firstDiv?.classList.contains('marquee')) {
     firstDiv.querySelectorAll('img').forEach(eagerLoad);
