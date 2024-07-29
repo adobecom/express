@@ -24,7 +24,6 @@ main .section.banner-container > div {
 main .banner {
   padding: 0;
   margin: 0 auto;
-  /* color: black; */
   color: var(--color-white);
 }
 
@@ -78,66 +77,22 @@ main .banner p:last-of-type {
 }
 
 main .banner .standout-container {
-  background-color: white;
-  color: #2A2A2A;
+  background-color: var(--body-background-color);
+  color: var(--body-color);
   padding: 33px 300px;
-  /* outline: 3px dotted orange; */
-   /* #07f; */
   border-radius: 12px;
-  /* margin: 32px 0 */
 }
 
-main .banner .standout-container  h2 {
-  color: #333
+main .banner .standout-container h2 {
+  color: var(--heading-color);
 }
-
-
 
 main .banner .standout-container .standout-text {
-  /* font-size: 72px; */
-  /* background: -webkit-linear-gradient(red, orange); */
-
-
-  /* background: linear-gradient(135deg, red 10%, orange 90%); */
-
-  /* background: linear-gradient(red 33%, orange 67%); */
-
-  /* background: linear-gradient(#E75FcF 33%, #F19759 67%); */
-
-  /* background: linear-gradient(#E75FcF 50%, #F19759 50%); */
-
-  /* background: linear-gradient(#E75FcF, #F19759); */
-
-  /* background: linear-gradient(red 45%, orange 55%); */
-  /* background: linear-gradient(0deg, blue, green 40%, red); */
-  /* linear-gradient(0deg, blue, green); */
-
-  /* background: linear-gradient(.25turn, red, 10%, orange); */
-
-  /* background: linear-gradient(45deg, red 0 50%, orange 50% 100%); */
-
-
-  /* background: linear-gradient(to left top, red, orange); */
-  /* background: linear-gradient(to left top, orange, red, orange); */
-
-  /* background: linear-gradient(to right top, orange, 45%, red); */
-
-  /* background: linear-gradient(60deg, orange, red); */
-
   background: linear-gradient(red, orange);
-
-
-  /* background: linear-gradient(red, orange); */
-
-  font-weight: 900;
-
-  /* -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; */
-
   -webkit-background-clip: text;
-
-  background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900;
 }
 
 
