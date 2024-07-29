@@ -14,8 +14,8 @@ main .interactive-marquee.horizontal-masonry.dark {
 
 main .interactive-marquee.horizontal-masonry .enticement-text {
     position: absolute;
-    left: 0;
-    top: -60px;
+    left: -30px;
+    top: -45px;
     font-size: 36px;
     color: black;
     font-weight: bold;
@@ -23,13 +23,12 @@ main .interactive-marquee.horizontal-masonry .enticement-text {
 
 main .interactive-marquee.horizontal-masonry .icon-enticement-arrow {
     position: absolute;
-    left: -30px;
-    top: -10px;
-    width: 50px;
+    left: -35px;
+    top: 0px;
     filter: brightness(1) invert(1);
-    width: 60px;
-    height: 60px;
-    transform: rotate(-15deg);
+    width: 70px;
+    height: 70px;
+    transform: rotate(-40d);
 }
 
 main .interactive-marquee.horizontal-masonry .enticement-container {
