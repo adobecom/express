@@ -62,10 +62,8 @@ function interactiveInit(el, decorateButtons, decorateBlockBg, createTag) {
 
   const firstDivInForeground = foreground.querySelector(':scope > div');
   if (firstDivInForeground?.classList.contains('asset')) el.classList.add('row-reversed');
-  const isMwebMarquee = el.classList.contains('mobile-cta-top');
-
   decorateButtons(text, 'button-xl');
-  decorateText(text, createTag, isMwebMarquee);
+  decorateText(text, createTag);
   extendButtonsClass(text);
 }
 
