@@ -45,20 +45,23 @@ export default async function decorate(block) {
   });
 
   if (isBannerStandoutVariant) {
+
+    console.log("DOING THE STANDOUT VARIANT")
+    
     // const standoutContainer = document.createElement('div');
     const standoutContainer = createTag('div', {
       class: "standout-container"
     });
 
-    const standoutMessageContainer = createTag('div', {
-      class: "banner-standout-message-container"
-    });
+    // const standoutMessageContainer = createTag('div', {
+    //   class: "banner-standout-message-container"
+    // });
 
-    standoutContainer.append(standoutMessageContainer)
+    // standoutContainer.append(standoutContainer)
 
     for (const child of block.children) {
       console.log("====== CHILD", child, child.tagName);
-      standoutMessageContainer.append(child)
+      standoutContainer.append(child)
     }
 
     // block.replaceChildren();
@@ -73,7 +76,7 @@ export default async function decorate(block) {
     console.log("=== arrGlobalBoldText", arrBoldText)
 
     for (const el of arrBoldText) {
-      el.classList.add("banner-standout-text")
+      el.classList.add("standout-text")
     }
     // standoutContainer.append(block);
 

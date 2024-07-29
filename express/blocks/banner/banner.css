@@ -1,7 +1,11 @@
 main .section.banner-container,
+main .section.banner-standout-container,
 main .section.banner-compact-container {
-  background-color: #07f;
-  /* background-color: var(--color-info-accent); */
+  background-color: var(--color-info-accent);
+}
+
+main .section.banner-standout-container {
+  padding: 52px 0;
 }
 
 main .section.banner-container,
@@ -76,10 +80,11 @@ main .banner p:last-of-type {
 main .banner .standout-container {
   background-color: white;
   color: #2A2A2A;
-  padding: 33px;
+  padding: 33px 300px;
   /* outline: 3px dotted orange; */
    /* #07f; */
   border-radius: 12px;
+  /* margin: 32px 0 */
 }
 
 main .banner .standout-container .message-container {
@@ -96,7 +101,7 @@ main .banner .standout-container .button-container a.button {
   background-color: #2A2A2A !important;    /* FIX THIS */
 }
 
-main .banner .standout-container .banner-standout-text {
+main .banner .standout-container .standout-text {
   /* font-size: 72px; */
   /* background: -webkit-linear-gradient(red, orange); */
 
