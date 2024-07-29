@@ -37,8 +37,7 @@ function createPromptLinkElement(promptLink) {
   const icon = getIconElement('external-link', 22);
   icon.classList.add('link');
   icon.addEventListener('click', () => {
-    const link = promptLink.querySelector('a').href;
-    const urlObj = new URL(link);
+    const urlObj = new URL(promptLink.querySelector('a').href);
     urlObj.searchParams.delete('referrer');
     windowHelper.redirect(urlObj.toString());
   });
