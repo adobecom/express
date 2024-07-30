@@ -294,11 +294,16 @@ main .interactive-marquee.horizontal-masonry.no-search .interactive-container {
         display: none;
     }
 
+    main .interactive-marquee.horizontal-masonry .asset{
+        max-width: unset;
+    }
+
     main .interactive-marquee.horizontal-masonry .interactive-container {
         display: flex;
         flex-direction: column-reverse;
         height: unset;
         margin-top: -60px;
+        width: 100%;
     }
 
     main .interactive-marquee.horizontal-masonry .container {
@@ -350,7 +355,7 @@ main .interactive-marquee.horizontal-masonry.no-search .interactive-container {
 
     main .interactive-marquee.horizontal-masonry .media-container p.image-container:first-of-type {
         display: block;
-        width: calc(100% - 20px);
+        width: 100%;
         margin: auto;
         height: 100%;
     }
@@ -359,6 +364,10 @@ main .interactive-marquee.horizontal-masonry.no-search .interactive-container {
         color: #888;
         font-size: 14px;
         margin-bottom: 5px;
+    }
+
+    main .interactive-marquee.horizontal-masonry .container {
+        width: calc(100% - 20px)
     }
 
     main .interactive-marquee.horizontal-masonry .enticement-container {
