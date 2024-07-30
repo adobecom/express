@@ -6,11 +6,11 @@ export default async function decorate(block) {
 
   if (isBannerStandoutVariant) {
     const standoutContainer = createTag('div', {
-      class: "standout-container"
+      class: 'standout-container',
     });
 
     for (const child of block.children) {
-      standoutContainer.append(child)
+      standoutContainer.append(child);
     }
 
     block.replaceChildren(standoutContainer);
