@@ -87,6 +87,7 @@ main .interactive-marquee.horizontal-masonry input[type="text"] {
 
 main .interactive-marquee.horizontal-masonry input[type="text"]::placeholder {
     font-style: italic;
+    content: "abfdsfdsfsdfds" !important;
 }
 
 main .interactive-container.interactive-marquee.horizontal-masonry .enticement-container input::placeholder {
@@ -274,7 +275,7 @@ main .interactive-marquee.horizontal-masonry.no-search .interactive-container {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     main .interactive-marquee.horizontal-masonry .con-button {
         display: none;
     }
