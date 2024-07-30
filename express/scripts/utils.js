@@ -601,7 +601,7 @@ export function removeIrrelevantSections(area) {
     const linkToTarget = getMetadata(`${device}-floating-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
     if (textToTarget || linkToTarget) {
       const linkToTargetURL = new URL(linkToTarget);
-      const sameUrlCTAs = Array.from(main.querySelectorAll('a:any-link'))
+      const sameUrlCTAs = Array.from(area.querySelectorAll('a:any-link'))
         .filter((a) => {
           try {
             const currURL = new URL(a.href);
