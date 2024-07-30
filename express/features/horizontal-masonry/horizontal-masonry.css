@@ -124,7 +124,7 @@ main .interactive-marquee.horizontal-masonry .icon-enticement-arrow {
 /* Media container styles */
 main .interactive-marquee.horizontal-masonry .media-container {
     display: flex;
-    width: 800px;
+    width: 600px;
     max-height: 400px;
     flex-wrap: wrap;
     flex-direction: row;
@@ -137,6 +137,20 @@ main .interactive-marquee.horizontal-masonry .media-container p.image-container 
     border-radius: 16px;
     height: 180px;
     flex: 0 0 calc(33% - 10px);
+}
+
+main .interactive-marquee.horizontal-masonry.tall .media-container p.image-container {
+    flex: unset;
+    height: 200px;
+}
+
+main .interactive-marquee.horizontal-masonry.wide .media-container p.image-container {
+    position: relative;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    height: 150px;
+    max-width: 400px;
+    flex: unset
 }
 
 main .interactive-marquee.horizontal-masonry .media-container p.image-container img {
