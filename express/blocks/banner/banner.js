@@ -14,12 +14,6 @@ export default async function decorate(block) {
     }
 
     block.replaceChildren(standoutContainer);
-
-    const arrBoldText = [...standoutContainer.querySelectorAll(":scope strong")];
-
-    for (const el of arrBoldText) {
-      el.classList.add("standout-text")
-    }
   }
 
   normalizeHeadings(block, ['h2', 'h3']);

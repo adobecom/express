@@ -90,8 +90,8 @@ main .banner .standout-container {
   border-radius: 12px;
 }
 
-main .banner .standout-container .standout-text {
-  background: linear-gradient(#EB5FC8, #F09758);
+main .banner .standout-container strong {
+  background: linear-gradient(#D463D3, #F09A55);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
