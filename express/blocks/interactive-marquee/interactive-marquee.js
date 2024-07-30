@@ -36,15 +36,11 @@ function extendButtonsClass(text) {
   });
 }
 
-function interactiveInit(el, decorateButtons, decorateBlockBg, createTag) {
+function interactiveInit(el, decorateButtons, createTag) {
   const isLight = el.classList.contains('light');
   if (!isLight) el.classList.add('dark');
   const children = el.querySelectorAll(':scope > div');
   const foreground = children[children.length - 1];
-  if (children.length > 1) {
-    children[0].classList.add('background');
-    decorateBlockBg(el, children[0], { useHandleFocalpoint: true });
-  }
   foreground.classList.add('foreground', 'container');
   const headline = foreground.querySelector('h1, h2, h3, h4, h5, h6');
   const text = headline.closest('div');
@@ -69,7 +65,7 @@ function interactiveInit(el, decorateButtons, decorateBlockBg, createTag) {
 
 export default async function init(el) {
   const miloLibs = setLibs('/libs');
-  const { decorateButtons, decorateBlockBg } = await import(`${miloLibs}/utils/decorate.js`);
+  const { decorateButtons  } = await import(`${miloLibs}/utils/decorate.js`);
   const { createTag, loadStyle } = await import(`${miloLibs}/utils/utils.js`);
   if (!el.classList.contains('horizontal-masonry')) {
     alert('Using interactive-marquee on Express requires using the horizontal-masonry class.');
@@ -77,7 +73,7 @@ export default async function init(el) {
   }
   loadStyle('/express/features/horizontal-masonry/horizontal-masonry.css');
   loadStyle('/express/blocks/interactive-marquee/milo-marquee.css');
-  interactiveInit(el, decorateButtons, decorateBlockBg, createTag);
+  interactiveInit(el, decorateButtons,   createTag);
   const { default: setHorizontalMasonry } = await import('../../features/horizontal-masonry/horizontal-masonry.js');
   await setHorizontalMasonry(el);
 }

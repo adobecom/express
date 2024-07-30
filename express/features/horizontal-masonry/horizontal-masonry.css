@@ -16,7 +16,7 @@ main .interactive-marquee.horizontal-masonry .interactive-container {
     height: unset;
 }
 
-main .section:has(.interactive-marquee.horizontal-masonry) > div {
+main .section:has(.interactive-marquee.horizontal-masonry)>div {
     max-width: unset;
 }
 
@@ -71,6 +71,7 @@ main .interactive-marquee.horizontal-masonry .con-button {
     margin-left: 0px;
     padding-top: 8px;
     padding-bottom: 3px;
+    border-radius: 32px;
 }
 
 /* Input styles */
@@ -78,9 +79,14 @@ main .interactive-marquee.horizontal-masonry input[type="text"] {
     width: calc(100% - 60px);
     height: 35px;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
+    border-color: transparent;
+    border-radius: 16px;
     margin-left: 40px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+main .interactive-marquee.horizontal-masonry input[type="text"]::placeholder {
+    font-style: italic;
 }
 
 main .interactive-container.interactive-marquee.horizontal-masonry .enticement-container input::placeholder {
@@ -117,7 +123,7 @@ main .interactive-marquee.horizontal-masonry .icon-enticement-arrow {
 /* Media container styles */
 main .interactive-marquee.horizontal-masonry .media-container {
     display: flex;
-    max-width: 600px;
+    width: 800px;
     max-height: 400px;
     flex-wrap: wrap;
     flex-direction: row;
@@ -158,6 +164,8 @@ main .interactive-marquee.horizontal-masonry .media-container .overlay {
     padding: 10px;
     display: none;
     color: white;
+    height: 100%;
+    overflow: hidden;
 }
 
 main .interactive-marquee.horizontal-masonry .media-container .prompt-title {
@@ -199,7 +207,7 @@ main .interactive-marquee.horizontal-masonry .media-container p.image-container:
 }
 
 /* Typography styles */
-main .interactive-marquee.horizontal-masonry .foreground h1 > em {
+main .interactive-marquee.horizontal-masonry .foreground h1>em {
     font-style: normal;
     background: linear-gradient(320deg, #7C84F3, #FF4DD2, #FF993B, #FF4DD2, #7C84F3, #FF4DD2, #FF993B);
     background-size: 400% 400%;
@@ -208,7 +216,7 @@ main .interactive-marquee.horizontal-masonry .foreground h1 > em {
     -webkit-text-fill-color: transparent;
 }
 
-main .interactive-marquee.horizontal-masonry h1 > em::after {
+main .interactive-marquee.horizontal-masonry h1>em::after {
     content: '';
     background-image: url(/express/icons/black-quick-actions.svg);
     background-size: contain;
@@ -255,7 +263,7 @@ main .interactive-marquee.horizontal-masonry.no-search .enticement-container {
     display: none;
 }
 
-main .interactive-marquee.horizontal-masonry.no-search  .interactive-container {
+main .interactive-marquee.horizontal-masonry.no-search .interactive-container {
     margin-top: unset;
 }
 
@@ -307,6 +315,10 @@ main .interactive-marquee.horizontal-masonry.no-search  .interactive-container {
         font-size: 16px;
         left: 10px;
         bottom: -100%;
+    }
+
+    main .interactive-marquee.horizontal-masonry .media-container {
+        width: unset;
     }
 
     main .interactive-marquee.horizontal-masonry .enticement-arrow {
