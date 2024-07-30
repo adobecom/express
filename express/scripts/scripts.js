@@ -1,6 +1,5 @@
 import {
   sampleRUM,
-  removeIrrelevantSections,
   loadArea,
   loadLana,
   getMetadata,
