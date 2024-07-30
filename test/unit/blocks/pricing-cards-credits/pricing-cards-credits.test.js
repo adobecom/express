@@ -26,7 +26,6 @@ describe('Pricing Cards Credits', () => {
     const cards = pricingCardsCredits.querySelectorAll('.head-cnt');
     expect(cards).to.have.length(1);
   });
-  
 
   it('Contains a card with gradient-promo class', () => {
     const gradientPromoCard = pricingCardsCredits.querySelector('.card.gradient-promo');
@@ -47,10 +46,9 @@ describe('Pricing Cards Credits', () => {
     const pricingAreaWrappers = pricingCardsCredits.querySelectorAll('.pricing-area-wrapper');
     expect(pricingAreaWrappers).to.have.length(2);
   });
- 
+
   it('Contains compare-all class on button containers', () => {
     const compareAllButtons = pricingCardsCredits.querySelectorAll('.compare-all');
     expect(compareAllButtons.length === 2).to.be.true;
   });
- 
 });

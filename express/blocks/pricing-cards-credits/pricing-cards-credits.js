@@ -1,6 +1,6 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
-  createTag
+  createTag,
 } from '../../scripts/utils.js';
 
 function decorateHeader(header, planExplanation) {
@@ -41,8 +41,7 @@ function decorateCardBorder(card, source) {
   const pattern = /\{\{(.*?)\}\}/g;
   const matches = Array.from(source.textContent?.matchAll(pattern));
   if (matches.length > 0) {
-    const [_,promoType] = matches[0];
-    console.log(matches)
+    const [, promoType] = matches[0];
     card.classList.add(promoType.replaceAll(' ', ''));
     const newHeader = createTag('div', { class: 'promo-eyebrow-text' });
     newHeader.textContent = source.textContent.replace(pattern, '');
