@@ -10,7 +10,7 @@ main .section.banner-light-container {
 }
 
 main .section.banner-standout-container {
-  padding: 3rem 0;
+  padding: 48px 0;
 }
 
 main .section.banner-compact-container {
@@ -43,7 +43,8 @@ main .banner.compact p.button-container ~ p {
   margin-top: 0;
 }
 
-main .banner h2, main .banner h3 {
+main .banner h2,
+main .banner h3 {
   color: var(--color-white);
 }
 
@@ -51,8 +52,14 @@ main .banner h2 {
   margin-top: 0;
 }
 
-main .banner.light h2, main .banner.light h3 {
+main .banner.light h2,
+main .banner.light h3 {
   color: var(--color-black);
+}
+
+main .banner.standout h2,
+main .banner.standout h3 {
+  color: var(--heading-color);
 }
 
 main .banner a:any-link {
@@ -83,35 +90,30 @@ main .banner .standout-container {
   border-radius: 12px;
 }
 
-main .banner .standout-container h2 {
-  color: var(--heading-color);
-}
-
 main .banner .standout-container .standout-text {
-  background: linear-gradient(red, orange);
+  background: linear-gradient(#EB5FC8, #F09758);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-weight: 900;
 }
 
-
-@media (min-width:900px) {
+@media (min-width: 900px) {
   main .section.banner-container {
     padding-left: 56px;
     padding-right: 56px;
   }
 }
 
-@media (max-width:900px) {
-  main .banner .standout-container {
-    padding: 33px 6%;
-  }
-}
-
-@media (max-width:900px) {
+@media (max-width: 900px) {
   main .section.banner-standout-container {
     padding-left: 6%;
     padding-right: 6%;
+  }
+}
+
+@media (max-width: 900px) {
+  main .banner .standout-container {
+    padding: 33px 9%;
   }
 }
