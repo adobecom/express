@@ -17,7 +17,7 @@ main .section.banner-compact-container {
   padding: 40px 15px;
 }
 
-main .section.banner-container>div {
+main .section.banner-container > div {
   padding: 0;
 }
 
@@ -39,7 +39,7 @@ main .banner.compact p.button-container {
   margin-bottom: 0;
 }
 
-main .banner.compact p.button-container~p {
+main .banner.compact p.button-container ~ p {
   margin-top: 0;
 }
 
@@ -102,20 +102,18 @@ main .banner .standout-container .standout-text {
   font-weight: 900;
 }
 
-
-@media (min-width:900px) {
+@media (min-width: 900px) {
   main .section.banner-container {
     padding-left: 56px;
     padding-right: 56px;
   }
 }
 
-@media (max-width:900px) {
+@media (max-width: 900px) {
   main .banner .standout-container {
     padding: 33px 15%;
   }
 }
-
 
 /* @media (max-width:900px) {
   main .section.banner-standout-container {
