@@ -5,7 +5,6 @@ import {
   toClassName,
   getMetadata,
   getExperimentConfig,
-  checkTesting,
 } from '../../express/scripts/utils.js';
 
 /**
@@ -13,7 +12,7 @@ import {
  * @return {Object} returns a badge or empty string
  */
 function createTesting() {
-  if (checkTesting()) {
+  if (getMetadata('testing').toLowerCase() === 'on') {
     const div = document.createElement('div');
     div.className = 'hlx-testing hlx-badge';
     div.innerHTML = '<span title="This Page is part of an A/B Test run in Adobe Target">Testing On</span>';

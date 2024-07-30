@@ -207,7 +207,7 @@ const loadMartechFiles = async (config, url, edgeConfigId) => {
       adobe: {
         launch: { url, controlPageLoad: true },
         alloy: { edgeConfigId },
-        target: false, // TODO: express uses checkTesting()
+        target: false,
         audienceManager: true, // FIXME: deprecate audienceManager
       },
       milo: true,

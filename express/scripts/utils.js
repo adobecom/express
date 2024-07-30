@@ -1593,10 +1593,6 @@ export function decorateButtons(el = document) {
   });
 }
 
-export function checkTesting() {
-  return (getMetadata('testing').toLowerCase() === 'on');
-}
-
 /**
  * Sanitizes a string and turns it into camel case.
  * @param {*} name The unsanitized string
@@ -1754,11 +1750,6 @@ async function decorateTesting() {
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
         await loadAndRunExp(config, forcedExperiment, forcedVariant);
       }
-    }
-    const martech = usp.get('martech');
-    if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
-      // eslint-disable-next-line no-console
-      console.log('rushing martech');
     }
   } catch (e) {
     // eslint-disable-next-line no-console
