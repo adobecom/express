@@ -1,6 +1,4 @@
-import {
-  createTag,
-} from '../../scripts/utils.js';
+import { createTag } from '../../scripts/utils.js';
 
 export function addSchema(bl, heading) {
   const schema = {
@@ -29,19 +27,27 @@ export function addSchema(bl, heading) {
   document.head.append(createTag('script', { type: 'application/ld+json' }, JSON.stringify(schema)));
 }
 
-export function removePages(bl, cards) {}
-
-export function addPages(bl, cards) {
-  if (bl.querySelector('.page-control')) {
-    
-  }
+const nextStepSVGHTML = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g id="Slider Button - Arrow - Right">
+    <circle id="Ellipse 24477" cx="16" cy="16" r="16" fill="#E1E1E1"/>
+    <path id="chevron-right" d="M14.6016 21.1996L19.4016 16.3996L14.6016 11.5996" stroke="#292929" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
+`;
+const prevStepSVGHTML = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g id="Slider Button - Arrow - Left">
+    <circle id="Ellipse 24477" cx="16" cy="16" r="16" transform="matrix(-1 0 0 1 32 0)" fill="#E1E1E1"/>
+    <path id="chevron-right" d="M17.3984 21.1996L12.5984 16.3996L17.3984 11.5996" stroke="#292929" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>`;
+export function addSlider(bl, cards) {
   const dots = [];
   let curr = 0;
   const cnt = cards.length;
   const control = createTag('div', { class: 'page-control' });
   const pageStatus = createTag('div', { class: 'page-status' });
-  const prev = createTag('div', { class: 'prev' }, 'p');
-  const next = createTag('div', { class: 'next' }, 'n');
+  const prev = createTag('div', { class: 'prev' }, prevStepSVGHTML);
+  const next = createTag('div', { class: 'next' }, nextStepSVGHTML);
   const changePage = (target) => {
     cards[curr].classList.add('hide');
     cards[target].classList.remove('hide');
@@ -65,6 +71,15 @@ export function addPages(bl, cards) {
   bl.append(control);
 }
 
+async function syncMinHeights(groups) {
+  const maxHeights = groups.map((els) => els
+    .filter(Boolean)
+    .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
+  maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
+    if (e) e.style.minHeight = `${maxHeight}px`;
+  }));
+}
+
 export default function decorate(bl) {
   const section = bl.closest('.section');
   const heading = section.querySelector('h2, h3, h4');
@@ -83,17 +98,19 @@ export default function decorate(bl) {
     content.classList.add('content');
   });
 
-  const mediaQuery = window.matchMedia('(min-width: 900px)');
-  // const cardCnt = cards.length;
-  const needsPage = true || mediaQuery.match;
-
-  if (needsPage) {
-    addPages(bl, cards);
-  }
+  addSlider(bl, cards);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        syncMinHeights([cards]);
+        bl.style.visibility = 'visible';
+      }
+    });
+  });
+  bl.style.visibility = 'hidden';
+  observer.observe(bl);
 
   if (bl.classList.contains('schema')) {
     addSchema(bl, heading);
   }
 }
-
-decorate(document.querySelector('.how-to-cards'));

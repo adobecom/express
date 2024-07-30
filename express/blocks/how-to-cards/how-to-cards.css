@@ -1,10 +1,9 @@
-
-.how-to-cards {
+.how-to-cards.block {
   display: grid;
   grid-template-columns: 1fr;
+  place-content: center;
+  place-items: center;
   grid-gap: 16px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .how-to-cards h2 {
@@ -19,8 +18,9 @@
 }
 
 .how-to-cards .card {
-  min-width: 320px;;
-  padding: 20px;
+  width: 246px;
+  box-sizing: border-box;
+  padding: 24px;
   border-radius: 12px;
   background-color: var(--color-gray-150);
 }
@@ -28,27 +28,40 @@
 .how-to-cards .page-control {
   display: flex;
   justify-content: flex-end;
-  gap: 20px;
+  gap: 8px;
   align-items: center;
+}
+
+.how-to-cards .page-control svg {
+  cursor: pointer;
+  height: 2rem;
+  width: 2rem;
+}
+
+.how-to-cards .page-control svg:hover circle {
+  fill: var(--color-gray-300);
 }
 
 .how-to-cards .page-status {
   display: flex;
-  gap: 12px;
-  background-color: blue;
-  padding: 10px;
+  align-items: center;
+  gap: 6px;
+  background-color: #e1e1e1;
+  padding: 8px 16px;
   border-radius: 50px;
+  height: 32px;
+  box-sizing: border-box;
 }
 
 .how-to-cards .page-status .dot {
   border-radius: 50px;
-  width: 10px;
-  height: 10px;
-  background-color: grey;
+  width: 6px;
+  height: 6px;
+  background-color: #717171;
 }
 
 .how-to-cards .page-status .dot.curr {
-  width: 80px; 
+  width: 30px; 
 }
 
 .how-to-cards .card.hide {
@@ -90,18 +103,26 @@
   left: 0;
   height: 0;
   width: 100%;
-  transition: height 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: height .5s cubic-bezier(0.19, 1, 0.22, 1);
   background-color: black;
+}
+
+.how-to-cards .card:hover {
+  background-color: var(--color-gray-200);
+  transition: background-color .5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.how-to-cards .card:not(:hover) {
+  transition: background-color .2s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .how-to-cards .card:hover .number-bg {
   height: 100%;
-  transition: height 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: height .5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .how-to-cards .card:not(:hover) .number-bg {
-  height: 0;
-  transition: height 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: height .2s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .how-to-cards .card:hover .number-txt {
@@ -109,11 +130,17 @@
   transition: color .1s linear;
 }
 
-@media (min-width: 900px) {
-  .how-to-cards {
-    display: flex;
+@media (min-width: 530px) {
+  .how-to-cards.block {
+    grid-template-columns: repeat(auto-fit, minmax(246px, 1fr));
+    max-width: 1440px;
   }
-}
 
-@media (min-width: 1200px) {
+  .how-to-cards .card.hide {
+    display: block;
+  }
+
+  .how-to-cards .page-control {
+    display: none;
+  }
 }
