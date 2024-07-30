@@ -57,6 +57,11 @@ main .banner.light h3 {
   color: var(--color-black);
 }
 
+main .banner.standout h2,
+main .banner.standout h3 {
+  color: var(--heading-color);
+}
+
 main .banner a:any-link {
   color: var(--color-white);
 }
@@ -83,10 +88,6 @@ main .banner .standout-container {
   color: var(--body-color);
   padding: 33px 31%;
   border-radius: 12px;
-}
-
-main .banner .standout-container h2 {
-  color: var(--heading-color);
 }
 
 main .banner-standout-container .banner.standout.block {
