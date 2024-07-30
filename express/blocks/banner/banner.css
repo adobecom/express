@@ -17,7 +17,7 @@ main .section.banner-compact-container {
   padding: 40px 15px;
 }
 
-main .section.banner-container > div {
+main .section.banner-container>div {
   padding: 0;
 }
 
@@ -39,11 +39,12 @@ main .banner.compact p.button-container {
   margin-bottom: 0;
 }
 
-main .banner.compact p.button-container ~ p {
+main .banner.compact p.button-container~p {
   margin-top: 0;
 }
 
-main .banner h2, main .banner h3 {
+main .banner h2,
+main .banner h3 {
   color: var(--color-white);
 }
 
@@ -51,7 +52,8 @@ main .banner h2 {
   margin-top: 0;
 }
 
-main .banner.light h2, main .banner.light h3 {
+main .banner.light h2,
+main .banner.light h3 {
   color: var(--color-black);
 }
 
@@ -79,12 +81,17 @@ main .banner p:last-of-type {
 main .banner .standout-container {
   background-color: var(--body-background-color);
   color: var(--body-color);
-  padding: 33px 28%;
+  padding: 33px 31%;
   border-radius: 12px;
 }
 
 main .banner .standout-container h2 {
   color: var(--heading-color);
+}
+
+main .banner-standout-container .banner.standout.block {
+  max-width: none;
+  width: 91.5%;
 }
 
 main .banner .standout-container .standout-text {
@@ -105,13 +112,21 @@ main .banner .standout-container .standout-text {
 
 @media (max-width:900px) {
   main .banner .standout-container {
-    padding: 33px 6%;
+    padding: 33px 15%;
   }
 }
 
-@media (max-width:900px) {
+
+/* @media (max-width:900px) {
   main .section.banner-standout-container {
-    padding-left: 6%;
-    padding-right: 6%;
+    padding-left: 3%;
+    padding-right: 3%;
   }
-}
+} */
+
+/* @media (max-width:900px) {
+  main .banner-standout-container .banner.standout.block {
+    max-width: none;
+    width: 93%;
+  }
+} */
