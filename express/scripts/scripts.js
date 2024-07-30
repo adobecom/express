@@ -9,6 +9,7 @@ import {
   createTag,
   getConfig,
   decorateArea,
+  getMobileOperatingSystem,
 } from './utils.js';
 
 const locales = {
@@ -89,6 +90,12 @@ const eagerLoad = (img) => {
     fqaMeta.setAttribute('name', 'fqa-on');
   }
   document.head.append(fqaMeta);
+  if (getMetadata('target-only-mobile-web') === 'on'
+    && getMetadata('target') === 'on'
+    && !(userAgent.includes('Mobile') && getMobileOperatingSystem() === 'Android' && navigator.deviceMemory >= 4)
+  ) {
+    document.head.querySelector('meta[name=target]').content = 'off';
+  }
 }());
 
 decorateArea();
