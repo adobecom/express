@@ -91,7 +91,7 @@ main .banner .standout-container {
 }
 
 main .banner .standout-container strong {
-  background: linear-gradient(#D463D3, #F09A55);
+  background: linear-gradient(180deg, #FF4DD2 20%, #FF993B 80%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
