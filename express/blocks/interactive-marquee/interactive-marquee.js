@@ -65,7 +65,7 @@ function interactiveInit(el, decorateButtons, createTag) {
 
 export default async function init(el) {
   const miloLibs = setLibs('/libs');
-  const { decorateButtons  } = await import(`${miloLibs}/utils/decorate.js`);
+  const { decorateButtons } = await import(`${miloLibs}/utils/decorate.js`);
   const { createTag, loadStyle } = await import(`${miloLibs}/utils/utils.js`);
   if (!el.classList.contains('horizontal-masonry')) {
     alert('Using interactive-marquee on Express requires using the horizontal-masonry class.');
@@ -73,7 +73,7 @@ export default async function init(el) {
   }
   loadStyle('/express/features/horizontal-masonry/horizontal-masonry.css');
   loadStyle('/express/blocks/interactive-marquee/milo-marquee.css');
-  interactiveInit(el, decorateButtons,   createTag);
+  interactiveInit(el, decorateButtons, createTag);
   const { default: setHorizontalMasonry } = await import('../../features/horizontal-masonry/horizontal-masonry.js');
   await setHorizontalMasonry(el);
 }
