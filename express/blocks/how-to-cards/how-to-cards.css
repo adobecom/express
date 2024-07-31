@@ -1,9 +1,5 @@
 .how-to-cards.block {
-  display: grid;
-  grid-template-columns: 1fr;
-  place-content: center;
-  place-items: center;
-  grid-gap: 16px;
+  max-width: unset;
 }
 
 .how-to-cards h2 {
@@ -17,8 +13,20 @@
   margin-top: 0;
 }
 
+.how-to-cards .cards-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+  overflow-x: scroll;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+
 .how-to-cards .card {
-  width: 246px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  width: 448px;
   box-sizing: border-box;
   padding: 24px;
   border-radius: 12px;
@@ -26,20 +34,33 @@
 }
 
 .how-to-cards .page-control {
+  padding-top: 16px;
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   align-items: center;
 }
 
-.how-to-cards .page-control svg {
+.how-to-cards .page-control button {
+  all: unset;
   cursor: pointer;
   height: 2rem;
-  width: 2rem;
 }
 
-.how-to-cards .page-control svg:hover circle {
+.how-to-cards .page-control button:hover circle {
   fill: var(--color-gray-300);
+}
+
+.how-to-cards .page-control button:disabled {
+  cursor: auto;
+}
+
+.how-to-cards .page-control button:disabled path {
+  stroke: var(--color-gray-300);
+}
+
+.how-to-cards .filler {
+  visibility: hidden;
 }
 
 .how-to-cards .page-status {
@@ -62,10 +83,6 @@
 
 .how-to-cards .page-status .dot.curr {
   width: 30px; 
-}
-
-.how-to-cards .card.hide {
-  display: none;
 }
 
 .how-to-cards .content {
@@ -130,17 +147,16 @@
   transition: color .1s linear;
 }
 
-@media (min-width: 530px) {
+@media (min-width: 480px) {
   .how-to-cards.block {
-    grid-template-columns: repeat(auto-fit, minmax(246px, 1fr));
-    max-width: 1440px;
-  }
-
-  .how-to-cards .card.hide {
-    display: block;
+    
   }
 
   .how-to-cards .page-control {
-    display: none;
+    justify-content: flex-start;
+  }
+
+  .how-to-cards .card {
+    width: 308px;
   }
 }

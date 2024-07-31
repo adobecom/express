@@ -40,29 +40,33 @@ const prevStepSVGHTML = `<svg width="32" height="32" viewBox="0 0 32 32" fill="n
     <path id="chevron-right" d="M17.3984 21.1996L12.5984 16.3996L17.3984 11.5996" stroke="#292929" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 </svg>`;
-export function addSlider(bl, cards) {
+export function addSlider(bl, items, platform) {
   const dots = [];
   let curr = 0;
-  const cnt = cards.length;
+  const cnt = items.length;
   const control = createTag('div', { class: 'page-control' });
   const pageStatus = createTag('div', { class: 'page-status' });
-  const prev = createTag('div', { class: 'prev' }, prevStepSVGHTML);
-  const next = createTag('div', { class: 'next' }, nextStepSVGHTML);
+  const prev = createTag('button', { class: 'prev' }, prevStepSVGHTML);
+  prev.disabled = true;
+  const next = createTag('button', { class: 'next' }, nextStepSVGHTML);
   const changePage = (target) => {
-    cards[curr].classList.add('hide');
-    cards[target].classList.remove('hide');
     dots[curr].classList.remove('curr');
     dots[target].classList.add('curr');
     curr = target;
   };
   prev.addEventListener('click', () => {
+    next.disabled = false;
     changePage((curr - 1 + cnt) % cnt);
+    platform.scrollLeft -= items[0].scrollWidth;
+    if (curr === 0) next.disabled = true;
   });
   next.addEventListener('click', () => {
+    prev.disabled = false;
     changePage((curr + 1) % cnt);
+    platform.scrollLeft += items[0].scrollWidth;
+    if (curr === 4) next.disabled = true;
   });
-  cards.forEach((card, i) => {
-    if (i > 0) card.classList.add('hide');
+  items.forEach((item, i) => {
     const dot = createTag('div', { class: `dot${i === 0 ? ' curr' : ''}` });
     dots.push(dot);
     pageStatus.append(dot);
@@ -71,19 +75,10 @@ export function addSlider(bl, cards) {
   bl.append(control);
 }
 
-async function syncMinHeights(groups) {
-  const maxHeights = groups.map((els) => els
-    .filter(Boolean)
-    .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
-  maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
-    if (e) e.style.minHeight = `${maxHeight}px`;
-  }));
-}
-
 export default function decorate(bl) {
   const section = bl.closest('.section');
   const heading = section.querySelector('h2, h3, h4');
-
+  const cardsContainer = createTag('div', { class: 'cards-container' });
   const cards = [...bl.querySelectorAll(':scope > div')];
 
   cards.forEach((div, index) => {
@@ -96,19 +91,14 @@ export default function decorate(bl) {
     );
     content.prepend(tipNumber);
     content.classList.add('content');
+    cardsContainer.append(div);
   });
+  cardsContainer.append(createTag('div', { class: 'filler card' }));
+  cardsContainer.append(createTag('div', { class: 'filler card' }));
+  cardsContainer.append(createTag('div', { class: 'filler card' }));
+  bl.append(cardsContainer);
 
-  addSlider(bl, cards);
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        syncMinHeights([cards]);
-        bl.style.visibility = 'visible';
-      }
-    });
-  });
-  bl.style.visibility = 'hidden';
-  observer.observe(bl);
+  addSlider(bl, cards, cardsContainer);
 
   if (bl.classList.contains('schema')) {
     addSchema(bl, heading);
