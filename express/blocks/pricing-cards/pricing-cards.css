@@ -20,6 +20,8 @@ main .section:has(.pricing-cards)>div {
   width: min-content;
   flex-wrap: wrap;
   gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
 } 
 
 .pricing-cards .card > div {
@@ -50,15 +52,17 @@ main .section:has(.pricing-cards)>div {
 }
 
 .pricing-cards>.card.gradient-promo {
-  margin-top: 0px;
-  border-top: 48px solid white;
-  border-radius: 16px;
-  border-width: 48px 3px 3px 3px;
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-  border-image: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) 1;
-  -webkit-mask-image: radial-gradient(circle, white 100%, black 0);
-  mask-image: radial-gradient(circle, white 100%, black 0);
+  margin-top: unset;
+  background:
+  linear-gradient(white 0 0) padding-box,
+  linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) border-box;
+border-radius: 12px;
+border-width: 4px;
+border-style: solid;
+border-image: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) 1;
+-webkit-mask-image: radial-gradient(circle, white 100%, black 100%);
+mask-image: radial-gradient(circle 32px at 32px 32px, white 100%, black 100%);
+border-top-width: 48px;
 }
 
 .pricing-cards > .card > div {
@@ -83,8 +87,10 @@ main .section:has(.pricing-cards)>div {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 20px;
-  padding-bottom: 20px;
+   padding-top: 20px;
+  padding-bottom: 20px;  
+  /* display: contents; */
+  /* min-height: 70px; */
 }
 
 .pricing-cards.block .card-header h2 {
@@ -494,7 +500,7 @@ main .section:has(.pricing-cards)>div {
 }
 
 .pricing-cards .card > div:nth-child(n+4){
-  flex-grow: 1;
+  /* flex-grow: 1; */
 }
 
 .pricing-cards .card > div:last-child {
@@ -503,7 +509,8 @@ main .section:has(.pricing-cards)>div {
 }
 
 .pricing-cards .card .plan-explanation {
-  min-height: 60px;
+  /* min-height: 60px; */
+  /* display: contents; */
 }
 
 .pricing-cards .card .card-feature-list {

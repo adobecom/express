@@ -11,7 +11,7 @@ import {
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
-import createToggle  from './pricing-toggle.js';
+import createToggle from './pricing-toggle.js';
 import { handleTooltip } from './pricing-tooltip.js';
 
 
@@ -205,7 +205,7 @@ async function createPricingSection(
       a.parentNode.remove();
     }
     formatDynamicCartLink(a);
-    if (a.textContent.includes(SALES_NUMBERS)){
+    if (a.textContent.includes(SALES_NUMBERS)) {
       formatSalesPhoneNumber([a], SALES_NUMBERS)
     }
     ctaArea.append(a);
@@ -295,7 +295,7 @@ export default async function init(el) {
 
     const groupID = `${Date.now()}`;
     const toggle = createToggle(placeholders, [m1, m2, a1, a2], groupID);
-    rows[3].children[0].insertBefore(toggle,rows[3].children[0].children[0])
+    rows[3].children[0].insertBefore(toggle, rows[3].children[0].children[0])
     rows[7].children[0].classList.add('card-feature-list')
     rows[8].children[0].classList.add('compare-all')
 
@@ -308,5 +308,50 @@ export default async function init(el) {
   for (let card of cards) {
     el.appendChild(card)
   }
-   
+
+  const observer = new IntersectionObserver((entries) => {
+ 
+    entries.forEach(entry => {
+      console.log(entry)
+      if (entry.isIntersecting) {
+        equalizeHeights();
+        observer.unobserve(entry.target);
+      }
+    });
+  });
+
+  document.querySelectorAll('.card').forEach(column => {
+    observer.observe(column);
+  });
+
+  function equalizeHeights() { 
+    const classNames = [".card-header", ".plan-explanation"]
+    for (let className of classNames){
+      const headers = document.querySelectorAll(className);
+      let maxHeight = 0;
+      headers.forEach((header, index) => {
+         if (header.checkVisibility()){
+          const height = getHeightWithoutPadding(header);
+          header.ATTRIBUTE_NODE
+          maxHeight = Math.max(maxHeight, height); 
+         }
+      });
+      headers.forEach(placeholder => {
+        if (placeholder.style.height) return
+        placeholder.style.height = maxHeight + 'px';
+      });
+    }
+  }
+
+  function getHeightWithoutPadding(element) {
+    const styles = window.getComputedStyle(element);
+    const paddingTop = parseFloat(styles.paddingTop);
+    const paddingBottom = parseFloat(styles.paddingBottom);
+    return element.clientHeight - paddingTop - paddingBottom;
+  }
+
+  // Run on load and resize
+  window.addEventListener('load', equalizeHeights);
+  window.addEventListener('resize', equalizeHeights);
+
 }
