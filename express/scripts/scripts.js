@@ -1,6 +1,5 @@
 import {
   sampleRUM,
-  removeIrrelevantSections,
   loadArea,
   loadLana,
   getMetadata,
@@ -9,6 +8,8 @@ import {
   setConfig,
   createTag,
   getConfig,
+  decorateArea,
+  getMobileOperatingSystem,
 } from './utils.js';
 
 const locales = {
@@ -53,6 +54,7 @@ const config = {
     onDemand: !jarvisImmediatelyVisible,
   },
   links: 'on',
+  decorateArea,
   imsClientId: 'AdobeExpressWeb',
   imsScope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
 };
@@ -88,11 +90,18 @@ const eagerLoad = (img) => {
     fqaMeta.setAttribute('name', 'fqa-on');
   }
   document.head.append(fqaMeta);
+  if (getMetadata('target-only-mobile-web') === 'on'
+    && getMetadata('target') === 'on'
+    && !(userAgent.includes('Mobile') && getMobileOperatingSystem() === 'Android' && navigator.deviceMemory >= 4)
+  ) {
+    document.head.querySelector('meta[name=target]').content = 'off';
+  }
 }());
+
+decorateArea();
 
 (function loadLCPImage() {
   const main = document.body.querySelector('main');
-  removeIrrelevantSections(main);
   const firstDiv = main.querySelector('div:nth-child(1) > div');
   if (firstDiv?.classList.contains('marquee')) {
     firstDiv.querySelectorAll('img').forEach(eagerLoad);

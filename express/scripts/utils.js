@@ -568,9 +568,10 @@ export function yieldToMain() {
   });
 }
 
-export function removeIrrelevantSections(main) {
-  if (!main) return;
-  main.querySelectorAll(':scope > div').forEach((section) => {
+export function removeIrrelevantSections(area) {
+  if (!area) return;
+  const selector = area === document ? 'body > main > div' : ':scope > div';
+  area.querySelectorAll(selector).forEach((section) => {
     const sectionMetaBlock = section.querySelector('div.section-metadata');
     if (sectionMetaBlock) {
       const sectionMeta = readBlockConfig(sectionMetaBlock);
@@ -600,7 +601,7 @@ export function removeIrrelevantSections(main) {
     const linkToTarget = getMetadata(`${device}-floating-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
     if (textToTarget || linkToTarget) {
       const linkToTargetURL = new URL(linkToTarget);
-      const sameUrlCTAs = Array.from(main.querySelectorAll('a:any-link'))
+      const sameUrlCTAs = Array.from(area.querySelectorAll('a:any-link'))
         .filter((a) => {
           try {
             const currURL = new URL(a.href);
@@ -1445,7 +1446,7 @@ export function loadIms() {
       loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
     }
   }).then(() => {
-    if (!window.adobeIMS?.isSignedInUser() && !getMetadata('xlg-entitlements')) {
+    if (!window.adobeIMS?.isSignedInUser() && getMetadata('xlg-entitlements') !== 'on') {
       getConfig().entitlements([]);
     } else {
       setTimeout(async () => {
@@ -1454,6 +1455,8 @@ export function loadIms() {
         }
       }, 3000);
     }
+  }).catch(() => {
+    getConfig().entitlements([]);
   });
 
   return imsLoaded;
@@ -1590,10 +1593,6 @@ export function decorateButtons(el = document) {
       }
     }
   });
-}
-
-export function checkTesting() {
-  return (getMetadata('testing').toLowerCase() === 'on');
 }
 
 /**
@@ -1753,11 +1752,6 @@ async function decorateTesting() {
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
         await loadAndRunExp(config, forcedExperiment, forcedVariant);
       }
-    }
-    const martech = usp.get('martech');
-    if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
-      // eslint-disable-next-line no-console
-      console.log('rushing martech');
     }
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -2239,6 +2233,10 @@ export function addHeaderSizing($block, classPrefix = 'heading', selector = 'h1,
   });
 }
 
+export function decorateArea(area = document) {
+  removeIrrelevantSections(area);
+}
+
 /**
  * Call `addHeaderSizing` on default content blocks in all section blocks
  * in all Japanese pages except blog pages.
@@ -2563,6 +2561,7 @@ export async function loadArea(area = document) {
   const main = area.querySelector('main');
   if (isDoc) {
     await checkForPageMods();
+    removeIrrelevantSections(main);
     if (getMetadata('template-search-page') === 'Y') {
       const { default: redirect } = await import('./template-redirect.js');
       await redirect();
