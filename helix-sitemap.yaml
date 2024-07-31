@@ -43,7 +43,7 @@ sitemaps:
       indonesia:
         source: /id_id/express/query-index.json
         destination: /id_id/express/sitemap.xml
-        hreflang: id
+        hreflang: en-ID
         alternate: /id_id/{path}
       japan:
         source: /jp/express/query-index.json
