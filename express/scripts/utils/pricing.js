@@ -244,7 +244,6 @@ export function shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremi
 export const formatSalesPhoneNumber = (() => {
   let numbersMap;
   return async (tags, placeholder = '') => {
-    console.log(tags)
     if (tags.length <= 0) return;
 
     if (!numbersMap) {

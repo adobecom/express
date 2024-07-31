@@ -308,6 +308,5 @@ export default async function init(el) {
   for (let card of cards) {
     el.appendChild(card)
   }
-  
-  observer.observe(el);
+   
 }
