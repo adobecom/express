@@ -233,7 +233,7 @@ main .interactive-marquee.horizontal-masonry .foreground h1>em {
 
 main .interactive-marquee.horizontal-masonry h1>em::after {
     content: '';
-    background-image: url(/express/icons/black-quick-actions.svg);
+    background-image: url(/express/icons/double-sparkles.svg);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
