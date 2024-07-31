@@ -23,7 +23,7 @@ function createEnticement(enticementDetail, enticementLink, mode) {
   const arrowText = enticementDetail;
   const enticementText = createTag('span', { class: 'enticement-text' }, arrowText.trim());
 
-  const input = createTag('input', { type: 'text', placeholder: window.screen.width < 600 ? 'Describe your image...' :'Desribe the image you want to create...' });
+  const input = createTag('input', { type: 'text', placeholder: window.screen.width < 600 ? 'Describe your image...' : 'Desribe the image you want to create...' });
   const buttonContainer = createTag('span', { class: 'button-container' });
   const button = createTag('button', { class: 'generate-small-btn' });
   buttonContainer.append(button);
