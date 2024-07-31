@@ -203,6 +203,7 @@
 		import { sampleRUM } from '/express/scripts/utils.js';
 		sampleRUM('404', { source: document.referrer });
 	</script>
+	<esi:include src="/head.html" onerror="continue"/>
 </head>
 <body class="error-404">
   <main>
