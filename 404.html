@@ -203,11 +203,8 @@
 		import { sampleRUM } from '/express/scripts/utils.js';
 		sampleRUM('404', { source: document.referrer });
 	</script>
-  <esi:include src="/head.html" onerror="continue"/>
 </head>
 <body class="error-404">
-  <!--  header -->
-  <header><esi:include src="/header.plain.html" onerror="continue"/></header>
   <!--  main content -->
   <main> 
 	  <div>
@@ -222,7 +219,5 @@
 		</cite>
 	  </div>
   </main>
-  <!--  footer -->
-  <footer><esi:include src="/footer.plain.html"  onerror="continue"/></footer>
 </body>
 </html>
