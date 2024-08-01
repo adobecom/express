@@ -39,9 +39,7 @@ main .section > .pricing-cards-wrapper {
   border-radius: 32px;
   border-width: 4px;
   border-style: solid;
-  border-image: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) 1;
-  -webkit-mask-image: radial-gradient(circle, white 100%, black 100%);
-  mask-image: radial-gradient(circle 32px at 32px 32px, white 100%, black 100%);
+  border-image: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) 1; 
 }
 
 .pricing-cards-credits .promo-eyebrow-text {
