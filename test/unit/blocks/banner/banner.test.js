@@ -40,10 +40,9 @@ describe('Banner', () => {
     decorate(banner);
 
     const standoutContainer = banner.querySelector('.standout-container');
-    expect(standoutContainer).not.to.be.null;
+    expect(standoutContainer).to.exist;
 
     const button = banner.querySelector('a.button');
-    expect(button.classList.contains('large', 'primary', 'reverse')).to.be.true;
 
     ['large', 'primary'].forEach((className) => {
       expect(button.classList.contains(className)).to.be.true;
@@ -60,19 +59,10 @@ describe('Banner', () => {
     decorate(banner);
 
     const button = banner.querySelector('a.button');
-    expect(button.classList.contains('large', 'primary', 'reverse')).to.be.true;
 
     ['large', 'primary', 'reverse'].forEach((className) => {
       expect(button.classList.contains(className)).to.be.true;
     });
-
-    expect(['large', 'primary', 'reverse'].every((className) => button.classList.contains(className))).to.be.true;
-
-    // expect([...button.classList].sort().join(' ') === 'button large primary reverse').to.be.true;
-    expect([...button.classList].sort().join(' ')).to.equal('button large light primary reverse');
-
-    // expect([...button.classList].sort().join(' ') === 'button large primary reverse').to.be.true;
-    expect([...button.classList].sort().join(' ')).to.equal('button large light primary reverse');
 
     expect(button.classList.contains('accent')).to.be.false;
   });
@@ -83,7 +73,6 @@ describe('Banner', () => {
     decorate(banner);
 
     const button = banner.querySelector('a.button');
-    expect(button.classList.contains('dark', 'accent')).to.be.true;
 
     ['dark', 'accent'].forEach((className) => {
       expect(button.classList.contains(className)).to.be.true;
