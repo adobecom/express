@@ -51,11 +51,11 @@ describe('Banner', () => {
     const button = banner.querySelector('a.button');
     expect(button.classList.contains('large', 'primary', 'reverse')).to.be.true;
 
-    ['large', 'primary', 'reverse'].forEach(className => {
+    ['large', 'primary', 'reverse'].forEach((className) => {
       expect(button.classList.contains(className)).to.be.true;
-    })
+    });
 
-    expect([...button.classList].sort().join(" ") === 'button large primary').to.be.true;
+    expect([...button.classList].sort().join(' ') === 'button large primary').to.be.true;
   });
 
   it('Banner dark variant has correct elements', () => {
