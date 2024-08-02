@@ -26,11 +26,21 @@
 .how-to-cards .card {
   flex: 0 0 auto;
   scroll-snap-align: start;
-  width: 448px;
+  width: 100%;
   box-sizing: border-box;
   padding: 24px;
   border-radius: 12px;
   background-color: var(--color-gray-150);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.how-to-cards .card p {
+  font-size: var(--body-font-size-s);
+  text-align: left;
+  margin: 4px 0;
 }
 
 .how-to-cards .page-control {
@@ -47,7 +57,7 @@
   height: 2rem;
 }
 
-.how-to-cards .page-control button:hover circle {
+.how-to-cards .page-control button:hover:not(:disabled) circle {
   fill: var(--color-gray-300);
 }
 
@@ -83,18 +93,6 @@
 
 .how-to-cards .page-status .dot.curr {
   width: 30px; 
-}
-
-.how-to-cards .content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.how-to-cards .content p {
-  font-size: var(--body-font-size-s);
-  text-align: left;
-  margin: 4px 0;
 }
 
 .how-to-cards .number {
