@@ -8,6 +8,7 @@ const { default: decorate } = await import('../../../../express/blocks/banner/ba
 
 const body = await readFile({ path: './mocks/body.html' });
 const light = await readFile({ path: './mocks/light.html' });
+const standout = await readFile({ path: './mocks/standout.html' });
 const multiButton = await readFile({ path: './mocks/multi-button.html' });
 
 describe('Banner', () => {
@@ -31,6 +32,15 @@ describe('Banner', () => {
     const button = banner.querySelector('a.button');
     expect(heading).to.exist;
     expect(button).to.exist;
+  });
+
+  it('Banner standout variant has correct elements', () => {
+    document.body.innerHTML = standout;
+    const banner = document.querySelector('.banner');
+    decorate(banner);
+
+    const button = banner.querySelector('a.button');
+    expect(button.classList.contains('large', 'primary', 'reverse')).to.be.true;
   });
 
   it('Banner light variant has correct elements', () => {
