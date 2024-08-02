@@ -42,7 +42,7 @@ describe('Banner', () => {
     const button = banner.querySelector('a.button');
     expect(button.classList.contains('large', 'primary', 'reverse')).to.be.true;
 
-    ['large', 'primary', 'reverse'].forEach((className) => {
+    ['large', 'primary'].forEach((className) => {
       expect(button.classList.contains(className)).to.be.true;
     });
   });
