@@ -49,7 +49,9 @@ describe('Banner', () => {
       expect(button.classList.contains(className)).to.be.true;
     });
 
-    expect(button.classList.contains('reverse')).to.be.false;
+    ['accent', 'reverse'].forEach((className) => {
+      expect(button.classList.contains(className)).to.be.false;
+    });
   });
 
   it('Banner light variant has correct elements', () => {
@@ -68,7 +70,6 @@ describe('Banner', () => {
 
     // expect([...button.classList].sort().join(' ') === 'button large primary reverse').to.be.true;
     expect([...button.classList].sort().join(' ')).to.equal('button large light primary reverse');
-
 
     // expect([...button.classList].sort().join(' ') === 'button large primary reverse').to.be.true;
     expect([...button.classList].sort().join(' ')).to.equal('button large light primary reverse');
