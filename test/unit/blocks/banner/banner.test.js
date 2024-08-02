@@ -55,7 +55,7 @@ describe('Banner', () => {
       expect(button.classList.contains(className)).to.be.true;
     });
 
-    expect([...button.classList].sort().join(' ') === 'button large primary reverse').to.be.true;
+    // expect([...button.classList].sort().join(' ') === 'button large primary reverse').to.be.true;
 
     expect([...button.classList].sort().join(' ')).to.equal('button large primary reverse');
 
