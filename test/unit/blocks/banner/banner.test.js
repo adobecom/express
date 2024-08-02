@@ -55,7 +55,7 @@ describe('Banner', () => {
       expect(button.classList.contains(className)).to.be.true;
     });
 
-    expect([...button.classList].sort().join(' ') === 'button large primary').to.be.true;
+    expect([...button.classList].sort().join(' ') === 'large primary reverse').to.be.true;
   });
 
   it('Banner dark variant has correct elements', () => {
