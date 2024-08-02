@@ -39,12 +39,17 @@ describe('Banner', () => {
     const banner = document.querySelector('.banner');
     decorate(banner);
 
+    const standoutContainer = banner.querySelector('.standout-container');
+    expect(standoutContainer).not.to.be.null;
+
     const button = banner.querySelector('a.button');
     expect(button.classList.contains('large', 'primary', 'reverse')).to.be.true;
 
     ['large', 'primary'].forEach((className) => {
       expect(button.classList.contains(className)).to.be.true;
     });
+
+    expect(button.classList.contains('reverse')).to.be.false;
   });
 
   it('Banner light variant has correct elements', () => {
