@@ -41,6 +41,10 @@ describe('Banner', () => {
 
     const button = banner.querySelector('a.button');
     expect(button.classList.contains('large', 'primary', 'reverse')).to.be.true;
+
+    ['large', 'primary', 'reverse'].forEach((className) => {
+      expect(button.classList.contains(className)).to.be.true;
+    });
   });
 
   it('Banner light variant has correct elements', () => {
