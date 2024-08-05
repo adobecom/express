@@ -7,6 +7,7 @@ import {
   getIconElement,
   addHeaderSizing,
   getMetadata,
+  replaceHyphensInText,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
@@ -145,6 +146,8 @@ const handleVideos = (cell, a, block, thumbnail) => {
 };
 
 export default async function decorate(block) {
+  document.body.dataset.device === 'mobile' && replaceHyphensInText(document);
+
   addTempWrapper(block, 'columns');
 
   const rows = Array.from(block.children);

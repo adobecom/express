@@ -9,7 +9,6 @@ import {
   setConfig,
   createTag,
   getConfig,
-  replaceHyphensInText,
 } from './utils.js';
 
 const locales = {
@@ -160,7 +159,6 @@ const listenAlloy = () => {
   loadLana({ clientId: 'express' });
   listenAlloy();
   await loadArea();
-  replaceHyphensInText(document);
 
   import('./express-delayed.js').then((mod) => {
     mod.default();
