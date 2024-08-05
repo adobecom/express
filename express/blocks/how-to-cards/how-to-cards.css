@@ -25,6 +25,7 @@
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
+  scroll-padding: 16px;
 }
 
 .how-to-cards .card {
@@ -49,7 +50,7 @@
 
 .how-to-cards .number {
   position: relative;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 50%;
   background-color: white;
   width: 34px;
@@ -74,7 +75,8 @@
   background-color: black;
 }
 
-.how-to-cards .card:hover {
+.how-to-cards .card:hover,
+.how-to-cards .card:focus {
   background-color: var(--color-gray-200);
   transition: background-color .5s cubic-bezier(0.19, 1, 0.22, 1);
 }
@@ -83,7 +85,8 @@
   transition: background-color .2s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.how-to-cards .card:hover .number-bg {
+.how-to-cards .card:hover .number-bg,
+.how-to-cards .card:focus .number-bg {
   height: 100%;
   transition: height .5s cubic-bezier(0.19, 1, 0.22, 1);
 }
@@ -92,7 +95,8 @@
   transition: height .2s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.how-to-cards .card:hover .number-txt {
+.how-to-cards .card:hover .number-txt,
+.how-to-cards .card:focus .number-txt {
   color: white;
   transition: color .1s linear;
 }

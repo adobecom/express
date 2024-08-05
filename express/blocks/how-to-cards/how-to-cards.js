@@ -51,17 +51,7 @@ export default async function decorate(bl) {
   });
   bl.append(cardsContainer);
 
-  new IntersectionObserver((_, observer) => {
-    observer.unobserve(bl);
-    if (cardsContainer.scrollWidth <= cardsContainer.clientWidth) {
-      return;
-    }
-    bl.style.paddingBottom = '48px';
-    // turn cards into horizontally scrollable and inject control
-    carouselize(cards, cardsContainer, bl).then(() => {
-      bl.style.paddingBottom = '0';
-    });
-  }).observe(bl);
+  await carouselize(cards, cardsContainer, bl);
   if (bl.classList.contains('schema')) {
     addSchema(bl, heading);
   }
