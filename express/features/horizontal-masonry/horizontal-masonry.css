@@ -281,7 +281,7 @@ main .interactive-marquee.horizontal-masonry.no-search .interactive-container {
     margin-top: unset;
 }
 
-main .interactive-marquee.horizontal-masonry input[type="text"]:focus{ 
+main .interactive-marquee.horizontal-masonry input[type="text"]:focus { 
     outline: none;
     background:
     linear-gradient(white 0 0) padding-box,
