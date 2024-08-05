@@ -63,6 +63,7 @@ export default async function init(el) {
     rows[3].children[0].classList.add('pricing-area-wrapper');
     rows[3].children[0].appendChild(createTag('div', { class: 'pricing-bar' }));
     rows[4].children[0].classList.add('compare-all');
+    rows[4].children[0].children[0].classList.remove('button')
     for (let j = 0; j < rows.length; j += 1) {
       card.appendChild(rows[j].children[0]);
     }
