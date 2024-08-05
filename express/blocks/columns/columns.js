@@ -146,7 +146,7 @@ const handleVideos = (cell, a, block, thumbnail) => {
 };
 
 export default async function decorate(block) {
-  document.body.dataset.device === 'mobile' && replaceHyphensInText(document);
+  document.body.dataset.device === 'mobile' && replaceHyphensInText(block);
 
   addTempWrapper(block, 'columns');
 
