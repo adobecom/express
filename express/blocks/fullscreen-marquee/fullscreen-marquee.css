@@ -278,6 +278,12 @@
     text-align: center;
   }
 
+  .fullscreen-marquee.medium-header .fullscreen-marquee-heading h1 {
+    font-size: 45px;
+    line-height: 90px;
+    text-align: center;
+  }
+
   .fullscreen-marquee .fullscreen-marquee-heading p {
     font-size: var(--body-font-size-l);
     line-height: 30px;
