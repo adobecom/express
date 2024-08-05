@@ -20,7 +20,6 @@ const locales = {
   es: { ietf: 'es-ES', tk: 'hah7vzn.css' },
   fi: { ietf: 'fi-FI', tk: 'qxw8hzm.css' },
   fr: { ietf: 'fr-FR', tk: 'hah7vzn.css' },
-  id_en: { ietf: 'en', tk: 'hah7vzn.css' },
   id_id: { ietf: 'id', tk: 'qxw8hzm.css' },
   in: { ietf: 'en-GB', tk: 'hah7vzn.css' },
   it: { ietf: 'it-IT', tk: 'hah7vzn.css' },
