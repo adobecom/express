@@ -1913,7 +1913,7 @@ async function buildAutoBlocks(main) {
   }
 
   async function loadFloatingCTA(BlockMediator) {
-    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button'];
     const device = document.body.dataset?.device;
     const blockName = getMetadata(`${device}-floating-cta`);
 
@@ -1946,7 +1946,7 @@ async function buildAutoBlocks(main) {
 function splitSections(area) {
   const blocks = area.querySelectorAll(`:scope${area === document ? ' main' : ''} > div > div`);
   blocks.forEach((block) => {
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion'];
+    const blocksToSplit = ['template-list', 'banner', 'promotion'];
     // work around for splitting columns and sixcols template list
     // add metadata condition to minimize impact on other use cases
 

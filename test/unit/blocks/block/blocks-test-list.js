@@ -12,14 +12,6 @@ export default [
     input: 'input/table-of-contents.2levels.doc.html',
     expected: 'expected/table-of-contents.2levels.block.html',
   }, {
-    name: 'Link Image - basic',
-    input: 'input/link-image.basic.doc.html',
-    expected: 'expected/link-image.basic.block.html',
-  }, {
-    name: 'Link Image - no line breaks',
-    input: 'input/link-image.nolinebreaks.doc.html',
-    expected: 'expected/link-image.nolinebreaks.block.html',
-  }, {
     name: 'Template List - video',
     input: 'input/template-list.video.doc.html',
     expected: 'expected/template-list.video.block.html',
@@ -92,18 +84,6 @@ export default [
     name: 'Banner - multi button',
     input: 'input/banner.multi-button.doc.html',
     expected: 'expected/banner.multi-button.block.html',
-  }, {
-    name: 'Inline Banner - h1 - converted to h2',
-    input: 'input/inline-banner.h1.doc.html',
-    expected: 'expected/inline-banner.h2.block.html',
-  }, {
-    name: 'Inline Banner - inverted if dark container',
-    input: 'input/inline-banner.dark.doc.html',
-    expected: 'expected/inline-banner.dark.section.html',
-  }, {
-    name: 'Inline Banner - inverted if highlighted container',
-    input: 'input/inline-banner.highlight.doc.html',
-    expected: 'expected/inline-banner.inverted.section.html',
   }, {
     name: 'FAQ - basic',
     input: 'input/faq.doc.html',
