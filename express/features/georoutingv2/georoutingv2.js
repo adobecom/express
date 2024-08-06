@@ -190,10 +190,10 @@ function buildContent(currentPage, locale, geoData, locales) {
   });
   img.addEventListener(
     'error',
-    () => (img.src = `${config.miloLibs || config.codeRoot}/features/georoutingv2/img/globe-grid.png`),
+    () => (img.src = `${config.codeRoot}/features/georoutingv2/img/globe-grid.png`),
     { once: true },
   );
-  img.src = `${config.miloLibs || config.codeRoot}/img/georouting/${flagFile}`;
+  img.src = `https://www.adobe.com/libs/img/georouting/${flagFile}`;
   const span = createTag('span', { class: 'icon margin-inline-end' }, img);
   const mainAction = createTag('a', {
     class: 'con-button blue button-l', lang, role: 'button', 'aria-haspopup': !!locales, 'aria-expanded': false, href: '#',
@@ -202,7 +202,7 @@ function buildContent(currentPage, locale, geoData, locales) {
   if (locales) {
     const downArrow = createTag('img', {
       class: 'icon-milo down-arrow',
-      src: `${config.miloLibs || config.codeRoot}/ui/img/chevron.svg`,
+      src: 'https://www.adobe.com/libs/ui/img/chevron.svg',
       role: 'presentation',
       width: 15,
       height: 15,
@@ -254,13 +254,13 @@ async function getDetails(currentPage, localeMatches, geoData) {
 }
 
 async function showModal(details) {
-  const { miloLibs, codeRoot } = config;
+  const { codeRoot } = config;
 
   const tabs = details.querySelector('.tabs');
   const promises = [
     tabs ? loadBlock(tabs) : null,
-    tabs ? loadStyle(`${miloLibs || codeRoot}/blocks/section-metadata/section-metadata.css`) : null,
-    new Promise((resolve) => { loadStyle(`${miloLibs || codeRoot}/features/georoutingv2/georoutingv2.css`, resolve); }),
+    tabs ? loadStyle(`${codeRoot}/blocks/section-metadata/section-metadata.css`) : null,
+    new Promise((resolve) => { loadStyle(`${codeRoot}/features/georoutingv2/georoutingv2.css`, resolve); }),
   ];
   await Promise.all(promises);
   // eslint-disable-next-line import/no-cycle
@@ -332,7 +332,6 @@ export default async function loadGeoRouting(
         );
       }
     }
-    return;
   }
 
   // Show modal when derived countries from url locale and akamai disagree
