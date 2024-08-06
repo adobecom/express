@@ -103,6 +103,7 @@
   
   .dialog-modal.locale-modal-v2 .icon-milo.down-arrow {
     float: right;
+    margin-top: 4px;
     margin-left: 4px;
     top: 3px;
     filter: brightness(0) invert(1);
