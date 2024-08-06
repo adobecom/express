@@ -2398,6 +2398,7 @@ export async function loadTemplate() {
       try {
         await import(`${base}/templates/${name}/${name}.js`);
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.log(`failed to load module for ${name}`, err);
       }
       resolve();
@@ -2547,13 +2548,13 @@ function fragmentBlocksToLinks(area) {
   });
 }
 
-// function replaceHyphensInText(area) {
-//   [...area.querySelectorAll('h1, h2, h3, h4, h5, h6')]
-//     .filter((header) => header.innerHTML.includes('-'))
-//     .forEach((header) => {
-//       header.innerHTML = header.innerHTML.replace(/-/g, '\u2011');
-//     });
-// }
+export function replaceHyphensInText(area) {
+  [...area.querySelectorAll('h1, h2, h3, h4, h5, h6')]
+    .filter((header) => header.textContent.includes('-'))
+    .forEach((header) => {
+      header.textContent = header.textContent.replace(/-/g, '\u2011');
+    });
+}
 
 export async function loadArea(area = document) {
   const isDoc = area === document;
@@ -2581,7 +2582,6 @@ export async function loadArea(area = document) {
 
   splitSections(area);
   decorateButtons(area);
-  // replaceHyphensInText(area);
   await fixIcons(area);
   decorateSocialIcons(area);
 
