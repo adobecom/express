@@ -51,28 +51,28 @@ function decorateCardBorder(card, source) {
 }
 
 function decoratePricingArea(pricingArea) {
-  const pricingBar = createTag('div', { class: 'pricing-bar' })
+  const pricingBar = createTag('div', { class: 'pricing-bar' });
   pricingArea.classList.add('pricing-area-wrapper');
   pricingArea.appendChild(pricingBar);
 }
 
 function decorateCompareAll(compareAll) {
   compareAll.classList.add('compare-all');
-  compareAll.children[0].classList.remove('button')
+  compareAll.children[0].classList.remove('button');
 }
 
 function decoratePercentageBar(el) {
-  const pricingArea = el.querySelectorAll('.pricing-area-wrapper')
-  let max_credits = 0; 
+  const pricingArea = el.querySelectorAll('.pricing-area-wrapper');
+  let maxCredits = 0;
   pricingArea.forEach((bar) => {
-    let credit_count = parseInt(bar.children[0].textContent)
-    if (credit_count > max_credits) max_credits = credit_count 
-  })
+    const creditCount = parseInt(bar.children[0].textContent, 10);
+    if (creditCount > maxCredits) maxCredits = creditCount;
+  });
   pricingArea.forEach((bar) => {
-    let credit_count = parseInt(bar.children[0].textContent)
-    let percentage = 100 * credit_count / max_credits
-    bar.style.setProperty('--progress', percentage + '%');
-  })
+    const creditCount = parseInt(bar.children[0].textContent, 10);
+    const percentage = (100 * creditCount) / maxCredits;
+    bar.style.setProperty('--progress', `${percentage}%`);
+  });
 }
 
 export default async function init(el) {
@@ -85,9 +85,9 @@ export default async function init(el) {
     const card = createTag('div', { class: 'card' });
     decorateCardBorder(card, rows[1].children[0]);
     decorateHeader(rows[0].children[0], rows[2].children[0]);
-    decoratePricingArea(rows[3].children[0])
-    decorateCompareAll(rows[4].children[0])
-    
+    decoratePricingArea(rows[3].children[0]);
+    decorateCompareAll(rows[4].children[0]);
+
     for (let j = 0; j < rows.length; j += 1) {
       card.appendChild(rows[j].children[0]);
     }
@@ -98,5 +98,5 @@ export default async function init(el) {
   for (const card of cards) {
     el.appendChild(card);
   }
-  decoratePercentageBar(el)
+  decoratePercentageBar(el);
 }
