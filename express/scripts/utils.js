@@ -968,9 +968,11 @@ function decorateSection(section, idx) {
   // TODO: not in milo
   /* process section metadata */
   const sectionMeta = section.querySelector('div.section-metadata');
+
   if (sectionMeta) {
     const meta = readBlockConfig(sectionMeta);
     const keys = Object.keys(meta);
+
     keys.forEach((key) => {
       if (key === 'style') {
         section.classList.add(...meta.style.split(', ').map(toClassName));
@@ -982,7 +984,7 @@ function decorateSection(section, idx) {
         section.dataset[key] = meta[key];
       }
     });
-    sectionMeta.remove();
+    sectionMeta.style.display = 'none';
   }
   const blocks = section.querySelectorAll(':scope > div[class]:not(.default-content-wrapper)');
 
