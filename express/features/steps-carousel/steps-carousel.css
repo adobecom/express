@@ -1,0 +1,66 @@
+.steps-carousel-control {
+  padding: 16px 16px 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  align-items: center;
+}
+
+.steps-carousel-control.hide,
+.steps-carousel-control .hide {
+  display: none;
+}
+
+.steps-carousel-control.loading {
+  visibility: hidden;
+}
+
+.steps-carousel-control button {
+  all: unset;
+  cursor: pointer;
+  height: 2rem;
+  box-shadow: 0px 2px 8px 0px #00000029;
+  border-radius: 50px;
+}
+
+.steps-carousel-control button:hover:not(:disabled) circle {
+  fill: var(--color-gray-300);
+}
+
+.steps-carousel-control button:disabled {
+  cursor: auto;
+}
+
+.steps-carousel-control button:disabled path {
+  stroke: var(--color-gray-300);
+}
+
+.steps-carousel-control .status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: white;
+  box-shadow: 0px 2px 8px 0px #00000029;
+  padding: 8px 16px;
+  border-radius: 50px;
+  height: 32px;
+  box-sizing: border-box;
+}
+
+.steps-carousel-control .status .dot {
+  border-radius: 50px;
+  width: 6px;
+  height: 6px;
+  background-color: #717171;
+}
+
+.steps-carousel-control .status .dot.curr {
+  width: 30px;
+  background-color: #686DF4;
+}
+
+@media (min-width: 480px) {
+  .steps-carousel-control {
+    justify-content: flex-start;
+  }
+}
