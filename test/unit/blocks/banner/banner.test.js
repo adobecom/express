@@ -8,6 +8,7 @@ const { default: decorate } = await import('../../../../express/blocks/banner/ba
 
 const body = await readFile({ path: './mocks/body.html' });
 const light = await readFile({ path: './mocks/light.html' });
+const standout = await readFile({ path: './mocks/standout.html' });
 const multiButton = await readFile({ path: './mocks/multi-button.html' });
 
 describe('Banner', () => {
@@ -33,13 +34,37 @@ describe('Banner', () => {
     expect(button).to.exist;
   });
 
+  it('Banner standout variant has correct elements', () => {
+    document.body.innerHTML = standout;
+    const banner = document.querySelector('.banner');
+    decorate(banner);
+
+    const standoutContainer = banner.querySelector('.standout-container');
+    expect(standoutContainer).to.exist;
+
+    const button = banner.querySelector('a.button');
+
+    ['large', 'primary'].forEach((className) => {
+      expect(button.classList.contains(className)).to.be.true;
+    });
+
+    ['accent', 'reverse'].forEach((className) => {
+      expect(button.classList.contains(className)).to.be.false;
+    });
+  });
+
   it('Banner light variant has correct elements', () => {
     document.body.innerHTML = light;
     const banner = document.querySelector('.banner');
     decorate(banner);
 
     const button = banner.querySelector('a.button');
-    expect(button.classList.contains('large', 'primary', 'reverse')).to.be.true;
+
+    ['large', 'primary', 'reverse'].forEach((className) => {
+      expect(button.classList.contains(className)).to.be.true;
+    });
+
+    expect(button.classList.contains('accent')).to.be.false;
   });
 
   it('Banner dark variant has correct elements', () => {
@@ -48,7 +73,10 @@ describe('Banner', () => {
     decorate(banner);
 
     const button = banner.querySelector('a.button');
-    expect(button.classList.contains('dark', 'accent')).to.be.true;
+
+    ['dark', 'accent'].forEach((className) => {
+      expect(button.classList.contains(className)).to.be.true;
+    });
   });
 
   it('Banner multi-button has correct elements', () => {
