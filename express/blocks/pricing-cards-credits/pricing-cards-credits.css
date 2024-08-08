@@ -1,0 +1,219 @@
+main .section>.pricing-cards-wrapper {
+  max-width: unset;
+}
+
+.pricing-cards-credits {
+  margin: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+  text-align: left;
+}
+
+.pricing-cards-credits>.card>.plan-explanation {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.pricing-cards-credits>.card {
+  width: 400px;
+  padding: 30px;
+  position: relative;
+  margin: 48px 10px 0;
+  z-index: 1;
+  border: 2px solid #C6C6C6;
+  background-color: white;
+  border-radius: 32px;
+}
+
+.pricing-cards-credits .none {
+  display: none;
+}
+
+.pricing-cards-credits>.card.gradient-promo {
+  background:
+    linear-gradient(white 0 0) padding-box,
+    linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) border-box;
+  border-radius: 32px;
+  border-width: 4px;
+  border-style: solid;
+  border-image: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) 1;
+  -webkit-mask-image: radial-gradient(circle, white 100%, black 100%);
+}
+
+.pricing-cards-credits .promo-eyebrow-text {
+  position: absolute;
+  top: -36px;
+  text-align: center;
+  color: white;
+  width: 100%;
+  margin: auto;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+/* Header */
+.pricing-cards-credits .card-header {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pricing-cards-credits.block .card-header h2 {
+  font-weight: var(--heading-font-weight);
+  line-height: var(--heading-line-height);
+  font-size: 1.75rem;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pricing-cards-credits .card-header h2 {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 8px;
+}
+
+.pricing-cards-credits .card-header img {
+  width: 22px;
+  height: 22px;
+}
+
+.pricing-cards-credits .card-header .head-cnt {
+  border-bottom: 1px solid #000;
+  padding-bottom: 2px;
+  font-size: var(--body-font-size-m);
+  font-weight: 400;
+}
+
+.pricing-cards-credits .card-header .head-cnt>img {
+  width: 14px;
+  height: 14px;
+  padding-right: 6px;
+}
+
+.pricing-cards-credits .pricing-area-wrapper {
+  padding-bottom: 40px;
+  border-bottom: 1px solid gray;
+}
+
+.pricing-cards-credits .pricing-area-wrapper strong {
+  font-size: 30pt;
+  font-weight: 800;
+}
+
+.pricing-cards-credits .pricing-area-wrapper a {
+  text-decoration: underline;
+}
+
+.pricing-cards-credits .pricing-bar {
+  border-bottom: 10px solid lightgray;
+  border-radius: 5px;
+  margin-top: 30px;
+  width: 400px;
+  position: relative;
+}
+
+.pricing-cards-credits .pricing-bar::before {
+  content: '';
+  position: absolute;
+  height: 10px;
+  background-color: #5c5ce0;
+  transition: width 0.5s ease-in-out;
+  width: var(--progress, 0%);
+  border-radius: 5px;
+}
+
+.pricing-cards-credits:has(.billing-toggle:not(.hidden)) .billing-toggle.hidden {
+  height: unset;
+}
+
+.pricing-cards-credits .compare-all {
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+}
+
+.pricing-cards-credits .card .compare-all>a {
+  color: var(--color-info-accent);
+  border: none;
+  background: none;
+  padding: 0px;
+  text-decoration: underline;
+  font-weight: 400;
+  margin-top: 15px;
+  font-size: 14pt;
+  margin-bottom: 0px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .pricing-cards-credits {
+    flex-wrap: wrap;
+    gap: 10px;
+    min-width: none;
+  }
+
+  .pricing-cards-credits .card {
+    width: calc(100% - 40px);
+    margin: auto;
+    min-height: unset;
+  }
+
+  .pricing-cards-credits .card-feature-list {
+    display: none;
+    min-height: 0px;
+  }
+
+  .pricing-cards-credits .card .card-feature-list {
+    min-height: unset;
+  }
+
+  .pricing-cards-credits .card-cta-group {
+    min-height: unset;
+  }
+
+  .pricing-cards-credits .pricing-area-wrapper {
+    min-height: unset;
+    margin-bottom: 20px;
+  }
+
+  .pricing-cards-credits .billing-toggle.hidden {
+    display: none;
+  }
+
+  .pricing-cards-credits .compare-all {
+    margin-bottom: 20px;
+  }
+
+  .pricing-cards-credits .pricing-bar {
+    width: 300px;
+  }
+}
+
+
+@media (max-width: 375px) {
+  .pricing-cards-credits .pricing-bar {
+    width: 250px;
+  }
+}
+
+
+@media (min-width: 1400px) {
+  .pricing-cards-credits {
+    margin: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    width: max-content;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
