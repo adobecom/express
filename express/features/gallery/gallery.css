@@ -16,7 +16,7 @@
   height: 0;
 }
 
-.gallery.gallery--all-displayed {
+.gallery.center.gallery--all-displayed {
   justify-content: center;
 }
 
