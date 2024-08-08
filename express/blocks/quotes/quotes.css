@@ -34,7 +34,9 @@ main .quotes .quote .content::before {
   font-weight: 900;
 }
 
-main .quotes .quote .author { 
+main .quotes .quote .author {
+  display: flex;
+  flex-wrap: nowrap;
   margin-top: 16px;
   align-items: center;
   align-self: baseline;
@@ -85,7 +87,6 @@ main .section.quotes-inverted-container .quote {
   background-color: var(--color-black);
   color: var(--color-white);
 }
-
 
 main .section.quotes-container h2,
 main .section.quotes-container h3,
