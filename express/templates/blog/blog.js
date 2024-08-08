@@ -157,15 +157,6 @@ export default async function decorateBlogPage() {
     const section = picture.closest('.section');
     section.classList.add('fullwidth');
   });
-  /*
-  const introText = document.querySelector('main div.section p');
-  if (introText) {
-    introText.classList.add('intro-text');
-  }
-  */
-
-  const section = createTag('div', { class: '.section' });
-  $main.appendChild(section);
 }
 
 await decorateBlogPage();

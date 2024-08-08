@@ -1,5 +1,5 @@
 // eslint-disable-next-line object-curly-newline
-import { getConfig, getMetadata, loadIms, loadLink, loadScript } from './utils.js';
+import { getConfig, getMetadata, loadIms, loadLink, loadScript, getMobileOperatingSystem } from './utils.js';
 
 const ALLOY_SEND_EVENT = 'alloy_sendEvent';
 const ALLOY_SEND_EVENT_ERROR = 'alloy_sendEvent_error';
@@ -213,6 +213,13 @@ const loadMartechFiles = async (config, url, edgeConfigId) => {
       milo: true,
     };
     window.edgeConfigId = edgeConfigId;
+
+    // TODO: remove after aexg4848
+    if (getMetadata('target-only-mobile-web') === 'on'
+      && !(navigator.userAgent.includes('Mobile') && getMobileOperatingSystem() === 'Android' && navigator.deviceMemory >= 4)
+    ) {
+      setDeep(window, 'alloy_all.data.__adobe.target.mobile_web_enough_ram', false);
+    }
 
     const env = ['stage', 'local'].includes(config.env.name) ? '.qa' : '';
     // TODO: milo is hosting their own martech script in repo
