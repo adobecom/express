@@ -27,7 +27,7 @@ main .section>.pricing-cards-wrapper {
   z-index: 1;
   border: 2px solid #C6C6C6;
   background-color: white;
-  border-radius: 16px;
+  border-radius: 20px;
 }
 
 .pricing-cards-credits .none {
@@ -38,7 +38,7 @@ main .section>.pricing-cards-wrapper {
   background:
     linear-gradient(white 0 0) padding-box,
     linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) border-box;
-  border-radius: 16px;
+  border-radius: 20px;
   border-width: 4px;
   border-style: solid;
   border-image: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) 1;
