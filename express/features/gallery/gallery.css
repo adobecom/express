@@ -1,4 +1,20 @@
-.steps-carousel-control {
+.gallery {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+  overflow-x: scroll;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scroll-padding: 0 16px;
+}
+
+.gallery.gallery--all-displayed {
+  justify-content: center;
+  padding: 0;
+}
+
+.gallery-control {
   padding: 16px 16px 0;
   display: flex;
   justify-content: flex-end;
@@ -6,16 +22,16 @@
   align-items: center;
 }
 
-.steps-carousel-control.hide,
-.steps-carousel-control .hide {
+.gallery-control.hide,
+.gallery-control .hide {
   display: none;
 }
 
-.steps-carousel-control.loading {
+.gallery-control.loading {
   visibility: hidden;
 }
 
-.steps-carousel-control button {
+.gallery-control button {
   all: unset;
   cursor: pointer;
   height: 2rem;
@@ -23,19 +39,19 @@
   border-radius: 50px;
 }
 
-.steps-carousel-control button:hover:not(:disabled) circle {
+.gallery-control button:hover:not(:disabled) circle {
   fill: var(--color-gray-300);
 }
 
-.steps-carousel-control button:disabled {
+.gallery-control button:disabled {
   cursor: auto;
 }
 
-.steps-carousel-control button:disabled path {
+.gallery-control button:disabled path {
   stroke: var(--color-gray-300);
 }
 
-.steps-carousel-control .status {
+.gallery-control .status {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -47,20 +63,20 @@
   box-sizing: border-box;
 }
 
-.steps-carousel-control .status .dot {
+.gallery-control .status .dot {
   border-radius: 50px;
   width: 6px;
   height: 6px;
   background-color: #717171;
 }
 
-.steps-carousel-control .status .dot.curr {
+.gallery-control .status .dot.curr {
   width: 30px;
   background-color: #686DF4;
 }
 
 @media (min-width: 480px) {
-  .steps-carousel-control {
+  .gallery-control {
     justify-content: flex-start;
   }
 }

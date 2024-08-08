@@ -15,14 +15,16 @@ const prevSVGHTML = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"
   </g>
 </svg>`;
 
+const scrollPadding = 16;
+
 let resStyle;
 const styleLoaded = new Promise((res) => {
   resStyle = res;
 });
-loadStyle('/express/features/steps-carousel/steps-carousel.css', resStyle);
+loadStyle('/express/features/gallery/gallery.css', resStyle);
 
 function createControl(items, container) {
-  const control = createTag('div', { class: 'steps-carousel-control loading' });
+  const control = createTag('div', { class: 'gallery-control loading' });
   const status = createTag('div', { class: 'status' });
   const prevButton = createTag('button', {
     class: 'prev',
@@ -60,9 +62,15 @@ function createControl(items, container) {
       i === first ? items[i].classList.add('curr') : items[i].classList.remove('curr');
       i > first && i <= last ? dot.classList.add('hide') : dot.classList.remove('hide');
     });
-    items.length === last - first + 1 ? control.classList.add('hide') : control.classList.remove('hide');
+    if (items.length === last - first + 1) {
+      control.classList.add('hide');
+      container.classList.add('gallery--all-displayed');
+    } else {
+      control.classList.remove('hide');
+      container.classList.remove('gallery--all-displayed');
+    }
     control.classList.remove('loading');
-  }, 200);
+  }, 300);
 
   const reactToChange = (entries) => {
     entries.forEach((entry) => {
@@ -75,7 +83,7 @@ function createControl(items, container) {
 
   const scrollObserver = new IntersectionObserver((entries) => {
     reactToChange(entries);
-  }, { root: container, threshold: 1 });
+  }, { root: container, threshold: 1, rootMargin: `0px ${scrollPadding}px 0px ${scrollPadding}px` });
 
   items.forEach((item) => scrollObserver.observe(item));
 
@@ -91,5 +99,6 @@ export default async function carouselize(
   if (!root) return;
   const control = createControl(items, container);
   await styleLoaded;
+  container.classList.add('gallery');
   root.append(control);
 }
