@@ -6,12 +6,23 @@
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
+  padding: 0 16px;
   scroll-padding: 0 16px;
+}
+
+.gallery::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 0;
+  height: 0;
 }
 
 .gallery.gallery--all-displayed {
   justify-content: center;
-  padding: 0;
+}
+
+.gallery--item {
+  scroll-snap-align: start;
+  width: calc(100% - 16px);
 }
 
 .gallery-control {
@@ -73,10 +84,4 @@
 .gallery-control .status .dot.curr {
   width: 30px;
   background-color: #686DF4;
-}
-
-@media (min-width: 480px) {
-  .gallery-control {
-    justify-content: flex-start;
-  }
 }

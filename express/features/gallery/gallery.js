@@ -97,8 +97,11 @@ export default async function carouselize(
   root = container?.parentNode,
 ) {
   if (!root) return;
-  const control = createControl(items, container);
+  const control = createControl([...items], container);
   await styleLoaded;
   container.classList.add('gallery');
+  [...items].forEach((item) => {
+    item.classList.add('gallery--item');
+  });
   root.append(control);
 }
