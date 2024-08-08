@@ -9,6 +9,8 @@ main .section>.pricing-cards-wrapper {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 16px;
+  width: min-content;
+  margin: auto;
   text-align: left;
 }
 
