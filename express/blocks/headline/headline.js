@@ -13,6 +13,5 @@ export default function init(el) {
     window.lana?.log(e);
   }
 
-  // el.innerHTML = heading?.outerHTML || '';
   return el;
 }
