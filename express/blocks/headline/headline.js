@@ -6,7 +6,7 @@ export default function init(el) {
     if (cfg === heading) return el;
     cfg.textContent.split(',').forEach((item) => {
       const [key, value] = item.split(':').map((t) => t.trim().toLowerCase());
-      el.style[key] = value;
+      heading.style[key] = value;
     });
     cfg.remove();
   } catch (e) {
