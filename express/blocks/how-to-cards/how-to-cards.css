@@ -17,17 +17,6 @@
   margin: 0;
 }
 
-.how-to-cards .cards-container {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 16px;
-  overflow-x: scroll;
-  scrollbar-width: none;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  scroll-padding: 16px;
-}
-
 .how-to-cards .card {
   flex: 0 0 auto;
   scroll-snap-align: start;

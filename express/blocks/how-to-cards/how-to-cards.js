@@ -1,5 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
-import carouselize from '../../features/steps-carousel/steps-carousel.js';
+import buildGallery from '../../features/gallery/gallery.js';
 
 export function addSchema(bl, heading) {
   const schema = {
@@ -29,8 +29,7 @@ export function addSchema(bl, heading) {
 }
 
 export default async function decorate(bl) {
-  const section = bl.closest('.section');
-  const heading = section.querySelector('h2, h3, h4');
+  const heading = bl.querySelector('h2, h3, h4, h5, h6');
   const cardsContainer = createTag('ol', { class: 'cards-container' });
 
   const cards = [...bl.querySelectorAll(':scope > div')].map((div, index) => {
@@ -51,7 +50,7 @@ export default async function decorate(bl) {
   });
   bl.append(cardsContainer);
 
-  await carouselize(cards, cardsContainer, bl);
+  await buildGallery(cards, cardsContainer, bl);
   if (bl.classList.contains('schema')) {
     addSchema(bl, heading);
   }
