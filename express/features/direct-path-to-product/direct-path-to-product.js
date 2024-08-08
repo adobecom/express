@@ -12,31 +12,37 @@ const OPT_OUT_KEY = 'no-direct-path-to-product';
 
 const adobeEventName = 'adobe.com:express:cta:pep';
 
+const REACT_TIME = 4000;
+
 function track(name) {
-  _satellite?.track('event', {
-    xdm: {},
-    data: {
-      eventType: 'web.webinteraction.linkClicks',
-      web: {
-        webInteraction: {
-          name,
-          linkClicks: {
-            value: 1,
+  try {
+    _satellite?.track('event', {
+      xdm: {},
+      data: {
+        eventType: 'web.webinteraction.linkClicks',
+        web: {
+          webInteraction: {
+            name,
+            linkClicks: {
+              value: 1,
+            },
+            type: 'other',
           },
-          type: 'other',
         },
-      },
-      _adobe_corpnew: {
-        digitalData: {
-          primaryEvent: {
-            eventInfo: {
-              eventName: name,
+        _adobe_corpnew: {
+          digitalData: {
+            primaryEvent: {
+              eventInfo: {
+                eventName: name,
+              },
             },
           },
         },
       },
-    },
-  });
+    });
+  } catch (e) {
+    window.lana.log(e);
+  }
 }
 
 function buildProfileWrapper(profile) {
@@ -52,8 +58,14 @@ function buildProfileWrapper(profile) {
   return profileWrapper;
 }
 
+function initRedirect(container) {
+  container.classList.add('done');
+  track(`${adobeEventName}:redirect`);
+  window.location.assign(getDestination());
+}
+
 export default async function loadLoginUserAutoRedirect() {
-  let followThrough = true;
+  let cancel = false;
   const [placeholders] = await Promise.all([
     fetchPlaceholders(),
     new Promise((resolve) => {
@@ -76,34 +88,22 @@ export default async function loadLoginUserAutoRedirect() {
     progressBg.append(progressBar);
     noticeWrapper.append(noticeText, noticeBtn);
     container.append(headerWrapper, progressBg);
-    return new Promise((resolve) => {
-      getProfile().then((profile) => {
-        if (profile) {
-          container.append(buildProfileWrapper(profile));
-        }
-        container.append(noticeWrapper);
+    const profile = await getProfile();
+    if (profile) {
+      container.append(buildProfileWrapper(profile));
+    }
+    container.append(noticeWrapper);
 
-        const header = document.querySelector('header');
-        header.append(container);
+    const header = document.querySelector('header');
+    header.append(container);
 
-        noticeBtn.addEventListener('click', () => {
-          track(`${adobeEventName}:cancel`);
-          container.remove();
-          followThrough = false;
-          localStorage.setItem(OPT_OUT_KEY, '3');
-        });
-
-        resolve(container);
-      });
+    noticeBtn.addEventListener('click', () => {
+      track(`${adobeEventName}:cancel`);
+      container.remove();
+      cancel = true;
+      localStorage.setItem(OPT_OUT_KEY, '3');
     });
-  };
-
-  const initRedirect = (container) => {
-    container.classList.add('done');
-
-    track(`${adobeEventName}:redirect`);
-
-    window.location.assign(getDestination());
+    return container;
   };
 
   const optOutCounter = localStorage.getItem(OPT_OUT_KEY);
@@ -112,10 +112,40 @@ export default async function loadLoginUserAutoRedirect() {
     const counterNumber = parseInt(optOutCounter, 10);
     localStorage.setItem(OPT_OUT_KEY, (counterNumber - 1).toString());
   } else {
-    buildRedirectAlert().then((container) => {
-      setTimeout(() => {
-        if (followThrough) initRedirect(container);
-      }, 4000);
-    });
+    const container = await buildRedirectAlert();
+    let startTime = performance.now();
+    let remainTime = REACT_TIME;
+    let timeoutId;
+    let isMouseIn = false;
+    const progressBar = container.querySelector('.pep-progress-bar');
+    let start;
+    const mouseEnter = () => {
+      isMouseIn = true;
+      clearTimeout(timeoutId);
+      const pastTime = performance.now() - startTime;
+      remainTime -= pastTime;
+      const progress = Math.min(100, ((REACT_TIME - remainTime) / REACT_TIME) * 100);
+      progressBar.style.transition = 'none';
+      progressBar.style.width = `${progress}%`;
+    };
+    const mouseLeave = () => {
+      if (!isMouseIn) return;
+      isMouseIn = false;
+      timeoutId = start();
+    };
+    start = () => {
+      startTime = performance.now();
+      progressBar.style.transition = `width ${remainTime}ms linear`;
+      progressBar.offsetWidth; // forcing a reflow to get more consistent transition
+      progressBar.style.width = '100%';
+      return setTimeout(() => {
+        container.removeEventListener('mouseenter', mouseEnter);
+        container.removeEventListener('mouseleave', mouseLeave);
+        if (!cancel) initRedirect(container);
+      }, remainTime);
+    };
+    container.addEventListener('mouseenter', mouseEnter);
+    container.addEventListener('mouseleave', mouseLeave);
+    timeoutId = start();
   }
 }
