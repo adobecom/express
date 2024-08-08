@@ -1,9 +1,5 @@
 .how-to-cards.block {
-  max-width: unset;
-}
-
-.how-to-cards h2 {
-  margin: 0;
+  max-width: 1440px;
 }
 
 .how-to-cards h3 {
@@ -13,14 +9,18 @@
   margin-top: 0;
 }
 
-.how-to-cards ol {
+.how-to-cards .text h2,
+.how-to-cards .text p {
+  text-align: left;
+  padding: 0 16px;
+}
+
+.how-to-cards .cards-container {
   margin: 0;
 }
 
 .how-to-cards .card {
   flex: 0 0 auto;
-  scroll-snap-align: start;
-  width: 100%;
   box-sizing: border-box;
   padding: 24px;
   border-radius: 12px;

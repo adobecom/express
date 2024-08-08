@@ -29,10 +29,15 @@ export function addSchema(bl, heading) {
 }
 
 export default async function decorate(bl) {
-  const heading = bl.querySelector('h2, h3, h4, h5, h6');
+  const heading = bl.querySelector('h3, h4, h5, h6');
   const cardsContainer = createTag('ol', { class: 'cards-container' });
-
-  const cards = [...bl.querySelectorAll(':scope > div')].map((div, index) => {
+  let steps = [...bl.querySelectorAll(':scope > div')];
+  if (steps[0].querySelector('h2')) {
+    const text = steps[0];
+    steps = steps.slice(1);
+    text.classList.add('text');
+  }
+  const cards = steps.map((div, index) => {
     const li = createTag('li', { class: 'card' });
     const tipNumber = createTag('div', { class: 'number' });
     tipNumber.append(
