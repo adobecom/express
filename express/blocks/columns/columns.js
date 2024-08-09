@@ -41,12 +41,12 @@ function transformToVideoColumn(cell, aTag, block, colorProperties) {
   cell.classList.add('column-video');
   parent.classList.add('columns-video');
 
-  if (colorProperties['card-text-color']) {
-    parent.style.color = colorProperties['card-text-color'];
-  }
-
+  // apply custom gradient and text color to columns cards
   if (colorProperties['card-gradient']) {
     parent.style.background = colorProperties['card-gradient'];
+  }
+  if (colorProperties['card-text-color']) {
+    parent.style.color = colorProperties['card-text-color'];
   }
 
   setTimeout(() => {
@@ -154,19 +154,23 @@ const handleVideos = (cell, a, block, thumbnail, colorProperties) => {
 };
 
 const extractProperties = (block) => {
-  const possibleGradientRow = Array.from(block.querySelectorAll(':scope > div'))[0];
-  const possibleColorRow = Array.from(block.querySelectorAll(':scope > div'))[1];
-  const gradientContent = possibleGradientRow?.innerText.trim();
-  const colorContent = possibleColorRow?.innerText.trim();
   const allProperties = {};
-  if (colorContent.includes('#')) {
-    allProperties['card-text-color'] = colorContent.replace(/color\(|\)/g, '');
-    possibleColorRow.remove();
-  }
-  if (gradientContent.includes('linear-gradient')) {
-    allProperties['card-gradient'] = gradientContent;
-    possibleGradientRow.remove();
-  }
+  const rows = Array.from(block.querySelectorAll(':scope > div')).slice(0, 3);
+
+  rows.forEach((row) => {
+    const content = row.innerText.trim();
+    if (content.includes('linear-gradient')) {
+      allProperties['card-gradient'] = content;
+      row.remove();
+    } else if (content.includes('text-color')) {
+      allProperties['card-text-color'] = content.replace(/text-color\(|\)/g, '');
+      row.remove();
+    } else if (content.includes('background-color')) {
+      allProperties['background-color'] = content.replace(/background-color\(|\)/g, '');
+      row.remove();
+    }
+  });
+
   return allProperties;
 };
 
@@ -304,8 +308,14 @@ export default async function decorate(block) {
     addFreePlanWidget(block.querySelector('.button-container') || block.querySelector(':scope .column:not(.hero-animation-overlay,.columns-picture)'));
   }
 
+  // add custom background color to columns-highlight-container
+  const sectionContainer = block.closest('.section.columns-highlight-container');
+  if (sectionContainer && colorProperties['background-color']) {
+    sectionContainer.style.background = colorProperties['background-color'];
+  }
+
   // invert buttons in regular columns inside columns-highlight-container
-  if (block.closest('.section.columns-highlight-container') && !block.classList.contains('highlight')) {
+  if (sectionContainer && !block.classList.contains('highlight')) {
     block.querySelectorAll('a.button').forEach((button) => {
       button.classList.add('dark');
     });
