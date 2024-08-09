@@ -55,7 +55,7 @@ export default async function init(bl) {
   });
   bl.append(cardsContainer);
 
-  await buildGallery(cards, cardsContainer, bl);
+  buildGallery(cards, cardsContainer, bl);
   if (bl.classList.contains('schema')) {
     addSchema(bl, heading);
   }
