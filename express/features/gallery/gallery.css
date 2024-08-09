@@ -50,6 +50,10 @@
   border-radius: 50px;
 }
 
+.gallery-control button:focus {
+  outline: revert;
+}
+
 .gallery-control button:hover:not(:disabled) circle {
   fill: var(--color-gray-300);
 }
