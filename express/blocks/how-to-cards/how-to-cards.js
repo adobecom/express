@@ -28,7 +28,7 @@ export function addSchema(bl, heading) {
   document.head.append(createTag('script', { type: 'application/ld+json' }, JSON.stringify(schema)));
 }
 
-export default async function decorate(bl) {
+export default async function init(bl) {
   const heading = bl.querySelector('h3, h4, h5, h6');
   const cardsContainer = createTag('ol', { class: 'cards-container' });
   let steps = [...bl.querySelectorAll(':scope > div')];
@@ -59,4 +59,5 @@ export default async function decorate(bl) {
   if (bl.classList.contains('schema')) {
     addSchema(bl, heading);
   }
+  return bl;
 }

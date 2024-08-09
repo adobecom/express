@@ -91,12 +91,12 @@ function createControl(items, container) {
   return control;
 }
 
-export default async function carouselize(
+export default async function buildGallery(
   items,
   container = items?.[0]?.parentNode,
   root = container?.parentNode,
 ) {
-  if (!root) return;
+  if (!root) throw new Error('Invalid Gallery input');
   const control = createControl([...items], container);
   await styleLoaded;
   container.classList.add('gallery');
