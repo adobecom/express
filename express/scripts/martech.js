@@ -215,18 +215,10 @@ const loadMartechFiles = async (config, url, edgeConfigId) => {
     window.edgeConfigId = edgeConfigId;
 
     // TODO: remove after aexg4848
+    let trackEligibility = false;
     if (getMetadata('target-only-mobile-web') === 'on') {
       if (navigator.userAgent.includes('Mobile') && getMobileOperatingSystem() === 'Android' && navigator.deviceMemory >= 4) {
-        // eslint-disable-next-line no-underscore-dangle
-        window._satellite.track('event', {
-          data: {
-            web: {
-              webInteraction: {
-                name: 'mobile_web_enough_ram: true',
-              },
-            },
-          },
-        });
+        trackEligibility = true;
       } else {
         setDeep(window, 'alloy_all.data.__adobe.target.mobile_web_enough_ram', false);
       }
@@ -238,6 +230,19 @@ const loadMartechFiles = async (config, url, edgeConfigId) => {
     await loadScript(`https://www.adobe.com/marketingtech/${martechPath}`);
     // eslint-disable-next-line no-underscore-dangle
     window._satellite.track('pageload');
+    // TODO: remove after aexg4848
+    if (trackEligibility) {
+      // eslint-disable-next-line no-underscore-dangle
+      window._satellite.track('event', {
+        data: {
+          web: {
+            webInteraction: {
+              name: 'mobile_web_enough_ram: true',
+            },
+          },
+        },
+      });
+    }
   };
 
   await filesLoadedPromise();
