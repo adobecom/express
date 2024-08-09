@@ -12,6 +12,6 @@ export default function init(el) {
   } catch (e) {
     window.lana?.log(e);
   }
-  el.innerHTML = heading?.outerHTML || '';
+
   return el;
 }
