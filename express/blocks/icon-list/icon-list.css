@@ -20,15 +20,12 @@ main .icon-list > div.icon-list-column {
 }
 
 main .icon-list .icon-list-description {
-  /* margin: 8px 0;
-  text-align: left; */
   overflow-x: auto;
 }
 
 main .icon-list .icon-list-description p {
   margin: 8px 0;
   text-align: left;
-  /* overflow: auto; */
 }
 
 main .icon-list .icon-list-image {
