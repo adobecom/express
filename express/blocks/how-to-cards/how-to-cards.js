@@ -1,4 +1,5 @@
 import { createTag } from '../../scripts/utils.js';
+import buildGallery from '../../features/gallery/gallery.js';
 
 export function addSchema(bl, heading) {
   const schema = {
@@ -54,9 +55,7 @@ export default async function init(bl) {
   });
   bl.append(cardsContainer);
 
-  import('../../features/gallery/gallery.js').then(({ default: buildGallery }) => {
-    buildGallery(cards, cardsContainer, bl);
-  });
+  await buildGallery(cards, cardsContainer, bl);
   if (bl.classList.contains('schema')) {
     addSchema(bl, heading);
   }
