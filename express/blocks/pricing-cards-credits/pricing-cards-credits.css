@@ -3,8 +3,7 @@ main .section>.pricing-cards-wrapper {
 }
 
 .pricing-cards-credits {
-  margin: auto;
-  padding: 20px;
+  margin: auto; 
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -12,6 +11,7 @@ main .section>.pricing-cards-wrapper {
   width: min-content;
   margin: auto;
   text-align: left;
+  
 }
 
 .pricing-cards-credits>.card>.plan-explanation {
@@ -160,7 +160,7 @@ main .section>.pricing-cards-wrapper {
   .pricing-cards-credits {
     flex-wrap: wrap;
     gap: 10px;
-    min-width: none;
+    min-width: unset;
   }
 
   .pricing-cards-credits .card {
