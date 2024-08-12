@@ -1659,7 +1659,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 .template-x.horizontal.mini .carousel-platform {
     padding: 32px;
-} 
+}
 
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
     transform: translate3d(0, 0, 0);
@@ -2069,6 +2069,10 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     text-overflow: ellipsis;
 }
 
+.template-x .template .button-container a.cta-link {
+    overflow: visible;
+}
+
 .template-x.horizontal .template .button-container a {
     min-height: 16px;
 }
@@ -2190,8 +2194,8 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
 }
 
 @media (max-width: 600px) {
-    .template-x .toolbar-wrapper { 
-        z-index: 11; 
+    .template-x .toolbar-wrapper {
+        z-index: 11;
     }
     .template-x-wrapper.horizontal {
         margin-left: 0;
@@ -2458,7 +2462,7 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     main.with-holiday-templates-banner {
         padding-top: 54px;
     }
-    
+
     .template-x.horizontal.holiday .toggle-bar {
         gap: 14px;
     }

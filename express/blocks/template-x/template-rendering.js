@@ -161,6 +161,7 @@ function renderCTA(placeholders, branchUrl) {
 function renderCTALink(branchUrl) {
   const linkEl = createTag('a', {
     href: branchUrl,
+    class: 'cta-link',
   });
   return linkEl;
 }
