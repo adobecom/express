@@ -110,7 +110,7 @@ export default function createToggle(
     button.setAttribute('aria-checked', defaultChecked);
     button.setAttribute('aria-labeledby', buttonID);
     if (isTeams && plan === "monthly") {
-      plan = "annual_billed_monthly"
+      plan = "annual-billed-monthly"
     }
     const label = placeholders?.[plan]
     button.append(createTag('div', { id: `${buttonID}:radio` }, label));
