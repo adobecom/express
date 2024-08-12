@@ -373,7 +373,6 @@ function renderHoverWrapper(template, placeholders) {
   cta.addEventListener('focusin', focusHandler);
 
   const ctaClickHandler = () => {
-    console.log("=== LOGGING");
     updateImpressionCache({
       content_id: template.id,
       status: template.licensingCategory,
