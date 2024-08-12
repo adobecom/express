@@ -25,7 +25,7 @@ import {
   sendEventToAnalytics,
 } from '../../scripts/instrument.js';
 
-function transformToVideoColumn(cell, aTag, block, colorProperties) {
+function transformToVideoColumn(cell, aTag, block) {
   const parent = cell.parentElement;
   const title = aTag.textContent.trim();
   // gather video urls from all links in cell
@@ -40,14 +40,6 @@ function transformToVideoColumn(cell, aTag, block, colorProperties) {
 
   cell.classList.add('column-video');
   parent.classList.add('columns-video');
-
-  // apply custom gradient and text color to columns cards
-  if (colorProperties['card-gradient']) {
-    parent.style.background = colorProperties['card-gradient'];
-  }
-  if (colorProperties['card-text-color']) {
-    parent.style.color = colorProperties['card-text-color'];
-  }
 
   setTimeout(() => {
     const sibling = parent.querySelector('.column-picture');
@@ -131,7 +123,7 @@ function decorateIconList(columnCell, rowNum, blockClasses) {
   }
 }
 
-const handleVideos = (cell, a, block, thumbnail, colorProperties) => {
+const handleVideos = (cell, a, block, thumbnail) => {
   if (!a.href) return;
 
   const url = new URL(a.href);
@@ -147,7 +139,7 @@ const handleVideos = (cell, a, block, thumbnail, colorProperties) => {
     return;
   }
 
-  transformToVideoColumn(cell, a, block, colorProperties);
+  transformToVideoColumn(cell, a, block);
   a.addEventListener('click', (e) => {
     e.preventDefault();
   });
@@ -200,8 +192,17 @@ export default async function decorate(block) {
     const cells = Array.from(row.children);
 
     cells.forEach((cell, cellNum) => {
+      const parent = cell.parentElement;
       const aTag = cell.querySelector('a');
       const pics = cell.querySelectorAll(':scope picture');
+
+      // apply custom gradient and text color to columns cards
+      if (colorProperties['card-gradient']) {
+        parent.style.background = colorProperties['card-gradient'];
+      }
+      if (colorProperties['card-text-color']) {
+        parent.style.color = colorProperties['card-text-color'];
+      }
 
       if (cellNum === 0 && isNumberedList) {
         // add number to first cell
@@ -231,7 +232,7 @@ export default async function decorate(block) {
         decorateIconList(cell, rowNum, block.classList);
       }
       if (isVideoLink(aTag?.href)) {
-        handleVideos(cell, aTag, block, pics[0], colorProperties);
+        handleVideos(cell, aTag, block, pics[0]);
       }
 
       if (aTag?.textContent.trim().startsWith('https://')) {
