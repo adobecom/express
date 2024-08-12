@@ -126,14 +126,12 @@ function renderShareWrapper(branchUrl, placeholders) {
   });
   let timeoutId = null;
   shareIcon.addEventListener('click', (e) => {
-    console.log("=== HERE")
     e.preventDefault();
     e.stopPropagation();
     timeoutId = share(branchUrl, tooltip, timeoutId);
   });
 
   shareIcon.addEventListener('keypress', (e) => {
-    console.log("=== HERE2")
     if (e.key !== 'Enter') {
       return;
     }
