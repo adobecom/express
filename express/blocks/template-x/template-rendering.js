@@ -154,14 +154,10 @@ function renderCTA(placeholders, branchUrl) {
   return btnEl;
 }
 
-function renderCTALink(placeholders, branchUrl) {
-  // const btnTitle = 'Edit this template';
+function renderCTALink(branchUrl) {
   const linkEl = createTag('a', {
     href: branchUrl,
-    // title: btnTitle,
-    // class: 'button accent small',
   });
-  // btnEl.textContent = btnTitle;
   return linkEl;
 }
 
@@ -363,20 +359,16 @@ function renderHoverWrapper(template, placeholders) {
     mediaWrapper, enterHandler, leaveHandler, focusHandler,
   } = renderMediaWrapper(template, placeholders);
 
+  const cta = renderCTA(placeholders, template.customLinks.branchUrl);
+  const ctaLink = renderCTALink(template.customLinks.branchUrl);
+
+  ctaLink.append(mediaWrapper);
+
+  btnContainer.append(cta);
+  btnContainer.append(ctaLink);
 
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
-
-  const cta = renderCTA(placeholders, template.customLinks.branchUrl);
-  const ctaLink = renderCTALink(placeholders, template.customLinks.branchUrl);
-  btnContainer.prepend(cta);
-
-  // btnContainer.append(mediaWrapper);
-
-  // btnContainer.querySelector('a').prepend(mediaWrapper);
-
-  ctaLink.prepend(mediaWrapper);
-  btnContainer.append(ctaLink);
 
   cta.addEventListener('focusin', focusHandler);
 
