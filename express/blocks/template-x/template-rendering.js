@@ -160,6 +160,7 @@ function renderCTALink(branchUrl) {
   const linkEl = createTag('a', {
     href: branchUrl,
     class: 'cta-link',
+    tabindex: '-1',
   });
   return linkEl;
 }

@@ -2059,7 +2059,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     flex-basis: 100%;
 }
 
-.template-x .template .button-container a {
+.template-x .template .button-container a.button {
     max-width: 100%;
     margin: 6px 6px 0;
     box-sizing: border-box;
@@ -2070,14 +2070,15 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x .template .button-container a.cta-link {
-    overflow: visible;
+    white-space: nowrap;
+    font-weight: var(--body-font-weight);
 }
 
-.template-x.horizontal .template .button-container a {
+.template-x.horizontal .template .button-container a.button {
     min-height: 16px;
 }
 
-.template-x.horizontal.mini .template .button-container a {
+.template-x.horizontal.mini .template .button-container a.button {
     font-size: var(--body-font-size-xs);
     padding: 2px 6px 4px;
 }
