@@ -2070,6 +2070,8 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x .template .button-container a.cta-link {
+    width: 100%;
+    height: 100%;
     white-space: nowrap;
     font-weight: var(--body-font-weight);
 }
