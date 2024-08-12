@@ -90,10 +90,19 @@ export default async function loadLoginUserAutoRedirect() {
 
     const header = document.querySelector('header');
     header.append(container);
+    const handleTab = (event) => {
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        noticeBtn.focus();
+        document.removeEventListener('keydown', handleTab);
+      }
+    };
+    document.addEventListener('keydown', handleTab);
 
     noticeBtn.addEventListener('click', () => {
       track(`${adobeEventName}:cancel`);
       container.remove();
+      document.removeEventListener('keydown', handleTab);
       cancel = true;
       localStorage.setItem(OPT_OUT_KEY, '3');
     });
