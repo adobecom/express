@@ -2546,7 +2546,7 @@ function fragmentBlocksToLinks(area) {
         const firstDiv = blk.querySelector('div');
         const textContent = firstDiv?.textContent?.trim();
         const fragURL = new URL(textContent, window.location.origin);
-        firstDiv.innerHTML = '';
+        firstDiv.textContent = '';
         fragLink = createTag('a', { href: fragURL.href });
       } catch (error) {
         blk.remove();
