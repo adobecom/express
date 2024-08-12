@@ -110,11 +110,10 @@ export default async function loadLoginUserAutoRedirect() {
     let startTime = performance.now();
     let remainTime = REACT_TIME;
     let timeoutId;
-    let isMouseIn = false;
+    let [hovering, focusing] = [false, false];
     const progressBar = container.querySelector('.pep-progress-bar');
     let start;
     const pause = () => {
-      isMouseIn = true;
       clearTimeout(timeoutId);
       const pastTime = performance.now() - startTime;
       remainTime -= pastTime;
@@ -123,9 +122,27 @@ export default async function loadLoginUserAutoRedirect() {
       progressBar.style.width = `${progress}%`;
     };
     const resume = () => {
-      if (!isMouseIn) return;
-      isMouseIn = false;
       timeoutId = start();
+    };
+    const mouseEnter = () => {
+      hovering = true;
+      if (focusing) return;
+      pause();
+    };
+    const mouseLeave = () => {
+      hovering = false;
+      if (focusing) return;
+      resume();
+    };
+    const focusIn = () => {
+      focusing = true;
+      if (hovering) return;
+      pause();
+    };
+    const focusOut = () => {
+      focusing = false;
+      if (hovering) return;
+      resume();
     };
     start = () => {
       startTime = performance.now();
@@ -133,10 +150,10 @@ export default async function loadLoginUserAutoRedirect() {
       progressBar.offsetWidth; // forcing a reflow to get more consistent transition
       progressBar.style.width = '100%';
       return setTimeout(() => {
-        container.removeEventListener('mouseenter', pause);
-        container.removeEventListener('mouseleave', resume);
-        noticeBtn.removeEventListener('focusin', pause);
-        noticeBtn.removeEventListener('focusout', resume);
+        container.removeEventListener('mouseenter', mouseEnter);
+        container.removeEventListener('mouseleave', mouseLeave);
+        noticeBtn.removeEventListener('focusin', focusIn);
+        noticeBtn.removeEventListener('focusout', focusOut);
         if (!cancel) {
           container.classList.add('done');
           track(`${adobeEventName}:redirect`);
@@ -145,10 +162,10 @@ export default async function loadLoginUserAutoRedirect() {
         }
       }, remainTime);
     };
-    noticeBtn.addEventListener('focusin', pause);
-    noticeBtn.addEventListener('focusout', resume);
-    container.addEventListener('mouseenter', pause);
-    container.addEventListener('mouseleave', resume);
+    noticeBtn.addEventListener('focusin', focusIn);
+    noticeBtn.addEventListener('focusout', focusOut);
+    container.addEventListener('mouseenter', mouseEnter);
+    container.addEventListener('mouseleave', mouseLeave);
     timeoutId = start();
   }
 }
