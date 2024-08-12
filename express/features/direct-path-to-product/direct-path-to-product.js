@@ -58,12 +58,6 @@ function buildProfileWrapper(profile) {
   return profileWrapper;
 }
 
-function initRedirect(container) {
-  container.classList.add('done');
-  track(`${adobeEventName}:redirect`);
-  window.location.assign(getDestination());
-}
-
 export default async function loadLoginUserAutoRedirect() {
   let cancel = false;
   const [placeholders] = await Promise.all([
@@ -141,7 +135,14 @@ export default async function loadLoginUserAutoRedirect() {
       return setTimeout(() => {
         container.removeEventListener('mouseenter', pause);
         container.removeEventListener('mouseleave', resume);
-        if (!cancel) initRedirect(container);
+        noticeBtn.removeEventListener('focusin', pause);
+        noticeBtn.removeEventListener('focusout', resume);
+        if (!cancel) {
+          container.classList.add('done');
+          track(`${adobeEventName}:redirect`);
+          window.location.assign(getDestination());
+          container.remove();
+        }
       }, remainTime);
     };
     noticeBtn.addEventListener('focusin', pause);
