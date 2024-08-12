@@ -112,7 +112,7 @@ export default function createToggle(
     if (isTeams && plan === "monthly") {
       plan = "annual-billed-monthly"
     }
-    const label = placeholders?.[plan]
+    const label = placeholders?.[plan] || "Annual, Billed Monthly"
     button.append(createTag('div', { id: `${buttonID}:radio` }, label));
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
