@@ -88,7 +88,7 @@ export function tagFreePlan(cardContainer) {
 }
 
 export default function createToggle(
-  placeholders, pricingSections, groupID, adjElemPos,
+  placeholders, pricingSections, groupID, adjElemPos, isTeams
 ) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
   const toggleWrapper = createTag('div', { class: 'billing-toggle' });
@@ -109,7 +109,10 @@ export default function createToggle(
     button.appendChild(createTag('span'));
     button.setAttribute('aria-checked', defaultChecked);
     button.setAttribute('aria-labeledby', buttonID);
-    const label = placeholders?.[plan] || plan[0].toUpperCase() + plan.slice(1).toLowerCase();
+    if (isTeams && plan === "monthly") {
+      plan = "annual_billed_monthly"
+    }
+    const label = placeholders?.[plan]
     button.append(createTag('div', { id: `${buttonID}:radio` }, label));
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {

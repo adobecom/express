@@ -426,7 +426,7 @@ async function decorateCard({
   yPricingSection.classList.add('annually', 'hide');
   const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
   const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID,
-    adjustElementPosition);
+    adjustElementPosition, header.innerText.includes("Teams"));
   card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
