@@ -7,6 +7,7 @@ import {
   getIconElement,
   addHeaderSizing,
   getMetadata,
+  replaceHyphensInText,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
@@ -24,7 +25,7 @@ import {
   sendEventToAnalytics,
 } from '../../scripts/instrument.js';
 
-function transformToVideoColumn(cell, aTag, block) {
+function transformToVideoColumn(cell, aTag, block, colorProperties) {
   const parent = cell.parentElement;
   const title = aTag.textContent.trim();
   // gather video urls from all links in cell
@@ -39,6 +40,14 @@ function transformToVideoColumn(cell, aTag, block) {
 
   cell.classList.add('column-video');
   parent.classList.add('columns-video');
+
+  // apply custom gradient and text color to columns cards
+  if (colorProperties['card-gradient']) {
+    parent.style.background = colorProperties['card-gradient'];
+  }
+  if (colorProperties['card-text-color']) {
+    parent.style.color = colorProperties['card-text-color'];
+  }
 
   setTimeout(() => {
     const sibling = parent.querySelector('.column-picture');
@@ -122,7 +131,7 @@ function decorateIconList(columnCell, rowNum, blockClasses) {
   }
 }
 
-const handleVideos = (cell, a, block, thumbnail) => {
+const handleVideos = (cell, a, block, thumbnail, colorProperties) => {
   if (!a.href) return;
 
   const url = new URL(a.href);
@@ -138,13 +147,36 @@ const handleVideos = (cell, a, block, thumbnail) => {
     return;
   }
 
-  transformToVideoColumn(cell, a, block);
+  transformToVideoColumn(cell, a, block, colorProperties);
   a.addEventListener('click', (e) => {
     e.preventDefault();
   });
 };
 
+const extractProperties = (block) => {
+  const allProperties = {};
+  const rows = Array.from(block.querySelectorAll(':scope > div')).slice(0, 3);
+
+  rows.forEach((row) => {
+    const content = row.innerText.trim();
+    if (content.includes('linear-gradient')) {
+      allProperties['card-gradient'] = content;
+      row.remove();
+    } else if (content.includes('text-color')) {
+      allProperties['card-text-color'] = content.replace(/text-color\(|\)/g, '');
+      row.remove();
+    } else if (content.includes('background-color')) {
+      allProperties['background-color'] = content.replace(/background-color\(|\)/g, '');
+      row.remove();
+    }
+  });
+
+  return allProperties;
+};
+
 export default async function decorate(block) {
+  document.body.dataset.device === 'mobile' && replaceHyphensInText(block);
+  const colorProperties = extractProperties(block);
   addTempWrapper(block, 'columns');
 
   const rows = Array.from(block.children);
@@ -199,7 +231,7 @@ export default async function decorate(block) {
         decorateIconList(cell, rowNum, block.classList);
       }
       if (isVideoLink(aTag?.href)) {
-        handleVideos(cell, aTag, block, pics[0]);
+        handleVideos(cell, aTag, block, pics[0], colorProperties);
       }
 
       if (aTag?.textContent.trim().startsWith('https://')) {
@@ -276,8 +308,14 @@ export default async function decorate(block) {
     addFreePlanWidget(block.querySelector('.button-container') || block.querySelector(':scope .column:not(.hero-animation-overlay,.columns-picture)'));
   }
 
+  // add custom background color to columns-highlight-container
+  const sectionContainer = block.closest('.section.columns-highlight-container');
+  if (sectionContainer && colorProperties['background-color']) {
+    sectionContainer.style.background = colorProperties['background-color'];
+  }
+
   // invert buttons in regular columns inside columns-highlight-container
-  if (block.closest('.section.columns-highlight-container') && !block.classList.contains('highlight')) {
+  if (sectionContainer && !block.classList.contains('highlight')) {
     block.querySelectorAll('a.button').forEach((button) => {
       button.classList.add('dark');
     });
