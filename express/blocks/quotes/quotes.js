@@ -1,9 +1,15 @@
 // eslint-disable-next-line import/no-unresolved
 import { addTempWrapper } from '../../scripts/decorate.js';
-import { createTag } from '../../scripts/utils.js';
+import { createTag, getMetadata } from '../../scripts/utils.js';
 
 export default function decorate($block) {
   addTempWrapper($block, 'quotes');
+
+  const sectionContainer = $block.closest('.section.section-wrapper.quotes-container');
+  const quotesBgColor = getMetadata('quotes-background-color');
+  if (quotesBgColor) {
+    sectionContainer.style.background = quotesBgColor;
+  }
 
   $block.querySelectorAll(':scope>div').forEach(($card) => {
     $card.classList.add('quote');
