@@ -144,7 +144,7 @@ function renderShareWrapper(branchUrl, placeholders) {
 }
 
 function renderCTA(placeholders, branchUrl) {
-  const btnTitle = placeholders['edit-this-template'] ?? 'Edit this template';
+  const btnTitle = 'EDIT3Edit this template';
   const btnEl = createTag('a', {
     href: branchUrl,
     title: btnTitle,
@@ -360,17 +360,17 @@ function renderHoverWrapper(template, placeholders) {
   btnContainer.prepend(cta);
   cta.addEventListener('focusin', focusHandler);
 
-  cta.addEventListener('click', () => {
-    updateImpressionCache({
-      content_id: template.id,
-      status: template.licensingCategory,
-      task: getMetadata('tasksx') || getMetadata('tasks') || '',
-      search_keyword: getMetadata('q') || getMetadata('topics') || '',
-      collection: getMetadata('tasksx') || getMetadata('tasks') || '',
-      collection_path: window.location.pathname,
-    });
-    trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
-  }, { passive: true });
+  // cta.addEventListener('click', () => {
+  //   updateImpressionCache({
+  //     content_id: template.id,
+  //     status: template.licensingCategory,
+  //     task: getMetadata('tasksx') || getMetadata('tasks') || '',
+  //     search_keyword: getMetadata('q') || getMetadata('topics') || '',
+  //     collection: getMetadata('tasksx') || getMetadata('tasks') || '',
+  //     collection_path: window.location.pathname,
+  //   });
+  //   trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
+  // }, { passive: true });
 
   return btnContainer;
 }

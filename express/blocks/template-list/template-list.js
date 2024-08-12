@@ -228,11 +228,11 @@ async function processResponse(props) {
       const $buttonWrapper = createTag('div', { class: 'button-container' });
       const $button = createTag('a', {
         href: template.branchURL,
-        title: placeholders['edit-this-template'] ?? 'Edit this template',
+        title:  'EDIT1Edit this template',
         class: 'button accent',
       });
 
-      $button.textContent = placeholders['edit-this-template'] ?? 'Edit this template';
+      $button.textContent = placeholders['edit-this-template'] ?? 'EDIT2Edit this template';
       imgWrapper.append(img);
       $buttonWrapper.append($button);
       $template.append(imgWrapper, $buttonWrapper);
