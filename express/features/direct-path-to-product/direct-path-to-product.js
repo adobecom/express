@@ -76,7 +76,7 @@ export default async function loadLoginUserAutoRedirect() {
     const progressBar = createTag('div', { class: 'pep-progress-bar' });
     const noticeWrapper = createTag('div', { class: 'notice-wrapper' });
     const noticeText = createTag('span', { class: 'notice-text' }, placeholders['pep-cancel']);
-    const noticeBtn = createTag('button', { class: 'notice-btn' }, placeholders.cancel);
+    const noticeBtn = createTag('button', { class: 'notice-btn', tabIndex: '1' }, placeholders.cancel);
 
     headerWrapper.append(headerIcon, headerText);
     progressBg.append(progressBar);
