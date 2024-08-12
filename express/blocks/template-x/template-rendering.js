@@ -144,7 +144,7 @@ function renderShareWrapper(branchUrl, placeholders) {
 }
 
 function renderCTA(placeholders, branchUrl) {
-  const btnTitle = 'Edit this template';
+  const btnTitle = placeholders['edit-this-template'] ?? 'Edit this template';
   const btnEl = createTag('a', {
     href: branchUrl,
     title: btnTitle,
@@ -453,7 +453,7 @@ function renderStillWrapper(template, placeholders) {
 }
 
 export default function renderTemplate(template, placeholders) {
-  const tmpltEl = createTag('div', {class: "GOODGOOD"});
+  const tmpltEl = createTag('div');
   tmpltEl.append(renderStillWrapper(template, placeholders));
   tmpltEl.append(renderHoverWrapper(template, placeholders));
 
