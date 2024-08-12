@@ -103,6 +103,14 @@ body {
   padding: 0;
 }
 
+body[data-device="mobile"] {
+  h1, h2, h3, h4, h5, h6 {
+    hyphens: none;
+    overflow-wrap: break-word; 
+    word-wrap: break-word;     
+  }
+}
+
 body.no-scroll {
   overflow-y: hidden;
   touch-action: none;
@@ -1256,10 +1264,4 @@ main > div[class="section section-wrapper"]:empty {
 
 main > div[class="section section-wrapper columns-container"][id^="column-"] {
   padding: 0;
-}
-
-/* FIXME: hacky behavior to fight for space with Jarvis */
-body.has-floating-panel #adbMsgClientWrapper .adbmsgAuthoredBotPopUpContainer.outwardAnimate,
-body.has-floating-panel #adbMsgClientWrapper #adbmsgCta {
-  bottom: 140px!important;
 }

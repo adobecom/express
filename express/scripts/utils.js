@@ -568,9 +568,10 @@ export function yieldToMain() {
   });
 }
 
-export function removeIrrelevantSections(main) {
-  if (!main) return;
-  main.querySelectorAll(':scope > div').forEach((section) => {
+export function removeIrrelevantSections(area) {
+  if (!area) return;
+  const selector = area === document ? 'body > main > div' : ':scope > div';
+  area.querySelectorAll(selector).forEach((section) => {
     const sectionMetaBlock = section.querySelector('div.section-metadata');
     if (sectionMetaBlock) {
       const sectionMeta = readBlockConfig(sectionMetaBlock);
@@ -600,7 +601,7 @@ export function removeIrrelevantSections(main) {
     const linkToTarget = getMetadata(`${device}-floating-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
     if (textToTarget || linkToTarget) {
       const linkToTargetURL = new URL(linkToTarget);
-      const sameUrlCTAs = Array.from(main.querySelectorAll('a:any-link'))
+      const sameUrlCTAs = Array.from(area.querySelectorAll('a:any-link'))
         .filter((a) => {
           try {
             const currURL = new URL(a.href);
@@ -1445,7 +1446,7 @@ export function loadIms() {
       loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
     }
   }).then(() => {
-    if (!window.adobeIMS?.isSignedInUser() && !getMetadata('xlg-entitlements')) {
+    if (!window.adobeIMS?.isSignedInUser() && getMetadata('xlg-entitlements') !== 'on') {
       getConfig().entitlements([]);
     } else {
       setTimeout(async () => {
@@ -1454,6 +1455,8 @@ export function loadIms() {
         }
       }, 3000);
     }
+  }).catch(() => {
+    getConfig().entitlements([]);
   });
 
   return imsLoaded;
@@ -1590,10 +1593,6 @@ export function decorateButtons(el = document) {
       }
     }
   });
-}
-
-export function checkTesting() {
-  return (getMetadata('testing').toLowerCase() === 'on');
 }
 
 /**
@@ -1753,11 +1752,6 @@ async function decorateTesting() {
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
         await loadAndRunExp(config, forcedExperiment, forcedVariant);
       }
-    }
-    const martech = usp.get('martech');
-    if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
-      // eslint-disable-next-line no-console
-      console.log('rushing martech');
     }
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -1919,7 +1913,7 @@ async function buildAutoBlocks(main) {
   }
 
   async function loadFloatingCTA(BlockMediator) {
-    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button'];
     const device = document.body.dataset?.device;
     const blockName = getMetadata(`${device}-floating-cta`);
 
@@ -1952,7 +1946,7 @@ async function buildAutoBlocks(main) {
 function splitSections(area) {
   const blocks = area.querySelectorAll(`:scope${area === document ? ' main' : ''} > div > div`);
   blocks.forEach((block) => {
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion'];
+    const blocksToSplit = ['template-list', 'banner', 'promotion'];
     // work around for splitting columns and sixcols template list
     // add metadata condition to minimize impact on other use cases
 
@@ -2239,6 +2233,10 @@ export function addHeaderSizing($block, classPrefix = 'heading', selector = 'h1,
   });
 }
 
+export function decorateArea(area = document) {
+  removeIrrelevantSections(area);
+}
+
 /**
  * Call `addHeaderSizing` on default content blocks in all section blocks
  * in all Japanese pages except blog pages.
@@ -2400,6 +2398,7 @@ export async function loadTemplate() {
       try {
         await import(`${base}/templates/${name}/${name}.js`);
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.log(`failed to load module for ${name}`, err);
       }
       resolve();
@@ -2541,12 +2540,32 @@ async function decorateExpressPage(main) {
 
 function fragmentBlocksToLinks(area) {
   area.querySelectorAll('div.fragment').forEach((blk) => {
-    const fragLink = blk.querySelector('a');
+    let fragLink = blk.querySelector('a');
+    if (!fragLink) {
+      try {
+        const firstDiv = blk.querySelector('div');
+        const textContent = firstDiv?.textContent?.trim();
+        const fragURL = new URL(textContent, window.location.origin);
+        firstDiv.textContent = '';
+        fragLink = createTag('a', { href: fragURL.href });
+      } catch (error) {
+        blk.remove();
+        window.lana.log(`Failed creating a url from an old fragment block: ${error.message}`);
+      }
+    }
     if (fragLink) {
       blk.parentElement.replaceChild(fragLink, blk);
       fragLink.setAttribute('ax-old-fragment', 'on');
     }
   });
+}
+
+export function replaceHyphensInText(area) {
+  [...area.querySelectorAll('h1, h2, h3, h4, h5, h6')]
+    .filter((header) => header.textContent.includes('-'))
+    .forEach((header) => {
+      header.textContent = header.textContent.replace(/-/g, '\u2011');
+    });
 }
 
 export async function loadArea(area = document) {
@@ -2555,6 +2574,7 @@ export async function loadArea(area = document) {
   const main = area.querySelector('main');
   if (isDoc) {
     await checkForPageMods();
+    removeIrrelevantSections(main);
     if (getMetadata('template-search-page') === 'Y') {
       const { default: redirect } = await import('./template-redirect.js');
       await redirect();

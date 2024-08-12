@@ -251,6 +251,16 @@
   display: flex;
 }
 
+.fullscreen-marquee .hyperlink {
+  display: inline-block;  
+  position: relative;
+  top: -27px;
+  text-decoration: underline;
+  padding-left: 10px;
+  padding-right: 10px;
+
+}
+
 @media (min-width: 900px) {
   .section > .fullscreen-marquee {
     padding-bottom: 40px;
