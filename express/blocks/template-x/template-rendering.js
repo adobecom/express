@@ -352,25 +352,30 @@ function renderHoverWrapper(template, placeholders) {
     mediaWrapper, enterHandler, leaveHandler, focusHandler,
   } = renderMediaWrapper(template, placeholders);
 
-  btnContainer.append(mediaWrapper);
+
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
   const cta = renderCTA(placeholders, template.customLinks.branchUrl);
   btnContainer.prepend(cta);
+
+  // btnContainer.append(mediaWrapper);
+
+  btnContainer.querySelector('a').prepend(mediaWrapper);
+
   cta.addEventListener('focusin', focusHandler);
 
-  // cta.addEventListener('click', () => {
-  //   updateImpressionCache({
-  //     content_id: template.id,
-  //     status: template.licensingCategory,
-  //     task: getMetadata('tasksx') || getMetadata('tasks') || '',
-  //     search_keyword: getMetadata('q') || getMetadata('topics') || '',
-  //     collection: getMetadata('tasksx') || getMetadata('tasks') || '',
-  //     collection_path: window.location.pathname,
-  //   });
-  //   trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
-  // }, { passive: true });
+  cta.addEventListener('click', () => {
+    updateImpressionCache({
+      content_id: template.id,
+      status: template.licensingCategory,
+      task: getMetadata('tasksx') || getMetadata('tasks') || '',
+      search_keyword: getMetadata('q') || getMetadata('topics') || '',
+      collection: getMetadata('tasksx') || getMetadata('tasks') || '',
+      collection_path: window.location.pathname,
+    });
+    trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
+  }, { passive: true });
 
   return btnContainer;
 }
@@ -433,7 +438,7 @@ function renderStillWrapper(template, placeholders) {
 }
 
 export default function renderTemplate(template, placeholders) {
-  const tmpltEl = createTag('div');
+  const tmpltEl = createTag('div', {class: "GOODGOOD"});
   tmpltEl.append(renderStillWrapper(template, placeholders));
   tmpltEl.append(renderHoverWrapper(template, placeholders));
 
