@@ -144,7 +144,7 @@ function renderShareWrapper(branchUrl, placeholders) {
 }
 
 function renderCTA(placeholders, branchUrl) {
-  const btnTitle = 'EDIT3Edit this template';
+  const btnTitle = 'Edit this template';
   const btnEl = createTag('a', {
     href: branchUrl,
     title: btnTitle,
@@ -152,6 +152,17 @@ function renderCTA(placeholders, branchUrl) {
   });
   btnEl.textContent = btnTitle;
   return btnEl;
+}
+
+function renderCTALink(placeholders, branchUrl) {
+  // const btnTitle = 'Edit this template';
+  const linkEl = createTag('a', {
+    href: branchUrl,
+    // title: btnTitle,
+    // class: 'button accent small',
+  });
+  // btnEl.textContent = btnTitle;
+  return linkEl;
 }
 
 function getPageIterator(pages) {
@@ -357,11 +368,15 @@ function renderHoverWrapper(template, placeholders) {
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
   const cta = renderCTA(placeholders, template.customLinks.branchUrl);
+  const ctaLink = renderCTALink(placeholders, template.customLinks.branchUrl);
   btnContainer.prepend(cta);
 
   // btnContainer.append(mediaWrapper);
 
-  btnContainer.querySelector('a').prepend(mediaWrapper);
+  // btnContainer.querySelector('a').prepend(mediaWrapper);
+
+  ctaLink.prepend(mediaWrapper);
+  btnContainer.append(ctaLink);
 
   cta.addEventListener('focusin', focusHandler);
 
