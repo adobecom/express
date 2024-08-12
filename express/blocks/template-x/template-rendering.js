@@ -372,7 +372,8 @@ function renderHoverWrapper(template, placeholders) {
 
   cta.addEventListener('focusin', focusHandler);
 
-  cta.addEventListener('click', () => {
+  const ctaClickHandler = () => {
+    console.log("=== LOGGING");
     updateImpressionCache({
       content_id: template.id,
       status: template.licensingCategory,
@@ -382,7 +383,10 @@ function renderHoverWrapper(template, placeholders) {
       collection_path: window.location.pathname,
     });
     trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
-  }, { passive: true });
+  };
+
+  cta.addEventListener('click', ctaClickHandler, { passive: true });
+  ctaLink.addEventListener('click', ctaClickHandler, { passive: true });
 
   return btnContainer;
 }
