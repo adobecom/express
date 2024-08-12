@@ -82,7 +82,7 @@ export default async function loadLoginUserAutoRedirect() {
     const progressBar = createTag('div', { class: 'pep-progress-bar' });
     const noticeWrapper = createTag('div', { class: 'notice-wrapper' });
     const noticeText = createTag('span', { class: 'notice-text' }, placeholders['pep-cancel']);
-    const noticeBtn = createTag('a', { class: 'notice-btn' }, placeholders.cancel);
+    const noticeBtn = createTag('button', { class: 'notice-btn' }, placeholders.cancel);
 
     headerWrapper.append(headerIcon, headerText);
     progressBg.append(progressBar);
@@ -103,7 +103,7 @@ export default async function loadLoginUserAutoRedirect() {
       cancel = true;
       localStorage.setItem(OPT_OUT_KEY, '3');
     });
-    return container;
+    return { container, noticeBtn };
   };
 
   const optOutCounter = localStorage.getItem(OPT_OUT_KEY);
@@ -112,14 +112,14 @@ export default async function loadLoginUserAutoRedirect() {
     const counterNumber = parseInt(optOutCounter, 10);
     localStorage.setItem(OPT_OUT_KEY, (counterNumber - 1).toString());
   } else {
-    const container = await buildRedirectAlert();
+    const { container, noticeBtn } = await buildRedirectAlert();
     let startTime = performance.now();
     let remainTime = REACT_TIME;
     let timeoutId;
     let isMouseIn = false;
     const progressBar = container.querySelector('.pep-progress-bar');
     let start;
-    const mouseEnter = () => {
+    const pause = () => {
       isMouseIn = true;
       clearTimeout(timeoutId);
       const pastTime = performance.now() - startTime;
@@ -128,7 +128,7 @@ export default async function loadLoginUserAutoRedirect() {
       progressBar.style.transition = 'none';
       progressBar.style.width = `${progress}%`;
     };
-    const mouseLeave = () => {
+    const resume = () => {
       if (!isMouseIn) return;
       isMouseIn = false;
       timeoutId = start();
@@ -139,13 +139,15 @@ export default async function loadLoginUserAutoRedirect() {
       progressBar.offsetWidth; // forcing a reflow to get more consistent transition
       progressBar.style.width = '100%';
       return setTimeout(() => {
-        container.removeEventListener('mouseenter', mouseEnter);
-        container.removeEventListener('mouseleave', mouseLeave);
+        container.removeEventListener('mouseenter', pause);
+        container.removeEventListener('mouseleave', resume);
         if (!cancel) initRedirect(container);
       }, remainTime);
     };
-    container.addEventListener('mouseenter', mouseEnter);
-    container.addEventListener('mouseleave', mouseLeave);
+    noticeBtn.addEventListener('focusin', pause);
+    noticeBtn.addEventListener('focusout', resume);
+    container.addEventListener('mouseenter', pause);
+    container.addEventListener('mouseleave', resume);
     timeoutId = start();
   }
 }

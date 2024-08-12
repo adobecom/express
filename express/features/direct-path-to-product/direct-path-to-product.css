@@ -109,6 +109,11 @@
 }
 
 .pep-container .notice-btn {
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: 0.875rem;
+    padding: 0;
     font-weight: 700;
     color: var(--color-info-accent);
     cursor: pointer;
