@@ -148,12 +148,8 @@ async function createPricingSection(
   specialPromo,
   isMonthly = false
 ) {
-  pricingArea.classList.add('pricing-area')
-  // const pricingArea = createTag('div', { class: 'pricing-area' })
-  // while (pricingSection?.firstChild) {
-  //   pricingArea.appendChild(pricingSection.firstChild);
-  // }
-
+  // console.log(pricingArea,ctaGroup, specialPromo)
+  pricingArea.classList.add('pricing-area') 
 
   const offer = pricingArea.querySelector(':scope > p > em');
   if (offer) {
@@ -193,8 +189,7 @@ async function createPricingSection(
     priceEl?.parentNode?.remove();
     pricingSuffixTextElem?.remove();
     pricingBtnContainer?.remove();
-  }
-  //const ctaArea = createTag('div', { class: 'card-cta-group' })
+  } 
   ctaGroup.classList.add('card-cta-group')
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
@@ -209,8 +204,7 @@ async function createPricingSection(
     formatDynamicCartLink(a);
     if (a.textContent.includes(SALES_NUMBERS)) {
       formatSalesPhoneNumber([a], SALES_NUMBERS)
-    }
-   // ctaArea.append(a);
+    } 
   });
 
   if (isMonthly) {
@@ -219,8 +213,7 @@ async function createPricingSection(
   } else {
     pricingArea.classList.add('annually', 'hide');
     ctaGroup.classList.add('annually', 'hide')
-  }
-  //return [pricingArea, ctaArea]
+  } 
 }
 
 function decorateHeader(header, planExplanation) {
@@ -253,11 +246,7 @@ function decorateHeader(header, planExplanation) {
 }
 
 function decorateCardBorder(card, source) {
-  if (!source?.textContent) {
-    const newHeader = createTag('div', { class: 'promo-eyebrow-text' })
-    card.appendChild(newHeader)
-    return
-  }
+  source.classList.add('none') 
   const pattern = /\{\{(.*?)\}\}/g;
   const matches = Array.from(source.textContent?.matchAll(pattern));
   if (matches.length > 0) {
@@ -266,8 +255,13 @@ function decorateCardBorder(card, source) {
     const newHeader = createTag('div', { class: 'promo-eyebrow-text' })
     newHeader.textContent = source.textContent.replace(pattern, '')
     card.appendChild(newHeader)
+  } else {
+    const newHeader = createTag('div', { class: 'promo-eyebrow-text' })
+    card.appendChild(newHeader)
   }
-  source.classList.add('none')
+ 
+
+
 }
 
 export default async function init(el) {
@@ -287,15 +281,12 @@ export default async function init(el) {
     rows[7].children[0].classList.add('card-feature-list')
     rows[8].children[0].classList.add('compare-all')
 
-
- 
     for (let j = 0; j < rows.length - 1; j += 1) {
       card.appendChild(rows[j].children[0])
-    }
+    } 
+    const toggle = createToggle(placeholders, [card.children[4], card.children[5], card.children[6], card.children[7]],  `${Date.now()}`, i === 2);
+    card.insertBefore(toggle, card.children[4]) 
 
-    const toggle = createToggle(placeholders, [card.children[4], card.children[5], card.children[6], card.children[7]],  `${Date.now()}`);
-    card.insertBefore(toggle, card.children[4])
-  //  card.appendChild(toggle)
     cards.push(card)
   }
   el.innerHTML = ''
@@ -304,7 +295,6 @@ export default async function init(el) {
   }
 
   const observer = new IntersectionObserver((entries) => {
- 
     entries.forEach(entry => {
       console.log(entry)
       if (entry.isIntersecting) {
@@ -325,7 +315,7 @@ export default async function init(el) {
 
 
 function equalizeHeights() { 
-  const classNames = [".card-header", ".plan-explanation"]
+  const classNames = [".card-header", ".plan-explanation", ".billing-toggle", ".pricing-area"]
   for (let className of classNames){
     const headers = document.querySelectorAll(className);
     let maxHeight = 0;
