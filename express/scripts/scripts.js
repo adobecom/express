@@ -21,7 +21,7 @@ const locales = {
   fi: { ietf: 'fi-FI', tk: 'aaz7dvd.css' },
   fr: { ietf: 'fr-FR', tk: 'vrk5vyv.css' },
   gb: { ietf: 'en-GB', tk: 'pps7abe.css' },
-  id: { ietf: 'id-ID', tk: 'cya6bri.css' },
+  id_id: { ietf: 'id-ID', tk: 'cya6bri.css' },
   in: { ietf: 'en-IN', tk: 'pps7abe.css' },
   it: { ietf: 'it-IT', tk: 'bbf5pok.css' },
   jp: { ietf: 'ja-JP', tk: 'dvg6awq' },
