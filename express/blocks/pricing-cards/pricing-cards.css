@@ -308,14 +308,13 @@ border-top-width: 48px;
   height: 0px;
 }
 
-.pricing-cards .billing-toggle {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  align-items: center;
-  font-size: var(--body-font-size-s); 
-  margin-top: 10px;
-  margin-bottom: 10px;
+.pricing-cards .billing-toggle { 
+    gap: 12px; 
+    font-size: var(--body-font-size-s);
+    margin-bottom: 12px;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .pricing-cards .billing-toggle button {

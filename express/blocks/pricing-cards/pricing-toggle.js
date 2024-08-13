@@ -61,7 +61,7 @@ function onKeyDown(e, pricingSections, buttons, toggleWrapper) {
 }
 
 export default function createToggle(
-  placeholders, pricingSections, groupID, adjustElementPosition,
+  placeholders, pricingSections, groupID, adjElemPos, isTeams,
 ) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
   const toggleWrapper = createTag('div', { class: 'billing-toggle' });
@@ -77,9 +77,8 @@ export default function createToggle(
   toggleWrapper.setAttribute('aria-labelledby', groupID);
   const groupLabel = toggleWrapper.children[0];
   groupLabel.setAttribute('id', groupID);
-
-
-  const buttons = PLANS.map((plan, i) => {
+  const buttons = PLANS.map((basePlan, i) => {
+    let plan = basePlan;
     const buttonID = `${groupID}:${plan}`;
     const defaultChecked = i === 0;
     const button = createTag('button', {
@@ -91,7 +90,10 @@ export default function createToggle(
     button.appendChild(createTag('span'));
     button.setAttribute('aria-checked', defaultChecked);
     button.setAttribute('aria-labeledby', buttonID);
-    const label = placeholders?.[plan] || plan[0].toUpperCase() + plan.slice(1).toLowerCase();
+    if (isTeams && plan === 'monthly') {
+      plan = 'annual-billed-monthly';
+    }
+    const label = placeholders?.[plan] || 'Annual, Billed Monthly';
     button.append(createTag('div', { id: `${buttonID}:radio` }, label));
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
@@ -105,7 +107,8 @@ export default function createToggle(
     onKeyDown(e, pricingSections, buttons, toggleWrapper);
     adjustElementPosition()
   });
-
-  toggleWrapper.append(...buttons);
+  const buttonWrapper = createTag('div', { class: 'billing-button-wrapper' });
+  buttonWrapper.append(...buttons);
+  toggleWrapper.append(buttonWrapper);
   return toggleWrapper;
 }
