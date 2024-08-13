@@ -143,15 +143,16 @@ function handleRawPrice(price, basePrice, response) {
 
 async function createPricingSection(
   placeholders,
-  pricingSection,
+  pricingArea,
   ctaGroup,
   specialPromo,
   isMonthly = false
 ) {
-  const pricingArea = createTag('div', { class: 'pricing-area' })
-  while (pricingSection?.firstChild) {
-    pricingArea.appendChild(pricingSection.firstChild);
-  }
+  pricingArea.classList.add('pricing-area')
+  // const pricingArea = createTag('div', { class: 'pricing-area' })
+  // while (pricingSection?.firstChild) {
+  //   pricingArea.appendChild(pricingSection.firstChild);
+  // }
 
 
   const offer = pricingArea.querySelector(':scope > p > em');
@@ -193,32 +194,33 @@ async function createPricingSection(
     pricingSuffixTextElem?.remove();
     pricingBtnContainer?.remove();
   }
-  const ctaArea = createTag('div', { class: 'card-cta-group' })
+  //const ctaArea = createTag('div', { class: 'card-cta-group' })
+  ctaGroup.classList.add('card-cta-group')
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
     if (i === 1) a.classList.add('secondary');
     if (a.parentNode.tagName.toLowerCase() === 'strong') {
       a.classList.add('button', 'primary');
-      a.parentNode.remove();
+    
     }
     if (a.parentNode.tagName.toLowerCase() === 'p') {
-      a.parentNode.remove();
+      
     }
     formatDynamicCartLink(a);
     if (a.textContent.includes(SALES_NUMBERS)) {
       formatSalesPhoneNumber([a], SALES_NUMBERS)
     }
-    ctaArea.append(a);
+   // ctaArea.append(a);
   });
 
   if (isMonthly) {
     pricingArea.classList.add('monthly');
-    ctaArea.classList.add('monthly')
+    ctaGroup.classList.add('monthly')
   } else {
     pricingArea.classList.add('annually', 'hide');
-    ctaArea.classList.add('annually', 'hide')
+    ctaGroup.classList.add('annually', 'hide')
   }
-  return [pricingArea, ctaArea]
+  //return [pricingArea, ctaArea]
 }
 
 function decorateHeader(header, planExplanation) {
@@ -279,29 +281,21 @@ export default async function init(el) {
     const card = createTag('div', { class: 'card' })
     decorateCardBorder(card, rows[1].children[0])
     decorateHeader(rows[0].children[0], rows[2].children[0])
-
-    const [[m1, m2], [a1, a2]] = await Promise.all([
-      createPricingSection(placeholders, rows[3].children[0], rows[4].children[0], rows[0].children[0], true),
-      createPricingSection(placeholders, rows[5].children[0], rows[6].children[0], rows[0].children[0]),
-    ]);
-    rows[3].children[0].classList.add("pricing-area-wrapper")
-    rows[3].children[0].innerHTML = ''
-    rows[3].children[0].appendChild(m1)
-    rows[3].children[0].appendChild(a1)
-    rows[4].children[0].classList.add("pricing-area-wrapper")
-    rows[4].children[0].innerHTML = ''
-    rows[4].children[0].appendChild(m2)
-    rows[4].children[0].appendChild(a2)
-
-    const groupID = `${Date.now()}`;
-    const toggle = createToggle(placeholders, [m1, m2, a1, a2], groupID);
-    rows[3].children[0].insertBefore(toggle, rows[3].children[0].children[0])
+    createPricingSection(placeholders, rows[3].children[0], rows[4].children[0], rows[0].children[0], true)
+    createPricingSection(placeholders, rows[5].children[0], rows[6].children[0], rows[0].children[0])
+ 
     rows[7].children[0].classList.add('card-feature-list')
     rows[8].children[0].classList.add('compare-all')
 
+
+ 
     for (let j = 0; j < rows.length - 1; j += 1) {
       card.appendChild(rows[j].children[0])
     }
+
+    const toggle = createToggle(placeholders, [card.children[4], card.children[5], card.children[6], card.children[7]],  `${Date.now()}`);
+    card.insertBefore(toggle, card.children[4])
+  //  card.appendChild(toggle)
     cards.push(card)
   }
   el.innerHTML = ''
@@ -324,34 +318,34 @@ export default async function init(el) {
     observer.observe(column);
   });
 
-  function equalizeHeights() { 
-    const classNames = [".card-header", ".plan-explanation"]
-    for (let className of classNames){
-      const headers = document.querySelectorAll(className);
-      let maxHeight = 0;
-      headers.forEach((header, index) => {
-         if (header.checkVisibility()){
-          const height = getHeightWithoutPadding(header);
-          header.ATTRIBUTE_NODE
-          maxHeight = Math.max(maxHeight, height); 
-         }
-      });
-      headers.forEach(placeholder => {
-        if (placeholder.style.height) return
-        placeholder.style.height = maxHeight + 'px';
-      });
-    }
-  }
-
-  function getHeightWithoutPadding(element) {
-    const styles = window.getComputedStyle(element);
-    const paddingTop = parseFloat(styles.paddingTop);
-    const paddingBottom = parseFloat(styles.paddingBottom);
-    return element.clientHeight - paddingTop - paddingBottom;
-  }
-
-  // Run on load and resize
   window.addEventListener('load', equalizeHeights);
   window.addEventListener('resize', equalizeHeights);
 
+}
+
+
+function equalizeHeights() { 
+  const classNames = [".card-header", ".plan-explanation"]
+  for (let className of classNames){
+    const headers = document.querySelectorAll(className);
+    let maxHeight = 0;
+    headers.forEach((header) => {
+       if (header.checkVisibility()){
+        const height = getHeightWithoutPadding(header);
+        header.ATTRIBUTE_NODE
+        maxHeight = Math.max(maxHeight, height); 
+       }
+    });
+    headers.forEach(placeholder => {
+      if (placeholder.style.height) return
+      placeholder.style.height = maxHeight + 'px';
+    });
+  }
+}
+
+function getHeightWithoutPadding(element) {
+  const styles = window.getComputedStyle(element);
+  const paddingTop = parseFloat(styles.paddingTop);
+  const paddingBottom = parseFloat(styles.paddingBottom);
+  return element.clientHeight - paddingTop - paddingBottom;
 }

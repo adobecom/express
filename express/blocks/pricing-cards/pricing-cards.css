@@ -19,9 +19,7 @@ main .section:has(.pricing-cards)>div {
   flex-direction: row;
   width: min-content;
   flex-wrap: wrap;
-  gap: 16px;
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
+  gap: 16px; 
 } 
 
 .pricing-cards .card > div {
@@ -283,17 +281,23 @@ border-top-width: 48px;
   font-size: var(--body-font-size-m);
 }
 
+.pricing-cards .card-cta-group p.button-container {
+  margin: 0;
+}
 
 .pricing-cards .card-cta-group {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 20px;
+  gap: 5px;
+  margin-top: 20px; 
+    min-height: 90px;
+    margin-bottom: 20px; 
 }
 
 .pricing-cards .card-cta-group a {
   box-sizing: border-box;
   margin: 0;
+  width: 100%;
 }
 
 .billing-radio-hidden {
@@ -306,12 +310,9 @@ border-top-width: 48px;
   justify-content: center;
   gap: 12px;
   align-items: center;
-  font-size: var(--body-font-size-s);
-  position: relative;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin-top: 10px;;
+  font-size: var(--body-font-size-s); 
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .pricing-cards .billing-toggle button {
@@ -391,6 +392,7 @@ border-top-width: 48px;
 .pricing-cards > .card > div:last-of-type {
   border-top: 1px solid gray;
   margin-top: 20px;
+
 }
 
 .pricing-cards > .card > div:last-of-type > a {
@@ -509,17 +511,13 @@ border-top-width: 48px;
 }
 
 .pricing-cards .card .plan-explanation {
-  /* min-height: 60px; */
-  /* display: contents; */
+  text-align: left;
 }
 
 .pricing-cards .card .card-feature-list {
   min-height: 800px;;
 }
 
-.pricing-cards .card-cta-group {
-  min-height: 90px;
-}
 
 .pricing-cards .pricing-area-wrapper {
   min-height: 200px;
@@ -536,12 +534,12 @@ border-top-width: 48px;
 @media (max-width: 600px) {
   .pricing-cards {
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 20px;
     min-width: none;
   }
 
   .pricing-cards .card {
-    width: 320px;
+    width: 353px;
     margin: auto;
   }
 
