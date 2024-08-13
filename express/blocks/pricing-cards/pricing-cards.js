@@ -410,10 +410,10 @@ async function decorateCard({
   yCtaGroup,
   featureList,
   compare,
-}, el, placeholders, legacyVersion) {
+}, el, placeholders, legacyVersion, index) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
-  const isTeams = header.innerText.includes('(');
+  const isTeams = header.innerText.includes('(') || index === 2;
   const { specialPromo, cardWrapper } = legacyVersion
     ? decorateLegacyHeader(header, card)
     : decorateHeader(header, borderParams, card, cardBorder);
@@ -463,7 +463,7 @@ export default async function init(el) {
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
   const decoratedCards = await Promise.all(
-    cards.map((card) => decorateCard(card, el, placeholders, legacyVersion)),
+    cards.map((card, index) => decorateCard(card, el, placeholders, legacyVersion, index)),
   );
   decoratedCards.forEach((card) => cardsContainer.append(card));
 
