@@ -246,22 +246,19 @@ function decorateHeader(header, planExplanation) {
 }
 
 function decorateCardBorder(card, source) {
-  source.classList.add('none') 
+  source.classList.add('promo-eyebrow-text' ) 
   const pattern = /\{\{(.*?)\}\}/g;
   const matches = Array.from(source.textContent?.matchAll(pattern));
   if (matches.length > 0) {
     const [token, promoType] = matches[matches.length - 1];
-    card.classList.add(promoType.replaceAll(' ', ''));
-    const newHeader = createTag('div', { class: 'promo-eyebrow-text' })
-    newHeader.textContent = source.textContent.replace(pattern, '')
-    card.appendChild(newHeader)
-  } else {
-    const newHeader = createTag('div', { class: 'promo-eyebrow-text' })
-    card.appendChild(newHeader)
-  }
- 
+    card.classList.add(promoType.replaceAll(' ', '')); 
+    source.textContent = source.textContent.replace(pattern, '')
+  }   
+}
 
-
+function decorateBillingToggle (card, cardIndex) {
+  const toggle = createToggle(placeholders, [card.children[3], card.children[4], card.children[5], card.children[6]],  `${Date.now()}`, cardIndex === 2);
+  card.insertBefore(toggle, card.children[3]) 
 }
 
 export default async function init(el) {
@@ -271,32 +268,36 @@ export default async function init(el) {
   const cardCount = rows[0].children.length
   const cards = []
 
-  for (let i = 0; i < cardCount; i += 1) {
+  const firstRow = rows[0]
+  rows.splice(0,1)
+  rows.splice(1,0,firstRow)
+
+  for (let cardIndex = 0; cardIndex < cardCount; cardIndex += 1) {
     const card = createTag('div', { class: 'card' })
-    decorateCardBorder(card, rows[1].children[0])
-    decorateHeader(rows[0].children[0], rows[2].children[0])
+    decorateCardBorder(card, rows[0].children[0])
+    decorateHeader(rows[1].children[0], rows[2].children[0])
     createPricingSection(placeholders, rows[3].children[0], rows[4].children[0], rows[0].children[0], true)
     createPricingSection(placeholders, rows[5].children[0], rows[6].children[0], rows[0].children[0])
- 
     rows[7].children[0].classList.add('card-feature-list')
     rows[8].children[0].classList.add('compare-all')
 
     for (let j = 0; j < rows.length - 1; j += 1) {
       card.appendChild(rows[j].children[0])
     } 
-    const toggle = createToggle(placeholders, [card.children[4], card.children[5], card.children[6], card.children[7]],  `${Date.now()}`, i === 2);
-    card.insertBefore(toggle, card.children[4]) 
-
     cards.push(card)
+
+    decorateBillingToggle(card, cardIndex)
   }
   el.innerHTML = ''
+  el.appendChild(createTag('div', {class : 'card-wrapper'}))
   for (let card of cards) {
-    el.appendChild(card)
+    el.children[0].appendChild(card)
   }
+  el.appendChild(rows[rows.length - 1])
+  
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      console.log(entry)
       if (entry.isIntersecting) {
         equalizeHeights();
         observer.unobserve(entry.target);
@@ -315,7 +316,9 @@ export default async function init(el) {
 
 
 function equalizeHeights() { 
-  const classNames = [".card-header", ".plan-explanation", ".billing-toggle", ".pricing-area"]
+  const classNames = [".card-header", ".plan-explanation", ".billing-toggle", ".pricing-area", ".card-cta-group"]
+  const cardCount = document.querySelectorAll(".pricing-cards .card").length
+  if (cardCount === 1) return
   for (let className of classNames){
     const headers = document.querySelectorAll(className);
     let maxHeight = 0;
@@ -328,6 +331,7 @@ function equalizeHeights() {
     });
     headers.forEach(placeholder => {
       if (placeholder.style.height) return
+      // if (! placeholder.checkVisibility()) return
       placeholder.style.height = maxHeight + 'px';
     });
   }

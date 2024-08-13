@@ -6,7 +6,7 @@
    max-width: none;
  }
 
- .pricing-cards {
+ .pricing-cards .card-wrapper {
    --card-width: 400px;
    --card-padding: 12px;
    margin: auto;
@@ -18,7 +18,7 @@
    gap: 10px;
  }
 
- .pricing-cards>.card {
+ .pricing-cards .card {
    width: var(--card-width);
    position: relative;
    margin-left: 10px;
@@ -35,7 +35,7 @@
    display: none;
  }
 
- .pricing-cards>.card.gradient-promo {
+ .pricing-cards .card.gradient-promo {
    margin-top: unset;
    background:
      linear-gradient(white 0 0) padding-box,
@@ -59,6 +59,8 @@
    left: 0;
    right: 0;
    bottom: 0;
+   z-index: -1;
+   pointer-events: none;
  }
 
  /** Header **/
@@ -106,7 +108,7 @@
    padding-right: 6px;
  }
 
- .pricing-cards>.card>.plan-explanation {
+ .pricing-cards .card>.plan-explanation {
    margin-top: 10px;
    margin-bottom: 10px;
    ;
@@ -164,7 +166,7 @@
  }
 
 
- .pricing-cards>.card>div:nth-last-of-type(2)>div {
+ .pricing-cards .card>div:nth-last-of-type(2)>div {
    border: 2px solid #C6C6C6;
    border-top: 0;
    border-radius: 0px 0px 4px 4px;
@@ -265,8 +267,8 @@
    display: flex;
    flex-direction: column;
    gap: 5px;
-   margin-top: 20px;
    min-height: 90px;
+   margin-top: 20px; 
    margin-bottom: 20px;
  }
 
@@ -372,13 +374,13 @@
  }
 
 
- .pricing-cards>.card>div:last-of-type {
+ .pricing-cards .card>div:last-of-type {
    border-top: 1px solid gray;
    margin-top: 20px;
 
  }
 
- .pricing-cards>.card>div:last-of-type>a {
+ .pricing-cards .card>div:last-of-type>a {
    color: var(--color-info-accent);
    border: none;
    background: none;
@@ -391,7 +393,7 @@
 
  }
 
- .pricing-cards>.card>div:last-of-type>a:hover {
+ .pricing-cards .card>div:last-of-type>a:hover {
    background: none;
  }
 
@@ -503,6 +505,16 @@
    height: unset;
  }
 
+ .pricing-cards > div:last-of-type {
+  padding: 12px 8px;
+    margin: 16px auto;
+    border-radius: 4px;
+    background: #E0E2FF;
+    font-size: var(--body-font-size-xs);
+    max-width: 1200px;
+    box-sizing: border-box;
+ }
+
  @media (max-width: 600px) {
    .pricing-cards {
      flex-wrap: wrap;
@@ -543,7 +555,7 @@
  }
 
  @media (min-width: 1400px) {
-   .pricing-cards {
+   .pricing-cards .card-wrapper {
      margin: auto;
      padding: 10px;
      display: flex;
