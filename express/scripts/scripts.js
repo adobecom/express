@@ -17,6 +17,7 @@ const locales = {
   cn: { ietf: 'zh-Hans-CN', tk: 'puu3xkp' },
   de: { ietf: 'de-DE', tk: 'vin7zsi.css' },
   dk: { ietf: 'da-DK', tk: 'aaz7dvd.css' },
+  eg: { ietf: 'en-EG', tk: 'pps7abe.css' },
   es: { ietf: 'es-ES', tk: 'oln4yqj.css' },
   fi: { ietf: 'fi-FI', tk: 'aaz7dvd.css' },
   fr: { ietf: 'fr-FR', tk: 'vrk5vyv.css' },
@@ -28,10 +29,9 @@ const locales = {
   nl: { ietf: 'nl-NL', tk: 'cya6bri.css' },
   no: { ietf: 'no-NO', tk: 'aaz7dvd.css' },
   se: { ietf: 'sv-SE', tk: 'fpk1pcd.css' },
+  tr: { ietf: 'tr-TR', tk: 'ley8vds.css' },
   tw: { ietf: 'zh-Hant-TW', tk: 'jay0ecd' },
   uk: { ietf: 'en-GB', tk: 'pps7abe.css' },
-  tr: { ietf: 'tr-TR', tk: 'ley8vds.css' },
-  eg: { ietf: 'en-EG', tk: 'pps7abe.css' },
 };
 
 let jarvisImmediatelyVisible = false;
@@ -44,6 +44,8 @@ const config = {
   local: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
   stage: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
   prod: { express: 'express.adobe.com', commerce: 'commerce.adobe.com' },
+  geoRouting: 'on',
+  fallbackRouting: 'on',
   locales,
   codeRoot: '/express',
   contentRoot: '/express',

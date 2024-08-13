@@ -1,0 +1,260 @@
+  
+  :root {
+    /* georouting modal */
+    --link-color-dark: #1473E6;
+    --link-hover-color-dark: #0d66d0;
+    --color-accent: var(--link-color-dark);
+    --color-accent-hover: var(--link-hover-color-dark);
+    --color-accent-down: #095aba;
+    --color-accent-focus-ring: #378ef0;
+  }
+  
+  .dialog-modal.locale-modal-v2 .georouting-wrapper {
+    display: block !important;
+    padding: 56px 24px 40px;
+  }
+  
+  .dialog-modal.locale-modal-v2 {
+    overflow: visible;
+    font-family: 'Adobe Clean', adobe-clean, 'Trebuchet MS', sans-serif;
+  }
+  
+  .dialog-modal.locale-modal-v2 .georouting-bg {
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: -1;
+  }
+  
+  .dialog-modal.locale-modal-v2 .georouting-bg svg {
+    width: 100%;
+  }
+  
+  .dialog-modal.locale-modal-v2 .picker {
+    position: fixed;
+    margin-top: 2px;
+    background: #FFF 0 0 no-repeat padding-box;
+    box-shadow: 0 1px 4px #00000026;
+    border: 1px solid #B1B1B1;
+    border-radius: 4px;
+    opacity: 1;
+    padding-inline-start: 0;
+    min-width: 176px;
+    margin-bottom: 8px;
+    z-index: 10;
+  }
+  
+  .dialog-modal.locale-modal-v2 .picker.top {
+    bottom: 41px;
+    position: absolute;
+  }
+  
+  .dialog-modal.locale-modal-v2 a:first-child {
+    margin-inline-end: 24px;
+  }
+  
+  .dialog-modal.locale-modal-v2 a:last-child {
+    white-space: nowrap;
+  }
+  
+  .dialog-modal.locale-modal-v2 .picker li {
+    list-style-type: none;
+  }
+  
+  .dialog-modal.locale-modal-v2 .picker li a {
+    width: calc(100% - 12px);
+    display: block;
+    padding-inline-start: 12px;
+    color: #222;
+    font-size: 14px;
+  }
+  
+  .dialog-modal.locale-modal-v2 .picker li a:hover {
+    background-color: rgb(229 229 229);
+    text-decoration: none;
+  }
+  
+  .dialog-modal.locale-modal-v2 h3 {
+    margin: 16px 0;
+  }
+  
+  .dialog-modal.locale-modal-v2 .locale-text {
+    margin: 16px 0 26px;
+  }
+  
+  .dialog-modal.locale-modal-v2 .link-wrapper {
+    line-height: 48px;
+    position: relative;
+  }
+  
+  .dialog-modal.locale-modal-v2 span.icon {
+    vertical-align: middle;
+  }
+  
+  .dialog-modal.locale-modal-v2 img.icon-milo {
+    top: 1px;
+  }
+  
+  .dialog-modal.locale-modal-v2 .icon-milo.down-arrow {
+    float: right;
+    margin-top: 4px;
+    margin-left: 4px;
+    top: 3px;
+    filter: brightness(0) invert(1);
+  }
+  
+  .dialog-modal.locale-modal-v2 .tabs div[role="tablist"]  {
+    box-shadow: initial;
+    background: initial;
+    margin: 0;
+  }
+  
+  .dialog-modal.locale-modal-v2 .tabs div[role="tablist"] .tab-list-container {
+    padding: initial;
+    margin: 2px;
+  }
+  
+  .dialog-modal.locale-modal-v2 .tabs .tab-paddles .paddle {
+    margin: 2px 0;
+    background: var(--tabs-active-bg-color);
+    border-width: 0 0 2px;
+  }
+  
+  .dialog-modal.locale-modal-v2 .tabs.quiet div[role="tablist"] button[aria-selected="true"] {
+    border-bottom-color: var(--tabs-active-text-color);
+  }
+  
+  .dialog-modal.locale-modal-v2 .tabs .tab-paddles .paddle:disabled {
+    display: none;
+  }
+  
+  .dialog-modal.locale-modal-v2 .tabs button {
+    border-radius: 0;
+  }
+  
+  .dialog-modal.locale-modal-v2 .tabs button:focus-visible {
+    outline: 2px solid var(--color-accent-focus-ring);
+    text-decoration: none;
+  }
+  
+  .dialog-modal.locale-modal-v2 .tabs.quiet div[role="tablist"] button:not(:first-of-type) {
+    margin-inline-start: 24px;
+  }
+  
+  .dialog-modal.locale-modal-v2 .tabs .tab-content {
+    border-bottom: initial;
+    padding: initial;
+  }
+
+  /* georouting modal button */
+  .con-button {
+    background-color: transparent;
+    border-radius: 16px;
+    border: 2px solid var(--text-color);
+    color: var(--text-color);
+    display: inline-block;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 16px;
+    padding: 5px 14px;
+    text-decoration: none;
+  }
+
+  .con-button:hover {
+    background-color: var(--color-black);
+    border-color: var(--color-black);
+    color: var(--color-white);
+    text-decoration: none;
+  }
+
+  .l-button .con-button,
+  .con-button.button-l {
+    border-radius: 20px;
+    font-size: 17px;
+    line-height: 20px;
+    min-height: 21px;
+    padding: 7px 18px 8px;
+  }
+
+  .con-button.blue {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-white);
+  }
+
+  .con-button.blue:hover,
+  .con-button.blue:active {
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+    color: var(--color-white);
+  }
+
+  .con-button.fill {
+    background: var(--text-color);
+    border-color: var(--text-color);
+    color: var(--color-white);
+  }
+
+  .con-button.fill:hover,
+  .con-button.fill:active {
+    background: var(--color-black);
+    border-color: var(--color-black);
+  }
+
+  .l-button .con-button,
+  .con-button.button-l {
+    border-radius: 20px;
+    font-size: 17px;
+    line-height: 20px;
+    min-height: 21px;
+    padding: 7px 18px 8px;
+  }
+
+  .button-l .con-button,
+  .con-button.button-l { margin-left: 12px; }
+
+  /* georouting modal span */
+  span.icon.margin-inline-end { margin-inline-end: 8px; }
+  
+  @media (min-width: 480px) {
+    .dialog-modal.locale-modal-v2 {
+      background-image: url('/express/features/georoutingv2/img/GeoModal_BG_Map_Tablet.png');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  
+    .dialog-modal.locale-modal-v2 .georouting-bg {
+      display: none;
+    }
+  }
+  
+  @media (min-width: 600px) {
+    .dialog-modal.locale-modal-v2 .georouting-wrapper {
+      padding: 56px 56px 40px;
+    }
+  
+    .dialog-modal.locale-modal-v2 {
+      max-width: calc((100% - 6px) - 2em);
+    }
+  }
+  
+  @media (min-width: 760px) {
+    .dialog-modal.locale-modal-v2 {
+      max-width: 720px;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .dialog-modal.locale-modal-v2 {
+      background-image: url('/express/features/georoutingv2/img/GeoModal_BG_Map_Desktop.png');
+    }
+  }
+  
