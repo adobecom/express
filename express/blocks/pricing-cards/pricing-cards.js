@@ -148,7 +148,6 @@ async function createPricingSection(
   specialPromo,
   isMonthly = false
 ) {
-  // console.log(pricingArea,ctaGroup, specialPromo)
   pricingArea.classList.add('pricing-area') 
 
   const offer = pricingArea.querySelector(':scope > p > em');
@@ -196,10 +195,6 @@ async function createPricingSection(
     if (i === 1) a.classList.add('secondary');
     if (a.parentNode.tagName.toLowerCase() === 'strong') {
       a.classList.add('button', 'primary');
-    
-    }
-    if (a.parentNode.tagName.toLowerCase() === 'p') {
-      
     }
     formatDynamicCartLink(a);
     if (a.textContent.includes(SALES_NUMBERS)) {
