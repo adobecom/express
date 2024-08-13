@@ -17,7 +17,6 @@ const locales = {
   cn: { ietf: 'zh-Hans-CN', tk: 'puu3xkp' },
   de: { ietf: 'de-DE', tk: 'vin7zsi.css' },
   dk: { ietf: 'da-DK', tk: 'aaz7dvd.css' },
-  eg: { ietf: 'en-EG', tk: 'pps7abe.css' },
   es: { ietf: 'es-ES', tk: 'oln4yqj.css' },
   fi: { ietf: 'fi-FI', tk: 'aaz7dvd.css' },
   fr: { ietf: 'fr-FR', tk: 'vrk5vyv.css' },
