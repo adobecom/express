@@ -105,6 +105,7 @@ border-top-width: 48px;
   display: flex;
   flex-direction: row-reverse;
   gap: 8px;
+  text-align: left;
 }
 
 .pricing-cards .card-header img {
@@ -221,6 +222,8 @@ border-top-width: 48px;
   color: #5258E4;
   height: 20px;
   font-style: normal;
+  height: auto;
+  max-width: 240px;
 }
 
 .pricing-cards .card-offer a {

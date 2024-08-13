@@ -7,6 +7,7 @@ import {
   fetchPlaceholders,
   loadStyle,
   getConfig,
+  loadIms,
 } from './utils.js';
 
 const isHomepage = window.location.pathname.endsWith('/express/');
@@ -22,15 +23,6 @@ if (isHomepage && getConfig().env.ims === 'prod') {
   expressLoginURL = 'https://new.express.adobe.com/?showCsatOnExportOnce=True&promoid=GHMVYBFM&mv=other';
 }
 let imsLibProm;
-
-// TODO remove all this when we go live with the unav
-const usp = new URLSearchParams(window.location.search);
-const unav = usp.get('unav')?.toLowerCase();
-if (unav === 'on' || unav === 'true') {
-  sessionStorage.setItem('unav', 'true');
-} else if (unav === 'off' || unav === 'false') {
-  sessionStorage.removeItem('unav');
-}
 
 async function checkRedirect(location, geoLookup) {
   const splits = location.pathname.split('/express/');
@@ -65,20 +57,6 @@ async function checkGeo(userGeo, userLocale, geoCheckForce) {
 
   const region = geoCheckForce ? await geoLookup() : getCookie('international') || await geoLookup();
   return checkRedirect(window.location, region);
-}
-
-async function loadIMS() {
-  window.adobeid = {
-    client_id: 'AdobeExpressWeb',
-    scope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
-    locale: getConfig().locale.region,
-    environment: getConfig().env.ims,
-  };
-  if (getConfig().env.ims === 'stg1') {
-    return loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-  } else {
-    return loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
-  }
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -157,16 +135,14 @@ async function loadFEDS() {
   window.addEventListener('adobePrivacy:PrivacyReject', handleConsentSettings);
   window.addEventListener('adobePrivacy:PrivacyCustom', handleConsentSettings);
 
-  const isMegaNav = window.location.pathname.startsWith('/express')
-    || window.location.pathname.startsWith('/in/express')
-    || window.location.pathname.startsWith('/uk/express')
-    || window.location.pathname.startsWith('/education')
-    || window.location.pathname.startsWith('/in/education')
-    || window.location.pathname.startsWith('/uk/education')
-    || window.location.pathname.startsWith('/drafts');
-  const fedsExp = isMegaNav
-    ? 'adobe-express/ax-gnav-x'
-    : 'adobe-express/ax-gnav-x-row';
+  let fedsExp;
+  if (prefix === '') {
+    fedsExp = 'acom/cc-mega-menu/ax-gnav-x';
+  } else if (prefix === 'gb' || prefix === 'uk' || prefix === 'in') {
+    fedsExp = 'en/acom/cc-mega-menu/ax-gnav-x';
+  } else {
+    fedsExp = 'adobe-express/ax-gnav-x-row';
+  }
 
   window.fedsConfig = {
     ...(window.fedsConfig || {}),
@@ -176,7 +152,7 @@ async function loadFEDS() {
         showRegionPicker();
       },
     },
-    universalNav: getConfig().locale.prefix === '' || sessionStorage.getItem('unav') === 'true',
+    universalNav: true,
     universalNavComponents: 'appswitcher, notifications, profile',
     locale: (prefix === '' ? 'en' : prefix),
     content: {
@@ -287,7 +263,7 @@ async function loadFEDS() {
 }
 
 if (!window.hlx || window.hlx.gnav) {
-  imsLibProm = loadIMS();
+  imsLibProm = loadIms();
   loadFEDS();
   if (!['off', 'no'].includes(getMetadata('google-yolo').toLowerCase())) {
     setTimeout(() => {
@@ -300,3 +276,7 @@ if (!window.hlx || window.hlx.gnav) {
 /* Core Web Vitals RUM collection */
 
 sampleRUM('cwv');
+
+/* collect browser preferred language in RUM */
+sampleRUM('audiences', { source: 'page-language', target: document.documentElement.lang });
+sampleRUM('audiences', { source: 'preferred-languages', target: navigator.languages.join(',') });
