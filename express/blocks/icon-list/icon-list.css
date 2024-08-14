@@ -20,7 +20,7 @@ main .icon-list > div.icon-list-column {
 }
 
 main .icon-list .icon-list-description {
-  overflow-x: auto;
+  overflow-wrap: anywhere;
 }
 
 main .icon-list .icon-list-description p {
