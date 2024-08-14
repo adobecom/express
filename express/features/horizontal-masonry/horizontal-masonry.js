@@ -34,18 +34,24 @@ function createEnticement(enticementDetail, enticementLink, mode) {
   return enticementDiv;
 }
 
-function createPromptLinkElement(promptLink) {
+function createPromptLinkElement(promptLink, prompt) {
   const icon = getIconElement('external-link', 22);
   icon.classList.add('link');
   icon.addEventListener('click', () => {
     const urlObj = new URL(promptLink.querySelector('a').href);
     urlObj.searchParams.delete('referrer');
+    urlObj.searchParams.append("prompt", prompt)
     windowHelper.redirect(urlObj.toString());
   });
   return icon;
 }
 
 export default async function setHorizontalMasonry(el) {
+  const link = el.querySelector(":scope .con-button")
+  if (!link) {
+    console.error("Missing Generate Link")
+    return
+  }
   const args = el.querySelectorAll('.interactive-container > .asset > p');
   const container = el.querySelector('.interactive-container .asset');
   container.classList.add('media-container');
@@ -57,19 +63,18 @@ export default async function setHorizontalMasonry(el) {
   args[0].remove();
 
   el.querySelector('.interactive-container').appendChild(createEnticement(enticementText, enticementLink, enticementMode));
-  for (let i = 1; i < args.length; i += 4) {
+  for (let i = 1; i < args.length; i += 3) {
     const divider = args[i];
-    divider.remove();
-    const link = args[i + 1];
-    const prompt = args[i + 2];
+    divider.remove(); 
+    const prompt = args[i + 1];
     prompt.classList.add('overlay');
     const title = createTag('div', { class: 'prompt-title' });
     title.textContent = 'Prompt used';
     prompt.prepend(title);
-    const image = args[i + 3];
+    const image = args[i + 2];
     image.classList.add('image-container');
     image.appendChild(prompt);
-    image.appendChild(createPromptLinkElement(link));
+    image.appendChild(createPromptLinkElement(link.href, prompt));
     link.remove();
   }
 }
