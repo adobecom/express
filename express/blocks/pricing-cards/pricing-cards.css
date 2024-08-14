@@ -49,7 +49,7 @@
    border-top-width: 48px;
  }
 
- .pricing-cards .promo-eyebrow-text {
+ /* .pricing-cards .promo-eyebrow-text {
    position: absolute;
    top: -36px;
    text-align: center;
@@ -61,7 +61,7 @@
    bottom: 0;
    z-index: -1;
    pointer-events: none;
- }
+ } */
 
  /** Header **/
  .pricing-cards .card-header {
@@ -373,13 +373,6 @@
    font-weight: 400;
  }
 
-
- .pricing-cards .card>div:last-of-type {
-   border-top: 1px solid gray;
-   margin-top: 20px;
-
- }
-
  .pricing-cards .card>div:last-of-type>a {
    color: var(--color-info-accent);
    border: none;
@@ -390,7 +383,6 @@
    margin-top: 15px;
    font-size: 14pt;
    margin-bottom: 0px;
-
  }
 
  .pricing-cards .card>div:last-of-type>a:hover {
@@ -504,7 +496,7 @@
  .pricing-cards:has(.billing-toggle:not(.hidden)) .billing-toggle.hidden {
    height: unset;
  }
-
+/* 
  .pricing-cards > div:last-of-type {
   padding: 12px 8px;
     margin: 16px auto;
@@ -513,7 +505,7 @@
     font-size: var(--body-font-size-xs);
     max-width: 1200px;
     box-sizing: border-box;
- }
+ } */
 
  @media (max-width: 600px) {
    .pricing-cards {
@@ -565,3 +557,114 @@
      gap: 16px;
    }
  }
+
+
+
+ .pricing-cards.table > div {
+  display: flex; 
+
+  gap: 20px;
+  position: relative;
+}
+
+.pricing-cards.table { 
+  width: fit-content;
+  margin: auto;
+  position: relative;
+  margin-top: 100px;
+  --card-padding: 12px;
+  margin-bottom: 240px;
+}
+
+ .pricing-cards.table > div > div{
+  --card-width: 400px;
+  width: var(--card-width);
+  margin-left: 10px;
+  margin-right: 10px;
+ }
+
+.pricing-cards.table > div:nth-of-type(2)  {
+  position: absolute;
+  height: inherit;
+  left: 0;
+  width: 1260px;;
+  top: 0;
+}
+
+.pricing-cards.table .border-wrapper {
+  top: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute; 
+  pointer-events: none;
+}
+
+
+.pricing-cards.table .border-wrapper .card-border {
+  border: 2px solid #C6C6C6; 
+  border-radius: 8px;
+ border-style: solid;   
+ margin-left: 0px;
+ margin-right: 0px;
+ width: 480px;
+ position: relative; 
+
+} 
+
+.pricing-cards.table .border-wrapper .card-border.gradient-promo {
+   border-image: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) 1;
+  border-radius: 12px;
+  border-width: 4px;
+  border-style: solid;
+  border-top-width: 48px; 
+  -webkit-mask-image: radial-gradient(circle, white 100%, black 100%);
+  mask-image: radial-gradient(circle 32px at 32px 32px, white 100%, black 100%);
+  top: -48px;;  
+  margin-left: 0px;
+  margin-right: 0px;
+  width: 480px;
+  position: relative;
+  margin-bottom: -48px;
+ 
+}
+
+ 
+.pricing-cards.table div:has(.promo-eyebrow-text) {
+  top: -36px;
+  width: 100%;
+}
+
+.pricing-cards.table .promo-eyebrow-text {
+  color: white;
+  z-index: 2;
+  left: unset;
+  right: unset;
+}
+
+.pricing-cards.table .disclaimer {
+  position: absolute;
+  width: 100%;
+}
+
+.pricing-cards.table .disclaimer> div {
+  width: 100%;
+  margin: 16px auto;
+  border-radius: 4px;
+  background: #E0E2FF;
+  font-size: var(--body-font-size-xs);
+  max-width: 1200px;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+/* .pricing-cards.table .card>div:last-of-type>a {
+  color: var(--color-info-accent);
+  border: none;
+  background: none;
+  padding: 0px;
+  text-decoration: underline;
+  font-weight: 400;
+  margin-top: 15px;
+  font-size: 14pt;
+  margin-bottom: 0px;
+} */

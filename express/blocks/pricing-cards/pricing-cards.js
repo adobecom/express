@@ -148,7 +148,7 @@ async function createPricingSection(
   specialPromo,
   isMonthly = false
 ) {
-  pricingArea.classList.add('pricing-area') 
+  pricingArea.classList.add('pricing-area')
 
   const offer = pricingArea.querySelector(':scope > p > em');
   if (offer) {
@@ -188,7 +188,7 @@ async function createPricingSection(
     priceEl?.parentNode?.remove();
     pricingSuffixTextElem?.remove();
     pricingBtnContainer?.remove();
-  } 
+  }
   ctaGroup.classList.add('card-cta-group')
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
@@ -199,7 +199,7 @@ async function createPricingSection(
     formatDynamicCartLink(a);
     if (a.textContent.includes(SALES_NUMBERS)) {
       formatSalesPhoneNumber([a], SALES_NUMBERS)
-    } 
+    }
   });
 
   if (isMonthly) {
@@ -208,7 +208,7 @@ async function createPricingSection(
   } else {
     pricingArea.classList.add('annually', 'hide');
     ctaGroup.classList.add('annually', 'hide')
-  } 
+  }
 }
 
 function decorateHeader(header, planExplanation) {
@@ -240,20 +240,51 @@ function decorateHeader(header, planExplanation) {
   planExplanation.classList.add('plan-explanation')
 }
 
-function decorateCardBorder(card, source) {
-  source.classList.add('promo-eyebrow-text' ) 
+function decorateCardBorder(source) {
+  source.classList.add('promo-eyebrow-text')
   const pattern = /\{\{(.*?)\}\}/g;
   const matches = Array.from(source.textContent?.matchAll(pattern));
   if (matches.length > 0) {
     const [token, promoType] = matches[matches.length - 1];
-    card.classList.add(promoType.replaceAll(' ', '')); 
+    source.classList.add(promoType.replaceAll(' ', ''));
     source.textContent = source.textContent.replace(pattern, '')
-  }   
+  }
 }
 
-function decorateBillingToggle (card, cardIndex) {
-  const toggle = createToggle(placeholders, [card.children[3], card.children[4], card.children[5], card.children[6]],  `${Date.now()}`, cardIndex === 2);
-  card.insertBefore(toggle, card.children[3]) 
+function decorateBillingToggle(card, cardIndex) {
+  const toggle = createToggle(placeholders, [card.children[3], card.children[4], card.children[5], card.children[6]], `${Date.now()}`, cardIndex === 2);
+  card.insertBefore(toggle, card.children[3])
+}
+
+function decorateDesktopVersion(el, count) {
+  el.classList.add('table')
+  const borderContainer = createTag('div', { class: "border-wrapper" })
+  const promoText = el.querySelectorAll('.promo-eyebrow-text')
+  for (let i = 0; i < count; i++) {
+    const promoBorder = createTag("div", { class: "card-border" })
+    if (promoText[i].classList.contains('gradient-promo')) {
+      promoBorder.classList.add('gradient-promo')
+    }
+    borderContainer.appendChild(promoBorder)
+
+  }
+  el.appendChild(borderContainer)
+}
+
+function decorateMobileVerson(el, rows, cardCount) {
+  const cards = []
+  for (let cardIndex = 0; cardIndex < cardCount; cardIndex += 1) {
+    const card = createTag('div', { class: 'card' })
+    for (let j = 0; j < rows.length - 1; j += 1) {
+      card.appendChild(rows[j].children[0])
+    }
+    cards.push(card)
+  }
+  el.innerHTML = ''
+  el.appendChild(createTag('div', { class: 'card-wrapper' }))
+  for (let card of cards) {
+    el.children[0].appendChild(card)
+  }
 }
 
 export default async function init(el) {
@@ -261,80 +292,22 @@ export default async function init(el) {
   const placeholders = await fetchPlaceholders();
   const rows = Array.from(el.querySelectorAll(":scope > div"))
   const cardCount = rows[0].children.length
-  const cards = []
-
-  const firstRow = rows[0]
-  rows.splice(0,1)
-  rows.splice(1,0,firstRow)
 
   for (let cardIndex = 0; cardIndex < cardCount; cardIndex += 1) {
-    const card = createTag('div', { class: 'card' })
-    decorateCardBorder(card, rows[0].children[0])
-    decorateHeader(rows[1].children[0], rows[2].children[0])
-    createPricingSection(placeholders, rows[3].children[0], rows[4].children[0], rows[0].children[0], true)
-    createPricingSection(placeholders, rows[5].children[0], rows[6].children[0], rows[0].children[0])
-    rows[7].children[0].classList.add('card-feature-list')
-    rows[8].children[0].classList.add('compare-all')
-
-    for (let j = 0; j < rows.length - 1; j += 1) {
-      card.appendChild(rows[j].children[0])
-    } 
-    cards.push(card)
-
-    decorateBillingToggle(card, cardIndex)
+    rows[1].classList.add('border-wrapper')
+    decorateCardBorder(rows[1].children[cardIndex])
+    decorateHeader(rows[0].children[cardIndex], rows[2].children[cardIndex])
+    createPricingSection(placeholders, rows[3].children[cardIndex], rows[4].children[cardIndex], rows[0].children[cardIndex], true)
+    createPricingSection(placeholders, rows[5].children[cardIndex], rows[6].children[cardIndex], rows[0].children[cardIndex])
+    rows[7].children[cardIndex].classList.add('card-feature-list')
+    rows[8].children[cardIndex].classList.add('compare-all')
   }
-  el.innerHTML = ''
-  el.appendChild(createTag('div', {class : 'card-wrapper'}))
-  for (let card of cards) {
-    el.children[0].appendChild(card)
-  }
-  el.appendChild(rows[rows.length - 1])
-  
+  rows[rows.length - 1].classList.add('disclaimer')
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        equalizeHeights();
-        observer.unobserve(entry.target);
-      }
-    });
-  });
-
-  document.querySelectorAll('.card').forEach(column => {
-    observer.observe(column);
-  });
-
-  window.addEventListener('load', equalizeHeights);
-  window.addEventListener('resize', equalizeHeights);
-
-}
-
-
-function equalizeHeights() { 
-  const classNames = [".card-header", ".plan-explanation", ".billing-toggle", ".pricing-area", ".card-cta-group"]
-  const cardCount = document.querySelectorAll(".pricing-cards .card").length
-  if (cardCount === 1) return
-  for (let className of classNames){
-    const headers = document.querySelectorAll(className);
-    let maxHeight = 0;
-    headers.forEach((header) => {
-       if (header.checkVisibility()){
-        const height = getHeightWithoutPadding(header);
-        header.ATTRIBUTE_NODE
-        maxHeight = Math.max(maxHeight, height); 
-       }
-    });
-    headers.forEach(placeholder => {
-      if (placeholder.style.height) return
-      // if (! placeholder.checkVisibility()) return
-      placeholder.style.height = maxHeight + 'px';
-    });
-  }
-}
-
-function getHeightWithoutPadding(element) {
-  const styles = window.getComputedStyle(element);
-  const paddingTop = parseFloat(styles.paddingTop);
-  const paddingBottom = parseFloat(styles.paddingBottom);
-  return element.clientHeight - paddingTop - paddingBottom;
-}
+  const isMobile = window.screen.width < 600;
+  if (isMobile) {
+    decorateMobileVerson(el,rows,cardCount)
+  } else {
+    decorateDesktopVersion(el, cardCount)
+  } 
+} 
