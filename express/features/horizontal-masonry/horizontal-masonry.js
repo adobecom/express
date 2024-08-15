@@ -1,4 +1,4 @@
-import { createTag, getIconElement } from '../../scripts/utils.js';
+import { createTag, getIconElement,  getMetadata } from '../../scripts/utils.js';
 
 const promptTokenRegex = new RegExp('(%7B%7B|{{)prompt-text(%7D%7D|}})');
 
@@ -38,12 +38,19 @@ function createPromptLinkElement(promptLink, prompt) {
   const icon = getIconElement('external-link', 22);
   icon.classList.add('link');
   icon.addEventListener('click', () => {
-    const urlObj = new URL(promptLink.querySelector('a').href);
+    const urlObj = new URL(promptLink);
     urlObj.searchParams.delete('referrer');
     urlObj.searchParams.append("prompt", prompt)
     windowHelper.redirect(urlObj.toString());
   });
-  return icon;
+  const wrapper = createTag('div', {class : "external-link-element"})
+ 
+  const usePrompt = createTag('div', {class: "mobile-prompt-link"})
+  usePrompt.textContent = "Use this prompt"
+  wrapper.appendChild(usePrompt)
+  usePrompt.appendChild(icon)
+  return wrapper;
+
 }
 
 export default async function setHorizontalMasonry(el) {
@@ -52,6 +59,7 @@ export default async function setHorizontalMasonry(el) {
     console.error("Missing Generate Link")
     return
   }
+ 
   const args = el.querySelectorAll('.interactive-container > .asset > p');
   const container = el.querySelector('.interactive-container .asset');
   container.classList.add('media-container');
@@ -68,13 +76,14 @@ export default async function setHorizontalMasonry(el) {
     divider.remove(); 
     const prompt = args[i + 1];
     prompt.classList.add('overlay');
+   
+    const image = args[i + 2];
+    image.classList.add('image-container');
+    image.appendChild(prompt); 
+    image.appendChild(createPromptLinkElement(link.href, prompt.textContent));
+
     const title = createTag('div', { class: 'prompt-title' });
     title.textContent = 'Prompt used';
     prompt.prepend(title);
-    const image = args[i + 2];
-    image.classList.add('image-container');
-    image.appendChild(prompt);
-    image.appendChild(createPromptLinkElement(link.href, prompt));
-    link.remove();
   }
 }

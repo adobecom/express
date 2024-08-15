@@ -288,6 +288,25 @@ main .interactive-marquee.horizontal-masonry input[type="text"]:focus {
     linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) border-box; 
 }
 
+main .interactive-marquee.horizontal-masonry .media-container p.image-container .external-link-element {
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: none;
+    color: white;
+}
+
+main .interactive-marquee.horizontal-masonry .media-container p.image-container:hover .external-link-element{
+    display: block;
+}
+
+main .interactive-marquee.horizontal-masonry .media-container p.image-container:hover .external-link-element .mobile-prompt-link{
+    color: transparent;
+    pointer-events: none;
+}
+
 /* Responsive styles */
 @media (min-width: 1440px) {
     main .interactive-marquee.horizontal-masonry .container {
@@ -316,9 +335,33 @@ main .interactive-marquee.horizontal-masonry input[type="text"]:focus {
         flex-direction: column-reverse;
     }
 
-    main .interactive-marquee.horizontal-masonry .media-container p.image-container:hover::after {
-        display: none;
+
+
+
+
+    main .interactive-marquee.horizontal-masonry .media-container p.image-container:hover .external-link-element .mobile-prompt-link {
+        color: white;
+        position: relative;
+        height: 22px;
+        margin: auto;
+        width: fit-content;
+        margin-top: auto;
+        display: block;
+        top: 45%;
+        z-index: 8;
     }
+ 
+ 
+    main .interactive-marquee.horizontal-masonry .media-container p.image-container .external-link-element  .icon{
+        display: inline;
+        position: relative; 
+        padding: 0; 
+        float: left;
+        padding-right: 10px;
+        padding-top: 5px;
+  
+    } 
+
 
     main .interactive-marquee.horizontal-masonry .media-container p.overlay .prompt-title {
         display: block;
@@ -407,4 +450,10 @@ main .interactive-marquee.interactive-marquee.horizontal-masonry .media-containe
 
 main .interactive-marquee.horizontal-masonry .media-container p.image-container::after {
     display: block;
+}
+
+
+main .interactive-marquee .foreground .text .icon-area > div {
+    display: flex;
+    width: fit-content;
 }

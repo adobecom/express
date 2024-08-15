@@ -1,4 +1,4 @@
-import { setLibs } from '../../scripts/utils.js';
+import { getIconElement, setLibs } from '../../scripts/utils.js';
 
 // [headingSize, bodySize, detailSize, titlesize]
 const typeSizes = ['xxl', 'xl', 'l', 'xs'];
@@ -18,12 +18,19 @@ function decorateText(el, createTag) {
       sib.classList.add(className);
       sib.previousElementSibling?.classList.add('icon-area');
     }
-    const iconAreaElements = el.querySelector('.icon-area');
+    const iconAreaElements = el.querySelector('.text > p.detail-l');
+  
     const iconText = createTag('div', { class: `heading-${typeSize[3]} icon-text` });
-    iconAreaElements.appendChild(iconText);
-    iconAreaElements?.classList.add('icon-area');
     iconText.innerText = (iconAreaElements.textContent.trim());
-    iconText.previousSibling.textContent = '';
+    iconAreaElements.innerText = ""
+    iconAreaElements.appendChild(getIconElement("CC-express"))
+    iconAreaElements.appendChild(iconText);
+    
+    iconAreaElements?.classList.add('icon-area');
+   
+    
+   
+
   };
   decorate(heading, config);
 }
