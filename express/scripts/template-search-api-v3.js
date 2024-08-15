@@ -152,7 +152,7 @@ function cleanPayload(impression, eventType) {
     }
   }
 
-  if (eventType === 'view-search-results') {
+  if (eventType === 'view-search-result') {
     delete impression.content_id;
     delete impression.keyword_rank;
     delete impression.prefix_query;
