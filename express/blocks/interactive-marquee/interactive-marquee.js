@@ -1,4 +1,4 @@
-import { getIconElement, setLibs } from '../../scripts/utils.js';
+import { setLibs } from '../../scripts/utils.js';
 
 // [headingSize, bodySize, detailSize, titlesize]
 const typeSizes = ['xxl', 'xl', 'l', 'xs'];

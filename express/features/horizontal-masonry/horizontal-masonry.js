@@ -1,4 +1,6 @@
-import { createTag, getIconElement, fetchPlaceholders, getMetadata } from '../../scripts/utils.js';
+import {
+  createTag, getIconElement, fetchPlaceholders, getMetadata,
+} from '../../scripts/utils.js';
 
 const promptTokenRegex = new RegExp('(%7B%7B|{{)prompt-text(%7D%7D|}})');
 
@@ -29,20 +31,20 @@ function createEnticement(enticementDetail, enticementLink, mode, placeholders) 
   const svgImage = getIconElement('enticement-arrow', 60);
   const arrowText = enticementDetail;
   const enticementText = createTag('span', { class: 'enticement-text' }, arrowText.trim());
-  const mobilePlacehoderText = placeholders['describe-image-mobile'] ||  'Describe your image...'
-  const desktopPlaceholderText = placeholders['describe-image-desktop'] ||  'Desribe the image you want to create...'
-  const input = createTag('input', { type: 'text', placeholder: window.screen.width < 600 ? mobilePlacehoderText : desktopPlaceholderText});
+  const mobilePlacehoderText = placeholders['describe-image-mobile'] || 'Describe your image...';
+  const desktopPlaceholderText = placeholders['describe-image-desktop'] || 'Desribe the image you want to create...';
+  const input = createTag('input', { type: 'text', placeholder: window.screen.width < 600 ? mobilePlacehoderText : desktopPlaceholderText });
   const buttonContainer = createTag('span', { class: 'button-container' });
   const button = createTag('button', { class: 'generate-small-btn' });
   buttonContainer.append(button);
-  button.textContent = placeholders['generate'] || 'Generate';
+  button.textContent = placeholders.generate || 'Generate';
   button.addEventListener('click', () => handleGenAISubmit(enticementDiv, enticementLink));
   enticementDiv.append(enticementText, svgImage, input, buttonContainer);
   if (mode === 'light') enticementText.classList.add('light');
   return enticementDiv;
 }
 
-function createPromptLinkElement(promptLink, prompt) {
+function createPromptLinkElement(promptLink, prompt, placeholders) {
   const icon = getIconElement('external-link', 22);
   icon.classList.add('link');
   icon.addEventListener('click', () => {
@@ -53,13 +55,13 @@ function createPromptLinkElement(promptLink, prompt) {
   });
   const wrapper = createTag('div', { class: 'external-link-element' });
   const usePrompt = createTag('div', { class: 'mobile-prompt-link' });
-  usePrompt.textContent =  placeholders['use-this-prompt'] || 'Use this prompt';
+  usePrompt.textContent = placeholders['use-this-prompt'] || 'Use this prompt';
   wrapper.appendChild(usePrompt);
   usePrompt.appendChild(icon);
   return wrapper;
 }
 
-const LOGO = 'adobe-express-logo'; 
+const LOGO = 'adobe-express-logo';
 function injectExpressLogo(block, wrapper) {
   if (block.classList.contains('entitled')) return;
   if (!['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) return;
@@ -69,7 +71,7 @@ function injectExpressLogo(block, wrapper) {
 }
 
 export default async function setHorizontalMasonry(el) {
-  const placeholders =  await fetchPlaceholders()
+  const placeholders = await fetchPlaceholders();
   const link = el.querySelector(':scope .con-button');
   if (!link) {
     console.error('Missing Generate Link');
@@ -103,5 +105,5 @@ export default async function setHorizontalMasonry(el) {
     prompt.prepend(title);
   }
 
-  injectExpressLogo(el, el.querySelector('.foreground > .text'))
+  injectExpressLogo(el, el.querySelector('.foreground > .text'));
 }
