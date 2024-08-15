@@ -20,7 +20,7 @@ main .icon-list > div.icon-list-column {
 }
 
 main .icon-list .icon-list-description {
-  overflow-wrap: anywhere;
+  overflow-x: auto;
 }
 
 main .icon-list .icon-list-description p {
@@ -53,6 +53,9 @@ main .icon-list h3, main .icon-list h4 {
 @media (min-width:600px) {
   main .icon-list {
     margin-top: 56px;
+  }
+  main .icon-list .icon-list-description {
+    overflow-x: unset;
   }
 }
 
