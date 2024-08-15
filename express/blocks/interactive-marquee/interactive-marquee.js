@@ -19,18 +19,14 @@ function decorateText(el, createTag) {
       sib.previousElementSibling?.classList.add('icon-area');
     }
     const iconAreaElements = el.querySelector('.text > p.detail-l');
-  
+
     const iconText = createTag('div', { class: `heading-${typeSize[3]} icon-text` });
     iconText.innerText = (iconAreaElements.textContent.trim());
-    iconAreaElements.innerText = ""
-    iconAreaElements.appendChild(getIconElement("CC-express"))
+    iconAreaElements.innerText = '';
+    iconAreaElements.appendChild(getIconElement('CC-express'));
     iconAreaElements.appendChild(iconText);
-    
-    iconAreaElements?.classList.add('icon-area');
-   
-    
-   
 
+    iconAreaElements?.classList.add('icon-area');
   };
   decorate(heading, config);
 }
