@@ -269,22 +269,29 @@ function decorateDesktopVersion(el, count) {
 
   }
   el.appendChild(borderContainer)
-}
+} 
 
-function decorateMobileVerson(el, rows, cardCount) {
-  const cards = []
-  for (let cardIndex = 0; cardIndex < cardCount; cardIndex += 1) {
-    const card = createTag('div', { class: 'card' })
-    for (let j = 0; j < rows.length - 1; j += 1) {
-      card.appendChild(rows[j].children[0])
+function decorateMobileVersion (el,cardCount, cardsPerRow) {
+  decorateDesktopVersion(el,cardCount)
+ 
+  const rows = Array.from(el.querySelectorAll(":scope > div"));
+  let tableWidth = rows[0].children.length
+
+  for (let q = 0; q < cardCount; q++) {
+    const c = createTag('div')
+    c.classList.add(...el.classList)
+    tableWidth = rows[0].children.length
+    if (tableWidth <= cardsPerRow) return
+    for (let i = 0; i < rows.length;i++) {
+      const newRow = createTag('div')
+      newRow.classList.add(...rows[i].classList) 
+      newRow.appendChild(rows[i].children[tableWidth - 1])
+      c.appendChild(newRow)
     }
-    cards.push(card)
+    el.parentElement.appendChild(c)
   }
-  el.innerHTML = ''
-  el.appendChild(createTag('div', { class: 'card-wrapper' }))
-  for (let card of cards) {
-    el.children[0].appendChild(card)
-  }
+  
+
 }
 
 export default async function init(el) {
@@ -294,7 +301,6 @@ export default async function init(el) {
   const cardCount = rows[0].children.length
 
   for (let cardIndex = 0; cardIndex < cardCount; cardIndex += 1) {
-    rows[1].classList.add('border-wrapper')
     decorateCardBorder(rows[1].children[cardIndex])
     decorateHeader(rows[0].children[cardIndex], rows[2].children[cardIndex])
     createPricingSection(placeholders, rows[3].children[cardIndex], rows[4].children[cardIndex], rows[0].children[cardIndex], true)
@@ -302,12 +308,21 @@ export default async function init(el) {
     rows[7].children[cardIndex].classList.add('card-feature-list')
     rows[8].children[cardIndex].classList.add('compare-all')
   }
-  rows[rows.length - 1].classList.add('disclaimer')
 
-  const isMobile = window.screen.width < 600;
-  if (isMobile) {
-    decorateMobileVerson(el,rows,cardCount)
+  const d = createTag('div')
+  const disclaimer = rows[rows.length - 1]
+  d.appendChild(disclaimer)
+  rows[rows.length - 1].classList.add('disclaimer')
+ 
+  if (window.screen.width < 900) {
+    decorateDesktopVersion(el, cardCount)
+    decorateMobileVersion(el, cardCount , 1)
+  } else if(window.screen.width < 1200) {
+    decorateMobileVersion(el, cardCount,  2)
   } else {
     decorateDesktopVersion(el, cardCount)
-  } 
+  }
+
+  el.parentElement.appendChild(d)
+
 } 
