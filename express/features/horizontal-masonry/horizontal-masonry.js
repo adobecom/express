@@ -1,4 +1,4 @@
-import { createTag, getIconElement, fetchPlaceholders } from '../../scripts/utils.js';
+import { createTag, getIconElement, fetchPlaceholders, getMetadata } from '../../scripts/utils.js';
 
 const promptTokenRegex = new RegExp('(%7B%7B|{{)prompt-text(%7D%7D|}})');
 
@@ -59,6 +59,15 @@ function createPromptLinkElement(promptLink, prompt) {
   return wrapper;
 }
 
+const LOGO = 'adobe-express-logo'; 
+function injectExpressLogo(block, wrapper) {
+  if (block.classList.contains('entitled')) return;
+  if (!['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) return;
+  const logo = getIconElement(LOGO, '22px');
+  logo.classList.add('express-logo');
+  wrapper.prepend(logo);
+}
+
 export default async function setHorizontalMasonry(el) {
   const placeholders =  await fetchPlaceholders()
   const link = el.querySelector(':scope .con-button');
@@ -93,4 +102,6 @@ export default async function setHorizontalMasonry(el) {
     title.textContent = placeholders['prompt-title'] || 'Prompt used';
     prompt.prepend(title);
   }
+
+  injectExpressLogo(el, el.querySelector('.foreground > .text'))
 }
