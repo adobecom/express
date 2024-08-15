@@ -54,6 +54,9 @@ main .icon-list h3, main .icon-list h4 {
   main .icon-list {
     margin-top: 56px;
   }
+  main .icon-list .icon-list-description {
+    overflow-x: unset;
+  }
 }
 
 @media (min-width:900px) {
