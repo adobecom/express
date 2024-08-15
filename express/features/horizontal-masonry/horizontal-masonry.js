@@ -1,4 +1,4 @@
-import { createTag, getIconElement, getMetadata, fetchPlaceholders } from '../../scripts/utils.js';
+import { createTag, getIconElement, fetchPlaceholders } from '../../scripts/utils.js';
 
 const promptTokenRegex = new RegExp('(%7B%7B|{{)prompt-text(%7D%7D|}})');
 
@@ -7,6 +7,13 @@ export const windowHelper = {
     window.location.assign(url);
   },
 };
+
+// List of placeholders required
+// 'describe-image-mobile
+// 'describe-image-desktop
+// 'generate'
+// 'use-this-prompt'
+// 'prompt-title'
 
 function handleGenAISubmit(form, link) {
   const input = form.querySelector('input');
@@ -45,7 +52,6 @@ function createPromptLinkElement(promptLink, prompt) {
     windowHelper.redirect(urlObj.toString());
   });
   const wrapper = createTag('div', { class: 'external-link-element' });
-
   const usePrompt = createTag('div', { class: 'mobile-prompt-link' });
   usePrompt.textContent =  placeholders['use-this-prompt'] || 'Use this prompt';
   wrapper.appendChild(usePrompt);
