@@ -23,6 +23,18 @@ main .quotes .quote .content {
   flex-grow: 1;
 }
 
+main .quotes .quote .author .author-content {
+  display: flex;
+  align-items: center;
+}
+
+main .quotes .quote .author .summary {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 main .quotes .quote .content::before {
   content: "“";
   display: block;
