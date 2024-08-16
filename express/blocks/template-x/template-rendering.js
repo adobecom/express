@@ -125,9 +125,7 @@ function renderShareWrapper(branchUrl, placeholders) {
     tabindex: '-1',
   });
   let timeoutId = null;
-  shareIcon.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  shareIcon.addEventListener('click', () => {
     timeoutId = share(branchUrl, tooltip, timeoutId);
   });
 
@@ -154,15 +152,6 @@ function renderCTA(placeholders, branchUrl) {
   });
   btnEl.textContent = btnTitle;
   return btnEl;
-}
-
-function renderCTALink(branchUrl) {
-  const linkEl = createTag('a', {
-    href: branchUrl,
-    class: 'cta-link',
-    tabindex: '-1',
-  });
-  return linkEl;
 }
 
 function getPageIterator(pages) {
@@ -363,20 +352,15 @@ function renderHoverWrapper(template, placeholders) {
     mediaWrapper, enterHandler, leaveHandler, focusHandler,
   } = renderMediaWrapper(template, placeholders);
 
-  const cta = renderCTA(placeholders, template.customLinks.branchUrl);
-  const ctaLink = renderCTALink(template.customLinks.branchUrl);
-
-  ctaLink.append(mediaWrapper);
-
-  btnContainer.append(cta);
-  btnContainer.append(ctaLink);
-
+  btnContainer.append(mediaWrapper);
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
+  const cta = renderCTA(placeholders, template.customLinks.branchUrl);
+  btnContainer.prepend(cta);
   cta.addEventListener('focusin', focusHandler);
 
-  const ctaClickHandler = () => {
+  cta.addEventListener('click', () => {
     updateImpressionCache({
       content_id: template.id,
       status: template.licensingCategory,
@@ -386,10 +370,7 @@ function renderHoverWrapper(template, placeholders) {
       collection_path: window.location.pathname,
     });
     trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
-  };
-
-  cta.addEventListener('click', ctaClickHandler, { passive: true });
-  ctaLink.addEventListener('click', ctaClickHandler, { passive: true });
+  }, { passive: true });
 
   return btnContainer;
 }
