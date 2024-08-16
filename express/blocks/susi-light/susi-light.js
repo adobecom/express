@@ -23,7 +23,10 @@ const authParams = {
 const onRedirect = (e) => {
   // eslint-disable-next-line no-console
   console.log('redirecting to:', e.detail);
-  window.location.assign(e.detail);
+  setTimeout(() => {
+    window.location.assign(e.detail);
+    // temporary solution: allows analytics to go thru
+  }, 100);
 };
 const onError = (e) => {
   window.lana?.log('on error:', e);

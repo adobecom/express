@@ -108,6 +108,8 @@ function isBranchLink(url) {
 }
 // product entry prompt
 async function canPEP() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('force-pep')) return true;
   if (document.body.dataset.device !== 'desktop') return false;
   const pepSegment = getMetadata('pep-segment');
   if (!pepSegment) return false;
