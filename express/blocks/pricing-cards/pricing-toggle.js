@@ -14,7 +14,7 @@ function toggleOther(pricingSections, buttons, planIndex) {
   const plan = button.getAttribute('plan');
   button.classList.add('checked');
   button.setAttribute('aria-checked', 'true');
-  pricingSections.forEach((section) => { 
+  pricingSections.forEach((section) => {
     if (section.classList.contains(plan)) {
       section.classList.remove('hide');
     } else {
@@ -68,9 +68,8 @@ export default function createToggle(
 
   const price = pricingSections[0].querySelector('.pricing-price > strong')?.textContent;
   if (price && parseInt(price, 10) === 0) {
-    toggleWrapper.classList.add('hidden')
+    toggleWrapper.classList.add('hidden');
   }
-
 
   toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`;
   toggleWrapper.setAttribute('role', 'radiogroup');
@@ -97,15 +96,13 @@ export default function createToggle(
     button.append(createTag('div', { id: `${buttonID}:radio` }, label));
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
-      toggleOther(pricingSections, buttons, i); 
-      adjustElementPosition()
+      toggleOther(pricingSections, buttons, i);
     });
     return button;
   });
 
   toggleWrapper.addEventListener('keydown', (e) => {
     onKeyDown(e, pricingSections, buttons, toggleWrapper);
-    adjustElementPosition()
   });
   const buttonWrapper = createTag('div', { class: 'billing-button-wrapper' });
   buttonWrapper.append(...buttons);
