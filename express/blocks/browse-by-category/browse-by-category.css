@@ -191,6 +191,7 @@ main .browse-by-category:not(.card) .browse-by-category-card-title {
   line-height: 24px;
   font-weight: 700;
   max-width: 148px;
+
 }
 
 main .browse-by-category.card .browse-by-category-card-title {
@@ -199,6 +200,7 @@ main .browse-by-category.card .browse-by-category-card-title {
   line-height: 24px;
   font-weight: 700;
   align-self: start;
+  text-align: left;
 }
 
 @media (min-width: 900px) {
