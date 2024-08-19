@@ -200,6 +200,10 @@ main .browse-by-category.card .browse-by-category-card-title {
   line-height: 24px;
   font-weight: 700;
   align-self: start;
+  
+}
+
+main .browse-by-category.card.title-text-align-left .browse-by-category-card-title {
   text-align: left;
 }
 
