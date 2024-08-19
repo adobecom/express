@@ -36,11 +36,15 @@ function extractComponentLinkHref(template) {
 }
 
 function extractImageThumbnail(page) {
-  return page.rendition.image?.thumbnail;
+  return page?.rendition?.image?.thumbnail;
 }
 
 function getImageThumbnailSrc(renditionLinkHref, componentLinkHref, page) {
   const thumbnail = extractImageThumbnail(page);
+  if (!thumbnail) {
+    // webpages
+    return renditionLinkHref.replace('{&page,size,type,fragment}', '');
+  }
   const {
     mediaType,
     componentId,
@@ -434,6 +438,10 @@ function renderStillWrapper(template, placeholders) {
 
 export default function renderTemplate(template, placeholders) {
   const tmpltEl = createTag('div');
+  if (template.assetType === 'Webpage_Template') {
+    // webpage_template has no pages
+    template.pages = [{}];
+  }
   tmpltEl.append(renderStillWrapper(template, placeholders));
   tmpltEl.append(renderHoverWrapper(template, placeholders));
 
