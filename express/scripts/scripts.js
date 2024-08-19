@@ -139,6 +139,17 @@ const listenAlloy = () => {
   }, 3000);
 };
 
+function registerSUSIModalLinks() {
+  const container = createTag('div', {}, `
+    <div>
+      <a href='https://www.adobe.com/express/fragments/susi-light-teacher#susi-light-1' rel: 'nofollow'></a>
+    </div>`);
+  container.style = 'display:none;position:absolute';
+  const main = document.querySelector('main');
+  const lastDiv = main.querySelector(':scope > div:last-of-type');
+  lastDiv.childElementCount === 0 ? main.insertBefore(container, lastDiv) : main.append(container);
+}
+
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   window.hlx = window.hlx || {};
@@ -161,6 +172,7 @@ const listenAlloy = () => {
   loadExpressMartechSettings();
   loadLana({ clientId: 'express' });
   listenAlloy();
+  registerSUSIModalLinks(); // TODO: remove post bts
   await loadArea();
 
   import('./express-delayed.js').then((mod) => {
