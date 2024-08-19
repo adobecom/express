@@ -3,7 +3,7 @@ import BlockMediator from './block-mediator.min.js';
 
 function getRedirectUri() {
   const primaryCtaUrl = BlockMediator.get('primaryCtaUrl')
-    || document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA')?.href;
+    || document.querySelector('a.button.xlarge.same-fcta, a.primaryCTA')?.href;
   if (primaryCtaUrl) {
     return primaryCtaUrl;
   }
