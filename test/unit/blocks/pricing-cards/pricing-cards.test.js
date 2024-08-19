@@ -42,13 +42,13 @@ describe('Pricing Cards', () => {
 
   it('Cards contain necessary elements', () => {
     blocks.forEach((block) => {
-      const cardContainer = block.querySelector('div.cards-container');
+      const cardContainer = block.querySelector('div.card-wrapper');
       expect(cardContainer).to.exist;
-      const cards = cardContainer.querySelectorAll('div.card-border');
+      const cards = cardContainer.querySelectorAll('div.card');
 
       cards.forEach((card) => {
         expect(card.querySelector('.card-header')).to.exist;
-        expect(card.querySelector('.card-explain')).to.exist;
+        expect(card.querySelector('.plan-explanation')).to.exist;
         expect(card.querySelector('.pricing-area')).to.exist;
         expect(card.querySelector('.card-cta-group')).to.exist;
         expect(card.querySelector('.card-feature-list')).to.exist;
