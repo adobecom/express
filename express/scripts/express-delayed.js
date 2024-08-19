@@ -10,7 +10,7 @@ import BlockMediator from './block-mediator.js';
 export function getDestination() {
   const pepDestinationMeta = getMetadata('pep-destination');
   return pepDestinationMeta || BlockMediator.get('primaryCtaUrl')
-    || document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA')?.href;
+    || document.querySelector('a.button.xlarge.same-fcta, a.primaryCTA')?.href;
 }
 
 function getSegmentsFromAlloyResponse(response) {
