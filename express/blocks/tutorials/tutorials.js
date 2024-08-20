@@ -12,6 +12,9 @@ import {
 } from '../shared/video.js';
 
 function createTutorialCard(title, url, time, $picture) {
+
+  console.log("=== IN createTutorialCard, title, url, time, $picture", title, url, time, $picture)
+
   const $card = createTag('a', { class: 'tutorial-card', title, tabindex: 0 });
   const $cardTop = createTag('div', { class: 'tutorial-card-top' });
   $cardTop.innerHTML = `<div class="tutorial-card-overlay"><div class="tutorial-card-play"></div>
@@ -47,11 +50,27 @@ export function handlePopstate(event) {
 function decorateTutorials($block) {
   const $tutorials = [...$block.children];
   $tutorials.forEach(($tutorial) => {
+
+    console.log("=== tutorial", $tutorial);
+
     const [$link, $time, $picture] = [...$tutorial.children];
+
+    console.log("=== $link, $time, $picture", $link, $time, $picture);
+
+
     const $a = $link.querySelector('a');
+
+    // console.log("=== IS IT SAME querySelector", document.querySelector === $link.querySelector);
+    // console.log("=== IS IT SAME querySelectorAll", document.querySelectorAll === $link.querySelectorAll);
+
+
     const url = $a && $a.href;
     const title = $link.textContent.trim();
     const time = $time.textContent.trim();
+
+    console.log("=== url, title, time", url, title, time);
+
+
     const $card = createTutorialCard(title, url, time, $picture);
     $block.appendChild($card);
     $tutorial.remove();

@@ -175,10 +175,15 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
 }
 
 export function isVideoLink(url) {
+
+  console.log("=== COMING INTO isVideoLink()");
+
+
   if (!url) return null;
   return url.includes('youtube.com/watch')
     || url.includes('youtu.be/')
     || url.includes('vimeo')
+    || url.includes('video.tv.adobe.com')
     || /.*\/media_.*(mp4|webm|m3u8)$/.test(new URL(url).pathname);
 }
 
@@ -258,6 +263,9 @@ export function displayVideoModal(url = [], title, push) {
       }
       vidUrls = [`https://www.youtube.com/embed/${vid}?feature=oembed&autoplay=1`];
     } else if (primaryUrl.includes('vimeo')) {
+
+      console.log("=== COMING INTO VIMEO handling");
+
       vidType = 'vimeo';
       const vid = new URL(primaryUrl).pathname.split('/')[1];
       const language = getAvailableVimeoSubLang();
