@@ -8,6 +8,10 @@
   
 }
 
+.wayfinder.block.borderless {
+  border: none;
+}
+
  .section .wayfinder.block {
   margin-top: -60px;
 }
