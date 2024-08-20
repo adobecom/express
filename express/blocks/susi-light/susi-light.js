@@ -53,7 +53,6 @@ export default async function init(el) {
     scope: 'AdobeID,openid',
   };
   const destURL = getDestURL(redirectUrl);
-  console.log(destURL, client_id);
   const goDest = () => window.location.assign(destURL);
   if (window.feds?.utilities?.imslib) {
     const { imslib } = window.feds.utilities;
