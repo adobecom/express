@@ -87,7 +87,7 @@ export default function decorate(block) {
       const buttons = document.querySelectorAll('.button.primaryCTA');
       const matchingButtons = Array.from(buttons).filter((button) => button.href === anchor.href);
 
-      if (anchor.classList.contains('same-as-floating-button-CTA') || matchingButtons.length > 0) {
+      if (anchor.classList.contains('same-fcta') || matchingButtons.length > 0) {
         anchor.classList.add('no-event');
         anchor.target = '_self';
         hrefHolder = anchor.href;
