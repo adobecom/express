@@ -1,7 +1,8 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 import sinon from 'sinon';
-import { setConfig } from '../../../../express/scripts/utils.js'; 
+import { setConfig } from '../../../../express/scripts/utils.js';
+
 const locales = { '': { ietf: 'en-US', tk: 'hah7vzn.css' } };
 const conf = { locales };
 setConfig(conf);
