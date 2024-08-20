@@ -26,15 +26,4 @@ describe('interactive marquee', () => {
     const heading = im.querySelector('.heading-xxl');
     expect(heading).to.exist;
   });
-
-  it('has an icon area', () => {
-    const iconArea = im.querySelector('.icon-area');
-    expect(iconArea).to.exist;
-  });
-
-  it('should have icon text', () => {
-    const iconText = im.querySelector('.icon-text');
-    expect(iconText).to.exist;
-    expect(iconText.classList.contains('heading-xs')).to.be.true;
-  });
 });

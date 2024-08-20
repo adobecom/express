@@ -37,7 +37,7 @@ function createEnticement(enticementDetail, enticementLink, mode, placeholders) 
   const buttonContainer = createTag('span', { class: 'button-container' });
   const button = createTag('button', { class: 'generate-small-btn' });
   buttonContainer.append(button);
-  button.textContent = placeholders.generate || 'Generate';
+  button.textContent = placeholders?.generate || 'Generate';
   button.addEventListener('click', () => handleGenAISubmit(enticementDiv, enticementLink));
   enticementDiv.append(enticementText, svgImage, input, buttonContainer);
   if (mode === 'light') enticementText.classList.add('light');
@@ -55,7 +55,7 @@ function createPromptLinkElement(promptLink, prompt, placeholders) {
   });
   const wrapper = createTag('div', { class: 'external-link-element' });
   const usePrompt = createTag('div', { class: 'mobile-prompt-link' });
-  usePrompt.textContent = placeholders['use-this-prompt'] || 'Use this prompt';
+  usePrompt.textContent = placeholders ? placeholders['use-this-prompt'] : 'Use this prompt';
   wrapper.appendChild(usePrompt);
   usePrompt.appendChild(icon);
   return wrapper;
@@ -101,7 +101,7 @@ export default async function setHorizontalMasonry(el) {
     image.appendChild(createPromptLinkElement(link.href, prompt.textContent, placeholders));
 
     const title = createTag('div', { class: 'prompt-title' });
-    title.textContent = placeholders['prompt-title'] || 'Prompt used';
+    title.textContent = placeholders ? placeholders['prompt-title'] : 'Prompt used';
     prompt.prepend(title);
   }
 
