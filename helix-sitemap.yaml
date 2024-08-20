@@ -171,7 +171,7 @@ sitemaps:
         alternate: /de/{path}
       indonesia:
         source: /id_id/express/templates/default/metadata.json?sheet=sitemap
-        destination: /it/express/templates/sitemap.xml
+        destination: /id_id/express/templates/sitemap.xml
         hreflang: id-ID
         alternate: /id_id/{path}
       italy:
