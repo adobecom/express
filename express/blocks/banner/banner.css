@@ -90,7 +90,8 @@ main .banner .standout-container {
   border-radius: 12px;
 }
 
-main .banner .standout-container strong {
+main .banner .standout-container em {
+  font-style: normal;
   background: linear-gradient(180deg, #FF4DD2 20%, #FF993B 80%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

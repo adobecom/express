@@ -215,12 +215,14 @@ const loadMartechFiles = async (config, url, edgeConfigId) => {
     window.edgeConfigId = edgeConfigId;
 
     // TODO: remove after aexg4848
-    let trackEligibility = false;
+    let trackEligibility = null;
     if (getMetadata('target-only-mobile-web') === 'on') {
       if (navigator.userAgent.includes('Mobile') && getMobileOperatingSystem() === 'Android' && navigator.deviceMemory >= 4) {
+        setDeep(window, 'alloy_all.data.__adobe.target.mobile_web_enough_ram', true);
         trackEligibility = true;
       } else {
         setDeep(window, 'alloy_all.data.__adobe.target.mobile_web_enough_ram', false);
+        trackEligibility = false;
       }
     }
 
@@ -231,13 +233,13 @@ const loadMartechFiles = async (config, url, edgeConfigId) => {
     // eslint-disable-next-line no-underscore-dangle
     window._satellite.track('pageload');
     // TODO: remove after aexg4848
-    if (trackEligibility) {
+    if (trackEligibility !== null) {
       // eslint-disable-next-line no-underscore-dangle
       window._satellite.track('event', {
         data: {
           web: {
             webInteraction: {
-              name: 'mobile_web_enough_ram: true',
+              name: `mobile_web_enough_ram: ${trackEligibility.toString()}`,
             },
           },
         },
