@@ -31,8 +31,10 @@ function createEnticement(enticementDetail, enticementLink, mode, placeholders) 
   const svgImage = getIconElement('enticement-arrow', 60);
   const arrowText = enticementDetail;
   const enticementText = createTag('span', { class: 'enticement-text' }, arrowText.trim());
-  const mobilePlacehoderText = placeholders ? placeholders['describe-image-mobile'] : 'Describe your image...';
-  const desktopPlaceholderText = placeholders ? placeholders['describe-image-desktop'] : 'Desribe the image you want to create...';
+  const mobilePlacehoderText = placeholders && placeholders['describe-image-mobile'] ||
+     'Describe your image...';
+  const desktopPlaceholderText = placeholders && placeholders['describe-image-desktop'] || 
+    'Desribe the image you want to create...';
   const input = createTag('input', { type: 'text', placeholder: window.screen.width < 600 ? mobilePlacehoderText : desktopPlaceholderText });
   const buttonContainer = createTag('span', { class: 'button-container' });
   const button = createTag('button', { class: 'generate-small-btn' });
@@ -55,7 +57,7 @@ function createPromptLinkElement(promptLink, prompt, placeholders) {
   });
   const wrapper = createTag('div', { class: 'external-link-element' });
   const usePrompt = createTag('div', { class: 'mobile-prompt-link' });
-  usePrompt.textContent = placeholders ? placeholders['use-this-prompt'] : 'Use this prompt';
+  usePrompt.textContent = placeholders && placeholders['use-this-prompt'] || 'Use this prompt';
   wrapper.appendChild(usePrompt);
   usePrompt.appendChild(icon);
   return wrapper;
@@ -101,7 +103,7 @@ export default async function setHorizontalMasonry(el) {
     image.appendChild(createPromptLinkElement(link.href, prompt.textContent, placeholders));
 
     const title = createTag('div', { class: 'prompt-title' });
-    title.textContent = placeholders ? placeholders['prompt-title'] : 'Prompt used';
+    title.textContent = placeholders && placeholders['prompt-title'] || 'Prompt used';
     prompt.prepend(title);
   }
 
