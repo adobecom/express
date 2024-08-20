@@ -3,6 +3,7 @@ import {
 } from '../../scripts/utils.js';
 
 const PLANS = ['monthly', 'annually'];
+const SPECIAL_PLAN = 'annual-billed-monthly'
 
 function toggleOther(pricingSections, buttons, planIndex) {
   const button = buttons[planIndex];
@@ -110,8 +111,9 @@ export default function createToggle(
     button.appendChild(createTag('span'));
     button.setAttribute('aria-checked', defaultChecked);
     button.setAttribute('aria-labeledby', buttonID);
-    if (isTeams && plan === 'monthly') {
-      plan = 'annual-billed-monthly';
+    if (isTeams && plan === 'monthly' && placeholders?.[SPECIAL_PLAN] ) {
+      plan = SPECIAL_PLAN;
+ 
     }
     const label = placeholders?.[plan] || 'Annual, Billed Monthly';
     button.append(createTag('div', { id: `${buttonID}:radio` }, label));
