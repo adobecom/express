@@ -324,10 +324,6 @@ End border style variants
   padding-left: 4px;
 }
 
-.pricing-cards .billing-button-wrapper {
-  display: flex;
-}
-
 .pricing-cards .pricing-section {
   width: 100%;
   display: flex;
@@ -386,13 +382,13 @@ End border style variants
   
 } 
 
-.pricing-cards .billing-toggle { 
-    gap: 12px; 
-    font-size: var(--body-font-size-s);
-    margin-bottom: 12px;
-    margin-right: auto;
-    display: flex;
-    flex-direction: column;
+.pricing-cards .billing-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+  font-size: var(--body-font-size-s);
+  margin-bottom: 12px;
 }
 
 .pricing-cards .billing-toggle button {

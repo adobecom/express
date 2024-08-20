@@ -410,10 +410,9 @@ async function decorateCard({
   yCtaGroup,
   featureList,
   compare,
-}, el, placeholders, legacyVersion, index) {
+}, el, placeholders, legacyVersion) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
-  const isTeams = header.innerText.includes('(') || index === 2;
   const { specialPromo, cardWrapper } = legacyVersion
     ? decorateLegacyHeader(header, card)
     : decorateHeader(header, borderParams, card, cardBorder);
@@ -427,7 +426,7 @@ async function decorateCard({
   yPricingSection.classList.add('annually', 'hide');
   const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
   const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID,
-    adjustElementPosition, isTeams);
+    adjustElementPosition);
   card.append(toggle, mPricingSection, yPricingSection);
   decorateBasicTextSection(featureList, 'card-feature-list', card);
   decorateCompareSection(compare, el, card);
@@ -463,7 +462,7 @@ export default async function init(el) {
   const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
   const decoratedCards = await Promise.all(
-    cards.map((card, index) => decorateCard(card, el, placeholders, legacyVersion, index)),
+    cards.map((card) => decorateCard(card, el, placeholders, legacyVersion)),
   );
   decoratedCards.forEach((card) => cardsContainer.append(card));
 
