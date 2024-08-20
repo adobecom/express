@@ -31,8 +31,8 @@ function createEnticement(enticementDetail, enticementLink, mode, placeholders) 
   const svgImage = getIconElement('enticement-arrow', 60);
   const arrowText = enticementDetail;
   const enticementText = createTag('span', { class: 'enticement-text' }, arrowText.trim());
-  const mobilePlacehoderText = placeholders['describe-image-mobile'] || 'Describe your image...';
-  const desktopPlaceholderText = placeholders['describe-image-desktop'] || 'Desribe the image you want to create...';
+  const mobilePlacehoderText = placeholders ? placeholders['describe-image-mobile'] : 'Describe your image...';
+  const desktopPlaceholderText = placeholders ? placeholders['describe-image-desktop'] : 'Desribe the image you want to create...';
   const input = createTag('input', { type: 'text', placeholder: window.screen.width < 600 ? mobilePlacehoderText : desktopPlaceholderText });
   const buttonContainer = createTag('span', { class: 'button-container' });
   const button = createTag('button', { class: 'generate-small-btn' });
