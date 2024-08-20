@@ -140,6 +140,8 @@ async function loadFEDS() {
     fedsExp = 'acom/cc-mega-menu/ax-gnav-x';
   } else if (prefix === 'gb' || prefix === 'uk' || prefix === 'in') {
     fedsExp = 'en/acom/cc-mega-menu/ax-gnav-x';
+  } else if (prefix === 'id_id') {
+    fedsExp = '/acom/cc-mega-menu/ax-gnav-x';
   } else {
     fedsExp = 'adobe-express/ax-gnav-x-row';
   }
