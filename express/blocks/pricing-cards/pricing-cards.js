@@ -412,8 +412,8 @@ async function decorateCard({
   compare,
 }, el, placeholders, legacyVersion, index) {
   const card = createTag('div', { class: 'card' });
-  const cardBorder = createTag('div', { class: 'card-border' });
-  const isTeams = header.innerText.includes('(') || index === 2;
+  const cardBorder = createTag('div', { class: 'card-border' }); 
+  const isTeams = header.innerText.includes('(') ||  header.innerText.includes('Creative Cloud')
   const { specialPromo, cardWrapper } = legacyVersion
     ? decorateLegacyHeader(header, card)
     : decorateHeader(header, borderParams, card, cardBorder);
