@@ -227,8 +227,6 @@ export function displayVideoModal(url = [], title, push) {
   const canPlayInline = vidUrls
     .some((src) => src && isVideoLink(src));
 
-  console.log("  === Coming into displayVideoModal 02, vidUrls, primaryUrl, canPlayInline", vidUrls, primaryUrl, canPlayInline)
-
   document.body.classList.add('no-scroll');
   if (canPlayInline) {
     const $overlay = createTag('div', { class: 'video-overlay' });
