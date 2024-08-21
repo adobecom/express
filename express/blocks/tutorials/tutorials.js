@@ -66,5 +66,6 @@ function decorateTutorials($block) {
 
 export default function decorate($block) {
   addTempWrapper($block, 'tutorials');
+
   decorateTutorials($block);
 }
