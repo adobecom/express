@@ -1,6 +1,6 @@
 import {
   createTag, getConfig, loadBlock, toClassName,
-  // eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
 const docTitle = document.title;
@@ -163,12 +163,9 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
       }
     });
   } else {
-
-    console.log("IN playInlineVideo, handling 3rd party video, playerType", playerType)
-
     if (playerType === 'adobetv') {
       const videoURL = `${primaryUrl.replace(/[/]$/, '')}/?autoplay=true`;
-      const $iframeEl = createTag('iframe', {
+      const $iframe = createTag('iframe', {
         allow: 'autoplay',
         title,
         src: videoURL,
@@ -178,10 +175,20 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
         allowfullscreen: '',
         scrolling: 'no'
       });
-      $element.replaceChildren($iframeEl);
+
+      $element.replaceChildren($iframe);
     } else {
       // iframe 3rd party player
-      $element.innerHTML = `<iframe src="${primaryUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${title}"></iframe>`;
+      const $iframe = createTag('iframe', {
+        allow: 'autoplay',
+        title,
+        src: primaryUrl,
+        frameborder: '0',
+        allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+        allowfullscreen: ''
+      });
+
+      $element.replaceChildren($iframe);
     }
     const $videoClose = $element.appendChild(createTag('div', { class: 'close' }));
     $videoClose.addEventListener('click', () => {
