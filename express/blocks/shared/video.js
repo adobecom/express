@@ -222,8 +222,6 @@ export function hideVideoModal(push) {
 }
 
 export function displayVideoModal(url = [], title, push) {
-  // return;
-  console.log("=== Coming into displayVideoModal, url, title, push", url, title, push)
   let vidUrls = typeof url === 'string' ? [url] : url;
   const [primaryUrl] = vidUrls;
   const canPlayInline = vidUrls
@@ -290,9 +288,6 @@ export function displayVideoModal(url = [], title, push) {
       }
       vidUrls = [`https://www.youtube.com/embed/${vid}?feature=oembed&autoplay=1`];
     } else if (primaryUrl.includes('vimeo')) {
-
-      console.log("=== COMING INTO VIMEO handling");
-
       vidType = 'vimeo';
       const vid = new URL(primaryUrl).pathname.split('/')[1];
       const language = getAvailableVimeoSubLang();
@@ -309,7 +304,6 @@ export function displayVideoModal(url = [], title, push) {
       vidUrls = vidUrls.map((vidUrl) => new URL(vidUrl).pathname);
     }
 
-    console.log("=== GOING INTO playInlineVideo, $video, vidUrls, vidType, title, ts", $video, vidUrls, vidType, title, ts)
     playInlineVideo($video, vidUrls, vidType, title, ts);
   } else {
     // redirect to first video url
