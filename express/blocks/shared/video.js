@@ -164,7 +164,7 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
     });
   } else {
     if (playerType === 'adobetv') {
-      const videoURL = `${primaryUrl.replace(/[/]$/, '')}/?autoplay=true&mute=false`;
+      const videoURL = `${primaryUrl.replace(/[/]$/, '')}/?autoplay=1`;
       const $iframe = createTag('iframe', {
         title,
         src: videoURL,
