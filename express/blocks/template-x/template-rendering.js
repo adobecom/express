@@ -148,7 +148,7 @@ function renderShareWrapper(branchUrl, placeholders) {
 }
 
 function renderCTA(placeholders, branchUrl) {
-  const btnTitle = 'Open';
+  const btnTitle = 'Remix';
   const btnEl = createTag('a', {
     href: branchUrl,
     title: btnTitle,
