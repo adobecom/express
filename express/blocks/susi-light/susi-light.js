@@ -5,9 +5,6 @@ import {
   getConfig,
 } from '../../scripts/utils.js';
 
-const config = {
-  consentProfile: 'free',
-};
 const variant = 'edu-express';
 const usp = new URLSearchParams(window.location.search);
 const isStage = (usp.get('env') && usp.get('env') !== 'prod') || getConfig().env.name !== 'prod';
@@ -48,6 +45,7 @@ export default async function init(el) {
   const redirectUrl = rows[0]?.textContent?.trim().toLowerCase();
   // eslint-disable-next-line camelcase
   const client_id = rows[1]?.textContent?.trim() ?? 'AdobeExpressWeb';
+  const title = rows[2]?.textContent?.trim();
   const authParams = {
     dt: false,
     locale: getConfig().locale.ietf.toLowerCase(),
@@ -64,6 +62,12 @@ export default async function init(el) {
   }
   el.innerHTML = '';
   await loadWrapper();
+  const config = {
+    consentProfile: 'free',
+  };
+  if (title) {
+    config.title = title;
+  }
   const susi = createTag('susi-sentry-light');
   susi.authParams = authParams;
   susi.authParams.redirect_uri = destURL;
