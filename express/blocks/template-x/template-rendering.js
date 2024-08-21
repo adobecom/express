@@ -148,7 +148,7 @@ function renderShareWrapper(branchUrl, placeholders) {
 }
 
 function renderCTA(placeholders, branchUrl) {
-  const btnTitle = placeholders['edit-this-template'] ?? 'Edit this template';
+  const btnTitle = 'Open';
   const btnEl = createTag('a', {
     href: branchUrl,
     title: btnTitle,
@@ -427,7 +427,7 @@ function renderStillWrapper(template, placeholders) {
   const { planIcon, videoIcon } = getStillWrapperIcons(template, placeholders);
   img.onload = (e) => {
     if (e.eventPhase >= Event.AT_TARGET) {
-      imgWrapper.append(planIcon);
+      // imgWrapper.append(planIcon);
       imgWrapper.append(videoIcon);
     }
   };

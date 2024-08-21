@@ -125,6 +125,7 @@ async function formatHeadingPlaceholder(props) {
   }
 
   if (toolBarHeading) {
+    toolBarHeading = toolBarHeading.replace('templates', 'results');
     toolBarHeading = toolBarHeading
       .replace('{{quantity}}', props.fallbackMsg ? '0' : templateCount)
       .replace('{{Type}}', titleCase(getMetadata('short-title') || getMetadata('q') || getMetadata('topics')))
@@ -310,6 +311,7 @@ function populateTemplates(block, props, templates) {
     tmplt.classList.add('template');
     if (isPlaceholder) {
       tmplt.classList.add('placeholder');
+      tmplt.remove();
     }
   }
 }
@@ -1082,18 +1084,6 @@ function toggleMasonryView(block, props, button, toggleButtons) {
 
     props.masonry.draw();
   }
-
-  const placeholder = block.querySelector('.template.placeholder');
-  const ratios = props.placeholderFormat;
-  const width = getPlaceholderWidth(block);
-
-  if (ratios[1]) {
-    const height = (ratios[1] / ratios[0]) * width;
-    placeholder.style = `height: ${height - 21}px`;
-    if (width / height > 1.3) {
-      placeholder.classList.add('wide');
-    }
-  }
 }
 
 function initViewToggle(block, props, toolBar) {
@@ -1751,8 +1741,21 @@ export default async function decorate(block) {
   addTempWrapper(block, 'template-x');
 
   const props = constructProps(block);
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('q')) {
+    props.q = params.get('q');
+  }
   block.innerHTML = '';
   await buildTemplateList(block, props, determineTemplateXType(props));
+
+  if (props.orientation.toLowerCase() !== 'horizontal') {
+    block.style.textAlign = 'left';
+    const breadcrumbs = createTag('div', { class: 'temp-bread' });
+    breadcrumbs.append(createTag('a', { href: '/drafts/jingle/buzz_loop/trends' }, 'Trends Home'));
+    breadcrumbs.append(createTag('div', {}, '/'));
+    breadcrumbs.append(createTag('div', {}, `${params.get('q') ?? 'Search'}`));
+    block.prepend(breadcrumbs);
+  }
   [...block.querySelectorAll('.template-title')].forEach((title) => {
     const textWrapper = title.querySelector('.text-wrapper');
     textWrapper.prepend(textWrapper.querySelector('p'));

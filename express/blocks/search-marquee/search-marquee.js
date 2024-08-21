@@ -8,7 +8,6 @@ import {
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import { trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
-import buildCarousel from '../shared/carousel.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -156,7 +155,7 @@ function initSearchFunction(block) {
       targetLocation = `${window.location.origin}${prefix}${searchUrlTemplate}`;
     }
 
-    window.location.assign(targetLocation);
+    window.location.assign(`/drafts/jingle/buzz_loop/search?q=${searchBar.value}`);
   };
 
   const onSearchSubmit = async () => {
@@ -247,10 +246,15 @@ function initSearchFunction(block) {
 
   import('../../scripts/autocomplete-api-v3.js').then(({ default: useInputAutocomplete }) => {
     const { inputHandler } = useInputAutocomplete(
-      suggestionsListUIUpdateCB, { throttleDelay: 300, debounceDelay: 500, limit: 7 },
+      suggestionsListUIUpdateCB, { throttleDelay: 300, debounceDelay: 500, limit: 4 },
     );
     searchBar.addEventListener('input', inputHandler);
   });
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('q')) {
+    searchBar.value = params.get('q');
+  }
 }
 
 async function decorateSearchFunctions(block) {
@@ -273,27 +277,6 @@ async function decorateSearchFunctions(block) {
   searchBarWrapper.append(searchForm);
 
   block.append(searchBarWrapper);
-}
-
-function decorateBackground(block) {
-  const mediaRow = block.querySelector('div:nth-child(2)');
-  if (mediaRow) {
-    let media = mediaRow.querySelector('picture img');
-    if (!media) {
-      media = createTag('img');
-      media.src = mediaRow.querySelector('a')?.href;
-    }
-    media.classList.add('backgroundimg');
-    media.loading = 'eager';
-    media.setAttribute('fetchpriority', 'high');
-    const wrapper = block.parentElement;
-    if (wrapper.classList.contains('search-marquee-wrapper')) {
-      wrapper.prepend(media);
-    } else {
-      block.prepend(media);
-    }
-    mediaRow.remove();
-  }
 }
 
 async function buildSearchDropdown(block) {
@@ -357,31 +340,15 @@ async function buildSearchDropdown(block) {
   }
 }
 
-function decorateLinkList(block) {
-  const carouselItemsWrapper = block.querySelector(':scope > div:nth-of-type(2) > div');
-  if (carouselItemsWrapper) {
-    const showLinkList = getMetadata('show-search-marquee-link-list');
-    if ((showLinkList && !['yes', 'true', 'on', 'Y'].includes(showLinkList))
-      // no link list for templates root page
-      || window.location.pathname.endsWith('/express/templates/')
-      || window.location.pathname.endsWith('/express/templates')) {
-      carouselItemsWrapper.remove();
-    } else {
-      buildCarousel(':scope > p', carouselItemsWrapper).then(() => {
-        const carousel = carouselItemsWrapper.querySelector('.carousel-container');
-        block.append(carousel);
-        carouselItemsWrapper.parentElement.remove();
-      });
-    }
-  }
-}
-
 export default async function decorate(block) {
   addTempWrapper(block, 'search-marquee');
   await decorateSearchFunctions(block);
   await buildSearchDropdown(block);
   initSearchFunction(block);
-
+  block.querySelector('.free-plans-container').remove();
+  [...block.querySelectorAll('a.trend-link')].forEach((a) => {
+    a.href = `/drafts/jingle/buzz_loop/search?q=${a.textContent}`;
+  });
   const blockLinks = block.querySelectorAll('a');
   if (blockLinks && blockLinks.length > 0) {
     const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
