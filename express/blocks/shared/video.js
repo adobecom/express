@@ -102,6 +102,8 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
   const [primaryUrl] = vidUrls;
   if (!primaryUrl) return;
   if (playerType === 'html5') {
+
+    console.log("IN playInlineVideo, handling html5 video")
     const sources = vidUrls.map((src) => `<source src="${src}" type="${getMimeType(src)}"></source>`).join('');
     const videoHTML = `<video controls playsinline autoplay>${sources}</video>`;
     $element.innerHTML = videoHTML;
@@ -163,9 +165,49 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
       }
     });
   } else {
-    // iframe 3rd party player
-    $element.innerHTML = `<iframe src="${primaryUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${title}"></iframe>`;
-    const $videoClose = $element.appendChild(createTag('div', { class: 'close' }));
+
+    console.log("IN playInlineVideo, handling 3rd party video, playerType", playerType)
+
+    if (playerType === 'adobetv') {
+      // src="https://images-tv.adobe.com/mpcv3/8112/2c506a6a-e54c-42fb-869d-3bba4b133d0a_1718031054.854x480at800_h264.mp4"
+      //         src="https://images-tv.adobe.com/mpcv3/8112/2c506a6a-e54c-42fb-869d-3bba4b133d0a_1718031054.854x480at800_h264.mp4?autoplay=true"
+
+      //  src="${primaryUrl}?autoplay=true&muted=false"
+
+
+      // Use this one:
+      // src="${primaryUrl}?autoplay=true"
+
+      $element.innerHTML =  `<iframe title="Adobe Video Publishing Cloud Player"
+        allow="autoplay"
+        width="640" height="360"
+
+        src="https://images-tv.adobe.com/mpcv3/8112/2c506a6a-e54c-42fb-869d-3bba4b133d0a_1718031054.854x480at800_h264.mp4?autoplay=true"
+
+
+        frameborder="0"  >
+        </iframe>`;
+
+      // src="https://images-tv.adobe.com/mpcv3/8112/2c506a6a-e54c-42fb-869d-3bba4b133d0a_1718031054.854x480at800_h264.mp4?autoplay=true"
+      //    src="${primaryUrl}/?autoplay=true&mute=false"
+
+      // $element.innerHTML =  `<iframe
+      //   allow="autoplay"
+      //   title="Adobe Video Publishing Cloud Player"
+      //   width="640" height="360"
+      //   <video
+      //     src="${primaryUrl}?autoplay=true"
+
+      //   autoplay="autoplay" ></video>
+
+      //   frameborder="0"  >
+      //   </iframe>`;
+
+    } else {
+      // iframe 3rd party player
+      $element.innerHTML = `<iframe src="${primaryUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${title}"></iframe>`;
+    }
+   const $videoClose = $element.appendChild(createTag('div', { class: 'close' }));
     $videoClose.addEventListener('click', () => {
       // eslint-disable-next-line no-use-before-define
       hideVideoModal(true);
@@ -201,10 +243,14 @@ export function hideVideoModal(push) {
 }
 
 export function displayVideoModal(url = [], title, push) {
+  // return;
+  console.log("=== Coming into displayVideoModal, url, title, push", url, title, push)
   let vidUrls = typeof url === 'string' ? [url] : url;
   const [primaryUrl] = vidUrls;
   const canPlayInline = vidUrls
     .some((src) => src && isVideoLink(src));
+
+    console.log("  === Coming into displayVideoModal 02, vidUrls, primaryUrl, canPlayInline", vidUrls, primaryUrl, canPlayInline)
 
   document.body.classList.add('no-scroll');
   if (canPlayInline) {
@@ -254,7 +300,10 @@ export function displayVideoModal(url = [], title, push) {
 
     let vidType = 'default';
     let ts = 0;
-    if (primaryUrl.includes('youtu')) {
+    if (primaryUrl.includes('video.tv.adobe.com')) {
+      vidType = 'adobetv';
+      // vidType = 'html5';
+    } else if (primaryUrl.includes('youtu')) {
       vidType = 'youtube';
       const yturl = new URL(primaryUrl);
       let vid = yturl.searchParams.get('v');
@@ -270,6 +319,7 @@ export function displayVideoModal(url = [], title, push) {
       const vid = new URL(primaryUrl).pathname.split('/')[1];
       const language = getAvailableVimeoSubLang();
       vidUrls = [`https://player.vimeo.com/video/${vid}?app_id=122963&autoplay=1&texttrack=${language}`];
+
     } else if (primaryUrl.includes('/media_')) {
       vidType = 'html5';
       const { hash } = new URL(vidUrls[0]);
@@ -280,6 +330,8 @@ export function displayVideoModal(url = [], title, push) {
       // local video url(s), remove origin, extract timestamp
       vidUrls = vidUrls.map((vidUrl) => new URL(vidUrl).pathname);
     }
+
+    console.log("=== GOING INTO playInlineVideo, $video, vidUrls, vidType, title, ts", $video, vidUrls, vidType, title, ts)
     playInlineVideo($video, vidUrls, vidType, title, ts);
   } else {
     // redirect to first video url
