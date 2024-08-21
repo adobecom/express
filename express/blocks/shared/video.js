@@ -279,9 +279,8 @@ export function displayVideoModal(url = [], title, push) {
 
     let vidType = 'default';
     let ts = 0;
-    if (primaryUrl.includes('video.tv.adobe.com')) {
+    if (/^[^/]+[/]+video[.]tv[.]adobe[.]com/.test(primaryUrl)) {
       vidType = 'adobetv';
-      // vidType = 'html5';
     } else if (primaryUrl.includes('youtu')) {
       vidType = 'youtube';
       const yturl = new URL(primaryUrl);
