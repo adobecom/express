@@ -139,6 +139,11 @@ const listenAlloy = () => {
   }, 3000);
 };
 
+(function hackathon() {
+  if (getMetadata('hackathon') !== 'on') return;
+  document.querySelector('main').style = 'max-width: 375px;margin:auto';
+}());
+
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   window.hlx = window.hlx || {};

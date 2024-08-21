@@ -1,3 +1,19 @@
+/* hackathon styles */
+.template-x-wrapper .template-x.block .template-title.horizontal h2 {
+    font-size: 20px;
+    margin-top: 0;
+    font-weight: 700;;
+}
+.template-title .text-wrapper > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+.template-title.horizontal .text-wrapper > div > p {
+    margin-top: 0;
+}
+
 /* templates pages spacial styling */
 div[class='section section-wrapper template-x-container'],
 div[class='section section-wrapper browse-by-category-card-fullwidth-container template-x-container'],
@@ -462,7 +478,7 @@ main.with-holiday-templates-banner {
     position: relative;
     display: inline-flex;
     width: 165px;
-    margin: 5px;
+    margin: 0px 5px 5px 0;
 }
 
 .template-x.fullwidth.lg-view .template,
@@ -1630,8 +1646,8 @@ main .template-x .api-templates-toolbar .search-bar-wrapper.collapsed .search-dr
 .template-x-wrapper.horizontal > *:not(.template-x.horizontal),
 .template-x-wrapper.horizontal:not(.holiday) > .template-x.horizontal > *:not(.carousel-container) {
     max-width: unset;
-    padding-left: 15px;
-    padding-right: 15px;
+    /* padding-left: 15px;
+    padding-right: 15px; */
     margin-right: auto;
     margin-left: auto;
     margin-bottom: 24px;
@@ -1653,7 +1669,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 .template-x.horizontal .carousel-platform {
     scroll-padding: 12px;
-    padding: 24px 15px;
+    padding: 8px 0;
     box-sizing: border-box;
 }
 

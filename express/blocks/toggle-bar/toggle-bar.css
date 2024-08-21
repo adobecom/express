@@ -1,11 +1,28 @@
 .section .toggle-bar-wrapper {
     margin: 0 auto;
-    padding: 0 16px;
     max-width: max-content;
+}
+.section .toggle-bar::-webkit-scrollbar {
+    display: none;
 }
 
 .block.toggle-bar {
-    display: none;
+    overflow-x: scroll;
+    scrollbar-width: none;
+}
+.block.toggle-bar button {
+    padding-left: 0;
+}
+.block.toggle-bar button {
+    font-size: 15px;
+}
+
+.section.toggle-bar-container {
+    padding-top: 0
+}
+.block.toggle-bar {
+    /* display: none; */
+    padding-bottom: 20px;
 }
 
 .block.toggle-bar.float {
@@ -38,10 +55,10 @@
     box-shadow: 0 0 10px #00000029;
     box-sizing: border-box;
     padding: 6px;
-    margin-top: 32px;
+    /* margin-top: 32px; */
     margin-bottom: 16px;
     height: 70px;
-    overflow: auto clip;
+    /* overflow: auto clip; */
     transition: top 0.2s;
 }
 
@@ -65,7 +82,7 @@
 }
 
 .block.toggle-bar > div:nth-of-type(2) {
-    -ms-overflow-style: none;
+    /* -ms-overflow-style: none; */
     scrollbar-width: none;
 }
 
@@ -84,6 +101,7 @@
 }
 
 .block.toggle-bar ul {
+    gap: 14px;
     padding: 0;
     margin: 0;
     height: 100%;
@@ -97,7 +115,7 @@
     list-style-type: none;
     background-color: transparent;
     font-size: var(--body-font-size-s);
-    margin: 0 28px;
+    margin-right: 10px;
     cursor: pointer;
     user-select: none;
     border: none;
@@ -108,8 +126,7 @@
 .toggle-bar .toggle-bar-button:after {
     content: '';
     position: absolute;
-    left: 50%;
-    bottom: -13px;
+    bottom: -6px;
     transform: translate(-50%);
     height: 4px;
     width: 100%;

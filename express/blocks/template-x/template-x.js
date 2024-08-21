@@ -1753,4 +1753,9 @@ export default async function decorate(block) {
   const props = constructProps(block);
   block.innerHTML = '';
   await buildTemplateList(block, props, determineTemplateXType(props));
+  [...block.querySelectorAll('.template-title')].forEach((title) => {
+    const textWrapper = title.querySelector('.text-wrapper');
+    textWrapper.prepend(textWrapper.querySelector('p'));
+    textWrapper.querySelector(':scope > div').append(title.querySelector('p.view-all-link-wrapper'));
+  });
 }

@@ -260,7 +260,7 @@ async function decorateSearchFunctions(block) {
   const searchBar = createTag('input', {
     class: 'search-bar',
     type: 'text',
-    placeholder: placeholders['template-search-placeholder'] ?? 'Search for over 50,000 templates',
+    placeholder: 'Search everything',
     enterKeyHint: placeholders.search ?? 'Search',
   });
 
@@ -378,24 +378,13 @@ function decorateLinkList(block) {
 
 export default async function decorate(block) {
   addTempWrapper(block, 'search-marquee');
-  decorateBackground(block);
-  if (['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
-    const logo = getIconElement('adobe-express-logo');
-    logo.classList.add('express-logo');
-    block.prepend(logo);
-  }
   await decorateSearchFunctions(block);
   await buildSearchDropdown(block);
   initSearchFunction(block);
-  decorateLinkList(block);
 
   const blockLinks = block.querySelectorAll('a');
   if (blockLinks && blockLinks.length > 0) {
     const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
     document.dispatchEvent(linksPopulated);
-  }
-  if (window.location.href.includes('/express/templates/')) {
-    const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
-    updateAsyncBlocks();
   }
 }
