@@ -197,12 +197,33 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
         // </iframe>`
 
 
-        $element.innerHTML =  `<iframe
-        allow="autoplay"
-        title="Adobe Video Publishing Cloud Player"
-        src="https://video.tv.adobe.com/v/3427956/?autoplay=true"
-        frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen scrolling="no">
-      </iframe>`
+
+        const videoURL = `${primaryUrl.replace(/[/]$/, '')}/?autoplay=true`;
+
+        console.log("=== IFRAME, primaryUrl", primaryUrl, "videoURL", videoURL);
+
+
+      //   $element.innerHTML =  `<iframe
+      //   allow="autoplay"
+      //   title='Adobe Video Publishing&apos;s Cloud Player'
+      //   src="${videoURL}"
+      //   frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen scrolling="no">
+      // </iframe>`
+
+      const $iframeEl = createTag('iframe', {
+        allow:'autoplay',
+        title,
+        src: videoURL,
+        frameborder: '0',
+        webkitallowfullscreen: '',
+        mozallowfullscreen: '',
+        allowfullscreen: '',
+        scrolling: 'no'
+      });
+
+console.log("=== ELEMENT", $element);
+      $element.replaceChildren($iframeEl);
+
 
       // src="https://video.tv.adobe.com/v/3427466/"
       // src="https://video.tv.adobe.com/v/3426827/"
