@@ -44,13 +44,6 @@ main .video-overlay .video-overlay-video.vimeo {
   max-height: 50vh;
 }
 
-/* main .video-overlay .video-overlay-video.default {
-  width: 90vh;
-  max-width: 90vw;
-  height: 50vw;
-  max-height: 50vh;
-} */
-
 main .video-overlay .video-overlay-video iframe,
 main .video-overlay .video-overlay-video video {
   width: 100%;
