@@ -178,15 +178,41 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
       // Use this one:
       // src="${primaryUrl}?autoplay=true"
 
-      $element.innerHTML =  `<iframe title="Adobe Video Publishing Cloud Player"
+      // This one is good:
+      //
+      // $element.innerHTML =  `<iframe title="Adobe Video Publishing Cloud Player"
+      //   allow="autoplay"
+      //   width="640" height="360"
+
+      //   src="https://images-tv.adobe.com/mpcv3/8112/2c506a6a-e54c-42fb-869d-3bba4b133d0a_1718031054.854x480at800_h264.mp4?autoplay=true"
+
+
+      //   frameborder="0"  >
+      //   </iframe>`;
+
+
+        // $element.innerHTML =  `<iframe title="Adobe Video Publishing Cloud Player"
+        //   width="640" height="360" src="https://video.tv.adobe.com/v/3427466/"
+        //   frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen scrolling="no">
+        // </iframe>`
+
+
+        $element.innerHTML =  `<iframe
         allow="autoplay"
-        width="640" height="360"
+        title="Adobe Video Publishing Cloud Player"
+        src="https://video.tv.adobe.com/v/3427956/?autoplay=true"
+        frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen scrolling="no">
+      </iframe>`
 
-        src="https://images-tv.adobe.com/mpcv3/8112/2c506a6a-e54c-42fb-869d-3bba4b133d0a_1718031054.854x480at800_h264.mp4?autoplay=true"
+      // src="https://video.tv.adobe.com/v/3427466/"
+      // src="https://video.tv.adobe.com/v/3426827/"
+      // "https://video.tv.adobe.com/v/19180/?captions=jpn&hidetitle=true"
+      // src="https://video.tv.adobe.com/v/3427956/"
+      // <iframe title="Adobe Video Publishing Cloud Player" width="640" height="360" src="https://video.tv.adobe.com/v/3426827/" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen scrolling="no"></iframe>
 
+      // <iframe title="Adobe Video Publishing Cloud Player" width="854" height="480" src="https://video.tv.adobe.com/v/19180/?captions=jpn&hidetitle=true" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen scrolling="no"></iframe>
+      // <iframe title="Adobe Video Publishing Cloud Player" width="640" height="360" src="https://video.tv.adobe.com/v/3427956/" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen scrolling="no"></iframe>
 
-        frameborder="0"  >
-        </iframe>`;
 
       // src="https://images-tv.adobe.com/mpcv3/8112/2c506a6a-e54c-42fb-869d-3bba4b133d0a_1718031054.854x480at800_h264.mp4?autoplay=true"
       //    src="${primaryUrl}/?autoplay=true&mute=false"
