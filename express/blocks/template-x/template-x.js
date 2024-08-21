@@ -1742,8 +1742,12 @@ export default async function decorate(block) {
 
   const props = constructProps(block);
   const params = new URLSearchParams(window.location.search);
-  if (params.get('q')) {
-    props.q = params.get('q');
+  const q = params.get('q');
+  if (q) {
+    props.q = q;
+    if (q.toLocaleLowerCase().includes('youtube') || q.toLocaleLowerCase().includes('tiktok') || q.toLocaleLowerCase().includes('video')) {
+      props.filters.animated = 'true';
+    }
   }
   block.innerHTML = '';
   await buildTemplateList(block, props, determineTemplateXType(props));

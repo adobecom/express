@@ -295,7 +295,14 @@ async function buildSearchDropdown(block) {
     const trendsTitle = placeholders['search-trends-title'];
     let trends;
     if (placeholders['search-trends']) trends = JSON.parse(placeholders['search-trends']);
-
+    trends = {
+      'OOTD Tiktok': '/drafts/jingle/buzz_loop/search?q=ootd tiktok',
+      'Cat Youtube': '/drafts/jingle/buzz_loop/search?q=cat youtube',
+      'Games Tiktok': '/drafts/jingle/buzz_loop/search?q=games tiktok',
+      'Dog Instagram': '/drafts/jingle/buzz_loop/search?q=dog instagram',
+      'Vote Poster': '/drafts/jingle/buzz_loop/search?q=vote poster',
+      'Cat Tiktok': '/drafts/jingle/buzz_loop/search?q=cat tiktok',
+    };
     if (fromScratchLink) {
       const linkDiv = fromScratchLink.parentElement.parentElement;
       const templateFreeAccentIcon = getIconElement('template-free-accent');
@@ -346,9 +353,9 @@ export default async function decorate(block) {
   await buildSearchDropdown(block);
   initSearchFunction(block);
   block.querySelector('.free-plans-container').remove();
-  [...block.querySelectorAll('a.trend-link')].forEach((a) => {
-    a.href = `/drafts/jingle/buzz_loop/search?q=${a.textContent}`;
-  });
+  // [...block.querySelectorAll('a.trend-link')].forEach((a) => {
+  //   a.href = `/drafts/jingle/buzz_loop/search?q=${a.textContent}`;
+  // });
   const blockLinks = block.querySelectorAll('a');
   if (blockLinks && blockLinks.length > 0) {
     const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
