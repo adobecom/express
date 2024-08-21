@@ -166,26 +166,25 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
     if (playerType === 'adobetv') {
       const videoURL = `${primaryUrl.replace(/[/]$/, '')}/?autoplay=true`;
       const $iframe = createTag('iframe', {
-        allow: 'autoplay',
         title,
         src: videoURL,
         frameborder: '0',
+        allow: 'autoplay',
         webkitallowfullscreen: '',
         mozallowfullscreen: '',
         allowfullscreen: '',
-        scrolling: 'no'
+        scrolling: 'no',
       });
 
       $element.replaceChildren($iframe);
     } else {
       // iframe 3rd party player
       const $iframe = createTag('iframe', {
-        allow: 'autoplay',
         title,
         src: primaryUrl,
         frameborder: '0',
         allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
-        allowfullscreen: ''
+        allowfullscreen: '',
       });
 
       $element.replaceChildren($iframe);
