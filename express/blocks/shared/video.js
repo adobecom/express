@@ -1,6 +1,6 @@
 import {
   createTag, getConfig, loadBlock, toClassName,
-// eslint-disable-next-line import/no-unresolved
+  // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
 const docTitle = document.title;
@@ -102,8 +102,6 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
   const [primaryUrl] = vidUrls;
   if (!primaryUrl) return;
   if (playerType === 'html5') {
-
-    console.log("IN playInlineVideo, handling html5 video")
     const sources = vidUrls.map((src) => `<source src="${src}" type="${getMimeType(src)}"></source>`).join('');
     const videoHTML = `<video controls playsinline autoplay>${sources}</video>`;
     $element.innerHTML = videoHTML;
@@ -169,49 +167,9 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
     console.log("IN playInlineVideo, handling 3rd party video, playerType", playerType)
 
     if (playerType === 'adobetv') {
-      // src="https://images-tv.adobe.com/mpcv3/8112/2c506a6a-e54c-42fb-869d-3bba4b133d0a_1718031054.854x480at800_h264.mp4"
-      //         src="https://images-tv.adobe.com/mpcv3/8112/2c506a6a-e54c-42fb-869d-3bba4b133d0a_1718031054.854x480at800_h264.mp4?autoplay=true"
-
-      //  src="${primaryUrl}?autoplay=true&muted=false"
-
-
-      // Use this one:
-      // src="${primaryUrl}?autoplay=true"
-
-      // This one is good:
-      //
-      // $element.innerHTML =  `<iframe title="Adobe Video Publishing Cloud Player"
-      //   allow="autoplay"
-      //   width="640" height="360"
-
-      //   src="https://images-tv.adobe.com/mpcv3/8112/2c506a6a-e54c-42fb-869d-3bba4b133d0a_1718031054.854x480at800_h264.mp4?autoplay=true"
-
-
-      //   frameborder="0"  >
-      //   </iframe>`;
-
-
-        // $element.innerHTML =  `<iframe title="Adobe Video Publishing Cloud Player"
-        //   width="640" height="360" src="https://video.tv.adobe.com/v/3427466/"
-        //   frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen scrolling="no">
-        // </iframe>`
-
-
-
-        const videoURL = `${primaryUrl.replace(/[/]$/, '')}/?autoplay=true`;
-
-        console.log("=== IFRAME, primaryUrl", primaryUrl, "videoURL", videoURL);
-
-
-      //   $element.innerHTML =  `<iframe
-      //   allow="autoplay"
-      //   title='Adobe Video Publishing&apos;s Cloud Player'
-      //   src="${videoURL}"
-      //   frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen scrolling="no">
-      // </iframe>`
-
+      const videoURL = `${primaryUrl.replace(/[/]$/, '')}/?autoplay=true`;
       const $iframeEl = createTag('iframe', {
-        allow:'autoplay',
+        allow: 'autoplay',
         title,
         src: videoURL,
         frameborder: '0',
@@ -220,41 +178,12 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
         allowfullscreen: '',
         scrolling: 'no'
       });
-
-console.log("=== ELEMENT", $element);
       $element.replaceChildren($iframeEl);
-
-
-      // src="https://video.tv.adobe.com/v/3427466/"
-      // src="https://video.tv.adobe.com/v/3426827/"
-      // "https://video.tv.adobe.com/v/19180/?captions=jpn&hidetitle=true"
-      // src="https://video.tv.adobe.com/v/3427956/"
-      // <iframe title="Adobe Video Publishing Cloud Player" width="640" height="360" src="https://video.tv.adobe.com/v/3426827/" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen scrolling="no"></iframe>
-
-      // <iframe title="Adobe Video Publishing Cloud Player" width="854" height="480" src="https://video.tv.adobe.com/v/19180/?captions=jpn&hidetitle=true" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen scrolling="no"></iframe>
-      // <iframe title="Adobe Video Publishing Cloud Player" width="640" height="360" src="https://video.tv.adobe.com/v/3427956/" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen scrolling="no"></iframe>
-
-
-      // src="https://images-tv.adobe.com/mpcv3/8112/2c506a6a-e54c-42fb-869d-3bba4b133d0a_1718031054.854x480at800_h264.mp4?autoplay=true"
-      //    src="${primaryUrl}/?autoplay=true&mute=false"
-
-      // $element.innerHTML =  `<iframe
-      //   allow="autoplay"
-      //   title="Adobe Video Publishing Cloud Player"
-      //   width="640" height="360"
-      //   <video
-      //     src="${primaryUrl}?autoplay=true"
-
-      //   autoplay="autoplay" ></video>
-
-      //   frameborder="0"  >
-      //   </iframe>`;
-
     } else {
       // iframe 3rd party player
       $element.innerHTML = `<iframe src="${primaryUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${title}"></iframe>`;
     }
-   const $videoClose = $element.appendChild(createTag('div', { class: 'close' }));
+    const $videoClose = $element.appendChild(createTag('div', { class: 'close' }));
     $videoClose.addEventListener('click', () => {
       // eslint-disable-next-line no-use-before-define
       hideVideoModal(true);
@@ -264,10 +193,6 @@ console.log("=== ELEMENT", $element);
 }
 
 export function isVideoLink(url) {
-
-  console.log("=== COMING INTO isVideoLink()");
-
-
   if (!url) return null;
   return url.includes('youtube.com/watch')
     || url.includes('youtu.be/')
@@ -297,7 +222,7 @@ export function displayVideoModal(url = [], title, push) {
   const canPlayInline = vidUrls
     .some((src) => src && isVideoLink(src));
 
-    console.log("  === Coming into displayVideoModal 02, vidUrls, primaryUrl, canPlayInline", vidUrls, primaryUrl, canPlayInline)
+  console.log("  === Coming into displayVideoModal 02, vidUrls, primaryUrl, canPlayInline", vidUrls, primaryUrl, canPlayInline)
 
   document.body.classList.add('no-scroll');
   if (canPlayInline) {
