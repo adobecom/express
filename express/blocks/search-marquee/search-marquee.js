@@ -299,9 +299,9 @@ async function buildSearchDropdown(block) {
       'OOTD Tiktok': '/drafts/jingle/buzz_loop/search?q=ootd tiktok',
       'Cat Youtube': '/drafts/jingle/buzz_loop/search?q=cat youtube',
       'Games Tiktok': '/drafts/jingle/buzz_loop/search?q=games tiktok',
-      'Dog Instagram': '/drafts/jingle/buzz_loop/search?q=dog instagram',
       'Vote Poster': '/drafts/jingle/buzz_loop/search?q=vote poster',
       'Cat Tiktok': '/drafts/jingle/buzz_loop/search?q=cat tiktok',
+      'Dog Instagram Video': '/drafts/jingle/buzz_loop/search?q=dog instagram video',
     };
     if (fromScratchLink) {
       const linkDiv = fromScratchLink.parentElement.parentElement;

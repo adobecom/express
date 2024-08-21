@@ -1755,7 +1755,7 @@ export default async function decorate(block) {
   if (props.orientation.toLowerCase() !== 'horizontal') {
     block.style.textAlign = 'left';
     const breadcrumbs = createTag('div', { class: 'temp-bread' });
-    breadcrumbs.append(createTag('a', { href: '/drafts/jingle/buzz_loop/trends' }, 'Trends Home'));
+    breadcrumbs.append(createTag('a', { href: '/drafts/jingle/buzz_loop/trends' }, 'Trends'));
     breadcrumbs.append(createTag('div', {}, '/'));
     breadcrumbs.append(createTag('div', {}, `${params.get('q') ?? 'Search'}`));
     block.prepend(breadcrumbs);
