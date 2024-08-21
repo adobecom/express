@@ -301,7 +301,6 @@ export function displayVideoModal(url = [], title, push) {
       // local video url(s), remove origin, extract timestamp
       vidUrls = vidUrls.map((vidUrl) => new URL(vidUrl).pathname);
     }
-
     playInlineVideo($video, vidUrls, vidType, title, ts);
   } else {
     // redirect to first video url
