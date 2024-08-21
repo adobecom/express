@@ -204,7 +204,7 @@ export function isVideoLink(url) {
   return url.includes('youtube.com/watch')
     || url.includes('youtu.be/')
     || url.includes('vimeo')
-    || /^[^/]+[/]+video[.]tv[.]adobe[.]com/.test(url)
+    || /^https?:[/][/]video[.]tv[.]adobe[.]com/.test(url)
     || /.*\/media_.*(mp4|webm|m3u8)$/.test(new URL(url).pathname);
 }
 
@@ -277,7 +277,7 @@ export function displayVideoModal(url = [], title, push) {
 
     let vidType = 'default';
     let ts = 0;
-    if (/^[^/]+[/]+video[.]tv[.]adobe[.]com/.test(primaryUrl)) {
+    if (/^https?:[/][/]video[.]tv[.]adobe[.]com/.test(primaryUrl)) {
       vidType = 'adobetv';
     } else if (primaryUrl.includes('youtu')) {
       vidType = 'youtube';
