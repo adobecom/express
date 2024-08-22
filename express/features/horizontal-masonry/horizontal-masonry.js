@@ -34,7 +34,7 @@ function createEnticement(enticementDetail, enticementLink, mode, placeholders) 
   const mobilePlacehoderText = (placeholders && placeholders['describe-image-mobile'])
      || 'Describe your image...';
   const desktopPlaceholderText = (placeholders && placeholders['describe-image-desktop'])
-    || 'Desribe the image you want to create...';
+    || 'Describe the image you want to create...';
   const input = createTag('input', { type: 'text', placeholder: window.screen.width < 600 ? mobilePlacehoderText : desktopPlaceholderText });
   const buttonContainer = createTag('span', { class: 'button-container' });
   const button = createTag('button', { class: 'generate-small-btn' });
