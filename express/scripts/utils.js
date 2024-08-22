@@ -472,14 +472,11 @@ export function getIconElement(icons, size, alt, additionalClassName, altSrc) {
 }
 
 export function transformLinkToAnimation($a, $videoLooping = true) {
-  if (!$a || !$a.href.endsWith('.mp4')) {
-    return null;
-  }
-  if (!$a.href) {
-    console.error('Empty video URL');
+  if (!$a ||!$a.href|| !$a.href.endsWith('.mp4')) {
+    console.error('Invalid video URL');
     console.error($a);
-    return;
-  }
+    return null;
+  } 
   const params = new URL($a.href).searchParams;
   const attribs = {};
   const dataAttr = $videoLooping ? ['playsinline', 'autoplay', 'loop', 'muted'] : ['playsinline', 'autoplay', 'muted'];
