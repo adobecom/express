@@ -170,7 +170,7 @@ export default async function decorate($block) {
       const $a = $div.querySelector('a');
       const $poster = $div.querySelector('img');
       if ($a) {
-        const url = new URL($a.href);
+        const url = .href);
         const params = new URLSearchParams(url.search);
         videoParameters = {
           loop: params.get('loop') !== 'false',

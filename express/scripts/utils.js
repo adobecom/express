@@ -344,8 +344,7 @@ function createSVGWrapper(icon, sheetSize, alt, altSrc) {
   if (altSrc) {
     u.setAttribute('href', altSrc);
   } else {
-    u.setAttribute('href', `/express/icons/ccx-sheet_${sanitizeInput(sheetSize)}.svg#${
-      sanitizeInput(icon)}${sanitizeInput(sheetSize)}`);
+    u.setAttribute('href', `/express/icons/ccx-sheet_${sanitizeInput(sheetSize)}.svg#${sanitizeInput(icon)}${sanitizeInput(sheetSize)}`);
   }
   svgWrapper.appendChild(u);
   return svgWrapper;
@@ -475,6 +474,11 @@ export function getIconElement(icons, size, alt, additionalClassName, altSrc) {
 export function transformLinkToAnimation($a, $videoLooping = true) {
   if (!$a || !$a.href.endsWith('.mp4')) {
     return null;
+  }
+  if (!$a.href) {
+    console.error("Empty video URL")
+    console.error($a)
+    return
   }
   const params = new URL($a.href).searchParams;
   const attribs = {};
@@ -1479,7 +1483,7 @@ export async function loadMartech({
   }
 
   window.targetGlobalSettings = { bodyHidingEnabled: false };
-  loadIms().catch(() => {});
+  loadIms().catch(() => { });
 
   const { default: initMartech } = await import('./martech.js');
   await initMartech({ persEnabled, persManifests, postLCP });
@@ -1541,9 +1545,14 @@ function decorateHeroLCP() {
 
 export function decorateButtons(el = document) {
   const noButtonBlocks = ['template-list', 'icon-list'];
+  const z = createTag('a')
+  el.children[0].appendChild(z)
   el.querySelectorAll(':scope a:not(.faas.link-block, .fragment.link-block)').forEach(($a) => {
+
     if ($a.closest('div.section > .text') && !($a.parentElement.tagName === 'STRONG' || $a.querySelector(':scope > strong'))) return;
+
     const originalHref = $a.href;
+
     const linkText = $a.textContent.trim();
     if ($a.children.length > 0) {
       // We can use this to eliminate styling so only text
@@ -1552,47 +1561,54 @@ export function decorateButtons(el = document) {
     }
     $a.title = $a.title || linkText;
     const $block = $a.closest('div.section > div > div');
-    const { hash } = new URL($a.href);
-    let blockName;
-    if ($block) {
-      blockName = $block.className;
+    try {
+      const { hash } = new URL($a.href);
+      let blockName;
+      if ($block) {
+        blockName = $block.className;
+      }
+      if (!noButtonBlocks.includes(blockName)
+        && originalHref !== linkText
+        && !(linkText.startsWith('https') && linkText.includes('/media_'))
+        && !/hlx\.blob\.core\.windows\.net/.test(linkText)
+        && !linkText.endsWith(' >')
+        && !(hash === '#embed-video')
+        && !linkText.endsWith(' ›')
+        && !linkText.endsWith('.svg')) {
+        const $up = $a.parentElement;
+        const $twoup = $a.parentElement.parentElement;
+        if (!$a.querySelector('img')) {
+          if ($up.childNodes.length === 1 && ($up.tagName === 'P' || $up.tagName === 'DIV')) {
+            $a.classList.add('button', 'accent'); // default
+            $up.classList.add('button-container');
+          }
+          if ($up.childNodes.length === 1 && $up.tagName === 'STRONG'
+            && $twoup.children.length === 1 && $twoup.tagName === 'P') {
+            $a.classList.add('button', 'accent');
+            $twoup.classList.add('button-container');
+          }
+          if ($up.childNodes.length === 1 && $up.tagName === 'EM'
+            && $twoup.children.length === 1 && $twoup.tagName === 'P') {
+            $a.classList.add('button', 'accent', 'light');
+            $twoup.classList.add('button-container');
+          }
+        }
+        if (linkText.startsWith('{{icon-') && linkText.endsWith('}}')) {
+          const $iconName = /{{icon-([\w-]+)}}/g.exec(linkText)[1];
+          if ($iconName) {
+            $a.appendChild(getIcon($iconName, `${$iconName} icon`));
+            $a.classList.remove('button', 'primary', 'secondary', 'accent');
+            $a.title = $iconName;
+          }
+        }
+      }
+    } catch (e) {
+      console.error(e)
+      console.error("Ignoring button")
     }
 
-    if (!noButtonBlocks.includes(blockName)
-      && originalHref !== linkText
-      && !(linkText.startsWith('https') && linkText.includes('/media_'))
-      && !/hlx\.blob\.core\.windows\.net/.test(linkText)
-      && !linkText.endsWith(' >')
-      && !(hash === '#embed-video')
-      && !linkText.endsWith(' ›')
-      && !linkText.endsWith('.svg')) {
-      const $up = $a.parentElement;
-      const $twoup = $a.parentElement.parentElement;
-      if (!$a.querySelector('img')) {
-        if ($up.childNodes.length === 1 && ($up.tagName === 'P' || $up.tagName === 'DIV')) {
-          $a.classList.add('button', 'accent'); // default
-          $up.classList.add('button-container');
-        }
-        if ($up.childNodes.length === 1 && $up.tagName === 'STRONG'
-          && $twoup.children.length === 1 && $twoup.tagName === 'P') {
-          $a.classList.add('button', 'accent');
-          $twoup.classList.add('button-container');
-        }
-        if ($up.childNodes.length === 1 && $up.tagName === 'EM'
-          && $twoup.children.length === 1 && $twoup.tagName === 'P') {
-          $a.classList.add('button', 'accent', 'light');
-          $twoup.classList.add('button-container');
-        }
-      }
-      if (linkText.startsWith('{{icon-') && linkText.endsWith('}}')) {
-        const $iconName = /{{icon-([\w-]+)}}/g.exec(linkText)[1];
-        if ($iconName) {
-          $a.appendChild(getIcon($iconName, `${$iconName} icon`));
-          $a.classList.remove('button', 'primary', 'secondary', 'accent');
-          $a.title = $iconName;
-        }
-      }
-    }
+
+
   });
 }
 
@@ -1976,6 +1992,7 @@ export function addFavIcon(href) {
 
 function decorateSocialIcons(el) {
   el.querySelectorAll(':scope a').forEach(($a) => {
+    if (!$a.href) return
     const urlObject = new URL($a.href);
 
     if (urlObject.hash === '#embed-video') return;
