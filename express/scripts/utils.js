@@ -476,9 +476,9 @@ export function transformLinkToAnimation($a, $videoLooping = true) {
     return null;
   }
   if (!$a.href) {
-    console.error("Empty video URL")
-    console.error($a)
-    return
+    console.error('Empty video URL');
+    console.error($a);
+    return;
   }
   const params = new URL($a.href).searchParams;
   const attribs = {};
@@ -1546,7 +1546,6 @@ function decorateHeroLCP() {
 export function decorateButtons(el = document) {
   const noButtonBlocks = ['template-list', 'icon-list'];
   el.querySelectorAll(':scope a:not(.faas.link-block, .fragment.link-block)').forEach(($a) => {
-
     if ($a.closest('div.section > .text') && !($a.parentElement.tagName === 'STRONG' || $a.querySelector(':scope > strong'))) return;
 
     const originalHref = $a.href;
@@ -1601,8 +1600,8 @@ export function decorateButtons(el = document) {
         }
       }
     } catch (e) {
-      console.error(e)
-      console.error("Ignoring button")
+      console.error(e);
+      console.error('Ignoring button');
     }
   });
 }
@@ -1987,7 +1986,7 @@ export function addFavIcon(href) {
 
 function decorateSocialIcons(el) {
   el.querySelectorAll(':scope a').forEach(($a) => {
-    if (!$a.href) return
+    if (!$a.href) return;
     const urlObject = new URL($a.href);
 
     if (urlObject.hash === '#embed-video') return;
