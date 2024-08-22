@@ -1,19 +1,19 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
-  getIcon,
+  getIconElement,
   fetchPlaceholders,
-// eslint-disable-next-line import/no-unresolved
+  // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
 export default function decorate($block) {
   addTempWrapper($block, 'quick-action-cards');
 
   const $cards = Array.from($block.querySelectorAll(':scope>div'));
-  const chevron = getIcon('chevron');
+  const chevron = getIconElement('chevron');
   $cards.forEach(($card) => {
     $card.classList.add('quick-action-card');
-    const $cardDivs = [...$card.children];
+    const $cardDivs = Array.from($card.children);
     $cardDivs.forEach(($div) => {
       if ($div.querySelector(':scope > picture:first-child')) {
         $div.classList.add('quick-action-card-image');
@@ -29,18 +29,17 @@ export default function decorate($block) {
         }
       } else {
         const $buttons = $div.querySelectorAll(':scope a');
-        for (let index = 0; index < $buttons.length; index += 1) {
+        $buttons.forEach(($button, index) => {
           if (index > 0) {
-            $buttons[index].insertAdjacentHTML('beforeend', chevron);
-            $buttons[index].classList.remove('button');
-            $buttons[index].classList.remove('primary');
-            $buttons[index].classList.remove('secondary');
-            $buttons[index].classList.remove('accent');
+            const chevronClone = chevron.cloneNode(true);
+            $button.appendChild(chevronClone);
+            $button.classList.remove('button', 'primary', 'secondary', 'accent');
           }
-        }
+        });
       }
     });
   });
+
   if ($cards.length > 3) {
     let $top = $block.previousElementSibling;
     if ($top && $top.tagName === 'P') {
@@ -50,38 +49,41 @@ export default function decorate($block) {
       $top = $block;
     }
     const $seeMore = document.createElement('a');
-    $seeMore.classList.add('quick-action-card--open');
-    $seeMore.classList.add('button');
-    $seeMore.classList.add('secondary');
+    $seeMore.classList.add('quick-action-card--open', 'button', 'secondary');
     const $seeLess = document.createElement('a');
-    $seeLess.classList.add('quick-action-card--close');
-    $seeLess.classList.add('button');
-    $seeLess.classList.add('secondary');
+    $seeLess.classList.add('quick-action-card--close', 'button', 'secondary');
     fetchPlaceholders().then((placeholders) => {
       $seeMore.innerText = placeholders['see-more'];
       $seeLess.innerText = placeholders['see-less'];
-      $seeMore.insertAdjacentHTML('beforeend', chevron);
-      $seeLess.insertAdjacentHTML('beforeend', chevron);
+      $seeMore.appendChild(chevron.cloneNode(true));
+      $seeLess.appendChild(chevron.cloneNode(true));
     });
-    // eslint-disable-next-line no-script-url
-    $seeMore.setAttribute('href', 'javascript: void(0)');
+
+    $seeMore.setAttribute('href', '');
+    $seeMore.addEventListener('click', (event) => {
+      event.preventDefault();
+    });
     $seeMore.addEventListener('click', () => {
       $block.classList.add('quick-action-cards--expanded');
     });
-    // eslint-disable-next-line no-script-url
-    $seeLess.setAttribute('href', 'javascript: void(0)');
+
+    $seeLess.setAttribute('href', '#');
+    $seeLess.addEventListener('click', (event) => {
+      event.preventDefault();
+    });
     $seeLess.addEventListener('click', () => {
       $block.classList.remove('quick-action-cards--expanded');
       window.scrollTo(0, $top.offsetTop);
     });
+
     const $pButton = document.createElement('p');
+    $pButton.classList.add('quick-action-cards--buttons');
+    $pButton.appendChild($seeMore);
+    $pButton.appendChild($seeLess);
     if ($block.nextElementSibling) {
       $block.parentNode.insertBefore($pButton, $block.nextElementSibling);
     } else {
       $block.parentNode.appendChild($pButton);
     }
-    $pButton.classList.add('quick-action-cards--buttons');
-    $pButton.appendChild($seeMore);
-    $pButton.appendChild($seeLess);
   }
 }

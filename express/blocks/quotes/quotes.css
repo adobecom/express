@@ -23,6 +23,18 @@ main .quotes .quote .content {
   flex-grow: 1;
 }
 
+main .quotes .quote .author .author-content {
+  display: flex;
+  align-items: center;
+}
+
+main .quotes .quote .author .summary {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 main .quotes .quote .content::before {
   content: "“";
   display: block;
@@ -36,10 +48,8 @@ main .quotes .quote .content::before {
 
 main .quotes .quote .author {
   display: flex;
-  margin-top: 16px;
-  width: 100%;
-  flex-direction: row;
   flex-wrap: nowrap;
+  margin-top: 16px;
   align-items: center;
   align-self: baseline;
 }
@@ -89,7 +99,6 @@ main .section.quotes-inverted-container .quote {
   background-color: var(--color-black);
   color: var(--color-white);
 }
-
 
 main .section.quotes-container h2,
 main .section.quotes-container h3,

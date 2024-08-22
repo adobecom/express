@@ -6,6 +6,7 @@ import {
   getMobileOperatingSystem,
   lazyLoadLottiePlayer,
   loadStyle,
+  decorateLinks,
 } from '../../scripts/utils.js';
 
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -158,12 +159,14 @@ export function createFloatingButton(block, audience, data) {
   new ResizeObserver(outputsize).observe(floatButtonLink);
 
   // Hide CTAs with same url & text as the Floating CTA && is NOT a Floating CTA (in mobile/tablet)
+  const aTagURL = new URL(aTag.href);
   const sameUrlCTAs = Array.from(main.querySelectorAll('a.button:any-link'))
-    .filter((a) => (a.textContent.trim() === aTag.textContent.trim()
-      || new URL(a.href).pathname === new URL(aTag.href).pathname)
-      && !a.parentElement.parentElement.classList.contains('floating-button') && !a.classList.contains('floating-cta-ignore'));
+    .filter((a) => (
+      a.textContent.trim() === aTag.textContent.trim()
+      || (new URL(a.href).pathname === aTagURL.pathname && new URL(a.href).hash === aTagURL.hash))
+      && !a.parentElement.parentElement.classList.contains('floating-button'));
   sameUrlCTAs.forEach((cta) => {
-    cta.classList.add('same-as-floating-button-CTA');
+    cta.classList.add('same-fcta');
   });
 
   const floatButtonWrapperOld = aTag.closest('.floating-button-wrapper');
@@ -254,7 +257,7 @@ export function createFloatingButton(block, audience, data) {
     },
   }));
 
-  const heroCTA = document.querySelector('a.button.same-as-floating-button-CTA');
+  const heroCTA = document.querySelector('a.button.same-fcta');
   if (heroCTA) {
     const hideButtonWhenIntersecting = new IntersectionObserver(([e]) => {
       if (e.boundingClientRect.top > window.innerHeight - 40 || e.boundingClientRect.top === 0) {
@@ -300,6 +303,7 @@ export function createFloatingButton(block, audience, data) {
     document.dispatchEvent(new CustomEvent('linkspopulated', { detail: [floatButtonLink] }));
   }
 
+  decorateLinks(floatButtonWrapper);
   return floatButtonWrapper;
 }
 

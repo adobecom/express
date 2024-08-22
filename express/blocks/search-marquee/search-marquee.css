@@ -22,6 +22,12 @@ main .search-marquee {
     align-items: center;
 }
 
+.search-marquee .express-logo {
+    width: unset;
+    height: 30px;
+    padding-bottom: 8px;
+}
+
 main .search-marquee > div:first-of-type h1 {
     font-size: var(--heading-font-size-l);
 }
@@ -29,6 +35,8 @@ main .search-marquee > div:first-of-type h1 {
 main .search-marquee > div:first-of-type p {
     font-size: var(--body-font-size-m);
     max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 main .search-marquee .search-marquee-bg {
@@ -50,7 +58,7 @@ main .search-marquee .search-dropdown-container {
     width: 100%;
     box-sizing: border-box;
     left: 0;
-    z-index: 3;
+    z-index: 12;
 }
 
 main .search-marquee .search-dropdown-container .dropdown-title {
@@ -245,3 +253,4 @@ main .search-marquee .hidden {
         max-height: 216px;
     }
 }
+

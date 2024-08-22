@@ -49,6 +49,15 @@ body.no-desktop-brand-header header {
   width: unset;
 }
 
+.marquee .express-logo {
+  width: unset;
+  height: 30px;
+}
+
+.marquee .express-logo.eyebrow-margin {
+  margin-bottom: 16px;
+}
+
 .marquee .marquee-foreground > :first-child {
   margin-top: 0;
 }
@@ -82,9 +91,44 @@ body.no-desktop-brand-header header {
   margin: 0 0 8px 0;
 }
 
+.marquee.entitled .content-wrapper .eyebrow-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: auto;
+  max-width: max-content;
+}
+
+.marquee.entitled .content-wrapper .eyebrow-wrapper h3 {
+  font-size: var(--body-font-size-l);
+  font-weight: 400;
+  text-align: left;
+}
+
+.marquee.entitled .content-wrapper .eyebrow-wrapper img.icon {
+  width: 32px;
+  height: 32px;
+}
+
 .marquee .content-wrapper p {
   font-size: var(--body-font-size-m);
   margin: 16px 0;
+}
+
+.marquee.entitled .content-wrapper .buttons-wrapper.with-legal-copy {
+  align-items: center;
+}
+
+.marquee.entitled .content-wrapper .buttons-wrapper.with-legal-copy .entitled-cta-tag {
+  font-size: var(--body-font-size-m);
+  align-items: center;
+  display: flex;
+  text-align: left;
+}
+
+.marquee.entitled .content-wrapper .buttons-wrapper.with-legal-copy .entitled-cta-tag .icon {
+  margin-right: 8px;
+  display: block;
 }
 
 .marquee p > a {
@@ -269,6 +313,10 @@ body.no-desktop-brand-header header {
   .marquee .content-wrapper,
   .marquee .content-wrapper h2{
     text-align: left;
+  }
+
+  .marquee.entitled .content-wrapper .eyebrow-wrapper {
+    margin: unset;
   }
 
   .marquee .background-wrapper {

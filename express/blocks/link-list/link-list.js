@@ -46,7 +46,6 @@ const formatSmartBlockLinks = (links, baseURL) => {
   links.forEach((p) => {
     const a = p.querySelector('a');
     a.href = `${formattedURL}&q=${a.title}`;
-    a.classList.add('floating-cta-ignore');
   });
 };
 
@@ -91,7 +90,6 @@ export default async function decorate(block) {
       if (!block.classList.contains('shaded')) {
         link.classList.add('secondary');
       }
-
       link.classList.add('medium');
       link.classList.remove('accent');
     });

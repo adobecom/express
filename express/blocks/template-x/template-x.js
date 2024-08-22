@@ -179,6 +179,7 @@ async function decorateLoadMoreButton(block, props) {
   loadMoreButton.append(getIconElement('plus-icon'));
 
   loadMoreButton.addEventListener('click', async () => {
+    trackSearch('select-load-more', BlockMediator.get('templateSearchSpecs').search_id);
     loadMoreButton.classList.add('disabled');
     const scrollPosition = window.scrollY;
     await decorateNewTemplates(block, props);
@@ -326,6 +327,16 @@ async function decorateCategoryList(block, props) {
     a.prepend(iconElement);
     listItem.append(a);
     categoriesList.append(listItem);
+
+    a.addEventListener('click', () => {
+      updateImpressionCache({
+        category_filter: a.dataset.tasks,
+        collection: a.dataset.topics,
+        collection_path: window.location.pathname,
+        content_category: 'templates',
+      });
+      trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
+    }, { passive: true });
   });
 
   categoriesDesktopWrapper.addEventListener(
@@ -410,6 +421,8 @@ async function decorateCategoryList(block, props) {
 }
 
 async function decorateTemplates(block, props) {
+  const impression = gatherPageImpression(props);
+  updateImpressionCache(impression);
   const innerWrapper = block.querySelector('.template-x-inner-wrapper');
 
   let rows = block.children.length;

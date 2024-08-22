@@ -163,8 +163,32 @@ function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
       }
     });
   } else {
-    // iframe 3rd party player
-    $element.innerHTML = `<iframe src="${primaryUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${title}"></iframe>`;
+    if (playerType === 'adobetv') {
+      const videoURL = `${primaryUrl.replace(/[/]$/, '')}/?autoplay=true`;
+      const $iframe = createTag('iframe', {
+        title,
+        src: videoURL,
+        frameborder: '0',
+        allow: 'autoplay',
+        webkitallowfullscreen: '',
+        mozallowfullscreen: '',
+        allowfullscreen: '',
+        scrolling: 'no',
+      });
+
+      $element.replaceChildren($iframe);
+    } else {
+      // iframe 3rd party player
+      const $iframe = createTag('iframe', {
+        title,
+        src: primaryUrl,
+        frameborder: '0',
+        allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+        allowfullscreen: '',
+      });
+
+      $element.replaceChildren($iframe);
+    }
     const $videoClose = $element.appendChild(createTag('div', { class: 'close' }));
     $videoClose.addEventListener('click', () => {
       // eslint-disable-next-line no-use-before-define
@@ -179,6 +203,7 @@ export function isVideoLink(url) {
   return url.includes('youtube.com/watch')
     || url.includes('youtu.be/')
     || url.includes('vimeo')
+    || /^https?:[/][/]video[.]tv[.]adobe[.]com/.test(url)
     || /.*\/media_.*(mp4|webm|m3u8)$/.test(new URL(url).pathname);
 }
 
@@ -249,7 +274,9 @@ export function displayVideoModal(url = [], title, push) {
 
     let vidType = 'default';
     let ts = 0;
-    if (primaryUrl.includes('youtu')) {
+    if (/^https?:[/][/]video[.]tv[.]adobe[.]com/.test(primaryUrl)) {
+      vidType = 'adobetv';
+    } else if (primaryUrl.includes('youtu')) {
       vidType = 'youtube';
       const yturl = new URL(primaryUrl);
       let vid = yturl.searchParams.get('v');

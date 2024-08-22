@@ -1,22 +1,31 @@
-.wayfinder {
+
+ .wayfinder.block {
   border: 2px solid black;
   border-radius: 20px;
-  padding: 10px;
+  padding: 16px 20px 12px 20px;
   margin-left: 10px;
-  margin-right: 10px;
-  padding-bottom: 0px;
+  margin-right: 10px; 
+  
 }
 
-.wayfinder.dark {
+.wayfinder.block.borderless {
+  border: none;
+}
+
+ .section .wayfinder.block {
+  margin-top: -60px;
+}
+
+ .wayfinder.block.dark {
   background-color: black;
   color: white;
 }
 
-.wayfinder.light {
+ .wayfinder.block.light {
   border: 2px solid var(--color-info-accent);
 }
 
-.wayfinder.gradient {
+ .wayfinder.block.gradient {
   background: linear-gradient(
     90.93deg,
     #aa5ef6 0.23%,
@@ -28,25 +37,24 @@
   border: 2px solid white;
 }
 
-.wayfinder .cta-row .button {
+ .wayfinder.block .cta-row .button {
   height: fit-content;
-  margin: 8px;
-  margin-top: 12px;
+  margin: 8px; 
   background-color: black;
   border-color: black;
 }
 
-.wayfinder.dark .cta-row .button {
+ .wayfinder.block.dark .cta-row .button {
   color: white;
   border-color: white;
 }
 
-.wayfinder div p {
+ .wayfinder.block .text-row{
   margin: auto;
-  font-size: 12pt;
+  font-size: 16px;
 }
 
-.wayfinder .cta-row strong .button {
+ .wayfinder.block .cta-row strong .button {
   background-color: var(--color-info-accent);
   color: white;
   border: none;
@@ -54,12 +62,12 @@
   padding-top: 8px;
 }
 
-.wayfinder .cta-row em .button {
+ .wayfinder.block .cta-row em .button {
   background-color: transparent;
   color: black;
 }
 
-.wayfinder .cta-row em strong .button {
+ .wayfinder.block .cta-row em strong .button {
   background-color: none;
   border: none;
   text-underline-offset: 5px;
@@ -71,35 +79,47 @@
   margin-top: 11px;
 }
 
-.wayfinder .cta-row {
+ .wayfinder.block .cta-row {
   overflow-x: scroll;
   margin-left: 10px;
   margin-right: 10px;
 }
 
-.wayfinder .cta-row::-webkit-scrollbar {
+ .wayfinder.block .cta-row::-webkit-scrollbar {
   display: none;
 }
 
-.wayfinder .cta-row > div {
+ .wayfinder.block .cta-row > div {
   display: flex;
   width: max-content;
   margin: auto;
-}
+} 
 
-@media (min-width: 1025px) {
-  .wayfinder {
+@media (min-width: 540px) {
+   .wayfinder.block {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: 10px;
+    margin: auto;
+    max-width: 90%;
+    padding: 10px;
+  
+  }
+   .section .wayfinder.block {
+    margin-top: -30px;
   }
 
-  .wayfinder .text-row div {
+   .wayfinder.block .text-row {
+    margin: initial;
+    font-size: 18px;
+  }
+
+   .wayfinder.block .text-row div {
+
     gap: 16px;
   }
 
-  .wayfinder .cta-row {
+   .wayfinder.block .cta-row {
     display: flex;
     margin-left: 10px;
     overflow-x: scroll;
@@ -107,7 +127,7 @@
 }
 
 @media (min-width: 1200px) {
-  .wayfinder div {
+   .wayfinder.block div {
     display: flex;
     width: fit-content;
     flex: none;

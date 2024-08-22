@@ -46,7 +46,7 @@ const currencies = {
   my: 'MYR',
   nl: 'EUR',
   no: 'NOK',
-  nz: 'AUD',
+  nz: 'NZD',
   pe: 'PEN',
   ph: 'PHP',
   pl: 'EUR',
@@ -61,15 +61,15 @@ const currencies = {
   tw: 'TWD',
   us: 'USD',
   ve: 'USD',
-  za: 'USD',
-  ae: 'USD',
+  za: 'ZAR',
+  ae: 'AED',
   bh: 'BHD',
   eg: 'EGP',
   jo: 'JOD',
   kw: 'KWD',
   om: 'OMR',
-  qa: 'USD',
-  sa: 'SAR',
+  qa: 'QAR',
+  sa: 'USD',
   ua: 'USD',
   dz: 'USD',
   lb: 'LBP',
@@ -266,17 +266,20 @@ export const formatSalesPhoneNumber = (() => {
 
 export async function formatPrice(price, currency) {
   if (price === '') return null;
-
   const customSymbols = {
     SAR: 'SR',
     CA: 'CAD',
     EGP: 'LE',
+    ARS: 'Ar$',
   };
-  const locale = ['USD', 'TWD'].includes(currency)
-    ? 'en-GB' // use en-GB for intl $ symbol formatting
-    : (getConfig().locales[await getCountry() || '']?.ietf ?? 'en-US');
+  let currencyLocale = 'en-GB'; // use en-GB for intl $ symbol formatting
+  if (!['USD', 'TWD'].includes(currency)) {
+    const country = await getCountry();
+    currencyLocale = Object.entries(getConfig().locales).find(([key]) => key.startsWith(country))?.[1]?.ietf ?? 'en-US';
+  }
   const currencyDisplay = getCurrencyDisplay(currency);
-  let formattedPrice = new Intl.NumberFormat(locale, {
+
+  let formattedPrice = new Intl.NumberFormat(currencyLocale, {
     style: 'currency',
     currency,
     currencyDisplay,
@@ -346,11 +349,13 @@ export const getOfferOnePlans = (() => {
   return async (offerId) => {
     let country = await getCountry();
     if (!country) country = 'us';
+
     let currency = getCurrency(country);
     if (!currency) {
       country = 'us';
       currency = 'USD';
     }
+
     if (!json) {
       const resp = await fetch('/express/system/offers-one.json?limit=5000');
       if (!resp.ok) return {};
@@ -407,7 +412,7 @@ export async function fetchPlanOnePlans(planUrl) {
     plan.symbol = '$';
 
     // TODO: Remove '/sp/ once confirmed with stakeholders
-    const allowedHosts = ['new.express.adobe.com', 'express.adobe.com', 'adobesparkpost.app.link'];
+    const allowedHosts = ['new.express.adobe.com', 'express.adobe.com', 'adobesparkpost.app.link', 'adobesparkpost-web.app.link'];
     const { host } = new URL(planUrl);
     if (allowedHosts.includes(host) || planUrl.includes('/sp/')) {
       plan.offerId = 'FREE0';
@@ -430,6 +435,7 @@ export async function fetchPlanOnePlans(planUrl) {
     }
 
     const offer = await getOfferOnePlans(plan.offerId);
+
     if (offer) {
       plan.currency = offer.currency;
       plan.price = offer.unitPrice;
@@ -459,7 +465,6 @@ export async function fetchPlanOnePlans(planUrl) {
       }
       plan.y2p = offer.y2p;
     }
-
     window.pricingPlans[planUrl] = plan;
   }
   return plan;
@@ -485,7 +490,7 @@ export async function fetchPlan(planUrl) {
     plan.symbol = '$';
 
     // TODO: Remove '/sp/ once confirmed with stakeholders
-    const allowedHosts = ['new.express.adobe.com', 'express.adobe.com', 'adobesparkpost.app.link'];
+    const allowedHosts = ['new.express.adobe.com', 'express.adobe.com', 'adobesparkpost.app.link', 'adobesparkpost-web.app.link'];
     const { host } = new URL(planUrl);
     if (allowedHosts.includes(host) || planUrl.includes('/sp/')) {
       plan.offerId = 'FREE0';
