@@ -4,8 +4,9 @@ import {
   getIconElement,
   toClassName,
 } from '../../scripts/utils.js';
-import renderTemplate from './template-rendering.js';
-import { fetchTemplates, isValidTemplate } from  '../../scripts/template-search-api-v3.js'
+import renderSingleTemplate from './render-single-template.js';
+import { fetchTemplates, isValidTemplate , trackSearch} from  '../../scripts/template-search-api-v3.js'
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 export function updateLoadMoreButton(props, loadMore) {
   if (props.start === '') {
@@ -15,12 +16,35 @@ export function updateLoadMoreButton(props, loadMore) {
   }
 }
 
-async function getTemplates(response, phs, fallbackMsg) {
-  console.log(response.items)
-  const filtered = response.items.filter((item) => isValidTemplate(item));
-  console.log(filtered)
+export async function decorateLoadMoreButton(block, props) {
+  const placeholders = await fetchPlaceholders();
+  const loadMoreDiv = createTag('div', { class: 'load-more' });
+  const loadMoreButton = createTag('button', { class: 'load-more-button' });
+  const loadMoreText = createTag('p', { class: 'load-more-text' });
+  loadMoreDiv.append(loadMoreButton, loadMoreText);
+  loadMoreText.textContent = placeholders['load-more'] ?? '';
+  block.append(loadMoreDiv);
+  loadMoreButton.append(getIconElement('plus-icon'));
+
+  loadMoreButton.addEventListener('click', async () => {
+    trackSearch('select-load-more', BlockMediator.get('templateSearchSpecs').search_id);
+    loadMoreButton.classList.add('disabled');
+    const scrollPosition = window.scrollY;
+    await decorateNewTemplates(block, props);
+    window.scrollTo({
+      top: scrollPosition,
+      left: 0,
+      behavior: 'smooth',
+    });
+    loadMoreButton.classList.remove('disabled');
+  });
+  updateLoadMoreButton(props, loadMoreButton);
+}
+
+async function getTemplates(response, phs, fallbackMsg) { 
+  const filtered = response.items.filter((item) => isValidTemplate(item)); 
   const templates = await Promise.all(
-    filtered.map((template) => renderTemplate(template, phs)),
+    filtered.map((template) => renderSingleTemplate(template, phs)),
   );
   return {
     fallbackMsg,

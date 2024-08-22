@@ -9,48 +9,26 @@ import {
   getLottie,
   lazyLoadLottiePlayer,
 } from '../../scripts/utils.js';
-import { fetchTemplatesCategoryCount,  gatherPageImpression,  updateImpressionCache } from '../../scripts/template-search-api-v3.js'
+import { fetchTemplatesCategoryCount, gatherPageImpression, updateImpressionCache } from '../../scripts/template-search-api-v3.js'
 import buildCarousel from '../shared/carousel.js';
 import { Masonry } from '../shared/masonry.js';
 
 import {
-  updateLoadMoreButton, fetchAndRenderTemplates, populateTemplates, decorateNewTemplates,
+  decorateLoadMoreButton, fetchAndRenderTemplates, populateTemplates,
 } from './core.js';
 
 import {
   decorateHoliday,
-  decorateToolbar,
-  importSearchBar,
-} from './template-x-ui.js';
+} from './template-x-holiday-banner.js';
+import { decorateToolbar } from './template-x-ui.js';
+
+import {
+
+  importSearchBar
+} from "./template-x-search-bar.js"
 
 function camelize(str) {
   return str.replace(/^\w|[A-Z]|\b\w/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase())).replace(/\s+/g, '');
-}
-
-async function decorateLoadMoreButton(block, props) {
-  const placeholders = await fetchPlaceholders();
-  const loadMoreDiv = createTag('div', { class: 'load-more' });
-  const loadMoreButton = createTag('button', { class: 'load-more-button' });
-  const loadMoreText = createTag('p', { class: 'load-more-text' });
-  loadMoreDiv.append(loadMoreButton, loadMoreText);
-  loadMoreText.textContent = placeholders['load-more'] ?? '';
-  block.append(loadMoreDiv);
-  loadMoreButton.append(getIconElement('plus-icon'));
-
-  loadMoreButton.addEventListener('click', async () => {
-    trackSearch('select-load-more', BlockMediator.get('templateSearchSpecs').search_id);
-    loadMoreButton.classList.add('disabled');
-    const scrollPosition = window.scrollY;
-    await decorateNewTemplates(block, props);
-    window.scrollTo({
-      top: scrollPosition,
-      left: 0,
-      behavior: 'smooth',
-    });
-    loadMoreButton.classList.remove('disabled');
-  });
-
-  return loadMoreDiv;
 }
 
 async function attachFreeInAppPills(block) {
@@ -179,7 +157,7 @@ async function decorateCategoryList(block, props) {
     const a = createTag('a', {
       'data-tasks': targetTasks,
       href: `${prefix}/express/templates/search?tasks=${targetTasks}&tasksx=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"
-      }&q=${currentTopic || ''}`,
+        }&q=${currentTopic || ''}`,
     });
     [a.textContent] = category;
 
@@ -369,25 +347,6 @@ async function decorateBreadcrumbs(block) {
   if (breadcrumbs) block.prepend(breadcrumbs);
 }
 
-function wordExistsInString(word, inputString) {
-  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regexPattern = new RegExp(
-    `(?:^|\\s|[.,!?()'"\\-])${escapedWord}(?:$|\\s|[.,!?()'"\\-])`,
-    'i',
-  );
-  return regexPattern.test(inputString);
-}
-
-function getTaskNameInMapping(text, placeholders) {
-  const taskMap = placeholders['x-task-name-mapping'] ? JSON.parse(placeholders['x-task-name-mapping']) : {};
-  return Object.entries(taskMap)
-    .filter((task) => task[1].some((word) => {
-      const searchValue = text.toLowerCase();
-      return wordExistsInString(word.toLowerCase(), searchValue);
-    }))
-    .sort((a, b) => b[0].length - a[0].length);
-}
-
 function renderFallbackMsgWrapper(block, { fallbackMsg }) {
   let fallbackMsgWrapper = block.querySelector(
     '.template-x-fallback-msg-wrapper',
@@ -438,25 +397,102 @@ async function processContentRow(block, props) {
   if (props.orientation.toLowerCase() === 'horizontal') templateTitle.classList.add('horizontal');
 }
 
-function determineTemplateXType(props) {
-  // todo: build layers of aspects based on props conditions - i.e. orientation -> style -> use case
-  const type = [];
-
-  // orientation aspect
-  if (props.orientation && props.orientation.toLowerCase() === 'horizontal') type.push('horizontal');
-
-  // style aspect
-  if (props.width && props.width.toLowerCase() === 'full') type.push('fullwidth');
-  if (props.width && props.width.toLowerCase() === 'sixcols') type.push('sixcols');
-  if (props.width && props.width.toLowerCase() === 'fourcols') type.push('fourcols');
-  if (props.mini) type.push('mini');
-
-  // use case aspect
-  if (props.holidayBlock) type.push('holiday');
-
-  return type;
+function wordExistsInString(word, inputString) {
+  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regexPattern = new RegExp(
+    `(?:^|\\s|[.,!?()'"\\-])${escapedWord}(?:$|\\s|[.,!?()'"\\-])`,
+    'i',
+  );
+  return regexPattern.test(inputString);
 }
 
+function getTaskNameInMapping(text, placeholders) {
+  const taskMap = placeholders['x-task-name-mapping'] ? JSON.parse(placeholders['x-task-name-mapping']) : {};
+  return Object.entries(taskMap)
+    .filter((task) => task[1].some((word) => {
+      const searchValue = text.toLowerCase();
+      return wordExistsInString(word.toLowerCase(), searchValue);
+    }))
+    .sort((a, b) => b[0].length - a[0].length);
+}
+
+
+async function buildTabs(block, props) {
+  block.classList.add('tabbed');
+  const tabs = props.tabs.split(',');
+  const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
+  const textWrapper = block.querySelector(
+    '.template-title .text-wrapper > div',
+  );
+  const tabsWrapper = createTag('div', { class: 'template-tabs' });
+  const tabBtns = [];
+
+  const placeholders = await fetchPlaceholders();
+  const collectionRegex = /(.+?)\s*\((.+?)\)/;
+  const tabConfigs = tabs.map((tab) => {
+    const match = collectionRegex.exec(tab.trim());
+    if (match) {
+      return { tab: match[1], collectionId: match[2] };
+    }
+    return { tab, collectionId: props.collectionId };
+  });
+
+  const taskNames = tabConfigs.map(({ tab }) => getTaskNameInMapping(tab, placeholders));
+  if (taskNames.length === tabs.length) {
+    taskNames.filter(({ length }) => length).forEach(([[task]], index) => {
+      const tabBtn = createTag('button', { class: 'template-tab-button' });
+      tabBtn.textContent = tabConfigs[index].tab;
+      tabsWrapper.append(tabBtn);
+      tabBtns.push(tabBtn);
+
+      if (props.filters.tasks === task) {
+        tabBtn.classList.add('active');
+      }
+
+      tabBtn.addEventListener('click', async () => {
+        templatesWrapper.style.opacity = 0;
+        const {
+          templates: newTemplates,
+          fallbackMsg: newFallbackMsg,
+        } = await fetchAndRenderTemplates({
+          ...props,
+          start: '',
+          filters: {
+            ...props.filters,
+            tasks: task,
+          },
+          collectionId: tabConfigs[index].collectionId,
+        });
+        if (newTemplates?.length > 0) {
+          props.fallbackMsg = newFallbackMsg;
+          renderFallbackMsgWrapper(block, props);
+
+          templatesWrapper.innerHTML = '';
+          props.templates = newTemplates;
+          props.templates.forEach((template) => {
+            templatesWrapper.append(template);
+          });
+
+          await decorateTemplates(block, props);
+          buildCarousel(':scope > .template', templatesWrapper);
+          templatesWrapper.style.opacity = 1;
+        }
+
+        tabsWrapper.querySelectorAll('.template-tab-button').forEach((btn) => {
+          if (btn !== tabBtn) btn.classList.remove('active');
+        });
+        tabBtn.classList.add('active');
+      }, { passive: true });
+    });
+
+    document.dispatchEvent(
+      new CustomEvent('linkspopulated', { detail: tabBtns }),
+    );
+  }
+
+  textWrapper.append(tabsWrapper);
+
+}
 
 async function buildTemplateList(block, props, type = []) {
   if (type?.length > 0) {
@@ -472,20 +508,7 @@ async function buildTemplateList(block, props, type = []) {
 
   const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
 
-  if (templates?.length > 0) {
-    props.fallbackMsg = fallbackMsg;
-    renderFallbackMsgWrapper(block, props);
-    const blockInnerWrapper = createTag('div', {
-      class: 'template-x-inner-wrapper',
-    });
-    block.append(blockInnerWrapper);
-    props.templates = props.templates.concat(templates);
-    props.templates.forEach((template) => {
-      blockInnerWrapper.append(template);
-    });
-
-    await decorateTemplates(block, props);
-  } else {
+  if (templates?.length === 0) {
     window.lana.log(
       `failed to load templates with props: ${JSON.stringify(props)}`,
       { tags: 'templates-api' },
@@ -499,88 +522,26 @@ async function buildTemplateList(block, props, type = []) {
     return;
   }
 
+  props.fallbackMsg = fallbackMsg;
+  renderFallbackMsgWrapper(block, props);
+  const blockInnerWrapper = createTag('div', {
+    class: 'template-x-inner-wrapper',
+  });
+  block.append(blockInnerWrapper);
+  props.templates = props.templates.concat(templates);
+  props.templates.forEach((template) => {
+    blockInnerWrapper.append(template);
+  });
+
+  await decorateTemplates(block, props);
+
+
   if (props.tabs) {
-    block.classList.add('tabbed');
-    const tabs = props.tabs.split(',');
-    const templatesWrapper = block.querySelector('.template-x-inner-wrapper');
-    const textWrapper = block.querySelector(
-      '.template-title .text-wrapper > div',
-    );
-    const tabsWrapper = createTag('div', { class: 'template-tabs' });
-    const tabBtns = [];
-
-    const placeholders = await fetchPlaceholders();
-    const collectionRegex = /(.+?)\s*\((.+?)\)/;
-    const tabConfigs = tabs.map((tab) => {
-      const match = collectionRegex.exec(tab.trim());
-      if (match) {
-        return { tab: match[1], collectionId: match[2] };
-      }
-      return { tab, collectionId: props.collectionId };
-    });
-    const taskNames = tabConfigs.map(({ tab }) => getTaskNameInMapping(tab, placeholders));
-    if (taskNames.length === tabs.length) {
-      taskNames.filter(({ length }) => length).forEach(([[task]], index) => {
-        const tabBtn = createTag('button', { class: 'template-tab-button' });
-        tabBtn.textContent = tabConfigs[index].tab;
-        tabsWrapper.append(tabBtn);
-        tabBtns.push(tabBtn);
-
-        if (props.filters.tasks === task) {
-          tabBtn.classList.add('active');
-        }
-
-        tabBtn.addEventListener('click', async () => {
-          templatesWrapper.style.opacity = 0;
-          const {
-            templates: newTemplates,
-            fallbackMsg: newFallbackMsg,
-          } = await fetchAndRenderTemplates({
-            ...props,
-            start: '',
-            filters: {
-              ...props.filters,
-              tasks: task,
-            },
-            collectionId: tabConfigs[index].collectionId,
-          });
-          if (newTemplates?.length > 0) {
-            props.fallbackMsg = newFallbackMsg;
-            renderFallbackMsgWrapper(block, props);
-
-            templatesWrapper.innerHTML = '';
-            props.templates = newTemplates;
-            props.templates.forEach((template) => {
-              templatesWrapper.append(template);
-            });
-
-            await decorateTemplates(block, props);
-            buildCarousel(':scope > .template', templatesWrapper);
-            templatesWrapper.style.opacity = 1;
-          }
-
-          tabsWrapper.querySelectorAll('.template-tab-button').forEach((btn) => {
-            if (btn !== tabBtn) btn.classList.remove('active');
-          });
-          tabBtn.classList.add('active');
-        }, { passive: true });
-      });
-
-      document.dispatchEvent(
-        new CustomEvent('linkspopulated', { detail: tabBtns }),
-      );
-    }
-
-    textWrapper.append(tabsWrapper);
+    buildTabs(block, props)
   }
 
-  // templates are either finished rendering or API has crashed at this point.
-
   if (props.loadMoreTemplates) {
-    const loadMore = await decorateLoadMoreButton(block, props);
-    if (loadMore) {
-      updateLoadMoreButton(props, loadMore);
-    }
+    await decorateLoadMoreButton(block, props);
   }
 
   if (props.toolBar) {
@@ -609,9 +570,26 @@ async function buildTemplateList(block, props, type = []) {
     }
   }
 
-  if (props.holidayBlock) {
-    decorateHoliday(block, props);
-  }
+  props.holidayBlock && decorateHoliday(block, props);
+}
+
+function determineTemplateXType(props) {
+  // todo: build layers of aspects based on props conditions - i.e. orientation -> style -> use case
+  const type = [];
+
+  // orientation aspect
+  if (props.orientation && props.orientation.toLowerCase() === 'horizontal') type.push('horizontal');
+
+  // style aspect
+  if (props.width && props.width.toLowerCase() === 'full') type.push('fullwidth');
+  if (props.width && props.width.toLowerCase() === 'sixcols') type.push('sixcols');
+  if (props.width && props.width.toLowerCase() === 'fourcols') type.push('fourcols');
+  if (props.mini) type.push('mini');
+
+  // use case aspect
+  if (props.holidayBlock) type.push('holiday');
+
+  return type;
 }
 
 function constructProps(block) {

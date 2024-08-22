@@ -13,7 +13,7 @@ import {
 
 import {
   decorateHoliday,
-} from '../template-x/template-x-ui.js';
+} from '../template-x/template-x-holiday-banner.js';
 
 /*
   Template X Horizontal. Assumes a single row of templates.

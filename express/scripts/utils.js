@@ -272,7 +272,12 @@ export function createTag(tag, attributes, html) {
   }
   if (attributes) {
     Object.entries(attributes).forEach(([key, val]) => {
-      el.setAttribute(key, val);
+      if (key === 'textContent') {
+        el.textContent = val
+      } else {
+        el.setAttribute(key, val);
+      }
+    
     });
   }
   return el;
