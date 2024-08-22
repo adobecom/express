@@ -27,20 +27,12 @@ function getTemplateTitle(template) {
   return '';
 }
 
-function extractRenditionLinkHref(template) {
-  return template._links?.['http://ns.adobe.com/adobecloud/rel/rendition']?.href;
-}
-
-function extractComponentLinkHref(template) {
-  return template._links?.['http://ns.adobe.com/adobecloud/rel/component']?.href;
-}
-
-function extractImageThumbnail(page) {
-  return page?.rendition?.image?.thumbnail;
+function extractLinkHref(template, key) {
+  return template._links?.['http://ns.adobe.com/adobecloud/rel/' + key]?.href;
 }
 
 function getImageThumbnailSrc(renditionLinkHref, componentLinkHref, page) {
-  const thumbnail = extractImageThumbnail(page);
+  const thumbnail = page?.rendition?.image?.thumbnail;
   if (!thumbnail) {
     // webpages
     return renditionLinkHref.replace('{&page,size,type,fragment}', '');
@@ -303,8 +295,8 @@ function renderMediaWrapper(template, placeholders) {
   let renderedMedia = null;
 
   const templateTitle = getTemplateTitle(template);
-  const renditionLinkHref = extractRenditionLinkHref(template);
-  const componentLinkHref = extractComponentLinkHref(template);
+  const renditionLinkHref = extractLinkHref(template, 'rendition');
+  const componentLinkHref = extractLinkHref(template, 'key');
   const { branchUrl } = template.customLinks;
   const templateInfo = {
     templateTitle,
@@ -407,8 +399,8 @@ function renderStillWrapper(template, placeholders) {
   const stillWrapper = createTag('div', { class: 'still-wrapper' });
 
   const templateTitle = getTemplateTitle(template);
-  const renditionLinkHref = extractRenditionLinkHref(template);
-  const componentLinkHref = extractComponentLinkHref(template);
+  const renditionLinkHref = extractLinkHref(template, 'rendition');
+  const componentLinkHref = extractLinkHref(template, 'component');
 
   const thumbnailImageHref = getImageThumbnailSrc(
     renditionLinkHref,

@@ -13,7 +13,7 @@ import {
   redrawTemplates,
   updateOptionsStatus,
 } from './core.js';
-import { fetchTemplatesCategoryCount } from './template-search-api-v3.js';
+import { fetchTemplatesCategoryCount } from  '../../scripts/template-search-api-v3.js'
 
 function wordStartsWithVowels(word) {
   return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');

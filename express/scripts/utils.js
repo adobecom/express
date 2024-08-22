@@ -1284,11 +1284,12 @@ async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
         const { default: init } = await import(jsPath);
         await init(block, blockName, document, eager);
       } catch (err) {
+        console.log(err)
         // eslint-disable-next-line no-console
-        window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, {
-          sampleRate: 1,
-          tags: 'module',
-        });
+        // window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, {
+        //   sampleRate: 1,
+        //   tags: 'module',
+        // });
       }
       resolve();
     })();

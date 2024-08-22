@@ -9,7 +9,7 @@ import {
   getLottie,
   lazyLoadLottiePlayer,
 } from '../../scripts/utils.js';
-import { fetchTemplatesCategoryCount } from './template-search-api-v3.js';
+import { fetchTemplatesCategoryCount } from '../../scripts/template-search-api-v3.js'
 import buildCarousel from '../shared/carousel.js';
 import { Masonry } from '../shared/masonry.js';
 
@@ -25,147 +25,6 @@ import {
 
 function camelize(str) {
   return str.replace(/^\w|[A-Z]|\b\w/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase())).replace(/\s+/g, '');
-}
-
-async function processContentRow(block, props) {
-  const templateTitle = createTag('div', { class: 'template-title' });
-  const textWrapper = createTag('div', { class: 'text-wrapper' });
-  textWrapper.innerHTML = props.contentRow.outerHTML;
-  templateTitle.append(textWrapper);
-
-  const aTags = templateTitle.querySelectorAll(':scope a');
-
-  if (aTags.length > 0) {
-    templateTitle.classList.add('with-link');
-    aTags.forEach((aTag) => {
-      aTag.className = 'template-title-link';
-
-      const p = aTag.closest('p');
-      if (p) {
-        templateTitle.append(p);
-        p.className = 'view-all-link-wrapper';
-      }
-    });
-
-    if (
-      textWrapper.children.length === 1
-      && textWrapper.firstElementChild.className === 'button-container'
-    ) {
-      templateTitle.classList.add('link-only');
-    }
-  }
-
-  block.prepend(templateTitle);
-
-  if (props.orientation.toLowerCase() === 'horizontal') templateTitle.classList.add('horizontal');
-}
-
-function constructProps(block) {
-  const props = {
-    templates: [],
-    filters: {
-      locales: 'en',
-      topics: '',
-    },
-    renditionParams: {
-      format: 'jpg',
-      size: 151,
-    },
-    tailButton: '',
-    limit: 70,
-    total: 0,
-    start: '',
-    collectionId: 'urn:aaid:sc:VA6C2:25a82757-01de-4dd9-b0ee-bde51dd3b418',
-    sort: '',
-    masonry: undefined,
-    headingTitle: null,
-    headingSlug: null,
-    viewAllLink: null,
-    holidayIcon: null,
-    backgroundColor: '#000B1D',
-    backgroundAnimation: null,
-    textColor: '#FFFFFF',
-    loadedOtherCategoryCounts: false,
-  };
-
-  Array.from(block.children).forEach((row) => {
-    const cols = row.querySelectorAll('div');
-    const key = cols[0]
-      .querySelector('strong')
-      ?.textContent.trim()
-      .toLowerCase();
-    if (cols.length === 1) {
-      [props.contentRow] = cols;
-    } else if (cols.length === 2) {
-      const value = cols[1].textContent.trim();
-
-      if (key && value) {
-        // FIXME: facebook-post
-        if (
-          ['tasks', 'topics', 'locales', 'behaviors'].includes(key)
-          || (['premium', 'animated'].includes(key)
-            && value.toLowerCase() !== 'all')
-        ) {
-          props.filters[camelize(key)] = value;
-        } else if (
-          ['yes', 'true', 'on', 'no', 'false', 'off'].includes(
-            value.toLowerCase(),
-          )
-        ) {
-          props[camelize(key)] = ['yes', 'true', 'on'].includes(
-            value.toLowerCase(),
-          );
-        } else if (key === 'collection id') {
-          props[camelize(key)] = value.replaceAll('\\:', ':');
-        } else {
-          props[camelize(key)] = value;
-        }
-      }
-    } else if (cols.length === 3) {
-      if (
-        key === 'template stats'
-        && ['yes', 'true', 'on'].includes(cols[1].textContent.trim().toLowerCase())
-      ) {
-        props[camelize(key)] = cols[2].textContent.trim();
-      }
-    } else if (cols.length === 4) {
-      if (key === 'blank template') {
-        cols[0].remove();
-        props.templates.push(row);
-      }
-    } else if (cols.length === 5) {
-      if (
-        key === 'holiday block'
-        && ['yes', 'true', 'on'].includes(cols[1].textContent.trim().toLowerCase())
-      ) {
-        const backgroundColor = cols[3].textContent.trim().toLowerCase();
-        let holidayIcon = cols[2].querySelector('picture');
-
-        if (!holidayIcon) {
-          const link = cols[2].querySelector('a');
-          if (
-            link
-            && (link.href.endsWith('.svg') || link.href.endsWith('.png'))
-          ) {
-            holidayIcon = createOptimizedPicture(link.href);
-          }
-        }
-        const backgroundAnimation = cols[4].querySelector('a');
-
-        props.holidayBlock = true;
-        props.holidayIcon = holidayIcon || null;
-        if (backgroundColor) {
-          props.backgroundColor = backgroundColor;
-        }
-        props.backgroundAnimation = backgroundAnimation || null;
-        props.textColor = isDarkOverlayReadable(backgroundColor)
-          ? 'dark-text'
-          : 'light-text';
-      }
-    }
-  });
-
-  return props;
 }
 
 async function decorateLoadMoreButton(block, props) {
@@ -546,6 +405,59 @@ function renderFallbackMsgWrapper(block, { fallbackMsg }) {
   }
 }
 
+async function processContentRow(block, props) {
+  const templateTitle = createTag('div', { class: 'template-title' });
+  const textWrapper = createTag('div', { class: 'text-wrapper' });
+  textWrapper.innerHTML = props.contentRow.outerHTML;
+  templateTitle.append(textWrapper);
+
+  const aTags = templateTitle.querySelectorAll(':scope a');
+
+  if (aTags.length > 0) {
+    templateTitle.classList.add('with-link');
+    aTags.forEach((aTag) => {
+      aTag.className = 'template-title-link';
+
+      const p = aTag.closest('p');
+      if (p) {
+        templateTitle.append(p);
+        p.className = 'view-all-link-wrapper';
+      }
+    });
+
+    if (
+      textWrapper.children.length === 1
+      && textWrapper.firstElementChild.className === 'button-container'
+    ) {
+      templateTitle.classList.add('link-only');
+    }
+  }
+
+  block.prepend(templateTitle);
+
+  if (props.orientation.toLowerCase() === 'horizontal') templateTitle.classList.add('horizontal');
+}
+
+function determineTemplateXType(props) {
+  // todo: build layers of aspects based on props conditions - i.e. orientation -> style -> use case
+  const type = [];
+
+  // orientation aspect
+  if (props.orientation && props.orientation.toLowerCase() === 'horizontal') type.push('horizontal');
+
+  // style aspect
+  if (props.width && props.width.toLowerCase() === 'full') type.push('fullwidth');
+  if (props.width && props.width.toLowerCase() === 'sixcols') type.push('sixcols');
+  if (props.width && props.width.toLowerCase() === 'fourcols') type.push('fourcols');
+  if (props.mini) type.push('mini');
+
+  // use case aspect
+  if (props.holidayBlock) type.push('holiday');
+
+  return type;
+}
+
+
 async function buildTemplateList(block, props, type = []) {
   if (type?.length > 0) {
     type.forEach((typeName) => {
@@ -702,28 +614,116 @@ async function buildTemplateList(block, props, type = []) {
   }
 }
 
-function determineTemplateXType(props) {
-  // todo: build layers of aspects based on props conditions - i.e. orientation -> style -> use case
-  const type = [];
+function constructProps(block) {
+  const props = {
+    templates: [],
+    filters: {
+      locales: 'en',
+      topics: '',
+    },
+    renditionParams: {
+      format: 'jpg',
+      size: 151,
+    },
+    tailButton: '',
+    limit: 70,
+    total: 0,
+    start: '',
+    collectionId: 'urn:aaid:sc:VA6C2:25a82757-01de-4dd9-b0ee-bde51dd3b418',
+    sort: '',
+    masonry: undefined,
+    headingTitle: null,
+    headingSlug: null,
+    viewAllLink: null,
+    holidayIcon: null,
+    backgroundColor: '#000B1D',
+    backgroundAnimation: null,
+    textColor: '#FFFFFF',
+    loadedOtherCategoryCounts: false,
+  };
 
-  // orientation aspect
-  if (props.orientation && props.orientation.toLowerCase() === 'horizontal') type.push('horizontal');
+  Array.from(block.children).forEach((row) => {
+    const cols = row.querySelectorAll('div');
+    const key = cols[0]
+      .querySelector('strong')
+      ?.textContent.trim()
+      .toLowerCase();
+    if (cols.length === 1) {
+      [props.contentRow] = cols;
+    } else if (cols.length === 2) {
+      const value = cols[1].textContent.trim();
 
-  // style aspect
-  if (props.width && props.width.toLowerCase() === 'full') type.push('fullwidth');
-  if (props.width && props.width.toLowerCase() === 'sixcols') type.push('sixcols');
-  if (props.width && props.width.toLowerCase() === 'fourcols') type.push('fourcols');
-  if (props.mini) type.push('mini');
+      if (key && value) {
+        // FIXME: facebook-post
+        if (
+          ['tasks', 'topics', 'locales', 'behaviors'].includes(key)
+          || (['premium', 'animated'].includes(key)
+            && value.toLowerCase() !== 'all')
+        ) {
+          props.filters[camelize(key)] = value;
+        } else if (
+          ['yes', 'true', 'on', 'no', 'false', 'off'].includes(
+            value.toLowerCase(),
+          )
+        ) {
+          props[camelize(key)] = ['yes', 'true', 'on'].includes(
+            value.toLowerCase(),
+          );
+        } else if (key === 'collection id') {
+          props[camelize(key)] = value.replaceAll('\\:', ':');
+        } else {
+          props[camelize(key)] = value;
+        }
+      }
+    } else if (cols.length === 3) {
+      if (
+        key === 'template stats'
+        && ['yes', 'true', 'on'].includes(cols[1].textContent.trim().toLowerCase())
+      ) {
+        props[camelize(key)] = cols[2].textContent.trim();
+      }
+    } else if (cols.length === 4) {
+      if (key === 'blank template') {
+        cols[0].remove();
+        props.templates.push(row);
+      }
+    } else if (cols.length === 5) {
+      if (
+        key === 'holiday block'
+        && ['yes', 'true', 'on'].includes(cols[1].textContent.trim().toLowerCase())
+      ) {
+        const backgroundColor = cols[3].textContent.trim().toLowerCase();
+        let holidayIcon = cols[2].querySelector('picture');
 
-  // use case aspect
-  if (props.holidayBlock) type.push('holiday');
+        if (!holidayIcon) {
+          const link = cols[2].querySelector('a');
+          if (
+            link
+            && (link.href.endsWith('.svg') || link.href.endsWith('.png'))
+          ) {
+            holidayIcon = createOptimizedPicture(link.href);
+          }
+        }
+        const backgroundAnimation = cols[4].querySelector('a');
 
-  return type;
+        props.holidayBlock = true;
+        props.holidayIcon = holidayIcon || null;
+        if (backgroundColor) {
+          props.backgroundColor = backgroundColor;
+        }
+        props.backgroundAnimation = backgroundAnimation || null;
+        props.textColor = isDarkOverlayReadable(backgroundColor)
+          ? 'dark-text'
+          : 'light-text';
+      }
+    }
+  });
+
+  return props;
 }
 
 export default async function decorate(block) {
   addTempWrapper(block, 'template-x');
-
   const props = constructProps(block);
   console.log(props)
   block.innerHTML = '';

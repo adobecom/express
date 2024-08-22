@@ -5,7 +5,7 @@ import {
   toClassName,
 } from '../../scripts/utils.js';
 import renderTemplate from './template-rendering.js';
-import { fetchTemplates, isValidTemplate } from './template-search-api-v3.js';
+import { fetchTemplates, isValidTemplate } from  '../../scripts/template-search-api-v3.js'
 
 export function updateLoadMoreButton(props, loadMore) {
   if (props.start === '') {
