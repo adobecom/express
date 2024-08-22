@@ -9,7 +9,7 @@ import {
   getLottie,
   lazyLoadLottiePlayer,
 } from '../../scripts/utils.js';
-import { fetchTemplatesCategoryCount } from '../../scripts/template-search-api-v3.js'
+import { fetchTemplatesCategoryCount,  gatherPageImpression,  updateImpressionCache } from '../../scripts/template-search-api-v3.js'
 import buildCarousel from '../shared/carousel.js';
 import { Masonry } from '../shared/masonry.js';
 

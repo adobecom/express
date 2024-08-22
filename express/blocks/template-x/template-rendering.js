@@ -28,6 +28,9 @@ function getTemplateTitle(template) {
 }
 
 function extractLinkHref(template, key) {
+  console.log('--------')
+  console.log('http://ns.adobe.com/adobecloud/rel/' + key)
+  console.log( template._links?.['http://ns.adobe.com/adobecloud/rel/' + key])
   return template._links?.['http://ns.adobe.com/adobecloud/rel/' + key]?.href;
 }
 
@@ -296,7 +299,7 @@ function renderMediaWrapper(template, placeholders) {
 
   const templateTitle = getTemplateTitle(template);
   const renditionLinkHref = extractLinkHref(template, 'rendition');
-  const componentLinkHref = extractLinkHref(template, 'key');
+  const componentLinkHref = extractLinkHref(template, 'component');
   const { branchUrl } = template.customLinks;
   const templateInfo = {
     templateTitle,
