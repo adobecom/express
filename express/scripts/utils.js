@@ -1545,8 +1545,6 @@ function decorateHeroLCP() {
 
 export function decorateButtons(el = document) {
   const noButtonBlocks = ['template-list', 'icon-list'];
-  const z = createTag('a')
-  el.children[0].appendChild(z)
   el.querySelectorAll(':scope a:not(.faas.link-block, .fragment.link-block)').forEach(($a) => {
 
     if ($a.closest('div.section > .text') && !($a.parentElement.tagName === 'STRONG' || $a.querySelector(':scope > strong'))) return;
@@ -1606,9 +1604,6 @@ export function decorateButtons(el = document) {
       console.error(e)
       console.error("Ignoring button")
     }
-
-
-
   });
 }
 
