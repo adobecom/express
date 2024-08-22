@@ -476,7 +476,7 @@ export function transformLinkToAnimation($a, $videoLooping = true) {
     console.error('Invalid video URL');
     console.error($a);
     return null;
-  } 
+  }
   const params = new URL($a.href).searchParams;
   const attribs = {};
   const dataAttr = $videoLooping ? ['playsinline', 'autoplay', 'loop', 'muted'] : ['playsinline', 'autoplay', 'muted'];
