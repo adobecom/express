@@ -98,7 +98,8 @@ export default function createToggle(
   toggleWrapper.setAttribute('aria-labelledby', groupID);
   const groupLabel = toggleWrapper.children[0];
   groupLabel.setAttribute('id', groupID);
-  const buttons = PLANS.map((plan, i) => {
+  const buttons = PLANS.map((base_plan, i) => {
+    let plan = base_plan
     const buttonID = `${groupID}:${plan}`;
     const defaultChecked = i === 0;
     const button = createTag('button', {
