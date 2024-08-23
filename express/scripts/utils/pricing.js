@@ -367,8 +367,7 @@ export const getOfferOnePlans = (() => {
     let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
     if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
     if (!offer) return {};
-    console.log('------')
-    console.log(offer)  
+
     const lang = getConfig().locale.ietf.split('-')[0];
     const unitPrice = offer.p;
     const customOfferId = offer.oo || offerId;
