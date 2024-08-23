@@ -99,7 +99,7 @@ export default function createToggle(
   const groupLabel = toggleWrapper.children[0];
   groupLabel.setAttribute('id', groupID);
   const buttons = PLANS.map((basePlan, i) => {
-    let plan = basePlan
+    let plan = basePlan;
     const buttonID = `${groupID}:${plan}`;
     const defaultChecked = i === 0;
     const button = createTag('button', {
