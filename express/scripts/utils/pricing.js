@@ -402,7 +402,6 @@ export async function fetchPlanOnePlans(planUrl) {
   }
 
   let plan = window.pricingPlans[planUrl];
-  // console.log(plan)
   if (!plan) {
     plan = {};
     const link = new URL(planUrl);
