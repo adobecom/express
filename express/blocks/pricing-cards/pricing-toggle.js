@@ -89,7 +89,7 @@ export function tagFreePlan(cardContainer) {
 }
 
 export default function createToggle(
-  placeholders, pricingSections, groupID, adjElemPos
+  placeholders, pricingSections, groupID, adjElemPos,
 ) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
   const toggleWrapper = createTag('div', { class: 'billing-toggle' });
@@ -111,7 +111,7 @@ export default function createToggle(
     button.appendChild(createTag('span'));
     button.setAttribute('aria-checked', defaultChecked);
     button.setAttribute('aria-labeledby', buttonID);
-    if (pricingSections[i].children[0].classList.contains("plan-term-ABM") && placeholders?.[SPECIAL_PLAN]) {
+    if (pricingSections[i].children[0].classList.contains('plan-term-ABM') && placeholders?.[SPECIAL_PLAN]) {
       plan = SPECIAL_PLAN;
     }
     const label = placeholders?.[plan] || 'Annual, Billed Monthly';

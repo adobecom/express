@@ -222,10 +222,10 @@ async function handlePrice(placeholders, pricingArea, specialPromo, legacyVersio
   priceRow.append(basePrice, price, priceSuffix);
 
   const response = await fetchPlanOnePlans(priceEl?.href);
-  if (response.term){
-    pricingArea.classList.add("plan-term-" + response.term)
+  if (response.term) {
+    pricingArea.classList.add(`plan-term-${response.term}`);
   }
- 
+
   const priceSuffixTextContent = getPriceElementSuffix(
     placeholders,
     placeholderArr,
@@ -414,7 +414,7 @@ async function decorateCard({
   yCtaGroup,
   featureList,
   compare,
-}, el, placeholders, legacyVersion, index) {
+}, el, placeholders, legacyVersion) {
   const card = createTag('div', { class: 'card' });
   const cardBorder = createTag('div', { class: 'card-border' });
   const { specialPromo, cardWrapper } = legacyVersion
