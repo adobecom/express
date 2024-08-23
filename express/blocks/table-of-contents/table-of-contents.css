@@ -1,25 +1,75 @@
-
-main .table-of-contents {
-    margin-top: 32px;
+.table-of-contents.block {
+  position: fixed;
+  z-index: 25;
+  top: 50%;  /* Start from 50% of the viewport height */
+  transform: translateY(-50%);  /* Center the container vertically */
+  left: 0;  /* Position it to the left of the viewport */
+  background-color: #f4f4f4;  /* Background color */
+  padding-top: 10px;  /* Padding inside the container */
+  padding-bottom: 10px;
+  border: 1px solid #ccc;  /* Border */
+  width: auto;  /* Allow the width to adjust automatically based on content */
+  white-space: nowrap;  /* Prevent text from wrapping to a new line */
+  text-align: left; /* Left align all content in the TOC */
+  border-radius: 0 16px 16px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft drop shadow */
 }
 
-main .table-of-contents .toc {
-    text-align: left;
+.toc-title {
+  font-weight: bold;
+  margin-bottom: 10px; /* Add some space between the title and the TOC entries */
 }
 
-main .table-of-contents.horizontal .toc > div {
-    display: inline-block;
+.toc-entry {
+  margin-bottom: 15px; /* Increased space between each TOC entry */
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 14px; /* Increase padding to shift text 10px more to the right */
+  padding-right: 50px; /* Ensure padding to the right of the text */
 }
 
-main .table-of-contents .toc .toc-level-h2 {
-    margin: 8px;
+.vertical-line {
+  width: 4px;
+  height: 100%; /* Match the height of the TOC entry */
+  background-color: transparent; /* Initially transparent */
+  position: absolute;
+  left: 0; /* Align it to the left of the container */
 }
 
-main .table-of-contents .toc .toc-level-h3 {
-    margin: 4px;
-    padding-left: 20px;
+.toc-entry.active .vertical-line {
+  background-color: var(--color-info-accent); /* Show the border when active */
 }
 
-main .table-of-contents .toc .toc-level-h4 {
-    padding-left: 40px;
+.toc-entry a {
+  text-decoration: none;
+  color: inherit; /* Ensure link color matches the rest of the TOC text */
+  display: inline-block;  /* Ensure the numbering aligns with the text */
+}
+
+.toc-entry .toc-number {
+  margin-right: 5px;  /* Space between the number and the text */
+}
+
+.toc-title,
+.toc-entry {
+  display: flex;
+  align-items: center; /* Vertically align arrow, title, and text */
+  padding-left: 20px;  /* Set consistent left padding */
+}
+
+.toc-title > div,
+.toc-entry > .toc-number {
+  margin-right: 8px; /* Space between the arrow/number and the text */
+}
+
+.toc-title > div {
+  display: flex;
+  align-items: center; /* Ensure the arrow is vertically centered */
+  margin-left: -6px; /* Shift the arrow to the left by half of its width to center it */
+}
+
+.toc-entry .toc-number {
+  flex-shrink: 0; /* Ensure the number stays aligned even if the text wraps */
+  font-weight: bold; /* Make the numbers bold */
 }
