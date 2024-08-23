@@ -324,6 +324,11 @@ End border style variants
   padding-left: 4px;
 }
 
+.pricing-cards .billing-button-wrapper {
+  display: flex;
+  gap: 10px;
+}
+
 .pricing-cards .pricing-section {
   width: 100%;
   display: flex;
