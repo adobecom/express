@@ -388,8 +388,15 @@ function renderHoverWrapper(template, placeholders) {
     trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
   };
 
+  const ctaClickHandlerTouchDevice = (ev) => {
+    if (window.matchMedia && window.matchMedia("(hover: none)").matches) {
+      ev.preventDefault();
+    }
+  };
+
   cta.addEventListener('click', ctaClickHandler, { passive: true });
   ctaLink.addEventListener('click', ctaClickHandler, { passive: true });
+  ctaLink.addEventListener('click', ctaClickHandlerTouchDevice);
 
   return btnContainer;
 }
