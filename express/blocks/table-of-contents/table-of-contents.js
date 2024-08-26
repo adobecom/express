@@ -8,6 +8,20 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
+function addHoverEffect(tocEntries) {
+  tocEntries.forEach(({ tocItem }) => {
+    tocItem.addEventListener('mouseenter', () => {
+      tocItem.querySelector('.toc-number').style.fontWeight = 'bold';
+      tocItem.querySelector('a').style.fontWeight = 'bold';
+    });
+
+    tocItem.addEventListener('mouseleave', () => {
+      tocItem.querySelector('.toc-number').style.fontWeight = 'normal';
+      tocItem.querySelector('a').style.fontWeight = 'normal';
+    });
+  });
+}
+
 function addTOCTitle(toc, title) {
   const tocTitle = createTag('div', { class: 'toc-title' });
   const arrow = createTag('div');
@@ -24,10 +38,11 @@ function addTOCTitle(toc, title) {
 
 function formatHeadingText(headingText) {
   const nonLatinRegex = /\p{Script=Han}|\p{Script=Hiragana}|\p{Script=Katakana}/u;
-  if (nonLatinRegex.test(headingText) && headingText.length > 12) {
-    return `${headingText.substring(0, 12)}...`;
+  if (nonLatinRegex.test(headingText)) {
+    return headingText.length > 12 ? `${headingText.substring(0, 12)}...` : headingText;
+  } else {
+    return headingText.length > 25 ? `${headingText.substring(0, 25)}\n${headingText.substring(25)}` : headingText;
   }
-  return headingText;
 }
 
 function findCorrespondingHeading(headingText, doc) {
@@ -167,6 +182,7 @@ export default function decorate(block, name, doc) {
   }
 
   const tocEntries = addTOCEntries(toc, config, doc);
+  addHoverEffect(tocEntries);
   block.innerHTML = '';
   block.appendChild(toc);
 
