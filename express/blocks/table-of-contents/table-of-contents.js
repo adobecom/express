@@ -8,144 +8,127 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
-export default function decorate(block, name, doc) {
-  addTempWrapper(block, 'table-of-contents');
-  // Hide the initial div elements within the block
-  Array.from(block.children).forEach((child) => {
-    child.style.display = 'none';
-  });
+function addTOCTitle(toc, title) {
+  const tocTitle = createTag('div', { class: 'toc-title' });
+  const arrow = createTag('div');
+  const checkIcon = getIconElement('arrow-gradient-down');
 
-  // Create a new TOC container
-  const toc = createTag('div', { class: 'toc' });
+  checkIcon.style.width = '18px';
+  checkIcon.style.height = '18px';
+  arrow.append(checkIcon);
 
-  // Read the config
-  const config = readBlockConfig(block);
+  tocTitle.appendChild(arrow);
+  tocTitle.appendChild(document.createTextNode(title));
+  toc.appendChild(tocTitle);
+}
 
-  // Add the title to the top of the TOC if available in config
-  if (config.title) {
-    const tocTitle = createTag('div', { class: 'toc-title' });
-
-    // Create the arrow element
-    const arrow = createTag('div');
-    const checkIcon = getIconElement('arrow-gradient-down');
-    checkIcon.style.width = '18px';
-    checkIcon.style.height = '18px';
-    arrow.append(checkIcon);
-
-    // Add the arrow and the title text to the tocTitle
-    tocTitle.appendChild(arrow);
-    tocTitle.appendChild(document.createTextNode(config.title));
-
-    toc.appendChild(tocTitle);
+function formatHeadingText(headingText) {
+  const nonLatinRegex = /\p{Script=Han}|\p{Script=Hiragana}|\p{Script=Katakana}/u;
+  if (nonLatinRegex.test(headingText) && headingText.length > 12) {
+    return `${headingText.substring(0, 12)}...`;
   }
+  return headingText;
+}
 
-  // Counter for TOC numbering
+function findCorrespondingHeading(headingText, doc) {
+  return Array.from(doc.querySelectorAll('main h2, main h3, main h4'))
+    .find((h) => h.textContent.trim().includes(headingText.replace('...', '').trim()));
+}
+
+function assignHeadingIdIfNeeded(heading, headingText) {
+  if (!heading.id) {
+    heading.id = headingText.replace(/\s+/g, '-').toLowerCase(); // Create a URL-friendly id
+  }
+}
+
+function setupTOCItem(tocItem, tocCounter, headingText, headingId) {
+  tocItem.innerHTML = `<span class="toc-number">${tocCounter}.</span> 
+    <a href="#${headingId}" daa-ll="${headingText}-2--" style="font-weight: normal;">
+      ${headingText}
+    </a>`;
+}
+
+function addTOCItemClickEvent(tocItem, heading, verticalLine) {
+  tocItem.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    document.querySelectorAll('.toc-entry').forEach((entry) => {
+      entry.classList.remove('active');
+      entry.querySelector('.vertical-line').style.display = 'none';
+    });
+
+    tocItem.classList.add('active');
+    verticalLine.style.display = 'block';
+
+    heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+
+function addTOCEntries(toc, config, doc) {
   let tocCounter = 1;
-
-  // Iterate over each item in the config that starts with 'item-'
   const tocEntries = [];
+
   Object.keys(config).forEach((key) => {
     if (key.startsWith('item-')) {
       const tocItem = createTag('div', { class: 'toc-entry' });
-
-      // Create the vertical line span
       const line = createTag('span', { class: 'toc-line' });
-
-      // Create the verticalLine div
       const verticalLine = createTag('div', { class: 'vertical-line' });
 
-      // Search for a corresponding heading in the document
-      let headingText = config[key];
-
-      // Check if the heading text contains non-Latin characters and is over 12 characters
-      const nonLatinRegex = /\p{Script=Han}|\p{Script=Hiragana}|\p{Script=Katakana}/u;
-      if (nonLatinRegex.test(headingText) && headingText.length > 12) {
-        headingText = `${headingText.substring(0, 12)}...`;
-      }
-
-      const heading = Array.from(doc.querySelectorAll('main h2, main h3, main h4'))
-        .find((h) => h.textContent.trim().includes(headingText.replace('...', '').trim()));
+      const headingText = formatHeadingText(config[key]);
+      const heading = findCorrespondingHeading(headingText, doc);
 
       if (heading) {
-        // Assign an id to the heading if it doesn't have one
-        if (!heading.id) {
-          heading.id = headingText.replace(/\s+/g, '-').toLowerCase(); // Create a URL-friendly id
-        }
+        assignHeadingIdIfNeeded(heading, headingText);
+        setupTOCItem(tocItem, tocCounter, headingText, heading.id);
+        addTOCItemClickEvent(tocItem, heading, verticalLine);
 
-        // Set up the TOC entry with the format specified
-        tocItem.innerHTML = `<span class="toc-number">${tocCounter}.</span> <a href="#${heading.id}" daa-ll="${headingText}-2--" style="font-weight: normal;">${headingText}</a>`;
-        tocItem.insertBefore(line, tocItem.firstChild); // Insert the line before the text
-        tocItem.insertBefore(verticalLine, tocItem.firstChild); // Insert the vertical line
-
-        // Add click event to show the verticalLine and scroll to the heading
-        tocItem.addEventListener('click', (event) => {
-          event.preventDefault();
-
-          // Remove the active class from all TOC entries
-          document.querySelectorAll('.toc-entry').forEach((entry) => {
-            entry.classList.remove('active');
-            entry.querySelector('.vertical-line').style.display = 'none'; // Hide the line
-          });
-
-          // Add the active class to the clicked entry
-          tocItem.classList.add('active');
-          verticalLine.style.display = 'block'; // Show the line
-
-          // Scroll to the heading
-          heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-
+        tocItem.insertBefore(line, tocItem.firstChild);
+        tocItem.insertBefore(verticalLine, tocItem.firstChild);
         toc.appendChild(tocItem);
-        tocEntries.push({ tocItem, heading }); // Store the TOC entry and corresponding heading
-
-        // Increment the TOC counter
+        tocEntries.push({ tocItem, heading });
         tocCounter += 1;
       }
     }
   });
 
-  // Clear the block and append the new TOC
-  block.innerHTML = '';
-  block.appendChild(toc);
+  return tocEntries;
+}
 
-  // Track the currently active TOC entry to prevent double highlighting
-  let activeEntry = null;
-
-  // Select the TOC container
+function initializeTOCContainer() {
   const tocContainer = document.querySelector('.table-of-contents.block');
-  // Initially hide the TOC container (optional, if needed)
   tocContainer.style.display = 'none';
+  return tocContainer;
+}
 
-  const headerHeight = document.querySelector('header')?.offsetHeight || 0; // Defaults to 0 if no header is found
+function handleSetTOCPos(toc, tocContainer) {
+  const headerHeight = document.querySelector('header')?.offsetHeight || 0;
 
-  // Scroll event listener
   window.addEventListener('scroll', () => {
     const firstLink = toc.querySelector('.toc-entry a');
     if (firstLink && tocContainer) {
-      // Step 1: Use the href attribute directly to find the target element
       const targetElement = document.querySelector(firstLink.getAttribute('href'));
       if (targetElement) {
         const rect = targetElement.getBoundingClientRect();
-
         const targetTop = Math.round(window.scrollY + rect.top);
         const viewportMidpoint = window.innerHeight / 2;
 
-        // Determine if the TOC container should be fixed at 50% of the viewport height
         if (targetTop <= window.scrollY + viewportMidpoint - headerHeight) {
-          tocContainer.style.top = `${viewportMidpoint}px`; // Fix at 50% of the viewport
-          tocContainer.style.position = 'fixed'; // Change to fixed positioning
+          tocContainer.style.top = `${viewportMidpoint}px`;
+          tocContainer.style.position = 'fixed';
         } else {
-          tocContainer.style.top = `${targetTop}px`; // Align with the heading
-          tocContainer.style.position = 'absolute'; // Maintain absolute positioning
+          tocContainer.style.top = `${targetTop}px`;
+          tocContainer.style.position = 'absolute';
         }
 
-        // Optionally show the TOC container if it was initially hidden
         tocContainer.style.display = 'block';
       }
     }
   });
+}
 
-  // Add scroll event listener to highlight the current section
+function handleActiveTOCHighlighting(tocEntries) {
+  let activeEntry = null;
+
   window.addEventListener('scroll', () => {
     let currentHeading = null;
 
@@ -157,16 +140,37 @@ export default function decorate(block, name, doc) {
     });
 
     if (currentHeading && currentHeading !== activeEntry) {
-      // Remove the active class from the previous active entry
       if (activeEntry) {
         activeEntry.classList.remove('active');
         activeEntry.querySelector('.vertical-line').style.display = 'none';
       }
 
-      // Set the new active entry
       activeEntry = currentHeading;
       activeEntry.classList.add('active');
       activeEntry.querySelector('.vertical-line').style.display = 'block';
     }
   });
+}
+
+export default function decorate(block, name, doc) {
+  addTempWrapper(block, 'table-of-contents');
+
+  Array.from(block.children).forEach((child) => {
+    child.style.display = 'none';
+  });
+
+  const toc = createTag('div', { class: 'toc' });
+  const config = readBlockConfig(block);
+
+  if (config.title) {
+    addTOCTitle(toc, config.title);
+  }
+
+  const tocEntries = addTOCEntries(toc, config, doc);
+  block.innerHTML = '';
+  block.appendChild(toc);
+
+  const tocContainer = initializeTOCContainer();
+  handleSetTOCPos(toc, tocContainer, tocEntries);
+  handleActiveTOCHighlighting(tocEntries);
 }
