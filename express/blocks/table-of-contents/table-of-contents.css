@@ -73,3 +73,15 @@
   flex-shrink: 0; /* Ensure the number stays aligned even if the text wraps */
   font-weight: bold; /* Make the numbers bold */
 }
+
+@media (max-width: 980px) {
+  .table-of-contents.block {
+    position: absolute;  /* Change to absolute to prevent stickiness */
+    top: 50%;  /* Center it vertically within the screen */
+    left: 50%;  /* Center it horizontally within the screen */
+    transform: translate(-50%, -50%);  /* Center the block both vertically and horizontally */
+    border-radius: 16px;  /* Apply a 16px radius to all corners */
+    width: 300px;  /* Maintain the same width */
+    white-space: nowrap;  /* Prevent text from wrapping */
+  }
+}

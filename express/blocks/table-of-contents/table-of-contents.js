@@ -1,6 +1,7 @@
 /* eslint-disable import/named, import/extensions */
 
 import { addTempWrapper } from '../../scripts/decorate.js';
+import { debounce } from '../../scripts/hofs.js';
 import {
   createTag,
   readBlockConfig,
@@ -116,10 +117,28 @@ function addTOCEntries(toc, config, doc) {
   return tocEntries;
 }
 
-function initializeTOCContainer() {
-  const tocContainer = document.querySelector('.table-of-contents.block');
-  tocContainer.style.display = 'none';
-  return tocContainer;
+function handleScrollForTOC(tocContainer) {
+  // This function handles the scroll behavior for the TOC on desktop devices
+  const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+  const firstLink = tocContainer.querySelector('.toc-entry a');
+  if (firstLink && tocContainer) {
+    const targetElement = document.querySelector(firstLink.getAttribute('href'));
+    if (targetElement) {
+      const rect = targetElement.getBoundingClientRect();
+      const targetTop = Math.round(window.scrollY + rect.top);
+      const viewportMidpoint = window.innerHeight / 2;
+
+      if (targetTop <= window.scrollY + viewportMidpoint - headerHeight) {
+        tocContainer.style.top = `${viewportMidpoint}px`;
+        tocContainer.style.position = 'fixed';
+      } else {
+        tocContainer.style.top = `${targetTop}px`;
+        tocContainer.style.position = 'absolute';
+      }
+
+      tocContainer.style.display = 'block';
+    }
+  }
 }
 
 function handleSetTOCPos(toc, tocContainer) {
@@ -146,6 +165,29 @@ function handleSetTOCPos(toc, tocContainer) {
       }
     }
   });
+}
+
+function applyTOCBehavior(tocContainer, deviceBySize) {
+  if (deviceBySize === 'MOBILE') {
+    // On mobile, remove sticky behavior
+    tocContainer.style.position = 'absolute';
+    tocContainer.style.top = '50%';
+    tocContainer.style.left = '50%';
+    tocContainer.style.transform = 'translate(-50%, -50%)';
+    tocContainer.style.borderRadius = '16px';
+
+    window.removeEventListener('scroll', handleScrollForTOC);
+  } else {
+    // On desktop, use sticky behavior
+    handleSetTOCPos(tocContainer);
+    window.addEventListener('scroll', () => handleScrollForTOC(tocContainer));
+  }
+}
+
+function initializeTOCContainer() {
+  const tocContainer = document.querySelector('.table-of-contents.block');
+  tocContainer.style.display = 'none';
+  return tocContainer;
 }
 
 function handleActiveTOCHighlighting(tocEntries) {
@@ -194,6 +236,16 @@ export default function decorate(block, name, doc) {
   block.appendChild(toc);
 
   const tocContainer = initializeTOCContainer();
+  // Check device type and apply behavior
+  let deviceBySize = defineDeviceByScreenSize();
+  applyTOCBehavior(tocContainer, deviceBySize);
+
+  window.addEventListener('resize', debounce(() => {
+    if (deviceBySize === defineDeviceByScreenSize()) return;
+    deviceBySize = defineDeviceByScreenSize();
+    applyTOCBehavior(tocContainer, deviceBySize);
+  }, 100));
+
   handleSetTOCPos(toc, tocContainer, tocEntries);
   handleActiveTOCHighlighting(tocEntries);
 }
