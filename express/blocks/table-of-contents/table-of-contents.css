@@ -10,7 +10,7 @@
   width: 300px;  /* Fixed width for the TOC container */
   white-space: nowrap;  /* Prevent text from wrapping to a new line */
   text-align: left; /* Left align all content in the TOC */
-  border-radius: 0 16px 16px 0;
+  border-radius: 0 12px 12px 0;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05), 0 -6px 12px rgba(0, 0, 0, 0.05), 
             6px 0 12px rgba(0, 0, 0, 0.05), -6px 0 12px rgba(0, 0, 0, 0.05); /* Lighter and softer shadow around all sides */
 }

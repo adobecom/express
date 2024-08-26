@@ -8,6 +8,13 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
+const MOBILE_SIZE = 981;
+function defineDeviceByScreenSize() {
+  const screenWidth = window.innerWidth;
+  if (screenWidth >= MOBILE_SIZE) return 'DESKTOP';
+  return 'MOBILE';
+}
+
 function addHoverEffect(tocEntries) {
   tocEntries.forEach(({ tocItem }) => {
     tocItem.addEventListener('mouseenter', () => {
