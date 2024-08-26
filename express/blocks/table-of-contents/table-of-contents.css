@@ -8,7 +8,7 @@
   padding-top: 10px;  /* Padding inside the container */
   padding-bottom: 10px;
   border: 1px solid #ccc;  /* Border */
-  width: auto;  /* Allow the width to adjust automatically based on content */
+  width: 300px;  /* Allow the width to adjust automatically based on content */
   white-space: nowrap;  /* Prevent text from wrapping to a new line */
   text-align: left; /* Left align all content in the TOC */
   border-radius: 0 16px 16px 0;
