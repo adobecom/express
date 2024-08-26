@@ -111,6 +111,40 @@ export default function decorate(block, name, doc) {
   // Track the currently active TOC entry to prevent double highlighting
   let activeEntry = null;
 
+  // Select the TOC container
+  const tocContainer = document.querySelector('.table-of-contents.block');
+  // Initially hide the TOC container (optional, if needed)
+  tocContainer.style.display = 'none';
+
+  const headerHeight = document.querySelector('header')?.offsetHeight || 0; // Defaults to 0 if no header is found
+
+  // Scroll event listener
+  window.addEventListener('scroll', () => {
+    const firstLink = toc.querySelector('.toc-entry a');
+    if (firstLink && tocContainer) {
+      // Step 1: Use the href attribute directly to find the target element
+      const targetElement = document.querySelector(firstLink.getAttribute('href'));
+      if (targetElement) {
+        const rect = targetElement.getBoundingClientRect();
+
+        const targetTop = Math.round(window.scrollY + rect.top);
+        const viewportMidpoint = window.innerHeight / 2;
+
+        // Determine if the TOC container should be fixed at 50% of the viewport height
+        if (targetTop <= window.scrollY + viewportMidpoint - headerHeight) {
+          tocContainer.style.top = `${viewportMidpoint}px`; // Fix at 50% of the viewport
+          tocContainer.style.position = 'fixed'; // Change to fixed positioning
+        } else {
+          tocContainer.style.top = `${targetTop}px`; // Align with the heading
+          tocContainer.style.position = 'absolute'; // Maintain absolute positioning
+        }
+
+        // Optionally show the TOC container if it was initially hidden
+        tocContainer.style.display = 'block';
+      }
+    }
+  });
+
   // Add scroll event listener to highlight the current section
   window.addEventListener('scroll', () => {
     let currentHeading = null;
