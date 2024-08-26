@@ -1,0 +1,25 @@
+name: Run JavaScript Script
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'fstab.yaml'
+      - 'helix-query.yaml'
+      - 'helix-sitemap.yaml'
+  push:
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+    - name: Install dependencies
+      run: npm ci
+    - name: Run script
+      run: node ./test/helpers/sitemap.js
