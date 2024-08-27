@@ -389,9 +389,9 @@ function renderHoverWrapper(template, placeholders) {
   };
 
   const ctaClickHandlerTouchDevice = (ev) => {
-    // If it is a touch device without a mouse / trackpad, do not jump over to Edit
+    // If it is a touch device, do not jump over to the Edit page,
     // but allow the user to preview the template instead
-    if (window.matchMedia('(hover: none)').matches) {
+    if (window.matchMedia('(pointer: coarse)').matches) {
       ev.preventDefault();
     }
   };
