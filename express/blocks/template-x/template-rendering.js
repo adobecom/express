@@ -125,9 +125,9 @@ function renderShareWrapper(branchUrl, placeholders) {
     tabindex: '-1',
   });
   let timeoutId = null;
-  shareIcon.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  shareIcon.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     timeoutId = share(branchUrl, tooltip, timeoutId);
   });
 
@@ -389,7 +389,9 @@ function renderHoverWrapper(template, placeholders) {
   };
 
   const ctaClickHandlerTouchDevice = (ev) => {
-    if (window.matchMedia && window.matchMedia("(hover: none)").matches) {
+    // If it is a touch device without a mouse / trackpad, do not jump over to Edit
+    // but allow the user to preview the template instead
+    if (window.matchMedia("(hover: none)").matches) {
       ev.preventDefault();
     }
   };
