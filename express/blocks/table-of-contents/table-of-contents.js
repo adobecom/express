@@ -87,6 +87,16 @@ function addTOCItemClickEvent(tocItem, heading, verticalLine) {
   });
 }
 
+function styleHeadingLink(heading, tocCounter) {
+  const numberCircle = createTag('span', {
+    class: 'number-circle',
+    'data-number': tocCounter, // Set the data-number attribute
+  });
+
+  // Do not set any inner text for numberCircle here
+  heading.prepend(numberCircle);
+}
+
 function addTOCEntries(toc, config, doc) {
   let tocCounter = 1;
   const tocEntries = [];
@@ -109,6 +119,9 @@ function addTOCEntries(toc, config, doc) {
         tocItem.insertBefore(verticalLine, tocItem.firstChild);
         toc.appendChild(tocItem);
         tocEntries.push({ tocItem, heading });
+
+        styleHeadingLink(heading, tocCounter); // Style the heading link with the number circle
+
         tocCounter += 1;
       }
     }
