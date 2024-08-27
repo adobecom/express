@@ -83,7 +83,19 @@ function addTOCItemClickEvent(tocItem, heading, verticalLine) {
     tocItem.classList.add('active');
     verticalLine.style.display = 'block';
 
-    heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const deviceBySize = defineDeviceByScreenSize();
+    const scrollOptions = { behavior: 'smooth', block: 'start' };
+
+    if (deviceBySize === 'MOBILE') {
+      const headingPosition = heading.getBoundingClientRect().top + window.scrollY;
+      const mobileOffset = 185; // Adjust this value to control the scroll offset on mobile
+      window.scrollTo({
+        top: headingPosition - mobileOffset,
+        behavior: 'smooth',
+      });
+    } else {
+      heading.scrollIntoView(scrollOptions);
+    }
   });
 }
 
@@ -126,6 +138,27 @@ function addTOCEntries(toc, config, doc) {
       }
     }
   });
+
+  // Check if the device is mobile
+  const deviceBySize = defineDeviceByScreenSize();
+  if (deviceBySize === 'MOBILE') {
+    tocEntries.forEach(({ heading }) => {
+      // Clone the TOC element
+      const tocClone = toc.cloneNode(true);
+
+      // Add a class to the cloned TOC
+      tocClone.classList.add('mobile-toc'); // Add a custom class to the cloned TOC
+
+      // Insert the cloned TOC before each corresponding heading
+      heading.parentNode.insertBefore(tocClone, heading);
+    });
+
+    // Find the element that has .table-of-contents.block and hide it
+    const originalTOC = document.querySelector('.table-of-contents.block');
+    if (originalTOC) {
+      originalTOC.style.display = 'none';
+    }
+  }
 
   return tocEntries;
 }
@@ -180,19 +213,19 @@ function handleSetTOCPos(toc, tocContainer) {
   });
 }
 
-function applyTOCBehavior(tocContainer, deviceBySize) {
+function applyTOCBehavior(toc, tocContainer, deviceBySize) {
   if (deviceBySize === 'MOBILE') {
     // On mobile, remove sticky behavior
-    tocContainer.style.position = 'absolute';
-    tocContainer.style.top = '50%';
-    tocContainer.style.left = '50%';
-    tocContainer.style.transform = 'translate(-50%, -50%)';
-    tocContainer.style.borderRadius = '16px';
+    // tocContainer.style.position = 'absolute';
+    // tocContainer.style.top = '10%';
+    // tocContainer.style.left = '50%';
+    // tocContainer.style.transform = 'translate(-50%, -50%)';
+    // tocContainer.style.borderRadius = '16px';
 
     window.removeEventListener('scroll', handleScrollForTOC);
   } else {
     // On desktop, use sticky behavior
-    handleSetTOCPos(tocContainer);
+    handleSetTOCPos(toc, tocContainer);
     window.addEventListener('scroll', () => handleScrollForTOC(tocContainer));
   }
 }
@@ -249,16 +282,17 @@ export default function decorate(block, name, doc) {
   block.appendChild(toc);
 
   const tocContainer = initializeTOCContainer();
+
   // Check device type and apply behavior
   let deviceBySize = defineDeviceByScreenSize();
-  applyTOCBehavior(tocContainer, deviceBySize);
-
   window.addEventListener('resize', debounce(() => {
     if (deviceBySize === defineDeviceByScreenSize()) return;
     deviceBySize = defineDeviceByScreenSize();
-    applyTOCBehavior(tocContainer, deviceBySize);
+    applyTOCBehavior(toc, tocContainer, deviceBySize);
   }, 100));
 
-  handleSetTOCPos(toc, tocContainer, tocEntries);
-  handleActiveTOCHighlighting(tocEntries);
+  if (deviceBySize === 'DESKTOP') {
+    handleSetTOCPos(toc, tocContainer);
+    handleActiveTOCHighlighting(tocEntries);
+  }
 }

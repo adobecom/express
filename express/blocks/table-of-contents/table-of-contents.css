@@ -21,12 +21,15 @@
 }
 
 .toc-entry {
-  margin-bottom: 15px; /* Increased space between each TOC entry */
+  margin-bottom: 15px;
   position: relative;
   display: flex;
-  align-items: center;
-  padding-left: 14px; /* Increase padding to shift text 10px more to the right */
-  padding-right: 50px; /* Ensure padding to the right of the text */
+  align-items: flex-start; /* Align items to the start to ensure correct alignment */
+  padding-left: 14px;
+  padding-right: 50px;
+  text-align: left; /* Ensure text is left-aligned */
+  white-space: normal; /* Allow text to wrap to a new line */
+  overflow-wrap: break-word; /* Break long words to avoid overflow */
 }
 
 .vertical-line {
@@ -43,12 +46,17 @@
 
 .toc-entry a {
   text-decoration: none;
-  color: inherit; /* Ensure link color matches the rest of the TOC text */
-  display: inline-block;  /* Ensure the numbering aligns with the text */
+  color: inherit;
+  display: block; /* Ensure the link occupies the full width for correct alignment */
+  white-space: normal; /* Allow wrapped text */
+  overflow-wrap: break-word; /* Break long words to avoid overflow */
+  line-height: 1.4; /* Adjust line-height for better readability with wrapped text */
 }
 
 .toc-entry .toc-number {
-  margin-right: 5px;  /* Space between the number and the text */
+  margin-right: 5px;
+  flex-shrink: 0; /* Prevent the number from shrinking or affecting text alignment */
+  align-self: flex-start; /* Align the number to the start of the flex container */
 }
 
 .toc-title,
@@ -98,14 +106,11 @@
   transform: translate(-50%, -50%); /* Center both horizontally and vertically */
 }
 
-@media (max-width: 980px) {
-  .table-of-contents.block {
-    position: absolute;  /* Change to absolute to prevent stickiness */
-    top: 50%;  /* Center it vertically within the screen */
-    left: 50%;  /* Center it horizontally within the screen */
-    transform: translate(-50%, -50%);  /* Center the block both vertically and horizontally */
-    border-radius: 16px;  /* Apply a 16px radius to all corners */
-    width: 300px;  /* Maintain the same width */
-    white-space: nowrap;  /* Prevent text from wrapping */
-  }
+.mobile-toc {
+  padding: 10px;          /* Optional: add some padding */
+  margin-bottom: 15px;    /* Optional: add some margin below each TOC */
+  background-color: #f4f4f4;  /* Background color */
+  border-radius: 16px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05), 0 -6px 12px rgba(0, 0, 0, 0.05), 
+            6px 0 12px rgba(0, 0, 0, 0.05), -6px 0 12px rgba(0, 0, 0, 0.05); /* Lighter and softer shadow around all sides */
 }
