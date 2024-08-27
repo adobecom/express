@@ -17,10 +17,11 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18.x'
-    - name: Install dependencies
+    - name: Install secondary dependencies
+      run: npm install node-fetch@2 dotenv
+    - name: Install main dependencies
       run: npm ci
-    - name: Create .env file
-      run: |
-        echo "API_KEY=${{ secrets.HELIX_API_KEY }}" > .env
     - name: Run script
+      env:
+        HELIX_API_KEY: ${{ secrets.HELIX_API_KEY }}
       run: node ./test/helpers/sitemap.js
