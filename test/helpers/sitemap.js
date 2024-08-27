@@ -19,13 +19,11 @@ async function makeRequests() {
                     'authorization' : `token ${apiKey}` 
                 },
             });
-
             if (!response.ok) {
                 console.log(response)
                 console.error(`Error: ${url}`, response.statusText);
                 continue;
             }
-
             const data = await response.text();
             console.log(`Success: ${url}`, data);
         } catch (error) {
