@@ -391,7 +391,7 @@ function renderHoverWrapper(template, placeholders) {
   const ctaClickHandlerTouchDevice = (ev) => {
     // If it is a touch device without a mouse / trackpad, do not jump over to Edit
     // but allow the user to preview the template instead
-    if (window.matchMedia("(hover: none)").matches) {
+    if (window.matchMedia('(hover: none)').matches) {
       ev.preventDefault();
     }
   };
