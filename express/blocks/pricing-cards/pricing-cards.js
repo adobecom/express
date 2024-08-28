@@ -12,7 +12,8 @@ import {
 } from '../../scripts/utils/pricing.js';
 
 import createToggle from './pricing-toggle.js';
-import { handleTooltip } from './pricing-tooltip.js';
+import { handleTooltip } from './pricing-tooltip.js'; 
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const SAVE_PERCENTAGE = '{{savePercentage}}';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
@@ -174,6 +175,7 @@ async function createPricingSection(
   ctaGroup,
   specialPromo,
   isMonthly = false,
+  groupID, 
 ) {
   pricingArea.classList.add('pricing-area');
 
@@ -195,6 +197,9 @@ async function createPricingSection(
     const basePrice = createTag('span', { class: 'pricing-base-price' });
     const priceSuffix = createTag('div', { class: 'pricing-row-suf' });
     const response = await fetchPlanOnePlans(priceEl?.href);
+    if (response.term){
+      BlockMediator.set(groupID,response.term)
+    }
     const priceSuffixTextContent = getPriceElementSuffix(
       placeholders,
       placeholderArr,
