@@ -90,22 +90,21 @@ export default function createToggle(placeholders, pricingSections, groupID, adj
       'aria-labelledby': buttonID,
     });
 
-    button.appendChild(createTag('span'));
-    button.setAttribute('aria-checked', defaultChecked);
-    button.setAttribute('aria-labeledby', buttonID); 
+    button.appendChild(createTag('span'));  
     button.append(createTag('div', { id: `${buttonID}:radio` }, label));
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
-      toggleOther(pricingSections, buttons, i);
+      togglePlan(pricingSections, buttons, i);
     });
 
     return button;
   });
-
+  const buttonWrapper = createTag('div', {class : "billing-button-wrapper"})
+  buttonWrapper.append(...buttons)
+  toggleWrapper.appendChild(buttonWrapper)
   toggleWrapper.addEventListener('keydown', (e) => {
     handleKeyNavigation(e, pricingSections, buttons, toggleWrapper);
   });
-
-  toggleWrapper.append(...buttons);
+   
   return toggleWrapper;
 }
