@@ -21,8 +21,6 @@
  .pricing-cards .card {
    width: var(--card-width);
    position: relative;
-   margin-left: 10px;
-   margin-right: 10px;
    padding-left: 10px;
    padding-right: 10px;
    z-index: 1;
