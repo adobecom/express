@@ -84,17 +84,15 @@ function addTOCItemClickEvent(tocItem, heading, verticalLine) {
     verticalLine.style.display = 'block';
 
     const deviceBySize = defineDeviceByScreenSize();
-    const scrollOptions = { behavior: 'smooth', block: 'start' };
-
     if (deviceBySize === 'MOBILE') {
-      const headingPosition = heading.getBoundingClientRect().top + window.scrollY;
       const mobileOffset = 185; // Adjust this value to control the scroll offset on mobile
+      const headingPosition = heading.getBoundingClientRect().top + window.scrollY - mobileOffset;
       window.scrollTo({
-        top: headingPosition - mobileOffset,
+        top: headingPosition,
         behavior: 'smooth',
       });
     } else {
-      heading.scrollIntoView(scrollOptions);
+      heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
 }
@@ -222,7 +220,7 @@ function applyTOCBehavior(toc, tocContainer, deviceBySize) {
     // tocContainer.style.transform = 'translate(-50%, -50%)';
     // tocContainer.style.borderRadius = '16px';
 
-    window.removeEventListener('scroll', handleScrollForTOC);
+    window.addEventListener('scroll', () => handleScrollForTOC(tocContainer));
   } else {
     // On desktop, use sticky behavior
     handleSetTOCPos(toc, tocContainer);
@@ -244,20 +242,26 @@ function handleActiveTOCHighlighting(tocEntries) {
 
     tocEntries.forEach(({ tocItem, heading }) => {
       const rect = heading.getBoundingClientRect();
-      if (rect.top <= window.innerHeight / 2 && rect.bottom >= 0) {
+      const isVisible = rect.top <= window.innerHeight / 2 && rect.bottom > 0;
+
+      if (isVisible) {
         currentHeading = tocItem;
       }
     });
 
     if (currentHeading && currentHeading !== activeEntry) {
       if (activeEntry) {
+        // Remove bold style from the previously active entry
         activeEntry.classList.remove('active');
-        activeEntry.querySelector('.vertical-line').style.display = 'none';
+        activeEntry.querySelector('a').style.fontWeight = 'normal';
+        activeEntry.querySelector('.toc-number').style.fontWeight = 'normal';
       }
 
+      // Apply bold style to the currently active entry
       activeEntry = currentHeading;
       activeEntry.classList.add('active');
-      activeEntry.querySelector('.vertical-line').style.display = 'block';
+      activeEntry.querySelector('a').style.fontWeight = 'bold';
+      activeEntry.querySelector('.toc-number').style.fontWeight = 'bold';
     }
   });
 }
