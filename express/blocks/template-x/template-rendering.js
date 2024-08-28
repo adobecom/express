@@ -106,7 +106,7 @@ async function share(branchUrl, tooltip, timeoutId, placeholders) {
     placement: 'template-x',
     isSearchOverride: true,
   });
-  await navigator.clipboard.writeText(urlWithTracking.toString());
+  await navigator.clipboard.writeText(urlWithTracking);
   tooltip.classList.add('display-tooltip');
 
   const rect = tooltip.getBoundingClientRect();
