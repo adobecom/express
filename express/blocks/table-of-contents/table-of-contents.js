@@ -83,26 +83,28 @@ function setupTOCItem(tocItem, tocCounter, headingText, headingId) {
 
 function addTOCItemClickEvent(tocItem, heading, verticalLine) {
   tocItem.addEventListener('click', (event) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent the default anchor click behavior
 
+    // Remove active class from all TOC entries
     document.querySelectorAll('.toc-entry').forEach((entry) => {
       entry.classList.remove('active');
       entry.querySelector('.vertical-line').style.display = 'none';
     });
 
+    // Add active class to the clicked TOC entry
     tocItem.classList.add('active');
     verticalLine.style.display = 'block';
 
-    if (getDeviceType() === 'MOBILE') {
-      const mobileOffset = 185; // Adjust this value to control the scroll offset on mobile
-      const headingPosition = heading.getBoundingClientRect().top + window.scrollY - mobileOffset;
-      window.scrollTo({
-        top: headingPosition,
-        behavior: 'smooth',
-      });
-    } else {
-      heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    // Calculate scroll position and apply smooth scrolling
+    const headerOffset = 10; // Adjust this value to control the scroll offset
+    const rect = heading.getBoundingClientRect();
+    const offsetPosition = rect.top + window.scrollY - headerOffset;
+
+    // Smooth scroll to the heading
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth',
+    });
   });
 }
 
@@ -148,15 +150,23 @@ function addTOCEntries(toc, config, doc) {
 
   // Check if the device is mobile
   if (getDeviceType() === 'MOBILE') {
+    // Clone the entire TOC element
+    const tocClone = toc.cloneNode(true);
+    tocClone.classList.add('mobile-toc'); // Add a custom class to the cloned TOC
+
     tocEntries.forEach(({ heading }) => {
-      // Clone the TOC element
-      const tocClone = toc.cloneNode(true);
-
-      // Add a class to the cloned TOC
-      tocClone.classList.add('mobile-toc'); // Add a custom class to the cloned TOC
-
       // Insert the cloned TOC before each corresponding heading
-      heading.parentNode.insertBefore(tocClone, heading);
+      heading.parentNode.insertBefore(tocClone.cloneNode(true), heading);
+    });
+
+    // Reapply click event listeners to each cloned TOC entry
+    const clonedTOCs = document.querySelectorAll('.mobile-toc');
+    clonedTOCs.forEach((clonedTOC) => {
+      const clonedTOCEntries = clonedTOC.querySelectorAll('.toc-entry');
+      clonedTOCEntries.forEach((tocEntry, index) => {
+        const verticalLine = tocEntry.querySelector('.vertical-line');
+        addTOCItemClickEvent(tocEntry, tocEntries[index].heading, verticalLine);
+      });
     });
 
     // Find the element that has .table-of-contents.block and hide it
@@ -167,30 +177,6 @@ function addTOCEntries(toc, config, doc) {
   }
 
   return tocEntries;
-}
-
-function handleScrollForTOC(tocContainer) {
-  // This function handles the scroll behavior for the TOC on desktop devices
-  const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-  const firstLink = tocContainer.querySelector('.toc-entry a');
-  if (firstLink && tocContainer) {
-    const targetElement = document.querySelector(firstLink.getAttribute('href'));
-    if (targetElement) {
-      const rect = targetElement.getBoundingClientRect();
-      const targetTop = Math.round(window.scrollY + rect.top);
-      const viewportMidpoint = window.innerHeight / 2;
-
-      if (targetTop <= window.scrollY + viewportMidpoint - headerHeight) {
-        tocContainer.style.top = `${viewportMidpoint}px`;
-        tocContainer.style.position = 'fixed';
-      } else {
-        tocContainer.style.top = `${targetTop}px`;
-        tocContainer.style.position = 'absolute';
-      }
-
-      tocContainer.style.display = 'block';
-    }
-  }
 }
 
 function handleSetTOCPos(toc, tocContainer) {
@@ -221,32 +207,25 @@ function handleSetTOCPos(toc, tocContainer) {
 
 function applyTOCBehavior(toc, tocContainer) {
   if (getDeviceType() === 'MOBILE') {
-    // Hide the desktop TOC on mobile
-    tocContainer.style.display = 'none';
-    // Ensure it's always hidden when scrolling on mobile
     window.addEventListener('scroll', () => {
       if (getDeviceType() === 'MOBILE') {
         tocContainer.style.display = 'none';
       }
     });
   } else {
-    // On desktop, use sticky behavior and hide mobile TOC elements
     const mobileTocs = document.querySelectorAll('.mobile-toc');
     mobileTocs.forEach((mobileToc) => {
       mobileToc.style.display = 'none';
     });
 
     handleSetTOCPos(toc, tocContainer);
-    window.addEventListener('scroll', () => handleScrollForTOC(tocContainer));
+    window.addEventListener('scroll', () => handleSetTOCPos(tocContainer));
   }
 }
 
 function initializeTOCContainer() {
   const tocContainer = document.querySelector('.table-of-contents.block');
-  // Hide the desktop TOC on mobile
-  if (getDeviceType() === 'MOBILE') {
-    tocContainer.style.display = 'none';
-  }
+  tocContainer.style.display = 'none';
   return tocContainer;
 }
 
