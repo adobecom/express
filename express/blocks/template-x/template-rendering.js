@@ -389,7 +389,7 @@ function renderHoverWrapper(template, placeholders) {
   };
 
   const ctaClickHandlerTouchDevice = (ev) => {
-    // If it is a touch device, do not jump over to the Edit page,
+    // If it is a mobile device with a touch screen, do not jump over to the Edit page,
     // but allow the user to preview the template instead
     if (window.matchMedia('(pointer: coarse)').matches) {
       ev.preventDefault();
