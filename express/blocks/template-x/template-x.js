@@ -333,6 +333,7 @@ async function decorateNewTemplates(block, props, options = { reDrawMasonry: fal
   const newCells = Array.from(block.querySelectorAll('.template:not(.appear)'));
 
   const templateLinks = block.querySelectorAll('.template:not(.appear) .button-container > a, a.template.placeholder');
+  templateLinks.isSearchOverride = true;
   const linksPopulated = new CustomEvent('linkspopulated', { detail: templateLinks });
   document.dispatchEvent(linksPopulated);
 
@@ -1330,6 +1331,7 @@ async function decorateTemplates(block, props) {
   if (searchId) trackSearch('view-search-result', searchId);
 
   const templateLinks = block.querySelectorAll('.template .button-container > a, a.template.placeholder');
+  templateLinks.isSearchOverride = true;
   const linksPopulated = new CustomEvent('linkspopulated', { detail: templateLinks });
   document.dispatchEvent(linksPopulated);
 }
