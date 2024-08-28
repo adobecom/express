@@ -61,7 +61,7 @@ function onKeyDown(e, pricingSections, buttons, toggleWrapper) {
 }
 
 export default function createToggle(
-  placeholders, pricingSections, groupID, isTeams,
+  placeholders, pricingSections, groupID,
 ) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
   const toggleWrapper = createTag('div', { class: 'billing-toggle' });
