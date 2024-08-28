@@ -2,6 +2,7 @@ import {
   createTag,
 } from '../../scripts/utils.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
+
 const PLANS = ['monthly', 'annually'];
 const SPECIAL_PLAN = 'annual-billed-monthly';
 
@@ -90,34 +91,34 @@ export function tagFreePlan(cardContainer) {
 
 export default function createToggle(placeholders, pricingSections, groupID, adjElemPos) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
-  const toggleWrapper = createTag('div', { 
+  const toggleWrapper = createTag('div', {
     class: 'billing-toggle',
     role: 'radiogroup',
-    'aria-labelledby': groupID
+    'aria-labelledby': groupID,
   });
 
   const groupLabel = createTag('strong', { id: groupID }, subDesc);
   toggleWrapper.appendChild(groupLabel);
 
   const buttons = PLANS.map((basePlan, i) => {
-    const planLabelID = (BlockMediator.get(groupID) === "ABM" && placeholders?.[SPECIAL_PLAN] && basePlan === "monthly") 
-      ? SPECIAL_PLAN 
+    const planLabelID = (BlockMediator.get(groupID) === 'ABM' && placeholders?.[SPECIAL_PLAN] && basePlan === 'monthly')
+      ? SPECIAL_PLAN
       : basePlan;
-    const label = placeholders?.[planLabelID]
+    const label = placeholders?.[planLabelID];
     const buttonID = `${groupID}:${basePlan}`;
     const isDefault = i === 0;
     const button = createTag('button', {
       class: isDefault ? 'checked' : '',
       id: buttonID,
-      plan : basePlan,
+      plan: basePlan,
       tabIndex: isDefault ? '0' : '-1',
       role: 'radio',
       'aria-checked': isDefault.toString(),
-      'aria-labelledby': buttonID
+      'aria-labelledby': buttonID,
     });
 
     button.appendChild(createTag('span'));
-    
+
     button.appendChild(createTag('div', { id: `${buttonID}:radio` }, label));
 
     button.addEventListener('click', () => {
@@ -128,8 +129,8 @@ export default function createToggle(placeholders, pricingSections, groupID, adj
     return button;
   });
 
-  const toggleButtonWrapper = createTag('div', {class : "toggle-button-wrapper"})
-  toggleButtonWrapper.append(...buttons)
+  const toggleButtonWrapper = createTag('div', { class: 'toggle-button-wrapper' });
+  toggleButtonWrapper.append(...buttons);
   toggleWrapper.append(toggleButtonWrapper);
   toggleWrapper.addEventListener('keydown', (e) => handleKeyNavigation(e, pricingSections, buttons, toggleWrapper));
 

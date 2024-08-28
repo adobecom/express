@@ -206,7 +206,7 @@ function handleTooltip(pricingArea) {
   iconWrapper.append(span);
   tooltipDiv.append(iconWrapper);
 }
-async function handlePrice(placeholders, pricingArea, specialPromo, groupID,legacyVersion) {
+async function handlePrice(placeholders, pricingArea, specialPromo, groupID, legacyVersion) {
   const priceEl = pricingArea.querySelector(`[title="${PRICE_TOKEN}"]`);
   const pricingBtnContainer = pricingArea.querySelector('.button-container');
   if (!pricingBtnContainer) return;
@@ -224,7 +224,7 @@ async function handlePrice(placeholders, pricingArea, specialPromo, groupID,lega
 
   const response = await fetchPlanOnePlans(priceEl?.href);
   if (response.term && groupID) {
-    BlockMediator.set(groupID, response.term) 
+    BlockMediator.set(groupID, response.term);
   }
 
   const priceSuffixTextContent = getPriceElementSuffix(
@@ -264,7 +264,7 @@ async function createPricingSection(
     offer.classList.add('card-offer');
     offer.parentElement.outerHTML = offer.outerHTML;
   }
-  await handlePrice(placeholders, pricingArea, specialPromo, groupID,legacyVersion);
+  await handlePrice(placeholders, pricingArea, specialPromo, groupID, legacyVersion);
   ctaGroup.classList.add('card-cta-group');
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
@@ -426,12 +426,12 @@ async function decorateCard({
   decorateBasicTextSection(explain, 'card-explain', card);
   const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
   const [mPricingSection, yPricingSection] = await Promise.all([
-    createPricingSection(placeholders, mPricingRow, mCtaGroup, specialPromo, groupID,legacyVersion),
+    createPricingSection(placeholders, mPricingRow, mCtaGroup, specialPromo, groupID, legacyVersion),
     createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
   ]);
   mPricingSection.classList.add('monthly');
   yPricingSection.classList.add('annually', 'hide');
- 
+
   const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID,
     adjustElementPosition);
   card.append(toggle, mPricingSection, yPricingSection);
