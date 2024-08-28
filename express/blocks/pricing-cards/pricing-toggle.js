@@ -1,11 +1,11 @@
 import {
   createTag,
 } from '../../scripts/utils.js';
-
+import BlockMediator from '../../scripts/block-mediator.min.js';
 const PLANS = ['monthly', 'annually'];
 const SPECIAL_PLAN = 'annual-billed-monthly';
 
-function toggleOther(pricingSections, buttons, planIndex) {
+function togglePlan(pricingSections, buttons, planIndex) {
   const button = buttons[planIndex];
   if (button.classList.contains('checked')) return;
   buttons.filter((b) => b !== button).forEach((b) => {
@@ -34,7 +34,7 @@ function focusPreviousButton(buttons, currentIndex) {
   buttons[prevIndex].focus();
 }
 
-function onKeyDown(e, pricingSections, buttons, toggleWrapper) {
+function handleKeyNavigation(e, pricingSections, buttons, toggleWrapper) {
   if (!e.target.isEqualNode(document.activeElement)) return;
   const currentIndex = buttons.indexOf(e.target);
   switch (e.code) {
@@ -51,7 +51,7 @@ function onKeyDown(e, pricingSections, buttons, toggleWrapper) {
     case 'Enter':
     case 'Space':
       e.preventDefault();
-      toggleOther(pricingSections, buttons, currentIndex);
+      togglePlan(pricingSections, buttons, currentIndex);
       break;
     case 'Tab':
       toggleWrapper.nextElementSibling.focus();
@@ -88,46 +88,50 @@ export function tagFreePlan(cardContainer) {
   });
 }
 
-export default function createToggle(
-  placeholders, pricingSections, groupID, adjElemPos,
-) {
+export default function createToggle(placeholders, pricingSections, groupID, adjElemPos) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
-  const toggleWrapper = createTag('div', { class: 'billing-toggle' });
-  toggleWrapper.innerHTML = `<strong>${subDesc}</strong>`;
-  toggleWrapper.setAttribute('role', 'radiogroup');
-  toggleWrapper.setAttribute('aria-labelledby', groupID);
-  const groupLabel = toggleWrapper.children[0];
-  groupLabel.setAttribute('id', groupID);
+  const toggleWrapper = createTag('div', { 
+    class: 'billing-toggle',
+    role: 'radiogroup',
+    'aria-labelledby': groupID
+  });
+
+  const groupLabel = createTag('strong', { id: groupID }, subDesc);
+  toggleWrapper.appendChild(groupLabel);
+
   const buttons = PLANS.map((basePlan, i) => {
-    let plan = basePlan;
-    const buttonID = `${groupID}:${plan}`;
-    const defaultChecked = i === 0;
+    const planLabelID = (BlockMediator.get(groupID) === "ABM" && placeholders?.[SPECIAL_PLAN] && basePlan === "monthly") 
+      ? SPECIAL_PLAN 
+      : basePlan;
+    const label = placeholders?.[planLabelID]
+    const buttonID = `${groupID}:${basePlan}`;
+    const isDefault = i === 0;
     const button = createTag('button', {
-      class: defaultChecked ? 'checked' : '',
+      class: isDefault ? 'checked' : '',
       id: buttonID,
-      plan,
-      tabIndex: defaultChecked ? '' : -1,
+      plan : basePlan,
+      tabIndex: isDefault ? '0' : '-1',
+      role: 'radio',
+      'aria-checked': isDefault.toString(),
+      'aria-labelledby': buttonID
     });
+
     button.appendChild(createTag('span'));
-    button.setAttribute('aria-checked', defaultChecked);
-    button.setAttribute('aria-labeledby', buttonID);
-    if (pricingSections[i].children[0].classList.contains('plan-term-ABM') && placeholders?.[SPECIAL_PLAN]) {
-      plan = SPECIAL_PLAN;
-    }
-    const label = placeholders?.[plan] || 'Annual, Billed Monthly';
-    button.append(createTag('div', { id: `${buttonID}:radio` }, label));
-    button.setAttribute('role', 'radio');
+    
+    button.appendChild(createTag('div', { id: `${buttonID}:radio` }, label));
+
     button.addEventListener('click', () => {
-      toggleOther(pricingSections, buttons, i);
+      togglePlan(pricingSections, buttons, i);
       adjElemPos();
     });
+
     return button;
   });
 
-  toggleWrapper.addEventListener('keydown', (e) => {
-    onKeyDown(e, pricingSections, buttons, toggleWrapper);
-  });
+  const toggleButtonWrapper = createTag('div', {class : "toggle-button-wrapper"})
+  toggleButtonWrapper.append(...buttons)
+  toggleWrapper.append(toggleButtonWrapper);
+  toggleWrapper.addEventListener('keydown', (e) => handleKeyNavigation(e, pricingSections, buttons, toggleWrapper));
 
-  toggleWrapper.append(...buttons);
   return toggleWrapper;
 }

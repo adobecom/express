@@ -388,12 +388,18 @@ End border style variants
 } 
 
 .pricing-cards .billing-toggle {
-  display: flex;
+ 
   justify-content: center;
-  gap: 12px;
+  width: 100%;
+  margin-left: 10px;
   align-items: center;
   font-size: var(--body-font-size-s);
   margin-bottom: 12px;
+}
+.pricing-cards .billing-toggle .toggle-button-wrapper {
+  display: flex;
+  margin-top: 10px;
+  gap: 12px;
 }
 
 .pricing-cards .billing-toggle button {
