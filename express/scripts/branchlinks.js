@@ -48,7 +48,7 @@ const setBasicBranchMetadata = new Set([
 ]);
 
 // return url string with analytics and branch parameters appended
-export function getTrackingAppendedURL(url, placeholders, options) {
+export function getTrackingAppendedURL(url, placeholders, options = {}) {
   const { placement, isSearchOverride } = options;
   const windowParams = new URLSearchParams(window.location.search);
   const [
@@ -107,7 +107,7 @@ export function getTrackingAppendedURL(url, placeholders, options) {
 
   const appending = new URL(url);
   const urlParams = appending.searchParams;
-  const isSearchBranchLink = placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${url.origin}${url.pathname}`);
+  const isSearchBranchLink = placeholders['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${appending.origin}${appending.pathname}`);
 
   const setParams = (k, v) => {
     if (v) urlParams.set(k, encodeURIComponent(v));
