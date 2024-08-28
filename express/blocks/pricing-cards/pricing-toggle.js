@@ -62,23 +62,25 @@ function handleKeyNavigation(e, pricingSections, buttons, toggleWrapper) {
   }
 }
 
-export default function createToggle(placeholders, pricingSections, groupID, adjElemPos) {
+export default function createToggle(placeholders, pricingSections, monthlyPlanID, yearlyPlanID) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
   const toggleWrapper = createTag('div', {
     class: 'billing-toggle',
     role: 'radiogroup',
-    'aria-labelledby': groupID,
+    'aria-labelledby': monthlyPlanID,
   });
 
-  const groupLabel = createTag('strong', { id: groupID }, subDesc);
+  const groupLabel = createTag('strong', { id: monthlyPlanID }, subDesc);
   toggleWrapper.appendChild(groupLabel);
-
+  if (BlockMediator.get(monthlyPlanID) === 0) {
+    toggleWrapper.classList.add('hidden')
+  }
   const buttons = PLANS.map((basePlan, i) => {
-    const planLabelID = (BlockMediator.get(groupID) === 'ABM' && placeholders?.[SPECIAL_PLAN] && basePlan === 'monthly')
+    const planLabelID = (BlockMediator.get(monthlyPlanID + "-planType") === 'ABM' && placeholders?.[SPECIAL_PLAN] && basePlan === 'monthly')
       ? SPECIAL_PLAN
       : basePlan;
     const label = placeholders?.[planLabelID];
-    const buttonID = `${groupID}:${basePlan}`;
+    const buttonID = `${monthlyPlanID}:${basePlan}`;
     const isDefault = i === 0;
     const button = createTag('button', {
       class: isDefault ? 'checked' : '',
@@ -90,7 +92,7 @@ export default function createToggle(placeholders, pricingSections, groupID, adj
       'aria-labelledby': buttonID,
     });
 
-    button.appendChild(createTag('span'));  
+    button.appendChild(createTag('span'));
     button.append(createTag('div', { id: `${buttonID}:radio` }, label));
     button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
@@ -99,12 +101,16 @@ export default function createToggle(placeholders, pricingSections, groupID, adj
 
     return button;
   });
-  const buttonWrapper = createTag('div', {class : "billing-button-wrapper"})
+  const buttonWrapper = createTag('div', { class: "billing-button-wrapper" })
   buttonWrapper.append(...buttons)
   toggleWrapper.appendChild(buttonWrapper)
+
+
+
+
   toggleWrapper.addEventListener('keydown', (e) => {
     handleKeyNavigation(e, pricingSections, buttons, toggleWrapper);
   });
-   
+
   return toggleWrapper;
 }

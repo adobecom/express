@@ -41,15 +41,13 @@
    border-radius: 12px;
    border-width: 4px;
    border-style: solid;
-   border-image: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) 1;
-   -webkit-mask-image: radial-gradient(circle, white 100%, black 100%);
-   mask-image: radial-gradient(circle 32px at 32px 32px, white 100%, black 100%);
-   border-top-width: 48px;
+   border-image: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) 1; 
+   border-top-width: 56px;
  }
 
  .pricing-cards .promo-eyebrow-text {
    position: absolute;
-   top: -36px;
+   top: -44px;
    text-align: center;
    color: white;
    width: 100%;
@@ -69,6 +67,22 @@
    justify-content: space-between;
    padding-top: 20px;
    padding-bottom: 20px;
+
+
+
+ }
+
+ .pricing-cards .card.gradient-promo .card-header {
+  height: 35px;
+  border: 20px solid white;
+  top: -12px;
+  position: relative;
+  width: 380px;
+  border-radius: 8px;
+  left: -10px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  border-bottom: 0px;
  }
 
  .pricing-cards.block .card-header h2 {
@@ -136,7 +150,7 @@
    box-sizing: border-box;
    displaY: flex;
    flex-direction: column;
-   gap: 16px; 
+   gap: 16px;
    margin-top: 20px;
    min-height: 200px;
    text-align: left;
@@ -265,8 +279,7 @@
    display: flex;
    flex-direction: column;
    gap: 5px;
-   min-height: 90px;
-   margin-top: 20px; 
+   margin-top: 20px;
    margin-bottom: 20px;
  }
 
@@ -276,9 +289,9 @@
    width: 100%;
  }
 
- .billing-radio-hidden {
-   opacity: 0;
-   height: 0px;
+
+ .pricing-cards .billing-toggle .billing-radio-hidden {
+   display: none;
  }
 
  .pricing-cards .billing-toggle {
@@ -485,7 +498,7 @@
  }
 
  .pricing-cards .card .card-feature-list {
-  flex-grow: 1;
+   flex-grow: 1;
    min-height: 800px;
    ;
  }
@@ -503,14 +516,14 @@
    height: unset;
  }
 
- .pricing-cards > div:last-of-type {
-  padding: 12px 8px;
-    margin: 16px auto;
-    border-radius: 4px;
-    background: #E0E2FF;
-    font-size: var(--body-font-size-xs);
-    max-width: 1200px;
-    box-sizing: border-box;
+ .pricing-cards>div:last-of-type {
+   padding: 12px 8px;
+   margin: 16px auto;
+   border-radius: 4px;
+   background: #E0E2FF;
+   font-size: var(--body-font-size-xs);
+   max-width: 1200px;
+   box-sizing: border-box;
  }
 
  @media (max-width: 600px) {

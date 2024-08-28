@@ -12,7 +12,7 @@ import {
 } from '../../scripts/utils/pricing.js';
 
 import createToggle from './pricing-toggle.js';
-import { handleTooltip } from './pricing-tooltip.js'; 
+import { handleTooltip, adjustElementPosition } from './pricing-tooltip.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 const SAVE_PERCENTAGE = '{{savePercentage}}';
@@ -27,12 +27,12 @@ function getHeightWithoutPadding(element) {
   return element.clientHeight - paddingTop - paddingBottom;
 }
 
-function equalizeHeights() {
+function equalizeHeights(el) {
   const classNames = ['.card-header', '.plan-explanation', '.billing-toggle', '.pricing-area', '.card-cta-group'];
-  const cardCount = document.querySelectorAll('.pricing-cards .card').length;
+  const cardCount = el.querySelectorAll('.pricing-cards .card').length;
   if (cardCount === 1) return;
   for (const className of classNames) {
-    const headers = document.querySelectorAll(className);
+    const headers = el.querySelectorAll(className);
     let maxHeight = 0;
     headers.forEach((header) => {
       if (header.checkVisibility()) {
@@ -43,7 +43,8 @@ function equalizeHeights() {
     });
     headers.forEach((placeholder) => {
       if (placeholder.style.height) return;
-      placeholder.style.height = `${maxHeight}px`;
+      if (maxHeight > 0) 
+        placeholder.style.height = `${maxHeight}px`;
     });
   }
 }
@@ -175,10 +176,10 @@ async function createPricingSection(
   ctaGroup,
   specialPromo,
   isMonthly = false,
-  groupID, 
+  groupID,
 ) {
   pricingArea.classList.add('pricing-area');
-
+  let offerId = undefined
   const offer = pricingArea.querySelector(':scope > p > em');
   if (offer) {
     offer.classList.add('card-offer');
@@ -197,9 +198,12 @@ async function createPricingSection(
     const basePrice = createTag('span', { class: 'pricing-base-price' });
     const priceSuffix = createTag('div', { class: 'pricing-row-suf' });
     const response = await fetchPlanOnePlans(priceEl?.href);
-    if (response.term){
-      BlockMediator.set(groupID,response.term)
+    if (response.term) {
+      BlockMediator.set(response.offerId + "-planType", response.term)
     }
+    offerId = response.offerId
+    BlockMediator.set(offerId, parseInt(response.price))
+
     const priceSuffixTextContent = getPriceElementSuffix(
       placeholders,
       placeholderArr,
@@ -241,6 +245,7 @@ async function createPricingSection(
     pricingArea.classList.add('annually', 'hide');
     ctaGroup.classList.add('annually', 'hide');
   }
+  return offerId
 }
 
 function decorateHeader(header, planExplanation) {
@@ -283,8 +288,8 @@ function decorateCardBorder(card, source) {
   }
 }
 
-function decorateBillingToggle(card, cardIndex, placeholders) {
-  const toggle = createToggle(placeholders, [card.children[3], card.children[4], card.children[5], card.children[6]], `${Date.now()}`, cardIndex === 2);
+function decorateBillingToggle(card, cardIndex, placeholders, monthlyPlanID, yearlyPlanID) {
+  const toggle = createToggle(placeholders, [card.children[3], card.children[4], card.children[5], card.children[6]], monthlyPlanID, yearlyPlanID);
   card.insertBefore(toggle, card.children[3]);
 }
 
@@ -303,9 +308,9 @@ export default async function init(el) {
     const card = createTag('div', { class: 'card' });
     decorateCardBorder(card, rows[0].children[0]);
     decorateHeader(rows[1].children[0], rows[2].children[0]);
-    createPricingSection(placeholders, rows[3].children[0],
+    const monthlyPlanID = await createPricingSection(placeholders, rows[3].children[0],
       rows[4].children[0], rows[0].children[0], true);
-    createPricingSection(placeholders, rows[5].children[0],
+    const yearlyPlanID = await createPricingSection(placeholders, rows[5].children[0],
       rows[6].children[0], rows[0].children[0]);
     rows[7].children[0].classList.add('card-feature-list');
     rows[8].children[0].classList.add('compare-all');
@@ -315,7 +320,7 @@ export default async function init(el) {
     }
     cards.push(card);
 
-    decorateBillingToggle(card, cardIndex, placeholders);
+    decorateBillingToggle(card, cardIndex, placeholders, monthlyPlanID, yearlyPlanID);
   }
   el.innerHTML = '';
   el.appendChild(createTag('div', { class: 'card-wrapper' }));
@@ -327,16 +332,18 @@ export default async function init(el) {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        equalizeHeights();
+        equalizeHeights(el);
         observer.unobserve(entry.target);
+        adjustElementPosition()
       }
     });
   });
 
   document.querySelectorAll('.card').forEach((column) => {
     observer.observe(column);
+    
   });
 
-  window.addEventListener('load', equalizeHeights);
-  window.addEventListener('resize', equalizeHeights);
+  window.addEventListener('load', () => equalizeHeights(el));
+  window.addEventListener('resize', () => equalizeHeights(el));
 }
