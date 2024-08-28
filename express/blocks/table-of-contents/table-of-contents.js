@@ -59,7 +59,7 @@ function addTOCItemClickEvent(tocItem, heading, verticalLine) {
     tocItem.classList.add('active');
     verticalLine.style.display = 'block';
 
-    const headerOffset = 65;
+    const headerOffset = 70;
     const rect = heading.getBoundingClientRect();
     const offsetPosition = rect.top + window.scrollY - headerOffset;
 
