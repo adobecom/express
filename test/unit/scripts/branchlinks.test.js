@@ -81,7 +81,6 @@ describe('branchlinks trackBranchParameteres', () => {
       expect(link.rel === 'nofollow').to.be.true;
     });
   });
-  // <a href="https://adobesparkpost.app.link/GJrBPFUWBBb?acomx-dno=y">normal branch link with no tracking wanted</a>
   it('skips adding params for links with disable flag', () => {
     links.forEach((link, index) => {
       if (index === links.length - 1) {
