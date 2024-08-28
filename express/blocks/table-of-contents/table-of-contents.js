@@ -44,7 +44,7 @@ function formatHeadingText(headingText) {
 
 function assignHeadingIdIfNeeded(heading, headingText) {
   if (!heading.id) {
-    heading.id = headingText.replace(/\s+/g, '-').toLowerCase(); // Create a URL-friendly id
+    heading.id = headingText.replace(/\s+/g, '-').toLowerCase();
   }
 }
 
@@ -59,11 +59,11 @@ function addTOCItemClickEvent(tocItem, heading, verticalLine) {
     tocItem.classList.add('active');
     verticalLine.style.display = 'block';
 
-    const headerOffset = 10; // Adjust this value to control the scroll offset
+    const headerOffset = 10;
     const rect = heading.getBoundingClientRect();
     const offsetPosition = rect.top + window.scrollY - headerOffset;
 
-    // Smooth scroll to the heading
+    // Smooth scroll to each heading
     window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
   });
 }
@@ -107,10 +107,11 @@ function setupTOCItem(tocItem, tocCounter, headingText, headingId) {
 function styleHeadingLink(heading, tocCounter) {
   const numberCircle = createTag('span', {
     class: 'number-circle',
-    'data-number': tocCounter, // Set the data-number attribute
+    'data-number': tocCounter, // Set the data-number attribute for the numbered headers on desktop
   });
 
-  // Do not set any inner text for numberCircle here
+  // Do not set inner text for numberCircle here b/c data-number
+  // above handles render of each header number
   heading.prepend(numberCircle);
 }
 
