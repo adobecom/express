@@ -1,7 +1,6 @@
 /* eslint-disable import/named, import/extensions */
 
 import { addTempWrapper } from '../../scripts/decorate.js';
-import { debounce } from '../../scripts/hofs.js';
 import {
   createTag,
   readBlockConfig,
@@ -10,11 +9,22 @@ import {
 } from '../../scripts/utils.js';
 
 const MOBILE_SIZE = 981;
-function defineDeviceByScreenSize() {
-  const screenWidth = window.innerWidth;
-  if (screenWidth >= MOBILE_SIZE) return 'DESKTOP';
-  return 'MOBILE';
+function getCurrentDeviceType() {
+  let deviceType = window.innerWidth >= MOBILE_SIZE ? 'DESKTOP' : 'MOBILE';
+
+  const updateDeviceType = () => {
+    deviceType = window.innerWidth >= MOBILE_SIZE ? 'DESKTOP' : 'MOBILE';
+  };
+
+  // Add resize event listener to update device type when window is resized
+  window.addEventListener('resize', updateDeviceType);
+
+  // Return a function that provides the current device type
+  return () => deviceType;
 }
+
+// Initialize the device type function
+const getDeviceType = getCurrentDeviceType();
 
 function addHoverEffect(tocEntries) {
   tocEntries.forEach(({ tocItem }) => {
@@ -83,8 +93,7 @@ function addTOCItemClickEvent(tocItem, heading, verticalLine) {
     tocItem.classList.add('active');
     verticalLine.style.display = 'block';
 
-    const deviceBySize = defineDeviceByScreenSize();
-    if (deviceBySize === 'MOBILE') {
+    if (getDeviceType() === 'MOBILE') {
       const mobileOffset = 185; // Adjust this value to control the scroll offset on mobile
       const headingPosition = heading.getBoundingClientRect().top + window.scrollY - mobileOffset;
       window.scrollTo({
@@ -138,8 +147,7 @@ function addTOCEntries(toc, config, doc) {
   });
 
   // Check if the device is mobile
-  const deviceBySize = defineDeviceByScreenSize();
-  if (deviceBySize === 'MOBILE') {
+  if (getDeviceType() === 'MOBILE') {
     tocEntries.forEach(({ heading }) => {
       // Clone the TOC element
       const tocClone = toc.cloneNode(true);
@@ -211,18 +219,23 @@ function handleSetTOCPos(toc, tocContainer) {
   });
 }
 
-function applyTOCBehavior(toc, tocContainer, deviceBySize) {
-  if (deviceBySize === 'MOBILE') {
-    // On mobile, remove sticky behavior
-    // tocContainer.style.position = 'absolute';
-    // tocContainer.style.top = '10%';
-    // tocContainer.style.left = '50%';
-    // tocContainer.style.transform = 'translate(-50%, -50%)';
-    // tocContainer.style.borderRadius = '16px';
-
-    window.addEventListener('scroll', () => handleScrollForTOC(tocContainer));
+function applyTOCBehavior(toc, tocContainer) {
+  if (getDeviceType() === 'MOBILE') {
+    // Hide the desktop TOC on mobile
+    tocContainer.style.display = 'none';
+    // Ensure it's always hidden when scrolling on mobile
+    window.addEventListener('scroll', () => {
+      if (getDeviceType() === 'MOBILE') {
+        tocContainer.style.display = 'none';
+      }
+    });
   } else {
-    // On desktop, use sticky behavior
+    // On desktop, use sticky behavior and hide mobile TOC elements
+    const mobileTocs = document.querySelectorAll('.mobile-toc');
+    mobileTocs.forEach((mobileToc) => {
+      mobileToc.style.display = 'none';
+    });
+
     handleSetTOCPos(toc, tocContainer);
     window.addEventListener('scroll', () => handleScrollForTOC(tocContainer));
   }
@@ -230,7 +243,10 @@ function applyTOCBehavior(toc, tocContainer, deviceBySize) {
 
 function initializeTOCContainer() {
   const tocContainer = document.querySelector('.table-of-contents.block');
-  tocContainer.style.display = 'none';
+  // Hide the desktop TOC on mobile
+  if (getDeviceType() === 'MOBILE') {
+    tocContainer.style.display = 'none';
+  }
   return tocContainer;
 }
 
@@ -287,16 +303,6 @@ export default function decorate(block, name, doc) {
 
   const tocContainer = initializeTOCContainer();
 
-  // Check device type and apply behavior
-  let deviceBySize = defineDeviceByScreenSize();
-  window.addEventListener('resize', debounce(() => {
-    if (deviceBySize === defineDeviceByScreenSize()) return;
-    deviceBySize = defineDeviceByScreenSize();
-    applyTOCBehavior(toc, tocContainer, deviceBySize);
-  }, 100));
-
-  if (deviceBySize === 'DESKTOP') {
-    handleSetTOCPos(toc, tocContainer);
-    handleActiveTOCHighlighting(tocEntries);
-  }
+  applyTOCBehavior(toc, tocContainer);
+  handleActiveTOCHighlighting(tocEntries);
 }
