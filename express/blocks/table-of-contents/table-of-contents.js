@@ -48,16 +48,9 @@ function assignHeadingIdIfNeeded(heading, headingText) {
   }
 }
 
-function addTOCItemClickEvent(tocItem, heading, verticalLine) {
+function addTOCItemClickEvent(tocItem, heading) {
   tocItem.addEventListener('click', (event) => {
-    event.preventDefault(); // Prevent the default anchor click behavior
-    document.querySelectorAll('.toc-entry').forEach((entry) => {
-      entry.classList.remove('active');
-      entry.querySelector('.vertical-line').style.display = 'none';
-    });
-
-    tocItem.classList.add('active');
-    verticalLine.style.display = 'block';
+    event.preventDefault();
 
     const headerOffset = 70;
     const rect = heading.getBoundingClientRect();
@@ -69,7 +62,6 @@ function addTOCItemClickEvent(tocItem, heading, verticalLine) {
 }
 
 function findCorrespondingHeading(headingText, doc) {
-  // Finds the corresponding heading element in the document by matching its text
   return Array.from(doc.querySelectorAll('main h2, main h3, main h4'))
     .find((h) => h.textContent.trim().includes(headingText.replace('...', '').trim()));
 }
@@ -86,8 +78,7 @@ function handleTOCCloningForMobile(toc, tocEntries) {
 
     const clonedTOCEntries = clonedTOC.querySelectorAll('.toc-entry');
     clonedTOCEntries.forEach((tocEntry, index) => {
-      const verticalLine = tocEntry.querySelector('.vertical-line');
-      addTOCItemClickEvent(tocEntry, tocEntries[index].heading, verticalLine);
+      addTOCItemClickEvent(tocEntry, tocEntries[index].heading);
     });
   });
 
@@ -130,7 +121,7 @@ function addTOCEntries(toc, config, doc) {
         setupTOCItem(tocItem, tocCounter, headingText, heading.id);
 
         const verticalLine = createTag('div', { class: 'vertical-line' });
-        addTOCItemClickEvent(tocItem, heading, verticalLine);
+        addTOCItemClickEvent(tocItem, heading);
 
         tocItem.insertBefore(createTag('span', { class: 'toc-line' }), tocItem.firstChild);
         tocItem.insertBefore(verticalLine, tocItem.firstChild);
@@ -196,11 +187,18 @@ function handleActiveTOCHighlighting(tocEntries) {
       const rect = heading.getBoundingClientRect();
       return rect.top <= window.innerHeight / 2 && rect.bottom > 0;
     })?.tocItem;
+    if (!currentHeading) return;
 
-    if (currentHeading && currentHeading !== activeEntry) {
-      if (activeEntry) setBoldStyle(activeEntry, false);
+    if (currentHeading !== activeEntry) {
+      if (activeEntry) {
+        setBoldStyle(activeEntry, false);
+        activeEntry.classList.remove('active');
+      }
       activeEntry = currentHeading;
-      setBoldStyle(activeEntry, true);
+      if (activeEntry) {
+        setBoldStyle(activeEntry, true);
+        activeEntry.classList.add('active');
+      }
     }
   });
 }
