@@ -1,3 +1,5 @@
+/* eslint-disable */
+// This file is a pure copy paste from lite-yt
 /**
  * A lightweight youtube embed. Still should feel the same to the user, just MUCH faster to initialize and paint.
  *
