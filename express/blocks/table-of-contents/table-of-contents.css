@@ -44,15 +44,6 @@
   background-color: var(--color-info-accent);
 }
 
-.toc-entry a {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-  white-space: normal;
-  overflow-wrap: break-word;
-  line-height: 1.4;
-}
-
 .toc-entry .toc-number {
   margin-right: 5px;
   flex-shrink: 0;
