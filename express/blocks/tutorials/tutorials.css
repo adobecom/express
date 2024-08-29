@@ -3,12 +3,21 @@ main .tutorials-twoperrow-container > div {
   max-width: 1200px;
 }
 
+main .tutorials-twoperrow-container .default-content-wrapper {
+  margin-top: 23px;
+}
+
 main .tutorials {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin: 0 72px;
   padding: 64px 0;
+}
+
+main .tutorials-twoperrow-container .tutorials {
+  margin: 0 72px;
+  padding: 24px 0 64px;
 }
 
 main .tutorials.block.twoperrow {
