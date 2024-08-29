@@ -403,6 +403,7 @@ function decorateEntitled(contentWrapper) {
 async function handleContent(div, block, animations) {
   const videoWrapper = createTag('div', { class: 'background-wrapper' });
   const video = createAnimation(animations);
+  video.poster = './media_1c5e14a6f226cbc7d3388e86510d3e033a22e70bf.png';
   let bg;
   if (video) {
     bg = videoWrapper;
