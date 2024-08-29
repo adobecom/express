@@ -426,7 +426,7 @@ async function decorateCard({
   decorateBasicTextSection(explain, 'card-explain', card);
   const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
   const [mPricingSection, yPricingSection] = await Promise.all([
-    createPricingSection(placeholders, mPricingRow, mCtaGroup, 
+    createPricingSection(placeholders, mPricingRow, mCtaGroup,
       specialPromo, groupID, legacyVersion),
     createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
   ]);
