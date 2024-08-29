@@ -1,85 +1,85 @@
 .table-of-contents.block {
   position: fixed;
   z-index: 25;
-  top: 50%;  /* Start from 50% of the viewport height */
-  transform: translateY(-50%);  /* Center the container vertically */
-  left: 0;  /* Position it to the left of the viewport */
-  background-color: #f4f4f4;  /* Background color */
-  padding-top: 10px;  /* Padding inside the container */
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  background-color: #f4f4f4;
+  padding-top: 10px;
   padding-bottom: 10px;
-  width: 300px;  /* Fixed width for the TOC container */
-  white-space: nowrap;  /* Prevent text from wrapping to a new line */
-  text-align: left; /* Left align all content in the TOC */
+  width: 300px;
+  white-space: nowrap;
+  text-align: left; 
   border-radius: 0 12px 12px 0;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05), 0 -6px 12px rgba(0, 0, 0, 0.05), 
-            6px 0 12px rgba(0, 0, 0, 0.05), -6px 0 12px rgba(0, 0, 0, 0.05); /* Lighter and softer shadow around all sides */
+            6px 0 12px rgba(0, 0, 0, 0.05), -6px 0 12px rgba(0, 0, 0, 0.05); 
 }
 
 .toc-title {
   font-weight: bold;
-  margin-bottom: 10px; /* Add some space between the title and the TOC entries */
+  margin-bottom: 10px; 
 }
 
 .toc-entry {
   margin-bottom: 15px;
   position: relative;
   display: flex;
-  align-items: flex-start; /* Align items to the start to ensure correct alignment */
+  align-items: flex-start;
   padding-left: 14px;
   padding-right: 50px;
-  text-align: left; /* Ensure text is left-aligned */
-  white-space: normal; /* Allow text to wrap to a new line */
-  overflow-wrap: break-word; /* Break long words to avoid overflow */
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .vertical-line {
   width: 4px;
-  height: 100%; /* Match the height of the TOC entry */
-  background-color: transparent; /* Initially transparent */
+  height: 100%;
+  background-color: transparent;
   position: absolute;
-  left: 0; /* Align it to the left of the container */
+  left: 0;
 }
 
 .toc-entry.active .vertical-line {
-  background-color: var(--color-info-accent); /* Show the border when active */
+  background-color: var(--color-info-accent);
 }
 
 .toc-entry a {
   text-decoration: none;
   color: inherit;
-  display: block; /* Ensure the link occupies the full width for correct alignment */
-  white-space: normal; /* Allow wrapped text */
-  overflow-wrap: break-word; /* Break long words to avoid overflow */
-  line-height: 1.4; /* Adjust line-height for better readability with wrapped text */
+  display: block;
+  white-space: normal;
+  overflow-wrap: break-word;
+  line-height: 1.4;
 }
 
 .toc-entry .toc-number {
   margin-right: 5px;
-  flex-shrink: 0; /* Prevent the number from shrinking or affecting text alignment */
-  align-self: flex-start; /* Align the number to the start of the flex container */
+  flex-shrink: 0;
+  align-self: flex-start;
 }
 
 .toc-title,
 .toc-entry {
   display: flex;
-  align-items: center; /* Vertically align arrow, title, and text */
-  padding-left: 20px;  /* Set consistent left padding */
+  align-items: center;
+  padding-left: 20px; 
 }
 
 .toc-title > div,
 .toc-entry > .toc-number {
-  margin-right: 8px; /* Space between the arrow/number and the text */
+  margin-right: 8px;
 }
 
 .toc-title > div {
   display: flex;
-  align-items: center; /* Ensure the arrow is vertically centered */
-  margin-left: -6px; /* Shift the arrow to the left by half of its width to center it */
+  align-items: center;
+  margin-left: -6px;
 }
 
 .toc-entry .toc-number {
-  flex-shrink: 0; /* Ensure the number stays aligned even if the text wraps */
-  font-weight: bold; /* Make the numbers bold */
+  flex-shrink: 0;
+  font-weight: bold;
 }
 
 .number-circle {
@@ -95,7 +95,7 @@
   display: inline-block;
   margin-right: 10px;
   position: relative;
-  vertical-align: bottom; /* Align to the bottom of the line */
+  vertical-align: bottom;
 }
 
 .number-circle::before {
@@ -103,14 +103,14 @@
   position: absolute;
   top: 46%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Center both horizontally and vertically */
+  transform: translate(-50%, -50%);
 }
 
 .mobile-toc {
-  padding: 10px;          /* Optional: add some padding */
-  margin-bottom: 15px;    /* Optional: add some margin below each TOC */
-  background-color: #f4f4f4;  /* Background color */
+  padding: 10px;
+  margin-bottom: 15px;
+  background-color: #f4f4f4;
   border-radius: 16px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05), 0 -6px 12px rgba(0, 0, 0, 0.05), 
-            6px 0 12px rgba(0, 0, 0, 0.05), -6px 0 12px rgba(0, 0, 0, 0.05); /* Lighter and softer shadow around all sides */
+            6px 0 12px rgba(0, 0, 0, 0.05), -6px 0 12px rgba(0, 0, 0, 0.05);
 }
