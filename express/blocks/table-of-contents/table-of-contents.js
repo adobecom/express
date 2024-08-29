@@ -56,7 +56,6 @@ function addTOCItemClickEvent(tocItem, heading) {
     const rect = heading.getBoundingClientRect();
     const offsetPosition = rect.top + window.scrollY - headerOffset;
 
-    // Smooth scroll to each heading
     window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
   });
 }
@@ -98,11 +97,8 @@ function setupTOCItem(tocItem, tocCounter, headingText, headingId) {
 function styleHeadingLink(heading, tocCounter) {
   const numberCircle = createTag('span', {
     class: 'number-circle',
-    'data-number': tocCounter, // Set the data-number attribute for the numbered headers on desktop
+    'data-number': tocCounter,
   });
-
-  // Do not set inner text for numberCircle here b/c data-number
-  // above handles render of each header number
   heading.prepend(numberCircle);
 }
 
@@ -128,7 +124,7 @@ function addTOCEntries(toc, config, doc) {
         toc.appendChild(tocItem);
         tocEntries.push({ tocItem, heading });
 
-        styleHeadingLink(heading, tocCounter); // Style the heading link with the number circle
+        styleHeadingLink(heading, tocCounter);
         tocCounter += 1;
       }
     }
