@@ -11,8 +11,7 @@ main .tutorials {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 0 72px;
-  padding: 64px 0;
+  margin: 64px 72px;
 }
 
 main .tutorials-twoperrow-container .tutorials {
