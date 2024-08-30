@@ -29,6 +29,23 @@
    margin-top: 48px;
  }
 
+ .pricing-cards .card.special-promo {
+  border-color: yellow;
+ }
+
+ .pricing-cards .card.special-promo .promo-eyebrow-text {
+  color: black;
+    background-color: yellow;
+    width: fit-content;
+    height: fit-content;
+    top: -12px;
+    margin: 0;
+    padding: 4px;
+    right: 4px;
+    border-radius: 4px;
+    left: unset;
+ }
+
  .pricing-cards .none {
    display: none;
  }
@@ -155,6 +172,7 @@
    min-height: 200px;
    text-align: left;
  }
+
 
  .pricing-cards .pricing-area p {
    margin: 0;

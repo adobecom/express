@@ -94,6 +94,8 @@ function handleSpecialPromo(
   isPremiumCard,
   response,
 ) {
+  console.log(specialPromo)
+  specialPromo.classList.add('special-promo')
   if (specialPromo?.textContent.includes(SAVE_PERCENTAGE)) {
     const offerTextContent = specialPromo.textContent;
     const shouldSuppress = shallSuppressOfferEyebrowText(
@@ -319,9 +321,9 @@ export default async function init(el) {
       card.appendChild(rows[j].children[0]);
     }
     cards.push(card);
-
     decorateBillingToggle(card, cardIndex, placeholders, monthlyPlanID, yearlyPlanID);
   }
+  
   el.innerHTML = '';
   el.appendChild(createTag('div', { class: 'card-wrapper' }));
   for (const card of cards) {
