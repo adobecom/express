@@ -171,13 +171,10 @@ export default async function decorate(block) {
   }
 
   if (['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
-    // const logo = getIconElement('adobe-express-logo');
-    // logo.classList.add('express-logo');
-    // block.prepend(logo);
+    const logo = getIconElement('adobe-express-logo');
+    logo.classList.add('express-logo');
+    block.prepend(logo);
   }
-  const logo = getIconElement('adobe-express-logo');
-  logo.classList.add('express-logo');
-  block.prepend(logo);
 
   if (background) {
     block.classList.add('has-background');
