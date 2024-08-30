@@ -37,9 +37,14 @@ function addTOCTitle(toc, title) {
 }
 
 function formatHeadingText(headingText) {
-  const nonLatinRegex = /\p{Script=Han}|\p{Script=Hiragana}|\p{Script=Katakana}/u;
-  const maxLength = nonLatinRegex.test(headingText) ? 12 : 25;
-  return headingText.length > maxLength ? `${headingText.substring(0, maxLength)}...` : headingText;
+  const cleanedText = headingText.replace('Adobe Express', '').trim();
+  const latinRegex = /^[\x20-\x7F]+$/;
+  const allNonLatin = !latinRegex.test(cleanedText);
+  const maxLength = allNonLatin ? 12 : 25;
+  const textToFormat = allNonLatin ? cleanedText : headingText;
+  return textToFormat.length > maxLength
+    ? `${textToFormat.substring(0, maxLength)}...`
+    : textToFormat;
 }
 
 function assignHeadingIdIfNeeded(heading, headingText) {
@@ -61,7 +66,7 @@ function addTOCItemClickEvent(tocItem, heading) {
 }
 
 function findCorrespondingHeading(headingText, doc) {
-  return Array.from(doc.querySelectorAll('main h2, main h3, main h4'))
+  return Array.from(doc.querySelectorAll('main h1, main h2, main h3, main h4'))
     .find((h) => h.textContent.trim().includes(headingText.replace('...', '').trim()));
 }
 
@@ -136,21 +141,28 @@ function addTOCEntries(toc, config, doc) {
 
 function setTOCPosition(toc, tocContainer, headerHeight) {
   const firstLink = toc.querySelector('.toc-entry a');
-  if (firstLink && tocContainer) {
-    const targetElement = document.querySelector(firstLink.getAttribute('href'));
-    if (targetElement) {
-      const rect = targetElement.getBoundingClientRect();
-      const targetTop = Math.round(window.scrollY + rect.top);
-      const viewportMidpoint = window.innerHeight / 2;
-
-      tocContainer.style.top = targetTop <= window.scrollY + viewportMidpoint - headerHeight
-        ? `${viewportMidpoint}px`
-        : `${targetTop}px`;
-
-      tocContainer.style.position = targetTop <= window.scrollY + viewportMidpoint - headerHeight ? 'fixed' : 'absolute';
-      tocContainer.style.display = 'block';
-    }
+  if (!firstLink || !tocContainer) {
+    return;
   }
+
+  const href = firstLink.getAttribute('href');
+  const partialId = href.slice(1).substring(0, 10);
+  const targetElement = document.querySelector(`[id^="${partialId}"]`);
+
+  if (!targetElement) {
+    return;
+  }
+
+  const rect = targetElement.getBoundingClientRect();
+  const targetTop = Math.round(window.scrollY + rect.top);
+  const viewportMidpoint = window.innerHeight / 2;
+
+  tocContainer.style.top = targetTop <= window.scrollY + viewportMidpoint - headerHeight
+    ? `${viewportMidpoint}px`
+    : `${targetTop}px`;
+
+  tocContainer.style.position = targetTop <= window.scrollY + viewportMidpoint - headerHeight ? 'fixed' : 'absolute';
+  tocContainer.style.display = 'block';
 }
 
 function handleSetTOCPos(toc, tocContainer) {
