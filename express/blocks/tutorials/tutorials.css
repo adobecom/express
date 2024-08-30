@@ -1,6 +1,9 @@
-main .tutorials-container > div,
-main .tutorials-twoperrow-container > div {
+main .tutorials-container > div {
   max-width: 1200px;
+}
+
+main .tutorials-twoperrow-container > div {
+  max-width: 1024px;
 }
 
 main .tutorials-twoperrow-container .default-content-wrapper {
