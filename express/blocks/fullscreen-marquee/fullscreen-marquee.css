@@ -23,7 +23,7 @@
 .fullscreen-marquee .express-logo {
   width: unset;
   height: 30px;
-  padding-bottom: 18px;
+  padding-bottom: 8px;
 }
 
 .fullscreen-marquee.has-background {
@@ -271,6 +271,10 @@
   .section > .fullscreen-marquee {
     padding-bottom: 40px;
     padding-top: 40px;
+  }
+
+  .fullscreen-marquee .express-logo {
+    padding-bottom: 18px;
   }
 
   .fullscreen-marquee .fullscreen-marquee-heading {
