@@ -56,6 +56,10 @@ function initButton($block, $sections, index) {
             $section.style.display = 'none';
           }
         });
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth',
+        });
       }
     });
     if (index === 0) {
