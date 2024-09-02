@@ -55,10 +55,10 @@ function initButton($block, $sections, index) {
           } else {
             $section.style.display = 'none';
           }
-        });
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth',
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth',
+          });
         });
       }
     });
