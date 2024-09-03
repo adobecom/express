@@ -173,9 +173,7 @@ function handleSetTOCPos(toc, tocContainer) {
 }
 
 function applyTOCBehavior(toc, tocContainer) {
-  tocContainer.style.display = 'none';
   if (getDeviceType() === 'DESKTOP') {
-    tocContainer.style.display = 'block';
     document.querySelectorAll('.mobile-toc').forEach((mobileToc) => {
       mobileToc.style.display = 'none';
     });

@@ -105,3 +105,10 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05), 0 -6px 12px rgba(0, 0, 0, 0.05), 
             6px 0 12px rgba(0, 0, 0, 0.05), -6px 0 12px rgba(0, 0, 0, 0.05);
 }
+
+/* Show the TOC on larger screens (desktop) */
+@media (min-width: 981px) {
+  .table-of-contents-seo.block {
+    display: block;
+  }
+}
