@@ -33,11 +33,10 @@ function addHoverEffect(tocEntries) {
 
 function addTOCTitle(toc, title) {
   const tocTitle = createTag('div', { class: 'toc-title' });
-  const checkIcon = getIconElement('arrow-gradient-down');
-  checkIcon.style.width = '18px';
-  checkIcon.style.height = '18px';
+  const arrowDownIcon = getIconElement('arrow-gradient-down');
+  Object.assign(arrowDownIcon.style, { width: '18px', height: '18px' });
 
-  tocTitle.appendChild(checkIcon);
+  tocTitle.appendChild(arrowDownIcon);
   tocTitle.appendChild(document.createTextNode(title));
   toc.appendChild(tocTitle);
 }
