@@ -35,10 +35,7 @@ function addTOCTitle(toc, title) {
   const tocTitle = createTag('div', { class: 'toc-title' });
   const arrowDownIcon = getIconElement('arrow-gradient-down');
   Object.assign(arrowDownIcon.style, { width: '18px', height: '18px' });
-
-  tocTitle.appendChild(arrowDownIcon);
-  tocTitle.appendChild(document.createTextNode(title));
-  toc.appendChild(tocTitle);
+  toc.appendChild(tocTitle).append(arrowDownIcon, document.createTextNode(title));
 }
 
 function formatHeadingText(headingText) {
