@@ -7,7 +7,6 @@ import {
   getIconElement,
   addHeaderSizing,
   getMetadata,
-  replaceHyphensInText,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
@@ -24,6 +23,14 @@ import {
   getExpressLandingPageType,
   sendEventToAnalytics,
 } from '../../scripts/instrument.js';
+
+function replaceHyphensInText(area) {
+  [...area.querySelectorAll('h1, h2, h3, h4, h5, h6')]
+    .filter((header) => header.textContent.includes('-'))
+    .forEach((header) => {
+      header.textContent = header.textContent.replace(/-/g, '\u2011');
+    });
+}
 
 function transformToVideoColumn(cell, aTag, block) {
   const parent = cell.parentElement;

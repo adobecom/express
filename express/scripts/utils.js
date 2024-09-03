@@ -2561,14 +2561,6 @@ function fragmentBlocksToLinks(area) {
   });
 }
 
-export function replaceHyphensInText(area) {
-  [...area.querySelectorAll('h1, h2, h3, h4, h5, h6')]
-    .filter((header) => header.textContent.includes('-'))
-    .forEach((header) => {
-      header.textContent = header.textContent.replace(/-/g, '\u2011');
-    });
-}
-
 export async function loadArea(area = document) {
   const isDoc = area === document;
 
