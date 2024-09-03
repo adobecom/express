@@ -155,6 +155,7 @@ function addTOCEntries(toc, config, doc) {
         tocEntries.push({ tocItem, heading });
 
         styleHeadingLink(heading, tocCounter);
+        setNormalStyle(tocItem);
         tocCounter += 1;
       }
     }
