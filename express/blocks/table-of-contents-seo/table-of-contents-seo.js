@@ -68,7 +68,7 @@ function addTOCItemClickEvent(tocItem, heading) {
 }
 
 function findCorrespondingHeading(headingText, doc) {
-  return Array.from(doc.querySelectorAll('main h1, main h2, main h3, main h4'))
+  return Array.from(doc.querySelectorAll('main :is(h2, h3, h4)'))
     .find((h) => h.textContent.trim().includes(headingText.replace('...', '').trim()));
 }
 
