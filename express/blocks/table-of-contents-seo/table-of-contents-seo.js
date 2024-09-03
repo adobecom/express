@@ -72,8 +72,8 @@ function findCorrespondingHeading(headingText, doc) {
     .find((h) => h.textContent.trim().includes(headingText.replace('...', '').trim()));
 }
 
-function handleTOCCloningForMobile(toc, tocEntries) {
-  if (getDeviceType() !== 'MOBILE') return;
+function handleTOCCloning(toc, tocEntries) {
+  if (getDeviceType() === 'DESKTOP') return;
 
   const tocClone = toc.cloneNode(true);
   tocClone.classList.add('mobile-toc');
@@ -137,7 +137,7 @@ function addTOCEntries(toc, config, doc) {
     }
   });
 
-  handleTOCCloningForMobile(toc, tocEntries);
+  handleTOCCloning(toc, tocEntries);
   return tocEntries;
 }
 
