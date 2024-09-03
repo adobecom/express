@@ -112,7 +112,7 @@ const loadExpressMartechSettings = () => {
         mod.default();
       });
     };
-    window.addEventListener('milo:LCP:loaded', handler);
+    window.addEventListener('express:LCP:loaded', handler);
   }
 };
 
