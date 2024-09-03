@@ -144,7 +144,7 @@ function addTOCEntries(toc, config, doc) {
   return tocEntries;
 }
 
-function setTOCPosition(toc, tocContainer, headerHeight) {
+function setTOCPosition(toc, tocContainer) {
   const firstLink = toc.querySelector('.toc-entry a');
   if (!firstLink || !tocContainer) {
     return;
@@ -162,17 +162,16 @@ function setTOCPosition(toc, tocContainer, headerHeight) {
   const targetTop = Math.round(window.scrollY + rect.top);
   const viewportMidpoint = window.innerHeight / 2;
 
-  tocContainer.style.top = targetTop <= window.scrollY + viewportMidpoint - headerHeight
+  tocContainer.style.top = targetTop <= window.scrollY + viewportMidpoint
     ? `${viewportMidpoint}px`
     : `${targetTop}px`;
 
-  tocContainer.style.position = targetTop <= window.scrollY + viewportMidpoint - headerHeight ? 'fixed' : 'absolute';
+  tocContainer.style.position = targetTop <= window.scrollY + viewportMidpoint ? 'fixed' : 'absolute';
   tocContainer.style.display = 'block';
 }
 
 function handleSetTOCPos(toc, tocContainer) {
-  const headerHeight = document.querySelector('header')?.offsetHeight - 65 || 0;
-  window.addEventListener('scroll', () => setTOCPosition(toc, tocContainer, headerHeight));
+  window.addEventListener('scroll', () => setTOCPosition(toc, tocContainer));
 }
 
 function applyTOCBehavior(toc, tocContainer) {
