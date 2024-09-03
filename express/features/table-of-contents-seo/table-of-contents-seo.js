@@ -1,7 +1,10 @@
 /* eslint-disable import/named, import/extensions */
 
-import { addTempWrapper } from '../../scripts/decorate.js';
-import { createTag, readBlockConfig, getIconElement } from '../../scripts/utils.js';
+import {
+  createTag,
+  getIconElement,
+  getMetadata,
+} from '../../scripts/utils.js';
 import { debounce } from '../../scripts/hofs.js';
 
 const MOBILE_SIZE = 981;
@@ -114,7 +117,7 @@ function addTOCEntries(toc, config, doc) {
   const tocEntries = [];
 
   Object.keys(config).forEach((key) => {
-    if (key.startsWith('item-')) {
+    if (key.startsWith('content-')) {
       const tocItem = createTag('div', { class: 'toc-entry' });
       const headingText = formatHeadingText(config[key]);
       const heading = findCorrespondingHeading(headingText, doc);
@@ -168,7 +171,7 @@ function setTOCPosition(toc, tocContainer, headerHeight) {
 }
 
 function handleSetTOCPos(toc, tocContainer) {
-  const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+  const headerHeight = document.querySelector('header')?.offsetHeight - 65 || 0;
   window.addEventListener('scroll', () => setTOCPosition(toc, tocContainer, headerHeight));
 }
 
@@ -182,7 +185,7 @@ function applyTOCBehavior(toc, tocContainer) {
 }
 
 function initializeTOCContainer() {
-  const tocContainer = document.querySelector('.table-of-contents-seo.block');
+  const tocContainer = document.querySelector('.table-of-contents-seo');
   tocContainer.style.display = 'none';
   return tocContainer;
 }
@@ -212,22 +215,35 @@ function handleActiveTOCHighlighting(tocEntries) {
   });
 }
 
-export default function decorate(block, name, doc) {
-  addTempWrapper(block, 'table-of-contents-seo');
-  Array.from(block.children).forEach((child) => {
-    child.style.display = 'none';
-  });
+function buildMetadataConfigObject() {
+  const title = getMetadata('toc-title');
+  const contents = [];
+  let i = 1;
+  let content = getMetadata(`content-${i}`);
 
+  while (content) {
+    contents.push({ [`content-${i}`]: content });
+    i += 1;
+    content = getMetadata(`content-${i}`);
+  }
+  const config = contents.reduce((acc, el) => ({
+    ...acc,
+    ...el,
+  }), { title });
+  return config;
+}
+
+export default function setTOCSEO() {
+  const doc = document.querySelector('main');
+  const config = buildMetadataConfigObject();
+  const tocSEO = createTag('div', { class: 'table-of-contents-seo' });
   const toc = createTag('div', { class: 'toc' });
-  const config = readBlockConfig(block);
-
   if (config.title) addTOCTitle(toc, config.title);
 
   const tocEntries = addTOCEntries(toc, config, doc);
   addHoverEffect(tocEntries);
-  block.innerHTML = '';
-  block.appendChild(toc);
-
+  tocSEO.appendChild(toc);
+  doc.appendChild(tocSEO);
   const tocContainer = initializeTOCContainer();
   applyTOCBehavior(toc, tocContainer);
   handleActiveTOCHighlighting(tocEntries);
