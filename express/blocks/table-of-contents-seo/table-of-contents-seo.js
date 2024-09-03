@@ -2,13 +2,15 @@
 
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { createTag, readBlockConfig, getIconElement } from '../../scripts/utils.js';
+import { debounce } from '../../scripts/hofs.js';
 
 const MOBILE_SIZE = 981;
 const getDeviceType = (() => {
   let deviceType = window.innerWidth >= MOBILE_SIZE ? 'DESKTOP' : 'MOBILE';
-  window.addEventListener('resize', () => {
+  const updateDeviceType = () => {
     deviceType = window.innerWidth >= MOBILE_SIZE ? 'DESKTOP' : 'MOBILE';
-  });
+  };
+  window.addEventListener('resize', debounce(updateDeviceType, 100));
   return () => deviceType;
 })();
 
