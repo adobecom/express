@@ -7,7 +7,7 @@ import {
 } from '../../scripts/utils.js';
 import { debounce } from '../../scripts/hofs.js';
 
-const MOBILE_SIZE = 981;
+const MOBILE_SIZE = 600;
 const getDeviceType = (() => {
   let deviceType = window.innerWidth >= MOBILE_SIZE ? 'DESKTOP' : 'MOBILE';
   const updateDeviceType = () => {
