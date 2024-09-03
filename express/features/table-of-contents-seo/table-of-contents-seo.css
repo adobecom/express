@@ -31,6 +31,14 @@
     white-space: normal;
     overflow-wrap: break-word;
   }
+
+  .toc-entry span.toc-bold {
+    font-weight: var(--font-weight-bold);
+  }
+  
+  .toc-entry a.toc-normal {
+    font-weight: normal;
+  }
   
   .vertical-line {
     width: 4px;

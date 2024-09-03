@@ -18,13 +18,33 @@ const getDeviceType = (() => {
 })();
 
 function setBoldStyle(element) {
-  element.querySelector('.toc-number').style.fontWeight = 'bold';
-  element.querySelector('a').style.fontWeight = 'bold';
+  const tocNumber = element.querySelector('.toc-number');
+  const tocLink = element.querySelector('a');
+
+  if (tocNumber) {
+    tocNumber.classList.remove('toc-normal');
+    tocNumber.classList.add('toc-bold');
+  }
+
+  if (tocLink) {
+    tocLink.classList.remove('toc-normal');
+    tocLink.classList.add('toc-bold');
+  }
 }
 
 function setNormalStyle(element) {
-  element.querySelector('.toc-number').style.fontWeight = 'normal';
-  element.querySelector('a').style.fontWeight = 'normal';
+  const tocNumber = element.querySelector('.toc-number');
+  const tocLink = element.querySelector('a');
+
+  if (tocNumber) {
+    tocNumber.classList.remove('toc-bold');
+    tocNumber.classList.add('toc-normal');
+  }
+
+  if (tocLink) {
+    tocLink.classList.remove('toc-bold');
+    tocLink.classList.add('toc-normal');
+  }
 }
 
 function addHoverEffect(tocEntries) {
@@ -91,14 +111,14 @@ function handleTOCCloning(toc, tocEntries) {
     });
   });
 
-  const originalTOC = document.querySelector('.table-of-contents-seo.block');
+  const originalTOC = document.querySelector('.table-of-contents-seo');
   if (originalTOC) originalTOC.style.display = 'none';
 }
 
 function setupTOCItem(tocItem, tocCounter, headingText, headingId) {
   tocItem.innerHTML = `
     <span class="toc-number">${tocCounter}.</span>
-    <a href="#${headingId}" daa-ll="${headingText}-2--" style="font-weight: normal;">
+    <a href="#${headingId}" daa-ll="${headingText}-${tocCounter}--">
       ${headingText}
     </a>
   `;
