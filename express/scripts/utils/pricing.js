@@ -339,6 +339,7 @@ export const getOffer = (() => {
       savePer: offer.savePer,
       ooAvailable,
       showVat,
+      term: offer.term,
       y2p: await formatPrice(offer.y2p, currency),
     };
   };
@@ -366,6 +367,7 @@ export const getOfferOnePlans = (() => {
     let offer = json.data.find((e) => (e.o === offerId) && (e.c === upperCountry));
     if (!offer) offer = json.data.find((e) => (e.o === offerId) && (e.c === 'US'));
     if (!offer) return {};
+
     const lang = getConfig().locale.ietf.split('-')[0];
     const unitPrice = offer.p;
     const customOfferId = offer.oo || offerId;
@@ -389,6 +391,7 @@ export const getOfferOnePlans = (() => {
       ooAvailable,
       showVat,
       y2p: await formatPrice(offer.y2p, currency),
+      term: offer.Term,
     };
   };
 })();
@@ -435,7 +438,6 @@ export async function fetchPlanOnePlans(planUrl) {
     }
 
     const offer = await getOfferOnePlans(plan.offerId);
-
     if (offer) {
       plan.currency = offer.currency;
       plan.price = offer.unitPrice;
@@ -451,6 +453,7 @@ export async function fetchPlanOnePlans(planUrl) {
       plan.sup = offer.priceSuperScript ?? '';
       plan.savePer = offer.savePer ?? '';
       plan.showVat = offer.showVat ?? false;
+      plan.term = offer.term;
       plan.formatted = offer.unitPriceCurrencyFormatted?.replace(
         plan.rawPrice[0],
         `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`,
@@ -533,6 +536,7 @@ export async function fetchPlan(planUrl) {
         plan.rawPrice[0],
         `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`,
       );
+      plan.term = offer.term;
 
       if (offer.basePriceCurrencyFormatted) {
         plan.rawBasePrice = offer.basePriceCurrencyFormatted.match(/[\d\s,.+]+/g);
