@@ -40,7 +40,7 @@
     font-weight: normal;
   }
   
-  .vertical-line {
+  .toc-entry .vertical-line {
     width: 4px;
     height: 100%;
     background-color: transparent;
