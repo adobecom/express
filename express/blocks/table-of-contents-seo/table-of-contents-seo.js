@@ -12,16 +12,20 @@ const getDeviceType = (() => {
   return () => deviceType;
 })();
 
-function setBoldStyle(element, isBold) {
-  const fontWeight = isBold ? 'bold' : 'normal';
-  element.querySelector('.toc-number').style.fontWeight = fontWeight;
-  element.querySelector('a').style.fontWeight = fontWeight;
+function setBoldStyle(element) {
+  element.querySelector('.toc-number').style.fontWeight = 'bold';
+  element.querySelector('a').style.fontWeight = 'bold';
+}
+
+function setNormalStyle(element) {
+  element.querySelector('.toc-number').style.fontWeight = 'normal';
+  element.querySelector('a').style.fontWeight = 'normal';
 }
 
 function addHoverEffect(tocEntries) {
   tocEntries.forEach(({ tocItem }) => {
-    tocItem.addEventListener('mouseenter', () => setBoldStyle(tocItem, true));
-    tocItem.addEventListener('mouseleave', () => setBoldStyle(tocItem, false));
+    tocItem.addEventListener('mouseenter', () => setBoldStyle(tocItem));
+    tocItem.addEventListener('mouseleave', () => setNormalStyle(tocItem));
   });
 }
 
@@ -195,16 +199,17 @@ function handleActiveTOCHighlighting(tocEntries) {
       const rect = heading.getBoundingClientRect();
       return rect.top <= window.innerHeight / 2 && rect.bottom > 0;
     })?.tocItem;
+
     if (!currentHeading) return;
 
     if (currentHeading !== activeEntry) {
       if (activeEntry) {
-        setBoldStyle(activeEntry, false);
+        setNormalStyle(activeEntry);
         activeEntry.classList.remove('active');
       }
       activeEntry = currentHeading;
       if (activeEntry) {
-        setBoldStyle(activeEntry, true);
+        setBoldStyle(activeEntry);
         activeEntry.classList.add('active');
       }
     }
