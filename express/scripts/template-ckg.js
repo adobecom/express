@@ -138,8 +138,10 @@ async function updateLinkList(container, linkPill, list) {
         const innerLink = clone.querySelector('a');
         if (innerLink) {
           const url = new URL(innerLink.href);
-          url.searchParams.set('searchId', generateSearchId());
-          innerLink.href = url.toString();
+          if (!url.searchParams.get('searchId')) {
+            url.searchParams.set('searchId', generateSearchId());
+            innerLink.href = url.toString();
+          }
         }
 
         if (clone) pageLinks.push(clone);
