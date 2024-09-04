@@ -1322,7 +1322,7 @@ async function decorateTemplates(block, props) {
 
   const searchId = new URLSearchParams(window.location.search).get('searchId');
   updateImpressionCache({
-    search_keyword: getMetadata('q') || getMetadata('topics-x'),
+    search_keyword: getMetadata('q') || getMetadata('topics-x') || getMetadata('topics'),
     result_count: props.total,
     content_category: 'templates',
   });
@@ -1464,7 +1464,7 @@ function importSearchBar(block, blockMediator) {
             type_filter: 'all',
             collection: 'all-templates',
             keyword_rank: index + 1,
-            search_keyword: searchBar.value,
+            search_keyword: searchBar.value || 'empty search',
             search_type: 'autocomplete',
           });
           await onSearchSubmit();
@@ -1478,7 +1478,7 @@ function importSearchBar(block, blockMediator) {
             type_filter: 'all',
             collection: 'all-templates',
             search_type: 'direct',
-            search_keyword: searchBar.value,
+            search_keyword: searchBar.value || 'empty search',
           });
           await onSearchSubmit();
         });

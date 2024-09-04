@@ -385,7 +385,7 @@ function renderHoverWrapper(template, placeholders) {
       content_id: template.id,
       status: template.licensingCategory,
       task: getMetadata('tasksx') || getMetadata('tasks') || '',
-      search_keyword: getMetadata('q') || getMetadata('topics') || '',
+      search_keyword: getMetadata('q') || getMetadata('topics-x') || getMetadata('topics') || '',
       collection: getMetadata('tasksx') || getMetadata('tasks') || '',
       collection_path: window.location.pathname,
     });
