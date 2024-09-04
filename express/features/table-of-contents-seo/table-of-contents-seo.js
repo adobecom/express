@@ -81,12 +81,15 @@ function assignHeadingIdIfNeeded(heading, headingText) {
 function addTOCItemClickEvent(tocItem, heading) {
   tocItem.addEventListener('click', (event) => {
     event.preventDefault();
-
-    const headerOffset = 70;
-    const rect = heading.getBoundingClientRect();
-    const offsetPosition = rect.top + window.scrollY - headerOffset;
-
-    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    const headerElement = document.getElementById(heading.id);
+    if (headerElement) {
+      const headerRect = headerElement.getBoundingClientRect();
+      const headerOffset = 70;
+      const offsetPosition = headerRect.top + window.scrollY - headerOffset;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    } else {
+      console.error(`Element with id "${heading.id}" not found.`);
+    }
   });
 }
 
