@@ -218,7 +218,8 @@ function handleActiveTOCHighlighting(tocEntries) {
 
   window.addEventListener('scroll', () => {
     const currentHeading = tocEntries.find(({ heading }) => {
-      const rect = heading.getBoundingClientRect();
+      const headerElement = document.getElementById(heading.id);
+      const rect = headerElement.getBoundingClientRect();
       return rect.top <= window.innerHeight / 2 && rect.bottom > 0;
     })?.tocItem;
 
