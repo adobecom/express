@@ -160,7 +160,7 @@ function initSearchFunction(block) {
   };
 
   const onSearchSubmit = async () => {
-    searchBar.disabled = true;
+    // searchBar.disabled = true;
     await redirectSearch();
   };
 
