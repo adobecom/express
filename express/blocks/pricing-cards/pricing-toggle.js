@@ -106,12 +106,11 @@ export default function createToggle(placeholders, pricingSections, groupID, adj
       : basePlan;
     const label = placeholders?.[planLabelID];
     const buttonID = `${groupID}:${basePlan}`;
-    const isDefault = i === 0;
+    const isDefault = i === 1;
     const button = createTag('button', {
       class: isDefault ? 'checked' : '',
       id: buttonID,
       plan: basePlan,
-      tabIndex: isDefault ? '0' : '-1',
       role: 'radio',
       'aria-checked': isDefault.toString(),
       'aria-labelledby': buttonID,

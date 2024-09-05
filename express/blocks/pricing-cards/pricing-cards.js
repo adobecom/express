@@ -430,8 +430,8 @@ async function decorateCard({
       specialPromo, groupID, legacyVersion),
     createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
   ]);
-  mPricingSection.classList.add('monthly');
-  yPricingSection.classList.add('annually', 'hide');
+  mPricingSection.classList.add('monthly', 'hide');
+  yPricingSection.classList.add('annually');
 
   const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID,
     adjustElementPosition);
