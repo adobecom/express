@@ -178,6 +178,12 @@ export default async function decorate(block) {
   const colorProperties = extractProperties(block);
   addTempWrapper(block, 'columns');
 
+  const narrowWidth = getMetadata('narrow-width') === 'on';
+  const container = document.querySelector('div.columns.block');
+  if (narrowWidth && container) {
+    container.classList.add('narrow-desktop-width');
+  }
+
   const rows = Array.from(block.children);
 
   let numCols = 0;

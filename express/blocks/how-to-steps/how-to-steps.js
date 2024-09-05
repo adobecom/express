@@ -2,6 +2,7 @@
 
 import {
   createTag,
+  getMetadata,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
@@ -9,6 +10,12 @@ export default function decorate($block, name, doc) {
   const $howto = $block;
   const $heading = $howto.closest('.section').querySelector('h2, h3, h4');
   const $rows = Array.from($howto.children);
+
+  const narrowWidth = getMetadata('narrow-width') === 'on';
+  const container = document.querySelector('div.how-to-steps.block');
+  if (narrowWidth && container) {
+    container.classList.add('narrow-desktop-width');
+  }
 
   const includeSchema = !$block.classList.contains('noschema');
 

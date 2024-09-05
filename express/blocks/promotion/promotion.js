@@ -4,7 +4,9 @@ import {
   decorateButtons,
   fixIcons,
   toClassName,
-  createOptimizedPicture, getConfig,
+  createOptimizedPicture,
+  getConfig,
+  getMetadata,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 
@@ -23,6 +25,12 @@ async function fetchPromotion(name) {
 
 export default async function decorate($block) {
   addTempWrapper($block, 'promotion');
+
+  const narrowWidth = getMetadata('narrow-width') === 'on';
+  const container = document.querySelector('div.promotion.block');
+  if (narrowWidth && container) {
+    container.classList.add('narrow-desktop-width');
+  }
 
   const name = $block.textContent.trim();
   if (!name) return;

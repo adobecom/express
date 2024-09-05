@@ -62,6 +62,12 @@ function decorateFAQBlocks(block) {
 export default async function decorate(block) {
   decorateFAQBlocks(block);
 
+  const narrowWidth = getMetadata('narrow-width') === 'on';
+  const container = document.querySelector('div.faq.block');
+  if (narrowWidth && container) {
+    container.classList.add('narrow-desktop-width');
+  }
+
   const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
   if (phoneNumberTags.length > 0) {
     const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');

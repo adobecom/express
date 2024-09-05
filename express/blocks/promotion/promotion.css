@@ -48,6 +48,12 @@ main .section .promotion h2 {
   margin-top: 0;
 }
 
+main .promotion.narrow-desktop-width {
+  max-width: 850px;
+  margin: 0 auto; 
+  padding: 10px; 
+}
+
 @media (min-width: 900px) {
   main .section.promotion-container > div {
     max-width: 800px;
