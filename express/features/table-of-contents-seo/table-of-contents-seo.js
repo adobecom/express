@@ -8,10 +8,12 @@ import {
 import { debounce } from '../../scripts/hofs.js';
 
 const MOBILE_SIZE = 600;
+const MOBILE = 'MOBILE';
+const DESKTOP = 'DESKTOP';
 const getDeviceType = (() => {
-  let deviceType = window.innerWidth >= MOBILE_SIZE ? 'DESKTOP' : 'MOBILE';
+  let deviceType = window.innerWidth >= MOBILE_SIZE ? DESKTOP : MOBILE;
   const updateDeviceType = () => {
-    deviceType = window.innerWidth >= MOBILE_SIZE ? 'DESKTOP' : 'MOBILE';
+    deviceType = window.innerWidth >= MOBILE_SIZE ? DESKTOP : MOBILE;
   };
   window.addEventListener('resize', debounce(updateDeviceType, 100));
   return () => deviceType;
@@ -81,12 +83,15 @@ function assignHeadingIdIfNeeded(heading, headingText) {
 function addTOCItemClickEvent(tocItem, heading) {
   tocItem.addEventListener('click', (event) => {
     event.preventDefault();
-
-    const headerOffset = 70;
-    const rect = heading.getBoundingClientRect();
-    const offsetPosition = rect.top + window.scrollY - headerOffset;
-
-    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    const headerElement = document.getElementById(heading.id);
+    if (headerElement) {
+      const headerRect = headerElement.getBoundingClientRect();
+      const headerOffset = 70;
+      const offsetPosition = headerRect.top + window.scrollY - headerOffset;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    } else {
+      console.error(`Element with id "${heading.id}" not found.`);
+    }
   });
 }
 
@@ -96,15 +101,11 @@ function findCorrespondingHeading(headingText, doc) {
 }
 
 function handleTOCCloning(toc, tocEntries) {
-  if (getDeviceType() === 'DESKTOP') return;
-
-  const tocClone = toc.cloneNode(true);
-  tocClone.classList.add('mobile-toc');
-
   tocEntries.forEach(({ heading }) => {
+    const tocClone = toc.cloneNode(true);
+    tocClone.classList.add('mobile-toc');
     const clonedTOC = tocClone.cloneNode(true);
-    heading.parentNode.insertBefore(clonedTOC, heading);
-
+    heading.parentNode.prepend(clonedTOC, heading);
     const clonedTOCEntries = clonedTOC.querySelectorAll('.toc-entry');
     clonedTOCEntries.forEach((tocEntry, index) => {
       addTOCItemClickEvent(tocEntry, tocEntries[index].heading);
@@ -124,11 +125,13 @@ function setupTOCItem(tocItem, tocCounter, headingText, headingId) {
   `;
 }
 
-function styleHeadingLink(heading, tocCounter) {
+function styleHeadingLink(heading, tocCounter, toc) {
   const numberCircle = createTag('span', {
     class: 'number-circle',
     'data-number': tocCounter,
   });
+  const tocClone = toc.cloneNode(true);
+  tocClone.classList.add('mobile-toc');
   heading.prepend(numberCircle);
 }
 
@@ -154,14 +157,15 @@ function addTOCEntries(toc, config, doc) {
         toc.appendChild(tocItem);
         tocEntries.push({ tocItem, heading });
 
-        styleHeadingLink(heading, tocCounter);
+        styleHeadingLink(heading, tocCounter, toc);
         setNormalStyle(tocItem);
         tocCounter += 1;
       }
     }
   });
 
-  handleTOCCloning(toc, tocEntries);
+  if (getDeviceType() !== DESKTOP) handleTOCCloning(toc, tocEntries);
+
   return tocEntries;
 }
 
@@ -196,12 +200,10 @@ function handleSetTOCPos(toc, tocContainer) {
 }
 
 function applyTOCBehavior(toc, tocContainer) {
-  if (getDeviceType() === 'DESKTOP') {
-    document.querySelectorAll('.mobile-toc').forEach((mobileToc) => {
-      mobileToc.style.display = 'none';
-    });
-    handleSetTOCPos(toc, tocContainer);
-  }
+  document.querySelectorAll('.mobile-toc').forEach((mobileToc) => {
+    mobileToc.style.display = 'none';
+  });
+  handleSetTOCPos(toc, tocContainer);
 }
 
 function initializeTOCContainer() {
@@ -215,7 +217,8 @@ function handleActiveTOCHighlighting(tocEntries) {
 
   window.addEventListener('scroll', () => {
     const currentHeading = tocEntries.find(({ heading }) => {
-      const rect = heading.getBoundingClientRect();
+      const headerElement = document.getElementById(heading.id);
+      const rect = headerElement.getBoundingClientRect();
       return rect.top <= window.innerHeight / 2 && rect.bottom > 0;
     })?.tocItem;
 
@@ -253,18 +256,25 @@ function buildMetadataConfigObject() {
   return config;
 }
 
-export default function setTOCSEO() {
+export default async function setTOCSEO() {
   const doc = document.querySelector('main');
   const config = buildMetadataConfigObject();
   const tocSEO = createTag('div', { class: 'table-of-contents-seo' });
   const toc = createTag('div', { class: 'toc' });
   if (config.title) addTOCTitle(toc, config.title);
 
-  const tocEntries = addTOCEntries(toc, config, doc);
-  addHoverEffect(tocEntries);
-  tocSEO.appendChild(toc);
-  doc.appendChild(tocSEO);
-  const tocContainer = initializeTOCContainer();
-  applyTOCBehavior(toc, tocContainer);
-  handleActiveTOCHighlighting(tocEntries);
+  let tocEntries;
+  if (getDeviceType() === DESKTOP) {
+    tocEntries = addTOCEntries(toc, config, doc);
+    addHoverEffect(tocEntries);
+    tocSEO.appendChild(toc);
+    doc.appendChild(tocSEO);
+    const tocContainer = initializeTOCContainer();
+    applyTOCBehavior(toc, tocContainer);
+    handleActiveTOCHighlighting(tocEntries);
+  } else {
+    setTimeout(() => {
+      tocEntries = addTOCEntries(toc, config, doc);
+    }, 50);
+  }
 }

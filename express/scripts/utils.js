@@ -2431,6 +2431,7 @@ async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
   loadTOC();
+
   window.dispatchEvent(new Event('express:LCP:loaded'));
   if (config.mep?.targetEnabled === 'gnav') {
     await loadMartech({ persEnabled: true, postLCP: true });
