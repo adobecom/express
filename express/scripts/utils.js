@@ -926,6 +926,15 @@ function decorateContent(el) {
   block.className = 'default-content-wrapper';
   block.append(...children);
   block.dataset.block = '';
+
+  const narrowWidth = getMetadata('narrow-width') === 'on';
+  const containers = document.querySelectorAll('div.default-content-wrapper');
+  containers.forEach((container) => {
+    if (narrowWidth && container) {
+      container.classList.add('narrow-desktop-width');
+    }
+  });
+
   return block;
 }
 

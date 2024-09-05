@@ -2172,6 +2172,12 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     padding: 0 28px;
 }
 
+.template-x-narrow-container {
+    max-width: 850px;
+    margin: 0 auto; 
+    padding: 10px;  
+}
+
 nav ol.templates-breadcrumbs {
     list-style: none;
     margin: 0 0 0 16px;

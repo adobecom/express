@@ -99,6 +99,12 @@ main .banner .standout-container em {
   font-weight: 900;
 }
 
+main .banner.block.narrow-desktop-width {
+  max-width: 850px;
+  margin: 0 auto; 
+  padding: 10px; 
+}
+
 @media (min-width: 900px) {
   main .section.banner-container {
     padding-left: 56px;

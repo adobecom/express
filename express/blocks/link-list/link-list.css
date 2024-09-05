@@ -8,6 +8,12 @@ main .link-list-centered-container > div {
   max-width: 1200px;
 }
 
+main .section.link-list-container .link-list.block.narrow-desktop-width {
+  max-width: 850px;
+  margin: 0 auto; 
+  padding: 10px; 
+}
+
 main .link-list {
   display: block;
   overflow: hidden;
