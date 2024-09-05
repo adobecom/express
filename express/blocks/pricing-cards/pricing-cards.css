@@ -295,6 +295,12 @@ main .section:has(.pricing-cards)>div,
   gap: 10px;
 }
 
+.pricing-cards .billing-toggle .toggle-button-wrapper {
+  display: flex;
+  margin-top: 10px;
+  gap: 12px;
+}
+
 .pricing-cards .billing-toggle button {
   border: 2px transparent solid;
   padding: 0;
