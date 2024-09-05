@@ -3,6 +3,7 @@ import {
   createTag,
   fetchPlaceholders,
   transformLinkToAnimation,
+  getMetadata,
 } from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
@@ -176,6 +177,12 @@ export default async function decorate(block) {
   if (heading) {
     heading.classList.add('fullscreen-marquee-heading');
     block.append(heading);
+  }
+
+  const narrowWidth = getMetadata('narrow-width') === 'on';
+  const container = document.querySelector('.fullscreen-marquee-heading > h1');
+  if (narrowWidth && container) {
+    container.classList.add('narrow-desktop-width');
   }
 
   if (content && document.body.dataset.device === 'desktop') {
