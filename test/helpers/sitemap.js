@@ -23,10 +23,12 @@ async function makeRequests() {
         },
       });
       if (response.status !== 200) {
+        /* eslint-disable*/
         console.error(`Error: ${url}`, response.statusText);
         failedURLs.push(url);
       } else {
         const data = await response.text();
+        /* eslint-disable*/
         console.log(`Success: ${url}`, data);
       }
     } catch (error) {
@@ -35,11 +37,15 @@ async function makeRequests() {
     }
   }
   if (failedURLs.length > 0) {
+    /* eslint-disable*/
     console.error('------------');
+    /* eslint-disable*/
     console.error('Failed to build some urls');
     for (const url of failedURLs) {
+      /* eslint-disable*/
       console.error(url);
     }
+    /* eslint-disable*/
     console.error('------------');
     throw new Error('Failed to rebuild some urls');
   }
