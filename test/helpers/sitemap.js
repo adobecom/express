@@ -17,7 +17,7 @@ if (!apiKey) {
 }
 
 async function makeRequests() {
-  const baseURL = 'https://admin.hlx.page/sitemap/adobecom/express/stage/';
+  const baseURL = 'https://admin.hlx.page/sitemap/adobecom/express/main/';
   const failedURLs = [];
   await Promise.all(urls.map(async (url) => {
     try {
