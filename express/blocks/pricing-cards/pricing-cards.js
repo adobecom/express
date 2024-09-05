@@ -431,7 +431,10 @@ async function decorateCard({
     createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
   ]);
   mPricingSection.classList.add('monthly');
-  yPricingSection.classList.add('annually', 'hide');
+  yPricingSection.classList.add('annually');
+  // urgent update
+  const defaultHidePlan = BlockMediator.get(groupID) === 'ABM' ? 0 : 1;
+  [mPricingSection, yPricingSection][defaultHidePlan].classList.add('hide');
 
   const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID,
     adjustElementPosition);
