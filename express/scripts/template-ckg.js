@@ -132,8 +132,18 @@ async function updateLinkList(container, linkPill, list) {
         };
 
         clone = replaceLinkPill(linkPill, pageData);
-        clone.innerHTML = clone.innerHTML.replaceAll('Default', d.displayValue);
-        clone.innerHTML = clone.innerHTML.replace('/express/templates/default', `${d.pathname}?searchId=${generateSearchId()}`);
+        clone.innerHTML = clone.innerHTML
+          .replaceAll('Default', d.displayValue)
+          .replace('/express/templates/default', d.pathname);
+        const innerLink = clone.querySelector('a');
+        if (innerLink) {
+          const url = new URL(innerLink.href);
+          if (!url.searchParams.get('searchId')) {
+            url.searchParams.set('searchId', generateSearchId());
+            innerLink.href = url.toString();
+          }
+        }
+
         if (clone) pageLinks.push(clone);
       } else {
         // fixme: we need single page search UX
