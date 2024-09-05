@@ -102,7 +102,6 @@ main .banner .standout-container em {
 main .banner.narrow-desktop-width {
   max-width: 850px;
   margin: 0 auto; 
-  padding: 10px; 
 }
 
 @media (min-width: 900px) {

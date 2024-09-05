@@ -1025,7 +1025,6 @@ main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .
 main .long-form.grid-width-6-desktop .default-content-wrapper.narrow-desktop-width {
   max-width: 850px;
   margin: 0 auto; 
-  padding: 10px; 
 } 
 
 

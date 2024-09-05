@@ -210,7 +210,6 @@ main .section.columns-container.steps-container div .steps.block div.step-descri
 main .columns-wrapper .columns.narrow-desktop-width {
   max-width: 850px;
   margin: 0 auto; 
-  padding: 10px; 
 }
 
 main .columns > div span.num {

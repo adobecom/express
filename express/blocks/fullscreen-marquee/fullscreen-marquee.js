@@ -181,8 +181,11 @@ export default async function decorate(block) {
 
   const narrowWidth = getMetadata('narrow-width') === 'on';
   const container = document.querySelector('.fullscreen-marquee-heading > h1');
-  if (narrowWidth && container) {
+  const desktop = document.body.dataset.device === 'desktop';
+  if (narrowWidth && container && desktop) {
     container.classList.add('narrow-desktop-width');
+  } else {
+    container.classList.remove('narrow-desktop-width');
   }
 
   if (content && document.body.dataset.device === 'desktop') {

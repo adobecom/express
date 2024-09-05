@@ -929,9 +929,16 @@ function decorateContent(el) {
 
   const narrowWidth = getMetadata('narrow-width') === 'on';
   const containers = document.querySelectorAll('div.default-content-wrapper');
+  const desktop = document.body.dataset.device === 'desktop';
   containers.forEach((container) => {
     if (narrowWidth && container) {
       container.classList.add('narrow-desktop-width');
+      if (!desktop) {
+        const headers = container.querySelectorAll('h1'); // Select all header elements
+        headers.forEach((header) => {
+          header.style.fontSize = '36px';
+        });
+      }
     }
   });
 
