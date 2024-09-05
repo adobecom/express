@@ -2,11 +2,8 @@ main .tutorials-container > div {
   max-width: 1200px;
 }
 
-main .tutorials-twoperrow-container > div {
+.default-content-wrapper:has(+ .tutorials-wrapper .tutorials.twoperrow) {
   max-width: 1024px;
-}
-
-main .tutorials-twoperrow-container .default-content-wrapper {
   margin-top: 24px;
 }
 
@@ -17,12 +14,12 @@ main .tutorials {
   margin: 64px 72px;
 }
 
-main .tutorials-twoperrow-container .tutorials {
+main .tutorials-wrapper .tutorials {
   margin: 0 72px;
   padding: 24px 0 64px;
 }
 
-main .tutorials.block.twoperrow {
+main .tutorials-wrapper .tutorials.twoperrow {
   max-width: 825px;
   margin-left: auto;
   margin-right: auto;
