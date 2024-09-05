@@ -13,8 +13,12 @@ export default function decorate($block, name, doc) {
 
   const narrowWidth = getMetadata('narrow-width') === 'on';
   const container = document.querySelector('div.how-to-steps.block');
-  if (narrowWidth && container) {
+  const desktop = document.body.dataset.device === 'desktop';
+  if (desktop && narrowWidth && container) {
     container.classList.add('narrow-desktop-width');
+  } else if (narrowWidth && container) {
+    container.classList.remove('narrow-desktop-width');
+    container.classList.add('narrow-mobile-width');
   }
 
   const includeSchema = !$block.classList.contains('noschema');
