@@ -8,10 +8,12 @@ import {
 import { debounce } from '../../scripts/hofs.js';
 
 const MOBILE_SIZE = 600;
+const MOBILE = 'MOBILE';
+const DESKTOP = 'DESKTOP';
 const getDeviceType = (() => {
-  let deviceType = window.innerWidth >= MOBILE_SIZE ? 'DESKTOP' : 'MOBILE';
+  let deviceType = window.innerWidth >= MOBILE_SIZE ? DESKTOP : MOBILE;
   const updateDeviceType = () => {
-    deviceType = window.innerWidth >= MOBILE_SIZE ? 'DESKTOP' : 'MOBILE';
+    deviceType = window.innerWidth >= MOBILE_SIZE ? DESKTOP : MOBILE;
   };
   window.addEventListener('resize', debounce(updateDeviceType, 100));
   return () => deviceType;
@@ -99,20 +101,18 @@ function findCorrespondingHeading(headingText, doc) {
 }
 
 function handleTOCCloning(toc, tocEntries) {
-  if (getDeviceType() === 'DESKTOP') return;
-
-  const tocClone = toc.cloneNode(true);
-  tocClone.classList.add('mobile-toc');
-
+  // problem block
   tocEntries.forEach(({ heading }) => {
+    const tocClone = toc.cloneNode(true);
+    tocClone.classList.add('mobile-toc');
     const clonedTOC = tocClone.cloneNode(true);
-    heading.parentNode.insertBefore(clonedTOC, heading);
-
+    heading.parentNode.prepend(clonedTOC, heading);
     const clonedTOCEntries = clonedTOC.querySelectorAll('.toc-entry');
     clonedTOCEntries.forEach((tocEntry, index) => {
       addTOCItemClickEvent(tocEntry, tocEntries[index].heading);
     });
   });
+  // end of problem block
 
   const originalTOC = document.querySelector('.table-of-contents-seo');
   if (originalTOC) originalTOC.style.display = 'none';
@@ -127,11 +127,13 @@ function setupTOCItem(tocItem, tocCounter, headingText, headingId) {
   `;
 }
 
-function styleHeadingLink(heading, tocCounter) {
+function styleHeadingLink(heading, tocCounter, toc) {
   const numberCircle = createTag('span', {
     class: 'number-circle',
     'data-number': tocCounter,
   });
+  const tocClone = toc.cloneNode(true);
+  tocClone.classList.add('mobile-toc');
   heading.prepend(numberCircle);
 }
 
@@ -157,14 +159,15 @@ function addTOCEntries(toc, config, doc) {
         toc.appendChild(tocItem);
         tocEntries.push({ tocItem, heading });
 
-        styleHeadingLink(heading, tocCounter);
+        styleHeadingLink(heading, tocCounter, toc);
         setNormalStyle(tocItem);
         tocCounter += 1;
       }
     }
   });
 
-  handleTOCCloning(toc, tocEntries);
+  if (getDeviceType() !== DESKTOP) handleTOCCloning(toc, tocEntries);
+
   return tocEntries;
 }
 
@@ -199,12 +202,10 @@ function handleSetTOCPos(toc, tocContainer) {
 }
 
 function applyTOCBehavior(toc, tocContainer) {
-  if (getDeviceType() === 'DESKTOP') {
-    document.querySelectorAll('.mobile-toc').forEach((mobileToc) => {
-      mobileToc.style.display = 'none';
-    });
-    handleSetTOCPos(toc, tocContainer);
-  }
+  document.querySelectorAll('.mobile-toc').forEach((mobileToc) => {
+    mobileToc.style.display = 'none';
+  });
+  handleSetTOCPos(toc, tocContainer);
 }
 
 function initializeTOCContainer() {
@@ -257,18 +258,25 @@ function buildMetadataConfigObject() {
   return config;
 }
 
-export default function setTOCSEO() {
+export default async function setTOCSEO() {
   const doc = document.querySelector('main');
   const config = buildMetadataConfigObject();
   const tocSEO = createTag('div', { class: 'table-of-contents-seo' });
   const toc = createTag('div', { class: 'toc' });
   if (config.title) addTOCTitle(toc, config.title);
 
-  const tocEntries = addTOCEntries(toc, config, doc);
-  addHoverEffect(tocEntries);
-  tocSEO.appendChild(toc);
-  doc.appendChild(tocSEO);
-  const tocContainer = initializeTOCContainer();
-  applyTOCBehavior(toc, tocContainer);
-  handleActiveTOCHighlighting(tocEntries);
+  let tocEntries;
+  if (getDeviceType() === DESKTOP) {
+    tocEntries = addTOCEntries(toc, config, doc);
+    addHoverEffect(tocEntries);
+    tocSEO.appendChild(toc);
+    doc.appendChild(tocSEO);
+    const tocContainer = initializeTOCContainer();
+    applyTOCBehavior(toc, tocContainer);
+    handleActiveTOCHighlighting(tocEntries);
+  } else {
+    setTimeout(() => {
+      tocEntries = addTOCEntries(toc, config, doc);
+    }, 100);
+  }
 }
