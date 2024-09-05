@@ -6,9 +6,5 @@
 **Steps to test the before vs. after and expectations:**
 - Steps for feature 1
 
-**Impacted pages to check for regression:**
+**Pages to check for regression and performance:**
 - https://<branch>--express--adobecom.hlx.page/express/?martech=off
-
-**Performance Testing URLs:**
-- Before: https://stage--express--adobecom.hlx.page/express/?martech=off
-- After: https://<branch>--express--adobecom.hlx.page/express/?martech=off
