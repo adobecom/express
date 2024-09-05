@@ -207,7 +207,7 @@ main .section.columns-container.steps-container div .steps.block div.step-descri
   line-height: 1.28;
 }
 
-main .columns-wrapper .columns.block.narrow-desktop-width {
+main .columns-wrapper .columns.narrow-desktop-width {
   max-width: 850px;
   margin: 0 auto; 
   padding: 10px; 

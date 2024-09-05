@@ -79,14 +79,14 @@ main .how-to-steps .tip-number span {
   transform: translate(-50%, -50%);
 }
 
-main .how-to-steps-inline-tip-container .how-to-steps.block.narrow-desktop-width {
+main .how-to-steps-inline-tip-container .how-to-steps.narrow-desktop-width {
   max-width: 850px;
   margin: 0 auto; 
   padding: 10px; 
 }
 
 
-main .how-to-steps .block .narrow-desktop-width {
+main .how-to-steps .narrow-desktop-width {
     max-width: 850px;
     margin: 0 auto; 
     padding: 10px;  
