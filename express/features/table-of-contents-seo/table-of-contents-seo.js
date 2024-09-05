@@ -101,7 +101,6 @@ function findCorrespondingHeading(headingText, doc) {
 }
 
 function handleTOCCloning(toc, tocEntries) {
-  // problem block
   tocEntries.forEach(({ heading }) => {
     const tocClone = toc.cloneNode(true);
     tocClone.classList.add('mobile-toc');
@@ -112,7 +111,6 @@ function handleTOCCloning(toc, tocEntries) {
       addTOCItemClickEvent(tocEntry, tocEntries[index].heading);
     });
   });
-  // end of problem block
 
   const originalTOC = document.querySelector('.table-of-contents-seo');
   if (originalTOC) originalTOC.style.display = 'none';
@@ -277,6 +275,6 @@ export default async function setTOCSEO() {
   } else {
     setTimeout(() => {
       tocEntries = addTOCEntries(toc, config, doc);
-    }, 100);
+    }, 50);
   }
 }
