@@ -159,7 +159,7 @@
   --type-heading-xs-lh: 20px;
   --type-heading-xxs-size: calc(var(--font-size-multiplier, 1) * 14px);
   --type-heading-xxs-lh: 18px;
-  
+
 }
 
 @media (min-width: 900px) {
@@ -825,32 +825,6 @@ main .section[data-padding='none'] {
 
 main .section.secondary {
   background-color: var(--color-gray-100);
-}
-
-main .section.pricing-hub.toc {
-  padding-bottom: 0;
-}
-
-main .section.pricing-hub-toc .link-list {
-  margin: 0 auto;
-}
-
-main .section.pricing-hub-toc .link-list-wrapper {
-  padding-top: 10px;
-}
-
-main .section.pricing-hub-toc .columns > div {
-  padding: 0;
-}
-
-main .section.pricing-hub-toc .columns .column {
-  margin: 0 auto;
-  padding: 0 0 10px 0!important;
-}
-
-main .section.pricing-hub-toc .columns h1 {
-  font-size: var(--heading-font-size-l);
-  margin: 20px auto;
 }
 
 @media (min-width: 900px) {
