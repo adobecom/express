@@ -20,8 +20,18 @@ jobs:
     - name: Install secondary dependencies
       run: npm install node-fetch@2 dotenv
     - name: Install main dependencies
-      run: npm ci
-    - name: Run script
-      env:
-        HELIX_API_KEY: ${{ secrets.HELIX_API_KEY }}
-      run: node ./test/helpers/sitemap.js
+      run: npm ci 
+    - uses: actions/checkout@v3
+    - name: Import Secrets
+      uses: hashicorp/vault-action@v2
+      with:
+        url: https://vault-amer.adobe.net
+        tlsSkipVerify: false
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        secrets: |
+            cloudtech_wcms/data/express_dev HELIX_API_KEY
+    - name: Run sitemap script
+      run: |
+          node ./test/helpers/sitemap.js
