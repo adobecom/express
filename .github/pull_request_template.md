@@ -1,14 +1,10 @@
-Describe your specific features or fixes:
+**Fixes following issues|Adds following features:**
+- Issue/Feature 1
 
-Resolves: [MWPW-NUMBER](https://jira.corp.adobe.com/browse/MWPW-NUMBER)
+**Resolves:** [MWPW-NUMBER](https://jira.corp.adobe.com/browse/MWPW-NUMBER)
 
-If fixing a bug, steps to reproduce the bug:
+**Steps to test the before vs. after and expectations:**
+- Steps for feature 1
 
-Steps to test the before vs. after and expectations:
-
-Impacted pages that should be checked for regression:
-
-
-Test URLs:
-- Before: https://stage--express--adobecom.hlx.page/express/
-- After: https://<branch>--express--adobecom.hlx.page/express/
+**Pages to check for regression and performance:**
+- https://<branch>--express--adobecom.hlx.page/express/?martech=off
