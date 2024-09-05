@@ -2,7 +2,7 @@ name: Run Sitemap Rebuild
 
 on:
   pull_request:
-    branches: [ main, stage ]
+    branches: [ main ]
     paths:
       - 'fstab.yaml'
       - 'helix-query.yaml'
