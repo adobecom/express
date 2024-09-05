@@ -9,7 +9,7 @@ on:
       - 'helix-sitemap.yaml'
 
 jobs:
-  run-script:
+  run-sitemap-script:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
