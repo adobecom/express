@@ -5,15 +5,21 @@ const dotenv = require('dotenv');
 dotenv.config();
 const urls = [
   'https://www.adobe.com/express/sitemap.xml',
+  'https://www.adobe.com/express/templates/sitemap.xml',
+  'https://www.adobe.com/express/colors/sitemap.xml',
+  'https://www.adobe.com/express/blog/sitemap.xml',
+
 ];
+
 const apiKey = process.env.HELIX_API_KEY;
 if (!apiKey) {
   throw new Error(`Invalid API Key: ${apiKey}`);
 }
+
 async function makeRequests() {
   const baseURL = 'https://admin.hlx.page/sitemap/adobecom/express/stage/';
   const failedURLs = [];
-  for await (const url of urls) {
+  await Promise.all(urls.map(async (url) => {
     try {
       const parsedURL = url.split('https://www.adobe.com/')[1];
       const response = await fetch(baseURL + parsedURL, {
@@ -35,7 +41,7 @@ async function makeRequests() {
       console.log(error);
       failedURLs.push(url);
     }
-  }
+  }))
   if (failedURLs.length > 0) {
     /* eslint-disable*/
     console.error('------------');
@@ -51,4 +57,4 @@ async function makeRequests() {
   }
 }
 
-makeRequests();
+makeRequests().catch((e) => console.error(e))
