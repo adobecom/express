@@ -95,7 +95,6 @@ function handleSpecialPromo(
   isPremiumCard,
   response,
 ) {
-  console.log(specialPromo);
   specialPromo.classList.add('special-promo');
   if (specialPromo?.textContent.includes(SAVE_PERCENTAGE)) {
     const offerTextContent = specialPromo.textContent;
