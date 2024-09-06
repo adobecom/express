@@ -43,7 +43,7 @@ function equalizeHeights(el) {
     });
     headers.forEach((placeholder) => {
       if (placeholder.style.height) return;
-      if (maxHeight > 0){ 
+      if (maxHeight > 0) {
         placeholder.style.height = `${maxHeight}px`;
       }
     });
@@ -290,7 +290,7 @@ function decorateCardBorder(card, source) {
 }
 
 function decorateBillingToggle(card, placeholders, monthlyPlanID, yearlyPlanID) {
-  const toggle = createToggle(placeholders, [card.children[3], 
+  const toggle = createToggle(placeholders, [card.children[3],
     card.children[4], card.children[5], card.children[6]], monthlyPlanID, yearlyPlanID);
   card.insertBefore(toggle, card.children[3]);
 }
@@ -305,8 +305,8 @@ export default async function init(el) {
   const firstRow = rows[0];
   rows.splice(0, 1);
   rows.splice(1, 0, firstRow);
-  let cardIndex = 0
-  while (cardIndex < cardCount){
+  /* eslint-disable no-await-in-loop */
+  for (let cardIndex = 0; cardIndex < cardCount; cardIndex += 1) {
     const card = createTag('div', { class: 'card' });
     decorateCardBorder(card, rows[0].children[0]);
     decorateHeader(rows[1].children[0], rows[2].children[0]);
@@ -322,7 +322,6 @@ export default async function init(el) {
     }
     cards.push(card);
     decorateBillingToggle(card, placeholders, monthlyPlanID, yearlyPlanID);
-    cardIndex += 1
   }
 
   el.innerHTML = '';
