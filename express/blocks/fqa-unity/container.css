@@ -1,0 +1,95 @@
+.qa-workspace {
+  display: flex;
+  text-align: left;
+  gap: 40px;
+  min-height: 560px;
+}
+.qa-workspace.loading .loader {
+  width: 80px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qa-workspace .canvas {
+  width: 1200px;
+  background-color: #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qa-workspace .canvas.loading {
+  background-color: unset;
+}
+
+.qa-workspace .canvas.loading .loader {
+  font-size: 3rem;
+}
+
+.qa-workspace .interactions {
+  font-size: 1.25rem;
+  color: #555;
+}
+
+.qa-workspace .interactions .ctas {
+  display: flex;
+  flex-wrap: wrap;
+ gap: 20px;
+ padding-bottom: 16px;
+}
+.qa-workspace .interactions .ctas a {
+  font-size: 1.25rem;
+  border-radius: 50px;
+  padding: 10px 1.5rem 10px 1.5rem;
+  margin: 0;
+}
+
+.qa-workspace .interactions .consent {
+  font-size: 1rem;
+  color: #6d6d6d;
+  padding-bottom: 20px;
+}
+
+.qa-workspace .interactions .consent a {
+  font-weight: unset;
+}
+
+.qa-workspace .interactions .free-plan-widget {
+  gap: 20px;
+  padding-bottom: 40px;
+  font-size: 1.125rem;
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.qa-workspace .explore {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.qa-workspace .explore a {
+  display: flex;
+  color: unset;
+  font-weight: unset;
+  align-items: center;
+  gap: 16px;
+  width: max-content;
+  padding: 8px 20px 8px 12px;
+  border-radius: 10px;
+}
+
+.qa-workspace .explore a:hover {
+  background-color: #f3f3f3;
+}
+
+.qa-workspace .explore a img {
+  height: 20px;
+  width: 20px;
+}
+
+.qa-workspace .pb-30px {
+  padding-bottom: 30px;
+}
