@@ -43,7 +43,7 @@ function equalizeHeights(el) {
     });
     headers.forEach((placeholder) => {
       if (placeholder.style.height) return;
-      if (maxHeight > 0) { 
+      if (maxHeight > 0){ 
         placeholder.style.height = `${maxHeight}px`;
       }
     });
@@ -177,7 +177,7 @@ async function createPricingSection(
   pricingArea,
   ctaGroup,
   specialPromo,
-  isMonthly = false
+  isMonthly = false,
 ) {
   pricingArea.classList.add('pricing-area');
   let offerId;
@@ -203,7 +203,7 @@ async function createPricingSection(
       BlockMediator.set(`${response.offerId}-planType`, response.term);
     }
     offerId = response.offerId;
-    BlockMediator.set(offerId, parseInt(response.price,4));
+    BlockMediator.set(offerId, parseInt(response.price, 4));
 
     const priceSuffixTextContent = getPriceElementSuffix(
       placeholders,
@@ -289,8 +289,9 @@ function decorateCardBorder(card, source) {
   }
 }
 
-function decorateBillingToggle(card, cardIndex, placeholders, monthlyPlanID, yearlyPlanID) {
-  const toggle = createToggle(placeholders, [card.children[3], card.children[4], card.children[5], card.children[6]], monthlyPlanID, yearlyPlanID);
+function decorateBillingToggle(card, placeholders, monthlyPlanID, yearlyPlanID) {
+  const toggle = createToggle(placeholders, [card.children[3], 
+    card.children[4], card.children[5], card.children[6]], monthlyPlanID, yearlyPlanID);
   card.insertBefore(toggle, card.children[3]);
 }
 
@@ -304,8 +305,8 @@ export default async function init(el) {
   const firstRow = rows[0];
   rows.splice(0, 1);
   rows.splice(1, 0, firstRow);
-
-  for (let cardIndex = 0; cardIndex < cardCount; cardIndex += 1) {
+  let cardIndex = 0
+  while (cardIndex < cardCount){
     const card = createTag('div', { class: 'card' });
     decorateCardBorder(card, rows[0].children[0]);
     decorateHeader(rows[1].children[0], rows[2].children[0]);
@@ -320,7 +321,8 @@ export default async function init(el) {
       card.appendChild(rows[j].children[0]);
     }
     cards.push(card);
-    decorateBillingToggle(card, cardIndex, placeholders, monthlyPlanID, yearlyPlanID);
+    decorateBillingToggle(card, placeholders, monthlyPlanID, yearlyPlanID);
+    cardIndex += 1
   }
 
   el.innerHTML = '';
