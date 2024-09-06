@@ -27,7 +27,7 @@ export function handleTooltip(pricingArea) {
   const pattern = /\[\[([^]+)\]\]([^]+)\[\[\/([^]+)\]\]/g;
   let tooltip;
   let tooltipDiv;
-  
+
   Array.from(elements).forEach((p) => {
     const res = pattern.exec(p.textContent);
     if (res) {

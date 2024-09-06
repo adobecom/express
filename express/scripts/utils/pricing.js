@@ -283,6 +283,8 @@ export async function formatPrice(price, currency) {
     style: 'currency',
     currency,
     currencyDisplay,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4
   }).format(price);
 
   Object.entries(customSymbols).forEach(([symbol, replacement]) => {

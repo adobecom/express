@@ -43,8 +43,9 @@ function equalizeHeights(el) {
     });
     headers.forEach((placeholder) => {
       if (placeholder.style.height) return;
-      if (maxHeight > 0) 
+      if (maxHeight > 0) { 
         placeholder.style.height = `${maxHeight}px`;
+      }
     });
   }
 }
@@ -94,8 +95,8 @@ function handleSpecialPromo(
   isPremiumCard,
   response,
 ) {
-  console.log(specialPromo)
-  specialPromo.classList.add('special-promo')
+  console.log(specialPromo);
+  specialPromo.classList.add('special-promo');
   if (specialPromo?.textContent.includes(SAVE_PERCENTAGE)) {
     const offerTextContent = specialPromo.textContent;
     const shouldSuppress = shallSuppressOfferEyebrowText(
@@ -177,11 +178,10 @@ async function createPricingSection(
   pricingArea,
   ctaGroup,
   specialPromo,
-  isMonthly = false,
-  groupID,
+  isMonthly = false
 ) {
   pricingArea.classList.add('pricing-area');
-  let offerId = undefined
+  let offerId;
   const offer = pricingArea.querySelector(':scope > p > em');
   if (offer) {
     offer.classList.add('card-offer');
@@ -201,10 +201,10 @@ async function createPricingSection(
     const priceSuffix = createTag('div', { class: 'pricing-row-suf' });
     const response = await fetchPlanOnePlans(priceEl?.href);
     if (response.term) {
-      BlockMediator.set(response.offerId + "-planType", response.term)
+      BlockMediator.set(`${response.offerId}-planType`, response.term);
     }
-    offerId = response.offerId
-    BlockMediator.set(offerId, parseInt(response.price))
+    offerId = response.offerId;
+    BlockMediator.set(offerId, parseInt(response.price,4));
 
     const priceSuffixTextContent = getPriceElementSuffix(
       placeholders,
@@ -247,7 +247,7 @@ async function createPricingSection(
     pricingArea.classList.add('annually', 'hide');
     ctaGroup.classList.add('annually', 'hide');
   }
-  return offerId
+  return offerId;
 }
 
 function decorateHeader(header, planExplanation) {
@@ -323,7 +323,7 @@ export default async function init(el) {
     cards.push(card);
     decorateBillingToggle(card, cardIndex, placeholders, monthlyPlanID, yearlyPlanID);
   }
-  
+
   el.innerHTML = '';
   el.appendChild(createTag('div', { class: 'card-wrapper' }));
   for (const card of cards) {
@@ -336,14 +336,13 @@ export default async function init(el) {
       if (entry.isIntersecting) {
         equalizeHeights(el);
         observer.unobserve(entry.target);
-        adjustElementPosition()
+        adjustElementPosition();
       }
     });
   });
 
   document.querySelectorAll('.card').forEach((column) => {
     observer.observe(column);
-    
   });
 
   window.addEventListener('load', () => equalizeHeights(el));
