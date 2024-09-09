@@ -180,11 +180,27 @@ export default async function decorate(block) {
 
   const narrowWidth = getMetadata('narrow-width') === 'on';
   const container = document.querySelector('div.columns.block');
+  const rows = Array.from(block.children);
+
   if (narrowWidth && container) {
     container.classList.add('narrow-width');
+    let count = 1;
+    rows.forEach((ele) => {
+      if (ele.innerHTML.includes('h2')) {
+        const headers = ele.querySelectorAll('h2');
+        headers.forEach((header) => {
+          const span = document.createElement('span');
+          span.style.background = 'linear-gradient(to top, rgb(201, 101, 214), rgb(239, 133, 120))';
+          span.style.webkitBackgroundClip = 'text';
+          span.style.backgroundClip = 'text';
+          span.style.color = 'transparent';
+          span.textContent = `${count}. `;
+          header.prepend(span);
+          count += 1;
+        });
+      }
+    });
   }
-
-  const rows = Array.from(block.children);
 
   let numCols = 0;
   if (rows[0]) numCols = rows[0].children.length;
