@@ -11,6 +11,13 @@ export default function decorate($block, name, doc) {
   const $heading = $howto.closest('.section').querySelector('h2, h3, h4');
   const $rows = Array.from($howto.children);
 
+  let numberStepStart = 1;
+  if ($rows.length > 0) {
+    const firstRow = $rows[0];
+    numberStepStart = +firstRow.querySelectorAll('div')[1].innerText.trim();
+    $rows[0].remove();
+  }
+
   const narrowWidth = getMetadata('narrow-width') === 'on';
   const container = document.querySelector('div.how-to-steps.block');
   const desktop = document.body.dataset.device === 'desktop';
@@ -41,37 +48,19 @@ export default function decorate($block, name, doc) {
         text: $cells[1].textContent.trim(),
       },
     });
-
     const $h3 = createTag('h3');
     $h3.innerHTML = $cells[0].textContent.trim();
-    $h3.style.flex = '1';
-
     const $p = createTag('p');
     $p.innerHTML = $cells[1].innerHTML;
-
-    const $headerWrapper = createTag('div', { class: 'header-wrapper' });
-    $headerWrapper.style.display = 'flex';
-    $headerWrapper.style.alignItems = 'center';
-    $headerWrapper.style.gap = '8px';
-
-    const $number = createTag('div', { class: 'tip-number' });
-    $number.innerHTML = `<span>${i + 1}</span>`;
-    $number.style.flex = 'none';
-
-    $headerWrapper.append($number);
-    $headerWrapper.append($h3);
     const $text = createTag('div', { class: 'tip-text' });
-    $text.append($headerWrapper);
+    $text.append($h3);
     $text.append($p);
+    const $number = createTag('div', { class: 'tip-number' });
+    $number.innerHTML = `<span>${i + numberStepStart - 1}</span>`;
     $cells[0].remove();
     $cells[1].innerHTML = '';
     $cells[1].classList.add('tip');
-    if (narrowWidth && desktop) {
-      $cells[1].style.maxWidth = '750px';
-    } else {
-      $cells[1].style.maxWidth = '600px';
-    }
-    $cells[1].style.margin = '0 auto';
+    $cells[1].append($number);
     $cells[1].append($text);
   });
 
