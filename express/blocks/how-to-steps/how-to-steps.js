@@ -12,9 +12,9 @@ export default function decorate($block, name, doc) {
   const $rows = Array.from($howto.children);
 
   let numberStepStart = 1;
-  if ($rows.length > 0) {
-    const firstRow = $rows[0];
-    numberStepStart = +firstRow.querySelectorAll('div')[1].innerText.trim();
+  const isStepNumberDefined = $rows[0].innerHTML.includes('number-step-start');
+  if (isStepNumberDefined) {
+    numberStepStart = +$rows[0].querySelectorAll('div')[1].innerText.trim();
     $rows[0].remove();
   }
 
