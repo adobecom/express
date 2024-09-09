@@ -66,7 +66,11 @@ export default function decorate($block, name, doc) {
     $cells[0].remove();
     $cells[1].innerHTML = '';
     $cells[1].classList.add('tip');
-    $cells[1].style.maxWidth = '600px';
+    if (narrowWidth && desktop) {
+      $cells[1].style.maxWidth = '750px';
+    } else {
+      $cells[1].style.maxWidth = '600px';
+    }
     $cells[1].style.margin = '0 auto';
     $cells[1].append($text);
   });
