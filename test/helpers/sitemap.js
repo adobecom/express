@@ -56,5 +56,5 @@ async function makeRequests() {
     throw new Error('Failed to rebuild some urls');
   }
 }
-
+/* eslint-disable*/
 makeRequests().catch((e) => console.error(e))
