@@ -79,7 +79,7 @@ main .how-to-steps .tip-number span {
   transform: translate(-50%, -50%);
 }
 
-main .how-to-steps-inline-tip-container .how-to-steps.narrow-desktop-width {
+main .how-to-steps-inline-tip-container .how-to-steps.narrow-width {
   max-width: 850px;
   margin: 0 auto; 
 }
@@ -88,11 +88,11 @@ main .how-to-steps-inline-tip-container .how-to-steps.narrow-mobile-width {
   max-width: 'none';
 }
 
-main .how-to-steps-inline-tip-container .how-to-steps.narrow-desktop-width h3 {
+main .how-to-steps-inline-tip-container .how-to-steps.narrow-width h3 {
   font-size: 28px;
 }
 
-main .how-to-steps.inline-tip.narrow-desktop-width .tip .tip-number {
+main .how-to-steps.inline-tip.narrow-width .tip .tip-number {
   width: 40px;
   min-width: 40px;
   height: 40px;
@@ -108,7 +108,7 @@ main .how-to-steps.inline-tip.narrow-mobile-width .tip .tip-number {
   font-size: 22px;
 }
 
-main .how-to-steps .narrow-desktop-width {
+main .how-to-steps .narrow-width {
     max-width: 850px;
     margin: 0 auto; 
 }

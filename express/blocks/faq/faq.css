@@ -65,7 +65,7 @@ main .faq .faq-answer p {
     margin-top: 0;
 }
 
-main .faq.narrow-desktop-width {
+main .faq.narrow-width {
     max-width: 850px;
     margin: 0 auto; 
 }

@@ -932,7 +932,7 @@ function decorateContent(el) {
   const desktop = document.body.dataset.device === 'desktop';
   containers.forEach((container) => {
     if (narrowWidth && container) {
-      container.classList.add('narrow-desktop-width');
+      container.classList.add('narrow-width');
       if (!desktop) {
         const headers = container.querySelectorAll('h1'); // Select all header elements
         headers.forEach((header) => {

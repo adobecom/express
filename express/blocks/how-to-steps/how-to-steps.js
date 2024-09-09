@@ -15,9 +15,9 @@ export default function decorate($block, name, doc) {
   const container = document.querySelector('div.how-to-steps.block');
   const desktop = document.body.dataset.device === 'desktop';
   if (desktop && narrowWidth && container) {
-    container.classList.add('narrow-desktop-width');
+    container.classList.add('narrow-width');
   } else if (narrowWidth && container) {
-    container.classList.remove('narrow-desktop-width');
+    container.classList.remove('narrow-width');
     container.classList.add('narrow-mobile-width');
   }
 

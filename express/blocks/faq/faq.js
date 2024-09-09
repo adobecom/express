@@ -65,7 +65,7 @@ export default async function decorate(block) {
   const narrowWidth = getMetadata('narrow-width') === 'on';
   const container = document.querySelector('div.faq.block');
   if (narrowWidth && container) {
-    container.classList.add('narrow-desktop-width');
+    container.classList.add('narrow-width');
   }
 
   const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
