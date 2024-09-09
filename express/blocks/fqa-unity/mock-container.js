@@ -3,20 +3,36 @@ import {
   render,
   useState,
   useEffect,
+  useRef,
 } from '../../scripts/libs/htm-preact.js';
 import { createTag, loadStyle } from '../../scripts/utils.js';
 
+const MAX_HEIGHT = 600;
+const MAX_WIDTH = 800;
+
 function Canvas() {
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-  }, []);
-  if (loading) {
-    return html`<div class="canvas loading"><div class="loader">loading...</div></div>`;
-  }
-  return html`<div class="canvas"><img src='/express/blocks/fqa-unity/removed.png' /></div>`;
+  const canvas = useRef(null);
+  const img = new Image();
+  img.src = '/express/blocks/fqa-unity/removed.png';
+  img.onload = () => {
+    const ctx = canvas.current.getContext('2d');
+    const { height, width } = img;
+    const ratio = height / width;
+    if (ratio > MAX_HEIGHT / MAX_WIDTH) {
+      const adjustedWidth = width * (MAX_HEIGHT / height);
+      ctx.drawImage(img, (MAX_WIDTH - adjustedWidth) / 2, 0, adjustedWidth, MAX_HEIGHT);
+    } else {
+      const adjustedHeight = height * (MAX_WIDTH / width);
+      ctx.drawImage(img, 0, (MAX_HEIGHT - adjustedHeight) / 2, MAX_WIDTH, adjustedHeight);
+    }
+  };
+  const onContextMenu = (e) => {
+    e.preventDefault();
+  };
+  return html`
+    <canvas ref=${canvas} height=${MAX_HEIGHT} width=${MAX_WIDTH} oncontextmenu=${onContextMenu}>
+      Image with its background removed
+    </canvas>`;
 }
 
 function Workspace() {
@@ -55,12 +71,9 @@ function getWorkspace() {
 }
 
 export default async function initUnityPOC(container) {
-  let resStyle;
-  const styleLoaded = new Promise((res) => {
-    resStyle = res;
+  await new Promise((res) => {
+    loadStyle('/express/blocks/fqa-unity/container.css', res);
   });
-  loadStyle('/express/blocks/fqa-unity/container.css', resStyle);
-  await styleLoaded;
   const wrapper = createTag('div');
   render(getWorkspace(), wrapper);
   container.append(wrapper);

@@ -2,7 +2,7 @@
   display: flex;
   text-align: left;
   gap: 40px;
-  min-height: 560px;
+  height: 600px;
 }
 .qa-workspace.loading .loader {
   width: 80px;
@@ -12,20 +12,9 @@
   align-items: center;
 }
 
-.qa-workspace .canvas {
-  width: 1200px;
-  background-color: #444;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.qa-workspace .canvas.loading {
-  background-color: unset;
-}
-
-.qa-workspace .canvas.loading .loader {
-  font-size: 3rem;
+.qa-workspace canvas {
+  display: block;
+  background-color: #ddd;
 }
 
 .qa-workspace .interactions {

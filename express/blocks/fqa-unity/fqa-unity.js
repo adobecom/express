@@ -205,5 +205,5 @@ export default async function decorate(block) {
   block.dataset.frictionlesstype = quickAction;
   block.dataset.frictionlessgroup = getQAGroup(quickAction);
 
-  // startSDK('', block);
+  startSDK('', block);
 }
