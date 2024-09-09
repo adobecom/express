@@ -175,7 +175,7 @@ function initSearchFunction(block) {
       type_filter: 'all',
       collection: 'all-templates',
       keyword_rank: index + 1,
-      search_keyword: searchBar.value,
+      search_keyword: searchBar.value || 'empty search',
       search_type: 'autocomplete',
     });
 
@@ -188,7 +188,7 @@ function initSearchFunction(block) {
       status_filter: 'free',
       type_filter: 'all',
       collection: 'all-templates',
-      search_keyword: searchBar.value,
+      search_keyword: searchBar.value || 'empty search',
       search_type: 'direct',
     });
     await onSearchSubmit();

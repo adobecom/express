@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { createTag, getIconElement, getMetadata } from '../../scripts/utils.js';
 import { trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
+import { getTrackingAppendedURL } from '../../scripts/branchlinks.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function containsVideo(pages) {
@@ -100,8 +101,12 @@ async function getVideoUrls(renditionLinkHref, componentLinkHref, page) {
   }
 }
 
-async function share(branchUrl, tooltip, timeoutId) {
-  await navigator.clipboard.writeText(branchUrl);
+async function share(branchUrl, tooltip, timeoutId, placeholders) {
+  const urlWithTracking = getTrackingAppendedURL(branchUrl, placeholders, {
+    placement: 'template-x',
+    isSearchOverride: true,
+  });
+  await navigator.clipboard.writeText(urlWithTracking);
   tooltip.classList.add('display-tooltip');
 
   const rect = tooltip.getBoundingClientRect();
@@ -132,14 +137,14 @@ function renderShareWrapper(branchUrl, placeholders) {
   shareIcon.addEventListener('click', (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    timeoutId = share(branchUrl, tooltip, timeoutId);
+    timeoutId = share(branchUrl, tooltip, timeoutId, placeholders);
   });
 
   shareIcon.addEventListener('keypress', (e) => {
     if (e.key !== 'Enter') {
       return;
     }
-    timeoutId = share(branchUrl, tooltip, timeoutId);
+    timeoutId = share(branchUrl, tooltip, timeoutId, placeholders);
   });
   const checkmarkIcon = getIconElement('checkmark-green');
   tooltip.append(checkmarkIcon);
@@ -385,7 +390,7 @@ function renderHoverWrapper(template, placeholders) {
       content_id: template.id,
       status: template.licensingCategory,
       task: getMetadata('tasksx') || getMetadata('tasks') || '',
-      search_keyword: getMetadata('q') || getMetadata('topics') || '',
+      search_keyword: getMetadata('q') || getMetadata('topics-x') || getMetadata('topics') || '',
       collection: getMetadata('tasksx') || getMetadata('tasks') || '',
       collection_path: window.location.pathname,
     });
