@@ -85,21 +85,14 @@ main .how-to-steps-inline-tip-narrow-container .how-to-steps.narrow {
 }
 
 main .how-to-steps-inline-tip-narrow-container .how-to-steps.narrow-mobile-width {
-  max-width: 'none';
+  max-width: none;
 }
 
 main .how-to-steps-inline-tip-narrow-container .how-to-steps.narrow h3 {
   font-size: 28px;
 }
 
-main .how-to-steps.inline-tip.narrow .tip .tip-number {
-  width: 40px;
-  min-width: 40px;
-  height: 40px;
-  min-height: 40px;
-  font-size: 22px;
-}
-
+main .how-to-steps.inline-tip.narrow .tip .tip-number,
 main .how-to-steps.inline-tip.narrow-mobile-width .tip .tip-number {
   width: 40px;
   min-width: 40px;
