@@ -6,10 +6,6 @@ import {
   getMetadata,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
-import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
-import { trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
-import buildCarousel from '../shared/carousel.js';
-import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function handlelize(str) {
@@ -138,11 +134,12 @@ function initSearchFunction(block) {
     const taskXUrl = `/${handlelize(currentTasks.content.toLowerCase())}`;
     const targetPath = `${prefix}/express/templates${taskUrl}${topicUrl}`;
     const targetPathX = `${prefix}/express/templates${taskXUrl}${topicUrl}`;
+    const { fetchAllTemplatesMetadata } = await import('../../scripts/all-templates-metadata.js');
     const allTemplatesMetadata = await fetchAllTemplatesMetadata();
     const pathMatch = (e) => e.url === targetPath;
     const pathMatchX = (e) => e.url === targetPathX;
     let targetLocation;
-
+    const { trackSearch, updateImpressionCache } = await import('../../scripts/template-search-api-v3.js');
     updateImpressionCache({ collection: currentTasks.content || 'all-templates', content_category: 'templates' });
     trackSearch('search-inspire');
 
@@ -348,7 +345,7 @@ async function buildSearchDropdown(block) {
 
     suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
     suggestionsContainer.append(suggestionsTitle, suggestionsList);
-
+    const { buildFreePlanWidget } = await import('../../scripts/utils/free-plan.js')
     const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
 
     freePlanContainer.append(freePlanTags);
@@ -367,11 +364,14 @@ function decorateLinkList(block) {
       || window.location.pathname.endsWith('/express/templates')) {
       carouselItemsWrapper.remove();
     } else {
-      buildCarousel(':scope > p', carouselItemsWrapper).then(() => {
-        const carousel = carouselItemsWrapper.querySelector('.carousel-container');
-        block.append(carousel);
-        carouselItemsWrapper.parentElement.remove();
-      });
+      import('../shared/carousel.js').then((res) => {
+        const buildCarousel = res.default
+        buildCarousel(':scope > p', carouselItemsWrapper).then(() => {
+          const carousel = carouselItemsWrapper.querySelector('.carousel-container');
+          block.append(carousel);
+          carouselItemsWrapper.parentElement.remove();
+        });
+      })
     }
   }
 }
