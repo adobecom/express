@@ -927,14 +927,14 @@ function decorateContent(el) {
   block.append(...children);
   block.dataset.block = '';
 
-  const narrowWidth = getMetadata('narrow-width') === 'on';
+  const narrowVariant = document.querySelector('.long-form[data-narrow="on"]');
   const containers = document.querySelectorAll('div.default-content-wrapper');
   const desktop = document.body.dataset.device === 'desktop';
   containers.forEach((container) => {
-    if (narrowWidth && container) {
-      container.classList.add('narrow-width');
+    if (narrowVariant && container) {
+      container.classList.add('narrow');
       if (!desktop) {
-        const headers = container.querySelectorAll('h1'); // Select all header elements
+        const headers = container.querySelectorAll('h1');
         headers.forEach((header) => {
           header.style.fontSize = '36px';
         });
