@@ -3,7 +3,6 @@ import {
   createTag,
   fetchPlaceholders,
   transformLinkToAnimation,
-  getMetadata,
 } from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
