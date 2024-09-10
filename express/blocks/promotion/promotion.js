@@ -25,12 +25,6 @@ async function fetchPromotion(name) {
 export default async function decorate($block) {
   addTempWrapper($block, 'promotion');
 
-  const container = document.querySelector('div.promotion.block');
-  const narrowVariant = container?.classList.contains('narrow');
-  if (narrowVariant && container) {
-    container.classList.add('narrow');
-  }
-
   const name = $block.textContent.trim();
   if (!name) return;
 
