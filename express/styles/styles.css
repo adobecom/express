@@ -1022,7 +1022,7 @@ main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .
   display: none;
 }
 
-main .long-form.grid-width-6-desktop .default-content-wrapper.narrow {
+main .long-form.grid-width-6-desktop.narrow .default-content-wrapper {
   max-width: 850px;
   margin: 0 auto; 
 } 

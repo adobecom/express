@@ -1,14 +1,8 @@
-import { normalizeHeadings, createTag, getMetadata } from '../../scripts/utils.js';
+import { normalizeHeadings, createTag } from '../../scripts/utils.js';
 
 export default async function decorate(block) {
   const isBannerLightVariant = block.classList.contains('light');
   const isBannerStandoutVariant = block.classList.contains('standout');
-
-  const narrowWidth = getMetadata('narrow-width') === 'on';
-  const container = document.querySelector('div.banner.block');
-  if (narrowWidth && container) {
-    container.classList.add('narrow-width');
-  }
 
   if (isBannerStandoutVariant) {
     const standoutContainer = createTag('div', {

@@ -927,21 +927,6 @@ function decorateContent(el) {
   block.append(...children);
   block.dataset.block = '';
 
-  const narrowVariant = document.querySelector('.long-form[data-narrow="on"]');
-  const containers = document.querySelectorAll('div.default-content-wrapper');
-  const desktop = document.body.dataset.device === 'desktop';
-  containers.forEach((container) => {
-    if (narrowVariant && container) {
-      container.classList.add('narrow');
-      if (!desktop) {
-        const headers = container.querySelectorAll('h1');
-        headers.forEach((header) => {
-          header.style.fontSize = '36px';
-        });
-      }
-    }
-  });
-
   return block;
 }
 
