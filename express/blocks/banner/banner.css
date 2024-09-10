@@ -99,7 +99,7 @@ main .banner .standout-container em {
   font-weight: 900;
 }
 
-main .grid-width-6-desktop.narrow.banner-container  .banner{
+main .grid-width-6-desktop.narrow.banner-container .banner{
   max-width: 850px;
   margin: 0 auto; 
 }
