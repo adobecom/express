@@ -2,7 +2,6 @@ import {
   fetchPlaceholders,
   fetchRelevantRows,
   normalizeHeadings,
-  getMetadata,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 
@@ -66,12 +65,6 @@ export default async function decorate(block) {
     variant = SMART_VARIANT;
   }
   addTempWrapper(block, 'link-list');
-
-  const narrowWidth = getMetadata('narrow-width') === 'on';
-  const container = document.querySelector('div.link-list.block');
-  if (narrowWidth && container) {
-    container.classList.add('narrow-width');
-  }
 
   const placeholders = await fetchPlaceholders();
   const options = {};
