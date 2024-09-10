@@ -29,8 +29,17 @@ function cycleThroughSuggestions(block, targetIndex = 0) {
   if (suggestions.length > 0) suggestions[targetIndex].focus();
 }
 
-function initSearchFunction(block, searchBarWrapper) {
+async function initSearchFunction(block, searchBarWrapper) {
   const searchDropdown = searchBarWrapper.querySelector('.search-dropdown-container');
+  import('../../scripts/utils/free-plan.js')
+  .then(({ buildFreePlanWidget }) => buildFreePlanWidget({ typeKey: 'branded', checkmarks: true }))
+  .then((freePlanTags) => {
+    const freePlanContainer = createTag('div', { class: 'free-plans-container' });
+    freePlanContainer.append(freePlanTags);
+    searchDropdown.append(freePlanContainer);
+  });
+
+
   const searchForm = searchBarWrapper.querySelector('.search-form');
   const searchBar = searchBarWrapper.querySelector('input.search-bar');
   const clearBtn = searchBarWrapper.querySelector('.icon-search-clear');
@@ -307,14 +316,6 @@ function buildSearchDropdown(block, searchBarWrapper, placeholders) {
 
   suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
   suggestionsContainer.append(suggestionsTitle, suggestionsList);
-
-  import('../../scripts/utils/free-plan.js')
-    .then(({ buildFreePlanWidget }) => buildFreePlanWidget({ typeKey: 'branded', checkmarks: true }))
-    .then((freePlanTags) => {
-      const freePlanContainer = createTag('div', { class: 'free-plans-container' });
-      freePlanContainer.append(freePlanTags);
-      dropdownContainer.append(freePlanContainer);
-    });
   dropdownContainer.append(trendsContainer, suggestionsContainer);
   searchBarWrapper.append(dropdownContainer);
 }
