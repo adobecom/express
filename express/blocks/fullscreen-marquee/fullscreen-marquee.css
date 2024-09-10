@@ -260,7 +260,7 @@
   padding-right: 10px;
 }
 
-main .fullscreen-marquee-heading h1.narrow-width {
+.grid-width-6-desktop.small-header .fullscreen-marquee h1 {
   font-size: 45px;
 }
 

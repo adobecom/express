@@ -179,13 +179,10 @@ export default async function decorate(block) {
     block.append(heading);
   }
 
-  const narrowWidth = getMetadata('narrow-width') === 'on';
-  const container = document.querySelector('.fullscreen-marquee-heading > h1');
+  const smallHeaderApplied = block.parentElement.classList.contains('small-header');
   const desktop = document.body.dataset.device === 'desktop';
-  if (narrowWidth && container && desktop) {
-    container.classList.add('narrow-width');
-  } else {
-    container.classList.remove('narrow-width');
+  if (!desktop && smallHeaderApplied) {
+    block.parentElement.classList.remove('small-header');
   }
 
   if (content && document.body.dataset.device === 'desktop') {
