@@ -184,8 +184,8 @@ export default async function decorate(block) {
   if (container?.classList.contains('narrow')) {
     let count = 1;
     rows.forEach((ele) => {
-      if (ele.innerHTML.includes('h2')) {
-        const headers = ele.querySelectorAll('h2');
+      const headers = ele.querySelectorAll('h2');
+      if (headers.length > 0) {
         headers.forEach((header) => {
           const span = document.createElement('span');
           span.style.background = 'linear-gradient(to top, rgb(201, 101, 214), rgb(239, 133, 120))';
