@@ -6,7 +6,6 @@ import {
   toClassName,
   createOptimizedPicture,
   getConfig,
-  getMetadata,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 
@@ -26,10 +25,10 @@ async function fetchPromotion(name) {
 export default async function decorate($block) {
   addTempWrapper($block, 'promotion');
 
-  const narrowWidth = getMetadata('narrow-width') === 'on';
   const container = document.querySelector('div.promotion.block');
-  if (narrowWidth && container) {
-    container.classList.add('narrow-width');
+  const narrowVariant = container?.classList.contains('narrow');
+  if (narrowVariant && container) {
+    container.classList.add('narrow');
   }
 
   const name = $block.textContent.trim();
