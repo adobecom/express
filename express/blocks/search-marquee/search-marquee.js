@@ -348,9 +348,8 @@ async function decorateLinkList(block) {
   }
 }
 
-export default async function decorate(block) {
-  decorateBackground(block);
-  if (['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
+async function test(block){
+    if (['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
     const logo = getIconElement('adobe-express-logo');
     logo.classList.add('express-logo');
     block.prepend(logo);
@@ -360,4 +359,9 @@ export default async function decorate(block) {
   buildSearchDropdown(block, searchBarWrapper, placeholders);
   initSearchFunction(block, searchBarWrapper);
   decorateLinkList(block);
+}
+
+export default async function decorate(block) {
+  decorateBackground(block);
+  test(block)
 }
