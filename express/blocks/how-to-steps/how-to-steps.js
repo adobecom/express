@@ -2,7 +2,6 @@
 
 import {
   createTag,
-  getMetadata,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
@@ -18,13 +17,13 @@ export default function decorate($block, name, doc) {
     $rows[0].remove();
   }
 
-  const narrowWidth = getMetadata('narrow-width') === 'on';
+  const narrowVariant = $block?.classList.contains('narrow');
   const container = document.querySelector('div.how-to-steps.block');
   const desktop = document.body.dataset.device === 'desktop';
-  if (desktop && narrowWidth && container) {
-    container.classList.add('narrow-width');
-  } else if (narrowWidth && container) {
-    container.classList.remove('narrow-width');
+  if (desktop && narrowVariant && container) {
+    container.classList.add('narrow');
+  } else if (narrowVariant && container) {
+    container.classList.remove('narrow');
     container.classList.add('narrow-mobile-width');
   }
 
