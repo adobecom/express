@@ -105,7 +105,7 @@ function initSearchFunction(block) {
   })).sort((a, b) => b[0].length - a[0].length);
 
   const redirectSearch = async () => {
-    const placeholders = await fetchPlaceholders();
+    const placeholders = window.placeholders
     const taskMap = placeholders['task-name-mapping'] ? JSON.parse(placeholders['task-name-mapping']) : {};
     const taskXMap = placeholders['x-task-name-mapping'] ? JSON.parse(placeholders['x-task-name-mapping']) : {};
 
@@ -251,7 +251,7 @@ function initSearchFunction(block) {
 }
 
 async function decorateSearchFunctions(block) {
-  const placeholders = await fetchPlaceholders();
+  const placeholders = window.placeholders
   const searchBarWrapper = createTag('div', { class: 'search-bar-wrapper' });
   const searchForm = createTag('form', { class: 'search-form' });
   const searchBar = createTag('input', {
