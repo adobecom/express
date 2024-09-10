@@ -18,6 +18,7 @@ export default {
   coverageConfig: {
     include: [
       '**/express/blocks/**',
+      '**/express/features/**',
       '**/express/scripts/**',
     ],
     exclude: [

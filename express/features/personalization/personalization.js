@@ -559,12 +559,14 @@ const checkForParamMatch = (paramStr) => {
 };
 
 async function getPersonalizationVariant(manifestPath, variantNames = [], variantLabel = null) {
+  const trimNames = (arr) => arr.map((v) => v.trim()).filter(Boolean);
   const variantInfo = variantNames.reduce((acc, name) => {
     let nameArr = [name];
     if (!name.startsWith(TARGET_EXP_PREFIX)) nameArr = name.split(',');
-    const vNames = nameArr.map((v) => v.trim()).filter(Boolean);
+    const vNames = trimNames(nameArr);
     acc[name] = vNames;
-    acc.allNames = [...acc.allNames, ...vNames];
+    // TODO: this line different from Milo. Will raise a PR to Milo soon
+    acc.allNames = [...acc.allNames, ...trimNames(name.split(/[,&]/))];
     return acc;
   }, { allNames: [] });
 

@@ -40,6 +40,11 @@ sitemaps:
         destination: /it/express/sitemap.xml
         hreflang: it
         alternate: /it/{path}
+      indonesia:
+        source: /id_id/express/query-index.json
+        destination: /id_id/express/sitemap.xml
+        hreflang: id-ID
+        alternate: /id_id/{path}
       japan:
         source: /jp/express/query-index.json
         destination: /jp/express/sitemap.xml
@@ -164,6 +169,11 @@ sitemaps:
         destination: /de/express/templates/sitemap.xml
         hreflang: de
         alternate: /de/{path}
+      indonesia:
+        source: /id_id/express/templates/default/metadata.json?sheet=sitemap
+        destination: /id_id/express/templates/sitemap.xml
+        hreflang: id-ID
+        alternate: /id_id/{path}
       italy:
         source: /it/express/templates/default/metadata.json?sheet=sitemap
         destination: /it/express/templates/sitemap.xml
@@ -204,7 +214,7 @@ sitemaps:
         destination: /uk/express/templates/sitemap.xml
         hreflang: en-GB
         alternate: /uk/{path}
-  
+
   colors:
     origin: https://www.adobe.com
     languages:

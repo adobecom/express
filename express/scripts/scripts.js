@@ -1,6 +1,5 @@
 import {
   sampleRUM,
-  removeIrrelevantSections,
   loadArea,
   loadLana,
   getMetadata,
@@ -9,6 +8,7 @@ import {
   setConfig,
   createTag,
   getConfig,
+  decorateArea,
 } from './utils.js';
 
 const locales = {
@@ -17,10 +17,12 @@ const locales = {
   cn: { ietf: 'zh-Hans-CN', tk: 'puu3xkp' },
   de: { ietf: 'de-DE', tk: 'vin7zsi.css' },
   dk: { ietf: 'da-DK', tk: 'aaz7dvd.css' },
+  eg: { ietf: 'en-EG', tk: 'pps7abe.css' },
   es: { ietf: 'es-ES', tk: 'oln4yqj.css' },
   fi: { ietf: 'fi-FI', tk: 'aaz7dvd.css' },
   fr: { ietf: 'fr-FR', tk: 'vrk5vyv.css' },
   gb: { ietf: 'en-GB', tk: 'pps7abe.css' },
+  id_id: { ietf: 'id-ID', tk: 'cya6bri.css' },
   in: { ietf: 'en-IN', tk: 'pps7abe.css' },
   it: { ietf: 'it-IT', tk: 'bbf5pok.css' },
   jp: { ietf: 'ja-JP', tk: 'dvg6awq' },
@@ -28,10 +30,9 @@ const locales = {
   nl: { ietf: 'nl-NL', tk: 'cya6bri.css' },
   no: { ietf: 'no-NO', tk: 'aaz7dvd.css' },
   se: { ietf: 'sv-SE', tk: 'fpk1pcd.css' },
+  tr: { ietf: 'tr-TR', tk: 'ley8vds.css' },
   tw: { ietf: 'zh-Hant-TW', tk: 'jay0ecd' },
   uk: { ietf: 'en-GB', tk: 'pps7abe.css' },
-  tr: { ietf: 'tr-TR', tk: 'ley8vds.css' },
-  eg: { ietf: 'en-EG', tk: 'pps7abe.css' },
 };
 
 let jarvisImmediatelyVisible = false;
@@ -53,6 +54,7 @@ const config = {
     onDemand: !jarvisImmediatelyVisible,
   },
   links: 'on',
+  decorateArea,
   imsClientId: 'AdobeExpressWeb',
   imsScope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
 };
@@ -90,9 +92,10 @@ const eagerLoad = (img) => {
   document.head.append(fqaMeta);
 }());
 
+decorateArea();
+
 (function loadLCPImage() {
   const main = document.body.querySelector('main');
-  removeIrrelevantSections(main);
   const firstDiv = main.querySelector('div:nth-child(1) > div');
   if (firstDiv?.classList.contains('marquee')) {
     firstDiv.querySelectorAll('img').forEach(eagerLoad);
@@ -109,7 +112,7 @@ const loadExpressMartechSettings = () => {
         mod.default();
       });
     };
-    window.addEventListener('milo:LCP:loaded', handler);
+    window.addEventListener('express:LCP:loaded', handler);
   }
 };
 
@@ -136,6 +139,17 @@ const listenAlloy = () => {
   }, 3000);
 };
 
+function registerSUSIModalLinks() {
+  const container = createTag('div', {}, `
+    <div>
+      <a href='https://www.adobe.com/express/fragments/susi-light-teacher#susi-light-1' rel: 'nofollow'></a>
+    </div>`);
+  container.style = 'display:none;position:absolute';
+  const main = document.querySelector('main');
+  const lastDiv = main.querySelector(':scope > div:last-of-type');
+  lastDiv.childElementCount === 0 ? main.insertBefore(container, lastDiv) : main.append(container);
+}
+
 (async function loadPage() {
   if (window.hlx.init || window.isTestEnv) return;
   window.hlx = window.hlx || {};
@@ -158,6 +172,7 @@ const listenAlloy = () => {
   loadExpressMartechSettings();
   loadLana({ clientId: 'express' });
   listenAlloy();
+  registerSUSIModalLinks(); // TODO: remove post bts
   await loadArea();
 
   import('./express-delayed.js').then((mod) => {

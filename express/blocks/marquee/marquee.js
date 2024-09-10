@@ -104,7 +104,7 @@ export function handleMediaQuery(block, mediaQuery) {
   });
 }
 
-function decorateToggleContext(ct, placeholders) {
+export function decorateToggleContext(ct, placeholders) {
   const reduceMotionIconWrapper = ct;
   const reduceMotionTextExist = reduceMotionIconWrapper.querySelector('.play-animation-text')
     && reduceMotionIconWrapper.querySelector('.pause-animation-text');
@@ -352,6 +352,7 @@ async function handleAnimation(div, typeHint, block, animations) {
 const LOGO = 'adobe-express-logo';
 const LOGO_WHITE = 'adobe-express-logo-white';
 function injectExpressLogo(block, wrapper) {
+  if (block.classList.contains('entitled')) return;
   if (!['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) return;
   const mediaQuery = window.matchMedia('(min-width: 900px)');
   const logo = getIconElement(block.classList.contains('dark') && mediaQuery.matches ? LOGO_WHITE : LOGO);
@@ -370,6 +371,33 @@ function injectExpressLogo(block, wrapper) {
     logo.classList.add('eyebrow-margin');
   }
   wrapper.prepend(logo);
+}
+
+function decorateEntitled(contentWrapper) {
+  const eyebrowText = contentWrapper.querySelector('h3');
+  const eyebrowIcon = contentWrapper.querySelector('p > img.icon');
+  const legalCopy = contentWrapper.querySelector('p.legal-copy');
+
+  if (eyebrowIcon && eyebrowText) {
+    const oldIconWrapper = eyebrowIcon.parentElement;
+    const eyebrowWrapper = createTag('div', { class: 'eyebrow-wrapper' });
+    eyebrowWrapper.append(eyebrowIcon, eyebrowText);
+    contentWrapper.prepend(eyebrowWrapper);
+
+    if (!oldIconWrapper.children.length) {
+      oldIconWrapper.remove();
+    }
+  }
+
+  if (legalCopy && legalCopy.previousElementSibling?.classList.contains('buttons-wrapper')) {
+    const btnContainer = legalCopy.previousElementSibling;
+    const legalText = createTag('span', {}, legalCopy.textContent.replace('**', '').trim());
+    legalCopy.innerHTML = '';
+    legalCopy.append(getIconElement('checkmark-green'), legalText);
+    legalCopy.className = 'entitled-cta-tag';
+    btnContainer.append(legalCopy);
+    btnContainer.classList.add('with-legal-copy');
+  }
 }
 
 async function handleContent(div, block, animations) {
@@ -456,6 +484,10 @@ async function handleContent(div, block, animations) {
         'with-inline-ctas',
       );
     }
+  }
+
+  if (block.classList.contains('entitled')) {
+    decorateEntitled(contentWrapper);
   }
 }
 

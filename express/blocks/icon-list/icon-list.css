@@ -19,6 +19,10 @@ main .icon-list > div.icon-list-column {
   width: unset;
 }
 
+main .icon-list .icon-list-description {
+  overflow-x: auto;
+}
+
 main .icon-list .icon-list-description p {
   margin: 8px 0;
   text-align: left;
@@ -49,6 +53,9 @@ main .icon-list h3, main .icon-list h4 {
 @media (min-width:600px) {
   main .icon-list {
     margin-top: 56px;
+  }
+  main .icon-list .icon-list-description {
+    overflow-x: unset;
   }
 }
 
@@ -184,7 +191,7 @@ main .icon-list-center-container ~ .columns-highlight-container {
   main .section.icon-list-two-column-container > div {
     max-width: 1122px;
   }
-  
+
   main .icon-list.fullwidth {
     justify-content: space-between;
   }
@@ -203,7 +210,7 @@ main .icon-list-center-container ~ .columns-highlight-container {
     max-width: 1024px;
     margin: auto;
   }
-  
+
   main .icon-list.fullwidth > div {
     width: 480px;
   }

@@ -60,6 +60,15 @@
   animation: GridGradient 85s ease infinite;
 }
 
+.feature-grid.white-text .grid-item {
+  color: white;
+}
+
+.feature-grid.white-text .cta {
+  color: white;
+}
+
+
 .feature-grid .cta {
   color: var(--body-color);
   margin-bottom: 24px;
@@ -166,7 +175,7 @@
     grid-gap: 20px;
   }
 
-  .section > .block.feature-grid {
+  .section>.block.feature-grid {
     max-width: 1020px;
   }
 
@@ -262,7 +271,7 @@
 }
 
 @media (min-width: 1440px) {
-  .section > .block.feature-grid {
+  .section>.block.feature-grid {
     max-width: 1255px;
   }
 
@@ -339,6 +348,7 @@
     grid-column: 1 / 5;
     grid-row: 7 / 8;
   }
+
   .feature-grid .grid-item.item-11 {
     grid-column: 5 / 9;
     grid-row: 7 / 8;
@@ -351,17 +361,43 @@
 }
 
 @-webkit-keyframes GridGradient {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
 }
+
 @-moz-keyframes GridGradient {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
 }
+
 @keyframes GridGradient {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
 }

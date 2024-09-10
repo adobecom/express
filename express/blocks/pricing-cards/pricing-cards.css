@@ -251,6 +251,7 @@ End border style variants
   display: flex;
   flex-direction: row-reverse;
   gap: 8px;
+  text-align: left;
 }
 
 .pricing-cards .card-header img {
@@ -284,6 +285,8 @@ End border style variants
   color: #5258E4;
   height: 20px;
   font-style: normal;
+  height: auto;
+  max-width: 240px;
 }
 
 .pricing-cards .card-offer a {
@@ -293,6 +296,7 @@ End border style variants
 /** pricing styles start **/
 .pricing-cards .pricing-row {
   max-width: 330px;
+  margin-top: 20px;
 }
 
 .pricing-cards .pricing-base-price,
@@ -375,16 +379,21 @@ End border style variants
 
 .pricing-cards .billing-toggle.suppressed-billing-toggle {
   visibility: hidden;
-  
 } 
 
 .pricing-cards .billing-toggle {
-  display: flex;
   justify-content: center;
-  gap: 12px;
+  width: 100%;
+  margin-left: 10px;
   align-items: center;
   font-size: var(--body-font-size-s);
-  margin-bottom: 4px;
+  margin-bottom: 12px;
+}
+
+.pricing-cards .billing-toggle .toggle-button-wrapper {
+  display: flex;
+  margin-top: 10px;
+  gap: 12px;
 }
 
 .pricing-cards .billing-toggle button {
@@ -395,7 +404,6 @@ End border style variants
   font: inherit;
   cursor: pointer;
   outline: inherit;
-
   font-size: var(--body-font-size-xs);
   display: flex;
   align-items: center;

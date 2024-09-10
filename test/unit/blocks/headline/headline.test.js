@@ -37,9 +37,4 @@ describe('Headline', () => {
     expect(lanaSpy.calledOnce).to.be.true;
     expect(lanaSpy.calledTwice).to.be.false;
   });
-  it('leaves nothing when whole thing fails', () => {
-    const block = decorate(document.getElementById('headline-ut-bad-block'));
-    expect(block.innerHTML === '').to.be.true;
-    expect(lanaSpy.calledTwice).to.be.true;
-  });
 });

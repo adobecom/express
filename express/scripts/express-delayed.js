@@ -4,14 +4,13 @@ import {
   getMetadata,
   getConfig,
   loadStyle,
-  loadLink,
 } from './utils.js';
 import BlockMediator from './block-mediator.js';
 
 export function getDestination() {
   const pepDestinationMeta = getMetadata('pep-destination');
   return pepDestinationMeta || BlockMediator.get('primaryCtaUrl')
-    || document.querySelector('a.button.xlarge.same-as-floating-button-CTA, a.primaryCTA')?.href;
+    || document.querySelector('a.button.xlarge.same-fcta, a.primaryCTA')?.href;
 }
 
 function getSegmentsFromAlloyResponse(response) {
@@ -109,6 +108,8 @@ function isBranchLink(url) {
 }
 // product entry prompt
 async function canPEP() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('force-pep')) return true;
   if (document.body.dataset.device !== 'desktop') return false;
   const pepSegment = getMetadata('pep-segment');
   if (!pepSegment) return false;
@@ -145,14 +146,10 @@ function preloadSUSILight() {
     preloadTag.setAttribute('data-stage', 'true');
   }
   import('../blocks/susi-light/susi-light.js')
-    .then((mod) => mod.loadWrapper())
-    .then(() => {
-      document.head.append(preloadTag);
-    });
+    .then(({ loadWrapper }) => loadWrapper())
+    .then(() => document.head.append(preloadTag));
   loadStyle('/express/blocks/susi-light/susi-light.css');
   import('../blocks/fragment/fragment.js');
-  loadLink('/express/icons/close-button-x.svg', { rel: 'preload', as: 'image' });
-  loadLink('/express/icons/cc-express.svg', { rel: 'preload', as: 'image' });
 }
 
 /**
