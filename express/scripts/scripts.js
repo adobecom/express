@@ -174,7 +174,7 @@ function registerSUSIModalLinks() {
   listenAlloy();
   registerSUSIModalLinks(); // TODO: remove post bts
   await loadArea();
-
+  
   import('./express-delayed.js').then((mod) => {
     mod.default();
   });
