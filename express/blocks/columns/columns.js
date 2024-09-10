@@ -178,12 +178,10 @@ export default async function decorate(block) {
   const colorProperties = extractProperties(block);
   addTempWrapper(block, 'columns');
 
-  const narrowWidth = getMetadata('narrow-width') === 'on';
   const container = document.querySelector('div.columns.block');
   const rows = Array.from(block.children);
 
-  if (narrowWidth && container) {
-    container.classList.add('narrow-width');
+  if (container?.classList.contains('narrow')) {
     let count = 1;
     rows.forEach((ele) => {
       if (ele.innerHTML.includes('h2')) {
