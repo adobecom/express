@@ -38,8 +38,6 @@ async function initSearchFunction(block, searchBarWrapper) {
     freePlanContainer.append(freePlanTags);
     searchDropdown.append(freePlanContainer);
   });
-
-
   const searchForm = searchBarWrapper.querySelector('.search-form');
   const searchBar = searchBarWrapper.querySelector('input.search-bar');
   const clearBtn = searchBarWrapper.querySelector('.icon-search-clear');
