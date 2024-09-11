@@ -65,12 +65,7 @@ main .faq .faq-answer p {
     margin-top: 0;
 }
 
-main .grid-width-6-desktop.narrow.faq-container .faq {
-    max-width: 850px;
-    margin: 0 auto; 
-}
-
-main .grid-width-6-desktop.narrow.faq-container .default-content-wrapper {
+main .faq-narrow-container {
     max-width: 850px;
     margin: 0 auto; 
 }
