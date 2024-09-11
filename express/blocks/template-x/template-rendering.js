@@ -374,7 +374,6 @@ function renderHoverWrapper(template, placeholders) {
 
   const cta = renderCTA(placeholders, template.customLinks.branchUrl);
   const ctaLink = renderCTALink(template.customLinks.branchUrl);
-
   ctaLink.append(mediaWrapper);
 
   btnContainer.append(cta);
