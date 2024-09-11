@@ -1,10 +1,12 @@
 main .section.banner-container,
+main .section.banner-narrow-container,
 main .section.banner-standout-container,
 main .section.banner-compact-container {
   background-color: var(--color-info-accent);
 }
 
 main .section.banner-container,
+main .section.banner-narrow-container,
 main .section.banner-light-container {
   padding: 80px 15px;
 }
@@ -99,8 +101,8 @@ main .banner .standout-container em {
   font-weight: 900;
 }
 
-main .grid-width-6-desktop.narrow.banner-container .banner{
-  max-width: 850px;
+main .grid-width-6-desktop.banner-narrow-container .banner { 
+  max-width: 850px !important;
   margin: 0 auto; 
 }
 
