@@ -2,6 +2,7 @@ import { createTag, loadStyle, loadScript } from './utils.js';
 import { getAvailableVimeoSubLang } from '../blocks/shared/video.js';
 
 export function getDefaultEmbed(url) {
+  console.log("=== IN getDefaultEmbed", url);
   return `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">
     <iframe src="${url.href}" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;" allowfullscreen=""
       scrolling="no" allow="encrypted-media" title="Content from ${url.hostname}" loading="lazy">
@@ -10,17 +11,27 @@ export function getDefaultEmbed(url) {
 }
 
 export function embedYoutube(url) {
+  console.log("=== IN embedYoutube", url);
+
   const title = !url.href.includes('http') ? url : 'Youtube Video';
   const searchParams = new URLSearchParams(url.search);
+
+  console.log("=== searchParams", searchParams);
+
   const id = searchParams.get('v') || url.pathname.split('/').pop();
   searchParams.delete('v');
+
+  console.log("=== PARAMS", id);
+
   loadScript('/express/scripts/libs/lite-yt-embed/lite-yt-embed.js', 'module');
   loadStyle('/express/scripts/libs/lite-yt-embed/lite-yt-embed.css');
 
-  return createTag('lite-youtube', {
+  const tag1 =  createTag('lite-youtube', {
     videoid: id,
     playlabel: title,
   });
+  console.log("=== TAG", tag1);
+  return tag1;
 }
 
 export function embedVimeo(url, thumbnail) {

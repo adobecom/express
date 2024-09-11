@@ -48,11 +48,15 @@ const EMBEDS_CONFIG = {
 
 function decorateBlockEmbeds(block) {
   block.querySelectorAll('.embed.block a[href]').forEach((a) => {
+
+    console.log("=== IN EMBED", a);
+
     const url = new URL(a.href.replace(/\/$/, ''));
     const config = EMBEDS_CONFIG[url.hostname];
 
     let embedContent;
     if (config) {
+      console.log("=== IN EMBED with config defined", a);
       embedContent = config.embed(url);
       if (embedContent instanceof HTMLElement) {
         embedContent = embedContent.outerHTML;

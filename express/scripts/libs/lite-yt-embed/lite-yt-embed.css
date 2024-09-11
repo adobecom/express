@@ -9,6 +9,10 @@ lite-youtube {
   max-width: 720px;
 }
 
+lite-youtube {
+  /* outline: 6px dotted #07f; */
+}
+
 /* gradient */
 lite-youtube::before {
   content: attr(data-title);

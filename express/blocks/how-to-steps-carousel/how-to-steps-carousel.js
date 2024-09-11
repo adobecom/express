@@ -6,6 +6,9 @@ import {
   fetchPlaceholders,
 } from '../../scripts/utils.js';
 
+import { embedYoutube } from '../../scripts/embed-videos.js';
+
+
 let rotationInterval;
 let fixedImageSize = false;
 
@@ -290,7 +293,22 @@ export default async function decorate(block) {
     backgroundPicImg.style.width = `${canvasWidth}px`;
     if (window.screen.width < 600) backgroundPicImg.style.height = `${window.screen.width * 0.536}px`;
     picture = backgroundPic;
-    section.prepend(picture);
+    // section.prepend(picture);
+
+    const ytEl = embedYoutube(new URL("https://www.youtube.com/watch?v=8IBxgDR27pQ"));
+
+    console.log("=== ytEl", ytEl);
+    section.prepend(ytEl);
+
+    // section.append("HELLO WORLD");
+
+    // a.parentElement.replaceChild(embedYoutube(url), a);
+    // section.replaceChildren(embedYoutube("https://www.youtube.com/watch?v=8IBxgDR27pQ"));
+
+
+
+    //import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
+
 
     loadImage(backgroundPicImg).then(() => {
       backgroundPicImg.width = canvasWidth;
@@ -321,4 +339,7 @@ export default async function decorate(block) {
     section.prepend(picture);
   }
   buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow);
+
+  // block.append(embedYoutube("https://www.youtube.com/watch?v=8IBxgDR27pQ"));
+
 }

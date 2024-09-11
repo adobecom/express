@@ -131,6 +131,7 @@ function decorateIconList(columnCell, rowNum, blockClasses) {
 }
 
 const handleVideos = (cell, a, block, thumbnail) => {
+  console.log("=== IN handleVideos", a, thumbnail);
   if (!a.href) return;
 
   const url = new URL(a.href);

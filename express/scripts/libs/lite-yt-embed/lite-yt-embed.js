@@ -13,6 +13,12 @@
  *   https://github.com/vb/lazyframe
  */
 class LiteYTEmbed extends HTMLElement {
+
+  constructor(...args) {
+    console.log("=== IN LiteYTEmbed constructor")
+    super(...args);
+  }
+
   connectedCallback() {
     this.videoId = this.getAttribute('videoid');
 
@@ -196,12 +202,13 @@ class LiteYTEmbed extends HTMLElement {
 
   createBasicIframe(){
     const iframeEl = document.createElement('iframe');
-    iframeEl.width = 560;
+    iframeEl.width = 560.5;
     iframeEl.height = 315;
     // No encoding necessary as [title] is safe. https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#:~:text=Safe%20HTML%20Attributes%20include
     iframeEl.title = this.playLabel;
     iframeEl.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
     iframeEl.allowFullscreen = true;
+    iframeEl.title = "bar";
     // AFAIK, the encoding here isn't necessary for XSS, but we'll do it only because this is a URL
     // https://stackoverflow.com/q/64959723/89484
     iframeEl.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(this.videoId)}?${this.getParams().toString()}`;

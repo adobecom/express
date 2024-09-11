@@ -275,8 +275,10 @@ export function displayVideoModal(url = [], title, push) {
     let vidType = 'default';
     let ts = 0;
     if (/^https?:[/][/]video[.]tv[.]adobe[.]com/.test(primaryUrl)) {
+      console.log("=== VIDEO_JS detected adobetv");
       vidType = 'adobetv';
     } else if (primaryUrl.includes('youtu')) {
+      console.log("=== VIDEO_JS detected YouTube");
       vidType = 'youtube';
       const yturl = new URL(primaryUrl);
       let vid = yturl.searchParams.get('v');
@@ -290,6 +292,7 @@ export function displayVideoModal(url = [], title, push) {
       const language = getAvailableVimeoSubLang();
       vidUrls = [`https://player.vimeo.com/video/${vid}?app_id=122963&autoplay=1&texttrack=${language}`];
     } else if (primaryUrl.includes('/media_')) {
+      console.log("=== VIDEO_JS detected html5");
       vidType = 'html5';
       const { hash } = new URL(vidUrls[0]);
       if (hash.startsWith('#t=')) {
