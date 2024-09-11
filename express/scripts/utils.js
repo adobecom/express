@@ -926,7 +926,6 @@ function decorateContent(el) {
   block.className = 'default-content-wrapper';
   block.append(...children);
   block.dataset.block = '';
-
   return block;
 }
 
