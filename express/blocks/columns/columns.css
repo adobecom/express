@@ -21,6 +21,12 @@ main .columns-top-container > div {
   max-width: 350px;
 }
 
+main .columns .express-logo.icon {
+  width: unset;
+  height: 30px;
+  padding-bottom: 8px;
+  float: unset;
+}
  
 
 .section.columns-enterprise-container .default-content-wrapper h2 {

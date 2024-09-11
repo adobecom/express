@@ -315,6 +315,11 @@ export default async function decorate(block) {
     && document.querySelector('main .block') === block) {
     addFreePlanWidget(block.querySelector('.button-container') || block.querySelector(':scope .column:not(.hero-animation-overlay,.columns-picture)'));
   }
+  if (document.querySelector('main .block') === block && ['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
+    const logo = getIconElement('adobe-express-logo');
+    logo.classList.add('express-logo');
+    block.querySelector('.column')?.prepend(logo);
+  }
 
   // add custom background color to columns-highlight-container
   const sectionContainer = block.closest('.section.columns-highlight-container');

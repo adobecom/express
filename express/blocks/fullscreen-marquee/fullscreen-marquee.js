@@ -3,6 +3,8 @@ import {
   createTag,
   fetchPlaceholders,
   transformLinkToAnimation,
+  getIconElement,
+  getMetadata,
 } from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
@@ -166,6 +168,12 @@ export default async function decorate(block) {
 
   if (content) {
     content = buildContent(content);
+  }
+
+  if (['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
+    const logo = getIconElement('adobe-express-logo');
+    logo.classList.add('express-logo');
+    block.prepend(logo);
   }
 
   if (background) {
