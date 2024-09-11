@@ -54,8 +54,7 @@ export default function decorate($block, name, doc) {
     const $text = createTag('div', { class: 'tip-text' });
     $text.append($h3);
     $text.append($p);
-    const $number = createTag('div', { class: 'tip-number' });
-    $number.innerHTML = `<span>${i + numberStepStart - 1}</span>`;
+    const $number = createTag('div', { class: 'tip-number' }, `<span>${i + numberStepStart - 1}</span>`);
     $cells[0].remove();
     $cells[1].innerHTML = '';
     $cells[1].classList.add('tip');
