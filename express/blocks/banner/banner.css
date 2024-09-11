@@ -102,7 +102,7 @@ main .banner .standout-container em {
 }
 
 main .grid-width-6-desktop.banner-narrow-container .banner { 
-  max-width: 850px !important;
+  max-width: 850px;
   margin: 0 auto; 
 }
 
