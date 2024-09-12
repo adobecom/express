@@ -165,6 +165,15 @@ function renderCTA(placeholders, branchUrl) {
   return btnEl;
 }
 
+function renderCTALink(branchUrl) {
+  const linkEl = createTag('a', {
+    href: branchUrl,
+    class: 'cta-link',
+    tabindex: '-1',
+  });
+  return linkEl;
+}
+
 function getPageIterator(pages) {
   return {
     i: 0,
@@ -182,6 +191,7 @@ function getPageIterator(pages) {
     },
   };
 }
+
 async function renderRotatingMedias(wrapper,
   pages,
   { templateTitle, renditionLinkHref, componentLinkHref }) {
@@ -363,13 +373,22 @@ function renderHoverWrapper(template, placeholders) {
     mediaWrapper, enterHandler, leaveHandler, focusHandler,
   } = renderMediaWrapper(template, placeholders);
 
-  btnContainer.append(mediaWrapper);
+  console.log("=== btnContainer", btnContainer)
+  // btnContainer.append(mediaWrapper);
+
+  const cta = renderCTA(placeholders, template.customLinks.branchUrl);
+  const ctaLink = renderCTALink(template.customLinks.branchUrl);
+
+  ctaLink.append(mediaWrapper);
+
+  btnContainer.append(cta);
+  btnContainer.append(ctaLink);
 
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
-  const cta = renderCTA(placeholders, template.customLinks.branchUrl);
-  btnContainer.prepend(cta);
+  // const cta = renderCTA(placeholders, template.customLinks.branchUrl);
+  // btnContainer.prepend(cta);
   cta.addEventListener('focusin', focusHandler);
 
   const ctaClickHandler = () => {
@@ -384,10 +403,23 @@ function renderHoverWrapper(template, placeholders) {
     trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
   };
 
+  const ctaClickHandlerTouchDevice = (ev) => {
+    // If it is a mobile device with a touch screen, do not jump over to the Edit page,
+    // but allow the user to preview the template instead
+    if (window.matchMedia('(pointer: coarse)').matches) {
+      ev.preventDefault();
+    }
+  };
+
+  // cta.addEventListener('click', ctaClickHandler, { passive: true });
   cta.addEventListener('click', ctaClickHandler, { passive: true });
+  ctaLink.addEventListener('click', ctaClickHandler, { passive: true });
+  ctaLink.addEventListener('click', ctaClickHandlerTouchDevice);
 
   return btnContainer;
 }
+
+
 
 function getStillWrapperIcons(template, placeholders) {
   let planIcon = null;
