@@ -5,15 +5,14 @@ import {
 } from '../../scripts/utils.js';
 
 import {
+  fetchPlanOnePlans,
   formatDynamicCartLink,
   formatSalesPhoneNumber,
   shallSuppressOfferEyebrowText,
-  fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
-import createToggle from './pricing-toggle.js';
-import { handleTooltip, adjustElementPosition } from './pricing-tooltip.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
+import { adjustElementPosition, handleTooltip } from './simplified-pricing-tooltip.js';
 
 const SAVE_PERCENTAGE = '{{savePercentage}}';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
@@ -276,6 +275,9 @@ function decorateHeader(header, planExplanation) {
     if (p.innerHTML.trim() === '') p.remove();
   });
   planExplanation.classList.add('plan-explanation');
+  const hideButton = createTag('div')
+  hideButton.innerText = ">"
+  header.append(hideButton)
 }
 
 function decorateCardBorder(card, source) {
@@ -287,12 +289,6 @@ function decorateCardBorder(card, source) {
     card.classList.add(promoType.replaceAll(' ', ''));
     source.textContent = source.textContent.replace(pattern, '');
   }
-}
-
-function decorateBillingToggle(card, placeholders, monthlyPlanID, yearlyPlanID) {
-  const toggle = createToggle(placeholders, [card.children[3],
-    card.children[4], card.children[5], card.children[6]], monthlyPlanID, yearlyPlanID);
-  card.insertBefore(toggle, card.children[3]);
 }
 
 export default async function init(el) {
@@ -310,18 +306,12 @@ export default async function init(el) {
     const card = createTag('div', { class: 'card' });
     decorateCardBorder(card, rows[0].children[0]);
     decorateHeader(rows[1].children[0], rows[2].children[0]);
-    const monthlyPlanID = await createPricingSection(placeholders, rows[3].children[0],
+    await createPricingSection(placeholders, rows[3].children[0],
       rows[4].children[0], rows[0].children[0], true);
-    const yearlyPlanID = await createPricingSection(placeholders, rows[5].children[0],
-      rows[6].children[0], rows[0].children[0]);
-    rows[7].children[0].classList.add('card-feature-list');
-    rows[8].children[0].classList.add('compare-all');
-
-    for (let j = 0; j < rows.length - 1; j += 1) {
+    for (let j = 0; j < rows.length - 2; j += 1) {
       card.appendChild(rows[j].children[0]);
     }
     cards.push(card);
-    decorateBillingToggle(card, placeholders, monthlyPlanID, yearlyPlanID);
   }
 
   el.innerHTML = '';
@@ -329,8 +319,9 @@ export default async function init(el) {
   for (const card of cards) {
     el.children[0].appendChild(card);
   }
+  el.appendChild(rows[rows.length - 2]);
   el.appendChild(rows[rows.length - 1]);
-
+  
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
