@@ -795,7 +795,7 @@ main.with-holiday-templates-banner {
     background: var(--color-gray-100);
     position: sticky;
     z-index: 1;
-    top: var(--header-height);
+    top: 64px;
 }
 
 .template-x .api-templates-toolbar {
