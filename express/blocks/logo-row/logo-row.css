@@ -35,7 +35,7 @@ main .logo-row .image-column {
 }
 
 main .logo-row .brand-image {
-    width: 150px;
+    width: 100px;
     height: 100px;
     object-fit: contain;
 }
@@ -46,7 +46,10 @@ main .logo-row .brand-image {
     }
 
     main .logo-row .image-column {
-        display: block;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; 
+        gap: 10px;
     }
 
     main .logo-row .text-column  {
@@ -57,4 +60,10 @@ main .logo-row .brand-image {
     main .logo-row .text-column > * {
         text-align: center;
     }
+
+    main .logo-row .brand-image { 
+        height: 100px;
+        object-fit: contain;
+    }
+ 
 }
