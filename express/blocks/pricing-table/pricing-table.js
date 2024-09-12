@@ -5,10 +5,7 @@ import { decorateButtons } from '../../scripts/utils/decorate.js';
 import {
   formatDynamicCartLink,
 } from '../../scripts/utils/pricing.js';
-import BlockMediator from '../../scripts/block-mediator.min.js';
-
-const plans = ['monthly', 'yearly']; // authored order should match with billing-radio
-const BILLING_PLAN = 'billing-plan';
+import { sendEventToAnalytics } from '../../scripts/instrument.js';
 
 const MOBILE_SIZE = 981;
 function defineDeviceByScreenSize() {
@@ -62,19 +59,8 @@ function handleHeading(headingRow, headingCols) {
 
     if (buttons.length > 1) {
       buttons.forEach((btn, index) => {
-        btn.classList.add(plans[index]);
+        if (index > 0) btn.remove();
       });
-      const reactToPlanChange = ({ newValue }) => {
-        buttons.forEach((btn) => {
-          if (btn.classList.contains(plans[newValue])) {
-            btn.classList.remove('hide');
-          } else {
-            btn.classList.add('hide');
-          }
-        });
-      };
-      reactToPlanChange({ newValue: BlockMediator.get(BILLING_PLAN) ?? 0 });
-      BlockMediator.subscribe(BILLING_PLAN, reactToPlanChange);
     }
 
     const div = document.createElement('div');
@@ -247,6 +233,12 @@ export default async function init(el) {
 
       const viewAllText = placeholders['view-all-features'] ?? 'View all features';
       const toggleOverflowContent = createTag('div', { class: 'toggle-content col', role: 'cell', 'aria-label': viewAllText }, viewAllText);
+
+      toggleOverflowContent.addEventListener('click', () => {
+        const buttonEl = toggleOverflowContent.querySelector('span.expand');
+        const action = buttonEl && buttonEl.getAttribute('aria-expanded') === 'true' ? 'closed' : 'opened';
+        sendEventToAnalytics(`adobe.com:express:cta:pricing:tableToggle:${action || ''}`);
+      });
       toggleRow.append(toggleOverflowContent);
 
       if (nextRow) {

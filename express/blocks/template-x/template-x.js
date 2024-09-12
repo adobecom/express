@@ -7,7 +7,6 @@ import {
   getLottie,
   getMetadata,
   lazyLoadLottiePlayer,
-  sampleRUM,
   titleCase,
   toClassName,
   transformLinkToAnimation,
@@ -15,10 +14,19 @@ import {
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { Masonry } from '../shared/masonry.js';
 import buildCarousel from '../shared/carousel.js';
-import { fetchTemplates, isValidTemplate, fetchTemplatesCategoryCount } from './template-search-api-v3.js';
+import {
+  fetchTemplates,
+  isValidTemplate,
+  fetchTemplatesCategoryCount,
+  gatherPageImpression,
+  trackSearch,
+  updateImpressionCache,
+  generateSearchId,
+} from '../../scripts/template-search-api-v3.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import renderTemplate from './template-rendering.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function wordStartsWithVowels(word) {
   return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
@@ -316,12 +324,18 @@ function updateLoadMoreButton(props, loadMore) {
 
 async function decorateNewTemplates(block, props, options = { reDrawMasonry: false }) {
   const { templates: newTemplates } = await fetchAndRenderTemplates(props);
+  updateImpressionCache({ result_count: props.total });
   const loadMore = block.parentElement.querySelector('.load-more');
 
   props.templates = props.templates.concat(newTemplates);
   populateTemplates(block, props, newTemplates);
 
   const newCells = Array.from(block.querySelectorAll('.template:not(.appear)'));
+
+  const templateLinks = block.querySelectorAll('.template:not(.appear) .button-container > a, a.template.placeholder');
+  templateLinks.isSearchOverride = true;
+  const linksPopulated = new CustomEvent('linkspopulated', { detail: templateLinks });
+  document.dispatchEvent(linksPopulated);
 
   if (options.reDrawMasonry) {
     props.masonry.cells = [props.masonry.cells[0]].concat(newCells);
@@ -346,6 +360,7 @@ async function decorateLoadMoreButton(block, props) {
   loadMoreButton.append(getIconElement('plus-icon'));
 
   loadMoreButton.addEventListener('click', async () => {
+    trackSearch('select-load-more', BlockMediator.get('templateSearchSpecs').search_id);
     loadMoreButton.classList.add('disabled');
     const scrollPosition = window.scrollY;
     await decorateNewTemplates(block, props);
@@ -617,13 +632,24 @@ async function decorateCategoryList(block, props) {
     const iconElement = getIconElement(icon);
     const a = createTag('a', {
       'data-tasks': targetTasks,
-      href: `${prefix}/express/templates/search?tasks=${targetTasks}&tasksx=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"}&q=${currentTopic || ''}`,
+      'data-topics': currentTopic || '',
+      href: `${prefix}/express/templates/search?tasks=${targetTasks}&tasksx=${targetTasks}&phformat=${format}&topics=${currentTopic || "''"}&q=${currentTopic || ''}&searchId=${generateSearchId()}`,
     });
     [a.textContent] = category;
 
     a.prepend(iconElement);
     listItem.append(a);
     categoriesList.append(listItem);
+
+    a.addEventListener('click', () => {
+      updateImpressionCache({
+        category_filter: a.dataset.tasks,
+        collection: a.dataset.topics,
+        collection_path: window.location.pathname,
+        content_category: 'templates',
+      });
+      trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
+    }, { passive: true });
   });
 
   categoriesDesktopWrapper.addEventListener('mouseover', () => {
@@ -631,6 +657,19 @@ async function decorateCategoryList(block, props) {
   }, { once: true });
 
   const categoriesMobileWrapper = categoriesDesktopWrapper.cloneNode({ deep: true });
+  const mobileJumpCategoryLinks = categoriesMobileWrapper.querySelectorAll('.category-list > li > a');
+  mobileJumpCategoryLinks.forEach((a) => {
+    a.addEventListener('click', () => {
+      updateImpressionCache({
+        search_keyword: a.dataset.tasks,
+        collection: a.dataset.topics,
+        collection_path: window.location.pathname,
+        content_category: 'templates',
+      });
+      trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
+    }, { passive: true });
+  });
+
   const mobileCategoriesToggle = createTag('span', { class: 'category-list-toggle' });
   mobileCategoriesToggle.textContent = placeholders['jump-to-category'] ?? '';
   categoriesMobileWrapper.querySelector('.category-list-toggle-wrapper > .icon')?.replaceWith(mobileCategoriesToggle);
@@ -797,7 +836,7 @@ function initDrawer(block, props, toolBar) {
           wrapper.classList.toggle('collapsed');
           wrapper.style.maxHeight = wrapper.classList.contains('collapsed') ? minHeight : maxHeight;
         }
-      }, { passive: true });
+      });
     }
   });
 
@@ -827,8 +866,7 @@ function updateQuery(functionWrapper, props, option) {
   }
 }
 
-async function redrawTemplates(block, existingProps, props, toolBar) {
-  if (JSON.stringify(props) === JSON.stringify(existingProps)) return;
+async function redrawTemplates(block, props, toolBar) {
   const heading = toolBar.querySelector('h2');
   const currentTotal = props.total.toLocaleString('en-US');
   props.templates = [props.templates[0]];
@@ -850,6 +888,33 @@ async function redrawTemplates(block, existingProps, props, toolBar) {
       block.classList.remove(className);
     });
   }
+}
+
+function parseOrderBy(queryString) {
+  let orderType = 'relevancy';
+  let orderDirection = 'descending';
+
+  if (!queryString) {
+    return {
+      orderType,
+      orderDirection,
+    };
+  }
+
+  const parts = queryString.split('=');
+
+  if (parts[1]?.startsWith('-')) {
+    orderDirection = 'descending';
+    orderType = parts[1].substring(1);
+  } else {
+    orderDirection = 'ascending';
+    [, orderType] = parts;
+  }
+
+  return {
+    orderType,
+    orderDirection,
+  };
 }
 
 async function initFilterSort(block, props, toolBar) {
@@ -901,10 +966,23 @@ async function initFilterSort(block, props, toolBar) {
           updateQuery(wrapper, props, option);
           updateFilterIcon(block);
 
-          if (!button.classList.contains('in-drawer')) {
-            await redrawTemplates(block, existingProps, props, toolBar);
+          if (!button.classList.contains('in-drawer') && JSON.stringify(props) !== JSON.stringify(existingProps)) {
+            const sortObj = parseOrderBy(props.sort);
+            updateImpressionCache({
+              ...gatherPageImpression(props),
+              ...{
+                search_type: 'adjust-filter',
+                search_keyword: 'change filters, no keyword found',
+                sort_type: sortObj.orderType,
+                sort_order: sortObj.orderDirection,
+                content_category: 'templates',
+              },
+            });
+            trackSearch('search-inspire');
+            await redrawTemplates(block, props, toolBar);
+            trackSearch('view-search-result', BlockMediator.get('templateSearchSpecs').search_id);
           }
-        }, { passive: true });
+        });
       });
 
       document.addEventListener('click', (e) => {
@@ -918,7 +996,22 @@ async function initFilterSort(block, props, toolBar) {
     if (applyFilterButton) {
       applyFilterButton.addEventListener('click', async (e) => {
         e.preventDefault();
-        await redrawTemplates(block, existingProps, props, toolBar);
+        if (JSON.stringify(props) !== JSON.stringify(existingProps)) {
+          const sortObj = parseOrderBy(props.sort);
+          updateImpressionCache({
+            ...gatherPageImpression(props),
+            ...{
+              search_type: 'adjust-filter',
+              search_keyword: 'change filters, no keyword found',
+              sort_type: sortObj.orderType,
+              sort_order: sortObj.orderDirection,
+              content_category: 'templates',
+            },
+          });
+          trackSearch('search-inspire');
+          await redrawTemplates(block, props, toolBar);
+        }
+
         closeDrawer(toolBar);
       });
     }
@@ -1024,7 +1117,7 @@ function initViewToggle(block, props, toolBar) {
   });
 }
 
-function initToolbarShadow(block, toolbar) {
+function initToolbarShadow(toolbar) {
   const toolbarWrapper = toolbar.parentElement;
   document.addEventListener('scroll', () => {
     if (toolbarWrapper.getBoundingClientRect().top <= 0) {
@@ -1073,11 +1166,11 @@ async function decorateToolbar(block, props) {
     initDrawer(block, props, tBar);
     initFilterSort(block, props, tBar);
     initViewToggle(block, props, tBar);
-    initToolbarShadow(block, tBar);
+    initToolbarShadow(tBar);
   }
 }
 
-function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
+function initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev) {
   const onToggle = () => {
     block.classList.toggle('expanded');
 
@@ -1095,19 +1188,29 @@ function initExpandCollapseToolbar(block, templateTitle, toggle, link) {
       }
     }
   };
+  const templateImages = block.querySelectorAll('.template');
 
-  const chev = block.querySelector('.toggle-button-chev');
-  templateTitle.addEventListener('click', () => onToggle());
-  chev.addEventListener('click', (e) => {
-    e.stopPropagation();
-    onToggle();
+  templateImages.forEach((template) => {
+    template.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
   });
 
+  toggleChev.addEventListener('click', onToggle);
   toggle.addEventListener('click', () => onToggle());
-  link.addEventListener('click', (e) => e.stopPropagation());
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.carousel-fader-right') || e.target.closest('.carousel-fader-left')) {
+      return;
+    }
+    if (e.target.closest('.template-x.holiday') || (
+      block.classList.contains('expanded')
+    )) {
+      onToggle();
+    }
+  });
 
   setTimeout(() => {
-    if (!block.matches(':hover')) {
+    if (block.classList.contains('auto-expand')) {
       onToggle();
     }
   }, 3000);
@@ -1136,7 +1239,7 @@ function decorateHoliday(block, props) {
   }
 
   if (templateXSection && templateXSection.querySelectorAll('div.block').length === 1) main.classList.add('with-holiday-templates-banner');
-  block.classList.add('expanded', props.textColor);
+  block.classList.add(props.textColor);
   toggleBar.classList.add('toggle-bar');
   topElements.append(heading);
   toggle.append(link, toggleChev);
@@ -1152,10 +1255,12 @@ function decorateHoliday(block, props) {
     toggleBar.append(toggle);
   }
 
-  initExpandCollapseToolbar(block, templateTitle, toggle, link);
+  initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev);
 }
 
 async function decorateTemplates(block, props) {
+  const impression = gatherPageImpression(props);
+  updateImpressionCache(impression);
   const innerWrapper = block.querySelector('.template-x-inner-wrapper');
 
   let rows = block.children.length;
@@ -1217,7 +1322,16 @@ async function decorateTemplates(block, props) {
 
   await attachFreeInAppPills(block);
 
+  const searchId = new URLSearchParams(window.location.search).get('searchId');
+  updateImpressionCache({
+    search_keyword: getMetadata('q') || getMetadata('topics-x') || getMetadata('topics'),
+    result_count: props.total,
+    content_category: 'templates',
+  });
+  if (searchId) trackSearch('view-search-result', searchId);
+
   const templateLinks = block.querySelectorAll('.template .button-container > a, a.template.placeholder');
+  templateLinks.isSearchOverride = true;
   const linksPopulated = new CustomEvent('linkspopulated', { detail: templateLinks });
   document.dispatchEvent(linksPopulated);
 }
@@ -1318,45 +1432,60 @@ function importSearchBar(block, blockMediator) {
             [[currentTasks]] = tasksFoundInInput;
           }
 
+          updateImpressionCache({ collection: currentTasks || 'all-templates', content_category: 'templates' });
+          trackSearch('search-inspire');
+
           const { prefix } = getConfig().locale;
           const topicUrl = searchInput ? `/${searchInput}` : '';
           const taskUrl = `/${handlelize(currentTasks.toLowerCase())}`;
           const targetPath = `${prefix}/express/templates${taskUrl}${topicUrl}`;
+          const searchId = BlockMediator.get('templateSearchSpecs').search_id;
           const allTemplatesMetadata = await fetchAllTemplatesMetadata();
           const pathMatch = (event) => event.url === targetPath;
+          let targetLocation;
+
           if (allTemplatesMetadata.some(pathMatch)) {
-            window.location = `${window.location.origin}${targetPath}`;
+            targetLocation = `${window.location.origin}${targetPath}?searchId=${searchId || ''}`;
           } else {
-            const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks}&phformat=${format}&topics=${searchInput || "''"}&q=${searchInput || "''"}`;
-            window.location = `${window.location.origin}${prefix}${searchUrlTemplate}`;
+            const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks}&phformat=${format}&topics=${searchInput || "''"}&q=${searchInput || "''"}&searchId=${searchId || ''}`;
+            targetLocation = `${window.location.origin}${prefix}${searchUrlTemplate}`;
           }
+
+          window.location.assign(targetLocation);
         };
 
         const onSearchSubmit = async () => {
           searchBar.disabled = true;
-          sampleRUM('search', {
-            source: block.dataset.blockName,
-            target: searchBar.value,
-          }, 1);
           await redirectSearch();
         };
 
-        const handleSubmitInteraction = async (item) => {
+        const handleSubmitInteraction = async (item, index) => {
           if (item.query !== searchBar.value) {
             searchBar.value = item.query;
             searchBar.dispatchEvent(new Event('input'));
           }
+          updateImpressionCache({
+            status_filter: 'free',
+            type_filter: 'all',
+            collection: 'all-templates',
+            keyword_rank: index + 1,
+            search_keyword: searchBar.value || 'empty search',
+            search_type: 'autocomplete',
+          });
           await onSearchSubmit();
         };
 
         searchForm.addEventListener('submit', async (event) => {
           event.preventDefault();
           searchBar.disabled = true;
-          sampleRUM('search', {
-            source: block.dataset.blockName,
-            target: searchBar.value,
-          }, 1);
-          await redirectSearch();
+          updateImpressionCache({
+            status_filter: 'free',
+            type_filter: 'all',
+            collection: 'all-templates',
+            search_type: 'direct',
+            search_keyword: searchBar.value || 'empty search',
+          });
+          await onSearchSubmit();
         });
 
         clearBtn.addEventListener('click', () => {
@@ -1376,12 +1505,16 @@ function importSearchBar(block, blockMediator) {
               const valRegEx = new RegExp(searchBar.value, 'i');
               li.innerHTML = item.query.replace(valRegEx, `<b>${searchBarVal}</b>`);
               li.addEventListener('click', async () => {
-                await handleSubmitInteraction(item);
+                if (item.query === searchBar.value) return;
+                searchBar.value = item.query;
+                searchBar.dispatchEvent(new Event('input'));
+
+                await handleSubmitInteraction(item, index);
               });
 
               li.addEventListener('keydown', async (event) => {
                 if (event.key === 'Enter' || event.keyCode === 13) {
-                  await handleSubmitInteraction(item);
+                  await handleSubmitInteraction(item, index);
                 }
               });
 
@@ -1400,6 +1533,12 @@ function importSearchBar(block, blockMediator) {
               });
 
               suggestionsList.append(li);
+            });
+
+            const suggestListString = suggestions.map((s) => s.query).join(',');
+            updateImpressionCache({
+              prefix_query: searchBarVal,
+              suggestion_list_shown: suggestListString,
             });
           }
         };

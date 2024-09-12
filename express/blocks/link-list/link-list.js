@@ -90,10 +90,8 @@ export default async function decorate(block) {
       if (!block.classList.contains('shaded')) {
         link.classList.add('secondary');
       }
-
       link.classList.add('medium');
       link.classList.remove('accent');
-      link.classList.add('floating-cta-ignore');
     });
     const platformEl = document.createElement('div');
     platformEl.classList.add('link-list-platform');

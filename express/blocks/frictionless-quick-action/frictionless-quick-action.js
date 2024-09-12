@@ -7,6 +7,7 @@ import {
   fetchPlaceholders,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
+import { sendFrictionlessEventToAdobeAnaltics } from '../../scripts/instrument.js';
 
 // only allows 1 qa per page?
 let quickAction;
@@ -344,4 +345,6 @@ export default async function decorate(block) {
 
   fqaBlock.dataset.frictionlesstype = quickAction;
   fqaBlock.dataset.frictionlessgroup = QA_CONFIGS[quickAction].group ?? 'image';
+
+  sendFrictionlessEventToAdobeAnaltics(block);
 }

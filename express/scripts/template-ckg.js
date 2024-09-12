@@ -1,6 +1,7 @@
 import {
   titleCase,
-  getMetadata, getConfig,
+  getMetadata,
+  getConfig,
 } from './utils.js';
 
 import {
@@ -8,6 +9,7 @@ import {
 } from './browse-api-controller.js';
 
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
+import { trackSearch, updateImpressionCache, generateSearchId } from './template-search-api-v3.js';
 
 const defaultRegex = /\/express\/templates\/default/;
 
@@ -41,8 +43,12 @@ async function fetchLinkList() {
   }
 
   if (!sheetData) {
+    let resolver;
+    sheetData = new Promise((res) => {
+      resolver = res;
+    });
     const resp = await fetch('/express/templates/top-priority-categories.json');
-    sheetData = resp.ok ? (await resp.json()).data : [];
+    resolver(resp.ok ? (await resp.json()).data : []);
   }
 }
 
@@ -122,27 +128,47 @@ async function updateLinkList(container, linkPill, list) {
         .replace(currentTasksX, '')
         .trim();
 
+      let clone;
       if (!isSearch(d.pathname)) {
         const pageData = {
           url: d.pathname,
           'short-title': d.displayValue,
         };
 
-        const clone = replaceLinkPill(linkPill, pageData);
-        clone.innerHTML = clone.innerHTML.replaceAll('Default', d.displayValue);
-        clone.innerHTML = clone.innerHTML.replace('/express/templates/default', d.pathname);
+        clone = replaceLinkPill(linkPill, pageData);
+        clone.innerHTML = clone.innerHTML
+          .replaceAll('Default', d.displayValue)
+          .replace('/express/templates/default', d.pathname);
+        const innerLink = clone.querySelector('a');
+        if (innerLink) {
+          const url = new URL(innerLink.href);
+          if (!url.searchParams.get('searchId')) {
+            url.searchParams.set('searchId', generateSearchId());
+            innerLink.href = url.toString();
+          }
+        }
+
         if (clone) pageLinks.push(clone);
       } else {
         // fixme: we need single page search UX
-        const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}`;
+        const searchParams = `tasks=${currentTasks}&tasksx=${currentTasksX}&phformat=${getMetadata('placeholder-format')}&topics=${topicsQuery}&q=${d.displayValue}&ckgid=${d.ckgID}&searchId=${generateSearchId()}`;
         const pageData = {
           url: `${prefix}/express/templates/search?${searchParams}`,
           'short-title': d.displayValue,
         };
 
-        const clone = replaceLinkPill(linkPill, pageData);
+        clone = replaceLinkPill(linkPill, pageData);
         searchLinks.push(clone);
       }
+
+      clone.addEventListener('click', () => {
+        const a = clone.querySelector(':scope > a');
+        updateImpressionCache({
+          keyword_filter: d.displayValue,
+          content_category: 'templates',
+        });
+        trackSearch('search-inspire', new URLSearchParams(new URL(a.href).search).get('searchId'));
+      });
     });
 
     if (leftTrigger) container.append(leftTrigger);
@@ -155,7 +181,7 @@ async function updateLinkList(container, linkPill, list) {
       const templatePages = await fetchAllTemplatesMetadata();
       const linkListData = [];
 
-      sheetData.forEach((row) => {
+      (await sheetData).forEach((row) => {
         if (row.parent === getMetadata('short-title')) {
           linkListData.push({
             childSibling: row['child-siblings'],

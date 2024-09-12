@@ -23,6 +23,14 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     padding: 0 15px;
 }
 
+.template-x.top-padding {
+    padding-top: 40px;
+}
+
+.template-x.bottom-padding {
+    padding-bottom: 40px;
+}
+
 .template-x .default-content-wrapper h2,
 .template-x .default-content-wrapper p {
     margin: 0;
@@ -236,9 +244,7 @@ main .template-x.sixcols .masonry-col, main .template-x.fullwidth .masonry-col {
     transform-origin: 75% 75%;
     transform: rotate( -45deg );
     content: "";
-    margin-top: 5px;
-    margin-left: 5px;
-    margin-right: 2.25px;
+    margin: none;
     transition: transform 0.2s;
 }
 
@@ -1653,7 +1659,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 
 .template-x.horizontal.mini .carousel-platform {
     padding: 32px;
-} 
+}
 
 .template-x.horizontal.fullwidth.holiday .carousel-container .carousel-fader-right {
     transform: translate3d(0, 0, 0);
@@ -1817,7 +1823,8 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     overflow: hidden;
     width: 100%;
     background: var(--color-black);
-    min-height: 72px
+    min-height: 72px;
+    cursor: pointer;
 }
 
 .template-x.horizontal.holiday.animated {
@@ -2183,6 +2190,9 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
 }
 
 @media (max-width: 600px) {
+    .template-x .toolbar-wrapper {
+        z-index: 11;
+    }
     .template-x-wrapper.horizontal {
         margin-left: 0;
         margin-right: 0;
@@ -2448,7 +2458,7 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     main.with-holiday-templates-banner {
         padding-top: 54px;
     }
-    
+
     .template-x.horizontal.holiday .toggle-bar {
         gap: 14px;
     }

@@ -1,4 +1,5 @@
 main .section.banner-container,
+main .section.banner-standout-container,
 main .section.banner-compact-container {
   background-color: var(--color-info-accent);
 }
@@ -6,6 +7,10 @@ main .section.banner-compact-container {
 main .section.banner-container,
 main .section.banner-light-container {
   padding: 80px 15px;
+}
+
+main .section.banner-standout-container {
+  padding: 48px 0;
 }
 
 main .section.banner-compact-container {
@@ -38,7 +43,8 @@ main .banner.compact p.button-container ~ p {
   margin-top: 0;
 }
 
-main .banner h2, main .banner h3 {
+main .banner h2,
+main .banner h3 {
   color: var(--color-white);
 }
 
@@ -46,8 +52,14 @@ main .banner h2 {
   margin-top: 0;
 }
 
-main .banner.light h2, main .banner.light h3 {
+main .banner.light h2,
+main .banner.light h3 {
   color: var(--color-black);
+}
+
+main .banner.standout h2,
+main .banner.standout h3 {
+  color: var(--heading-color);
 }
 
 main .banner a:any-link {
@@ -71,9 +83,38 @@ main .banner p:last-of-type {
   margin-bottom: 0;
 }
 
-@media (min-width:900px) {
+main .banner .standout-container {
+  background-color: var(--body-background-color);
+  color: var(--body-color);
+  padding: 33px 28%;
+  border-radius: 12px;
+}
+
+main .banner .standout-container em {
+  font-style: normal;
+  background: linear-gradient(180deg, #FF4DD2 20%, #FF993B 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900;
+}
+
+@media (min-width: 900px) {
   main .section.banner-container {
     padding-left: 56px;
     padding-right: 56px;
+  }
+}
+
+@media (max-width: 900px) {
+  main .section.banner-standout-container {
+    padding-left: 6%;
+    padding-right: 6%;
+  }
+}
+
+@media (max-width: 900px) {
+  main .banner .standout-container {
+    padding: 33px 9%;
   }
 }

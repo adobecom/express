@@ -1,9 +1,8 @@
 /* eslint-disable no-underscore-dangle */
-import {
-  createTag,
-  getIconElement,
-  getMetadata,
-} from '../../scripts/utils.js';
+import { createTag, getIconElement, getMetadata } from '../../scripts/utils.js';
+import { trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
+import { getTrackingAppendedURL } from '../../scripts/branchlinks.js';
+import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function containsVideo(pages) {
   return pages.some((page) => !!page?.rendition?.video?.thumbnail?.componentId);
@@ -38,11 +37,15 @@ function extractComponentLinkHref(template) {
 }
 
 function extractImageThumbnail(page) {
-  return page.rendition.image?.thumbnail;
+  return page?.rendition?.image?.thumbnail;
 }
 
 function getImageThumbnailSrc(renditionLinkHref, componentLinkHref, page) {
   const thumbnail = extractImageThumbnail(page);
+  if (!thumbnail) {
+    // webpages
+    return renditionLinkHref.replace('{&page,size,type,fragment}', '');
+  }
   const {
     mediaType,
     componentId,
@@ -98,8 +101,12 @@ async function getVideoUrls(renditionLinkHref, componentLinkHref, page) {
   }
 }
 
-async function share(branchUrl, tooltip, timeoutId) {
-  await navigator.clipboard.writeText(branchUrl);
+async function share(branchUrl, tooltip, timeoutId, placeholders) {
+  const urlWithTracking = getTrackingAppendedURL(branchUrl, placeholders, {
+    placement: 'template-x',
+    isSearchOverride: true,
+  });
+  await navigator.clipboard.writeText(urlWithTracking);
   tooltip.classList.add('display-tooltip');
 
   const rect = tooltip.getBoundingClientRect();
@@ -128,14 +135,14 @@ function renderShareWrapper(branchUrl, placeholders) {
   });
   let timeoutId = null;
   shareIcon.addEventListener('click', () => {
-    timeoutId = share(branchUrl, tooltip, timeoutId);
+    timeoutId = share(branchUrl, tooltip, timeoutId, placeholders);
   });
 
   shareIcon.addEventListener('keypress', (e) => {
     if (e.key !== 'Enter') {
       return;
     }
-    timeoutId = share(branchUrl, tooltip, timeoutId);
+    timeoutId = share(branchUrl, tooltip, timeoutId, placeholders);
   });
   const checkmarkIcon = getIconElement('checkmark-green');
   tooltip.append(checkmarkIcon);
@@ -355,12 +362,27 @@ function renderHoverWrapper(template, placeholders) {
   } = renderMediaWrapper(template, placeholders);
 
   btnContainer.append(mediaWrapper);
+
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
   const cta = renderCTA(placeholders, template.customLinks.branchUrl);
   btnContainer.prepend(cta);
   cta.addEventListener('focusin', focusHandler);
+
+  const ctaClickHandler = () => {
+    updateImpressionCache({
+      content_id: template.id,
+      status: template.licensingCategory,
+      task: getMetadata('tasksx') || getMetadata('tasks') || '',
+      search_keyword: getMetadata('q') || getMetadata('topics-x') || getMetadata('topics') || '',
+      collection: getMetadata('tasksx') || getMetadata('tasks') || '',
+      collection_path: window.location.pathname,
+    });
+    trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
+  };
+
+  cta.addEventListener('click', ctaClickHandler, { passive: true });
 
   return btnContainer;
 }
@@ -424,6 +446,10 @@ function renderStillWrapper(template, placeholders) {
 
 export default function renderTemplate(template, placeholders) {
   const tmpltEl = createTag('div');
+  if (template.assetType === 'Webpage_Template') {
+    // webpage_template has no pages
+    template.pages = [{}];
+  }
   tmpltEl.append(renderStillWrapper(template, placeholders));
   tmpltEl.append(renderHoverWrapper(template, placeholders));
 

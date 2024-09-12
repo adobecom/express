@@ -1,3 +1,8 @@
+const MILO_TEMPLATES = [
+  '404',
+  'featured-story',
+];
+
 const AUTO_BLOCKS = [
   { faas: '/tools/faas' },
   { fragment: '/express/fragments/' },
@@ -9,6 +14,8 @@ const DO_NOT_INLINE = [
   'z-pattern',
 ];
 
+const cachedMetadata = [];
+
 const ENVS = {
   stage: {
     name: 'stage',
@@ -16,7 +23,7 @@ const ENVS = {
     adobeIO: 'cc-collab-stage.adobe.io',
     adminconsole: 'stage.adminconsole.adobe.com',
     account: 'stage.account.adobe.com',
-    edgeConfigId: '72b074a6-76d2-43de-a210-124acc734f1c',
+    edgeConfigId: '8d2805dd-85bf-4748-82eb-f99fdad117a6',
     pdfViewerClientId: '600a4521c23d4c7eb9c7b039bee534a0',
   },
   prod: {
@@ -25,7 +32,7 @@ const ENVS = {
     adobeIO: 'cc-collab.adobe.io',
     adminconsole: 'adminconsole.adobe.com',
     account: 'account.adobe.com',
-    edgeConfigId: '913eac4d-900b-45e8-9ee7-306216765cd2',
+    edgeConfigId: '2cba807b-7430-41ae-9aac-db2b0da742d5',
     pdfViewerClientId: '3c0a5ddf2cc04d3198d9e48efc390fa9',
   },
 };
@@ -34,14 +41,39 @@ ENVS.local = {
   name: 'local',
 };
 
+export const MILO_EVENTS = { DEFERRED: 'milo:deferred' };
+
 const LANGSTORE = 'langstore';
 
 const PAGE_URL = new URL(window.location.href);
+
+function sanitizeInput(input) {
+  if (Number.isInteger(input)) return input;
+  return input.replace(/[^a-zA-Z0-9-_]/g, ''); // Simple regex to strip out potentially dangerous characters
+}
 
 export function getMetadata(name) {
   const attr = name && name.includes(':') ? 'property' : 'name';
   const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
   return ($meta && $meta.content) || '';
+}
+
+const handleEntitlements = (() => {
+  let entResolve;
+  const entPromise = new Promise((resolve) => {
+    entResolve = resolve;
+  });
+
+  return (resolveVal) => {
+    if (resolveVal !== undefined) {
+      entResolve(resolveVal);
+    }
+    return entPromise;
+  };
+})();
+export function getCachedMetadata(name) {
+  if (cachedMetadata[name] === undefined) cachedMetadata[name] = getMetadata(name);
+  return cachedMetadata[name];
 }
 
 function getEnv(conf) {
@@ -111,6 +143,8 @@ export const [setConfig, updateConfig, getConfig] = (() => {
       config.locale.contentRoot = `${origin}${config.locale.prefix}${config.contentRoot ?? ''}`;
       config.useDotHtml = !PAGE_URL.origin.includes('.hlx.')
         && (conf.useDotHtml ?? PAGE_URL.pathname.endsWith('.html'));
+      config.entitlements = handleEntitlements;
+      config.consumerEntitlements = conf.entitlements || [];
       return config;
     },
     // eslint-disable-next-line no-return-assign
@@ -202,94 +236,6 @@ export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
   } catch (error) {
     // something went wrong
   }
-}
-
-export function getAssetDetails(el) {
-  if (el.tagName === 'PICTURE') {
-    return getAssetDetails(el.querySelector('img'));
-  }
-  // Get asset details
-  const assetUrl = new URL(
-    el.href // the reference for an a/svg tag
-    || el.currentSrc // the active source in a picture/video/audio element
-    || el.src,
-  ); // the source for an image/video/iframe
-  const match = assetUrl.href.match(/media_([a-f0-9]+)\.\w+/);
-  let assetId;
-  if (match) {
-    [, assetId] = match;
-  } else if (assetUrl.origin.endsWith('.adobeprojectm.com')) {
-    [assetId] = assetUrl.pathname.split('/').splice(-2, 1);
-  } else {
-    assetId = `${assetUrl.pathname}`;
-  }
-  return {
-    assetId,
-    assetPath: assetUrl.href,
-  };
-}
-
-/**
- * Track assets in that appear in the viewport and add populate
- * `viewasset` events to the data layer.
- */
-function trackViewedAssetsInDataLayer(assetsSelectors = ['img[src*="/media_"]']) {
-  const assetsSelector = assetsSelectors.join(',');
-
-  const viewAssetObserver = new IntersectionObserver((entries) => {
-    entries
-      .filter((entry) => entry.isIntersecting)
-      .forEach((entry) => {
-        const el = entry.target;
-
-        // observe only once
-        viewAssetObserver.unobserve(el);
-
-        // Get asset details
-        const { assetId, assetPath } = getAssetDetails(el);
-        const details = {
-          event: 'viewasset',
-          assetId,
-          assetPath,
-        };
-
-        // Add experiment details
-        const { id, selectedVariant } = (window.hlx.experiment || {});
-        if (selectedVariant) {
-          details.experiment = id;
-          details.variant = selectedVariant;
-        }
-
-        window.dataLayer.push(details);
-      });
-  }, { threshold: 0.25 });
-
-  // Observe all assets in the DOM
-  document.querySelectorAll(assetsSelector).forEach((el) => {
-    viewAssetObserver.observe(el);
-  });
-
-  // Observe all assets added async
-  new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.removedNodes.forEach((n) => {
-        if (n.nodeType === Node.TEXT_NODE) {
-          return;
-        }
-        n.querySelectorAll(assetsSelector).forEach((asset) => {
-          viewAssetObserver.unobserve(asset);
-        });
-      });
-      mutation.addedNodes.forEach((n) => {
-        if (n.nodeType === Node.TEXT_NODE) {
-          return;
-        }
-        n.querySelectorAll(assetsSelector).forEach((asset) => {
-          viewAssetObserver.observe(asset);
-        });
-      });
-    });
-  }).observe(document.body, { childList: true, subtree: true });
 }
 
 export function addPublishDependencies(url) {
@@ -386,7 +332,26 @@ export function lazyLoadLottiePlayer($block = null) {
   }
 }
 
-export function getIcon(icons, alt, size = 44) {
+function createSVGWrapper(icon, sheetSize, alt, altSrc) {
+  const svgWrapper = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svgWrapper.classList.add('icon');
+  svgWrapper.classList.add(`icon-${icon}`);
+  svgWrapper.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/1999/xlink');
+  if (alt) {
+    svgWrapper.appendChild(createTag('title', { innerText: alt }));
+  }
+  const u = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  if (altSrc) {
+    u.setAttribute('href', altSrc);
+  } else {
+    u.setAttribute('href', `/express/icons/ccx-sheet_${sanitizeInput(sheetSize)}.svg#${
+      sanitizeInput(icon)}${sanitizeInput(sheetSize)}`);
+  }
+  svgWrapper.appendChild(u);
+  return svgWrapper;
+}
+
+function getIcon(icons, alt, size = 44, altSrc) {
   // eslint-disable-next-line no-param-reassign
   icons = Array.isArray(icons) ? icons : [icons];
   const [defaultIcon, mobileIcon] = icons;
@@ -488,25 +453,23 @@ export function getIcon(icons, alt, size = 44) {
     'pricingpremium',
   ];
 
-  if (symbols.includes(icon)) {
-    const iconName = icon;
+  if (symbols.includes(icon) || altSrc) {
     let sheetSize = size;
     if (size22Icons.includes(icon)) sheetSize = 22;
-    return `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-${icon}">
-      ${alt ? `<title>${alt}</title>` : ''}
-      <use href="/express/icons/ccx-sheet_${sheetSize}.svg#${iconName}${sheetSize}"></use>
-    </svg>`;
+    return createSVGWrapper(icon, sheetSize, alt, altSrc);
   } else {
-    return (`<img class="icon icon-${icon}" src="/express/icons/${icon}.svg" alt="${alt || icon}">`);
+    return createTag('img', {
+      class: `icon icon-${icon}`,
+      src: altSrc || `/express/icons/${icon}.svg`,
+      alt: `${alt || icon}`,
+    });
   }
 }
 
-export function getIconElement(icons, size, alt, additionalClassName) {
-  const $div = createTag('div');
-  $div.innerHTML = getIcon(icons, alt, size);
-
-  if (additionalClassName) $div.firstElementChild.classList.add(additionalClassName);
-  return ($div.firstElementChild);
+export function getIconElement(icons, size, alt, additionalClassName, altSrc) {
+  const icon = getIcon(icons, alt, size, altSrc);
+  if (additionalClassName) icon.classList.add(additionalClassName);
+  return icon;
 }
 
 export function transformLinkToAnimation($a, $videoLooping = true) {
@@ -554,18 +517,6 @@ export function transformLinkToAnimation($a, $videoLooping = true) {
     }
   });
   return $video;
-}
-
-export function linkPicture($picture) {
-  const $nextSib = $picture.parentNode.nextElementSibling;
-  if ($nextSib) {
-    const $a = $nextSib.querySelector('a');
-    if ($a && $a.textContent.trim().startsWith('https://')) {
-      $a.innerHTML = '';
-      $a.className = '';
-      $a.appendChild($picture);
-    }
-  }
 }
 
 export function linkImage($elem) {
@@ -617,9 +568,10 @@ export function yieldToMain() {
   });
 }
 
-export function removeIrrelevantSections(main) {
-  if (!main) return;
-  main.querySelectorAll(':scope > div').forEach((section) => {
+export function removeIrrelevantSections(area) {
+  if (!area) return;
+  const selector = area === document ? 'body > main > div' : ':scope > div';
+  area.querySelectorAll(selector).forEach((section) => {
     const sectionMetaBlock = section.querySelector('div.section-metadata');
     if (sectionMetaBlock) {
       const sectionMeta = readBlockConfig(sectionMetaBlock);
@@ -649,7 +601,7 @@ export function removeIrrelevantSections(main) {
     const linkToTarget = getMetadata(`${device}-floating-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
     if (textToTarget || linkToTarget) {
       const linkToTargetURL = new URL(linkToTarget);
-      const sameUrlCTAs = Array.from(main.querySelectorAll('a:any-link'))
+      const sameUrlCTAs = Array.from(area.querySelectorAll('a:any-link'))
         .filter((a) => {
           try {
             const currURL = new URL(a.href);
@@ -668,7 +620,7 @@ export function removeIrrelevantSections(main) {
         });
 
       sameUrlCTAs.forEach((cta) => {
-        cta.classList.add('same-as-floating-button-CTA');
+        cta.classList.add('same-fcta');
       });
     }
   }
@@ -711,8 +663,9 @@ export async function decorateBlock(block) {
     // split and add options with a dash
     // (fullscreen-center -> fullscreen-center + fullscreen + center)
     const extra = [];
+    const skipList = ['same-fcta'];
     block.classList.forEach((className, index) => {
-      if (index === 0) return; // block name, no split
+      if (index === 0 || skipList.includes(className)) return; // block name or skip, no split
       const split = className.split('-');
       if (split.length > 1) {
         split.forEach((part) => {
@@ -724,10 +677,6 @@ export async function decorateBlock(block) {
     // end CCX custom block option class handling
 
     block.classList.add('block');
-
-    block.dataset.block = '';
-    block.setAttribute('data-block-name', blockName);
-    block.setAttribute('data-block-status', 'initialized');
 
     if (getMetadata('sheet-powered') === 'Y') {
       const { setBlockTheme } = await import('./content-replace.js');
@@ -784,8 +733,7 @@ export function localizeLink(
     const relative = url.hostname === originHostName;
     const processedHref = relative ? href.replace(url.origin, '') : href;
     const { hash } = url;
-    // TODO remove this special logic for uk & in after coordinating with Pankaj & Mili
-    if (hash.includes('#_dnt') || window.location.href.includes('/uk/express/learn/blog') || window.location.href.includes('/in/express/learn/blog')) return processedHref.replace('#_dnt', '');
+    if (hash.includes('#_dnt')) return processedHref.replace('#_dnt', '');
     const path = url.pathname;
     const extension = getExtension(path);
     const allowedExts = ['', 'html', 'json'];
@@ -934,7 +882,6 @@ export function decorateAutoBlock(a) {
     if (key === 'video' && !a.textContent.match('media_.*.mp4')) {
       return false;
     }
-
     a.className = `${key} link-block`;
     return true;
   });
@@ -963,78 +910,116 @@ export function decorateLinks(el) {
   }, []);
 }
 
+function decorateContent(el) {
+  const children = [el];
+  let child = el;
+  while (child) {
+    child = child.nextElementSibling;
+    if (child && child.nodeName !== 'DIV') {
+      children.push(child);
+    } else {
+      break;
+    }
+  }
+  const block = document.createElement('div');
+  // FIXME: in Milo, this className is 'content'
+  block.className = 'default-content-wrapper';
+  block.append(...children);
+  block.dataset.block = '';
+  return block;
+}
+
+export function decorateDefaults(el) {
+  const firstChild = ':scope > *:not(div):first-child';
+  const afterBlock = ':scope > div + *:not(div)';
+  const children = el.querySelectorAll(`${firstChild}, ${afterBlock}`);
+  children.forEach((child) => {
+    const prev = child.previousElementSibling;
+    const content = decorateContent(child);
+    if (prev) {
+      prev.insertAdjacentElement('afterend', content);
+    } else {
+      el.insertAdjacentElement('afterbegin', content);
+    }
+  });
+}
+
+export function filterDuplicatedLinkBlocks(blocks) {
+  if (!blocks?.length) return [];
+  const uniqueModalKeys = new Set();
+  const uniqueBlocks = [];
+  for (const obj of blocks) {
+    if (obj.className.includes('modal')) {
+      const key = `${obj.dataset.modalHash}-${obj.dataset.modalPath}`;
+      if (!uniqueModalKeys.has(key)) {
+        uniqueModalKeys.add(key);
+        uniqueBlocks.push(obj);
+      }
+    } else {
+      uniqueBlocks.push(obj);
+    }
+  }
+  return uniqueBlocks;
+}
+
+// TODO: different from milo as it doesnot inline consumer blocks
+function decorateSection(section, idx) {
+  let links = decorateLinks(section);
+  decorateDefaults(section);
+  // TODO: not in milo
+  /* process section metadata */
+  const sectionMeta = section.querySelector('div.section-metadata');
+  if (sectionMeta) {
+    const meta = readBlockConfig(sectionMeta);
+    const keys = Object.keys(meta);
+    keys.forEach((key) => {
+      if (key === 'style') {
+        section.classList.add(...meta.style.split(', ').map(toClassName));
+      } else if (key === 'anchor') {
+        section.id = toClassName(meta.anchor);
+      } else if (key === 'background') {
+        section.style.background = meta.background;
+      } else {
+        section.dataset[key] = meta[key];
+      }
+    });
+    sectionMeta.remove();
+  }
+  const blocks = section.querySelectorAll(':scope > div[class]:not(.default-content-wrapper)');
+
+  const blockLinks = [...blocks].reduce((blkLinks, block) => {
+    links.filter((link) => block.contains(link))
+      .forEach((link) => {
+        if (link.classList.contains('link-block')) {
+          blkLinks.autoBlocks.push(link);
+        }
+      });
+    return blkLinks;
+  }, { inlineFrags: [], autoBlocks: [] });
+
+  const embeddedLinks = [...blockLinks.inlineFrags, ...blockLinks.autoBlocks];
+  if (embeddedLinks.length) {
+    links = links.filter((link) => !embeddedLinks.includes(link));
+  }
+  section.classList.add('section', 'section-wrapper'); // TODO: section-wrapper backcomp
+  section.dataset.status = 'decorated';
+  section.dataset.idx = idx;
+  return {
+    blocks: [...links, ...blocks],
+    el: section,
+    idx,
+    preloadLinks: filterDuplicatedLinkBlocks(blockLinks.autoBlocks),
+  };
+}
+
 /**
  * Decorates all sections in a container element.
  * @param {Element} el The container element
  * @param {Boolean} isDoc Is document or fragment
  */
-async function decorateSections(el, isDoc) {
-  // fixme: our decorateSections gets main while in Milo it gets area.
-  //  For us, the selector never changes. That's why isDoc always needs to be false.
-  // eslint-disable-next-line no-param-reassign
-  isDoc = false;
+function decorateSections(el, isDoc) {
   const selector = isDoc ? 'body > main > div' : ':scope > div';
-  return [...el.querySelectorAll(selector)].map((section, idx) => {
-    /* process section metadata */
-    const sectionMeta = section.querySelector('div.section-metadata');
-    if (sectionMeta) {
-      const meta = readBlockConfig(sectionMeta);
-      const keys = Object.keys(meta);
-      keys.forEach((key) => {
-        if (key === 'style') {
-          section.classList.add(...meta.style.split(', ').map(toClassName));
-        } else if (key === 'anchor') {
-          section.id = toClassName(meta.anchor);
-        } else if (key === 'background') {
-          section.style.background = meta.background;
-        } else {
-          section.dataset[key] = meta[key];
-        }
-      });
-      sectionMeta.remove();
-    }
-
-    const links = decorateLinks(section);
-
-    const blocks = section.querySelectorAll(':scope > div[class]:not(.content, .section-metadata)');
-
-    section.classList.add('section', 'section-wrapper'); // keep .section-wrapper for compatibility
-    section.dataset.status = 'decorated';
-    section.dataset.idx = idx;
-
-    let defaultContentWrapper;
-    [...section.children].forEach((child) => {
-      const isDivTag = child.tagName === 'DIV';
-      if (isDivTag) {
-        defaultContentWrapper = undefined;
-      } else {
-        if (!defaultContentWrapper) {
-          defaultContentWrapper = document.createElement('div');
-          defaultContentWrapper.classList.add('default-content-wrapper');
-          section.insertBefore(defaultContentWrapper, child);
-        }
-        defaultContentWrapper.append(child);
-      }
-    });
-    blocks.forEach(async (block) => {
-      await decorateBlock(block);
-    });
-    const blockLinks = [...blocks].reduce((blkLinks, block) => {
-      links.filter((link) => block.contains(link))
-        .forEach((link) => {
-          if (link.classList.contains('link-block')) {
-            blkLinks.autoBlocks.push(link);
-          }
-        });
-      return blkLinks;
-    }, { autoBlocks: [] });
-
-    return {
-      el: section,
-      blocks: [...links, ...blocks],
-      preloadLinks: blockLinks.autoBlocks,
-    };
-  });
+  return [...el.querySelectorAll(selector)].map(decorateSection);
 }
 
 /**
@@ -1240,23 +1225,22 @@ function resolveFragments() {
     });
 }
 
-/**
- * scroll to hash
- */
-
-export function scrollToHash() {
-  const { hash } = window.location;
-  if (hash) {
-    const elem = document.querySelector(hash);
-    if (elem) {
-      setTimeout(() => {
-        elem.scrollIntoView({
-          block: 'start',
-          behavior: 'smooth',
-        });
-      }, 500);
-    }
+export function scrollToHashedElement(hash) {
+  if (!hash) return;
+  const elementId = decodeURIComponent(hash).slice(1);
+  let targetElement;
+  try {
+    targetElement = document.querySelector(`#${elementId}:not(.dialog-modal)`);
+  } catch (e) {
+    window.lana?.log(`Could not query element because of invalid hash - ${elementId}: ${e.toString()}`);
   }
+  if (!targetElement) return;
+  const bufferHeight = document.querySelector('.global-navigation')?.offsetHeight || 0;
+  const topOffset = targetElement.getBoundingClientRect().top + window.pageYOffset;
+  window.scrollTo({
+    top: topOffset - bufferHeight,
+    behavior: 'smooth',
+  });
 }
 
 /**
@@ -1317,6 +1301,8 @@ async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
  * @param {Element} block The block element
  */
 export async function loadBlock(block, eager = false) {
+  // TODO: different from milo as we have legacy decorateBlock()
+  await decorateBlock(block);
   if (!(block.getAttribute('data-block-status') === 'loading' || block.getAttribute('data-block-status') === 'loaded')) {
     block.setAttribute('data-block-status', 'loading');
     const blockName = block.getAttribute('data-block-name') || block.classList[0];
@@ -1376,58 +1362,37 @@ export const loadScript = (url, type) => new Promise((resolve, reject) => {
   script.addEventListener('error', onScript);
 });
 
-export async function setTemplateTheme() {
-  // todo: remove theme after we move blog to template column in metadata sheet
-  const template = getMetadata('template') || getMetadata('theme');
-  if (!template || template?.toLowerCase() === 'no brand header') return;
-  const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
-  document.body.classList.add(name);
-  await new Promise((resolve) => {
-    loadStyle(`/express/templates/${name}/${name}.css`, resolve);
-  });
-}
-
-export async function loadTemplateScript() {
-  // todo: remove theme after we move blog to template column in metadata sheet
-  const template = getMetadata('template') || getMetadata('theme');
-  if (!template || template?.toLowerCase() === 'no brand header') return;
-  const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
-  await new Promise((resolve) => {
-    (async () => {
-      try {
-        await import(`/express/templates/${name}/${name}.js`);
-      } catch (err) {
-        window.lana.log(`failed to load template module for ${name}`, err);
-      }
-      resolve();
-    })();
-  });
-}
-
 /**
  * fetches the string variables.
  * @returns {object} localized variables
  */
 
 export async function fetchPlaceholders() {
+  if (window.placeholders) return window.placeholders;
+  let resolver;
+  window.placeholders = new Promise((res) => {
+    resolver = res;
+  });
   const requestPlaceholders = async (url) => {
     const resp = await fetch(url);
     if (resp.ok) {
       const json = await resp.json();
-      window.placeholders = {};
+      const placeholders = {};
       json.data.forEach((placeholder) => {
-        if (placeholder.value) window.placeholders[placeholder.key] = placeholder.value;
-        else if (placeholder.Text) window.placeholders[placeholder.Key] = placeholder.Text;
+        if (placeholder.value) placeholders[placeholder.key] = placeholder.value;
+        else if (placeholder.Text) placeholders[placeholder.Key] = placeholder.Text;
       });
+      return placeholders;
     }
+    return null;
   };
-  if (!window.placeholders) {
-    try {
-      const { prefix } = getConfig().locale;
-      await requestPlaceholders(`${prefix}/express/placeholders.json`);
-    } catch {
-      await requestPlaceholders('/express/placeholders.json');
-    }
+  try {
+    const { prefix } = getConfig().locale;
+    const placeholders = await requestPlaceholders(`${prefix}/express/placeholders.json`);
+    if (!placeholders) throw new Error(`placeholders req failed in prefix: ${prefix}`);
+    resolver(placeholders);
+  } catch {
+    resolver(await requestPlaceholders('/express/placeholders.json') || {});
   }
   return window.placeholders;
 }
@@ -1454,15 +1419,79 @@ function addPromotion() {
   }
 }
 
-async function loadMartech() {
-  const usp = new URLSearchParams(window.location.search);
-  const martech = usp.get('martech');
+let imsLoaded;
+export function loadIms() {
+  imsLoaded = imsLoaded || new Promise((resolve, reject) => {
+    const {
+      locale, imsClientId, imsScope, env, adobeid,
+    } = getConfig();
+    if (!imsClientId) {
+      reject(new Error('Missing IMS Client ID'));
+      return;
+    }
+    const [unavMeta, ahomeMeta] = [getMetadata('universal-nav')?.trim(), getMetadata('adobe-home-redirect')];
+    const defaultScope = `AdobeID,openid,gnav${unavMeta && unavMeta !== 'off' ? ',pps.read,firefly_api,additional_info.roles,read_organizations' : ''}`;
+    const timeout = setTimeout(() => reject(new Error('IMS timeout')), 5000);
+    window.adobeid = {
+      client_id: imsClientId,
+      scope: imsScope || defaultScope,
+      locale: locale?.ietf?.replace('-', '_') || 'en_US',
+      redirect_uri: ahomeMeta === 'on'
+        ? `https://www${env.name !== 'prod' ? '.stage' : ''}.adobe.com${locale.prefix}` : undefined,
+      autoValidateToken: true,
+      environment: env.ims,
+      useLocalStorage: false,
+      onReady: () => {
+        resolve();
+        clearTimeout(timeout);
+      },
+      onError: reject,
+      ...adobeid,
+    };
+    if (getConfig().env.ims === 'stg1') {
+      loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
+    } else {
+      loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
+    }
+  }).then(() => {
+    if (!window.adobeIMS?.isSignedInUser() && getMetadata('xlg-entitlements') !== 'on') {
+      getConfig().entitlements([]);
+    } else {
+      setTimeout(async () => {
+        if (!(await window.alloyLoader)) {
+          getConfig().entitlements([]);
+        }
+      }, 3000);
+    }
+  }).catch(() => {
+    getConfig().entitlements([]);
+  });
 
-  const analyticsUrl = '/express/scripts/instrument.js';
-  if (!(martech === 'off' || document.querySelector(`head script[src="${analyticsUrl}"]`))) {
-    const mod = await import('./instrument.js');
-    mod.default();
+  return imsLoaded;
+}
+
+export async function loadMartech({
+  persEnabled = false,
+  persManifests = [],
+  postLCP = false,
+} = {}) {
+  // eslint-disable-next-line no-underscore-dangle
+  if (window.marketingtech?.adobe?.launch && window._satellite) {
+    return true;
   }
+
+  const query = PAGE_URL.searchParams.get('martech');
+  if (query === 'off' || getMetadata('martech') === 'off') {
+    return false;
+  }
+
+  window.targetGlobalSettings = { bodyHidingEnabled: false };
+  loadIms().catch(() => {});
+
+  const { default: initMartech } = await import('./martech.js');
+  await initMartech({ persEnabled, persManifests, postLCP });
+
+  return true;
 }
 
 function loadGnav() {
@@ -1475,36 +1504,40 @@ function loadGnav() {
   }
 }
 
-function decoratePageStyle() {
-  const isBlog = getMetadata('theme') === 'blog' || getMetadata('template') === 'blog';
-  if (!isBlog) {
-    const $h1 = document.querySelector('main h1');
-    // check if h1 is inside a block
-    // eslint-disable-next-line no-lonely-if
-    if ($h1 && !$h1.closest('.section > div > div ')) {
-      const $heroPicture = $h1.parentElement.querySelector('picture');
-      let $heroSection;
-      const $main = document.querySelector('main');
-      if ($main.children.length === 1) {
-        $heroSection = createTag('div', { class: 'hero' });
-        const $div = createTag('div');
-        $heroSection.append($div);
-        if ($heroPicture) {
-          $div.append($heroPicture);
+function decorateHeroLCP() {
+  const template = getMetadata('template');
+  const h1 = document.querySelector('main h1');
+  if (template !== 'blog') {
+    if (h1 && !h1.closest('main > div > div')) {
+      const heroPicture = h1.parentElement.querySelector('picture');
+      let heroSection;
+      const main = document.querySelector('main');
+      if (main.children.length === 1) {
+        heroSection = createTag('div', { id: 'hero' });
+        const div = createTag('div');
+        heroSection.append(div);
+        if (heroPicture) {
+          div.append(heroPicture);
         }
-        $div.append($h1);
-        $main.prepend($heroSection);
+        div.append(h1);
+        main.prepend(heroSection);
       } else {
-        $heroSection = $h1.closest('.section');
-        $heroSection.classList.add('hero');
-        $heroSection.removeAttribute('style');
+        heroSection = h1.closest('main > div');
+        heroSection.id = 'hero';
+        heroSection.removeAttribute('style');
       }
-      if ($heroPicture) {
-        $heroPicture.classList.add('hero-bg');
+      if (heroPicture) {
+        heroPicture.classList.add('hero-bg');
       } else {
-        $heroSection.classList.add('hero-noimage');
+        heroSection.classList.add('hero-noimage');
       }
     }
+  } else if (template === 'blog' && h1 && getMetadata('author') && getMetadata('publication-date')) {
+    loadStyle(`${getConfig().codeRoot}/templates/blog/blog.css`);
+    document.body.style.visibility = 'hidden';
+    const heroSection = createTag('div', { id: 'hero' });
+    const main = document.querySelector('main');
+    main.prepend(heroSection);
   }
 }
 
@@ -1514,9 +1547,9 @@ function decoratePageStyle() {
  */
 
 export function decorateButtons(el = document) {
-  // FIXME: Different function from Milo.
   const noButtonBlocks = ['template-list', 'icon-list'];
   el.querySelectorAll(':scope a:not(.faas.link-block, .fragment.link-block)').forEach(($a) => {
+    if ($a.closest('div.section > .text') && !($a.parentElement.tagName === 'STRONG' || $a.querySelector(':scope > strong'))) return;
     const originalHref = $a.href;
     const linkText = $a.textContent.trim();
     if ($a.children.length > 0) {
@@ -1561,17 +1594,13 @@ export function decorateButtons(el = document) {
       if (linkText.startsWith('{{icon-') && linkText.endsWith('}}')) {
         const $iconName = /{{icon-([\w-]+)}}/g.exec(linkText)[1];
         if ($iconName) {
-          $a.innerHTML = getIcon($iconName, `${$iconName} icon`);
+          $a.appendChild(getIcon($iconName, `${$iconName} icon`));
           $a.classList.remove('button', 'primary', 'secondary', 'accent');
           $a.title = $iconName;
         }
       }
     }
   });
-}
-
-export function checkTesting() {
-  return (getMetadata('testing').toLowerCase() === 'on');
 }
 
 /**
@@ -1589,11 +1618,6 @@ export function toCamelCase(name) {
  */
 export function getExperiment() {
   let experiment = toClassName(getMetadata('experiment'));
-  const { hostname } = window.location;
-  if (!(/adobe\.com/.test(hostname) || /\.hlx\.live/.test(hostname) || hostname.includes('localhost'))) {
-    experiment = '';
-    // reason = 'not prod host and not local';
-  }
   if (window.location.hash) {
     experiment = '';
     // reason = 'suppressed by #';
@@ -1710,28 +1734,12 @@ export async function getExperimentConfig(experimentId) {
   }
 }
 
-function loadIMS() {
-  window.adobeid = {
-    client_id: 'AdobeExpressWeb',
-    scope: 'AdobeID,openid,pps.read,firefly_api,additional_info.roles,read_organizations',
-    locale: getConfig().locale.region,
-    environment: getConfig().env.ims,
-  };
-  if (getConfig().env.ims === 'stg1') {
-    loadScript('https://auth-stg1.services.adobe.com/imslib/imslib.min.js');
-  } else {
-    loadScript('https://auth.services.adobe.com/imslib/imslib.min.js');
-  }
-}
-
 async function loadAndRunExp(config, forcedExperiment, forcedVariant) {
   const promises = [import('./experiment.js')];
   const aepaudiencedevice = getMetadata('aepaudiencedevice').toLowerCase();
   if (aepaudiencedevice === 'all' || aepaudiencedevice === document.body.dataset?.device) {
-    loadIMS();
-    // rush instrument-martech-launch-alloy
+    // rush martech-launch-alloy
     promises.push(loadMartech());
-    window.delay_preload_product = true;
   }
   const [{ runExps }] = await Promise.all(promises);
   await runExps(config, forcedExperiment, forcedVariant);
@@ -1752,11 +1760,6 @@ async function decorateTesting() {
       if (config && (toCamelCase(config.status) === 'active' || forcedExperiment)) {
         await loadAndRunExp(config, forcedExperiment, forcedVariant);
       }
-    }
-    const martech = usp.get('martech');
-    if ((checkTesting() && (martech !== 'off') && (martech !== 'delay')) || martech === 'rush') {
-      // eslint-disable-next-line no-console
-      console.log('rushing martech');
     }
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -1799,7 +1802,7 @@ export async function fixIcons(el = document) {
         const $block = $picture.closest('.block');
         let size = 44;
         if ($block) {
-          const blockName = $block.getAttribute('data-block-name');
+          const blockName = $block.getAttribute('data-block-name') || $block.classList[0];
           // use small icons in .columns (except for .columns.offer)
           if (blockName === 'columns') {
             size = $block.classList.contains('offer') ? 44 : 22;
@@ -1896,14 +1899,6 @@ export async function fetchBlockFragDecorated(url, blockName) {
 async function buildAutoBlocks(main) {
   const lastDiv = main.querySelector(':scope > div:last-of-type');
 
-  // Load the branch.io banner autoblock...
-  if (['yes', 'true', 'on'].includes(getMetadata('show-banner').toLowerCase())) {
-    const branchio = buildBlock('branch-io', '');
-    if (lastDiv) {
-      lastDiv.append(branchio);
-    }
-  }
-
   if (['yes', 'true', 'on'].includes(getMetadata('show-relevant-rows').toLowerCase()) && document.body.dataset.device === 'mobile') {
     const authoredRRFound = [
       '.template-list.horizontal.fullwidth.mini',
@@ -1926,7 +1921,7 @@ async function buildAutoBlocks(main) {
   }
 
   async function loadFloatingCTA(BlockMediator) {
-    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'floating-panel'];
+    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button'];
     const device = document.body.dataset?.device;
     const blockName = getMetadata(`${device}-floating-cta`);
 
@@ -1956,23 +1951,15 @@ async function buildAutoBlocks(main) {
   }
 }
 
-function splitSections(main) {
-  main.querySelectorAll(':scope > div > div').forEach((block) => {
-    const blocksToSplit = ['template-list', 'layouts', 'banner', 'promotion'];
+function splitSections(area) {
+  const blocks = area.querySelectorAll(`:scope${area === document ? ' main' : ''} > div > div`);
+  blocks.forEach((block) => {
+    const blocksToSplit = ['template-list', 'banner', 'promotion'];
     // work around for splitting columns and sixcols template list
     // add metadata condition to minimize impact on other use cases
 
     if (blocksToSplit.includes(block.className)) {
       unwrapBlock(block);
-    }
-  });
-}
-
-function decorateLinkedPictures($main) {
-  /* thanks to word online */
-  $main.querySelectorAll(':scope > picture').forEach(($picture) => {
-    if (!$picture.closest('div.block')) {
-      linkPicture($picture);
     }
   });
 }
@@ -1994,8 +1981,8 @@ export function addFavIcon(href) {
   }
 }
 
-function decorateSocialIcons($main) {
-  $main.querySelectorAll(':scope a').forEach(($a) => {
+function decorateSocialIcons(el) {
+  el.querySelectorAll(':scope a').forEach(($a) => {
     const urlObject = new URL($a.href);
 
     if (urlObject.hash === '#embed-video') return;
@@ -2143,59 +2130,6 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
   return picture;
 }
 
-function decoratePictures(main) {
-  main.querySelectorAll('img[src*="/media_"]').forEach((img, i) => {
-    const newPicture = createOptimizedPicture(img.src, img.alt, !i);
-    const picture = img.closest('picture');
-    if (picture) picture.parentElement.replaceChild(newPicture, picture);
-  });
-}
-
-/**
- * Decorates the main element.
- * @param {Element} main The main element
- * @param {Boolean} isDoc Is document or fragment
- */
-export async function decorateMain(main, isDoc) {
-  await buildAutoBlocks(main);
-  splitSections(main);
-  const sections = decorateSections(main, isDoc);
-  decorateButtons(main);
-  await fixIcons(main);
-  decoratePictures(main);
-  decorateLinkedPictures(main);
-  decorateSocialIcons(main);
-
-  await sections;
-  return sections;
-}
-
-function unhideBody() {
-  try {
-    const id = ('alloy-prehiding');
-    document.head.removeChild(document.getElementById(id));
-  } catch (e) {
-    // nothing
-  }
-}
-
-function hideBody() {
-  const id = 'alloy-prehiding';
-  let style = document.getElementById(id);
-  if (style) {
-    return;
-  }
-  style = document.createElement('style');
-  style.id = 'alloy-prehiding';
-  style.innerHTML = '.personalization-container{opacity:0.01 !important}';
-
-  try {
-    document.head.appendChild(style);
-  } catch (e) {
-    // nothing
-  }
-}
-
 export function toggleVideo(target) {
   const videos = target.querySelectorAll('video');
   const paused = videos[0] ? videos[0].paused : false;
@@ -2228,20 +2162,20 @@ export function addAnimationToggle(target) {
  * Searches for Japanese text in headings and applies a smart word-breaking algorithm by surrounding
  * semantic blocks with spans. This allows browsers to break japanese sentences correctly.
  */
-async function wordBreakJapanese() {
+async function wordBreakJapanese(area) {
   if (getConfig().locale.region !== 'jp') {
     return;
   }
   const { loadDefaultJapaneseParser } = await import('./budoux-index-ja.min.js');
   const parser = loadDefaultJapaneseParser();
-  document.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
+  area.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
     el.classList.add('budoux');
     parser.applyElement(el);
   });
 
   const BalancedWordWrapper = (await import('./bw2.js')).default;
   const bw2 = new BalancedWordWrapper();
-  document.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
+  area.querySelectorAll('h1, h2, h3, h4, h5').forEach((el) => {
     // apply balanced word wrap to headings
     if (typeof window.requestIdleCallback === 'function') {
       window.requestIdleCallback(() => {
@@ -2307,13 +2241,17 @@ export function addHeaderSizing($block, classPrefix = 'heading', selector = 'h1,
   });
 }
 
+export function decorateArea(area = document) {
+  removeIrrelevantSections(area);
+}
+
 /**
  * Call `addHeaderSizing` on default content blocks in all section blocks
  * in all Japanese pages except blog pages.
  */
-function addJapaneseSectionHeaderSizing() {
+function addJapaneseSectionHeaderSizing(area) {
   if (getConfig().locale.region === 'jp') {
-    document.querySelectorAll('body:not(.blog) .section .default-content-wrapper').forEach((el) => {
+    area.querySelectorAll('body:not(.blog) .section .default-content-wrapper').forEach((el) => {
       addHeaderSizing(el);
     });
   }
@@ -2323,9 +2261,9 @@ function addJapaneseSectionHeaderSizing() {
  * Detects legal copy based on a * or † prefix and applies a smaller font size.
  * @param {Element} main The main element
  */
-function decorateLegalCopy(main) {
+function decorateLegalCopy(area) {
   const legalCopyPrefixes = ['*', '†'];
-  main.querySelectorAll('p').forEach(($p) => {
+  area.querySelectorAll('p').forEach(($p) => {
     const pText = $p.textContent.trim() ? $p.textContent.trim().charAt(0) : '';
     if (pText && legalCopyPrefixes.includes(pText)) {
       $p.classList.add('legal-copy');
@@ -2365,63 +2303,147 @@ function removeMetadata() {
   });
 }
 
-/**
- * loads everything that doesn't need to be delayed.
- */
-async function loadLazy(main) {
-  addPromotion();
-  loadStyle('/express/styles/lazy-styles.css');
-  scrollToHash();
-  resolveFragments();
-  removeMetadata();
-  addFavIcon('/express/icons/cc-express.svg');
-  sampleRUM('lazy');
-  sampleRUM.observe(document.querySelectorAll('main picture > img'));
-  sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
-  trackViewedAssetsInDataLayer([
-    'img[src*="/media_"]',
-    'img[src*="https://design-assets.adobeprojectm.com/"]',
-  ]);
+const getMepValue = (val) => {
+  const valMap = { on: true, off: false, gnav: 'gnav' };
+  const finalVal = val?.toLowerCase().trim();
+  if (finalVal in valMap) return valMap[finalVal];
+  return finalVal;
+};
+
+export const getMepEnablement = (mdKey, paramKey = false) => {
+  const paramValue = PAGE_URL.searchParams.get(paramKey || mdKey);
+  if (paramValue) return getMepValue(paramValue);
+  const mdValue = getMetadata(mdKey);
+  if (!mdValue) return false;
+  return getMepValue(mdValue);
+};
+
+export const combineMepSources = async (persEnabled, promoEnabled, mepParam) => {
+  let persManifests = [];
+
+  if (persEnabled) {
+    persManifests = persEnabled.toLowerCase()
+      .split(/,|(\s+)|(\\n)/g)
+      .filter((path) => path?.trim())
+      .map((manifestPath) => ({ manifestPath }));
+  }
+
+  if (promoEnabled) {
+    const { default: getPromoManifests } = await import('../features/personalization/promo-utils.js');
+    persManifests = persManifests.concat(getPromoManifests(promoEnabled, PAGE_URL.searchParams));
+  }
+
+  if (mepParam && mepParam !== 'off') {
+    const persManifestPaths = persManifests.map((manifest) => {
+      const { manifestPath } = manifest;
+      if (manifestPath.startsWith('/')) return manifestPath;
+      try {
+        const url = new URL(manifestPath);
+        return url.pathname;
+      } catch (e) {
+        return manifestPath;
+      }
+    });
+
+    mepParam.split('---').forEach((manifestPair) => {
+      const manifestPath = manifestPair.trim().toLowerCase().split('--')[0];
+      if (!persManifestPaths.includes(manifestPath)) {
+        persManifests.push({ manifestPath });
+      }
+    });
+  }
+  return persManifests;
+};
+
+async function checkForPageMods() {
+  const { mep: mepParam } = Object.fromEntries(PAGE_URL.searchParams);
+  if (mepParam === 'off') return;
+  const persEnabled = getMepEnablement('personalization');
+  const promoEnabled = getMepEnablement('manifestnames', 'promo');
+  const targetEnabled = getMepEnablement('target');
+  const mepEnabled = persEnabled || targetEnabled || promoEnabled || mepParam;
+  if (!mepEnabled) return;
+
+  const config = getConfig();
+  config.mep = { targetEnabled };
+  loadLink(
+    `${config.base}/features/personalization/personalization.js`,
+    { as: 'script', rel: 'modulepreload' },
+  );
+
+  const persManifests = await combineMepSources(persEnabled, promoEnabled, mepParam);
+  if (targetEnabled === true) {
+    await loadMartech({ persEnabled: true, persManifests, targetEnabled });
+    return;
+  }
+  if (!persManifests.length) return;
+
+  loadIms()
+    .then(() => {
+      if (window.adobeIMS.isSignedInUser() || getMetadata('xlg-entitlements')) loadMartech();
+    })
+    // eslint-disable-next-line no-console
+    .catch((e) => { console.log('Unable to load IMS:', e); });
+
+  const { preloadManifests, applyPers } = await import('../features/personalization/personalization.js');
+  const manifests = preloadManifests({ persManifests }, { getConfig, loadLink });
+
+  await applyPers(manifests);
+}
+
+export async function loadTemplate() {
+  const template = getMetadata('template');
+  if (!template) return;
+  const name = template.toLowerCase().replace(/[^0-9a-z]/gi, '-');
+  document.body.classList.add(name);
+  const { miloLibs, codeRoot } = getConfig();
+  const base = miloLibs && MILO_TEMPLATES.includes(name) ? miloLibs : codeRoot;
+  const styleLoaded = new Promise((resolve) => {
+    loadStyle(`${base}/templates/${name}/${name}.css`, resolve);
+  });
+  const scriptLoaded = new Promise((resolve) => {
+    (async () => {
+      try {
+        await import(`${base}/templates/${name}/${name}.js`);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.log(`failed to load module for ${name}`, err);
+      }
+      resolve();
+    })();
+  });
+  await Promise.all([styleLoaded, scriptLoaded]);
+}
+
+function loadTOC() {
+  if (getMetadata('toc-seo') === 'on') {
+    const handler = () => {
+      loadStyle('/express/features/table-of-contents-seo/table-of-contents-seo.css');
+      import('../features/table-of-contents-seo/table-of-contents-seo.js').then(({ default: setTOCSEO }) => setTOCSEO());
+    };
+    window.addEventListener('express:LCP:loaded', handler);
+  }
 }
 
 async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
-  window.dispatchEvent(new Event('milo:LCP:loaded'));
-  if (window.hlx.martech) window.hlx.martechLoaded = loadMartech();
+  loadTOC();
+
+  window.dispatchEvent(new Event('express:LCP:loaded'));
+  if (config.mep?.targetEnabled === 'gnav') {
+    await loadMartech({ persEnabled: true, postLCP: true });
+  } else {
+    loadMartech();
+  }
   loadGnav();
+  loadTemplate();
   const { default: loadFonts } = await import('./fonts.js');
   loadFonts(config.locale, loadStyle);
-}
-
-/**
- * Loads JS and CSS for all blocks in a container element.
- * @param {Array} sections The sections loaded in main
- * @param {Boolean} isDoc if is the document or fragment
- */
-export async function loadSections(sections, isDoc) {
-  const areaBlocks = [];
-  for (const section of sections) {
-    if (section.preloadLinks.length) {
-      const preloads = section.preloadLinks.map((block) => loadBlock(block));
-      // eslint-disable-next-line no-await-in-loop
-      await Promise.all(preloads);
-    }
-    const loaded = section.blocks.map((block) => loadBlock(block));
-    areaBlocks.push(...section.blocks);
-
-    // Only move on to the next section when all blocks are loaded.
-    // eslint-disable-next-line no-await-in-loop
-    await Promise.all(loaded);
-    // Post LCP operations.
-    if (section.el.dataset.idx === '0' && isDoc) loadPostLCP(getConfig());
-
-    // Show the section when all blocks inside are done.
-    delete section.el.dataset.status;
-    delete section.el.dataset.idx;
+  if (config.mep?.preview) {
+    import('../features/personalization/preview.js')
+      .then(({ default: decoratePreviewMode }) => decoratePreviewMode());
   }
-
-  return areaBlocks;
 }
 
 function initSidekick() {
@@ -2439,94 +2461,186 @@ function initSidekick() {
   }
 }
 
-/**
- * Decorates the page.
- */
-export async function loadArea(area = document) {
-  const isDoc = area === document;
-  const main = area.querySelector('main');
+export async function loadDeferred(area, blocks, config) {
+  const event = new Event(MILO_EVENTS.DEFERRED);
+  area.dispatchEvent(event);
 
-  if (isDoc) {
-    decorateHeaderAndFooter();
+  if (area !== document) {
+    return;
   }
 
-  window.hlx = window.hlx || {};
-  const params = new URLSearchParams(window.location.search);
-  const experimentParams = params.get('experiment');
-  ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
-    window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
-  });
-  window.hlx.experimentParams = experimentParams;
-  window.hlx.init = true;
+  config.resolveDeferred?.(true);
 
-  await setTemplateTheme();
-
-  if (window.hlx.testing) await decorateTesting();
-
-  if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
-    const { default: replaceContent } = await import('./content-replace.js');
-    await replaceContent(main);
+  if (config.links === 'on') {
+    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/seo/links.json'}`;
+    import('../features/links.js').then((mod) => mod.default(path, area));
   }
 
-  if (getMetadata('template-search-page') === 'Y') {
-    const { default: redirect } = await import('./template-redirect.js');
-    await redirect();
+  sampleRUM('lazy');
+  sampleRUM.observe(blocks);
+  sampleRUM.observe(area.querySelectorAll('picture > img'));
+}
+
+async function documentPostSectionLoading(config) {
+  // TODO: different from milo
+  addFavIcon('/express/icons/cc-express.svg');
+  if (config.experiment?.selectedVariant?.scripts?.length) {
+    config.experiment.selectedVariant.scripts.forEach((script) => loadScript(script));
   }
-
-  let sections = [];
-  if (main) {
-    sections = await decorateMain(main, isDoc);
-    decoratePageStyle();
-    decorateLegalCopy(main);
-    addJapaneseSectionHeaderSizing();
-    displayEnv();
-    displayOldLinkWarning();
-    wordBreakJapanese();
-
-    if (window.hlx.testing) {
-      const target = checkTesting();
-      document.querySelector('body').classList.add('personalization-container');
-      // target = true;
-      if (target) {
-        hideBody();
-        setTimeout(() => {
-          unhideBody();
-        }, 3000);
-      }
-    }
-  }
-  await loadTemplateScript();
-  await loadSections(sections, isDoc);
-  const footer = document.querySelector('footer');
-  delete footer.dataset.status;
-
   initSidekick();
-
-  const lazy = loadLazy(main);
-
-  const buttonOff = params.get('button') === 'off';
-  if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
-    import('../../tools/preview/preview.js');
-  }
-  await lazy;
 
   const { default: delayed } = await import('./delayed.js');
   delayed([getConfig, getMetadata, loadScript, loadStyle]);
-
-  // milo's links featurecc
-  const config = getConfig();
-  if (config.links === 'on') {
-    const path = `${config.contentRoot || ''}${getMetadata('links-path') || '/express/seo/links.json'}`;
-    import('../features/links.js').then((mod) => mod.default(path, area));
-  }
 
   import('./attributes.js').then((analytics) => {
     document.querySelectorAll('main > div').forEach((section, idx) => analytics.decorateSectionAnalytics(section, idx, config));
   });
 
-  window.hlx.martechLoaded?.then(() => import('./legacy-analytics.js')).then(({ default: decorateTrackingEvents }) => {
-    decorateTrackingEvents();
+  document.body.appendChild(createTag('div', { id: 'page-load-ok-milo', style: 'display: none;' }));
+}
+
+async function processSection(section, config, isDoc) {
+  const inlineFrags = [...section.el.querySelectorAll('a[href*="#_inline"]')];
+  if (inlineFrags.length) {
+    const { default: loadInlineFrags } = await import('../blocks/fragment/fragment.js');
+    const fragPromises = inlineFrags.map((link) => loadInlineFrags(link));
+    await Promise.all(fragPromises);
+    // await decoratePlaceholders(section.el, config);
+    const newlyDecoratedSection = decorateSection(section.el, section.idx);
+    section.blocks = newlyDecoratedSection.blocks;
+    section.preloadLinks = newlyDecoratedSection.preloadLinks;
+  }
+
+  if (section.preloadLinks.length) {
+    const preloads = section.preloadLinks.map((block) => loadBlock(block));
+    await Promise.all(preloads);
+  }
+
+  const loaded = section.blocks.map((block) => loadBlock(block));
+
+  // await decorateIcons(section.el, config);
+
+  // Only move on to the next section when all blocks are loaded.
+  await Promise.all(loaded);
+
+  // Show the section when all blocks inside are done.
+  delete section.el.dataset.status;
+
+  if (isDoc && section.el.dataset.idx === '0') {
+    await loadPostLCP(config);
+  }
+
+  delete section.el.dataset.idx;
+
+  return section.blocks;
+}
+
+// logic in express but not in milo
+async function decorateExpressPage(main) {
+  if (main) {
+    displayEnv();
+    displayOldLinkWarning();
+  }
+  const footer = document.querySelector('footer');
+  if (footer && footer.dataset) delete footer.dataset.status;
+
+  addPromotion();
+  loadStyle('/express/styles/lazy-styles.css');
+
+  // TODO: check if can deprecate support for these 2 patterns
+  resolveFragments();
+  removeMetadata();
+
+  const params = new URLSearchParams(window.location.search);
+  const buttonOff = params.get('button') === 'off';
+  if ((window.location.hostname.endsWith('hlx.page') || window.location.hostname === ('localhost')) && !buttonOff) {
+    import('../../tools/preview/preview.js');
+  }
+}
+
+function fragmentBlocksToLinks(area) {
+  area.querySelectorAll('div.fragment').forEach((blk) => {
+    let fragLink = blk.querySelector('a');
+    if (!fragLink) {
+      try {
+        const firstDiv = blk.querySelector('div');
+        const textContent = firstDiv?.textContent?.trim();
+        const fragURL = new URL(textContent, window.location.origin);
+        firstDiv.textContent = '';
+        fragLink = createTag('a', { href: fragURL.href });
+      } catch (error) {
+        blk.remove();
+        window.lana.log(`Failed creating a url from an old fragment block: ${error.message}`);
+      }
+    }
+    if (fragLink) {
+      blk.parentElement.replaceChild(fragLink, blk);
+      fragLink.setAttribute('ax-old-fragment', 'on');
+    }
   });
+}
+
+export async function loadArea(area = document) {
+  const isDoc = area === document;
+
+  const main = area.querySelector('main');
+  if (isDoc) {
+    await checkForPageMods();
+    removeIrrelevantSections(main);
+    if (getMetadata('template-search-page') === 'Y') {
+      const { default: redirect } = await import('./template-redirect.js');
+      await redirect();
+    }
+    if (getMetadata('sheet-powered') === 'Y' || window.location.href.includes('/express/templates/')) {
+      const { default: replaceContent } = await import('./content-replace.js');
+      await replaceContent(main);
+    }
+    decorateHeaderAndFooter();
+    if (window.hlx.testing) await decorateTesting();
+    await buildAutoBlocks(main);
+    decorateHeroLCP();
+  }
+  const config = getConfig();
+
+  fragmentBlocksToLinks(area);
+
+  splitSections(area);
+  decorateButtons(area);
+  await fixIcons(area);
+  decorateSocialIcons(area);
+
+  const sections = decorateSections(area, isDoc);
+  decorateLegalCopy(area);
+  addJapaneseSectionHeaderSizing(area);
+  wordBreakJapanese(area);
+
+  // appending express-specific branch parameters
+  const links = isDoc ? area.querySelectorAll('main a[href*="adobesparkpost"]') : area.querySelectorAll(':scope a[href*="adobesparkpost"]');
+  if (links.length) {
+    import('./branchlinks.js').then((mod) => mod.default(links));
+  }
+
+  const areaBlocks = [];
+  for (const section of sections) {
+    // eslint-disable-next-line no-await-in-loop
+    const sectionBlocks = await processSection(section, config, isDoc);
+    areaBlocks.push(...sectionBlocks);
+
+    areaBlocks.forEach((block) => {
+      if (!block.className.includes('metadata')) block.dataset.block = '';
+    });
+  }
+
+  if (isDoc) await decorateExpressPage(main);
+
+  const currentHash = window.location.hash;
+  if (currentHash) {
+    scrollToHashedElement(currentHash);
+  }
+
+  if (isDoc) await documentPostSectionLoading(config);
+
+  await loadDeferred(area, areaBlocks, config);
 }
 
 export function getMobileOperatingSystem() {
@@ -2623,3 +2737,33 @@ export function registerPerformanceLogger() {
     // no output
   }
 }
+
+export const [setLibs, getLibs] = (() => {
+  let libs;
+  return [
+    (prodLibs, force = false) => {
+      if (force) {
+        libs = prodLibs;
+        return libs;
+      }
+      const { hostname } = window.location;
+      if (!hostname.includes('hlx.page')
+        && !hostname.includes('hlx.live')
+        && !hostname.includes('localhost')) {
+        libs = prodLibs;
+        return libs;
+      }
+      const branch = new URLSearchParams(window.location.search).get('milolibs') || 'main';
+      if (branch === 'local') {
+        libs = 'http://localhost:6456/libs';
+        return libs;
+      }
+      if (branch.indexOf('--') > -1) {
+        libs = `https://${branch}.hlx.live/libs`;
+        return libs;
+      }
+      libs = `https://${branch}--milo--adobecom.hlx.live/libs`;
+      return libs;
+    }, () => libs,
+  ];
+})();

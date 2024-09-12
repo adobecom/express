@@ -49,7 +49,7 @@ End legacy CSS
 }
 
 .pricing-cards.block {
-  padding: 0 15px 40px;
+  padding: 12px 15px 40px 15px;
 }
 
 .pricing-cards .cards-container {
@@ -166,10 +166,21 @@ End border style variants
   position: relative;
   top: 2px;
 }
+.pricing-cards .tooltip-text.overflow-left {
+  right: inherit;
+  left: -20px;
 
+}
+.pricing-cards .tooltip-text.overflow-right {
+  left: inherit;
+  right: -20px;
+
+}
 .pricing-cards .tooltip-text {
-  display: none;
+  pointer-events: none;
+  opacity: 0;
   padding: 8px;
+  z-index: 10;
   background-color: #292929;
   color: white;
   border-radius: 8px;
@@ -179,7 +190,8 @@ End border style variants
   left: -105px;
   width: fit-content;
   margin-bottom: 19px;
-  transition: bottom 0.5s
+  transition: bottom 0.5s;
+  width: 100%;
 }
 
 .pricing-cards .tooltip-text::after {
@@ -192,6 +204,17 @@ End border style variants
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
   border-top: 5px solid black;
+  
+}
+
+.pricing-cards .tooltip-text.overflow-left::after {
+  right: inherit;
+  left: 20px;
+}
+
+.pricing-cards .tooltip-text.overflow-right::after {
+  left: inherit;
+  right: 20px;
 }
 
 .pricing-cards .tooltip {
@@ -208,7 +231,8 @@ End border style variants
 }
 
 .pricing-cards .tooltip .icon:hover~.tooltip-text {
-  display: block;
+  opacity: 1;
+  pointer-events: visible;
 }
 
 .pricing-cards .card-border .hide {
@@ -227,6 +251,7 @@ End border style variants
   display: flex;
   flex-direction: row-reverse;
   gap: 8px;
+  text-align: left;
 }
 
 .pricing-cards .card-header img {
@@ -260,6 +285,8 @@ End border style variants
   color: #5258E4;
   height: 20px;
   font-style: normal;
+  height: auto;
+  max-width: 240px;
 }
 
 .pricing-cards .card-offer a {
@@ -269,6 +296,7 @@ End border style variants
 /** pricing styles start **/
 .pricing-cards .pricing-row {
   max-width: 330px;
+  margin-top: 20px;
 }
 
 .pricing-cards .pricing-base-price,
@@ -348,6 +376,56 @@ End border style variants
 
 
 /** pricing styles end **/
+
+.pricing-cards .billing-toggle.suppressed-billing-toggle {
+  visibility: hidden;
+} 
+
+.pricing-cards .billing-toggle {
+  justify-content: center;
+  width: 100%;
+  margin-left: 10px;
+  align-items: center;
+  font-size: var(--body-font-size-s);
+  margin-bottom: 12px;
+}
+
+.pricing-cards .billing-toggle .toggle-button-wrapper {
+  display: flex;
+  margin-top: 10px;
+  gap: 12px;
+}
+
+.pricing-cards .billing-toggle button {
+  border: 2px transparent solid;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  font-size: var(--body-font-size-xs);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pricing-cards .billing-toggle :focus-within {
+  border-color: var(--color-info-accent);
+}
+
+.pricing-cards .billing-toggle span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transition: 0.2s all linear;
+  border: 2px solid #292929;
+  box-sizing: border-box;
+}
+
+.pricing-cards .billing-toggle .checked span {
+  border-width: 6px;
+}
 
 .pricing-cards .card-cta-group {
   display: flex;

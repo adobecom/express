@@ -1,3 +1,5 @@
+import { getMetadata, getIconElement } from '../../scripts/utils.js';
+
 // avoid using this kind of text-block unless necessary
 export default function init(el) {
   const heading = el.querySelector('h1, h2, h3, h4, h5, h6');
@@ -12,6 +14,12 @@ export default function init(el) {
   } catch (e) {
     window.lana?.log(e);
   }
-  el.innerHTML = heading?.outerHTML || '';
+
+  if (document.querySelector('main .block') === el && ['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
+    const logo = getIconElement('adobe-express-logo');
+    logo.classList.add('express-logo');
+    el.prepend(logo);
+  }
+
   return el;
 }

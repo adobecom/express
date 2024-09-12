@@ -1,15 +1,11 @@
 import {
   createTag,
-  fetchPlaceholders, getConfig,
+  fetchPlaceholders,
+  getConfig,
   getIconElement,
   getMetadata,
-  sampleRUM,
 } from '../../scripts/utils.js';
-import { addTempWrapper } from '../../scripts/decorate.js';
-import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
-
-import buildCarousel from '../shared/carousel.js';
-import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
+import { trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function handlelize(str) {
@@ -33,9 +29,7 @@ function cycleThroughSuggestions(block, targetIndex = 0) {
   if (suggestions.length > 0) suggestions[targetIndex].focus();
 }
 
-function initSearchFunction(block) {
-  const searchBarWrapper = block.querySelector('.search-bar-wrapper');
-
+function initSearchFunction(block, searchBarWrapper) {
   const searchDropdown = searchBarWrapper.querySelector('.search-dropdown-container');
   const searchForm = searchBarWrapper.querySelector('.search-form');
   const searchBar = searchBarWrapper.querySelector('input.search-bar');
@@ -138,38 +132,60 @@ function initSearchFunction(block) {
     const taskXUrl = `/${handlelize(currentTasks.content.toLowerCase())}`;
     const targetPath = `${prefix}/express/templates${taskUrl}${topicUrl}`;
     const targetPathX = `${prefix}/express/templates${taskXUrl}${topicUrl}`;
+    const { default: fetchAllTemplatesMetadata } = await import('../../scripts/all-templates-metadata.js');
     const allTemplatesMetadata = await fetchAllTemplatesMetadata();
     const pathMatch = (e) => e.url === targetPath;
     const pathMatchX = (e) => e.url === targetPathX;
+    let targetLocation;
+
+    updateImpressionCache({ collection: currentTasks.content || 'all-templates', content_category: 'templates' });
+    trackSearch('search-inspire');
+
+    const searchId = BlockMediator.get('templateSearchSpecs').search_id;
     if (allTemplatesMetadata.some(pathMatchX) && document.body.dataset.device !== 'mobile') {
-      window.location = `${window.location.origin}${targetPathX}`;
+      targetLocation = `${window.location.origin}${targetPathX}?searchId=${searchId || ''}`;
     } else if (allTemplatesMetadata.some(pathMatch) && document.body.dataset.device !== 'desktop') {
-      window.location = `${window.location.origin}${targetPath}`;
+      targetLocation = `${window.location.origin}${targetPath}`;
     } else {
-      const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks.xCore}&tasksx=${currentTasks.content}&phformat=${format}&topics=${searchInput || "''"}&q=${searchBar.value || "''"}`;
-      window.location = `${window.location.origin}${prefix}${searchUrlTemplate}`;
+      const searchUrlTemplate = `/express/templates/search?tasks=${currentTasks.xCore}&tasksx=${currentTasks.content}&phformat=${format}&topics=${searchInput || "''"}&q=${searchBar.value || "''"}&searchId=${searchId || ''}`;
+      targetLocation = `${window.location.origin}${prefix}${searchUrlTemplate}`;
     }
+
+    window.location.assign(targetLocation);
   };
 
   const onSearchSubmit = async () => {
     searchBar.disabled = true;
-    sampleRUM('search', {
-      source: block.dataset.blockName,
-      target: searchBar.value,
-    }, 1);
     await redirectSearch();
   };
 
-  async function handleSubmitInteraction(item) {
+  async function handleSubmitInteraction(item, index) {
     if (item.query !== searchBar.value) {
       searchBar.value = item.query;
       searchBar.dispatchEvent(new Event('input'));
     }
+
+    updateImpressionCache({
+      status_filter: 'free',
+      type_filter: 'all',
+      collection: 'all-templates',
+      keyword_rank: index + 1,
+      search_keyword: searchBar.value || 'empty search',
+      search_type: 'autocomplete',
+    });
+
     await onSearchSubmit();
   }
 
   searchForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    updateImpressionCache({
+      status_filter: 'free',
+      type_filter: 'all',
+      collection: 'all-templates',
+      search_keyword: searchBar.value || 'empty search',
+      search_type: 'direct',
+    });
     await onSearchSubmit();
   });
 
@@ -190,12 +206,12 @@ function initSearchFunction(block) {
         const valRegEx = new RegExp(searchBar.value, 'i');
         li.innerHTML = item.query.replace(valRegEx, `<b>${searchBarVal}</b>`);
         li.addEventListener('click', async () => {
-          await handleSubmitInteraction(item);
+          await handleSubmitInteraction(item, index);
         });
 
         li.addEventListener('keydown', async (e) => {
           if (e.key === 'Enter' || e.keyCode === 13) {
-            await handleSubmitInteraction(item);
+            await handleSubmitInteraction(item, index);
           }
         });
 
@@ -215,6 +231,12 @@ function initSearchFunction(block) {
 
         suggestionsList.append(li);
       });
+
+      const suggestListString = suggestions.map((s) => s.query).join(',');
+      updateImpressionCache({
+        prefix_query: searchBarVal,
+        suggestion_list_shown: suggestListString,
+      });
     }
   };
 
@@ -226,8 +248,7 @@ function initSearchFunction(block) {
   });
 }
 
-async function decorateSearchFunctions(block) {
-  const placeholders = await fetchPlaceholders();
+function decorateSearchFunctions(block, placeholders) {
   const searchBarWrapper = createTag('div', { class: 'search-bar-wrapper' });
   const searchForm = createTag('form', { class: 'search-form' });
   const searchBar = createTag('input', {
@@ -245,91 +266,90 @@ async function decorateSearchFunctions(block) {
   searchBarWrapper.append(searchIcon, searchClearIcon);
   searchBarWrapper.append(searchForm);
 
-  block.append(searchBarWrapper);
+  block.insertBefore(searchBarWrapper, block.querySelector('div:nth-of-type(2)'));
+  return searchBarWrapper;
 }
 
 function decorateBackground(block) {
-  const mediaRow = block.querySelector('div:nth-child(2)');
+  const mediaRow = block.querySelector('div:nth-of-type(2)');
   if (mediaRow) {
-    const media = mediaRow.querySelector('picture img');
-    if (media) {
-      media.classList.add('backgroundimg');
-      media.loading = 'eager';
-      media.setAttribute('fetchpriority', 'high');
-      const wrapper = block.parentElement;
-      if (wrapper.classList.contains('search-marquee-wrapper')) {
-        wrapper.prepend(media);
-      } else {
-        block.prepend(media);
-      }
+    let media = mediaRow.querySelector('picture img');
+    if (!media) {
+      media = createTag('img');
+      media.src = mediaRow.querySelector('a')?.href;
     }
+    media.classList.add('backgroundimg');
+    media.loading = 'eager';
+    media.setAttribute('fetchpriority', 'high');
+    block.prepend(media);
     mediaRow.remove();
   }
 }
 
-async function buildSearchDropdown(block) {
-  const placeholders = await fetchPlaceholders();
+function buildSearchDropdown(block, searchBarWrapper, placeholders) {
+  if (!searchBarWrapper) return;
+  const dropdownContainer = createTag('div', { class: 'search-dropdown-container hidden' });
+  const trendsContainer = createTag('div', { class: 'trends-container' });
+  const suggestionsContainer = createTag('div', { class: 'suggestions-container hidden' });
+  const suggestionsTitle = createTag('p', { class: 'dropdown-title' });
+  const suggestionsList = createTag('ul', { class: 'suggestions-list' });
 
-  const searchBarWrapper = block.querySelector('.search-bar-wrapper');
-  if (searchBarWrapper) {
-    const dropdownContainer = createTag('div', { class: 'search-dropdown-container hidden' });
-    const trendsContainer = createTag('div', { class: 'trends-container' });
-    const suggestionsContainer = createTag('div', { class: 'suggestions-container hidden' });
-    const suggestionsTitle = createTag('p', { class: 'dropdown-title' });
-    const suggestionsList = createTag('ul', { class: 'suggestions-list' });
-    const freePlanContainer = createTag('div', { class: 'free-plans-container' });
+  const fromScratchLink = block.querySelector('a');
+  const trendsTitle = placeholders['search-trends-title'];
+  let trends;
+  if (placeholders['search-trends']) trends = JSON.parse(placeholders['search-trends']);
 
-    const fromScratchLink = block.querySelector('a');
-    const trendsTitle = placeholders['search-trends-title'];
-    let trends;
-    if (placeholders['search-trends']) trends = JSON.parse(placeholders['search-trends']);
-
-    if (fromScratchLink) {
-      const linkDiv = fromScratchLink.parentElement.parentElement;
-      const templateFreeAccentIcon = getIconElement('template-free-accent');
-      templateFreeAccentIcon.loading = 'lazy';
-      const arrowRightIcon = getIconElement('arrow-right');
-      arrowRightIcon.loading = 'lazy';
-      fromScratchLink.prepend(templateFreeAccentIcon);
-      fromScratchLink.append(arrowRightIcon);
-      fromScratchLink.classList.remove('button');
-      fromScratchLink.classList.add('from-scratch-link');
-      fromScratchLink.href = getMetadata('search-marquee-from-scratch-link') || '/';
-      trendsContainer.append(fromScratchLink);
-      linkDiv.remove();
-    }
-
-    if (trendsTitle) {
-      const trendsTitleEl = createTag('p', { class: 'dropdown-title' });
-      trendsTitleEl.textContent = trendsTitle;
-      trendsContainer.append(trendsTitleEl);
-    }
-
-    if (trends) {
-      const trendsWrapper = createTag('ul', { class: 'trends-wrapper' });
-      for (const [key, value] of Object.entries(trends)) {
-        const trendLinkWrapper = createTag('li');
-        const trendLink = createTag('a', { class: 'trend-link', href: value });
-        trendLink.textContent = key;
-        trendLinkWrapper.append(trendLink);
-        trendsWrapper.append(trendLinkWrapper);
-      }
-      trendsContainer.append(trendsWrapper);
-    }
-
-    suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
-    suggestionsContainer.append(suggestionsTitle, suggestionsList);
-
-    const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
-
-    freePlanContainer.append(freePlanTags);
-    dropdownContainer.append(trendsContainer, suggestionsContainer, freePlanContainer);
-    searchBarWrapper.append(dropdownContainer);
+  if (fromScratchLink) {
+    const linkDiv = fromScratchLink.parentElement.parentElement;
+    const templateFreeAccentIcon = getIconElement('template-free-accent');
+    templateFreeAccentIcon.loading = 'lazy';
+    const arrowRightIcon = getIconElement('arrow-right');
+    arrowRightIcon.loading = 'lazy';
+    fromScratchLink.prepend(templateFreeAccentIcon);
+    fromScratchLink.append(arrowRightIcon);
+    fromScratchLink.classList.remove('button');
+    fromScratchLink.classList.add('from-scratch-link');
+    fromScratchLink.href = getMetadata('search-marquee-from-scratch-link') || '/';
+    trendsContainer.append(fromScratchLink);
+    linkDiv.remove();
   }
+
+  if (trendsTitle) {
+    const trendsTitleEl = createTag('p', { class: 'dropdown-title' });
+    trendsTitleEl.textContent = trendsTitle;
+    trendsContainer.append(trendsTitleEl);
+  }
+
+  if (trends) {
+    const trendsWrapper = createTag('ul', { class: 'trends-wrapper' });
+    for (const [key, value] of Object.entries(trends)) {
+      const trendLinkWrapper = createTag('li');
+      const trendLink = createTag('a', { class: 'trend-link', href: value });
+      trendLink.textContent = key;
+      trendLinkWrapper.append(trendLink);
+      trendsWrapper.append(trendLinkWrapper);
+    }
+    trendsContainer.append(trendsWrapper);
+  }
+
+  suggestionsTitle.textContent = placeholders['search-suggestions-title'] ?? '';
+  suggestionsContainer.append(suggestionsTitle, suggestionsList);
+
+  import('../../scripts/utils/free-plan.js')
+    .then(({ buildFreePlanWidget }) => buildFreePlanWidget({ typeKey: 'branded', checkmarks: true }))
+    .then((freePlanTags) => {
+      const freePlanContainer = createTag('div', { class: 'free-plans-container' });
+      freePlanContainer.append(freePlanTags);
+      dropdownContainer.append(freePlanContainer);
+    });
+  dropdownContainer.append(trendsContainer, suggestionsContainer);
+  searchBarWrapper.append(dropdownContainer);
 }
 
-function decorateLinkList(block) {
-  const carouselItemsWrapper = block.querySelector(':scope > div:nth-of-type(2) > div');
+async function decorateLinkList(block) {
+  // preventing css. will be removed by buildCarousel
+  block.querySelector(':scope > div:last-of-type').style.cssText = 'max-height: 90px; visibility: hidden;';
+  const carouselItemsWrapper = block.querySelector(':scope > div:last-of-type > div');
   if (carouselItemsWrapper) {
     const showLinkList = getMetadata('show-search-marquee-link-list');
     if ((showLinkList && !['yes', 'true', 'on', 'Y'].includes(showLinkList))
@@ -338,23 +358,13 @@ function decorateLinkList(block) {
       || window.location.pathname.endsWith('/express/templates')) {
       carouselItemsWrapper.remove();
     } else {
-      buildCarousel(':scope > p', carouselItemsWrapper).then(() => {
-        const carousel = carouselItemsWrapper.querySelector('.carousel-container');
-        block.append(carousel);
-        carouselItemsWrapper.parentElement.remove();
-      });
+      const { default: buildCarousel } = await import('../shared/carousel.js');
+      await buildCarousel(':scope > p', carouselItemsWrapper);
+      const carousel = carouselItemsWrapper.querySelector('.carousel-container');
+      block.append(carousel);
+      carouselItemsWrapper.parentElement.remove();
     }
   }
-}
-
-export default async function decorate(block) {
-  addTempWrapper(block, 'search-marquee');
-  decorateBackground(block);
-  await decorateSearchFunctions(block);
-  await buildSearchDropdown(block);
-  initSearchFunction(block);
-  decorateLinkList(block);
-
   const blockLinks = block.querySelectorAll('a');
   if (blockLinks && blockLinks.length > 0) {
     const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
@@ -364,4 +374,18 @@ export default async function decorate(block) {
     const { default: updateAsyncBlocks } = await import('../../scripts/template-ckg.js');
     updateAsyncBlocks();
   }
+}
+
+export default async function decorate(block) {
+  decorateBackground(block);
+  if (['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
+    const logo = getIconElement('adobe-express-logo');
+    logo.classList.add('express-logo');
+    block.prepend(logo);
+  }
+  const placeholders = await fetchPlaceholders();
+  const searchBarWrapper = decorateSearchFunctions(block, placeholders);
+  buildSearchDropdown(block, searchBarWrapper, placeholders);
+  initSearchFunction(block, searchBarWrapper);
+  decorateLinkList(block);
 }

@@ -1,6 +1,5 @@
 import {
   createTag,
-  getIcon,
   getMobileOperatingSystem,
   fetchPlaceholders,
   getIconElement,
@@ -31,10 +30,13 @@ async function buildPayload() {
 // Returns true if a week has passed or the banner has not been closed yet
 const weekPassed = () => new Date().getTime() > localStorage.getItem('app-banner-optout-exp-date');
 
+function populateStars(count, star, parent) {
+  for (let i = 0; i < count; i += 1) {
+    parent.appendChild(getIconElement(star));
+  }
+}
+
 function getCurrentRatingStars(rating = 5) {
-  const star = getIcon('star', 'Full star');
-  const starHalf = getIcon('star-half', 'Half star');
-  const starEmpty = getIcon('star-empty', 'Empty star');
   const stars = createTag('span', { class: 'rating-stars' });
   let newRating = rating;
   if (newRating > 5) newRating = 5;
@@ -43,7 +45,9 @@ function getCurrentRatingStars(rating = 5) {
   const filledStars = Math.floor(newRatingRoundedHalf);
   const halfStars = (filledStars === newRatingRoundedHalf) ? 0 : 1;
   const emptyStars = (halfStars === 1) ? 4 - filledStars : 5 - filledStars;
-  stars.innerHTML = `${star.repeat(filledStars)}${starHalf.repeat(halfStars)}${starEmpty.repeat(emptyStars)}`;
+  populateStars(filledStars, 'star', stars);
+  populateStars(halfStars, 'star-half', stars);
+  populateStars(emptyStars, 'star-empty', stars);
   const votes = createTag('span', { class: 'rating-votes' });
   stars.appendChild(votes);
   return stars;
@@ -52,7 +56,6 @@ function getCurrentRatingStars(rating = 5) {
 function addCloseBtn(block) {
   const $closeBtnDiv = createTag('div', { class: 'close-btn-div' });
   const $closeBtnImg = getIconElement('close-icon');
-
   $closeBtnDiv.append($closeBtnImg);
   block.append($closeBtnDiv);
 

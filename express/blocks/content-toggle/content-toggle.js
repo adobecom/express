@@ -1,5 +1,6 @@
 import { createTag } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
+import { trackButtonClick } from '../../scripts/instrument.js';
 
 function decorateButton($block, $toggle) {
   const $button = createTag('button', { class: 'content-toggle-button' });
@@ -16,6 +17,11 @@ function decorateButton($block, $toggle) {
     $button.textContent = $toggle.textContent.trim();
     $button.dataset.text = $button.textContent.toLowerCase();
   }
+  // for tracking the content toggle buttons
+  $button.addEventListener('click', () => {
+    trackButtonClick($button);
+  });
+
   $block.append($button);
 }
 
@@ -49,12 +55,10 @@ function initButton($block, $sections, index) {
           } else {
             $section.style.display = 'none';
           }
-          if (!document.querySelector('.pricing-hub')) {
-            window.scrollTo({
-              top: offsetPosition,
-              behavior: 'smooth',
-            });
-          }
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth',
+          });
         });
       }
     });
@@ -71,22 +75,22 @@ function initButton($block, $sections, index) {
   }
 }
 
-export default function decorate($block) {
-  addTempWrapper($block, 'content-toggle');
+export default function decorate(block) {
+  addTempWrapper(block, 'content-toggle');
 
-  const $enclosingMain = $block.closest('main');
+  const $enclosingMain = block.closest('main');
   if ($enclosingMain) {
     const $sections = $enclosingMain.querySelectorAll('[data-toggle]');
-    const $toggleContainer = $block.querySelector('ul');
+    const $toggleContainer = block.querySelector('ul');
     const $toggleBackground = createTag('div', { class: 'toggle-background' });
 
-    $block.innerHTML = '';
+    block.innerHTML = '';
 
-    $block.prepend($toggleBackground);
+    block.prepend($toggleBackground);
 
     Array.from($toggleContainer.children).forEach(($toggle, index) => {
-      decorateButton($block, $toggle);
-      initButton($block, $sections, index);
+      decorateButton(block, $toggle);
+      initButton(block, $sections, index);
     });
 
     if ($sections) {

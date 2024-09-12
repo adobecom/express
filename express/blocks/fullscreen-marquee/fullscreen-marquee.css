@@ -20,15 +20,14 @@
   max-width: none;
 }
 
-.fullscreen-marquee.has-background {
-  padding-bottom: 160px;
+.fullscreen-marquee .express-logo {
+  width: unset;
+  height: 30px;
+  padding-bottom: 8px;
 }
 
-.fullscreen-marquee .fullscreen-marquee-heading {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+.fullscreen-marquee.has-background {
+  padding-bottom: 160px;
 }
 
 .fullscreen-marquee .fullscreen-marquee-heading h1 {
@@ -48,6 +47,7 @@
   align-items: center;
   display: none;
 }
+
 
 .fullscreen-marquee-heading h1.budoux {
   display: flex;
@@ -241,9 +241,8 @@
 }
 
 .block.fullscreen-marquee .button-container.free-plan-container {
-  flex-direction: row;
-  width: auto;
-  justify-content: left;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .block.fullscreen-marquee .button-container.free-plan-container a.button {
@@ -254,10 +253,28 @@
   margin: 0;
 }
 
+.block.fullscreen-marquee .cta-container {
+  display: flex;
+}
+
+.fullscreen-marquee .hyperlink {
+  display: inline-block;  
+  position: relative;
+  top: -27px;
+  text-decoration: underline;
+  padding-left: 10px;
+  padding-right: 10px;
+
+}
+
 @media (min-width: 900px) {
   .section > .fullscreen-marquee {
     padding-bottom: 40px;
-    padding-top: 80px;
+    padding-top: 40px;
+  }
+
+  .fullscreen-marquee .express-logo {
+    padding-bottom: 18px;
   }
 
   .fullscreen-marquee .fullscreen-marquee-heading {
@@ -277,8 +294,12 @@
     text-align: center;
   }
 
+  .fullscreen-marquee .fullscreen-marquee-heading p:first-of-type {
+    margin: 10px auto 0px auto;
+  }
+
   .fullscreen-marquee .fullscreen-marquee-heading .button-container {
-    display: flex;
+    display: inline-block;
   }
 
   .fullscreen-marquee .fullscreen-marquee-app-frame {

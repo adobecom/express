@@ -25,6 +25,9 @@
     <loc>https://www.adobe.com/fr/express/sitemap.xml</loc>
   </sitemap>
   <sitemap>
+    <loc>https://www.adobe.com/id_id/express/sitemap.xml</loc>
+  </sitemap>
+  <sitemap>
     <loc>https://www.adobe.com/in/express/sitemap.xml</loc>
   </sitemap>
   <sitemap>
@@ -94,6 +97,12 @@
     <loc>https://www.adobe.com/fr/express/templates/sitemap.xml</loc>
   </sitemap>
   <sitemap>
+    <loc>https://www.adobe.com/id_id/express/templates/sitemap.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.adobe.com/in/express/templates/sitemap.xml</loc>
+  </sitemap>
+  <sitemap>
     <loc>https://www.adobe.com/it/express/templates/sitemap.xml</loc>
   </sitemap>
   <sitemap>
@@ -107,6 +116,9 @@
   </sitemap>
   <sitemap>
     <loc>https://www.adobe.com/tw/express/templates/sitemap.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.adobe.com/uk/express/templates/sitemap.xml</loc>
   </sitemap>
   <sitemap>
     <loc>https://www.adobe.com/express/colors/sitemap.xml</loc>

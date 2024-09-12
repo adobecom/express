@@ -21,6 +21,12 @@ main .columns-top-container > div {
   max-width: 350px;
 }
 
+main .columns .express-logo.icon {
+  width: unset;
+  height: 30px;
+  padding-bottom: 8px;
+  float: unset;
+}
  
 
 .section.columns-enterprise-container .default-content-wrapper h2 {
@@ -691,6 +697,7 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
       padding-right: 20px;
       word-break: auto-phrase;
   }
+
 }
 
 @media (min-width: 900px) and (max-width: 1200px) {
@@ -1022,4 +1029,58 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
   main .columns h1.columns-heading-x-long {
     font-size: var(--heading-font-size-l);
   }
+ 
+  main .columns.extra-wide > div {
+    align-items: flex-start;
+   }
+
+  main .section > div:has( .columns.extra-wide ) {
+    max-width: 1440px;
+    margin-top: -60px;
+  } 
+  main .columns.extra-wide .button-container{
+    margin-top: 0;
+  } 
+
+
+}
+
+main .columns.extra-wide {
+  text-align: center;
+}
+
+main .columns.extra-wide .column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 250px;
+}
+
+main .columns.extra-wide > div {
+ align-items: flex-start;
+}
+
+main .columns.extra-wide .column:has(a:only-of-type) {
+  text-align: center;
+}
+
+main .columns.extra-wide .column > div{
+  text-align: center;
+}
+
+main .columns.slim-button  a.button {
+  padding: 5px 19.5px;
+}
+
+main .columns.slim-padding > div {
+  padding: 0px;
+}
+
+main .columns.slim-padding .column {
+  padding: 20px;
+}
+
+main .extra-wide .column {
+  width: fit-content;
+  margin: auto;
 }

@@ -5,6 +5,7 @@ import {
   getIconElement,
   fetchPlaceholders,
   getConfig,
+  getMetadata,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -103,7 +104,7 @@ export function handleMediaQuery(block, mediaQuery) {
   });
 }
 
-function decorateToggleContext(ct, placeholders) {
+export function decorateToggleContext(ct, placeholders) {
   const reduceMotionIconWrapper = ct;
   const reduceMotionTextExist = reduceMotionIconWrapper.querySelector('.play-animation-text')
     && reduceMotionIconWrapper.querySelector('.pause-animation-text');
@@ -348,6 +349,57 @@ async function handleAnimation(div, typeHint, block, animations) {
   div.remove();
 }
 
+const LOGO = 'adobe-express-logo';
+const LOGO_WHITE = 'adobe-express-logo-white';
+function injectExpressLogo(block, wrapper) {
+  if (block.classList.contains('entitled')) return;
+  if (!['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) return;
+  const mediaQuery = window.matchMedia('(min-width: 900px)');
+  const logo = getIconElement(block.classList.contains('dark') && mediaQuery.matches ? LOGO_WHITE : LOGO);
+  mediaQuery.addEventListener('change', (e) => {
+    if (!block.classList.contains('dark')) return;
+    if (e.matches) {
+      logo.src = logo.src.replace(`${LOGO}.svg`, `${LOGO_WHITE}.svg`);
+      logo.alt = logo.alt.replace(LOGO, LOGO_WHITE);
+    } else {
+      logo.src = logo.src.replace(`${LOGO_WHITE}.svg`, `${LOGO}.svg`);
+      logo.alt = logo.alt.replace(LOGO_WHITE, LOGO);
+    }
+  });
+  logo.classList.add('express-logo');
+  if (wrapper.firstElementChild?.tagName === 'H2') {
+    logo.classList.add('eyebrow-margin');
+  }
+  wrapper.prepend(logo);
+}
+
+function decorateEntitled(contentWrapper) {
+  const eyebrowText = contentWrapper.querySelector('h3');
+  const eyebrowIcon = contentWrapper.querySelector('p > img.icon');
+  const legalCopy = contentWrapper.querySelector('p.legal-copy');
+
+  if (eyebrowIcon && eyebrowText) {
+    const oldIconWrapper = eyebrowIcon.parentElement;
+    const eyebrowWrapper = createTag('div', { class: 'eyebrow-wrapper' });
+    eyebrowWrapper.append(eyebrowIcon, eyebrowText);
+    contentWrapper.prepend(eyebrowWrapper);
+
+    if (!oldIconWrapper.children.length) {
+      oldIconWrapper.remove();
+    }
+  }
+
+  if (legalCopy && legalCopy.previousElementSibling?.classList.contains('buttons-wrapper')) {
+    const btnContainer = legalCopy.previousElementSibling;
+    const legalText = createTag('span', {}, legalCopy.textContent.replace('**', '').trim());
+    legalCopy.innerHTML = '';
+    legalCopy.append(getIconElement('checkmark-green'), legalText);
+    legalCopy.className = 'entitled-cta-tag';
+    btnContainer.append(legalCopy);
+    btnContainer.classList.add('with-legal-copy');
+  }
+}
+
 async function handleContent(div, block, animations) {
   const videoWrapper = createTag('div', { class: 'background-wrapper' });
   const video = createAnimation(animations);
@@ -372,8 +424,10 @@ async function handleContent(div, block, animations) {
   }
 
   const marqueeForeground = createTag('div', { class: 'marquee-foreground' });
-  bg.nextElementSibling.classList.add('content-wrapper');
-  marqueeForeground.append(bg.nextElementSibling);
+  const contentWrapper = bg.nextElementSibling;
+  contentWrapper.classList.add('content-wrapper');
+  marqueeForeground.append(contentWrapper);
+  injectExpressLogo(block, contentWrapper);
   div.append(marqueeForeground);
 
   video.addEventListener('canplay', () => {
@@ -430,6 +484,10 @@ async function handleContent(div, block, animations) {
         'with-inline-ctas',
       );
     }
+  }
+
+  if (block.classList.contains('entitled')) {
+    decorateEntitled(contentWrapper);
   }
 }
 

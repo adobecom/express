@@ -124,7 +124,7 @@ export default async function init(el) {
   // Get the data
   const base = await fetchLibrary(window.location.origin);
   const library = {
-    blocks: base.data,
+    blocks: base.blocks.data,
   };
 
   // Create the UI
