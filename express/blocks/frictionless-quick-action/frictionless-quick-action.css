@@ -15,6 +15,10 @@
     font-size: 1rem;
 }
 
+.frictionless-quick-action.block input {
+    display: none;
+}
+
 .frictionless-quick-action.block .quick-action-container {
     padding: 40px 0;
     min-height: 697px;

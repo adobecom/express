@@ -9,9 +9,6 @@ import {
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import { sendFrictionlessEventToAdobeAnaltics } from '../../scripts/instrument.js';
 
-// only allows 1 qa per page?
-let quickAction;
-let fqaBlock;
 let error;
 let ccEverywhere;
 let quickActionContainer;
@@ -23,6 +20,7 @@ const PNG = 'png';
 export const getBaseImgCfg = (...types) => ({
   group: 'image',
   max_size: 40 * 1024 * 1024,
+  accept: types.map((type) => `.${type}`).join(', '),
   input_check: (input) => types.map((type) => `image/${type}`).includes(input),
 });
 export const getBaseVideoCfg = (...types) => ({
@@ -75,7 +73,7 @@ function selectElementByTagPrefix(p) {
   return Array.from(allEls).find((e) => e.tagName.toLowerCase().startsWith(p.toLowerCase()));
 }
 
-async function startSDK(data = '') {
+async function startSDK(data = '', quickAction, block) {
   const urlParams = new URLSearchParams(window.location.search);
   const CDN_URL = 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
   const clientId = 'AdobeExpressWeb';
@@ -145,8 +143,8 @@ async function startSDK(data = '') {
 
   const id = `${quickAction}-container`;
   quickActionContainer = createTag('div', { id, class: 'quick-action-container' });
-  fqaBlock.append(quickActionContainer);
-  const divs = fqaBlock.querySelectorAll(':scope > div');
+  block.append(quickActionContainer);
+  const divs = block.querySelectorAll(':scope > div');
   if (divs[1]) [, uploadContainer] = divs;
   fade(uploadContainer, 'out');
 
@@ -214,14 +212,14 @@ async function startSDK(data = '') {
   }
 }
 
-async function startSDKWithUnconvertedFile(file) {
+async function startSDKWithUnconvertedFile(file, quickAction, block) {
   if (!file) return;
   const maxSize = QA_CONFIGS[quickAction].max_size ?? 40 * 1024 * 1024;
   if (QA_CONFIGS[quickAction].input_check(file.type) && file.size <= maxSize) {
     const reader = new FileReader();
     reader.onloadend = () => {
       window.history.pushState({ hideFrictionlessQa: true }, '', '');
-      startSDK(reader.result);
+      startSDK(reader.result, quickAction, block);
     };
 
     // Read the file as a data URL (Base64)
@@ -237,16 +235,20 @@ async function startSDKWithUnconvertedFile(file) {
     }
 
     error = createTag('p', { class: 'input-error' }, invalidInputError);
-    const dropzoneButton = fqaBlock.querySelector(':scope .dropzone a.button');
+    const dropzoneButton = block.querySelector(':scope .dropzone a.button');
     dropzoneButton?.before(error);
   }
 }
 
 export default async function decorate(block) {
-  // cache block element for the
-  fqaBlock = block;
-
   const rows = Array.from(block.children);
+  const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
+  const quickAction = quickActionRow?.[0].children[1]?.textContent;
+  if (!quickAction) {
+    throw new Error('Invalid Quick Action Type.');
+  }
+  quickActionRow[0].remove();
+
   const actionAndAnimationRow = rows[1].children;
   const animationContainer = actionAndAnimationRow[0];
   const animation = animationContainer.querySelector('a');
@@ -268,17 +270,18 @@ export default async function decorate(block) {
   dropzone.before(actionColumn);
   dropzoneContainer.append(dropzone);
   actionColumn.append(dropzoneContainer, gtcText);
+  console.log(QA_CONFIGS, quickAction);
   const inputElement = createTag('input', { type: 'file', accept: QA_CONFIGS[quickAction].accept });
   inputElement.onchange = () => {
     const file = inputElement.files[0];
-    startSDKWithUnconvertedFile(file);
+    startSDKWithUnconvertedFile(file, quickAction, block);
   };
-  // block.append(inputElement);
+  block.append(inputElement);
 
   dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();
     if (quickAction === 'generate-qr-code') {
-      startSDK();
+      startSDK('', quickAction, block);
     } else {
       inputElement.click();
     }
@@ -314,15 +317,11 @@ export default async function decorate(block) {
     const dt = e.dataTransfer;
     const { files } = dt;
 
-    await Promise.all([...files].map((file) => startSDKWithUnconvertedFile(file)));
+    await Promise.all(
+      [...files].map((file) => startSDKWithUnconvertedFile(file, quickAction, block)),
+    );
     document.body.dataset.suppressfloatingcta = 'true';
   }, false);
-
-  const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
-  if (quickActionRow[0]) {
-    quickAction = quickActionRow[0].children[1]?.textContent;
-    quickActionRow[0].remove();
-  }
 
   const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
   dropzone.append(freePlanTags);
@@ -343,8 +342,8 @@ export default async function decorate(block) {
     }
   }, { passive: true });
 
-  fqaBlock.dataset.frictionlesstype = quickAction;
-  fqaBlock.dataset.frictionlessgroup = QA_CONFIGS[quickAction].group ?? 'image';
+  block.dataset.frictionlesstype = quickAction;
+  block.dataset.frictionlessgroup = QA_CONFIGS[quickAction].group ?? 'image';
 
   sendFrictionlessEventToAdobeAnaltics(block);
 }
