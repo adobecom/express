@@ -373,9 +373,6 @@ function renderHoverWrapper(template, placeholders) {
     mediaWrapper, enterHandler, leaveHandler, focusHandler,
   } = renderMediaWrapper(template, placeholders);
 
-  console.log("=== btnContainer", btnContainer)
-  // btnContainer.append(mediaWrapper);
-
   const cta = renderCTA(placeholders, template.customLinks.branchUrl);
   const ctaLink = renderCTALink(template.customLinks.branchUrl);
 
@@ -387,8 +384,6 @@ function renderHoverWrapper(template, placeholders) {
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
-  // const cta = renderCTA(placeholders, template.customLinks.branchUrl);
-  // btnContainer.prepend(cta);
   cta.addEventListener('focusin', focusHandler);
 
   const ctaClickHandler = () => {
@@ -418,8 +413,6 @@ function renderHoverWrapper(template, placeholders) {
 
   return btnContainer;
 }
-
-
 
 function getStillWrapperIcons(template, placeholders) {
   let planIcon = null;
