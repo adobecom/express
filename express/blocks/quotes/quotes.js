@@ -44,8 +44,13 @@ export default function decorate($block) {
     $quoteText.append($quoteTextComment)
 
     const authorDescription = $card.children[1].innerText;
+    const authorDescription2 = $card.children[1].innerText.trim().replace(/\n/, ",");
+    // .replace(/\s+$/, '');
+    // .replace("/\n[^\n]+$/", ",");
+    console.log("=== authorDescription", JSON.stringify(authorDescription))
+    console.log("=== authorDescription2", JSON.stringify(authorDescription2))
     const $quoteTextAuthorDescription = createTag("div", { class: "author-description" });
-    $quoteTextAuthorDescription.append(authorDescription)
+    $quoteTextAuthorDescription.append(authorDescription2)
 
     $quoteText.append($quoteTextAuthorDescription)
 
