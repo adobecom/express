@@ -270,7 +270,6 @@ export default async function decorate(block) {
   dropzone.before(actionColumn);
   dropzoneContainer.append(dropzone);
   actionColumn.append(dropzoneContainer, gtcText);
-  console.log(QA_CONFIGS, quickAction);
   const inputElement = createTag('input', { type: 'file', accept: QA_CONFIGS[quickAction].accept });
   inputElement.onchange = () => {
     const file = inputElement.files[0];

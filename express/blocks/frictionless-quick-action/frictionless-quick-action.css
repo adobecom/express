@@ -1,9 +1,6 @@
-.frictionless-quick-action-wrapper, .frictionless-quick-action.block {
-    max-width: none !important;
-}
-
 .frictionless-quick-action.block {
     padding: 40px 20px;
+    max-width: none;
 }
 
 .frictionless-quick-action.block h1 {
