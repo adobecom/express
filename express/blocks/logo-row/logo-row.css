@@ -35,8 +35,8 @@ main .logo-row .image-column {
 }
 
 main .logo-row .brand-image {
-    width: 100px;
-    height: 100px;
+    max-width: 100px;
+    max-height: 100px;
     object-fit: contain;
 }
 
@@ -62,7 +62,7 @@ main .logo-row .brand-image {
     }
 
     main .logo-row .brand-image { 
-        height: 100px;
+        max-height: 100px;
         object-fit: contain;
     }
  

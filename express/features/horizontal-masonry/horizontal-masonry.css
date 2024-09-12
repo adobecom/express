@@ -162,6 +162,7 @@ main .interactive-marquee.horizontal-masonry .media-container p.image-container 
     height: 100%;
     object-position: center;
     width: 100%;
+    max-width: 400px;
 }
 
 main .interactive-marquee.horizontal-masonry .media-container .link {
@@ -446,6 +447,9 @@ main .interactive-marquee.horizontal-masonry .media-container p.image-container:
     }
 }
 
+main .interactive-marquee.interactive-marquee.horizontal-masonry {
+    padding: 16px;
+}
 /* Additional styles */
 main .interactive-marquee.interactive-marquee.horizontal-masonry .media-container {
     max-height: unset;
@@ -460,9 +464,12 @@ main .interactive-marquee .foreground .text .icon-area > div {
     display: flex;
     width: fit-content;
 }
+main .interactive-marquee .foreground .text p {
+    font-size: 18px;
+}
 
 main .interactive-marquee .foreground .express-logo {
-    width: unset;
+    width: fit-content;
     height: 30px;
     padding-bottom: 8px;
 }
