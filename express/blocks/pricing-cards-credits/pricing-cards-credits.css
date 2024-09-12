@@ -9,7 +9,6 @@ main .section>div:has(.pricing-cards-credits) {
   --border-radius: 20px;
   --primary-color: #5c5ce0;
   --gradient: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
-
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
@@ -23,7 +22,7 @@ main .section>div:has(.pricing-cards-credits) {
 .pricing-cards-credits > .card {
   width: var(--card-width);
   padding: var(--card-padding);
-  margin: 48px 10px 0;
+  margin: 48px 0px 0;
   border: 2px solid #C6C6C6;
   background-color: white;
   border-radius: var(--border-radius);
