@@ -134,7 +134,9 @@ function renderShareWrapper(branchUrl, placeholders) {
     tabindex: '-1',
   });
   let timeoutId = null;
-  shareIcon.addEventListener('click', () => {
+  shareIcon.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     timeoutId = share(branchUrl, tooltip, timeoutId, placeholders);
   });
 
