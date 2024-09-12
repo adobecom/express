@@ -9,7 +9,6 @@ import {
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
 // only allows 1 qa per page?
-let inputElement;
 let quickAction;
 let fqaBlock;
 let error;
@@ -231,29 +230,15 @@ async function startSDKWithUnconvertedFile(file) {
     let invalidInputError;
     // FIXME: localize & placehold these messages
     if (!QA_CONFIGS[quickAction].input_check(file.type)) {
-      invalidInputError = placeholders['fqa-too-large'] ?? 'invalid file type. Please make sure your file format is one of the following: "image/png", "image/jpeg", "image/jpg"';
+      invalidInputError = placeholders['file-type-not-supported'] ?? 'File type not supported.';
     } else if (file.size > maxSize) {
-      invalidInputError = placeholders['fqa-too-large'] ?? 'your file is too large';
+      invalidInputError = placeholders['file-size-not-supported'] ?? 'File size not supported.';
     }
 
     error = createTag('p', { class: 'input-error' }, invalidInputError);
     const dropzoneButton = fqaBlock.querySelector(':scope .dropzone a.button');
     dropzoneButton?.before(error);
   }
-}
-
-function uploadFile() {
-  if (!inputElement) {
-    inputElement = createTag('input', { type: 'file', accept: QA_CONFIGS[quickAction].accept });
-  }
-  // Trigger the file selector when the button is clicked
-  inputElement.click();
-
-  // Handle file selection
-  inputElement.onchange = () => {
-    const file = inputElement.files[0];
-    startSDKWithUnconvertedFile(file);
-  };
 }
 
 export default async function decorate(block) {
@@ -282,13 +267,19 @@ export default async function decorate(block) {
   dropzone.before(actionColumn);
   dropzoneContainer.append(dropzone);
   actionColumn.append(dropzoneContainer, gtcText);
+  const inputElement = createTag('input', { type: 'file', accept: QA_CONFIGS[quickAction].accept });
+  inputElement.onchange = () => {
+    const file = inputElement.files[0];
+    startSDKWithUnconvertedFile(file);
+  };
+  // block.append(inputElement);
 
   dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();
     if (quickAction === 'generate-qr-code') {
       startSDK();
     } else {
-      uploadFile();
+      inputElement.click();
     }
     document.body.dataset.suppressfloatingcta = 'true';
   });
