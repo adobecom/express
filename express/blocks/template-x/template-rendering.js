@@ -406,7 +406,6 @@ function renderHoverWrapper(template, placeholders) {
     }
   };
 
-  // cta.addEventListener('click', ctaClickHandler, { passive: true });
   cta.addEventListener('click', ctaClickHandler, { passive: true });
   ctaLink.addEventListener('click', ctaClickHandler, { passive: true });
   ctaLink.addEventListener('click', ctaClickHandlerTouchDevice);
