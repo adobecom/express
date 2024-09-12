@@ -228,7 +228,7 @@ export function shallSuppressOfferEyebrowText(savePer, offerTextContent, isPremi
   let suppressOfferEyeBrowText = false;
   if (offerTextContent) {
     suppressOfferEyeBrowText = savePer === '' && offerTextContent.includes('{{savePercentage}}');
-  }  
+  }
   offerIdSuppressMap.set(key, suppressOfferEyeBrowText);
   return suppressOfferEyeBrowText;
 }
