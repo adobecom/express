@@ -97,10 +97,17 @@ export default async function setHorizontalMasonry(el) {
     const prompt = args[i + 1];
     prompt.classList.add('overlay');
 
-    const image = args[i + 2];
-    image.classList.add('image-container');
-    image.appendChild(prompt);
-    image.appendChild(createPromptLinkElement(link.href, prompt.textContent, placeholders));
+    const pictureContainer = args[i + 2];
+    pictureContainer.classList.add('image-container');
+    pictureContainer.appendChild(prompt);
+    pictureContainer.appendChild(createPromptLinkElement(link.href, prompt.textContent, placeholders));
+
+    const image = pictureContainer.querySelector('img')
+    console.log(image)
+    if (image.width < image.height) {
+      console.log('image tall')
+      image.classList.add('tall-prompt-image')
+    }
 
     const title = createTag('div', { class: 'prompt-title' });
     title.textContent = (placeholders && placeholders['prompt-title']) || 'Prompt used';

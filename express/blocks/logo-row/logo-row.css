@@ -11,9 +11,8 @@ main .logo-row .block-row {
 }
 
 main .logo-row .text-column {
-    flex: 1;
-    margin: auto;
-   padding-right: 40px;
+    margin: auto 0 auto auto;
+    padding-right: 40px;
 }
 
 main .logo-row .text-column > * {

@@ -226,6 +226,17 @@ main .interactive-marquee.horizontal-masonry .media-container p.image-container:
 }
 
 /* Typography styles */
+
+main .interactive-marquee.horizontal-masonry .foreground >.text:first-of-type h1 {
+    font-size: 45px;
+}
+
+main .interactive-marquee.horizontal-masonry .foreground >.text:first-of-type p:first-of-type{
+    font-size: 20px;
+}
+
+
+
 main .interactive-marquee.horizontal-masonry .foreground h1>em {
     font-style: normal;
     background: linear-gradient(320deg, #7C84F3, #FF4DD2, #FF993B, #FF4DD2, #7C84F3, #FF4DD2, #FF993B);
@@ -444,6 +455,14 @@ main .interactive-marquee.horizontal-masonry .media-container p.image-container:
     main .interactive-marquee.horizontal-masonry.wide .media-container p.image-container,
     main .interactive-marquee.horizontal-masonry.quad .media-container p.image-container {
         flex: unset;
+    }
+
+    main .interactive-marquee.horizontal-masonry .media-container .image-container:has( img.tall-prompt-image ){
+        width: unset;
+        margin: auto;
+    }
+    main .interactive-marquee.horizontal-masonry p.image-container img.tall-prompt-image {
+        max-width: 220px;
     }
 }
 
