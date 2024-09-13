@@ -1,3 +1,7 @@
+main .section>.logo-row {
+    max-width: 1280px;
+}
+
 main .logo-row .block-layout {
     display: flex;
     align-items: center;
@@ -7,14 +11,16 @@ main .logo-row .block-layout {
 
 main .logo-row .block-row {
     display: flex;
-    width: 100%;
+    width: fit-content;
+    margin: auto;
 }
 
 main .logo-row .text-column {
     margin: auto 0 auto auto;
     padding-right: 40px;
+    max-width: 300px;
 }
-
+ 
 main .logo-row .text-column > * {
     text-align: left;   
 }
@@ -29,9 +35,14 @@ main .logo-row .text-content {
 main .logo-row .image-column {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 10px;
+    gap: 40px;
 }
+
+main .logo-row.numerous .image-column {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+} 
 
 main .logo-row .brand-image {
     max-width: 100px;
