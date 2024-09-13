@@ -235,10 +235,17 @@ async function startSDKWithUnconvertedFile(file, quickAction, block) {
     msg = placeholders['file-size-not-supported'] ?? 'File size not supported.';
   }
 
-  const toast = createTag('div', { class: 'error-toast' }, msg);
-  toast.prepend(getIconElement('close'));
-  toast.append(getIconElement('close-white'));
-  block.append(toast);
+  let toast = block.querySelector('.error-toast');
+  if (!toast) {
+    toast = createTag('div', { class: 'error-toast hide' }, msg);
+    toast.prepend(getIconElement('error'));
+    toast.append(getIconElement('close-white'));
+    block.append(toast);
+  }
+  toast.classList.remove('hide');
+  setTimeout(() => {
+    toast.classList.add('hide');
+  }, 2000);
 }
 
 export default async function decorate(block) {

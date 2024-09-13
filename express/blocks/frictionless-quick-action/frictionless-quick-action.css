@@ -149,7 +149,14 @@
     opacity: 0;
 }
 
-.frictionless-quick-action div.error-toast {
+.frictionless-quick-action .error-toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 1;
+    transition: opacity 1s;
+    z-index: 10;
     margin: 0 auto;
     color: white;
     background-color: red;
@@ -160,6 +167,14 @@
     font-size: var(--body-font-size-s);
     width: fit-content;
     border-radius: 50px;
+}
+
+.frictionless-quick-action .error-toast.hide {
+    opacity: 0;
+}
+
+.frictionless-quick-action .error-toast img.icon-close-white {
+    padding-left: 8px;
 }
 
 @media (min-width: 1200) {
