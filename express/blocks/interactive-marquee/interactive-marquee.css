@@ -68,10 +68,16 @@ main .interactive-marquee.horizontal-masonry .generate-small-btn::before {
     left: -4px;
 }
 
+main .interactive-marquee.horizontal-masonry .foreground > .text .button-container{
+   width: fit-content;
+   padding-top: 24px;
+}
+
 main .interactive-marquee.horizontal-masonry .foreground > .text .button-container a {
     margin-left: 0px;
-    padding-top: 8px;
-    padding-bottom: 3px;
+    padding: 12px;
+    padding-left: 16px;
+    padding-right: 16px;
     border-radius: 32px;
 }
 
