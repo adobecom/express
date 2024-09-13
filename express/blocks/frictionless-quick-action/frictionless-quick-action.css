@@ -149,6 +149,19 @@
     opacity: 0;
 }
 
+.frictionless-quick-action div.error-toast {
+    margin: 0 auto;
+    color: white;
+    background-color: red;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--body-font-size-s);
+    width: fit-content;
+    border-radius: 50px;
+}
+
 @media (min-width: 1200) {
     .frictionless-quick-action.block .quick-action-container#resize-image-container {
         height: 1000px;

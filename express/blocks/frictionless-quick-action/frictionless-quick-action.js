@@ -5,11 +5,11 @@ import {
   transformLinkToAnimation,
   addAnimationToggle,
   fetchPlaceholders,
+  getIconElement,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import { sendFrictionlessEventToAdobeAnaltics } from '../../scripts/instrument.js';
 
-let error;
 let ccEverywhere;
 let quickActionContainer;
 let uploadContainer;
@@ -224,20 +224,21 @@ async function startSDKWithUnconvertedFile(file, quickAction, block) {
 
     // Read the file as a data URL (Base64)
     reader.readAsDataURL(file);
-  } else if (!error) {
-    const placeholders = await fetchPlaceholders();
-    let invalidInputError;
-    // FIXME: localize & placehold these messages
-    if (!QA_CONFIGS[quickAction].input_check(file.type)) {
-      invalidInputError = placeholders['file-type-not-supported'] ?? 'File type not supported.';
-    } else if (file.size > maxSize) {
-      invalidInputError = placeholders['file-size-not-supported'] ?? 'File size not supported.';
-    }
-
-    error = createTag('p', { class: 'input-error' }, invalidInputError);
-    const dropzoneButton = block.querySelector(':scope .dropzone a.button');
-    dropzoneButton?.before(error);
+    return;
   }
+  const placeholders = await fetchPlaceholders();
+  let msg;
+  // FIXME: localize & placehold these messages
+  if (!QA_CONFIGS[quickAction].input_check(file.type)) {
+    msg = placeholders['file-type-not-supported'] ?? 'File type not supported.';
+  } else {
+    msg = placeholders['file-size-not-supported'] ?? 'File size not supported.';
+  }
+
+  const toast = createTag('div', { class: 'error-toast' }, msg);
+  toast.prepend(getIconElement('close'));
+  toast.append(getIconElement('close-white'));
+  block.append(toast);
 }
 
 export default async function decorate(block) {
@@ -333,7 +334,6 @@ export default async function decorate(block) {
     if (correctState || embedElsFound) {
       quickActionContainer?.remove();
       editorModal?.remove();
-      error?.remove();
       document.body.classList.remove('editor-modal-loaded');
       inputElement.value = '';
       fade(uploadContainer, 'in');
