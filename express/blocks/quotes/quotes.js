@@ -3,90 +3,96 @@ import { addTempWrapper } from "../../scripts/decorate.js";
 import { createTag } from "../../scripts/utils.js";
 
 export default function decorate($block) {
-  addTempWrapper($block, "quotes");
 
-  const $newBlock = createTag("div", { class: "new-block" });
+  const isSingularVariant = $block.classList.contains('singular');
 
-  // $newBlock.innerHTML = "Hello World";
 
-  // // return $newBlock;
-
-  // $block.replaceChildren($newBlock);
+  console.log("=== $block, isSingularVariant", $block, isSingularVariant);
   // return;
 
-  $block.querySelectorAll(":scope>div").forEach(($card) => {
-    console.log("=== card", $card, $card.querySelector);
+  addTempWrapper($block, "quotes");
 
-    // $card.classList.add("quote");
+  if (isSingularVariant) {
+    const $newBlock = createTag("div", { class: "new-block" });
 
-    console.log("=== children", $card.children[0]);
+    // $newBlock.innerHTML = "Hello World";
 
-    const $picture = $card.querySelector("picture");
+    // // return $newBlock;
 
-    console.log("=== $picture", $picture);
+    // $block.replaceChildren($newBlock);
+    // return;
 
-    const $quote = createTag("div", { class: "quote" });
+    $block.querySelectorAll(":scope>div").forEach(($card) => {
+      console.log("=== card", $card, $card.querySelector);
 
-    const $authorImg = createTag("div", { class: "image" });
+      // $card.classList.add("quote");
 
-    $quote.append($authorImg)
-    $authorImg.append($picture);
+      console.log("=== children", $card.children[0]);
 
-    // $newBlock.append($picture);
+      const $picture = $card.querySelector("picture");
 
-    const $quoteText = createTag("div", { class: "quote-text" });
+      console.log("=== $picture", $picture);
 
-    const $quoteTextComment = createTag("div", { class: "quote-comment" });
+      const $quote = createTag("div", { class: "quote" });
 
-    const $review = $card.children[0];
-    $quoteTextComment.append(`“${$review.innerText.replace(/”$/, '').replace(/"$/, '')}”`)
+      const $authorImg = createTag("div", { class: "image" });
 
-    $quoteText.append($quoteTextComment)
+      $quote.append($authorImg)
+      $authorImg.append($picture);
 
-    const authorDescription = $card.children[1].innerText;
-    const authorDescription2 = $card.children[1].innerText.trim().replace(/\n/, ",");
-    // .replace(/\s+$/, '');
-    // .replace("/\n[^\n]+$/", ",");
-    console.log("=== authorDescription", JSON.stringify(authorDescription))
-    console.log("=== authorDescription2", JSON.stringify(authorDescription2))
-    const $quoteTextAuthorDescription = createTag("div", { class: "author-description" });
-    $quoteTextAuthorDescription.append(authorDescription2)
+      // $newBlock.append($picture);
 
-    $quoteText.append($quoteTextAuthorDescription)
+      const $quoteText = createTag("div", { class: "quote-text" });
+
+      const $quoteTextComment = createTag("div", { class: "quote-comment" });
+
+      const $review = $card.children[0];
+      $quoteTextComment.append(`“${$review.innerText.replace(/”$/, '').replace(/"$/, '')}”`)
+
+      $quoteText.append($quoteTextComment)
+
+      const authorDescription = $card.children[1].innerText;
+      const authorDescription2 = $card.children[1].innerText.trim().replace(/\n/, ",");
+      // .replace(/\s+$/, '');
+      // .replace("/\n[^\n]+$/", ",");
+      console.log("=== authorDescription", JSON.stringify(authorDescription))
+      console.log("=== authorDescription2", JSON.stringify(authorDescription2))
+      const $quoteTextAuthorDescription = createTag("div", { class: "author-description" });
+      $quoteTextAuthorDescription.append(authorDescription2)
+
+      $quoteText.append($quoteTextAuthorDescription)
 
 
-    $quote.append($quoteText)
+      $quote.append($quoteText)
 
-    $newBlock.append($quote);
+      $newBlock.append($quote);
 
-    if (false) {
-      $card.classList.add("quote");
-      if ($card.children.length > 1) {
-        const $author = $card.children[1];
-        $author.classList.add("author");
-        // Create a container for image and summary
-        const $authorContent = createTag("div", { class: "author-content" });
+      $block.replaceChildren($newBlock);
+    });
 
-        if ($author.querySelector("picture")) {
-          const $authorImg = createTag("div", { class: "image" });
-          $authorImg.appendChild($author.querySelector("picture"));
-          $authorContent.appendChild($authorImg);
-        }
+  } else {
+    $card.classList.add("quote");
+    if ($card.children.length > 1) {
+      const $author = $card.children[1];
+      $author.classList.add("author");
+      // Create a container for image and summary
+      const $authorContent = createTag("div", { class: "author-content" });
 
-        const $authorSummary = createTag("div", { class: "summary" });
-        Array.from($author.querySelectorAll("p"))
-          .filter(($p) => !!$p.textContent.trim())
-          .forEach(($p) => $authorSummary.appendChild($p));
-        $authorContent.appendChild($authorSummary);
-        // Append the author content container to author
-        $author.appendChild($authorContent);
+      if ($author.querySelector("picture")) {
+        const $authorImg = createTag("div", { class: "image" });
+        $authorImg.appendChild($author.querySelector("picture"));
+        $authorContent.appendChild($authorImg);
       }
-      $card.firstElementChild.classList.add("content");
+
+      const $authorSummary = createTag("div", { class: "summary" });
+      Array.from($author.querySelectorAll("p"))
+        .filter(($p) => !!$p.textContent.trim())
+        .forEach(($p) => $authorSummary.appendChild($p));
+      $authorContent.appendChild($authorSummary);
+      // Append the author content container to author
+      $author.appendChild($authorContent);
     }
+    $card.firstElementChild.classList.add("content");
+  }
 
-
-  });
-  $block.replaceChildren($newBlock);
-  return;
-  //  $block;
 }
