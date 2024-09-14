@@ -67,7 +67,11 @@ export default function decorate($block) {
       console.log("=== $newBlock.parentElement", $newBlock.parentElement)
       console.log("=== $newBlock.parentNode", $newBlock.parentNode)
 
-      $newBlock.style.background = `repeat-x -90% 0%  url("${backgroundUrl}")`
+      // $newBlock.style.background = `repeat-x -90% 0%  url("${backgroundUrl}")`
+
+      $block.style.background = `repeat-x -90% 0%  url("${backgroundUrl}")`
+
+
   //     $newBlock.style.background = `radial-gradient(circle, #0000 45%, #000f 48%),
   // radial-gradient(ellipse farthest-corner, #fc1c14 20%, #cf15cf 80%);`;
     } else {
@@ -139,6 +143,8 @@ export default function decorate($block) {
       $newBlock.append($quote);
 
       $block.replaceChildren($newBlock);
+
+      console.log("=== FINAL $block", $block)
     });
   } else {
     $block.querySelectorAll(':scope>div').forEach(($card) => {

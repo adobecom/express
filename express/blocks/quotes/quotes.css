@@ -75,8 +75,19 @@ main .quotes .quote .author .image img {
 
 } */
 
+main .quotes-wrapper:has(.singular.quotes) {
+  margin-left: 0;
+  margin-right: 0;
+  max-width: unset;
+}
+
+main .quotes.singular {
+  width: 100%;
+}
 main .quotes.singular .new-block {
   width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 main .quotes.singular  .quote {
@@ -84,6 +95,8 @@ display: flex;
 /* flex-direction: row; */
 flex-flow: row;
 background: transparent; /* CHECK HOW TO DO THIS ONE */
+display:flex;
+justify-content: center;
 }
 
 
@@ -106,7 +119,8 @@ main .quotes.singular .image picture {
 
 main .quotes.singular  .quote-text {
   margin-left: 30px;
- width: 600px;
+ /* width: 600px; */
+ width: 800px;
  font-size: 28px;
  font-weight: 800;
  text-align: left;
