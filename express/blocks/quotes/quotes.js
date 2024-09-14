@@ -69,7 +69,14 @@ export default function decorate($block) {
 
       // $newBlock.style.background = `repeat-x -90% 0%  url("${backgroundUrl}")`
 
-      $block.style.background = `repeat-x -90% 0%  url("${backgroundUrl}")`
+      const backgroundCSS = `no-repeat -10% -12%  url("${backgroundUrl}"), no-repeat 100% -12%  url("${backgroundUrl}")`;
+console.log("=== backgroundCSS", backgroundCSS)
+      $block.style.background = backgroundCSS;
+      $block.style.backgroundBlendMode= 'lighten, soft-light';
+      // $block.style.backgroundBlendMode= 'lighten';
+      // $block.style.backgroundBlendMode= 'soft-light';
+      // $block.style.backgroundBlendMode= 'multiply';
+      // `no-repeat-x -90% 0%  url("${backgroundUrl}), no-repeat -30% 0%  url("${backgroundUrl}")")`
 
 
   //     $newBlock.style.background = `radial-gradient(circle, #0000 45%, #000f 48%),

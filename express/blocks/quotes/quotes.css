@@ -97,6 +97,7 @@ flex-flow: row;
 background: transparent; /* CHECK HOW TO DO THIS ONE */
 display:flex;
 justify-content: center;
+
 }
 
 
