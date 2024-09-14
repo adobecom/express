@@ -80,15 +80,15 @@ flex-flow: row;
 
 main .quotes.singular  .image {
   /* padding-right: 10px; */
-  width: 150px;
-  height: 150px;
-  border-radius: 75px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
   /* box-sizing: border-box; */
   overflow: hidden;
 }
 
-main .quotes.singular  .image picture {
-  width: 150px;
+main .quotes.singular .image picture {
+  width: 100px;
   /* max-height: 150px; */
   /* max-width: unset; */
   /* border-radius: 75px;
@@ -98,8 +98,8 @@ main .quotes.singular  .image picture {
 main .quotes.singular  .quote-text {
   margin-left: 30px;
  width: 600px;
- font-size: 24px;
- font-weight: bold;
+ font-size: 28px;
+ font-weight: 800;
  text-align: left;
   }
 
@@ -108,6 +108,7 @@ main .quotes.singular  .quote-text {
     /* margin-left: 60px;
    width: 600px; */
    font-size: 15px;
+   font-weight: normal;
    /* font-weight: bold; */
     }
 
