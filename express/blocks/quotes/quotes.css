@@ -71,10 +71,19 @@ main .quotes .quote .author .image img {
 }
 
 
+/* .quotes-wrapper:has(.has-background) {
+
+} */
+
+main .quotes.singular .new-block {
+  width: 1200px;
+}
+
 main .quotes.singular  .quote {
 display: flex;
 /* flex-direction: row; */
 flex-flow: row;
+background: transparent; /* CHECK HOW TO DO THIS ONE */
 }
 
 

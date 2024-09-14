@@ -3,6 +3,8 @@ import { addTempWrapper } from '../../scripts/decorate.js';
 import { createTag } from '../../scripts/utils.js';
 
 export default function decorate($block) {
+  console.log('=== ENTERING decorate');
+
   addTempWrapper($block, 'quotes');
 
   const isSingularVariant = $block.classList.contains('singular');
@@ -11,6 +13,10 @@ export default function decorate($block) {
   // return;
 
   if (isSingularVariant) {
+    const $rows = [...$block.querySelectorAll(':scope>div')];
+
+    console.log('=== rows', $rows);
+
     const $newBlock = createTag('div', { class: 'new-block' });
 
     // $newBlock.innerHTML = "Hello World";
@@ -20,7 +26,69 @@ export default function decorate($block) {
     // $block.replaceChildren($newBlock);
     // return;
 
-    $block.querySelectorAll(':scope>div').forEach(($card) => {
+    console.log('=== $rows[$rows.length - 1]', $rows[$rows.length - 1]);
+
+    console.log(
+      '=== $rows[$rows.length - 1].children',
+      $rows[$rows.length - 1].children
+    );
+
+    console.log(
+      '=== $rows[$rows.length - 1].children',
+      $rows[$rows.length - 1].children[0].innerHTML
+    );
+    console.log(
+      '=== $rows[$rows.length - 1].children',
+      $rows[$rows.length - 1].children[1].innerHTML
+    );
+    // if ($rows[$rows.length - 1])
+
+    console.log(
+      '=== $rows[$rows.length - 1].children[0].textContent',
+      JSON.stringify($rows[$rows.length - 1].children[0].textContent)
+    );
+    console.log(
+      '=== $rows[$rows.length - 1].children[0].innerText',
+      JSON.stringify($rows[$rows.length - 1].children[0].innerText)
+    );
+
+    const $lastRow = $rows[$rows.length - 1];
+
+    let hasBackground, backgroundUrl, $quotes;
+    if ($lastRow.children[0].innerText.trim().toLowerCase() === 'background') {
+      hasBackground = true;
+      const $img = $lastRow.children[1].querySelector('img');
+      console.log('=== img', $img);
+      backgroundUrl = $img.src;
+      console.log('=== backgroundUrl', backgroundUrl);
+      $quotes = $rows.slice(0, $rows.length - 1);
+      // $newBlock.parentElement.parentElement.style.background = `repeat-x 40% 0%  url("${backgroundUrl}")`
+
+      console.log("=== $newBlock.parentElement", $newBlock.parentElement)
+      console.log("=== $newBlock.parentNode", $newBlock.parentNode)
+
+      $newBlock.style.background = `repeat-x -50% 0%  url("${backgroundUrl}")`
+  //     $newBlock.style.background = `radial-gradient(circle, #0000 45%, #000f 48%),
+  // radial-gradient(ellipse farthest-corner, #fc1c14 20%, #cf15cf 80%);`;
+    } else {
+      hasBackground = false;
+      $quotes = $rows;
+    }
+
+    // console.log("=== ALL", $block.querySelectorAll(':scope>div'));
+    // console.log("=== ALL2", $block.querySelectorAll('div'));
+
+    // console.log("=== ONE", $block.querySelector(':scope>div'));
+    // console.log("=== ONE2", $block.querySelector('div'));
+
+    console.log(
+      '=== $quotes, hasBackground, backgroundUrl',
+      $quotes,
+      hasBackground,
+      backgroundUrl
+    );
+
+    $quotes.forEach(($card) => {
       console.log('=== card', $card, $card.querySelector);
 
       // $card.classList.add("quote");
