@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { addTempWrapper } from '../../scripts/decorate.js';
-import { createTag } from '../../scripts/utils.js';
+import { createTag, pickOneFromArray } from '../../scripts/utils.js';
 
 export default function decorate($block) {
   console.log('=== ENTERING decorate');
@@ -69,7 +69,7 @@ export default function decorate($block) {
 
       // $newBlock.style.background = `repeat-x -90% 0%  url("${backgroundUrl}")`
 
-      const backgroundCSS = `no-repeat -10% -12%  url("${backgroundUrl}"), no-repeat 100% -12%  url("${backgroundUrl}")`;
+      const backgroundCSS = `no-repeat -24% -12%  url("${backgroundUrl}"), no-repeat 110% -12%  url("${backgroundUrl}")`;
 console.log("=== backgroundCSS", backgroundCSS)
       $block.style.background = backgroundCSS;
       $block.style.backgroundBlendMode= 'lighten, soft-light';
@@ -85,6 +85,8 @@ console.log("=== backgroundCSS", backgroundCSS)
       hasBackground = false;
       $quotes = $rows;
     }
+
+    $quotes = [pickOneFromArray($quotes)];
 
     // console.log("=== ALL", $block.querySelectorAll(':scope>div'));
     // console.log("=== ALL2", $block.querySelectorAll('div'));
