@@ -249,7 +249,7 @@ async function startSDKWithUnconvertedFile(file, quickAction, block) {
   toast.classList.remove('hide');
   setTimeout(() => {
     toast.classList.add('hide');
-  }, 4500);
+  }, 6000);
 }
 
 export default async function decorate(block) {
