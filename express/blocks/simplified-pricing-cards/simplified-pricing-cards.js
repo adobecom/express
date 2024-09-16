@@ -336,7 +336,7 @@ export default async function init(el) {
   
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
+      if (entry.isIntersecting && window.screen.width > 768)  {
         equalizeHeights(el);
         observer.unobserve(entry.target);
         adjustElementPosition();

@@ -39,21 +39,6 @@ main .section:has(.pricing-cards)>div,
   border-radius: 24px;
 }
 
-.simplified-pricing-cards .card.special-promo {
-  border-color: yellow;
-}
-
-.simplified-pricing-cards .card.special-promo .promo-eyebrow-text {
-  color: black;
-  background-color: yellow;
-  position: absolute;
-  top: -12px;
-  right: 4px;
-  padding: 4px;
-  border-radius: 4px;
-  width: fit-content;
-}
-
 .simplified-pricing-cards .none {
   display: none;
 }
@@ -186,17 +171,7 @@ main .section:has(.pricing-cards)>div,
   border: none;
   box-sizing: border-box;
   margin-bottom: 10px;
-}
-
-.simplified-pricing-cards .billing-toggle.hidden {
-  opacity: 0;
-  pointer-events: none;
-  height: 0;
-}
-
-.pricing-cards:has(.billing-toggle:not(.hidden)) .billing-toggle.hidden {
-  height: unset;
-}
+} 
 
 .simplified-pricing-cards .card-offer {
   position: absolute;
@@ -272,108 +247,7 @@ main .section:has(.pricing-cards)>div,
   box-sizing: border-box;
   margin: 0;
   width: 100%;
-}
-
-.simplified-pricing-cards .billing-toggle .billing-radio-hidden {
-  display: none;
-}
-
-.simplified-pricing-cards .billing-toggle {
-  gap: 12px;
-  font-size: var(--body-font-size-s);
-  margin: 0 auto 12px 0;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-}
-
-.simplified-pricing-cards .billing-button-wrapper {
-  display: flex;
-  gap: 10px;
-}
-
-.simplified-pricing-cards .billing-toggle .toggle-button-wrapper {
-  display: flex;
-  margin-top: 10px;
-  gap: 12px;
-}
-
-.simplified-pricing-cards .billing-toggle button {
-  border: 2px transparent solid;
-  padding: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  outline: inherit;
-  font-size: var(--body-font-size-xs);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.simplified-pricing-cards .billing-toggle :focus-within {
-  border-color: var(--color-info-accent);
-}
-
-.simplified-pricing-cards .billing-toggle span {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  transition: 0.2s all linear;
-  border: 2px solid #292929;
-  box-sizing: border-box;
-}
-
-.simplified-pricing-cards .billing-toggle .checked span {
-  border-width: 6px;
-}
-
-.simplified-pricing-cards .card-feature-list {
-  align-self: flex-start;
-  text-align: left;
-  flex-grow: 1;
-}
-
-.simplified-pricing-cards .card-feature-list p {
-  padding: 16px 0;
-  border-bottom: 1px solid var(--Palette-gray-100, #E9E9E9);
-  margin: 0 0 24px;
-  box-sizing: border-box;
-  text-align: left;
-}
-
-.simplified-pricing-cards .card-feature-list p strong {
-  font-size: var(--body-font-size-m);
-  padding: 8px;
-}
-
-.simplified-pricing-cards .card-feature-list ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-.simplified-pricing-cards .card-feature-list li {
-  padding: 8px;
-}
-
-.simplified-pricing-cards .card-feature-list li:first-of-type {
-  padding-top: 0;
-}
-
-.simplified-pricing-cards .card-feature-list li:last-of-type {
-  padding-bottom: 0;
-}
-
-.simplified-pricing-cards .card-feature-list li a {
-  text-decoration: underline;
-  font-weight: 400;
-}
-
-.simplified-pricing-cards .card>div:last-of-type>a:hover {
-  background: none;
-}
+} 
 
 .simplified-pricing-cards .tooltip-icon {
   position: relative;
@@ -472,13 +346,6 @@ main .section:has(.pricing-cards)>div,
     min-height: unset;
   } 
 
-
-  .simplified-pricing-cards .card-feature-list,
-  .simplified-pricing-cards .card .card-feature-list {
-    display: none;
-    min-height: 0;
-  }
-
   .simplified-pricing-cards .card-cta-group,
   .simplified-pricing-cards .pricing-area-wrapper {
     min-height: unset;
@@ -486,11 +353,7 @@ main .section:has(.pricing-cards)>div,
 
   .simplified-pricing-cards .pricing-area-wrapper {
     margin-bottom: 20px;
-  }
-
-  .simplified-pricing-cards .billing-toggle.hidden {
-    display: none;
-  }
+  } 
 
   .simplified-pricing-cards .card-header {
     display: flex;
