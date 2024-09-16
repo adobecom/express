@@ -90,7 +90,9 @@ export default async function setHorizontalMasonry(el) {
   const enticementLink = enticementElement.href;
   args[0].remove();
 
-  el.querySelector('.interactive-container').appendChild(createEnticement(enticementText, enticementLink, enticementMode, placeholders));
+  el.querySelector('.interactive-container').appendChild(
+    createEnticement(enticementText, enticementLink, enticementMode, placeholders),
+  );
   for (let i = 1; i < args.length; i += 3) {
     const divider = args[i];
     divider.remove();
@@ -102,11 +104,11 @@ export default async function setHorizontalMasonry(el) {
     pictureContainer.appendChild(prompt);
     pictureContainer.appendChild(createPromptLinkElement(link.href, prompt.textContent, placeholders));
 
-    const image = pictureContainer.querySelector('img')
-    console.log(image)
+    const image = pictureContainer.querySelector('img');
+    console.log(image);
     if (image.width < image.height) {
-      console.log('image tall')
-      image.classList.add('tall-prompt-image')
+      console.log('image tall');
+      image.classList.add('tall-prompt-image');
     }
 
     const title = createTag('div', { class: 'prompt-title' });
