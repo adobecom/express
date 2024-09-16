@@ -1,4 +1,6 @@
-import { createTag, getIconElement, fetchPlaceholders, getMetadata, setLibs } from '../../scripts/utils.js';
+import {
+  createTag, getIconElement, fetchPlaceholders, getMetadata,
+} from '../../scripts/utils.js';
 // [headingSize, bodySize, detailSize, titlesize]
 const typeSizes = ['xxl', 'xl', 'l', 'xs'];
 
@@ -23,7 +25,7 @@ function extendButtonsClass(text) {
   });
 }
 
-function interactiveInit(el, createTag) {
+function interactiveInit(el) {
   const isLight = el.classList.contains('light');
   if (!isLight) el.classList.add('dark');
   const children = el.querySelectorAll(':scope > div');
@@ -155,13 +157,12 @@ async function setHorizontalMasonry(el) {
   injectExpressLogo(el, el.querySelector('.foreground > .text'));
 }
 
-
 export default async function init(el) {
   if (!el.classList.contains('horizontal-masonry')) {
     window.lana?.log('Using interactive-marquee on Express requires using the horizontal-masonry class.');
     return;
   }
-  interactiveInit(el, createTag)
-  decorateText(el)
+  interactiveInit(el, createTag);
+  decorateText(el);
   setHorizontalMasonry(el);
 }
