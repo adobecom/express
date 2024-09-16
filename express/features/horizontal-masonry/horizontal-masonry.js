@@ -91,7 +91,8 @@ export default async function setHorizontalMasonry(el) {
   args[0].remove();
 
   el.querySelector('.interactive-container').appendChild(
-    createEnticement(enticementText, enticementLink, enticementMode, placeholders));
+    createEnticement(enticementText, enticementLink, enticementMode, placeholders),
+  );
   for (let i = 1; i < args.length; i += 3) {
     const divider = args[i];
     divider.remove();
