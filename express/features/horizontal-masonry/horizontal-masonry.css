@@ -192,7 +192,7 @@ main .interactive-marquee.horizontal-masonry .media-container .prompt-title {
 }
 
 /* Hover effects */
-main .interactive-marquee.horizontal-masonry .media-container p.image-container:hover::after {
+main .interactive-marquee.horizontal-masonry .media-container p.image-container::after {
     content: '';
     position: absolute;
     top: 0;
@@ -201,11 +201,16 @@ main .interactive-marquee.horizontal-masonry .media-container p.image-container:
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.3s;
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
     z-index: 2;
     height: 100%;
     width: 100%;
-    border-radius: 16px;
+    border-radius: 16px; 
+}
+
+main .interactive-marquee.horizontal-masonry .media-container p.image-container:hover::after {
+    opacity: 1;
 }
 
 main .interactive-marquee.horizontal-masonry .media-container p.image-container:hover .overlay {
