@@ -301,19 +301,12 @@ async function autoUpdatePage(main) {
 
   await Promise.all(Array.from(metaTags).map((meta) => sanitizeMeta(meta)));
 
-  const replacePlaceholdersInTextNodes = (node) => {
-    if (node.nodeType === Node.TEXT_NODE) {
-      node.nodeValue = node.nodeValue.replace(regex, (match, p1) => {
-        if (!wl.includes(match.toLowerCase())) {
-          return getMetadata(p1);
-        }
-        return match;
-      });
-    } else if (node.nodeType === Node.ELEMENT_NODE) {
-      node.childNodes.forEach(replacePlaceholdersInTextNodes);
+  main.innerHTML = main.innerHTML.replaceAll(regex, (match, p1) => {
+    if (!wl.includes(match.toLowerCase())) {
+      return getMetadata(p1);
     }
-  };
-  replacePlaceholdersInTextNodes(main);
+    return match;
+  });
 
   // handle link replacement on sheet-powered pages
   main.querySelectorAll('a[href*="#"]').forEach((a) => {
