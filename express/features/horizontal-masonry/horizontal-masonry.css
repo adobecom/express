@@ -490,5 +490,5 @@ main .interactive-marquee .foreground .text p {
 main .interactive-marquee .foreground .express-logo {
     width: fit-content;
     height: 30px;
-    padding-bottom: 8px;
+    padding-bottom: 20px;
 }
