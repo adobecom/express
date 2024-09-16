@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { createTag, pickOneFromArray } from '../../scripts/utils.js';
+import { throttle } from '../../scripts/hofs.js';
 
 export default function decorate($block) {
   console.log('=== ENTERING decorate');
@@ -13,6 +14,26 @@ export default function decorate($block) {
   // return;
 
   if (isSingularVariant) {
+    function setMobileBackground($el, backgroundUrl) {
+      console.log("=== in setMobileBackground", new Date())
+      const backgroundCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`; // mobile
+      $el.style.background = backgroundCSS;
+    }
+
+    function setDesktopBackground($el, backgroundUrl) {
+      // const backgroundCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`; // mobile
+      console.log("=== in setDesktopBackground", new Date())
+      const backgroundCSS = `no-repeat -24% -12%  url("${backgroundUrl}"), no-repeat 110% -12%  url("${backgroundUrl}")`;
+      $el.style.background = backgroundCSS;
+    }
+    function setBackground() {
+      if (window.innerWidth < 600) {
+        setMobileBackground($block, backgroundUrl);
+      } else {
+        setDesktopBackground($block, backgroundUrl);
+      }
+    }
+
     const $rows = [...$block.querySelectorAll(':scope>div')];
 
     console.log('=== rows', $rows);
@@ -64,30 +85,38 @@ export default function decorate($block) {
       $quotes = $rows.slice(0, $rows.length - 1);
       // $newBlock.parentElement.parentElement.style.background = `repeat-x 40% 0%  url("${backgroundUrl}")`
 
-      console.log("=== $newBlock.parentElement", $newBlock.parentElement)
-      console.log("=== $newBlock.parentNode", $newBlock.parentNode)
+      console.log('=== $newBlock.parentElement', $newBlock.parentElement);
+      console.log('=== $newBlock.parentNode', $newBlock.parentNode);
 
       // $newBlock.style.background = `repeat-x -90% 0%  url("${backgroundUrl}")`
 
       // const backgroundCSS = `no-repeat -24% -12%  url("${backgroundUrl}"), no-repeat 110% -12%  url("${backgroundUrl}")`;
-// console.log("=== backgroundCSS", backgroundCSS)  // desktop
+      // console.log("=== backgroundCSS", backgroundCSS)  // desktop
 
-// ALSO NOTE LAYOUT IS CHANGED
-const backgroundCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`;  // mobile
-console.log("=== backgroundCSS", backgroundCSS)
+      // ALSO NOTE LAYOUT IS CHANGED
 
+      // console.log('=== backgroundCSS', backgroundCSS);
 
+      window.addEventListener('resize', throttle(() => {
+        console.log('=== window RESIZE');
+        setBackground();
+      }, 300, {trailing: true}));
 
-      $block.style.background = backgroundCSS;
-      $block.style.backgroundBlendMode= 'lighten, soft-light';
+      setBackground();
+
+      // $block.addEventListener("resize", () => {
+      //   console.log("=== block RESIZE");
+      // })
+
+      // $block.style.background = backgroundCSS;
+      $block.style.backgroundBlendMode = 'lighten, soft-light';
       // $block.style.backgroundBlendMode= 'lighten';
       // $block.style.backgroundBlendMode= 'soft-light';
       // $block.style.backgroundBlendMode= 'multiply';
       // `no-repeat-x -90% 0%  url("${backgroundUrl}), no-repeat -30% 0%  url("${backgroundUrl}")")`
 
-
-  //     $newBlock.style.background = `radial-gradient(circle, #0000 45%, #000f 48%),
-  // radial-gradient(ellipse farthest-corner, #fc1c14 20%, #cf15cf 80%);`;
+      //     $newBlock.style.background = `radial-gradient(circle, #0000 45%, #000f 48%),
+      // radial-gradient(ellipse farthest-corner, #fc1c14 20%, #cf15cf 80%);`;
     } else {
       hasBackground = false;
       $quotes = $rows;
@@ -160,8 +189,8 @@ console.log("=== backgroundCSS", backgroundCSS)
         class: 'author-photo-mobile',
       });
 
-     const $pictureCloned = $picture.cloneNode(true);
-     console.log("=== $pictureCloned", $pictureCloned)
+      const $pictureCloned = $picture.cloneNode(true);
+      console.log('=== $pictureCloned', $pictureCloned);
 
       $quoteTextAuthorPhotoMobile.append($pictureCloned);
 
@@ -178,7 +207,7 @@ console.log("=== backgroundCSS", backgroundCSS)
 
       $block.replaceChildren($newBlock);
 
-      console.log("=== FINAL $block", $block)
+      console.log('=== FINAL $block', $block);
     });
   } else {
     $block.querySelectorAll(':scope>div').forEach(($card) => {
