@@ -17,13 +17,18 @@ export default function decorate($block) {
     function setMobileBackground($el, backgroundUrl) {
       console.log("=== in setMobileBackground", new Date())
       const backgroundCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`; // mobile
+      // const backgroundCSS = `no-repeat calc(-600px + 45%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 45%) 0  url("${backgroundUrl}")`;
+
       $el.style.background = backgroundCSS;
     }
 
     function setDesktopBackground($el, backgroundUrl) {
       // const backgroundCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`; // mobile
       console.log("=== in setDesktopBackground", new Date())
-      const backgroundCSS = `no-repeat -24% -12%  url("${backgroundUrl}"), no-repeat 110% -12%  url("${backgroundUrl}")`;
+      // const backgroundCSS = `no-repeat calc(-400px + 20%) -12%  url("${backgroundUrl}"), no-repeat 1000px -12%  url("${backgroundUrl}")`;
+      const backgroundCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
+      // const backgroundCSS = `no-repeat calc(-450px + 30%) 0   url("${backgroundUrl}"), no-repeat calc(500px + 70%) 0  url("${backgroundUrl}")`;
+
       $el.style.background = backgroundCSS;
     }
     function setBackground() {
@@ -122,7 +127,8 @@ export default function decorate($block) {
       $quotes = $rows;
     }
 
-    $quotes = [pickOneFromArray($quotes)];
+    // $quotes = [pickOneFromArray($quotes)];
+    const $card = pickOneFromArray($quotes);
 
     // console.log("=== ALL", $block.querySelectorAll(':scope>div'));
     // console.log("=== ALL2", $block.querySelectorAll('div'));
@@ -131,13 +137,13 @@ export default function decorate($block) {
     // console.log("=== ONE2", $block.querySelector('div'));
 
     console.log(
-      '=== $quotes, hasBackground, backgroundUrl',
-      $quotes,
+      '=== $card, hasBackground, backgroundUrl',
+      $card,
       hasBackground,
       backgroundUrl
     );
 
-    $quotes.forEach(($card) => {
+    // $quotes.forEach(($card) => {
       console.log('=== card', $card, $card.querySelector);
 
       // $card.classList.add("quote");
@@ -203,12 +209,14 @@ export default function decorate($block) {
 
       $quote.append($quoteText);
 
-      $newBlock.append($quote);
+      // $newBlock.append($quote);
 
-      $block.replaceChildren($newBlock);
+      // $block.replaceChildren($quote);
 
-      console.log('=== FINAL $block', $block);
-    });
+      // console.log('=== FINAL $block', $block);
+    // });
+    $block.replaceChildren($quote);
+    console.log('=== FINAL $block', $block);
   } else {
     $block.querySelectorAll(':scope>div').forEach(($card) => {
       $card.classList.add('quote');

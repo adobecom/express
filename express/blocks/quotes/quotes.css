@@ -100,7 +100,8 @@ main .quotes.singular .quote {
   /* CHECK HOW TO DO THIS ONE */
   display: flex;
   justify-content: center;
-
+padding: 100px 0 130px;
+outline: 3px dotted #07f;
 }
 
 
