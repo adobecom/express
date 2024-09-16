@@ -275,8 +275,16 @@ function decorateHeader(header, planExplanation) {
     if (p.innerHTML.trim() === '') p.remove();
   });
   planExplanation.classList.add('plan-explanation');
-  const hideButton = createTag('div')
+  const hideButton = createTag('div', {class : "toggle-switch"})
   hideButton.innerText = ">"
+  hideButton.addEventListener('click',() => {
+    const classList = header.parentElement.classList
+    if (classList.contains('hide')) {
+      classList.remove('hide')
+    } else {
+      classList.add('hide')
+    }
+  })
   header.append(hideButton)
 }
 
@@ -304,6 +312,9 @@ export default async function init(el) {
   /* eslint-disable no-await-in-loop */
   for (let cardIndex = 0; cardIndex < cardCount; cardIndex += 1) {
     const card = createTag('div', { class: 'card' });
+    if (cardIndex > 0) {
+      card.classList.add('hide')
+    }
     decorateCardBorder(card, rows[0].children[0]);
     decorateHeader(rows[1].children[0], rows[2].children[0]);
     await createPricingSection(placeholders, rows[3].children[0],
@@ -319,6 +330,7 @@ export default async function init(el) {
   for (const card of cards) {
     el.children[0].appendChild(card);
   }
+
   el.appendChild(rows[rows.length - 2]);
   el.appendChild(rows[rows.length - 1]);
   

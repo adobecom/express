@@ -145,12 +145,7 @@ main .section:has(.pricing-cards)>div,
   gap: 16px;
 }
 
-.simplified-pricing-cards .pricing-area,
-.simplified-pricing-cards .card-cta-group {
-  display: none;
-}
-
-.simplified-pricing-cards .pricing-area:not(.hide) {
+.simplified-pricing-cards .pricing-area {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -186,12 +181,6 @@ main .section:has(.pricing-cards)>div,
 .simplified-pricing-cards .pricing-area-wrapper:has(.hide) {
   min-height: 0;
 }
-
-/* .simplified-pricing-cards .card>div:nth-last-of-type(2)>div {
-  border: 2px solid #C6C6C6;
-  border-top: 0;
-  border-radius: 0 0 4px 4px;
-} */
 
 .simplified-pricing-cards .card .compare-all {
   border: none;
@@ -381,8 +370,6 @@ main .section:has(.pricing-cards)>div,
   text-decoration: underline;
   font-weight: 400;
 }
- 
- 
 
 .simplified-pricing-cards .card>div:last-of-type>a:hover {
   background: none;
@@ -463,6 +450,16 @@ main .section:has(.pricing-cards)>div,
   box-sizing: border-box;
 }
 
+.simplified-pricing-cards .toggle-switch {
+  display: none;
+}
+
+.simplified-pricing-cards .card.hide .toggle-switch {
+  rotate: 180deg;
+}
+
+
+
 @media (max-width: 600px) {
   .simplified-pricing-cards {
     flex-wrap: wrap;
@@ -474,6 +471,7 @@ main .section:has(.pricing-cards)>div,
     margin: auto;
     min-height: unset;
   } 
+
 
   .simplified-pricing-cards .card-feature-list,
   .simplified-pricing-cards .card .card-feature-list {
@@ -493,6 +491,40 @@ main .section:has(.pricing-cards)>div,
   .simplified-pricing-cards .billing-toggle.hidden {
     display: none;
   }
+
+  .simplified-pricing-cards .card-header {
+    display: flex;
+  }
+
+  .simplified-pricing-cards .card-header > * {
+    margin-right: auto; 
+  }
+
+  .simplified-pricing-cards .card-header > *:first-child {
+    margin-right: 10px;
+  }
+
+  .simplified-pricing-cards .toggle-switch {
+    font-weight: 600;
+    transform: scalex(1.75) rotate(90deg);
+    display: block; 
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+
+.simplified-pricing-cards .card-wrapper .card.hide .plan-explanation{
+  display:none;
+}
+
+.simplified-pricing-cards .card-wrapper .card.hide .pricing-area {
+  display: none;
+}
+
+.simplified-pricing-cards .card-wrapper .card.hide .card-cta-group {
+  display: none;
+}
+
 }
 
 @media (min-width: 1400px) {
