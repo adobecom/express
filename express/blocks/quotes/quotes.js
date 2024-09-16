@@ -69,8 +69,15 @@ export default function decorate($block) {
 
       // $newBlock.style.background = `repeat-x -90% 0%  url("${backgroundUrl}")`
 
-      const backgroundCSS = `no-repeat -24% -12%  url("${backgroundUrl}"), no-repeat 110% -12%  url("${backgroundUrl}")`;
+      // const backgroundCSS = `no-repeat -24% -12%  url("${backgroundUrl}"), no-repeat 110% -12%  url("${backgroundUrl}")`;
+// console.log("=== backgroundCSS", backgroundCSS)  // desktop
+
+// ALSO NOTE LAYOUT IS CHANGED
+const backgroundCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`;  // mobile
 console.log("=== backgroundCSS", backgroundCSS)
+
+
+
       $block.style.background = backgroundCSS;
       $block.style.backgroundBlendMode= 'lighten, soft-light';
       // $block.style.backgroundBlendMode= 'lighten';
