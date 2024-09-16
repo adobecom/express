@@ -173,8 +173,13 @@
     opacity: 0;
 }
 
-.frictionless-quick-action .error-toast img.icon-close-white {
-    padding-left: 8px;
+.frictionless-quick-action .error-toast button {
+    background-color: unset;
+    border: unset;
+    padding: unset;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
 
 @media (min-width: 1200) {

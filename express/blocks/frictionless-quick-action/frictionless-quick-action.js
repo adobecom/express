@@ -239,13 +239,17 @@ async function startSDKWithUnconvertedFile(file, quickAction, block) {
   if (!toast) {
     toast = createTag('div', { class: 'error-toast hide' }, msg);
     toast.prepend(getIconElement('error'));
-    toast.append(getIconElement('close-white'));
+    const close = createTag('button', {}, getIconElement('close-white'));
+    close.addEventListener('click', () => {
+      toast.classList.add('hide');
+    });
+    toast.append(close);
     block.append(toast);
   }
   toast.classList.remove('hide');
   setTimeout(() => {
     toast.classList.add('hide');
-  }, 3500);
+  }, 4500);
 }
 
 export default async function decorate(block) {
