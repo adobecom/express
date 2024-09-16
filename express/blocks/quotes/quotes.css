@@ -170,8 +170,8 @@ main .quotes.singular .author-description {
   margin-top: 20px;
   /* margin-left: 60px;
    width: 600px; */
-  font-size: 15px;
-  font-weight: normal;
+  font-size: 18px;
+  font-weight: 600;
   /* font-weight: bold; */
   display: none;
 }
