@@ -152,7 +152,25 @@ console.log("=== backgroundCSS", backgroundCSS)
       });
       $quoteTextAuthorDescription.append(authorDescription2);
 
+      const $quoteTextAuthorPanelMobile = createTag('div', {
+        class: 'author-panel-mobile',
+      });
+
+      const $quoteTextAuthorPhotoMobile = createTag('div', {
+        class: 'author-photo-mobile',
+      });
+
+     const $pictureCloned = $picture.cloneNode(true);
+     console.log("=== $pictureCloned", $pictureCloned)
+
+      $quoteTextAuthorPhotoMobile.append($pictureCloned);
+
+      $quoteTextAuthorPanelMobile.append($quoteTextAuthorPhotoMobile);
+
+      $quoteTextAuthorPanelMobile.append(authorDescription2);
+
       $quoteText.append($quoteTextAuthorDescription);
+      $quoteText.append($quoteTextAuthorPanelMobile);
 
       $quote.append($quoteText);
 
