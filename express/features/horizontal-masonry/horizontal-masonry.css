@@ -101,8 +101,20 @@ main .interactive-marquee.horizontal-masonry .enticement-container {
     padding: 10px;
     border-color: transparent;
     border-radius: 16px;
-
+    border: 2px solid transparent;
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+main .interactive-marquee.horizontal-masonry .enticement-container:hover {
+    --gradient: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    background: linear-gradient(white 0 0) padding-box, var(--gradient) border-box;
+ 
+ 
+ 
+   
+
 }
 
 main .interactive-marquee.horizontal-masonry .enticement-text {
