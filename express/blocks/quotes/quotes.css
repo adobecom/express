@@ -192,7 +192,7 @@ main .quotes.singular .author-panel-mobile {
   align-items: center;
 }
 
-@media (-width: 600px) {
+@media (min-width: 600px) {
   main .quotes.singular .author-panel-mobile {
     display: none;
   }
