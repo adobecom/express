@@ -79,7 +79,7 @@ export default function decorate($block) {
       const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
       $quoteDesktopBackground.style.background = backgroundDesktopCSS;
 
-      const backgroundMobileCSS = `no-repeat 15% 52%  url("${backgroundUrl}")`; // mobile
+      const backgroundMobileCSS = `no-repeat 15% 12%  url("${backgroundUrl}")`; // mobile
 
       $quoteMobileBackground.style.background = backgroundMobileCSS;
 
