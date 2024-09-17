@@ -172,6 +172,10 @@ main .section .template-x-heading {
   display: none;
 }
 
+.button-container {
+  display: none;
+}
+
 /* Show the CTA button when the .button-container is hovered */
 .button-container:hover .edit-template-button {
   display: block;
