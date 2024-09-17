@@ -102,7 +102,9 @@ export default async function setHorizontalMasonry(el) {
     const pictureContainer = args[i + 2];
     pictureContainer.classList.add('image-container');
     pictureContainer.appendChild(prompt);
-    pictureContainer.appendChild(createPromptLinkElement(link.href, prompt.textContent, placeholders));
+    pictureContainer.appendChild(
+      createPromptLinkElement(link.href, prompt.textContent, placeholders),
+    );
 
     const image = pictureContainer.querySelector('img');
     console.log(image);
