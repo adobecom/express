@@ -13,7 +13,6 @@ export default function decorate($block) {
   console.log('=== $block, isSingularVariant', $block, isSingularVariant);
 
   if (isSingularVariant) {
-
     const $rows = [...$block.querySelectorAll(':scope>div')];
 
     console.log('=== rows', $rows);
@@ -27,13 +26,12 @@ export default function decorate($block) {
     const $quoteDesktop = createTag('div', { class: 'quote-desktop' });
     const $quoteMobile = createTag('div', { class: 'quote-mobile' });
 
-
     const $quoteDesktopBackground = createTag('div', { class: 'background' });
 
     const $quoteMobileBackground = createTag('div', { class: 'background' });
 
-    $quoteDesktop.append($quoteDesktopBackground)
-    $quoteMobile.append($quoteMobileBackground)
+    $quoteDesktop.append($quoteDesktopBackground);
+    $quoteMobile.append($quoteMobileBackground);
     $quoteContainer.append($quoteDesktop);
     $quoteContainer.append($quoteMobile);
 
@@ -79,10 +77,9 @@ export default function decorate($block) {
       const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
       $quoteDesktopBackground.style.background = backgroundDesktopCSS;
 
-      const backgroundMobileCSS = `no-repeat 15% 12%  url("${backgroundUrl}")`; // mobile
+      const backgroundMobileCSS = `no-repeat 15% 12% url("${backgroundUrl}")`; // mobile
 
       $quoteMobileBackground.style.background = backgroundMobileCSS;
-
     } else {
       hasBackground = false;
       $quotes = $rows;
@@ -97,87 +94,83 @@ export default function decorate($block) {
       backgroundUrl
     );
 
+    console.log('=== card', $card, $card.querySelector);
 
-      console.log('=== card', $card, $card.querySelector);
+    console.log('=== children', $card.children[0]);
 
+    const $picture = $card.querySelector('picture');
 
-      console.log('=== children', $card.children[0]);
+    console.log('=== $picture', $picture);
 
-      const $picture = $card.querySelector('picture');
+    const $quote = createTag('div', { class: 'quote' });
 
-      console.log('=== $picture', $picture);
+    const $authorImg = createTag('div', { class: 'image' });
 
-      const $quote = createTag('div', { class: 'quote' });
+    $quote.append($authorImg);
+    $authorImg.append($picture);
 
-      const $authorImg = createTag('div', { class: 'image' });
+    const $quoteText = createTag('div', { class: 'quote-text' });
 
-      $quote.append($authorImg);
-      $authorImg.append($picture);
+    const $quoteTextComment = createTag('div', { class: 'quote-comment' });
 
-      const $quoteText = createTag('div', { class: 'quote-text' });
+    const $review = $card.children[0];
+    $quoteTextComment.append(
+      `“${$review.innerText.replace(/”$/, '').replace(/"$/, '')}”`
+    );
 
-      const $quoteTextComment = createTag('div', { class: 'quote-comment' });
+    $quoteText.append($quoteTextComment);
 
-      const $review = $card.children[0];
-      $quoteTextComment.append(
-        `“${$review.innerText.replace(/”$/, '').replace(/"$/, '')}”`
-      );
+    const $quoteForMobile = createTag('div', { class: 'quote' });
 
-      $quoteText.append($quoteTextComment);
+    const $quoteTextMobile = createTag('div', { class: 'quote-text' });
 
-      const $quoteForMobile = createTag('div', { class: 'quote' });
+    const $quoteTextCommentMobile = $quoteTextComment.cloneNode(true);
 
-      const $quoteTextMobile = createTag('div', { class: 'quote-text' });
+    $quoteTextMobile.append($quoteTextCommentMobile);
 
+    $quoteMobile.append($quoteForMobile);
+    $quoteForMobile.append($quoteTextMobile);
 
-      const $quoteTextCommentMobile = $quoteTextComment.cloneNode(true);
+    const authorDescription = $card.children[1].innerText;
+    const authorDescription2 = $card.children[1].innerText
+      .trim()
+      .replace(/\n/, ',');
+    // .replace(/\s+$/, '');
+    // .replace("/\n[^\n]+$/", ",");
+    console.log('=== authorDescription', JSON.stringify(authorDescription));
+    console.log('=== authorDescription2', JSON.stringify(authorDescription2));
+    const $quoteTextAuthorDescription = createTag('div', {
+      class: 'author-description',
+    });
+    $quoteTextAuthorDescription.append(authorDescription2);
 
-      $quoteTextMobile.append($quoteTextCommentMobile)
+    const $quoteTextAuthorPanelMobile = createTag('div', {
+      class: 'author-panel-mobile',
+    });
 
-      $quoteMobile.append($quoteForMobile)
-      $quoteForMobile.append($quoteTextMobile);
+    const $quoteTextAuthorPhotoMobile = createTag('div', {
+      class: 'author-photo-mobile',
+    });
 
+    const $pictureCloned = $picture.cloneNode(true);
+    console.log('=== $pictureCloned', $pictureCloned);
 
-      const authorDescription = $card.children[1].innerText;
-      const authorDescription2 = $card.children[1].innerText
-        .trim()
-        .replace(/\n/, ',');
-      // .replace(/\s+$/, '');
-      // .replace("/\n[^\n]+$/", ",");
-      console.log('=== authorDescription', JSON.stringify(authorDescription));
-      console.log('=== authorDescription2', JSON.stringify(authorDescription2));
-      const $quoteTextAuthorDescription = createTag('div', {
-        class: 'author-description',
-      });
-      $quoteTextAuthorDescription.append(authorDescription2);
+    $quoteTextAuthorPhotoMobile.append($pictureCloned);
 
-      const $quoteTextAuthorPanelMobile = createTag('div', {
-        class: 'author-panel-mobile',
-      });
+    $quoteTextAuthorPanelMobile.append($quoteTextAuthorPhotoMobile);
 
-      const $quoteTextAuthorPhotoMobile = createTag('div', {
-        class: 'author-photo-mobile',
-      });
+    $quoteTextAuthorPanelMobile.append(authorDescription2);
 
-      const $pictureCloned = $picture.cloneNode(true);
-      console.log('=== $pictureCloned', $pictureCloned);
+    $quoteText.append($quoteTextAuthorDescription);
 
-      $quoteTextAuthorPhotoMobile.append($pictureCloned);
+    $quoteTextMobile.append($quoteTextAuthorPanelMobile);
 
-      $quoteTextAuthorPanelMobile.append($quoteTextAuthorPhotoMobile);
+    $quote.append($quoteText);
 
-      $quoteTextAuthorPanelMobile.append(authorDescription2);
+    $quoteDesktop.append($quoteDesktopBackground);
+    $quoteDesktop.append($quote);
 
-      $quoteText.append($quoteTextAuthorDescription);
-
-      $quoteTextMobile.append($quoteTextAuthorPanelMobile);
-
-      $quote.append($quoteText);
-
-      $quoteDesktop.append($quoteDesktopBackground)
-      $quoteDesktop.append($quote)
-
-      $quoteContainer.append($quoteDesktop);
+    $quoteContainer.append($quoteDesktop);
 
     $block.replaceChildren($quoteContainer);
     console.log('=== FINAL $block', $block);
