@@ -66,15 +66,19 @@ export default function decorate($block) {
 
     let hasOpacity, opacitySpecified;
     if ($lastRow.children[0].innerText.trim().toLowerCase() === 'opacity') {
-       hasOpacity = true;
-       console.log("$lastRow.children[1]", $lastRow.children[1]);
-       opacitySpecified = +$lastRow.children[1].innerText;
-       $rows.pop()
+      hasOpacity = true;
+      console.log('$lastRow.children[1]', $lastRow.children[1]);
+      opacitySpecified = +$lastRow.children[1].innerText;
+      $rows.pop();
     } else {
-       hasOpacity = false;
+      hasOpacity = false;
     }
 
-    console.log("=== hasOpacity, opacitySpecified", hasOpacity, opacitySpecified);
+    console.log(
+      '=== hasOpacity, opacitySpecified',
+      hasOpacity,
+      opacitySpecified
+    );
 
     $lastRow = $rows[$rows.length - 1];
 
@@ -92,18 +96,20 @@ export default function decorate($block) {
 
       const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
       $quoteDesktopBackground.style.background = backgroundDesktopCSS;
-      $quoteDesktopBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
+      $quoteDesktopBackground.style.opacity =
+        opacitySpecified ?? DEFAULT_OPACITY;
 
       const backgroundMobileCSS = `no-repeat 15% 12% url("${backgroundUrl}")`; // mobile
 
       $quoteMobileBackground.style.background = backgroundMobileCSS;
-      $quoteMobileBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
+      $quoteMobileBackground.style.opacity =
+        opacitySpecified ?? DEFAULT_OPACITY;
     } else {
       hasBackground = false;
       $quotes = $rows;
     }
 
-    const $card = $quotes[$quotes.length - 1] // pickOneFromArray($quotes);
+    const $card = pickOneFromArray($quotes);
 
     console.log(
       '=== $card, hasBackground, backgroundUrl',
