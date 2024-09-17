@@ -60,6 +60,7 @@ export default function decorate(block, name, doc) {
         shareIcon.addEventListener('click', () => {
           console.log('clicked');
           const href = document.querySelector('.button-container > a')?.href;
+          console.log('href', href);
           if (href) {
             navigator.clipboard.writeText(href).then(() => {
               console.log('href copied to clipboard');
@@ -108,7 +109,7 @@ export default function decorate(block, name, doc) {
             console.log('Mouse left hover container:', hoverContainer);
 
             // Remove the hover container when the mouse leaves
-            // hoverContainer.remove();
+            hoverContainer.remove();
             hoverContainer = null; // Reset the hover container reference
           }
         });
