@@ -39,10 +39,7 @@ export default function decorate($block) {
 
     console.log('=== $rows[$rows.length - 1]', $rows[$rows.length - 1]);
 
-    console.log(
-      '=== $rows[$rows.length - 1].children',
-      $rows[$rows.length - 1].children
-    );
+    console.log('=== $rows[$rows.length - 1].children', $rows[$rows.length - 1].children);
 
     console.log(
       '=== $rows[$rows.length - 1].children',
@@ -74,11 +71,7 @@ export default function decorate($block) {
       hasOpacity = false;
     }
 
-    console.log(
-      '=== hasOpacity, opacitySpecified',
-      hasOpacity,
-      opacitySpecified
-    );
+    console.log('=== hasOpacity, opacitySpecified', hasOpacity, opacitySpecified);
 
     $lastRow = $rows[$rows.length - 1];
 
@@ -96,14 +89,12 @@ export default function decorate($block) {
 
       const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
       $quoteDesktopBackground.style.background = backgroundDesktopCSS;
-      $quoteDesktopBackground.style.opacity =
-        opacitySpecified ?? DEFAULT_OPACITY;
+      $quoteDesktopBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
 
-      const backgroundMobileCSS = `no-repeat 15% 12% url("${backgroundUrl}")`; // mobile
+      const backgroundMobileCSS = `no-repeat 15% 12% url("${backgroundUrl}")`;
 
       $quoteMobileBackground.style.background = backgroundMobileCSS;
-      $quoteMobileBackground.style.opacity =
-        opacitySpecified ?? DEFAULT_OPACITY;
+      $quoteMobileBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
     } else {
       hasBackground = false;
       $quotes = $rows;
@@ -111,12 +102,7 @@ export default function decorate($block) {
 
     const $card = pickOneFromArray($quotes);
 
-    console.log(
-      '=== $card, hasBackground, backgroundUrl',
-      $card,
-      hasBackground,
-      backgroundUrl
-    );
+    console.log('=== $card, hasBackground, backgroundUrl', $card, hasBackground, backgroundUrl);
 
     console.log('=== card', $card, $card.querySelector);
 
@@ -138,9 +124,7 @@ export default function decorate($block) {
     const $quoteTextComment = createTag('div', { class: 'quote-comment' });
 
     const $review = $card.children[0];
-    $quoteTextComment.append(
-      `“${$review.innerText.replace(/”$/, '').replace(/"$/, '')}”`
-    );
+    $quoteTextComment.append(`“${$review.innerText.replace(/”$/, '').replace(/"$/, '')}”`);
 
     $quoteText.append($quoteTextComment);
 
@@ -156,9 +140,7 @@ export default function decorate($block) {
     $quoteForMobile.append($quoteTextMobile);
 
     const authorDescription = $card.children[1].innerText;
-    const authorDescription2 = $card.children[1].innerText
-      .trim()
-      .replace(/\n/, ',');
+    const authorDescription2 = $card.children[1].innerText.trim().replace(/\n/, ',');
     // .replace(/\s+$/, '');
     // .replace("/\n[^\n]+$/", ",");
     console.log('=== authorDescription', JSON.stringify(authorDescription));
