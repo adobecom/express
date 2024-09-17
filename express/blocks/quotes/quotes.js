@@ -3,6 +3,8 @@ import { addTempWrapper } from '../../scripts/decorate.js';
 import { createTag, pickOneFromArray } from '../../scripts/utils.js';
 import { throttle } from '../../scripts/hofs.js';
 
+const DEFAULT_OPACITY = 1;
+
 export default function decorate($block) {
   console.log('=== ENTERING decorate');
 
@@ -60,7 +62,21 @@ export default function decorate($block) {
       JSON.stringify($rows[$rows.length - 1].children[0].innerText)
     );
 
-    const $lastRow = $rows[$rows.length - 1];
+    let $lastRow = $rows[$rows.length - 1];
+
+    let hasOpacity, opacitySpecified;
+    if ($lastRow.children[0].innerText.trim().toLowerCase() === 'opacity') {
+       hasOpacity = true;
+       console.log("$lastRow.children[1]", $lastRow.children[1]);
+       opacitySpecified = +$lastRow.children[1].innerText;
+       $rows.pop()
+    } else {
+       hasOpacity = false;
+    }
+
+    console.log("=== hasOpacity, opacitySpecified", hasOpacity, opacitySpecified);
+
+    $lastRow = $rows[$rows.length - 1];
 
     let hasBackground, backgroundUrl, $quotes;
     if ($lastRow.children[0].innerText.trim().toLowerCase() === 'background') {
@@ -76,16 +92,18 @@ export default function decorate($block) {
 
       const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
       $quoteDesktopBackground.style.background = backgroundDesktopCSS;
+      $quoteDesktopBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
 
       const backgroundMobileCSS = `no-repeat 15% 12% url("${backgroundUrl}")`; // mobile
 
       $quoteMobileBackground.style.background = backgroundMobileCSS;
+      $quoteMobileBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
     } else {
       hasBackground = false;
       $quotes = $rows;
     }
 
-    const $card = pickOneFromArray($quotes);
+    const $card = $quotes[$quotes.length - 1] // pickOneFromArray($quotes);
 
     console.log(
       '=== $card, hasBackground, backgroundUrl',
