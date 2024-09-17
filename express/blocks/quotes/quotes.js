@@ -32,6 +32,7 @@ export default function decorate($block) {
       $el.style.background = backgroundCSS;
     }
     function setBackground() {
+      return;
       if (window.innerWidth < 600) {
         setMobileBackground($block, backgroundUrl);
       } else {
@@ -44,6 +45,23 @@ export default function decorate($block) {
     console.log('=== rows', $rows);
 
     const $newBlock = createTag('div', { class: 'new-block' });
+
+    // The Desktop design has a different element layout from the mobile design, plus
+    // the desktop design uses the background image twice, while the mobile design uses
+    // it once. Because of the many differences, it may be simpler to divide them into two fragments
+    const $quoteContainer = createTag('div', { class: 'quote-container' });
+    const $quoteDesktop = createTag('div', { class: 'quote-desktop' });
+    // const $quoteMobile = createTag('div', { class: 'quote-mobile' });
+
+
+    const $quoteDesktopBackground = createTag('div', { class: 'background' });
+
+    // const $quoteMobileBackground = createTag('div', { class: 'background' });
+
+    $quoteDesktop.append($quoteDesktopBackground)
+    // $quoteMobile.append($quoteMobileBackground)
+    $quoteContainer.append($quoteDesktop);
+    // $quoteContainer.append($quoteMobile);
 
     // $newBlock.innerHTML = "Hello World";
 
@@ -109,12 +127,18 @@ export default function decorate($block) {
 
       setBackground();
 
+      const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
+      $quoteDesktopBackground.style.background = backgroundDesktopCSS;
+
+
       // $block.addEventListener("resize", () => {
       //   console.log("=== block RESIZE");
       // })
 
       // $block.style.background = backgroundCSS;
-      $block.style.backgroundBlendMode = 'lighten, soft-light';
+      // $block.style.backgroundBlendMode = 'lighten, soft-light';
+      // $block.style.backgroundBlendMode = 'lighten';
+
       // $block.style.backgroundBlendMode= 'lighten';
       // $block.style.backgroundBlendMode= 'soft-light';
       // $block.style.backgroundBlendMode= 'multiply';
@@ -209,13 +233,22 @@ export default function decorate($block) {
 
       $quote.append($quoteText);
 
+
+
+      // $quoteMobile.append($quoteMobileBackground)
+
+      // $quoteContainer.append($quoteMobile);
+      $quoteDesktop.append($quoteDesktopBackground)
+      $quoteDesktop.append($quote)
+
+      $quoteContainer.append($quoteDesktop);
       // $newBlock.append($quote);
 
       // $block.replaceChildren($quote);
 
       // console.log('=== FINAL $block', $block);
     // });
-    $block.replaceChildren($quote);
+    $block.replaceChildren($quoteContainer);
     console.log('=== FINAL $block', $block);
   } else {
     $block.querySelectorAll(':scope>div').forEach(($card) => {
