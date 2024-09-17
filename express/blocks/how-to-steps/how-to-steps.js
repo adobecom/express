@@ -52,9 +52,7 @@ export default function decorate(block, name, doc) {
 
         shareIcon.addEventListener('click', () => {
           if (templateHref) {
-            navigator.clipboard.writeText(templateHref).then(() => {
-              console.log('template-x link copied');
-            }).catch((err) => {
+            navigator.clipboard.writeText(templateHref).catch((err) => {
               console.error('Failed to copy template-x link: ', err);
             });
           }
