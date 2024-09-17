@@ -11,35 +11,8 @@ export default function decorate($block) {
   const isSingularVariant = $block.classList.contains('singular');
 
   console.log('=== $block, isSingularVariant', $block, isSingularVariant);
-  // return;
 
   if (isSingularVariant) {
-
-    // function setMobileBackground($el, backgroundUrl) {
-    //   console.log("=== in setMobileBackground", new Date())
-    //   const backgroundCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`; // mobile
-    //   // const backgroundCSS = `no-repeat calc(-600px + 45%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 45%) 0  url("${backgroundUrl}")`;
-
-    //   $el.style.background = backgroundCSS;
-    // }
-
-    // function setDesktopBackground($el, backgroundUrl) {
-    //   // const backgroundCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`; // mobile
-    //   console.log("=== in setDesktopBackground", new Date())
-    //   // const backgroundCSS = `no-repeat calc(-400px + 20%) -12%  url("${backgroundUrl}"), no-repeat 1000px -12%  url("${backgroundUrl}")`;
-    //   const backgroundCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
-    //   // const backgroundCSS = `no-repeat calc(-450px + 30%) 0   url("${backgroundUrl}"), no-repeat calc(500px + 70%) 0  url("${backgroundUrl}")`;
-
-    //   $el.style.background = backgroundCSS;
-    // }
-    // function setBackground() {
-    //   return;
-    //   if (window.innerWidth < 600) {
-    //     setMobileBackground($block, backgroundUrl);
-    //   } else {
-    //     setDesktopBackground($block, backgroundUrl);
-    //   }
-    // }
 
     const $rows = [...$block.querySelectorAll(':scope>div')];
 
@@ -64,13 +37,6 @@ export default function decorate($block) {
     $quoteContainer.append($quoteDesktop);
     $quoteContainer.append($quoteMobile);
 
-    // $newBlock.innerHTML = "Hello World";
-
-    // // return $newBlock;
-
-    // $block.replaceChildren($newBlock);
-    // return;
-
     console.log('=== $rows[$rows.length - 1]', $rows[$rows.length - 1]);
 
     console.log(
@@ -86,7 +52,6 @@ export default function decorate($block) {
       '=== $rows[$rows.length - 1].children',
       $rows[$rows.length - 1].children[1].innerHTML
     );
-    // if ($rows[$rows.length - 1])
 
     console.log(
       '=== $rows[$rows.length - 1].children[0].textContent',
@@ -107,64 +72,23 @@ export default function decorate($block) {
       backgroundUrl = $img.src;
       console.log('=== backgroundUrl', backgroundUrl);
       $quotes = $rows.slice(0, $rows.length - 1);
-      // $newBlock.parentElement.parentElement.style.background = `repeat-x 40% 0%  url("${backgroundUrl}")`
 
       console.log('=== $newBlock.parentElement', $newBlock.parentElement);
       console.log('=== $newBlock.parentNode', $newBlock.parentNode);
 
-      // $newBlock.style.background = `repeat-x -90% 0%  url("${backgroundUrl}")`
-
-      // const backgroundCSS = `no-repeat -24% -12%  url("${backgroundUrl}"), no-repeat 110% -12%  url("${backgroundUrl}")`;
-      // console.log("=== backgroundCSS", backgroundCSS)  // desktop
-
-      // ALSO NOTE LAYOUT IS CHANGED
-
-      // console.log('=== backgroundCSS', backgroundCSS);
-
-      // window.addEventListener('resize', throttle(() => {
-      //   console.log('=== window RESIZE');
-      //   setBackground();
-      // }, 300, {trailing: true}));
-
-      // setBackground();
-
       const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
       $quoteDesktopBackground.style.background = backgroundDesktopCSS;
 
-      // const backgroundMobileCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`; // mobile
       const backgroundMobileCSS = `no-repeat 15% 52%  url("${backgroundUrl}")`; // mobile
-      // const backgroundCSS = `no-repeat calc(-600px + 45%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 45%) 0  url("${backgroundUrl}")`;
 
       $quoteMobileBackground.style.background = backgroundMobileCSS;
 
-      // $block.addEventListener("resize", () => {
-      //   console.log("=== block RESIZE");
-      // })
-
-      // $block.style.background = backgroundCSS;
-      // $block.style.backgroundBlendMode = 'lighten, soft-light';
-      // $block.style.backgroundBlendMode = 'lighten';
-
-      // $block.style.backgroundBlendMode= 'lighten';
-      // $block.style.backgroundBlendMode= 'soft-light';
-      // $block.style.backgroundBlendMode= 'multiply';
-      // `no-repeat-x -90% 0%  url("${backgroundUrl}), no-repeat -30% 0%  url("${backgroundUrl}")")`
-
-      //     $newBlock.style.background = `radial-gradient(circle, #0000 45%, #000f 48%),
-      // radial-gradient(ellipse farthest-corner, #fc1c14 20%, #cf15cf 80%);`;
     } else {
       hasBackground = false;
       $quotes = $rows;
     }
 
-    // $quotes = [pickOneFromArray($quotes)];
     const $card = pickOneFromArray($quotes);
-
-    // console.log("=== ALL", $block.querySelectorAll(':scope>div'));
-    // console.log("=== ALL2", $block.querySelectorAll('div'));
-
-    // console.log("=== ONE", $block.querySelector(':scope>div'));
-    // console.log("=== ONE2", $block.querySelector('div'));
 
     console.log(
       '=== $card, hasBackground, backgroundUrl',
@@ -173,10 +97,9 @@ export default function decorate($block) {
       backgroundUrl
     );
 
-    // $quotes.forEach(($card) => {
+
       console.log('=== card', $card, $card.querySelector);
 
-      // $card.classList.add("quote");
 
       console.log('=== children', $card.children[0]);
 
@@ -190,8 +113,6 @@ export default function decorate($block) {
 
       $quote.append($authorImg);
       $authorImg.append($picture);
-
-      // $newBlock.append($picture);
 
       const $quoteText = createTag('div', { class: 'quote-text' });
 
@@ -249,27 +170,15 @@ export default function decorate($block) {
 
       $quoteText.append($quoteTextAuthorDescription);
 
-      // $quoteMobile.append($quoteTextAuthorPanelMobile);
       $quoteTextMobile.append($quoteTextAuthorPanelMobile);
-      // $quoteText.append($quoteTextAuthorPanelMobile);
 
       $quote.append($quoteText);
 
-
-
-      // $quoteMobile.append($quoteMobileBackground)
-
-      // $quoteContainer.append($quoteMobile);
       $quoteDesktop.append($quoteDesktopBackground)
       $quoteDesktop.append($quote)
 
       $quoteContainer.append($quoteDesktop);
-      // $newBlock.append($quote);
 
-      // $block.replaceChildren($quote);
-
-      // console.log('=== FINAL $block', $block);
-    // });
     $block.replaceChildren($quoteContainer);
     console.log('=== FINAL $block', $block);
   } else {
