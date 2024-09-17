@@ -38,10 +38,12 @@ function handleHeading(headingRow, headingCols) {
   headingCols.forEach((col) => {
     col.classList.add('col-heading');
     const elements = col.children;
+    console.log(elements)
     if (!elements?.length) {
       col.innerHTML = `<p class="tracking-header">${col.innerHTML}</p>`;
       return;
     }
+  
     decorateButtons(col, 'button-l');
     const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
     const buttons = col.querySelectorAll('.button');
@@ -67,6 +69,7 @@ function handleHeading(headingRow, headingCols) {
     const colLabel = document.createElement('div');
     colLabel.classList.add('col-heading');
     [...elements].forEach((e) => {
+      console.log(e)
       if (!e.classList.contains('buttons-wrapper')) colLabel.append(e.cloneNode(true));
       div.append(e);
     });
