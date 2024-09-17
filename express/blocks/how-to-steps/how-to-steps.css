@@ -79,16 +79,16 @@ main .how-to-steps .tip-number span {
   transform: translate(-50%, -50%);
 }
 
-main .how-to-steps-inline-tip-narrow-container .how-to-steps.narrow {
+main .how-to-steps.narrow {
   max-width: 850px;
   margin: 0 auto; 
 }
 
-main .how-to-steps-inline-tip-narrow-container .how-to-steps.narrow-mobile-width {
+main .how-to-steps.narrow-mobile-width {
   max-width: none;
 }
 
-main .how-to-steps-inline-tip-narrow-container .how-to-steps.narrow h3 {
+main .how-to-steps.narrow h3 {
   font-size: 28px;
 }
 
@@ -102,8 +102,54 @@ main .how-to-steps.inline-tip.narrow-mobile-width .tip .tip-number {
 }
 
 main .how-to-steps .narrow {
-    max-width: 850px;
-    margin: 0 auto; 
+  max-width: 850px;
+  margin: 0 auto; 
+}
+
+.template-x-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+main .section .template-x-heading {
+  font-weight: normal;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.template-x-thumbnail picture img {
+  width: 200px; 
+  height: auto;  
+}
+
+.image-wrapper {
+  padding: 10px;
+  background-color: #ffffff;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px;
+  border-radius: 15px;
+  z-index: 100;
+}
+
+/* Ensure the CTA button is hidden initially */
+.image-wrapper .edit-template-button {
+  display: none;
+}
+
+/* Show the CTA button when the .button-container is hovered */
+.button-container:hover .edit-template-button {
+  display: block;
+  position: absolute;
+  top: 50%; /* Adjust to desired position */
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the button */
+  z-index: 10; /* Ensure the button appears above the image */
+  background-color: var(--color-info-accent-light);
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  cursor: pointer;
 }
 
 @media (min-width: 600px) {
