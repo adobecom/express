@@ -114,6 +114,7 @@ main .how-to-steps .narrow {
 
 main .section .template-x-heading {
   font-weight: normal;
+  font-size: var(--body-font-size-xl);
   margin-top: 10px;
   margin-bottom: 20px;
   text-align: left;
@@ -148,11 +149,11 @@ main .section .template-x-heading {
   position: absolute;
   top: 10px;
   right: 10px;
-  z-index: 20; /* Ensure it is above other elements */
-  width: 24px; /* Adjust size as needed */
+  z-index: 20;
+  width: 24px;
   height: 24px;
-  background-color: white; /* White background for the circle */
-  border-radius: 50%; /* Makes the background a circle */
+  background-color: white;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -162,12 +163,11 @@ main .section .template-x-heading {
 }
 
 .share-icon-wrapper svg {
-  width: 16px;  /* Adjust size to make it smaller */
+  width: 16px; 
   height: 16px;
   cursor: pointer;
 }
 
-/* Ensure the CTA button is hidden initially */
 .image-wrapper .edit-template-button {
   display: none;
 }
@@ -176,14 +176,13 @@ main .section .template-x-heading {
   display: none;
 }
 
-/* Show the CTA button when the .button-container is hovered */
 .button-container:hover .edit-template-button {
   display: block;
   position: absolute;
-  top: 50%; /* Adjust to desired position */
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Center the button */
-  z-index: 10; /* Ensure the button appears above the image */
+  transform: translate(-50%, -50%);
+  z-index: 10;
   background-color: var(--color-info-accent-light);
   border: none;
   padding: 10px 20px;

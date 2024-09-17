@@ -1,5 +1,4 @@
 /* eslint-disable import/named, import/extensions */
-
 import {
   createTag,
   getIconElement,
@@ -63,45 +62,31 @@ export default function decorate(block, name, doc) {
 
         const imageWrapper = createTag('div', { class: 'image-wrapper' });
 
-        // Clone the original image to create an enlarged version
         const enlargedImg = imgElement.cloneNode(true);
         enlargedImg.classList.add('enlarged-template-img');
         enlargedImg.style.width = `${imgElement.offsetWidth * 1.2}px`;
         enlargedImg.style.height = `${imgElement.offsetHeight * 1.2}px`;
 
-        // Prevent the hover container from blocking mouse events
-        hoverContainer.style.pointerEvents = 'auto'; // Allow mouse events on the hover container
+        hoverContainer.style.pointerEvents = 'auto';
         hoverContainer.style.position = 'absolute';
-        hoverContainer.style.top = `${imgElement.offsetTop - (imgElement.offsetHeight * 0.1) - 10}px`; // Adjust for padding
+        hoverContainer.style.top = `${imgElement.offsetTop - (imgElement.offsetHeight * 0.1) - 10}px`;
         hoverContainer.style.left = `${imgElement.offsetLeft - (imgElement.offsetWidth * 0.1) - 10}px`;
 
-        // Ensure the button container is positioned below the enlarged image within the wrapper
         buttonContainer.style.position = 'relative';
-        buttonContainer.style.marginTop = '10px'; // Add some space between the image and the button
+        buttonContainer.style.marginTop = '10px';
         buttonContainer.style.display = 'flex';
-        buttonContainer.style.justifyContent = 'center'; // Center the button horizontally
+        buttonContainer.style.justifyContent = 'center';
         buttonContainer.style.width = '100%';
 
-        // Append the enlarged image to the image wrapper
         imageWrapper.appendChild(enlargedImg);
-
-        // Append the button container to the image wrapper
         imageWrapper.appendChild(buttonContainer);
-
-        // Append the image wrapper to the hover container
         hoverContainer.appendChild(imageWrapper);
-
-        // Append the hover container to the row, over the image
         imgElement.parentElement.appendChild(hoverContainer);
 
-        // Add the mouseleave event listener to the hoverContainer
         hoverContainer.addEventListener('mouseleave', () => {
-          if (hoverContainer) { // Ensure the container exists before trying to remove it
-            // console.log('Mouse left hover container:', hoverContainer);
-
-            // Remove the hover container when the mouse leaves
+          if (hoverContainer) {
             hoverContainer.remove();
-            hoverContainer = null; // Reset the hover container reference
+            hoverContainer = null;
           }
         });
       }
@@ -116,11 +101,8 @@ export default function decorate(block, name, doc) {
       row.classList.add('template-x-thumbnail');
       const imgElement = row.querySelector('picture img');
       imgElement.style.borderRadius = '10px';
-      const buttonContainer = row.querySelector('.button-container'); // Assume each row has a button-container
-
-      // Call the function to handle hover effect
+      const buttonContainer = row.querySelector('.button-container');
       createHoverContainer(imgElement, row, buttonContainer);
-
       const templateXText = row.lastElementChild;
       const text = templateXText?.textContent.trim();
       const templateXHeading = createTag('h4', { class: 'template-x-heading' }, text);
