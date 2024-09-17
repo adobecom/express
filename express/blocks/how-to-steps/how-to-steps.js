@@ -44,30 +44,21 @@ export default function decorate(block, name, doc) {
         console.log('Mouse entered image:', imgElement);
 
         // Create a new div element for the hover container
-        hoverContainer = document.createElement('div');
-
-        // Add a class to identify this container
-        // hoverContainer.classList.add('jackson');
+        hoverContainer = document.createElement('div', { class: 'hover-container' });
 
         // Ensure the parent row is relatively positioned
         row.style.position = 'relative';
 
         const imageWrapper = createTag('div', { class: 'image-wrapper' });
-        imageWrapper.style.position = 'relative';
-        imageWrapper.style.zIndex = '10'; // Ensure the background is on top
 
         // Clone the original image to create an enlarged version
         const enlargedImg = imgElement.cloneNode(true);
-
-        // Set the styles to make the enlarged image visible and positioned correctly
-        enlargedImg.style.width = `${imgElement.offsetWidth * 1.2}px`; // 20% larger than the original image width
-        enlargedImg.style.height = `${imgElement.offsetHeight * 1.2}px`; //
-        enlargedImg.style.objectFit = 'cover';
-        // Round the corners of the enlarged image
-        enlargedImg.style.borderRadius = '10px'; // Adjust the value as needed
+        enlargedImg.classList.add('enlarged-template-img');
+        enlargedImg.style.width = `${imgElement.offsetWidth * 1.2}px`;
+        enlargedImg.style.height = `${imgElement.offsetHeight * 1.2}px`;
 
         // Prevent the hover container from blocking mouse events
-        hoverContainer.style.pointerEvents = 'none';
+        hoverContainer.style.pointerEvents = 'auto'; // Allow mouse events on the hover container
         hoverContainer.style.position = 'absolute';
         hoverContainer.style.top = `${imgElement.offsetTop - (imgElement.offsetHeight * 0.1) - 10}px`; // Adjust for padding
         hoverContainer.style.left = `${imgElement.offsetLeft - (imgElement.offsetWidth * 0.1) - 10}px`;
@@ -91,17 +82,16 @@ export default function decorate(block, name, doc) {
         // Append the hover container to the row, over the image
         imgElement.parentElement.appendChild(hoverContainer);
 
-        console.log('Hover container with enlarged image and button added:', hoverContainer);
-      }
-    });
+        // Add the mouseleave event listener to the hoverContainer
+        hoverContainer.addEventListener('mouseleave', () => {
+          if (hoverContainer) { // Ensure the container exists before trying to remove it
+            console.log('Mouse left hover container:', hoverContainer);
 
-    imgElement.addEventListener('mouseleave', () => {
-      if (hoverContainer) { // Ensure the container exists before trying to remove it
-        console.log('Mouse left image:', imgElement);
-
-        // Remove the hover container when the mouse leaves
-        hoverContainer.remove();
-        hoverContainer = null; // Reset the hover container reference
+            // Remove the hover container when the mouse leaves
+            hoverContainer.remove();
+            hoverContainer = null; // Reset the hover container reference
+          }
+        });
       }
     });
   }
@@ -111,7 +101,6 @@ export default function decorate(block, name, doc) {
 
   rows.forEach((row, i) => {
     if (templateXVariant && row.querySelector('picture')) {
-      console.log('row', row);
       row.classList.add('template-x-thumbnail');
       const imgElement = row.querySelector('picture img');
       const buttonContainer = row.querySelector('.button-container'); // Assume each row has a button-container
