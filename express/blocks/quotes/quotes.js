@@ -14,31 +14,32 @@ export default function decorate($block) {
   // return;
 
   if (isSingularVariant) {
-    function setMobileBackground($el, backgroundUrl) {
-      console.log("=== in setMobileBackground", new Date())
-      const backgroundCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`; // mobile
-      // const backgroundCSS = `no-repeat calc(-600px + 45%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 45%) 0  url("${backgroundUrl}")`;
 
-      $el.style.background = backgroundCSS;
-    }
+    // function setMobileBackground($el, backgroundUrl) {
+    //   console.log("=== in setMobileBackground", new Date())
+    //   const backgroundCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`; // mobile
+    //   // const backgroundCSS = `no-repeat calc(-600px + 45%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 45%) 0  url("${backgroundUrl}")`;
 
-    function setDesktopBackground($el, backgroundUrl) {
-      // const backgroundCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`; // mobile
-      console.log("=== in setDesktopBackground", new Date())
-      // const backgroundCSS = `no-repeat calc(-400px + 20%) -12%  url("${backgroundUrl}"), no-repeat 1000px -12%  url("${backgroundUrl}")`;
-      const backgroundCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
-      // const backgroundCSS = `no-repeat calc(-450px + 30%) 0   url("${backgroundUrl}"), no-repeat calc(500px + 70%) 0  url("${backgroundUrl}")`;
+    //   $el.style.background = backgroundCSS;
+    // }
 
-      $el.style.background = backgroundCSS;
-    }
-    function setBackground() {
-      return;
-      if (window.innerWidth < 600) {
-        setMobileBackground($block, backgroundUrl);
-      } else {
-        setDesktopBackground($block, backgroundUrl);
-      }
-    }
+    // function setDesktopBackground($el, backgroundUrl) {
+    //   // const backgroundCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`; // mobile
+    //   console.log("=== in setDesktopBackground", new Date())
+    //   // const backgroundCSS = `no-repeat calc(-400px + 20%) -12%  url("${backgroundUrl}"), no-repeat 1000px -12%  url("${backgroundUrl}")`;
+    //   const backgroundCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
+    //   // const backgroundCSS = `no-repeat calc(-450px + 30%) 0   url("${backgroundUrl}"), no-repeat calc(500px + 70%) 0  url("${backgroundUrl}")`;
+
+    //   $el.style.background = backgroundCSS;
+    // }
+    // function setBackground() {
+    //   return;
+    //   if (window.innerWidth < 600) {
+    //     setMobileBackground($block, backgroundUrl);
+    //   } else {
+    //     setDesktopBackground($block, backgroundUrl);
+    //   }
+    // }
 
     const $rows = [...$block.querySelectorAll(':scope>div')];
 
@@ -120,12 +121,12 @@ export default function decorate($block) {
 
       // console.log('=== backgroundCSS', backgroundCSS);
 
-      window.addEventListener('resize', throttle(() => {
-        console.log('=== window RESIZE');
-        setBackground();
-      }, 300, {trailing: true}));
+      // window.addEventListener('resize', throttle(() => {
+      //   console.log('=== window RESIZE');
+      //   setBackground();
+      // }, 300, {trailing: true}));
 
-      setBackground();
+      // setBackground();
 
       const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
       $quoteDesktopBackground.style.background = backgroundDesktopCSS;
