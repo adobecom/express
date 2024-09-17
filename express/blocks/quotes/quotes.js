@@ -51,17 +51,17 @@ export default function decorate($block) {
     // it once. Because of the many differences, it may be simpler to divide them into two fragments
     const $quoteContainer = createTag('div', { class: 'quote-container' });
     const $quoteDesktop = createTag('div', { class: 'quote-desktop' });
-    // const $quoteMobile = createTag('div', { class: 'quote-mobile' });
+    const $quoteMobile = createTag('div', { class: 'quote-mobile' });
 
 
     const $quoteDesktopBackground = createTag('div', { class: 'background' });
 
-    // const $quoteMobileBackground = createTag('div', { class: 'background' });
+    const $quoteMobileBackground = createTag('div', { class: 'background' });
 
     $quoteDesktop.append($quoteDesktopBackground)
-    // $quoteMobile.append($quoteMobileBackground)
+    $quoteMobile.append($quoteMobileBackground)
     $quoteContainer.append($quoteDesktop);
-    // $quoteContainer.append($quoteMobile);
+    $quoteContainer.append($quoteMobile);
 
     // $newBlock.innerHTML = "Hello World";
 
@@ -130,6 +130,11 @@ export default function decorate($block) {
       const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
       $quoteDesktopBackground.style.background = backgroundDesktopCSS;
 
+      // const backgroundMobileCSS = `no-repeat 15% -12%  url("${backgroundUrl}")`; // mobile
+      const backgroundMobileCSS = `no-repeat 15% 52%  url("${backgroundUrl}")`; // mobile
+      // const backgroundCSS = `no-repeat calc(-600px + 45%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 45%) 0  url("${backgroundUrl}")`;
+
+      $quoteMobileBackground.style.background = backgroundMobileCSS;
 
       // $block.addEventListener("resize", () => {
       //   console.log("=== block RESIZE");
@@ -198,6 +203,19 @@ export default function decorate($block) {
 
       $quoteText.append($quoteTextComment);
 
+      const $quoteForMobile = createTag('div', { class: 'quote' });
+
+      const $quoteTextMobile = createTag('div', { class: 'quote-text' });
+
+
+      const $quoteTextCommentMobile = $quoteTextComment.cloneNode(true);
+
+      $quoteTextMobile.append($quoteTextCommentMobile)
+
+      $quoteMobile.append($quoteForMobile)
+      $quoteForMobile.append($quoteTextMobile);
+
+
       const authorDescription = $card.children[1].innerText;
       const authorDescription2 = $card.children[1].innerText
         .trim()
@@ -229,7 +247,10 @@ export default function decorate($block) {
       $quoteTextAuthorPanelMobile.append(authorDescription2);
 
       $quoteText.append($quoteTextAuthorDescription);
-      $quoteText.append($quoteTextAuthorPanelMobile);
+
+      // $quoteMobile.append($quoteTextAuthorPanelMobile);
+      $quoteTextMobile.append($quoteTextAuthorPanelMobile);
+      // $quoteText.append($quoteTextAuthorPanelMobile);
 
       $quote.append($quoteText);
 
