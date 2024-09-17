@@ -2,6 +2,7 @@
 
 import {
   createTag,
+  getIconElement,
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
@@ -49,6 +50,25 @@ export default function decorate(block, name, doc) {
         // Ensure the parent row is relatively positioned
         row.style.position = 'relative';
 
+        // Create and append the share icon to the hover container
+        const wrapper = createTag('div', { class: 'share-icon-wrapper' });
+        const shareIcon = getIconElement('share-arrow');
+        wrapper.appendChild(shareIcon);
+        hoverContainer.appendChild(wrapper);
+
+        // Add click event listener to the share icon
+        shareIcon.addEventListener('click', () => {
+          console.log('clicked');
+          const href = document.querySelector('.button-container > a')?.href;
+          if (href) {
+            navigator.clipboard.writeText(href).then(() => {
+              console.log('href copied to clipboard');
+            }).catch((err) => {
+              console.error('Failed to copy href: ', err);
+            });
+          }
+        });
+
         const imageWrapper = createTag('div', { class: 'image-wrapper' });
 
         // Clone the original image to create an enlarged version
@@ -88,7 +108,7 @@ export default function decorate(block, name, doc) {
             console.log('Mouse left hover container:', hoverContainer);
 
             // Remove the hover container when the mouse leaves
-            hoverContainer.remove();
+            // hoverContainer.remove();
             hoverContainer = null; // Reset the hover container reference
           }
         });
@@ -103,6 +123,7 @@ export default function decorate(block, name, doc) {
     if (templateXVariant && row.querySelector('picture')) {
       row.classList.add('template-x-thumbnail');
       const imgElement = row.querySelector('picture img');
+      imgElement.style.borderRadius = '10px';
       const buttonContainer = row.querySelector('.button-container'); // Assume each row has a button-container
 
       // Call the function to handle hover effect

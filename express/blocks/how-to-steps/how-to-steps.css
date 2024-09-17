@@ -119,12 +119,14 @@ main .section .template-x-heading {
   text-align: left;
 }
 
-.hover-container {
-}
-
 .template-x-thumbnail picture img {
   width: 200px; 
   height: auto;  
+}
+
+.template-x-thumbnail picture img.icon-share-arrow {
+  width: 14px;
+  height: auto;
 }
 
 .image-wrapper {
@@ -140,6 +142,29 @@ main .section .template-x-heading {
 .enlarged-template-img {
   border-radius: 10px;
   object-fit: cover;
+}
+
+.share-icon-wrapper {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 20; /* Ensure it is above other elements */
+  width: 24px; /* Adjust size as needed */
+  height: 24px;
+  background-color: white; /* White background for the circle */
+  border-radius: 50%; /* Makes the background a circle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.share-icon-wrapper svg {
+  width: 16px;  /* Adjust size to make it smaller */
+  height: 16px;
+  cursor: pointer;
 }
 
 /* Ensure the CTA button is hidden initially */
