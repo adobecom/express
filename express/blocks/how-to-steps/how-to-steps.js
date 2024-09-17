@@ -41,31 +41,22 @@ export default function decorate(block, name, doc) {
     let hoverContainer;
 
     imgElement.addEventListener('mouseenter', () => {
-      if (!hoverContainer) { // Ensure the container is not already created
-        console.log('Mouse entered image:', imgElement);
-
-        // Create a new div element for the hover container
+      if (!hoverContainer) {
+        const templateHref = buttonContainer.querySelector('a').href;
         hoverContainer = document.createElement('div', { class: 'hover-container' });
-
-        // Ensure the parent row is relatively positioned
         row.style.position = 'relative';
 
-        // Create and append the share icon to the hover container
         const wrapper = createTag('div', { class: 'share-icon-wrapper' });
         const shareIcon = getIconElement('share-arrow');
         wrapper.appendChild(shareIcon);
         hoverContainer.appendChild(wrapper);
 
-        // Add click event listener to the share icon
         shareIcon.addEventListener('click', () => {
-          console.log('clicked');
-          const href = document.querySelector('.button-container > a')?.href;
-          console.log('href', href);
-          if (href) {
-            navigator.clipboard.writeText(href).then(() => {
-              console.log('href copied to clipboard');
+          if (templateHref) {
+            navigator.clipboard.writeText(templateHref).then(() => {
+              console.log('template-x link copied');
             }).catch((err) => {
-              console.error('Failed to copy href: ', err);
+              console.error('Failed to copy template-x link: ', err);
             });
           }
         });
@@ -106,7 +97,7 @@ export default function decorate(block, name, doc) {
         // Add the mouseleave event listener to the hoverContainer
         hoverContainer.addEventListener('mouseleave', () => {
           if (hoverContainer) { // Ensure the container exists before trying to remove it
-            console.log('Mouse left hover container:', hoverContainer);
+            // console.log('Mouse left hover container:', hoverContainer);
 
             // Remove the hover container when the mouse leaves
             hoverContainer.remove();
