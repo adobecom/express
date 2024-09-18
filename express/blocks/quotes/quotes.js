@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { addTempWrapper } from '../../scripts/decorate.js';
-import { createTag, pickOneFromArray } from '../../scripts/utils.js';
+import { createTag, pickRandomFromArray } from '../../scripts/utils.js';
 // import { throttle } from '../../scripts/hofs.js';
 
 const DEFAULT_BACKGROUND_OPACITY = 1;
@@ -62,10 +62,15 @@ export default function decorate($block) {
     let $lastRow = $rows[$rows.length - 1];
 
     let hasOpacity, opacitySpecified;
-    if ($lastRow.children[0].innerText.trim().toLowerCase() === 'opacity') {
+    if ($lastRow.children[0].textContent.trim().toLowerCase() === 'opacity') {
       hasOpacity = true;
-      console.log('$lastRow.children[1]', $lastRow.children[1]);
-      opacitySpecified = +$lastRow.children[1].innerText;
+      console.log(
+        '=== $lastRow.children[1] opacity',
+        $lastRow.children[1],
+        JSON.stringify($lastRow.children[1].innerText),
+        JSON.stringify($lastRow.children[1].textContent)
+      );
+      opacitySpecified = +$lastRow.children[1].textContent;
       $rows.pop();
     } else {
       hasOpacity = false;
@@ -76,7 +81,7 @@ export default function decorate($block) {
     $lastRow = $rows[$rows.length - 1];
 
     let hasBackground, backgroundUrl;
-    if ($lastRow.children[0].innerText.trim().toLowerCase() === 'background') {
+    if ($lastRow.children[0].textContent.trim().toLowerCase() === 'background') {
       hasBackground = true;
       const $img = $lastRow.children[1].querySelector('img');
       console.log('=== img', $img);
@@ -102,9 +107,14 @@ export default function decorate($block) {
     }
 
     // at this point, $rows contains only quotes (no param)
-    const $quoteSelected = pickOneFromArray($rows);
+    const $quoteSelected = pickRandomFromArray($rows);
 
-    console.log('=== $quoteSelected, hasBackground, backgroundUrl', $quoteSelected, hasBackground, backgroundUrl);
+    console.log(
+      '=== $quoteSelected, hasBackground, backgroundUrl',
+      $quoteSelected,
+      hasBackground,
+      backgroundUrl
+    );
 
     console.log('=== card', $quoteSelected, $quoteSelected.querySelector);
 
@@ -114,23 +124,42 @@ export default function decorate($block) {
 
     console.log('=== $picture', $picture);
 
-    const $quote = createTag('div', { class: 'quote' });
+    const $quoteDesktop = createTag('div', { class: 'quote' });
+    // $desktopContainer.append($desktopContainerBackground);
+    $desktopContainer.append($quoteDesktop);
 
-    const $authorImg = createTag('div', { class: 'image' });
+    const $authorImgDesktop = createTag('div', { class: 'image' });
+    $quoteDesktop.append($authorImgDesktop);
 
-    $quote.append($authorImg);
-    $authorImg.append($picture);
+    $authorImgDesktop.append($picture);
 
     const $quoteText = createTag('div', { class: 'quote-text' });
+    $quoteDesktop.append($quoteText);
 
     const $quoteTextComment = createTag('div', { class: 'quote-comment' });
-
-    const $review = $quoteSelected.children[0];
-    $quoteTextComment.append(`“${$review.innerText.replace(/”$/, '').replace(/"$/, '')}”`);
-
     $quoteText.append($quoteTextComment);
 
-    const $quoteForMobile = createTag('div', { class: 'quote' });
+    const $review = $quoteSelected.children[0];
+
+    // $quoteTextComment.append(`“${$review.innerText.replace(/”$/, '').replace(/"$/, '')}”`);
+    $quoteTextComment.append($review.textContent);
+
+    const authorDescription = $quoteSelected.children[1].textContent;
+
+    // const authorDescription2 = $quoteSelected.children[1].innerText.trim().replace(/\n/, ',');
+    // .replace(/\s+$/, '');
+    // .replace("/\n[^\n]+$/", ",");
+
+    console.log('=== authorDescription', JSON.stringify(authorDescription));
+
+    const $authorDescription = createTag('div', { class: 'author-description' });
+    $quoteText.append($authorDescription);
+
+    $authorDescription.append(authorDescription);
+
+    // mobile layout
+
+    const $quoteMobile = createTag('div', { class: 'quote' });
 
     const $quoteTextMobile = createTag('div', { class: 'quote-text' });
 
@@ -138,19 +167,8 @@ export default function decorate($block) {
 
     $quoteTextMobile.append($quoteTextCommentMobile);
 
-    $mobileContainer.append($quoteForMobile);
-    $quoteForMobile.append($quoteTextMobile);
-
-    const authorDescription = $quoteSelected.children[1].innerText;
-    const authorDescription2 = $quoteSelected.children[1].innerText.trim().replace(/\n/, ',');
-    // .replace(/\s+$/, '');
-    // .replace("/\n[^\n]+$/", ",");
-    console.log('=== authorDescription', JSON.stringify(authorDescription));
-    console.log('=== authorDescription2', JSON.stringify(authorDescription2));
-    const $quoteTextAuthorDescription = createTag('div', {
-      class: 'author-description',
-    });
-    $quoteTextAuthorDescription.append(authorDescription2);
+    $mobileContainer.append($quoteMobile);
+    $quoteMobile.append($quoteTextMobile);
 
     const $quoteTextAuthorPanelMobile = createTag('div', {
       class: 'author-panel-mobile',
@@ -167,16 +185,9 @@ export default function decorate($block) {
 
     $quoteTextAuthorPanelMobile.append($quoteTextAuthorPhotoMobile);
 
-    $quoteTextAuthorPanelMobile.append(authorDescription2);
-
-    $quoteText.append($quoteTextAuthorDescription);
+    $quoteTextAuthorPanelMobile.append(authorDescription);
 
     $quoteTextMobile.append($quoteTextAuthorPanelMobile);
-
-    $quote.append($quoteText);
-
-    // $desktopContainer.append($desktopContainerBackground);
-    $desktopContainer.append($quote);
 
     // $quoteContainer.append($desktopContainer);
 

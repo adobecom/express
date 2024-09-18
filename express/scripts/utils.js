@@ -2663,7 +2663,7 @@ export function titleCase(str) {
   return splitStr.join(' ');
 }
 
-export function pickOneFromArray(arr) {
+export function pickRandomFromArray(arr) {
   return arr[Math.floor(arr.length * Math.random())];
 }
 
