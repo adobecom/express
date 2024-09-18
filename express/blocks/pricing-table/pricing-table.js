@@ -137,16 +137,23 @@ function handleSection(sectionParams) {
         if (!col.children?.length || col.querySelector(':scope > sup')) col.innerHTML = `<p>${col.innerHTML}</p>`;
         return;
       }
-      const child = col.children?.[0] || col;
-      if (!child.innerHTML || child.innerHTML === '-') {
+      
+      const dim = col.querySelectorAll('em').length > 0
+      if (dim){
+        col.classList.add('dim')
+      }
+
+      let child = col.children?.[0] || col;
+      if (!child.innerHTML || child.textContent === '-') {
         col.classList.add('excluded-feature');
         child.innerHTML = EXCLUDE_ICON;
-      } else if (child.innerHTML === '+') {
+      } else if (child.textContent === '+') {
         col.classList.add('included-feature');
         child.innerHTML = INCLUDE_ICON;
       } else if (!col.children.length) {
         child.innerHTML = `<p>${col.innerHTML}</p>`;
       }
+      
     });
     if (nextRow.classList.contains('toggle-row')) {
       row.classList.add('table-end-row');
@@ -264,9 +271,7 @@ export default async function init(el) {
       rowCols: cols,
       isToggle,
       firstSection
-    };
-    console.log('--------')
-    console.log(sectionParams)
+    }; 
     handleSection(sectionParams);
     // eslint-disable-next-line no-await-in-loop
     await yieldToMain();
