@@ -224,8 +224,18 @@ main .quotes.singular .quote-details {
 @media (min-width: 600px) {
   main .quotes.singular .quote-details {
 
-    width: 800px;
+    width: 600px;
+    font-size: 21px;
+    /* font-weight: 600; */
+  }
+}
 
+@media (min-width: 900px) {
+  main .quotes.singular .quote-details {
+
+    width: 800px;
+    font-size: 21px;
+    font-weight: 600;
   }
 }
 

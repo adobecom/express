@@ -19,6 +19,8 @@ export default function decorate($block) {
 
     console.log('=== rows', $rows);
 
+    console.log('=== rows', $rows.map(e => e.children));
+
     // const $newBlock = createTag('div', { class: 'new-block' });
 
     // The Desktop design has a different element layout from the mobile design, plus
@@ -59,52 +61,76 @@ export default function decorate($block) {
       JSON.stringify($rows[$rows.length - 1].children[0].innerText)
     );
 
+    // let $firstRow = $rows[0];
     let $lastRow = $rows[$rows.length - 1];
 
-    let hasOpacity, opacitySpecified;
-    if ($lastRow.children[0].textContent.trim().toLowerCase() === 'opacity') {
-      hasOpacity = true;
-      console.log(
-        '=== $lastRow.children[1] opacity',
-        $lastRow.children[1],
-        JSON.stringify($lastRow.children[1].innerText),
-        JSON.stringify($lastRow.children[1].textContent)
-      );
-      opacitySpecified = +$lastRow.children[1].textContent;
-      $rows.pop();
-    } else {
-      hasOpacity = false;
-    }
+    console.log("=== $rows[0].children", $rows[0].children, $rows[0].children.length)
 
-    console.log('=== hasOpacity, opacitySpecified', hasOpacity, opacitySpecified);
+    // return;
+    // let hasOpacity, opacitySpecified;
+    // if ($lastRow.children[0].textContent.trim().toLowerCase() === 'opacity') {
+    //   hasOpacity = true;
+    //   console.log(
+    //     '=== $lastRow.children[1] opacity',
+    //     $lastRow.children[1],
+    //     JSON.stringify($lastRow.children[1].innerText),
+    //     JSON.stringify($lastRow.children[1].textContent)
+    //   );
+    //   opacitySpecified = +$lastRow.children[1].textContent;
+    //   $rows.pop();
+    // } else {
+    //   hasOpacity = false;
+    // }
 
-    $lastRow = $rows[$rows.length - 1];
+    // console.log('=== hasOpacity, opacitySpecified', hasOpacity, opacitySpecified);
+
 
     let hasBackground, backgroundUrl;
-    if ($lastRow.children[0].textContent.trim().toLowerCase() === 'background') {
+    if ($rows[0].children.length === 1) {
       hasBackground = true;
-      const $img = $lastRow.children[1].querySelector('img');
+      const $img = $rows[0].children[0].querySelector('img');
       console.log('=== img', $img);
       backgroundUrl = $img.src;
       console.log('=== backgroundUrl', backgroundUrl);
 
-      $rows.pop();
-      // $quotes = $rows.slice(0, $rows.length - 1);
-
-      // console.log('=== $newBlock.parentElement', $newBlock.parentElement);
-      // console.log('=== $newBlock.parentNode', $newBlock.parentNode);
-
-      const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0 url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`;
+            const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0 url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`;
       $desktopContainerBackground.style.background = backgroundDesktopCSS;
-      $desktopContainerBackground.style.opacity = opacitySpecified ?? DEFAULT_BACKGROUND_OPACITY;
 
-      const backgroundMobileCSS = `no-repeat 15% 12% url("${backgroundUrl}")`;
+          const backgroundMobileCSS = `no-repeat 15% 12% url("${backgroundUrl}")`;
       $mobileContainerBackground.style.background = backgroundMobileCSS;
-      $mobileContainerBackground.style.opacity = opacitySpecified ?? DEFAULT_BACKGROUND_OPACITY;
+
+      $rows.shift();
     } else {
       hasBackground = false;
-      // $quotes = $rows;
     }
+
+    // $lastRow = $rows[$rows.length - 1];
+
+    // let hasBackground, backgroundUrl;
+    // if ($lastRow.children[0].textContent.trim().toLowerCase() === 'background') {
+    //   hasBackground = true;
+    //   const $img = $lastRow.children[1].querySelector('img');
+    //   console.log('=== img', $img);
+    //   backgroundUrl = $img.src;
+    //   console.log('=== backgroundUrl', backgroundUrl);
+
+    //   $rows.pop();
+    //   // $quotes = $rows.slice(0, $rows.length - 1);
+
+    //   // console.log('=== $newBlock.parentElement', $newBlock.parentElement);
+    //   // console.log('=== $newBlock.parentNode', $newBlock.parentNode);
+
+    //   const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0 url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`;
+    //   $desktopContainerBackground.style.background = backgroundDesktopCSS;
+    //   // $desktopContainerBackground.style.opacity = opacitySpecified ?? DEFAULT_BACKGROUND_OPACITY;
+
+    //   const backgroundMobileCSS = `no-repeat 15% 12% url("${backgroundUrl}")`;
+    //   $mobileContainerBackground.style.background = backgroundMobileCSS;
+    //   // $mobileContainerBackground.style.opacity = opacitySpecified ?? DEFAULT_BACKGROUND_OPACITY;
+    // } else {
+    //   hasBackground = false;
+    //   // $quotes = $rows;
+    // }
 
     // at this point, $rows contains only quotes (no param)
     const $quoteSelected = pickRandomFromArray($rows);
