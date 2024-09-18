@@ -100,6 +100,7 @@ function handleSection(sectionParams) {
     allRows,
     rowCols,
     isToggle,
+    firstSection
   } = sectionParams;
 
   const previousRow = allRows[index - 1];
@@ -111,14 +112,15 @@ function handleSection(sectionParams) {
     if (index > 0) previousRow.classList.add('table-end-row');
     if (nextRow) nextRow.classList.add('table-start-row');
   } else if (isToggle) {
-    const toggleIconTag = createTag('span', { class: 'icon expand', 'aria-expanded': 'false' });
+    const toggleIconTag = createTag('span', { class: 'icon expand', 'aria-expanded': firstSection });
     row.querySelector('.toggle-content').prepend(toggleIconTag);
     row.classList.add('collapsed');
     let prevRow = previousRow;
-    let i = index;
+    let i = index; 
     // TODO: clean up this func please...
     while (prevRow && !prevRow.classList.contains('section-header-row') && !prevRow.classList.contains('blank-row')) {
-      prevRow.classList.add('collapsed');
+      if (!firstSection)
+        prevRow.classList.add('collapsed');
       i -= 1;
       prevRow = allRows[i].previousElementSibling;
     }
@@ -198,6 +200,7 @@ export default async function init(el) {
   let sectionItem = 0;
   const placeholders = await fetchPlaceholders();
   let headingChildren;
+  let firstSection = true
   for (let index = 0; index < rows.length; index += 1) {
     const row = rows[index];
     row.classList.add('row', `row-${index + 1}`);
@@ -253,16 +256,24 @@ export default async function init(el) {
       }
     }
     if (isAdditional && cols.length > 1) row.classList.add('additional-row');
+ 
     const sectionParams = {
       row,
       index,
       allRows: rows,
       rowCols: cols,
       isToggle,
+      firstSection
     };
+    console.log('--------')
+    console.log(sectionParams)
     handleSection(sectionParams);
     // eslint-disable-next-line no-await-in-loop
     await yieldToMain();
+
+    if (isToggle) {
+      firstSection = false
+    }
   }
 
   handleHeading(rows[0], headingChildren);
