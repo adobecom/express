@@ -480,6 +480,10 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   background-color: var(--color-gray-600); 
 }
 
+.pricing-table .dim .col-content em { 
+  font-style: normal;
+}
+
 .pricing-table .check {
   width: 13px;
   height: 11.5px;

@@ -38,12 +38,11 @@ function handleHeading(headingRow, headingCols) {
   headingCols.forEach((col) => {
     col.classList.add('col-heading');
     const elements = col.children;
-    console.log(elements)
     if (!elements?.length) {
       col.innerHTML = `<p class="tracking-header">${col.innerHTML}</p>`;
       return;
     }
-  
+
     decorateButtons(col, 'button-l');
     const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
     const buttons = col.querySelectorAll('.button');
@@ -69,7 +68,7 @@ function handleHeading(headingRow, headingCols) {
     const colLabel = document.createElement('div');
     colLabel.classList.add('col-heading');
     [...elements].forEach((e) => {
-      console.log(e)
+      console.log(e);
       if (!e.classList.contains('buttons-wrapper')) colLabel.append(e.cloneNode(true));
       div.append(e);
     });
@@ -100,7 +99,7 @@ function handleSection(sectionParams) {
     allRows,
     rowCols,
     isToggle,
-    firstSection
+    firstSection,
   } = sectionParams;
 
   const previousRow = allRows[index - 1];
@@ -116,11 +115,10 @@ function handleSection(sectionParams) {
     row.querySelector('.toggle-content').prepend(toggleIconTag);
     row.classList.add('collapsed');
     let prevRow = previousRow;
-    let i = index; 
+    let i = index;
     // TODO: clean up this func please...
     while (prevRow && !prevRow.classList.contains('section-header-row') && !prevRow.classList.contains('blank-row')) {
-      if (!firstSection)
-        prevRow.classList.add('collapsed');
+      if (!firstSection) prevRow.classList.add('collapsed');
       i -= 1;
       prevRow = allRows[i].previousElementSibling;
     }
@@ -137,13 +135,13 @@ function handleSection(sectionParams) {
         if (!col.children?.length || col.querySelector(':scope > sup')) col.innerHTML = `<p>${col.innerHTML}</p>`;
         return;
       }
-      
-      const dim = col.querySelectorAll('em').length > 0
-      if (dim){
-        col.classList.add('dim')
+
+      const dim = col.querySelectorAll('em').length > 0;
+      if (dim) {
+        col.classList.add('dim');
       }
 
-      let child = col.children?.[0] || col;
+      const child = col.children?.[0] || col;
       if (!child.innerHTML || child.textContent === '-') {
         col.classList.add('excluded-feature');
         child.innerHTML = EXCLUDE_ICON;
@@ -153,7 +151,6 @@ function handleSection(sectionParams) {
       } else if (!col.children.length) {
         child.innerHTML = `<p>${col.innerHTML}</p>`;
       }
-      
     });
     if (nextRow.classList.contains('toggle-row')) {
       row.classList.add('table-end-row');
@@ -207,7 +204,7 @@ export default async function init(el) {
   let sectionItem = 0;
   const placeholders = await fetchPlaceholders();
   let headingChildren;
-  let firstSection = true
+  let firstSection = true;
   for (let index = 0; index < rows.length; index += 1) {
     const row = rows[index];
     row.classList.add('row', `row-${index + 1}`);
@@ -263,21 +260,21 @@ export default async function init(el) {
       }
     }
     if (isAdditional && cols.length > 1) row.classList.add('additional-row');
- 
+
     const sectionParams = {
       row,
       index,
       allRows: rows,
       rowCols: cols,
       isToggle,
-      firstSection
-    }; 
+      firstSection,
+    };
     handleSection(sectionParams);
     // eslint-disable-next-line no-await-in-loop
     await yieldToMain();
 
     if (isToggle) {
-      firstSection = false
+      firstSection = false;
     }
   }
 
