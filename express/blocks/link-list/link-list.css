@@ -8,7 +8,7 @@ main .link-list-centered-container > div {
   max-width: 1200px;
 }
 
-main .grid-width-6-desktop.link-list-narrow-container {
+main .link-list-wrapper .link-list.narrow {
   max-width: 850px;
   margin: 0 auto; 
 }

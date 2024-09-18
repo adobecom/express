@@ -2172,12 +2172,12 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     padding: 0 28px;
 }
 
-.template-x-narrow-container {
+.template-x.narrow {
     max-width: 850px;
     margin: 0 auto; 
 }
 
-.template-x-narrow-container h2 {
+.template-x.narrow h2 {
     font-size: 22px;
 }
 

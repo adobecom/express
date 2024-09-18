@@ -48,7 +48,7 @@ main .section .promotion h2 {
   margin-top: 0;
 }
 
-main .promotion-narrow-container .promotion {
+main .promotion.narrow {
   max-width: 850px;
   margin: 0 auto; 
 }

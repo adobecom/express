@@ -17,6 +17,11 @@ export default async function decorate(block) {
     block.replaceChildren(standoutContainer);
   }
 
+  if (isBannerNarrowVariant) {
+    block.parentElement.style.backgroundColor = 'var(--color-info-accent)';
+    block.parentElement.style.padding = '80px 15px';
+  }
+
   if (isBannerNarrowVariant && document.body.dataset.device === 'desktop') {
     block.classList.add('desktop');
     block.classList.remove('mobile');

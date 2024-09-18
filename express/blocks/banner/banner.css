@@ -1,12 +1,10 @@
 main .section.banner-container,
-main .section.banner-narrow-container,
 main .section.banner-standout-container,
 main .section.banner-compact-container {
   background-color: var(--color-info-accent);
 }
 
 main .section.banner-container,
-main .section.banner-narrow-container,
 main .section.banner-light-container {
   padding: 80px 15px;
 }
