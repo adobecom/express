@@ -210,7 +210,7 @@ main .quotes.singular .author-photo-mobile picture img {
   box-sizing: border-box; */
 }
 
-main .quotes.singular .quote-text {
+main .quotes.singular .quote-details {
   /* margin-left: auto;
   margin-right: auto; */
   /* width: 600px; */
@@ -222,7 +222,7 @@ main .quotes.singular .quote-text {
 }
 
 @media (min-width: 600px) {
-main .quotes.singular .quote-text {
+main .quotes.singular .quote-details {
 
   width: 800px;
 

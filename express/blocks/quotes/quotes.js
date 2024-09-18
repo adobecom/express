@@ -133,7 +133,7 @@ export default function decorate($block) {
 
     $authorImgDesktop.append($picture);
 
-    const $quoteDetails = createTag('div', { class: 'quote-text' });
+    const $quoteDetails = createTag('div', { class: 'quote-details' });
     $quoteDesktop.append($quoteDetails);
 
     const $quoteComment = createTag('div', { class: 'quote-comment' });
@@ -160,34 +160,33 @@ export default function decorate($block) {
     // Mobile layout
 
     const $quoteMobile = createTag('div', { class: 'quote' });
-
-    const $quoteTextMobile = createTag('div', { class: 'quote-text' });
-
-    const $quoteTextCommentMobile = $quoteComment.cloneNode(true);
-
-    $quoteTextMobile.append($quoteTextCommentMobile);
-
     $mobileContainer.append($quoteMobile);
-    $quoteMobile.append($quoteTextMobile);
 
-    const $quoteTextAuthorPanelMobile = createTag('div', {
+    const $quoteDetailsMobile = createTag('div', { class: 'quote-details' });
+    $quoteMobile.append($quoteDetailsMobile);
+
+    const $quoteCommentMobile = $quoteComment.cloneNode(true);
+
+    $quoteDetailsMobile.append($quoteCommentMobile);
+
+    const $quoteAuthorPanelMobile = createTag('div', {
       class: 'author-panel-mobile',
     });
+    $quoteDetailsMobile.append($quoteAuthorPanelMobile);
 
-    const $quoteTextAuthorPhotoMobile = createTag('div', {
+
+    const $quoteAuthorPhotoMobile = createTag('div', {
       class: 'author-photo-mobile',
     });
+    $quoteAuthorPanelMobile.append($quoteAuthorPhotoMobile);
 
     const $pictureCloned = $picture.cloneNode(true);
     console.log('=== $pictureCloned', $pictureCloned);
 
-    $quoteTextAuthorPhotoMobile.append($pictureCloned);
+    $quoteAuthorPhotoMobile.append($pictureCloned);
 
-    $quoteTextAuthorPanelMobile.append($quoteTextAuthorPhotoMobile);
+    $quoteAuthorPanelMobile.append(authorDescription);
 
-    $quoteTextAuthorPanelMobile.append(authorDescription);
-
-    $quoteTextMobile.append($quoteTextAuthorPanelMobile);
 
     // $quoteContainer.append($desktopContainer);
 
