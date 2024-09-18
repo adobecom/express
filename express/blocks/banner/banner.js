@@ -1,7 +1,6 @@
 import { normalizeHeadings, createTag } from '../../scripts/utils.js';
 
 export default async function decorate(block) {
-  console.log('are we here', block);
   const isBannerLightVariant = block.classList.contains('light');
   const isBannerStandoutVariant = block.classList.contains('standout');
   const isBannerNarrowVariant = block.classList.contains('narrow');

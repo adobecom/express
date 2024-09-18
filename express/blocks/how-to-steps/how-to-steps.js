@@ -22,6 +22,7 @@ export default function decorate(block, name, doc) {
   const desktop = document.body.dataset.device === 'desktop';
   if (desktop && narrowVariant && container) {
     container.classList.add('narrow');
+    container.classList.remove('narrow-mobile-width');
   } else if (narrowVariant && container) {
     container.classList.remove('narrow');
     container.classList.add('narrow-mobile-width');
