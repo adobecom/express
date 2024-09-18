@@ -1,9 +1,9 @@
 // eslint-disable-next-line import/no-unresolved
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { createTag, pickOneFromArray } from '../../scripts/utils.js';
-import { throttle } from '../../scripts/hofs.js';
+// import { throttle } from '../../scripts/hofs.js';
 
-const DEFAULT_OPACITY = 1;
+const DEFAULT_BACKGROUND_OPACITY = 1;
 
 export default function decorate($block) {
   console.log('=== ENTERING decorate');
@@ -91,11 +91,11 @@ export default function decorate($block) {
 
       const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0 url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`;
       $desktopContainerBackground.style.background = backgroundDesktopCSS;
-      $desktopContainerBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
+      $desktopContainerBackground.style.opacity = opacitySpecified ?? DEFAULT_BACKGROUND_OPACITY;
 
       const backgroundMobileCSS = `no-repeat 15% 12% url("${backgroundUrl}")`;
       $mobileContainerBackground.style.background = backgroundMobileCSS;
-      $mobileContainerBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
+      $mobileContainerBackground.style.opacity = opacitySpecified ?? DEFAULT_BACKGROUND_OPACITY;
     } else {
       hasBackground = false;
       // $quotes = $rows;
