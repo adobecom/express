@@ -106,10 +106,20 @@ main .how-to-steps .narrow {
   margin: 0 auto; 
 }
 
-.template-x-container {
+main .section .template-x-container, 
+main .section .template-x-container .template-x-heading {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  text-align: center;
+}
+
+main .section .template-x-container.desktop, 
+main .section .template-x-container.desktop .template-x-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
 }
 
 main .section .template-x-heading {
@@ -172,8 +182,16 @@ main .section .template-x-heading {
   display: none;
 }
 
-.button-container {
+.button-container.template-x {
   display: none;
+}
+
+.button-container.template-x.visible {
+  position: relative;
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .button-container:hover .edit-template-button {

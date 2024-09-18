@@ -36,7 +36,7 @@ export default function decorate(block, name, doc) {
     step: [],
   };
 
-  function createHoverContainer(imgElement, row, buttonContainer) {
+  function renderHoverContainer(imgElement, row, buttonContainer) {
     let hoverContainer;
 
     imgElement.addEventListener('mouseenter', () => {
@@ -49,6 +49,8 @@ export default function decorate(block, name, doc) {
         const shareIcon = getIconElement('share-arrow');
         wrapper.appendChild(shareIcon);
         hoverContainer.appendChild(wrapper);
+
+        buttonContainer.classList.add('visible');
 
         shareIcon.addEventListener('click', () => {
           if (templateHref) {
@@ -70,12 +72,6 @@ export default function decorate(block, name, doc) {
         hoverContainer.style.top = `${imgElement.offsetTop - (imgElement.offsetHeight * 0.1) - 10}px`;
         hoverContainer.style.left = `${imgElement.offsetLeft - (imgElement.offsetWidth * 0.1) - 10}px`;
 
-        buttonContainer.style.position = 'relative';
-        buttonContainer.style.marginTop = '10px';
-        buttonContainer.style.display = 'flex';
-        buttonContainer.style.justifyContent = 'center';
-        buttonContainer.style.width = '100%';
-
         imageWrapper.appendChild(enlargedImg);
         imageWrapper.appendChild(buttonContainer);
         hoverContainer.appendChild(imageWrapper);
@@ -83,6 +79,7 @@ export default function decorate(block, name, doc) {
 
         hoverContainer.addEventListener('mouseleave', () => {
           if (hoverContainer) {
+            buttonContainer.classList.remove('visible');
             hoverContainer.remove();
             hoverContainer = null;
           }
@@ -93,14 +90,21 @@ export default function decorate(block, name, doc) {
 
   const templateXVariant = block?.classList.contains('template-x');
   const templateXContainer = templateXVariant && createTag('div', { class: 'template-x-container' });
+  if (document.body.dataset.device === 'desktop') {
+    templateXContainer.classList.add('desktop');
+  } else {
+    templateXContainer.classList.remove('desktop');
+  }
 
   rows.forEach((row, i) => {
     if (templateXVariant && row.querySelector('picture')) {
       row.classList.add('template-x-thumbnail');
+
       const imgElement = row.querySelector('picture img');
       imgElement.style.borderRadius = '10px';
       const buttonContainer = row.querySelector('.button-container');
-      createHoverContainer(imgElement, row, buttonContainer);
+      buttonContainer.classList.add('template-x');
+      renderHoverContainer(imgElement, row, buttonContainer);
       const templateXText = row.lastElementChild;
       const text = templateXText?.textContent.trim();
       const templateXHeading = createTag('h4', { class: 'template-x-heading' }, text);
