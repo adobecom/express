@@ -26,7 +26,8 @@ function handleGenAISubmit(form, link) {
   if (genAILink) windowHelper.redirect(urlObj.toString());
 }
 
-function createEnticement(enticementDetail, enticementPlaceholder, enticementPlaceholerMobile, enticementLink, mode, placeholders) {
+function createEnticement(enticementDetail, enticementPlaceholder,
+  enticementPlaceholerMobile, enticementLink, mode, placeholders) {
   const enticementDiv = createTag('div', { class: 'enticement-container' });
   const svgImage = getIconElement('enticement-arrow', 60);
   const arrowText = enticementDetail;
@@ -91,7 +92,8 @@ export default async function setHorizontalMasonry(el) {
   args[2].remove();
 
   el.querySelector('.interactive-container').appendChild(
-    createEnticement(enticementText, enticementPlaceholder, enticementPlaceholerMobile, enticementLink, enticementMode, placeholders),
+    createEnticement(enticementText, enticementPlaceholder,
+      enticementPlaceholerMobile, enticementLink, enticementMode, placeholders),
   );
   for (let i = 3; i < args.length; i += 3) {
     const divider = args[i];
