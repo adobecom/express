@@ -1,8 +1,10 @@
 import { normalizeHeadings, createTag } from '../../scripts/utils.js';
 
 export default async function decorate(block) {
+  console.log('are we here', block);
   const isBannerLightVariant = block.classList.contains('light');
   const isBannerStandoutVariant = block.classList.contains('standout');
+  const isBannerNarrowVariant = block.classList.contains('narrow');
 
   if (isBannerStandoutVariant) {
     const standoutContainer = createTag('div', {
@@ -14,6 +16,14 @@ export default async function decorate(block) {
     }
 
     block.replaceChildren(standoutContainer);
+  }
+
+  if (isBannerNarrowVariant && document.body.dataset.device === 'desktop') {
+    block.classList.add('desktop');
+    block.classList.remove('mobile');
+  } else {
+    block.classList.add('mobile');
+    block.classList.remove('desktop');
   }
 
   normalizeHeadings(block, ['h2', 'h3']);

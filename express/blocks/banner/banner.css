@@ -101,8 +101,13 @@ main .banner .standout-container em {
   font-weight: 900;
 }
 
-main .grid-width-6-desktop.banner-narrow-container .banner { 
+main .grid-width-6-desktop .banner.narrow.desktop { 
   max-width: 850px;
+  margin: 0 auto; 
+}
+
+main .banner.narrow.mobile { 
+  max-width: 375px;
   margin: 0 auto; 
 }
 

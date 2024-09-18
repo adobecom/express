@@ -85,7 +85,7 @@ main .how-to-steps.narrow {
 }
 
 main .how-to-steps.narrow-mobile-width {
-  max-width: none;
+  max-width: 375px;
 }
 
 main .how-to-steps.narrow h3 {
@@ -114,12 +114,22 @@ main .section .template-x-container .template-x-heading {
   text-align: center;
 }
 
-main .section .template-x-container.desktop, 
+main .section .template-x-container.desktop {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  margin-left: 60px;
+  margin-right: 60px;
+}
+
 main .section .template-x-container.desktop .template-x-heading {
   display: flex;
   flex-direction: column;
   gap: 10px;
   text-align: left;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 main .section .template-x-heading {
