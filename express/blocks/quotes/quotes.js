@@ -75,14 +75,16 @@ export default function decorate($block) {
 
     $lastRow = $rows[$rows.length - 1];
 
-    let hasBackground, backgroundUrl, $quotes;
+    let hasBackground, backgroundUrl;
     if ($lastRow.children[0].innerText.trim().toLowerCase() === 'background') {
       hasBackground = true;
       const $img = $lastRow.children[1].querySelector('img');
       console.log('=== img', $img);
       backgroundUrl = $img.src;
       console.log('=== backgroundUrl', backgroundUrl);
-      $quotes = $rows.slice(0, $rows.length - 1);
+
+      $rows.pop();
+      // $quotes = $rows.slice(0, $rows.length - 1);
 
       // console.log('=== $newBlock.parentElement', $newBlock.parentElement);
       // console.log('=== $newBlock.parentNode', $newBlock.parentNode);
@@ -96,18 +98,19 @@ export default function decorate($block) {
       $mobileContainerBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
     } else {
       hasBackground = false;
-      $quotes = $rows;
+      // $quotes = $rows;
     }
 
-    const $card = pickOneFromArray($quotes);
+    // at this point, $rows contains only quotes (no param)
+    const $quoteSelected = pickOneFromArray($rows);
 
-    console.log('=== $card, hasBackground, backgroundUrl', $card, hasBackground, backgroundUrl);
+    console.log('=== $quoteSelected, hasBackground, backgroundUrl', $quoteSelected, hasBackground, backgroundUrl);
 
-    console.log('=== card', $card, $card.querySelector);
+    console.log('=== card', $quoteSelected, $quoteSelected.querySelector);
 
-    console.log('=== children', $card.children[0]);
+    console.log('=== children', $quoteSelected.children[0]);
 
-    const $picture = $card.querySelector('picture');
+    const $picture = $quoteSelected.querySelector('picture');
 
     console.log('=== $picture', $picture);
 
@@ -122,7 +125,7 @@ export default function decorate($block) {
 
     const $quoteTextComment = createTag('div', { class: 'quote-comment' });
 
-    const $review = $card.children[0];
+    const $review = $quoteSelected.children[0];
     $quoteTextComment.append(`“${$review.innerText.replace(/”$/, '').replace(/"$/, '')}”`);
 
     $quoteText.append($quoteTextComment);
@@ -138,8 +141,8 @@ export default function decorate($block) {
     $mobileContainer.append($quoteForMobile);
     $quoteForMobile.append($quoteTextMobile);
 
-    const authorDescription = $card.children[1].innerText;
-    const authorDescription2 = $card.children[1].innerText.trim().replace(/\n/, ',');
+    const authorDescription = $quoteSelected.children[1].innerText;
+    const authorDescription2 = $quoteSelected.children[1].innerText.trim().replace(/\n/, ',');
     // .replace(/\s+$/, '');
     // .replace("/\n[^\n]+$/", ",");
     console.log('=== authorDescription', JSON.stringify(authorDescription));
