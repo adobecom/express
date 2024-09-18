@@ -475,10 +475,28 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   -webkit-mask-image: url('./dash.svg');
   mask-image: url('./dash.svg');
 }
+.pricing-table em .dash {
+  width: 13px;
+  height: 11.5px;
+  margin-bottom: 4.5px;
+  margin-top: -4.5px;
+  background-color: var(--color-gray-600);
+  -webkit-mask-image: url('./dash.svg');
+  mask-image: url('./dash.svg');
+}
+
 .pricing-table .check {
   width: 13px;
   height: 11.5px;
   background-color: var(--checkmark-color);
+  -webkit-mask-image: url('./check.svg');
+  mask-image: url('./check.svg');
+}
+
+.pricing-table em .check {
+  width: 13px;
+  height: 11.5px;
+  background-color: var(--color-gray-600);
   -webkit-mask-image: url('./check.svg');
   mask-image: url('./check.svg');
 }
