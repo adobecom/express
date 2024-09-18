@@ -133,16 +133,16 @@ export default function decorate($block) {
 
     $authorImgDesktop.append($picture);
 
-    const $quoteText = createTag('div', { class: 'quote-text' });
-    $quoteDesktop.append($quoteText);
+    const $quoteDetails = createTag('div', { class: 'quote-text' });
+    $quoteDesktop.append($quoteDetails);
 
-    const $quoteTextComment = createTag('div', { class: 'quote-comment' });
-    $quoteText.append($quoteTextComment);
+    const $quoteComment = createTag('div', { class: 'quote-comment' });
+    $quoteDetails.append($quoteComment);
 
     const $review = $quoteSelected.children[0];
 
     // $quoteTextComment.append(`“${$review.innerText.replace(/”$/, '').replace(/"$/, '')}”`);
-    $quoteTextComment.append($review.textContent);
+    $quoteComment.append($review.textContent);
 
     const authorDescription = $quoteSelected.children[1].textContent;
 
@@ -153,17 +153,17 @@ export default function decorate($block) {
     console.log('=== authorDescription', JSON.stringify(authorDescription));
 
     const $authorDescription = createTag('div', { class: 'author-description' });
-    $quoteText.append($authorDescription);
+    $quoteDetails.append($authorDescription);
 
     $authorDescription.append(authorDescription);
 
-    // mobile layout
+    // Mobile layout
 
     const $quoteMobile = createTag('div', { class: 'quote' });
 
     const $quoteTextMobile = createTag('div', { class: 'quote-text' });
 
-    const $quoteTextCommentMobile = $quoteTextComment.cloneNode(true);
+    const $quoteTextCommentMobile = $quoteComment.cloneNode(true);
 
     $quoteTextMobile.append($quoteTextCommentMobile);
 
