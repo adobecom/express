@@ -170,13 +170,13 @@ export default function decorate($block) {
     $quoteDetailsMobile.append($quoteCommentMobile);
 
     const $quoteAuthorPanelMobile = createTag('div', {
-      class: 'author-panel-mobile',
+      class: 'author-panel',
     });
     $quoteDetailsMobile.append($quoteAuthorPanelMobile);
 
 
     const $quoteAuthorPhotoMobile = createTag('div', {
-      class: 'author-photo-mobile',
+      class: 'author-photo',
     });
     $quoteAuthorPanelMobile.append($quoteAuthorPhotoMobile);
 
