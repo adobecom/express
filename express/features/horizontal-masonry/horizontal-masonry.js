@@ -26,7 +26,7 @@ function handleGenAISubmit(form, link) {
   if (genAILink) windowHelper.redirect(urlObj.toString());
 }
 
-function createEnticement(enticementDetail,enticementPlaceholder, enticementPlaceholerMobile, enticementLink, mode, placeholders) {
+function createEnticement(enticementDetail, enticementPlaceholder, enticementPlaceholerMobile, enticementLink, mode, placeholders) {
   const enticementDiv = createTag('div', { class: 'enticement-container' });
   const svgImage = getIconElement('enticement-arrow', 60);
   const arrowText = enticementDetail;
@@ -84,14 +84,14 @@ export default async function setHorizontalMasonry(el) {
   const enticementMode = el.classList.contains('light') ? 'light' : 'dark';
   const enticementText = enticementElement.textContent.trim();
   const enticementLink = enticementElement.href;
-  const enticementPlaceholder = args[1].textContent
-  const enticementPlaceholerMobile = args[2].textContent
+  const enticementPlaceholder = args[1].textContent;
+  const enticementPlaceholerMobile = args[2].textContent;
   args[0].remove();
   args[1].remove();
   args[2].remove();
 
   el.querySelector('.interactive-container').appendChild(
-    createEnticement(enticementText,enticementPlaceholder, enticementPlaceholerMobile, enticementLink, enticementMode, placeholders ),
+    createEnticement(enticementText, enticementPlaceholder, enticementPlaceholerMobile, enticementLink, enticementMode, placeholders),
   );
   for (let i = 3; i < args.length; i += 3) {
     const divider = args[i];
