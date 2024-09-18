@@ -19,23 +19,23 @@ export default function decorate($block) {
 
     console.log('=== rows', $rows);
 
-    const $newBlock = createTag('div', { class: 'new-block' });
+    // const $newBlock = createTag('div', { class: 'new-block' });
 
     // The Desktop design has a different element layout from the mobile design, plus
     // the desktop design uses the background image twice, while the mobile design uses
     // it once. Because of the many differences, it may be simpler to divide them into two fragments
     const $quoteContainer = createTag('div', { class: 'quote-container' });
-    const $quoteDesktop = createTag('div', { class: 'quote-desktop' });
-    const $quoteMobile = createTag('div', { class: 'quote-mobile' });
+    const $desktopContainer = createTag('div', { class: 'desktop-container' });
+    const $mobileContainer = createTag('div', { class: 'mobile-container' });
 
-    const $quoteDesktopBackground = createTag('div', { class: 'background' });
+    const $desktopContainerBackground = createTag('div', { class: 'background' });
 
-    const $quoteMobileBackground = createTag('div', { class: 'background' });
+    const $mobileContainerBackground = createTag('div', { class: 'background' });
 
-    $quoteDesktop.append($quoteDesktopBackground);
-    $quoteMobile.append($quoteMobileBackground);
-    $quoteContainer.append($quoteDesktop);
-    $quoteContainer.append($quoteMobile);
+    $desktopContainer.append($desktopContainerBackground);
+    $mobileContainer.append($mobileContainerBackground);
+    $quoteContainer.append($desktopContainer);
+    $quoteContainer.append($mobileContainer);
 
     console.log('=== $rows[$rows.length - 1]', $rows[$rows.length - 1]);
 
@@ -84,17 +84,16 @@ export default function decorate($block) {
       console.log('=== backgroundUrl', backgroundUrl);
       $quotes = $rows.slice(0, $rows.length - 1);
 
-      console.log('=== $newBlock.parentElement', $newBlock.parentElement);
-      console.log('=== $newBlock.parentNode', $newBlock.parentNode);
+      // console.log('=== $newBlock.parentElement', $newBlock.parentElement);
+      // console.log('=== $newBlock.parentNode', $newBlock.parentNode);
 
-      const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0   url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`; // static relative to middle region
-      $quoteDesktopBackground.style.background = backgroundDesktopCSS;
-      $quoteDesktopBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
+      const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0 url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`;
+      $desktopContainerBackground.style.background = backgroundDesktopCSS;
+      $desktopContainerBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
 
       const backgroundMobileCSS = `no-repeat 15% 12% url("${backgroundUrl}")`;
-
-      $quoteMobileBackground.style.background = backgroundMobileCSS;
-      $quoteMobileBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
+      $mobileContainerBackground.style.background = backgroundMobileCSS;
+      $mobileContainerBackground.style.opacity = opacitySpecified ?? DEFAULT_OPACITY;
     } else {
       hasBackground = false;
       $quotes = $rows;
@@ -136,7 +135,7 @@ export default function decorate($block) {
 
     $quoteTextMobile.append($quoteTextCommentMobile);
 
-    $quoteMobile.append($quoteForMobile);
+    $mobileContainer.append($quoteForMobile);
     $quoteForMobile.append($quoteTextMobile);
 
     const authorDescription = $card.children[1].innerText;
@@ -173,10 +172,10 @@ export default function decorate($block) {
 
     $quote.append($quoteText);
 
-    $quoteDesktop.append($quoteDesktopBackground);
-    $quoteDesktop.append($quote);
+    // $desktopContainer.append($desktopContainerBackground);
+    $desktopContainer.append($quote);
 
-    $quoteContainer.append($quoteDesktop);
+    // $quoteContainer.append($desktopContainer);
 
     $block.replaceChildren($quoteContainer);
     console.log('=== FINAL $block', $block);
