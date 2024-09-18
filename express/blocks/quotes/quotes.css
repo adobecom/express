@@ -95,24 +95,24 @@ main .quotes.singular .quote-container {
 main .quotes.singular .quote-container .desktop-container {
   /* width: 100%; */
   position: relative;
-display: none;
+  display: none;
 }
 
 main .quotes.singular .quote-container .mobile-container {
   /* width: 100%; */
   position: relative;
-/* display: none; */
+  /* display: none; */
 }
 
 @media (min-width: 600px) {
-  main .quotes.singular .quote-container .desktop-container  {
+  main .quotes.singular .quote-container .desktop-container {
     display: block;
     /* position: relative; */
   }
 }
 
 @media (min-width: 600px) {
-  main .quotes.singular .quote-container .mobile-container  {
+  main .quotes.singular .quote-container .mobile-container {
     display: none;
     /* position: relative; */
   }
@@ -151,9 +151,9 @@ main .quotes.singular .quote {
   /* CHECK HOW TO DO THIS ONE */
   display: flex;
   justify-content: center;
-padding: 100px 0 130px;
-/* outline: 3px dotted #07f; */
-min-height: 372px;
+  padding: 100px 0 130px;
+  /* outline: 3px dotted #07f; */
+  min-height: 372px;
 }
 
 
@@ -161,7 +161,7 @@ main .quotes.singular .image {
   /* padding-right: 10px; */
   width: 100px;
   height: 100px;
-  min-width: 100px; /* at certain container width, the 100px width may be made smaller, so impose a min-width */
+  min-width: 100px;  /* at certain container width, the 100px width may be made smaller, so impose a min-width */
   border-radius: 50%;
   /* box-sizing: border-box; */
   overflow: hidden;
@@ -197,8 +197,8 @@ main .quotes.singular .mobile-container .author-photo {
 
 }
 
-main .quotes.singular  .mobile-container .author-photo picture,
-main .quotes.singular .mobile-container  .author-photo picture img {
+main .quotes.singular .mobile-container .author-photo picture,
+main .quotes.singular .mobile-container .author-photo picture img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -222,11 +222,11 @@ main .quotes.singular .quote-details {
 }
 
 @media (min-width: 600px) {
-main .quotes.singular .quote-details {
+  main .quotes.singular .quote-details {
 
-  width: 800px;
+    width: 800px;
 
-}
+  }
 }
 
 main .quotes.singular .author-description {
@@ -257,12 +257,12 @@ main .quotes.singular .mobile-container .author-panel {
 }
 
 @media (min-width: 600px) {
-  main .quotes.singular .mobile-container   .author-panel {
+  main .quotes.singular .mobile-container .author-panel {
     display: none;
   }
 }
 
-main .quotes.singular .mobile-container  .author-panel .author-photo {
+main .quotes.singular .mobile-container .author-panel .author-photo {
   margin-right: 8px;
 }
 
