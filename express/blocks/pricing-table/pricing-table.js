@@ -68,7 +68,6 @@ function handleHeading(headingRow, headingCols) {
     const colLabel = document.createElement('div');
     colLabel.classList.add('col-heading');
     [...elements].forEach((e) => {
-      console.log(e);
       if (!e.classList.contains('buttons-wrapper')) colLabel.append(e.cloneNode(true));
       div.append(e);
     });
