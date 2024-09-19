@@ -264,7 +264,10 @@
   text-decoration: underline;
   padding-left: 10px;
   padding-right: 10px;
+}
 
+.grid-width-6-desktop.small-header .fullscreen-marquee h1 {
+  font-size: 45px;
 }
 
 @media (min-width: 900px) {

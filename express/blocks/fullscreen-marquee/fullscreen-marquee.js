@@ -186,6 +186,12 @@ export default async function decorate(block) {
     block.append(heading);
   }
 
+  const smallHeaderApplied = block.parentElement.classList.contains('small-header');
+  const desktop = document.body.dataset.device === 'desktop';
+  if (!desktop && smallHeaderApplied) {
+    block.parentElement.classList.remove('small-header');
+  }
+
   if (content && document.body.dataset.device === 'desktop') {
     block.append(await buildApp(block, content));
   }

@@ -5,7 +5,7 @@ import {
   getIconElement,
   getMetadata,
 } from '../../scripts/utils.js';
-import { trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
+import { trackSearch, updateImpressionCache, generateSearchId } from '../../scripts/template-search-api-v3.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function handlelize(str) {
@@ -324,7 +324,14 @@ function buildSearchDropdown(block, searchBarWrapper, placeholders) {
     const trendsWrapper = createTag('ul', { class: 'trends-wrapper' });
     for (const [key, value] of Object.entries(trends)) {
       const trendLinkWrapper = createTag('li');
-      const trendLink = createTag('a', { class: 'trend-link', href: value });
+      const trendLink = createTag('a', { class: 'trend-link', href: `${value}?searchId=${generateSearchId()}` });
+      trendLink.addEventListener('click', () => {
+        updateImpressionCache({
+          keyword_filter: key,
+          content_category: 'templates',
+        });
+        trackSearch('search-inspire', new URLSearchParams(new URL(trendLink.href).search).get('searchId'));
+      });
       trendLink.textContent = key;
       trendLinkWrapper.append(trendLink);
       trendsWrapper.append(trendLinkWrapper);
