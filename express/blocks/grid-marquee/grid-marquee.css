@@ -1,0 +1,127 @@
+.grid-marquee .express-logo {
+  width: unset;
+  height: 30px;
+  padding-bottom: 1rem;
+}
+
+.grid-marquee h1 {
+  font-size: var(--heading-font-size-m);
+  padding-bottom: 8px;
+}
+
+.grid-marquee .headline p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.grid-marquee .background {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.grid-marquee .background .tablet-only,
+.grid-marquee .background .desktop-only {
+  display: none;
+}
+
+.grid-marquee .foreground {
+  position: relative;
+}
+
+.grid-marquee .cards-container {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  gap: 8px;
+  justify-content: center;
+}
+
+.grid-marquee .card {
+  background-color: unset;
+  width: 170px;
+  padding: 8px;
+  border-radius: 16px;
+  border: 1px solid #fff;
+  background: linear-gradient(170.96deg, rgba(255, 255, 255, 0.6) 18.95%, rgba(255, 255, 255, 0.2) 99.73%);
+  text-align: left;
+}
+
+.grid-marquee .face p {
+  margin: 0;
+  line-height: 20.8px;
+}
+
+.grid-marquee .face strong {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.grid-marquee .face img {
+  border-radius: 8px;
+  /* TODO: use image cropping */
+  min-height: 114px;
+}
+
+.grid-marquee .drawer {
+  display: none;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff;
+  padding: 16px;
+}
+
+.grid-marquee .drawer.active {
+  display: block;
+}
+
+.grid-marquee .drawer .title-row {
+  font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.grid-marquee .drawer video {
+  border-width: 1px 0 0;
+  border-radius: 0;
+  border-style: solid;
+  border-color: #ccc;
+  padding: 10px 20px 20px 0px;
+}
+
+.grid-marquee .drawer-close {
+  background: unset;
+  border: unset;
+}
+
+.grid-marquee .tabs-container {
+  display: flex;
+}
+
+.grid-marquee .tab a.button {
+  display: none;
+}
+.grid-marquee .tab.active a.button {
+  display: inline-block;
+  width: 100%;
+  background-color: unset;
+  color: unset;
+  font-weight: unset;
+  font-size: 1rem;
+  border-width: 1px 0 0;
+  border-radius: 0;
+  border-style: solid;
+  border-color: #ccc;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 10px;
+}
+
+.grid-marquee .ratings {
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+}
