@@ -1022,6 +1022,18 @@ main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .
   display: none;
 }
 
+main .long-form.grid-width-6-desktop.narrow .default-content-wrapper {
+  max-width: 850px;
+  margin: 0 auto; 
+} 
+
+@media (max-width: 600px) {
+  .long-form.narrow.section.section-wrapper {
+    max-width: 375px;
+    margin: 0 auto;
+  }
+}
+
 
 @media (min-width: 900px) {
   main .block .button-container.free-plan-container {
