@@ -218,7 +218,7 @@ main .quotes.singular .quote-details {
   /* width: 600px; */
   margin-left: 30px;
   width: 80%;
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 800;
   text-align: left;
 }
@@ -226,18 +226,24 @@ main .quotes.singular .quote-details {
 @media (min-width: 600px) {
   main .quotes.singular .quote {
 
-    width: 90%;
-    font-size: 21px;
+    width: 80%;
+    /* font-size: 22px; */
     /* font-weight: 600; */
   }
+  /* main .quotes.singular .quote-details {
+    font-size: 22px;
+  } */
 }
 
 @media (min-width: 900px) {
   main .quotes.singular .quote {
-    width: 90%;
+    width: 80%;
     max-width: 830px;
-    font-size: 21px;
+    /* font-size: 28px; */
     font-weight: 600;
+  }
+  main .quotes.singular .quote-details {
+    font-size: 28px;
   }
 }
 
