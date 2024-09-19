@@ -475,7 +475,7 @@ main .interactive-marquee.horizontal-masonry .media-container p.image-container:
     }
 
     main .interactive-marquee.horizontal-masonry .media-container .image-container:has( img.tall-prompt-image ){
-        width: unset;
+        width: 220px;
         margin: auto;
     }
     main .interactive-marquee.horizontal-masonry p.image-container img.tall-prompt-image {
