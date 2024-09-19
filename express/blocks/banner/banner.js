@@ -24,9 +24,7 @@ export default async function decorate(block) {
 
   if (isBannerNarrowVariant && document.body.dataset.device === 'desktop') {
     block.classList.add('desktop');
-    block.classList.remove('mobile');
   } else {
-    block.classList.add('mobile');
     block.classList.remove('desktop');
   }
 
