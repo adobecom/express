@@ -109,9 +109,6 @@ main .quotes.singular .quote-container .mobile-container {
     display: block;
     /* position: relative; */
   }
-}
-
-@media (min-width: 600px) {
   main .quotes.singular .quote-container .mobile-container {
     display: none;
     /* position: relative; */
@@ -165,14 +162,14 @@ main .quotes.singular .image {
   border-radius: 50%;
   /* box-sizing: border-box; */
   overflow: hidden;
-  display: none;
+  /* display: none; */
 }
 
-@media (min-width: 600px) {
+/* @media (min-width: 600px) {
   main .quotes.singular .image {
     display: unset;
   }
-}
+} */
 
 main .quotes.singular .image picture,
 main .quotes.singular .image picture img {
@@ -222,18 +219,18 @@ main .quotes.singular .quote-details {
 }
 
 @media (min-width: 600px) {
-  main .quotes.singular .quote-details {
+  main .quotes.singular .quote {
 
-    width: 600px;
+    width: 90%;
     font-size: 21px;
     /* font-weight: 600; */
   }
 }
 
 @media (min-width: 900px) {
-  main .quotes.singular .quote-details {
-
-    width: 800px;
+  main .quotes.singular .quote {
+    width: 90%;
+    max-width: 1024px;
     font-size: 21px;
     font-weight: 600;
   }
@@ -246,14 +243,14 @@ main .quotes.singular .author-description {
   font-size: 18px;
   font-weight: 600;
   /* font-weight: bold; */
-  display: none;
+  /* display: none; */
 }
 
-@media (min-width: 600px) {
+/* @media (min-width: 600px) {
   main .quotes.singular .author-description {
     display: unset;
   }
-}
+} */
 
 main .quotes.singular .mobile-container .author-panel {
   margin-top: 20px;
@@ -266,11 +263,11 @@ main .quotes.singular .mobile-container .author-panel {
   align-items: center;
 }
 
-@media (min-width: 600px) {
+/* @media (min-width: 600px) {
   main .quotes.singular .mobile-container .author-panel {
     display: none;
   }
-}
+} */
 
 main .quotes.singular .mobile-container .author-panel .author-photo {
   margin-right: 8px;
