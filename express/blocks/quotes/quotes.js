@@ -154,7 +154,7 @@ export default function decorate($block) {
     // $desktopContainer.append($desktopContainerBackground);
     $desktopContainer.append($quoteDesktop);
 
-    const $authorPhoto = createTag('div', { class: 'image' });
+    const $authorPhoto = createTag('div', { class: 'author-photo' });
     $quoteDesktop.append($authorPhoto);
 
     $authorPhoto.append($picture);

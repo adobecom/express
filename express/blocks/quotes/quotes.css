@@ -158,7 +158,7 @@ main .quotes.singular .quote {
 }
 
 
-main .quotes.singular .image {
+main .quotes.singular .author-photo {
   /* padding-right: 10px; */
   width: 100px;
   height: 100px;
@@ -175,8 +175,8 @@ main .quotes.singular .image {
   }
 } */
 
-main .quotes.singular .image picture,
-main .quotes.singular .image picture img {
+main .quotes.singular .author-photo picture,
+main .quotes.singular .author-photo picture img {
   width: 100%;
   height: 100%;
   object-fit: cover;
