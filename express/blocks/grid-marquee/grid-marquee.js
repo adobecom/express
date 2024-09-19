@@ -22,14 +22,14 @@ function createAnimation(src, title, poster) {
 let activeDrawer = null;
 function deactivateDrawer() {
   if (!activeDrawer) return;
-  activeDrawer.classList.remove('active');
   activeDrawer.closest('.card').setAttribute('aria-expanded', false);
+  activeDrawer.hidden = true;
   activeDrawer = null;
 }
 function activateDrawer(drawer) {
   deactivateDrawer();
-  drawer.classList.add('active');
   drawer.closest('.card').setAttribute('aria-expanded', true);
+  drawer.hidden = false;
   activeDrawer = drawer;
 }
 document.addEventListener('click', (e) => {
@@ -39,11 +39,12 @@ document.addEventListener('click', (e) => {
   }
 });
 
-function createDrawer(card, title, tabs) {
+function createDrawer(card, title, panels) {
   const titleRow = createTag('div', { class: 'title-row' });
   const titleText = title.textContent.trim();
   const drawer = createTag('div', { class: 'drawer', id: `drawer-${titleText}` });
-  const closeButton = createTag('button', { class: 'drawer-close', 'aria-label': 'close' }, getIconElement('close-black'));
+  drawer.hidden = true;
+  const closeButton = createTag('button', { 'aria-label': 'close' }, getIconElement('close-black'));
   closeButton.addEventListener('click', (e) => {
     e.stopPropagation();
     deactivateDrawer();
@@ -56,20 +57,42 @@ function createDrawer(card, title, tabs) {
   const posterSrc = card.querySelector('img').src;
   const video = createAnimation(videoSrc, titleText, posterSrc);
   drawer.append(video);
-  const tabsContainer = createTag('div', { class: 'tabs-container', role: 'tablist' });
-  tabsContainer.append(...tabs);
-  if (tabs.length > 1) {
 
-    // const tabButton = createTag('button', { class: 'tab-button', 'aria-selected': false, 'aria-controls': '' });
-    // need list of buttons need aria-labelledby
+  drawer.append(...panels);
+  if (panels.length <= 1) {
+    return drawer;
   }
-  tabs.forEach((tab, index) => {
-    tab.classList.add('tab');
-    tab.role = 'tab';
-    if (index === 0) tab.classList.add('active');
-    tabsContainer.append(tab);
+
+  const tabList = createTag('div', { role: 'tablist' });
+  let activeTab = null;
+  panels.forEach((panel, i) => {
+    panel.role = 'tabpanel';
+    const tabHead = panel.querySelector('p:not(:has(a))');
+    const tabName = tabHead.textContent;
+    tabHead.remove();
+    panel.setAttribute('aria-labelledby', `tab-${tabName}`);
+    panel.id = `panel-${tabName}`;
+    if (i !== 0) panel.hidden = true;
+    const tab = createTag('button', {
+      role: 'tab',
+      'aria-selected': i === 0,
+      'aria-controls': `panel-${tabName}`,
+      id: `tab-${tabName}`,
+    }, tabName);
+    if (!activeTab) activeTab = tab;
+    tab.addEventListener('click', () => {
+      activeTab.setAttribute('aria-selected', false);
+      tab.setAttribute('aria-selected', true);
+      panels.forEach((p) => {
+        p.hidden = p !== panel;
+      });
+      activeTab = tab;
+    });
+    tabList.append(tab);
   });
-  drawer.append(tabsContainer);
+
+  panels[0].before(tabList);
+
   return drawer;
 }
 

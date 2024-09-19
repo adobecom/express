@@ -64,7 +64,6 @@
 }
 
 .grid-marquee .drawer {
-  display: none;
   position: fixed;
   left: 0;
   bottom: 0;
@@ -73,8 +72,8 @@
   padding: 16px;
 }
 
-.grid-marquee .drawer.active {
-  display: block;
+.grid-marquee .drawer[hidden] {
+  display: none;
 }
 
 .grid-marquee .drawer .title-row {
@@ -92,20 +91,30 @@
   padding: 10px 20px 20px 0px;
 }
 
-.grid-marquee .drawer-close {
+.grid-marquee .drawer [aria-label='close'] {
   background: unset;
   border: unset;
 }
 
-.grid-marquee .tabs-container {
+.grid-marquee .drawer [role='tab-list'] {
   display: flex;
 }
 
-.grid-marquee .tab a.button {
+.grid-marquee .drawer [role='tab'] {
+  background-color: unset;
+  border: unset;
+  border-radius: 15px;
+  padding: 10px;
+}
+.grid-marquee .drawer [role='tab'][aria-selected='true'] {
+  background-color: grey;
+}
+
+.grid-marquee .drawer [role='tabpanel'][hidden] {
   display: none;
 }
-.grid-marquee .tab.active a.button {
-  display: inline-block;
+
+.grid-marquee .drawer a.button {
   width: 100%;
   background-color: unset;
   color: unset;
