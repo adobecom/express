@@ -104,7 +104,7 @@ main .grid-width-6-desktop .banner.narrow.desktop {
   margin: 0 auto; 
 }
 
-main .banner.narrow.mobile { 
+main .banner.narrow { 
   max-width: 375px;
   margin: 0 auto; 
 }
