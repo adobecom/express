@@ -109,7 +109,7 @@ export default async function setHorizontalMasonry(el) {
     );
 
     const image = pictureContainer.querySelector('img');
-    if (image.width < image.height) { 
+    if (image.width < image.height) {
       image.classList.add('tall-prompt-image');
     }
 
