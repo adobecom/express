@@ -75,6 +75,10 @@ main .quotes .quote .author .image img {
 
 } */
 
+main div:has(> .quotes-wrapper .singular.quotes) {
+  padding-top: 0;
+}
+
 main .quotes-wrapper:has(.singular.quotes) {
   margin-left: 0;
   margin-right: 0;
@@ -153,6 +157,7 @@ main .quotes.singular .quote {
   display: flex;
   justify-content: center;
   padding: 100px 0 130px;
+  /* padding-bottom: 130px; */
   /* outline: 3px dotted #07f; */
   min-height: 372px;
 }

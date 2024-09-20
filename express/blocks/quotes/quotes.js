@@ -25,7 +25,7 @@ export default function decorate($block) {
 
     // The Desktop design has a different element layout from the mobile design, plus
     // the desktop design uses the background image twice, while the mobile design uses
-    // it once. Because of the many differences, it may be simpler to divide them into two fragments
+    // it once. Because of the many differences, it may be simpler to divide them into two layouts
     const $quoteContainer = createTag('div', { class: 'quote-container' });
     const $desktopContainer = createTag('div', { class: 'desktop-container' });
     const $mobileContainer = createTag('div', { class: 'mobile-container' });
@@ -93,7 +93,7 @@ export default function decorate($block) {
       backgroundUrl = $img.src;
       console.log('=== backgroundUrl', backgroundUrl);
 
-            const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0 url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`;
+      const backgroundDesktopCSS = `no-repeat calc(-600px + 50%) 0 url("${backgroundUrl}"), no-repeat calc(600px + 50%) 0  url("${backgroundUrl}")`;
       $desktopContainerBackground.style.background = backgroundDesktopCSS;
 
           const backgroundMobileCSS = `no-repeat 15% 12% url("${backgroundUrl}")`;
