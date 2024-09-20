@@ -178,7 +178,27 @@ export default async function decorate(block) {
   const colorProperties = extractProperties(block);
   addTempWrapper(block, 'columns');
 
+  const container = document.querySelector('div.columns.block');
   const rows = Array.from(block.children);
+
+  if (container?.classList.contains('narrow')) {
+    let count = 1;
+    rows.forEach((ele) => {
+      const headers = ele.querySelectorAll('h2');
+      if (headers.length > 0) {
+        headers.forEach((header) => {
+          const span = document.createElement('span');
+          span.style.background = 'linear-gradient(to top, rgb(201, 101, 214), rgb(239, 133, 120))';
+          span.style.webkitBackgroundClip = 'text';
+          span.style.backgroundClip = 'text';
+          span.style.color = 'transparent';
+          span.textContent = `${count}. `;
+          header.prepend(span);
+          count += 1;
+        });
+      }
+    });
+  }
 
   let numCols = 0;
   if (rows[0]) numCols = rows[0].children.length;

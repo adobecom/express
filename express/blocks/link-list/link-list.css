@@ -8,6 +8,11 @@ main .link-list-centered-container > div {
   max-width: 1200px;
 }
 
+main .link-list-wrapper .link-list.narrow {
+  max-width: 850px;
+  margin: 0 auto; 
+}
+
 main .link-list {
   display: block;
   overflow: hidden;

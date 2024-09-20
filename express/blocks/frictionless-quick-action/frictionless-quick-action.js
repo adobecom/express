@@ -212,6 +212,24 @@ async function startSDK(data = '', quickAction, block) {
   }
 }
 
+let timeoutId = null;
+function showErrorToast(block, msg) {
+  let toast = block.querySelector('.error-toast');
+  const hideToast = () => toast.classList.add('hide');
+  if (!toast) {
+    toast = createTag('div', { class: 'error-toast hide' });
+    toast.prepend(getIconElement('error'));
+    const close = createTag('button', {}, getIconElement('close-white'));
+    close.addEventListener('click', hideToast);
+    toast.append(close);
+    block.append(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.remove('hide');
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(hideToast, 6000);
+}
+
 async function startSDKWithUnconvertedFile(file, quickAction, block) {
   if (!file) return;
   const maxSize = QA_CONFIGS[quickAction].max_size ?? 40 * 1024 * 1024;
@@ -228,28 +246,12 @@ async function startSDKWithUnconvertedFile(file, quickAction, block) {
   }
   const placeholders = await fetchPlaceholders();
   let msg;
-  // FIXME: localize & placehold these messages
   if (!QA_CONFIGS[quickAction].input_check(file.type)) {
     msg = placeholders['file-type-not-supported'] ?? 'File type not supported.';
   } else {
     msg = placeholders['file-size-not-supported'] ?? 'File size not supported.';
   }
-
-  let toast = block.querySelector('.error-toast');
-  if (!toast) {
-    toast = createTag('div', { class: 'error-toast hide' }, msg);
-    toast.prepend(getIconElement('error'));
-    const close = createTag('button', {}, getIconElement('close-white'));
-    close.addEventListener('click', () => {
-      toast.classList.add('hide');
-    });
-    toast.append(close);
-    block.append(toast);
-  }
-  toast.classList.remove('hide');
-  setTimeout(() => {
-    toast.classList.add('hide');
-  }, 6000);
+  showErrorToast(block, msg);
 }
 
 export default async function decorate(block) {
