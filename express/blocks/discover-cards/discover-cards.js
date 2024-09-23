@@ -3,8 +3,8 @@ import buildGallery from '../../features/gallery/gallery.js';
 
 export default async function decorate(block) {
   const isBottomImageVariant = block.classList.contains('bottom-image');
-
   const firstChild = block.querySelector(':scope > div:first-child');
+
   if (firstChild && firstChild.querySelector('h3')) {
     firstChild.classList.add('centered-title');
     block.insertBefore(firstChild, block.firstChild);
@@ -22,6 +22,12 @@ export default async function decorate(block) {
     cardsWrapper.appendChild(card);
 
     const cardDivs = [...card.children];
+    if (isBottomImageVariant && cardDivs.length >= 2) {
+      const parent = cardDivs[0].parentNode;
+      parent.insertBefore(cardDivs[1], cardDivs[0]);
+      parent.insertBefore(cardDivs[0], cardDivs[1].nextSibling);
+    }
+
     cardDivs.forEach((element) => {
       if (element.tagName === 'H2') {
         element.classList.add('card-title');
