@@ -20,6 +20,8 @@ export default async function decorate(block) {
     if (index === 0 && firstChild) return;
     card.classList.add('card');
     card.classList.toggle('short', isBottomImageVariant);
+    card.classList.toggle('image-bottom', isBottomImageVariant);
+
     cardsWrapper.appendChild(card);
 
     const cardDivs = [...card.children];
