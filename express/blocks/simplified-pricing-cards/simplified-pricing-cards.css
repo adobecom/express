@@ -66,8 +66,7 @@ main .section:has(.pricing-cards)>div,
 .simplified-pricing-cards .card-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 20px 0 8px;
+  justify-content: space-between; 
   width: calc(var(--card-width) - 20px);
   margin: auto;
 }

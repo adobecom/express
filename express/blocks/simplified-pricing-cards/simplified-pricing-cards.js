@@ -27,7 +27,7 @@ function getHeightWithoutPadding(element) {
 }
 
 function equalizeHeights(el) {
-  const classNames = ['.card-header', '.plan-explanation', '.billing-toggle', '.pricing-area', '.card-cta-group'];
+  const classNames = [ '.plan-explanation', '.billing-toggle', '.pricing-area', '.card-cta-group'];
   const cardCount = el.querySelectorAll('.pricing-cards .card').length;
   if (cardCount === 1) return;
   for (const className of classNames) {
