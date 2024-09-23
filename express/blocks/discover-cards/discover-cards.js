@@ -2,7 +2,7 @@ import { createTag } from '../../scripts/utils.js';
 import buildGallery from '../../features/gallery/gallery.js';
 
 export default async function decorate(block) {
-  const isBottomImageVariant = block.classList.contains('bottom-image');
+  const isBottomImageVariant = !block.classList.contains('bottom-image');
   const firstChild = block.querySelector(':scope > div:first-child');
 
   if (firstChild && firstChild.querySelector('h3')) {
@@ -29,20 +29,18 @@ export default async function decorate(block) {
     }
 
     cardDivs.forEach((element) => {
+      const textHeader = element.querySelector('h4');
+      const textBody = element.querySelector('p');
+      if (textHeader && textBody) {
+        textHeader.style.textAlign = 'left';
+        textBody.style.marginTop = '5px';
+        textBody.style.marginBottom = '5px';
+        element.style.textAlign = 'left';
+      }
       if (element.tagName === 'H2') {
         element.classList.add('card-title');
       } else if (element.querySelector('a.button')) {
         element.classList.add('cta-section');
-
-        const h4Element = element.querySelector('h4');
-        if (h4Element) {
-          const pTagAfterH4 = h4Element.nextElementSibling;
-          if (pTagAfterH4 && pTagAfterH4.tagName === 'P') {
-            pTagAfterH4.classList.add('cta-section-text');
-          }
-        }
-      } else if (element.tagName === 'P') {
-        element.classList.add('card-text');
       }
     });
   });
