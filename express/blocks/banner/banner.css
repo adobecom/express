@@ -132,13 +132,14 @@ main .banner.cool p.button-container a.button {
   font-size: 17px;
 }
 
-@media (min-width: 600px) {
-  main .banner .cool-container {
-    padding: 63px 21% 45px;
-  }
+
+
+main .banner.cool {
+  /* padding-left: 82px;
+  padding-right: 82px; */
+
+  padding: 0 32px;
 }
-
-
 
 main .banner.cool,
 main .banner.cool h2 {
@@ -146,6 +147,24 @@ main .banner.cool h2 {
   color: var(--body-color);
   font-size: 45px;
   font-weight: 900;
+}
+
+@media (min-width: 600px) {
+  main .banner .cool-container {
+    padding: 63px 21% 45px;
+  }
+}
+
+@media (min-width: 900px) {
+  main .banner.cool {
+    padding: 0 82px;
+  }
+}
+
+@media (min-width: 1200px) {
+  main .banner.cool {
+    max-width: 1200px;
+  }
 }
 
 main .grid-width-6-desktop .banner.narrow.desktop {
