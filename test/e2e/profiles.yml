@@ -1,0 +1,8 @@
+---
+default: -p prod -b chromium --headless false --logConsole
+
+prod: 
+  baseUrl: https://www.adobe.com/express
+
+stage:
+  baseUrl: https://www.stage.adobe.com/express
