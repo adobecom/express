@@ -131,16 +131,16 @@ main .section .discover-cards {
     background-color: #333;
 }
 
-.circle-container {
+.section.section-wrapper .circle-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100vw;
     height: 84%;
-    margin-top: 81px !important;
+    margin-top: 81px;
     z-index: -1;
     overflow: hidden;
-    max-width: none !important;
+    max-width: none;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0) 150px), transparent;
   }
 
