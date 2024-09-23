@@ -19,9 +19,7 @@ export default async function decorate(block) {
   cards.forEach((card, index) => {
     if (index === 0 && firstChild) return;
     card.classList.add('card');
-    if (isBottomImageVariant) {
-      card.classList.add('short');
-    }
+    card.classList.toggle('short', isBottomImageVariant);
     cardsWrapper.appendChild(card);
 
     const cardDivs = [...card.children];
@@ -52,14 +50,14 @@ export default async function decorate(block) {
         textBody.style.fontSize = '14px';
       }
 
-      const image = element.querySelector('picture img');
-      if (image && isBottomImageVariant) {
-        image.classList.add('tall');
-        image.classList.remove('short');
+      if (element.classList.contains('button-container')) {
+        element.classList.toggle('center-button', isBottomImageVariant);
       }
-      if (image && !isBottomImageVariant) {
-        image.classList.add('short');
-        image.classList.remove('tall');
+
+      const image = element.querySelector('picture img');
+      if (image) {
+        image.classList.add(isBottomImageVariant ? 'tall' : 'short');
+        image.classList.remove(isBottomImageVariant ? 'short' : 'tall');
       }
 
       if (element.tagName === 'H2') {

@@ -53,6 +53,21 @@
     height: 274px;
 }
 
+.card .button-container.center-button {
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    display: block;
+    justify-content: center;
+}
+
+.discover-cards .card .button-container.center-button a {
+    border: 1px solid black;
+    background-color: white;
+    color: black;
+    text-align: center;
+}
+
 .card h2, .card h4 {
     font-size: 1.5em;
     margin-bottom: 0.5em;
