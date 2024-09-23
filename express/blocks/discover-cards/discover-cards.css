@@ -27,6 +27,10 @@
     overflow: hidden;
 }
 
+.card.short {
+    height: 415px;
+}
+
 .card div {
     flex: 1;
     display: flex;
@@ -36,10 +40,17 @@
 
 .card picture img {
     width: 100%; 
-    height: 198px;
     object-fit: cover;
     margin-bottom: 16px;
     display: block;
+}
+
+.card picture img.short {
+    height: 198px;
+}
+
+.card picture img.tall {
+    height: 274px;
 }
 
 .card h2, .card h4 {
