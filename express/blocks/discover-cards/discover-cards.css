@@ -11,7 +11,7 @@
 }
 
 .card {
-    width: 385px;
+    min-width: 385px;
     height: 435px;
     border: 1px solid #ccc;
     border-radius: 8px;
