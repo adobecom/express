@@ -62,7 +62,9 @@ main .section:has(.pricing-cards)>div,
   z-index: -1;
   pointer-events: none;
 }
-
+.simplified-pricing-cards .card-header p {
+  margin: 0;
+}
 .simplified-pricing-cards .card-header {
   display: flex;
   align-items: center;
