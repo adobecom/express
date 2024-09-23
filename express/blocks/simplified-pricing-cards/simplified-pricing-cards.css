@@ -1,8 +1,4 @@
-main .section>.pricing-cards-wrapper {
-  max-width: fit-content;
-}
-
-.simplified-pricing-cards {
+:root {
   --card-width: 300px;
   --card-padding: 12px;
   --body-font-size-xs: 0.875rem;
@@ -11,17 +7,21 @@ main .section>.pricing-cards-wrapper {
   --heading-font-size-s: 1.5rem;
 }
 
+.simplified-pricing-cards {
+  --card-width: 300px;
+}
+
 main .section:has(.pricing-cards)>div,
-.pricing-cards-container>div.pricing-cards-wrapper {
+.pricing-cards-container>div.pricing-cards-wrapper,
+main .section>.pricing-cards-wrapper {
   max-width: unset;
 }
 
 .simplified-pricing-cards .card-wrapper {
-  margin: auto;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 20px;
+  margin: 20px auto 0;
   width: min-content;
 }
 
@@ -38,14 +38,81 @@ main .section:has(.pricing-cards)>div,
   border-radius: 24px;
 }
 
-.simplified-pricing-cards .none {
-  display: none;
-}
-
 .simplified-pricing-cards .card.gradient-promo {
   background: linear-gradient(white 0 0) padding-box,
     linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) border-box;
   border: 2px solid transparent;
+}
+
+.simplified-pricing-cards .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: calc(var(--card-width) - 20px);
+  margin: 30px auto 10px;
+}
+
+.simplified-pricing-cards .card-header h2 {
+  font-weight: var(--heading-font-weight);
+  line-height: var(--heading-line-height);
+  font-size: 1.75rem;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row-reverse;
+  text-align: left;
+}
+
+.simplified-pricing-cards .card-header img {
+  width: 22px;
+  height: 22px;
+}
+
+.simplified-pricing-cards .card-header .head-cnt {
+  border-bottom: 1px solid #000;
+  padding-bottom: 2px;
+  font-size: var(--body-font-size-m);
+  font-weight: 400;
+  margin-top: 5px;
+}
+
+.simplified-pricing-cards .card-header .head-cnt>img {
+  width: 14px;
+  height: 14px;
+  padding-right: 6px;
+}
+
+.simplified-pricing-cards .card>.plan-explanation {
+  margin: 0 auto;
+  text-align: left;
+  width: calc(var(--card-width) - 20px);
+}
+
+.simplified-pricing-cards .pricing-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.simplified-pricing-cards .pricing-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  border-radius: 8px;
+  padding: var(--card-padding);
+  margin-top: 5px;
+  text-align: left;
+}
+
+.simplified-pricing-cards .pricing-area h2 {
+  text-align: left;
+}
+
+.simplified-pricing-cards .pricing-area p {
+  margin: 0;
+  font-size: var(--body-font-size-s);
 }
 
 .simplified-pricing-cards .promo-eyebrow-text {
@@ -83,81 +150,6 @@ main .section:has(.pricing-cards)>div,
   height: 0;
 }
 
-.simplified-pricing-cards .card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: calc(var(--card-width) - 20px);
-  margin: 30px auto 10px auto;
-}
-
-
-.pricing-cards.block .card-header h2,
-.simplified-pricing-cards .card-header h2 {
-  font-weight: var(--heading-font-weight);
-  line-height: var(--heading-line-height);
-  font-size: 1.75rem;
-  margin-top: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.simplified-pricing-cards .card-header h2 {
-  flex-direction: row-reverse;
-  text-align: left;
-}
-
-.simplified-pricing-cards .card-header img {
-  width: 22px;
-  height: 22px;
-}
-
-.simplified-pricing-cards .card-header .head-cnt {
-  border-bottom: 1px solid #000;
-  padding-bottom: 2px;
-  font-size: var(--body-font-size-m);
-  font-weight: 400;
-  margin-top: 5px;
-}
-
-.simplified-pricing-cards .card-header .head-cnt>img {
-  width: 14px;
-  height: 14px;
-  padding-right: 6px;
-}
-
-.simplified-pricing-cards .card>.plan-explanation {
-  margin: 0 auto 0 auto;
-  text-align: left;
-  width: calc(var(--card-width) - 20px);
-}
-
-.simplified-pricing-cards .pricing-section {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.simplified-pricing-cards .pricing-area {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  position: relative;
-  border-radius: 8px;
-  padding: var(--card-padding);
-  margin-top: 5px;
-  text-align: left;
-}
-
-.simplified-pricing-cards .pricing-area h2 {
-  text-align: left;
-}
-
-.simplified-pricing-cards .pricing-area p {
-  margin: 0;
-  font-size: var(--body-font-size-s);
-}
 
 .simplified-pricing-cards .pricing-area .pricing-row-suf {
   font-size: var(--body-font-size-xs);
@@ -200,16 +192,8 @@ main .section:has(.pricing-cards)>div,
   max-width: 240px;
 }
 
-.simplified-pricing-cards .card-offer a {
-  text-decoration: underline;
-}
-
 .simplified-pricing-cards .pricing-base-price,
-.simplified-pricing-cards .pricing-price {
-  font-size: 28px;
-  font-weight: 900;
-}
-
+.simplified-pricing-cards .pricing-price,
 .simplified-pricing-cards .pricing-price>* {
   font-size: 28px;
   font-weight: 900;
@@ -266,6 +250,45 @@ main .section:has(.pricing-cards)>div,
   width: 100%;
 }
 
+.simplified-pricing-cards .tooltip {
+  position: relative;
+  display: inline;
+}
+
+.simplified-pricing-cards .tooltip span {
+  position: relative;
+}
+
+.simplified-pricing-cards .tooltip .icon:hover~.tooltip-text {
+  opacity: 1;
+}
+
+.pricing-cards>div:last-of-type {
+  padding: 12px 8px;
+  margin: 16px auto 40px;
+  border-radius: 4px;
+  background: #E0E2FF;
+  font-size: var(--body-font-size-xs);
+  max-width: 1200px;
+  box-sizing: border-box;
+}
+
+.simplified-pricing-cards .toggle-switch {
+  display: none;
+}
+
+.simplified-pricing-cards .card.hide .toggle-switch {
+  rotate: 180deg;
+}
+
+.simplified-pricing-cards a.button.compare-all-button {
+  background-color: white;
+  border: 2px solid black;
+  color: black;
+  margin-top: 30px;
+}
+/* Tooltip CSS */
+
 .simplified-pricing-cards .tooltip-icon {
   position: relative;
   top: 2px;
@@ -316,46 +339,6 @@ main .section:has(.pricing-cards)>div,
   left: inherit;
   right: 20px;
 }
-
-.simplified-pricing-cards .tooltip {
-  position: relative;
-  display: inline;
-}
-
-.simplified-pricing-cards .tooltip span {
-  position: relative;
-}
-
-.simplified-pricing-cards .tooltip .icon:hover~.tooltip-text {
-  opacity: 1;
-}
-
-.pricing-cards>div:last-of-type {
-  padding: 12px 8px;
-  margin: 16px auto;
-  border-radius: 4px;
-  background: #E0E2FF;
-  font-size: var(--body-font-size-xs);
-  max-width: 1200px;
-  margin-bottom: 40px;
-  box-sizing: border-box;
-}
-
-.simplified-pricing-cards .toggle-switch {
-  display: none;
-}
-
-.simplified-pricing-cards .card.hide .toggle-switch {
-  rotate: 180deg;
-}
-
-.simplified-pricing-cards a.button.compare-all-button {
-  background-color: white;
-  border: 2px solid black;
-  color: black;
-  margin-top: 30px;
-}
-
 @media (max-width: 600px) {
   .simplified-pricing-cards {
     flex-wrap: wrap;
@@ -376,7 +359,6 @@ main .section:has(.pricing-cards)>div,
 
   .simplified-pricing-cards .pricing-area-wrapper {
     margin-bottom: 20px;
-
   }
 
   .simplified-pricing-cards .card-header {
@@ -403,7 +385,6 @@ main .section:has(.pricing-cards)>div,
     margin: 0;
     width: 0;
     height: 0;
-
   }
 
   .simplified-pricing-cards .card-header p:nth-of-type(2) {
@@ -413,14 +394,9 @@ main .section:has(.pricing-cards)>div,
   }
 
   .simplified-pricing-cards .card-header p:nth-of-type(2) em {
-    padding: 5px 7px 5px 7px;
+    padding: 5px 7px;
     font-size: 12px;
   }
-
-
-
-
-
 }
 
 @media (max-width: 1024px) {
@@ -435,28 +411,21 @@ main .section:has(.pricing-cards)>div,
     margin-left: 10px;
     margin-right: 0;
   }
-  .simplified-pricing-cards .card-wrapper .card.hide .plan-explanation {
-    display: none;
-  }
 
-  .simplified-pricing-cards .card-wrapper .card.hide .pricing-area {
-    display: none;
-  }
-
+  .simplified-pricing-cards .card-wrapper .card.hide .plan-explanation,
+  .simplified-pricing-cards .card-wrapper .card.hide .pricing-area,
   .simplified-pricing-cards .card-wrapper .card.hide .card-cta-group {
     display: none;
   }
 
   .simplified-pricing-cards .card-header {
-    margin: 10px auto 10px auto;
-
+    margin: 10px auto;
   }
-
 }
+
 @media (min-width: 1400px) {
   .simplified-pricing-cards .card-wrapper {
     width: max-content;
     gap: 16px;
   }
-
 }
