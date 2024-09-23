@@ -124,9 +124,17 @@ main .banner .cool-container {
   border: 2px solid #fff;
 }
 
+main .banner.cool p.button-container {
+  margin-top: 21px;
+}
+
+main .banner.cool p.button-container a.button {
+  font-size: 17px;
+}
+
 @media (min-width: 600px) {
   main .banner .cool-container {
-    padding: 63px 21%;
+    padding: 63px 21% 45px;
   }
 }
 
