@@ -20,7 +20,7 @@ main .section.banner-standout-container {
 }
 
 main .section.banner-cool-container {
-  padding: 60px 0;
+  padding: 65px 0;
 }
 
 main .section.banner-compact-container {
@@ -126,7 +126,7 @@ main .banner .cool-container {
 
 @media (min-width: 600px) {
   main .banner .cool-container {
-    padding: 69px 21%;
+    padding: 63px 21%;
   }
 }
 
