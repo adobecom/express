@@ -17,20 +17,19 @@ main .section:has(.pricing-cards)>div,
 }
 
 .simplified-pricing-cards .card-wrapper {
-  margin: auto;
-  padding: 10px;
+  margin: auto; 
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  margin-top: 20px;
   width: min-content;
 }
 
 .simplified-pricing-cards .card {
   width: var(--card-width);
   position: relative;
-  padding: 0 10px;
-  z-index: 1;
-  border: 2px solid #C6C6C6;
+  padding: 0 10px; 
+  border: 3px solid #C6C6C6;
   background-color: white;
   margin-top: 48px;
   display: flex;
@@ -44,46 +43,53 @@ main .section:has(.pricing-cards)>div,
 }
 
 .simplified-pricing-cards .card.gradient-promo {
-  margin-top: unset;
   background: linear-gradient(white 0 0) padding-box,
     linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) border-box;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  border-top-width: 56px;
+  border: 2px solid transparent; 
 }
 
 .simplified-pricing-cards .promo-eyebrow-text {
-  position: absolute;
-  top: -44px;
-  text-align: center;
-  color: white;
-  width: 100%;
-  left: 0;
-  z-index: -1;
-  pointer-events: none;
+  display: none;
+  height: 0px;
 }
 .simplified-pricing-cards .card-header p {
   margin: 0;
 }
+
+.simplified-pricing-cards .card-header p:has(em) {
+  width: fit-content;
+  margin: auto;
+  margin-right: 0;
+}
+
+.simplified-pricing-cards .card-header p em {
+  padding: 5px 7px 5px 7px;
+  border-radius: 24px;
+  border: 1px solid transparent;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  color: white;
+  display: block;
+  margin-right: 5px;
+  background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) border-box;
+}
+
+.simplified-pricing-cards .card-header p:nth-of-type(2) {
+  display: none;
+  margin: 0;
+  width: 0;
+  height: 0;
+}
+
 .simplified-pricing-cards .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between; 
   width: calc(var(--card-width) - 20px);
-  margin: auto;
+  margin: 30px auto 10px auto;
 }
-
-.simplified-pricing-cards .card.gradient-promo .card-header {
-  height: 35px;
-  border: 20px solid white;
-  border-bottom: 0;
-  top: -12px;
-  position: relative;
-  width: calc(var(--card-width) - 20px  );
-  border-radius: 8px;
-  left: -10px;
-  padding: 0;
-}
+ 
 
 .pricing-cards.block .card-header h2,
 .simplified-pricing-cards .card-header h2 {
@@ -111,6 +117,7 @@ main .section:has(.pricing-cards)>div,
   padding-bottom: 2px;
   font-size: var(--body-font-size-m);
   font-weight: 400;
+  margin-top: 5px;
 }
 
 .simplified-pricing-cards .card-header .head-cnt>img {
@@ -140,6 +147,10 @@ main .section:has(.pricing-cards)>div,
   padding: var(--card-padding);
   margin-top: 5px; 
   text-align: left;
+}
+
+.simplified-pricing-cards .pricing-area h2 {
+   text-align: left;
 }
 
 .simplified-pricing-cards .pricing-area p {
@@ -194,11 +205,11 @@ main .section:has(.pricing-cards)>div,
 
 .simplified-pricing-cards .pricing-base-price,
 .simplified-pricing-cards .pricing-price {
-  font-size: 36px;
+  font-size: 18px;
   font-weight: 900;
 }
 .simplified-pricing-cards .pricing-price > * {
-  font-size: 36px;
+  font-size: 30px;
   font-weight: 900;
 }
 .simplified-pricing-cards .pricing-price.price-active {
@@ -207,11 +218,13 @@ main .section:has(.pricing-cards)>div,
 
 .simplified-pricing-cards .pricing-base-price {
   color: var(--color-gray-600);
+  font-size: 18px;
 }
 
 .simplified-pricing-cards .pricing-base-price>strong {
   text-decoration: line-through;
   padding-right: 4px;
+  font-size: 30px;
 }
 
 .simplified-pricing-cards .pricing-price>strong,
@@ -333,7 +346,12 @@ main .section:has(.pricing-cards)>div,
   rotate: 180deg;
 }
 
-
+.simplified-pricing-cards a.button.compare-all-button {
+  background-color: white;
+  border: 2px solid black;
+  color: black;
+  margin-top: 30px;
+}
 
 @media (max-width: 600px) {
   .simplified-pricing-cards {
@@ -345,8 +363,9 @@ main .section:has(.pricing-cards)>div,
     --card-width: 325px;
     margin: auto;
     min-height: unset;
-  } 
-
+    padding: 10px;
+  }  
+  
   .simplified-pricing-cards .card-cta-group,
   .simplified-pricing-cards .pricing-area-wrapper {
     min-height: unset;
@@ -354,23 +373,42 @@ main .section:has(.pricing-cards)>div,
 
   .simplified-pricing-cards .pricing-area-wrapper {
     margin-bottom: 20px;
+    
   } 
 
   .simplified-pricing-cards .card-header {
     display: flex;
+    margin-top: 10px;
   }
 
   .simplified-pricing-cards .card-header > * {
     margin-right: auto; 
   }
 
+  .simplified-pricing-cards .card-header > p {
+    margin-top: 4px;
+    font-size: 18px;
+  }
   .simplified-pricing-cards .card-header > *:first-child {
     margin-right: 10px;
   }
 
+  .simplified-pricing-cards .card-header p:nth-of-type(1) em {
+    display: none;
+    margin: 0;
+    width: 0;
+    height: 0;
+   }
+
+   .simplified-pricing-cards .card-header p:nth-of-type(2){
+    display: block;
+    width: unset;
+    height: unset;
+   }
+
   .simplified-pricing-cards .toggle-switch {
     font-weight: 600;
-    transform: scalex(1.75) rotate(90deg);
+    transform: scalex(1.75) rotate(90deg) translateY(-2px);
     display: block; 
     margin-left: auto;
     margin-right: 0;
@@ -388,6 +426,8 @@ main .section:has(.pricing-cards)>div,
 .simplified-pricing-cards .card-wrapper .card.hide .card-cta-group {
   display: none;
 }
+
+
 
 }
 

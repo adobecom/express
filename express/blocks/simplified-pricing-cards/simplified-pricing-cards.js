@@ -14,9 +14,9 @@ import {
 import BlockMediator from '../../scripts/block-mediator.min.js';
 import { adjustElementPosition, handleTooltip } from './simplified-pricing-tooltip.js';
 
-const SAVE_PERCENTAGE = '{{savePercentage}}';
-const SALES_NUMBERS = '{{business-sales-numbers}}';
-const PRICE_TOKEN = '{{pricing}}';
+const SAVE_PERCENTAGE = '[[savePercentage]]';
+const SALES_NUMBERS = '[[business-sales-numbers]]';
+const PRICE_TOKEN = '[[pricing]]';
 const YEAR_2_PRICING_TOKEN = '[[year-2-pricing-token]]';
 
 function getHeightWithoutPadding(element) {
@@ -61,7 +61,7 @@ function suppressOfferEyebrow(specialPromo) {
 function getPriceElementSuffix(placeholders, placeholderArr, response) {
   return placeholderArr
     .map((phText) => {
-      const key = phText.replace('{{', '').replace('}}', '');
+      const key = phText.replace('[[', '').replace(']]', '');
       return key.includes('vat') && !response.showVat
         ? ''
         : placeholders?.[key] || '';
@@ -166,9 +166,11 @@ function handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent) {
 function handleRawPrice(price, basePrice, response) {
   price.innerHTML = response.formatted;
   basePrice.innerHTML = response.formattedBP || '';
-  basePrice.innerHTML !== ''
-    ? price.classList.add('price-active')
-    : price.classList.remove('price-active');
+  if (basePrice.innerHTML !== '') {
+    price.classList.add('price-active')
+  } else {
+    price.classList.remove('price-active');
+  }
 }
 
 async function createPricingSection(
@@ -290,7 +292,7 @@ function decorateHeader(header, planExplanation) {
 
 function decorateCardBorder(card, source) {
   source.classList.add('promo-eyebrow-text');
-  const pattern = /\{\{(.*?)\}\}/g;
+  const pattern = /\[\[(.*?)\]\]/g;
   const matches = Array.from(source.textContent?.matchAll(pattern));
   if (matches.length > 0) {
     const [, promoType] = matches[matches.length - 1];
@@ -331,6 +333,7 @@ export default async function init(el) {
     el.children[0].appendChild(card);
   }
 
+  rows[rows.length - 1].querySelector('a').classList.add('button' , 'compare-all-button')
   el.appendChild(rows[rows.length - 2]);
   el.appendChild(rows[rows.length - 1]);
   
