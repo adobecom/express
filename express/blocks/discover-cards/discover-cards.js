@@ -2,7 +2,7 @@ import { createTag } from '../../scripts/utils.js';
 import buildGallery from '../../features/gallery/gallery.js';
 
 export default async function decorate(block) {
-  const isBottomImageVariant = block.classList.contains('bottom-image');
+  const isBottomImageVariant = !block.classList.contains('bottom-image');
   const firstChild = block.querySelector(':scope > div:first-child');
 
   if (firstChild && firstChild.querySelector('h3')) {
@@ -15,6 +15,41 @@ export default async function decorate(block) {
   });
 
   const cards = block.querySelectorAll(':scope > div');
+  const subHeader = firstChild.querySelector('h4');
+  if (isBottomImageVariant) {
+    subHeader.style.fontWeight = 400;
+    subHeader.style.fontSize = '16px';
+    subHeader.style.textAlign = 'center';
+    subHeader.style.marginTop = '20px';
+    subHeader.style.marginBottom = '32px';
+  } else if (subHeader) {
+    subHeader.style.display = 'none';
+    firstChild.style.marginBottom = '30px';
+  }
+
+  const targetElement = document.querySelector('.discover-cards');
+  if (targetElement) {
+    const { parentElement } = targetElement;
+
+    if (parentElement) {
+      const circleContainer = createTag('div', {
+        class: 'circle-container',
+      });
+
+      const gradientOverlay = createTag('div', { class: 'gradient-overlay' });
+      circleContainer.appendChild(gradientOverlay);
+      const circles = ['blue-circle', 'pink-circle', 'purple-circle', 'light-blue-circle', 'light-purple-circle'].map((className) => {
+        const circle = createTag('div', {
+          class: `circle ${className}`,
+        });
+        return circle;
+      });
+      circles.forEach((circle) => {
+        circleContainer.appendChild(circle);
+      });
+      parentElement.appendChild(circleContainer);
+    }
+  }
 
   cards.forEach((card, index) => {
     if (index === 0 && firstChild) return;

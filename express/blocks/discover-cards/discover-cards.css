@@ -1,4 +1,8 @@
-.discover-cards-container .discover-cards.block {
+.discover-cards-container .discover-cards {
+    max-width: none;
+}
+
+main .section .discover-cards {
     max-width: none;
 }
 
@@ -16,14 +20,14 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 16px;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.7);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 10px auto;
     flex: 1 1 calc(33.33% - 32px);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    position: relative; /* Necessary for absolute positioning of the image */
+    position: relative;
     overflow: hidden;
 }
 
@@ -126,3 +130,72 @@
 .card .button:hover {
     background-color: #333;
 }
+
+.circle-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 84%;
+    margin-top: 81px !important;
+    z-index: -1;
+    overflow: hidden;
+    max-width: none !important;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0) 150px), transparent;
+  }
+
+  
+  .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: 
+      linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
+      linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%);
+  }
+  
+  .blue-circle, .pink-circle, .purple-circle, .light-blue-circle, .light-purple-circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(172px);
+  }
+  
+  .blue-circle {
+    width: 222px;
+    height: 222px;
+    background: #31A8FF;
+    top: 35%; left: 4%;
+  }
+  
+  .pink-circle {
+    width: 381px;
+    height: 381px;
+    background: #E055E2;
+    top: 14%; left: 14%;
+  }
+  
+  .purple-circle {
+    width: 641px;
+    height: 641px;
+    background: #99F;
+    bottom: 10%; right: 36%;
+  }
+  
+  .light-blue-circle {
+    width: 445px;
+    height: 445px;
+    background: #31A8FF;
+    bottom: 30%; left: 55%;
+  }
+  
+  .light-purple-circle {
+    width: 191px;
+    height: 191px;
+    background: #E055E2;
+    top: 55%; right: 10%;
+  }
+  
