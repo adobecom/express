@@ -58,6 +58,7 @@ main .section>.simplified-pricing-cards-wrapper {
   gap: 8px;
   flex-direction: row-reverse;
   text-align: left;
+  margin-right: 5px;
 }
 
 .simplified-pricing-cards .card-header img {
@@ -260,16 +261,6 @@ main .section>.simplified-pricing-cards-wrapper {
   opacity: 1;
 }
 
-/* .pricing-cards>div:last-of-type {
-  padding: 12px 8px;
-  margin: 16px auto 40px;
-  border-radius: 4px;
-  background: #E0E2FF;
-  font-size: var(--body-font-size-xs);
-  max-width: 1200px;
-  box-sizing: border-box;
-} */
-
 .simplified-pricing-cards .toggle-switch {
   display: block;
   font-weight: 600;
@@ -396,7 +387,7 @@ main .section>.simplified-pricing-cards-wrapper {
   }
 
   .simplified-pricing-cards .card-header {
-    margin: 30px auto 10px;
+    margin: 10px auto 10px;
   }
 
   .simplified-pricing-cards .card-header h2 {
@@ -434,7 +425,7 @@ main .section>.simplified-pricing-cards-wrapper {
   .simplified-pricing-cards .card-header {
     justify-content: unset;
     gap: unset;
-    margin: 30px auto auto auto;
+    margin: 10px auto auto auto;
     padding: 5px;
 
   }
