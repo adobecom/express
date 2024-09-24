@@ -1,4 +1,10 @@
-import { getMetadata, getIconElement, createTag } from '../../scripts/utils.js';
+import {
+  getMetadata,
+  getIconElement,
+  createTag,
+  fetchPlaceholders,
+  getMobileOperatingSystem,
+} from '../../scripts/utils.js';
 
 function createAnimation(src, title, poster) {
   const attribs = {
@@ -120,13 +126,47 @@ function convertToCard(item) {
   return card;
 }
 
+function decorateHeadline(headline) {
+  headline.classList.add('headline');
+  const ctas = [...headline.querySelectorAll('a')];
+  if (!ctas.length) return headline;
+  ctas.forEach((cta) => cta.classList.add('button'));
+  ctas[0].classList.add('primaryCTA');
+  headline.querySelectorAll('p');
+  return headline;
+}
+// apple-store.svg
+// google-store.svg
+async function decorateRatings(el, store) {
+  const placeholders = await fetchPlaceholders();
+  const score = placeholders[`${store}-store-rating-score`];
+  const cnt = placeholders[`${store}-store-rating-count`];
+  const star = getIconElement('star');
+  const storeIcon = getIconElement(`${store}-store`);
+  el.append(score, star, cnt, storeIcon);
+}
+
+function createRatings() {
+  const ratings = createTag('div', { class: 'ratings' });
+  const userAgent = getMobileOperatingSystem();
+  if (userAgent !== 'Android') {
+    const el = createTag('div', { class: 'container' });
+    ratings.append(el);
+    decorateRatings(el, 'apple');
+  }
+  if (userAgent !== 'iOS') {
+    const el = createTag('div', { class: 'container' });
+    ratings.append(el);
+    decorateRatings(el, 'google');
+  }
+  return ratings;
+}
+
 export default function init(el) {
   const rows = [...el.querySelectorAll(':scope > div')];
-  const headline = rows[0];
+  const headline = decorateHeadline(rows[0]);
   const background = rows[1];
-  const items = rows.slice(2, rows.length - 1);
-  const ratings = rows[rows.length - 1];
-  headline.classList.add('headline');
+  const items = rows.slice(2);
   background.classList.add('background');
   const backgroundMediaDivs = [...background.querySelectorAll(':scope > div')];
   backgroundMediaDivs.forEach((div, index) => {
@@ -142,8 +182,7 @@ export default function init(el) {
     logo.classList.add('express-logo');
     foreground.prepend(logo);
   }
-  ratings.classList.add('ratings');
-  foreground.append(ratings);
+  foreground.append(createRatings());
   el.append(foreground);
 }
 // delay dom for tablet/desktop?
