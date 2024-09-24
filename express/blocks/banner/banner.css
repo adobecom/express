@@ -17,7 +17,7 @@ main .section.banner-standout-container {
   padding: 48px 0;
 }
 
-main .section.banner-cool-container {
+div:has(> .banner.cool) {
   padding: 40px 0;
 }
 
