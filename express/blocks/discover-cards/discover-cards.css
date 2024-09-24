@@ -1,6 +1,6 @@
 .discover-cards-container .discover-cards {
     background-image: 
-    linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, white 100%), 
+    linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, var(--color-white) 100%),
     url(/express/img/cards-bg-large.png);
     background-size: cover;
     background-position: center;
@@ -35,7 +35,7 @@ main .section .discover-cards {
     height: 478px;
     border-radius: 8px;
     padding: 16px;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(var(--color-white), 0.7);
     margin: 10px auto;
     flex: 1 1 calc(33.33% - 32px);
     box-sizing: border-box;
@@ -128,9 +128,9 @@ main .section .discover-cards {
 }
 
 .discover-cards .card .button-container.center-button a {
-    border: 1px solid black;
-    background-color: white;
-    color: black;
+    border: 1px solid var(--color-black);
+    background-color: var(--color-white);
+    color: var(--color-black);
     text-align: center;
 }
 
@@ -162,8 +162,8 @@ main .section .discover-cards {
 }
 
 .discover-cards .card .button-container a {
-    background-color: black;
-    color: white;
+    background-color: #292929;
+    color: var(--color-white);
     border: none;
     width: 78px;
     margin-left: 0;
