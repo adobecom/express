@@ -73,6 +73,8 @@ export default async function decorate(block) {
 
   block.appendChild(cardsWrapper);
   await buildGallery(cards, cardsWrapper);
-  const parentBlock = document.querySelector('.discover-cards');
-  parentBlock.style.backgroundImage = 'linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, #FFFFFF 100%), url(/express/blocks/discover-cards/img/cards-bg-large.webp)';
+  if (!isBottomImageVariant) {
+    const parentBlock = document.querySelector('.discover-cards');
+    parentBlock.style.backgroundImage = 'linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, #FFFFFF 100%), url(/express/blocks/discover-cards/img/cards-bg-large.webp)';
+  }
 }
