@@ -336,6 +336,12 @@ main .section>.simplified-pricing-cards-wrapper {
   right: 20px;
 }
 
+.simplified-pricing-cards .card-wrapper .card.hide .plan-explanation,
+.simplified-pricing-cards .card-wrapper .card.hide .pricing-area,
+.simplified-pricing-cards .card-wrapper .card.hide .card-cta-group {
+  display: none;
+}
+
 /* Tablet styles */
 @media (min-width: 601px) and (max-width: 1200px) {
   .simplified-pricing-cards {
@@ -411,6 +417,12 @@ main .section>.simplified-pricing-cards-wrapper {
     width: unset;
     height: unset;
   }
+  .simplified-pricing-cards .card-wrapper .card.hide .plan-explanation,
+  .simplified-pricing-cards .card-wrapper .card.hide .pricing-area,
+  .simplified-pricing-cards .card-wrapper .card.hide .card-cta-group {
+    display: flex;
+  }
+
 }
 
 @media (min-width: 1201px) and (max-width: 1399px) {
