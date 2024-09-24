@@ -15,7 +15,7 @@ main .quotes .quote {
   box-sizing: border-box;
   border-radius: 20px;
   margin: 0 auto;
-  background-color: #FFF;
+  background-color: #fff;
   padding: 32px;
   display: flex;
   flex-direction: column;
@@ -41,7 +41,7 @@ main .quotes .quote .author .summary {
 }
 
 main .quotes .quote .content::before {
-  content: "“";
+  content: '“';
   display: block;
   position: absolute;
   margin-top: -50px;
@@ -75,7 +75,6 @@ main .quotes .quote .author .image img {
   box-sizing: border-box;
 }
 
-
 /* .quotes-wrapper:has(.has-background) {
 
 } */
@@ -98,7 +97,6 @@ main .quotes.singular {
 
 main .quotes.singular .quote-container {
   width: 100%;
-
 }
 
 main .quotes.singular .quote-container .desktop-container {
@@ -136,8 +134,6 @@ main .quotes.singular .quote-container .desktop-container .background {
   /* opacity: 0.6; */
 }
 
-
-
 main .quotes.singular .quote-container .mobile-container .background {
   position: absolute;
   width: 100%;
@@ -169,12 +165,11 @@ main .quotes.singular .quote {
   min-height: 320px;
 }
 
-
 main .quotes.singular .author-photo {
   /* padding-right: 10px; */
   width: 100px;
   height: 100px;
-  min-width: 100px;  /* at certain container width, the 100px width may be made smaller by the browser, so impose a min-width */
+  min-width: 100px; /* at certain container width, the 100px width may be made smaller by the browser, so impose a min-width */
   border-radius: 50%;
   /* box-sizing: border-box; */
   overflow: hidden;
@@ -204,11 +199,10 @@ main .quotes.singular .mobile-container .author-photo {
   /* padding-right: 10px; */
   width: 60px;
   height: 60px;
-  min-width: 60px;  /* at certain container width, the 60px width may be made smaller by the browser, so impose a min-width */
+  min-width: 60px; /* at certain container width, the 60px width may be made smaller by the browser, so impose a min-width */
   border-radius: 50%;
   /* box-sizing: border-box; */
   overflow: hidden;
-
 }
 
 main .quotes.singular .mobile-container .author-photo picture,
@@ -236,12 +230,11 @@ main .quotes.singular .quote-details {
 }
 
 main .quotes.singular .desktop-container .quote-details {
-margin-left: 30px;
+  margin-left: 30px;
 }
 
 @media (min-width: 600px) {
   main .quotes.singular .quote {
-
     width: 80%;
     /* font-size: 22px; */
     /* font-weight: 600; */
@@ -361,7 +354,6 @@ main .section.quotes-dark-container {
 }
 
 @media (min-width: 900px) {
-
   main .quotes-container > div,
   main .quotes-highlight-container > div,
   main .quotes-dark-container > div {
@@ -379,7 +371,6 @@ main .section.quotes-dark-container {
 }
 
 @media (min-width: 1200px) {
-
   main .quotes-container > div,
   main .quotes-highlight-container > div,
   main .quotes-dark-container > div {
