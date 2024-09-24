@@ -246,8 +246,7 @@ main .section>.simplified-pricing-cards-wrapper {
   display: block;
   font-weight: 600;
   transform: scalex(1.75) rotate(90deg) translateY(-2px);
-  margin-left: 10px;
-  margin-right: 0;
+   margin: auto 10px auto auto;
 }
 
 .simplified-pricing-cards .card.hide .toggle-switch {
@@ -338,13 +337,12 @@ main .section>.simplified-pricing-cards-wrapper {
   }
 
   .simplified-pricing-cards .card-header p:nth-of-type(2) {
-    font-size: 16px;
+    font-size: var(--type-detail-m-lh);
     padding-top: 3px;
   }
 
   .simplified-pricing-cards .toggle-switch-wrapper {
-    margin-left: auto;
-    margin-right: 10px;
+    margin: auto 0px auto 10px;
   }
 
   .simplified-pricing-cards .card-wrapper .card.hide .plan-explanation,
