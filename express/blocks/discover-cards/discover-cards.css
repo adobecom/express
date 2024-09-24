@@ -16,6 +16,14 @@ main .section .discover-cards {
     max-width: none;
 }
 
+.discover-cards .sub-header {
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 32px;
+}
+
 .discover-cards .cards-container {
     display: flex;
     flex-wrap: nowrap;

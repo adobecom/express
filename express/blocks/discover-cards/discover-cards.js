@@ -2,7 +2,7 @@ import { createTag } from '../../scripts/utils.js';
 import buildGallery from '../../features/gallery/gallery.js';
 
 export default async function decorate(block) {
-  const isBottomImageVariant = block.classList.contains('bottom-image');
+  const isBottomImageVariant = !block.classList.contains('bottom-image');
   block.classList.toggle('no-bg', isBottomImageVariant);
   const firstChild = block.querySelector(':scope > div:first-child');
 
@@ -18,11 +18,7 @@ export default async function decorate(block) {
   const cards = block.querySelectorAll(':scope > div');
   const subHeader = firstChild.querySelector('h4');
   if (isBottomImageVariant) {
-    subHeader.style.fontWeight = 400;
-    subHeader.style.fontSize = '16px';
-    subHeader.style.textAlign = 'center';
-    subHeader.style.marginTop = '20px';
-    subHeader.style.marginBottom = '32px';
+    subHeader.classList.add('sub-header');
   } else if (subHeader) {
     subHeader.style.display = 'none';
     firstChild.style.marginBottom = '30px';
