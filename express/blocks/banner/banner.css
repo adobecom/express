@@ -4,10 +4,8 @@ main .section.banner-compact-container {
   background-color: var(--color-info-accent);
 }
 
-main .section.banner-cool-container {
-  /* background-color: #C7E1FB; */
+div:has(> .banner.cool){
   background: linear-gradient(155.96deg, #BFE4FF -0.25%, #CECEF6 104.12%);
-
 }
 
 main .section.banner-container,
