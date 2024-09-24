@@ -37,6 +37,12 @@ main .section .discover-cards {
     overflow: hidden;
 }
 
+.discover-cards .cards-container .card.image-bottom {
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
 .discover-cards .cards-container .card .text-content {
     text-align: left;
     width: 351px;
@@ -46,7 +52,7 @@ main .section .discover-cards {
 
 .discover-cards .cards-container .card .text-content .header {
     text-align: left;
-    font-size: 28;
+    font-size: 28px;
 }
 
 .discover-cards .cards-container .card .text-content .body {

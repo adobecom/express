@@ -52,8 +52,9 @@ export default async function decorate(block) {
       }
 
       if (textHeader && textBody && isBottomImageVariant) {
+        console.log('element', element);
         textHeader.style.fontWeight = 600;
-        textHeader.style.fontSize = '28px';
+        textHeader.style.fontSize = '17px';
         textHeader.style.textAlign = 'left';
         element.style.textAlign = 'left';
         element.style.display = 'contents';
