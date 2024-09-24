@@ -8,6 +8,10 @@
     background-repeat: no-repeat;
 }
 
+.discover-cards-container .discover-cards.no-bg {
+    background-image: none;
+}
+
 main .section .discover-cards {
     max-width: none;
 }
@@ -36,8 +40,7 @@ main .section .discover-cards {
 }
 
 .discover-cards .cards-container .card.short.image-bottom {
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #E1E1E1;
     border-radius: 8px;
     height: 396px;
     min-width: 357px;
@@ -53,6 +56,7 @@ main .section .discover-cards {
     margin-top: 0px;
     margin-bottom: 5px;
     font-size: 14px;
+    line-height: normal;
 }
 
 .discover-cards .cards-container .card .text-content .header {
@@ -99,6 +103,7 @@ main .section .discover-cards {
 .card picture img.tall {
     width: 325px;
     height: 274px;
+    border-radius: 8px;
 }
 
 .card .button-container.center-button {
