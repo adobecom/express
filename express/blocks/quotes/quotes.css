@@ -1,11 +1,14 @@
 main .quotes {
-  /* margin: 40px auto 0 auto; */
-  margin: 0 auto;
-  /* padding-bottom: 40px; */
-  padding-bottom: 0;
+  margin: 40px auto 0 auto;
+  padding-bottom: 40px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+main .quotes.singular {
+  margin: 0 auto;
+  padding-bottom: 0;
 }
 
 main .quotes .quote {
