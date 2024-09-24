@@ -1,3 +1,6 @@
+.grid-marquee.block {
+  max-width: unset;
+}
 .grid-marquee .express-logo {
   width: unset;
   height: 30px;
@@ -12,6 +15,15 @@
 .grid-marquee .headline p {
   margin: 0;
   font-size: 1rem;
+}
+
+.grid-marquee .headline a.button {
+  display: none;
+}
+
+.grid-marquee .headline a:not(.primaryCTA) {
+  background-color: black;
+  border-color: black;
 }
 
 .grid-marquee .background {
@@ -33,8 +45,11 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(2, max-content);
+  grid-template-rows: auto;
   gap: 8px;
   justify-content: center;
+  justify-items: center;
+  margin: auto;
 }
 
 .grid-marquee .card {
@@ -74,7 +89,8 @@
 }
 
 .grid-marquee .drawer[aria-hidden='true'] {
-  bottom: -100%;
+  bottom: -100vh;
+  /* display: none; */
 }
 
 .grid-marquee .drawer .title-row {
@@ -90,6 +106,8 @@
   border-style: solid;
   border-color: #ccc;
   padding: 10px 20px 20px 0px;
+  width: 328px;
+  height: 247px;
 }
 
 .grid-marquee .drawer [aria-label='close'] {
@@ -135,5 +153,54 @@
 .grid-marquee .ratings {
   display: flex;
   justify-content: center;
+  align-items: center;
   padding-top: 40px;
+  gap: 48px;
+}
+
+.grid-marquee .ratings .container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.grid-marquee .ratings img {
+  height: 35px;
+}
+
+@media screen and (min-width: 900px) {
+  .grid-marquee .background .mobile-only,
+  .grid-marquee .background .desktop-only {
+    display: none;
+  }
+  .grid-marquee .background .tablet-only {
+    display: block;
+  }
+  .grid-marquee .headline a.button {
+    display: inline-block;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .grid-marquee .cards-container {
+    grid-template-columns: repeat(auto-fit, minmax(199px, 1fr));
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .grid-marquee .background .mobile-only,
+  .grid-marquee .background .tablet-only {
+    display: none;
+  }
+  .grid-marquee .background .desktop-only {
+    display: block;
+  }
+  .grid-marquee .cards-container {
+    width: 1152px;
+    gap: 24px
+  }
+  .grid-marquee .card {
+    width: 276px;
+    height: 249px;
+    padding: 16px;
+  }
 }
