@@ -7,7 +7,7 @@ import {
 import {
   fetchPlanOnePlans,
   formatDynamicCartLink,
-  formatSalesPhoneNumber
+  formatSalesPhoneNumber,
 } from '../../scripts/utils/pricing.js';
 
 import { adjustElementPosition, handleTooltip } from './simplified-pricing-tooltip.js';
@@ -24,7 +24,7 @@ function getHeightWithoutPadding(element) {
 }
 
 function equalizeHeights(el) {
-  const classNames = [ '.plan-explanation', '.billing-toggle', '.pricing-area', '.card-cta-group'];
+  const classNames = ['.plan-explanation', '.billing-toggle', '.pricing-area', '.card-cta-group'];
   const cardCount = el.querySelectorAll('.pricing-cards .card').length;
   if (cardCount === 1) return;
   for (const className of classNames) {
@@ -44,7 +44,7 @@ function equalizeHeights(el) {
       }
     });
   }
-} 
+}
 
 function getPriceElementSuffix(placeholders, placeholderArr, response) {
   return placeholderArr
@@ -97,7 +97,7 @@ function handleRawPrice(price, basePrice, response) {
   price.innerHTML = response.formatted;
   basePrice.innerHTML = response.formattedBP || '';
   if (basePrice.innerHTML !== '') {
-    price.classList.add('price-active')
+    price.classList.add('price-active');
   } else {
     price.classList.remove('price-active');
   }
@@ -126,11 +126,11 @@ async function createPricingSection(
       placeholders,
       placeholderArr,
       response,
-    ); 
+    );
 
     handleRawPrice(price, basePrice, response);
     handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent);
-    handleTooltip(pricingArea); 
+    handleTooltip(pricingArea);
     handleYear2PricingToken(pricingArea, response.y2p, priceSuffixTextContent);
 
     priceRow.append(basePrice, price, priceSuffix);
@@ -139,10 +139,10 @@ async function createPricingSection(
     pricingSuffixTextElem?.remove();
     pricingBtnContainer?.remove();
   }
-  
+
   ctaGroup.classList.add('card-cta-group');
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
-    console.log(a)
+    console.log(a);
     a.classList.add('large');
     if (i === 1) a.classList.add('secondary');
     if (a.parentNode.tagName.toLowerCase() === 'strong') {
@@ -156,22 +156,22 @@ async function createPricingSection(
 }
 
 function decorateHeader(header, planExplanation) {
-  header.classList.add('card-header'); 
+  header.classList.add('card-header');
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
   });
   planExplanation.classList.add('plan-explanation');
-  const hideButton = createTag('div', {class : "toggle-switch"})
-  hideButton.innerText = ">"
-  hideButton.addEventListener('click',() => {
-    const classList = header.parentElement.classList
+  const hideButton = createTag('div', { class: 'toggle-switch' });
+  hideButton.innerText = '>';
+  hideButton.addEventListener('click', () => {
+    const { classList } = header.parentElement;
     if (classList.contains('hide')) {
-      classList.remove('hide')
+      classList.remove('hide');
     } else {
-      classList.add('hide')
+      classList.add('hide');
     }
-  })
-  header.append(hideButton)
+  });
+  header.append(hideButton);
 }
 
 function decorateCardBorder(card, source) {
@@ -196,7 +196,7 @@ export default async function init(el) {
   for (let cardIndex = 0; cardIndex < cardCount; cardIndex += 1) {
     const card = createTag('div', { class: 'card' });
     if (cardIndex > 0) {
-      card.classList.add('hide')
+      card.classList.add('hide');
     }
     decorateCardBorder(card, rows[1].children[0]);
     decorateHeader(rows[0].children[0], rows[2].children[0]);
@@ -215,13 +215,13 @@ export default async function init(el) {
     el.children[0].appendChild(card);
   }
 
-  rows[rows.length - 1].querySelector('a').classList.add('button' , 'compare-all-button')
+  rows[rows.length - 1].querySelector('a').classList.add('button', 'compare-all-button');
   el.appendChild(rows[rows.length - 2]);
   el.appendChild(rows[rows.length - 1]);
-  
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting && window.screen.width > 768)  {
+      if (entry.isIntersecting && window.screen.width > 768) {
         equalizeHeights(el);
         observer.unobserve(entry.target);
         adjustElementPosition();

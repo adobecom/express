@@ -56,5 +56,4 @@ describe('Pricing Cards', () => {
   it('Special and gradient promo classes are added', () => {
     expect(document.querySelectorAll('.gradient-promo')).to.have.lengthOf.at.least(2);
   });
-
 });
