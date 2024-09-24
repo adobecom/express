@@ -73,9 +73,6 @@ export default async function decorate(block) {
 
   block.appendChild(cardsWrapper);
   await buildGallery(cards, cardsWrapper);
-  new PerformanceObserver((entryList) => {
-    for (const entry of entryList.getEntries()) {
-      console.log('LCP candidate:', entry.startTime, entry);
-    }
-  }).observe({ type: 'largest-contentful-paint', buffered: true });
+  const parentBlock = document.querySelector('.discover-cards');
+  parentBlock.style.backgroundImage = 'linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, #FFFFFF 100%), url(/express/blocks/discover-cards/img/cards-bg-large.webp)';
 }

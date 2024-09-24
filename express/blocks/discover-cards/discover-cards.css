@@ -1,7 +1,4 @@
 .discover-cards {
-    background-image: 
-    linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, var(--color-white) 100%),
-    url(/express/blocks/discover-cards/img/cards-bg-large.webp);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
