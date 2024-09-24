@@ -2,8 +2,6 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { createTag, pickRandomFromArray } from '../../scripts/utils.js';
 
-const DEFAULT_BACKGROUND_OPACITY = 1;
-
 export default function decorate($block) {
   addTempWrapper($block, 'quotes');
 
@@ -26,11 +24,9 @@ export default function decorate($block) {
     $quoteContainer.append($desktopContainer);
     $quoteContainer.append($mobileContainer);
 
-    let hasBackground, backgroundUrl;
     if ($rows[0].children.length === 1) {
-      hasBackground = true;
       const $img = $rows[0].children[0].querySelector('img');
-      backgroundUrl = $img.src;
+      const backgroundUrl = $img.src;
 
       const backgroundDesktopCSS = `no-repeat calc(-400px + 25%) 10px / 640px url("${backgroundUrl}"), no-repeat calc(450px + 75%) 10px / 640px url("${backgroundUrl}")`;
       $desktopContainerBackground.style.background = backgroundDesktopCSS;
@@ -39,8 +35,6 @@ export default function decorate($block) {
       $mobileContainerBackground.style.background = backgroundMobileCSS;
 
       $rows.shift();
-    } else {
-      hasBackground = false;
     }
 
     // at this point, $rows contains only quotes (no param)
