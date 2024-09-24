@@ -5,7 +5,13 @@
   --body-font-size-s: 1rem;
   --body-font-size-m: 1.125rem;
   --heading-font-size-s: 1.5rem;
-  padding-bottom: 48px;
+  --spacing-xl: 48px;
+  --color-white: #FFF;
+  --color-gray-100: #F8F8F8;
+  --color-gray-300: #D4D4D4;
+  --color-gray-600: #686868;
+  --color-black: #000;
+  --type-detail-m-lh: 15px;
 }
 
 main .section>.simplified-pricing-cards-wrapper {
@@ -24,8 +30,8 @@ main .section>.simplified-pricing-cards-wrapper {
   width: var(--card-width);
   position: relative;
   padding: 0 10px;
-  border: 2px solid #C6C6C6;
-  background-color: white;
+  border: 2px solid var(--color-gray-300);
+  background-color: var(--color-white);
   margin: 10px auto;
   display: flex;
   flex-direction: column;
@@ -34,7 +40,7 @@ main .section>.simplified-pricing-cards-wrapper {
 }
 
 .simplified-pricing-cards .card.gradient-promo {
-  background: linear-gradient(white 0 0) padding-box,
+  background: linear-gradient(var(--color-white) 0 0) padding-box,
     linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) border-box;
   border: 2px solid transparent;
 }
@@ -44,7 +50,7 @@ main .section>.simplified-pricing-cards-wrapper {
   align-items: center;
   justify-content: space-between;
   width: calc(var(--card-width) - 20px);
-  margin: 10px auto;
+  margin: 5px auto;
   gap: 10px;
 }
 
@@ -64,21 +70,7 @@ main .section>.simplified-pricing-cards-wrapper {
 .simplified-pricing-cards .card-header img {
   width: 22px;
   height: 22px;
-}
-
-.simplified-pricing-cards .card-header .head-cnt {
-  border-bottom: 1px solid #000;
-  padding-bottom: 2px;
-  font-size: var(--body-font-size-m);
-  font-weight: 400;
-  margin-top: 5px;
-}
-
-.simplified-pricing-cards .card-header .head-cnt>img {
-  width: 14px;
-  height: 14px;
-  padding-right: 6px;
-}
+} 
 
 .simplified-pricing-cards .card>.plan-explanation {
   margin: 0 auto;
@@ -128,29 +120,32 @@ main .section>.simplified-pricing-cards-wrapper {
   font-style: normal;
   font-weight: 700;
   font-size: 16px;
-  color: white;
+  color: var(--color-white);
   display: block;
   margin-right: 5px;
   background: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) border-box;
 }
 
+.simplified-pricing-cards .card-header p:nth-of-type(1) {
+  display: block;
+  width: unset;
+  height: unset;
+  font-size: var(--type-detail-m-lh);
+}
+
 .simplified-pricing-cards .card-header p:nth-of-type(1) em {
+  padding: 5px 7px;
+  font-size: 12px;
+}
+
+
+.simplified-pricing-cards .card-header p:nth-of-type(2) em {
   display: none;
   margin: 0;
   width: 0;
   height: 0;
 }
 
-.simplified-pricing-cards .card-header p:nth-of-type(2) {
-  display: block;
-  width: unset;
-  height: unset;
-}
-
-.simplified-pricing-cards .card-header p:nth-of-type(2) em {
-  padding: 5px 7px;
-  font-size: 12px;
-}
 
 .simplified-pricing-cards .pricing-area .pricing-row-suf {
   font-size: var(--body-font-size-xs);
@@ -167,20 +162,6 @@ main .section>.simplified-pricing-cards-wrapper {
   border: none;
   box-sizing: border-box;
   margin-bottom: 10px;
-}
-
-.simplified-pricing-cards .card-offer {
-  position: absolute;
-  right: 8px;
-  top: -10px;
-  border-radius: 4px;
-  background: #D3D5FF;
-  padding: 0 6px 1px;
-  font-size: var(--body-font-size-xs);
-  font-weight: 700;
-  color: #5258E4;
-  display: none;
-  max-width: 240px;
 }
 
 .simplified-pricing-cards .pricing-base-price,
@@ -274,8 +255,8 @@ main .section>.simplified-pricing-cards-wrapper {
 }
 
 .simplified-pricing-cards a.button.compare-all-button {
-  background-color: white;
-  border: 2px solid black;
+  background-color: var(--color-white);
+  border: 2px solid var(--color-black);
   color: black;
   margin-top: 30px;
   padding-top: 12px;
@@ -293,9 +274,9 @@ main .section>.simplified-pricing-cards-wrapper {
 .simplified-pricing-cards .tooltip-text {
   opacity: 0;
   padding: 8px;
-  z-index: 10;
-  background-color: #292929;
-  color: white;
+  z-index: 10; 
+  background-color: var( --color-gray-800);
+  color: var(--color-white);
   border-radius: 8px;
   position: absolute;
   bottom: 100%;
@@ -323,7 +304,7 @@ main .section>.simplified-pricing-cards-wrapper {
   bottom: -5px;
   left: 50%;
   border: 5px solid transparent;
-  border-top-color: black;
+  border-top-color: var(--color-black)
 }
 
 .simplified-pricing-cards .tooltip-text.overflow-left::after {
@@ -369,17 +350,18 @@ main .section>.simplified-pricing-cards-wrapper {
   }
 
   .simplified-pricing-cards .card-header p:nth-of-type(1) em {
+    display: block;
+    width: unset;
+    height: unset;
+  }
+
+  .simplified-pricing-cards .card-header p:nth-of-type(2) em {
     display: none;
     margin: 0;
     width: 0;
     height: 0;
   }
-  
-  .simplified-pricing-cards .card-header p:nth-of-type(2) em {
-    display: block;
-    width: unset;
-    height: unset;
-  }
+
 }
 
 /* Desktop styles */
@@ -389,15 +371,11 @@ main .section>.simplified-pricing-cards-wrapper {
   }
 
   .simplified-pricing-cards .card {
-    margin-top: 48px;
+    margin-top: var(--spacing-xl);
   }
 
   .simplified-pricing-cards .card-header {
     margin: 10px auto 10px;
-  }
-
-  .simplified-pricing-cards .card-header h2 {
-    font-size: 1.75rem;
   }
 
   .simplified-pricing-cards .pricing-area-wrapper {
@@ -408,11 +386,11 @@ main .section>.simplified-pricing-cards-wrapper {
     display: none;
   }
 
-  .simplified-pricing-cards .card-header p:nth-of-type(2){
+  .simplified-pricing-cards .card-header p:nth-of-type(1){
     display: none; 
   }
   
-  .simplified-pricing-cards .card-header p:nth-of-type(1) em {
+  .simplified-pricing-cards .card-header p:nth-of-type(2) em {
     display: block;
     width: unset;
     height: unset;
@@ -443,15 +421,15 @@ main .section>.simplified-pricing-cards-wrapper {
   }
 
   .simplified-pricing-cards .card-header p { 
-    font-size: 14px;
+    font-size: var(--type-detail-m-lh);
     margin-left: auto
   }
 
-  .simplified-pricing-cards .card-header p:nth-of-type(2){
+  .simplified-pricing-cards .card-header p:nth-of-type(1){
     display: none; 
   }
   
-  .simplified-pricing-cards .card-header p:nth-of-type(1) em {
+  .simplified-pricing-cards .card-header p:nth-of-type(2) em {
     display: block;
     width: unset;
     height: unset;
@@ -473,15 +451,15 @@ main .section>.simplified-pricing-cards-wrapper {
 
   }
   .simplified-pricing-cards .card-header p { 
-    font-size: 14px;
+    font-size: var(--type-detail-m-lh);
     margin-left: auto
   }
 
-  .simplified-pricing-cards .card-header p:nth-of-type(2) em {
+  .simplified-pricing-cards .card-header p:nth-of-type(1) em {
     display: none; 
   }
   
-  .simplified-pricing-cards .card-header p:nth-of-type(1) em{
+  .simplified-pricing-cards .card-header p:nth-of-type(2) em{
     display: block;
     width: unset;
     height: unset;

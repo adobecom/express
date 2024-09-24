@@ -230,10 +230,9 @@ export default async function init(el) {
     });
   });
 
-  document.querySelectorAll('.card').forEach((column) => {
+  document.querySelectorAll('.simplified-pricing-cards .card').forEach((column) => {
     observer.observe(column);
   });
-
-  window.addEventListener('load', () => equalizeHeights(el), 100);
+ 
   window.addEventListener('resize', () => equalizeHeights(el), 100);
 }
