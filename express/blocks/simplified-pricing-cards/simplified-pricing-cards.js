@@ -142,7 +142,6 @@ async function createPricingSection(
 
   ctaGroup.classList.add('card-cta-group');
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
-    console.log(a);
     a.classList.add('large');
     if (i === 1) a.classList.add('secondary');
     if (a.parentNode.tagName.toLowerCase() === 'strong') {
