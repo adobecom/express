@@ -20,7 +20,7 @@ main .section.banner-standout-container {
 }
 
 main .section.banner-cool-container {
-  padding: 65px 0;
+  padding: 40px 0;
 }
 
 main .section.banner-compact-container {
@@ -119,17 +119,18 @@ main .banner .cool-container {
   background: linear-gradient(95.37deg, rgba(255, 255, 255, 0.8) 18.1%, rgba(255, 255, 255, 0.4) 93.47%);
 
   color: var(--body-color);
-  padding: 33px 9%;
+  padding: 38px 45px 20px;
   border-radius: 12px;
   border: 2px solid #fff;
 }
 
 main .banner.cool p.button-container {
-  margin-top: 21px;
+  margin-top: 16px;
 }
 
 main .banner.cool p.button-container a.button {
   font-size: 17px;
+  /* font-size: var(--body-font-size-l); */
 }
 
 
@@ -145,25 +146,44 @@ main .banner.cool,
 main .banner.cool h2 {
   /* background-color: #EDF4FD; */
   color: var(--body-color);
-  font-size: 45px;
+  /* font-size: 45px; */
+  font-size: 28px;
   font-weight: 900;
 }
 
 @media (min-width: 600px) {
   main .banner .cool-container {
-    padding: 63px 21% 45px;
+    padding: 63px 45px 45px;
+    /* padding: 0 82px; */
   }
 }
 
 @media (min-width: 900px) {
+  main .section.banner-cool-container {
+    padding: 65px 0;
+  }
   main .banner.cool {
+    /* padding: 63px 21% 45px; */
     padding: 0 82px;
+  }
+  main .banner.cool h2 {
+    /* background-color: #EDF4FD; */
+    /* color: var(--body-color); */
+    font-size: 28px;
+    font-weight: 900;
+  }
+  main .banner .cool-container {
+    padding: 33px 45px;
+  }
+  main .banner.cool p.button-container {
+    margin-top: 21px;
   }
 }
 
 @media (min-width: 1200px) {
   main .banner.cool {
     max-width: 1200px;
+    /* padding: 0 82px; */
   }
 }
 
