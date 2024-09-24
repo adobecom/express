@@ -118,11 +118,7 @@ main .section>.simplified-pricing-cards-wrapper {
 
 .simplified-pricing-cards .card-header p {
   margin: 0;
-}
-
-/* .simplified-pricing-cards .card-header p:has(em) {
-  width: fit-content;
-} */
+} 
 
 .simplified-pricing-cards .card-header p em {
   padding: 5px 10px 5px 10px;
@@ -159,23 +155,12 @@ main .section>.simplified-pricing-cards-wrapper {
   font-size: var(--body-font-size-xs);
 }
 
-/* .simplified-pricing-cards .pricing-area:not(:has(p)) {
-  font-size: 22px;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-} */
-
 .simplified-pricing-cards .pricing-area-wrapper {
   display: flex;
   flex-direction: column;
   min-height: unset;
   margin-bottom: 20px;
-}
-/* 
-.simplified-pricing-cards .pricing-area-wrapper:has(.hide) {
-  min-height: 0;
-} */
+} 
 
 .simplified-pricing-cards .card .compare-all {
   border: none;
@@ -459,11 +444,6 @@ main .section>.simplified-pricing-cards-wrapper {
     margin-left: auto
   }
 
-  /* .simplified-pricing-cards .card-header p:has(em) {
-    margin-left: 10px;
-    margin-right: auto;
-  } */
-
   .simplified-pricing-cards .card-header p:nth-of-type(2){
     display: none; 
   }
@@ -485,7 +465,7 @@ main .section>.simplified-pricing-cards-wrapper {
   .simplified-pricing-cards .card-header {
     justify-content: unset;
     gap: 5px;
-    margin: 30px auto auto auto;
+    margin: 10px auto auto auto;
     padding: 5px;
 
   }
