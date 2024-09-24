@@ -2,7 +2,7 @@ import { createTag } from '../../scripts/utils.js';
 import buildGallery from '../../features/gallery/gallery.js';
 
 export default async function decorate(block) {
-  const isBottomImageVariant = block.classList.contains('bottom-image');
+  const isBottomImageVariant = !block.classList.contains('bottom-image');
   block.classList.toggle('no-bg', isBottomImageVariant);
   const firstChild = block.querySelector(':scope > div:first-child');
 
@@ -50,9 +50,8 @@ export default async function decorate(block) {
 
       if (textHeader && textBody && isBottomImageVariant) {
         textHeader.classList.add('small-header');
-        element.style.textAlign = 'left';
-        element.style.display = 'contents';
-        textBody.classList.add('small-text-content');
+        element.classList.add('small-text-content');
+        textBody.classList.add('small-text-body');
       }
 
       if (element.classList.contains('button-container')) {

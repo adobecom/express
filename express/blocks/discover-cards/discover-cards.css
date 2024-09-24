@@ -58,7 +58,13 @@ main .section .discover-cards {
     margin-left: auto;
     margin-right: auto;
 }
-.discover-cards .cards-container .card.image-bottom .small-text-content {
+
+.discover-cards .cards-container .card .small-text-content {
+    text-align: left;
+    display: contents;
+}
+
+.discover-cards .cards-container .card.image-bottom .small-text-body {
     margin: 0 0 5px 0;
     font-size: 14px;
     line-height: normal;
