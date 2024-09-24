@@ -30,7 +30,6 @@ export default async function decorate(block) {
     card.classList.toggle('image-bottom', isBottomImageVariant);
 
     cardsWrapper.appendChild(card);
-
     const cardDivs = [...card.children];
     if (isBottomImageVariant && cardDivs.length >= 2) {
       const parent = cardDivs[0].parentNode;
@@ -73,8 +72,12 @@ export default async function decorate(block) {
 
   block.appendChild(cardsWrapper);
   await buildGallery(cards, cardsWrapper);
-  if (!isBottomImageVariant) {
-    const parentBlock = document.querySelector('.discover-cards');
-    parentBlock.style.backgroundImage = 'linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, #FFFFFF 100%), url(/express/blocks/discover-cards/img/cards-bg-large.webp)';
+
+  function waitForLCP() {
+    if (!isBottomImageVariant) {
+      const parentBlock = document.querySelector('.discover-cards');
+      parentBlock.style.backgroundImage = 'linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, #FFFFFF 100%), url(/express/blocks/discover-cards/img/cards-bg-large.webp)';
+    }
   }
+  window.addEventListener('express:LCP:loaded', waitForLCP);
 }
