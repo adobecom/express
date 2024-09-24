@@ -1,4 +1,4 @@
-.discover-cards-container .discover-cards {
+.discover-cards {
     background-image: 
     linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, var(--color-white) 100%),
     url(/express/blocks/discover-cards/img/cards-bg-large.png);
@@ -7,7 +7,7 @@
     background-repeat: no-repeat;
 }
 
-.discover-cards-container .discover-cards.no-bg { 
+.discover-cards.no-bg { 
     background-image: none; 
 }
 
@@ -170,7 +170,7 @@ main .section .discover-cards {
 }
 
 @media (max-width: 400px) {
-    .discover-cards-container .discover-cards {
+    .discover-cards {
         background-image: url(/express/blocks/discover-cards/img/cards-bg-small.png);
     }
     .discover-cards .cards-container{
