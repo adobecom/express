@@ -193,14 +193,14 @@ main .banner.narrow {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   main .section.banner-standout-container {
     padding-left: 6%;
     padding-right: 6%;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   main .banner .standout-container {
     padding: 33px 9%;
   }
