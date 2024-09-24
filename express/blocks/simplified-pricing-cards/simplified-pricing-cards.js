@@ -24,7 +24,7 @@ function getHeightWithoutPadding(element) {
 }
 
 function equalizeHeights(el) {
-  const classNames = ['.plan-explanation', '.billing-toggle', '.pricing-area', '.card-cta-group'];
+  const classNames = ['.plan-explanation'];
   const cardCount = el.querySelectorAll('.pricing-cards .card').length;
   if (cardCount === 1) return;
   for (const className of classNames) {
@@ -160,6 +160,7 @@ function decorateHeader(header, planExplanation) {
     if (p.innerHTML.trim() === '') p.remove();
   });
   planExplanation.classList.add('plan-explanation');
+  const hideButtonWrapper = createTag('div', {class : 'toggle-switch-wrapper'})
   const hideButton = createTag('div', { class: 'toggle-switch' });
   hideButton.innerText = '>';
   hideButton.addEventListener('click', () => {
@@ -170,7 +171,9 @@ function decorateHeader(header, planExplanation) {
       classList.add('hide');
     }
   });
-  header.append(hideButton);
+  header.append(hideButtonWrapper)
+  hideButtonWrapper.append(hideButton);
+
 }
 
 function decorateCardBorder(card, source) {
