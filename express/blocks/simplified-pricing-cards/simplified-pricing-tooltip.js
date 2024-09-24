@@ -24,7 +24,6 @@ export function adjustElementPosition() {
 
 export function handleTooltip(pricingArea) {
   const elements = pricingArea.querySelectorAll('p');
-  console.log(elements);
   const pattern = /\[\[([^]+)\]\]([^]+)\[\[\/([^]+)\]\]/g;
   let tooltip;
   let tooltipDiv;
