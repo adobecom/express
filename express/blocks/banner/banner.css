@@ -4,7 +4,7 @@ main .section.banner-compact-container {
   background-color: var(--color-info-accent);
 }
 
-div:has(> .banner.cool) {
+main div:has(> .banner.cool) {
   background: linear-gradient(155.96deg, #bfe4ff -0.25%, #cecef6 104.12%);
 }
 
@@ -17,7 +17,7 @@ main .section.banner-standout-container {
   padding: 48px 0;
 }
 
-div:has(> .banner.cool) {
+main div:has(> .banner.cool) {
   padding: 40px 0;
 }
 
@@ -108,15 +108,15 @@ main .banner .standout-container em {
 }
 
 main .banner .cool-container {
+  color: var(--body-color);
   background: linear-gradient(
     95.37deg,
     rgba(255, 255, 255, 0.8) 18.1%,
     rgba(255, 255, 255, 0.4) 93.47%
   );
-  color: var(--body-color);
   padding: 38px 45px 20px;
-  border-radius: 12px;
   border: 2px solid #fff;
+  border-radius: 12px;
 }
 
 main .banner.cool p.button-container {
@@ -151,7 +151,7 @@ main .banner.cool h2 {
 }
 
 @media (min-width: 900px) {
-  main .section.banner-cool-container {
+  main div:has(> .banner.cool) {
     padding: 65px 0;
   }
   main .banner.cool {
