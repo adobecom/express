@@ -190,6 +190,24 @@ main .quotes.singular .desktop-container .quote-details {
   margin-left: 30px;
 }
 
+main .quotes.singular .author-description {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+main .quotes.singular .mobile-container .author-panel {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+main .quotes.singular .mobile-container .author-panel .author-photo {
+  margin-right: 15px;
+}
+
 @media (min-width: 600px) {
   main .quotes.singular .quote {
     width: 80%;
@@ -211,24 +229,6 @@ main .quotes.singular .desktop-container .quote-details {
   main .quotes.singular .quote {
     max-width: 1024px;
   }
-}
-
-main .quotes.singular .author-description {
-  margin-top: 20px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-main .quotes.singular .mobile-container .author-panel {
-  margin-top: 20px;
-  font-size: 18px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-}
-
-main .quotes.singular .mobile-container .author-panel .author-photo {
-  margin-right: 15px;
 }
 
 main .quotes .quote .author .summary p {

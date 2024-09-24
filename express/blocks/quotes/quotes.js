@@ -32,7 +32,7 @@ export default function decorate($block) {
       const $img = $rows[0].children[0].querySelector('img');
       backgroundUrl = $img.src;
 
-      const backgroundDesktopCSS = `no-repeat calc(-400px + 25%) 10px / 640px url("${backgroundUrl}"), no-repeat calc(650px + 35%) 10px / 640px url("${backgroundUrl}")`;
+      const backgroundDesktopCSS = `no-repeat calc(-400px + 25%) 10px / 640px url("${backgroundUrl}"), no-repeat calc(450px + 75%) 10px / 640px url("${backgroundUrl}")`;
       $desktopContainerBackground.style.background = backgroundDesktopCSS;
 
       const backgroundMobileCSS = `no-repeat -20px 10px url("${backgroundUrl}")`;
