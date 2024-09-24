@@ -1,14 +1,10 @@
-:root {
+.simplified-pricing-cards {
   --card-width: 325px;
   --card-padding: 12px;
   --body-font-size-xs: 0.875rem;
   --body-font-size-s: 1rem;
   --body-font-size-m: 1.125rem;
   --heading-font-size-s: 1.5rem;
-}
-
-.simplified-pricing-cards {
-  --card-width: 325px;
   padding-bottom: 48px;
 }
 
@@ -281,7 +277,7 @@ main .section>.simplified-pricing-cards-wrapper {
   opacity: 1;
 }
 
-.pricing-cards>div:last-of-type {
+/* .pricing-cards>div:last-of-type {
   padding: 12px 8px;
   margin: 16px auto 40px;
   border-radius: 4px;
@@ -289,7 +285,7 @@ main .section>.simplified-pricing-cards-wrapper {
   font-size: var(--body-font-size-xs);
   max-width: 1200px;
   box-sizing: border-box;
-}
+} */
 
 .simplified-pricing-cards .toggle-switch {
   display: block;
@@ -432,11 +428,8 @@ main .section>.simplified-pricing-cards-wrapper {
     display: none;
   }
 
-  .simplified-pricing-cards .card-header p:nth-of-type(2) em {
-    display: none;
-    margin: 0;
-    width: 0;
-    height: 0;
+  .simplified-pricing-cards .card-header p:nth-of-type(2){
+    display: none; 
   }
   
   .simplified-pricing-cards .card-header p:nth-of-type(1) em {
@@ -456,12 +449,16 @@ main .section>.simplified-pricing-cards-wrapper {
   }
 
   .simplified-pricing-cards .card-header {
-    justify-content: start;
+    justify-content: unset;
+    gap: unset;
+    margin: 30px auto auto auto;
+    padding: 5px;
+
   }
 
-  .simplified-pricing-cards .card-header p {
-    margin-left: 10px;
-    margin-right: auto;
+  .simplified-pricing-cards .card-header p { 
+    font-size: 14px;
+    margin-left: auto
   }
 
   .simplified-pricing-cards .card-header p:has(em) {
@@ -469,17 +466,15 @@ main .section>.simplified-pricing-cards-wrapper {
     margin-right: auto;
   }
 
-  .simplified-pricing-cards .card-header p:nth-of-type(2) em {
-    display: none;
-    margin: 0;
-    width: 0;
-    height: 0;
+  .simplified-pricing-cards .card-header p:nth-of-type(2){
+    display: none; 
   }
   
   .simplified-pricing-cards .card-header p:nth-of-type(1) em {
     display: block;
     width: unset;
     height: unset;
+    padding-top: 5px;
   }
 }
 
@@ -489,11 +484,20 @@ main .section>.simplified-pricing-cards-wrapper {
     gap: 16px;
   }
 
+  .simplified-pricing-cards .card-header {
+    justify-content: unset;
+    gap: unset;
+    margin: 30px auto auto auto;
+    padding: 5px;
+
+  }
+  .simplified-pricing-cards .card-header p { 
+    font-size: 14px;
+    margin-left: auto
+  }
+
   .simplified-pricing-cards .card-header p:nth-of-type(2) em {
-    display: none;
-    margin: 0;
-    width: 0;
-    height: 0;
+    display: none; 
   }
   
   .simplified-pricing-cards .card-header p:nth-of-type(1) em{
