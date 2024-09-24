@@ -27,30 +27,6 @@ export default async function decorate(block) {
     firstChild.style.marginBottom = '30px';
   }
 
-  const targetElement = document.querySelector('.discover-cards');
-  if (targetElement && !isBottomImageVariant) {
-    const { parentElement } = targetElement;
-
-    if (parentElement) {
-      const circleContainer = createTag('div', {
-        class: 'circle-container',
-      });
-
-      const gradientOverlay = createTag('div', { class: 'gradient-overlay' });
-      circleContainer.appendChild(gradientOverlay);
-      const circles = ['blue-circle', 'pink-circle', 'purple-circle', 'light-blue-circle', 'light-purple-circle'].map((className) => {
-        const circle = createTag('div', {
-          class: `circle ${className}`,
-        });
-        return circle;
-      });
-      circles.forEach((circle) => {
-        circleContainer.appendChild(circle);
-      });
-      parentElement.appendChild(circleContainer);
-    }
-  }
-
   cards.forEach((card, index) => {
     if (index === 0 && firstChild) return;
     card.classList.add('card');
@@ -71,14 +47,17 @@ export default async function decorate(block) {
       const textBody = element.querySelector('p');
       if (textHeader && textBody && !isBottomImageVariant) {
         textHeader.style.textAlign = 'left';
+        textHeader.style.fontSize = '28px';
+
         textBody.style.marginTop = '5px';
         textBody.style.marginBottom = '5px';
-        element.style.textAlign = 'left';
+
+        element.classList.add('text-content');
       }
 
       if (textHeader && textBody && isBottomImageVariant) {
         textHeader.style.fontWeight = 600;
-        textHeader.style.fontSize = '18px';
+        textHeader.style.fontSize = '28px';
         textHeader.style.textAlign = 'left';
         element.style.textAlign = 'left';
         element.style.display = 'contents';

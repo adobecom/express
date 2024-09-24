@@ -1,27 +1,33 @@
 .discover-cards-container .discover-cards {
     max-width: none;
+    background-image: 
+    linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, white 100%), 
+    url(/express/img/cards-bg-large.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 main .section .discover-cards {
     max-width: none;
 }
 
-.cards-container {
+.discover-cards .cards-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 16px;
     justify-content: space-between;
     padding: 16px;
 }
 
-.card {
+.discover-cards .cards-container .card {
     min-width: 399px;
     height: 478px;
-    border: 1px solid #ccc;
     border-radius: 8px;
     padding: 16px;
     background-color: rgba(255, 255, 255, 0.7);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* border: 1px solid #ccc; */
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
     margin: 10px auto;
     flex: 1 1 calc(33.33% - 32px);
     box-sizing: border-box;
@@ -29,6 +35,13 @@ main .section .discover-cards {
     flex-direction: column;
     position: relative;
     overflow: hidden;
+}
+
+.card .text-content {
+    text-align: left;
+    width: 351px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .card.short {
@@ -54,10 +67,12 @@ main .section .discover-cards {
 }
 
 .card picture img {
-    width: 100%; 
+    width: 351px; 
+    margin-left: auto;
+    margin-right: auto;
     object-fit: cover;
+    margin-top: 12px;
     margin-bottom: 16px;
-    display: block;
 }
 
 .card picture img.short {
@@ -131,71 +146,14 @@ main .section .discover-cards {
     background-color: #333;
 }
 
-.section.section-wrapper .circle-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 84%;
-    margin-top: 81px;
-    z-index: -1;
-    overflow: hidden;
-    max-width: none;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0) 150px), transparent;
+@media (max-width: 400px) {
+    .discover-cards .cards-container .card {
+        min-width: 294px;
+    }
+    .discover-cards .gallery-control .status {
+        display: none;
+    }
+    .discover-cards-container .discover-cards {
+        /* background-image: none; */
+    }
   }
-
-  
-  .gradient-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background: 
-      linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
-      linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%);
-  }
-  
-  .blue-circle, .pink-circle, .purple-circle, .light-blue-circle, .light-purple-circle {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(172px);
-  }
-  
-  .blue-circle {
-    width: 222px;
-    height: 222px;
-    background: #31A8FF;
-    top: 35%; left: 4%;
-  }
-  
-  .pink-circle {
-    width: 381px;
-    height: 381px;
-    background: #E055E2;
-    top: 14%; left: 14%;
-  }
-  
-  .purple-circle {
-    width: 641px;
-    height: 641px;
-    background: #99F;
-    bottom: 10%; right: 36%;
-  }
-  
-  .light-blue-circle {
-    width: 445px;
-    height: 445px;
-    background: #31A8FF;
-    bottom: 30%; left: 55%;
-  }
-  
-  .light-purple-circle {
-    width: 191px;
-    height: 191px;
-    background: #E055E2;
-    top: 55%; right: 10%;
-  }
-  
