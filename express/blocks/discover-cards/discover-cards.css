@@ -49,6 +49,11 @@ main .section .discover-cards {
     margin-left: auto;
     margin-right: auto;
 }
+.discover-cards .cards-container .card.image-bottom .small-text-content {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
 
 .discover-cards .cards-container .card .text-content .header {
     text-align: left;

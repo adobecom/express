@@ -2,7 +2,7 @@ import { createTag } from '../../scripts/utils.js';
 import buildGallery from '../../features/gallery/gallery.js';
 
 export default async function decorate(block) {
-  const isBottomImageVariant = block.classList.contains('bottom-image');
+  const isBottomImageVariant = !block.classList.contains('bottom-image');
   const firstChild = block.querySelector(':scope > div:first-child');
 
   if (firstChild && firstChild.querySelector('h3')) {
@@ -52,15 +52,12 @@ export default async function decorate(block) {
       }
 
       if (textHeader && textBody && isBottomImageVariant) {
-        console.log('element', element);
         textHeader.style.fontWeight = 600;
         textHeader.style.fontSize = '17px';
         textHeader.style.textAlign = 'left';
         element.style.textAlign = 'left';
         element.style.display = 'contents';
-        textBody.style.marginTop = '5px';
-        textBody.style.marginBottom = '5px';
-        textBody.style.fontSize = '14px';
+        textBody.classList.add('small-text-content');
       }
 
       if (element.classList.contains('button-container')) {
