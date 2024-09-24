@@ -73,4 +73,9 @@ export default async function decorate(block) {
 
   block.appendChild(cardsWrapper);
   await buildGallery(cards, cardsWrapper);
+  new PerformanceObserver((entryList) => {
+    for (const entry of entryList.getEntries()) {
+      console.log('LCP candidate:', entry.startTime, entry);
+    }
+  }).observe({ type: 'largest-contentful-paint', buffered: true });
 }
