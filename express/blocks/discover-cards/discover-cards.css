@@ -37,11 +37,16 @@ main .section .discover-cards {
     overflow: hidden;
 }
 
-.card .text-content {
+.discover-cards .cards-container .card .text-content {
     text-align: left;
     width: 351px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.discover-cards .cards-container .card .text-content .header {
+    text-align: left;
+    font-size: 28;
 }
 
 .card.short {
