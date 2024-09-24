@@ -107,6 +107,10 @@ main .banner .standout-container em {
   font-weight: 900;
 }
 
+main .banner.cool {
+  padding: 0 24px;
+}
+
 main .banner .cool-container {
   color: var(--body-color);
   background: linear-gradient(
@@ -125,10 +129,6 @@ main .banner.cool p.button-container {
 
 main .banner.cool p.button-container a.button {
   font-size: 17px;
-}
-
-main .banner.cool {
-  padding: 0 24px;
 }
 
 main .banner.cool h2 {
