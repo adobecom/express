@@ -26,8 +26,6 @@ main .section .discover-cards {
     border-radius: 8px;
     padding: 16px;
     background-color: rgba(255, 255, 255, 0.7);
-    /* border: 1px solid #ccc; */
-    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
     margin: 10px auto;
     flex: 1 1 calc(33.33% - 32px);
     box-sizing: border-box;
@@ -37,10 +35,12 @@ main .section .discover-cards {
     overflow: hidden;
 }
 
-.discover-cards .cards-container .card.image-bottom {
+.discover-cards .cards-container .card.short.image-bottom {
     border: 1px solid #ccc;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    height: 396px;
+    min-width: 357px;
 }
 
 .discover-cards .cards-container .card .text-content {
@@ -50,7 +50,7 @@ main .section .discover-cards {
     margin-right: auto;
 }
 .discover-cards .cards-container .card.image-bottom .small-text-content {
-    margin-top: 5px;
+    margin-top: 0px;
     margin-bottom: 5px;
     font-size: 14px;
 }
@@ -63,10 +63,6 @@ main .section .discover-cards {
 .discover-cards .cards-container .card .text-content .body {
     margin-top: 5px;
     margin-bottom: 5px;
-}
-
-.card.short {
-    height: 415px;
 }
 
 .card.image-bottom picture img {
@@ -101,6 +97,7 @@ main .section .discover-cards {
 }
 
 .card picture img.tall {
+    width: 325px;
     height: 274px;
 }
 

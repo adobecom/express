@@ -2,7 +2,7 @@ import { createTag } from '../../scripts/utils.js';
 import buildGallery from '../../features/gallery/gallery.js';
 
 export default async function decorate(block) {
-  const isBottomImageVariant = !block.classList.contains('bottom-image');
+  const isBottomImageVariant = block.classList.contains('bottom-image');
   const firstChild = block.querySelector(':scope > div:first-child');
 
   if (firstChild && firstChild.querySelector('h3')) {
