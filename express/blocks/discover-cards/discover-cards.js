@@ -2,7 +2,7 @@ import { createTag } from '../../scripts/utils.js';
 import buildGallery from '../../features/gallery/gallery.js';
 
 export default async function decorate(block) {
-  const isBottomImageVariant = block.classList.contains('bottom-image');
+  const isBottomImageVariant = !block.classList.contains('bottom-image');
   block.classList.toggle('no-bg', isBottomImageVariant);
   const firstChild = block.querySelector(':scope > div:first-child');
 

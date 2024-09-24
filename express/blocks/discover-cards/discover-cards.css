@@ -210,5 +210,13 @@ main .section .discover-cards {
     .discover-cards .cards-container .card picture img.short {
         margin-top: 6px;
     }
-    
+    .discover-cards .cards-container .card.short.image-bottom {
+        min-width: 294px;
+    }
+    .discover-cards .cards-container .card picture img.tall {
+        width: 262px;
+    }
+    .discover-cards .cards-container .card.image-bottom picture img {
+        bottom: -22px;
+    }
   }
