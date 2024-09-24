@@ -61,7 +61,9 @@ function createDrawer(card, title, panels) {
   videoAnchor.remove();
   const posterSrc = card.querySelector('img').src;
   const video = createAnimation(videoSrc, titleText, posterSrc);
-  drawer.append(video);
+  const videoWrapper = createTag('div', { class: 'video-container' });
+  videoWrapper.append(video);
+  drawer.append(videoWrapper);
 
   drawer.append(...panels);
   if (panels.length <= 1) {
@@ -140,10 +142,17 @@ function decorateHeadline(headline) {
 async function decorateRatings(el, store) {
   const placeholders = await fetchPlaceholders();
   const score = placeholders[`${store}-store-rating-score`];
-  const cnt = placeholders[`${store}-store-rating-count`];
+  const cnt = placeholders[`${store}-store-rating-count-text`];
+  const link = placeholders['app-store-link'];
+  if (!score || !cnt || !link) {
+    el.remove();
+    return;
+  }
   const star = getIconElement('star');
-  const storeIcon = getIconElement(`${store}-store`);
-  el.append(score, star, cnt, storeIcon);
+  const storeLink = createTag('a', { href: link }, getIconElement(`${store}-store`));
+  const { default: trackBranchParameters } = await import('../../scripts/branchlinks.js');
+  await trackBranchParameters([storeLink]);
+  el.append(score, star, cnt, storeLink);
 }
 
 function createRatings() {
