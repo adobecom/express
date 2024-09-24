@@ -15,7 +15,7 @@ export default async function decorate(block) {
     class: 'cards-container',
   });
 
-  const cards = block.querySelectorAll(':scope > div');
+  const cards = block.querySelectorAll(':scope > div:not(:first-child)');
   const subHeader = firstChild.querySelector('h4');
   if (isBottomImageVariant) {
     subHeader.classList.add('sub-header');
@@ -24,8 +24,7 @@ export default async function decorate(block) {
     firstChild.style.marginBottom = '30px';
   }
 
-  cards.forEach((card, index) => {
-    if (index === 0 && firstChild) return;
+  cards.forEach((card) => {
     card.classList.add('card');
     card.classList.toggle('short', isBottomImageVariant);
     card.classList.toggle('image-bottom', isBottomImageVariant);
