@@ -235,5 +235,5 @@ export default async function init(el) {
     observer.observe(column);
   });
 
-  window.addEventListener('resize', () => equalizeHeights(el));
+  window.addEventListener('resize', () => equalizeHeights(el), 100);
 }
