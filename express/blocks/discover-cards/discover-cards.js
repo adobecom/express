@@ -49,9 +49,7 @@ export default async function decorate(block) {
       }
 
       if (textHeader && textBody && isBottomImageVariant) {
-        textHeader.style.fontWeight = 600;
-        textHeader.style.fontSize = '17px';
-        textHeader.style.textAlign = 'left';
+        textHeader.classList.add('small-header');
         element.style.textAlign = 'left';
         element.style.display = 'contents';
         textBody.classList.add('small-text-content');
@@ -76,6 +74,5 @@ export default async function decorate(block) {
   });
 
   block.appendChild(cardsWrapper);
-
   await buildGallery(cards, cardsWrapper);
 }

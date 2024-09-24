@@ -7,16 +7,19 @@
     background-repeat: no-repeat;
 }
 
-.discover-cards-container .discover-cards.no-bg { background-image: none; }
+.discover-cards-container .discover-cards.no-bg { 
+    background-image: none; 
+}
 
-main .section .discover-cards { max-width: none; }
+main .section .discover-cards { 
+    max-width: none; 
+}
 
 .discover-cards .sub-header {
     font-weight: 400;
     font-size: 16px;
     text-align: center;
-    margin-top: 10px;
-    margin-bottom: 8px;
+    margin: 10px 0 8px 0;
 }
 
 .discover-cards .cards-container {
@@ -56,15 +59,25 @@ main .section .discover-cards { max-width: none; }
     margin-right: auto;
 }
 .discover-cards .cards-container .card.image-bottom .small-text-content {
-    margin-top: 0px;
-    margin-bottom: 5px;
+    margin: 0 0 5px 0;
     font-size: 14px;
     line-height: normal;
 }
 
-.discover-cards .cards-container .card .text-content .header { text-align: left; font-size: 28px; }
+.discover-cards .cards-container .card.image-bottom .small-header { 
+    text-align: left; 
+    font-size: 17px; 
+    font-weight: 600;
+}
 
-.discover-cards .cards-container .card .text-content .body { margin-top: 5px; margin-bottom: 5px; }
+.discover-cards .cards-container .card .text-content .header { 
+    text-align: left; 
+    font-size: 28px; 
+}
+
+.discover-cards .cards-container .card .text-content .body { 
+    margin: 5px 0;
+}
 
 .discover-cards .cards-container .card.image-bottom picture img {
     position: absolute;
@@ -86,14 +99,13 @@ main .section .discover-cards { max-width: none; }
 
 .discover-cards .cards-container .card picture img {
     width: 351px; 
-    margin-left: auto;
-    margin-right: auto;
+    margin: 12px auto 16px auto;
     object-fit: cover;
-    margin-top: 12px;
-    margin-bottom: 16px;
 }
 
-.discover-cards .cards-container .card picture img.short { height: 198px; }
+.discover-cards .cards-container .card picture img.short { 
+    height: 198px; 
+}
 
 .discover-cards .cards-container .card picture img.tall {
     width: 325px;
@@ -116,13 +128,24 @@ main .section .discover-cards { max-width: none; }
     text-align: center;
 }
 
-.discover-cards .card h2, .card h4 { font-size: 1.5em; margin-bottom: 0.5em; }
+.discover-cards .card h2, .card h4 { 
+    font-size: 1.5em; 
+    margin-bottom: 0.5em; 
+}
 
-.discover-cards .card p { margin: 0.5em 0; font-size: 1em; }
+.discover-cards .card p { 
+    margin: 0.5em 0; 
+    font-size: 1em; 
+}
 
-.discover-cards .card .cta-section { margin-top: auto; text-align: left; }
+.discover-cards .card .cta-section { 
+    margin-top: auto; 
+    text-align: left; 
+}
 
-.discover-cards .card .cta-section-text { margin: 0; }
+.discover-cards .card .cta-section-text { 
+    margin: 0; 
+}
 
 .discover-cards .card .button-container {
     position: absolute;
