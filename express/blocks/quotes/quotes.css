@@ -75,10 +75,6 @@ main .quotes .quote .author .image img {
   box-sizing: border-box;
 }
 
-/* .quotes-wrapper:has(.has-background) {
-
-} */
-
 main div:has(> .quotes-wrapper .singular.quotes) {
   padding-top: 0;
 }
@@ -91,8 +87,6 @@ main .quotes-wrapper:has(.singular.quotes) {
 
 main .quotes.singular {
   width: 100%;
-  /* background-color:rgba(0, 0, 0, 0.1) */
-  /* opacity: 0.3; */
 }
 
 main .quotes.singular .quote-container {
@@ -100,15 +94,12 @@ main .quotes.singular .quote-container {
 }
 
 main .quotes.singular .quote-container .desktop-container {
-  /* width: 100%; */
   position: relative;
   display: none;
 }
 
 main .quotes.singular .quote-container .mobile-container {
-  /* width: 100%; */
   position: relative;
-  /* display: none; */
 }
 
 main .quotes.singular .quote-container .mobile-container .quote {
@@ -118,11 +109,9 @@ main .quotes.singular .quote-container .mobile-container .quote {
 @media (min-width: 600px) {
   main .quotes.singular .quote-container .desktop-container {
     display: block;
-    /* position: relative; */
   }
   main .quotes.singular .quote-container .mobile-container {
     display: none;
-    /* position: relative; */
   }
 }
 
@@ -131,7 +120,6 @@ main .quotes.singular .quote-container .desktop-container .background {
   width: 100%;
   height: 100%;
   z-index: -1;
-  /* opacity: 0.6; */
 }
 
 main .quotes.singular .quote-container .mobile-container .background {
@@ -139,7 +127,6 @@ main .quotes.singular .quote-container .mobile-container .background {
   width: 100%;
   height: 100%;
   z-index: -1;
-  /* opacity: 0.6; */
 }
 
 main .quotes.singular .new-block {
@@ -151,36 +138,20 @@ main .quotes.singular .new-block {
 
 main .quotes.singular .quote {
   display: flex;
-  /* flex-direction: row; */
   flex-flow: row;
   background: transparent;
-  /* CHECK HOW TO DO THIS ONE */
-  display: flex;
   justify-content: center;
   padding: 100px 0 70px;
-  /* padding-bottom: 130px; */
-  /* outline: 3px dotted #07f; */
-  /* min-height: 372px; */
-
   min-height: 320px;
 }
 
 main .quotes.singular .author-photo {
-  /* padding-right: 10px; */
   width: 100px;
   height: 100px;
   min-width: 100px; /* at certain container width, the 100px width may be made smaller by the browser, so impose a min-width */
   border-radius: 50%;
-  /* box-sizing: border-box; */
   overflow: hidden;
-  /* display: none; */
 }
-
-/* @media (min-width: 600px) {
-  main .quotes.singular .image {
-    display: unset;
-  }
-} */
 
 main .quotes.singular .author-photo picture,
 main .quotes.singular .author-photo picture img {
@@ -189,19 +160,13 @@ main .quotes.singular .author-photo picture img {
   object-fit: cover;
   object-position: 50% 0%;
   display: inline-block;
-  /* max-height: 150px; */
-  /* max-width: unset; */
-  /* border-radius: 75px;
-  box-sizing: border-box; */
 }
 
 main .quotes.singular .mobile-container .author-photo {
-  /* padding-right: 10px; */
   width: 60px;
   height: 60px;
   min-width: 60px; /* at certain container width, the 60px width may be made smaller by the browser, so impose a min-width */
   border-radius: 50%;
-  /* box-sizing: border-box; */
   overflow: hidden;
 }
 
@@ -212,17 +177,9 @@ main .quotes.singular .mobile-container .author-photo picture img {
   object-fit: cover;
   object-position: 50% 0%;
   display: inline-block;
-  /* max-height: 150px; */
-  /* max-width: unset; */
-  /* border-radius: 75px;
-  box-sizing: border-box; */
 }
 
 main .quotes.singular .quote-details {
-  /* margin-left: auto;
-  margin-right: auto; */
-  /* width: 600px; */
-  /* margin-left: 30px; */
   width: 90%;
   font-size: 22px;
   font-weight: 800;
@@ -236,19 +193,13 @@ main .quotes.singular .desktop-container .quote-details {
 @media (min-width: 600px) {
   main .quotes.singular .quote {
     width: 80%;
-    /* font-size: 22px; */
-    /* font-weight: 600; */
   }
-  /* main .quotes.singular .quote-details {
-    font-size: 22px;
-  } */
 }
 
 @media (min-width: 900px) {
   main .quotes.singular .quote {
     width: 75%;
     max-width: 830px;
-    /* font-size: 28px; */
     font-weight: 600;
   }
   main .quotes.singular .quote-details {
@@ -264,36 +215,17 @@ main .quotes.singular .desktop-container .quote-details {
 
 main .quotes.singular .author-description {
   margin-top: 20px;
-  /* margin-left: 60px;
-   width: 600px; */
   font-size: 18px;
   font-weight: 600;
-  /* font-weight: bold; */
-  /* display: none; */
 }
-
-/* @media (min-width: 600px) {
-  main .quotes.singular .author-description {
-    display: unset;
-  }
-} */
 
 main .quotes.singular .mobile-container .author-panel {
   margin-top: 20px;
-  /* margin-left: 60px;
-     width: 600px; */
   font-size: 18px;
   font-weight: 600;
-  /* font-weight: bold; */
   display: flex;
   align-items: center;
 }
-
-/* @media (min-width: 600px) {
-  main .quotes.singular .mobile-container .author-panel {
-    display: none;
-  }
-} */
 
 main .quotes.singular .mobile-container .author-panel .author-photo {
   margin-right: 15px;
