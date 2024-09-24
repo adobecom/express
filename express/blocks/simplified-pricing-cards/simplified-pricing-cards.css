@@ -50,7 +50,7 @@ main .section>.simplified-pricing-cards-wrapper {
   align-items: center;
   justify-content: space-between;
   width: calc(var(--card-width) - 20px);
-  margin: 5px auto;
+  margin: 10px auto;
   gap: 10px;
 }
 
@@ -331,6 +331,10 @@ main .section>.simplified-pricing-cards-wrapper {
 
   .simplified-pricing-cards .card-wrapper {
     width: min-content;
+  }
+
+  .simplified-pricing-cards .card-header {
+    margin: 20px auto;
   }
 
   .simplified-pricing-cards .card-header p:nth-of-type(2) {

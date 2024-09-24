@@ -30,15 +30,16 @@ function equalizeHeights(el) {
   for (const className of classNames) {
     const headers = el.querySelectorAll(className);
     let maxHeight = 0;
+    headers.forEach((placeholder) => {
+      placeholder.style.height = 'unset';
+    });
     headers.forEach((header) => {
       if (header.checkVisibility()) {
         const height = getHeightWithoutPadding(header);
-        header.ATTRIBUTE_NODE;
         maxHeight = Math.max(maxHeight, height);
       }
     });
     headers.forEach((placeholder) => {
-      if (placeholder.style.height) return;
       if (maxHeight > 0) {
         placeholder.style.height = `${maxHeight}px`;
       }
@@ -233,6 +234,6 @@ export default async function init(el) {
   document.querySelectorAll('.simplified-pricing-cards .card').forEach((column) => {
     observer.observe(column);
   });
- 
-  window.addEventListener('resize', () => equalizeHeights(el), 100);
+
+  window.addEventListener('resize', () => equalizeHeights(el));
 }
