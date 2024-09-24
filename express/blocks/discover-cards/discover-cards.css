@@ -1,7 +1,7 @@
 .discover-cards-container .discover-cards {
     background-image: 
     linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, var(--color-white) 100%),
-    url(/express/img/cards-bg-large.png);
+    url(/express/blocks/discover-cards/img/cards-bg-large.png);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -171,7 +171,7 @@ main .section .discover-cards {
 
 @media (max-width: 400px) {
     .discover-cards-container .discover-cards {
-        background-image: url(/express/img/cards-bg-small.png);
+        background-image: url(/express/blocks/discover-cards/img/cards-bg-small.png);
     }
     .discover-cards .cards-container{
         padding-bottom: 0px;
