@@ -160,7 +160,7 @@ function decorateHeader(header, planExplanation) {
     if (p.innerHTML.trim() === '') p.remove();
   });
   planExplanation.classList.add('plan-explanation');
-  const hideButtonWrapper = createTag('div', {class : 'toggle-switch-wrapper'})
+  const hideButtonWrapper = createTag('div', { class: 'toggle-switch-wrapper' });
   const hideButton = createTag('div', { class: 'toggle-switch' });
   hideButton.innerText = '>';
   hideButton.addEventListener('click', () => {
@@ -171,9 +171,8 @@ function decorateHeader(header, planExplanation) {
       classList.add('hide');
     }
   });
-  header.append(hideButtonWrapper)
+  header.append(hideButtonWrapper);
   hideButtonWrapper.append(hideButton);
-
 }
 
 function decorateCardBorder(card, source) {
@@ -235,6 +234,6 @@ export default async function init(el) {
     observer.observe(column);
   });
 
-  window.addEventListener('load', () => equalizeHeights(el));
-  window.addEventListener('resize', () => equalizeHeights(el));
+  window.addEventListener('load', () => equalizeHeights(el), 100);
+  window.addEventListener('resize', () => equalizeHeights(el), 100);
 }
