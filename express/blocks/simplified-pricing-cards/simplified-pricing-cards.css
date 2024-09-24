@@ -11,9 +11,9 @@
   --card-width: 300px;
 }
 
-main .section:has(.pricing-cards)>div,
-.pricing-cards-container>div.pricing-cards-wrapper,
-main .section>.pricing-cards-wrapper {
+main .section:has(.simplified-pricing-cards)>div,
+.pricing-cards-container>div.simplified-pricing-cards-wrapper,
+main .section>.simplified-pricing-cards-wrapper {
   max-width: unset;
 }
 

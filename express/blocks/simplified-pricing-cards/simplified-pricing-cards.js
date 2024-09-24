@@ -185,7 +185,7 @@ function decorateCardBorder(card, source) {
 }
 
 export default async function init(el) {
-  addTempWrapper(el, 'pricing-cards');
+  addTempWrapper(el, 'simplified-pricing-cards');
   const placeholders = await fetchPlaceholders();
   const rows = Array.from(el.querySelectorAll(':scope > div'));
   const cardCount = rows[0].children.length;
