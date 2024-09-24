@@ -49,6 +49,11 @@ main .section .discover-cards {
     font-size: 28;
 }
 
+.discover-cards .cards-container .card .text-content .body {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .card.short {
     height: 415px;
 }

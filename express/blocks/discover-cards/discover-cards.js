@@ -47,8 +47,7 @@ export default async function decorate(block) {
       const textBody = element.querySelector('p');
       if (textHeader && textBody && !isBottomImageVariant) {
         textHeader.classList.add('header');
-        textBody.style.marginTop = '5px';
-        textBody.style.marginBottom = '5px';
+        textBody.classList.add('body');
         element.classList.add('text-content');
       }
 
