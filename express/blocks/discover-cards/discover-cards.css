@@ -20,8 +20,8 @@ main .section .discover-cards {
     font-weight: 400;
     font-size: 16px;
     text-align: center;
-    margin-top: 20px;
-    margin-bottom: 32px;
+    margin-top: 10px;
+    margin-bottom: 8px;
 }
 
 .discover-cards .cards-container {
