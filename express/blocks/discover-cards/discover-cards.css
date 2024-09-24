@@ -35,7 +35,7 @@ main .section .discover-cards {
     height: 478px;
     border-radius: 8px;
     padding: 16px;
-    background-color: rgba(var(--color-white), 0.7);
+    background-color: rgba(255, 255, 255, 0.7);
     margin: 10px auto;
     flex: 1 1 calc(33.33% - 32px);
     box-sizing: border-box;
