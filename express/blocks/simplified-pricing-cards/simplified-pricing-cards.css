@@ -9,6 +9,7 @@
 
 .simplified-pricing-cards {
   --card-width: 300px;
+  padding-bottom: 48px;
 }
 
 main .section:has(.simplified-pricing-cards)>div,
@@ -286,6 +287,9 @@ main .section>.simplified-pricing-cards-wrapper {
   border: 2px solid black;
   color: black;
   margin-top: 30px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-radius: 24px;
 }
 
 /* Tooltip CSS */
