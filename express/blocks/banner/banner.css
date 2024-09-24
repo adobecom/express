@@ -152,9 +152,16 @@ main .banner.cool h2 {
 }
 
 @media (min-width: 600px) {
+  main .banner.cool {
+    /* padding: 63px 21% 45px; */
+    max-width: 820px;
+  }
   main .banner .cool-container {
-    padding: 63px 45px 45px;
+    padding: 38px 45px 20px;
     /* padding: 0 82px; */
+  }
+  main .banner.cool p.button-container {
+    margin-top: 14px;
   }
 }
 
