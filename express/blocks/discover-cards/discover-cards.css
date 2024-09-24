@@ -178,13 +178,37 @@ main .section .discover-cards {
 }
 
 @media (max-width: 400px) {
+    .discover-cards-container .discover-cards {
+        background-image: url(/express/img/cards-bg-small.png);
+    }
+    .discover-cards .cards-container{
+        padding-bottom: 0px;
+    }
     .discover-cards .cards-container .card {
         min-width: 294px;
+        height: 427px;
+    }
+    .discover-cards .gallery-control {
+        padding-top: 8px;
     }
     .discover-cards .gallery-control .status {
         display: none;
     }
-    .discover-cards-container .discover-cards {
-        /* background-image: none; */
+    .discover-cards .cards-container .card .text-content .header {
+        font-size: 20px;
     }
+    .discover-cards .cards-container .card .text-content .body {
+        font-size: 16px;
+        width: 262px;
+    }
+    .discover-cards .cards-container .card picture img.short {
+        height: 147px;
+    }
+    .discover-cards .cards-container .card .text-content {
+        margin-top: -62px;
+    }
+    .discover-cards .cards-container .card picture img.short {
+        margin-top: 6px;
+    }
+    
   }
