@@ -4,8 +4,8 @@ main .section.banner-compact-container {
   background-color: var(--color-info-accent);
 }
 
-div:has(> .banner.cool){
-  background: linear-gradient(155.96deg, #BFE4FF -0.25%, #CECEF6 104.12%);
+div:has(> .banner.cool) {
+  background: linear-gradient(155.96deg, #bfe4ff -0.25%, #cecef6 104.12%);
 }
 
 main .section.banner-container,
@@ -100,7 +100,7 @@ main .banner .standout-container {
 
 main .banner .standout-container em {
   font-style: normal;
-  background: linear-gradient(180deg, #FF4DD2 20%, #FF993B 80%);
+  background: linear-gradient(180deg, #ff4dd2 20%, #ff993b 80%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -113,8 +113,12 @@ main .banner .standout-container em {
 
 main .banner .cool-container {
   background-color: var(--body-background-color);
-  background-color: #EDF4FD;
-  background: linear-gradient(95.37deg, rgba(255, 255, 255, 0.8) 18.1%, rgba(255, 255, 255, 0.4) 93.47%);
+  background-color: #edf4fd;
+  background: linear-gradient(
+    95.37deg,
+    rgba(255, 255, 255, 0.8) 18.1%,
+    rgba(255, 255, 255, 0.4) 93.47%
+  );
 
   color: var(--body-color);
   padding: 38px 45px 20px;
@@ -130,8 +134,6 @@ main .banner.cool p.button-container a.button {
   font-size: 17px;
   /* font-size: var(--body-font-size-l); */
 }
-
-
 
 main .banner.cool {
   /* padding-left: 82px;
