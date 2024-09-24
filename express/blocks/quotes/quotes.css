@@ -106,6 +106,7 @@ main .quotes.singular .quote-container .mobile-container .quote {
   max-width: 375px;
 }
 
+/* toggles between the mobile and desktop layout */
 @media (min-width: 600px) {
   main .quotes.singular .quote-container .desktop-container {
     display: block;
