@@ -159,12 +159,13 @@ main .banner.cool h2 {
   }
   main .banner.cool {
     padding: 0 82px;
+    max-width: unset;
   }
   main .banner .cool-container {
-    padding: 33px 45px;
+    padding: 70px 45px;
   }
   main .banner.cool h2 {
-    font-size: 37px;
+    font-size: 45px;
     font-weight: 900;
   }
   main .banner.cool p.button-container {
