@@ -69,11 +69,12 @@
   bottom: 0;
   width: 100%;
   background-color: #fff;
-  padding: 16px;
+  padding-top: 16px;
+  transition: bottom .4s ease;
 }
 
-.grid-marquee .drawer[hidden] {
-  display: none;
+.grid-marquee .drawer[aria-hidden='true'] {
+  bottom: -100%;
 }
 
 .grid-marquee .drawer .title-row {
@@ -110,8 +111,13 @@
   background-color: grey;
 }
 
-.grid-marquee .drawer [role='tabpanel'][hidden] {
+.grid-marquee .drawer [role='tabpanel'][aria-hidden='true'] {
   display: none;
+}
+
+.grid-marquee .drawer p {
+  border-top: 1px solid #0000001A;
+  margin: 0;
 }
 
 .grid-marquee .drawer a.button {
@@ -120,13 +126,10 @@
   color: unset;
   font-weight: unset;
   font-size: 1rem;
-  border-width: 1px 0 0;
-  border-radius: 0;
-  border-style: solid;
-  border-color: #ccc;
-  padding-left: 0;
-  padding-right: 0;
-  padding-top: 10px;
+  border: unset;
+  padding: unset;
+  text-align: left;
+  margin: unset;
 }
 
 .grid-marquee .ratings {

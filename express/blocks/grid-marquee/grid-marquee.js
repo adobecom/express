@@ -23,13 +23,13 @@ let activeDrawer = null;
 function deactivateDrawer() {
   if (!activeDrawer) return;
   activeDrawer.closest('.card').setAttribute('aria-expanded', false);
-  activeDrawer.hidden = true;
+  activeDrawer.setAttribute('aria-hidden', true);
   activeDrawer = null;
 }
 function activateDrawer(drawer) {
   deactivateDrawer();
   drawer.closest('.card').setAttribute('aria-expanded', true);
-  drawer.hidden = false;
+  drawer.setAttribute('aria-hidden', false);
   activeDrawer = drawer;
 }
 document.addEventListener('click', (e) => {
@@ -42,8 +42,7 @@ document.addEventListener('click', (e) => {
 function createDrawer(card, title, panels) {
   const titleRow = createTag('div', { class: 'title-row' });
   const titleText = title.textContent.trim();
-  const drawer = createTag('div', { class: 'drawer', id: `drawer-${titleText}` });
-  drawer.hidden = true;
+  const drawer = createTag('div', { class: 'drawer', id: `drawer-${titleText}`, 'aria-hidden': true });
   const closeButton = createTag('button', { 'aria-label': 'close' }, getIconElement('close-black'));
   closeButton.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -69,22 +68,23 @@ function createDrawer(card, title, panels) {
     panel.role = 'tabpanel';
     const tabHead = panel.querySelector('p:not(:has(a))');
     const tabName = tabHead.textContent;
+    const id = `${titleText}-${tabName}`;
     tabHead.remove();
-    panel.setAttribute('aria-labelledby', `tab-${tabName}`);
-    panel.id = `panel-${tabName}`;
-    if (i !== 0) panel.hidden = true;
+    panel.setAttribute('aria-labelledby', `tab-${id}`);
+    panel.id = `panel-${id}`;
+    i > 0 && (panel.setAttribute('aria-hidden', true));
     const tab = createTag('button', {
       role: 'tab',
       'aria-selected': i === 0,
-      'aria-controls': `panel-${tabName}`,
-      id: `tab-${tabName}`,
+      'aria-controls': `panel-${id}`,
+      id: `tab-${id}`,
     }, tabName);
-    if (!activeTab) activeTab = tab;
+    activeTab ||= tab;
     tab.addEventListener('click', () => {
       activeTab.setAttribute('aria-selected', false);
       tab.setAttribute('aria-selected', true);
       panels.forEach((p) => {
-        p.hidden = p !== panel;
+        p.setAttribute('aria-hidden', p !== panel);
       });
       activeTab = tab;
     });
@@ -111,8 +111,10 @@ function convertToCard(item) {
   face.classList.add('face');
   card.append(drawer);
   card.addEventListener('click', (e) => {
-    e.stopPropagation();
-    activateDrawer(drawer);
+    if (!activeDrawer) {
+      e.stopPropagation();
+      activateDrawer(drawer);
+    }
   });
 
   return card;
