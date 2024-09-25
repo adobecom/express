@@ -483,6 +483,7 @@ main .interactive-marquee.interactive-marquee.horizontal-masonry {
 /* Additional styles */
 main .interactive-marquee.interactive-marquee.horizontal-masonry .media-container {
     max-height: unset;
+    margin: auto;
 }
 
 main .interactive-marquee.horizontal-masonry .media-container p.image-container::after {
