@@ -237,4 +237,8 @@
     height: 249px;
     padding: 16px;
   }
+
+  .grid-marquee .drawer {
+    position: static;
+  }
 }
