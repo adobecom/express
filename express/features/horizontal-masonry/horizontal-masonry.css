@@ -248,12 +248,6 @@ main .interactive-marquee.horizontal-masonry .foreground >.text:first-of-type h1
     font-size: 45px;
 }
 
-main .interactive-marquee.horizontal-masonry .foreground >.text:first-of-type p:first-of-type{
-    font-size: 20px;
-}
-
-
-
 main .interactive-marquee.horizontal-masonry .foreground h1>em {
     font-style: normal;
     background: linear-gradient(320deg, #7C84F3, #FF4DD2, #FF993B, #FF4DD2, #7C84F3, #FF4DD2, #FF993B);
@@ -501,7 +495,8 @@ main .interactive-marquee .foreground .text .icon-area > div {
     width: fit-content;
 }
 main .interactive-marquee .foreground .text p {
-    font-size: 18px;
+    font-size: 20x;
+    margin: 10px 0px;
 }
 
 main .interactive-marquee .foreground .express-logo {
