@@ -1,35 +1,22 @@
+main .section .discover-cards { 
+    max-width: none; 
+}
 .discover-cards {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
-
-.discover-cards.no-bg { 
-    background-image: none; 
-}
-
-main .section .discover-cards { 
-    max-width: none; 
-}
-
 .discover-cards .sub-header {
     font-weight: 400;
     font-size: 16px;
     text-align: center;
     margin: 10px 0 8px 0;
+    padding-left: 20px;
+    padding-right: 20px;
 }
-
-.discover-cards .cards-container {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 16px;
-    justify-content: space-between;
-    padding: 16px;
-}
-
 .discover-cards .cards-container .card {
-    min-width: 399px;
-    height: 478px;
+    min-width: 294px;
+    height: 427px;
     border-radius: 8px;
     padding: 16px;
     background-color: rgba(255, 255, 255, 0.7);
@@ -41,81 +28,75 @@ main .section .discover-cards {
     position: relative;
     overflow: hidden;
 }
-
 .discover-cards .cards-container .card.short.image-bottom {
     border: 2px solid #E1E1E1;
     border-radius: 8px;
     height: 396px;
-    min-width: 357px;
+    min-width: 316px;
 }
-
+.discover-cards .center-title h3 {
+    font-size: 22px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.discover-cards .gallery-control {
+    padding-top: 8px;
+}
+.discover-cards .gallery-control .status {
+    display: none;
+}
 .discover-cards .cards-container .card .text-content {
     text-align: left;
-    width: 351px;
-    margin-left: auto;
-    margin-right: auto;
 }
-
-.discover-cards .cards-container .card .small-text-content {
-    text-align: left;
-    display: contents;
+.discover-cards .cards-container .card .text-content .header {
+    text-align: left; 
+    font-size: 20px;
+    margin-top: 10px;
 }
-
-.discover-cards .cards-container .card.image-bottom .small-text-body {
-    margin: 0 0 5px 0;
-    font-size: 14px;
-    line-height: normal;
+.discover-cards .cards-container .card .text-content .body {
+    font-size: 16px;
+    width: 262px;
+    margin-top: 10px;
+    margin-bottom: 2px;
 }
-
 .discover-cards .cards-container .card.image-bottom .small-header { 
     text-align: left; 
     font-size: 17px; 
     font-weight: 600;
 }
-
-.discover-cards .cards-container .card .text-content .header { 
-    text-align: left; 
-    font-size: 28px; 
+.discover-cards .cards-container .card.image-bottom .small-text-content {
+    text-align: left;
+    display: contents;
 }
-
-.discover-cards .cards-container .card .text-content .body { 
-    margin: 5px 0;
+.discover-cards .cards-container .card.image-bottom .small-text-body {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    line-height: normal;
 }
-
-.discover-cards .cards-container .card.image-bottom picture img {
+.discover-cards .cards-container .card.image-bottom picture img.tall {
+    width: 294px;
+    height: 289px;
     position: absolute;
-    bottom: -2px;
-    left: 10px;
-    right: 10px;
-    top: auto;
-    width: calc(100% - 20px);
-    height: auto;
-    object-fit: cover;
+    left: 8px;
+    bottom: 10px;
 }
-
-.discover-cards .cards-container .card div {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+.discover-cards .cards-container .card picture img.short {
+    height: 147px;
+    margin-top: 6px;
 }
-
-.discover-cards .cards-container .card picture img {
-    width: 351px; 
-    margin: 12px auto 16px auto;
-    object-fit: cover;
+.discover-cards .card .button-container {
+    position: absolute;
+    bottom: 5px;
+    left: 3px;
+    right: 16px;
+    text-align: left;
 }
-
-.discover-cards .cards-container .card picture img.short { 
-    height: 198px; 
+.discover-cards .card .button-container a {
+    background-color: #292929;
+    color: var(--color-white);
+    border: none;
+    width: 78px;
 }
-
-.discover-cards .cards-container .card picture img.tall {
-    width: 325px;
-    height: 274px;
-    border-radius: 8px;
-}
-
 .discover-cards .cards-container .card .button-container.center-button {
     left: 50%;
     transform: translateX(-50%);
@@ -123,7 +104,6 @@ main .section .discover-cards {
     display: block;
     justify-content: center;
 }
-
 .discover-cards .card .button-container.center-button a {
     border: 1px solid var(--color-black);
     background-color: var(--color-white);
@@ -131,81 +111,44 @@ main .section .discover-cards {
     text-align: center;
 }
 
-.discover-cards .card h2, .card h4 { 
-    font-size: 1.5em; 
-    margin-bottom: 0.5em; 
-}
-
-.discover-cards .card p { 
-    margin: 0.5em 0; 
-    font-size: 1em; 
-}
-
-.discover-cards .card .cta-section { 
-    margin-top: auto; 
-    text-align: left; 
-}
-
-.discover-cards .card .cta-section-text { 
-    margin: 0; 
-}
-
-.discover-cards .card .button-container {
-    position: absolute;
-    bottom: 18px;
-    left: 16px;
-    right: 16px;
-    text-align: left;
-}
-
-.discover-cards .card .button-container a {
-    background-color: #292929;
-    color: var(--color-white);
-    border: none;
-    width: 78px;
-    margin-left: 0;
-}
-
-@media (max-width: 400px) {
-    .discover-cards {
-        background-image: url(/express/blocks/discover-cards/img/cards-bg-small.webp);
-    }
-    .discover-cards .cards-container{
-        padding-bottom: 0px;
+@media (min-width: 401px) {  
+    .discover-cards .cards-container {
+        padding: 16px;
     }
     .discover-cards .cards-container .card {
-        min-width: 294px;
-        height: 427px;
+        min-width: 399px;
+        height: 478px;
     }
-    .discover-cards .gallery-control {
-        padding-top: 8px;
+    .discover-cards .center-title h3 {
+        font-size: 36px;
     }
-    .discover-cards .gallery-control .status {
-        display: none;
+    .discover-cards .cards-container .card .text-content .header { 
+        font-size: 28px; 
     }
-    .discover-cards .cards-container .card .text-content .header {
-        font-size: 20px;
-    }
-    .discover-cards .cards-container .card .text-content .body {
-        font-size: 16px;
-        width: 262px;
-    }
-    .discover-cards .cards-container .card picture img.short {
-        height: 147px;
+    .discover-cards .cards-container .card .text-content .body { 
+        width: auto;
     }
     .discover-cards .cards-container .card .text-content {
-        margin-top: -62px;
+        text-align: left;
+        width: 351px;
+        margin-left: auto;
+        margin-right: auto;
     }
-    .discover-cards .cards-container .card picture img.short {
-        margin-top: 6px;
+    .discover-cards .gallery-control .status {
+        display: flex;
+    }
+    .discover-cards .cards-container .card picture img.short { 
+        width: 351px;
+        height: 198px; 
     }
     .discover-cards .cards-container .card.short.image-bottom {
-        min-width: 294px;
+        min-width: 357px;
+        height: 396px;
     }
-    .discover-cards .cards-container .card picture img.tall {
-        width: 262px;
+    .discover-cards .cards-container .card.image-bottom picture img.tall {
+        position: absolute;
+        left: 14px;
+        bottom: 10px;
+        width: 325px;
     }
-    .discover-cards .cards-container .card.image-bottom picture img {
-        bottom: -22px;
-    }
-  }
+}

@@ -7,7 +7,7 @@ export default async function decorate(block) {
   const firstChild = block.querySelector(':scope > div:first-child');
 
   if (firstChild && firstChild.querySelector('h3')) {
-    firstChild.classList.add('centered-title');
+    firstChild.classList.add('center-title');
     block.insertBefore(firstChild, block.firstChild);
   }
 
@@ -76,7 +76,12 @@ export default async function decorate(block) {
   function waitForLCP() {
     if (!isBottomImageVariant) {
       const parentBlock = document.querySelector('.discover-cards');
-      parentBlock.style.backgroundImage = 'linear-gradient(to bottom, rgba(255, 255, 255, 0) 80%, #FFFFFF 100%), url(/express/blocks/discover-cards/img/cards-bg-large.webp)';
+      const imageSize = document.body.dataset.device === 'desktop' ? 'large' : 'small';
+      parentBlock.style.backgroundImage = `
+        linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
+        linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
+        url(/express/blocks/discover-cards/img/cards-bg-${imageSize}.webp)
+      `;
     }
   }
   window.addEventListener('express:LCP:loaded', waitForLCP);
