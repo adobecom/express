@@ -284,7 +284,6 @@ async function getFallbackMsg(tasks = '') {
 }
 
 async function fetchTemplatesNoToolbar(props) {
-  console.log('props', props);
   const { filters, limit } = props;
   const langs = extractLangs(filters.locales);
   if (langs.length <= 1) {
