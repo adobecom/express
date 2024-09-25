@@ -227,7 +227,6 @@ async function fetchSearchUrl({
   q,
   collectionId,
 }) {
-  // q = '紅葉';
   const base = 'https://www.adobe.com/express-search-api-v3';
   const collectionIdParam = `collectionId=${collectionId}`;
   const queryType = 'search';
