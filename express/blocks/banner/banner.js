@@ -6,22 +6,14 @@ export default async function decorate(block) {
   const isBannerCoolVariant = block.classList.contains('cool');
   const isBannerNarrowVariant = block.classList.contains('narrow');
 
-  const addIntermediateContainer = (el, className) => {
-    const intermediateContainer = createTag('div', {
-      class: className,
+  if (isBannerStandoutVariant || isBannerCoolVariant) {
+    const contentContainer = createTag('div', {
+      class: 'content-container',
     });
-
-    for (const child of el.children) {
-      intermediateContainer.append(child);
+    for (const child of block.children) {
+      contentContainer.append(child);
     }
-
-    el.replaceChildren(intermediateContainer);
-  };
-
-  if (isBannerStandoutVariant) {
-    addIntermediateContainer(block, 'standout-container');
-  } else if (isBannerCoolVariant) {
-    addIntermediateContainer(block, 'cool-container');
+    block.replaceChildren(contentContainer);
   }
 
   if (isBannerNarrowVariant) {
