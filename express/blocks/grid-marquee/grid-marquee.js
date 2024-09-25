@@ -163,17 +163,16 @@ function decorateHeadline(headline) {
   headline.querySelectorAll('p');
   return headline;
 }
-// apple-store.svg
-// google-store.svg
+
 async function decorateRatings(el, store) {
   const placeholders = await fetchPlaceholders();
-  const score = placeholders[`${store}-store-rating-score`];
-  const cnt = placeholders[`${store}-store-rating-count-text`];
-  const link = placeholders['app-store-link'];
-  if (!score || !cnt || !link) {
+  const ratings = placeholders['app-store-ratings']?.split(';') || [];
+  const link = ratings[2]?.trim();
+  if (!link) {
     el.remove();
     return;
   }
+  const [score, cnt] = ratings[['apple', 'google'].indexOf(store)].split(',').map((str) => str.trim());
   const star = getIconElement('star');
   const storeLink = createTag('a', { href: link }, getIconElement(`${store}-store`));
   const { default: trackBranchParameters } = await import('../../scripts/branchlinks.js');
