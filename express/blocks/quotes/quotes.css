@@ -205,7 +205,7 @@ main .quotes.singular .mobile-container .author-panel .author-photo {
 @media (min-width: 600px) {
   main .quotes.singular .quote {
     width: 80%;
-    min-height: 330px;
+    min-height: 335px;
   }
 }
 
