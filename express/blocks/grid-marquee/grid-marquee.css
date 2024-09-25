@@ -79,14 +79,20 @@
 }
 
 .grid-marquee .drawer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   border-radius: 16px 16px 0 0;
+  padding: 16px 16px 0 16px;
   position: fixed;
   left: 0;
   bottom: 0;
   width: 100%;
+  box-sizing: border-box;
   background-color: #fff;
   padding-top: 16px;
   transition: bottom .4s ease;
+  box-shadow: 0px -62px 80px 0px #0000002B;
 }
 
 .grid-marquee .drawer[aria-hidden='true'] {
@@ -94,31 +100,43 @@
 }
 
 .grid-marquee .drawer .title-row {
+  padding-top: 6px;
+  padding-bottom: 8px;
   font-size: 1.125rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
 }
 
 .grid-marquee .drawer .title-row strong {
   font-weight: 700;
 }
 
-.grid-marquee .drawer video {
-  border-width: 1px 0 0;
-  border-radius: 0;
-  border-style: solid;
-  border-color: #ccc;
-  padding: 16px;
-  width: 328px;
-  height: 247px;
+.grid-marquee .drawer .video-container {
+  border-top: 1px solid #0000001A;
   margin: auto;
 }
 
-.grid-marquee .drawer .video-container {
-  display: flex;
+.grid-marquee .drawer video {
+  max-height: 40vh;
+}
 
+.grid-marquee .drawer .ctas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.grid-marquee .drawer .ctas-container p {
+  margin: 0;
+  padding: 8px 0;
+  border-top: 1px solid #0000001A;
+  display: flex;
+  gap: 16px;
+}
+
+.grid-marquee .drawer .icon {
+  width: 22px;
 }
 
 .grid-marquee .drawer [aria-label='close'] {
@@ -144,12 +162,7 @@
   display: none;
 }
 
-.grid-marquee .drawer p {
-  border-top: 1px solid #0000001A;
-  margin: 0;
-}
-
-.grid-marquee .drawer a.button {
+.grid-marquee .drawer a {
   width: 100%;
   background-color: unset;
   color: unset;
