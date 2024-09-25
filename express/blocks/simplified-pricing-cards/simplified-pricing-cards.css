@@ -355,13 +355,13 @@ main .section>.simplified-pricing-cards-wrapper {
     display: none;
   }
 
-  .simplified-pricing-cards .card-header p:nth-of-type(1) em {
+  .simplified-pricing-cards .card-header p:nth-of-type(2) em {
     display: block;
     width: unset;
     height: unset;
   }
 
-  .simplified-pricing-cards .card-header p:nth-of-type(2) em {
+  .simplified-pricing-cards .card-header p:nth-of-type(1) em {
     display: none;
     margin: 0;
     width: 0;
@@ -392,11 +392,11 @@ main .section>.simplified-pricing-cards-wrapper {
     display: none;
   }
 
-  .simplified-pricing-cards .card-header p:nth-of-type(1){
+  .simplified-pricing-cards .card-header p:nth-of-type(2){
     display: none; 
   }
   
-  .simplified-pricing-cards .card-header p:nth-of-type(2) em {
+  .simplified-pricing-cards .card-header p:nth-of-type(1) em {
     display: block;
     width: unset;
     height: unset;
@@ -431,11 +431,11 @@ main .section>.simplified-pricing-cards-wrapper {
     margin-left: auto
   }
 
-  .simplified-pricing-cards .card-header p:nth-of-type(1){
+  .simplified-pricing-cards .card-header p:nth-of-type(2){
     display: none; 
   }
   
-  .simplified-pricing-cards .card-header p:nth-of-type(2) em {
+  .simplified-pricing-cards .card-header p:nth-of-type(1) {
     display: block;
     width: unset;
     height: unset;
@@ -461,11 +461,11 @@ main .section>.simplified-pricing-cards-wrapper {
     margin-left: auto
   }
 
-  .simplified-pricing-cards .card-header p:nth-of-type(1) em {
+  .simplified-pricing-cards .card-header p:nth-of-type(2) em {
     display: none; 
   }
   
-  .simplified-pricing-cards .card-header p:nth-of-type(2) em{
+  .simplified-pricing-cards .card-header p:nth-of-type(1) em{
     display: block;
     width: unset;
     height: unset;
