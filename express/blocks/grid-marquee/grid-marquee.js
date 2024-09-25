@@ -45,15 +45,15 @@ document.addEventListener('click', (e) => {
   }
 });
 
-function decorateIcons(drawer) {
-  const icons = [...drawer.querySelectorAll('span.icon')];
-  icons.forEach((icon) => {
-    const match = /icon-(.+)/.exec(icon.classList);
-    if (match?.[1]) {
-      icon.append(getIconElement(match[1]));
-    }
-  });
-}
+// function decorateIcons(drawer) {
+//   const icons = [...drawer.querySelectorAll('span.icon')];
+//   icons.forEach((icon) => {
+//     const match = /icon-(.+)/.exec(icon.classList);
+//     if (match?.[1]) {
+//       icon.append(getIconElement(match[1]));
+//     }
+//   });
+// }
 
 function createDrawer(card, title, panels) {
   const titleRow = createTag('div', { class: 'title-row' });
@@ -75,10 +75,22 @@ function createDrawer(card, title, panels) {
   videoWrapper.append(video);
   drawer.append(videoWrapper);
   drawer.append(...panels);
-  decorateIcons(drawer);
+  // decorateIcons(drawer);
 
   panels.forEach((panel) => {
     panel.classList.add('ctas-container');
+    [...panel.querySelectorAll('p')].forEach((p) => {
+      const icon = p.querySelector('span.icon');
+      const match = icon && /icon-(.+)/.exec(icon.classList);
+      if (match?.[1]) {
+        icon.append(getIconElement(match[1]));
+      }
+      const anchor = p.querySelector('a');
+      if (anchor) {
+        anchor.prepend(icon);
+        p.replaceWith(anchor);
+      }
+    });
   });
   if (panels.length <= 1) {
     return drawer;

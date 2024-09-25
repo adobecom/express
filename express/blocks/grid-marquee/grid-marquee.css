@@ -90,7 +90,6 @@
   width: 100%;
   box-sizing: border-box;
   background-color: #fff;
-  padding-top: 16px;
   transition: bottom .4s ease;
   box-shadow: 0px -62px 80px 0px #0000002B;
 }
@@ -115,6 +114,7 @@
 .grid-marquee .drawer .video-container {
   border-top: 1px solid #0000001A;
   margin: auto;
+  padding: 16px 0;
 }
 
 .grid-marquee .drawer video {
@@ -127,16 +127,18 @@
   gap: 8px;
 }
 
-.grid-marquee .drawer .ctas-container p {
+.grid-marquee .drawer .ctas-container a {
   margin: 0;
-  padding: 8px 0;
+  padding: 16px 0;
   border-top: 1px solid #0000001A;
   display: flex;
+  align-items: center;
   gap: 16px;
 }
 
 .grid-marquee .drawer .icon {
   width: 22px;
+  height: 22px;
 }
 
 .grid-marquee .drawer [aria-label='close'] {
@@ -151,11 +153,16 @@
 .grid-marquee .drawer [role='tab'] {
   background-color: unset;
   border: unset;
-  border-radius: 15px;
-  padding: 10px;
+  border-radius: 16px;
+  padding: 8px 12px;
+  font-size: var(--body-font-size-s);
+  color: #292929;
+  cursor: pointer;
 }
 .grid-marquee .drawer [role='tab'][aria-selected='true'] {
-  background-color: grey;
+  background-color: #e1e1e1;
+  font-weight: 700;
+  cursor: unset;
 }
 
 .grid-marquee .drawer [role='tabpanel'][aria-hidden='true'] {
