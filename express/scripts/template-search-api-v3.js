@@ -227,6 +227,7 @@ async function fetchSearchUrl({
   q,
   collectionId,
 }) {
+  // q = '紅葉';
   const base = 'https://www.adobe.com/express-search-api-v3';
   const collectionIdParam = `collectionId=${collectionId}`;
   const queryType = 'search';
@@ -283,6 +284,7 @@ async function getFallbackMsg(tasks = '') {
 }
 
 async function fetchTemplatesNoToolbar(props) {
+  console.log('props', props);
   const { filters, limit } = props;
   const langs = extractLangs(filters.locales);
   if (langs.length <= 1) {
@@ -382,6 +384,7 @@ export async function fetchTemplatesCategoryCount(props, tasks) {
 }
 
 export async function fetchTemplates(props) {
+  props.q = props.topic || props.q;
   // api rejects 10000+
   const start = parseInt(props.start, 10);
   if (Number.isInteger(start) && start > 9999) {
