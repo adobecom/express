@@ -129,7 +129,7 @@ function createDrawer(card, title, panels) {
 
   return drawer;
 }
-
+const mediaQuery = window.matchMedia('(min-width: 1200px)');
 function convertToCard(item) {
   const title = item.querySelector('strong');
   const card = createTag('button', {
@@ -145,11 +145,19 @@ function convertToCard(item) {
   face.classList.add('face');
   card.append(drawer);
   card.addEventListener('click', (e) => {
-    if (!activeDrawer) {
-      e.stopPropagation();
-      activateDrawer(drawer);
-    }
+    // race condition here! It's not opening first try!
+    if (activeDrawer) return;
+    e.stopPropagation();
+    activateDrawer(drawer);
   });
+  card.addEventListener('mouseenter', () => {
+    activateDrawer(drawer);
+  });
+  card.addEventListener('focus', () => {
+    activateDrawer(drawer);
+  });
+  card.addEventListener('mouseleave', deactivateDrawer);
+  card.addEventListener('blue', deactivateDrawer);
 
   return card;
 }
@@ -158,6 +166,8 @@ function decorateHeadline(headline) {
   headline.classList.add('headline');
   const ctas = [...headline.querySelectorAll('a')];
   if (!ctas.length) return headline;
+  const ctasContainer = ctas[0].parentElement;
+  ctasContainer.classList.add('ctas-container');
   ctas.forEach((cta) => cta.classList.add('button'));
   ctas[0].classList.add('primaryCTA');
   headline.querySelectorAll('p');
@@ -218,5 +228,6 @@ export default function init(el) {
   }
   foreground.append(createRatings());
   el.append(foreground);
+  mediaQuery.addEventListener('change', deactivateDrawer);
 }
 // delay dom for tablet/desktop?
