@@ -235,5 +235,10 @@ export default async function init(el) {
     observer.observe(column);
   });
 
-  window.addEventListener('resize', () => equalizeHeights(el), 100);
+  const { debounce } = await import('../../scripts/hofs.js');
+  window.addEventListener('resize', debounce(
+    () => {
+      equalizeHeights(el);
+    }, 100,
+  ));
 }

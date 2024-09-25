@@ -334,6 +334,7 @@ main .section>.simplified-pricing-cards-wrapper {
 
   .simplified-pricing-cards .card-header {
     margin: 20px auto;
+    justify-content: start;
   }
 
   .simplified-pricing-cards .card-header p:nth-of-type(2) {
@@ -343,6 +344,9 @@ main .section>.simplified-pricing-cards-wrapper {
 
   .simplified-pricing-cards .toggle-switch-wrapper {
     margin: auto 0px auto 10px;
+    display: flex;
+    flex-direction: row-reverse;
+    flex-grow: 1;
   }
 
   .simplified-pricing-cards .card-wrapper .card.hide .plan-explanation,
