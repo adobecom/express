@@ -3,7 +3,6 @@ import buildGallery from '../../features/gallery/gallery.js';
 
 export default async function decorate(block) {
   const isBottomImageVariant = block.classList.contains('bottom-image');
-  block.classList.toggle('no-bg', isBottomImageVariant);
   const firstChild = block.querySelector(':scope > div:first-child');
 
   if (firstChild && firstChild.querySelector('h3')) {
@@ -70,18 +69,18 @@ export default async function decorate(block) {
     });
   });
 
+  const isbgBlock = block && !block.classList.contains('bottom-image');
   block.appendChild(cardsWrapper);
   await buildGallery(cards, cardsWrapper);
 
   function waitForLCP() {
-    if (!isBottomImageVariant) {
-      const parentBlock = document.querySelector('.discover-cards');
+    if (isbgBlock) {
       const imageSize = document.body.dataset.device === 'desktop' ? 'large' : 'small';
-      parentBlock.style.backgroundImage = `
-        linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
-        linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
-        url(/express/blocks/discover-cards/img/cards-bg-${imageSize}.webp)
-      `;
+      block.style.backgroundImage = `
+          linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
+          linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
+          url(/express/blocks/discover-cards/img/cards-bg-${imageSize}.webp)
+        `;
     }
   }
   window.addEventListener('express:LCP:loaded', waitForLCP);
