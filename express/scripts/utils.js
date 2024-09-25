@@ -2670,7 +2670,7 @@ export function titleCase(str) {
   return splitStr.join(' ');
 }
 
-export function pickRandomFromArray(arr) { // trigger rebuild
+export function pickRandomFromArray(arr) {
   return arr[Math.floor(arr.length * Math.random())];
 }
 
