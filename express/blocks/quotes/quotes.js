@@ -28,10 +28,10 @@ export default function decorate($block) {
       const $img = $rows[0].children[0].querySelector('img');
       const backgroundUrl = $img.src;
 
-      const backgroundDesktopCSS = `no-repeat calc(-400px + 25%) 10px / 640px url("${backgroundUrl}"), no-repeat calc(450px + 75%) 10px / 640px url("${backgroundUrl}")`;
+      const backgroundDesktopCSS = `no-repeat calc(-400px + 25%) -20px / 640px url("${backgroundUrl}"), no-repeat calc(450px + 75%) -20px / 640px url("${backgroundUrl}")`;
       $desktopContainerBackground.style.background = backgroundDesktopCSS;
 
-      const backgroundMobileCSS = `no-repeat -20px 10px url("${backgroundUrl}")`;
+      const backgroundMobileCSS = `no-repeat -20px -20px / 750px url("${backgroundUrl}")`;
       $mobileContainerBackground.style.background = backgroundMobileCSS;
 
       $rows.shift();
