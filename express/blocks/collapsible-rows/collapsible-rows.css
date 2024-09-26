@@ -1,4 +1,7 @@
 @media (min-width: 900px) {
+    .collapsible-rows.small .collapsible-row-accordion {
+        height: 78px;
+    }
     .collapsible-row-accordion {
         height: 128px;
         margin-bottom: 4px;
@@ -7,10 +10,9 @@
         background: #F8F8F8;
         padding: 16px;
 
-        /* Flexbox to vertically center content */
         display: flex;
         flex-direction: column;
-        justify-content: center; /* Vertically centers the content */
+        justify-content: center;
     }
 
     .collapsible-row-header {
