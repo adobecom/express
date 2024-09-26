@@ -50,8 +50,8 @@ function decorateCollapsibleRows(block) {
     });
   });
 
-  const toggleButton = createTag('button', { class: 'collapsible-row-toggle-btn' });
-  toggleButton.textContent = 'Show More';
+  const toggleButton = createTag('a', { class: 'collapsible-row-toggle-btn button' });
+  toggleButton.textContent = 'View more';
   block.append(toggleButton);
 
   toggleButton.addEventListener('click', () => {

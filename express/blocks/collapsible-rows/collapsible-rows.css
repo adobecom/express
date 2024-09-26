@@ -1,11 +1,11 @@
 @media (min-width: 900px) {
     .collapsible-row-accordion {
-        /* Layout styles applied all the time */
-        margin-bottom: 4px; /* Space between rows */
+        height: 128px;
+        margin-bottom: 4px;
         border-radius: 0px 16px 16px 0px;
         border-left: 4px solid #724CDC;
         background: #F8F8F8;
-        padding: 16px; /* Padding is always applied */
+        padding: 16px;
       }
       
       .collapsible-row-header {
@@ -25,11 +25,34 @@
       }
       
       .collapsible-row-accordion.collapsed {
-        display: none; /* Hide content */
+        display: none;
       }
       
       .collapsible-row-accordion.expanded {
-        display: block; /* Show content */
+        display: block;
       }
-      
+      .collapsible-row-toggle-btn {
+        display: block; 
+        width: fit-content;
+        margin-left: 0; 
+        text-align: left;
+        text-decoration: none;
+        border-radius: 18px;
+        padding: 5px 1.2em 6px 1.2em;
+        font-size: var(--body-font-size-s);
+        font-style: normal;
+        font-weight: 600;
+        line-height: var(--body-line-height);
+        cursor: pointer;
+        transition: background-color .3s, color .3s, border .3s;
+        border-width: 2px;
+        border-style: solid;
+        margin: 10px 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--color-white);
+        background-color: var(--color-info-accent);
+        border-color: var(--color-info-accent);
+        font-weight: 600;
+    }
 }
