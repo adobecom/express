@@ -2,7 +2,6 @@ import { createTag } from '../../scripts/utils.js';
 import { trackButtonClick } from '../../scripts/instrument.js';
 
 function decorateCollapsibleRows(block) {
-  console.log('are we here ', block);
   const collapsibleRows = [];
   const entities = [];
   const rows = Array.from(block.children);
@@ -17,46 +16,45 @@ function decorateCollapsibleRows(block) {
   });
 
   block.innerHTML = '';
-  const visibleCount = 3; // Set the number of rows to show initially
-  let isExpanded = false; // Track whether the row list is expanded
+  const visibleCount = 3;
+  let isExpanded = false;
 
-  collapsibleRows.forEach((faq, index) => {
-    const { header, subHeader } = faq;
+  collapsibleRows.forEach((row, index) => {
+    const { header, subHeader } = row;
 
-    const $accordion = createTag('div', { class: 'collapsible-row-accordion' });
+    const accordion = createTag('div', { class: 'collapsible-row-accordion' });
     if (index >= visibleCount) {
-      $accordion.classList.add('collapsed'); // Initially hide extra rows
+      accordion.classList.add('collapsed');
     }
-    $accordion.addEventListener('click', () => {
-      trackButtonClick($accordion);
+    accordion.addEventListener('click', () => {
+      trackButtonClick(accordion);
     });
 
-    block.append($accordion);
+    block.append(accordion);
 
-    const $headerDiv = createTag('h3', { class: 'collapsible-row-header' });
-    $accordion.append($headerDiv);
-    $headerDiv.innerHTML = header;
+    const headerDiv = createTag('h3', { class: 'collapsible-row-header' });
+    accordion.append(headerDiv);
+    headerDiv.innerHTML = header;
 
-    const $subHeaderDiv = createTag('div', { class: 'collapsible-row-sub-header' });
-    $accordion.append($subHeaderDiv);
-    $subHeaderDiv.innerHTML = subHeader;
+    const subHeaderDiv = createTag('div', { class: 'collapsible-row-sub-header' });
+    accordion.append(subHeaderDiv);
+    subHeaderDiv.innerHTML = subHeader;
 
     entities.push({
-      '@type': 'Question',
+      '@type': 'Header',
       name: header,
       acceptedAnswer: {
-        '@type': 'Answer',
+        '@type': 'SubHeader',
         text: subHeader,
       },
     });
   });
 
-  const $toggleButton = createTag('button', { class: 'collapsible-row-toggle-btn' });
-  $toggleButton.textContent = 'Show More';
-  block.append($toggleButton);
+  const toggleButton = createTag('button', { class: 'collapsible-row-toggle-btn' });
+  toggleButton.textContent = 'Show More';
+  block.append(toggleButton);
 
-  // Event listener to toggle visibility
-  $toggleButton.addEventListener('click', () => {
+  toggleButton.addEventListener('click', () => {
     const hiddenItems = block.querySelectorAll('.collapsible-row-accordion');
     hiddenItems.forEach((item, index) => {
       if (index >= visibleCount) {
@@ -65,7 +63,7 @@ function decorateCollapsibleRows(block) {
       }
     });
     isExpanded = !isExpanded;
-    $toggleButton.textContent = isExpanded ? 'Show Less' : 'Show More';
+    toggleButton.textContent = isExpanded ? 'Show Less' : 'Show More';
   });
 }
 
