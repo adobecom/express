@@ -75,10 +75,11 @@ main .section .discover-cards {
 }
 .discover-cards .cards-container .card.image-bottom picture img.tall {
     width: 294px;
-    height: 289px;
+    height: 274px;
     position: absolute;
     left: 8px;
     bottom: 10px;
+    object-fit: fill;
 }
 .discover-cards .cards-container .card picture img.short {
     height: 147px;
@@ -112,15 +113,13 @@ main .section .discover-cards {
 }
 
 @media (min-width: 401px) {  
-    .discover-cards .cards-container {
-        padding: 16px;
-    }
     .discover-cards .cards-container .card {
         min-width: 399px;
         height: 478px;
     }
     .discover-cards .center-title h3 {
         font-size: 36px;
+        margin-top: 50px;
     }
     .discover-cards .cards-container .card .text-content .header { 
         font-size: 28px; 
