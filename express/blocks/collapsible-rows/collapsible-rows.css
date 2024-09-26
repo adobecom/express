@@ -1,4 +1,16 @@
 @media (min-width: 900px) {
+    .collapsible-rows.one-line-collapse .collapsible-row-accordion .collapsible-row-header {
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 24px;
+    }
+    .collapsible-rows.one-line-collapse .collapsible-row-accordion .collapsible-row-sub-header {
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 24px;
+    }
     .collapsible-rows.small .collapsible-row-accordion {
         height: 78px;
     }
