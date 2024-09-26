@@ -5,6 +5,7 @@ function decorateCollapsibleRows(block) {
   const collapsibleRows = [];
   const entities = [];
   const rows = Array.from(block.children);
+
   rows.forEach((row) => {
     const cells = Array.from(row.children);
     const header = cells[0];
@@ -25,7 +26,9 @@ function decorateCollapsibleRows(block) {
     const accordion = createTag('div', { class: 'collapsible-row-accordion' });
     if (index >= visibleCount) {
       accordion.classList.add('collapsed');
+      accordion.style.display = 'none'; // Initially hide the rows
     }
+
     accordion.addEventListener('click', () => {
       trackButtonClick(accordion);
     });
@@ -58,8 +61,13 @@ function decorateCollapsibleRows(block) {
     const hiddenItems = block.querySelectorAll('.collapsible-row-accordion');
     hiddenItems.forEach((item, index) => {
       if (index >= visibleCount) {
-        item.classList.toggle('collapsed');
-        item.classList.toggle('expanded');
+        if (item.classList.contains('collapsed')) {
+          item.classList.remove('collapsed');
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+          item.classList.add('collapsed');
+        }
       }
     });
     isExpanded = !isExpanded;
