@@ -69,19 +69,16 @@ export default async function decorate(block) {
     });
   });
 
-  const isbgBlock = block && !block.classList.contains('bottom-image');
   block.appendChild(cardsWrapper);
   await buildGallery(cards, cardsWrapper);
 
   function waitForLCP() {
-    if (isbgBlock) {
-      const imageSize = document.body.dataset.device === 'desktop' ? 'large' : 'small';
-      block.style.backgroundImage = `
+    const imageSize = document.body.dataset.device === 'desktop' ? 'large' : 'small';
+    block.style.backgroundImage = `
           linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
           linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
           url(/express/blocks/discover-cards/img/cards-bg-${imageSize}.webp)
         `;
-    }
   }
   window.addEventListener('express:LCP:loaded', waitForLCP);
 }

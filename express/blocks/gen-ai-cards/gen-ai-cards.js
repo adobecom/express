@@ -13,7 +13,7 @@ export function decorateTextWithTag(textSource, options = {}) {
     tagClass,
   } = options;
   const text = createTag(baseT || 'p', { class: baseClass || '' });
-  const tagText = textSource.match(/\[(.*?)]/);
+  const tagText = textSource?.match(/\[(.*?)]/);
 
   if (tagText) {
     const [fullText, tagTextContent] = tagText;

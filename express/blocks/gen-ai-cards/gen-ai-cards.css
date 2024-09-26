@@ -201,11 +201,17 @@
 }
 
 @media (min-width: 900px) {
+  .gen-ai-cards.homepage .card {
+    border: 2px solid #E1E1E1;
+    background: var(--color-white);
+  }
+  .gen-ai-cards.homepage .gen-ai-cards-heading {
+    font-size: 36px;
+  }
   .gen-ai-cards .gen-ai-cards-heading-section {
       flex-direction: row;
       align-items: flex-end;
   }
-
   .gen-ai-cards .carousel-container .carousel-fader-left,
   .gen-ai-cards .carousel-container .carousel-fader-right{
       background: unset;
