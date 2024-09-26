@@ -12,7 +12,9 @@
   padding-bottom: 8px;
 }
 
-.grid-marquee strong {
+.grid-marquee strong,
+.grid-marquee a,
+.grid-marquee button {
   font-family: var(--body-font-family);
 }
 
