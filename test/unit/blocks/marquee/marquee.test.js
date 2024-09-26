@@ -8,6 +8,7 @@ import { expect } from '@esm-bundle/chai';
 import { setConfig } from '../../../../express/scripts/utils.js';
 
 window.isTestEnv = true;
+
 const {
   default: decorate,
   handleMediaQuery,
