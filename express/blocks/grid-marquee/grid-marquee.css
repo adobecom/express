@@ -113,7 +113,7 @@
   flex-direction: column;
   gap: 8px;
   border-radius: 16px 16px 0 0;
-  padding: 16px 16px 0 16px;
+  padding: 16px 16px 100px 16px;
   position: fixed;
   left: 0;
   bottom: 0;
@@ -122,6 +122,8 @@
   background-color: #fff;
   transition: bottom .4s ease;
   box-shadow: 0px -62px 80px 0px #0000002B;
+  height: 50%;
+  overflow-y: auto;
 }
 
 .grid-marquee .drawer[aria-hidden='true'] {
@@ -255,6 +257,10 @@
   .grid-marquee .face img {
     width: 183px;
     height: 152px;
+  }
+
+  .grid-marquee .drawer {
+    height: 70%;
   }
 }
 
