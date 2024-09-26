@@ -137,6 +137,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  position: fixed;
+  background-color: white;
+  width: calc(100% - 40px);
+  padding: 24px;
+  margin: -16px;
+  border-radius: 16px; 
 }
 
 .grid-marquee .drawer .title-row strong {
@@ -145,8 +152,9 @@
 
 .grid-marquee .drawer .video-container {
   border-top: 1px solid #0000001A;
-  margin: auto;
+  margin: 40px auto auto auto;
   padding: 16px 0;
+  
 }
 
 .grid-marquee .drawer video {
@@ -301,6 +309,10 @@
     top: 0;
     bottom: unset;
     box-shadow: none;
+
+    z-index: 2;
+    height: unset;
+    overflow-y: unset;
   }
 
   .grid-marquee .drawer .title-row {
@@ -310,6 +322,7 @@
   .grid-marquee .drawer .video-container {
     border-top: 0;
     padding: 0 0 12px 0;
+    margin-top: unset;
   }
 
   .grid-marquee .drawer div[role='tablist'] {
