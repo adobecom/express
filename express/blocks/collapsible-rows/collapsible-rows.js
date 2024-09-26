@@ -1,9 +1,7 @@
 import { createTag } from '../../scripts/utils.js';
-import { trackButtonClick } from '../../scripts/instrument.js';
 
 function decorateCollapsibleRows(block) {
   const collapsibleRows = [];
-  const entities = [];
   const rows = Array.from(block.children);
 
   const isOneLineCollapseVariant = block.classList.contains('one-line-collapse');
@@ -45,31 +43,24 @@ function decorateCollapsibleRows(block) {
       subHeaderDiv.style.display = 'none';
       accordion.append(subHeaderDiv);
 
-      const plusIcon = createTag('span', { class: 'plus-icon' });
-      plusIcon.innerHTML = '+';
-      accordion.append(plusIcon);
+      const iconElement = createTag('img', {
+        src: '/express/icons/plus-heavy.svg',
+        alt: 'toggle-icon',
+        class: 'toggle-icon',
+      });
+      accordion.append(iconElement);
 
-      plusIcon.addEventListener('click', () => {
+      iconElement.addEventListener('click', () => {
         const isCollapsed = subHeaderDiv.style.display === 'none';
         subHeaderDiv.style.display = isCollapsed ? 'block' : 'none';
-        plusIcon.innerHTML = isCollapsed ? '-' : '+';
+
+        iconElement.src = isCollapsed
+          ? '/express/icons/minus-heavy.svg'
+          : '/express/icons/plus-heavy.svg';
       });
     } else {
       accordion.append(subHeaderDiv);
-
-      accordion.addEventListener('click', () => {
-        trackButtonClick(accordion);
-      });
     }
-
-    entities.push({
-      '@type': 'Header',
-      name: header,
-      acceptedAnswer: {
-        '@type': 'SubHeader',
-        text: subHeader,
-      },
-    });
   });
 
   if (!isOneLineCollapseVariant) {

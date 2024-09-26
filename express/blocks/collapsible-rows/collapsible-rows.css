@@ -24,6 +24,7 @@
     }
 
     .collapsible-row-sub-header {
+        margin-top: 10px;
         font-size: 18px;
         font-style: normal;
         font-weight: 700;
@@ -65,5 +66,9 @@
         cursor: pointer;
         font-size: 18px;
         font-weight: bold;
+      }
+      .toggle-icon {
+        width: 20px; /* Set desired width */
+        height: 20px; /* Set desired height */
       }
 }
