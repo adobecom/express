@@ -29,6 +29,7 @@ body.no-desktop-brand-header header {
   color: var(--color-black);
   border-color:transparent;
 }
+
 .marquee.light-primary-cta a.button.primaryCTA:hover{
   border-color: transparent;
   background-color: #FDFDFD;
