@@ -238,6 +238,9 @@
   .grid-marquee .headline {
     padding-bottom: 24px;
   }
+  .grid-marquee .headline h1 {
+    font-size: var(--heading-font-size-m);
+  }
   .grid-marquee .headline a.button {
     display: inline-block;
     margin-left: 0;
@@ -265,6 +268,9 @@
   }
   .grid-marquee .headline {
     padding-bottom: 32px;
+  }
+  .grid-marquee .headline h1 {
+    font-size: var(--heading-font-size-xl);
   }
   .grid-marquee .cards-container {
     width: 1152px;
@@ -296,7 +302,7 @@
     width: 100%;
     top: 0;
     bottom: unset;
-    box-shadow: none;
+    box-shadow: 0px 0px 12px 0px #00000029;
   }
 
   .grid-marquee .drawer .title-row {
