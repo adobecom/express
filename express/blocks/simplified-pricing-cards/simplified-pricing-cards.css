@@ -165,6 +165,7 @@ main .section>.simplified-pricing-cards-wrapper {
 }
 
 .simplified-pricing-cards .pricing-base-price,
+.simplified-pricing-cards .pricing-base-price>*,
 .simplified-pricing-cards .pricing-price,
 .simplified-pricing-cards .pricing-price>* {
   font-size: 18px;
@@ -183,12 +184,12 @@ main .section>.simplified-pricing-cards-wrapper {
 .simplified-pricing-cards .pricing-base-price>strong {
   text-decoration: line-through;
   padding-right: 4px;
-  font-size: 28px;
+  font-size: 22px;
 }
 
 .simplified-pricing-cards .pricing-price>strong { 
   padding-right: 4px;
-  font-size: 28px;
+  font-size: 22px;
 }
 
 .simplified-pricing-cards .pricing-price>strong,
