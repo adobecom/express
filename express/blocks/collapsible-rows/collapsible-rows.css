@@ -59,4 +59,11 @@
         border-color: var(--color-info-accent);
         font-weight: 600;
     }
+
+    .plus-icon {
+        margin-left: auto;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+      }
 }
