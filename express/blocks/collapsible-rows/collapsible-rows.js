@@ -41,14 +41,21 @@ function decorateCollapsibleRows(block) {
 
     if (isOneLineCollapseVariant) {
       subHeaderDiv.style.display = 'none';
-      accordion.append(subHeaderDiv);
+
+      const headerIconWrapper = createTag('div', { class: 'header-icon-wrapper' });
+      headerDiv.classList.add('header-icon');
 
       const iconElement = createTag('img', {
         src: '/express/icons/plus-heavy.svg',
         alt: 'toggle-icon',
         class: 'toggle-icon',
       });
-      accordion.append(iconElement);
+
+      headerIconWrapper.append(headerDiv, iconElement);
+
+      accordion.append(headerIconWrapper);
+
+      accordion.append(subHeaderDiv);
 
       iconElement.addEventListener('click', () => {
         const isCollapsed = subHeaderDiv.style.display === 'none';

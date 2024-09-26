@@ -72,9 +72,20 @@
         border-color: var(--color-info-accent);
         font-weight: 600;
     }
+    .header-icon-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .header-icon {
+        flex-grow: 1;
+    }
     .toggle-icon {
         width: 20px;
         height: 20px;
         cursor: pointer;
+        margin-left: 10px;
     }
 }
