@@ -10,7 +10,6 @@ import {
   getConfig,
   decorateArea,
 } from './utils.js';
-import crawl from './crawl.js';
 
 const locales = {
   '': { ietf: 'en-US', tk: 'jdq5hay.css' },
@@ -151,7 +150,33 @@ function registerSUSIModalLinks() {
 }
 
 (async function loadPage() {
-  crawl(locales);
+  if (window.hlx.init || window.isTestEnv) return;
+  window.hlx = window.hlx || {};
+  const params = new URLSearchParams(window.location.search);
+  const experimentParams = params.get('experiment');
+  ['martech', 'gnav', 'testing', 'preload_product'].forEach((p) => {
+    window.hlx[p] = params.get('lighthouse') !== 'on' && params.get(p) !== 'off';
+  });
+  window.hlx.experimentParams = experimentParams;
+  window.hlx.init = true;
+  setConfig(config);
+
+  if (getMetadata('hide-breadcrumbs') !== 'true' && !getMetadata('breadcrumbs') && !window.location.pathname.endsWith('/express/')) {
+    const meta = createTag('meta', { name: 'breadcrumbs', content: 'on' });
+    document.head.append(meta);
+    import('./gnav.js').then((gnav) => gnav.buildBreadCrumbArray(getConfig().locale.prefix.replaceAll('/', ''))).then((breadcrumbs) => {
+      if (breadcrumbs && breadcrumbs.length) document.body.classList.add('breadcrumbs-spacing');
+    });
+  } else if (getMetadata('breadcrumbs') === 'on' && !!getMetadata('breadcrumbs-base') && (!!getMetadata('short-title') || !!getMetadata('breadcrumbs-page-title'))) document.body.classList.add('breadcrumbs-spacing');
+  loadExpressMartechSettings();
+  loadLana({ clientId: 'express' });
+  listenAlloy();
+  registerSUSIModalLinks(); // TODO: remove post bts
+  await loadArea();
+
+  import('./express-delayed.js').then((mod) => {
+    mod.default();
+  });
 }());
 
 stamp('start');
