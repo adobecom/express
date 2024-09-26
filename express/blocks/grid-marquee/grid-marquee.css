@@ -125,6 +125,7 @@
 }
 
 .grid-marquee .drawer[aria-hidden='true'] {
+  visibility: hidden;
   bottom: -100%;
 }
 
@@ -285,8 +286,9 @@
   }
 
   .grid-marquee .drawer {
+    visibility: visible;
     opacity: 100;
-    transition: opacity .4s ease;
+    transition: opacity .4s ease, visibility .4s;
     border-radius: 12px;
     padding-bottom: 16px;
     border: 1px solid #fff;

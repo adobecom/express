@@ -6,36 +6,28 @@ import {
   getMobileOperatingSystem,
 } from '../../scripts/utils.js';
 
-function createAnimation(src, title, poster) {
-  const attribs = {
-    class: 'marquee-background',
-    playsinline: '',
-    autoplay: '',
-    muted: true,
-    loop: '',
-    src,
-    title,
-    poster,
-  };
-
-  // replace anchor with video element
-  const video = createTag('video', attribs);
-  video.setAttribute('preload', 'auto');
-  video.innerHTML = `<source src="${src}" type="video/mp4">`;
-  return video;
-}
-
 let activeDrawer = null;
 function deactivateDrawer() {
   if (!activeDrawer) return;
   activeDrawer.closest('.card').setAttribute('aria-expanded', false);
   activeDrawer.setAttribute('aria-hidden', true);
+  activeDrawer.querySelector('video')?.pause();
   activeDrawer = null;
 }
 function activateDrawer(drawer) {
   deactivateDrawer();
   drawer.closest('.card').setAttribute('aria-expanded', true);
   drawer.setAttribute('aria-hidden', false);
+  const video = drawer.querySelector('video');
+  if (video) {
+    video.muted = true;
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // ignore
+      });
+    }
+  }
   activeDrawer = drawer;
 }
 document.addEventListener('click', (e) => {
@@ -57,15 +49,19 @@ function createDrawer(card, title, panels) {
   titleRow.append(createTag('strong', { class: 'drawer-title' }, titleText), closeButton);
   drawer.append(titleRow);
   const videoAnchor = card.querySelector('a');
-  const videoSrc = videoAnchor.href;
   videoAnchor.remove();
-  const posterSrc = card.querySelector('img').src;
-  const video = createAnimation(videoSrc, titleText, posterSrc);
+  const video = createTag('video', {
+    playsinline: '',
+    muted: '',
+    loop: '',
+    preload: 'metadata',
+    title: titleText,
+    poster: card.querySelector('img').src,
+  }, `<source src="${videoAnchor.href}" type="video/mp4">`);
   const videoWrapper = createTag('div', { class: 'video-container' });
   videoWrapper.append(video);
   drawer.append(videoWrapper);
   drawer.append(...panels);
-  // decorateIcons(drawer);
 
   panels.forEach((panel) => {
     panel.classList.add('ctas-container');
