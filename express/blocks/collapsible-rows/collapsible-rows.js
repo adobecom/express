@@ -26,7 +26,7 @@ function decorateCollapsibleRows(block) {
     const accordion = createTag('div', { class: 'collapsible-row-accordion' });
     if (index >= visibleCount) {
       accordion.classList.add('collapsed');
-      accordion.style.display = 'none'; // Initially hide the rows
+      accordion.style.display = 'none';
     }
 
     accordion.addEventListener('click', () => {
@@ -71,7 +71,7 @@ function decorateCollapsibleRows(block) {
       }
     });
     isExpanded = !isExpanded;
-    toggleButton.textContent = isExpanded ? 'Show Less' : 'Show More';
+    toggleButton.textContent = isExpanded ? 'View less' : 'View more';
   });
 }
 
