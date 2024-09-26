@@ -11,7 +11,7 @@ function createAnimation(src, title, poster) {
     class: 'marquee-background',
     playsinline: '',
     autoplay: '',
-    muted: '',
+    muted: true,
     loop: '',
     src,
     title,
