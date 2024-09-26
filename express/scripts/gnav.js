@@ -177,17 +177,6 @@ async function loadFEDS() {
       window.feds.components.NavBar.disableRetractability();
     }
 
-    /* attempt to switch link */
-    if (window.location.pathname.includes('/create/')
-      || window.location.pathname.includes('/discover/')
-      || window.location.pathname.includes('/feature/')) {
-      const $aNav = document.querySelector('header a.feds-navLink--primaryCta');
-      const $aHero = document.querySelector('main > div:first-of-type a.button.accent');
-      if ($aNav && $aHero) {
-        $aNav.href = $aHero.href;
-      }
-    }
-
     /* switch all links if lower env */
     const env = getHelixEnv();
     if (env && env.spark) {
