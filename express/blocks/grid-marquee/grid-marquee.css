@@ -41,10 +41,14 @@
   border-color: black;
 }
 
-.grid-marquee .background {
+.grid-marquee .background img {
   position: absolute;
-  left: 0;
-  top: 0;
+  top: 50%;
+  object-fit: cover;
+  max-width: none;
+  width: 350%;
+  transform: translate(-50%, -40%);
+  max-height: 100%;
 }
 
 .grid-marquee .background .tablet-only,
@@ -235,6 +239,10 @@
   }
   .grid-marquee .background .tablet-only {
     display: block;
+  }
+  .grid-marquee .background img {
+    width: 100%;
+    transform: translate(-50%, -40%);
   }
   .grid-marquee .headline {
     padding-bottom: 24px;

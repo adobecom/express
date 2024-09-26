@@ -40,20 +40,10 @@ function activateDrawer(drawer) {
 }
 document.addEventListener('click', (e) => {
   if (!activeDrawer) return;
-  if (!activeDrawer.contains(e.target)) {
+  if (!activeDrawer.closest('.card').contains(e.target)) {
     deactivateDrawer();
   }
 });
-
-// function decorateIcons(drawer) {
-//   const icons = [...drawer.querySelectorAll('span.icon')];
-//   icons.forEach((icon) => {
-//     const match = /icon-(.+)/.exec(icon.classList);
-//     if (match?.[1]) {
-//       icon.append(getIconElement(match[1]));
-//     }
-//   });
-// }
 
 function createDrawer(card, title, panels) {
   const titleRow = createTag('div', { class: 'title-row' });
