@@ -177,19 +177,17 @@ function decorateHeader(header, planExplanation) {
 }
 
 function decorateCardBorder(card, source) {
- 
   const pattern = /\[\[(.*?)\]\]/g;
   const matches = Array.from(source.textContent?.matchAll(pattern));
   if (matches.length > 0) {
     const [, promoType] = matches[matches.length - 1];
     card.classList.add(promoType.replaceAll(' ', ''));
-    source.textContent = source.textContent.replace(pattern, '').trim()
-    console.log(source.textContent.length)
+    source.textContent = source.textContent.replace(pattern, '').trim();
     if (source.textContent !== '') {
       source.classList.add('promo-eyebrow-text');
-      card.classList.add('promo-text')
+      card.classList.add('promo-text');
     }
-  }  
+  }
 }
 
 export default async function init(el) {
