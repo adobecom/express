@@ -202,10 +202,6 @@ export default function init(el) {
   const background = rows[1];
   const items = rows.slice(2);
   background.classList.add('background');
-  const backgroundMediaDivs = [...background.querySelectorAll(':scope > div')];
-  backgroundMediaDivs.forEach((div, index) => {
-    div.classList.add(['mobile-only', 'tablet-only', 'desktop-only'][index]);
-  });
   const foreground = createTag('div', { class: 'foreground' });
   const cards = items.map((item) => convertToCard(item));
   const cardsContainer = createTag('div', { class: 'cards-container' });
