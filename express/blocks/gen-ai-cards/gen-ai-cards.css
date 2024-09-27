@@ -201,6 +201,9 @@
 }
 
 @media (min-width: 900px) {
+  .section .gen-ai-cards-wrapper {
+    max-width: fit-content;
+  }
   .gen-ai-cards.homepage .card {
     border: 2px solid #E1E1E1;
     background: var(--color-white);
@@ -217,7 +220,7 @@
       background: unset;
   }
   .gen-ai-cards.homepage .carousel-element.card {
-    width: 357px;
+    width: 353px;
     height: 396px;
   }
   .gen-ai-cards.homepage .carousel-element.card .media-wrapper {
