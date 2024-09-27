@@ -1,0 +1,37 @@
+name: Run Sitemap Rebuild
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'fstab.yaml'
+      - 'helix-query.yaml'
+      - 'helix-sitemap.yaml'
+
+jobs:
+  run-sitemap-script:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+    - name: Install secondary dependencies
+      run: npm install node-fetch@2 dotenv
+    - name: Install main dependencies
+      run: npm ci 
+    - uses: actions/checkout@v3
+    - name: Import Secrets
+      uses: hashicorp/vault-action@v2
+      with:
+        url: https://vault-amer.adobe.net
+        tlsSkipVerify: false
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        secrets: |
+            cloudtech_wcms/data/express_dev HELIX_API_KEY
+    - name: Run sitemap script
+      run: |
+          node ./test/helpers/sitemap.js

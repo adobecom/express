@@ -125,7 +125,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
   opacity: 0;
   cursor: pointer;
   border-radius: 24px;
