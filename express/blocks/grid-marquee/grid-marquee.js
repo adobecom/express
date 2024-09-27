@@ -143,7 +143,9 @@ function convertToCard(item) {
     activateDrawer(drawer);
   });
   card.addEventListener('mouseleave', deactivateDrawer);
-  card.addEventListener('blue', deactivateDrawer);
+  card.addEventListener('blur', () => {
+    // deactivateDrawer();
+  });
 
   return card;
 }
