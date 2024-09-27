@@ -1,8 +1,8 @@
 .grid-marquee.block {
-  max-width: unset;
+  max-width: initial;
 }
 .grid-marquee .express-logo {
-  width: unset;
+  width: initial;
   height: 30px;
   padding-bottom: 1rem;
 }
@@ -74,13 +74,13 @@
 }
 
 .grid-marquee .card {
-  background-color: unset;
   width: 170px;
   padding: 8px;
   border-radius: 16px;
   border: 1px solid #fff;
   background: linear-gradient(170.96deg, rgba(255, 255, 255, 0.6) 18.95%, rgba(255, 255, 255, 0.2) 99.73%);
   text-align: left;
+  display: flex;
 }
 
 .grid-marquee .face {
@@ -110,7 +110,7 @@
 }
 
 .grid-marquee .drawer {
-  z-index: 1;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -179,8 +179,8 @@
 }
 
 .grid-marquee .drawer [aria-label='close'] {
-  background: unset;
-  border: unset;
+  background: initial;
+  border: initial;
 }
 
 .grid-marquee .drawer [role='tab-list'] {
@@ -188,8 +188,8 @@
 }
 
 .grid-marquee .drawer [role='tab'] {
-  background-color: unset;
-  border: unset;
+  background-color: initial;
+  border: initial;
   border-radius: 16px;
   padding: 8px 12px;
   font-size: var(--body-font-size-s);
@@ -199,7 +199,7 @@
 .grid-marquee .drawer [role='tab'][aria-selected='true'] {
   background-color: #e1e1e1;
   font-weight: 700;
-  cursor: unset;
+  cursor: initial;
 }
 
 .grid-marquee .drawer [role='tabpanel'][aria-hidden='true'] {
@@ -208,14 +208,14 @@
 
 .grid-marquee .drawer a {
   width: 100%;
-  background-color: unset;
-  color: unset;
-  font-weight: unset;
+  background-color: initial;
+  color: initial;
+  font-weight: initial;
   font-size: 1rem;
-  border: unset;
-  padding: unset;
+  border: initial;
+  padding: initial;
   text-align: left;
-  margin: unset;
+  margin: initial;
 }
 
 .grid-marquee .ratings {
@@ -302,11 +302,10 @@
     transition: opacity .4s ease, visibility .4s;
     border-radius: 12px;
     padding-bottom: 16px;
-    border: 1px solid #fff;
     position: absolute;
     width: 100%;
     top: 0;
-    bottom: unset;
+    bottom: initial;
     box-shadow: 0px 0px 12px 0px #00000029;
   }
 
@@ -334,7 +333,6 @@
 
   .grid-marquee .drawer[aria-hidden='true'] {
     opacity: 0;
-    bottom: unset;
   }
 
   .grid-marquee .card {
