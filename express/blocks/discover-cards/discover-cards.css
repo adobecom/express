@@ -28,12 +28,6 @@ main .section .discover-cards {
     position: relative;
     overflow: hidden;
 }
-.discover-cards .cards-container .card.short.image-bottom {
-    border: 2px solid #E1E1E1;
-    border-radius: 8px;
-    height: 396px;
-    min-width: 316px;
-}
 .discover-cards .center-title h3 {
     font-size: 22px;
     padding-left: 10px;
@@ -59,28 +53,6 @@ main .section .discover-cards {
     margin-top: 10px;
     margin-bottom: 2px;
 }
-.discover-cards .cards-container .card.image-bottom .small-header { 
-    text-align: left; 
-    font-size: 17px; 
-    font-weight: 600;
-}
-.discover-cards .cards-container .card.image-bottom .small-text-content {
-    text-align: left;
-    display: contents;
-}
-.discover-cards .cards-container .card.image-bottom .small-text-body {
-    margin: 0 0 5px 0;
-    font-size: 14px;
-    line-height: normal;
-}
-.discover-cards .cards-container .card.image-bottom picture img.tall {
-    width: 294px;
-    height: 274px;
-    position: absolute;
-    left: 8px;
-    bottom: 10px;
-    object-fit: fill;
-}
 .discover-cards .cards-container .card picture img.short {
     height: 147px;
     margin-top: 6px;
@@ -98,21 +70,11 @@ main .section .discover-cards {
     border: none;
     width: 78px;
 }
-.discover-cards .cards-container .card .button-container.center-button {
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    display: block;
-    justify-content: center;
-}
-.discover-cards .card .button-container.center-button a {
-    border: 1px solid var(--color-black);
-    background-color: var(--color-white);
-    color: var(--color-black);
-    text-align: center;
-}
 
 @media (min-width: 401px) {  
+    main .section .discover-cards {
+        padding-left: 20px;
+    }
     .discover-cards .cards-container .card {
         min-width: 399px;
         height: 478px;
@@ -120,6 +82,7 @@ main .section .discover-cards {
     .discover-cards .center-title h3 {
         font-size: 36px;
         margin-top: 50px;
+        margin-bottom: 20px;
     }
     .discover-cards .cards-container .card .text-content .header { 
         font-size: 28px; 
@@ -139,15 +102,5 @@ main .section .discover-cards {
     .discover-cards .cards-container .card picture img.short { 
         width: 351px;
         height: 198px; 
-    }
-    .discover-cards .cards-container .card.short.image-bottom {
-        min-width: 357px;
-        height: 396px;
-    }
-    .discover-cards .cards-container .card.image-bottom picture img.tall {
-        position: absolute;
-        left: 14px;
-        bottom: 10px;
-        width: 325px;
     }
 }
