@@ -207,6 +207,13 @@ function constructPayload(block) {
 export default async function decorate(block) {
   addTempWrapper(block, 'gen-ai-cards');
 
+  if (block.classList.contains('homepage')) {
+    const parent = block.closest('.gen-ai-cards-wrapper');
+    if (parent) {
+      parent.classList.add('homepage');
+    }
+  }
+
   const payload = constructPayload(block);
   decorateHeading(block, payload);
   await decorateCards(block, payload);

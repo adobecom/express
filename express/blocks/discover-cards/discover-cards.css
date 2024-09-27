@@ -72,6 +72,9 @@ main .section .discover-cards {
 }
 
 @media (min-width: 401px) {  
+    main .section .discover-cards {
+        padding-left: 20px;
+    }
     .discover-cards .cards-container .card {
         min-width: 399px;
         height: 478px;
