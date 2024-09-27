@@ -120,6 +120,8 @@
   left: 0;
   bottom: 0;
   width: 100%;
+  max-height: calc(100vh - 64px);
+  overflow-y: scroll;
   box-sizing: border-box;
   background-color: #fff;
   transition: bottom .4s ease;
@@ -146,7 +148,8 @@
 
 .grid-marquee .drawer .video-container {
   border-top: 1px solid #0000001A;
-  margin: auto;
+  display: flex;
+  justify-content: center;
   padding: 16px 0;
 }
 
