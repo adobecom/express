@@ -39,7 +39,7 @@ describe('Banner', () => {
     const banner = document.querySelector('.banner');
     decorate(banner);
 
-    const standoutContainer = banner.querySelector('.standout-container');
+    const standoutContainer = banner.querySelector('.content-container');
     expect(standoutContainer).to.exist;
 
     const button = banner.querySelector('a.button');

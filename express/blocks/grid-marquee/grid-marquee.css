@@ -1,0 +1,340 @@
+.grid-marquee.block {
+  max-width: unset;
+}
+.grid-marquee .express-logo {
+  width: unset;
+  height: 30px;
+  padding-bottom: 1rem;
+}
+
+.grid-marquee h1 {
+  font-size: var(--heading-font-size-m);
+  padding-bottom: 8px;
+}
+
+.grid-marquee strong,
+.grid-marquee a,
+.grid-marquee button {
+  font-family: var(--body-font-family);
+}
+
+.grid-marquee .headline {
+  padding-bottom: 8px;
+}
+
+.grid-marquee .headline p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.grid-marquee .headline .ctas-container {
+  padding-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.grid-marquee .headline a.button {
+  display: none;
+}
+
+.grid-marquee .headline a:not(.primaryCTA) {
+  background-color: black;
+  border-color: black;
+}
+
+.grid-marquee .background  {
+  width: 100%
+}
+
+.grid-marquee .background img {
+  position: absolute;
+  top: 50%;
+  object-fit: fill;
+  max-width: none;
+  width: 250%;
+  transform: translate(-50%, -35%);
+  max-height: 500px;
+  max-width: 1200px;
+}
+
+.grid-marquee .foreground {
+  position: relative;
+}
+
+.grid-marquee .cards-container {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  grid-template-rows: auto;
+  gap: 8px;
+  justify-content: center;
+  justify-items: center;
+  margin: auto;
+}
+
+.grid-marquee .card {
+  background-color: unset;
+  width: 170px;
+  padding: 8px;
+  border-radius: 16px;
+  border: 1px solid #fff;
+  background: linear-gradient(170.96deg, rgba(255, 255, 255, 0.6) 18.95%, rgba(255, 255, 255, 0.2) 99.73%);
+  text-align: left;
+}
+
+.grid-marquee .face {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.grid-marquee .face p {
+  margin: 0;
+  line-height: 20.8px;
+}
+
+.grid-marquee .face strong {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0 4px;
+  display: inline-block;
+}
+
+.grid-marquee .face img {
+  border-radius: 8px;
+  width: 152px;
+  height: 103px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.grid-marquee .drawer {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: 16px 16px 0 0;
+  padding: 16px 16px 0 16px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fff;
+  transition: bottom .4s ease;
+  box-shadow: 0px -62px 80px 0px #0000002B;
+}
+
+.grid-marquee .drawer[aria-hidden='true'] {
+  visibility: hidden;
+  bottom: -100%;
+}
+
+.grid-marquee .drawer .title-row {
+  padding-top: 6px;
+  padding-bottom: 8px;
+  font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.grid-marquee .drawer .title-row strong {
+  font-weight: 700;
+}
+
+.grid-marquee .drawer .video-container {
+  border-top: 1px solid #0000001A;
+  margin: auto;
+  padding: 16px 0;
+}
+
+.grid-marquee .drawer video {
+  max-height: 30vh;
+  border-radius: 8px;
+}
+
+.grid-marquee .drawer .ctas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.grid-marquee .drawer .ctas-container a {
+  margin: 0;
+  padding: 16px 0;
+  border-top: 1px solid #0000001A;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.grid-marquee .drawer .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.grid-marquee .drawer [aria-label='close'] {
+  background: unset;
+  border: unset;
+}
+
+.grid-marquee .drawer [role='tab-list'] {
+  display: flex;
+}
+
+.grid-marquee .drawer [role='tab'] {
+  background-color: unset;
+  border: unset;
+  border-radius: 16px;
+  padding: 8px 12px;
+  font-size: var(--body-font-size-s);
+  color: #292929;
+  cursor: pointer;
+}
+.grid-marquee .drawer [role='tab'][aria-selected='true'] {
+  background-color: #e1e1e1;
+  font-weight: 700;
+  cursor: unset;
+}
+
+.grid-marquee .drawer [role='tabpanel'][aria-hidden='true'] {
+  display: none;
+}
+
+.grid-marquee .drawer a {
+  width: 100%;
+  background-color: unset;
+  color: unset;
+  font-weight: unset;
+  font-size: 1rem;
+  border: unset;
+  padding: unset;
+  text-align: left;
+  margin: unset;
+}
+
+.grid-marquee .ratings {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 40px;
+  gap: 12px 48px;
+}
+
+.grid-marquee .ratings .container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.grid-marquee .ratings img {
+  height: 35px;
+  padding-left: 12px;
+  margin: 0;
+}
+
+@media screen and (min-width: 900px) {
+  .grid-marquee .headline {
+    padding-bottom: 24px;
+  }
+  .grid-marquee .headline h1 {
+    font-size: var(--heading-font-size-m);
+  }
+  .grid-marquee .headline a.button {
+    display: inline-block;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .grid-marquee .cards-container {
+    grid-template-columns: repeat(auto-fit, minmax(199px, 1fr));
+    width: 820px;
+    gap: 8px;
+  }
+
+  .grid-marquee .card {
+    width: 201px;
+  }
+
+  .grid-marquee .face img {
+    width: 183px;
+    height: 152px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .grid-marquee .background img {
+    max-width: 1800px;
+  }
+  .grid-marquee .headline {
+    padding-bottom: 32px;
+  }
+  .grid-marquee .headline h1 {
+    font-size: var(--heading-font-size-xl);
+  }
+  .grid-marquee .cards-container {
+    width: 1152px;
+    gap: 24px
+  }
+  .grid-marquee .card {
+    width: 278px;
+    padding: 16px;
+    position: relative;
+  }
+
+  .grid-marquee .face img {
+    width: 244px;
+    height: 183px;
+  }
+
+  .grid-marquee .face {
+    gap: 12px;
+  }
+
+  .grid-marquee .drawer {
+    visibility: visible;
+    opacity: 100;
+    transition: opacity .4s ease, visibility .4s;
+    border-radius: 12px;
+    padding-bottom: 16px;
+    border: 1px solid #fff;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    bottom: unset;
+    box-shadow: 0px 0px 12px 0px #00000029;
+  }
+
+  .grid-marquee .drawer .title-row {
+    display: none;
+  }
+
+  .grid-marquee .drawer .video-container {
+    border-top: 0;
+    padding: 0 0 12px 0;
+  }
+
+  .grid-marquee .drawer div[role='tablist'] {
+    padding-bottom: 12px;
+  }
+
+  .grid-marquee .drawer .ctas-container {
+    gap: 8px;
+  }
+
+  .grid-marquee .drawer .ctas-container a {
+    border-top: none;
+    padding: 0;
+  }
+
+  .grid-marquee .drawer[aria-hidden='true'] {
+    opacity: 0;
+    bottom: unset;
+  }
+
+  .grid-marquee .card {
+    padding: 16px;
+  }
+}
