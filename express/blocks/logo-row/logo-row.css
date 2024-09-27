@@ -50,7 +50,7 @@ main .logo-row .brand-image {
     object-fit: contain;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
     main .logo-row .block-row {
         display: block;
     }
@@ -76,4 +76,9 @@ main .logo-row .brand-image {
         object-fit: contain;
     }
  
+}
+@media (max-width: 913px) {
+    main .logo-row .image-column {
+        gap: 10px;
+    }
 }
