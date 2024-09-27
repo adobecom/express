@@ -216,4 +216,12 @@
   .gen-ai-cards .carousel-container .carousel-fader-right{
       background: unset;
   }
+  .gen-ai-cards.homepage .carousel-element.card {
+    width: 357px;
+    height: 396px;
+  }
+  .gen-ai-cards.homepage .carousel-element.card .media-wrapper {
+    width: 325px;
+    height: 274px;
+  }
 }
