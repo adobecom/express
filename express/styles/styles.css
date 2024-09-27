@@ -162,6 +162,25 @@
 
 }
 
+@media (min-width: 401px) {
+  main .section.content-group .default-content-wrapper h2 {
+    font-size: 44px;
+    text-align: left;
+    margin-top: 0px;
+  }
+  main .section.content-group .default-content-wrapper h3 {
+    font-size: 20px;
+    text-align: left;
+    margin-top: 16px;
+  }
+  main .section.content-group .default-content-wrapper p {
+    font-size: 20px;
+    text-align: left;
+    margin-top: 16px;
+    margin-bottom: 75px;
+  }
+}
+
 @media (min-width: 900px) {
   :root {
     --heading-font-size-xxxl: 3.75rem;

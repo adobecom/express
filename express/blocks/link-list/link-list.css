@@ -188,6 +188,19 @@ main .link-list.large p.button-container .button {
   border-radius: 24px;
 }
 
+@media (min-width: 401px) {
+  main .link-list.left-align {
+    margin-top: 0px;
+    margin-bottom: 75px;
+  }
+  main .link-list.left-align h3 {
+    padding-left: 0px;
+  }
+  main .link-list.left-align .button-container {
+    margin-left: 0px;
+  }
+}
+
 @media (min-width: 900px) {
   main .link-list-container > div,
   main .link-list-centered-container > div {

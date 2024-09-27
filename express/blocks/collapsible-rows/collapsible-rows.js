@@ -4,7 +4,10 @@ function decorateCollapsibleRows(block) {
   const collapsibleRows = [];
   const rows = Array.from(block.children);
 
+  block.closest('.section.section-wrapper')?.classList.add('reduce-padding-top');
+
   const isOneLineCollapseVariant = block.classList.contains('one-line-collapse');
+  isOneLineCollapseVariant && block.closest('.section.section-wrapper')?.classList.add('grey-bg');
 
   rows.forEach((row) => {
     const cells = Array.from(row.children);

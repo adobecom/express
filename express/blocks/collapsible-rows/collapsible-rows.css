@@ -1,4 +1,7 @@
 @media (min-width: 900px) {
+    .section.section-wrapper.grey-bg {
+        background-color: #E8E8E8;
+    }
     .collapsible-rows.one-line-collapse .collapsible-row-accordion .collapsible-row-header {
         font-size: 16px;
         font-style: normal;
@@ -19,6 +22,7 @@
     }
 
     .collapsible-rows.one-line-collapse .collapsible-row-accordion {
+        height: 72px;
         border-left: none;
         background: #F8F8F8;
         padding: 16px;
@@ -110,5 +114,8 @@
         height: 20px;
         cursor: pointer;
         margin-left: 10px;
+    }
+    .section.section-wrapper.reduce-padding-top {
+        padding-top: 10px;
     }
 }
