@@ -20,6 +20,8 @@
         font-weight: 700;
         cursor: pointer;
         height: 72px;
+        display: block;
+        margin-bottom: 8px;
     }
   
     .collapsible-table .labels .header-icon-wrapper {
@@ -41,6 +43,8 @@
   
     .collapsible-table .collapsible-content {
         background-color: #F8F8F8;
+        display: block;
+        margin-bottom: 8px;
     }
   
     .collapsible-row-header {
@@ -56,7 +60,7 @@
         margin-top: 10px;
         font-size: 18px;
         font-style: normal;
-        font-weight: 400;
+        font-weight: 700;
         line-height: 24px;
         text-align: left;
         padding-left: 16px;
@@ -164,5 +168,14 @@
     .section.section-wrapper.reduce-padding-top {
         padding-top: 10px;
     }
+    .collapsible-table tbody:first-of-type tr:first-child td {
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+    }
+      
+    .collapsible-table tbody:last-of-type tr:last-child td {
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 16px;
+    }   
   }
   
