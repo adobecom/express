@@ -135,7 +135,7 @@ main .quotes.singular .quote {
   flex-flow: row;
   background: transparent;
   justify-content: center;
-  padding: 70px 0 70px;
+  padding: 70px 0;
   min-height: 370px;
 }
 
