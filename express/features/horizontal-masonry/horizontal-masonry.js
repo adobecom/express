@@ -28,22 +28,23 @@ function handleGenAISubmit(form, link) {
 
 function createEnticement(enticementDetail, enticementPlaceholder,
   enticementPlaceholerMobile, enticementLink, mode, placeholders) {
-  const enticementDiv = createTag('div', { class: 'enticement-container' });
+  const enticementDiv = createTag('form', { class: 'enticement-container', id : 'interactive-marquee',action: '#', // Prevent default form action
+    method: 'POST' });
   const svgImage = getIconElement('enticement-arrow', 60);
   const arrowText = enticementDetail;
   const enticementText = createTag('span', { class: 'enticement-text' }, arrowText.trim());
   const input = createTag('input', { type: 'text', placeholder: window.screen.width < 600 ? enticementPlaceholerMobile : enticementPlaceholder });
   const buttonContainer = createTag('span', { class: 'button-container' });
-  const button = createTag('button', { class: 'generate-small-btn' });
+  const button = createTag('input', { class: 'generate-small-btn', type : 'submit' });
 
   buttonContainer.append(button);
-  button.textContent = placeholders?.generate || 'Generate';
-  button.addEventListener('click', () => handleGenAISubmit(enticementDiv, enticementLink));
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && input.value.length > 0) {
-      handleGenAISubmit(enticementDiv, enticementLink);
-    }
-  });
+  button.value = placeholders?.generate || 'Generate';
+ 
+  enticementDiv.addEventListener('submit', (e) => {
+    e.preventDefault()
+    console.log('afdfs')
+    handleGenAISubmit(enticementDiv, enticementLink)
+  })  
   enticementDiv.append(enticementText, svgImage, input, buttonContainer);
 
   if (mode === 'light') enticementText.classList.add('light');
