@@ -307,10 +307,12 @@ export default async function init(el) {
       const gnavHeight = gnav.offsetHeight;
       const { top } = rows[0].getBoundingClientRect();
       if (top <= gnavHeight && !rows[0].classList.contains('stuck')) {
-        rows[0].classList.add('stuck');
         rows[0].style.top = `${gnavHeight}px`;
       } else if (rows[0].classList.contains('stuck') && top > gnavHeight) {
         rows[0].classList.remove('stuck');
+      }
+      if (top <= gnavHeight - 75 && !rows[0].classList.contains('stuck')) {
+        rows[0].classList.add('stuck');
       }
     };
     window.addEventListener('scroll', debounce(scrollHandler, 30), { passive: true });
