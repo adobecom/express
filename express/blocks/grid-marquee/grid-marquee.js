@@ -131,20 +131,24 @@ function convertToCard(item) {
   face.classList.add('face');
   card.append(drawer);
   card.addEventListener('click', (e) => {
-    // race condition here! It's not opening first try!
     if (activeDrawer) return;
     e.stopPropagation();
     activateDrawer(drawer);
   });
   card.addEventListener('mouseenter', () => {
+    const firstElem = drawer.querySelector('button, a');
     activateDrawer(drawer);
+    firstElem?.focus();
   });
-  card.addEventListener('focus', () => {
+  card.addEventListener('focusin', (e) => {
+    if (card.contains(e.relatedTarget)) return;
     activateDrawer(drawer);
   });
   card.addEventListener('mouseleave', deactivateDrawer);
-  card.addEventListener('blue', deactivateDrawer);
-
+  card.addEventListener('focusout', (e) => {
+    if (card.contains(e.relatedTarget)) return;
+    deactivateDrawer();
+  });
   return card;
 }
 
