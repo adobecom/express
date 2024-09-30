@@ -35,10 +35,17 @@ function createEnticement(enticementDetail, enticementPlaceholder,
   const input = createTag('input', { type: 'text', placeholder: window.screen.width < 600 ? enticementPlaceholerMobile : enticementPlaceholder });
   const buttonContainer = createTag('span', { class: 'button-container' });
   const button = createTag('button', { class: 'generate-small-btn' });
+ 
   buttonContainer.append(button);
   button.textContent = placeholders?.generate || 'Generate';
   button.addEventListener('click', () => handleGenAISubmit(enticementDiv, enticementLink));
+  document.addEventListener("keydown",(e) => {
+    if (e.key === 'Enter' && input.value.length > 0 ){ 
+      handleGenAISubmit(enticementDiv, enticementLink);
+    }
+  })
   enticementDiv.append(enticementText, svgImage, input, buttonContainer);
+
   if (mode === 'light') enticementText.classList.add('light');
   return enticementDiv;
 }

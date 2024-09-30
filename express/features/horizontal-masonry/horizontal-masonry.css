@@ -39,6 +39,10 @@ main .interactive-marquee.horizontal-masonry .generate-btn {
     cursor: pointer;
 }
 
+main .interactive-marquee.horizontal-masonry .generate-btn:focus {
+    border: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) border-box; 
+}
+
 main .interactive-marquee.horizontal-masonry .generate-small-btn {
     background-color: #333;
     color: white;
@@ -49,6 +53,10 @@ main .interactive-marquee.horizontal-masonry .generate-small-btn {
     position: absolute;
     top: 10px;
     right: 10px;
+}
+
+main .interactive-marquee.horizontal-masonry .generate-small-btn:focus {
+    border: linear-gradient(90deg, #ff477b 0%, #5c5ce0 52%, #318fff 100%) border-box; 
 }
 
 main .interactive-marquee.horizontal-masonry .generate-small-btn::before {
@@ -110,11 +118,6 @@ main .interactive-marquee.horizontal-masonry .enticement-container:hover {
     border: 2px solid transparent;
     border-radius: 16px;
     background: linear-gradient(white 0 0) padding-box, var(--gradient) border-box;
- 
- 
- 
-   
-
 }
 
 main .interactive-marquee.horizontal-masonry .enticement-text {
