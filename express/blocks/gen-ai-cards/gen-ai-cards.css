@@ -60,7 +60,7 @@
 }
 
 .gen-ai-cards.homepage .carousel-element.card {
-  width: 316px;
+  width: 292px;
   height: 396px;
 }
 
@@ -243,6 +243,23 @@ main .gen-ai-cards.homepage .carousel-container .carousel-fader-right {
   right: 15px;
 }
 
+@media (min-width: 400px) {
+  .section .gen-ai-cards-wrapper.homepage {
+    max-width: fit-content;
+  }
+  .gen-ai-cards.homepage .gen-ai-cards-heading {
+    font-size: 36px;
+  }
+  .gen-ai-cards.homepage .gen-ai-cards-heading-section {
+    display: inline-block;
+  }
+  .gen-ai-cards.homepage .gen-ai-cards-heading-section h2, 
+  .gen-ai-cards .gen-ai-cards-heading-section p {
+    text-align: center;
+    max-width: none;
+  }
+}
+
 @media (min-width: 900px) {
   .gen-ai-cards .gen-ai-cards-heading-section {
       flex-direction: row;
@@ -254,26 +271,18 @@ main .gen-ai-cards.homepage .carousel-container .carousel-fader-right {
   }
 }
 
-@media (min-width: 401px) {
-  .section .gen-ai-cards-wrapper.homepage {
-    max-width: fit-content;
-  }
-  .gen-ai-cards.homepage .gen-ai-cards-heading {
-    font-size: 36px;
-  }
-  .gen-ai-cards.homepage .carousel-element.card {
-    width: 353px;
-    height: 396px;
-  }
+@media (min-width: 1200px) {
   .gen-ai-cards.homepage .carousel-element.card .media-wrapper {
     width: 325px;
   }
-  .gen-ai-cards.homepage .gen-ai-cards-heading-section {
-    display: inline-block;
+  .gen-ai-cards.homepage .carousel-element.card {
+    width: 357px;
+    height: 396px;
   }
-  .gen-ai-cards.homepage .gen-ai-cards-heading-section h2, 
-  .gen-ai-cards .gen-ai-cards-heading-section p {
-    text-align: center;
-    max-width: none;
+  .gen-ai-cards .card .text-wrapper {
+    text-align: left;
+    margin: 20px 20px 12px 20px;
   }
 }
+
+
