@@ -47,5 +47,5 @@ export default async function init(el) {
   const languageCode = localeMap[langFromPath] ? localeMap[langFromPath].split('-')[0] : 'en';
   const languageRegion = localeMap[langFromPath] ? localeMap[langFromPath].split('-')[1] : 'us';
   const { default: wfinit } = await import(`${unitylibs}/core/workflow/workflow.js`);
-  await wfinit(el, 'express', unitylibs, 'v2', languageRegion, languageCode);
+  await wfinit(el, 'photoshop', unitylibs, 'v2', languageRegion, languageCode);
 }
