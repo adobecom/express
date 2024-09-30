@@ -8,6 +8,11 @@
   margin: auto;
 }
 
+.gen-ai-cards.homepage {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
 .gen-ai-cards .gen-ai-cards-heading-section {
   display: flex;
   flex-direction: column;
@@ -213,6 +218,29 @@
 
 .gen-ai-cards .card .links-wrapper a:not(:hover) {
   background-color: var(--color-white);
+}
+
+main .gen-ai-cards.homepage .carousel-container .carousel-platform.left-fader:not(.right-fader) {
+  -webkit-mask-image: none; 
+  mask-image: none;
+}
+
+main .gen-ai-cards.homepage .carousel-container .carousel-platform.right-fader:not(.left-fade) {
+  -webkit-mask-image: none; 
+  mask-image: none;
+}
+
+main .gen-ai-cards.homepage .carousel-container .carousel-fader-left {
+  align-items: end;
+  top: 45px;
+  right: 42px;
+  left: auto; 
+}
+
+main .gen-ai-cards.homepage .carousel-container .carousel-fader-right {
+  align-items: end;
+  top: 45px;
+  right: 15px;
 }
 
 @media (min-width: 900px) {
