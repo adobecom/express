@@ -30,9 +30,6 @@ function createEnticement(enticementDetail, enticementPlaceholder,
   enticementPlaceholerMobile, enticementLink, mode, placeholders) {
   const enticementDiv = createTag('form', {
     class: 'enticement-container',
-    id: 'interactive-marquee',
-    action: '#',
-    method: 'POST',
   });
   const svgImage = getIconElement('enticement-arrow', 60);
   const arrowText = enticementDetail;
