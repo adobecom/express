@@ -28,23 +28,26 @@ function handleGenAISubmit(form, link) {
 
 function createEnticement(enticementDetail, enticementPlaceholder,
   enticementPlaceholerMobile, enticementLink, mode, placeholders) {
-  const enticementDiv = createTag('form', { class: 'enticement-container', id : 'interactive-marquee',action: '#', // Prevent default form action
-    method: 'POST' });
+  const enticementDiv = createTag('form', {
+    class: 'enticement-container',
+    id: 'interactive-marquee',
+    action: '#',
+    method: 'POST',
+  });
   const svgImage = getIconElement('enticement-arrow', 60);
   const arrowText = enticementDetail;
   const enticementText = createTag('span', { class: 'enticement-text' }, arrowText.trim());
   const input = createTag('input', { type: 'text', placeholder: window.screen.width < 600 ? enticementPlaceholerMobile : enticementPlaceholder });
   const buttonContainer = createTag('span', { class: 'button-container' });
-  const button = createTag('input', { class: 'generate-small-btn', type : 'submit' });
+  const button = createTag('input', { class: 'generate-small-btn', type: 'submit' });
 
   buttonContainer.append(button);
   button.value = placeholders?.generate || 'Generate';
- 
+
   enticementDiv.addEventListener('submit', (e) => {
-    e.preventDefault()
-    console.log('afdfs')
-    handleGenAISubmit(enticementDiv, enticementLink)
-  })  
+    e.preventDefault();
+    handleGenAISubmit(enticementDiv, enticementLink);
+  });
   enticementDiv.append(enticementText, svgImage, input, buttonContainer);
 
   if (mode === 'light') enticementText.classList.add('light');

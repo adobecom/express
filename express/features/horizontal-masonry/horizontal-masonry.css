@@ -457,6 +457,7 @@ main .interactive-marquee.horizontal-masonry .media-container p.image-container:
     }
 
     main .interactive-marquee.horizontal-masonry .media-container p.image-container img {
+        width: 300px;
         height: unset;
     }
 
