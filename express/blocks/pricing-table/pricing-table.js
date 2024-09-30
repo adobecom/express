@@ -316,6 +316,6 @@ export default async function init(el) {
         rows[0].classList.add('stuck');
       }
     };
-    window.addEventListener('scroll', debounce(scrollHandler, 30), { passive: true });
+    window.addEventListener('scroll', debounce(scrollHandler, 5), { passive: true });
   }
 }
