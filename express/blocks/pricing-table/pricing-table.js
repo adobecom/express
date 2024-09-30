@@ -311,7 +311,8 @@ export default async function init(el) {
       } else if (rows[0].classList.contains('stuck') && top > gnavHeight) {
         rows[0].classList.remove('stuck');
       }
-      if (top <= gnavHeight - 75 && !rows[0].classList.contains('stuck')) {
+      const p = rows[1].getBoundingClientRect()
+      if (top >= p.top && top > 0 && !rows[0].classList.contains('stuck')) {
         rows[0].classList.add('stuck');
       }
     };
