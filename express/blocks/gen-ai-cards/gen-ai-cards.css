@@ -279,7 +279,7 @@ main .gen-ai-cards.homepage .carousel-container .carousel-fader-right {
     width: 357px;
     height: 396px;
   }
-  .gen-ai-cards .card .text-wrapper {
+  .gen-ai-cards.homepage .card .text-wrapper {
     text-align: left;
     margin: 20px 20px 12px 20px;
   }
