@@ -71,7 +71,16 @@ main .section .discover-cards {
     width: 78px;
 }
 
-@media (min-width: 401px) {  
+.discover-cards .cards-container.gallery {
+    scroll-padding-left: 20px;
+}  
+.discover-cards .cards-container .card:first-child {
+    margin-left: 20px;
+}
+
+
+
+@media (min-width: 400px) {  
     .discover-cards .cards-container .card {
         min-width: 399px;
         height: 478px;
@@ -99,5 +108,23 @@ main .section .discover-cards {
     .discover-cards .cards-container .card picture img.short { 
         width: 351px;
         height: 198px; 
+    }
+}
+
+@media (min-width: 600px) {  
+    .discover-cards .cards-container.gallery {
+        scroll-padding-left: 60px;
+    }  
+    .discover-cards .cards-container .card:first-child {
+        margin-left: 60px;
+    }
+}
+
+@media (min-width: 1200px) {  
+    .discover-cards .cards-container.gallery {
+        scroll-padding-left: 100px;
+    }  
+    .discover-cards .cards-container .card:first-child {
+        margin-left: 100px;
     }
 }
