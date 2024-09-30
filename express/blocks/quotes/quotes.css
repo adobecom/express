@@ -136,7 +136,7 @@ main .quotes.singular .quote {
   background: transparent;
   justify-content: center;
   padding: 70px 0 70px;
-  min-height: 390px;
+  min-height: 370px;
 }
 
 main .quotes.singular .author-photo {
@@ -205,7 +205,7 @@ main .quotes.singular .mobile-container .author-panel .author-photo {
 @media (min-width: 600px) {
   main .quotes.singular .quote {
     width: 80%;
-    min-height: 335px;
+    min-height: 315px;
   }
 }
 
