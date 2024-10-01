@@ -663,7 +663,7 @@ export async function decorateBlock(block) {
     // split and add options with a dash
     // (fullscreen-center -> fullscreen-center + fullscreen + center)
     const extra = [];
-    const skipList = ['same-fcta'];
+    const skipList = ['same-fcta', 'easy-in'];
     block.classList.forEach((className, index) => {
       if (index === 0 || skipList.includes(className)) return; // block name or skip, no split
       const split = className.split('-');
