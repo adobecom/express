@@ -126,6 +126,7 @@ function buildGenAIUpload(cta, card) {
 async function decorateCards(block, payload) {
   const cards = createTag('div', { class: 'cta-carousel-cards' });
   const placeholders = await fetchPlaceholders();
+  const searchBranchLinks = placeholders['search-branch-links']?.replace(/\s/g, '')?.split(',') || [];
 
   payload.actions.forEach((cta, index) => {
     const card = createTag('div', { class: 'card' });
@@ -169,11 +170,11 @@ async function decorateCards(block, payload) {
         a.textContent = '';
         a.classList.add('clickable-overlay');
       }
-      const searchBranchLinks = placeholders['search-branch-links']?.replace(/\s/g, '')?.split(',');
+
       cta.ctaLinks.forEach((a) => {
-        if (a.href && searchBranchLinks.includes(a.href)) {
+        if (a.href) {
           const btnUrl = new URL(a.href);
-          if (placeholders?.['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
+          if (searchBranchLinks.includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
             btnUrl.searchParams.set('q', cta.text);
             btnUrl.searchParams.set('category', 'templates');
             a.href = decodeURIComponent(btnUrl.toString());
