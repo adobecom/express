@@ -7,7 +7,9 @@ import { expect } from '@esm-bundle/chai';
 const { default: decorate } = await import(
   '../../../../express/blocks/quotes/quotes.js'
 );
-document.body.innerHTML = await readFile({ path: './mocks/body.html' });
+const body = await readFile({ path: './mocks/body.html' });
+const cool = await readFile({ path: './mocks/singular.html' });
+
 
 describe('Quotes', () => {
   before(() => {
@@ -15,12 +17,14 @@ describe('Quotes', () => {
   });
 
   it('Quotes exists', () => {
+    document.body.innerHTML = body;
     const quotes = document.querySelector('.quotes');
     decorate(quotes);
     expect(quotes).to.exist;
   });
 
   it('All direct div children get "quote" class', () => {
+    document.body.innerHTML = body;
     const quotes = document.querySelector('.quotes');
     decorate(quotes);
 
@@ -30,10 +34,12 @@ describe('Quotes', () => {
   });
 
   it('Author and summary are well constructed', () => {
+    document.body.innerHTML = body;
     const quotes = document.querySelector('.quotes');
     decorate(quotes);
 
     quotes.querySelectorAll(':scope>div').forEach((card) => {
+      document.body.innerHTML = body;
       if (card.children.length > 1) {
         const author = card.children[1];
         expect(author.classList.contains('author')).to.be.true;
@@ -43,6 +49,7 @@ describe('Quotes', () => {
   });
 
   it('First child of each card has "content" class', () => {
+    document.body.innerHTML = body;
     const quotes = document.querySelector('.quotes');
     decorate(quotes);
 
@@ -52,6 +59,7 @@ describe('Quotes', () => {
   });
 
   it('Picture is wrapped in div with class "image"', () => {
+    document.body.innerHTML = body;
     const quotes = document.querySelector('.quotes');
     decorate(quotes);
 
