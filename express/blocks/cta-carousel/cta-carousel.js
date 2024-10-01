@@ -181,9 +181,11 @@ async function decorateCards(block, payload) {
               const match = /(\d+)x(\d+)(.+)/.exec(cta.subtext);
               if (match) {
                 const [, width, height, unit] = match;
-                if (!btnUrl.searchParams.get('width')) btnUrl.searchParams.set('width', width);
-                if (!btnUrl.searchParams.get('height'))btnUrl.searchParams.set('height', height);
-                if (!btnUrl.searchParams.get('unit'))btnUrl.searchParams.set('unit', unit);
+                if (unit === 'px' || unit === 'in') {
+                  btnUrl.searchParams.get('width') || btnUrl.searchParams.set('width', width);
+                  btnUrl.searchParams.get('height') || btnUrl.searchParams.set('height', height);
+                  btnUrl.searchParams.get('unit') || btnUrl.searchParams.set('unit', unit);
+                }
               }
             }
             a.href = decodeURIComponent(btnUrl.toString());
