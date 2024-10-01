@@ -74,4 +74,17 @@ describe('Quotes', () => {
     const quoteContainer = document.querySelector('.quote-container');
     expect(quoteContainer).to.exist;
   });
+
+  it('creates a singular variant with desktop and mobile DOM structures', () => {
+    document.body.innerHTML = singular;
+    const quotes = document.querySelector('.quotes');
+    decorate(quotes);
+
+    const desktopContainer = document.querySelector('.quote-container desktop-container');
+    expect(desktopContainer).to.exist;
+
+    const mobileContainer = document.querySelector('.quote-container mobile-container');
+    expect(mobileContainer).to.exist;
+  });
+
 });
