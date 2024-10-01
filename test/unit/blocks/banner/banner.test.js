@@ -9,6 +9,7 @@ const { default: decorate } = await import('../../../../express/blocks/banner/ba
 const body = await readFile({ path: './mocks/body.html' });
 const light = await readFile({ path: './mocks/light.html' });
 const standout = await readFile({ path: './mocks/standout.html' });
+const cool = await readFile({ path: './mocks/cool.html' });
 const multiButton = await readFile({ path: './mocks/multi-button.html' });
 
 describe('Banner', () => {
