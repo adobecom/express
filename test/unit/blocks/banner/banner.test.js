@@ -39,8 +39,27 @@ describe('Banner', () => {
     const banner = document.querySelector('.banner');
     decorate(banner);
 
-    const standoutContainer = banner.querySelector('.content-container');
-    expect(standoutContainer).to.exist;
+    const contentContainer = banner.querySelector('.content-container');
+    expect(contentContainer).to.exist;
+
+    const button = banner.querySelector('a.button');
+
+    ['large', 'primary'].forEach((className) => {
+      expect(button.classList.contains(className)).to.be.true;
+    });
+
+    ['accent', 'reverse'].forEach((className) => {
+      expect(button.classList.contains(className)).to.be.false;
+    });
+  });
+
+  it('creates a Banner cool variant block with correct elements', () => {
+    document.body.innerHTML = cool;
+    const banner = document.querySelector('.banner');
+    decorate(banner);
+
+    const contentContainer = banner.querySelector('.content-container');
+    expect(contentContainer).to.exist;
 
     const button = banner.querySelector('a.button');
 
