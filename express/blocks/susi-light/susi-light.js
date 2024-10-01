@@ -5,7 +5,6 @@ import {
   getConfig,
 } from '../../scripts/utils.js';
 
-const variant = 'edu-express';
 const usp = new URLSearchParams(window.location.search);
 const isStage = (usp.get('env') && usp.get('env') !== 'prod') || getConfig().env.name !== 'prod';
 
@@ -40,12 +39,23 @@ function getDestURL(url) {
   return destURL.toString();
 }
 
+// wrap with our customizations
+function wrapEasyIn(susi, title, guest) {
+  const wrapper = createTag('div', { class: 'easy-in-wrapper' }, susi);
+  const titleDiv = createTag('div', { class: 'title' }, title);
+  const guestDiv = createTag('div', { class: 'guest' }, guest);
+  wrapper.append(titleDiv, susi, guestDiv);
+  return wrapper;
+}
+
 export default async function init(el) {
   const rows = el.querySelectorAll(':scope> div > div');
   const redirectUrl = rows[0]?.textContent?.trim().toLowerCase();
   // eslint-disable-next-line camelcase
   const client_id = rows[1]?.textContent?.trim() || 'AdobeExpressWeb';
   const title = rows[2]?.textContent?.trim();
+  const variant = el.classList.contains('standard') ? 'standard' : 'edu-express';
+  const isEasyIn = el.classList.contains('easy-in');
   const authParams = {
     dt: false,
     locale: getConfig().locale.ietf.toLowerCase(),
@@ -118,5 +128,5 @@ export default async function init(el) {
   susi.addEventListener('redirect', onRedirect);
   susi.addEventListener('on-error', onError);
   susi.addEventListener('on-analytics', onAnalytics);
-  el.append(susi);
+  el.append(isEasyIn ? wrapEasyIn(susi, title, rows[3]) : susi);
 }
