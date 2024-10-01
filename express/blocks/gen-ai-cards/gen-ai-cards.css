@@ -44,6 +44,12 @@
   align-items: unset;
 }
 
+.gen-ai-cards.homepage .carousel-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .gen-ai-cards .card {
   position: relative;
   height: 347px;
@@ -242,22 +248,24 @@ main .gen-ai-cards.homepage .carousel-container .carousel-fader-right {
   top: 45px;
   right: 15px;
 }
+.gen-ai-cards.homepage .gen-ai-cards-heading-section {
+  margin-left: 20px;
+  margin-right: 20px;
+  display: inline-block;
+}
 
-@media (min-width: 400px) {
-  .section .gen-ai-cards-wrapper.homepage {
-    max-width: fit-content;
-  }
-  .gen-ai-cards.homepage .gen-ai-cards-heading {
-    font-size: 36px;
-  }
-  .gen-ai-cards.homepage .gen-ai-cards-heading-section {
-    display: inline-block;
-  }
-  .gen-ai-cards.homepage .gen-ai-cards-heading-section h2, 
-  .gen-ai-cards .gen-ai-cards-heading-section p {
+.gen-ai-cards.homepage .gen-ai-cards-heading {
+  font-size: 36px;
+}
+
+.section .gen-ai-cards-wrapper.homepage {
+  max-width: fit-content;
+}
+
+.gen-ai-cards.homepage .gen-ai-cards-heading-section h2, 
+.gen-ai-cards .gen-ai-cards-heading-section p {
     text-align: center;
     max-width: none;
-  }
 }
 
 @media (min-width: 900px) {
