@@ -9,6 +9,7 @@ const { default: decorate } = await import(
 );
 const body = await readFile({ path: './mocks/body.html' });
 const singular = await readFile({ path: './mocks/singular.html' });
+const singularMultipleQuoteContent = await readFile({ path: './mocks/singular-multiple.html' });
 
 describe('Quotes', () => {
   before(() => {
@@ -129,9 +130,47 @@ describe('Quotes', () => {
     decorate(quotes);
 
     const desktopBackground = document.querySelector('.quote-container .desktop-container .background');
-    expect(desktopBackground.style.background).to.have.string('url');
+    expect(desktopBackground?.style?.background).to.have.string('url');
 
     const mobileBackground = document.querySelector('.quote-container .mobile-container .background');
-    expect(mobileBackground.style.background).to.have.string('url');
+    expect(mobileBackground?.style?.background).to.have.string('url');
+  });
+
+  it('creates a singular variant with correct structure when multiple quotes are provided', () => {
+    document.body.innerHTML = singularMultipleQuoteContent;
+    const quotes = document.querySelector('.quotes');
+    decorate(quotes);
+
+    const quoteContainer = document.querySelector('.quote-container');
+    expect(quoteContainer).to.exist;
+
+    const desktopContainer = document.querySelector('.quote-container .desktop-container');
+    expect(desktopContainer).to.exist;
+
+    const mobileContainer = document.querySelector('.quote-container .mobile-container');
+    expect(mobileContainer).to.exist;
+
+    const desktopQuote = document.querySelector('.quote-container .desktop-container .quote');
+    expect(desktopQuote).to.exist;
+
+    const mobileQuote = document.querySelector('.quote-container .mobile-container .quote');
+    expect(mobileQuote).to.exist;
+  });
+
+  it('creates a singular variant with only one quote when multiple quotes are provided', () => {
+    document.body.innerHTML = singularMultipleQuoteContent;
+    const quotes = document.querySelector('.quotes');
+    decorate(quotes);
+
+    // the following is 1 for desktop and 1 for mobile, so the total is 2
+
+    const quote = document.querySelectorAll('.quotes .quote');
+    expect(desktopQuote).to.have.lengthOf(2);
+
+    const photo = document.querySelectorAll('.quotes .author-photo');
+    expect(desktopAuthorPhoto).to.have.lengthOf(2);
+
+    const text = document.querySelectorAll('.quotes .quote-comment');
+    expect(mobileQuoteText).to.have.lengthOf(2);
   });
 });

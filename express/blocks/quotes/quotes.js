@@ -2,7 +2,7 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { createTag, pickRandomFromArray } from '../../scripts/utils.js';
 
-export default function decorate($block) {
+export default function decorate($block) {return;
   addTempWrapper($block, 'quotes');
 
   const isSingularVariant = $block.classList.contains('singular');
