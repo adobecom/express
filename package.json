@@ -44,8 +44,5 @@
     "shelljs": "0.8.4",
     "sinon": "^15.1.0",
     "uglify-js": "^3.17.4"
-  },
-  "dependencies": {
-    "node-fetch": "^3.3.2"
   }
 }
