@@ -65,4 +65,13 @@ describe('Quotes', () => {
     const image = document.querySelector('.image');
     expect(image).to.exist;
   });
+
+  it('creates a quotes singular variant block', () => {
+    document.body.innerHTML = singular;
+    const quotes = document.querySelector('.quotes');
+    decorate(quotes);
+
+    const quoteContainer = document.querySelector('.quote-container');
+    expect(quoteContainer).to.exist;
+  });
 });
