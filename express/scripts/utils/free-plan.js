@@ -23,9 +23,15 @@ export async function buildFreePlanWidget(config) {
   const { typeKey, checkmarks } = config;
   const placeholders = await fetchPlaceholders();
   const widget = createTag('div', { class: 'free-plan-widget' });
+  const noSignupRequired = getMetadata('no-signup-required');
 
   typeMap[typeKey].forEach((tagKey) => {
-    const tagText = placeholders[tagKey];
+    let tagText;
+    if (noSignupRequired && tagKey === 'free-plan-check-2') {
+      tagText = placeholders['free-plan-check-3'];
+    } else {
+      tagText = placeholders[tagKey];
+    }
 
     if (tagText) {
       const textDiv = createTag('span', { class: 'plan-widget-tag' });

@@ -61,7 +61,6 @@ function decorateFAQBlocks(block) {
 
 export default async function decorate(block) {
   decorateFAQBlocks(block);
-
   const phoneNumberTags = block.querySelectorAll('a[title="{{business-sales-numbers}}"]');
   if (phoneNumberTags.length > 0) {
     const { formatSalesPhoneNumber } = await import('../../scripts/utils/pricing.js');

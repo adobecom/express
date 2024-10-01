@@ -104,7 +104,7 @@ export function handleMediaQuery(block, mediaQuery) {
   });
 }
 
-function decorateToggleContext(ct, placeholders) {
+export function decorateToggleContext(ct, placeholders) {
   const reduceMotionIconWrapper = ct;
   const reduceMotionTextExist = reduceMotionIconWrapper.querySelector('.play-animation-text')
     && reduceMotionIconWrapper.querySelector('.pause-animation-text');

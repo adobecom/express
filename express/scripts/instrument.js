@@ -341,19 +341,6 @@ export function trackButtonClick(a) {
       adobeEventName = 'quickAction:downloadPressed';
     } else if (a.closest('ccl-quick-action') && (a.getAttribute('data-action') === 'Editor')) {
       adobeEventName = 'quickAction:openInEditorPressed';
-      // ToC clicks
-    } else if (a.closest('.toc-container')) {
-      if (a.classList.contains('toc-toggle')) {
-        adobeEventName += 'toc:toggle:Click';
-      } else if (a.classList.contains('toc-close')) {
-        adobeEventName += 'toc:close:Click';
-      } else if (a.classList.contains('toc-handle')) {
-        adobeEventName += 'toc:close:Click:handle';
-      } else if (a.classList.contains('toc-wrapper')) {
-        adobeEventName += 'toc:close:Click:background';
-      } else {
-        adobeEventName = appendLinkText(`${adobeEventName}toc:link:Click:`, a);
-      }
     } else if (a.closest('.template')) {
       adobeEventName = appendLinkText(adobeEventName, a);
     } else if (a.closest('.tabs-ax .tab-list-container')) {

@@ -140,10 +140,8 @@ async function loadFEDS() {
     fedsExp = 'acom/cc-mega-menu/ax-gnav-x';
   } else if (prefix === 'gb' || prefix === 'uk' || prefix === 'in') {
     fedsExp = 'en/acom/cc-mega-menu/ax-gnav-x';
-  } else if (prefix === 'id_id') {
-    fedsExp = '/acom/cc-mega-menu/ax-gnav-x';
   } else {
-    fedsExp = 'adobe-express/ax-gnav-x-row';
+    fedsExp = '/acom/cc-mega-menu/ax-gnav-x';
   }
 
   window.fedsConfig = {
@@ -177,17 +175,6 @@ async function loadFEDS() {
 
     if (['no', 'f', 'false', 'n', 'off'].includes(getMetadata('gnav-retract').toLowerCase())) {
       window.feds.components.NavBar.disableRetractability();
-    }
-
-    /* attempt to switch link */
-    if (window.location.pathname.includes('/create/')
-      || window.location.pathname.includes('/discover/')
-      || window.location.pathname.includes('/feature/')) {
-      const $aNav = document.querySelector('header a.feds-navLink--primaryCta');
-      const $aHero = document.querySelector('main > div:first-of-type a.button.accent');
-      if ($aNav && $aHero) {
-        $aNav.href = $aHero.href;
-      }
     }
 
     /* switch all links if lower env */

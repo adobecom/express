@@ -346,8 +346,9 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
 /* Table Header Row */
 .pricing-table .row.row-heading .col {
   display: flex;
-  justify-content: center;
 }
+
+
 .pricing-table .row.row-heading .col.col-1 {
   flex-direction: column;
   justify-content: center;
@@ -363,6 +364,13 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   column-gap: 6px;
   row-gap: 6px;
 }
+
+.pricing-table.vertical-header .row.row-heading .col > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .pricing-table .row.row-heading .col .buttons-wrapper {
   width: 100%;
 }
@@ -435,6 +443,11 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
 .pricing-table .row.section-row .col .col-content {
   font-weight: 600;
 }
+
+.pricing-table .row.section-row .col .col-content em{
+  color: gray;
+}
+
 .pricing-table .row.section-row .col.included-feature .col-content {
   color: var(--checkmark-color);
 }
@@ -462,6 +475,15 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   -webkit-mask-image: url('./dash.svg');
   mask-image: url('./dash.svg');
 }
+
+.pricing-table .dim .col-content span { 
+  background-color: var(--color-gray-600); 
+}
+
+.pricing-table .dim .col-content em { 
+  font-style: normal;
+}
+
 .pricing-table .check {
   width: 13px;
   height: 11.5px;
@@ -469,6 +491,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   -webkit-mask-image: url('./check.svg');
   mask-image: url('./check.svg');
 }
+ 
 /* /Table Section Rows */
 
 

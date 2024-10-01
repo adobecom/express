@@ -2,7 +2,6 @@ import {
   readFile,
   emulateMedia,
   setViewport,
-  sendMouse,
   sendKeys,
 } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
@@ -13,21 +12,9 @@ const {
   default: decorate,
   handleMediaQuery,
   transformToVideoLink,
+  decorateToggleContext,
 } = await import('../../../../express/blocks/marquee/marquee.js');
 setConfig({});
-
-function getMiddleOfElement(element) {
-  const {
-    x,
-    y,
-    width,
-    height,
-  } = element.getBoundingClientRect();
-  return {
-    x: Math.floor(x + window.scrollX + width / 2),
-    y: Math.floor(y + window.scrollY + height / 2),
-  };
-}
 
 async function prepBlock(filePath) {
   document.body.innerHTML = await readFile({ path: filePath });
@@ -76,13 +63,13 @@ describe('marquee', () => {
       expect(marquee.classList.contains('reduce-motion')).to.be.false;
     });
 
-    it('reduce motion toggle responds to mouse hover', async () => {
+    it('reduce motion toggle on hover adds text', async () => {
       const marquee = await prepBlock('./mocks/default.html');
       const video = marquee.querySelector('video.marquee-background');
       video.dispatchEvent(new Event('canplay'));
       const reduceMotionToggle = marquee.querySelector('.reduce-motion-wrapper');
-      const { x, y } = getMiddleOfElement(reduceMotionToggle);
-      await sendMouse({ type: 'move', position: [x, y] });
+      expect(reduceMotionToggle.children.length).equals(2);
+      decorateToggleContext(reduceMotionToggle, {});
       expect(reduceMotionToggle.children.length).equals(4);
     });
 

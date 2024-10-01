@@ -1,25 +1,25 @@
 
 main .table-of-contents {
-    margin-top: 32px;
+  margin-top: 32px;
 }
 
 main .table-of-contents .toc {
-    text-align: left;
+  text-align: left;
 }
 
 main .table-of-contents.horizontal .toc > div {
-    display: inline-block;
+  display: inline-block;
 }
 
 main .table-of-contents .toc .toc-level-h2 {
-    margin: 8px;
+  margin: 8px;
 }
 
 main .table-of-contents .toc .toc-level-h3 {
-    margin: 4px;
-    padding-left: 20px;
+  margin: 4px;
+  padding-left: 20px;
 }
 
 main .table-of-contents .toc .toc-level-h4 {
-    padding-left: 40px;
+  padding-left: 40px;
 }

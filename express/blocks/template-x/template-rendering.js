@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { createTag, getIconElement, getMetadata } from '../../scripts/utils.js';
 import { trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
+import { getTrackingAppendedURL } from '../../scripts/branchlinks.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 function containsVideo(pages) {
@@ -100,8 +101,12 @@ async function getVideoUrls(renditionLinkHref, componentLinkHref, page) {
   }
 }
 
-async function share(branchUrl, tooltip, timeoutId) {
-  await navigator.clipboard.writeText(branchUrl);
+async function share(branchUrl, tooltip, timeoutId, placeholders) {
+  const urlWithTracking = getTrackingAppendedURL(branchUrl, placeholders, {
+    placement: 'template-x',
+    isSearchOverride: true,
+  });
+  await navigator.clipboard.writeText(urlWithTracking);
   tooltip.classList.add('display-tooltip');
 
   const rect = tooltip.getBoundingClientRect();
@@ -129,15 +134,17 @@ function renderShareWrapper(branchUrl, placeholders) {
     tabindex: '-1',
   });
   let timeoutId = null;
-  shareIcon.addEventListener('click', () => {
-    timeoutId = share(branchUrl, tooltip, timeoutId);
+  shareIcon.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    timeoutId = share(branchUrl, tooltip, timeoutId, placeholders);
   });
 
   shareIcon.addEventListener('keypress', (e) => {
     if (e.key !== 'Enter') {
       return;
     }
-    timeoutId = share(branchUrl, tooltip, timeoutId);
+    timeoutId = share(branchUrl, tooltip, timeoutId, placeholders);
   });
   const checkmarkIcon = getIconElement('checkmark-green');
   tooltip.append(checkmarkIcon);
@@ -158,6 +165,15 @@ function renderCTA(placeholders, branchUrl) {
   return btnEl;
 }
 
+function renderCTALink(branchUrl) {
+  const linkEl = createTag('a', {
+    href: branchUrl,
+    class: 'cta-link',
+    tabindex: '-1',
+  });
+  return linkEl;
+}
+
 function getPageIterator(pages) {
   return {
     i: 0,
@@ -175,6 +191,7 @@ function getPageIterator(pages) {
     },
   };
 }
+
 async function renderRotatingMedias(wrapper,
   pages,
   { templateTitle, renditionLinkHref, componentLinkHref }) {
@@ -356,25 +373,42 @@ function renderHoverWrapper(template, placeholders) {
     mediaWrapper, enterHandler, leaveHandler, focusHandler,
   } = renderMediaWrapper(template, placeholders);
 
-  btnContainer.append(mediaWrapper);
+  const cta = renderCTA(placeholders, template.customLinks.branchUrl);
+  const ctaLink = renderCTALink(template.customLinks.branchUrl);
+
+  ctaLink.append(mediaWrapper);
+
+  btnContainer.append(cta);
+  btnContainer.append(ctaLink);
+
   btnContainer.addEventListener('mouseenter', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
-  const cta = renderCTA(placeholders, template.customLinks.branchUrl);
-  btnContainer.prepend(cta);
   cta.addEventListener('focusin', focusHandler);
 
-  cta.addEventListener('click', () => {
+  const ctaClickHandler = () => {
     updateImpressionCache({
       content_id: template.id,
       status: template.licensingCategory,
       task: getMetadata('tasksx') || getMetadata('tasks') || '',
-      search_keyword: getMetadata('q') || getMetadata('topics') || '',
+      search_keyword: getMetadata('q') || getMetadata('topics-x') || getMetadata('topics') || '',
       collection: getMetadata('tasksx') || getMetadata('tasks') || '',
       collection_path: window.location.pathname,
     });
     trackSearch('select-template', BlockMediator.get('templateSearchSpecs')?.search_id);
-  }, { passive: true });
+  };
+
+  const ctaClickHandlerTouchDevice = (ev) => {
+    // If it is a mobile device with a touch screen, do not jump over to the Edit page,
+    // but allow the user to preview the template instead
+    if (window.matchMedia('(pointer: coarse)').matches) {
+      ev.preventDefault();
+    }
+  };
+
+  cta.addEventListener('click', ctaClickHandler, { passive: true });
+  ctaLink.addEventListener('click', ctaClickHandler, { passive: true });
+  ctaLink.addEventListener('click', ctaClickHandlerTouchDevice);
 
   return btnContainer;
 }

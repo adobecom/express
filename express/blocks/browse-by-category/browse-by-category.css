@@ -15,6 +15,7 @@ main .browse-by-category .carousel-container .carousel-platform {
 main .browse-by-category.card .carousel-container .carousel-platform {
   gap: 14px;
   margin: 6px 0 0 0;
+  padding-left: 20px;
 }
 
 main .browse-by-category .carousel-container .button.carousel-arrow {
@@ -85,12 +86,14 @@ main .browse-by-category:not(.card) .browse-by-category-card {
   min-width: 123px;
   margin: 0;
   padding: 10px 8px 0 8px;
+
 }
 
 main .browse-by-category.card .browse-by-category-card {
   position: relative;
   display: flex;
   flex-direction: column;
+  width: min-content;
 }
 
 main .browse-by-category .browse-by-category-card-link {
@@ -188,6 +191,7 @@ main .browse-by-category:not(.card) .browse-by-category-card-title {
   line-height: 24px;
   font-weight: 700;
   max-width: 148px;
+
 }
 
 main .browse-by-category.card .browse-by-category-card-title {
@@ -196,6 +200,11 @@ main .browse-by-category.card .browse-by-category-card-title {
   line-height: 24px;
   font-weight: 700;
   align-self: start;
+  
+}
+
+main .browse-by-category.card.title-text-align-left .browse-by-category-card-title {
+  text-align: left;
 }
 
 @media (min-width: 900px) {

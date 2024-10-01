@@ -36,6 +36,7 @@ main .video-overlay .video-overlay-video {
   max-height: 100vh;
 }
 
+main .video-overlay .video-overlay-video.adobetv,
 main .video-overlay .video-overlay-video.vimeo {
   width: 90vh;
   max-width: 90vw;

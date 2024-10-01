@@ -3,6 +3,8 @@ import {
   createTag,
   fetchPlaceholders,
   transformLinkToAnimation,
+  getIconElement,
+  getMetadata,
 } from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
@@ -168,6 +170,12 @@ export default async function decorate(block) {
     content = buildContent(content);
   }
 
+  if (['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
+    const logo = getIconElement('adobe-express-logo');
+    logo.classList.add('express-logo');
+    block.prepend(logo);
+  }
+
   if (background) {
     block.classList.add('has-background');
     block.append(buildBackground(block, background));
@@ -176,6 +184,12 @@ export default async function decorate(block) {
   if (heading) {
     heading.classList.add('fullscreen-marquee-heading');
     block.append(heading);
+  }
+
+  const smallHeaderApplied = block.parentElement.classList.contains('small-header');
+  const desktop = document.body.dataset.device === 'desktop';
+  if (!desktop && smallHeaderApplied) {
+    block.parentElement.classList.remove('small-header');
   }
 
   if (content && document.body.dataset.device === 'desktop') {

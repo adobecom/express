@@ -4,7 +4,8 @@ import {
   decorateButtons,
   fixIcons,
   toClassName,
-  createOptimizedPicture, getConfig,
+  createOptimizedPicture,
+  getConfig,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 

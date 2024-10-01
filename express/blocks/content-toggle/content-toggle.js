@@ -55,12 +55,10 @@ function initButton($block, $sections, index) {
           } else {
             $section.style.display = 'none';
           }
-          if (!document.querySelector('.pricing-hub')) {
-            window.scrollTo({
-              top: offsetPosition,
-              behavior: 'smooth',
-            });
-          }
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth',
+          });
         });
       }
     });

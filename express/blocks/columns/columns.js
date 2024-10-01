@@ -7,7 +7,6 @@ import {
   getIconElement,
   addHeaderSizing,
   getMetadata,
-  replaceHyphensInText,
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
@@ -24,6 +23,14 @@ import {
   getExpressLandingPageType,
   sendEventToAnalytics,
 } from '../../scripts/instrument.js';
+
+function replaceHyphensInText(area) {
+  [...area.querySelectorAll('h1, h2, h3, h4, h5, h6')]
+    .filter((header) => header.textContent.includes('-'))
+    .forEach((header) => {
+      header.textContent = header.textContent.replace(/-/g, '\u2011');
+    });
+}
 
 function transformToVideoColumn(cell, aTag, block) {
   const parent = cell.parentElement;
@@ -171,7 +178,27 @@ export default async function decorate(block) {
   const colorProperties = extractProperties(block);
   addTempWrapper(block, 'columns');
 
+  const container = document.querySelector('div.columns.block');
   const rows = Array.from(block.children);
+
+  if (container?.classList.contains('narrow')) {
+    let count = 1;
+    rows.forEach((ele) => {
+      const headers = ele.querySelectorAll('h2');
+      if (headers.length > 0) {
+        headers.forEach((header) => {
+          const span = document.createElement('span');
+          span.style.background = 'linear-gradient(to top, rgb(201, 101, 214), rgb(239, 133, 120))';
+          span.style.webkitBackgroundClip = 'text';
+          span.style.backgroundClip = 'text';
+          span.style.color = 'transparent';
+          span.textContent = `${count}. `;
+          header.prepend(span);
+          count += 1;
+        });
+      }
+    });
+  }
 
   let numCols = 0;
   if (rows[0]) numCols = rows[0].children.length;
@@ -307,6 +334,11 @@ export default async function decorate(block) {
   if (!(getMetadata('theme') === 'blog' || getMetadata('template') === 'blog') && document.querySelector('main .columns') === block
     && document.querySelector('main .block') === block) {
     addFreePlanWidget(block.querySelector('.button-container') || block.querySelector(':scope .column:not(.hero-animation-overlay,.columns-picture)'));
+  }
+  if (document.querySelector('main .block') === block && ['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
+    const logo = getIconElement('adobe-express-logo');
+    logo.classList.add('express-logo');
+    block.querySelector('.column')?.prepend(logo);
   }
 
   // add custom background color to columns-highlight-container

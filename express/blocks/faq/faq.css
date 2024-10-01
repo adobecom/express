@@ -65,6 +65,11 @@ main .faq .faq-answer p {
     margin-top: 0;
 }
 
+main .faq.narrow {
+    max-width: 850px;
+    margin: 0 auto; 
+}
+
 @media (min-width: 900px) {
     main .section.faq-container > div {
         padding: 0 56px;

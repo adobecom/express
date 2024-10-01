@@ -3,6 +3,7 @@ import { normalizeHeadings, createTag } from '../../scripts/utils.js';
 export default async function decorate(block) {
   const isBannerLightVariant = block.classList.contains('light');
   const isBannerStandoutVariant = block.classList.contains('standout');
+  const isBannerNarrowVariant = block.classList.contains('narrow');
 
   if (isBannerStandoutVariant) {
     const standoutContainer = createTag('div', {
@@ -14,6 +15,17 @@ export default async function decorate(block) {
     }
 
     block.replaceChildren(standoutContainer);
+  }
+
+  if (isBannerNarrowVariant) {
+    block.parentElement.style.backgroundColor = 'var(--color-info-accent)';
+    block.parentElement.style.padding = '80px 15px';
+  }
+
+  if (isBannerNarrowVariant && document.body.dataset.device === 'desktop') {
+    block.classList.add('desktop');
+  } else {
+    block.classList.remove('desktop');
   }
 
   normalizeHeadings(block, ['h2', 'h3']);

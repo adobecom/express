@@ -3,9 +3,13 @@
   border: 2px solid black;
   border-radius: 20px;
   padding: 16px 20px 12px 20px;
-  margin-left: 10px;
-  margin-right: 10px; 
+  margin-left: 20px;
+  margin-right: 20px; 
   
+}
+
+.wayfinder.block.narrow {
+  width: 850px;
 }
 
 .wayfinder.block.borderless {
