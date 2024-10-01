@@ -5,7 +5,7 @@ main .section.banner-compact-container {
 }
 
 main div:has(> .banner.cool) {
-  background: linear-gradient(155.96deg, #bfe4ff -0.25%, #cecef6 104.12%);
+  background: linear-gradient(170.96deg, #bfe4ff -0.25%, #cecef6 104.12%);
 }
 
 main .section.banner-container,
