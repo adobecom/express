@@ -122,4 +122,16 @@ describe('Quotes', () => {
     const mobileQuoteText = document.querySelectorAll('.quote-container .mobile-container .quote .quote-comment');
     expect(mobileQuoteText).to.have.lengthOf(1);
   });
+
+  it('creates a singular variant with background', () => {
+    document.body.innerHTML = singular;
+    const quotes = document.querySelector('.quotes');
+    decorate(quotes);
+
+    const desktopBackground = document.querySelectorAll('.quote-container .desktop-container .background');
+    expect(desktopBackground.style.background).to.have.string('url');
+
+    const mobileBackground = document.querySelectorAll('.quote-container .mobile-container .background');
+    expect(mobileBackground.style.background).to.have.string('url');
+  });
 });
