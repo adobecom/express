@@ -96,8 +96,8 @@ export default function decorate(block, name, doc) {
   } else if (templateXContainer) {
     templateXContainer.classList.remove('desktop');
   }
-
   rows.forEach((row, i) => {
+    const index = (typeof numberStepStart === 'number' ? numberStepStart : 1) + i;
     if (templateXVariant && row.querySelector('picture')) {
       row.classList.add('template-x-thumbnail');
 
@@ -116,29 +116,30 @@ export default function decorate(block, name, doc) {
 
       templateXContainer.appendChild(row);
     } else {
-      const cells = Array.from(row.children);
+      const $cells = Array.from(row.children);
       schema.step.push({
         '@type': 'HowToStep',
         position: i + 1,
-        name: cells[0].textContent.trim(),
+        name: $cells[0].textContent.trim(),
         itemListElement: {
           '@type': 'HowToDirection',
-          text: cells[1].textContent.trim(),
+          text: $cells[1].textContent.trim(),
         },
       });
-      const h3 = createTag('h3');
-      h3.innerHTML = cells[0].textContent.trim();
-      const p = createTag('p');
-      p.innerHTML = cells[1].innerHTML;
-      const text = createTag('div', { class: 'tip-text' });
-      text.append(h3);
-      text.append(p);
-      const number = createTag('div', { class: 'tip-number' }, `<span>${i + numberStepStart - 1}</span>`);
-      cells[0].remove();
-      cells[1].innerHTML = '';
-      cells[1].classList.add('tip');
-      cells[1].append(number);
-      cells[1].append(text);
+      const $h3 = createTag('h3');
+      $h3.innerHTML = $cells[0].textContent.trim();
+      const $p = createTag('p');
+      $p.innerHTML = $cells[1].innerHTML;
+      const $text = createTag('div', { class: 'tip-text' });
+      $text.append($h3);
+      $text.append($p);
+      const $number = createTag('div', { class: 'tip-number' });
+      $number.innerHTML = `<span>${index}</span>`;
+      $cells[0].remove();
+      $cells[1].innerHTML = '';
+      $cells[1].classList.add('tip');
+      $cells[1].append($number);
+      $cells[1].append($text);
     }
   });
 
