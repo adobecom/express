@@ -171,6 +171,9 @@ main .banner.cool h2 {
   main .banner.cool p.button-container {
     margin-top: 21px;
   }
+  main .banner.cool p.button-container a.button {
+    font-size: 19px;
+  }
 }
 
 @media (min-width: 1200px) {
