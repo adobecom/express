@@ -98,4 +98,28 @@ describe('Quotes', () => {
     const mobileQuote = document.querySelectorAll('.quote-container .mobile-container .quote');
     expect(mobileQuote).to.have.lengthOf(1);
   });
+
+  it('creates a singular variant with correct author photo', () => {
+    document.body.innerHTML = singular;
+    const quotes = document.querySelector('.quotes');
+    decorate(quotes);
+
+    const desktopAuthorPhoto = document.querySelectorAll('.quote-container .desktop-container .quote .author-photo');
+    expect(desktopAuthorPhoto).to.have.lengthOf(1);
+
+    const mobileAuthorPhoto = document.querySelectorAll('.quote-container .mobile-container .quote .author-photo');
+    expect(mobileAuthorPhoto).to.have.lengthOf(1);
+  });
+
+  it('creates a singular variant with correct quote text', () => {
+    document.body.innerHTML = singular;
+    const quotes = document.querySelector('.quotes');
+    decorate(quotes);
+
+    const desktopQuoteText = document.querySelectorAll('.quote-container .desktop-container .quote .quote-comment');
+    expect(desktopQuoteText).to.have.lengthOf(1);
+
+    const mobileQuoteText = document.querySelectorAll('.quote-container .mobile-container .quote .quote-comment');
+    expect(mobileQuoteText).to.have.lengthOf(1);
+  });
 });
