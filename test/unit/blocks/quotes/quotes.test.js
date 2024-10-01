@@ -153,7 +153,7 @@ describe('Quotes', () => {
     const desktopQuote = document.querySelector('.quote-container .desktop-container .quote');
     expect(desktopQuote).to.exist;
 
-    const mobileQuote = document.querySelector('.quote-container .mobile-container .quote-not');
+    const mobileQuote = document.querySelector('.quote-container .mobile-container .quote');
     expect(mobileQuote).to.exist;
   });
 
