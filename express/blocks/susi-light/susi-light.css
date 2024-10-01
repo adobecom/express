@@ -4,11 +4,21 @@
   min-height: 462px;
 }
 
+.easy-in-wrapper {
+  text-align: center;
+}
+
+.easy-in-wrapper .express-logo {
+  width: unset;
+  height: 24px;
+  padding-top: 32px;
+}
+
 .easy-in-wrapper .title {
   font-size: var(--heading-font-size-s);
   line-height: 28.6px;
   font-weight: 900;
-  padding-top: 32px;
+  padding-top: 4px;
   text-align: center;
 }
 

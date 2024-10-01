@@ -3,6 +3,7 @@ import {
   createTag,
   loadScript,
   getConfig,
+  getIconElement,
 } from '../../scripts/utils.js';
 
 const usp = new URLSearchParams(window.location.search);
@@ -42,9 +43,11 @@ function getDestURL(url) {
 // wrap with our customizations
 function wrapEasyIn(susi, title, guest) {
   const wrapper = createTag('div', { class: 'easy-in-wrapper' }, susi);
+  const logo = getIconElement('adobe-express-logo');
+  logo.classList.add('express-logo');
   const titleDiv = createTag('div', { class: 'title' }, title);
   const guestDiv = createTag('div', { class: 'guest' }, guest);
-  wrapper.append(titleDiv, susi, guestDiv);
+  wrapper.append(logo, titleDiv, susi, guestDiv);
   return wrapper;
 }
 
