@@ -78,9 +78,7 @@ main .section .discover-cards {
     margin-left: 20px;
 }
 
-
-
-@media (min-width: 400px) {  
+@media (min-width: 600px) {  
     .discover-cards .cards-container .card {
         min-width: 399px;
         height: 478px;
@@ -109,9 +107,6 @@ main .section .discover-cards {
         width: 351px;
         height: 198px; 
     }
-}
-
-@media (min-width: 600px) {  
     .discover-cards .cards-container.gallery {
         scroll-padding-left: 60px;
     }  
