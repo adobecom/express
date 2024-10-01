@@ -8,8 +8,7 @@ const { default: decorate } = await import(
   '../../../../express/blocks/quotes/quotes.js'
 );
 const body = await readFile({ path: './mocks/body.html' });
-const cool = await readFile({ path: './mocks/singular.html' });
-
+const singular = await readFile({ path: './mocks/singular.html' });
 
 describe('Quotes', () => {
   before(() => {
