@@ -165,12 +165,12 @@ describe('Quotes', () => {
     // the following is 1 for desktop and 1 for mobile, so the total is 2
 
     const quote = document.querySelectorAll('.quotes .quote');
-    expect(desktopQuote).to.have.lengthOf(2);
+    expect(quote).to.have.lengthOf(2);
 
     const photo = document.querySelectorAll('.quotes .author-photo');
-    expect(desktopAuthorPhoto).to.have.lengthOf(2);
+    expect(photo).to.have.lengthOf(2);
 
     const text = document.querySelectorAll('.quotes .quote-comment');
-    expect(mobileQuoteText).to.have.lengthOf(2);
+    expect(text).to.have.lengthOf(2);
   });
 });
