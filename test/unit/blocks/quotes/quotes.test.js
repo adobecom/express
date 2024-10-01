@@ -80,11 +80,22 @@ describe('Quotes', () => {
     const quotes = document.querySelector('.quotes');
     decorate(quotes);
 
-    const desktopContainer = document.querySelector('.quote-container desktop-container');
+    const desktopContainer = document.querySelector('.quote-container .desktop-container');
     expect(desktopContainer).to.exist;
 
-    const mobileContainer = document.querySelector('.quote-container mobile-container');
+    const mobileContainer = document.querySelector('.quote-container .mobile-container');
     expect(mobileContainer).to.exist;
   });
 
+  it('creates a singular variant with one and only one quote', () => {
+    document.body.innerHTML = singular;
+    const quotes = document.querySelector('.quotes');
+    decorate(quotes);
+
+    const desktopQuote = document.querySelectorAll('.quote-container .desktop-container .quote');
+    expect(desktopQuote).to.have.lengthOf(1);
+
+    const mobileQuote = document.querySelectorAll('.quote-container .mobile-container .quote');
+    expect(mobileQuote).to.have.lengthOf(1);
+  });
 });
