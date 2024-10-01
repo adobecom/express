@@ -128,10 +128,10 @@ describe('Quotes', () => {
     const quotes = document.querySelector('.quotes');
     decorate(quotes);
 
-    const desktopBackground = document.querySelectorAll('.quote-container .desktop-container .background');
+    const desktopBackground = document.querySelector('.quote-container .desktop-container .background');
     expect(desktopBackground.style.background).to.have.string('url');
 
-    const mobileBackground = document.querySelectorAll('.quote-container .mobile-container .background');
+    const mobileBackground = document.querySelector('.quote-container .mobile-container .background');
     expect(mobileBackground.style.background).to.have.string('url');
   });
 });
