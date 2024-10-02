@@ -179,10 +179,13 @@ const decoratePrimaryCTARow = ( rowNum, cellNum, cell) => {
   if (! content) return 
   const links = content.querySelectorAll('a')
   if (links.length < 2) return
-  content.classList.add("primary-cta-row")
+  content.classList.add("phone-number-cta-row")
   links[0].classList.add('button')
   links[0].classList.add('xlarge')
+  links[0].classList.add('trial-cta')
   links[1].classList.add('phone')
+  content.parentElement.prepend(links[0])
+  
 }
 
 export default async function decorate(block) {
