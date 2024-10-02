@@ -5,6 +5,7 @@ import {
   transformLinkToAnimation,
   addAnimationToggle,
   fetchPlaceholders,
+  getMetadata,
   getIconElement,
 } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
@@ -256,6 +257,7 @@ async function startSDKWithUnconvertedFile(file, quickAction, block) {
 
 export default async function decorate(block) {
   const rows = Array.from(block.children);
+  rows[1].classList.add('container');
   const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
   const quickAction = quickActionRow?.[0].children[1]?.textContent;
   if (!quickAction) {
@@ -356,6 +358,12 @@ export default async function decorate(block) {
 
   block.dataset.frictionlesstype = quickAction;
   block.dataset.frictionlessgroup = QA_CONFIGS[quickAction].group ?? 'image';
+
+  if (['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
+    const logo = getIconElement('adobe-express-logo');
+    logo.classList.add('express-logo');
+    block.prepend(logo);
+  }
 
   sendFrictionlessEventToAdobeAnaltics(block);
 }
