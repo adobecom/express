@@ -1,19 +1,26 @@
 import {
   html,
   render,
-  useState,
-  useEffect,
   useRef,
+  signal,
 } from '../../scripts/libs/htm-preact.js';
 import { createTag, loadStyle } from '../../scripts/utils.js';
 
 const MAX_HEIGHT = 600;
 const MAX_WIDTH = 800;
 
+export const data = signal({ src: null, loading: false });
+
 function Canvas() {
   const canvas = useRef(null);
+  if (!data.value.src) {
+    return html`
+      <canvas ref=${canvas} height=${MAX_HEIGHT} width=${MAX_WIDTH}>
+        Image Not Provided
+      </canvas>`;
+  }
   const img = new Image();
-  img.src = '/express/blocks/fqa-unity/removed.png';
+  img.src = data.value.src;
   img.onload = () => {
     const ctx = canvas.current.getContext('2d');
     const { height, width } = img;
@@ -35,20 +42,17 @@ function Canvas() {
     </canvas>`;
 }
 
+function Loader() {
+  const hidden = !data.value.loading;
+  return html`<div class="loader${hidden ? ' hidden' : ''}"><img src='/express/icons/cc-express.svg' />Loading...</div>`;
+}
+
 function Workspace() {
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-  }, []);
-  if (loading) {
-    return html`<div class="qa-workspace loading"><div class="loader"><img src='/express/icons/cc-express.svg' />Loading...</div></div>`;
-  }
-  return html`<div class="qa-workspace">
+  const hidden = data.value.loading;
+  return html`<div class="qa-workspace${hidden ? ' hidden' : ''}">
       <${Canvas} />
       <div class="interactions">
-      <div class="ctas"><a href='/' class="button secondary">Download</a><a class="button" href='/'>Open in Adobe Express</a></div>
+      <div class="ctas"><a href='/' class="button secondary download-cta">Download</a><a class="button open-in-app-cta" href='/'>Open in Adobe Express</a></div>
       <div class="consent">By uploading your image or video, you are agreeing to the Adobe <a href='/'>Terms of Use</a> and <a href='/'>Privacy Policy</a>.</div>
       <div class="free-plan-widget">
         <span class="plan-widget-tag"><img class="icon icon-checkmark" src="/express/icons/checkmark.svg" alt="checkmark" />Free to use</span>
@@ -66,8 +70,18 @@ function Workspace() {
   </div>`;
 }
 
-function getWorkspace() {
-  return html`<${Workspace} />`;
+function Layout() {
+  const hidden = !data.value.src;
+  return html`
+    <div class="qa-workspace-layout${hidden ? ' hidden' : ''}">
+      <${Loader} />
+      <${Workspace} />
+    </div>
+  `;
+}
+
+function getLayout() {
+  return html`<${Layout} />`;
 }
 
 export default async function initUnityPOC(container) {
@@ -75,6 +89,6 @@ export default async function initUnityPOC(container) {
     loadStyle('/express/blocks/fqa-unity/container.css', res);
   });
   const wrapper = createTag('div');
-  render(getWorkspace(), wrapper);
+  render(getLayout(), wrapper);
   container.append(wrapper);
 }

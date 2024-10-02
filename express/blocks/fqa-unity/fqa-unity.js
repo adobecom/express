@@ -13,6 +13,7 @@ let quickAction;
 let error;
 let quickActionContainer;
 let uploadContainer;
+let data;
 
 function fade(element, action) {
   if (action === 'in') {
@@ -28,21 +29,13 @@ function fade(element, action) {
   }
 }
 
-function selectElementByTagPrefix(p) {
-  const allEls = document.body.querySelectorAll(':scope > *');
-  return Array.from(allEls).find((e) => e.tagName.toLowerCase().startsWith(p.toLowerCase()));
-}
-
-// eslint-disable-next-line no-unused-vars
-async function startSDK(data = '', block) {
+async function createQAContainer(block) {
   const id = `${quickAction}-container`;
   quickActionContainer = createTag('div', { id, class: 'quick-action-container' });
-  const { default: initUnityPOC } = await import('./mock-container.js');
-  await initUnityPOC(quickActionContainer);
+  const mod = await import('./mock-container.js');
+  data = mod.data;
+  await mod.default(quickActionContainer);
   block.append(quickActionContainer);
-  const divs = block.querySelectorAll(':scope > div');
-  if (divs[1]) [, uploadContainer] = divs;
-  fade(uploadContainer, 'out');
 }
 
 function getQAGroup() {
@@ -72,7 +65,10 @@ function startSDKWithUnconvertedFile(file, block) {
     const reader = new FileReader();
     reader.onloadend = () => {
       window.history.pushState({ hideFrictionlessQa: true }, '', '');
-      startSDK(reader.result, block);
+      if (data) data.value = { src: '/express/blocks/fqa-unity/removed.png', loading: true };
+      setTimeout(() => {
+        if (data) data.value = { ...data.value, loading: false };
+      }, 1500);
     };
 
     // Read the file as a data URL (Base64)
@@ -102,11 +98,14 @@ function uploadFile(block) {
   inputElement.onchange = () => {
     const file = inputElement.files[0];
     startSDKWithUnconvertedFile(file, block);
+    fade(uploadContainer, 'out');
   };
 }
 
 export default async function decorate(block) {
   const rows = Array.from(block.children);
+  [, uploadContainer] = rows;
+  uploadContainer.classList.add('upload-container');
   const actionAndAnimationRow = rows[1].children;
   const animationContainer = actionAndAnimationRow[0];
   const animation = animationContainer.querySelector('a');
@@ -167,6 +166,7 @@ export default async function decorate(block) {
       const { files } = dt;
 
       [...files].forEach((file) => startSDKWithUnconvertedFile(file, block));
+      fade(uploadContainer, 'out');
       document.body.dataset.suppressfloatingcta = 'true';
     },
     false,
@@ -186,16 +186,14 @@ export default async function decorate(block) {
   window.addEventListener(
     'popstate',
     (e) => {
-      const editorModal = selectElementByTagPrefix('cc-everywhere-container-');
       const correctState = e.state?.hideFrictionlessQa;
-      const embedElsFound = quickActionContainer || editorModal;
+      const embedElsFound = quickActionContainer;
       window.history.pushState({ hideFrictionlessQa: true }, '', '');
       if (correctState || embedElsFound) {
-        quickActionContainer?.remove();
-        editorModal?.remove();
         document.body.classList.remove('editor-modal-loaded');
-        inputElement.value = '';
+        if (inputElement) inputElement.value = '';
         fade(uploadContainer, 'in');
+        if (data) data.value = { src: null, loading: false };
         document.body.dataset.suppressfloatingcta = 'false';
       }
     },
@@ -205,5 +203,5 @@ export default async function decorate(block) {
   block.dataset.frictionlesstype = quickAction;
   block.dataset.frictionlessgroup = getQAGroup(quickAction);
 
-  // startSDK('', block);
+  createQAContainer(block);
 }
