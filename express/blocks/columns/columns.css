@@ -79,6 +79,21 @@ main .columns p.powered-by {
   line-height: 1.2;
 }
 
+main .columns .primary-cta-row {
+  font-style: normal;
+  margin: 10px auto auto -10px;
+  width: fit-content;
+  display: block;
+}
+
+main .columns .primary-cta-row a.button {
+  display: unset;
+}
+
+main .columns .primary-cta-row a.phone {
+  text-decoration: underline;
+}
+
 main .columns p.button-container {
   margin: 0;
   margin-top: 40px;
