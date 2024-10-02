@@ -95,6 +95,7 @@ main .columns .trial-cta {
 
 main .columns .phone-number-cta-row a.phone {
   text-decoration: underline;
+  color: black;
 }
 
 main .columns p.button-container {
