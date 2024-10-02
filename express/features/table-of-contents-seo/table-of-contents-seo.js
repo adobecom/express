@@ -8,6 +8,7 @@ import {
 import { debounce } from '../../scripts/hofs.js';
 
 const MOBILE_SIZE = 600;
+const MOBILE_NAV_HEIGHT = 65;
 const MOBILE = 'MOBILE';
 const DESKTOP = 'DESKTOP';
 const getDeviceType = (() => {
@@ -109,10 +110,12 @@ function findCorrespondingHeading(headingText, doc) {
 }
 
 function toggleSticky(tocClone, sticky) {
-  if (window.scrollY >= sticky) {
+  if (window.scrollY >= sticky + MOBILE_NAV_HEIGHT) {
     tocClone.classList.add('sticky');
+    tocClone.style.top = `${MOBILE_NAV_HEIGHT}px`;
   } else {
     tocClone.classList.remove('sticky');
+    tocClone.style.top = '';
   }
 }
 
@@ -142,7 +145,7 @@ function handleTOCCloning(toc, tocEntries) {
     clonedTOCEntries.forEach((tocEntry, index) => {
       addTOCItemClickEvent(tocEntry, tocEntries[index].heading);
     });
-    const sticky = tocClone.offsetTop;
+    const sticky = tocClone.offsetTop - MOBILE_NAV_HEIGHT;
     window.addEventListener('scroll', () => toggleSticky(tocClone, sticky));
   }
 
