@@ -56,11 +56,19 @@ function addHoverEffect(tocEntries) {
   });
 }
 
-function addTOCTitle(toc, title) {
+function addTOCTitle(toc, { title, icon }) {
+  if (!title) return;
+
   const tocTitle = createTag('div', { class: 'toc-title' });
-  const arrowDownIcon = getIconElement('arrow-gradient-down');
-  Object.assign(arrowDownIcon.style, { width: '18px', height: '18px' });
-  toc.appendChild(tocTitle).append(arrowDownIcon, document.createTextNode(title));
+  tocTitle.append(document.createTextNode(title));
+
+  if (icon) {
+    const arrowDownIcon = getIconElement('arrow-gradient-down');
+    Object.assign(arrowDownIcon.style, { width: '18px', height: '18px' });
+    tocTitle.prepend(arrowDownIcon);
+  }
+
+  toc.appendChild(tocTitle);
 }
 
 function formatHeadingText(headingText) {
@@ -118,7 +126,7 @@ function handleTOCCloning(toc, tocEntries) {
 
 function setupTOCItem(tocItem, tocCounter, headingText, headingId) {
   tocItem.innerHTML = `
-    <span class="toc-number">${tocCounter}.</span>
+    <span class="toc-number">${tocCounter}</span>
     <a href="#${headingId}" daa-ll="${headingText}-${tocCounter}--">
       ${headingText}
     </a>
@@ -138,11 +146,18 @@ function styleHeadingLink(heading, tocCounter, toc) {
 function addTOCEntries(toc, config, doc) {
   let tocCounter = 1;
   const tocEntries = [];
+  const showContentNumbers = config['toc-content-numbers'];
+  const useEllipsis = config['toc-content-ellipsis'];
 
   Object.keys(config).forEach((key) => {
     if (key.startsWith('content-')) {
       const tocItem = createTag('div', { class: 'toc-entry' });
-      const headingText = formatHeadingText(config[key]);
+      let headingText;
+      if (useEllipsis) {
+        headingText = formatHeadingText(config[key]);
+      } else {
+        headingText = config[key];
+      }
       const heading = findCorrespondingHeading(headingText, doc);
 
       if (heading) {
@@ -157,7 +172,7 @@ function addTOCEntries(toc, config, doc) {
         toc.appendChild(tocItem);
         tocEntries.push({ tocItem, heading });
 
-        styleHeadingLink(heading, tocCounter, toc);
+        showContentNumbers && styleHeadingLink(heading, tocCounter, toc);
         setNormalStyle(tocItem);
         tocCounter += 1;
       }
@@ -165,7 +180,6 @@ function addTOCEntries(toc, config, doc) {
   });
 
   if (getDeviceType() !== DESKTOP) handleTOCCloning(toc, tocEntries);
-
   return tocEntries;
 }
 
@@ -261,7 +275,7 @@ export default async function setTOCSEO() {
   const config = buildMetadataConfigObject();
   const tocSEO = createTag('div', { class: 'table-of-contents-seo' });
   const toc = createTag('div', { class: 'toc' });
-  if (config.title) addTOCTitle(toc, config.title);
+  if (config.title) addTOCTitle(toc, config);
 
   let tocEntries;
   if (getDeviceType() === DESKTOP) {
