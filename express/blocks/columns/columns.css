@@ -81,9 +81,10 @@ main .columns p.powered-by {
 
 main .columns .primary-cta-row {
   font-style: normal;
-  margin: 10px auto auto -10px;
+  margin: 30px auto auto -10px;
   width: fit-content;
   display: block;
+
 }
 
 main .columns .primary-cta-row a.button {

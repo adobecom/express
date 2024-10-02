@@ -181,6 +181,7 @@ const decoratePrimaryCTARow = ( rowNum, cellNum, cell) => {
   if (links.length < 2) return
   content.classList.add("primary-cta-row")
   links[0].classList.add('button')
+  links[0].classList.add('xlarge')
   links[1].classList.add('phone')
 }
 
