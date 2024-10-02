@@ -124,11 +124,12 @@ function handleTOCCloning(toc, tocEntries) {
 
     tocClone.appendChild(tocContent);
     parentDiv.insertAdjacentElement('afterend', tocClone);
+    const tocTitle = tocClone.querySelector('.toc-title');
 
-    const tocTitle = document.querySelector('.toc-title');
     tocTitle.addEventListener('click', () => {
       tocContent.style.display = tocContent.style.display === 'none' ? 'block' : 'none';
     });
+
     const clonedTOCEntries = tocContent.querySelectorAll('.toc-entry');
     clonedTOCEntries.forEach((tocEntry, index) => {
       addTOCItemClickEvent(tocEntry, tocEntries[index].heading);

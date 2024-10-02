@@ -118,6 +118,14 @@
   margin-bottom: 15px;
   background-color: #f4f4f4;
 }
+.section.section-wrapper .mobile-toc .toc-title {
+  height: 36px;
+  margin-bottom: 0;
+}
+
+.section.section-wrapper .mobile-toc .toc-content {
+  margin-top: 8px
+}
 
 @media (min-width: 600px) {
   .table-of-contents-seo {
