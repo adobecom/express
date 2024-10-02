@@ -127,6 +127,14 @@
   margin-top: 8px
 }
 
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: white;
+}
+
 @media (min-width: 600px) {
   .table-of-contents-seo {
     display: block;
