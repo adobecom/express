@@ -111,14 +111,12 @@
   transform: translate(-50%, -50%);
 }
 
-.mobile-toc {
-  color: var(--color-info-accent);
+.section.section-wrapper .mobile-toc {
+  max-width: none;
+  border-top: 1px solid #D0D0D0;
   padding: 10px;
   margin-bottom: 15px;
   background-color: #f4f4f4;
-  border-radius: 16px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05), 0 -6px 12px rgba(0, 0, 0, 0.05), 
-            6px 0 12px rgba(0, 0, 0, 0.05), -6px 0 12px rgba(0, 0, 0, 0.05);
 }
 
 @media (min-width: 600px) {

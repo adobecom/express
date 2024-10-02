@@ -109,16 +109,31 @@ function findCorrespondingHeading(headingText, doc) {
 }
 
 function handleTOCCloning(toc, tocEntries) {
-  tocEntries.forEach(({ heading }) => {
+  const parentDiv = document.querySelector('.columns').parentElement;
+
+  if (parentDiv) {
     const tocClone = toc.cloneNode(true);
     tocClone.classList.add('mobile-toc');
-    const clonedTOC = tocClone.cloneNode(true);
-    heading.parentNode.prepend(clonedTOC, heading);
-    const clonedTOCEntries = clonedTOC.querySelectorAll('.toc-entry');
+
+    const tocContent = document.createElement('div');
+    tocContent.className = 'toc-content';
+
+    tocClone.querySelectorAll('.toc-entry').forEach((entry) => {
+      tocContent.appendChild(entry);
+    });
+
+    tocClone.appendChild(tocContent);
+    parentDiv.insertAdjacentElement('afterend', tocClone);
+
+    const tocTitle = document.querySelector('.toc-title');
+    tocTitle.addEventListener('click', () => {
+      tocContent.style.display = tocContent.style.display === 'none' ? 'block' : 'none';
+    });
+    const clonedTOCEntries = tocContent.querySelectorAll('.toc-entry');
     clonedTOCEntries.forEach((tocEntry, index) => {
       addTOCItemClickEvent(tocEntry, tocEntries[index].heading);
     });
-  });
+  }
 
   const originalTOC = document.querySelector('.table-of-contents-seo');
   if (originalTOC) originalTOC.style.display = 'none';
