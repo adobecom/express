@@ -5,6 +5,58 @@ import {
 // eslint-disable-next-line import/no-unresolved
 } from '../../scripts/utils.js';
 
+function renderHoverContainer(imgElement, row, buttonContainer) {
+  let hoverContainer;
+
+  imgElement.addEventListener('mouseenter', () => {
+    if (!hoverContainer) {
+      const templateHref = buttonContainer.querySelector('a').href;
+      hoverContainer = document.createElement('div', { class: 'hover-container' });
+      row.style.position = 'relative';
+
+      const wrapper = createTag('div', { class: 'share-icon-wrapper' });
+      const shareIcon = getIconElement('share-arrow');
+      wrapper.appendChild(shareIcon);
+      hoverContainer.appendChild(wrapper);
+
+      buttonContainer.classList.add('visible');
+
+      shareIcon.addEventListener('click', () => {
+        if (templateHref) {
+          navigator.clipboard.writeText(templateHref).catch((err) => {
+            console.error('Failed to copy template-x link: ', err);
+          });
+        }
+      });
+
+      const imageWrapper = createTag('div', { class: 'image-wrapper' });
+
+      const enlargedImg = imgElement.cloneNode(true);
+      enlargedImg.classList.add('enlarged-template-img');
+      enlargedImg.style.width = `${imgElement.offsetWidth * 1.2}px`;
+      enlargedImg.style.height = `${imgElement.offsetHeight * 1.2}px`;
+
+      hoverContainer.style.pointerEvents = 'auto';
+      hoverContainer.style.position = 'absolute';
+      hoverContainer.style.top = `${imgElement.offsetTop - (imgElement.offsetHeight * 0.1) - 10}px`;
+      hoverContainer.style.left = `${imgElement.offsetLeft - (imgElement.offsetWidth * 0.1) - 10}px`;
+
+      imageWrapper.appendChild(enlargedImg);
+      imageWrapper.appendChild(buttonContainer);
+      hoverContainer.appendChild(imageWrapper);
+      imgElement.parentElement.appendChild(hoverContainer);
+
+      hoverContainer.addEventListener('mouseleave', () => {
+        if (hoverContainer) {
+          buttonContainer.classList.remove('visible');
+          hoverContainer.remove();
+          hoverContainer = null;
+        }
+      });
+    }
+  });
+}
+
 export default function decorate(block, name, doc) {
   const howto = block;
   const heading = howto.closest('.section').querySelector('h2, h3, h4');
@@ -37,67 +89,15 @@ export default function decorate(block, name, doc) {
     step: [],
   };
 
-  function renderHoverContainer(imgElement, row, buttonContainer) {
-    let hoverContainer;
-
-    imgElement.addEventListener('mouseenter', () => {
-      if (!hoverContainer) {
-        const templateHref = buttonContainer.querySelector('a').href;
-        hoverContainer = document.createElement('div', { class: 'hover-container' });
-        row.style.position = 'relative';
-
-        const wrapper = createTag('div', { class: 'share-icon-wrapper' });
-        const shareIcon = getIconElement('share-arrow');
-        wrapper.appendChild(shareIcon);
-        hoverContainer.appendChild(wrapper);
-
-        buttonContainer.classList.add('visible');
-
-        shareIcon.addEventListener('click', () => {
-          if (templateHref) {
-            navigator.clipboard.writeText(templateHref).catch((err) => {
-              console.error('Failed to copy template-x link: ', err);
-            });
-          }
-        });
-
-        const imageWrapper = createTag('div', { class: 'image-wrapper' });
-
-        const enlargedImg = imgElement.cloneNode(true);
-        enlargedImg.classList.add('enlarged-template-img');
-        enlargedImg.style.width = `${imgElement.offsetWidth * 1.2}px`;
-        enlargedImg.style.height = `${imgElement.offsetHeight * 1.2}px`;
-
-        hoverContainer.style.pointerEvents = 'auto';
-        hoverContainer.style.position = 'absolute';
-        hoverContainer.style.top = `${imgElement.offsetTop - (imgElement.offsetHeight * 0.1) - 10}px`;
-        hoverContainer.style.left = `${imgElement.offsetLeft - (imgElement.offsetWidth * 0.1) - 10}px`;
-
-        imageWrapper.appendChild(enlargedImg);
-        imageWrapper.appendChild(buttonContainer);
-        hoverContainer.appendChild(imageWrapper);
-        imgElement.parentElement.appendChild(hoverContainer);
-
-        hoverContainer.addEventListener('mouseleave', () => {
-          if (hoverContainer) {
-            buttonContainer.classList.remove('visible');
-            hoverContainer.remove();
-            hoverContainer = null;
-          }
-        });
-      }
-    });
-  }
-
   const templateXVariant = block?.classList.contains('template-x');
   const templateXContainer = templateXVariant && createTag('div', { class: 'template-x-container' });
-  if (document.body.dataset.device === 'desktop') {
+  if (templateXContainer && document.body.dataset.device === 'desktop') {
     templateXContainer.classList.add('desktop');
-  } else {
+  } else if (templateXContainer) {
     templateXContainer.classList.remove('desktop');
   }
-
   rows.forEach((row, i) => {
+    const index = (typeof numberStepStart === 'number' ? numberStepStart : 1) + i;
     if (templateXVariant && row.querySelector('picture')) {
       row.classList.add('template-x-thumbnail');
 
@@ -133,7 +133,8 @@ export default function decorate(block, name, doc) {
       const text = createTag('div', { class: 'tip-text' });
       text.append(h3);
       text.append(p);
-      const number = createTag('div', { class: 'tip-number' }, `<span>${i + numberStepStart - 1}</span>`);
+      const number = createTag('div', { class: 'tip-number' });
+      number.innerHTML = `<span>${index}</span>`;
       cells[0].remove();
       cells[1].innerHTML = '';
       cells[1].classList.add('tip');

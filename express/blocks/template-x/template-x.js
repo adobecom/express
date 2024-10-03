@@ -159,7 +159,7 @@ function constructProps(block) {
     limit: 70,
     total: 0,
     start: '',
-    collectionId: 'urn:aaid:sc:VA6C2:2370e7c8-3200-40c5-be6a-c44b9ed2203f',
+    collectionId: 'urn:aaid:sc:VA6C2:25a82757-01de-4dd9-b0ee-bde51dd3b418',
     sort: '',
     masonry: undefined,
     headingTitle: null,

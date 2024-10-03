@@ -663,7 +663,7 @@ export async function decorateBlock(block) {
     // split and add options with a dash
     // (fullscreen-center -> fullscreen-center + fullscreen + center)
     const extra = [];
-    const skipList = ['same-fcta'];
+    const skipList = ['same-fcta', 'meta-powered'];
     block.classList.forEach((className, index) => {
       if (index === 0 || skipList.includes(className)) return; // block name or skip, no split
       const split = className.split('-');
@@ -1927,7 +1927,7 @@ async function buildAutoBlocks(main) {
 
     if (blockName && validButtonVersion.includes(blockName) && lastDiv) {
       const button = buildBlock(blockName, device);
-      button.classList.add('metadata-powered');
+      button.classList.add('meta-powered');
       lastDiv.append(button);
       BlockMediator.set('floatingCtasLoaded', true);
     }
