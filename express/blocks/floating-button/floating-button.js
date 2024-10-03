@@ -9,7 +9,7 @@ import {
 
 export default function decorate(block) {
   addTempWrapper(block, 'floating-button');
-  if (!block.classList.contains('metadata-powered')) {
+  if (!block.classList.contains('meta-powered')) {
     block.parentElement?.remove();
     return;
   }

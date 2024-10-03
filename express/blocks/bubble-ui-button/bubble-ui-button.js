@@ -386,7 +386,7 @@ export async function createMultiFunctionButton($block, data, audience) {
 }
 
 export default async function decorate($block) {
-  if ($block.classList.contains('metadata-powered')) {
+  if ($block.classList.contains('meta-powered')) {
     const audience = $block.querySelector(':scope > div').textContent.trim();
     if (audience === 'mobile') {
       $block.closest('.section').remove();
