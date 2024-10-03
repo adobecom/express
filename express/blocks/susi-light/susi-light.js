@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
 import {
   createTag,
@@ -40,13 +41,55 @@ function getDestURL(url) {
   return destURL.toString();
 }
 
+function sendEventToAnalytics(type, eventName, client_id) {
+  const sendEvent = () => {
+    window._satellite.track('event', {
+      xdm: {},
+      data: {
+        eventType: 'web.webinteraction.linkClicks',
+        web: {
+          webInteraction: {
+            name: eventName,
+            linkClicks: {
+              value: 1,
+            },
+            type,
+          },
+        },
+        _adobe_corpnew: {
+          digitalData: {
+            primaryEvent: {
+              eventInfo: {
+                eventName,
+                client_id,
+              },
+            },
+          },
+        },
+      },
+    });
+  };
+  if (window._satellite?.track) {
+    sendEvent();
+  } else {
+    window.addEventListener('alloy_sendEvent', () => {
+      sendEvent();
+    }, { once: true });
+  }
+}
+
 // wrap with our customizations
-function wrapEasyIn(susi, title, guest) {
+function wrapEasyIn(client_id, susi, title, guest) {
   const wrapper = createTag('div', { class: 'easy-in-wrapper' }, susi);
   const logo = getIconElement('adobe-express-logo');
   logo.classList.add('express-logo');
   const titleDiv = createTag('div', { class: 'title' }, title);
   const guestDiv = createTag('div', { class: 'guest' }, guest);
+  [...guestDiv.querySelectorAll('a, button')].forEach((e) => {
+    e.addEventListener('click', () => {
+      sendEventToAnalytics('event', `acomx:susi-light:guest-${e.title || e.textContent}`, client_id);
+    });
+  });
   wrapper.append(logo, titleDiv, susi, guestDiv);
   return wrapper;
 }
@@ -87,49 +130,13 @@ export default async function init(el) {
   susi.config = config;
   if (isStage) susi.stage = 'true';
   susi.variant = variant;
-  function sendEventToAnalytics(type, eventName) {
-    const sendEvent = () => {
-      window._satellite.track('event', {
-        xdm: {},
-        data: {
-          eventType: 'web.webinteraction.linkClicks',
-          web: {
-            webInteraction: {
-              name: eventName,
-              linkClicks: {
-                value: 1,
-              },
-              type,
-            },
-          },
-          _adobe_corpnew: {
-            digitalData: {
-              primaryEvent: {
-                eventInfo: {
-                  eventName,
-                  client_id,
-                },
-              },
-            },
-          },
-        },
-      });
-    };
-    if (window._satellite?.track) {
-      sendEvent();
-    } else {
-      window.addEventListener('alloy_sendEvent', () => {
-        sendEvent();
-      }, { once: true });
-    }
-  }
 
   const onAnalytics = (e) => {
     const { type, event } = e.detail;
-    sendEventToAnalytics(type, event);
+    sendEventToAnalytics(type, event, client_id);
   };
   susi.addEventListener('redirect', onRedirect);
   susi.addEventListener('on-error', onError);
   susi.addEventListener('on-analytics', onAnalytics);
-  el.append(isEasyIn ? wrapEasyIn(susi, title, rows[3]) : susi);
+  el.append(isEasyIn ? wrapEasyIn(client_id, susi, title, rows[3]) : susi);
 }
