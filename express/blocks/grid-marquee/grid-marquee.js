@@ -212,7 +212,7 @@ export default function init(el) {
     logo.classList.add('express-logo');
     foreground.prepend(logo);
   }
-  foreground.append(createRatings());
+  if (el.classList.contains('ratings')) foreground.append(createRatings());
   el.append(foreground);
   mediaQuery.addEventListener('change', deactivateDrawer);
 }
