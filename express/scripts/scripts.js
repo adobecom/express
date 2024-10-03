@@ -83,7 +83,7 @@ const eagerLoad = (img) => {
   document.body.dataset.device = userAgent.includes('Mobile') ? 'mobile' : 'desktop';
   const fqaMeta = createTag('meta', { content: 'on' });
   if (document.body.dataset.device === 'mobile'
-    || (/Safari/.test(userAgent) && !/Chrome|CriOS|FxiOS|Edg|OPR|Opera|OPiOS|Vivaldi|YaBrowser|Avast|VivoBrowser|GSA/.test(userAgent))) {
+    && !(/Safari/.test(userAgent) || /Chrome|CriOS|FxiOS|Edg|OPR|Opera|OPiOS|Vivaldi|YaBrowser|Avast|VivoBrowser|GSA/.test(userAgent))) {
     fqaMeta.setAttribute('name', 'fqa-off');
   } else {
     fqaMeta.setAttribute('name', 'fqa-on');
