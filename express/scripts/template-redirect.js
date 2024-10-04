@@ -20,12 +20,19 @@ export function constructTargetPath(topics, tasks, tasksx) {
 
 export default async function redirectToExistingPage() {
   // TODO: check if the search query points to an existing page. If so, redirect.
-  const { topics, tasks, tasksx } = new Proxy(new URLSearchParams(window.location.search), {
-    get: (searchParams, prop) => searchParams.get(prop),
-  });
+  const {
+    topics,
+    tasks,
+    tasksx,
+    searchId,
+  } = new Proxy(
+    new URLSearchParams(window.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    },
+  );
   const pathToMatch = constructTargetPath(topics, tasks, tasksx);
   if (await existsTemplatePage(pathToMatch)) {
-    window.location.assign(`${window.location.origin}${pathToMatch}`);
+    window.location.assign(`${window.location.origin}${pathToMatch}${searchId ? `?searchId=${searchId}` : ''}`);
     document.body.style.display = 'none'; // hide the page until the redirect happens
   }
 }

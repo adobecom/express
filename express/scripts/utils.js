@@ -668,7 +668,7 @@ export async function decorateBlock(block) {
     // split and add options with a dash
     // (fullscreen-center -> fullscreen-center + fullscreen + center)
     const extra = [];
-    const skipList = ['same-fcta'];
+    const skipList = ['same-fcta', 'meta-powered'];
     block.classList.forEach((className, index) => {
       if (index === 0 || skipList.includes(className)) return; // block name or skip, no split
       const split = className.split('-');
@@ -1374,24 +1374,31 @@ export const loadScript = (url, type) => new Promise((resolve, reject) => {
  */
 
 export async function fetchPlaceholders() {
+  if (window.placeholders) return window.placeholders;
+  let resolver;
+  window.placeholders = new Promise((res) => {
+    resolver = res;
+  });
   const requestPlaceholders = async (url) => {
     const resp = await fetch(url);
     if (resp.ok) {
       const json = await resp.json();
-      window.placeholders = {};
+      const placeholders = {};
       json.data.forEach((placeholder) => {
-        if (placeholder.value) window.placeholders[placeholder.key] = placeholder.value;
-        else if (placeholder.Text) window.placeholders[placeholder.Key] = placeholder.Text;
+        if (placeholder.value) placeholders[placeholder.key] = placeholder.value;
+        else if (placeholder.Text) placeholders[placeholder.Key] = placeholder.Text;
       });
+      return placeholders;
     }
+    return null;
   };
-  if (!window.placeholders) {
-    try {
-      const { prefix } = getConfig().locale;
-      await requestPlaceholders(`${prefix}/express/placeholders.json`);
-    } catch {
-      await requestPlaceholders('/express/placeholders.json');
-    }
+  try {
+    const { prefix } = getConfig().locale;
+    const placeholders = await requestPlaceholders(`${prefix}/express/placeholders.json`);
+    if (!placeholders) throw new Error(`placeholders req failed in prefix: ${prefix}`);
+    resolver(placeholders);
+  } catch {
+    resolver(await requestPlaceholders('/express/placeholders.json') || {});
   }
   return window.placeholders;
 }
@@ -1926,7 +1933,7 @@ async function buildAutoBlocks(main) {
 
     if (blockName && validButtonVersion.includes(blockName) && lastDiv) {
       const button = buildBlock(blockName, device);
-      button.classList.add('metadata-powered');
+      button.classList.add('meta-powered');
       lastDiv.append(button);
       BlockMediator.set('floatingCtasLoaded', true);
     }
@@ -2414,10 +2421,22 @@ export async function loadTemplate() {
   await Promise.all([styleLoaded, scriptLoaded]);
 }
 
+function loadTOC() {
+  if (getMetadata('toc-seo') === 'on') {
+    const handler = () => {
+      loadStyle('/express/features/table-of-contents-seo/table-of-contents-seo.css');
+      import('../features/table-of-contents-seo/table-of-contents-seo.js').then(({ default: setTOCSEO }) => setTOCSEO());
+    };
+    window.addEventListener('express:LCP:loaded', handler);
+  }
+}
+
 async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
-  window.dispatchEvent(new Event('milo:LCP:loaded'));
+  loadTOC();
+
+  window.dispatchEvent(new Event('express:LCP:loaded'));
   if (config.mep?.targetEnabled === 'gnav') {
     await loadMartech({ persEnabled: true, postLCP: true });
   } else {
@@ -2565,14 +2584,6 @@ function fragmentBlocksToLinks(area) {
       fragLink.setAttribute('ax-old-fragment', 'on');
     }
   });
-}
-
-export function replaceHyphensInText(area) {
-  [...area.querySelectorAll('h1, h2, h3, h4, h5, h6')]
-    .filter((header) => header.textContent.includes('-'))
-    .forEach((header) => {
-      header.textContent = header.textContent.replace(/-/g, '\u2011');
-    });
 }
 
 export async function loadArea(area = document) {

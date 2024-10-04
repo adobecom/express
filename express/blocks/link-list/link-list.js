@@ -65,6 +65,7 @@ export default async function decorate(block) {
     variant = SMART_VARIANT;
   }
   addTempWrapper(block, 'link-list');
+
   const placeholders = await fetchPlaceholders();
   const options = {};
 
