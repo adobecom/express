@@ -162,21 +162,46 @@
 
 }
 
-main .section.content-group .default-content-wrapper h2 {
+main .section.content-group {
+  padding-top: 20px;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+main .section.desktop.content-group .default-content-wrapper h2 {
   font-size: 44px;
   text-align: left;
   margin-top: 0px;
 }
-main .section.content-group .default-content-wrapper h3 {
+main .section.desktop.content-group .default-content-wrapper h3 {
   font-size: 20px;
   text-align: left;
   margin-top: 16px;
 }
-main .section.content-group .default-content-wrapper p {
+main .section.desktop.content-group .default-content-wrapper p {
   font-size: 20px;
   text-align: left;
   margin-top: 16px;
   margin-bottom: 75px;
+}
+
+main .section.content-group .default-content-wrapper h2 {
+  font-size: 32px;
+  font-weight: 800;
+  text-align: left;
+  margin-top: 0px;
+}
+main .section.content-group .default-content-wrapper h3 {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: left;
+  margin-top: 16px;
+}
+main .section.content-group .default-content-wrapper p {
+  font-size: 16px;
+  font-weight: 400;
+  text-align: left;
+  margin-top: 16px;
 }
 
 @media (min-width: 900px) {
