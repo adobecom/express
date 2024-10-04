@@ -166,7 +166,6 @@ main .interactive-marquee.horizontal-masonry.wide .media-container p.image-conta
     position: relative;
     margin-bottom: 20px;
     border-radius: 16px;
-    height: 150px;
     max-width: 400px;
     flex: unset
 }
