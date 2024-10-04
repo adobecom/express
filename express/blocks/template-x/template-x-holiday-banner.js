@@ -1,7 +1,6 @@
-
 import {
   createTag,
-  transformLinkToAnimation
+  transformLinkToAnimation,
 } from '../../scripts/utils.js';
 
 function initExpandCollapseToolbar(block, templateTitle, toggle, link) {

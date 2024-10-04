@@ -273,11 +273,10 @@ export function createTag(tag, attributes, html) {
   if (attributes) {
     Object.entries(attributes).forEach(([key, val]) => {
       if (key === 'textContent') {
-        el.textContent = val
+        el.textContent = val;
       } else {
         el.setAttribute(key, val);
       }
-    
     });
   }
   return el;
@@ -1289,7 +1288,7 @@ async function loadAndExecute(cssPath, jsPath, block, blockName, eager) {
         const { default: init } = await import(jsPath);
         await init(block, blockName, document, eager);
       } catch (err) {
-        console.log(err)
+        console.log(err);
         // eslint-disable-next-line no-console
         // window.lana.log(`failed to load module for ${blockName}: ${err.message}\nError Stack:${err.stack}`, {
         //   sampleRate: 1,

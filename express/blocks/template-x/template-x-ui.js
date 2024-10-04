@@ -1,4 +1,3 @@
-
 import { fetchTemplatesCategoryCount } from '../../scripts/template-search-api-v3.js';
 import {
   createTag,
@@ -7,7 +6,7 @@ import {
   getIconElement,
   getMetadata,
   titleCase,
-  transformLinkToAnimation
+  transformLinkToAnimation,
 } from '../../scripts/utils.js';
 import {
   redrawTemplates,
@@ -564,7 +563,6 @@ function decorateFunctionsContainer(block, functions, placeholders) {
 
   return { mobile: functionContainerMobile, desktop: functionsContainer };
 }
-
 
 function getPlaceholderWidth(block) {
   let width;

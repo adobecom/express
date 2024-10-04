@@ -3,7 +3,6 @@ import { createTag, getIconElement, getMetadata } from '../../scripts/utils.js';
 import { trackSearch, updateImpressionCache } from '../../scripts/template-search-api-v3.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
-
 // This file focuses on rendering a single template.
 
 const CONSTANTS = {
@@ -12,20 +11,20 @@ const CONSTANTS = {
   TOOLTIP_TIMEOUT: 2500,
 };
 
-const getTemplateTitle = (template) => 
-  template['dc:title']?.['i-default'] ??
-  `${template.moods?.join(', ')} ${template.task?.name}` ??
-  `${getMetadata('topics-x')} ${getMetadata('tasks-x')}`.trim() ??
-  '';
+const getTemplateTitle = (template) => template['dc:title']?.['i-default']
+  ?? `${template.moods?.join(', ')} ${template.task?.name}`
+  ?? `${getMetadata('topics-x')} ${getMetadata('tasks-x')}`.trim()
+  ?? '';
 
-const extractLinkHref = (template, key) => 
-  template._links?.[`http://ns.adobe.com/adobecloud/rel/${key}`]?.href;
+const extractLinkHref = (template, key) => template._links?.[`http://ns.adobe.com/adobecloud/rel/${key}`]?.href;
 
 const getImageThumbnailSrc = (renditionLinkHref, componentLinkHref, page) => {
   const thumbnail = page?.rendition?.image?.thumbnail;
   if (!thumbnail) return renditionLinkHref.replace('{&page,size,type,fragment}', '');
 
-  const { mediaType, componentId, width, height, hzRevision } = thumbnail;
+  const {
+    mediaType, componentId, width, height, hzRevision,
+  } = thumbnail;
   return mediaType === 'image/webp'
     ? componentLinkHref.replace('{&revision,component_id}', `&revision=${hzRevision || 0}&component_id=${componentId}`)
     : renditionLinkHref.replace('{&page,size,type,fragment}', `&size=${Math.max(width, height)}&type=${mediaType}&fragment=id=${componentId}`);
@@ -35,7 +34,7 @@ const getVideoUrls = async (renditionLinkHref, componentLinkHref, page) => {
   const { componentId } = page.rendition?.video?.thumbnail ?? {};
   const preLink = renditionLinkHref.replace(
     '{&page,size,type,fragment}',
-    `&type=${CONSTANTS.VIDEO_METADATA_TYPE}&fragment=id=${componentId}`
+    `&type=${CONSTANTS.VIDEO_METADATA_TYPE}&fragment=id=${componentId}`,
   );
   const backupPosterSrc = getImageThumbnailSrc(renditionLinkHref, componentLinkHref, page);
 
@@ -46,7 +45,7 @@ const getVideoUrls = async (renditionLinkHref, componentLinkHref, page) => {
     const { renditionsStatus: { state }, posterframe, renditions } = await response.json();
     if (state !== 'COMPLETED') throw new Error('Video not ready');
 
-    const mp4Rendition = renditions.find(r => r.videoContainer === 'MP4');
+    const mp4Rendition = renditions.find((r) => r.videoContainer === 'MP4');
     if (!mp4Rendition?.url) throw new Error('No MP4 rendition found');
 
     return { src: mp4Rendition.url, poster: posterframe?.url ?? backupPosterSrc };
@@ -119,14 +118,14 @@ const renderRotatingMedias = async (wrapper, pages, { templateTitle, renditionLi
   const img = createTag('img', { src: '', alt: templateTitle, class: 'hidden' });
   wrapper.prepend(img);
 
-  const video = pages.some(page => page?.rendition?.video?.thumbnail?.componentId)
+  const video = pages.some((page) => page?.rendition?.video?.thumbnail?.componentId)
     ? createTag('video', {
-        muted: true,
-        playsinline: '',
-        title: templateTitle,
-        poster: '',
-        class: 'unloaded hidden',
-      })
+      muted: true,
+      playsinline: '',
+      title: templateTitle,
+      poster: '',
+      class: 'unloaded hidden',
+    })
     : null;
 
   if (video) {
@@ -208,8 +207,8 @@ const renderMediaWrapper = (template, placeholders) => {
   };
 
   return {
-    mediaWrapper, 
-    enterHandler: handleEnter, 
+    mediaWrapper,
+    enterHandler: handleEnter,
     leaveHandler: () => renderedMedia?.cleanup(),
     focusHandler: handleEnter,
   };
@@ -231,12 +230,12 @@ const renderStillWrapper = (template, placeholders) => {
   });
 
   const planIcon = template.licensingCategory === 'free'
-    ? createTag('span', { class: 'free-tag', textContent: placeholders.free ||  'Free' })
+    ? createTag('span', { class: 'free-tag', textContent: placeholders.free || 'Free' })
     : getIconElement('premium');
 
   let videoIcon = '';
   if (template.pages.length > 1) {
-    videoIcon = getIconElement(template.pages.some(p => p?.rendition?.video?.thumbnail?.componentId) ? 'multipage-video-badge' : 'multipage-static-badge');
+    videoIcon = getIconElement(template.pages.some((p) => p?.rendition?.video?.thumbnail?.componentId) ? 'multipage-video-badge' : 'multipage-static-badge');
   } else if (template.pages[0]?.rendition?.video?.thumbnail?.componentId) {
     videoIcon = getIconElement('video-badge');
   }
@@ -259,7 +258,9 @@ const renderSingleTemplate = (template, placeholders) => {
   const tmpltEl = createTag('div');
   tmpltEl.append(renderStillWrapper(template, placeholders));
 
-  const { mediaWrapper, enterHandler, leaveHandler, focusHandler } = renderMediaWrapper(template, placeholders);
+  const {
+    mediaWrapper, enterHandler, leaveHandler, focusHandler,
+  } = renderMediaWrapper(template, placeholders);
   const btnContainer = createTag('div', { class: 'button-container' });
   btnContainer.append(mediaWrapper);
   btnContainer.addEventListener('mouseenter', enterHandler);

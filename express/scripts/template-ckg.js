@@ -9,7 +9,7 @@ import {
 } from './browse-api-controller.js';
 
 import fetchAllTemplatesMetadata from './all-templates-metadata.js';
-import { trackSearch, updateImpressionCache, generateSearchId } from './template-search-api-v3.js'
+import { trackSearch, updateImpressionCache, generateSearchId } from './template-search-api-v3.js';
 
 const defaultRegex = /\/express\/templates\/default/;
 

@@ -5,7 +5,7 @@ import {
   toClassName,
 } from '../../scripts/utils.js';
 import renderSingleTemplate from './render-single-template.js';
-import { fetchTemplates, isValidTemplate , trackSearch} from  '../../scripts/template-search-api-v3.js'
+import { fetchTemplates, isValidTemplate, trackSearch } from '../../scripts/template-search-api-v3.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
 export function updateLoadMoreButton(props, loadMore) {
@@ -41,8 +41,8 @@ export async function decorateLoadMoreButton(block, props) {
   updateLoadMoreButton(props, loadMoreButton);
 }
 
-async function getTemplates(response, phs, fallbackMsg) { 
-  const filtered = response.items.filter((item) => isValidTemplate(item)); 
+async function getTemplates(response, phs, fallbackMsg) {
+  const filtered = response.items.filter((item) => isValidTemplate(item));
   const templates = await Promise.all(
     filtered.map((template) => renderSingleTemplate(template, phs)),
   );
@@ -71,7 +71,7 @@ export async function fetchAndRenderTemplates(props) {
   }
 
   props.total = response.metadata.totalHits;
-  console.log(props)
+  console.log(props);
   // eslint-disable-next-line no-return-await
   return await getTemplates(response, placeholders, fallbackMsg);
 }
@@ -287,4 +287,3 @@ export async function decorateBreadcrumbs(block) {
   const breadcrumbs = await getBreadcrumbs();
   if (breadcrumbs) block.prepend(breadcrumbs);
 }
-

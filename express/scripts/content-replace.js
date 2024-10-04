@@ -329,7 +329,7 @@ async function updateNonBladeContent(main) {
   const templateX = main.querySelector('.template-x');
   const browseByCat = main.querySelector('.browse-by-category');
   const seoNav = main.querySelector('.seo-nav');
-  console.log('========')
+  console.log('========');
   if (heroAnimation) {
     if (getMetadata('hero-title')) {
       heroAnimation.innerHTML = heroAnimation.innerHTML.replace('Default template title', getMetadata('hero-title'));
@@ -348,7 +348,7 @@ async function updateNonBladeContent(main) {
   }
 
   if (templateX) {
-    console.log('-------')
+    console.log('-------');
     await replaceDefaultPlaceholders(templateX, {
       link: getMetadata('create-link-x') || getMetadata('create-link') || '/',
       tasks: getMetadata('tasks-x'),

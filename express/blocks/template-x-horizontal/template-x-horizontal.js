@@ -8,7 +8,7 @@ import {
 import buildCarousel from '../shared/carousel.js';
 
 import {
-  fetchAndRenderTemplates, populateTemplates, decorateBreadcrumbs
+  fetchAndRenderTemplates, populateTemplates, decorateBreadcrumbs,
 } from '../template-x/core.js';
 
 import {
@@ -123,7 +123,7 @@ async function decorateTemplates(block, props) {
     },
     { width: '750' },
   ];
-  
+
   block.querySelectorAll(':scope picture > img').forEach((img) => {
     const { src, alt } = img;
     img.parentNode.replaceWith(
