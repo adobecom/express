@@ -4,7 +4,7 @@ main .section>div:has(.pricing-cards-credits) {
 
 /* General styles */
 .pricing-cards-credits {
-  --card-width: 400px;
+  --card-width: 361px;
   --card-padding: 30px;
   --border-radius: 20px;
   --primary-color: #5c5ce0;

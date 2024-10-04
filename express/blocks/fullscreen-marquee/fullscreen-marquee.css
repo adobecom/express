@@ -125,7 +125,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
   opacity: 0;
   cursor: pointer;
   border-radius: 24px;
@@ -264,7 +263,10 @@
   text-decoration: underline;
   padding-left: 10px;
   padding-right: 10px;
+}
 
+.grid-width-6-desktop.small-header .fullscreen-marquee h1 {
+  font-size: 45px;
 }
 
 @media (min-width: 900px) {

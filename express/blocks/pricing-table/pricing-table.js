@@ -42,6 +42,7 @@ function handleHeading(headingRow, headingCols) {
       col.innerHTML = `<p class="tracking-header">${col.innerHTML}</p>`;
       return;
     }
+
     decorateButtons(col, 'button-l');
     const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
     const buttons = col.querySelectorAll('.button');
@@ -97,6 +98,7 @@ function handleSection(sectionParams) {
     allRows,
     rowCols,
     isToggle,
+    firstSection,
   } = sectionParams;
 
   const previousRow = allRows[index - 1];
@@ -108,14 +110,14 @@ function handleSection(sectionParams) {
     if (index > 0) previousRow.classList.add('table-end-row');
     if (nextRow) nextRow.classList.add('table-start-row');
   } else if (isToggle) {
-    const toggleIconTag = createTag('span', { class: 'icon expand', 'aria-expanded': 'false' });
+    const toggleIconTag = createTag('span', { class: 'icon expand', 'aria-expanded': firstSection });
     row.querySelector('.toggle-content').prepend(toggleIconTag);
     row.classList.add('collapsed');
     let prevRow = previousRow;
     let i = index;
     // TODO: clean up this func please...
     while (prevRow && !prevRow.classList.contains('section-header-row') && !prevRow.classList.contains('blank-row')) {
-      prevRow.classList.add('collapsed');
+      if (!firstSection) prevRow.classList.add('collapsed');
       i -= 1;
       prevRow = allRows[i].previousElementSibling;
     }
@@ -132,11 +134,17 @@ function handleSection(sectionParams) {
         if (!col.children?.length || col.querySelector(':scope > sup')) col.innerHTML = `<p>${col.innerHTML}</p>`;
         return;
       }
+
+      const dim = col.querySelectorAll('em').length > 0;
+      if (dim) {
+        col.classList.add('dim');
+      }
+
       const child = col.children?.[0] || col;
-      if (!child.innerHTML || child.innerHTML === '-') {
+      if (!child.innerHTML || child.textContent === '-') {
         col.classList.add('excluded-feature');
         child.innerHTML = EXCLUDE_ICON;
-      } else if (child.innerHTML === '+') {
+      } else if (child.textContent === '+') {
         col.classList.add('included-feature');
         child.innerHTML = INCLUDE_ICON;
       } else if (!col.children.length) {
@@ -195,6 +203,7 @@ export default async function init(el) {
   let sectionItem = 0;
   const placeholders = await fetchPlaceholders();
   let headingChildren;
+  let firstSection = true;
   for (let index = 0; index < rows.length; index += 1) {
     const row = rows[index];
     row.classList.add('row', `row-${index + 1}`);
@@ -250,16 +259,22 @@ export default async function init(el) {
       }
     }
     if (isAdditional && cols.length > 1) row.classList.add('additional-row');
+
     const sectionParams = {
       row,
       index,
       allRows: rows,
       rowCols: cols,
       isToggle,
+      firstSection,
     };
     handleSection(sectionParams);
     // eslint-disable-next-line no-await-in-loop
     await yieldToMain();
+
+    if (isToggle) {
+      firstSection = false;
+    }
   }
 
   handleHeading(rows[0], headingChildren);
@@ -292,12 +307,15 @@ export default async function init(el) {
       const gnavHeight = gnav.offsetHeight;
       const { top } = rows[0].getBoundingClientRect();
       if (top <= gnavHeight && !rows[0].classList.contains('stuck')) {
-        rows[0].classList.add('stuck');
         rows[0].style.top = `${gnavHeight}px`;
       } else if (rows[0].classList.contains('stuck') && top > gnavHeight) {
         rows[0].classList.remove('stuck');
       }
+      const p = rows[1].getBoundingClientRect();
+      if (top >= p.top && top > 0) {
+        rows[0].classList.add('stuck');
+      }
     };
-    window.addEventListener('scroll', debounce(scrollHandler, 30), { passive: true });
+    window.addEventListener('scroll', debounce(scrollHandler, 16), { passive: true });
   }
 }

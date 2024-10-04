@@ -8,6 +8,10 @@
   
 }
 
+.wayfinder.block.narrow {
+  width: 850px;
+}
+
 .wayfinder.block.borderless {
   border: none;
 }
