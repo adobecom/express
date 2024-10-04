@@ -177,6 +177,17 @@ async function decorateCards(block, payload) {
           if (searchBranchLinks.includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
             btnUrl.searchParams.set('q', cta.text);
             btnUrl.searchParams.set('category', 'templates');
+            if (cta.subtext) {
+              const match = /(\d+)x(\d+)(.+)/.exec(cta.subtext);
+              if (match) {
+                const [, width, height, unit] = match;
+                if (unit === 'px' || unit === 'in') {
+                  btnUrl.searchParams.get('width') || btnUrl.searchParams.set('width', width);
+                  btnUrl.searchParams.get('height') || btnUrl.searchParams.set('height', height);
+                  btnUrl.searchParams.get('unit') || btnUrl.searchParams.set('unit', unit);
+                }
+              }
+            }
             a.href = decodeURIComponent(btnUrl.toString());
           }
           a.removeAttribute('title');

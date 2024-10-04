@@ -173,6 +173,20 @@ const extractProperties = (block) => {
   return allProperties;
 };
 
+const decoratePrimaryCTARow = (rowNum, cellNum, cell) => {
+  if (rowNum + cellNum !== 0) return;
+  const content = cell.querySelector('p > em');
+  if (!content) return;
+  const links = content.querySelectorAll('a');
+  if (links.length < 2) return;
+  content.classList.add('phone-number-cta-row');
+  links[0].classList.add('button');
+  links[0].classList.add('xlarge');
+  links[0].classList.add('trial-cta');
+  links[1].classList.add('phone');
+  content.parentElement.prepend(links[0]);
+};
+
 export default async function decorate(block) {
   document.body.dataset.device === 'mobile' && replaceHyphensInText(block);
   const colorProperties = extractProperties(block);
@@ -308,6 +322,8 @@ export default async function decorate(block) {
           $pars[i].classList.add('powered-by');
         }
       }
+
+      decoratePrimaryCTARow(rowNum, cellNum, cell);
     });
   });
   addAnimationToggle(block);

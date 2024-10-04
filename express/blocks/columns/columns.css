@@ -79,6 +79,23 @@ main .columns p.powered-by {
   line-height: 1.2;
 }
 
+main .columns .phone-number-cta-row {
+  font-style: normal;
+  margin: 20px auto auto auto;
+  width: fit-content;
+  display: block;
+}
+
+main .columns .trial-cta {
+  display: block;
+  margin: auto;
+}
+
+main .columns .phone-number-cta-row a.phone {
+  text-decoration: underline;
+  color: var(--color-black);
+}
+
 main .columns p.button-container {
   margin: 0;
   margin-top: 40px;
@@ -915,6 +932,15 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
 
   .section.columns-enterprise-container .column h2 {
     font-size: var(--heading-font-size-xxl);
+  }
+
+  main .columns .phone-number-cta-row {
+    float: left;
+    margin: 15px auto auto 10px;
+  }
+  
+  main .columns .trial-cta {
+    float: left;
   }
 }
 

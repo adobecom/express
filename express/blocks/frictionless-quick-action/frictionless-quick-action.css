@@ -7,6 +7,11 @@
     font-size: 2.8125rem;
 }
 
+.frictionless-quick-action.block .express-logo {
+    width: initial;
+    height: 30px;
+  }
+
 .frictionless-quick-action.block h1+p {
     margin: 16px 0 24px;
     font-size: 1rem;
@@ -37,7 +42,7 @@
     -webkit-text-fill-color: transparent;
 }
 
-.frictionless-quick-action.block > div:nth-child(2) {
+.frictionless-quick-action .container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,7 +50,7 @@
     flex-wrap: wrap;
 }
 
-.frictionless-quick-action.block > div:nth-child(2) > div:nth-child(2) {
+.frictionless-quick-action .container > div:nth-child(2) {
     margin-top: 26px;
 }
 
@@ -108,7 +113,7 @@
     margin-bottom: 0;
 }
 
-.frictionless-quick-action.block > div:nth-child(2) > div:nth-child(2) > p:last-of-type {
+.frictionless-quick-action .container > div:nth-child(2) > p:last-of-type {
     margin: 15px 0 0;
     font-size: 0.75rem;
 }
