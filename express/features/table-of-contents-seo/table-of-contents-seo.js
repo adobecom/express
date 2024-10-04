@@ -96,7 +96,7 @@ function addTOCItemClickEvent(tocItem, heading) {
     if (headerElement) {
       const headerRect = headerElement.getBoundingClientRect();
       const headerOffset = 70;
-      const offsetPosition = headerRect.top + window.scrollY - headerOffset;
+      const offsetPosition = headerRect.top + window.scrollY - headerOffset - MOBILE_NAV_HEIGHT;
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     } else {
       console.error(`Element with id "${heading.id}" not found.`);
