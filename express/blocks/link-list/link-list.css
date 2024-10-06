@@ -200,6 +200,14 @@ main .link-list.left-align .button-container {
 }
 
 @media (min-width: 900px) {
+  main .link-list.content-group {
+    width: 648px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  main .link-list.content-group h3 {
+    padding-left: 0;
+  }
   main .link-list-container > div,
   main .link-list-centered-container > div {
     padding: 0 50px;

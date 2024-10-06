@@ -20,6 +20,7 @@
     line-height: 24px;
     text-align: left;
     padding-left: 16px;
+    color: #444444;
 }
 .collapsible-row-sub-header {
     margin-top: 10px;
@@ -29,6 +30,7 @@
     line-height: 16px;
     text-align: left;
     padding-left: 16px;
+    color: #505050;
 }
 .collapsible-rows .collapsible-row-toggle-btn {
     display: block;
@@ -226,9 +228,28 @@
     }   
   }
 
-  @media (min-width: 900px) {
-    
+@media (min-width: 900px) {
+  .collapsible-rows-container {
+    width: 648px;
+    margin-left: auto;
+    margin-right: auto;
   }
+  .collapsible-rows {
+    width: 648px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .collapsible-rows .collapsible-row-accordion {
+    margin-left: 0;
+    margin-right: 0;
+  }  
+  .collapsible-rows .collapsible-row-toggle-btn {
+    width: 65px;
+    height: 24px;
+    line-height: 24px;
+    margin-left: 0;
+  }
+}
   
   
   
