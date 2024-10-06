@@ -105,13 +105,20 @@
         display: block;
         margin-bottom: 8px;
     }
-  
+
+    .collapsible-rows.expandable .collapsible-row-header {
+        font-weight: 700;
+    }
+    .collapsible-rows.expandable .collapsible-row-sub-header {
+        font-weight: 400;
+    }
     .collapsible-row-header {
         font-size: 18px;
+        font-weight: 400;
     }
-  
     .collapsible-row-sub-header {
         font-size: 18px;
+        font-weight: 700;
         line-height: 24px;
     }
   
