@@ -309,7 +309,6 @@ export default async function setTOCSEO() {
 
   let tocEntries;
   if (getDeviceType() === DESKTOP) {
-    document.querySelector('.section.content-group')?.classList.add('desktop');
     tocEntries = addTOCEntries(toc, config, doc);
     addHoverEffect(tocEntries);
     tocSEO.appendChild(toc);
@@ -318,7 +317,6 @@ export default async function setTOCSEO() {
     applyTOCBehavior(toc, tocContainer);
     handleActiveTOCHighlighting(tocEntries);
   } else {
-    document.querySelector('.section.content-group')?.classList.remove('desktop');
     setTimeout(() => {
       tocEntries = addTOCEntries(toc, config, doc);
     }, 50);
