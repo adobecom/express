@@ -124,7 +124,7 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
     const cells = Array.from(row.children);
 
     const h3 = createTag('h3');
-    h3.innerHTML = "Good! " + cells[0].textContent.trim();
+    h3.innerHTML = cells[0].textContent.trim();
     const text = createTag('div', { class: 'tip-text' });
     text.append(h3);
     text.append(cells[1]);
@@ -136,11 +136,15 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
     // row.append("<a href='#'>View</a>")
     // row.append("<div>hello</div>")
 
+    const videoIntro = createTag('div', { class: 'video-intro'});
+    videoIntro.innerHTML = "Watch it in video:"
     const videoLink = createTag('a', { class: 'video-link', href: '#' });
 
     const img = createTag('img', { class: 'video-thumbnail', src: imageURL });
 
     videoLink.append(img);
+
+    row.append(videoIntro);
     row.append(videoLink);
 
     videoLink.addEventListener('click', (ev) => {
