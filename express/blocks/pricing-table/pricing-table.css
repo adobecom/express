@@ -366,10 +366,13 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
 }
 
 .pricing-table.vertical-header .row.row-heading .col > div {
-  display: flex;
+ 
   flex-direction: column;
+  text-align: center;
   gap: 10px;
 }
+
+ 
 
 .pricing-table .row.row-heading .col .buttons-wrapper {
   width: 100%;
@@ -387,13 +390,16 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   height: 24px;
   width: 24px;
 }
-.pricing-table .row.row-heading .col > div p {
+.pricing-table .row.row-heading .col p {
   font-size: 1.125rem;
   font-weight: 700;
+  text-align: center;
 }
 .pricing-table .row-heading .col.col-heading p {
   display: flex;
   gap: 6px;
+  width: fit-content;
+  margin: auto;
 }
 .pricing-table .row.row-heading .col:first-child * {
     font-weight: 900;
