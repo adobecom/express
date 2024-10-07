@@ -10,7 +10,6 @@ function buildTableLayout(block) {
   if (headerText) {
     const rowAccordionHeader = createTag('h2', { class: 'collapsible-row-accordion title' });
     rowAccordionHeader.textContent = headerText;
-    console.log('rowAccordionHeader', rowAccordionHeader);
     block.prepend(rowAccordionHeader);
   }
 
