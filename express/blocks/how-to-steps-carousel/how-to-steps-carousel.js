@@ -6,6 +6,11 @@ import {
   fetchPlaceholders,
 } from '../../scripts/utils.js';
 
+import {
+  displayVideoModal,
+  hideVideoModal,
+} from '../shared/video.js';
+
 let rotationInterval;
 let fixedImageSize = false;
 
@@ -131,8 +136,17 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
     // row.append("<a href='#'>View</a>")
     // row.append("<div>hello</div>")
 
+    const videoLink = createTag('a', { class: 'video-link', href: '#' });
+
     const img = createTag('img', { class: 'video-thumbnail', src: imageURL });
-    row.append(img);
+
+    videoLink.append(img);
+    row.append(videoLink);
+
+    videoLink.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      displayVideoModal('https://www.youtube.com/watch?v=9jWlqX46apI', 'Adobe Express Poster How To');
+    })
 
     tips.prepend(row);
 
