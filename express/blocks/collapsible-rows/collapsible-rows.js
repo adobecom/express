@@ -103,15 +103,26 @@ function buildTableLayout(block) {
   collapsibleRows.forEach((row) => {
     const { header, subHeader } = row;
 
+    // Create a container for the header accordion
     const headerAccordion = createTag('div', { class: 'collapsible-row-accordion expandable header-accordion' });
     block.append(headerAccordion);
 
-    // Create header div
+    // Create the header div
     const headerDiv = createTag('h3', { class: 'collapsible-row-header expandable' });
     headerDiv.innerHTML = header;
     headerAccordion.append(headerDiv);
 
-    // Create separate accordion for the sub-header with a unique class
+    // Create the toggle icon element
+    const iconElement = createTag('img', {
+      src: '/express/icons/plus-heavy.svg',
+      alt: 'toggle-icon',
+      class: 'toggle-icon',
+    });
+
+    // Add the icon element to the header div, making it inline with the text
+    headerDiv.appendChild(iconElement);
+
+    // Create separate accordion for the sub-header
     const subHeaderAccordion = createTag('div', { class: 'collapsible-row-accordion expandable sub-header-accordion' });
     block.append(subHeaderAccordion);
 
@@ -126,6 +137,9 @@ function buildTableLayout(block) {
       const isCollapsed = subHeaderAccordion.classList.toggle('collapsed');
       subHeaderAccordion.style.display = isCollapsed ? 'flex' : 'none';
       subHeaderAccordion.style.paddingTop = 0;
+
+      // Toggle the icon image on click
+      iconElement.src = isCollapsed ? '/express/icons/minus-heavy.svg' : '/express/icons/plus-heavy.svg';
     });
   });
 }
