@@ -1,14 +1,17 @@
 import { createTag } from '../../scripts/utils.js';
 
 function buildTableLayout(block) {
-  block.closest('.section.section-wrapper')?.classList.add('grey-bg', 'reduce-padding-top');
+  block.closest('.section.section-wrapper')?.classList.add('grey-bg', 'collapsible-section-padding');
 
   const rows = Array.from(block.children);
   const headerText = rows.shift()?.innerText.trim();
+  block.innerHTML = '';
 
   if (headerText) {
-    const rowAccordionHeader = createTag('h2', { class: 'collapsible-row-accordion expandable header' });
+    const rowAccordionHeader = createTag('h2', { class: 'collapsible-row-accordion title' });
     rowAccordionHeader.textContent = headerText;
+    console.log('rowAccordionHeader', rowAccordionHeader);
+    block.prepend(rowAccordionHeader);
   }
 
   const collapsibleRows = [];
@@ -21,8 +24,6 @@ function buildTableLayout(block) {
       subHeader: subHeader.innerHTML,
     });
   });
-
-  block.innerHTML = '';
 
   collapsibleRows.forEach((row) => {
     const { header, subHeader } = row;
@@ -123,9 +124,9 @@ function buildOriginalLayout(block) {
 }
 
 export default async function decorate(block) {
-  const isOneLineCollapseVariant = block.classList.contains('expandable');
+  const isExpandableVariant = block.classList.contains('expandable');
 
-  if (isOneLineCollapseVariant) {
+  if (isExpandableVariant) {
     buildTableLayout(block);
   } else {
     buildOriginalLayout(block);
