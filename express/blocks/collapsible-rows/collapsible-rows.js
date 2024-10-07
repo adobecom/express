@@ -100,17 +100,10 @@ function buildTableLayout(block) {
 
   block.innerHTML = '';
 
-  const visibleCount = 6;
-
-  collapsibleRows.forEach((row, index) => {
+  collapsibleRows.forEach((row) => {
     const { header, subHeader } = row;
 
-    // Create separate accordion for the header with a unique class
     const headerAccordion = createTag('div', { class: 'collapsible-row-accordion expandable header-accordion' });
-    if (index >= visibleCount) {
-      headerAccordion.classList.add('collapsed');
-      headerAccordion.style.display = 'none';
-    }
     block.append(headerAccordion);
 
     // Create header div
@@ -120,10 +113,6 @@ function buildTableLayout(block) {
 
     // Create separate accordion for the sub-header with a unique class
     const subHeaderAccordion = createTag('div', { class: 'collapsible-row-accordion expandable sub-header-accordion' });
-    if (index >= visibleCount) {
-      subHeaderAccordion.classList.add('collapsed');
-      subHeaderAccordion.style.display = 'none';
-    }
     block.append(subHeaderAccordion);
 
     // Create sub-header div
@@ -133,8 +122,10 @@ function buildTableLayout(block) {
 
     // Add click event to the headerDiv to toggle the subHeaderAccordion
     headerDiv.addEventListener('click', () => {
+      headerAccordion.classList.toggle('rounded-corners');
       const isCollapsed = subHeaderAccordion.classList.toggle('collapsed');
-      subHeaderAccordion.style.display = isCollapsed ? 'none' : 'flex';
+      subHeaderAccordion.style.display = isCollapsed ? 'flex' : 'none';
+      subHeaderAccordion.style.paddingTop = 0;
     });
   });
 }

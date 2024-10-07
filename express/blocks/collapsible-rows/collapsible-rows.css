@@ -63,14 +63,20 @@
     }
     .collapsible-row-accordion.expandable.header-accordion {
         height: 100%;
-        border-radius: 16px 16px 0 0;
+        border-radius: 16px;
         border: none;
+        margin-bottom: 6px;
+    }
+    .collapsible-row-accordion.expandable.header-accordion.rounded-corners {
+        border-radius: 16px 16px 0 0;
         margin-bottom: 0;
     }
     .collapsible-row-accordion.expandable.sub-header-accordion {
         height: 100%;
         border-radius: 0 0 16px 16px;
         border: none;
+        display: none;
+        margin-bottom: 6px;
     }
     .collapsible-row-header.expandable {
         cursor: pointer;
@@ -80,6 +86,7 @@
     .collapsible-row-sub-header.expandable {
         font-size: 16px;
         font-weight: 400;
+        margin-top: 0;
     }
     .collapsible-row-header {
         font-size: 18px;
