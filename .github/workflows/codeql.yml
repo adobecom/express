@@ -42,6 +42,7 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
+          node-version: '18.x'
           languages: ${{ matrix.language }}
           config-file: ./.github/codeql/codeql-config.yml
 
