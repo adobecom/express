@@ -204,6 +204,8 @@ main .link-list.left-align .button-container {
     width: 648px;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 70px;
   }
   main .link-list.content-group h3 {
     padding-left: 0;
