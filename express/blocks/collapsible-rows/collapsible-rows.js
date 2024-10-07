@@ -1,12 +1,93 @@
 import { createTag } from '../../scripts/utils.js';
 
+// function buildTableLayout(block) {
+//   block.closest('.section.section-wrapper')?.classList.add('grey-bg', 'reduce-padding-top');
+
+//   const collapsibleRows = [];
+//   const rows = Array.from(block.children);
+//   const headerElement = rows.shift();
+
+//   rows.forEach((row) => {
+//     const cells = Array.from(row.children);
+//     const header = cells[0];
+//     const subHeader = cells[1];
+//     collapsibleRows.push({
+//       header: header.textContent.trim(),
+//       subHeader: subHeader.innerHTML,
+//     });
+//   });
+
+//   block.innerHTML = '';
+
+//   const table = createTag('table', { class: 'collapsible-table' });
+
+//   if (headerElement) {
+//     const thead = createTag('thead');
+//     const headerRow = createTag('tr');
+//     const headerCell = createTag('th', { colspan: '2' });
+//     headerCell.innerHTML = headerElement.innerHTML;
+//     headerRow.append(headerCell);
+//     thead.append(headerRow);
+//     table.append(thead);
+//   }
+
+//   collapsibleRows.forEach((row) => {
+//     const { header, subHeader } = row;
+
+//     const labelBody = createTag('tbody', { class: 'labels' });
+//     const contentBody = createTag('tbody', { class: 'collapsible-content hide' });
+
+//     const labelRow = createTag('tr');
+//     const labelCell = createTag('td', { colspan: '2' });
+//     const labelDiv = createTag('div', { class: 'header-icon-wrapper' });
+
+//     const labelHeader = createTag('div', { class: 'collapsible-row-header' });
+//     labelHeader.textContent = header;
+
+//     const iconElement = createTag('img', {
+//       src: '/express/icons/plus-heavy.svg',
+//       alt: 'toggle-icon',
+//       class: 'toggle-icon',
+//     });
+
+//     labelDiv.append(labelHeader, iconElement);
+//     labelCell.append(labelDiv);
+//     labelRow.append(labelCell);
+//     labelBody.append(labelRow);
+
+//     const subHeaderRow = createTag('tr');
+//     const subHeaderCell = createTag('td', { colspan: '2' });
+//     subHeaderCell.innerHTML = subHeader;
+//     subHeaderRow.append(subHeaderCell);
+//     contentBody.append(subHeaderRow);
+
+//     table.append(labelBody);
+//     table.append(contentBody);
+
+//     labelDiv.addEventListener('click', () => {
+//       const isCollapsed = contentBody.classList.contains('hide');
+//       contentBody.classList.toggle('hide', !isCollapsed);
+//       iconElement.src = isCollapsed
+//         ? '/express/icons/minus-heavy.svg'
+//         : '/express/icons/plus-heavy.svg';
+//     });
+//   });
+
+//   block.append(table);
+// }
+
 function buildTableLayout(block) {
   block.closest('.section.section-wrapper')?.classList.add('grey-bg', 'reduce-padding-top');
 
-  const collapsibleRows = [];
   const rows = Array.from(block.children);
-  const headerElement = rows.shift();
+  const headerText = rows.shift()?.innerText.trim();
 
+  if (headerText) {
+    const rowAccordionHeader = createTag('h2', { class: 'collapsible-row-accordion expandable header' });
+    rowAccordionHeader.textContent = headerText;
+  }
+
+  const collapsibleRows = [];
   rows.forEach((row) => {
     const cells = Array.from(row.children);
     const header = cells[0];
@@ -19,61 +100,66 @@ function buildTableLayout(block) {
 
   block.innerHTML = '';
 
-  const table = createTag('table', { class: 'collapsible-table' });
+  const visibleCount = 3;
+  let isExpanded = false;
 
-  if (headerElement) {
-    const thead = createTag('thead');
-    const headerRow = createTag('tr');
-    const headerCell = createTag('th', { colspan: '2' });
-    headerCell.innerHTML = headerElement.innerHTML;
-    headerRow.append(headerCell);
-    thead.append(headerRow);
-    table.append(thead);
-  }
-
-  collapsibleRows.forEach((row) => {
+  collapsibleRows.forEach((row, index) => {
     const { header, subHeader } = row;
 
-    const labelBody = createTag('tbody', { class: 'labels' });
-    const contentBody = createTag('tbody', { class: 'collapsible-content hide' });
+    // Create separate accordion for the header
+    const headerAccordion = createTag('div', { class: 'collapsible-row-accordion expandable' });
+    if (index >= visibleCount) {
+      headerAccordion.classList.add('collapsed');
+      headerAccordion.style.display = 'none';
+    }
+    block.append(headerAccordion);
 
-    const labelRow = createTag('tr');
-    const labelCell = createTag('td', { colspan: '2' });
-    const labelDiv = createTag('div', { class: 'header-icon-wrapper' });
+    // Create header div
+    const headerDiv = createTag('h3', { class: 'collapsible-row-header expandable' });
+    headerDiv.innerHTML = header;
+    headerAccordion.append(headerDiv);
 
-    const labelHeader = createTag('div', { class: 'collapsible-row-header' });
-    labelHeader.textContent = header;
+    // Create separate accordion for the sub-header
+    const subHeaderAccordion = createTag('div', { class: 'collapsible-row-accordion expandable' });
+    if (index >= visibleCount) {
+      subHeaderAccordion.classList.add('collapsed');
+      subHeaderAccordion.style.display = 'none';
+    }
+    block.append(subHeaderAccordion);
 
-    const iconElement = createTag('img', {
-      src: '/express/icons/plus-heavy.svg',
-      alt: 'toggle-icon',
-      class: 'toggle-icon',
-    });
+    // Create sub-header div
+    const subHeaderDiv = createTag('div', { class: 'collapsible-row-sub-header expandable' });
+    subHeaderDiv.innerHTML = subHeader;
+    subHeaderAccordion.append(subHeaderDiv);
 
-    labelDiv.append(labelHeader, iconElement);
-    labelCell.append(labelDiv);
-    labelRow.append(labelCell);
-    labelBody.append(labelRow);
-
-    const subHeaderRow = createTag('tr');
-    const subHeaderCell = createTag('td', { colspan: '2' });
-    subHeaderCell.innerHTML = subHeader;
-    subHeaderRow.append(subHeaderCell);
-    contentBody.append(subHeaderRow);
-
-    table.append(labelBody);
-    table.append(contentBody);
-
-    labelDiv.addEventListener('click', () => {
-      const isCollapsed = contentBody.classList.contains('hide');
-      contentBody.classList.toggle('hide', !isCollapsed);
-      iconElement.src = isCollapsed
-        ? '/express/icons/minus-heavy.svg'
-        : '/express/icons/plus-heavy.svg';
+    // Add click event to the headerDiv to toggle the subHeaderAccordion
+    headerDiv.addEventListener('click', () => {
+      const isCollapsed = subHeaderAccordion.classList.toggle('collapsed');
+      subHeaderAccordion.style.display = isCollapsed ? 'none' : 'flex';
     });
   });
 
-  block.append(table);
+  // Create the toggle button for showing more/less rows
+  const toggleButton = createTag('a', { class: 'collapsible-row-toggle-btn button' });
+  toggleButton.textContent = 'View more';
+  block.append(toggleButton);
+
+  toggleButton.addEventListener('click', () => {
+    const hiddenItems = block.querySelectorAll('.collapsible-row-accordion.expandable');
+    hiddenItems.forEach((item, index) => {
+      if (index >= visibleCount * 2) { // Adjust for both header and sub-header accordions
+        if (item.classList.contains('collapsed')) {
+          item.classList.remove('collapsed');
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+          item.classList.add('collapsed');
+        }
+      }
+    });
+    isExpanded = !isExpanded;
+    toggleButton.textContent = isExpanded ? 'View less' : 'View more';
+  });
 }
 
 function buildOriginalLayout(block) {
@@ -86,7 +172,7 @@ function buildOriginalLayout(block) {
     const subHeader = cells[1];
     collapsibleRows.push({
       header: header.textContent.trim(),
-      subHeader: subHeader.innerHTML,
+      subHeader: subHeader?.innerHTML,
     });
   });
 
@@ -139,7 +225,7 @@ function buildOriginalLayout(block) {
 }
 
 export default async function decorate(block) {
-  const isOneLineCollapseVariant = block.classList.contains('one-line-collapse');
+  const isOneLineCollapseVariant = block.classList.contains('expandable');
 
   if (isOneLineCollapseVariant) {
     buildTableLayout(block);

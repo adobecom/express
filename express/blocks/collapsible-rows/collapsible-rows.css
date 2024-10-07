@@ -61,57 +61,17 @@
     .section.section-wrapper.grey-bg {
         background-color: #E8E8E8;
     }
-  
-    .collapsible-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0 auto;
+    .collapsible-row-accordion.expandable {
+        height: 100%;
+        border-radius: 16px;
+        border: none;
     }
-  
-    .collapsible-table th,
-    .collapsible-table td {
-        padding: 16px;
-        text-align: left;
-    }
-  
-    .collapsible-table .labels {
-        background-color: #F8F8F8;
-        font-weight: 700;
-        cursor: pointer;
-        height: 72px;
-        display: block;
-        margin-bottom: 8px;
-    }
-  
-    .collapsible-table .labels .header-icon-wrapper {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-  
-    .collapsible-table .header-icon-wrapper .toggle-icon {
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-        margin-left: 10px;
-    }
-  
-    .collapsible-table .collapsible-content.hide {
-        display: none;
-    }
-  
-    .collapsible-table .collapsible-content {
-        background-color: #F8F8F8;
-        display: block;
-        margin-bottom: 8px;
-    }
-
-    .collapsible-rows.expandable .collapsible-row-header {
+    /* .collapsible-rows.expandable .collapsible-row-header {
         font-weight: 700;
     }
     .collapsible-rows.expandable .collapsible-row-sub-header {
         font-weight: 400;
-    }
+    } */
     .collapsible-row-header {
         font-size: 18px;
         font-weight: 400;
@@ -121,8 +81,7 @@
         font-weight: 700;
         line-height: 24px;
     }
-  
-    .collapsible-rows.one-line-collapse .collapsible-row-header {
+    /* .collapsible-rows.one-line-collapse .collapsible-row-header {
         font-size: 16px;
         font-weight: 700;
         line-height: 24px;
@@ -133,13 +92,13 @@
         font-weight: 400;
         line-height: 24px;
         display: none;
-    }
+    } */
   
-    .collapsible-rows.one-line-collapse .collapsible-row-accordion.expanded .collapsible-row-sub-header {
+    /* .collapsible-rows.one-line-collapse .collapsible-row-accordion.expanded .collapsible-row-sub-header {
         display: block;
-    }
+    } */
   
-    .collapsible-rows.one-line-collapse .collapsible-row-accordion {
+    /* .collapsible-rows.one-line-collapse .collapsible-row-accordion {
         border-left: none;
         background: #F8F8F8;
         padding: 16px;
@@ -147,14 +106,14 @@
         margin-bottom: 4px;
         transition: max-height 0.3s ease;
         overflow: hidden;
-    }
+    } */
   
-    .collapsible-rows.one-line-collapse h2 {
+    /* .collapsible-rows.one-line-collapse h2 {
         font-size: 32px;
         text-align: left;
         margin-top: 60px;
         margin-bottom: 30px;
-    }
+    } */
   
     .collapsible-rows.small .collapsible-row-accordion {
         height: 78px;
@@ -200,15 +159,15 @@
         font-weight: 600;
     }
   
-    .collapsible-rows.one-line-collapse .header-icon-wrapper {
+    /* .collapsible-rows.one-line-collapse .header-icon-wrapper {
         display: flex;
         justify-content: space-between;
         align-items: center;
         width: 100%;
         padding-bottom: 10px;
-    }
+    } */
   
-    .collapsible-rows.one-line-collapse .header-icon {
+    /* .collapsible-rows.one-line-collapse .header-icon {
         flex-grow: 1;
         font-size: 16px;
         font-weight: 700;
@@ -219,20 +178,11 @@
         height: 20px;
         cursor: pointer;
         margin-left: 10px;
-    }
+    } */
   
     .section.section-wrapper.reduce-padding-top {
         padding-top: 10px;
     }
-    .collapsible-table tbody:first-of-type tr:first-child td {
-        border-top-left-radius: 16px;
-        border-top-right-radius: 16px;
-    }
-      
-    .collapsible-table tbody:last-of-type tr:last-child td {
-        border-bottom-left-radius: 16px;
-        border-bottom-right-radius: 16px;
-    }   
   }
 
 @media (min-width: 900px) {
