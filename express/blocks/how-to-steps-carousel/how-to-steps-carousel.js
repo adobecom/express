@@ -75,8 +75,10 @@ function initRotation(howToWindow, howToDocument) {
   }
 }
 
-function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow) {
+function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, imageURL) {
   // join wrappers together
+
+  console.log("=== BUILDING ", section, block, howToDocument, rows, howToWindow, imageURL)
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
     if (i === 0) {
       // add block to first wrapper
@@ -117,13 +119,20 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
     const cells = Array.from(row.children);
 
     const h3 = createTag('h3');
-    h3.innerHTML = cells[0].textContent.trim();
+    h3.innerHTML = "Good! " + cells[0].textContent.trim();
     const text = createTag('div', { class: 'tip-text' });
     text.append(h3);
     text.append(cells[1]);
+    // text.append("<div>hello world</div>")
 
     row.innerHTML = '';
     row.append(text);
+
+    // row.append("<a href='#'>View</a>")
+    // row.append("<div>hello</div>")
+
+    const img = createTag('img', { class: 'video-thumbnail', src: imageURL });
+    row.append(img);
 
     tips.prepend(row);
 
@@ -262,14 +271,20 @@ export default async function decorate(block) {
   const howto = block;
   const rows = Array.from(howto.children);
   let picture;
-
+let imageURL;
   if (image) {
+
+    console.log("=== image ", image)
     const canvasWidth = 2000;
     const canvasHeight = 1072;
 
     const placeholderImgUrl = createTag('div');
     const placeholders = await fetchPlaceholders();
     const url = placeholders['how-to-steps-carousel-image-app'];
+    imageURL = url;
+
+    console.log("=== URL", url)
+
     const alt = block.querySelector('picture > img').getAttribute('alt');
     const eagerLoad = document.querySelector('.block') === block;
     const backgroundPic = createOptimizedPicture(url, 'template in express', eagerLoad);
@@ -306,10 +321,18 @@ export default async function decorate(block) {
           canvas.toBlob((blob) => {
             const blobUrl = URL.createObjectURL(blob);
             img.src = blobUrl;
+            console.log("=== blobUrl", blobUrl)
             backgroundPic.append(img);
             img.alt = alt;
             backgroundPicImg.remove();
             setPictureHeight(block, true);
+            const videoThumbnails = block.querySelectorAll(':scope img.video-thumbnail');
+            console.log("=== videoThumbnails", videoThumbnails)
+            // if (videoThumbnails) {
+            for (const img of videoThumbnails) {
+              img.src = blobUrl;
+            }
+            // }
           });
         });
       });
@@ -320,5 +343,5 @@ export default async function decorate(block) {
     parent.remove();
     section.prepend(picture);
   }
-  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow);
+  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, imageURL);
 }

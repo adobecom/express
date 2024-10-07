@@ -198,3 +198,10 @@ main .how-to-steps-carousel-container > picture > img {
     margin: 0 120px 0 20px;
   }
 }
+
+
+main .how-to-steps-carousel-container .video-thumbnail {
+  margin: 30px 0;
+  width: 133px;
+  height: 75px;
+}
