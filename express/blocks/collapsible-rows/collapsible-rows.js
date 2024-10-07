@@ -100,14 +100,13 @@ function buildTableLayout(block) {
 
   block.innerHTML = '';
 
-  const visibleCount = 3;
-  let isExpanded = false;
+  const visibleCount = 6;
 
   collapsibleRows.forEach((row, index) => {
     const { header, subHeader } = row;
 
-    // Create separate accordion for the header
-    const headerAccordion = createTag('div', { class: 'collapsible-row-accordion expandable' });
+    // Create separate accordion for the header with a unique class
+    const headerAccordion = createTag('div', { class: 'collapsible-row-accordion expandable header-accordion' });
     if (index >= visibleCount) {
       headerAccordion.classList.add('collapsed');
       headerAccordion.style.display = 'none';
@@ -119,8 +118,8 @@ function buildTableLayout(block) {
     headerDiv.innerHTML = header;
     headerAccordion.append(headerDiv);
 
-    // Create separate accordion for the sub-header
-    const subHeaderAccordion = createTag('div', { class: 'collapsible-row-accordion expandable' });
+    // Create separate accordion for the sub-header with a unique class
+    const subHeaderAccordion = createTag('div', { class: 'collapsible-row-accordion expandable sub-header-accordion' });
     if (index >= visibleCount) {
       subHeaderAccordion.classList.add('collapsed');
       subHeaderAccordion.style.display = 'none';
@@ -137,28 +136,6 @@ function buildTableLayout(block) {
       const isCollapsed = subHeaderAccordion.classList.toggle('collapsed');
       subHeaderAccordion.style.display = isCollapsed ? 'none' : 'flex';
     });
-  });
-
-  // Create the toggle button for showing more/less rows
-  const toggleButton = createTag('a', { class: 'collapsible-row-toggle-btn button' });
-  toggleButton.textContent = 'View more';
-  block.append(toggleButton);
-
-  toggleButton.addEventListener('click', () => {
-    const hiddenItems = block.querySelectorAll('.collapsible-row-accordion.expandable');
-    hiddenItems.forEach((item, index) => {
-      if (index >= visibleCount * 2) { // Adjust for both header and sub-header accordions
-        if (item.classList.contains('collapsed')) {
-          item.classList.remove('collapsed');
-          item.style.display = 'flex';
-        } else {
-          item.style.display = 'none';
-          item.classList.add('collapsed');
-        }
-      }
-    });
-    isExpanded = !isExpanded;
-    toggleButton.textContent = isExpanded ? 'View less' : 'View more';
   });
 }
 
