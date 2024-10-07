@@ -12,8 +12,8 @@
     "build:htm-preact": "microbundle ./build/htm-preact.js -o ./express/scripts/libs/htm-preact.js -f modern --no-sourcemap --target web; mv ./express/scripts/libs/htm-preact.modern.mjs ./express/scripts/libs/htm-preact.js",
     "build:preact-debug": "microbundle ./build/htm-preact-debug.js -o ./express/scripts/libs/htm-preact-debug.js -f modern --no-sourcemap --target web; mv ./express/scripts/libs/htm-preact-debug.modern.mjs ./express/scripts/libs/htm-preact-debug.js"
   },
-  "engines" : { 
-    "node" : ">=17.0.0"
+  "engines": {
+    "node": ">=17.0.0"
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,7 @@
     "@preact/signals": "^1.2.1",
     "@web/dev-server-import-maps": "^0.1.1",
     "@web/test-runner": "^0.19.0",
-    "@web/test-runner-commands": "^0.7.0",
+    "@web/test-runner-commands": "^0.9.0",
     "chai": "4.3.4",
     "eslint": "7.15.0",
     "eslint-plugin-header": "3.1.0",
@@ -44,7 +44,7 @@
     "microbundle": "^0.15.1",
     "preact": "^10.18.2",
     "puppeteer": "23.5.1",
-    "shelljs": "0.8.4",
+    "shelljs": "^0.8.5",
     "sinon": "^15.1.0",
     "uglify-js": "^3.17.4"
   }
