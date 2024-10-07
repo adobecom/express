@@ -79,9 +79,16 @@
         margin-bottom: 6px;
     }
     .collapsible-row-header.expandable {
-        cursor: pointer;
         font-size: 16px;
         font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+    .collapsible-row-accordion.expandable .toggle-icon {
+        width: 12px;
+        height: 12px;
     }
     .collapsible-row-sub-header.expandable {
         font-size: 16px;
