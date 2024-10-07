@@ -1,7 +1,7 @@
 import { createTag } from '../../scripts/utils.js';
 
 function buildTableLayout(block) {
-  block.closest('.section.section-wrapper')?.classList.add('grey-bg', 'collapsible-section-padding');
+  block.closest('.section.section-wrapper')?.classList.add('collapsible-rows-grey-bg', 'collapsible-section-padding');
 
   const rows = Array.from(block.children);
   const headerText = rows.shift()?.innerText.trim();

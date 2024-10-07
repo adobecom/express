@@ -81,6 +81,7 @@
     align-items: center;
     cursor: pointer;
     color: #242424;
+    padding-left: 6px;
 }
 .collapsible-row-accordion.expandable .toggle-icon {
     width: 12px;
@@ -91,6 +92,7 @@
     font-weight: 400;
     margin-top: 0;
     padding-bottom: 10px;
+    padding-left: 6px;
 }
 .collapsible-row-accordion.title {
     font-size: 32px;
@@ -102,11 +104,15 @@
     background-color: #E8E8E8;
     text-align: left;
 }
+.section.section-wrapper.collapsible-rows-grey-bg {
+    background-color: #E8E8E8;
+}
+.section.section-wrapper.collapsible-section-padding {
+    padding-top: 10px;
+    padding-bottom: 50px;
+}
 
 @media (min-width: 400px) {
-    .section.section-wrapper.grey-bg {
-        background-color: #E8E8E8;
-    }
     .collapsible-row-header {
         font-size: 18px;
         font-weight: 400;
@@ -155,10 +161,6 @@
         background-color: var(--color-info-accent);
         border-color: var(--color-info-accent);
         font-weight: 600;
-    }
-    .section.section-wrapper.collapsible-section-padding {
-        padding-top: 10px;
-        padding-bottom: 50px;
     }
   }
 
