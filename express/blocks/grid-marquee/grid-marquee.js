@@ -7,6 +7,9 @@ import {
 } from '../../scripts/utils.js';
 
 let currDrawer = null;
+const desktopMQ = window.matchMedia('(min-width: 1200px)');
+const reduceMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+
 function hideDrawer() {
   if (!currDrawer) return;
   currDrawer.closest('.card').setAttribute('aria-expanded', false);
@@ -19,7 +22,7 @@ function showDrawer(drawer) {
   drawer.closest('.card').setAttribute('aria-expanded', true);
   drawer.setAttribute('aria-hidden', false);
   const video = drawer.querySelector('video');
-  if (video) {
+  if (video && !reduceMotionMQ.matches) {
     video.muted = true;
     const playPromise = video.play();
     if (playPromise !== undefined) {
@@ -90,7 +93,7 @@ function createDrawer(card, title, panels) {
     tabHead.remove();
     panel.setAttribute('aria-labelledby', `tab-${id}`);
     panel.id = `panel-${id}`;
-    i > 0 && (panel.setAttribute('aria-hidden', true));
+    panel.setAttribute('aria-hidden', i > 0);
     const tab = createTag('button', {
       role: 'tab',
       'aria-selected': i === 0,
@@ -113,7 +116,7 @@ function createDrawer(card, title, panels) {
 
   return drawer;
 }
-const mediaQuery = window.matchMedia('(min-width: 1200px)');
+
 let isTouch;
 function convertToCard(item) {
   const title = item.querySelector('strong');
@@ -217,7 +220,7 @@ export default function init(el) {
   }
   el.classList.contains('ratings') && foreground.append(createRatings());
   el.append(foreground);
-  mediaQuery.addEventListener('change', () => {
+  desktopMQ.addEventListener('change', () => {
     isTouch = false;
     hideDrawer();
   });
