@@ -213,8 +213,9 @@ main .section>.simplified-pricing-cards-wrapper {
   font-size: 18px;
 }
 
-.simplified-pricing-cards .pricing-base-price.pricing-price.long-price > strong, .pricing-price.long-price>strong {
-  font-size: 18px;
+.simplified-pricing-cards .pricing-base-price.long-price > strong, 
+.simplified-pricing-cards .pricing-price.long-price>strong {
+  font-size: 24px;
 }
 
 

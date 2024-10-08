@@ -102,7 +102,7 @@ function handleRawPrice(price, basePrice, response) {
   } else {
     price.classList.remove('price-active');
   }
-  if (response.price.length > 7) {
+  if (response.price.length > 6) {
     price.classList.add('long-price');
     basePrice.classList.add('long-price');
   }
