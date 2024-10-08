@@ -194,9 +194,7 @@ function decorateCardBorder(card, source) {
       card.classList.add('promo-text');
     }
   } else {
-    [
-      source.style.display = 'none',
-    ];
+      source.style.display = 'none';
   }
 }
 
