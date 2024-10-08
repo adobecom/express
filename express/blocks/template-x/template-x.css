@@ -2501,6 +2501,9 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         width: 648px;
         height: auto;
     } 
+    .template-x.tight.one-template .carousel-platform.right-fader {
+        height: 400px;
+    }
     .template-x.one-template.tight .template-x-inner-wrapper,
     .template-x.one-template.tight .carousel-platform,
     .template-x.one-template.tight .carousel-platform .template.carousel-element {
