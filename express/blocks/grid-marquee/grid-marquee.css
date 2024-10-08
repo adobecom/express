@@ -1,3 +1,11 @@
+.grid-marquee {
+  --m-img-w: 152px;
+  --m-img-h: 103px;
+  --t-img-w: 183px;
+  --t-img-h: 152px;
+  --d-img-w: 244px;
+  --d-img-h: 183px;
+}
 .grid-marquee.block {
   max-width: initial;
 }
@@ -107,8 +115,8 @@
 
 .grid-marquee .face img {
   border-radius: 8px;
-  width: 152px;
-  height: 103px;
+  width: var(--m-img-w);
+  height: var(--m-img-h);
   object-fit: cover;
   object-position: center;
 }
@@ -268,8 +276,8 @@
   }
 
   .grid-marquee .face img {
-    width: 183px;
-    height: 152px;
+    width: var(--t-img-w);
+    height: var(--t-img-h);
   }
 }
 
@@ -295,8 +303,8 @@
   }
 
   .grid-marquee .face img {
-    width: 244px;
-    height: 183px;
+    width: var(--d-img-w);
+    height: var(--d-img-h);
   }
 
   .grid-marquee .face {
@@ -329,6 +337,11 @@
   .grid-marquee .drawer .video-container {
     border-top: 0;
     padding: 0 0 12px 0;
+  }
+
+  .grid-marquee .drawer video {
+    width: var(--d-img-w);
+    height: var(--d-img-h);
   }
 
   .grid-marquee .drawer div[role='tablist'] {
