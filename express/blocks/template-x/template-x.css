@@ -2494,6 +2494,27 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     }
     .template-x.tight {
         width: 648px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .template-x.tight.one-template .image-wrapper img {
+        width: 648px;
+        height: auto;
+    } 
+    .template-x.one-template.tight .template-x-inner-wrapper,
+    .template-x.one-template.tight .carousel-platform,
+    .template-x.one-template.tight .carousel-platform .template.carousel-element {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .template-x.two-templates .template.appear {
+        width: 316px;
+    }
+    .template-x.two-templates .template-x-inner-wrapper {
+        justify-content: space-between;
+    }
+    .template-x.four-templates .template.carousel-element {
+        width: 128px;
     }
 }
 
