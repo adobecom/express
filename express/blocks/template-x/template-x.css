@@ -2517,6 +2517,9 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         justify-content: space-between;
     }
     .template-x.four-templates .template.carousel-element {
+        width: 200px;
+    }
+    .template-x.four-templates .template.carousel-element {
         width: 128px;
     }
 }
