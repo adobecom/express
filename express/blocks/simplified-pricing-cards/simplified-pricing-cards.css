@@ -196,6 +196,7 @@ main .section>.simplified-pricing-cards-wrapper {
  
 }
 
+.simplified-pricing-cards .pricing-base-price>strong , 
 .simplified-pricing-cards .pricing-price>strong {
   font-size: var(--header-size);
   font-weight: 900;
