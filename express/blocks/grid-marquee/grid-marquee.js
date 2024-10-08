@@ -217,6 +217,8 @@ export default function init(el) {
   }
   el.classList.contains('ratings') && foreground.append(createRatings());
   el.append(foreground);
-  mediaQuery.addEventListener('change', hideDrawer);
+  mediaQuery.addEventListener('change', () => {
+    isTouch = false;
+    hideDrawer();
+  });
 }
-// delay dom for tablet/desktop?

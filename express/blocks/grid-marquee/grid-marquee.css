@@ -12,7 +12,7 @@
 .grid-marquee .express-logo {
   width: initial;
   height: 30px;
-  padding-bottom: 1rem;
+  padding: 1rem 0 1rem;
 }
 
 .grid-marquee h1 {
@@ -133,7 +133,7 @@
   bottom: 0;
   width: 100%;
   max-height: calc(100vh - 64px);
-  overflow-y: scroll;
+  overflow-y: auto;
   box-sizing: border-box;
   background-color: #fff;
   transition: bottom .4s ease, visibility .4s;
@@ -282,6 +282,9 @@
 }
 
 @media screen and (min-width: 1200px) {
+  .grid-marquee .express-logo {
+    padding-top: 3rem;
+  }
   .grid-marquee .background img {
     max-width: 1800px;
   }
@@ -355,6 +358,7 @@
   .grid-marquee .drawer .ctas-container a {
     border-top: none;
     padding: 0;
+    font-size: var(--body-font-size-l);
   }
 
   .grid-marquee .card {
