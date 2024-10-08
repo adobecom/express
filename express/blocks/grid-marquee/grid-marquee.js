@@ -6,16 +6,16 @@ import {
   getMobileOperatingSystem,
 } from '../../scripts/utils.js';
 
-let activeDrawer = null;
-function deactivateDrawer() {
-  if (!activeDrawer) return;
-  activeDrawer.closest('.card').setAttribute('aria-expanded', false);
-  activeDrawer.setAttribute('aria-hidden', true);
-  activeDrawer.querySelector('video')?.pause();
-  activeDrawer = null;
+let currDrawer = null;
+function hideDrawer() {
+  if (!currDrawer) return;
+  currDrawer.closest('.card').setAttribute('aria-expanded', false);
+  currDrawer.setAttribute('aria-hidden', true);
+  currDrawer.querySelector('video')?.pause();
+  currDrawer = null;
 }
-function activateDrawer(drawer) {
-  deactivateDrawer();
+function showDrawer(drawer) {
+  hideDrawer();
   drawer.closest('.card').setAttribute('aria-expanded', true);
   drawer.setAttribute('aria-hidden', false);
   const video = drawer.querySelector('video');
@@ -28,12 +28,12 @@ function activateDrawer(drawer) {
       });
     }
   }
-  activeDrawer = drawer;
+  currDrawer = drawer;
 }
 document.addEventListener('click', (e) => {
-  if (!activeDrawer) return;
-  if (!activeDrawer.closest('.card').contains(e.target)) {
-    deactivateDrawer();
+  if (!currDrawer) return;
+  if (!currDrawer.closest('.card').contains(e.target)) {
+    hideDrawer();
   }
 });
 
@@ -44,10 +44,9 @@ function createDrawer(card, title, panels) {
   const closeButton = createTag('button', { 'aria-label': 'close' }, getIconElement('close-black'));
   closeButton.addEventListener('click', (e) => {
     e.stopPropagation();
-    deactivateDrawer();
+    hideDrawer();
   });
   titleRow.append(createTag('strong', { class: 'drawer-title' }, titleText), closeButton);
-  drawer.append(titleRow);
   const videoAnchor = card.querySelector('a');
   videoAnchor.remove();
   const video = createTag('video', {
@@ -60,8 +59,7 @@ function createDrawer(card, title, panels) {
   }, `<source src="${videoAnchor.href}" type="video/mp4">`);
   const videoWrapper = createTag('div', { class: 'video-container' });
   videoWrapper.append(video);
-  drawer.append(videoWrapper);
-  drawer.append(...panels);
+  drawer.append(titleRow, videoWrapper, ...panels);
 
   panels.forEach((panel) => {
     panel.classList.add('ctas-container');
@@ -116,6 +114,7 @@ function createDrawer(card, title, panels) {
   return drawer;
 }
 const mediaQuery = window.matchMedia('(min-width: 1200px)');
+let isTouch;
 function convertToCard(item) {
   const title = item.querySelector('strong');
   const card = createTag('button', {
@@ -131,23 +130,27 @@ function convertToCard(item) {
   face.classList.add('face');
   card.append(drawer);
   card.addEventListener('click', (e) => {
-    if (activeDrawer) return;
+    if (currDrawer) return;
     e.stopPropagation();
-    activateDrawer(drawer);
+    showDrawer(drawer);
+  });
+  card.addEventListener('touchstart', () => {
+    isTouch = true;
   });
   card.addEventListener('mouseenter', () => {
+    if (isTouch) return; // touchstart->mouseenter->click
     const firstElem = drawer.querySelector('button, a');
-    activateDrawer(drawer);
+    showDrawer(drawer);
     firstElem?.focus();
   });
   card.addEventListener('focusin', (e) => {
     if (card.contains(e.relatedTarget)) return;
-    activateDrawer(drawer);
+    showDrawer(drawer);
   });
-  card.addEventListener('mouseleave', deactivateDrawer);
+  card.addEventListener('mouseleave', hideDrawer);
   card.addEventListener('focusout', (e) => {
     if (card.contains(e.relatedTarget)) return;
-    deactivateDrawer();
+    hideDrawer();
   });
   return card;
 }
@@ -212,8 +215,8 @@ export default function init(el) {
     logo.classList.add('express-logo');
     foreground.prepend(logo);
   }
-  if (el.classList.contains('ratings')) foreground.append(createRatings());
+  el.classList.contains('ratings') && foreground.append(createRatings());
   el.append(foreground);
-  mediaQuery.addEventListener('change', deactivateDrawer);
+  mediaQuery.addEventListener('change', hideDrawer);
 }
 // delay dom for tablet/desktop?

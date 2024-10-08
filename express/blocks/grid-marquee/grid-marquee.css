@@ -128,13 +128,14 @@
   overflow-y: scroll;
   box-sizing: border-box;
   background-color: #fff;
-  transition: bottom .4s ease;
+  transition: bottom .4s ease, visibility .4s;
   box-shadow: 0px -62px 80px 0px #0000002B;
 }
 
 .grid-marquee .drawer[aria-hidden='true'] {
-  visibility: hidden;
   bottom: -100%;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .grid-marquee .drawer .title-row {
@@ -304,7 +305,7 @@
 
   .grid-marquee .drawer {
     visibility: visible;
-    opacity: 100;
+    opacity: 1;
     transition: opacity .4s ease, visibility .4s;
     border-radius: 12px;
     padding-bottom: 16px;
@@ -313,6 +314,12 @@
     top: 0;
     bottom: initial;
     box-shadow: 0px 0px 12px 0px #00000029;
+  }
+
+  .grid-marquee .drawer[aria-hidden='true'] {
+    opacity: 0;
+    visibility: hidden;
+    bottom: initial;
   }
 
   .grid-marquee .drawer .title-row {
@@ -335,10 +342,6 @@
   .grid-marquee .drawer .ctas-container a {
     border-top: none;
     padding: 0;
-  }
-
-  .grid-marquee .drawer[aria-hidden='true'] {
-    opacity: 0;
   }
 
   .grid-marquee .card {
