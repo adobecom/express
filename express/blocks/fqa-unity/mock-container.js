@@ -1,45 +1,23 @@
 import {
   html,
   render,
-  useRef,
   signal,
 } from '../../scripts/libs/htm-preact.js';
 import { createTag, loadStyle } from '../../scripts/utils.js';
 
-const MAX_HEIGHT = 600;
-const MAX_WIDTH = 800;
-
 export const data = signal({ src: null, loading: false });
 
 function Canvas() {
-  const canvas = useRef(null);
   if (!data.value.src) {
     return html`
-      <canvas ref=${canvas} height=${MAX_HEIGHT} width=${MAX_WIDTH}>
+      <div>
         Image Not Provided
-      </canvas>`;
+      </div>`;
   }
-  const img = new Image();
-  img.src = data.value.src;
-  img.onload = () => {
-    const ctx = canvas.current.getContext('2d');
-    const { height, width } = img;
-    const ratio = height / width;
-    if (ratio > MAX_HEIGHT / MAX_WIDTH) {
-      const adjustedWidth = width * (MAX_HEIGHT / height);
-      ctx.drawImage(img, (MAX_WIDTH - adjustedWidth) / 2, 0, adjustedWidth, MAX_HEIGHT);
-    } else {
-      const adjustedHeight = height * (MAX_WIDTH / width);
-      ctx.drawImage(img, 0, (MAX_HEIGHT - adjustedHeight) / 2, MAX_WIDTH, adjustedHeight);
-    }
-  };
-  const onContextMenu = (e) => {
-    e.preventDefault();
-  };
   return html`
-    <canvas ref=${canvas} height=${MAX_HEIGHT} width=${MAX_WIDTH} oncontextmenu=${onContextMenu}>
-      Image with its background removed
-    </canvas>`;
+    <div class='canvas'>
+      <img src='${data.value.src}' />
+    </div>`;
 }
 
 function Loader() {

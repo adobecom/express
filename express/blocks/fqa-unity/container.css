@@ -21,9 +21,18 @@
   gap: 40px;
 }
 
-.qa-workspace canvas {
+/* .qa-workspace canvas {
   display: block;
   background-color: #ddd;
+} */
+
+.qa-workspace .canvas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ddd;
+  height: 600px;
+  width: 800px;
 }
 
 .qa-workspace .interactions {
