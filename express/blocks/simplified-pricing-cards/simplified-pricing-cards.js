@@ -33,12 +33,14 @@ function equalizeHeights(el) {
     headers.forEach((placeholder) => {
       placeholder.style.height = 'unset';
     });
+    if (window.screen.width < 1200) return
     headers.forEach((header) => {
       if (header.checkVisibility()) {
         const height = getHeightWithoutPadding(header);
         maxHeight = Math.max(maxHeight, height);
       }
     });
+  
     headers.forEach((placeholder) => {
       if (maxHeight > 0) {
         placeholder.style.height = `${maxHeight}px`;
@@ -233,8 +235,9 @@ export default async function init(el) {
   el.appendChild(rows[rows.length - 1]);
 
   const observer = new IntersectionObserver((entries) => {
+    console.log(window.screen.width > 1200,  window.screen.width)
     entries.forEach((entry) => {
-      if (entry.isIntersecting && window.screen.width > 768) {
+      if (entry.isIntersecting) {
         equalizeHeights(el);
         observer.unobserve(entry.target);
         adjustElementPosition();
