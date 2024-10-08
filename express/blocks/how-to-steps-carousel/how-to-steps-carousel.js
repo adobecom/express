@@ -7,8 +7,10 @@ import {
 } from '../../scripts/utils.js';
 
 import {
+  playInlineVideo,
   displayVideoModal,
   hideVideoModal,
+
 } from '../shared/video.js';
 
 let rotationInterval;
@@ -80,7 +82,7 @@ function initRotation(howToWindow, howToDocument) {
   }
 }
 
-function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, imageURL) {
+function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, imageURL, imageContainer) {
   // join wrappers together
 
   console.log("=== BUILDING ", section, block, howToDocument, rows, howToWindow, imageURL)
@@ -144,12 +146,24 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
 
     videoLink.append(img);
 
-    row.append(videoIntro);
-    row.append(videoLink);
+    // row.append(videoIntro);
+    // row.append(videoLink);
 
-    videoLink.addEventListener('click', (ev) => {
+    imageContainer.addEventListener('click-no', (ev) => {
       ev.preventDefault();
-      displayVideoModal('https://www.youtube.com/watch?v=9jWlqX46apI', 'Adobe Express Poster How To');
+      // displayVideoModal('https://www.youtube.com/watch?v=9jWlqX46apI', 'Adobe Express Poster How To');
+
+
+      const primaryUrl = 'https://www.youtube.com/watch?v=9jWlqX46apI';
+      const yturl = new URL(primaryUrl);
+      let vid = yturl.searchParams.get('v');
+      if (!vid) {
+        vid = yturl.pathname.substr(1);
+      }
+      const vidUrls = [`https://www.youtube.com/embed/${vid}?feature=oembed&autoplay=1`];
+
+
+      playInlineVideo(imageContainer, vidUrls, 'youtube', 'some title')
     })
 
     tips.prepend(row);
@@ -283,13 +297,16 @@ export default async function decorate(block) {
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
   const image = block.classList.contains('image');
+  const isVideoVariant = block.classList.contains('video');
 
+  console.log("=== isVideoVariant", isVideoVariant)
   // move first image of container outside of div for styling
   const section = block.closest('.section');
   const howto = block;
   const rows = Array.from(howto.children);
   let picture;
 let imageURL;
+let imageContainer;
   if (image) {
 
     console.log("=== image ", image)
@@ -308,6 +325,8 @@ let imageURL;
     const backgroundPic = createOptimizedPicture(url, 'template in express', eagerLoad);
     const backgroundPicImg = backgroundPic.querySelector('img', { alt: 'template in express' });
 
+    imageContainer = backgroundPic;
+
     if (placeholderImgUrl) {
       backgroundPic.appendChild(backgroundPicImg);
       placeholderImgUrl.remove();
@@ -325,7 +344,21 @@ let imageURL;
     picture = backgroundPic;
     section.prepend(picture);
 
-    loadImage(backgroundPicImg).then(() => {
+    if (isVideoVariant) {
+      const primaryUrl = 'https://www.youtube.com/watch?v=9jWlqX46apI';
+      const yturl = new URL(primaryUrl);
+      let vid = yturl.searchParams.get('v');
+      if (!vid) {
+        vid = yturl.pathname.substr(1);
+      }
+      const vidUrls = [`https://www.youtube.com/embed/${vid}?feature=oembed&autoplay=1`];
+
+
+      playInlineVideo(imageContainer, vidUrls, 'youtube', 'some title')
+    } else {
+
+
+     loadImage(backgroundPicImg).then(() => {
       backgroundPicImg.width = canvasWidth;
       const canvas = createTag('canvas', { width: canvasWidth, height: canvasHeight });
       const ctx = canvas.getContext('2d');
@@ -338,6 +371,9 @@ let imageURL;
           const img = createTag('img');
           canvas.toBlob((blob) => {
             const blobUrl = URL.createObjectURL(blob);
+
+            console.log("=== img inside of loadImage handler is, and backgroundPic", backgroundPic, backgroundPic)
+
             img.src = blobUrl;
             console.log("=== blobUrl", blobUrl)
             backgroundPic.append(img);
@@ -355,11 +391,13 @@ let imageURL;
         });
       });
     });
+  }
+
   } else {
     picture = section.querySelector('picture');
     const parent = picture.parentElement;
     parent.remove();
     section.prepend(picture);
   }
-  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, imageURL);
+  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, imageURL, imageContainer);
 }
