@@ -102,11 +102,6 @@ function handleRawPrice(price, basePrice, response) {
   } else {
     price.classList.remove('price-active');
   }
-  console.log(response.price, response.price.length);
-  if (response.price.length > 8) {
-    price.classList.add('long-price');
-    basePrice.classList.add('long-price');
-  }
 }
 
 async function createPricingSection(
@@ -192,10 +187,6 @@ function decorateCardBorder(card, source) {
       source.classList.add('promo-eyebrow-text');
       card.classList.add('promo-text');
     }
-  } else {
-    [
-      source.style.display = 'none',
-    ];
   }
 }
 
