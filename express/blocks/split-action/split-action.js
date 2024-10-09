@@ -69,7 +69,7 @@ export default function decorate(block) {
   const notchPill = createTag('div', { class: 'notch-pill' });
   const blockWrapper = block.parentNode;
 
-  let hrefHolder = '';
+  let hrefHolder;
 
   if (section) {
     section.classList.add('hidden');
@@ -99,6 +99,11 @@ export default function decorate(block) {
       div.remove();
     }
   });
+
+  if (!hrefHolder) {
+    block.remove();
+    return;
+  }
 
   notch.append(notchPill);
   blockBackground.append(underlay);
