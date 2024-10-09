@@ -6,13 +6,6 @@ import {
   fetchPlaceholders,
 } from '../../scripts/utils.js';
 
-// import {
-//   playInlineVideo,
-//   displayVideoModal,
-//   hideVideoModal,
-
-// } from '../shared/video.js';
-
 import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
 
 
@@ -139,37 +132,6 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
 
     row.innerHTML = '';
     row.append(text);
-
-    // row.append("<a href='#'>View</a>")
-    // row.append("<div>hello</div>")
-
-    // const videoIntro = createTag('div', { class: 'video-intro'});
-    // videoIntro.innerHTML = "Watch it in video:"
-    // const videoLink = createTag('a', { class: 'video-link', href: '#' });
-
-    // const img = createTag('img', { class: 'video-thumbnail', src: imageURL });
-
-    // videoLink.append(img);
-
-    // row.append(videoIntro);
-    // row.append(videoLink);
-
-    // imageContainer.addEventListener('click-no', (ev) => {
-    //   ev.preventDefault();
-    //   // displayVideoModal('https://www.youtube.com/watch?v=9jWlqX46apI', 'Adobe Express Poster How To');
-
-
-    //   const primaryUrl = 'https://www.youtube.com/watch?v=9jWlqX46apI';
-    //   const yturl = new URL(primaryUrl);
-    //   let vid = yturl.searchParams.get('v');
-    //   if (!vid) {
-    //     vid = yturl.pathname.substr(1);
-    //   }
-    //   const vidUrls = [`https://www.youtube.com/embed/${vid}?feature=oembed&autoplay=1`];
-
-
-    //   playInlineVideo(imageContainer, vidUrls, 'youtube', 'some title')
-    // })
 
     tips.prepend(row);
 
@@ -318,17 +280,6 @@ export default async function decorate(block) {
 
 
 if (isVideoVariant) {
-  // const primaryUrl = 'https://www.youtube.com/watch?v=9jWlqX46apI';
-  // const yturl = new URL(primaryUrl);
-  // let vid = yturl.searchParams.get('v');
-  // if (!vid) {
-  //   vid = yturl.pathname.substr(1);
-  // }
-  // const vidUrls = [`https://www.youtube.com/embed/${vid}?feature=oembed&autoplay=1`];
-
-
-  // playInlineVideo(imageContainer, vidUrls, 'youtube', 'some title')
-
 
   console.log("=== rows", JSON.stringify(rows))
   const videoData = rows.shift();
