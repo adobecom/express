@@ -1441,6 +1441,7 @@ export function loadIms() {
       autoValidateToken: true,
       environment: env.ims,
       useLocalStorage: false,
+      api_parameters: { check_token: { guest_allowed: true } },
       onReady: () => {
         resolve();
         clearTimeout(timeout);
