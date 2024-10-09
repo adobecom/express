@@ -231,7 +231,7 @@ function layerTemplateImage(canvas, ctx, templateImg) {
           if (prevWidth <= maxWidth && change.contentRect.height <= maxHeight) {
             ctx.save();
             roundedImage(centerX - (templateImg.width / 2), centerY - (templateImg.height / 2),
-            templateImg.width, templateImg.height, 7, ctx);
+              templateImg.width, templateImg.height, 7, ctx);
             ctx.clip();
             ctx.drawImage(templateImg, 0, 0, templateImg.naturalWidth,
               templateImg.naturalHeight, centerX - (templateImg.width / 2),
