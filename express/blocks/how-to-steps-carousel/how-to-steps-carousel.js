@@ -314,8 +314,6 @@ if (isVideoVariant) {
     const backgroundPic = createOptimizedPicture(url, 'template in express', eagerLoad);
     const backgroundPicImg = backgroundPic.querySelector('img', { alt: 'template in express' });
 
-    imageContainer = backgroundPic;
-
     if (placeholderImgUrl) {
       backgroundPic.appendChild(backgroundPicImg);
       placeholderImgUrl.remove();
