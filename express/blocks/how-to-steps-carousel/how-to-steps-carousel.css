@@ -222,3 +222,19 @@ main .how-to-steps-carousel-container .youtube iframe {
   width: 600px;
   height: 338px;
 }
+
+main .how-to-steps-carousel-container lite-youtube,
+main .how-to-steps-carousel-container lite-youtube iframe {
+
+  width: 600px;
+  height: 338px;
+}
+
+main .how-to-steps-carousel-container lite-youtube {
+  margin-left: 80px;
+
+}
+
+main div:has(> .how-to-steps-carousel.video) {
+  width: 30%;
+}

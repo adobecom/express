@@ -13,6 +13,9 @@ import {
 
 } from '../shared/video.js';
 
+import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
+
+
 let rotationInterval;
 let fixedImageSize = false;
 
@@ -84,7 +87,7 @@ function initRotation(howToWindow, howToDocument, isVideoVariant) {
   }
 }
 
-function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, imageURL, imageContainer, isVideoVariant) {
+function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, imageURL, isVideoVariant) {
   // join wrappers together
 
   console.log("=== BUILDING ", section, block, howToDocument, rows, howToWindow, imageURL)
@@ -151,22 +154,22 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
     // row.append(videoIntro);
     // row.append(videoLink);
 
-    imageContainer.addEventListener('click-no', (ev) => {
-      ev.preventDefault();
-      // displayVideoModal('https://www.youtube.com/watch?v=9jWlqX46apI', 'Adobe Express Poster How To');
+    // imageContainer.addEventListener('click-no', (ev) => {
+    //   ev.preventDefault();
+    //   // displayVideoModal('https://www.youtube.com/watch?v=9jWlqX46apI', 'Adobe Express Poster How To');
 
 
-      const primaryUrl = 'https://www.youtube.com/watch?v=9jWlqX46apI';
-      const yturl = new URL(primaryUrl);
-      let vid = yturl.searchParams.get('v');
-      if (!vid) {
-        vid = yturl.pathname.substr(1);
-      }
-      const vidUrls = [`https://www.youtube.com/embed/${vid}?feature=oembed&autoplay=1`];
+    //   const primaryUrl = 'https://www.youtube.com/watch?v=9jWlqX46apI';
+    //   const yturl = new URL(primaryUrl);
+    //   let vid = yturl.searchParams.get('v');
+    //   if (!vid) {
+    //     vid = yturl.pathname.substr(1);
+    //   }
+    //   const vidUrls = [`https://www.youtube.com/embed/${vid}?feature=oembed&autoplay=1`];
 
 
-      playInlineVideo(imageContainer, vidUrls, 'youtube', 'some title')
-    })
+    //   playInlineVideo(imageContainer, vidUrls, 'youtube', 'some title')
+    // })
 
     tips.prepend(row);
 
@@ -298,6 +301,8 @@ function layerTemplateImage(canvas, ctx, templateImg) {
 export default async function decorate(block) {
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
+
+  console.log("=== howToDocument", howToDocument, block.ownerDocument.defaultView)
   const image = block.classList.contains('image');
   const isVideoVariant = block.classList.contains('video');
 
@@ -308,10 +313,42 @@ export default async function decorate(block) {
   const rows = Array.from(howto.children);
   let picture;
 let imageURL;
-let imageContainer;
-  if (image) {
+let mediaContainer;
 
-    console.log("=== image ", image)
+
+
+if (isVideoVariant) {
+  // const primaryUrl = 'https://www.youtube.com/watch?v=9jWlqX46apI';
+  // const yturl = new URL(primaryUrl);
+  // let vid = yturl.searchParams.get('v');
+  // if (!vid) {
+  //   vid = yturl.pathname.substr(1);
+  // }
+  // const vidUrls = [`https://www.youtube.com/embed/${vid}?feature=oembed&autoplay=1`];
+
+
+  // playInlineVideo(imageContainer, vidUrls, 'youtube', 'some title')
+
+  const videoData = rows.shift();
+
+  console.log("=== videoData", videoData)
+
+  const videoLink = videoData.querySelector('a')
+
+  console.log("=== videoLink", videoLink)
+
+  const youtubeURL = videoLink.href;
+
+  // 'https://www.youtube.com/watch?v=9jWlqX46apI';
+
+  const url = new URL(youtubeURL);
+
+  const mediaContainer = embedYoutube(url);
+  section.prepend(mediaContainer)
+  // imageContainer.append(another)
+
+  } else if (image) {
+
     const canvasWidth = 2000;
     const canvasHeight = 1072;
 
@@ -346,18 +383,7 @@ let imageContainer;
     picture = backgroundPic;
     section.prepend(picture);
 
-    if (isVideoVariant) {
-      const primaryUrl = 'https://www.youtube.com/watch?v=9jWlqX46apI';
-      const yturl = new URL(primaryUrl);
-      let vid = yturl.searchParams.get('v');
-      if (!vid) {
-        vid = yturl.pathname.substr(1);
-      }
-      const vidUrls = [`https://www.youtube.com/embed/${vid}?feature=oembed&autoplay=1`];
 
-
-      playInlineVideo(imageContainer, vidUrls, 'youtube', 'some title')
-    } else {
 
 
      loadImage(backgroundPicImg).then(() => {
@@ -393,7 +419,7 @@ let imageContainer;
         });
       });
     });
-  }
+
 
   } else {
     picture = section.querySelector('picture');
@@ -401,5 +427,5 @@ let imageContainer;
     parent.remove();
     section.prepend(picture);
   }
-  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, imageURL, imageContainer, isVideoVariant);
+  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, imageURL, isVideoVariant);
 }
