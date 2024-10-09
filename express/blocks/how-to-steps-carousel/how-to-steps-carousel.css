@@ -222,35 +222,49 @@ main .how-to-steps-carousel-container > picture > img {
   }
 }
 
+main div:has(> .video-how-to-steps-carousel) {
+  display: flex;
+  /* note: as requested by KyleC, when it is mobile, put the video under the text */
+  flex-direction: column-reverse;
+}
+
+main .how-to-steps-carousel-container lite-youtube {
+  margin: 56px 24px 24px;
+}
+
 @media (min-width: 600px) {
+  main div:has(> .video-how-to-steps-carousel) {
+    display: flex;
+    flex-direction: unset;
+  }
+
   main .how-to-steps-carousel-container .youtube {
-    margin-left: 80px;
   }
 
   main .how-to-steps-carousel-container .youtube iframe {
-    width: 600px;
-    height: 338px;
-  }
-
-  main .how-to-steps-carousel-container lite-youtube,
-  main .how-to-steps-carousel-container lite-youtube iframe {
-    width: 600px;
-    height: 338px;
   }
 
   main .how-to-steps-carousel-container lite-youtube {
-    margin-left: 80px;
-    margin-top: 144px;
+    width: calc((100% - 72px) / 2 + 1px);
   }
 
-  /* main div:has(> .how-to-steps-carousel.video) {
-  width: 30%;
-} */
+  main .how-to-steps-carousel-container lite-youtube {
+    margin: 220px 0 0 24px;
+  }
+
   main div:has(> .how-to-steps-carousel.video) {
-    width: 30%;
+    width: calc((100% - 72px) / 2);
   }
+}
 
-  main div:has(> .video-how-to-steps-carousel) {
-    /* align-items: center; */
+@media (min-width: 900px) {
+  main .how-to-steps-carousel-container lite-youtube {
+    margin: 220px 0 0 80px;
+  }
+}
+
+@media (min-width: 1200px) {
+  main .how-to-steps-carousel-container lite-youtube {
+    margin-top: 138px;
   }
 }
