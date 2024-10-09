@@ -230,6 +230,7 @@ main .how-to-steps-carousel-container lite-youtube iframe {
 
 main .how-to-steps-carousel-container lite-youtube {
   margin-left: 80px;
+  margin-top: 92px;
 }
 
 main div:has(> .how-to-steps-carousel.video) {
