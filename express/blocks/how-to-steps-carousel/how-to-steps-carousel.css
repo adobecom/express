@@ -140,9 +140,7 @@ main .how-to-steps-carousel .tip-number {
 
 main .how-to-steps-carousel .tip-number:focus {
   outline: none;
-  box-shadow:
-    0 0 0 2px var(--color-white),
-    0 0 0 4px var(--color-info-accent);
+  box-shadow: 0 0 0 2px var(--color-white), 0 0 0 4px var(--color-info-accent);
 }
 
 main .how-to-steps-carousel .tip-number.active {
@@ -224,11 +222,7 @@ main .how-to-steps-carousel-container > picture > img {
   }
 }
 
-
-
-
 @media (min-width: 600px) {
-
   main .how-to-steps-carousel-container .youtube {
     margin-left: 80px;
   }
