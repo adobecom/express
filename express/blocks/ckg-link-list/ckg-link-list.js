@@ -21,7 +21,8 @@ export default async function decorate(block) {
   const payloadContext = { urlPath: block.textContent.trim() || window.location.pathname };
   const ckgResult = await getDataWithContext(payloadContext);
   if (!ckgResult) return;
-  const pills = ckgResult?.queryResults?.[0]?.facets?.[0]?.buckets;
+  const results = ckgResult?.querySuggestionResults?.groupResults;
+  const pills = results?.[0]?.buckets;
   const hexCodes = ckgResult?.queryResults?.[0].context?.application?.['metadata.color.hexCodes'];
 
   if (!pills || !pills.length) return;
