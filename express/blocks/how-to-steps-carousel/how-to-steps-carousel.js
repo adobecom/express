@@ -257,7 +257,6 @@ function layerTemplateImage(canvas, ctx, templateImg) {
 export default async function decorate(block) {
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
-
   const image = block.classList.contains('image');
   const isVideoVariant = block.classList.contains('video');
 
