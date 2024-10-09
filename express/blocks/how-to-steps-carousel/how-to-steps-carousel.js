@@ -234,8 +234,8 @@ function layerTemplateImage(canvas, ctx, templateImg) {
             templateImg.width, templateImg.height, 7, ctx);
             ctx.clip();
             ctx.drawImage(templateImg, 0, 0, templateImg.naturalWidth,
-            templateImg.naturalHeight, centerX - (templateImg.width / 2),
-            centerY - (templateImg.height / 2), templateImg.width, templateImg.height);
+              templateImg.naturalHeight, centerX - (templateImg.width / 2),
+              centerY - (templateImg.height / 2), templateImg.width, templateImg.height);
             ctx.restore();
             obs.disconnect();
             resolve();
@@ -245,7 +245,7 @@ function layerTemplateImage(canvas, ctx, templateImg) {
       obs.observe(templateImg);
       templateImg.style.maxWidth = `${maxWidth}px`;
       templateImg.style.maxHeight = `${maxHeight}px`;
-      });
+    });
 
     // start and end areas were directly measured and transferred from the spec image
     drawImage(1123, 600, 986, 652)
