@@ -63,28 +63,53 @@ main .how-to-steps-carousel .tips .tip.active {
 }
 
 @keyframes fadeIn {
-  0% { opacity:0.1; }
-  100% { opacity:1; }
+  0% {
+    opacity: 0.1;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 @-moz-keyframes fadeIn {
-  0% { opacity:0; }
-  100% { opacity:1; }
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 @-webkit-keyframes fadeIn {
-  0% { opacity:0; }
-  100% { opacity:1; }
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 @-o-keyframes fadeIn {
-  0% { opacity:0; }
-  100% { opacity:1; }
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 @-ms-keyframes fadeIn {
-  0% { opacity:0; }
-  100% { opacity:1; }
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 main .how-to-steps-carousel .tip-numbers {
@@ -116,8 +141,8 @@ main .how-to-steps-carousel .tip-number {
 main .how-to-steps-carousel .tip-number:focus {
   outline: none;
   box-shadow:
-          0 0 0 2px var(--color-white),
-          0 0 0 4px var(--color-info-accent );
+    0 0 0 2px var(--color-white),
+    0 0 0 4px var(--color-info-accent);
 }
 
 main .how-to-steps-carousel .tip-number.active {
@@ -199,48 +224,39 @@ main .how-to-steps-carousel-container > picture > img {
   }
 }
 
-main .how-to-steps-carousel-container .video-thumbnail {
-  /* margin: 30px 0; */
-  width: 133px;
-  height: 75px;
-  /* width: 200px;
-  height: 113px; */
-}
 
-main .how-to-steps-carousel-container .video-intro {
-  font-size: var(--body-font-size-xl);
-  margin: 30px 0 3px;
-  /* margin-top: 30px; */
-}
 
-main .how-to-steps-carousel-container .youtube {
-  margin-left: 80px;
-}
 
-main .how-to-steps-carousel-container .youtube iframe {
-  width: 600px;
-  height: 338px;
-}
+@media (min-width: 600px) {
 
-main .how-to-steps-carousel-container lite-youtube,
-main .how-to-steps-carousel-container lite-youtube iframe {
-  width: 600px;
-  height: 338px;
-}
+  main .how-to-steps-carousel-container .youtube {
+    margin-left: 80px;
+  }
 
-main .how-to-steps-carousel-container lite-youtube {
-  margin-left: 80px;
-  margin-top: 144px;
-}
+  main .how-to-steps-carousel-container .youtube iframe {
+    width: 600px;
+    height: 338px;
+  }
 
-main div:has(> .how-to-steps-carousel.video) {
+  main .how-to-steps-carousel-container lite-youtube,
+  main .how-to-steps-carousel-container lite-youtube iframe {
+    width: 600px;
+    height: 338px;
+  }
+
+  main .how-to-steps-carousel-container lite-youtube {
+    margin-left: 80px;
+    margin-top: 144px;
+  }
+
+  /* main div:has(> .how-to-steps-carousel.video) {
   width: 30%;
-}
+} */
+  main div:has(> .how-to-steps-carousel.video) {
+    width: 30%;
+  }
 
-main div:has(> .how-to-steps-carousel.video) {
-  width: 30%;
-}
-
-main div:has(> .video-how-to-steps-carousel) {
-  /* align-items: center; */
+  main div:has(> .video-how-to-steps-carousel) {
+    /* align-items: center; */
+  }
 }
