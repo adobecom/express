@@ -8,7 +8,6 @@ import {
 
 import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
 
-
 let rotationInterval;
 let fixedImageSize = false;
 
@@ -63,8 +62,6 @@ function activate(block, target, isVideoVariant) {
 }
 
 function initRotation(howToWindow, howToDocument, isVideoVariant) {
-
-  console.log("=== in initRotation")
   if (howToWindow && !rotationInterval) {
     rotationInterval = howToWindow.setInterval(() => {
       howToDocument.querySelectorAll('.tip-numbers').forEach((numbers) => {
@@ -83,9 +80,7 @@ function initRotation(howToWindow, howToDocument, isVideoVariant) {
 function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant = false) {
   // join wrappers together
 
-  console.log("=== BUILDING ", section, block, howToDocument, rows, howToWindow)
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
-    console.log("=== look at wrapper", i, wrapper)
     if (i === 0) {
       // add block to first wrapper
       wrapper.append(block);
@@ -118,7 +113,6 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
   block.append(tips);
 
   rows.forEach((row, i) => {
-    console.log("=== look at row", row)
     row.classList.add('tip');
     row.classList.add(`tip-${i + 1}`);
     row.setAttribute('data-tip-index', i + 1);
@@ -231,28 +225,28 @@ function layerTemplateImage(canvas, ctx, templateImg) {
   return new Promise((outerResolve) => {
     let prevWidth;
     const drawImage = (centerX, centerY, maxWidth, maxHeight) => new Promise((resolve) => {
-      const obs = new ResizeObserver((changes) => {
-        for (const change of changes) {
-          if (change.contentRect.width === prevWidth) return;
-          prevWidth = change.contentRect.width;
-          if (prevWidth <= maxWidth && change.contentRect.height <= maxHeight) {
-            ctx.save();
+        const obs = new ResizeObserver((changes) => {
+          for (const change of changes) {
+            if (change.contentRect.width === prevWidth) return;
+            prevWidth = change.contentRect.width;
+            if (prevWidth <= maxWidth && change.contentRect.height <= maxHeight) {
+              ctx.save();
             roundedImage(centerX - (templateImg.width / 2), centerY - (templateImg.height / 2),
               templateImg.width, templateImg.height, 7, ctx);
-            ctx.clip();
+              ctx.clip();
             ctx.drawImage(templateImg, 0, 0, templateImg.naturalWidth,
               templateImg.naturalHeight, centerX - (templateImg.width / 2),
               centerY - (templateImg.height / 2), templateImg.width, templateImg.height);
-            ctx.restore();
-            obs.disconnect();
-            resolve();
+              ctx.restore();
+              obs.disconnect();
+              resolve();
+            }
           }
-        }
+        });
+        obs.observe(templateImg);
+        templateImg.style.maxWidth = `${maxWidth}px`;
+        templateImg.style.maxHeight = `${maxHeight}px`;
       });
-      obs.observe(templateImg);
-      templateImg.style.maxWidth = `${maxWidth}px`;
-      templateImg.style.maxHeight = `${maxHeight}px`;
-    });
 
     // start and end areas were directly measured and transferred from the spec image
     drawImage(1123, 600, 986, 652)
@@ -266,50 +260,29 @@ export default async function decorate(block) {
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
 
-  console.log("=== howToDocument", howToDocument, block.ownerDocument.defaultView)
   const image = block.classList.contains('image');
   const isVideoVariant = block.classList.contains('video');
 
-  console.log("=== isVideoVariant", isVideoVariant)
   // move first image of container outside of div for styling
   const section = block.closest('.section');
   const howto = block;
   const rows = Array.from(howto.children);
   let picture;
 
-if (isVideoVariant) {
+  if (isVideoVariant) {
+    const videoData = rows.shift();
 
-  console.log("=== rows", JSON.stringify(rows))
-  const videoData = rows.shift();
+    // remove the added social link from the block DOM
+    block.removeChild(block.children[0]);
 
-  // remove the added social link from the block DOM
-  block.removeChild(block.children[0]);
+    const videoLink = videoData.querySelector('a');
+    const youtubeURL = videoLink?.href;
+    const url = new URL(youtubeURL);
 
-  console.log("=== rows", JSON.stringify(rows))
-
-  console.log("=== videoData", videoData)
-
-  const videoLink = videoData.querySelector('a')
-
-  console.log("=== videoLink", videoLink)
-
-  const youtubeURL = videoLink?.href;
-
-  // 'https://www.youtube.com/watch?v=9jWlqX46apI';
-
-  const url = new URL(youtubeURL);
-
-  // const mediaContainer = createTag('div', { class: 'video-container' });
-
-  const videoEl = embedYoutube(url);
-  videoEl.classList.add('video-how-to-steps-carousel')
-
-  // mediaContainer.append(videoEl);
-  section.prepend(videoEl)
-  // imageContainer.append(another)
-
+    const videoEl = embedYoutube(url);
+    videoEl.classList.add('video-how-to-steps-carousel');
+    section.prepend(videoEl);
   } else if (image) {
-
     const canvasWidth = 2000;
     const canvasHeight = 1072;
 
@@ -335,11 +308,12 @@ if (isVideoVariant) {
     templateImg.removeAttribute('width');
     templateImg.removeAttribute('height');
     backgroundPicImg.style.width = `${canvasWidth}px`;
-    if (window.screen.width < 600) backgroundPicImg.style.height = `${window.screen.width * 0.536}px`;
+    if (window.screen.width < 600)
+      backgroundPicImg.style.height = `${window.screen.width * 0.536}px`;
     picture = backgroundPic;
     section.prepend(picture);
 
-     loadImage(backgroundPicImg).then(() => {
+    loadImage(backgroundPicImg).then(() => {
       backgroundPicImg.width = canvasWidth;
       const canvas = createTag('canvas', { width: canvasWidth, height: canvasHeight });
       const ctx = canvas.getContext('2d');
@@ -353,10 +327,7 @@ if (isVideoVariant) {
           canvas.toBlob((blob) => {
             const blobUrl = URL.createObjectURL(blob);
 
-            console.log("=== img inside of loadImage handler is, and backgroundPic", backgroundPic, backgroundPic)
-
             img.src = blobUrl;
-            console.log("=== blobUrl", blobUrl)
             backgroundPic.append(img);
             img.alt = alt;
             backgroundPicImg.remove();
@@ -365,14 +336,11 @@ if (isVideoVariant) {
         });
       });
     });
-
-
   } else {
     picture = section.querySelector('picture');
     const parent = picture.parentElement;
     parent.remove();
     section.prepend(picture);
   }
-  console.log("=== rows right before buildHowToStepsCarousel", JSON.stringify(rows), rows, rows.map(e => e.innerHTML));
   buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant);
 }
