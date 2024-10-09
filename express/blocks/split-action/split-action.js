@@ -3,27 +3,28 @@ import { createTag, getIconElement } from '../../scripts/utils.js';
 
 function show(block) {
   const body = block.closest('body');
-  const blockWrapper = block.parentNode;
-  if (blockWrapper.parentElement.classList.contains('split-action-container')) {
-    blockWrapper.parentElement.classList.remove('hidden');
-    body.style.overflow = 'hidden';
-    setTimeout(() => {
-      blockWrapper.parentElement.classList.remove('transparent');
-      block.style.bottom = '0';
-    }, 10);
-  }
+  const card = block.querySelector('.block-body');
+
+  if (!body || !card) return;
+
+  block.classList.remove('hidden');
+  body.style.overflow = 'hidden';
+  setTimeout(() => {
+    block.classList.remove('transparent');
+    card.style.bottom = '0';
+  }, 10);
 }
 
 function initCTAListener(block, href, targetBlock) {
   const buttons = targetBlock ? targetBlock.querySelectorAll('.button') : block.closest('main').querySelectorAll('.button');
 
-  for (let i = 0; i < buttons.length; i += 1) {
-    if (buttons[i].href === href && !buttons[i].classList.contains('no-event')) {
-      buttons[i].addEventListener('click', (e) => {
+  buttons.forEach((button) => {
+    if (button.href === href && !button.classList.contains('no-event')) {
+      button.addEventListener('click', (e) => {
         e.preventDefault();
-        const buttonOuterWrapper = buttons[i].parentElement.parentElement;
+        const buttonOuterWrapper = button.parentElement.parentElement;
         if (buttonOuterWrapper.classList.contains('multifunction')) {
-          if (buttons[i].parentElement.classList.contains('toolbox-opened')) {
+          if (button.parentElement.classList.contains('toolbox-opened')) {
             buttonOuterWrapper.remove();
             show(block);
           }
@@ -32,28 +33,28 @@ function initCTAListener(block, href, targetBlock) {
         }
       });
     }
-  }
+  });
 }
 
-function initNotchDragAction(block) {
+function initNotchDragAction(card) {
   let touchStart = 0;
-  const notch = block.querySelector('.notch');
+  const notch = card.querySelector('.notch');
 
   notch.addEventListener('touchstart', (e) => {
-    block.style.transition = 'none';
+    card.style.transition = 'none';
     touchStart = e.changedTouches[0].clientY;
   });
 
   notch.addEventListener('touchmove', (e) => {
-    block.style.bottom = `-${e.changedTouches[0].clientY - touchStart}px`;
+    card.style.bottom = `-${e.changedTouches[0].clientY - touchStart}px`;
   });
 
   notch.addEventListener('touchend', (e) => {
-    block.style.transition = 'bottom 0.2s';
+    card.style.transition = 'bottom 0.2s';
     if (e.changedTouches[0].clientY - touchStart > 100) {
       notch.click();
     } else {
-      block.style.bottom = '0';
+      card.style.bottom = '0';
     }
   });
 }
@@ -66,16 +67,17 @@ export default function decorate(block) {
 
   const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
   const blockBackground = createTag('div', { class: 'block-background' });
-  const blockBody = createTag('div', { class: 'block-body' });
+  const card = createTag('div', { class: 'block-body' }, block.innerHTML);
   const underlay = createTag('a', { class: 'underlay' });
   const notch = createTag('a', { class: 'notch' });
   const notchPill = createTag('div', { class: 'notch-pill' });
 
-  let hrefHolder;
+  let hrefHolder = '';
+  block.innerHTML = '';
 
-  block.prepend(getIconElement('adobe-express-white'));
+  card.prepend(getIconElement('adobe-express-white'));
 
-  Array.from(block.children).forEach((div) => {
+  Array.from(card.children).forEach((div) => {
     const anchor = div.querySelector('a');
 
     if (anchor) {
@@ -97,25 +99,25 @@ export default function decorate(block) {
     }
   });
 
-  // if (!hrefHolder) {
-  //   block.remove();
-  //   return;
-  // }
+  if (!hrefHolder) {
+    block.remove();
+    return;
+  }
 
   notch.append(notchPill);
   blockBackground.append(underlay);
-  block.append(blockBackground, blockBody);
-  blockBody.append(notch, buttonsWrapper);
+  block.append(blockBackground, card);
+  card.append(notch, buttonsWrapper);
 
   [notch, underlay].forEach((element) => {
     element.addEventListener('click', () => {
       const actionCta = block.querySelector('.button[target="_self"]');
-      window.location.href = actionCta.href;
+      window.location.assign(actionCta.href);
     });
   });
 
   if (document.body.dataset.device === 'mobile') {
-    initNotchDragAction(block);
+    initNotchDragAction(card);
     initCTAListener(block, hrefHolder);
 
     document.addEventListener('floatingbuttonloaded', (e) => {
