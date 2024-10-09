@@ -63,53 +63,28 @@ main .how-to-steps-carousel .tips .tip.active {
 }
 
 @keyframes fadeIn {
-  0% {
-    opacity: 0.1;
-  }
-
-  100% {
-    opacity: 1;
-  }
+  0% { opacity: 0.1; }
+  100% { opacity: 1; }
 }
 
 @-moz-keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 @-webkit-keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 @-o-keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 @-ms-keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 main .how-to-steps-carousel .tip-numbers {
@@ -140,7 +115,9 @@ main .how-to-steps-carousel .tip-number {
 
 main .how-to-steps-carousel .tip-number:focus {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-white), 0 0 0 4px var(--color-info-accent);
+  box-shadow:
+          0 0 0 2px var(--color-white),
+          0 0 0 4px var(--color-info-accent );
 }
 
 main .how-to-steps-carousel .tip-number.active {
