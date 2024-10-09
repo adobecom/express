@@ -286,7 +286,6 @@ export default async function decorate(block) {
     const placeholderImgUrl = createTag('div');
     const placeholders = await fetchPlaceholders();
     const url = placeholders['how-to-steps-carousel-image-app'];
-
     const alt = block.querySelector('picture > img').getAttribute('alt');
     const eagerLoad = document.querySelector('.block') === block;
     const backgroundPic = createOptimizedPicture(url, 'template in express', eagerLoad);
