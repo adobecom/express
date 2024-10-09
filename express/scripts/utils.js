@@ -663,7 +663,7 @@ export async function decorateBlock(block) {
     // split and add options with a dash
     // (fullscreen-center -> fullscreen-center + fullscreen + center)
     const extra = [];
-    const skipList = ['same-fcta'];
+    const skipList = ['same-fcta', 'meta-powered'];
     block.classList.forEach((className, index) => {
       if (index === 0 || skipList.includes(className)) return; // block name or skip, no split
       const split = className.split('-');
@@ -1368,24 +1368,31 @@ export const loadScript = (url, type) => new Promise((resolve, reject) => {
  */
 
 export async function fetchPlaceholders() {
+  if (window.placeholders) return window.placeholders;
+  let resolver;
+  window.placeholders = new Promise((res) => {
+    resolver = res;
+  });
   const requestPlaceholders = async (url) => {
     const resp = await fetch(url);
     if (resp.ok) {
       const json = await resp.json();
-      window.placeholders = {};
+      const placeholders = {};
       json.data.forEach((placeholder) => {
-        if (placeholder.value) window.placeholders[placeholder.key] = placeholder.value;
-        else if (placeholder.Text) window.placeholders[placeholder.Key] = placeholder.Text;
+        if (placeholder.value) placeholders[placeholder.key] = placeholder.value;
+        else if (placeholder.Text) placeholders[placeholder.Key] = placeholder.Text;
       });
+      return placeholders;
     }
+    return null;
   };
-  if (!window.placeholders) {
-    try {
-      const { prefix } = getConfig().locale;
-      await requestPlaceholders(`${prefix}/express/placeholders.json`);
-    } catch {
-      await requestPlaceholders('/express/placeholders.json');
-    }
+  try {
+    const { prefix } = getConfig().locale;
+    const placeholders = await requestPlaceholders(`${prefix}/express/placeholders.json`);
+    if (!placeholders) throw new Error(`placeholders req failed in prefix: ${prefix}`);
+    resolver(placeholders);
+  } catch {
+    resolver(await requestPlaceholders('/express/placeholders.json') || {});
   }
   return window.placeholders;
 }
@@ -1920,7 +1927,7 @@ async function buildAutoBlocks(main) {
 
     if (blockName && validButtonVersion.includes(blockName) && lastDiv) {
       const button = buildBlock(blockName, device);
-      button.classList.add('metadata-powered');
+      button.classList.add('meta-powered');
       lastDiv.append(button);
       BlockMediator.set('floatingCtasLoaded', true);
     }

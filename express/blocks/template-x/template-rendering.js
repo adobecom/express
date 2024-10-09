@@ -191,6 +191,7 @@ function getPageIterator(pages) {
     },
   };
 }
+
 async function renderRotatingMedias(wrapper,
   pages,
   { templateTitle, renditionLinkHref, componentLinkHref }) {

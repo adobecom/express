@@ -43,8 +43,12 @@ async function fetchLinkList() {
   }
 
   if (!sheetData) {
+    let resolver;
+    sheetData = new Promise((res) => {
+      resolver = res;
+    });
     const resp = await fetch('/express/templates/top-priority-categories.json');
-    sheetData = resp.ok ? (await resp.json()).data : [];
+    resolver(resp.ok ? (await resp.json()).data : []);
   }
 }
 
@@ -177,7 +181,7 @@ async function updateLinkList(container, linkPill, list) {
       const templatePages = await fetchAllTemplatesMetadata();
       const linkListData = [];
 
-      sheetData.forEach((row) => {
+      (await sheetData).forEach((row) => {
         if (row.parent === getMetadata('short-title')) {
           linkListData.push({
             childSibling: row['child-siblings'],

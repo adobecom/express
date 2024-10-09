@@ -118,6 +118,7 @@ function removeLazyAfterNeighborLoaded(image, lastImage) {
 async function decorateCards(block, { actions }) {
   const cards = createTag('div', { class: 'gen-ai-cards-cards' });
   const placeholders = await fetchPlaceholders();
+  const searchBranchLinks = placeholders['search-branch-links']?.replace(/\s/g, '')?.split(',') || [];
 
   actions.forEach((cta, i) => {
     const {
@@ -151,7 +152,7 @@ async function decorateCards(block, { actions }) {
       } else {
         const a = ctaLinks[0];
         const btnUrl = new URL(a.href);
-        if (placeholders?.['search-branch-links']?.replace(/\s/g, '').split(',').includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
+        if (searchBranchLinks.includes(`${btnUrl.origin}${btnUrl.pathname}`)) {
           btnUrl.searchParams.set('q', cta.text);
           btnUrl.searchParams.set('category', 'templates');
           a.href = decodeURIComponent(btnUrl.toString());
