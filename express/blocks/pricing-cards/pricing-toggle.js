@@ -61,78 +61,60 @@ function handleKeyNavigation(e, pricingSections, buttons, toggleWrapper) {
       break;
   }
 }
-export function tagFreePlan(cardContainer) {
-  const cards = Array.from(cardContainer.querySelectorAll('.card'));
-  let disableAllToggles = true;
-  const freePlanStatus = [];
 
-  for (const card of cards) {
-    let isFreePlan = true;
-    const pricingSections = card.querySelectorAll('.pricing-section');
-    for (const section of pricingSections) {
-      const price = section.querySelector('.pricing-price > strong')?.textContent;
-      if (price && parseInt(price, 10) > 0) {
-        isFreePlan = false;
-        disableAllToggles = false;
-        break;
-      }
-    }
-    freePlanStatus.push(isFreePlan ? card.querySelector('.billing-toggle') : undefined);
-  }
-
-  freePlanStatus.forEach((billingToggle) => {
-    if (disableAllToggles) {
-      billingToggle.remove();
-    } else if (billingToggle) {
-      billingToggle.classList.add('suppressed-billing-toggle');
-    }
-  });
-}
-
-export default function createToggle(placeholders, pricingSections, groupID, adjElemPos) {
+export default function createToggle(placeholders, pricingSections, monthlyPlanID) {
   const subDesc = placeholders?.['subscription-type'] || 'Subscription Type:';
   const toggleWrapper = createTag('div', {
     class: 'billing-toggle',
     role: 'radiogroup',
-    'aria-labelledby': groupID,
+    'aria-labelledby': monthlyPlanID,
   });
 
-  const groupLabel = createTag('strong', { id: groupID }, subDesc);
+  const groupLabel = createTag('strong', { id: monthlyPlanID }, subDesc);
   toggleWrapper.appendChild(groupLabel);
+  if (BlockMediator.get(monthlyPlanID) === 0) {
+    toggleWrapper.classList.add('hidden');
+  }
+  let hasSpecialPlan = (basePlan) => basePlan === 'monthly';
 
   const buttons = PLANS.map((basePlan, i) => {
-    const planLabelID = (BlockMediator.get(groupID) === 'ABM' && placeholders?.[SPECIAL_PLAN] && basePlan === 'monthly')
+    const planLabelID = (BlockMediator.get(`${monthlyPlanID}-planType`) === 'ABM' && placeholders?.[SPECIAL_PLAN] && basePlan === 'monthly')
       ? SPECIAL_PLAN
       : basePlan;
     const label = placeholders?.[planLabelID];
-    const buttonID = `${groupID}:${basePlan}`;
-    // urgent update
-    const isDefault = i === (BlockMediator.get(groupID) === 'ABM' ? 1 : 0);
+    const buttonID = `${monthlyPlanID}:${basePlan}`;
+
+    if (planLabelID === SPECIAL_PLAN) {
+      hasSpecialPlan = (bP) => bP === 'annually';
+    }
+
+    const isDefault = hasSpecialPlan(basePlan);
     const button = createTag('button', {
       class: isDefault ? 'checked' : '',
       id: buttonID,
       plan: basePlan,
+      tabIndex: isDefault ? '0' : '-1',
       role: 'radio',
       'aria-checked': isDefault.toString(),
       'aria-labelledby': buttonID,
     });
 
     button.appendChild(createTag('span'));
-
-    button.appendChild(createTag('div', { id: `${buttonID}:radio` }, label));
-
+    button.append(createTag('div', { id: `${buttonID}:radio` }, label));
+    button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
       togglePlan(pricingSections, buttons, i);
-      adjElemPos();
     });
 
     return button;
   });
+  const buttonWrapper = createTag('div', { class: 'billing-button-wrapper' });
+  buttonWrapper.append(...buttons);
+  toggleWrapper.appendChild(buttonWrapper);
 
-  const toggleButtonWrapper = createTag('div', { class: 'toggle-button-wrapper' });
-  toggleButtonWrapper.append(...buttons);
-  toggleWrapper.append(toggleButtonWrapper);
-  toggleWrapper.addEventListener('keydown', (e) => handleKeyNavigation(e, pricingSections, buttons, toggleWrapper));
+  toggleWrapper.addEventListener('keydown', (e) => {
+    handleKeyNavigation(e, pricingSections, buttons, toggleWrapper);
+  });
 
   return toggleWrapper;
 }

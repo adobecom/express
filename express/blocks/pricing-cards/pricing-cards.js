@@ -2,10 +2,7 @@ import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
   fetchPlaceholders,
-  yieldToMain,
-  getIconElement,
 } from '../../scripts/utils.js';
-import { debounce } from '../../scripts/hofs.js';
 
 import {
   formatDynamicCartLink,
@@ -14,36 +11,51 @@ import {
   fetchPlanOnePlans,
 } from '../../scripts/utils/pricing.js';
 
-import createToggle, { tagFreePlan } from './pricing-toggle.js';
+import createToggle from './pricing-toggle.js';
+import { handleTooltip, adjustElementPosition } from './pricing-tooltip.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
-const blockKeys = [
-  'header',
-  'borderParams',
-  'explain',
-  'mPricingRow',
-  'mCtaGroup',
-  'yPricingRow',
-  'yCtaGroup',
-  'featureList',
-  'compare',
-];
 const SAVE_PERCENTAGE = '{{savePercentage}}';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
 const PRICE_TOKEN = '{{pricing}}';
 const YEAR_2_PRICING_TOKEN = '[[year-2-pricing-token]]';
 
-function suppressOfferEyebrow(specialPromo, legacyVersion) {
+function getHeightWithoutPadding(element) {
+  const styles = window.getComputedStyle(element);
+  const paddingTop = parseFloat(styles.paddingTop);
+  const paddingBottom = parseFloat(styles.paddingBottom);
+  return element.clientHeight - paddingTop - paddingBottom;
+}
+
+function equalizeHeights(el) {
+  const classNames = ['.card-header', '.plan-explanation', '.billing-toggle', '.pricing-area', '.card-cta-group'];
+  const cardCount = el.querySelectorAll('.pricing-cards .card').length;
+  if (cardCount === 1) return;
+  for (const className of classNames) {
+    const headers = el.querySelectorAll(className);
+    let maxHeight = 0;
+    headers.forEach((header) => {
+      if (header.checkVisibility()) {
+        const height = getHeightWithoutPadding(header);
+        header.ATTRIBUTE_NODE;
+        maxHeight = Math.max(maxHeight, height);
+      }
+    });
+    headers.forEach((placeholder) => {
+      if (placeholder.style.height) return;
+      if (maxHeight > 0) {
+        placeholder.style.height = `${maxHeight}px`;
+      }
+    });
+  }
+}
+
+function suppressOfferEyebrow(specialPromo) {
   if (specialPromo.parentElement) {
-    if (legacyVersion) {
-      specialPromo.parentElement.classList.remove('special-promo');
-      specialPromo.remove();
-    } else {
-      specialPromo.className = 'hide';
-      specialPromo.parentElement.className = '';
-      specialPromo.parentElement.classList.add('card-border');
-      specialPromo.remove();
-    }
+    specialPromo.className = 'hide';
+    specialPromo.parentElement.className = '';
+    specialPromo.parentElement.classList.add('card-border');
+    specialPromo.remove();
   }
 }
 
@@ -82,8 +94,8 @@ function handleSpecialPromo(
   specialPromo,
   isPremiumCard,
   response,
-  legacyVersion,
 ) {
+  specialPromo.classList.add('special-promo');
   if (specialPromo?.textContent.includes(SAVE_PERCENTAGE)) {
     const offerTextContent = specialPromo.textContent;
     const shouldSuppress = shallSuppressOfferEyebrowText(
@@ -95,7 +107,7 @@ function handleSpecialPromo(
     );
 
     if (shouldSuppress) {
-      suppressOfferEyebrow(specialPromo, legacyVersion);
+      suppressOfferEyebrow(specialPromo);
     } else {
       specialPromo.innerHTML = specialPromo.innerHTML.replace(
         SAVE_PERCENTAGE,
@@ -160,197 +172,90 @@ function handleRawPrice(price, basePrice, response) {
     : price.classList.remove('price-active');
 }
 
-function adjustElementPosition() {
-  const elements = document.querySelectorAll('.tooltip-text');
-
-  if (elements.length === 0) return;
-  for (const element of elements) {
-    const rect = element.getBoundingClientRect();
-    if (rect.right > window.innerWidth) {
-      element.classList.remove('overflow-left');
-      element.classList.add('overflow-right');
-    } else if (rect.left < 0) {
-      element.classList.remove('overflow-right');
-      element.classList.add('overflow-left');
-    } else {
-      element.classList.remove('overflow-right');
-      element.classList.remove('overflow-left');
-    }
-  }
-}
-
-function handleTooltip(pricingArea) {
-  const elements = pricingArea.querySelectorAll('p');
-  const pattern = /\[\[([^]+)\]\]([^]+)\[\[\/([^]+)\]\]/g;
-  let tooltip;
-  let tooltipDiv;
-
-  Array.from(elements).forEach((p) => {
-    const res = pattern.exec(p.textContent);
-    if (res) {
-      tooltip = res;
-      tooltipDiv = p;
-    }
-  });
-  if (!tooltip) return;
-
-  tooltipDiv.innerHTML = tooltipDiv.innerHTML.replace(pattern, '');
-  const tooltipText = tooltip[2];
-  tooltipDiv.classList.add('tooltip');
-  const span = createTag('div', { class: 'tooltip-text' });
-  span.innerText = tooltipText;
-  const icon = getIconElement('info', 44, 'Info', 'tooltip-icon');
-  icon.append(span);
-  const iconWrapper = createTag('span');
-  iconWrapper.append(icon);
-  iconWrapper.append(span);
-  tooltipDiv.append(iconWrapper);
-}
-async function handlePrice(placeholders, pricingArea, specialPromo, groupID, legacyVersion) {
-  const priceEl = pricingArea.querySelector(`[title="${PRICE_TOKEN}"]`);
-  const pricingBtnContainer = pricingArea.querySelector('.button-container');
-  if (!pricingBtnContainer) return;
-  if (!priceEl) return;
-
-  const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
-  const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
-
-  const priceRow = createTag('div', { class: 'pricing-row' });
-  const price = createTag('span', { class: 'pricing-price' });
-  const basePrice = createTag('span', { class: 'pricing-base-price' });
-  const priceSuffix = createTag('div', { class: 'pricing-row-suf' });
-
-  priceRow.append(basePrice, price, priceSuffix);
-
-  const response = await fetchPlanOnePlans(priceEl?.href);
-  if (response.term && groupID) {
-    BlockMediator.set(groupID, response.term);
-  }
-
-  const priceSuffixTextContent = getPriceElementSuffix(
-    placeholders,
-    placeholderArr,
-    response,
-  );
-
-  const isPremiumCard = response.ooAvailable || false;
-  const savePercentElem = pricingArea.querySelector('.card-offer');
-  handleRawPrice(price, basePrice, response);
-  handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent);
-  handleTooltip(pricingArea);
-  handleSavePercentage(savePercentElem, isPremiumCard, response);
-  handleSpecialPromo(specialPromo, isPremiumCard, response, legacyVersion);
-  handleYear2PricingToken(pricingArea, response.y2p, priceSuffixTextContent);
-
-  priceEl?.parentNode?.remove();
-  if (!priceRow) return;
-  pricingArea.prepend(priceRow);
-  pricingBtnContainer?.remove();
-  pricingSuffixTextElem?.remove();
-}
-
 async function createPricingSection(
   placeholders,
   pricingArea,
   ctaGroup,
   specialPromo,
-  groupID,
-  legacyVersion,
+  isMonthly = false,
 ) {
-  const pricingSection = createTag('div', { class: 'pricing-section' });
   pricingArea.classList.add('pricing-area');
+  let offerId;
   const offer = pricingArea.querySelector(':scope > p > em');
   if (offer) {
     offer.classList.add('card-offer');
     offer.parentElement.outerHTML = offer.outerHTML;
   }
-  await handlePrice(placeholders, pricingArea, specialPromo, groupID, legacyVersion);
+
+  const priceEl = pricingArea.querySelector(`[title="${PRICE_TOKEN}"]`);
+  const pricingBtnContainer = pricingArea.querySelector('.button-container');
+
+  if (pricingBtnContainer && priceEl) {
+    const pricingSuffixTextElem = pricingBtnContainer.nextElementSibling;
+    const placeholderArr = pricingSuffixTextElem.textContent?.split(' ');
+
+    const priceRow = createTag('div', { class: 'pricing-row' });
+    const price = createTag('span', { class: 'pricing-price' });
+    const basePrice = createTag('span', { class: 'pricing-base-price' });
+    const priceSuffix = createTag('div', { class: 'pricing-row-suf' });
+    const response = await fetchPlanOnePlans(priceEl?.href);
+    if (response.term) {
+      BlockMediator.set(`${response.offerId}-planType`, response.term);
+    }
+    offerId = response.offerId;
+    BlockMediator.set(offerId, parseInt(response.price, 4));
+
+    const priceSuffixTextContent = getPriceElementSuffix(
+      placeholders,
+      placeholderArr,
+      response,
+    );
+    const isPremiumCard = response.ooAvailable || false;
+    const savePercentElem = pricingArea.querySelector('.card-offer');
+
+    handleRawPrice(price, basePrice, response);
+    handlePriceSuffix(priceEl, priceSuffix, priceSuffixTextContent);
+    handleTooltip(pricingArea);
+    handleSavePercentage(savePercentElem, isPremiumCard, response);
+    handleSpecialPromo(specialPromo, isPremiumCard, response);
+    handleYear2PricingToken(pricingArea, response.y2p, priceSuffixTextContent);
+
+    priceRow.append(basePrice, price, priceSuffix);
+    pricingArea.prepend(priceRow);
+    priceEl?.parentNode?.remove();
+    pricingSuffixTextElem?.remove();
+    pricingBtnContainer?.remove();
+  }
   ctaGroup.classList.add('card-cta-group');
   ctaGroup.querySelectorAll('a').forEach((a, i) => {
     a.classList.add('large');
     if (i === 1) a.classList.add('secondary');
     if (a.parentNode.tagName.toLowerCase() === 'strong') {
       a.classList.add('button', 'primary');
-      a.parentNode.remove();
-    }
-    if (a.parentNode.tagName.toLowerCase() === 'p') {
-      a.parentNode.remove();
     }
     formatDynamicCartLink(a);
-    ctaGroup.append(a);
-  });
-  pricingSection.append(pricingArea);
-  pricingSection.append(ctaGroup);
-  return pricingSection;
-}
-
-function readBraces(inputString, card) {
-  if (!inputString) {
-    return null;
-  }
-
-  // Pattern to find {{...}}
-  const pattern = /\{\{(.*?)\}\}/g;
-  const matches = Array.from(inputString.trim().matchAll(pattern));
-
-  if (matches.length > 0) {
-    const [token, promoType] = matches[matches.length - 1];
-    const specialPromo = createTag('div');
-    specialPromo.textContent = inputString.split(token)[0].trim();
-    card.classList.add(promoType.replaceAll(' ', ''));
-    card.append(specialPromo);
-    return specialPromo;
-  }
-  return null;
-}
-// Function for decorating a legacy header / promo.
-function decorateLegacyHeader(header, card) {
-  header.classList.add('card-header');
-  const h2 = header.querySelector('h2');
-  const h2Text = h2.textContent.trim();
-  h2.innerHTML = '';
-  const headerConfig = /\((.+)\)/.exec(h2Text);
-  const premiumIcon = header.querySelector('img');
-  let specialPromo;
-  if (premiumIcon) h2.append(premiumIcon);
-  if (headerConfig) {
-    const cfg = headerConfig[1];
-    h2.append(h2Text.replace(`(${cfg})`, '').trim());
-    if (/^\d/.test(cfg)) {
-      const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
-      headCntDiv.textContent = cfg;
-      headCntDiv.prepend(
-        createTag('img', {
-          src: '/express/icons/head-count.svg',
-          alt: 'icon-head-count',
-        }),
-      );
-      header.append(headCntDiv);
-    } else {
-      specialPromo = createTag('div');
-      specialPromo.textContent = cfg;
-      card.classList.add('special-promo');
-      card.append(specialPromo);
+    if (a.textContent.includes(SALES_NUMBERS)) {
+      formatSalesPhoneNumber([a], SALES_NUMBERS);
     }
-  } else {
-    h2.append(h2Text);
-  }
-  header.querySelectorAll('p').forEach((p) => {
-    if (p.innerHTML.trim() === '') p.remove();
   });
-  card.append(header);
-  return { specialPromo, cardWrapper: card };
+
+  if (isMonthly) {
+    pricingArea.classList.add('monthly');
+    ctaGroup.classList.add('monthly');
+  } else {
+    pricingArea.classList.add('annually', 'hide');
+    ctaGroup.classList.add('annually', 'hide');
+  }
+  return offerId;
 }
 
-function decorateHeader(header, borderParams, card, cardBorder) {
+function decorateHeader(header, planExplanation) {
   const h2 = header.querySelector('h2');
-  // The raw text extracted from the word doc
   header.classList.add('card-header');
-  const specialPromo = readBraces(borderParams?.innerText, cardBorder);
   const premiumIcon = header.querySelector('img');
   // Finds the headcount, removes it from the original string and creates an icon with the hc
   const extractHeadCountExp = /(>?)\(\d+(.*?)\)/;
-  if (extractHeadCountExp.test(h2.innerText)) {
+  if (extractHeadCountExp.test(h2?.innerText)) {
     const headCntDiv = createTag('div', { class: 'head-cnt', alt: '' });
     const headCount = h2.innerText
       .match(extractHeadCountExp)[0]
@@ -370,188 +275,76 @@ function decorateHeader(header, borderParams, card, cardBorder) {
   header.querySelectorAll('p').forEach((p) => {
     if (p.innerHTML.trim() === '') p.remove();
   });
-  card.append(header);
-  cardBorder.append(card);
-  return { cardWrapper: cardBorder, specialPromo };
+  planExplanation.classList.add('plan-explanation');
 }
 
-function decorateBasicTextSection(textElement, className, card) {
-  if (textElement.innerHTML.trim()) {
-    textElement.classList.add(className);
-    card.append(textElement);
+function decorateCardBorder(card, source) {
+  source.classList.add('promo-eyebrow-text');
+  const pattern = /\{\{(.*?)\}\}/g;
+  const matches = Array.from(source.textContent?.matchAll(pattern));
+  if (matches.length > 0) {
+    const [, promoType] = matches[matches.length - 1];
+    card.classList.add(promoType.replaceAll(' ', ''));
+    source.textContent = source.textContent.replace(pattern, '');
   }
 }
 
-// Links user to page where plans can be compared
-function decorateCompareSection(compare, el, card) {
-  if (compare?.innerHTML.trim()) {
-    compare.classList.add('card-compare');
-    compare.querySelector('a')?.classList.remove('button', 'accent');
-    // in a tab, update url
-    const closestTab = el.closest('div.tabpanel');
-    if (closestTab) {
-      try {
-        const tabId = parseInt(closestTab.id.split('-').pop(), 10);
-        const compareLink = compare.querySelector('a');
-        const url = new URL(compareLink.href);
-        url.searchParams.set('tab', tabId);
-        compareLink.href = url.href;
-      } catch (e) {
-        // ignore
-      }
-    }
-    card.append(compare);
-  }
-}
-
-// In legacy versions, the card element encapsulates all content
-// In new versions, the cardBorder element encapsulates all content instead
-async function decorateCard({
-  header,
-  borderParams,
-  explain,
-  mPricingRow,
-  mCtaGroup,
-  yPricingRow,
-  yCtaGroup,
-  featureList,
-  compare,
-}, el, placeholders, legacyVersion) {
-  const card = createTag('div', { class: 'card' });
-  const cardBorder = createTag('div', { class: 'card-border' });
-  const { specialPromo, cardWrapper } = legacyVersion
-    ? decorateLegacyHeader(header, card)
-    : decorateHeader(header, borderParams, card, cardBorder);
-
-  decorateBasicTextSection(explain, 'card-explain', card);
-  const groupID = `${Date.now()}:${header.textContent.replace(/\s/g, '').trim()}`;
-  const [mPricingSection, yPricingSection] = await Promise.all([
-    createPricingSection(placeholders, mPricingRow, mCtaGroup,
-      specialPromo, groupID, legacyVersion),
-    createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
-  ]);
-  mPricingSection.classList.add('monthly');
-  yPricingSection.classList.add('annually');
-  // urgent update
-  const defaultHidePlan = BlockMediator.get(groupID) === 'ABM' ? 0 : 1;
-  [mPricingSection, yPricingSection][defaultHidePlan].classList.add('hide');
-
-  const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID,
-    adjustElementPosition);
-  card.append(toggle, mPricingSection, yPricingSection);
-  decorateBasicTextSection(featureList, 'card-feature-list', card);
-  decorateCompareSection(compare, el, card);
-  return cardWrapper;
-}
-
-// less thrashing by separating get and set
-async function syncMinHeights(groups) {
-  const maxHeights = groups.map((els) => els
-    .filter((e) => !!e)
-    .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
-  await yieldToMain();
-  maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
-    if (e) e.style.minHeight = `${maxHeight}px`;
-  }));
+function decorateBillingToggle(card, placeholders, monthlyPlanID, yearlyPlanID) {
+  const toggle = createToggle(placeholders, [card.children[3],
+    card.children[4], card.children[5], card.children[6]], monthlyPlanID, yearlyPlanID);
+  card.insertBefore(toggle, card.children[3]);
 }
 
 export default async function init(el) {
   addTempWrapper(el, 'pricing-cards');
-  // For backwards compatability with old versions of the pricing card
-  const legacyVersion = el.querySelectorAll(':scope > div').length < 10;
-  const currentKeys = [...blockKeys];
-  if (legacyVersion) {
-    currentKeys.splice(1, 1);
-  }
-  const divs = currentKeys.map((_, index) => el.querySelectorAll(`:scope > div:nth-child(${index + 1}) > div`));
-
-  const cards = Array.from(divs[0]).map((_, index) => currentKeys.reduce((obj, key, keyIndex) => {
-    obj[key] = divs[keyIndex][index];
-    return obj;
-  }, {}));
-  el.querySelectorAll(':scope > div:not(:last-of-type)').forEach((d) => d.remove());
-  const cardsContainer = createTag('div', { class: 'cards-container' });
   const placeholders = await fetchPlaceholders();
-  const decoratedCards = await Promise.all(
-    cards.map((card) => decorateCard(card, el, placeholders, legacyVersion)),
-  );
-  decoratedCards.forEach((card) => cardsContainer.append(card));
+  const rows = Array.from(el.querySelectorAll(':scope > div'));
+  const cardCount = rows[0].children.length;
+  const cards = [];
 
-  const phoneNumberTags = [...cardsContainer.querySelectorAll('a')].filter(
-    (a) => a.title.includes(SALES_NUMBERS),
-  );
-  if (phoneNumberTags.length > 0) {
-    await formatSalesPhoneNumber(phoneNumberTags, SALES_NUMBERS);
-  }
-  el.classList.add('no-visible');
-  el.prepend(cardsContainer);
+  const firstRow = rows[0];
+  rows.splice(0, 1);
+  rows.splice(1, 0, firstRow);
+  /* eslint-disable no-await-in-loop */
+  for (let cardIndex = 0; cardIndex < cardCount; cardIndex += 1) {
+    const card = createTag('div', { class: 'card' });
+    decorateCardBorder(card, rows[0].children[0]);
+    decorateHeader(rows[1].children[0], rows[2].children[0]);
+    const monthlyPlanID = await createPricingSection(placeholders, rows[3].children[0],
+      rows[4].children[0], rows[0].children[0], true);
+    const yearlyPlanID = await createPricingSection(placeholders, rows[5].children[0],
+      rows[6].children[0], rows[0].children[0]);
+    rows[7].children[0].classList.add('card-feature-list');
+    rows[8].children[0].classList.add('compare-all');
 
-  const groups = [
-    cards.map(({ header }) => header),
-    cards.map(({ explain }) => explain),
-    cards.reduce((acc, card) => [...acc, card.mCtaGroup, card.yCtaGroup], []),
-    [...el.querySelectorAll('.pricing-area')],
-    cards.map(({ featureList }) => featureList.querySelector('p')),
-    cards.map(({ featureList }) => featureList),
-    cards.map(({ compare }) => compare),
-  ];
-  const decoratedCardEls = [...cardsContainer.querySelectorAll('.card')];
-  const synchedItems = groups.flat();
-  synchedItems.forEach((item) => {
-    // elements with js-controlled heights need border-box
-    if (item) item.style.boxSizing = 'border-box';
-  });
-  const undoSyncHeights = () => {
-    synchedItems.forEach((item) => {
-      item.style?.removeProperty('min-height');
-    });
-  };
-  const doSyncHeights = () => {
-    // possible 2 card in row 1 and 3rd card in row 2
-    const yPositions = decoratedCardEls.map((c) => c.getBoundingClientRect().top);
-    const positionGroups = [];
-    // positionGroups -> [2,1]
-    yPositions.forEach((yPosition, i) => {
-      // accounting for pixel lineup issues
-      if (i === 0 || Math.abs(yPosition - yPositions[i - 1]) > 6) {
-        positionGroups.push(1);
-      } else {
-        positionGroups[positionGroups.length - 1] += 1;
-      }
-    });
-    if (positionGroups.length === cards.length) {
-      // no sync when 1 card per row
-      undoSyncHeights();
-      return;
+    for (let j = 0; j < rows.length - 1; j += 1) {
+      card.appendChild(rows[j].children[0]);
     }
-    const groupsByTop = [];
-    // [[h1, h2, h3], [e1, e2, e3], [m1,y1,m2,y2,m3,y3]] + [2,1]
-    // -> [[h1, h2], [h3], [e1, e2], [e3], [m1, m2, y1, y2], [m3, y3]]
-    groups.forEach((group) => {
-      for (let prev = 0, i = 0; i < positionGroups.length; i += 1) {
-        const span = positionGroups[i] * (group.length / cards.length);
-        groupsByTop.push(group.slice(prev, prev + span));
-        prev += span;
-      }
-    });
-    syncMinHeights(groupsByTop);
-  };
-  window.addEventListener('resize', debounce(() => {
-    doSyncHeights();
-  }, 100));
+    cards.push(card);
+    decorateBillingToggle(card, placeholders, monthlyPlanID, yearlyPlanID);
+  }
+
+  el.innerHTML = '';
+  el.appendChild(createTag('div', { class: 'card-wrapper' }));
+  for (const card of cards) {
+    el.children[0].appendChild(card);
+  }
+  el.appendChild(rows[rows.length - 1]);
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        doSyncHeights();
-        el.classList.remove('no-visible');
+        equalizeHeights(el);
+        observer.unobserve(entry.target);
+        adjustElementPosition();
       }
-      adjustElementPosition();
     });
   });
 
-  observer.observe(el);
-  tagFreePlan(cardsContainer);
+  document.querySelectorAll('.card').forEach((column) => {
+    observer.observe(column);
+  });
 
-  window.addEventListener('resize', adjustElementPosition);
+  window.addEventListener('load', () => equalizeHeights(el));
+  window.addEventListener('resize', () => equalizeHeights(el));
 }
