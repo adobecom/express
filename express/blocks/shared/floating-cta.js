@@ -114,198 +114,207 @@ function buildLottieArrow(wrapper, floatingBtn, data) {
   floatingBtn.append(lottieScrollButton);
 
   // Floating button scroll/click events
-  lazyLoadLottiePlayer();
-  const scrollAnchor = document.querySelector('.section:not(:nth-child(1)):not(:nth-child(2)) .template-list, .section:not(:nth-child(1)):not(:nth-child(2)) .layouts, .section:not(:nth-child(1)):not(:nth-child(2)) .steps-highlight-container') ?? document.querySelector('.section:nth-child(3)');
-  if (!scrollAnchor) {
-    hideScrollArrow(wrapper, lottieScrollButton);
-  } else {
-    initLottieArrow(lottieScrollButton, wrapper, scrollAnchor, data);
-  }
+  // lazyLoadLottiePlayer();
+  // const scrollAnchor = document.querySelector('.section:not(:nth-child(1)):not(:nth-child(2)) .template-list, .section:not(:nth-child(1)):not(:nth-child(2)) .layouts, .section:not(:nth-child(1)):not(:nth-child(2)) .steps-highlight-container') ?? document.querySelector('.section:nth-child(3)');
+  // if (!scrollAnchor) {
+  //   hideScrollArrow(wrapper, lottieScrollButton);
+  // } else {
+  //   initLottieArrow(lottieScrollButton, wrapper, scrollAnchor, data);
+  // }
 
   return lottieScrollButton;
 }
 
 export function createFloatingButton(block, audience, data) {
-  const aTag = makeCTAFromSheet(block, data);
+  const aTag = createTag('a')
+  aTag.href = 'www.adobe.com'
+  aTag.textContent = 'Get started'
+  //makeCTAFromSheet(block, data);
+ 
+  const floatButtonWrapper = createTag('div', { class: 'floating-button-wrapper-test' });
   const main = document.querySelector('main');
-  loadStyle('/express/blocks/shared/floating-cta.css');
+  floatButtonWrapper.append(aTag)
+  main.append(floatButtonWrapper)
+  return floatButtonWrapper
+  // const main = document.querySelector('main');
+  // loadStyle('/express/blocks/shared/floating-cta.css');
 
-  // Floating button html
-  const floatButtonLink = aTag.cloneNode(true);
-  floatButtonLink.className = '';
-  floatButtonLink.classList.add('button', 'gradient', 'xlarge');
+  // // Floating button html
+  // const floatButtonLink = aTag.cloneNode(true);
+  // floatButtonLink.className = '';
+  // floatButtonLink.classList.add('button', 'gradient', 'xlarge');
 
-  // Change font size when text is too long
-  function outputsize() {
-    const floatButtonLinkStyle = window.getComputedStyle(floatButtonLink);
-    const lineHeight = floatButtonLinkStyle.getPropertyValue('line-height');
-    const lineHeightInt = +lineHeight.replace('px', '');
+  // // Change font size when text is too long
+  // function outputsize() {
+  //   const floatButtonLinkStyle = window.getComputedStyle(floatButtonLink);
+  //   const lineHeight = floatButtonLinkStyle.getPropertyValue('line-height');
+  //   const lineHeightInt = +lineHeight.replace('px', '');
 
-    // To figure out the available vertical space for text
-    const paddingTop = floatButtonLinkStyle.getPropertyValue('padding-top');
-    const paddingTopInt = +paddingTop.replace('px', '');
-    const paddingBottom = floatButtonLinkStyle.getPropertyValue('padding-bottom');
-    const paddingBottomInt = +paddingBottom.replace('px', '');
-    const availableHeight = floatButtonLink.offsetHeight - paddingTopInt - paddingBottomInt;
+  //   // To figure out the available vertical space for text
+  //   const paddingTop = floatButtonLinkStyle.getPropertyValue('padding-top');
+  //   const paddingTopInt = +paddingTop.replace('px', '');
+  //   const paddingBottom = floatButtonLinkStyle.getPropertyValue('padding-bottom');
+  //   const paddingBottomInt = +paddingBottom.replace('px', '');
+  //   const availableHeight = floatButtonLink.offsetHeight - paddingTopInt - paddingBottomInt;
 
-    const numberOfLines = availableHeight / lineHeightInt;
-    if (numberOfLines >= 2) {
-      floatButtonLink.style.fontSize = '0.8rem';
-      floatButtonLink.style.paddingLeft = '0.8rem';
-      floatButtonLink.style.paddingRight = '0.8rem';
-    }
-  }
+  //   const numberOfLines = availableHeight / lineHeightInt;
+  //   if (numberOfLines >= 2) {
+  //     floatButtonLink.style.fontSize = '0.8rem';
+  //     floatButtonLink.style.paddingLeft = '0.8rem';
+  //     floatButtonLink.style.paddingRight = '0.8rem';
+  //   }
+  // }
 
-  new ResizeObserver(outputsize).observe(floatButtonLink);
+  // new ResizeObserver(outputsize).observe(floatButtonLink);
 
-  // Hide CTAs with same url & text as the Floating CTA && is NOT a Floating CTA (in mobile/tablet)
-  const aTagURL = new URL(aTag.href);
-  const sameUrlCTAs = Array.from(main.querySelectorAll('a.button:any-link'))
-    .filter((a) => (
-      a.textContent.trim() === aTag.textContent.trim()
-      || (new URL(a.href).pathname === aTagURL.pathname && new URL(a.href).hash === aTagURL.hash))
-      && !a.parentElement.parentElement.classList.contains('floating-button'));
-  sameUrlCTAs.forEach((cta) => {
-    cta.classList.add('same-fcta');
-  });
+  // // Hide CTAs with same url & text as the Floating CTA && is NOT a Floating CTA (in mobile/tablet)
+  // const aTagURL = new URL(aTag.href);
+  // const sameUrlCTAs = Array.from(main.querySelectorAll('a.button:any-link'))
+  //   .filter((a) => (
+  //     a.textContent.trim() === aTag.textContent.trim()
+  //     || (new URL(a.href).pathname === aTagURL.pathname && new URL(a.href).hash === aTagURL.hash))
+  //     && !a.parentElement.parentElement.classList.contains('floating-button'));
+  // sameUrlCTAs.forEach((cta) => {
+  //   cta.classList.add('same-fcta');
+  // });
 
-  const floatButtonWrapperOld = aTag.closest('.floating-button-wrapper');
-  const floatButtonWrapper = createTag('div', { class: 'floating-button-wrapper' });
-  const floatButton = createTag('div', {
-    class: 'floating-button block',
-    'data-block-name': 'floating-button',
-    'data-block-status': 'loaded',
-    'data-block': '',
-  });
-  [...block.classList].filter((c) => c === 'closed').forEach((c) => floatButtonWrapper.classList.add(c));
-  const floatButtonInnerWrapper = createTag('div', { class: 'floating-button-inner-wrapper' });
-  const floatButtonBackground = createTag('div', { class: 'floating-button-background' });
+  // const floatButtonWrapperOld = aTag.closest('.floating-button-wrapper');
+  // const floatButtonWrapper = createTag('div', { class: 'floating-button-wrapper' });
+  // const floatButton = createTag('div', {
+  //   class: 'floating-button block',
+  //   'data-block-name': 'floating-button',
+  //   'data-block-status': 'loaded',
+  //   'data-block': '',
+  // });
+  // [...block.classList].filter((c) => c === 'closed').forEach((c) => floatButtonWrapper.classList.add(c));
+  // const floatButtonInnerWrapper = createTag('div', { class: 'floating-button-inner-wrapper' });
+  // const floatButtonBackground = createTag('div', { class: 'floating-button-background' });
 
-  if (audience) {
-    floatButtonWrapper.dataset.audience = audience;
-    floatButtonWrapper.dataset.sectionStatus = 'loaded';
-  }
+  // if (audience) {
+  //   floatButtonWrapper.dataset.audience = audience;
+  //   floatButtonWrapper.dataset.sectionStatus = 'loaded';
+  // }
 
-  floatButtonInnerWrapper.append(floatButtonBackground, floatButtonLink);
-  floatButton.append(floatButtonInnerWrapper);
-  floatButtonWrapper.append(floatButton);
-  main.append(floatButtonWrapper);
-  if (floatButtonWrapperOld) {
-    const parent = floatButtonWrapperOld.parentElement;
-    if (parent && parent.children.length === 1) {
-      parent.remove();
-    } else {
-      floatButtonWrapperOld.remove();
-    }
-  }
+  // floatButtonInnerWrapper.append(floatButtonBackground, floatButtonLink);
+  // floatButton.append(floatButtonInnerWrapper);
+  // floatButtonWrapper.append(floatButton);
+  // main.append(floatButtonWrapper);
+  // if (floatButtonWrapperOld) {
+  //   const parent = floatButtonWrapperOld.parentElement;
+  //   if (parent && parent.children.length === 1) {
+  //     parent.remove();
+  //   } else {
+  //     floatButtonWrapperOld.remove();
+  //   }
+  // }
 
-  const promoBar = BlockMediator.get('promobar');
-  const currentBottom = parseInt(floatButtonWrapper.style.bottom, 10);
-  let promoBarHeight;
-  if (promoBar) {
-    const promoBarMargin = parseInt(window.getComputedStyle(promoBar.block).marginBottom, 10);
-    promoBarHeight = promoBarMargin + promoBar.block.offsetHeight;
-  }
+  // const promoBar = BlockMediator.get('promobar');
+  // const currentBottom = parseInt(floatButtonWrapper.style.bottom, 10);
+  // let promoBarHeight;
+  // if (promoBar) {
+  //   const promoBarMargin = parseInt(window.getComputedStyle(promoBar.block).marginBottom, 10);
+  //   promoBarHeight = promoBarMargin + promoBar.block.offsetHeight;
+  // }
 
-  if (promoBar && promoBar.rendered && floatButtonWrapper.dataset.audience !== 'desktop') {
-    floatButton.style.bottom = currentBottom ? `${currentBottom + promoBarHeight}px` : `${promoBarHeight}px`;
-  } else {
-    floatButton.style.removeProperty('bottom');
-  }
+  // if (promoBar && promoBar.rendered && floatButtonWrapper.dataset.audience !== 'desktop') {
+  //   floatButton.style.bottom = currentBottom ? `${currentBottom + promoBarHeight}px` : `${promoBarHeight}px`;
+  // } else {
+  //   floatButton.style.removeProperty('bottom');
+  // }
 
-  BlockMediator.subscribe('promobar', (e) => {
-    if (!e.newValue.rendered && floatButtonWrapper.dataset.audience !== 'desktop') {
-      floatButton.style.bottom = currentBottom ? `${currentBottom - promoBarHeight}px` : '';
-    } else {
-      floatButton.style.removeProperty('bottom');
-    }
-  });
+  // BlockMediator.subscribe('promobar', (e) => {
+  //   if (!e.newValue.rendered && floatButtonWrapper.dataset.audience !== 'desktop') {
+  //     floatButton.style.bottom = currentBottom ? `${currentBottom - promoBarHeight}px` : '';
+  //   } else {
+  //     floatButton.style.removeProperty('bottom');
+  //   }
+  // });
 
-  // Intersection observer - hide button when scrolled to footer
-  const footer = document.querySelector('footer');
-  if (footer) {
-    const hideButtonWhenFooter = new IntersectionObserver((entries) => {
-      const entry = entries[0];
-      if (entry.intersectionRatio > 0 || entry.isIntersecting) {
-        floatButtonWrapper.classList.add('floating-button--hidden');
-        floatButton.style.bottom = '0px';
-      } else {
-        floatButtonWrapper.classList.remove('floating-button--hidden');
-        if (promoBar && promoBar.block) {
-          floatButton.style.bottom = currentBottom ? `${currentBottom + promoBarHeight}px` : `${promoBarHeight}px`;
-        } else if (currentBottom) {
-          floatButton.style.bottom = currentBottom;
-        }
-      }
-    }, {
-      root: null,
-      rootMargin: '32px',
-      threshold: 0,
-    });
+  // // Intersection observer - hide button when scrolled to footer
+  // const footer = document.querySelector('footer');
+  // if (footer) {
+  //   const hideButtonWhenFooter = new IntersectionObserver((entries) => {
+  //     const entry = entries[0];
+  //     if (entry.intersectionRatio > 0 || entry.isIntersecting) {
+  //       floatButtonWrapper.classList.add('floating-button--hidden');
+  //       floatButton.style.bottom = '0px';
+  //     } else {
+  //       floatButtonWrapper.classList.remove('floating-button--hidden');
+  //       if (promoBar && promoBar.block) {
+  //         floatButton.style.bottom = currentBottom ? `${currentBottom + promoBarHeight}px` : `${promoBarHeight}px`;
+  //       } else if (currentBottom) {
+  //         floatButton.style.bottom = currentBottom;
+  //       }
+  //     }
+  //   }, {
+  //     root: null,
+  //     rootMargin: '32px',
+  //     threshold: 0,
+  //   });
 
-    if (document.readyState === 'complete') {
-      hideButtonWhenFooter.observe(footer);
-    } else {
-      window.addEventListener('load', () => {
-        hideButtonWhenFooter.observe(footer);
-      });
-    }
-  }
+  //   if (document.readyState === 'complete') {
+  //     hideButtonWhenFooter.observe(footer);
+  //   } else {
+  //     window.addEventListener('load', () => {
+  //       hideButtonWhenFooter.observe(footer);
+  //     });
+  //   }
+  // }
 
-  document.dispatchEvent(new CustomEvent('floatingbuttonloaded', {
-    detail: {
-      block: floatButtonWrapper,
-    },
-  }));
+  // document.dispatchEvent(new CustomEvent('floatingbuttonloaded', {
+  //   detail: {
+  //     block: floatButtonWrapper,
+  //   },
+  // }));
 
-  const heroCTA = document.querySelector('a.button.same-fcta');
-  if (heroCTA) {
-    const hideButtonWhenIntersecting = new IntersectionObserver(([e]) => {
-      if (e.boundingClientRect.top > window.innerHeight - 40 || e.boundingClientRect.top === 0) {
-        floatButtonWrapper.classList.remove('floating-button--below-the-fold');
-        floatButtonWrapper.classList.add('floating-button--above-the-fold');
-      } else {
-        floatButtonWrapper.classList.add('floating-button--below-the-fold');
-        floatButtonWrapper.classList.remove('floating-button--above-the-fold');
-      }
-      if (e.intersectionRatio > 0 || e.isIntersecting) {
-        floatButtonWrapper.classList.add('floating-button--intersecting');
-        floatButton.style.bottom = '0px';
-      } else {
-        floatButtonWrapper.classList.remove('floating-button--intersecting');
-        if (promoBar && promoBar.block) {
-          floatButton.style.bottom = currentBottom ? `${currentBottom + promoBarHeight}px` : `${promoBarHeight}px`;
-        } else if (currentBottom) {
-          floatButton.style.bottom = currentBottom;
-        }
-      }
-    }, {
-      root: null,
-      rootMargin: '-40px 0px',
-      threshold: 0,
-    });
-    if (document.readyState === 'complete') {
-      hideButtonWhenIntersecting.observe(heroCTA);
-    } else {
-      window.addEventListener('load', () => {
-        hideButtonWhenIntersecting.observe(heroCTA);
-      });
-    }
-  } else {
-    floatButtonWrapper.classList.add('floating-button--above-the-fold');
-  }
+  // const heroCTA = document.querySelector('a.button.same-fcta');
+  // if (heroCTA) {
+  //   const hideButtonWhenIntersecting = new IntersectionObserver(([e]) => {
+  //     if (e.boundingClientRect.top > window.innerHeight - 40 || e.boundingClientRect.top === 0) {
+  //       floatButtonWrapper.classList.remove('floating-button--below-the-fold');
+  //       floatButtonWrapper.classList.add('floating-button--above-the-fold');
+  //     } else {
+  //       floatButtonWrapper.classList.add('floating-button--below-the-fold');
+  //       floatButtonWrapper.classList.remove('floating-button--above-the-fold');
+  //     }
+  //     if (e.intersectionRatio > 0 || e.isIntersecting) {
+  //       floatButtonWrapper.classList.add('floating-button--intersecting');
+  //       floatButton.style.bottom = '0px';
+  //     } else {
+  //       floatButtonWrapper.classList.remove('floating-button--intersecting');
+  //       if (promoBar && promoBar.block) {
+  //         floatButton.style.bottom = currentBottom ? `${currentBottom + promoBarHeight}px` : `${promoBarHeight}px`;
+  //       } else if (currentBottom) {
+  //         floatButton.style.bottom = currentBottom;
+  //       }
+  //     }
+  //   }, {
+  //     root: null,
+  //     rootMargin: '-40px 0px',
+  //     threshold: 0,
+  //   });
+  //   if (document.readyState === 'complete') {
+  //     hideButtonWhenIntersecting.observe(heroCTA);
+  //   } else {
+  //     window.addEventListener('load', () => {
+  //       hideButtonWhenIntersecting.observe(heroCTA);
+  //     });
+  //   }
+  // } else {
+  //   floatButtonWrapper.classList.add('floating-button--above-the-fold');
+  // }
 
-  if (data.useLottieArrow) {
-    const lottieScrollButton = buildLottieArrow(floatButtonWrapper, floatButton, data);
-    document.dispatchEvent(new CustomEvent('linkspopulated', { detail: [floatButtonLink, lottieScrollButton] }));
-  } else {
-    data.scrollState = 'withoutLottie';
-    floatButtonWrapper.classList.add('floating-button--scrolled');
-    document.dispatchEvent(new CustomEvent('linkspopulated', { detail: [floatButtonLink] }));
-  }
+  // if (data.useLottieArrow) {
+  //   const lottieScrollButton = buildLottieArrow(floatButtonWrapper, floatButton, data);
+  //   document.dispatchEvent(new CustomEvent('linkspopulated', { detail: [floatButtonLink, lottieScrollButton] }));
+  // } else {
+  //   data.scrollState = 'withoutLottie';
+  //   floatButtonWrapper.classList.add('floating-button--scrolled');
+  //   document.dispatchEvent(new CustomEvent('linkspopulated', { detail: [floatButtonLink] }));
+  // }
 
-  decorateLinks(floatButtonWrapper);
-  return floatButtonWrapper;
+  // decorateLinks(floatButtonWrapper);
+  // return floatButtonWrapper;
 }
 
 const CTA_ICON_COUNT = 7;
@@ -414,21 +423,21 @@ export function initToolBox(wrapper, data, toggleFunction) {
   const notch = wrapper.querySelector('.notch');
   const background = wrapper.querySelector('.toolbox-background');
 
-  cta.addEventListener('click', (e) => {
-    if (!wrapper.classList.contains('toolbox-opened')) {
-      e.preventDefault();
-      e.stopPropagation();
-      toggleFunction(wrapper, lottie, data);
-    }
-  });
+  // cta.addEventListener('click', (e) => {
+  //   if (!wrapper.classList.contains('toolbox-opened')) {
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     toggleFunction(wrapper, lottie, data);
+  //   }
+  // });
 
-  [toggleButton, notch, background].forEach((element) => {
-    if (element) {
-      element.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleFunction(wrapper, lottie, data);
-      });
-    }
-  });
+  // [toggleButton, notch, background].forEach((element) => {
+  //   if (element) {
+  //     element.addEventListener('click', (e) => {
+  //       e.preventDefault();
+  //       e.stopPropagation();
+  //       toggleFunction(wrapper, lottie, data);
+  //     });
+  //   }
+  // });
 }

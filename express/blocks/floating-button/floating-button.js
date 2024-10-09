@@ -28,12 +28,12 @@ export default function decorate(block) {
     data,
   );
 
-  const blockLinks = blockWrapper.querySelectorAll('a');
-  if (blockLinks && blockLinks.length > 0) {
-    formatDynamicCartLink(blockLinks[0]);
-    const linksPopulated = new CustomEvent('linkspopulated', {
-      detail: blockLinks,
-    });
-    document.dispatchEvent(linksPopulated);
-  }
+//  const blockLinks = blockWrapper.querySelectorAll('a');
+  // if (blockLinks && blockLinks.length > 0) {
+  //   formatDynamicCartLink(blockLinks[0]);
+  //   const linksPopulated = new CustomEvent('linkspopulated', {
+  //     detail: blockLinks,
+  //   });
+  //   document.dispatchEvent(linksPopulated);
+  // }
 }

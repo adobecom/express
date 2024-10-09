@@ -27,6 +27,9 @@ main .floating-button-wrapper {
     transition: bottom 0.6s ease-out, opacity 0.6s ease-out, height 0.6s ease-out, background 0.6s, padding-bottom 0.6s;
     height: 150px;
 }
+
+
+
 main .floating-button-wrapper.push-up {
     padding-bottom: 96px;
 }
