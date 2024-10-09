@@ -80,7 +80,7 @@ function initRotation(howToWindow, howToDocument, isVideoVariant) {
   }
 }
 
-function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant) {
+function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant = false) {
   // join wrappers together
 
   console.log("=== BUILDING ", section, block, howToDocument, rows, howToWindow)
@@ -128,7 +128,6 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
     const text = createTag('div', { class: 'tip-text' });
     text.append(h3);
     text.append(cells[1]);
-    // text.append("<div>hello world</div>")
 
     row.innerHTML = '';
     row.append(text);
@@ -274,10 +273,6 @@ export default async function decorate(block) {
   const howto = block;
   const rows = Array.from(howto.children);
   let picture;
-// let imageURL;
-// let mediaContainer;
-
-
 
 if (isVideoVariant) {
 
@@ -313,9 +308,6 @@ if (isVideoVariant) {
     const placeholderImgUrl = createTag('div');
     const placeholders = await fetchPlaceholders();
     const url = placeholders['how-to-steps-carousel-image-app'];
-    // imageURL = url;
-
-    console.log("=== URL", url)
 
     const alt = block.querySelector('picture > img').getAttribute('alt');
     const eagerLoad = document.querySelector('.block') === block;
@@ -341,9 +333,6 @@ if (isVideoVariant) {
     picture = backgroundPic;
     section.prepend(picture);
 
-
-
-
      loadImage(backgroundPicImg).then(() => {
       backgroundPicImg.width = canvasWidth;
       const canvas = createTag('canvas', { width: canvasWidth, height: canvasHeight });
@@ -366,13 +355,6 @@ if (isVideoVariant) {
             img.alt = alt;
             backgroundPicImg.remove();
             setPictureHeight(block, true);
-            const videoThumbnails = block.querySelectorAll(':scope img.video-thumbnail');
-            console.log("=== videoThumbnails", videoThumbnails)
-            // if (videoThumbnails) {
-            for (const img of videoThumbnails) {
-              img.src = blobUrl;
-            }
-            // }
           });
         });
       });
