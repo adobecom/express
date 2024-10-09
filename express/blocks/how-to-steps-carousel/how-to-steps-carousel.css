@@ -241,5 +241,5 @@ main div:has(> .how-to-steps-carousel.video) {
 }
 
 main div:has(> .video-how-to-steps-carousel) {
-  align-items: center;
+  /* align-items: center; */
 }
