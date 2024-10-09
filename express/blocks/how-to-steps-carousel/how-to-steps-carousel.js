@@ -77,8 +77,7 @@ function initRotation(howToWindow, howToDocument, isVideoVariant) {
   }
 }
 
-function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow,
-                                 isVideoVariant = false) {
+function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant) {
   // join wrappers together
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
     if (i === 0) {
