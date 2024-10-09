@@ -85,6 +85,7 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
 
   console.log("=== BUILDING ", section, block, howToDocument, rows, howToWindow)
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
+    console.log("=== look at wrapper", i, wrapper)
     if (i === 0) {
       // add block to first wrapper
       wrapper.append(block);
@@ -117,6 +118,7 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
   block.append(tips);
 
   rows.forEach((row, i) => {
+    console.log("=== look at row", row)
     row.classList.add('tip');
     row.classList.add(`tip-${i + 1}`);
     row.setAttribute('data-tip-index', i + 1);
@@ -260,6 +262,7 @@ function layerTemplateImage(canvas, ctx, templateImg) {
 }
 
 export default async function decorate(block) {
+  //return;
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
 
@@ -278,6 +281,10 @@ if (isVideoVariant) {
 
   console.log("=== rows", JSON.stringify(rows))
   const videoData = rows.shift();
+
+  // remove the added social link from the block DOM
+  block.removeChild(block.children[0]);
+
   console.log("=== rows", JSON.stringify(rows))
 
   console.log("=== videoData", videoData)
@@ -366,5 +373,6 @@ if (isVideoVariant) {
     parent.remove();
     section.prepend(picture);
   }
+  console.log("=== rows right before buildHowToStepsCarousel", JSON.stringify(rows), rows, rows.map(e => e.innerHTML));
   buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant);
 }
