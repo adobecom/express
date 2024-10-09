@@ -306,8 +306,7 @@ export default async function decorate(block) {
     templateImg.removeAttribute('width');
     templateImg.removeAttribute('height');
     backgroundPicImg.style.width = `${canvasWidth}px`;
-    if (window.screen.width < 600)
-      backgroundPicImg.style.height = `${window.screen.width * 0.536}px`;
+    if (window.screen.width < 600) backgroundPicImg.style.height = `${window.screen.width * 0.536}px`;
     picture = backgroundPic;
     section.prepend(picture);
 
@@ -324,7 +323,6 @@ export default async function decorate(block) {
           const img = createTag('img');
           canvas.toBlob((blob) => {
             const blobUrl = URL.createObjectURL(blob);
-
             img.src = blobUrl;
             backgroundPic.append(img);
             img.alt = alt;
