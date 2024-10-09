@@ -61,20 +61,17 @@ function initNotchDragAction(block) {
 export default function decorate(block) {
   addTempWrapper(block, 'split-action');
 
-  const section = block.closest('.section');
+  block.classList.add('hidden');
+  block.classList.add('transparent');
+
   const buttonsWrapper = createTag('div', { class: 'buttons-wrapper' });
   const blockBackground = createTag('div', { class: 'block-background' });
+  const blockBody = createTag('div', { class: 'block-body' });
   const underlay = createTag('a', { class: 'underlay' });
   const notch = createTag('a', { class: 'notch' });
   const notchPill = createTag('div', { class: 'notch-pill' });
-  const blockWrapper = block.parentNode;
 
   let hrefHolder;
-
-  if (section) {
-    section.classList.add('hidden');
-    section.classList.add('transparent');
-  }
 
   block.prepend(getIconElement('adobe-express-white'));
 
@@ -100,15 +97,15 @@ export default function decorate(block) {
     }
   });
 
-  if (!hrefHolder) {
-    block.remove();
-    return;
-  }
+  // if (!hrefHolder) {
+  //   block.remove();
+  //   return;
+  // }
 
   notch.append(notchPill);
   blockBackground.append(underlay);
-  blockWrapper.append(blockBackground);
-  block.append(notch, buttonsWrapper);
+  block.append(blockBackground, blockBody);
+  blockBody.append(notch, buttonsWrapper);
 
   [notch, underlay].forEach((element) => {
     element.addEventListener('click', () => {
