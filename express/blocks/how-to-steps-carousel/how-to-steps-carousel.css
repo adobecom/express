@@ -216,7 +216,7 @@ main .video-how-to-steps-carousel {
   }
 
   main .video-how-to-steps-carousel {
-    margin: 92px 0 0 24px;
+    margin: 220px 0 0 24px;
     width: calc((100% - 72px) * 0.4);
   }
 
@@ -227,6 +227,12 @@ main .video-how-to-steps-carousel {
 
 @media (min-width: 900px) {
   main .video-how-to-steps-carousel {
-    margin-left: 80px;
+    margin: 220px 0 0 80px;
+  }
+}
+
+@media (min-width: 1200px) {
+  main .video-how-to-steps-carousel {
+    margin-top: 138px;
   }
 }
