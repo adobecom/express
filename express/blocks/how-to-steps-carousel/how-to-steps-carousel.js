@@ -6,7 +6,7 @@ import {
   fetchPlaceholders,
 } from '../../scripts/utils.js';
 
-import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
+import { embedYoutube } from '../../scripts/embed-videos.js';
 
 let rotationInterval;
 let fixedImageSize = false;
@@ -77,9 +77,9 @@ function initRotation(howToWindow, howToDocument, isVideoVariant) {
   }
 }
 
-function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant = false) {
+function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow,
+                                 isVideoVariant = false) {
   // join wrappers together
-
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
     if (i === 0) {
       // add block to first wrapper
@@ -225,27 +225,27 @@ function layerTemplateImage(canvas, ctx, templateImg) {
   return new Promise((outerResolve) => {
     let prevWidth;
     const drawImage = (centerX, centerY, maxWidth, maxHeight) => new Promise((resolve) => {
-        const obs = new ResizeObserver((changes) => {
-          for (const change of changes) {
-            if (change.contentRect.width === prevWidth) return;
-            prevWidth = change.contentRect.width;
-            if (prevWidth <= maxWidth && change.contentRect.height <= maxHeight) {
-              ctx.save();
-            roundedImage(centerX - (templateImg.width / 2), centerY - (templateImg.height / 2),
-              templateImg.width, templateImg.height, 7, ctx);
-              ctx.clip();
-            ctx.drawImage(templateImg, 0, 0, templateImg.naturalWidth,
-              templateImg.naturalHeight, centerX - (templateImg.width / 2),
-              centerY - (templateImg.height / 2), templateImg.width, templateImg.height);
-              ctx.restore();
-              obs.disconnect();
-              resolve();
-            }
+      const obs = new ResizeObserver((changes) => {
+        for (const change of changes) {
+          if (change.contentRect.width === prevWidth) return;
+          prevWidth = change.contentRect.width;
+          if (prevWidth <= maxWidth && change.contentRect.height <= maxHeight) {
+            ctx.save();
+          roundedImage(centerX - (templateImg.width / 2), centerY - (templateImg.height / 2),
+            templateImg.width, templateImg.height, 7, ctx);
+            ctx.clip();
+          ctx.drawImage(templateImg, 0, 0, templateImg.naturalWidth,
+            templateImg.naturalHeight, centerX - (templateImg.width / 2),
+            centerY - (templateImg.height / 2), templateImg.width, templateImg.height);
+            ctx.restore();
+            obs.disconnect();
+            resolve();
           }
-        });
-        obs.observe(templateImg);
-        templateImg.style.maxWidth = `${maxWidth}px`;
-        templateImg.style.maxHeight = `${maxHeight}px`;
+        }
+      });
+      obs.observe(templateImg);
+      templateImg.style.maxWidth = `${maxWidth}px`;
+      templateImg.style.maxHeight = `${maxHeight}px`;
       });
 
     // start and end areas were directly measured and transferred from the spec image
@@ -256,7 +256,6 @@ function layerTemplateImage(canvas, ctx, templateImg) {
 }
 
 export default async function decorate(block) {
-  //return;
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
 
