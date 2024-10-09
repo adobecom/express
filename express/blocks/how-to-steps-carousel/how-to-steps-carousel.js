@@ -6,12 +6,12 @@ import {
   fetchPlaceholders,
 } from '../../scripts/utils.js';
 
-import {
-  playInlineVideo,
-  displayVideoModal,
-  hideVideoModal,
+// import {
+//   playInlineVideo,
+//   displayVideoModal,
+//   hideVideoModal,
 
-} from '../shared/video.js';
+// } from '../shared/video.js';
 
 import { embedYoutube, embedVimeo } from '../../scripts/embed-videos.js';
 
@@ -87,10 +87,10 @@ function initRotation(howToWindow, howToDocument, isVideoVariant) {
   }
 }
 
-function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, imageURL, isVideoVariant) {
+function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant) {
   // join wrappers together
 
-  console.log("=== BUILDING ", section, block, howToDocument, rows, howToWindow, imageURL)
+  console.log("=== BUILDING ", section, block, howToDocument, rows, howToWindow)
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
     if (i === 0) {
       // add block to first wrapper
@@ -143,13 +143,13 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
     // row.append("<a href='#'>View</a>")
     // row.append("<div>hello</div>")
 
-    const videoIntro = createTag('div', { class: 'video-intro'});
-    videoIntro.innerHTML = "Watch it in video:"
-    const videoLink = createTag('a', { class: 'video-link', href: '#' });
+    // const videoIntro = createTag('div', { class: 'video-intro'});
+    // videoIntro.innerHTML = "Watch it in video:"
+    // const videoLink = createTag('a', { class: 'video-link', href: '#' });
 
-    const img = createTag('img', { class: 'video-thumbnail', src: imageURL });
+    // const img = createTag('img', { class: 'video-thumbnail', src: imageURL });
 
-    videoLink.append(img);
+    // videoLink.append(img);
 
     // row.append(videoIntro);
     // row.append(videoLink);
@@ -312,8 +312,8 @@ export default async function decorate(block) {
   const howto = block;
   const rows = Array.from(howto.children);
   let picture;
-let imageURL;
-let mediaContainer;
+// let imageURL;
+// let mediaContainer;
 
 
 
@@ -329,7 +329,10 @@ if (isVideoVariant) {
 
   // playInlineVideo(imageContainer, vidUrls, 'youtube', 'some title')
 
+
+  console.log("=== rows", JSON.stringify(rows))
   const videoData = rows.shift();
+  console.log("=== rows", JSON.stringify(rows))
 
   console.log("=== videoData", videoData)
 
@@ -337,14 +340,18 @@ if (isVideoVariant) {
 
   console.log("=== videoLink", videoLink)
 
-  const youtubeURL = videoLink.href;
+  const youtubeURL = videoLink?.href;
 
   // 'https://www.youtube.com/watch?v=9jWlqX46apI';
 
   const url = new URL(youtubeURL);
 
-  const mediaContainer = embedYoutube(url);
-  section.prepend(mediaContainer)
+  // const mediaContainer = createTag('div', { class: 'video-container' });
+
+  const videoEl = embedYoutube(url);
+
+  // mediaContainer.append(videoEl);
+  section.prepend(videoEl)
   // imageContainer.append(another)
 
   } else if (image) {
@@ -355,7 +362,7 @@ if (isVideoVariant) {
     const placeholderImgUrl = createTag('div');
     const placeholders = await fetchPlaceholders();
     const url = placeholders['how-to-steps-carousel-image-app'];
-    imageURL = url;
+    // imageURL = url;
 
     console.log("=== URL", url)
 
@@ -427,5 +434,5 @@ if (isVideoVariant) {
     parent.remove();
     section.prepend(picture);
   }
-  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, imageURL, isVideoVariant);
+  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant);
 }
