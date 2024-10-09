@@ -295,6 +295,7 @@ if (isVideoVariant) {
   // const mediaContainer = createTag('div', { class: 'video-container' });
 
   const videoEl = embedYoutube(url);
+  videoEl.classList.add('video-how-to-steps-carousel')
 
   // mediaContainer.append(videoEl);
   section.prepend(videoEl)

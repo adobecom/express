@@ -238,3 +238,11 @@ main .how-to-steps-carousel-container lite-youtube {
 main div:has(> .how-to-steps-carousel.video) {
   width: 30%;
 }
+
+main div:has(> .how-to-steps-carousel.video) {
+  width: 30%;
+}
+
+main div:has(> .video-how-to-steps-carousel) {
+  align-items: center;
+}
