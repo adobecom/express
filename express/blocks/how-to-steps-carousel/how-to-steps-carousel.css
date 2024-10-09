@@ -240,11 +240,11 @@ main .video-how-to-steps-carousel {
 
   main .video-how-to-steps-carousel {
     margin: 220px 0 0 24px;
-    width: calc((100% - 72px) / 2);
+    width: calc((100% - 72px) * 0.4);
   }
 
   main div:has(> .how-to-steps-carousel.video) {
-    width: calc((100% - 72px) / 2);
+    width: calc((100% - 72px) * 0.6 - 176px);
   }
 }
 
