@@ -98,9 +98,7 @@ function getMimeType(src) {
   return `video/${src.split('.').pop()}`;
 }
 
-export function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
-
-  console.log("=== in playInlineVideo, $element, vidUrls = [], playerType, title, ts", $element, vidUrls, playerType, title, ts)
+function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
   const [primaryUrl] = vidUrls;
   if (!primaryUrl) return;
   if (playerType === 'html5') {
@@ -180,8 +178,6 @@ export function playInlineVideo($element, vidUrls = [], playerType, title, ts) {
 
       $element.replaceChildren($iframe);
     } else {
-
-      console.log("=== coming into iframe 3rd party player")
       // iframe 3rd party player
       const $iframe = createTag('iframe', {
         title,
