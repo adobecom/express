@@ -44,6 +44,8 @@ const config = {
   local: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
   stage: { express: 'stage.projectx.corp.adobe.com', commerce: 'commerce-stg.adobe.com' },
   prod: { express: 'express.adobe.com', commerce: 'commerce.adobe.com' },
+  geoRouting: 'on',
+  fallbackRouting: 'on',
   locales,
   codeRoot: '/express',
   contentRoot: '/express',
