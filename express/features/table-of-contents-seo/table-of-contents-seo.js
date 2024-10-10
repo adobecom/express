@@ -180,18 +180,20 @@ function addTOCEntries(toc, config, doc) {
   const useEllipsis = config['toc-content-ellipsis'];
 
   Object.keys(config).forEach((key) => {
-    if (key.startsWith('content-')) {
+    if (key.startsWith('content-') && !key.endsWith('-short')) {
       const tocItem = createTag('div', { class: 'toc-entry' });
-      let headingText;
+
+      const shortKey = `${key}-short`;
+      let headingText = config[shortKey] || config[key];
+
       if (useEllipsis) {
-        headingText = formatHeadingText(config[key]);
-      } else {
-        headingText = config[key];
+        headingText = formatHeadingText(headingText);
       }
-      const heading = findCorrespondingHeading(headingText, doc);
+
+      const heading = findCorrespondingHeading(config[key], doc);
 
       if (heading) {
-        assignHeadingIdIfNeeded(heading, headingText);
+        assignHeadingIdIfNeeded(heading, config[key]);
         setupTOCItem(tocItem, tocCounter, headingText, heading.id);
 
         const verticalLine = createTag('div', { class: 'vertical-line' });
@@ -289,14 +291,20 @@ function buildMetadataConfigObject() {
   let content = getMetadata(`content-${i}`);
 
   while (content) {
+    const abbreviatedContent = getMetadata(`content-${i}-short`);
+    if (abbreviatedContent) {
+      contents.push({ [`content-${i}-short`]: abbreviatedContent });
+    }
     contents.push({ [`content-${i}`]: content });
     i += 1;
     content = getMetadata(`content-${i}`);
   }
+
   const config = contents.reduce((acc, el) => ({
     ...acc,
     ...el,
   }), { title });
+
   return config;
 }
 

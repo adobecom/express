@@ -2516,6 +2516,15 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     .template-x.two-templates .template-x-inner-wrapper {
         justify-content: space-between;
     }
+    .template-x.horizontal.three-templates .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+        width: 196px;
+        height: 300px;
+    }
+    .template-x.horizontal.three-templates .carousel-container {
+        margin-left: 0;
+        margin-right: 0;
+        width: 105%;
+    }
     .template-x.four-templates .template.carousel-element {
         width: 200px;
     }
