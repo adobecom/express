@@ -15,7 +15,7 @@ const onRedirect = (e) => {
   setTimeout(() => {
     window.location.assign(e.detail);
     // temporary solution: allows analytics to go thru
-  }, 100);
+  }, 50);
 };
 const onError = (e) => {
   window.lana?.log('on error:', e);
