@@ -308,7 +308,6 @@ export function displayVideoModal(url = [], title, push) {
   }
 }
 
-
 export function playPreloadedVideo(videoID) {
   const videoOverlays = document.querySelectorAll(".video-overlay-preloaded")
   for (let vo of videoOverlays) {
@@ -385,14 +384,14 @@ export function preloadVideoModal(url = [], title, push, videoID) {
   buildVideoElement($video, vidUrls, vidType, title, ts);
 }
 
-function buildVideoElement($element, vidUrls = [], playerType, title, ts) {
+function buildVideoElement($video, vidUrls = [], playerType, title, ts) {
   const [primaryUrl] = vidUrls;
   if (!primaryUrl) return;
   if (playerType === 'html5') {
     const sources = vidUrls.map((src) => `<source src="${src}" type="${getMimeType(src)}"></source>`).join('');
     const videoHTML = `<video controls playsinline>${sources}</video>`;
-    $element.innerHTML = videoHTML;
-    const $video = $element.querySelector('video');
+    $video.innerHTML = videoHTML;
+    const $video = $video.querySelector('video');
     $video.addEventListener('loadeddata', async () => {
       if (ts) {
         $video.currentTime = ts;
@@ -404,13 +403,13 @@ function buildVideoElement($element, vidUrls = [], playerType, title, ts) {
       const videoAnalytic = await getVideoAnalytic($video);
       const promoName = videoPromos[primaryUrl];
       if (typeof promoName === 'string') {
-        $element.insertAdjacentHTML('beforeend', `<div class="promotion block" data-block-name="promotion">${promoName}</div>`);
-        const $promo = $element.querySelector('.promotion');
+        $video.insertAdjacentHTML('beforeend', `<div class="promotion block" data-block-name="promotion">${promoName}</div>`);
+        const $promo = $video.querySelector('.promotion');
         await loadBlock($promo, true);
         $promo.querySelector(':scope a.button').className = 'button accent';
         const $PromoClose = $promo.appendChild(createTag('div', { class: 'close' }));
         $PromoClose.addEventListener('click', () => {
-          closeVideo($element);
+          closeVideo($video);
         });
         window.videoPromotions[primaryUrl] = $promo;
       }
@@ -443,7 +442,7 @@ function buildVideoElement($element, vidUrls = [], playerType, title, ts) {
       scrolling: 'no',
     });
 
-    $element.replaceChildren($iframe);
+    $video.replaceChildren($iframe);
   } else {
     // iframe 3rd party player
     const $iframe = createTag('iframe', {
@@ -454,16 +453,16 @@ function buildVideoElement($element, vidUrls = [], playerType, title, ts) {
       allowfullscreen: '',
     });
 
-    $element.replaceChildren($iframe);
+    $video.replaceChildren($iframe);
   }
 
-  const $videoClose = $element.appendChild(createTag('div', { class: 'close' }));
+  const $videoClose = $video.appendChild(createTag('div', { class: 'close' }));
   $videoClose.addEventListener('click', async () => {
-    closeVideo($element);
+    closeVideo($video);
   });
 
-  $element.classList.add(playerType);
-  $element.querySelector('video').pause()
+  $video.classList.add(playerType);
+  $video.querySelector('video').pause()
 }
 
 async function closeVideo($video) {
