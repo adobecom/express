@@ -86,6 +86,7 @@
   background: linear-gradient(170.96deg, rgba(255, 255, 255, 0.6) 18.95%, rgba(255, 255, 255, 0.2) 99.73%);
   text-align: left;
   display: flex;
+  color: initial;
 }
 
 .grid-marquee .face {
