@@ -8,10 +8,11 @@ import {
 
 import {
   displayVideoModal,
-  hideVideoModal,
+  playPreloadedVideo,
+  preloadVideoModal
 } from '../shared/video.js';
 
-function createTutorialCard(title, url, time, $picture) {
+function createTutorialCard(title, url, time, $picture, videoID) {
   const $card = createTag('a', { class: 'tutorial-card', title, tabindex: 0 });
   const $cardTop = createTag('div', { class: 'tutorial-card-top' });
   $cardTop.innerHTML = `<div class="tutorial-card-overlay"><div class="tutorial-card-play"></div>
@@ -21,11 +22,11 @@ function createTutorialCard(title, url, time, $picture) {
   const $cardBottom = createTag('div', { class: 'tutorial-card-text' });
   $cardBottom.innerHTML = `<h3>${title}</h3>`;
   $card.addEventListener('click', () => {
-    displayVideoModal(url, title, true);
+    playPreloadedVideo(videoID)
   });
   $card.addEventListener('keyup', ({ key }) => {
     if (key === 'Enter') {
-      displayVideoModal(url, title);
+      playPreloadedVideo(videoID)
     }
   });
   $card.appendChild($cardTop);
@@ -35,12 +36,11 @@ function createTutorialCard(title, url, time, $picture) {
   return ($card);
 }
 
-export function handlePopstate(event) {
+export function handlePopstate(event, videoID) {
   const { state } = event;
-  hideVideoModal();
   const { url, title } = state || {};
   if (url) {
-    displayVideoModal(url, title);
+    playPreloadedVideo(videoID)
   }
 }
 
@@ -52,16 +52,18 @@ function decorateTutorials($block) {
     const url = $a && $a.href;
     const title = $link.textContent.trim();
     const time = $time.textContent.trim();
-    const $card = createTutorialCard(title, url, time, $picture);
+    const videoID = Date.now();
+    const $card = createTutorialCard(title, url, time, $picture, videoID);
     $block.appendChild($card);
     $tutorial.remove();
+    preloadVideoModal(url, title, undefined ,videoID);
     // autoplay if hash matches title
-    if (toClassName(title) === window.location.hash.substr(1)) {
-      displayVideoModal(url, title);
-    }
+    // if (toClassName(title) === window.location.hash.substr(1)) {
+    //   preloadVideoModal(url, title);
+    // }
   });
   // handle history events
-  window.addEventListener('popstate', handlePopstate);
+  window.addEventListener('popstate', (e) => handlePopstate(e,videoID));
 }
 
 export default function decorate($block) {
