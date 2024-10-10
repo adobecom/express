@@ -6,6 +6,8 @@ import {
   fetchPlaceholders,
 } from '../../scripts/utils.js';
 
+import { embedYoutube } from '../../scripts/embed-videos.js';
+
 let rotationInterval;
 let fixedImageSize = false;
 
@@ -46,8 +48,8 @@ function setPictureHeight(block, override) {
   }
 }
 
-function activate(block, target) {
-  setPictureHeight(block);
+function activate(block, target, isVideoVariant) {
+  if (!isVideoVariant) setPictureHeight(block);
   // de-activate all
   block.querySelectorAll('.tip, .tip-number').forEach((item) => {
     item.classList.remove('active');
@@ -59,7 +61,7 @@ function activate(block, target) {
   block.querySelectorAll(`.tip-${i}`).forEach((elem) => elem.classList.add('active'));
 }
 
-function initRotation(howToWindow, howToDocument) {
+function initRotation(howToWindow, howToDocument, isVideoVariant) {
   if (howToWindow && !rotationInterval) {
     rotationInterval = howToWindow.setInterval(() => {
       howToDocument.querySelectorAll('.tip-numbers').forEach((numbers) => {
@@ -69,13 +71,13 @@ function initRotation(howToWindow, howToDocument) {
           // if no next adjacent, back to first
           activeAdjacentSibling = numbers.firstElementChild;
         }
-        activate(numbers.parentElement, activeAdjacentSibling);
+        activate(numbers.parentElement, activeAdjacentSibling, isVideoVariant);
       });
     }, 5000);
   }
 }
 
-function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow) {
+function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant) {
   // join wrappers together
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
     if (i === 0) {
@@ -155,7 +157,7 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
       if (e.target.nodeName.toLowerCase() === 'span') {
         target = e.target.parentElement;
       }
-      activate(block, target);
+      activate(block, target, isVideoVariant);
     });
 
     number.addEventListener('keyup', (e) => {
@@ -183,8 +185,8 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
   if (howToWindow) {
     howToWindow.addEventListener('resize', () => {
       reset(block);
-      activate(block, block.querySelector('.tip-number.tip-1'));
-      initRotation(howToWindow, howToDocument);
+      activate(block, block.querySelector('.tip-number.tip-1'), isVideoVariant);
+      initRotation(howToWindow, howToDocument, isVideoVariant);
     });
   }
 
@@ -192,8 +194,8 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
   const onIntersect = ([entry], observer) => {
     if (!entry.isIntersecting) return;
 
-    activate(block, block.querySelector('.tip-number.tip-1'));
-    initRotation(howToWindow, howToDocument);
+    activate(block, block.querySelector('.tip-number.tip-1'), isVideoVariant);
+    initRotation(howToWindow, howToDocument, isVideoVariant);
 
     observer.unobserve(block);
   };
@@ -256,6 +258,7 @@ export default async function decorate(block) {
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
   const image = block.classList.contains('image');
+  const isVideoVariant = block.classList.contains('video');
 
   // move first image of container outside of div for styling
   const section = block.closest('.section');
@@ -263,7 +266,20 @@ export default async function decorate(block) {
   const rows = Array.from(howto.children);
   let picture;
 
-  if (image) {
+  if (isVideoVariant) {
+    const videoData = rows.shift();
+
+    // remove the added social link from the block DOM
+    block.removeChild(block.children[0]);
+
+    const videoLink = videoData.querySelector('a');
+    const youtubeURL = videoLink?.href;
+    const url = new URL(youtubeURL);
+
+    const videoEl = embedYoutube(url);
+    videoEl.classList.add('video-how-to-steps-carousel');
+    section.prepend(videoEl);
+  } else if (image) {
     const canvasWidth = 2000;
     const canvasHeight = 1072;
 
@@ -320,5 +336,5 @@ export default async function decorate(block) {
     parent.remove();
     section.prepend(picture);
   }
-  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow);
+  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant);
 }
