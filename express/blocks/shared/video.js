@@ -275,12 +275,9 @@ export function displayVideoModal(url = [], title, push) {
   $overlay.appendChild($video);
   $overlay.addEventListener('click', async () => {
     hideVideoModal(true);
-
     const $videoElement = $video.querySelector('video');
-
     if ($videoElement) {
       const videoAnalytic = await getVideoAnalytic($videoElement);
-
       if (videoAnalytic) {
         const linksPopulated = new CustomEvent('videoclosed', { detail: videoAnalytic });
         document.dispatchEvent(linksPopulated);
@@ -293,12 +290,9 @@ export function displayVideoModal(url = [], title, push) {
   window.onkeyup = async ({ key }) => {
     if (key === 'Escape') {
       hideVideoModal(true);
-
       const $videoElement = $video.querySelector('video');
-
       if ($videoElement) {
         const videoAnalytic = await getVideoAnalytic($videoElement);
-
         if (videoAnalytic) {
           const linksPopulated = new CustomEvent('videoclosed', { detail: videoAnalytic });
           document.dispatchEvent(linksPopulated);
