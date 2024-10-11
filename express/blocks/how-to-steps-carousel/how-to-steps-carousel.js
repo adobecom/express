@@ -48,8 +48,10 @@ function setPictureHeight(block, override) {
   }
 }
 
-function activate(block, target, isImageVariant) {
-  if (isImageVariant) setPictureHeight(block);
+function activate(block, target) {
+  if (block.classList.contains('image')) {
+    setPictureHeight(block);
+  }
   // de-activate all
   block.querySelectorAll('.tip, .tip-number').forEach((item) => {
     item.classList.remove('active');
@@ -61,7 +63,7 @@ function activate(block, target, isImageVariant) {
   block.querySelectorAll(`.tip-${i}`).forEach((elem) => elem.classList.add('active'));
 }
 
-function initRotation(howToWindow, howToDocument, isImageVariant) {
+function initRotation(howToWindow, howToDocument) {
   if (howToWindow && !rotationInterval) {
     rotationInterval = howToWindow.setInterval(() => {
       howToDocument.querySelectorAll('.tip-numbers').forEach((numbers) => {
@@ -71,13 +73,13 @@ function initRotation(howToWindow, howToDocument, isImageVariant) {
           // if no next adjacent, back to first
           activeAdjacentSibling = numbers.firstElementChild;
         }
-        activate(numbers.parentElement, activeAdjacentSibling, isImageVariant);
+        activate(numbers.parentElement, activeAdjacentSibling);
       });
     }, 5000);
   }
 }
 
-function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isImageVariant) {
+function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow) {
   // join wrappers together
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
     if (i === 0) {
@@ -157,7 +159,7 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
       if (e.target.nodeName.toLowerCase() === 'span') {
         target = e.target.parentElement;
       }
-      activate(block, target, isImageVariant);
+      activate(block, target);
     });
 
     number.addEventListener('keyup', (e) => {
@@ -185,8 +187,8 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
   if (howToWindow) {
     howToWindow.addEventListener('resize', () => {
       reset(block);
-      activate(block, block.querySelector('.tip-number.tip-1'), isImageVariant);
-      initRotation(howToWindow, howToDocument, isImageVariant);
+      activate(block, block.querySelector('.tip-number.tip-1'));
+      initRotation(howToWindow, howToDocument);
     });
   }
 
@@ -194,8 +196,8 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
   const onIntersect = ([entry], observer) => {
     if (!entry.isIntersecting) return;
 
-    activate(block, block.querySelector('.tip-number.tip-1'), isImageVariant);
-    initRotation(howToWindow, howToDocument, isImageVariant);
+    activate(block, block.querySelector('.tip-number.tip-1'));
+    initRotation(howToWindow, howToDocument);
 
     observer.unobserve(block);
   };
@@ -336,5 +338,5 @@ export default async function decorate(block) {
     parent.remove();
     section.prepend(picture);
   }
-  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isImageVariant);
+  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow);
 }
