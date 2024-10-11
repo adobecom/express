@@ -210,15 +210,13 @@ main .video-how-to-steps-carousel {
 }
 
 @media (min-width: 600px) {
-
   main .video-how-to-steps-carousel {
-    width: calc((100% - 48px) * 1.0);
+    width: calc(100% - 48px);
     max-width: unset;
   }
 
   main div:has(> .how-to-steps-carousel.video) {
-    width: calc((100% - 48px ) * 1.0 );
-    /* max-width: unset; */
+    width: calc(100% - 48px);
     max-width: fit-content;
   }
 }
@@ -231,12 +229,13 @@ main .video-how-to-steps-carousel {
 
   main .video-how-to-steps-carousel {
     margin: 92px 0 0 24px;
-    width: calc((100% - 72px) * 0.4);
+    width: calc((100% - 72px) * 0.45);
   }
 
   main div:has(> .how-to-steps-carousel.video) {
-    width: calc((100% - 72px) * 0.6 - 176px);
+    width: calc((100% - 72px) * 0.55 - 176px);
   }
+
   main .video-how-to-steps-carousel {
     margin-left: 80px;
   }
