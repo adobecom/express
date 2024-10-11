@@ -147,7 +147,6 @@ function buildVideoElement($element, vidUrls = [], playerType, title, ts, autopl
           });
         }
       }
-
     });
     $video.addEventListener('ended', async () => {
       // hide player and show promotion
@@ -166,7 +165,6 @@ function buildVideoElement($element, vidUrls = [], playerType, title, ts, autopl
         document.dispatchEvent(linksPopulated);
       }
     });
-
   } else {
     if (playerType === 'adobetv') {
       const videoURL = `${primaryUrl.replace(/[/]$/, '')}/?autoplay=true`;
@@ -204,7 +202,7 @@ function buildVideoElement($element, vidUrls = [], playerType, title, ts, autopl
 }
 
 function parseVideoURLs(primaryUrl, vidUrls) {
-  let parsedVidUls = vidUrls
+  let parsedVidUls = vidUrls;
   let vidType = 'default';
   let ts = 0;
   if (/^https?:[/][/]video[.]tv[.]adobe[.]com/.test(primaryUrl)) {
@@ -232,7 +230,7 @@ function parseVideoURLs(primaryUrl, vidUrls) {
     // local video url(s), remove origin, extract timestamp
     parsedVidUls = parsedVidUls.map((vidUrl) => new URL(vidUrl).pathname);
   }
-  return { vidType, parsedVidUls, ts }
+  return { vidType, parsedVidUls, ts };
 }
 
 export function isVideoLink(url) {
@@ -258,7 +256,7 @@ export function hideVideoModal(push) {
 }
 
 export function displayVideoModal(url = [], title, push) {
-  let vidUrls = typeof url === 'string' ? [url] : url;
+  const vidUrls = typeof url === 'string' ? [url] : url;
   const [primaryUrl] = vidUrls;
   const canPlayInline = vidUrls
     .some((src) => src && isVideoLink(src));
@@ -267,7 +265,7 @@ export function displayVideoModal(url = [], title, push) {
   if (!canPlayInline) {
     // redirect to first video url
     [window.location.href] = vidUrls;
-    return
+    return;
   }
   const $overlay = createTag('div', { class: 'video-overlay' });
   const $video = createTag('div', { class: 'video-overlay-video', id: 'video-overlay-video' });
@@ -307,7 +305,7 @@ export function displayVideoModal(url = [], title, push) {
   const $main = document.querySelector('main');
   $main.append($overlay);
 
-  let { parsedVidUls, vidType, ts } = parseVideoURLs(primaryUrl, vidUrls)
+  const { parsedVidUls, vidType, ts } = parseVideoURLs(primaryUrl, vidUrls);
   buildVideoElement($video, parsedVidUls, vidType, title, ts, false);
 }
 
@@ -324,48 +322,48 @@ async function closeVideo($video) {
 }
 
 export function playPreloadedVideo(title, autoplayOnStart) {
-  const videoOverlays = document.querySelectorAll(".video-overlay-preloaded")
-  for (let vo of videoOverlays) { 
-    if (vo.id === 'video-overlay-' + title) {
-      vo.classList.add('video-overlay')
+  const videoOverlays = document.querySelectorAll('.video-overlay-preloaded');
+  for (const vo of videoOverlays) {
+    if (vo.id === `video-overlay-${title}`) {
+      vo.classList.add('video-overlay');
       if (autoplayOnStart) {
-        setTimeout(() => { 
-          vo.querySelector('video').setAttribute('muted', 'muted')
-          vo.querySelector('video').play()
-        }, 1500)
+        setTimeout(() => {
+          vo.querySelector('video').setAttribute('muted', 'muted');
+          vo.querySelector('video').play();
+        }, 1500);
       } else {
-        vo.querySelector('video').play()
+        vo.querySelector('video').play();
       }
     } else {
-      vo.classList.remove('video-overlay')
-      vo.querySelector('video').pause()
+      vo.classList.remove('video-overlay');
+      vo.querySelector('video').pause();
     }
   }
 }
 
 export function preloadVideoModal(url = [], title, push) {
-  let vidUrls = typeof url === 'string' ? [url] : url;
+  const vidUrls = typeof url === 'string' ? [url] : url;
 
   const [primaryUrl] = vidUrls;
   const canPlayInline = vidUrls
     .some((src) => src && isVideoLink(src));
   if (!canPlayInline) {
     [window.location.href] = vidUrls;
-    return
+    return;
   }
 
-  const $overlay = createTag('div', { class: 'video-overlay-preloaded', id: 'video-overlay-' + title });
+  const $overlay = createTag('div', { class: 'video-overlay-preloaded', id: `video-overlay-${title}` });
   const $video = createTag('div', { class: 'video-overlay-video', id: 'video-overlay-video' });
   $overlay.appendChild($video);
   $overlay.addEventListener('click', async () => {
-    closeVideo($video)
+    closeVideo($video);
   });
   $video.addEventListener('click', (evt) => {
     evt.stopPropagation();
   });
   window.onkeyup = async ({ key }) => {
     if (key === 'Escape') {
-      closeVideo($video)
+      closeVideo($video);
     }
   };
 
@@ -377,6 +375,6 @@ export function preloadVideoModal(url = [], title, push) {
   const $main = document.querySelector('main');
   $main.append($overlay);
 
-  let { parsedVidUls, vidType, ts } = parseVideoURLs(primaryUrl, vidUrls)
+  const { parsedVidUls, vidType, ts } = parseVideoURLs(primaryUrl, vidUrls);
   buildVideoElement($video, parsedVidUls, vidType, title, ts);
 }

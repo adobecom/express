@@ -62,7 +62,7 @@ export default async function init(el) {
     imslib.onReady().then(() => imslib.isSignedInUser() && goDest());
   }
   el.innerHTML = '';
-  
+
   const config = {
     consentProfile: 'free',
   };

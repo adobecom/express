@@ -22,11 +22,11 @@ function createTutorialCard(title, url, time, $picture) {
   const $cardBottom = createTag('div', { class: 'tutorial-card-text' });
   $cardBottom.innerHTML = `<h3>${title}</h3>`;
   $card.addEventListener('click', () => {
-    playPreloadedVideo(title)
+    playPreloadedVideo(title);
   });
   $card.addEventListener('keyup', ({ key }) => {
     if (key === 'Enter') {
-      playPreloadedVideo(title)
+      playPreloadedVideo(title);
     }
   });
   $card.appendChild($cardTop);
@@ -36,11 +36,11 @@ function createTutorialCard(title, url, time, $picture) {
   return ($card);
 }
 
-export function handlePopstate(event ) {
+export function handlePopstate(event) {
   const { state } = event;
   const { url, title } = state || {};
   if (url) {
-    playPreloadedVideo(title)
+    playPreloadedVideo(title);
   }
 }
 
@@ -55,14 +55,14 @@ function decorateTutorials($block) {
     const $card = createTutorialCard(title, url, time, $picture);
     $block.appendChild($card);
     $tutorial.remove();
-    preloadVideoModal(url, title, undefined );
+    preloadVideoModal(url, title, undefined);
     // autoplay if hash matches title
     if (toClassName(title) === window.location.hash.substr(1)) {
-      playPreloadedVideo( title, true);
+      playPreloadedVideo(title, true);
     }
   });
   // handle history events
-  window.addEventListener('popstate', (e) => handlePopstate(e ));
+  window.addEventListener('popstate', (e) => handlePopstate(e));
 }
 
 export default function decorate($block) {
