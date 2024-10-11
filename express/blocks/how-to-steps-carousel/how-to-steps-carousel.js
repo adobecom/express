@@ -48,8 +48,8 @@ function setPictureHeight(block, override) {
   }
 }
 
-function activate(block, target, isVideoVariant) {
-  if (!isVideoVariant) setPictureHeight(block);
+function activate(block, target, isImageVariant) {
+  if (isImageVariant) setPictureHeight(block);
   // de-activate all
   block.querySelectorAll('.tip, .tip-number').forEach((item) => {
     item.classList.remove('active');
@@ -61,7 +61,7 @@ function activate(block, target, isVideoVariant) {
   block.querySelectorAll(`.tip-${i}`).forEach((elem) => elem.classList.add('active'));
 }
 
-function initRotation(howToWindow, howToDocument, isVideoVariant) {
+function initRotation(howToWindow, howToDocument, isImageVariant) {
   if (howToWindow && !rotationInterval) {
     rotationInterval = howToWindow.setInterval(() => {
       howToDocument.querySelectorAll('.tip-numbers').forEach((numbers) => {
@@ -71,13 +71,13 @@ function initRotation(howToWindow, howToDocument, isVideoVariant) {
           // if no next adjacent, back to first
           activeAdjacentSibling = numbers.firstElementChild;
         }
-        activate(numbers.parentElement, activeAdjacentSibling, isVideoVariant);
+        activate(numbers.parentElement, activeAdjacentSibling, isImageVariant);
       });
     }, 5000);
   }
 }
 
-function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant) {
+function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isImageVariant) {
   // join wrappers together
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
     if (i === 0) {
@@ -157,7 +157,7 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
       if (e.target.nodeName.toLowerCase() === 'span') {
         target = e.target.parentElement;
       }
-      activate(block, target, isVideoVariant);
+      activate(block, target, isImageVariant);
     });
 
     number.addEventListener('keyup', (e) => {
@@ -185,8 +185,8 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
   if (howToWindow) {
     howToWindow.addEventListener('resize', () => {
       reset(block);
-      activate(block, block.querySelector('.tip-number.tip-1'), isVideoVariant);
-      initRotation(howToWindow, howToDocument, isVideoVariant);
+      activate(block, block.querySelector('.tip-number.tip-1'), isImageVariant);
+      initRotation(howToWindow, howToDocument, isImageVariant);
     });
   }
 
@@ -194,8 +194,8 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
   const onIntersect = ([entry], observer) => {
     if (!entry.isIntersecting) return;
 
-    activate(block, block.querySelector('.tip-number.tip-1'), isVideoVariant);
-    initRotation(howToWindow, howToDocument, isVideoVariant);
+    activate(block, block.querySelector('.tip-number.tip-1'), isImageVariant);
+    initRotation(howToWindow, howToDocument, isImageVariant);
 
     observer.unobserve(block);
   };
@@ -257,7 +257,7 @@ function layerTemplateImage(canvas, ctx, templateImg) {
 export default async function decorate(block) {
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
-  const image = block.classList.contains('image');
+  const isImageVariant = block.classList.contains('image');
   const isVideoVariant = block.classList.contains('video');
 
   // move first image of container outside of div for styling
@@ -279,7 +279,7 @@ export default async function decorate(block) {
     const videoEl = embedYoutube(url);
     videoEl.classList.add('video-how-to-steps-carousel');
     section.prepend(videoEl);
-  } else if (image) {
+  } else if (isImageVariant) {
     const canvasWidth = 2000;
     const canvasHeight = 1072;
 
@@ -336,5 +336,5 @@ export default async function decorate(block) {
     parent.remove();
     section.prepend(picture);
   }
-  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isVideoVariant);
+  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow, isImageVariant);
 }
