@@ -1,5 +1,4 @@
 import {
-  getMetadata,
   getIconElement,
   createTag,
   fetchPlaceholders,
@@ -24,12 +23,7 @@ function showDrawer(drawer) {
   const video = drawer.querySelector('video');
   if (video && !reduceMotionMQ.matches) {
     video.muted = true;
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // ignore
-      });
-    }
+    video.play()?.catch(); // ignore
   }
   currDrawer = drawer;
 }
@@ -43,7 +37,8 @@ document.addEventListener('click', (e) => {
 function createDrawer(card, title, panels) {
   const titleRow = createTag('div', { class: 'title-row' });
   const titleText = title.textContent.trim();
-  const drawer = createTag('div', { class: 'drawer', id: `drawer-${titleText}`, 'aria-hidden': true });
+  const content = createTag('div', { class: 'content' });
+  const drawer = createTag('div', { class: 'drawer', id: `drawer-${titleText}`, 'aria-hidden': true }, content);
   const closeButton = createTag('button', { 'aria-label': 'close' }, getIconElement('close-black'));
   closeButton.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -62,13 +57,13 @@ function createDrawer(card, title, panels) {
   }, `<source src="${videoAnchor.href}" type="video/mp4">`);
   const videoWrapper = createTag('div', { class: 'video-container' });
   videoWrapper.append(video);
-  drawer.append(titleRow, videoWrapper, ...panels);
+  content.append(titleRow, videoWrapper, ...panels);
 
   panels.forEach((panel) => {
     panel.classList.add('ctas-container');
     [...panel.querySelectorAll('p')].forEach((p) => {
       const icon = p.querySelector('span.icon');
-      const match = icon && /icon-(.+)/.exec(icon.classList);
+      const match = icon && /icon-(.+)/.exec(icon.className);
       if (match?.[1]) {
         icon.append(getIconElement(match[1]));
       }
@@ -87,7 +82,7 @@ function createDrawer(card, title, panels) {
   let activeTab = null;
   panels.forEach((panel, i) => {
     panel.role = 'tabpanel';
-    const tabHead = panel.querySelector('p:not(:has(a))');
+    const tabHead = panel.querySelector('p');
     const tabName = tabHead.textContent;
     const id = `${titleText}-${tabName}`;
     tabHead.remove();
@@ -213,11 +208,9 @@ export default function init(el) {
   const cardsContainer = createTag('div', { class: 'cards-container' });
   cardsContainer.append(...cards);
   foreground.append(headline, cardsContainer);
-  if (document.querySelector('main .block') === el && ['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
-    const logo = getIconElement('adobe-express-logo');
-    logo.classList.add('express-logo');
-    foreground.prepend(logo);
-  }
+  const logo = getIconElement('adobe-express-logo');
+  logo.classList.add('express-logo');
+  foreground.prepend(logo);
   el.classList.contains('ratings') && foreground.append(createRatings());
   el.append(foreground);
   desktopMQ.addEventListener('change', () => {
