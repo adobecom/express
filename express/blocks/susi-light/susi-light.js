@@ -41,6 +41,7 @@ function getDestURL(url) {
 }
 
 export default async function init(el) {
+  await loadWrapper();
   const rows = el.querySelectorAll(':scope> div > div');
   const redirectUrl = rows[0]?.textContent?.trim().toLowerCase();
   // eslint-disable-next-line camelcase
@@ -61,7 +62,7 @@ export default async function init(el) {
     imslib.onReady().then(() => imslib.isSignedInUser() && goDest());
   }
   el.innerHTML = '';
-  await loadWrapper();
+  
   const config = {
     consentProfile: 'free',
   };
