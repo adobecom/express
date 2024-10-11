@@ -9,10 +9,10 @@ import {
 import {
   displayVideoModal,
   playPreloadedVideo,
-  preloadVideoModal
+  preloadVideoModal,
 } from '../shared/video.js';
 
-function createTutorialCard(title, url, time, $picture, videoID) {
+function createTutorialCard(title, url, time, $picture) {
   const $card = createTag('a', { class: 'tutorial-card', title, tabindex: 0 });
   const $cardTop = createTag('div', { class: 'tutorial-card-top' });
   $cardTop.innerHTML = `<div class="tutorial-card-overlay"><div class="tutorial-card-play"></div>
@@ -22,11 +22,11 @@ function createTutorialCard(title, url, time, $picture, videoID) {
   const $cardBottom = createTag('div', { class: 'tutorial-card-text' });
   $cardBottom.innerHTML = `<h3>${title}</h3>`;
   $card.addEventListener('click', () => {
-    playPreloadedVideo(videoID)
+    playPreloadedVideo(title)
   });
   $card.addEventListener('keyup', ({ key }) => {
     if (key === 'Enter') {
-      playPreloadedVideo(videoID)
+      playPreloadedVideo(title)
     }
   });
   $card.appendChild($cardTop);
@@ -36,11 +36,11 @@ function createTutorialCard(title, url, time, $picture, videoID) {
   return ($card);
 }
 
-export function handlePopstate(event, videoID) {
+export function handlePopstate(event ) {
   const { state } = event;
   const { url, title } = state || {};
   if (url) {
-    playPreloadedVideo(videoID)
+    playPreloadedVideo(title)
   }
 }
 
@@ -52,18 +52,17 @@ function decorateTutorials($block) {
     const url = $a && $a.href;
     const title = $link.textContent.trim();
     const time = $time.textContent.trim();
-    const videoID = Date.now();
-    const $card = createTutorialCard(title, url, time, $picture, videoID);
+    const $card = createTutorialCard(title, url, time, $picture);
     $block.appendChild($card);
     $tutorial.remove();
-    preloadVideoModal(url, title, undefined ,videoID);
+    preloadVideoModal(url, title, undefined );
     // autoplay if hash matches title
-    // if (toClassName(title) === window.location.hash.substr(1)) {
-    //   preloadVideoModal(url, title);
-    // }
+    if (toClassName(title) === window.location.hash.substr(1)) {
+      playPreloadedVideo( title, true);
+    }
   });
   // handle history events
-  window.addEventListener('popstate', (e) => handlePopstate(e,videoID));
+  window.addEventListener('popstate', (e) => handlePopstate(e ));
 }
 
 export default function decorate($block) {

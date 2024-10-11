@@ -323,19 +323,27 @@ async function closeVideo($video) {
   }
 }
 
-export function playPreloadedVideo(videoID) {
+export function playPreloadedVideo(title, autoplayOnStart) {
   const videoOverlays = document.querySelectorAll(".video-overlay-preloaded")
-  for (let vo of videoOverlays) {
-    vo.classList.remove('video-overlay')
-    vo.querySelector('video').pause()
-    if (vo.id === 'video-overlay-' + videoID) {
+  for (let vo of videoOverlays) { 
+    if (vo.id === 'video-overlay-' + title) {
       vo.classList.add('video-overlay')
-      vo.querySelector('video').play()
+      if (autoplayOnStart) {
+        setTimeout(() => { 
+          vo.querySelector('video').setAttribute('muted', 'muted')
+          vo.querySelector('video').play()
+        }, 1500)
+      } else {
+        vo.querySelector('video').play()
+      }
+    } else {
+      vo.classList.remove('video-overlay')
+      vo.querySelector('video').pause()
     }
   }
 }
 
-export function preloadVideoModal(url = [], title, push, videoID) {
+export function preloadVideoModal(url = [], title, push) {
   let vidUrls = typeof url === 'string' ? [url] : url;
 
   const [primaryUrl] = vidUrls;
@@ -346,7 +354,7 @@ export function preloadVideoModal(url = [], title, push, videoID) {
     return
   }
 
-  const $overlay = createTag('div', { class: 'video-overlay-preloaded', id: 'video-overlay-' + videoID });
+  const $overlay = createTag('div', { class: 'video-overlay-preloaded', id: 'video-overlay-' + title });
   const $video = createTag('div', { class: 'video-overlay-video', id: 'video-overlay-video' });
   $overlay.appendChild($video);
   $overlay.addEventListener('click', async () => {
@@ -371,5 +379,4 @@ export function preloadVideoModal(url = [], title, push, videoID) {
 
   let { parsedVidUls, vidType, ts } = parseVideoURLs(primaryUrl, vidUrls)
   buildVideoElement($video, parsedVidUls, vidType, title, ts);
-
 }
