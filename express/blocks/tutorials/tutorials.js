@@ -7,7 +7,6 @@ import {
 } from '../../scripts/utils.js';
 
 import {
-  displayVideoModal,
   playPreloadedVideo,
   preloadVideoModal,
 } from '../shared/video.js';

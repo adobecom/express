@@ -309,17 +309,6 @@ export function displayVideoModal(url = [], title, push) {
   buildVideoElement($video, parsedVidUls, vidType, title, ts, false);
 }
 
-async function closeVideo($video) {
-  playPreloadedVideo(undefined);
-  const $videoElement = $video.querySelector('video');
-  if ($videoElement) {
-    const videoAnalytic = await getVideoAnalytic($videoElement);
-    if (videoAnalytic) {
-      const linksPopulated = new CustomEvent('videoclosed', { detail: videoAnalytic });
-      document.dispatchEvent(linksPopulated);
-    }
-  }
-}
 
 export function playPreloadedVideo(title, autoplayOnStart) {
   const videoOverlays = document.querySelectorAll('.video-overlay-preloaded');
@@ -341,6 +330,17 @@ export function playPreloadedVideo(title, autoplayOnStart) {
   }
 }
 
+async function closeVideo($video) {
+  playPreloadedVideo(undefined);
+  const $videoElement = $video.querySelector('video');
+  if ($videoElement) {
+    const videoAnalytic = await getVideoAnalytic($videoElement);
+    if (videoAnalytic) {
+      const linksPopulated = new CustomEvent('videoclosed', { detail: videoAnalytic });
+      document.dispatchEvent(linksPopulated);
+    }
+  }
+}
 export function preloadVideoModal(url = [], title, push) {
   const vidUrls = typeof url === 'string' ? [url] : url;
 
