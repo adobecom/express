@@ -404,6 +404,11 @@ main .section>.simplified-pricing-cards-wrapper {
   margin-top: 24px;
 }
 
+.simplified-pricing-cards .pricing-footer div{
+ width: calc(var(--card-width) + 20px);
+ margin: auto;
+}
+
 /* Tablet styles */
 @media (min-width: 601px) and (max-width: 1200px) {
   .simplified-pricing-cards {
