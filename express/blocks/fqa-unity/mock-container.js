@@ -8,26 +8,14 @@ import { createTag, loadStyle } from '../../scripts/utils.js';
 export const data = signal({ src: null, loading: false });
 
 function Canvas() {
-  if (!data.value.src) {
-    return html`
-      <div>
-        Image Not Provided
-      </div>`;
-  }
   return html`
     <div class='canvas'>
       <img src='${data.value.src}' />
     </div>`;
 }
 
-function Loader() {
-  const hidden = !data.value.loading;
-  return html`<div class="loader${hidden ? ' hidden' : ''}"><img src='/express/icons/cc-express.svg' />Loading...</div>`;
-}
-
 function Workspace() {
-  const hidden = data.value.loading;
-  return html`<div class="qa-workspace${hidden ? ' hidden' : ''}">
+  return html`<div class="qa-workspace">
       <${Canvas} />
       <div class="interactions">
       <div class="ctas"><a href='/' class="button secondary download-cta">Download</a><a class="button open-in-app-cta" href='/'>Open in Adobe Express</a></div>
@@ -49,10 +37,8 @@ function Workspace() {
 }
 
 function Layout() {
-  const hidden = !data.value.src;
   return html`
-    <div class="qa-workspace-layout${hidden ? ' hidden' : ''}">
-      <${Loader} />
+    <div class="qa-workspace-layout">
       <${Workspace} />
     </div>
   `;

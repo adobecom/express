@@ -47,11 +47,6 @@
   margin-top: 26px;
 }
 
-.fqa-unity.block video,
-.fqa-unity.block img:not(.icon) {
-  max-width: 444px;
-}
-
 .fqa-unity.block .dropzone-container {
   cursor: pointer;
   padding: 24px 0;
@@ -138,5 +133,9 @@
 
 .fqa-unity.block > div.transparent {
   /* opacity: 0; */
+  display: none;
+}
+
+.file-input {
   display: none;
 }

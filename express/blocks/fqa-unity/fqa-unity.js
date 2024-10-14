@@ -1,12 +1,7 @@
 import { createTag, transformLinkToAnimation, addAnimationToggle } from '../../scripts/utils.js';
 import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
-const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 const imageInputAccept = '.png, .jpeg, .jpg';
-const sizeLimits = {
-  image: 40 * 1024 * 1024,
-  video: 1024 * 1024 * 1024,
-};
 
 let inputElement;
 let quickAction;
@@ -58,46 +53,18 @@ function getQAGroup() {
   return 'image';
 }
 
-function startSDKWithUnconvertedFile(file, block) {
-  if (!file) return;
-  const maxSize = sizeLimits[getQAGroup()] ?? 40 * 1024 * 1024;
-  if (validImageTypes.includes(file.type) && file.size <= maxSize) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      window.history.pushState({ hideFrictionlessQa: true }, '', '');
-      if (data) data.value = { src: '/express/blocks/fqa-unity/removed.png', loading: true };
-      setTimeout(() => {
-        if (data) data.value = { ...data.value, loading: false };
-      }, 1500);
-    };
-
-    // Read the file as a data URL (Base64)
-    reader.readAsDataURL(file);
-  } else if (!error) {
-    let invalidInputError;
-    if (!validImageTypes.includes(file.type)) {
-      invalidInputError = 'invalid image type. Please make sure your image format is one of the following: "image/png", "image/jpeg", "image/jpg"';
-    } else if (file.size > maxSize) {
-      invalidInputError = 'your image file is too large';
-    }
-
-    error = createTag('p', {}, invalidInputError);
-    const dropzoneButton = block.querySelector(':scope .dropzone a.button');
-    dropzoneButton?.before(error);
-  }
-}
 
 function uploadFile(block) {
   if (!inputElement) {
-    inputElement = createTag('input', { type: 'file', accept: imageInputAccept });
+    inputElement = createTag('input', { type: 'file', accept: imageInputAccept, class: 'file-input' });
+    block.append(inputElement)
   }
   // Trigger the file selector when the button is clicked
   inputElement.click();
 
   // Handle file selection
   inputElement.onchange = () => {
-    const file = inputElement.files[0];
-    startSDKWithUnconvertedFile(file, block);
+    window.history.pushState({ hideFrictionlessQa: true }, '', '');
     fade(uploadContainer, 'out');
   };
 }
@@ -127,6 +94,10 @@ export default async function decorate(block) {
   dropzone.before(actionColumn);
   dropzoneContainer.append(dropzone);
   actionColumn.append(dropzoneContainer, gtcText);
+  if(!inputElement){
+    inputElement = createTag('input', { type: 'file', accept: imageInputAccept, class: 'file-input' });
+    block.append(inputElement)
+  }
 
   dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();
@@ -164,8 +135,8 @@ export default async function decorate(block) {
     (e) => {
       const dt = e.dataTransfer;
       const { files } = dt;
-
-      [...files].forEach((file) => startSDKWithUnconvertedFile(file, block));
+      inputElement.files = files;
+      inputElement.dispatchEvent(new Event('change'));
       fade(uploadContainer, 'out');
       document.body.dataset.suppressfloatingcta = 'true';
     },
