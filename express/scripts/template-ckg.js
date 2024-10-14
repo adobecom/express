@@ -21,7 +21,7 @@ async function fetchLinkList() {
     const response = await getDataWithContext();
     // catch data from CKG API, if empty, use top priority categories sheet
     if (response?.status?.httpCode === 200) {
-      ckgData = response.querySuggestionResults?.groupResults?.[0].buckets.map((ckgItem) => {
+      ckgData = response.querySuggestionResults?.groupResults?.[0]?.buckets?.map((ckgItem) => {
         let formattedTasks;
         if (getMetadata('template-search-page') === 'Y') {
           const params = new Proxy(new URLSearchParams(window.location.search), {
