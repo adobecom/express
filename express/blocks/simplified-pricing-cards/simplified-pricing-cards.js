@@ -226,7 +226,7 @@ export default async function init(el) {
   for (const card of cards) {
     el.children[0].appendChild(card);
   }
-
+  rows[rows.length - 2].classList.add('pricing-footer')
   rows[rows.length - 1].querySelector('a').classList.add('button', 'compare-all-button');
   el.appendChild(rows[rows.length - 2]);
   el.appendChild(rows[rows.length - 1]);
