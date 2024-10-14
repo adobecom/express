@@ -473,8 +473,6 @@ export function getIconElement(icons, size, alt, additionalClassName, altSrc) {
 
 export function transformLinkToAnimation($a, $videoLooping = true) {
   if (!$a || !$a.href || !$a.href.endsWith('.mp4')) {
-    console.error('Invalid video URL');
-    console.error($a);
     return null;
   }
   const params = new URL($a.href).searchParams;
