@@ -190,12 +190,11 @@ function decorateCardBorder(card, source) {
     if (source.textContent !== '') {
       source.classList.add('promo-eyebrow-text');
       card.classList.add('promo-text');
+    } else {
+       source.style.display = 'none'
     }
-  } else {
-    [
-      source.style.display = 'none',
-    ];
-  }
+  } 
+   source.style.display = 'none'
 }
 
 export default async function init(el) {
