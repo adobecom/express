@@ -55,8 +55,7 @@ function createDrawer(card, title, panels) {
     title: titleText,
     poster: card.querySelector('img').src,
   }, `<source src="${videoAnchor.href}" type="video/mp4">`);
-  const videoWrapper = createTag('div', { class: 'video-container' });
-  videoWrapper.append(video);
+  const videoWrapper = createTag('div', { class: 'video-container' }, video);
   content.append(titleRow, videoWrapper, ...panels);
 
   panels.forEach((panel) => {
@@ -123,9 +122,8 @@ function convertToCard(item) {
   while (item.firstChild) card.append(item.firstChild);
   item.remove();
   const cols = [...card.querySelectorAll(':scope > div')];
-  const face = cols[0];
   const drawer = createDrawer(card, title, cols.slice(1));
-  face.classList.add('face');
+  cols[0].classList.add('face');
   card.append(drawer);
   card.addEventListener('click', (e) => {
     if (currDrawer) return;
@@ -142,13 +140,11 @@ function convertToCard(item) {
     firstElem?.focus();
   });
   card.addEventListener('focusin', (e) => {
-    if (card.contains(e.relatedTarget)) return;
-    showDrawer(drawer);
+    !card.contains(e.relatedTarget) && showDrawer();
   });
   card.addEventListener('mouseleave', hideDrawer);
   card.addEventListener('focusout', (e) => {
-    if (card.contains(e.relatedTarget)) return;
-    hideDrawer();
+    !card.contains(e.relatedTarget) && hideDrawer();
   });
   return card;
 }
@@ -157,11 +153,9 @@ function decorateHeadline(headline) {
   headline.classList.add('headline');
   const ctas = [...headline.querySelectorAll('a')];
   if (!ctas.length) return headline;
-  const ctasContainer = ctas[0].parentElement;
-  ctasContainer.classList.add('ctas-container');
+  ctas[0].parentElement.classList.add('ctas-container');
   ctas.forEach((cta) => cta.classList.add('button'));
   ctas[0].classList.add('primaryCTA');
-  headline.querySelectorAll('p');
   return headline;
 }
 
@@ -199,19 +193,12 @@ function createRatings() {
 
 export default function init(el) {
   const rows = [...el.querySelectorAll(':scope > div')];
-  const headline = decorateHeadline(rows[0]);
-  const background = rows[1];
-  const items = rows.slice(2);
+  const [headline, background, items, foreground] = [decorateHeadline(rows[0]), rows[1], rows.slice(2), createTag('div', { class: 'foreground' })];
   background.classList.add('background');
-  const foreground = createTag('div', { class: 'foreground' });
-  const cards = items.map((item) => convertToCard(item));
-  const cardsContainer = createTag('div', { class: 'cards-container' });
-  cardsContainer.append(...cards);
-  foreground.append(headline, cardsContainer);
   const logo = getIconElement('adobe-express-logo');
   logo.classList.add('express-logo');
-  foreground.prepend(logo);
-  el.classList.contains('ratings') && foreground.append(createRatings());
+  const cardsContainer = createTag('div', { class: 'cards-container' }, items.map((item) => convertToCard(item)));
+  foreground.append(logo, headline, cardsContainer, ...(el.classList.contains('ratings') ? [createRatings()] : []));
   el.append(foreground);
   desktopMQ.addEventListener('change', () => {
     isTouch = false;
