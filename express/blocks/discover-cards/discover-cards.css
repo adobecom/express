@@ -18,15 +18,18 @@ main .section .discover-cards {
     min-width: 294px;
     height: 427px;
     border-radius: 8px;
-    padding: 16px;
-    background-color: rgba(255, 255, 255, 0.7);
-    margin: 10px auto;
+    border: 1px solid;
+    border-image: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2)) 1;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
     flex: 1 1 calc(33.33% - 32px);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     position: relative;
     overflow: hidden;
+    padding: 16px;
+    margin: 9px -7px 10px auto;
+
 }
 .discover-cards .center-title h3 {
     font-size: 22px;
@@ -34,7 +37,8 @@ main .section .discover-cards {
     padding-right: 10px;
 }
 .discover-cards .gallery-control {
-    padding-top: 8px;
+    /* padding-top: 4px; */
+    padding-top: 11px;
 }
 .discover-cards .gallery-control .status {
     display: none;
@@ -45,12 +49,12 @@ main .section .discover-cards {
 .discover-cards .cards-container .card .text-content .header {
     text-align: left; 
     font-size: 20px;
-    margin-top: 10px;
+    margin-top: 17px;
 }
 .discover-cards .cards-container .card .text-content .body {
     font-size: 16px;
     width: 262px;
-    margin-top: 10px;
+    margin-top: 8px;
     margin-bottom: 2px;
 }
 .discover-cards .cards-container .card picture img.short {
@@ -90,6 +94,7 @@ main .section .discover-cards {
     }
     .discover-cards .cards-container .card .text-content .header { 
         font-size: 28px; 
+        margin-top: 10px;
     }
     .discover-cards .cards-container .card .text-content .body { 
         width: auto;
@@ -99,6 +104,9 @@ main .section .discover-cards {
         width: 351px;
         margin-left: auto;
         margin-right: auto;
+    }
+    .discover-cards .gallery-control {
+        padding-top: 4px;
     }
     .discover-cards .gallery-control .status {
         display: flex;
