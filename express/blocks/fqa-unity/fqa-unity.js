@@ -5,7 +5,6 @@ const imageInputAccept = '.png, .jpeg, .jpg';
 
 let inputElement;
 let quickAction;
-let error;
 let quickActionContainer;
 let uploadContainer;
 let data;
@@ -53,11 +52,10 @@ function getQAGroup() {
   return 'image';
 }
 
-
 function uploadFile(block) {
   if (!inputElement) {
     inputElement = createTag('input', { type: 'file', accept: imageInputAccept, class: 'file-input' });
-    block.append(inputElement)
+    block.append(inputElement);
   }
   // Trigger the file selector when the button is clicked
   inputElement.click();
@@ -95,10 +93,6 @@ export default async function decorate(block) {
   dropzone.before(actionColumn);
   dropzoneContainer.append(dropzone);
   actionColumn.append(dropzoneContainer, gtcText);
-  if(!inputElement){
-    inputElement = createTag('input', { type: 'file', accept: imageInputAccept, class: 'file-input' });
-    block.append(inputElement)
-  }
 
   dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();
