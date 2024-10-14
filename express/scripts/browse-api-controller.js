@@ -24,25 +24,29 @@ const mFetch = memoize((url, data) => fetch(url, data).then((r) => (r.ok ? r.jso
 });
 
 // eslint-disable-next-line no-unused-vars
-export async function getDataWithContext({ urlPath }) {
+export async function getDataWithContext() {
+  const textQuery = window.location.pathname.split('/')
+    .filter(Boolean)
+    .map((s) => s.trim())
+    .filter((s, i) => i > 1 || !['express', 'templates', 'colors'].includes(s))
+    .reverse()
+    .join(' ');
   const data = {
     experienceId: 'default-templates-search-seo',
-    context: {
-      application: { urlPath },
-    },
+    context: {},
     experiments: [],
     querySuggestion: {
       facet: {
         'function:querySuggestions': {},
       },
-      limit: 10,
+      limit: 5,
     },
-    textQuery: 'christmas flyer',
+    textQuery,
     locale: getConfig().locale.ietf || 'en-US',
     queries: [{
       id: 'template_1',
       start: 0,
-      limit: 10,
+      limit: 5,
       scope: { entities: ['HzTemplate'] },
     }],
   };

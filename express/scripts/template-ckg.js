@@ -18,10 +18,10 @@ let sheetData;
 
 async function fetchLinkList() {
   if (!ckgData) {
-    const response = await getDataWithContext({ urlPath: window.location.pathname });
+    const response = await getDataWithContext();
     // catch data from CKG API, if empty, use top priority categories sheet
-    if (response && response.queryResults[0].facets) {
-      ckgData = response.queryResults[0].facets[0].buckets.map((ckgItem) => {
+    if (response?.status?.httpCode === 200) {
+      ckgData = response.querySuggestionResults?.groupResults?.[0].buckets.map((ckgItem) => {
         let formattedTasks;
         if (getMetadata('template-search-page') === 'Y') {
           const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -34,9 +34,9 @@ async function fetchLinkList() {
 
         return {
           parent: formattedTasks,
-          ckgID: ckgItem.canonicalName,
-          displayValue: ckgItem.displayValue,
-          value: ckgItem.value,
+          ckgID: ckgItem.metadata.ckgId,
+          displayValue: ckgItem.canonicalName,
+          value: ckgItem.metadata.link,
         };
       });
     }
