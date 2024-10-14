@@ -34,12 +34,13 @@ document.addEventListener('click', (e) => {
   }
 });
 
-function createDrawer(card, title, panels) {
-  const titleRow = createTag('div', { class: 'title-row' });
-  const titleText = title.textContent.trim();
+let isTouch;
+function decorateDrawer(card, drawer, title, panels) {
   const content = createTag('div', { class: 'content' });
-  const drawer = createTag('div', { class: 'drawer', id: `drawer-${titleText}`, 'aria-hidden': true }, content);
+  const titleRow = createTag('div', { class: 'title-row' });
   const closeButton = createTag('button', { 'aria-label': 'close' }, getIconElement('close-black'));
+  const titleText = title.textContent.trim();
+  drawer.id = `drawer-${titleText}`;
   closeButton.addEventListener('click', (e) => {
     e.stopPropagation();
     hideDrawer();
@@ -57,6 +58,7 @@ function createDrawer(card, title, panels) {
   }, `<source src="${videoAnchor.href}" type="video/mp4">`);
   const videoWrapper = createTag('div', { class: 'video-container' }, video);
   content.append(titleRow, videoWrapper, ...panels);
+  drawer.append(content);
 
   panels.forEach((panel) => {
     panel.classList.add('ctas-container');
@@ -72,6 +74,27 @@ function createDrawer(card, title, panels) {
         p.replaceWith(anchor);
       }
     });
+  });
+  card.addEventListener('click', (e) => {
+    if (currDrawer) return;
+    e.stopPropagation();
+    showDrawer(drawer);
+  });
+  card.addEventListener('touchstart', () => {
+    isTouch = true;
+  });
+  card.addEventListener('mouseenter', () => {
+    if (isTouch) return; // touchstart->mouseenter->click
+    const firstElem = drawer.querySelector('button, a');
+    showDrawer(drawer);
+    firstElem?.focus();
+  });
+  card.addEventListener('focusin', (e) => {
+    !card.contains(e.relatedTarget) && showDrawer();
+  });
+  card.addEventListener('mouseleave', hideDrawer);
+  card.addEventListener('focusout', (e) => {
+    !card.contains(e.relatedTarget) && hideDrawer();
   });
   if (panels.length <= 1) {
     return drawer;
@@ -111,7 +134,6 @@ function createDrawer(card, title, panels) {
   return drawer;
 }
 
-let isTouch;
 function convertToCard(item) {
   const title = item.querySelector('strong');
   const card = createTag('button', {
@@ -122,30 +144,16 @@ function convertToCard(item) {
   while (item.firstChild) card.append(item.firstChild);
   item.remove();
   const cols = [...card.querySelectorAll(':scope > div')];
-  const drawer = createDrawer(card, title, cols.slice(1));
+
+  const drawer = createTag('div', { class: 'drawer', 'aria-hidden': true });
+  let decorated = false;
+  window.addEventListener('express:LCP:loaded', () => {
+    if (decorated) return;
+    decorated = true;
+    decorateDrawer(card, drawer, title, cols.slice(1));
+  });
   cols[0].classList.add('face');
   card.append(drawer);
-  card.addEventListener('click', (e) => {
-    if (currDrawer) return;
-    e.stopPropagation();
-    showDrawer(drawer);
-  });
-  card.addEventListener('touchstart', () => {
-    isTouch = true;
-  });
-  card.addEventListener('mouseenter', () => {
-    if (isTouch) return; // touchstart->mouseenter->click
-    const firstElem = drawer.querySelector('button, a');
-    showDrawer(drawer);
-    firstElem?.focus();
-  });
-  card.addEventListener('focusin', (e) => {
-    !card.contains(e.relatedTarget) && showDrawer();
-  });
-  card.addEventListener('mouseleave', hideDrawer);
-  card.addEventListener('focusout', (e) => {
-    !card.contains(e.relatedTarget) && hideDrawer();
-  });
   return card;
 }
 
