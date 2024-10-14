@@ -35,12 +35,12 @@ document.addEventListener('click', (e) => {
 });
 
 let isTouch;
-function decorateDrawer(card, drawer, title, panels) {
-  const content = createTag('div', { class: 'content' });
+function createDrawer(card, titleText, panels) {
   const titleRow = createTag('div', { class: 'title-row' });
   const closeButton = createTag('button', { 'aria-label': 'close' }, getIconElement('close-black'));
-  const titleText = title.textContent.trim();
-  drawer.id = `drawer-${titleText}`;
+  const content = createTag('div', { class: 'content' });
+  const drawer = createTag('div', { id: `drawer-${titleText}`, class: 'drawer', 'aria-hidden': true }, content);
+  card.append(drawer);
   closeButton.addEventListener('click', (e) => {
     e.stopPropagation();
     hideDrawer();
@@ -58,7 +58,6 @@ function decorateDrawer(card, drawer, title, panels) {
   }, `<source src="${videoAnchor.href}" type="video/mp4">`);
   const videoWrapper = createTag('div', { class: 'video-container' }, video);
   content.append(titleRow, videoWrapper, ...panels);
-  drawer.append(content);
 
   panels.forEach((panel) => {
     panel.classList.add('ctas-container');
@@ -136,24 +135,23 @@ function decorateDrawer(card, drawer, title, panels) {
 
 function convertToCard(item) {
   const title = item.querySelector('strong');
+  const titleText = title.textContent.trim();
   const card = createTag('button', {
     class: 'card',
-    'aria-controls': `drawer-${title.textContent.trim()}`,
+    'aria-controls': `drawer-${titleText}`,
     'aria-expanded': false,
   });
   while (item.firstChild) card.append(item.firstChild);
   item.remove();
   const cols = [...card.querySelectorAll(':scope > div')];
 
-  const drawer = createTag('div', { class: 'drawer', 'aria-hidden': true });
-  let decorated = false;
+  let created = false;
   window.addEventListener('express:LCP:loaded', () => {
-    if (decorated) return;
-    decorated = true;
-    decorateDrawer(card, drawer, title, cols.slice(1));
+    if (created) return;
+    created = true;
+    createDrawer(card, title, cols.slice(1));
   });
   cols[0].classList.add('face');
-  card.append(drawer);
   return card;
 }
 
