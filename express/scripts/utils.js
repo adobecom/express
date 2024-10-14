@@ -1595,8 +1595,8 @@ export function decorateButtons(el = document) {
         }
       }
     } catch (e) {
-      console.error(e);
-      console.error('Ignoring button');
+      window.lana.log(e);
+      window.lana.log('Ignoring button');
     }
   });
 }
