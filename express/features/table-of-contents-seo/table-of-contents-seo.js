@@ -101,7 +101,7 @@ function addTOCItemClickEvent(tocItem, heading) {
     } else {
       console.error(`Element with id "${heading.id}" not found.`);
     }
-    document.querySelector('.toc-content').style.display = 'none';
+    document.querySelector('.toc-content').classList.toggle('open');
   });
 }
 
@@ -121,11 +121,24 @@ function toggleSticky(tocClone, sticky) {
 }
 
 function handleTOCCloning(toc, tocEntries) {
-  const parentDiv = document.querySelector('.columns').parentElement;
+  const mainElement = document.querySelector('main');
 
-  if (parentDiv) {
+  if (mainElement) {
     const tocClone = toc.cloneNode(true);
     tocClone.classList.add('mobile-toc');
+
+    const titleWrapper = document.createElement('div');
+    titleWrapper.classList.add('toc-title-wrapper');
+
+    const tocTitle = tocClone.querySelector('.toc-title');
+
+    const tocChevron = document.createElement('span');
+    tocChevron.className = 'toc-chevron';
+
+    titleWrapper.appendChild(tocTitle);
+    titleWrapper.appendChild(tocChevron);
+
+    tocClone.insertBefore(titleWrapper, tocClone.firstChild);
 
     const tocContent = document.createElement('div');
     tocContent.className = 'toc-content';
@@ -135,17 +148,18 @@ function handleTOCCloning(toc, tocEntries) {
     });
 
     tocClone.appendChild(tocContent);
-    parentDiv.insertAdjacentElement('afterend', tocClone);
+    mainElement.insertAdjacentElement('beforebegin', tocClone);
 
-    const tocTitle = tocClone.querySelector('.toc-title');
-    tocTitle.addEventListener('click', () => {
-      tocContent.style.display = tocContent.style.display === 'none' ? 'block' : 'none';
+    titleWrapper.addEventListener('click', () => {
+      tocContent.classList.toggle('open');
+      tocChevron.classList.toggle('up');
     });
 
     const clonedTOCEntries = tocContent.querySelectorAll('.toc-entry');
     clonedTOCEntries.forEach((tocEntry, index) => {
       addTOCItemClickEvent(tocEntry, tocEntries[index].heading);
     });
+
     const sticky = tocClone.offsetTop - MOBILE_NAV_HEIGHT;
     window.addEventListener('scroll', () => toggleSticky(tocClone, sticky));
   }
@@ -286,6 +300,7 @@ function handleActiveTOCHighlighting(tocEntries) {
 
 function buildMetadataConfigObject() {
   const title = getMetadata('toc-title');
+  const showContentNumbers = getMetadata('toc-content-numbers');
   const contents = [];
   let i = 1;
   let content = getMetadata(`content-${i}`);
@@ -303,7 +318,7 @@ function buildMetadataConfigObject() {
   const config = contents.reduce((acc, el) => ({
     ...acc,
     ...el,
-  }), { title });
+  }), { title, 'toc-content-numbers': showContentNumbers });
 
   return config;
 }
