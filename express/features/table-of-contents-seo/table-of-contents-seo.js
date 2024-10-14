@@ -8,6 +8,7 @@ import {
 import { debounce } from '../../scripts/hofs.js';
 
 const MOBILE_SIZE = 600;
+const MOBILE_NAV_HEIGHT = 65;
 const MOBILE = 'MOBILE';
 const DESKTOP = 'DESKTOP';
 const getDeviceType = (() => {
@@ -56,11 +57,19 @@ function addHoverEffect(tocEntries) {
   });
 }
 
-function addTOCTitle(toc, title) {
+function addTOCTitle(toc, { title, icon }) {
+  if (!title) return;
+
   const tocTitle = createTag('div', { class: 'toc-title' });
-  const arrowDownIcon = getIconElement('arrow-gradient-down');
-  Object.assign(arrowDownIcon.style, { width: '18px', height: '18px' });
-  toc.appendChild(tocTitle).append(arrowDownIcon, document.createTextNode(title));
+  tocTitle.append(document.createTextNode(title));
+
+  if (icon) {
+    const arrowDownIcon = getIconElement('arrow-gradient-down');
+    Object.assign(arrowDownIcon.style, { width: '18px', height: '18px' });
+    tocTitle.prepend(arrowDownIcon);
+  }
+
+  toc.appendChild(tocTitle);
 }
 
 function formatHeadingText(headingText) {
@@ -87,11 +96,12 @@ function addTOCItemClickEvent(tocItem, heading) {
     if (headerElement) {
       const headerRect = headerElement.getBoundingClientRect();
       const headerOffset = 70;
-      const offsetPosition = headerRect.top + window.scrollY - headerOffset;
+      const offsetPosition = headerRect.top + window.scrollY - headerOffset - MOBILE_NAV_HEIGHT;
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     } else {
       console.error(`Element with id "${heading.id}" not found.`);
     }
+    document.querySelector('.toc-content').style.display = 'none';
   });
 }
 
@@ -100,17 +110,45 @@ function findCorrespondingHeading(headingText, doc) {
     .find((h) => h.textContent.trim().includes(headingText.replace('...', '').trim()));
 }
 
+function toggleSticky(tocClone, sticky) {
+  if (window.scrollY >= sticky + MOBILE_NAV_HEIGHT) {
+    tocClone.classList.add('sticky');
+    tocClone.style.top = `${MOBILE_NAV_HEIGHT}px`;
+  } else {
+    tocClone.classList.remove('sticky');
+    tocClone.style.top = '';
+  }
+}
+
 function handleTOCCloning(toc, tocEntries) {
-  tocEntries.forEach(({ heading }) => {
+  const parentDiv = document.querySelector('.columns').parentElement;
+
+  if (parentDiv) {
     const tocClone = toc.cloneNode(true);
     tocClone.classList.add('mobile-toc');
-    const clonedTOC = tocClone.cloneNode(true);
-    heading.parentNode.prepend(clonedTOC, heading);
-    const clonedTOCEntries = clonedTOC.querySelectorAll('.toc-entry');
+
+    const tocContent = document.createElement('div');
+    tocContent.className = 'toc-content';
+
+    tocClone.querySelectorAll('.toc-entry').forEach((entry) => {
+      tocContent.appendChild(entry);
+    });
+
+    tocClone.appendChild(tocContent);
+    parentDiv.insertAdjacentElement('afterend', tocClone);
+
+    const tocTitle = tocClone.querySelector('.toc-title');
+    tocTitle.addEventListener('click', () => {
+      tocContent.style.display = tocContent.style.display === 'none' ? 'block' : 'none';
+    });
+
+    const clonedTOCEntries = tocContent.querySelectorAll('.toc-entry');
     clonedTOCEntries.forEach((tocEntry, index) => {
       addTOCItemClickEvent(tocEntry, tocEntries[index].heading);
     });
-  });
+    const sticky = tocClone.offsetTop - MOBILE_NAV_HEIGHT;
+    window.addEventListener('scroll', () => toggleSticky(tocClone, sticky));
+  }
 
   const originalTOC = document.querySelector('.table-of-contents-seo');
   if (originalTOC) originalTOC.style.display = 'none';
@@ -118,7 +156,7 @@ function handleTOCCloning(toc, tocEntries) {
 
 function setupTOCItem(tocItem, tocCounter, headingText, headingId) {
   tocItem.innerHTML = `
-    <span class="toc-number">${tocCounter}.</span>
+    <span class="toc-number">${tocCounter}</span>
     <a href="#${headingId}" daa-ll="${headingText}-${tocCounter}--">
       ${headingText}
     </a>
@@ -138,15 +176,24 @@ function styleHeadingLink(heading, tocCounter, toc) {
 function addTOCEntries(toc, config, doc) {
   let tocCounter = 1;
   const tocEntries = [];
+  const showContentNumbers = config['toc-content-numbers'];
+  const useEllipsis = config['toc-content-ellipsis'];
 
   Object.keys(config).forEach((key) => {
-    if (key.startsWith('content-')) {
+    if (key.startsWith('content-') && !key.endsWith('-short')) {
       const tocItem = createTag('div', { class: 'toc-entry' });
-      const headingText = formatHeadingText(config[key]);
-      const heading = findCorrespondingHeading(headingText, doc);
+
+      const shortKey = `${key}-short`;
+      let headingText = config[shortKey] || config[key];
+
+      if (useEllipsis) {
+        headingText = formatHeadingText(headingText);
+      }
+
+      const heading = findCorrespondingHeading(config[key], doc);
 
       if (heading) {
-        assignHeadingIdIfNeeded(heading, headingText);
+        assignHeadingIdIfNeeded(heading, config[key]);
         setupTOCItem(tocItem, tocCounter, headingText, heading.id);
 
         const verticalLine = createTag('div', { class: 'vertical-line' });
@@ -157,7 +204,7 @@ function addTOCEntries(toc, config, doc) {
         toc.appendChild(tocItem);
         tocEntries.push({ tocItem, heading });
 
-        styleHeadingLink(heading, tocCounter, toc);
+        showContentNumbers && styleHeadingLink(heading, tocCounter, toc);
         setNormalStyle(tocItem);
         tocCounter += 1;
       }
@@ -165,7 +212,6 @@ function addTOCEntries(toc, config, doc) {
   });
 
   if (getDeviceType() !== DESKTOP) handleTOCCloning(toc, tocEntries);
-
   return tocEntries;
 }
 
@@ -245,14 +291,20 @@ function buildMetadataConfigObject() {
   let content = getMetadata(`content-${i}`);
 
   while (content) {
+    const abbreviatedContent = getMetadata(`content-${i}-short`);
+    if (abbreviatedContent) {
+      contents.push({ [`content-${i}-short`]: abbreviatedContent });
+    }
     contents.push({ [`content-${i}`]: content });
     i += 1;
     content = getMetadata(`content-${i}`);
   }
+
   const config = contents.reduce((acc, el) => ({
     ...acc,
     ...el,
   }), { title });
+
   return config;
 }
 
@@ -261,7 +313,7 @@ export default async function setTOCSEO() {
   const config = buildMetadataConfigObject();
   const tocSEO = createTag('div', { class: 'table-of-contents-seo' });
   const toc = createTag('div', { class: 'toc' });
-  if (config.title) addTOCTitle(toc, config.title);
+  if (config.title) addTOCTitle(toc, config);
 
   let tocEntries;
   if (getDeviceType() === DESKTOP) {
