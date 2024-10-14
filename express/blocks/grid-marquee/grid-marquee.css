@@ -237,6 +237,7 @@
   align-items: center;
   padding-top: 40px;
   gap: 12px 48px;
+  min-height: 39px;
 }
 
 .grid-marquee .ratings .container {
