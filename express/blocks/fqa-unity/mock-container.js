@@ -5,12 +5,12 @@ import {
 } from '../../scripts/libs/htm-preact.js';
 import { createTag, loadStyle } from '../../scripts/utils.js';
 
-export const data = signal({ src: null, loading: false });
+export const data = signal({ showWorkspace: false });
 
 function Canvas() {
   return html`
     <div class='canvas'>
-      <img src='${data.value.src}' />
+      <img />
     </div>`;
 }
 
@@ -37,8 +37,9 @@ function Workspace() {
 }
 
 function Layout() {
+  const hidden = !data.value.showWorkspace;
   return html`
-    <div class="qa-workspace-layout">
+    <div class="qa-workspace-layout${hidden ? ' hidden' : ''}">
       <${Workspace} />
     </div>
   `;

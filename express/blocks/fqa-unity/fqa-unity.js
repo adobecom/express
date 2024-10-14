@@ -65,6 +65,7 @@ function uploadFile(block) {
   // Handle file selection
   inputElement.onchange = () => {
     window.history.pushState({ hideFrictionlessQa: true }, '', '');
+    if (data) data.value = { showWorkspace: true };
     fade(uploadContainer, 'out');
   };
 }
@@ -137,6 +138,7 @@ export default async function decorate(block) {
       const { files } = dt;
       inputElement.files = files;
       inputElement.dispatchEvent(new Event('change'));
+      if (data) data.value = { showWorkspace: true };
       fade(uploadContainer, 'out');
       document.body.dataset.suppressfloatingcta = 'true';
     },
@@ -164,7 +166,7 @@ export default async function decorate(block) {
         document.body.classList.remove('editor-modal-loaded');
         if (inputElement) inputElement.value = '';
         fade(uploadContainer, 'in');
-        if (data) data.value = { src: null, loading: false };
+        if (data) data.value = { showWorkspace: false };
         document.body.dataset.suppressfloatingcta = 'false';
       }
     },

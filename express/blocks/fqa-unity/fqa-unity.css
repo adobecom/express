@@ -47,6 +47,10 @@
   margin-top: 26px;
 }
 
+.fqa-unity.block video {
+  max-width: 444px;
+}
+
 .fqa-unity.block .dropzone-container {
   cursor: pointer;
   padding: 24px 0;
