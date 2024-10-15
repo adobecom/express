@@ -102,6 +102,10 @@ function handleRawPrice(price, basePrice, response) {
   } else {
     price.classList.remove('price-active');
   }
+  if (response.price.length > 6) {
+    price.classList.add('long-price');
+    basePrice.classList.add('long-price');
+  }
 }
 
 async function createPricingSection(
@@ -187,6 +191,10 @@ function decorateCardBorder(card, source) {
       source.classList.add('promo-eyebrow-text');
       card.classList.add('promo-text');
     }
+  } else {
+    [
+      source.style.display = 'none',
+    ];
   }
 }
 
