@@ -79,7 +79,7 @@ function initRotation(howToWindow, howToDocument) {
   }
 }
 
-function buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow) {
+function buildHowToStepsAccordion0(section, block, howToDocument, rows, howToWindow) {
 
   let indexOpenedStep = 0;
 
@@ -214,57 +214,97 @@ function buildHowToStepsAccordion(section, block, howToDocument, rows, howToWind
   howToStepsObserver.observe(block);
 }
 
-function roundedImage(x, y, width, height, radius, ctx) {
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + width - radius, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-  ctx.lineTo(x + width, y + height - radius);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-  ctx.lineTo(x + radius, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
-  ctx.closePath();
+function buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow) {
+
+  console.log("=== SECTION, BLOCK", section, block)
+  let indexOpenedStep = 0;
+
+  for (const row of rows) {
+    console.log("=== ROW", row)
+  }
 }
 
-function layerTemplateImage(canvas, ctx, templateImg) {
-  templateImg.style.objectFit = 'contain';
+function setStepDetails(block, indexOpenedStep) {
+  const listItems = block.querySelectorAll(':scope li');
 
-  return new Promise((outerResolve) => {
-    let prevWidth;
-    const drawImage = (centerX, centerY, maxWidth, maxHeight) => new Promise((resolve) => {
-      const obs = new ResizeObserver((changes) => {
-        for (const change of changes) {
-          if (change.contentRect.width === prevWidth) return;
-          prevWidth = change.contentRect.width;
-          if (prevWidth <= maxWidth && change.contentRect.height <= maxHeight) {
-            ctx.save();
-            roundedImage(centerX - (templateImg.width / 2), centerY - (templateImg.height / 2),
-              templateImg.width, templateImg.height, 7, ctx);
-            ctx.clip();
-            ctx.drawImage(templateImg, 0, 0, templateImg.naturalWidth,
-              templateImg.naturalHeight, centerX - (templateImg.width / 2),
-              centerY - (templateImg.height / 2), templateImg.width, templateImg.height);
-            ctx.restore();
-            obs.disconnect();
-            resolve();
-          }
-        }
-      });
-      obs.observe(templateImg);
-      templateImg.style.maxWidth = `${maxWidth}px`;
-      templateImg.style.maxHeight = `${maxHeight}px`;
-    });
+  console.log('=== listItems', listItems);
+  listItems.forEach((item, i) => {
+    // const $detail = listItems[i].querySelector('div');
+    const $detailContainer = item.querySelector('.detail-container');
+    const $detail = item.querySelector('.detail-container div');
 
-    // start and end areas were directly measured and transferred from the spec image
-    drawImage(1123, 600, 986, 652)
-      .then(() => drawImage(1816, 479, 312, 472))
-      .then(() => outerResolve());
+    console.log('=== detail', $detail, i, indexOpenedStep);
+    if (i === indexOpenedStep) {
+      $detail.classList.remove('closed');
+      $detail.style.maxHeight = `${$detail.scrollHeight}px`;
+    } else {
+      $detail.classList.add('closed');
+      $detail.style.maxHeight = '0';
+    }
   });
 }
 
+
+
+function buildAccordion(block) {
+  console.log('=== BLOCK', block);
+  let indexOpenedStep = 0;
+
+  for (const row of block.children) {
+    console.log('=== ROW', row);
+  }
+
+  const $list = createTag('OL', { class: 'steps' });
+  // const numbers = createTag('div', { class: 'tip-numbers', 'aria-role': 'tablist' });
+
+  // for (const row of block.children)
+
+  [...block.children].forEach((row, i) => {
+    console.log('=== ROW', row);
+
+    const [stepTitle, stepDetail] = row.querySelectorAll(':scope div');
+
+    console.log('=== stepTitle', stepTitle, stepTitle.children);
+
+    const $newStepTitle = createTag('h3');
+    $newStepTitle.replaceChildren(...stepTitle.childNodes);
+
+    stepDetail.classList.add('closed');
+
+    const $listItem = createTag('LI', { class: 'step' });
+    $list.append($listItem);
+
+    // $listItem.append(row)
+
+    const $detailContainer = createTag('div', { class: 'detail-container' });
+
+    $detailContainer.append(stepDetail)
+
+    $listItem.append($newStepTitle);
+    $listItem.append($detailContainer);
+
+    $newStepTitle.addEventListener('click', (ev) => {
+      // ev.stopPropagation();
+      // ev.preventDefault();
+      indexOpenedStep = i;
+      setStepDetails(block, indexOpenedStep);
+    });
+  });
+
+  // return $list;
+
+  // const accordion = buildAccordion(block);
+
+  block.replaceChildren($list);
+  setStepDetails(block, indexOpenedStep);
+
+  // return block;
+}
+
+
 export default async function decorate(block) {
+
+  console.log("=== IN decorate", block)
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
   const isVideoVariant = block.classList.contains('video');
@@ -289,5 +329,12 @@ export default async function decorate(block) {
     videoEl.classList.add('video-how-to-steps-accordion');
     section.prepend(videoEl);
   }
-  buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow);
+
+  buildAccordion(block);
+  // buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow);
+  // buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow);
+
+  // const accordion = buildAccordion(block);
+  // block.replaceChildren(accordion)
+  // return block;
 }

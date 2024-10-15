@@ -240,3 +240,45 @@ main .video-how-to-steps-accordion {
     margin-left: 80px;
   }
 }
+
+
+.how-to-steps-accordion.block ol {
+  list-style-type:none;
+}
+
+.how-to-steps-accordion.block ol li {
+ border-bottom: 1px dotted #555
+}
+
+.how-to-steps-accordion.block ol li h3 {
+  text-align: left;
+  font-size: 21px;
+}
+
+.how-to-steps-accordion.block .closed {
+ /* display:none; */
+}
+
+.how-to-steps-accordion.block ol li .detail-container div {
+  /* height: 100%;
+  transition: all 0.7s; */
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.how-to-steps-accordion.block ol li .detail-container div.closed {
+  /* height: 50%; */
+
+}
+
+
+.how-to-steps-accordion-video-container  {
+  /* TODO: tmp */
+  width: 1000px;
+}
+
+.how-to-steps-accordion-video-container lite-youtube {
+    /* TODO: tmp */
+    width: 800px;
+}
