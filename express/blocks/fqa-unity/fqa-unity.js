@@ -94,6 +94,11 @@ export default async function decorate(block) {
   dropzoneContainer.append(dropzone);
   actionColumn.append(dropzoneContainer, gtcText);
 
+    if(!inputElement){
+    inputElement = createTag('input', { type: 'file', accept: imageInputAccept, class: 'file-input' });
+    block.append(inputElement)
+  }
+
   dropzoneContainer.addEventListener('click', (e) => {
     e.preventDefault();
     uploadFile(block);
