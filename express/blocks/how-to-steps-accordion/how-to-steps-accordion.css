@@ -247,6 +247,7 @@ main .video-how-to-steps-accordion {
 }
 
 .how-to-steps-accordion.block ol li {
+  padding: 12px 0;
  border-bottom: 1px dotted #555
 }
 
