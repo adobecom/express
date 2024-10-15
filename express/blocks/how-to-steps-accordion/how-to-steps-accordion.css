@@ -233,7 +233,7 @@ main .video-how-to-steps-accordion {
   }
 
   main div:has(> .how-to-steps-accordion.video) {
-    width: calc((100% - 72px) * 0.55 - 176px);
+    /* width: calc((100% - 72px) * 0.55 - 176px); */
   }
 
   main .video-how-to-steps-accordion {
