@@ -121,7 +121,7 @@ function toggleSticky(tocClone, sticky) {
 }
 
 function handleTOCCloning(toc, tocEntries) {
-  const mainElement = document.querySelector('main');
+  const mainElement = document.querySelector('.section.section-wrapper').firstElementChild;
 
   if (mainElement) {
     const tocClone = toc.cloneNode(true);
@@ -148,7 +148,7 @@ function handleTOCCloning(toc, tocEntries) {
     });
 
     tocClone.appendChild(tocContent);
-    mainElement.insertAdjacentElement('beforebegin', tocClone);
+    mainElement.insertAdjacentElement('afterend', tocClone);
 
     titleWrapper.addEventListener('click', () => {
       tocContent.classList.toggle('open');
