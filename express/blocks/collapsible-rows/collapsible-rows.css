@@ -1,7 +1,7 @@
 .collapsible-row-accordion {
     height: 128px;
     margin-bottom: 4px;
-    border-radius: 0px 16px 16px 0px;
+    border-radius: 0px 8px 8px 0px;
     border-left: 4px solid #724CDC;
     background: #F8F8F8;
     padding: 16px;
@@ -64,20 +64,33 @@
 }
 .collapsible-row-accordion.expandable.header-accordion {
     height: 100%;
-    border-radius: 16px;
+    border-radius: 8px;
     border: none;
     margin-bottom: 6px;
+    background: white;
 }
 .collapsible-row-accordion.expandable.header-accordion.rounded-corners {
-    border-radius: 16px 16px 0 0;
+    border-radius: 8px 8px 0 0;
     margin-bottom: 0;
+    background: linear-gradient(to bottom, 
+        #5C5CE0, 
+        #9C49C6, 
+        #BF38A5) left / 1% 100% no-repeat,
+    white;
 }
 .collapsible-row-accordion.expandable.sub-header-accordion {
     height: 100%;
-    border-radius: 0 0 16px 16px;
+    border-radius: 0 0 8px 8px;
     border: none;
     display: none;
     margin-bottom: 6px;
+    background: linear-gradient(to bottom, 
+        #D13381, 
+        #DE3E67, 
+        #EC5153, 
+        #F2693C, 
+        #F08420) left / 1% 100% no-repeat,
+    white;
 }
 .collapsible-row-header.expandable {
     font-size: 16px;
@@ -152,7 +165,7 @@
     .collapsible-row-accordion {
         height: 128px;
         margin-bottom: 4px;
-        border-radius: 0px 16px 16px 0px;
+        border-radius: 0px 8px 8px 0px;
         border-left: 4px solid #724CDC;
         background: #F8F8F8;
         padding: 16px;
