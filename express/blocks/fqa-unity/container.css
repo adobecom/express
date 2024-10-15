@@ -100,3 +100,7 @@
 .qa-workspace .pb-30px {
   padding-bottom: 30px;
 }
+
+.canvas img {
+  max-height: 100%
+}
