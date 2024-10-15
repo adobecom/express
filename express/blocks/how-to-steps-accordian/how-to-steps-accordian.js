@@ -79,7 +79,7 @@ function initRotation(howToWindow, howToDocument) {
   }
 }
 
-function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow) {
+function buildHowToStepsAccordian(section, block, howToDocument, rows, howToWindow) {
   // join wrappers together
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
     if (i === 0) {
@@ -97,9 +97,9 @@ function buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindo
 
   const includeSchema = block.classList.contains('schema');
   if (includeSchema) {
-    // this is due to block loader setting how-to-steps-carousel-schema-container
-    // and not how-to-steps-carousel-container as expected
-    section.classList.add('how-to-steps-carousel-container');
+    // this is due to block loader setting how-to-steps-accordian-schema-container
+    // and not how-to-steps-accordian-container as expected
+    section.classList.add('how-to-steps-accordian-container');
   }
   const schema = {
     '@context': 'http://schema.org',
@@ -279,7 +279,7 @@ export default async function decorate(block) {
     const url = new URL(youtubeURL);
 
     const videoEl = embedYoutube(url);
-    videoEl.classList.add('video-how-to-steps-carousel');
+    videoEl.classList.add('video-how-to-steps-accordian');
     section.prepend(videoEl);
   } else if (isImageVariant) {
     const canvasWidth = 2000;
@@ -287,7 +287,7 @@ export default async function decorate(block) {
 
     const placeholderImgUrl = createTag('div');
     const placeholders = await fetchPlaceholders();
-    const url = placeholders['how-to-steps-carousel-image-app'];
+    const url = placeholders['how-to-steps-accordian-image-app'];
     const alt = block.querySelector('picture > img').getAttribute('alt');
     const eagerLoad = document.querySelector('.block') === block;
     const backgroundPic = createOptimizedPicture(url, 'template in express', eagerLoad);
@@ -338,5 +338,5 @@ export default async function decorate(block) {
     parent.remove();
     section.prepend(picture);
   }
-  buildHowToStepsCarousel(section, block, howToDocument, rows, howToWindow);
+  buildHowToStepsAccordian(section, block, howToDocument, rows, howToWindow);
 }
