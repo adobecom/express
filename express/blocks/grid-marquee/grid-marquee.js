@@ -150,7 +150,7 @@ function convertToCard(item) {
   window.addEventListener('express:LCP:loaded', () => {
     if (created) return;
     created = true;
-    createDrawer(card, title, cols.slice(1));
+    createDrawer(card, titleText, cols.slice(1));
   });
   cols[0].classList.add('face');
   return card;
