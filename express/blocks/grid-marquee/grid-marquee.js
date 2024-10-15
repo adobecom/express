@@ -28,10 +28,7 @@ function showDrawer(drawer) {
   currDrawer = drawer;
 }
 document.addEventListener('click', (e) => {
-  if (!currDrawer) return;
-  if (!currDrawer.closest('.card').contains(e.target)) {
-    hideDrawer();
-  }
+  currDrawer && currDrawer.closest('.card')?.contains(e.target) && hideDrawer();
 });
 
 let isTouch;
