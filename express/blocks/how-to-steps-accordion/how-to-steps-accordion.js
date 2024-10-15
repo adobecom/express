@@ -79,7 +79,10 @@ function initRotation(howToWindow, howToDocument) {
   }
 }
 
-function buildHowToStepsAccordian(section, block, howToDocument, rows, howToWindow) {
+function buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow) {
+
+  let indexOpenedStep = 0;
+
   // join wrappers together
   section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
     if (i === 0) {
@@ -151,6 +154,11 @@ function buildHowToStepsAccordian(section, block, howToDocument, rows, howToWind
     number.setAttribute('data-tip-index', i + 1);
 
     number.addEventListener('click', (e) => {
+
+      console.log("=== The previous indexOpenedStep", indexOpenedStep)
+      indexOpenedStep = i;
+      console.log("=== and now it is", indexOpenedStep)
+
       if (rotationInterval) {
         howToWindow.clearTimeout(rotationInterval);
       }
@@ -259,7 +267,6 @@ function layerTemplateImage(canvas, ctx, templateImg) {
 export default async function decorate(block) {
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
-  const isImageVariant = block.classList.contains('image');
   const isVideoVariant = block.classList.contains('video');
 
   // move first image of container outside of div for styling
@@ -281,62 +288,6 @@ export default async function decorate(block) {
     const videoEl = embedYoutube(url);
     videoEl.classList.add('video-how-to-steps-accordion');
     section.prepend(videoEl);
-  } else if (isImageVariant) {
-    const canvasWidth = 2000;
-    const canvasHeight = 1072;
-
-    const placeholderImgUrl = createTag('div');
-    const placeholders = await fetchPlaceholders();
-    const url = placeholders['how-to-steps-accordion-image-app'];
-    const alt = block.querySelector('picture > img').getAttribute('alt');
-    const eagerLoad = document.querySelector('.block') === block;
-    const backgroundPic = createOptimizedPicture(url, 'template in express', eagerLoad);
-    const backgroundPicImg = backgroundPic.querySelector('img', { alt: 'template in express' });
-
-    if (placeholderImgUrl) {
-      backgroundPic.appendChild(backgroundPicImg);
-      placeholderImgUrl.remove();
-    }
-
-    const templateDiv = rows.shift();
-    const templateImg = templateDiv.querySelector(':scope picture > img');
-
-    templateImg.style.visibility = 'hidden';
-    templateImg.style.position = 'absolute';
-    templateImg.removeAttribute('width');
-    templateImg.removeAttribute('height');
-    backgroundPicImg.style.width = `${canvasWidth}px`;
-    if (window.screen.width < 600) backgroundPicImg.style.height = `${window.screen.width * 0.536}px`;
-    picture = backgroundPic;
-    section.prepend(picture);
-
-    loadImage(backgroundPicImg).then(() => {
-      backgroundPicImg.width = canvasWidth;
-      const canvas = createTag('canvas', { width: canvasWidth, height: canvasHeight });
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(backgroundPicImg, 0, 0, canvasWidth, canvasHeight);
-      const sources = backgroundPic.querySelectorAll(':scope > source');
-      sources.forEach((source) => source.remove());
-      return loadImage(templateImg).then(() => {
-        layerTemplateImage(canvas, ctx, templateImg).then(() => {
-          templateDiv.remove();
-          const img = createTag('img');
-          canvas.toBlob((blob) => {
-            const blobUrl = URL.createObjectURL(blob);
-            img.src = blobUrl;
-            backgroundPic.append(img);
-            img.alt = alt;
-            backgroundPicImg.remove();
-            setPictureHeight(block, true);
-          });
-        });
-      });
-    });
-  } else {
-    picture = section.querySelector('picture');
-    const parent = picture.parentElement;
-    parent.remove();
-    section.prepend(picture);
   }
-  buildHowToStepsAccordian(section, block, howToDocument, rows, howToWindow);
+  buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow);
 }
