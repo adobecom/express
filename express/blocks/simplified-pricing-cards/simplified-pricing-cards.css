@@ -418,19 +418,17 @@ main .section>.simplified-pricing-cards-wrapper {
   }
 
   .simplified-pricing-cards .card-wrapper {
-    margin: auto;
+    margin: 48px auto;
+    width: min-content;
   }
 
   .simplified-pricing-cards .card.hide {
     gap: 10px;
   }
-
-  .simplified-pricing-cards .card-wrapper {
-    width: min-content;
-  }
+ 
 
   .simplified-pricing-cards .card-header {
-    margin: 20px auto;
+    margin: 16px auto;
     justify-content: start;
   }
 
