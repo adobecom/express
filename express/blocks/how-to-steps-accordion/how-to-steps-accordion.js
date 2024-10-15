@@ -296,7 +296,12 @@ function buildAccordion(block) {
   // const accordion = buildAccordion(block);
 
   block.replaceChildren($list);
-  setStepDetails(block, indexOpenedStep);
+
+  // set this in next event cycle
+  setTimeout(() => {
+    setStepDetails(block, indexOpenedStep);
+  }, 0)
+
 
   // return block;
 }
