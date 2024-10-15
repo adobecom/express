@@ -254,8 +254,12 @@ main .gen-ai-cards.homepage .carousel-container .carousel-fader-right {
   display: inline-block;
 }
 
+.gen-ai-cards.homepage .gen-ai-cards-heading-section p {
+  font-size: 16px;
+}
+
 .gen-ai-cards.homepage .gen-ai-cards-heading {
-  font-size: 36px;
+  font-size: 22px;
 }
 
 .section .gen-ai-cards-wrapper.homepage {
@@ -281,6 +285,9 @@ main .gen-ai-cards.homepage .carousel-container .carousel-fader-right {
   .gen-ai-cards .gen-ai-cards-heading-section {
       flex-direction: row;
       align-items: flex-end;
+  }
+  .gen-ai-cards.homepage .gen-ai-cards-heading {
+    font-size: 36px;
   }
   .gen-ai-cards .carousel-container .carousel-fader-left,
   .gen-ai-cards .carousel-container .carousel-fader-right{
