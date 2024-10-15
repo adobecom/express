@@ -28,9 +28,8 @@ function showDrawer(drawer) {
   currDrawer = drawer;
 }
 document.addEventListener('click', (e) => {
-  currDrawer && currDrawer.closest('.card')?.contains(e.target) && hideDrawer();
+  currDrawer && !currDrawer.closest('.card').contains(e.target) && hideDrawer();
 });
-
 let isTouch;
 function createDrawer(card, titleText, panels) {
   const titleRow = createTag('div', { class: 'title-row' });
@@ -72,7 +71,7 @@ function createDrawer(card, titleText, panels) {
     });
   });
   card.addEventListener('click', (e) => {
-    if (currDrawer) return;
+    if (currDrawer && e.target !== card && !card.contains(e.target)) return;
     e.stopPropagation();
     showDrawer(drawer);
   });
@@ -81,16 +80,10 @@ function createDrawer(card, titleText, panels) {
   });
   card.addEventListener('mouseenter', () => {
     if (isTouch) return; // touchstart->mouseenter->click
-    const firstElem = drawer.querySelector('button, a');
     showDrawer(drawer);
-    firstElem?.focus();
   });
-  card.addEventListener('focusin', (e) => {
-    !card.contains(e.relatedTarget) && showDrawer();
-  });
-  card.addEventListener('mouseleave', hideDrawer);
-  card.addEventListener('focusout', (e) => {
-    !card.contains(e.relatedTarget) && hideDrawer();
+  card.addEventListener('mouseleave', () => {
+    hideDrawer();
   });
   if (panels.length <= 1) {
     return drawer;
@@ -142,13 +135,7 @@ function convertToCard(item) {
   while (item.firstChild) card.append(item.firstChild);
   item.remove();
   const cols = [...card.querySelectorAll(':scope > div')];
-
-  let created = false;
-  window.addEventListener('express:LCP:loaded', () => {
-    if (created) return;
-    created = true;
-    createDrawer(card, titleText, cols.slice(1));
-  });
+  createDrawer(card, titleText, cols.slice(1));
   cols[0].classList.add('face');
   return card;
 }

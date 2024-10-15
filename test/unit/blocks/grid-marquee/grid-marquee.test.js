@@ -44,6 +44,7 @@ describe('grid-marquee', () => {
     card.click();
     expect(drawer.getAttribute('aria-hidden')).to.equal('false');
     expect(card.getAttribute('aria-expanded')).to.equal('true');
+    card.click();
   });
   it('collapses and expands drawer', () => {
     const card = block.querySelector('.card');
@@ -65,13 +66,6 @@ describe('grid-marquee', () => {
     expect(drawer.getAttribute('aria-hidden')).to.equal('false');
     expect(card.getAttribute('aria-expanded')).to.equal('true');
     card.querySelector("button[aria-label='close']").click();
-
-    card.dispatchEvent(new Event('focusin'));
-    expect(drawer.getAttribute('aria-hidden')).to.equal('false');
-    expect(card.getAttribute('aria-expanded')).to.equal('true');
-    card.dispatchEvent(new Event('focusout'));
-    expect(drawer.getAttribute('aria-hidden')).to.equal('true');
-    expect(card.getAttribute('aria-expanded')).to.equal('false');
   });
   it('splits card content by tabs when more than 1 col is authored', () => {
     const card = block.querySelectorAll('.card')[1];
