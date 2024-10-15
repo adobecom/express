@@ -140,6 +140,7 @@ function convertToCard(item) {
     class: 'card',
     'aria-controls': `drawer-${titleText}`,
     'aria-expanded': false,
+    'aria-label': titleText,
   });
   while (item.firstChild) card.append(item.firstChild);
   item.remove();
