@@ -56,7 +56,7 @@
   max-width: none;
   width: 250%;
   transform: translate(-50%, -35%);
-  max-height: 500px;
+  max-height: 600px;
   max-width: 1200px;
 }
 
@@ -163,7 +163,7 @@
   border-top: 1px solid #0000001A;
   display: flex;
   justify-content: center;
-  padding: 16px 0;
+  padding: 16px;
 }
 
 .grid-marquee .drawer video {
@@ -188,6 +188,11 @@
 .grid-marquee .drawer .icon {
   width: 22px;
   height: 22px;
+}
+
+.grid-marquee .drawer button[aria-label='close'] .icon {
+  width: 12px;
+  height: 12px;
 }
 
 .grid-marquee .drawer [aria-label='close'] {
@@ -277,7 +282,7 @@
   }
 
   .grid-marquee .card {
-    width: 201px;
+    width: 199px;
     border-radius: 16px;
   }
 
@@ -313,7 +318,7 @@
   }
   .grid-marquee .cards-container {
     width: 1152px;
-    gap: 24px
+    gap: 16px;
   }
   .grid-marquee .card {
     width: 278px;

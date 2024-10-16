@@ -7,12 +7,30 @@ const { default: decorate } = await import(
 document.body.innerHTML = await readFile({ path: './mocks/body.html' });
 describe('grid-marquee', () => {
   let block;
+  const oldIO = window.IntersectionObserver;
+  const cbs = [];
   before(async () => {
     window.placeholders = {
-      'app-store-ratings': '4.9, 233.8k ratings; 4.6, 117k ratings; https://adobesparkpost.app.link/GJrBPFUWBBb',
+      'app-store-ratings':
+        '4.9, 233.8k ratings; 4.6, 117k ratings; https://adobesparkpost.app.link/GJrBPFUWBBb',
     };
+    const mockIntersectionObserver = class {
+      items = [];
+
+      constructor(cb) {
+        cbs.push(cb);
+      }
+
+      observe(item) {
+        this.items.push(item);
+      }
+    };
+    window.IntersectionObserver = mockIntersectionObserver;
     block = document.querySelector('.grid-marquee');
     decorate(block);
+  });
+  after(() => {
+    window.IntersectionObserver = oldIO;
   });
   it('has a background image', async () => {
     const background = block.querySelector('.background');
@@ -28,8 +46,22 @@ describe('grid-marquee', () => {
   it('decorates cards', () => {
     const cardsContainer = block.querySelector('.cards-container');
     const cards = [...cardsContainer.querySelectorAll('.card')];
+    cards.forEach((card) => {
+      expect(card.querySelector('.face')).to.exist;
+    });
+  });
+  it('creates drawer when in view', async () => {
+    expect(block.querySelector('.drawer')).to.not.exist;
+    const cards = block.querySelectorAll('.card');
+    cbs[0]([{ target: cards[0], isIntersecting: true }], { unobserve: () => {} });
+    expect(block.querySelector('.drawer')).to.exist;
+    cbs[1]([{ target: cards[1], isIntersecting: true }], { unobserve: () => {} });
+    cbs[2]([{ target: cards[2], isIntersecting: true }], { unobserve: () => {} });
+    cbs[3]([{ target: cards[3], isIntersecting: true }], { unobserve: () => {} });
+
+    expect(block.querySelectorAll('.drawer').length).to.equal(4);
+
     const drawers = [...block.querySelectorAll('.drawer')];
-    expect(cards.length === drawers.length).to.be.true;
     drawers.forEach((drawer) => {
       expect(drawer.querySelector('.title-row')).to.exist;
       expect(drawer.querySelector('.video-container')).to.exist;

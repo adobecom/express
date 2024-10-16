@@ -13,7 +13,7 @@ function hideDrawer() {
   if (!currDrawer) return;
   currDrawer.closest('.card').setAttribute('aria-expanded', false);
   currDrawer.setAttribute('aria-hidden', true);
-  currDrawer.querySelector('video')?.pause();
+  currDrawer.querySelector('video')?.pause()?.catch(() => {});
   currDrawer = null;
 }
 function showDrawer(drawer) {
@@ -23,7 +23,7 @@ function showDrawer(drawer) {
   const video = drawer.querySelector('video');
   if (video && !reduceMotionMQ.matches) {
     video.muted = true;
-    video.play()?.catch(); // ignore
+    video.play().catch(() => {});
   }
   currDrawer = drawer;
 }
@@ -53,6 +53,9 @@ function createDrawer(card, titleText, panels) {
     poster: card.querySelector('img').src,
   }, `<source src="${videoAnchor.href}" type="video/mp4">`);
   const videoWrapper = createTag('div', { class: 'video-container' }, video);
+  panels.forEach((panel) => {
+    panel.classList.add('ctas-container');
+  });
   content.append(titleRow, videoWrapper, ...panels);
 
   panels.forEach((panel) => {
@@ -122,7 +125,7 @@ function createDrawer(card, titleText, panels) {
 
   return drawer;
 }
-
+const cbs = [];
 function convertToCard(item) {
   const title = item.querySelector('strong');
   const titleText = title.textContent.trim();
@@ -134,9 +137,14 @@ function convertToCard(item) {
   });
   while (item.firstChild) card.append(item.firstChild);
   item.remove();
-  const cols = [...card.querySelectorAll(':scope > div')];
-  createDrawer(card, titleText, cols.slice(1));
-  cols[0].classList.add('face');
+  const [face, ...panels] = [...card.querySelectorAll(':scope > div')];
+  face.classList.add('face');
+  const cb = (entries, ob) => {
+    ob.unobserve(card);
+    createDrawer(card, titleText, panels);
+  };
+  cbs.push(cb);
+  new IntersectionObserver(cb).observe(card);
   return card;
 }
 
