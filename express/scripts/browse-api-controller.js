@@ -14,7 +14,7 @@ const endpoints = {
   },
   prod: {
     cdn: 'https://www.adobe.com/ax-uss-api/',
-    url: 'https://uss-templates.adobe.io/uss/v3/query',
+    url: 'https://hz-template-search.adobe.io/uss/v3/query',
     key: window.atob('dGVtcGxhdGUtbGlzdC1saW5rbGlzdC1mYWNldA=='),
   },
 };
@@ -23,30 +23,25 @@ const mFetch = memoize((url, data) => fetch(url, data).then((r) => (r.ok ? r.jso
   ttl: 1000 * 60 * 60 * 24,
 });
 
-// eslint-disable-next-line no-unused-vars
 export async function getDataWithContext() {
+  const { locale } = getConfig();
   const textQuery = window.location.pathname.split('/')
     .filter(Boolean)
     .map((s) => s.trim())
-    .filter((s, i) => i > 1 || !['express', 'templates', 'colors'].includes(s))
+    .filter((s) => !['express', 'templates', 'colors', locale.prefix.replace('/', '')].includes(s))
     .reverse()
     .join(' ');
   const data = {
     experienceId: 'default-templates-search-seo',
-    context: {},
-    experiments: [],
     querySuggestion: {
       facet: {
         'function:querySuggestions': {},
       },
-      limit: 5,
     },
     textQuery,
-    locale: getConfig().locale.ietf || 'en-US',
+    locale: locale.ietf || 'en-US',
     queries: [{
       id: 'template_1',
-      start: 0,
-      limit: 5,
       scope: { entities: ['HzTemplate'] },
     }],
   };
