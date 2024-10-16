@@ -37,7 +37,6 @@ main .section .discover-cards {
     padding-right: 10px;
 }
 .discover-cards .gallery-control {
-    /* padding-top: 4px; */
     padding-top: 11px;
 }
 .discover-cards .gallery-control .status {
@@ -107,9 +106,6 @@ main .section .discover-cards {
     }
     .discover-cards .gallery-control {
         padding-top: 4px;
-    }
-    .discover-cards .gallery-control .status {
-        display: flex;
     }
     .discover-cards .cards-container .card picture img.short { 
         width: 351px;
