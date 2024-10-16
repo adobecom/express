@@ -39,10 +39,12 @@ const breakpointConfig = [
 ];
 
 const PRICE_TOKEN = '{{pricing}}';
+const SAVE_PERCENTAGE = '{{savePercentage}}';
+const BASE_PRICING_TOKEN = '[[base-pricing-token]]';
 
 // Transforms a {{pricing}} tag into human readable format.
-async function handlePrice(block) {
-  const priceEl = block.querySelector(`[title="${PRICE_TOKEN}"]`);
+async function handlePrice(block, tokenType=PRICE_TOKEN, responseFieldName="formatted") {
+  const priceEl = block.querySelector(`[title="${tokenType}"]`);
   if (!priceEl) return null;
 
   const newContainer = createTag('span');
@@ -51,13 +53,16 @@ async function handlePrice(block) {
   priceEl.remove();
   try {
     const response = await fetchPlanOnePlans(priceEl?.href);
-    newContainer.innerHTML = response.formatted;
+    newContainer.innerHTML = response[responseFieldName];
   } catch (error) {
     window.lana.log('Failed to fetch prices for page plan');
     window.lana.log(error);
   }
   return newContainer;
 }
+
+
+
 
 // FIXME: Not fulfilling requirement. Re-think of a way to allow subtext to contain link.
 function handleSubCTAText(buttonContainer) {
@@ -514,6 +519,8 @@ async function handleOptions(div, typeHint, block) {
 export default async function decorate(block) {
   addTempWrapper(block, 'marquee');
   handlePrice(block);
+  handlePrice(block,SAVE_PERCENTAGE,"savePer");
+  handlePrice(block, BASE_PRICING_TOKEN, "bp");
   const possibleBreakpoints = breakpointConfig.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const animations = {};
