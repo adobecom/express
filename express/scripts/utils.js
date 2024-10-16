@@ -2617,7 +2617,9 @@ export async function loadArea(area = document) {
   // appending express-specific branch parameters
   const links = isDoc ? area.querySelectorAll('main a[href*="adobesparkpost"]') : area.querySelectorAll(':scope a[href*="adobesparkpost"]');
   if (links.length) {
-    import('./branchlinks.js').then((mod) => mod.default(links));
+    window.addEventListener('express:lcp:loaded', () => {
+      import('./branchlinks.js').then((mod) => mod.default(links));
+    });
   }
 
   const areaBlocks = [];

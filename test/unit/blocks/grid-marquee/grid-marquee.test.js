@@ -1,5 +1,6 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
+import { delay } from '../../../helpers/waitfor.js';
 
 const { default: decorate } = await import(
   '../../../../express/blocks/grid-marquee/grid-marquee.js'
@@ -51,21 +52,16 @@ describe('grid-marquee', () => {
     });
   });
   it('creates drawer when in view', async () => {
-    expect(block.querySelector('.drawer')).to.not.exist;
-    const cards = block.querySelectorAll('.card');
-    cbs[0]([{ target: cards[0], isIntersecting: true }], { unobserve: () => {} });
-    expect(block.querySelector('.drawer')).to.exist;
-    cbs[1]([{ target: cards[1], isIntersecting: true }], { unobserve: () => {} });
-    cbs[2]([{ target: cards[2], isIntersecting: true }], { unobserve: () => {} });
-    cbs[3]([{ target: cards[3], isIntersecting: true }], { unobserve: () => {} });
-
-    expect(block.querySelectorAll('.drawer').length).to.equal(4);
+    expect(block.querySelector('.drawer .content')).to.not.exist;
+    cbs[0]([{ target: block, isIntersecting: true }], { unobserve: () => {} });
+    await delay(310);
+    expect(block.querySelectorAll('.drawer .content').length).to.equal(4);
 
     const drawers = [...block.querySelectorAll('.drawer')];
     drawers.forEach((drawer) => {
       expect(drawer.querySelector('.title-row')).to.exist;
       expect(drawer.querySelector('.video-container')).to.exist;
-      expect(drawer.querySelector('.ctas-container')).to.exist;
+      expect(drawer.querySelector('.panel')).to.exist;
     });
   });
   it('expands drawer when interacted', () => {

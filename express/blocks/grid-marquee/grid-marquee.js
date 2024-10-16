@@ -3,21 +3,22 @@ import {
   createTag,
   fetchPlaceholders,
   getMobileOperatingSystem,
+  yieldToMain,
 } from '../../scripts/utils.js';
 
 let currDrawer = null;
 const desktopMQ = window.matchMedia('(min-width: 1200px)');
 const reduceMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-function hideDrawer() {
+function drawerOff() {
   if (!currDrawer) return;
   currDrawer.closest('.card').setAttribute('aria-expanded', false);
   currDrawer.setAttribute('aria-hidden', true);
   currDrawer.querySelector('video')?.pause()?.catch(() => {});
   currDrawer = null;
 }
-function showDrawer(drawer) {
-  hideDrawer();
+function drawerOn(drawer) {
+  drawerOff();
   drawer.closest('.card').setAttribute('aria-expanded', true);
   drawer.setAttribute('aria-hidden', false);
   const video = drawer.querySelector('video');
@@ -28,68 +29,45 @@ function showDrawer(drawer) {
   currDrawer = drawer;
 }
 document.addEventListener('click', (e) => {
-  currDrawer && !currDrawer.closest('.card').contains(e.target) && hideDrawer();
+  currDrawer && !currDrawer.closest('.card').contains(e.target) && drawerOff();
 });
 let isTouch;
-function createDrawer(card, titleText, panels) {
+const iconRegex = /icon-(.+)/;
+async function decorateDrawer(videoSrc, poster, titleText, panels, panelsFrag, drawer) {
   const titleRow = createTag('div', { class: 'title-row' });
-  const closeButton = createTag('button', { 'aria-label': 'close' }, getIconElement('close-black'));
   const content = createTag('div', { class: 'content' });
-  const drawer = createTag('div', { id: `drawer-${titleText}`, class: 'drawer', 'aria-hidden': true }, content);
-  card.append(drawer);
+  const closeButton = createTag('button', { 'aria-label': 'close' }, getIconElement('close-black'));
   closeButton.addEventListener('click', (e) => {
     e.stopPropagation();
-    hideDrawer();
+    drawerOff();
   });
   titleRow.append(createTag('strong', { class: 'drawer-title' }, titleText), closeButton);
-  const videoAnchor = card.querySelector('a');
-  videoAnchor.remove();
+  await yieldToMain();
   const video = createTag('video', {
     playsinline: '',
     muted: '',
     loop: '',
     preload: 'metadata',
     title: titleText,
-    poster: card.querySelector('img').src,
-  }, `<source src="${videoAnchor.href}" type="video/mp4">`);
+    poster,
+  }, `<source src="${videoSrc}" type="video/mp4">`);
   const videoWrapper = createTag('div', { class: 'video-container' }, video);
-  panels.forEach((panel) => {
-    panel.classList.add('ctas-container');
-  });
-  content.append(titleRow, videoWrapper, ...panels);
 
-  panels.forEach((panel) => {
-    panel.classList.add('ctas-container');
-    [...panel.querySelectorAll('p')].forEach((p) => {
-      const icon = p.querySelector('span.icon');
-      const match = icon && /icon-(.+)/.exec(icon.className);
-      if (match?.[1]) {
-        icon.append(getIconElement(match[1]));
-      }
-      const anchor = p.querySelector('a');
-      if (anchor) {
-        anchor.prepend(icon);
-        p.replaceWith(anchor);
-      }
-    });
+  const icons = panelsFrag.querySelectorAll('.icon');
+  const anchors = [...panelsFrag.querySelectorAll('a')];
+  anchors.forEach((anchor, i) => {
+    anchor.classList.add('drawer-cta');
+    const icon = icons[i];
+    const match = icon && iconRegex.exec(icon.className);
+    if (match?.[1]) {
+      icon.append(getIconElement(match[1]));
+    }
+    anchor?.prepend(icon);
   });
-  card.addEventListener('click', (e) => {
-    if (currDrawer && e.target !== card && !card.contains(e.target)) return;
-    e.stopPropagation();
-    showDrawer(drawer);
-  });
-  card.addEventListener('touchstart', () => {
-    isTouch = true;
-  });
-  card.addEventListener('mouseenter', () => {
-    if (isTouch) return; // touchstart->mouseenter->click
-    showDrawer(drawer);
-  });
-  card.addEventListener('mouseleave', () => {
-    hideDrawer();
-  });
+  content.append(titleRow, videoWrapper, panelsFrag);
+  drawer.append(content);
   if (panels.length <= 1) {
-    return drawer;
+    return;
   }
 
   const tabList = createTag('div', { role: 'tablist' });
@@ -122,85 +100,97 @@ function createDrawer(card, titleText, panels) {
   });
 
   panels[0].before(tabList);
-
-  return drawer;
 }
-const cbs = [];
-function convertToCard(item) {
-  const title = item.querySelector('strong');
-  const titleText = title.textContent.trim();
+function addCardInteractions(card, drawer) {
+  card.addEventListener('click', (e) => {
+    if (currDrawer && e.target !== card && !card.contains(e.target)) return;
+    e.stopPropagation();
+    drawerOn(drawer);
+  });
+  card.addEventListener('touchstart', () => {
+    isTouch = true;
+  });
+  card.addEventListener('mouseenter', () => {
+    if (isTouch) return; // touchstart->mouseenter->click
+    drawerOn(drawer);
+  });
+  card.addEventListener('mouseleave', () => {
+    drawerOff();
+  });
+}
+function toCard(drawer) {
+  const titleText = drawer.querySelector('strong').textContent.trim();
+  const [face, ...panels] = [...drawer.querySelectorAll(':scope > div')];
+  const panelsFrag = new DocumentFragment();
+  panelsFrag.append(...panels);
+  panels.forEach((panel) => panel.classList.add('panel'));
+  const videoAnchor = face.querySelector('a');
+  videoAnchor?.remove();
   const card = createTag('button', {
     class: 'card',
     'aria-controls': `drawer-${titleText}`,
     'aria-expanded': false,
     'aria-label': titleText,
-  });
-  while (item.firstChild) card.append(item.firstChild);
-  item.remove();
-  const [face, ...panels] = [...card.querySelectorAll(':scope > div')];
+  }, [face, drawer]);
+
   face.classList.add('face');
-  const cb = (entries, ob) => {
-    ob.unobserve(card);
-    createDrawer(card, titleText, panels);
-  };
-  cbs.push(cb);
-  new IntersectionObserver(cb).observe(card);
-  return card;
+  addCardInteractions(card, drawer);
+  const lazyCB = () => decorateDrawer(videoAnchor.href, face.querySelector('img').src, titleText, panels, panelsFrag, drawer);
+  drawer.classList.add('drawer');
+  drawer.setAttribute('aria-hidden', true);
+  drawer.id = `drawer-${titleText}`;
+  return { card, lazyCB };
 }
 
 function decorateHeadline(headline) {
-  headline.classList.add('headline');
-  const ctas = [...headline.querySelectorAll('a')];
+  const ctas = headline.querySelectorAll('a');
   if (!ctas.length) return headline;
-  ctas[0].parentElement.classList.add('ctas-container');
+  ctas[0].parentElement.classList.add('ctas');
   ctas.forEach((cta) => cta.classList.add('button'));
   ctas[0].classList.add('primaryCTA');
+  headline.classList.add('headline');
   return headline;
 }
 
-async function decorateRatings(el, store) {
+async function makeRating(store) {
   const placeholders = await fetchPlaceholders();
   const ratings = placeholders['app-store-ratings']?.split(';') || [];
   const link = ratings[2]?.trim();
   if (!link) {
-    el.remove();
-    return;
+    return null;
   }
   const [score, cnt] = ratings[['apple', 'google'].indexOf(store)].split(',').map((str) => str.trim());
-  const star = getIconElement('star');
   const storeLink = createTag('a', { href: link }, getIconElement(`${store}-store`));
   const { default: trackBranchParameters } = await import('../../scripts/branchlinks.js');
   await trackBranchParameters([storeLink]);
-  el.append(score, star, cnt, storeLink);
+  return createTag('div', { class: 'container' }, [score, getIconElement('star'), cnt, storeLink]);
 }
 
-function createRatings() {
+function makeRatings() {
   const ratings = createTag('div', { class: 'ratings' });
   const userAgent = getMobileOperatingSystem();
-  if (userAgent !== 'Android') {
-    const el = createTag('div', { class: 'container' });
-    ratings.append(el);
-    decorateRatings(el, 'apple');
-  }
-  if (userAgent !== 'iOS') {
-    const el = createTag('div', { class: 'container' });
-    ratings.append(el);
-    decorateRatings(el, 'google');
-  }
+  const cb = (el) => el && ratings.append(el);
+  userAgent !== 'Android' && makeRating('apple').then(cb);
+  userAgent !== 'iOS' && makeRating('google').then(cb);
   return ratings;
 }
 
 export default function init(el) {
   const rows = [...el.querySelectorAll(':scope > div')];
-  const [headline, background, items, foreground] = [decorateHeadline(rows[0]), rows[1], rows.slice(2), createTag('div', { class: 'foreground' })];
-  background.classList.add('background');
+  const [headline, background, items, foreground] = [rows[0], rows[1], rows.slice(2), createTag('div', { class: 'foreground' })];
   const logo = getIconElement('adobe-express-logo');
   logo.classList.add('express-logo');
-  const cardsContainer = createTag('div', { class: 'cards-container' }, items.map((item) => convertToCard(item)));
-  foreground.append(logo, headline, cardsContainer, ...(el.classList.contains('ratings') ? [createRatings()] : []));
+  const cards = items.map((item) => toCard(item));
+  const cardsContainer = createTag('div', { class: 'cards-container' }, cards.map(({ card }) => card));
+  foreground.append(logo, decorateHeadline(headline), cardsContainer, ...(el.classList.contains('ratings') ? [makeRatings()] : []));
+  background.classList.add('background');
   el.append(foreground);
+  new IntersectionObserver((entries, ob) => {
+    ob.unobserve(el);
+    cards.forEach((card) => card.lazyCB());
+  }).observe(el);
   desktopMQ.addEventListener('change', () => {
     isTouch = false;
-    hideDrawer();
+    drawerOff();
   });
 }
