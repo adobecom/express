@@ -1018,7 +1018,7 @@ body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"]
   display: block;
 }
 
-main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf, .split-action, .link-list, .wayfinder, .ratings) a.button.same-fcta {
+main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf, .split-action, .link-list, .wayfinder, .ratings, .frictionless-quick-action.mobile) a.button.same-fcta {
   display: none;
 }
 
