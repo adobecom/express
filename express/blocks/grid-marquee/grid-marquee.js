@@ -9,15 +9,15 @@ let currDrawer = null;
 const desktopMQ = window.matchMedia('(min-width: 1200px)');
 const reduceMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-function hideDrawer() {
+function drawerOff() {
   if (!currDrawer) return;
   currDrawer.closest('.card').setAttribute('aria-expanded', false);
   currDrawer.setAttribute('aria-hidden', true);
   currDrawer.querySelector('video')?.pause()?.catch(() => {});
   currDrawer = null;
 }
-function showDrawer(drawer) {
-  hideDrawer();
+function drawerOn(drawer) {
+  drawerOff();
   drawer.closest('.card').setAttribute('aria-expanded', true);
   drawer.setAttribute('aria-hidden', false);
   const video = drawer.querySelector('video');
@@ -28,22 +28,20 @@ function showDrawer(drawer) {
   currDrawer = drawer;
 }
 document.addEventListener('click', (e) => {
-  currDrawer && !currDrawer.closest('.card').contains(e.target) && hideDrawer();
+  currDrawer && !currDrawer.closest('.card').contains(e.target) && drawerOff();
 });
 let isTouch;
-function createDrawer(card, titleText, panels) {
+const iconRegex = /icon-(.+)/;
+function makeDrawer(card, videoSrc, titleText, panels) {
   const titleRow = createTag('div', { class: 'title-row' });
   const closeButton = createTag('button', { 'aria-label': 'close' }, getIconElement('close-black'));
   const content = createTag('div', { class: 'content' });
   const drawer = createTag('div', { id: `drawer-${titleText}`, class: 'drawer', 'aria-hidden': true }, content);
-  card.append(drawer);
   closeButton.addEventListener('click', (e) => {
     e.stopPropagation();
-    hideDrawer();
+    drawerOff();
   });
   titleRow.append(createTag('strong', { class: 'drawer-title' }, titleText), closeButton);
-  const videoAnchor = card.querySelector('a');
-  videoAnchor.remove();
   const video = createTag('video', {
     playsinline: '',
     muted: '',
@@ -51,18 +49,14 @@ function createDrawer(card, titleText, panels) {
     preload: 'metadata',
     title: titleText,
     poster: card.querySelector('img').src,
-  }, `<source src="${videoAnchor.href}" type="video/mp4">`);
+  }, `<source src="${videoSrc}" type="video/mp4">`);
   const videoWrapper = createTag('div', { class: 'video-container' }, video);
-  panels.forEach((panel) => {
-    panel.classList.add('ctas-container');
-  });
   content.append(titleRow, videoWrapper, ...panels);
 
   panels.forEach((panel) => {
-    panel.classList.add('ctas-container');
     [...panel.querySelectorAll('p')].forEach((p) => {
       const icon = p.querySelector('span.icon');
-      const match = icon && /icon-(.+)/.exec(icon.className);
+      const match = icon && iconRegex.exec(icon.className);
       if (match?.[1]) {
         icon.append(getIconElement(match[1]));
       }
@@ -76,17 +70,17 @@ function createDrawer(card, titleText, panels) {
   card.addEventListener('click', (e) => {
     if (currDrawer && e.target !== card && !card.contains(e.target)) return;
     e.stopPropagation();
-    showDrawer(drawer);
+    drawerOn(drawer);
   });
   card.addEventListener('touchstart', () => {
     isTouch = true;
   });
   card.addEventListener('mouseenter', () => {
     if (isTouch) return; // touchstart->mouseenter->click
-    showDrawer(drawer);
+    drawerOn(drawer);
   });
   card.addEventListener('mouseleave', () => {
-    hideDrawer();
+    drawerOff();
   });
   if (panels.length <= 1) {
     return drawer;
@@ -122,13 +116,12 @@ function createDrawer(card, titleText, panels) {
   });
 
   panels[0].before(tabList);
-
   return drawer;
 }
-const cbs = [];
-function convertToCard(item) {
-  const title = item.querySelector('strong');
-  const titleText = title.textContent.trim();
+function toCard(item) {
+  const titleText = item.querySelector('strong').textContent.trim();
+  const videoAnchor = item.querySelector('a');
+  videoAnchor?.remove();
   const card = createTag('button', {
     class: 'card',
     'aria-controls': `drawer-${titleText}`,
@@ -138,13 +131,14 @@ function convertToCard(item) {
   while (item.firstChild) card.append(item.firstChild);
   item.remove();
   const [face, ...panels] = [...card.querySelectorAll(':scope > div')];
+  panels.forEach((panel) => {
+    panel.classList.add('panel');
+  });
   face.classList.add('face');
-  const cb = (entries, ob) => {
+  new IntersectionObserver((entries, ob) => {
     ob.unobserve(card);
-    createDrawer(card, titleText, panels);
-  };
-  cbs.push(cb);
-  new IntersectionObserver(cb).observe(card);
+    card.append(makeDrawer(card, videoAnchor.href, titleText, panels));
+  }).observe(card);
   return card;
 }
 
@@ -152,41 +146,34 @@ function decorateHeadline(headline) {
   headline.classList.add('headline');
   const ctas = [...headline.querySelectorAll('a')];
   if (!ctas.length) return headline;
-  ctas[0].parentElement.classList.add('ctas-container');
+  ctas[0].parentElement.classList.add('ctas');
   ctas.forEach((cta) => cta.classList.add('button'));
   ctas[0].classList.add('primaryCTA');
   return headline;
 }
 
-async function decorateRatings(el, store) {
+async function makeRating(store) {
   const placeholders = await fetchPlaceholders();
   const ratings = placeholders['app-store-ratings']?.split(';') || [];
   const link = ratings[2]?.trim();
   if (!link) {
-    el.remove();
-    return;
+    return null;
   }
+  const el = createTag('div', { class: 'container' });
   const [score, cnt] = ratings[['apple', 'google'].indexOf(store)].split(',').map((str) => str.trim());
-  const star = getIconElement('star');
   const storeLink = createTag('a', { href: link }, getIconElement(`${store}-store`));
   const { default: trackBranchParameters } = await import('../../scripts/branchlinks.js');
   await trackBranchParameters([storeLink]);
-  el.append(score, star, cnt, storeLink);
+  el.append(score, getIconElement('star'), cnt, storeLink);
+  return el;
 }
 
-function createRatings() {
+function makeRatings() {
   const ratings = createTag('div', { class: 'ratings' });
   const userAgent = getMobileOperatingSystem();
-  if (userAgent !== 'Android') {
-    const el = createTag('div', { class: 'container' });
-    ratings.append(el);
-    decorateRatings(el, 'apple');
-  }
-  if (userAgent !== 'iOS') {
-    const el = createTag('div', { class: 'container' });
-    ratings.append(el);
-    decorateRatings(el, 'google');
-  }
+  const cb = (el) => el && ratings.append(el);
+  userAgent !== 'Android' && makeRating('apple').then(cb);
+  userAgent !== 'iOS' && makeRating('google').then(cb);
   return ratings;
 }
 
@@ -196,11 +183,11 @@ export default function init(el) {
   background.classList.add('background');
   const logo = getIconElement('adobe-express-logo');
   logo.classList.add('express-logo');
-  const cardsContainer = createTag('div', { class: 'cards-container' }, items.map((item) => convertToCard(item)));
-  foreground.append(logo, headline, cardsContainer, ...(el.classList.contains('ratings') ? [createRatings()] : []));
+  const cardsContainer = createTag('div', { class: 'cards-container' }, items.map((item) => toCard(item)));
+  foreground.append(logo, headline, cardsContainer, ...(el.classList.contains('ratings') ? [makeRatings()] : []));
   el.append(foreground);
   desktopMQ.addEventListener('change', () => {
     isTouch = false;
-    hideDrawer();
+    drawerOff();
   });
 }
