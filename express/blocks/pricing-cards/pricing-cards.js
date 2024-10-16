@@ -59,7 +59,7 @@ function getPriceElementSuffix(placeholders, placeholderArr, response) {
     .join(' ');
 }
 
-function handlePriceToken(pricingArea, priceToken=YEAR_2_PRICING_TOKEN, newPrice, priceSuffix='') {
+function handlePriceToken(pricingArea, priceToken = YEAR_2_PRICING_TOKEN, newPrice, priceSuffix = '') {
   try {
     const elements = pricingArea.querySelectorAll('p');
     const year2PricingToken = Array.from(elements).find(
@@ -241,8 +241,8 @@ async function handlePrice(placeholders, pricingArea, specialPromo, groupID, leg
   handleTooltip(pricingArea);
   handleSavePercentage(savePercentElem, isPremiumCard, response);
   handleSpecialPromo(specialPromo, isPremiumCard, response, legacyVersion);
-  handlePriceToken(pricingArea,YEAR_2_PRICING_TOKEN ,response.y2p, priceSuffixTextContent);
-  handlePriceToken(pricingArea,BASE_PRICING_TOKEN ,response.formattedBP);
+  handlePriceToken(pricingArea, YEAR_2_PRICING_TOKEN, response.y2p, priceSuffixTextContent);
+  handlePriceToken(pricingArea, BASE_PRICING_TOKEN, response.formattedBP);
   priceEl?.parentNode?.remove();
   if (!priceRow) return;
   pricingArea.prepend(priceRow);

@@ -43,7 +43,7 @@ const SAVE_PERCENTAGE = '[[savePercentage]]';
 const BASE_PRICING_TOKEN = '[[base-pricing-token]]';
 
 // Transforms a {{pricing}} tag into human readable format.
-async function handlePrice(block, tokenType=PRICE_TOKEN, responseFieldName="formatted") {
+async function handlePrice(block, tokenType = PRICE_TOKEN, responseFieldName = 'formatted') {
   const priceEl = block.querySelector(`[title="${tokenType}"]`);
   if (!priceEl) return null;
 
@@ -60,9 +60,6 @@ async function handlePrice(block, tokenType=PRICE_TOKEN, responseFieldName="form
   }
   return newContainer;
 }
-
-
-
 
 // FIXME: Not fulfilling requirement. Re-think of a way to allow subtext to contain link.
 function handleSubCTAText(buttonContainer) {
@@ -519,8 +516,8 @@ async function handleOptions(div, typeHint, block) {
 export default async function decorate(block) {
   addTempWrapper(block, 'marquee');
   handlePrice(block);
-  handlePrice(block,SAVE_PERCENTAGE,"savePer");
-  handlePrice(block, BASE_PRICING_TOKEN, "formattedBP");
+  handlePrice(block, SAVE_PERCENTAGE, 'savePer');
+  handlePrice(block, BASE_PRICING_TOKEN, 'formattedBP');
   const possibleBreakpoints = breakpointConfig.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const animations = {};
