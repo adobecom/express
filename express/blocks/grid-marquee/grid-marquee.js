@@ -31,19 +31,19 @@ document.addEventListener('click', (e) => {
   currDrawer && !currDrawer.closest('.card').contains(e.target) && hideDrawer();
 });
 let isTouch;
+const iconRegex = /icon-(.+)/;
 function createDrawer(card, titleText, panels) {
   const titleRow = createTag('div', { class: 'title-row' });
   const closeButton = createTag('button', { 'aria-label': 'close' }, getIconElement('close-black'));
   const content = createTag('div', { class: 'content' });
   const drawer = createTag('div', { id: `drawer-${titleText}`, class: 'drawer', 'aria-hidden': true }, content);
-  card.append(drawer);
   closeButton.addEventListener('click', (e) => {
     e.stopPropagation();
     hideDrawer();
   });
   titleRow.append(createTag('strong', { class: 'drawer-title' }, titleText), closeButton);
   const videoAnchor = card.querySelector('a');
-  videoAnchor.remove();
+  videoAnchor?.remove();
   const video = createTag('video', {
     playsinline: '',
     muted: '',
@@ -53,16 +53,13 @@ function createDrawer(card, titleText, panels) {
     poster: card.querySelector('img').src,
   }, `<source src="${videoAnchor.href}" type="video/mp4">`);
   const videoWrapper = createTag('div', { class: 'video-container' }, video);
-  panels.forEach((panel) => {
-    panel.classList.add('ctas-container');
-  });
   content.append(titleRow, videoWrapper, ...panels);
 
   panels.forEach((panel) => {
     panel.classList.add('ctas-container');
     [...panel.querySelectorAll('p')].forEach((p) => {
       const icon = p.querySelector('span.icon');
-      const match = icon && /icon-(.+)/.exec(icon.className);
+      const match = icon && iconRegex.exec(icon.className);
       if (match?.[1]) {
         icon.append(getIconElement(match[1]));
       }
@@ -122,13 +119,11 @@ function createDrawer(card, titleText, panels) {
   });
 
   panels[0].before(tabList);
-
   return drawer;
 }
 const cbs = [];
 function convertToCard(item) {
-  const title = item.querySelector('strong');
-  const titleText = title.textContent.trim();
+  const titleText = item.querySelector('strong').textContent.trim();
   const card = createTag('button', {
     class: 'card',
     'aria-controls': `drawer-${titleText}`,
@@ -141,7 +136,7 @@ function convertToCard(item) {
   face.classList.add('face');
   const cb = (entries, ob) => {
     ob.unobserve(card);
-    createDrawer(card, titleText, panels);
+    card.append(createDrawer(card, titleText, panels));
   };
   cbs.push(cb);
   new IntersectionObserver(cb).observe(card);
