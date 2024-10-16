@@ -250,6 +250,10 @@ function buildAccordion(block) {
   console.log('=== BLOCK', block);
   let indexOpenedStep = 0;
 
+  const container = document.querySelector(".how-to-steps-accordion-video-container");
+  console.log("=== container", container)
+  if (container) container.classList.add("how-to-steps-accordion-container")
+
   for (const row of block.children) {
     console.log('=== ROW', row);
   }

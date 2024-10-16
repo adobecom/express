@@ -243,12 +243,29 @@ main .video-how-to-steps-accordion {
 
 
 .how-to-steps-accordion.block ol {
-  list-style-type:none;
+  list-style-type: none;
+  font-size: 21px;
+  font-weight: 900;
 }
 
 .how-to-steps-accordion.block ol li {
   padding: 12px 0;
- border-bottom: 1px dotted #555
+ /* border-bottom: 1px dotted #555; */
+
+ /* border-left: 6px solid orange; */
+
+ border-left: 6px solid #EC6D4E;
+ /* border-radius: 6px; */
+  /* orange; */
+ padding-left: 24px;
+
+margin-bottom: 24px;
+}
+
+.how-to-steps-accordion.block ol li:has(.closed) {
+
+ border-left: 6px solid #ccc;
+
 }
 
 .how-to-steps-accordion.block ol li h3 {
@@ -260,12 +277,20 @@ main .video-how-to-steps-accordion {
  /* display:none; */
 }
 
+.how-to-steps-accordion.block ol li .detail-container {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+
 .how-to-steps-accordion.block ol li .detail-container div {
   /* height: 100%;
   transition: all 0.7s; */
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
+
+
 }
 
 .how-to-steps-accordion.block ol li .detail-container div.closed {
@@ -282,4 +307,16 @@ main .video-how-to-steps-accordion {
 .how-to-steps-accordion-video-container lite-youtube {
     /* TODO: tmp */
     width: 800px;
+}
+
+
+.how-to-steps-accordion-video-container .default-content-wrapper {
+  /* TODO: temporaray */
+  display: none;
+}
+
+
+main .how-to-steps-accordion-container > div {
+  background: none;
+
 }
