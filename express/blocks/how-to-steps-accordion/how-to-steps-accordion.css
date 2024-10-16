@@ -260,6 +260,10 @@ main .video-how-to-steps-accordion {
  padding-left: 24px;
 
 margin-bottom: 24px;
+
+cursor: pointer;
+transition: all 0.2s;
+
 }
 
 .how-to-steps-accordion.block ol li:has(.closed) {
