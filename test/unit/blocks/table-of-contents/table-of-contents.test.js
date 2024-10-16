@@ -17,7 +17,7 @@ describe('table-of-contents', () => {
     block.classList.add('table-of-contents');
   });
 
-  it('should not generate toc-entry elements for headings above the configured level', () => {
+  it('generates toc-entry elements for h2 headings', () => {
     const block = document.querySelector('.table-of-contents');
     const config = { levels: '2' };
     block.dataset.config = JSON.stringify(config);
@@ -25,8 +25,8 @@ describe('table-of-contents', () => {
     decorate(block, 'table-of-contents', document);
 
     const tocEntries = document.querySelectorAll('.toc-entry');
-    tocEntries.forEach(($entry) => {
-      const levelClass = $entry.classList[1];
+    tocEntries.forEach((entry) => {
+      const levelClass = entry.classList[1];
       expect(levelClass).to.equal('toc-level-h2');
     });
   });
