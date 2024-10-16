@@ -39,7 +39,7 @@ const breakpointConfig = [
 ];
 
 const PRICE_TOKEN = '{{pricing}}';
-const SAVE_PERCENTAGE = '{{savePercentage}}';
+const SAVE_PERCENTAGE = '[[savePercentage]]';
 const BASE_PRICING_TOKEN = '[[base-pricing-token]]';
 
 // Transforms a {{pricing}} tag into human readable format.
@@ -520,7 +520,7 @@ export default async function decorate(block) {
   addTempWrapper(block, 'marquee');
   handlePrice(block);
   handlePrice(block,SAVE_PERCENTAGE,"savePer");
-  handlePrice(block, BASE_PRICING_TOKEN, "bp");
+  handlePrice(block, BASE_PRICING_TOKEN, "formattedBP");
   const possibleBreakpoints = breakpointConfig.map((bp) => bp.typeHint);
   const possibleOptions = ['shadow', 'background'];
   const animations = {};

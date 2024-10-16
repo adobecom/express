@@ -59,35 +59,17 @@ function getPriceElementSuffix(placeholders, placeholderArr, response) {
     .join(' ');
 }
 
-async function handlePrice(block) {
-  const priceEl = block.querySelector(`[title="${BASE_PRICING_TOKEN}"]`);
-  if (!priceEl) return null;
-
-  const newContainer = createTag('span');
-  priceEl.closest('p')?.classList.remove('button-container');
-  priceEl.after(newContainer);
-  priceEl.remove();
-  try {
-    const response = await fetchPlanOnePlans(priceEl?.href);
-    newContainer.innerHTML = response.bp;
-  } catch (error) {
-    window.lana.log('Failed to fetch prices for page plan');
-    window.lana.log(error);
-  }
-  return newContainer;
-}
-
-function handleYear2PricingToken(pricingArea, y2p, priceSuffix) {
+function handlePriceToken(pricingArea, priceToken=YEAR_2_PRICING_TOKEN, newPrice, priceSuffix='') {
   try {
     const elements = pricingArea.querySelectorAll('p');
     const year2PricingToken = Array.from(elements).find(
-      (p) => p.textContent.includes(YEAR_2_PRICING_TOKEN),
+      (p) => p.textContent.includes(priceToken),
     );
     if (!year2PricingToken) return;
-    if (y2p) {
+    if (newPrice) {
       year2PricingToken.innerHTML = year2PricingToken.innerHTML.replace(
-        YEAR_2_PRICING_TOKEN,
-        `${y2p} ${priceSuffix}`,
+        priceToken,
+        `${newPrice} ${priceSuffix}`,
       );
     } else {
       year2PricingToken.textContent = '';
@@ -259,8 +241,8 @@ async function handlePrice(placeholders, pricingArea, specialPromo, groupID, leg
   handleTooltip(pricingArea);
   handleSavePercentage(savePercentElem, isPremiumCard, response);
   handleSpecialPromo(specialPromo, isPremiumCard, response, legacyVersion);
-  handleYear2PricingToken(pricingArea, response.y2p, priceSuffixTextContent);
-
+  handlePriceToken(pricingArea,YEAR_2_PRICING_TOKEN ,response.y2p, priceSuffixTextContent);
+  handlePriceToken(pricingArea,BASE_PRICING_TOKEN ,response.formattedBP);
   priceEl?.parentNode?.remove();
   if (!priceRow) return;
   pricingArea.prepend(priceRow);
