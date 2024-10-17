@@ -232,34 +232,28 @@ function addTOCEntries(toc, config, doc) {
 }
 
 function setTOCPosition(toc, tocContainer) {
-  const footer = document.querySelector('footer');
   const firstLink = toc.querySelector('.toc-entry a');
-  if (!firstLink || !tocContainer || !footer) return;
+  if (!firstLink || !tocContainer) {
+    return;
+  }
 
   const href = firstLink.getAttribute('href');
   const partialId = href.slice(1).substring(0, 10);
   const targetElement = document.querySelector(`[id^="${partialId}"]`);
-  if (!targetElement) return;
 
-  const rect = targetElement.getBoundingClientRect();
-  const footerRect = footer.getBoundingClientRect();
-  const targetTop = Math.round(window.scrollY + rect.top);
-  const footerTop = Math.round(window.scrollY + footerRect.top);
-  const viewportHeight = window.innerHeight;
-
-  const tocHeight = tocContainer.offsetHeight;
-
-  if (window.scrollY + tocHeight >= footerTop - viewportHeight) {
-    tocContainer.style.position = 'absolute';
-    tocContainer.style.top = `${footerTop - tocHeight}px`;
-  } else if (window.scrollY >= targetTop - viewportHeight / 2) {
-    tocContainer.style.position = 'fixed';
-    tocContainer.style.top = `${viewportHeight / 2}px`;
-  } else {
-    tocContainer.style.position = 'absolute';
-    tocContainer.style.top = `${targetTop}px`;
+  if (!targetElement) {
+    return;
   }
 
+  const rect = targetElement.getBoundingClientRect();
+  const targetTop = Math.round(window.scrollY + rect.top);
+  const viewportMidpoint = window.innerHeight / 2;
+
+  tocContainer.style.top = targetTop <= window.scrollY + viewportMidpoint
+    ? `${viewportMidpoint}px`
+    : `${targetTop}px`;
+
+  tocContainer.style.position = targetTop <= window.scrollY + viewportMidpoint ? 'fixed' : 'absolute';
   tocContainer.style.display = 'block';
 }
 
