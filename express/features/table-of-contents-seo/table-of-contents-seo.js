@@ -232,10 +232,10 @@ function addTOCEntries(toc, config, doc) {
 }
 
 function setTOCPosition(toc, tocContainer) {
-  const footer = document.querySelector('footer');
+  const promotionWrapper = document.querySelector('div.promotion-wrapper');
   const firstLink = toc.querySelector('.toc-entry a');
 
-  if (!firstLink || !tocContainer || !footer) return;
+  if (!firstLink || !tocContainer || !promotionWrapper) return;
 
   const href = firstLink.getAttribute('href');
   const partialId = href.slice(1).substring(0, 10);
@@ -247,13 +247,15 @@ function setTOCPosition(toc, tocContainer) {
   const targetTop = Math.round(window.scrollY + rect.top);
   const viewportMidpoint = window.innerHeight / 2;
 
-  const footerTop = Math.round(
-    window.scrollY + footer.getBoundingClientRect().top,
+  // Get the top position of the promotion-wrapper div
+  const promotionTop = Math.round(
+    window.scrollY + promotionWrapper.getBoundingClientRect().top,
   );
 
-  if (window.scrollY + viewportMidpoint + tocContainer.offsetHeight > footerTop) {
+  if (window.scrollY + viewportMidpoint + tocContainer.offsetHeight > promotionTop) {
+    // Stop the TOC just above the promotion-wrapper
     tocContainer.style.position = 'absolute';
-    tocContainer.style.top = `${footerTop - tocContainer.offsetHeight}px`;
+    tocContainer.style.top = `${promotionTop - tocContainer.offsetHeight}px`;
   } else if (targetTop <= window.scrollY + viewportMidpoint) {
     tocContainer.style.position = 'fixed';
     tocContainer.style.top = `${viewportMidpoint}px`;
