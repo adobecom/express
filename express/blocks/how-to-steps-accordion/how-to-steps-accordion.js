@@ -230,8 +230,8 @@ function setStepDetails(block, indexOpenedStep) {
   console.log('=== listItems', listItems);
   listItems.forEach((item, i) => {
     // const $detail = listItems[i].querySelector('div');
-    const $detailContainer = item.querySelector('.detail-container');
-    const $detail = item.querySelector('.detail-container div');
+    // const $detailContainer = item.querySelector('.detail-container');
+    const $detail = item.querySelector('.detail-container');
 
     console.log('=== detail', $detail, i, indexOpenedStep);
     if (i === indexOpenedStep) {
@@ -273,7 +273,9 @@ function buildAccordion(block) {
     const $newStepTitle = createTag('h3');
     $newStepTitle.replaceChildren(...stepTitle.childNodes);
 
-    stepDetail.classList.add('closed');
+    if (i !== 0) {
+      stepDetail.classList.add('closed');
+    }
 
     const $listItem = createTag('LI', { class: 'step' });
     $list.append($listItem);
@@ -284,9 +286,11 @@ function buildAccordion(block) {
 
     // $listItem.append(row)
 
-    const $detailContainer = createTag('div', { class: 'detail-container' });
+    const $detailContainer = stepDetail;
+    // createTag('div', { class: 'detail-container' });
 
-    $detailContainer.append(stepDetail)
+    $detailContainer.classList.add('detail-container')
+    // $detailContainer.append(stepDetail)
 
     $listItem.append($listItemIndicator);
     $listItem.append($listItemContent);
@@ -309,7 +313,7 @@ function buildAccordion(block) {
 
   block.replaceChildren($list);
 
-  // set this in next event cycle
+  // set this in next event cycle when scrollHeight has been established
   setTimeout(() => {
     setStepDetails(block, indexOpenedStep);
   }, 0)
