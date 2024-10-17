@@ -7,8 +7,8 @@ import {
 } from '../../scripts/utils.js';
 
 import {
-  displayVideoModal,
-  hideVideoModal,
+  playPreloadedVideo,
+  preloadVideoModal,
 } from '../shared/video.js';
 
 function createTutorialCard(title, url, time, $picture) {
@@ -21,11 +21,11 @@ function createTutorialCard(title, url, time, $picture) {
   const $cardBottom = createTag('div', { class: 'tutorial-card-text' });
   $cardBottom.innerHTML = `<h3>${title}</h3>`;
   $card.addEventListener('click', () => {
-    displayVideoModal(url, title, true);
+    playPreloadedVideo(title);
   });
   $card.addEventListener('keyup', ({ key }) => {
     if (key === 'Enter') {
-      displayVideoModal(url, title);
+      playPreloadedVideo(title);
     }
   });
   $card.appendChild($cardTop);
@@ -37,10 +37,9 @@ function createTutorialCard(title, url, time, $picture) {
 
 export function handlePopstate(event) {
   const { state } = event;
-  hideVideoModal();
   const { url, title } = state || {};
   if (url) {
-    displayVideoModal(url, title);
+    playPreloadedVideo(title);
   }
 }
 
@@ -55,13 +54,14 @@ function decorateTutorials($block) {
     const $card = createTutorialCard(title, url, time, $picture);
     $block.appendChild($card);
     $tutorial.remove();
+    preloadVideoModal(url, title, undefined);
     // autoplay if hash matches title
     if (toClassName(title) === window.location.hash.substr(1)) {
-      displayVideoModal(url, title);
+      playPreloadedVideo(title, true);
     }
   });
   // handle history events
-  window.addEventListener('popstate', handlePopstate);
+  window.addEventListener('popstate', (e) => handlePopstate(e));
 }
 
 export default function decorate($block) {
