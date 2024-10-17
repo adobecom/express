@@ -290,7 +290,7 @@ main .video-how-to-steps-accordion {
   margin-right: 20px;
   background: #ec6d4e;
   background: linear-gradient(277deg, #ff4885 5.24%, #fc7d00 94.76%), #686df4;
-  border-radius: 3px;
+  border-radius: 2.5px;
   /* transition: all 0.2s; */
 }
 
@@ -330,9 +330,10 @@ main .video-how-to-steps-accordion {
   transition: max-height 0.2s ease-out;
 }
 
-/* .how-to-steps-accordion.block ol li:first-child .detail-container  {
+/* so that there is no initial re-paint */
+.how-to-steps-accordion.block ol li:first-child .detail-container  {
   max-height: none;
-} */
+}
 
 .how-to-steps-accordion.block ol li .detail-container div.closed {
   /* height: 50%; */
