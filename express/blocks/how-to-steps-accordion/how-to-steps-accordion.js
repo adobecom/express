@@ -250,9 +250,9 @@ function buildAccordion(block) {
   console.log('=== BLOCK', block);
   let indexOpenedStep = 0;
 
-  const container = document.querySelector(".how-to-steps-accordion-video-container");
-  console.log("=== container", container)
-  if (container) container.classList.add("how-to-steps-accordion-container")
+  // const container = document.querySelector(".how-to-steps-accordion-video-container");
+  // console.log("=== container", container)
+  // if (container) container.classList.add("how-to-steps-accordion-container")
 
   for (const row of block.children) {
     console.log('=== ROW', row);
@@ -278,14 +278,22 @@ function buildAccordion(block) {
     const $listItem = createTag('LI', { class: 'step' });
     $list.append($listItem);
 
+    const $listItemIndicator = createTag('div', { class: 'step-indicator' });
+    const $listItemContent = createTag('div', { class: 'step-content' });
+
+
     // $listItem.append(row)
 
     const $detailContainer = createTag('div', { class: 'detail-container' });
 
     $detailContainer.append(stepDetail)
 
-    $listItem.append($newStepTitle);
-    $listItem.append($detailContainer);
+    $listItem.append($listItemIndicator);
+    $listItem.append($listItemContent);
+
+
+    $listItemContent.append($newStepTitle);
+    $listItemContent.append($detailContainer);
 
     $newStepTitle.addEventListener('click', (ev) => {
       // ev.stopPropagation();

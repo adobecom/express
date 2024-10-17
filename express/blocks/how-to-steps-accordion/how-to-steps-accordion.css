@@ -63,28 +63,48 @@ main .how-to-steps-accordion .tips .tip.active {
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0.1; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @-moz-keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @-webkit-keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @-o-keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @-ms-keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 main .how-to-steps-accordion .tip-numbers {
@@ -115,9 +135,7 @@ main .how-to-steps-accordion .tip-number {
 
 main .how-to-steps-accordion .tip-number:focus {
   outline: none;
-  box-shadow:
-          0 0 0 2px var(--color-white),
-          0 0 0 4px var(--color-info-accent );
+  box-shadow: 0 0 0 2px var(--color-white), 0 0 0 4px var(--color-info-accent);
 }
 
 main .how-to-steps-accordion .tip-number.active {
@@ -241,7 +259,6 @@ main .video-how-to-steps-accordion {
   }
 }
 
-
 .how-to-steps-accordion.block ol {
   list-style-type: none;
   font-size: 21px;
@@ -250,26 +267,44 @@ main .video-how-to-steps-accordion {
 
 .how-to-steps-accordion.block ol li {
   padding: 12px 0;
- /* border-bottom: 1px dotted #555; */
+  /* border-bottom: 1px dotted #555; */
 
- /* border-left: 6px solid orange; */
+  /* border-left: 6px solid orange; */
 
- border-left: 6px solid #EC6D4E;
- /* border-radius: 6px; */
+  /* border-left: 6px solid #EC6D4E; */
+  /* border-radius: 6px; */
   /* orange; */
- padding-left: 24px;
+  padding-left: 24px;
 
-margin-bottom: 24px;
+  /* margin-bottom: 24px; */
 
-cursor: pointer;
-transition: all 0.2s;
+  cursor: pointer;
+  transition: all 0.2s;
 
+  display: flex;
+}
+
+.how-to-steps-accordion.block ol li .step-indicator {
+  width: 6px;
+  min-width: 6px;
+  margin-right: 20px;
+  background: #ec6d4e;
+  background: linear-gradient(277deg, #ff4885 5.24%, #fc7d00 94.76%), #686df4;
+  border-radius: 3px;
+  /* transition: all 0.2s; */
+}
+
+.how-to-steps-accordion.block ol li .step-content {
+  margin: 6px 0;
+}
+
+.how-to-steps-accordion.block ol li .step-indicator:has(+ div .closed) {
+  /* visibility: hidden; */
+  background: transparent;
 }
 
 .how-to-steps-accordion.block ol li:has(.closed) {
-
- border-left: 6px solid #ccc;
-
+  /* border-left: 6px solid #ccc; */
 }
 
 .how-to-steps-accordion.block ol li h3 {
@@ -278,7 +313,7 @@ transition: all 0.2s;
 }
 
 .how-to-steps-accordion.block .closed {
- /* display:none; */
+  /* display:none; */
 }
 
 .how-to-steps-accordion.block ol li .detail-container {
@@ -286,41 +321,33 @@ transition: all 0.2s;
   font-weight: 500;
 }
 
-
 .how-to-steps-accordion.block ol li .detail-container div {
   /* height: 100%;
   transition: all 0.7s; */
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
-
-
 }
 
 .how-to-steps-accordion.block ol li .detail-container div.closed {
   /* height: 50%; */
-
 }
 
-
-.how-to-steps-accordion-video-container  {
+.how-to-steps-accordion-video-container {
   /* TODO: tmp */
   width: 1000px;
 }
 
 .how-to-steps-accordion-video-container lite-youtube {
-    /* TODO: tmp */
-    width: 800px;
+  /* TODO: tmp */
+  width: 800px;
 }
-
 
 .how-to-steps-accordion-video-container .default-content-wrapper {
   /* TODO: temporaray */
   display: none;
 }
 
-
 main .how-to-steps-accordion-container > div {
   background: none;
-
 }
