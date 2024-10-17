@@ -232,28 +232,38 @@ function addTOCEntries(toc, config, doc) {
 }
 
 function setTOCPosition(toc, tocContainer) {
+  const promotionWrapper = document.querySelector('div.promotion-wrapper');
   const firstLink = toc.querySelector('.toc-entry a');
-  if (!firstLink || !tocContainer) {
-    return;
-  }
+
+  if (!firstLink || !tocContainer || !promotionWrapper) return;
 
   const href = firstLink.getAttribute('href');
   const partialId = href.slice(1).substring(0, 10);
   const targetElement = document.querySelector(`[id^="${partialId}"]`);
 
-  if (!targetElement) {
-    return;
-  }
+  if (!targetElement) return;
 
   const rect = targetElement.getBoundingClientRect();
   const targetTop = Math.round(window.scrollY + rect.top);
   const viewportMidpoint = window.innerHeight / 2;
 
-  tocContainer.style.top = targetTop <= window.scrollY + viewportMidpoint
-    ? `${viewportMidpoint}px`
-    : `${targetTop}px`;
+  // Get the top position of the promotion-wrapper div
+  const promotionTop = Math.round(
+    window.scrollY + promotionWrapper.getBoundingClientRect().top,
+  );
 
-  tocContainer.style.position = targetTop <= window.scrollY + viewportMidpoint ? 'fixed' : 'absolute';
+  if (window.scrollY + viewportMidpoint + tocContainer.offsetHeight > promotionTop) {
+    // Stop the TOC just above the promotion-wrapper
+    tocContainer.style.position = 'absolute';
+    tocContainer.style.top = `${promotionTop - tocContainer.offsetHeight}px`;
+  } else if (targetTop <= window.scrollY + viewportMidpoint) {
+    tocContainer.style.position = 'fixed';
+    tocContainer.style.top = `${viewportMidpoint}px`;
+  } else {
+    tocContainer.style.position = 'absolute';
+    tocContainer.style.top = `${targetTop}px`;
+  }
+
   tocContainer.style.display = 'block';
 }
 
