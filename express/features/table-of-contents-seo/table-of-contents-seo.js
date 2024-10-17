@@ -245,14 +245,16 @@ function setTOCPosition(toc, tocContainer) {
   const footerRect = footer.getBoundingClientRect();
   const targetTop = Math.round(window.scrollY + rect.top);
   const footerTop = Math.round(window.scrollY + footerRect.top);
-  const viewportMidpoint = window.innerHeight / 2;
+  const viewportHeight = window.innerHeight;
 
-  if (window.scrollY + viewportMidpoint + tocContainer.offsetHeight > footerTop) {
+  const tocHeight = tocContainer.offsetHeight;
+
+  if (window.scrollY + tocHeight >= footerTop - viewportHeight) {
     tocContainer.style.position = 'absolute';
-    tocContainer.style.top = `${footerTop - tocContainer.offsetHeight}px`;
-  } else if (targetTop <= window.scrollY + viewportMidpoint) {
+    tocContainer.style.top = `${footerTop - tocHeight}px`;
+  } else if (window.scrollY >= targetTop - viewportHeight / 2) {
     tocContainer.style.position = 'fixed';
-    tocContainer.style.top = `${viewportMidpoint}px`;
+    tocContainer.style.top = `${viewportHeight / 2}px`;
   } else {
     tocContainer.style.position = 'absolute';
     tocContainer.style.top = `${targetTop}px`;
