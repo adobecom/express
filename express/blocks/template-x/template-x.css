@@ -85,6 +85,18 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     white-space: nowrap;
 }
 
+.template-x.horizontal.three-templates .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    width: 216px;
+    height: 324px;
+}
+.template-x.horizontal.three-templates .template.carousel-element {
+    margin-right: 0px;
+}
+.template-x.horizontal.four-templates .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    width: 216px;
+    height: 324px;
+}
+
 main .template-x.sixcols .masonry-col, main .template-x.fullwidth .masonry-col {
     max-width: 175px;
 }
@@ -2268,6 +2280,11 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
 }
 
 @media (min-width: 600px) {
+    .template-x.horizontal.four-templates .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+        width: 128px;
+        height: 200px; 
+    }
+
     .template-x .toolbar-wrapper {
         border-radius: 12px;
     }
@@ -2491,6 +2508,39 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
 
     .template-x.horizontal:not(.fullwidth) {
         max-width: 800px;
+    }
+    .template-x.tight {
+        width: 648px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .template-x.tight.one-template .image-wrapper img {
+        width: 648px;
+        height: auto;
+    } 
+    .template-x.tight.one-template .carousel-platform.right-fader {
+        height: 400px;
+    }
+    .template-x.one-template.tight .template-x-inner-wrapper,
+    .template-x.one-template.tight .carousel-platform,
+    .template-x.one-template.tight .carousel-platform .template.carousel-element {
+        padding: 0 ;
+        margin: 0;
+    }
+    .template-x.two-templates .template.appear {
+        width: 316px;
+    }
+    .template-x.two-templates .template-x-inner-wrapper {
+        justify-content: space-between;
+    }
+    .template-x.horizontal.three-templates .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+        width: 196px;
+        height: 300px;
+    }
+    .template-x.horizontal.three-templates .carousel-container {
+        margin-left: 0;
+        margin-right: 0;
+        width: 105%;
     }
 }
 
