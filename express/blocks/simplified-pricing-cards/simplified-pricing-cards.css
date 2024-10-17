@@ -31,7 +31,7 @@ main .section>.simplified-pricing-cards-wrapper {
 .simplified-pricing-cards .card {
   width: var(--card-width);
   position: relative;
-  padding: 0 10px;
+  padding: 10px;
   border: 2px solid var(--color-gray-300);
   background-color: var(--color-white);
   margin: 4px auto;
@@ -39,13 +39,12 @@ main .section>.simplified-pricing-cards-wrapper {
   flex-direction: column;
   border-radius: 16px;
   gap: 8px;
+
 }
 
 .simplified-pricing-cards .card:first-of-type {
   background-color: #F8F8F8;
 }
-
-
 
 .simplified-pricing-cards .card.gradient-promo {
   background: linear-gradient(var(--color-white) 0 0) padding-box,
@@ -99,7 +98,7 @@ main .section>.simplified-pricing-cards-wrapper {
   gap: 8px;
   position: relative;
   border-radius: 8px;
-  padding: var(--card-padding);
+  padding: 0px var(--card-padding) var(--card-padding) var(--card-padding);
   margin-top: 5px;
   text-align: left;
 }
@@ -198,7 +197,7 @@ main .section>.simplified-pricing-cards-wrapper {
 
 .simplified-pricing-cards .pricing-base-price>strong,
 .simplified-pricing-cards .pricing-price>strong {
-  font-size: var(--header-size);
+  font-size: 18px;
   font-weight: 900;
 }
 
@@ -215,7 +214,7 @@ main .section>.simplified-pricing-cards-wrapper {
 
 .simplified-pricing-cards .pricing-base-price.long-price>strong,
 .simplified-pricing-cards .pricing-price.long-price>strong {
-  font-size: 24px;
+  font-size: var(--header-size)
 }
 
 
@@ -228,6 +227,7 @@ main .section>.simplified-pricing-cards-wrapper {
 .simplified-pricing-cards .pricing-price>strong {
   padding-right: 4px;
   padding-left: 4px;
+  font-size: var(--header-size);
   ;
 }
 
@@ -245,6 +245,9 @@ main .section>.simplified-pricing-cards-wrapper {
   gap: 5px;
   margin: 20px 0;
   min-height: unset;
+}
+.simplified-pricing-cards .card-cta-group .button.primary {
+  height: 100%;
 }
 
 .simplified-pricing-cards .card-cta-group:not(.hide) {
@@ -285,6 +288,8 @@ main .section>.simplified-pricing-cards-wrapper {
 
 .simplified-pricing-cards .card.hide {
   gap: unset;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 .simplified-pricing-cards .card.hide .toggle-switch {
@@ -471,6 +476,8 @@ main .section>.simplified-pricing-cards-wrapper {
     width: unset;
   }
 
+
+  
 }
 
 /* Desktop styles */
@@ -518,8 +525,11 @@ main .section>.simplified-pricing-cards-wrapper {
     display: flex;
   }
 
-  .simplified-pricing-cards .card.hide {
-    gap: 10px;
+  .simplified-pricing-cards .card {
+    gap: 10px; 
+      padding-top: initial;
+      padding-bottom: initial;
+ 
   }
 
   .simplified-pricing-cards a.button.compare-all-button {

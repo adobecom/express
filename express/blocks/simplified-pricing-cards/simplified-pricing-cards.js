@@ -24,6 +24,7 @@ function getHeightWithoutPadding(element) {
 }
 
 function equalizeHeights(el) {
+  if (window.screen.width < 1200) return
   const classNames = ['.plan-explanation', '.card-header'];
   const cardCount = el.querySelectorAll('.simplified-pricing-cards .card').length;
   if (cardCount === 1) return;
@@ -233,7 +234,7 @@ export default async function init(el) {
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting && window.screen.width > 768) {
+      if (entry.isIntersecting) {
         equalizeHeights(el);
         observer.unobserve(entry.target);
         adjustElementPosition();
