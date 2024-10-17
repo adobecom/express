@@ -101,7 +101,7 @@ function addTOCItemClickEvent(tocItem, heading) {
     } else {
       console.error(`Element with id "${heading.id}" not found.`);
     }
-    document.querySelector('.toc-content').classList.toggle('open');
+    document.querySelector('.toc-content')?.classList.toggle('open');
   });
 }
 
