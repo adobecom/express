@@ -32,6 +32,7 @@ const SAVE_PERCENTAGE = '{{savePercentage}}';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
 const PRICE_TOKEN = '{{pricing}}';
 const YEAR_2_PRICING_TOKEN = '[[year-2-pricing-token]]';
+const BASE_PRICING_TOKEN = '[[base-pricing-token]]';
 
 function suppressOfferEyebrow(specialPromo, legacyVersion) {
   if (specialPromo.parentElement) {
@@ -58,17 +59,17 @@ function getPriceElementSuffix(placeholders, placeholderArr, response) {
     .join(' ');
 }
 
-function handleYear2PricingToken(pricingArea, y2p, priceSuffix) {
+function handlePriceToken(pricingArea, priceToken = YEAR_2_PRICING_TOKEN, newPrice, priceSuffix = '') {
   try {
     const elements = pricingArea.querySelectorAll('p');
     const year2PricingToken = Array.from(elements).find(
-      (p) => p.textContent.includes(YEAR_2_PRICING_TOKEN),
+      (p) => p.textContent.includes(priceToken),
     );
     if (!year2PricingToken) return;
-    if (y2p) {
+    if (newPrice) {
       year2PricingToken.innerHTML = year2PricingToken.innerHTML.replace(
-        YEAR_2_PRICING_TOKEN,
-        `${y2p} ${priceSuffix}`,
+        priceToken,
+        `${newPrice} ${priceSuffix}`,
       );
     } else {
       year2PricingToken.textContent = '';
@@ -240,8 +241,8 @@ async function handlePrice(placeholders, pricingArea, specialPromo, groupID, leg
   handleTooltip(pricingArea);
   handleSavePercentage(savePercentElem, isPremiumCard, response);
   handleSpecialPromo(specialPromo, isPremiumCard, response, legacyVersion);
-  handleYear2PricingToken(pricingArea, response.y2p, priceSuffixTextContent);
-
+  handlePriceToken(pricingArea, YEAR_2_PRICING_TOKEN, response.y2p, priceSuffixTextContent);
+  handlePriceToken(pricingArea, BASE_PRICING_TOKEN, response.formattedBP);
   priceEl?.parentNode?.remove();
   if (!priceRow) return;
   pricingArea.prepend(priceRow);
@@ -431,10 +432,7 @@ async function decorateCard({
     createPricingSection(placeholders, yPricingRow, yCtaGroup, null),
   ]);
   mPricingSection.classList.add('monthly');
-  yPricingSection.classList.add('annually');
-  // urgent update
-  const defaultHidePlan = BlockMediator.get(groupID) === 'ABM' ? 0 : 1;
-  [mPricingSection, yPricingSection][defaultHidePlan].classList.add('hide');
+  yPricingSection.classList.add('annually', 'hide');
 
   const toggle = createToggle(placeholders, [mPricingSection, yPricingSection], groupID,
     adjustElementPosition);

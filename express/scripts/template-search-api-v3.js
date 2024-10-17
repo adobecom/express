@@ -187,6 +187,8 @@ export function trackSearch(eventName, searchID = generateSearchId()) {
 
   // eslint-disable-next-line no-undef
   const impression = cleanPayload(structuredClone(BlockMediator.get('templateSearchSpecs')), eventName);
+  // catch location missing scenarios
+  if (!impression.custom_ui_location) impression.custom_ui_location = 'seo';
   function fireEvent() {
     _satellite.track('event', {
       xdm: {},

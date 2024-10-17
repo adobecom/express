@@ -229,7 +229,7 @@ const startInitialization = async (config, event) => {
     region,
     cookiesEnabled: window.adobePrivacy?.activeCookieGroups()?.length > 1,
     cookies: {
-      mcid: window.alloy ? await window.alloy('getIdentity')
+      mcid: window.alloy_getIdentity ? window.alloy_getIdentity
         .then((data) => data?.identity?.ECID) : undefined,
     },
     callbacks: {

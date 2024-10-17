@@ -1,4 +1,4 @@
-/* global _satellite __satelliteLoadedCallback alloy */
+/* global _satellite __satelliteLoadedCallback */
 
 import {
   loadScript,
@@ -562,7 +562,7 @@ export default function martechLoadedCB() {
     };
 
     await _satellite.alloyConfigurePromise;
-    const data = await alloy('getIdentity');
+    const data = await window.alloy_getIdentity;
     getSegments(data?.identity?.ECID || null);
   }
 
