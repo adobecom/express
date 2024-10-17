@@ -232,28 +232,32 @@ function addTOCEntries(toc, config, doc) {
 }
 
 function setTOCPosition(toc, tocContainer) {
+  const footer = document.querySelector('footer');
   const firstLink = toc.querySelector('.toc-entry a');
-  if (!firstLink || !tocContainer) {
-    return;
-  }
+  if (!firstLink || !tocContainer || !footer) return;
 
   const href = firstLink.getAttribute('href');
   const partialId = href.slice(1).substring(0, 10);
   const targetElement = document.querySelector(`[id^="${partialId}"]`);
-
-  if (!targetElement) {
-    return;
-  }
+  if (!targetElement) return;
 
   const rect = targetElement.getBoundingClientRect();
+  const footerRect = footer.getBoundingClientRect();
   const targetTop = Math.round(window.scrollY + rect.top);
+  const footerTop = Math.round(window.scrollY + footerRect.top);
   const viewportMidpoint = window.innerHeight / 2;
 
-  tocContainer.style.top = targetTop <= window.scrollY + viewportMidpoint
-    ? `${viewportMidpoint}px`
-    : `${targetTop}px`;
+  if (window.scrollY + viewportMidpoint + tocContainer.offsetHeight > footerTop) {
+    tocContainer.style.position = 'absolute';
+    tocContainer.style.top = `${footerTop - tocContainer.offsetHeight}px`;
+  } else if (targetTop <= window.scrollY + viewportMidpoint) {
+    tocContainer.style.position = 'fixed';
+    tocContainer.style.top = `${viewportMidpoint}px`;
+  } else {
+    tocContainer.style.position = 'absolute';
+    tocContainer.style.top = `${targetTop}px`;
+  }
 
-  tocContainer.style.position = targetTop <= window.scrollY + viewportMidpoint ? 'fixed' : 'absolute';
   tocContainer.style.display = 'block';
 }
 
