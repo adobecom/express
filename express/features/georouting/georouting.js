@@ -113,7 +113,7 @@ async function getDetails(currentPage, localeMatches, config, createTag, getMeta
 
   if (availableLocales && availableLocales.length > 0) {
     currentPage.url = window.location.hash ? document.location.href : '#';
-    const imgUrl = `${config.miloLibs || config.codeRoot}/img/icons/Smock_GlobeOutline_18_N.svg`;
+    const imgUrl = `${config.codeRoot}/features/georouting/img/icons/Smock_GlobeOutline_18_N.svg`;
     const worldIcon = createTag('img', { src: imgUrl, class: 'world-icon' });
     const text = buildText([...availableLocales, currentPage], config, createTag);
     const links = buildLinks([...availableLocales, currentPage], config, createTag);
