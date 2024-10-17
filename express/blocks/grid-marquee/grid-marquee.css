@@ -3,8 +3,8 @@
   --m-img-h: 103px;
   --t-img-w: 183px;
   --t-img-h: 152px;
-  --d-img-w: 244px;
-  --d-img-h: 183px;
+  --d-img-w: 256px;
+  --d-img-h: 199px;
 }
 .grid-marquee.block {
   max-width: initial;
@@ -300,7 +300,7 @@
     max-width: 1800px;
   }
   .grid-marquee .headline {
-    max-width: 1152px;
+    max-width: 1200px;
     padding-bottom: 40px;
   }
   .grid-marquee .headline h1 {
@@ -317,11 +317,11 @@
     line-height: 23.4px;
   }
   .grid-marquee .cards-container {
-    width: 1152px;
+    width: 1200px;
     gap: 16px;
   }
   .grid-marquee .card {
-    width: 278px;
+    width: 288px;
     padding: 16px;
     position: relative;
   }
