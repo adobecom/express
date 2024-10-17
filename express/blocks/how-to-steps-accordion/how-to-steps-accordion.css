@@ -250,6 +250,8 @@ main .video-how-to-steps-accordion {
 
   main .video-how-to-steps-accordion {
     margin: 92px 0 0 24px;
+/* TODO */
+    margin: 20px 0 0 24px;
     width: calc((100% - 72px) * 0.45);
   }
 
@@ -354,7 +356,8 @@ main .how-to-steps-accordion-video-container {
 .how-to-steps-accordion-video-container lite-youtube {
   /* TODO: tmp */
   width: 534px;
-  min-width: 534px
+  min-width: 534px;
+  height: 387px;
 }
 
 .how-to-steps-accordion-video-container .default-content-wrapper {
