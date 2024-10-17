@@ -76,7 +76,7 @@ function selectElementByTagPrefix(p) {
 
 async function startSDK(data = '', quickAction, block) {
   const urlParams = new URLSearchParams(window.location.search);
-  const CDN_URL = 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
+  const CDN_URL = urlParams.get('sdk-override') || 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
   const clientId = 'AdobeExpressWeb';
 
   await loadScript(CDN_URL);
