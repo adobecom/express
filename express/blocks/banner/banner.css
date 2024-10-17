@@ -4,6 +4,10 @@ main .section.banner-compact-container {
   background-color: var(--color-info-accent);
 }
 
+main div:has(> .banner.cool) {
+  background: linear-gradient(170.96deg, #bfe4ff -0.25%, #cecef6 104.12%);
+}
+
 main .section.banner-container,
 main .section.banner-light-container {
   padding: 80px 15px;
@@ -11,6 +15,10 @@ main .section.banner-light-container {
 
 main .section.banner-standout-container {
   padding: 48px 0;
+}
+
+main div:has(> .banner.cool) {
+  padding: 40px 0;
 }
 
 main .section.banner-compact-container {
@@ -83,30 +91,105 @@ main .banner p:last-of-type {
   margin-bottom: 0;
 }
 
-main .banner .standout-container {
+main .banner.standout .content-container {
   background-color: var(--body-background-color);
   color: var(--body-color);
   padding: 33px 28%;
   border-radius: 12px;
 }
 
-main .banner .standout-container em {
+main .banner.standout .content-container em {
   font-style: normal;
-  background: linear-gradient(180deg, #FF4DD2 20%, #FF993B 80%);
+  background: linear-gradient(180deg, #ff4dd2 20%, #ff993b 80%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-weight: 900;
 }
 
-main .grid-width-6-desktop .banner.narrow.desktop { 
-  max-width: 850px;
-  margin: 0 auto; 
+main .banner.cool {
+  padding: 0 24px;
 }
 
-main .banner.narrow { 
+main .banner.cool .content-container {
+  color: var(--body-color);
+  background: linear-gradient(
+    95.37deg,
+    rgba(255, 255, 255, 0.8) 18.1%,
+    rgba(255, 255, 255, 0.4) 93.47%
+  );
+  padding: 38px 35px 20px;
+  border: 2px solid #fff;
+  border-radius: 15px;
+}
+
+main .banner.cool p.button-container {
+  margin-top: 16px;
+}
+
+main .banner.cool p.button-container a.button {
+  font-size: 17px;
+}
+
+main .banner.cool h2 {
+  color: var(--body-color);
+  font-size: 28px;
+  font-weight: 900;
+  padding: 0 15px;
+}
+
+@media (min-width: 600px) {
+  main .banner.cool {
+    max-width: 820px;
+  }
+  main .banner.cool .content-container {
+    padding: 38px 45px 20px;
+  }
+  main .banner.cool h2 {
+    padding: 0;
+  }
+  main .banner.cool p.button-container {
+    margin-top: 14px;
+  }
+}
+
+@media (min-width: 900px) {
+  main div:has(> .banner.cool) {
+    padding: 65px 0;
+  }
+  main .banner.cool {
+    padding: 0 82px;
+    max-width: unset;
+  }
+  main .banner.cool .content-container {
+    padding: 70px 45px;
+  }
+  main .banner.cool h2 {
+    font-size: 45px;
+    font-weight: 900;
+  }
+  main .banner.cool p.button-container {
+    margin-top: 21px;
+  }
+  main .banner.cool p.button-container a.button {
+    font-size: 19px;
+  }
+}
+
+@media (min-width: 1200px) {
+  main .banner.cool {
+    max-width: 1200px;
+  }
+}
+
+main .grid-width-6-desktop .banner.narrow.desktop {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+main .banner.narrow {
   max-width: 375px;
-  margin: 0 auto; 
+  margin: 0 auto;
 }
 
 @media (min-width: 900px) {
@@ -124,7 +207,7 @@ main .banner.narrow {
 }
 
 @media (max-width: 900px) {
-  main .banner .standout-container {
+  main .banner.standout .content-container {
     padding: 33px 9%;
   }
 }

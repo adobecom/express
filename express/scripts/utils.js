@@ -2675,6 +2675,10 @@ export function titleCase(str) {
   return splitStr.join(' ');
 }
 
+export function pickRandomFromArray(arr) {
+  return arr[Math.floor(arr.length * Math.random())];
+}
+
 export function createIntersectionObserver({
   el, callback, once = true, options = {},
 }) {

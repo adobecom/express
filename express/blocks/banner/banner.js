@@ -3,18 +3,17 @@ import { normalizeHeadings, createTag } from '../../scripts/utils.js';
 export default async function decorate(block) {
   const isBannerLightVariant = block.classList.contains('light');
   const isBannerStandoutVariant = block.classList.contains('standout');
+  const isBannerCoolVariant = block.classList.contains('cool');
   const isBannerNarrowVariant = block.classList.contains('narrow');
 
-  if (isBannerStandoutVariant) {
-    const standoutContainer = createTag('div', {
-      class: 'standout-container',
+  if (isBannerStandoutVariant || isBannerCoolVariant) {
+    const contentContainer = createTag('div', {
+      class: 'content-container',
     });
-
     for (const child of block.children) {
-      standoutContainer.append(child);
+      contentContainer.append(child);
     }
-
-    block.replaceChildren(standoutContainer);
+    block.replaceChildren(contentContainer);
   }
 
   if (isBannerNarrowVariant) {
@@ -38,7 +37,7 @@ export default async function decorate(block) {
     $button.classList.remove('primary');
     $button.classList.remove('secondary');
 
-    if (isBannerStandoutVariant) {
+    if (isBannerStandoutVariant || isBannerCoolVariant) {
       $button.classList.remove('accent');
       $button.classList.add('large', 'primary');
     } else if (isBannerLightVariant) {
