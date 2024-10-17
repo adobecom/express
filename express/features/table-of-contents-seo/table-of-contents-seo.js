@@ -1,5 +1,4 @@
 /* eslint-disable import/named, import/extensions */
-
 import {
   createTag,
   getIconElement,
@@ -111,12 +110,15 @@ function findCorrespondingHeading(headingText, doc) {
 }
 
 function toggleSticky(tocClone, sticky) {
+  const main = document.querySelector('main .section.section-wrapper');
   if (window.scrollY >= sticky + MOBILE_NAV_HEIGHT) {
     tocClone.classList.add('sticky');
     tocClone.style.top = `${MOBILE_NAV_HEIGHT}px`;
+    main.style.marginBottom = '60px';
   } else {
     tocClone.classList.remove('sticky');
     tocClone.style.top = '';
+    main.style.marginBottom = '0';
   }
 }
 
