@@ -24,7 +24,7 @@ function getHeightWithoutPadding(element) {
 }
 
 function equalizeHeights(el) {
-  if (window.screen.width < 1200) return
+
   const classNames = ['.plan-explanation', '.card-header'];
   const cardCount = el.querySelectorAll('.simplified-pricing-cards .card').length;
   if (cardCount === 1) return;
@@ -34,6 +34,7 @@ function equalizeHeights(el) {
     headers.forEach((placeholder) => {
       placeholder.style.height = 'unset';
     });
+    if (window.screen.width < 1200) continue;
     headers.forEach((header) => {
       if (header.checkVisibility()) {
         const height = getHeightWithoutPadding(header);
