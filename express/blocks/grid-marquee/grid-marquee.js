@@ -135,10 +135,11 @@ function toCard(item) {
     panel.classList.add('panel');
   });
   face.classList.add('face');
-  new IntersectionObserver((entries, ob) => {
-    ob.unobserve(card);
-    card.append(makeDrawer(card, videoAnchor.href, titleText, panels));
-  }).observe(card);
+  // new IntersectionObserver((entries, ob) => {
+  //   ob.unobserve(card);
+
+  // }).observe(card);
+  card.append(makeDrawer(card, videoAnchor.href, titleText, panels));
   return card;
 }
 
