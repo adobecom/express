@@ -171,13 +171,13 @@
   border-radius: 8px;
 }
 
+.grid-marquee .panel {
+  display: none;
+}
+
 .grid-marquee .drawer .panel {
   display: flex;
   flex-direction: column;
-}
-
-.grid-marquee .panel[hidden='true'] {
-  display: none;
 }
 
 .grid-marquee .drawer .panel a {

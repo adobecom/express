@@ -66,7 +66,6 @@ function makeDrawer(card, videoSrc, titleText, panels) {
         p.replaceWith(anchor);
       }
     });
-    panel.setAttribute('hidden', false);
   });
   card.addEventListener('click', (e) => {
     if (currDrawer && e.target !== card && !card.contains(e.target)) return;
@@ -134,7 +133,6 @@ function toCard(item) {
   const [face, ...panels] = [...card.querySelectorAll(':scope > div')];
   panels.forEach((panel) => {
     panel.classList.add('panel');
-    panel.setAttribute('hidden', true);
   });
   face.classList.add('face');
   new IntersectionObserver((entries, ob) => {
