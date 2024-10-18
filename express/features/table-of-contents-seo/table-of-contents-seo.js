@@ -265,18 +265,18 @@ function setTOCPosition(toc, tocContainer) {
   tocContainer.style.position = targetTop <= window.scrollY + viewportMidpoint ? 'fixed' : 'absolute';
   tocContainer.style.display = 'block';
 
-  const promotionWrapper = document.querySelector('.promotion-wrapper');
+  const footer = document.querySelector('footer');
 
-  if (promotionWrapper) {
-    const promoRect = promotionWrapper.getBoundingClientRect();
-    const promoTop = Math.round(window.scrollY + promoRect.top);
+  if (footer) {
+    const footerRect = footer.getBoundingClientRect();
+    const footerTop = Math.round(window.scrollY + footerRect.top);
     const tocBottom = Math.round(window.scrollY + tocContainer.getBoundingClientRect().bottom);
 
-    const positionDifference = tocBottom - promoTop;
+    const positionDifference = tocBottom - footerTop;
 
     if (positionDifference >= 0) {
       tocContainer.style.position = 'absolute';
-      tocContainer.style.top = `${promoTop - tocContainer.offsetHeight + 92}px`;
+      tocContainer.style.top = `${footerTop - tocContainer.offsetHeight + 92}px`;
     } else if (targetTop <= window.scrollY + viewportMidpoint) {
       tocContainer.style.position = 'fixed';
       tocContainer.style.top = `${viewportMidpoint}px`;
