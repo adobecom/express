@@ -269,16 +269,9 @@ main .video-how-to-steps-accordion {
   font-size: 21px;
   font-weight: 900;
 }
-
 .how-to-steps-accordion.block ol li {
   padding: 12px 0;
-  /* border-bottom: 1px dotted #555; */
 
-  /* border-left: 6px solid orange; */
-
-  /* border-left: 6px solid #EC6D4E; */
-  /* border-radius: 6px; */
-  /* orange; */
   padding-left: 24px;
 
   /* margin-bottom: 24px; */
@@ -288,47 +281,13 @@ main .video-how-to-steps-accordion {
 
   display: flex;
 }
-
 .how-to-steps-accordion.block ol li .step-indicator {
   width: 5px;
   min-width: 5px;
   margin-right: 20px;
-  background: #ec6d4e;
-  /* background: linear-gradient(277deg, #ff4885 5.24%, #fc7d00 94.76%), #686df4; */
-  /* background-color: linear-gradient(277deg, #ff4885 5.24%, #0f0 94.76%); */
 
-  /* Rectangle 669249 */
-
-/* width: 95px;
-height: 5px; */
-
-/* background: linear-gradient(276.68deg, #FF4885 5.24%, #FC7D00 94.76%), #686DF4;
-
-background: linear-gradient(276.68deg, #FF4885 5.24%, #FC7D00 94.76%);
-
-background-color: linear-gradient(277deg, #ff4885 5.24%, #fc7d00 94.76%); */
-
-background: linear-gradient(-96.68deg, #FF4885 5.24%, #FC7D00 94.76%), #686DF4;
-
-/* transform: rotate(180deg); */
-
-/* border-radius: 100px; */
-/* transform: rotate(-90deg); */
-
-/* Inside auto layout */
-/* flex: none;
-order: 0;
-align-self: stretch;
-flex-grow: 0; */
-
-  /* border-radius: 2.5px;
-  border-radius: 500px; */
-  /* transition: all 0.2s; */
-
+  background: linear-gradient(-96.68deg, #FF4885 5.24%, #FC7D00 94.76%), #686DF4;
   border-radius: 2.5px;
-
-
-
 }
 
 .how-to-steps-accordion.block ol li .step-content {
@@ -336,30 +295,7 @@ flex-grow: 0; */
 }
 
 .how-to-steps-accordion.block ol li .step-indicator:has(+ div .closed) {
-  /* visibility: hidden; */
-  /* background-color: transparent; */
-  background-color: #c5c5c5;
-
-  /* Rectangle 669249 */
-
-/* box-sizing: border-box; */
-
-/* width: 45px;
-height: 5px; */
-
-/* background: linear-gradient(275.55deg, rgba(255, 255, 255, 0.5) 4.43%, rgba(255, 255, 255, 0.3) 93.65%), #8F8F8F; */
-background: linear-gradient(95.55deg, rgba(255, 255, 255, 0.5) 4.43%, rgba(255, 255, 255, 0.3) 93.65%), #8F8F8F;
-
-/* border: 0.5px solid #FFFFFF;
-border-radius: 100px; */
-/* transform: rotate(-90deg); */
-
-/* Inside auto layout */
-/* flex: none;
-order: 0;
-align-self: stretch;
-flex-grow: 0; */
-
+  background: linear-gradient(95.55deg, rgba(255, 255, 255, 0.5) 4.43%, rgba(255, 255, 255, 0.3) 93.65%), #8F8F8F;
 }
 
 .how-to-steps-accordion.block ol li:has(.closed) {
@@ -389,7 +325,7 @@ flex-grow: 0; */
 }
 
 /* so that there is no initial re-paint */
-.how-to-steps-accordion.block ol li:first-child .detail-container  {
+.how-to-steps-accordion.block ol li:first-child .detail-container {
   max-height: none;
 }
 
