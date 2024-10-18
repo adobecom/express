@@ -51,8 +51,17 @@ function setNormalStyle(element) {
 
 function addHoverEffect(tocEntries) {
   tocEntries.forEach(({ tocItem }) => {
-    tocItem.addEventListener('mouseenter', () => setBoldStyle(tocItem));
-    tocItem.addEventListener('mouseleave', () => setNormalStyle(tocItem));
+    tocItem.addEventListener('mouseenter', () => {
+      if (!tocItem.classList.contains('active')) {
+        setBoldStyle(tocItem);
+      }
+    });
+
+    tocItem.addEventListener('mouseleave', () => {
+      if (!tocItem.classList.contains('active')) {
+        setNormalStyle(tocItem);
+      }
+    });
   });
 }
 
