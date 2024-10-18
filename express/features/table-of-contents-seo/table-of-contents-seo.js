@@ -264,6 +264,24 @@ function setTOCPosition(toc, tocContainer) {
 
   tocContainer.style.position = targetTop <= window.scrollY + viewportMidpoint ? 'fixed' : 'absolute';
   tocContainer.style.display = 'block';
+
+  const promotionWrapper = document.querySelector('.promotion-wrapper');
+
+  if (promotionWrapper) {
+    const promoRect = promotionWrapper.getBoundingClientRect();
+    const promoTop = Math.round(window.scrollY + promoRect.top);
+    const tocBottom = Math.round(window.scrollY + tocContainer.getBoundingClientRect().bottom);
+
+    const positionDifference = tocBottom - promoTop;
+
+    if (positionDifference >= 0) {
+      tocContainer.style.position = 'absolute';
+      tocContainer.style.top = `${promoTop - tocContainer.offsetHeight + 92}px`;
+    } else if (targetTop <= window.scrollY + viewportMidpoint) {
+      tocContainer.style.position = 'fixed';
+      tocContainer.style.top = `${viewportMidpoint}px`;
+    }
+  }
 }
 
 function handleSetTOCPos(toc, tocContainer) {
