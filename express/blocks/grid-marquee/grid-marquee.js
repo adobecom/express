@@ -66,6 +66,7 @@ function makeDrawer(card, videoSrc, titleText, panels) {
         p.replaceWith(anchor);
       }
     });
+    panel.setAttribute('hidden', false);
   });
   card.addEventListener('click', (e) => {
     if (currDrawer && e.target !== card && !card.contains(e.target)) return;
@@ -113,7 +114,6 @@ function makeDrawer(card, videoSrc, titleText, panels) {
       activeTab = tab;
     });
     tabList.append(tab);
-    panel.setAttribute('hidden', false);
   });
 
   panels[0].before(tabList);
