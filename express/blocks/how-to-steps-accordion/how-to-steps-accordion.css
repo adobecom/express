@@ -308,7 +308,9 @@ background: linear-gradient(276.68deg, #FF4885 5.24%, #FC7D00 94.76%);
 
 background-color: linear-gradient(277deg, #ff4885 5.24%, #fc7d00 94.76%); */
 
-background: linear-gradient(276.68deg, #FF4885 5.24%, #FC7D00 94.76%), #686DF4;
+background: linear-gradient(-96.68deg, #FF4885 5.24%, #FC7D00 94.76%), #686DF4;
+
+/* transform: rotate(180deg); */
 
 /* border-radius: 100px; */
 /* transform: rotate(-90deg); */
@@ -345,7 +347,9 @@ flex-grow: 0; */
 /* width: 45px;
 height: 5px; */
 
-background: linear-gradient(275.55deg, rgba(255, 255, 255, 0.5) 4.43%, rgba(255, 255, 255, 0.3) 93.65%), #8F8F8F;
+/* background: linear-gradient(275.55deg, rgba(255, 255, 255, 0.5) 4.43%, rgba(255, 255, 255, 0.3) 93.65%), #8F8F8F; */
+background: linear-gradient(95.55deg, rgba(255, 255, 255, 0.5) 4.43%, rgba(255, 255, 255, 0.3) 93.65%), #8F8F8F;
+
 /* border: 0.5px solid #FFFFFF;
 border-radius: 100px; */
 /* transform: rotate(-90deg); */
