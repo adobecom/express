@@ -152,11 +152,19 @@ function preloadSUSILight() {
   import('../blocks/fragment/fragment.js');
 }
 
+function loadTOC() {
+  if (getMetadata('toc-seo') === 'on') {
+    loadStyle('/express/features/table-of-contents-seo/table-of-contents-seo.css');
+    import('../features/table-of-contents-seo/table-of-contents-seo.js').then(({ default: setTOCSEO }) => setTOCSEO());
+  }
+}
+
 /**
  * Executes everything that happens a lot later, without impacting the user experience.
  */
 export default async function loadDelayed() {
   try {
+    loadTOC();
     preloadSUSILight();
     if (await canPEP()) {
       const { default: loadLoginUserAutoRedirect } = await import('../features/direct-path-to-product/direct-path-to-product.js');
