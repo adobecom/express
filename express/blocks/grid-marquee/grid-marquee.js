@@ -119,7 +119,6 @@ function makeDrawer(card, videoSrc, titleText, panels) {
   panels[0].before(tabList);
   return drawer;
 }
-const cbs = [];
 function toCard(item) {
   const titleText = item.querySelector('strong').textContent.trim();
   const videoAnchor = item.querySelector('a');
@@ -138,12 +137,10 @@ function toCard(item) {
     panel.setAttribute('hidden', true);
   });
   face.classList.add('face');
-  const cb = (entries, ob) => {
+  new IntersectionObserver((entries, ob) => {
     ob.unobserve(card);
     card.append(makeDrawer(card, videoAnchor.href, titleText, panels));
-  };
-  cbs.push(cb);
-  new IntersectionObserver(cb).observe(card);
+  }).observe(card);
   return card;
 }
 
