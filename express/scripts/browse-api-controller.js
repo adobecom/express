@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import {
   getConfig,
   getHelixEnv,
@@ -23,7 +22,7 @@ const mFetch = memoize((url, data) => fetch(url, data).then((r) => (r.ok ? r.jso
   ttl: 1000 * 60 * 60 * 24,
 });
 
-export async function getDataWithContext() {
+export default async function getData() {
   const { locale } = getConfig();
   const textQuery = window.location.pathname.split('/')
     .filter(Boolean)
@@ -63,8 +62,12 @@ export async function getDataWithContext() {
       },
       body: JSON.stringify(data),
     });
+    if (result?.status?.httpCode !== 200) {
+      throw new Error(`Invalid status code ${result?.status?.httpCode}`);
+    }
+    return result.querySuggestionResults?.groupResults?.[0]?.buckets?.filter((pill) => pill?.metadata?.status === 'enabled') || null;
   } catch (err) {
     window.lana?.log('error fetching sdc browse api:', err.message);
+    return null;
   }
-  return result?.status?.httpCode !== 200 ? null : result;
 }
