@@ -95,6 +95,38 @@ main .template-x.horizontal.one-template .carousel-container .carousel-platform.
     -webkit-mask-image: none;
 }
 
+main .template-x.horizontal.one-template .carousel-container .carousel-fader-left {
+    display: contents;
+}
+
+main .template-x.horizontal.one-template .carousel-container .carousel-fader-left.arrow-hidden {
+    display: none;
+}
+
+main .template-x.horizontal.one-template .carousel-container .carousel-fader-right {
+    display: contents;
+}
+
+main .template-x.horizontal.one-template .carousel-container .carousel-fader-right.arrow-hidden {
+    display: contents;
+}
+
+main .template-x.horizontal.three-templates .carousel-container .carousel-fader-left {
+    display: contents;
+}
+
+main .template-x.horizontal.three-templates .carousel-container .carousel-fader-left.arrow-hidden {
+    display: none;
+}
+
+main .template-x.horizontal.three-templates .carousel-container .carousel-fader-right {
+    display: contents;
+}
+
+main .template-x.horizontal.three-templates .carousel-container .carousel-fader-right.arrow-hidden {
+    display: none;
+}
+
 main .template-x.horizontal.three-templates  .carousel-container .carousel-platform.left-fader:not(.right-fader) {
     mask-image: none;
     -webkit-mask-image: none;
@@ -112,6 +144,22 @@ main .template-x.horizontal.three-templates .carousel-container .carousel-platfo
 
 .template-x.horizontal.three-templates .template.carousel-element {
     margin-right: 0px;
+}
+
+main .template-x.horizontal.four-templates .carousel-container .carousel-fader-left {
+    display: contents;
+}
+
+main .template-x.horizontal.four-templates .carousel-container .carousel-fader-left.arrow-hidden {
+    display: none;
+}
+
+main .template-x.horizontal.four-templates .carousel-container .carousel-fader-right {
+    display: contents;
+}
+
+main .template-x.horizontal.four-templates .carousel-container .carousel-fader-right.arrow-hidden {
+    display: none;
 }
 
 main .template-x.horizontal.four-templates  .carousel-container .carousel-platform.left-fader:not(.right-fader) {
