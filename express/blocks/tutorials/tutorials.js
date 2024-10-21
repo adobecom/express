@@ -9,7 +9,7 @@ import {
 import {
   playPreloadedVideo,
   preloadVideoModal,
-} from '../shared/video.js';
+} from '../shared/fast-video.js';
 
 function createTutorialCard(title, url, time, $picture) {
   const $card = createTag('a', { class: 'tutorial-card', title, tabindex: 0 });
