@@ -1,13 +1,15 @@
 import { getMetadata } from './utils.js';
 import BlockMediator from './block-mediator.min.js';
 
+const branchLinkOriginPattern = /^https:\/\/adobesparkpost(-web)?\.app\.link/;
+function isBranchLink(url) {
+  return branchLinkOriginPattern.test(new URL(url).origin);
+}
 function getRedirectUri() {
-  const primaryCtaUrl = BlockMediator.get('primaryCtaUrl')
+  const url = getMetadata('pep-destination')
+    || BlockMediator.get('primaryCtaUrl')
     || document.querySelector('a.button.xlarge.same-fcta, a.primaryCTA')?.href;
-  if (primaryCtaUrl) {
-    return primaryCtaUrl;
-  }
-  return false;
+  return isBranchLink(url) && url;
 }
 
 function onGoogleToken(data) {
