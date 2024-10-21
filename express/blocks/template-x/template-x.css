@@ -85,6 +85,11 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     white-space: nowrap;
 }
 
+.template-x-wrapper.horizontal > *:not(.template-x.horizontal), .template-x-wrapper.horizontal:not(.holiday) > .template-x.horizontal.one-template > *:not(.carousel-container) {
+    padding-left: 0;  
+    padding-right: 0;
+}
+
 main .template-x.horizontal.one-template  .carousel-container .carousel-platform.left-fader:not(.right-fader) {
     mask-image: none;
     -webkit-mask-image: none;
@@ -109,6 +114,10 @@ main .template-x.horizontal.one-template .carousel-container .carousel-fader-rig
 
 main .template-x.horizontal.one-template .carousel-container .carousel-fader-right.arrow-hidden {
     display: contents;
+}
+
+.template-x-wrapper.horizontal > *:not(.template-x.horizontal), .template-x-wrapper.horizontal:not(.holiday) > .template-x.horizontal.three-templates > *:not(.carousel-container) {
+    padding-left: 0;   
 }
 
 main .template-x.horizontal.three-templates .carousel-container .carousel-fader-left {
@@ -144,6 +153,10 @@ main .template-x.horizontal.three-templates .carousel-container .carousel-platfo
 
 .template-x.horizontal.three-templates .template.carousel-element {
     margin-right: 0px;
+}
+
+.template-x-wrapper.horizontal > *:not(.template-x.horizontal), .template-x-wrapper.horizontal:not(.holiday) > .template-x.horizontal.four-templates > *:not(.carousel-container) {
+    padding-left: 0;   
 }
 
 main .template-x.horizontal.four-templates .carousel-container .carousel-fader-left {
@@ -2361,8 +2374,8 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
 
 @media (min-width: 600px) {
     .template-x.horizontal.four-templates .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
-        width: 128px;
-        height: 200px; 
+        width: 136px;
+        height: 208px; 
     }
 
     .template-x .toolbar-wrapper {
@@ -2614,8 +2627,8 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
         justify-content: space-between;
     }
     .template-x.horizontal.three-templates .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
-        width: 196px;
-        height: 300px;
+        width: 206px;
+        height: 310px;
     }
     .template-x.horizontal.three-templates .carousel-container {
         margin-left: 0;
