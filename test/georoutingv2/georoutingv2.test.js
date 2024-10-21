@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 // import { stub } from 'sinon';
 // import { expect } from '@esm-bundle/chai';
 //
