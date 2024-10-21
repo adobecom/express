@@ -352,6 +352,7 @@ describe('GeoRouting', () => {
   //   expect(storage).to.be.null;
   //   const links = modal.querySelectorAll('a');
   //   expect(links).to.not.be.null;
+  // eslint-disable-next-line max-len
   //   expect(links[0].text).to.be.equal(mockGeoroutingJson.data.find((d) => d.prefix === 'ch_de').button);
   //   links[3].click();
   //   expect(getCookie('international')).to.be.equal('us');
