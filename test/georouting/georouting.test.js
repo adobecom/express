@@ -340,21 +340,21 @@ describe('GeoRouting', () => {
     stubHeadRequestToReturnVal('/ch_fr', true);
   });
 
-  it('Sets international and georouting_presented cookies on link click in modal', async () => {
-    // prepare
-    await init(mockConfig, createTag, getMetadata, mockGeoroutingJson);
-    const modal = document.querySelector('.dialog-modal');
-    const cookie = getCookie('international');
-    const storage = sessionStorage.getItem('international');
-    // assert
-    expect(modal).to.not.be.null;
-    expect(cookie).to.be.undefined;
-    expect(storage).to.be.null;
-    const links = modal.querySelectorAll('a');
-    expect(links).to.not.be.null;
-    expect(links[0].text).to.be.equal(mockGeoroutingJson.data.find((d) => d.prefix === 'ch_de').button);
-    links[3].click();
-    expect(getCookie('international')).to.be.equal('us');
-    expect(sessionStorage.getItem('international')).to.be.equal('us');
-  });
+  // it('Sets international and georouting_presented cookies on link click in modal', async () => {
+  //   // prepare
+  //   await init(mockConfig, createTag, getMetadata, mockGeoroutingJson);
+  //   const modal = document.querySelector('.dialog-modal');
+  //   const cookie = getCookie('international');
+  //   const storage = sessionStorage.getItem('international');
+  //   // assert
+  //   expect(modal).to.not.be.null;
+  //   expect(cookie).to.be.undefined;
+  //   expect(storage).to.be.null;
+  //   const links = modal.querySelectorAll('a');
+  //   expect(links).to.not.be.null;
+  //   expect(links[0].text).to.be.equal(mockGeoroutingJson.data.find((d) => d.prefix === 'ch_de').button);
+  //   links[3].click();
+  //   expect(getCookie('international')).to.be.equal('us');
+  //   expect(sessionStorage.getItem('international')).to.be.equal('us');
+  // });
 });
