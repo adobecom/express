@@ -39,16 +39,16 @@ const QA_CONFIGS = {
     ...getBaseImgCfg(JPG, JPEG, WEBP),
   },
   'convert-to-svg': {
-    ...getBaseImgCfg(JPG, JPEG, PNG, WEBP),
+    ...getBaseImgCfg(JPG, JPEG, PNG),
   },
   'crop-image': {
-    ...getBaseImgCfg(JPG, JPEG, PNG, WEBP),
+    ...getBaseImgCfg(JPG, JPEG, PNG),
   },
   'resize-image': {
     ...getBaseImgCfg(JPG, JPEG, PNG, WEBP),
   },
   'remove-background': {
-    ...getBaseImgCfg(JPG, JPEG, PNG, WEBP),
+    ...getBaseImgCfg(JPG, JPEG, PNG),
   },
   'generate-qr-code': {
     ...getBaseImgCfg(JPG, JPEG, PNG),
