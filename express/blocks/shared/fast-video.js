@@ -221,7 +221,7 @@ function parseVideoURLs(primaryUrl, vidUrls, autoplay) {
     vidType = 'vimeo';
     const vid = new URL(primaryUrl).pathname.split('/')[1];
     const language = getAvailableVimeoSubLang();
-    parsedVidUls = [`https://player.vimeo.com/video/${vid}?app_id=122963&texttrack=${language}`];
+    parsedVidUls = [`https://player.vimeo.com/video/${vid}?app_id=122963&texttrack=${language}&enablejsapi=1`];
   } else if (primaryUrl.includes('/media_')) {
     vidType = 'html5';
     const { hash } = new URL(vidUrls[0]);
