@@ -2526,6 +2526,10 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     .template-x.horizontal.fullwidth .template:not(.placeholder) {
         margin: 24px 11px 18px 11px;
     }
+ 
+    .template-x.horizontal.one-template.fullwidth .carousel-container .still-wrapper {
+        width: 625px;
+    }
 
     .columns .template-x-inner-wrapper {
         margin-top: 0;
@@ -2617,8 +2621,8 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     .template-x.one-template.tight .template-x-inner-wrapper,
     .template-x.one-template.tight .carousel-platform,
     .template-x.one-template.tight .carousel-platform .template.carousel-element {
-        padding: 0 ;
-        margin: 0;
+        /* padding: 0 ;
+        margin: 0; */
     }
     .template-x.two-templates .template.appear {
         width: 316px;
