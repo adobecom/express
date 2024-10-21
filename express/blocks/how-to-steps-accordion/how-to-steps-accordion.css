@@ -355,3 +355,19 @@ main .how-to-steps-accordion-video-container {
 main .how-to-steps-accordion-container > div {
   background: none;
 }
+
+
+main .block.how-to-steps-accordion em {
+  font-style: normal;
+  /* background: linear-gradient(180deg, #FF4DD2 20%, #FF993B 80%);
+  background: linear-gradient(95.08deg, #FF4DD2 67.54%, #FF993B 74.42%); */
+  background: linear-gradient(140.08deg, #FF4DD2 67.54%, #FF993B 74.42%);
+  background-size: 108% 108%;
+  /* background: linear-gradient(275.08deg, #FF4DD2 67.54%, #FF993B 74.42%); */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900;
+}
+
+

@@ -246,7 +246,7 @@ function setStepDetails(block, indexOpenedStep) {
 
 
 
-function buildAccordion(block) {
+function buildAccordion(block, rows, $videoAndSteps) {
   console.log('=== BLOCK', block);
   let indexOpenedStep = 0;
 
@@ -254,7 +254,7 @@ function buildAccordion(block) {
   // console.log("=== container", container)
   // if (container) container.classList.add("how-to-steps-accordion-container")
 
-  for (const row of block.children) {
+  for (const row of rows) {
     console.log('=== ROW', row);
   }
 
@@ -263,7 +263,7 @@ function buildAccordion(block) {
 
   // for (const row of block.children)
 
-  [...block.children].forEach((row, i) => {
+  rows.forEach((row, i) => {
     console.log('=== ROW', row);
 
     const [stepTitle, stepDetail] = row.querySelectorAll(':scope div');
@@ -311,7 +311,8 @@ function buildAccordion(block) {
 
   // const accordion = buildAccordion(block);
 
-  block.replaceChildren($list);
+  $videoAndSteps.append($list)
+  // block.replaceChildren($list);
 
   // set this in next event cycle when scrollHeight has been established
   setTimeout(() => {
@@ -324,16 +325,19 @@ function buildAccordion(block) {
 
 
 export default async function decorate(block) {
-
+// return;
   console.log("=== IN decorate", block)
+
+  // block.classList.add('trytry')
+
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
   const isVideoVariant = block.classList.contains('video');
 
   // move first image of container outside of div for styling
   const section = block.closest('.section');
-  const howto = block;
-  const rows = Array.from(howto.children);
+  // const howto = block;
+  const rows = Array.from(block.children);
   let picture;
 
   if (isVideoVariant) {
@@ -348,10 +352,22 @@ export default async function decorate(block) {
 
     const videoEl = embedYoutube(url);
     videoEl.classList.add('video-how-to-steps-accordion');
-    section.prepend(videoEl);
+
+    const $videoAndSteps = createTag('div', { class: 'video-and-steps' });
+
+    // section.prepend(videoEl);
+    $videoAndSteps.append(videoEl)
+
+    const heading = section.querySelector('h2, h3, h4');
+    console.log("=== heading", heading);
+
+    block.replaceChildren(heading, $videoAndSteps);
+    // block.prepend(heading);
+    // block.append($videoAndSteps)
+    buildAccordion(block, rows, $videoAndSteps);
   }
 
-  buildAccordion(block);
+
   // buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow);
   // buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow);
 
