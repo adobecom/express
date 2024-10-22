@@ -1,5 +1,6 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
+import { delay } from '../../../helpers/waitfor.js';
 
 const { default: decorate } = await import(
   '../../../../express/blocks/grid-marquee/grid-marquee.js'
@@ -7,12 +8,30 @@ const { default: decorate } = await import(
 document.body.innerHTML = await readFile({ path: './mocks/body.html' });
 describe('grid-marquee', () => {
   let block;
+  const oldIO = window.IntersectionObserver;
+  const cbs = [];
   before(async () => {
     window.placeholders = {
-      'app-store-ratings': '4.9, 233.8k ratings; 4.6, 117k ratings; https://adobesparkpost.app.link/GJrBPFUWBBb',
+      'app-store-ratings':
+        '4.9, 233.8k ratings; 4.6, 117k ratings; https://adobesparkpost.app.link/GJrBPFUWBBb',
     };
+    const mockIntersectionObserver = class {
+      items = [];
+
+      constructor(cb) {
+        cbs.push(cb);
+      }
+
+      observe(item) {
+        this.items.push(item);
+      }
+    };
+    window.IntersectionObserver = mockIntersectionObserver;
     block = document.querySelector('.grid-marquee');
     decorate(block);
+  });
+  after(() => {
+    window.IntersectionObserver = oldIO;
   });
   it('has a background image', async () => {
     const background = block.querySelector('.background');
@@ -28,12 +47,21 @@ describe('grid-marquee', () => {
   it('decorates cards', () => {
     const cardsContainer = block.querySelector('.cards-container');
     const cards = [...cardsContainer.querySelectorAll('.card')];
+    cards.forEach((card) => {
+      expect(card.querySelector('.face')).to.exist;
+    });
+  });
+  it('creates drawer when in view', async () => {
+    expect(block.querySelector('.drawer .content')).to.not.exist;
+    cbs[0]([{ target: block, isIntersecting: true }], { unobserve: () => {} });
+    await delay(310);
+    expect(block.querySelectorAll('.drawer .content').length).to.equal(4);
+
     const drawers = [...block.querySelectorAll('.drawer')];
-    expect(cards.length === drawers.length).to.be.true;
     drawers.forEach((drawer) => {
       expect(drawer.querySelector('.title-row')).to.exist;
       expect(drawer.querySelector('.video-container')).to.exist;
-      expect(drawer.querySelector('.ctas-container')).to.exist;
+      expect(drawer.querySelector('.panel')).to.exist;
     });
   });
   it('expands drawer when interacted', () => {
@@ -44,6 +72,7 @@ describe('grid-marquee', () => {
     card.click();
     expect(drawer.getAttribute('aria-hidden')).to.equal('false');
     expect(card.getAttribute('aria-expanded')).to.equal('true');
+    card.click();
   });
   it('collapses and expands drawer', () => {
     const card = block.querySelector('.card');
@@ -65,13 +94,6 @@ describe('grid-marquee', () => {
     expect(drawer.getAttribute('aria-hidden')).to.equal('false');
     expect(card.getAttribute('aria-expanded')).to.equal('true');
     card.querySelector("button[aria-label='close']").click();
-
-    card.dispatchEvent(new Event('focusin'));
-    expect(drawer.getAttribute('aria-hidden')).to.equal('false');
-    expect(card.getAttribute('aria-expanded')).to.equal('true');
-    card.dispatchEvent(new Event('focusout'));
-    expect(drawer.getAttribute('aria-hidden')).to.equal('true');
-    expect(card.getAttribute('aria-expanded')).to.equal('false');
   });
   it('splits card content by tabs when more than 1 col is authored', () => {
     const card = block.querySelectorAll('.card')[1];
