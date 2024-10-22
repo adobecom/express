@@ -64,7 +64,6 @@ main .logo-row .brand-image {
 
     main .logo-row .text-column  {
        margin: auto;
-        padding-bottom: 20px;
          padding-right: initial;   
     }
     main .logo-row .text-column > * {
@@ -76,4 +75,11 @@ main .logo-row .brand-image {
         object-fit: contain;
     }
  
+}
+
+/* Surface Pro */
+@media (max-width: 913px) {
+    main .logo-row .image-column {
+        gap: 10px;
+    }
 }
