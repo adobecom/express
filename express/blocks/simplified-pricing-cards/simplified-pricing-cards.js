@@ -24,6 +24,7 @@ function getHeightWithoutPadding(element) {
 }
 
 function equalizeHeights(el) {
+
   const classNames = ['.plan-explanation', '.card-header'];
   const cardCount = el.querySelectorAll('.simplified-pricing-cards .card').length;
   if (cardCount === 1) return;
@@ -33,6 +34,7 @@ function equalizeHeights(el) {
     headers.forEach((placeholder) => {
       placeholder.style.height = 'unset';
     });
+    if (window.screen.width < 1200) continue;
     headers.forEach((header) => {
       if (header.checkVisibility()) {
         const height = getHeightWithoutPadding(header);
@@ -190,12 +192,11 @@ function decorateCardBorder(card, source) {
     if (source.textContent !== '') {
       source.classList.add('promo-eyebrow-text');
       card.classList.add('promo-text');
+    } else {
+      source.style.display = 'none';
     }
-  } else {
-    [
-      source.style.display = 'none',
-    ];
   }
+  source.style.display = 'none';
 }
 
 export default async function init(el) {
@@ -227,14 +228,14 @@ export default async function init(el) {
   for (const card of cards) {
     el.children[0].appendChild(card);
   }
-
+  rows[rows.length - 2].classList.add('pricing-footer');
   rows[rows.length - 1].querySelector('a').classList.add('button', 'compare-all-button');
   el.appendChild(rows[rows.length - 2]);
   el.appendChild(rows[rows.length - 1]);
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting && window.screen.width > 768) {
+      if (entry.isIntersecting) {
         equalizeHeights(el);
         observer.unobserve(entry.target);
         adjustElementPosition();
