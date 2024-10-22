@@ -86,7 +86,7 @@ function showVideoPromotion($video, vid) {
   const $overlay = $video.closest('.video-overlay');
   if ($promo && $promo.parentElement !== $overlay) {
     $overlay.append($promo);
-    playVid($video, false)
+    closeVideo($video)
     $promo.classList.add('appear');
   }
 }
@@ -115,7 +115,7 @@ function buildVideoElement($element, vidUrls = [], playerType, title, ts, autopl
     $video.addEventListener('loadeddata', async () => {
       // check for video promotion
       const videoPromos = await fetchVideoPromotions();
-      const videoAnalytic = await getVideoAnalytic($video);
+    
       const promoName = videoPromos[primaryUrl];
       if (typeof promoName === 'string') {
         $element.insertAdjacentHTML('beforeend', `<div class="promotion block" data-block-name="promotion">${promoName}</div>`);
@@ -125,20 +125,17 @@ function buildVideoElement($element, vidUrls = [], playerType, title, ts, autopl
         const $PromoClose = $promo.appendChild(createTag('div', { class: 'close' }));
         $PromoClose.addEventListener('click', () => {
           // eslint-disable-next-line no-use-before-define
-          hideVideoModal(true);
-
-          if (videoAnalytic) {
-            const linksPopulated = new CustomEvent('videoclosed', { detail: videoAnalytic });
-            document.dispatchEvent(linksPopulated);
-          }
+          closeVideo($video)
         });
         window.videoPromotions[primaryUrl] = $promo;
       }
 
+      const videoAnalytic = await getVideoAnalytic($video);
       if (videoAnalytic) {
         const videoLoaded = new CustomEvent('videoloaded', { detail: videoAnalytic });
         document.dispatchEvent(videoLoaded);
       }
+      
       if (autoplay) {
         const playPromise = $video.play();
         if (playPromise !== undefined) {
@@ -154,16 +151,8 @@ function buildVideoElement($element, vidUrls = [], playerType, title, ts, autopl
     });
 
     const $videoClose = $element.appendChild(createTag('div', { class: 'close' }));
-    $videoClose.addEventListener('click', async () => {
-      const videoAnalytic = await getVideoAnalytic($video);
-
-      // eslint-disable-next-line no-use-before-define
-      hideVideoModal(true);
-
-      if (videoAnalytic) {
-        const linksPopulated = new CustomEvent('videoclosed', { detail: videoAnalytic });
-        document.dispatchEvent(linksPopulated);
-      }
+    $videoClose.addEventListener('click', async () => { 
+      closeVideo($video)
     });
   } else {
     if (playerType === 'adobetv') {
@@ -196,8 +185,7 @@ function buildVideoElement($element, vidUrls = [], playerType, title, ts, autopl
     }
     const $videoClose = $element.appendChild(createTag('div', { class: 'close' }));
     $videoClose.addEventListener('click', () => {
-      // eslint-disable-next-line no-use-before-define
-      hideVideoModal(true);
+      closeVideo($element)
     });
   }
   $element.classList.add(playerType);
@@ -244,19 +232,6 @@ export function isVideoLink(url) {
     || /.*\/media_.*(mp4|webm|m3u8)$/.test(new URL(url).pathname);
 }
 
-export function hideVideoModal(push) {
-  const $overlay = document.querySelector('main .video-overlay');
-  if ($overlay) {
-    $overlay.remove();
-    window.onkeyup = null;
-  }
-  if (push) {
-    // create new history entry
-    window.history.pushState({}, docTitle, window.location.href.split('#')[0]);
-  }
-  document.body.classList.remove('no-scroll');
-}
-
 function sendMessage(iframe, action) {
   iframe.contentWindow.postMessage('{"event":"command","func":"' + action + '","args":""}', "*");
 }
@@ -278,30 +253,14 @@ export function displayVideoModal(url = [], title, push) {
 
   $overlay.appendChild($video);
   $overlay.addEventListener('click', async () => {
-    hideVideoModal(true);
-    const $videoElement = $video.querySelector('video');
-    if ($videoElement) {
-      const videoAnalytic = await getVideoAnalytic($videoElement);
-      if (videoAnalytic) {
-        const linksPopulated = new CustomEvent('videoclosed', { detail: videoAnalytic });
-        document.dispatchEvent(linksPopulated);
-      }
-    }
+    closeVideo($video)
   });
   $video.addEventListener('click', (evt) => {
     evt.stopPropagation();
   });
   window.onkeyup = async ({ key }) => {
     if (key === 'Escape') {
-      hideVideoModal(true);
-      const $videoElement = $video.querySelector('video');
-      if ($videoElement) {
-        const videoAnalytic = await getVideoAnalytic($videoElement);
-        if (videoAnalytic) {
-          const linksPopulated = new CustomEvent('videoclosed', { detail: videoAnalytic });
-          document.dispatchEvent(linksPopulated);
-        }
-      }
+      closeVideo($video)
     }
   };
   if (push) {
@@ -316,9 +275,9 @@ export function displayVideoModal(url = [], title, push) {
 }
 
 async function playVid(element, play) {
-  const video = element.querySelector('video') 
+  const video = element.querySelector('video')
   const iframe = element.querySelector('iframe')
-  if (iframe) { 
+  if (iframe) {
     if (!play) {
       sendMessage(iframe, 'stopVideo');
     } else {
@@ -335,7 +294,7 @@ async function playVid(element, play) {
   }
 }
 
-export function playPreloadedVideo(title, autoplayOnStart) {
+export function playPreloadedVideo(title) {
   const videoOverlays = document.querySelectorAll('.video-overlay-preloaded');
   for (const vo of videoOverlays) {
     if (vo.id === `video-overlay-${title}`) {
