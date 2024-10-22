@@ -451,11 +451,20 @@ export async function fetchPlanOnePlans(planUrl) {
         `<strong>${plan.prefix}${plan.rawPrice[0]}</strong>`,
       );
 
+      plan.formattedPriceNormal = offer.unitPriceCurrencyFormatted?.replace(
+        plan.rawPrice[0],
+        `${plan.prefix}${plan.rawPrice[0]}`,
+      );
+
       if (offer.basePriceCurrencyFormatted) {
         plan.rawBasePrice = offer.basePriceCurrencyFormatted.match(/[\d\s,.+]+/g);
         plan.formattedBP = offer.basePriceCurrencyFormatted.replace(
           plan.rawBasePrice[0],
           `<strong>${plan.prefix}${plan.rawBasePrice[0]}</strong>`,
+        );
+        plan.formattedBPNormal = offer.unitPriceCurrencyFormatted?.replace(
+          plan.rawBasePrice[0],
+          `${plan.prefix}${plan.rawBasePrice[0]}`,
         );
       }
       plan.y2p = offer.y2p;

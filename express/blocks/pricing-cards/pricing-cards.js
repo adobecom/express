@@ -32,7 +32,7 @@ const SAVE_PERCENTAGE = '{{savePercentage}}';
 const SALES_NUMBERS = '{{business-sales-numbers}}';
 const PRICE_TOKEN = '{{pricing}}';
 const YEAR_2_PRICING_TOKEN = '[[year-2-pricing-token]]';
-const BASE_PRICING_TOKEN = '[[base-pricing-token]]';
+const BASE_PRICING_TOKEN = '((base-pricing-token))';
 
 function suppressOfferEyebrow(specialPromo, legacyVersion) {
   if (specialPromo.parentElement) {
@@ -242,7 +242,7 @@ async function handlePrice(placeholders, pricingArea, specialPromo, groupID, leg
   handleSavePercentage(savePercentElem, isPremiumCard, response);
   handleSpecialPromo(specialPromo, isPremiumCard, response, legacyVersion);
   handlePriceToken(pricingArea, YEAR_2_PRICING_TOKEN, response.y2p, priceSuffixTextContent);
-  handlePriceToken(pricingArea, BASE_PRICING_TOKEN, response.formattedBP);
+  handlePriceToken(pricingArea, BASE_PRICING_TOKEN, response.formattedBPNormal);
   priceEl?.parentNode?.remove();
   if (!priceRow) return;
   pricingArea.prepend(priceRow);
