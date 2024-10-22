@@ -1,8 +1,14 @@
-main .split-action-container.hidden {
+main .split-action {
+    position: relative;
+    transition: opacity 0.2s;
+    z-index: 10;
+}
+
+main .split-action.hidden {
     display: none;
 }
 
-main .split-action-container.transparent {
+main .split-action.transparent {
     opacity: 0;
 }
 
@@ -10,7 +16,7 @@ body.branch-banner-is-active .split-action-container {
     z-index: 100000;
 }
 
-main .split-action {
+main .split-action .block-body {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -28,7 +34,7 @@ main .split-action {
     transition: bottom 0.2s;
 }
 
-main .block-background {
+main .split-action .block-background {
     position: fixed;
     top: 0;
     left: 0;
@@ -37,12 +43,7 @@ main .block-background {
     background-color: var(--color-white);
 }
 
-main .split-action-container.hidden .split-action,
-main .split-action-container.hidden .block-background {
-    display: none;
-}
-
-main .block-background .underlay {
+main .split-action .block-background .underlay {
     content: '';
     top: 0;
     left: 0;
@@ -53,20 +54,20 @@ main .block-background .underlay {
     opacity: 50%;
 }
 
-main .block-background img {
+main .split-action .block-background img {
     width: 100%;
     object-fit: cover;
 }
 
-main .split-action > div {
+main .split-action .block-body > div {
     padding: 12px 0;
 }
 
-main .split-action > div:nth-of-type(1) h2 {
+main .split-action .block-body > div:nth-of-type(1) h2 {
     text-align: left;
 }
 
-main .split-action > div:nth-of-type(2) {
+main .split-action .block-body > div:nth-of-type(2) {
     padding-right: 32px;
 }
 
@@ -75,13 +76,13 @@ main .split-action .icon {
     min-height: 32px;
 }
 
-main .split-action > .buttons-wrapper {
+main .split-action .block-body > .buttons-wrapper {
     display: flex;
     align-items: center;
     flex-wrap: wrap-reverse;
 }
 
-main .split-action > .buttons-wrapper > a.button {
+main .split-action .block-body  > .buttons-wrapper > a.button {
     font-size: 16px;
     line-height: 20px;
     padding: 14px 23px;
@@ -92,11 +93,11 @@ main .split-action > .buttons-wrapper > a.button {
     margin: 8px 8px 0 0;
 }
 
-main .split-action > .buttons-wrapper > a.button:last-of-type {
+main .split-action .block-body > .buttons-wrapper > a.button:last-of-type {
     margin: 8px 0 0 0;
 }
 
-main .split-action > .buttons-wrapper > a.button:first-of-type {
+main .split-action .block-body > .buttons-wrapper > a.button:first-of-type {
     padding: 14px 11px;
     display: unset;
     background-color: transparent;
@@ -117,9 +118,4 @@ main .split-action .notch-pill {
     width: 36px;
     background: var(--color-gray-200);
     opacity: 30%;
-}
-
-main .split-action-container {
-    transition: opacity 0.2s;
-    z-index: 10;
 }
