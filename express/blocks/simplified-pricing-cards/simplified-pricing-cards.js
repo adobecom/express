@@ -24,7 +24,6 @@ function getHeightWithoutPadding(element) {
 }
 
 function equalizeHeights(el) {
-
   const classNames = ['.plan-explanation', '.card-header'];
   const cardCount = el.querySelectorAll('.simplified-pricing-cards .card').length;
   if (cardCount === 1) return;
@@ -34,18 +33,19 @@ function equalizeHeights(el) {
     headers.forEach((placeholder) => {
       placeholder.style.height = 'unset';
     });
-    if (window.screen.width < 1200) continue;
-    headers.forEach((header) => {
-      if (header.checkVisibility()) {
-        const height = getHeightWithoutPadding(header);
-        maxHeight = Math.max(maxHeight, height);
-      }
-    });
-    headers.forEach((placeholder) => {
-      if (maxHeight > 0) {
-        placeholder.style.height = `${maxHeight}px`;
-      }
-    });
+    if (window.screen.width > 1200){
+      headers.forEach((header) => {
+        if (header.checkVisibility()) {
+          const height = getHeightWithoutPadding(header);
+          maxHeight = Math.max(maxHeight, height);
+        }
+      });
+      headers.forEach((placeholder) => {
+        if (maxHeight > 0) {
+          placeholder.style.height = `${maxHeight}px`;
+        }
+      });
+    }
   }
 }
 
