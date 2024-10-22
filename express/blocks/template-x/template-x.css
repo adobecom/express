@@ -90,6 +90,33 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     padding-right: 0;
 }
 
+main .template-x.horizontal.one-template .template-x-inner-wrapper .carousel-container .button.carousel-arrow.carousel-arrow-left {
+    position: absolute;
+    right: 42px;
+}
+
+main .template-x.horizontal.one-template .carousel-container .carousel-fader-left {
+    display: contents;
+    opacity: 1;
+}
+
+main .template-x.horizontal.one-template .carousel-container .carousel-fader-left.arrow-hidden a {
+    opacity: 0.5;
+}
+
+main .template-x.horizontal.one-template .carousel-container .carousel-fader-right {
+    display: contents;
+    opacity: 1;
+}
+
+main .template-x.horizontal.one-template .carousel-container .carousel-fader-right.arrow-hidden a {
+    opacity: 0.5;
+}
+
+main .template-x-wrapper.horizontal .template-x.horizontal.one-template .carousel-container .carousel-platform.right-fader {
+    padding-left: 0;
+}
+
 main .template-x.horizontal.one-template  .carousel-container .carousel-platform.left-fader:not(.right-fader) {
     mask-image: none;
     -webkit-mask-image: none;
@@ -100,40 +127,31 @@ main .template-x.horizontal.one-template .carousel-container .carousel-platform.
     -webkit-mask-image: none;
 }
 
-main .template-x.horizontal.one-template .carousel-container .carousel-fader-left {
-    display: contents;
-}
-
-main .template-x.horizontal.one-template .carousel-container .carousel-fader-left.arrow-hidden {
-    display: none;
-}
-
-main .template-x.horizontal.one-template .carousel-container .carousel-fader-right {
-    display: contents;
-}
-
-main .template-x.horizontal.one-template .carousel-container .carousel-fader-right.arrow-hidden {
-    display: contents;
-}
-
 .template-x-wrapper.horizontal > *:not(.template-x.horizontal), .template-x-wrapper.horizontal:not(.holiday) > .template-x.horizontal.three-templates > *:not(.carousel-container) {
     padding-left: 0;   
 }
 
-main .template-x.horizontal.three-templates .carousel-container .carousel-fader-left {
-    display: contents;
+main .template-x.horizontal.three-templates .template-x-inner-wrapper .carousel-container .button.carousel-arrow.carousel-arrow-left {
+    position: absolute;
+    right: 42px;
 }
 
-main .template-x.horizontal.three-templates .carousel-container .carousel-fader-left.arrow-hidden {
-    display: none;
+main .template-x.horizontal.three-templates .carousel-container .carousel-fader-left {
+    display: contents;
+    opacity: 1;
+}
+
+main .template-x.horizontal.three-templates .carousel-container .carousel-fader-left.arrow-hidden a {
+    opacity: 0.5;
 }
 
 main .template-x.horizontal.three-templates .carousel-container .carousel-fader-right {
     display: contents;
+    opacity: 1;
 }
 
-main .template-x.horizontal.three-templates .carousel-container .carousel-fader-right.arrow-hidden {
-    display: none;
+main .template-x.horizontal.three-templates .carousel-container .carousel-fader-right.arrow-hidden a {
+    opacity: 0.5;
 }
 
 main .template-x.horizontal.three-templates  .carousel-container .carousel-platform.left-fader:not(.right-fader) {
@@ -159,20 +177,27 @@ main .template-x.horizontal.three-templates .carousel-container .carousel-platfo
     padding-left: 0;   
 }
 
-main .template-x.horizontal.four-templates .carousel-container .carousel-fader-left {
-    display: contents;
+main .template-x.horizontal.four-templates .template-x-inner-wrapper .carousel-container .button.carousel-arrow.carousel-arrow-left {
+    position: absolute;
+    right: 42px;
 }
 
-main .template-x.horizontal.four-templates .carousel-container .carousel-fader-left.arrow-hidden {
-    display: none;
+main .template-x.horizontal.four-templates .carousel-container .carousel-fader-left {
+    display: contents;
+    opacity: 1;
+}
+
+main .template-x.horizontal.four-templates .carousel-container .carousel-fader-left.arrow-hidden a {
+    opacity: 0.5;
 }
 
 main .template-x.horizontal.four-templates .carousel-container .carousel-fader-right {
     display: contents;
+    opacity: 1;
 }
 
-main .template-x.horizontal.four-templates .carousel-container .carousel-fader-right.arrow-hidden {
-    display: none;
+main .template-x.horizontal.four-templates .carousel-container .carousel-fader-right.arrow-hidden a {
+    opacity: 0.5;
 }
 
 main .template-x.horizontal.four-templates  .carousel-container .carousel-platform.left-fader:not(.right-fader) {
