@@ -18,6 +18,7 @@ let uploadContainer;
 const JPG = 'jpg';
 const JPEG = 'jpeg';
 const PNG = 'png';
+const WEBP = 'webp';
 export const getBaseImgCfg = (...types) => ({
   group: 'image',
   max_size: 40 * 1024 * 1024,
@@ -32,10 +33,10 @@ export const getBaseVideoCfg = (...types) => ({
 });
 const QA_CONFIGS = {
   'convert-to-jpg': {
-    ...getBaseImgCfg(PNG),
+    ...getBaseImgCfg(PNG, WEBP),
   },
   'convert-to-png': {
-    ...getBaseImgCfg(JPG, JPEG),
+    ...getBaseImgCfg(JPG, JPEG, WEBP),
   },
   'convert-to-svg': {
     ...getBaseImgCfg(JPG, JPEG, PNG),
@@ -44,7 +45,7 @@ const QA_CONFIGS = {
     ...getBaseImgCfg(JPG, JPEG, PNG),
   },
   'resize-image': {
-    ...getBaseImgCfg(JPG, JPEG, PNG),
+    ...getBaseImgCfg(JPG, JPEG, PNG, WEBP),
   },
   'remove-background': {
     ...getBaseImgCfg(JPG, JPEG, PNG),
