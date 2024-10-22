@@ -31,34 +31,34 @@ export async function fetchVideoAnalytics() {
 }
 
 async function getVideoAnalytic($video) {
-  // const videoAnalytics = await fetchVideoAnalytics();
-  // let videoAnalytic;
+  const videoAnalytics = await fetchVideoAnalytics();
+  let videoAnalytic;
 
-  // videoAnalytics.forEach((analytic) => {
-  //   if (window.location.pathname.includes(analytic.Page)) {
-  //     const filenames = analytic.Filenames ? analytic.Filenames.split('\n') : [];
+  videoAnalytics.forEach((analytic) => {
+    if (window.location.pathname.includes(analytic.Page)) {
+      const filenames = analytic.Filenames ? analytic.Filenames.split('\n') : [];
 
-  //     filenames.forEach((filename) => {
-  //       if ($video.currentSrc.includes(filename)) {
-  //         videoAnalytic = {
-  //           video: $video,
-  //           parameters: {
-  //             videoName: analytic.videoName ?? null,
-  //             videoId: analytic.videoId ?? null,
-  //             videoLength: $video.duration,
-  //             product: 'Adobe Express',
-  //             videoCategory: 'default',
-  //             videoDescription: analytic.videoDescription ?? null,
-  //             videoPlayer: 'html5-video',
-  //             videoMediaType: 'VOD',
-  //           },
-  //         };
-  //       }
-  //     });
-  //   }
-  // });
+      filenames.forEach((filename) => {
+        if ($video.currentSrc.includes(filename)) {
+          videoAnalytic = {
+            video: $video,
+            parameters: {
+              videoName: analytic.videoName ?? null,
+              videoId: analytic.videoId ?? null,
+              videoLength: $video.duration,
+              product: 'Adobe Express',
+              videoCategory: 'default',
+              videoDescription: analytic.videoDescription ?? null,
+              videoPlayer: 'html5-video',
+              videoMediaType: 'VOD',
+            },
+          };
+        }
+      });
+    }
+  });
 
-  // return videoAnalytic;
+  return videoAnalytic;
 }
 
 async function fetchVideoPromotions() {
@@ -86,7 +86,7 @@ function showVideoPromotion($video, vid) {
   const $overlay = $video.closest('.video-overlay');
   if ($promo && $promo.parentElement !== $overlay) {
     $overlay.append($promo);
-    $video.closest('.video-overlay-video').remove();
+    playVid($video, false)
     $promo.classList.add('appear');
   }
 }
