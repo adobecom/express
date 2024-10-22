@@ -12,9 +12,9 @@ import {
 
 import { adjustElementPosition, handleTooltip } from './simplified-pricing-tooltip.js';
 
-const SALES_NUMBERS = '[[business-sales-numbers]]';
-const PRICE_TOKEN = '[[pricing]]';
-const YEAR_2_PRICING_TOKEN = '[[year-2-pricing-token]]';
+const SALES_NUMBERS = '((business-sales-numbers))';
+const PRICE_TOKEN = '((pricing))';
+const YEAR_2_PRICING_TOKEN = '((year-2-pricing-token))';
 
 function getHeightWithoutPadding(element) {
   const styles = window.getComputedStyle(element);
@@ -24,7 +24,6 @@ function getHeightWithoutPadding(element) {
 }
 
 function equalizeHeights(el) {
-
   const classNames = ['.plan-explanation', '.card-header'];
   const cardCount = el.querySelectorAll('.simplified-pricing-cards .card').length;
   if (cardCount === 1) return;
@@ -34,25 +33,26 @@ function equalizeHeights(el) {
     headers.forEach((placeholder) => {
       placeholder.style.height = 'unset';
     });
-    if (window.screen.width < 1200) continue;
-    headers.forEach((header) => {
-      if (header.checkVisibility()) {
-        const height = getHeightWithoutPadding(header);
-        maxHeight = Math.max(maxHeight, height);
-      }
-    });
-    headers.forEach((placeholder) => {
-      if (maxHeight > 0) {
-        placeholder.style.height = `${maxHeight}px`;
-      }
-    });
+    if (window.screen.width > 1200){
+      headers.forEach((header) => {
+        if (header.checkVisibility()) {
+          const height = getHeightWithoutPadding(header);
+          maxHeight = Math.max(maxHeight, height);
+        }
+      });
+      headers.forEach((placeholder) => {
+        if (maxHeight > 0) {
+          placeholder.style.height = `${maxHeight}px`;
+        }
+      });
+    }
   }
 }
 
 function getPriceElementSuffix(placeholders, placeholderArr, response) {
   return placeholderArr
     .map((phText) => {
-      const key = phText.replace('[[', '').replace(']]', '');
+      const key = phText.replace('((', '').replace('))', '');
       return key.includes('vat') && !response.showVat
         ? ''
         : placeholders?.[key] || '';
@@ -183,7 +183,7 @@ function decorateHeader(header, planExplanation) {
 }
 
 function decorateCardBorder(card, source) {
-  const pattern = /\[\[(.*?)\]\]/g;
+  const pattern = /\(\((.*?)\)\)/g;
   const matches = Array.from(source.textContent?.matchAll(pattern));
   if (matches.length > 0) {
     const [, promoType] = matches[matches.length - 1];

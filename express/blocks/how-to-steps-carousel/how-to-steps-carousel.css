@@ -63,28 +63,28 @@ main .how-to-steps-carousel .tips .tip.active {
 }
 
 @keyframes fadeIn {
-  0% { opacity:0.1; }
-  100% { opacity:1; }
+  0% { opacity: 0.1; }
+  100% { opacity: 1; }
 }
 
 @-moz-keyframes fadeIn {
-  0% { opacity:0; }
-  100% { opacity:1; }
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 @-webkit-keyframes fadeIn {
-  0% { opacity:0; }
-  100% { opacity:1; }
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 @-o-keyframes fadeIn {
-  0% { opacity:0; }
-  100% { opacity:1; }
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 @-ms-keyframes fadeIn {
-  0% { opacity:0; }
-  100% { opacity:1; }
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 main .how-to-steps-carousel .tip-numbers {
@@ -196,5 +196,47 @@ main .how-to-steps-carousel-container > picture > img {
 @media (min-width: 1200px) {
   main .how-to-steps-carousel-container.no-cover > div {
     margin: 0 120px 0 20px;
+  }
+}
+
+main div:has(> .video-how-to-steps-carousel) {
+  display: flex;
+  /* note: as requested by KyleC, when it is mobile, put the video under the text */
+  flex-direction: column-reverse;
+}
+
+main .video-how-to-steps-carousel {
+  margin: 56px 24px 24px;
+}
+
+@media (min-width: 600px) {
+  main .video-how-to-steps-carousel {
+    width: calc(100% - 48px);
+    max-width: unset;
+  }
+
+  main div:has(> .how-to-steps-carousel.video) {
+    width: calc(100% - 48px);
+    max-width: fit-content;
+  }
+}
+
+@media (min-width: 900px) {
+  main div:has(> .video-how-to-steps-carousel) {
+    display: flex;
+    flex-direction: unset;
+  }
+
+  main .video-how-to-steps-carousel {
+    margin: 92px 0 0 24px;
+    width: calc((100% - 72px) * 0.45);
+  }
+
+  main div:has(> .how-to-steps-carousel.video) {
+    width: calc((100% - 72px) * 0.55 - 176px);
+  }
+
+  main .video-how-to-steps-carousel {
+    margin-left: 80px;
   }
 }
