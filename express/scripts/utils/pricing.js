@@ -184,7 +184,7 @@ function getCurrencyDisplay(currency) {
 }
 
 export function normCountry(country) {
-  return (country.toLowerCase() === 'uk' ? 'gb' : country.toLowerCase()).split('_')[0];
+  return (country.toLowerCase()).split('_')[0];
 }
 
 // urlparam > cookie > sessionStorage > feds > api > config

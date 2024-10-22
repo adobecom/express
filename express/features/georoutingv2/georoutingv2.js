@@ -296,6 +296,7 @@ export default async function loadGeoRouting(
   let resp;
   for (const url of urls) {
     resp = await fetch(url);
+
     if (resp.ok) {
       if (url.includes('georouting.json')) {
         const json = await resp.json();
@@ -306,8 +307,15 @@ export default async function loadGeoRouting(
       break;
     }
   }
-  const json = await resp.json();
+  let json = await resp.json();
   const { locale } = config;
+  json = {
+    ...json,
+    georouting: {
+      ...json.georouting,
+      data: json.georouting.data.filter((item) => item.prefix !== 'gb'),
+    },
+  };
 
   const urlLocale = locale.prefix.replace('/', '');
   const storedInter = getCookie('international');
