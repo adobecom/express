@@ -83,7 +83,7 @@ main .section>.simplified-pricing-cards-wrapper {
 .simplified-pricing-cards .card>.plan-explanation {
   margin: 0;
   text-align: left;
-
+  
 }
 
 .simplified-pricing-cards .pricing-section {
@@ -97,7 +97,7 @@ main .section>.simplified-pricing-cards-wrapper {
   flex-direction: column;
   gap: 8px;
   position: relative;
-  border-radius: 8px;
+  border-radius: 8px; 
   text-align: left;
 }
 
@@ -244,7 +244,6 @@ main .section>.simplified-pricing-cards-wrapper {
   margin-top: 20px;
   min-height: unset;
 }
-
 .simplified-pricing-cards .card-cta-group .button.primary {
   height: 100%;
 }
@@ -297,6 +296,11 @@ main .section>.simplified-pricing-cards-wrapper {
 
 .simplified-pricing-cards .card.hide .toggle-switch {
   rotate: 180deg;
+}
+
+.simplified-pricing-cards .pricing-area p {
+  font-size: 12px;
+  line-height: 1.3;
 }
 
 .simplified-pricing-cards a.button.compare-all-button {
@@ -367,7 +371,6 @@ main .section>.simplified-pricing-cards-wrapper {
 .simplified-pricing-cards .card-wrapper .card.hide .card-cta-group {
   display: none;
 }
-
 /* 
 .simplified-pricing-cards .card.gradient-promo.promo-text {
   margin-top: var(--spacing-xl);
@@ -408,9 +411,9 @@ main .section>.simplified-pricing-cards-wrapper {
   margin-top: 24px;
 }
 
-.simplified-pricing-cards .pricing-footer div {
-  width: calc(var(--card-width) + 20px);
-  margin: auto;
+.simplified-pricing-cards .pricing-footer div{
+ width: calc(var(--card-width) + 20px);
+ margin: auto;
 }
 
 /* Tablet styles */
@@ -467,13 +470,13 @@ main .section>.simplified-pricing-cards-wrapper {
   .simplified-pricing-cards a.button.compare-all-button {
     margin-top: 40px;
   }
-
-  .simplified-pricing-cards .pricing-footer div {
+   
+  .simplified-pricing-cards .pricing-footer div{
     width: unset;
   }
 
 
-
+  
 }
 
 /* Desktop styles */
@@ -482,7 +485,7 @@ main .section>.simplified-pricing-cards-wrapper {
     --card-width: 300px;
     --header-size: 28px;
     --header-offer-size: 16px;
-    padding-top: 40px;
+   padding-top: 40px;
   }
 
   .simplified-pricing-cards .toggle-switch-wrapper {
@@ -491,7 +494,7 @@ main .section>.simplified-pricing-cards-wrapper {
 
   .simplified-pricing-cards .card-wrapper {
     margin: auto;
-  }
+  } 
 
   .simplified-pricing-cards .pricing-area-wrapper {
     min-height: 200px;
@@ -519,17 +522,17 @@ main .section>.simplified-pricing-cards-wrapper {
   }
 
   .simplified-pricing-cards .card {
-    gap: 10px;
-    padding-top: initial;
-    padding-bottom: initial;
-
+    gap: 10px; 
+      padding-top: initial;
+      padding-bottom: initial;
+ 
   }
 
   .simplified-pricing-cards a.button.compare-all-button {
     margin-top: 40px;
   }
-
-  .simplified-pricing-cards .pricing-footer div {
+     
+  .simplified-pricing-cards .pricing-footer div{
     width: unset;
   }
 
@@ -546,14 +549,14 @@ main .section>.simplified-pricing-cards-wrapper {
   .simplified-pricing-cards .card-wrapper {
     margin: auto;
   }
-
+  
   .simplified-pricing-cards .card {
     gap: 8px;
     padding: 20px;
-    margin: unset;
+    margin: unset ;
   }
 
-  .simplified-pricing-cards .card-header {
+  .simplified-pricing-cards .card-header { 
     gap: unset;
     margin: auto;
     padding: 5px;
@@ -583,16 +586,10 @@ main .section>.simplified-pricing-cards-wrapper {
   .simplified-pricing-cards a.button.compare-all-button {
     margin-top: 40px;
   }
-
-  .simplified-pricing-cards .pricing-footer div {
+     
+  .simplified-pricing-cards .pricing-footer div{
     width: unset;
   }
-
-  .simplified-pricing-cards .pricing-area p {
-    font-size: 12px;
-    line-height: 1.3;
-  }
-
 
 }
 
@@ -601,11 +598,10 @@ main .section>.simplified-pricing-cards-wrapper {
     --header-size: 28px;
     --header-offer-size: 16px;
   }
-
   .simplified-pricing-cards .card-wrapper {
     margin: auto;
   }
-
+  
   .simplified-pricing-cards .card-wrapper {
     width: max-content;
     gap: 16px;
@@ -613,17 +609,15 @@ main .section>.simplified-pricing-cards-wrapper {
 
   .simplified-pricing-cards .card {
     padding: 20px;
-  }
-
+  } 
   .simplified-pricing-cards .card.hide {
     gap: 8px;
     padding: 20px;
   }
-
-  .simplified-pricing-cards .card-header {
+  .simplified-pricing-cards .card-header { 
     gap: 5px;
     width: 100%;
-
+ 
 
   }
 
@@ -642,19 +636,14 @@ main .section>.simplified-pricing-cards-wrapper {
     height: unset;
   }
 
-
+  
 
   .simplified-pricing-cards a.button.compare-all-button {
     margin-top: 40px;
   }
-
-  .simplified-pricing-cards .pricing-footer div {
+     
+  .simplified-pricing-cards .pricing-footer div{
     width: unset;
-  }
-
-  .simplified-pricing-cards .pricing-area p {
-    font-size: 12px;
-    line-height: 1.3;
   }
 
 }
