@@ -1,5 +1,6 @@
 main .section>.logo-row {
     max-width: 1280px;
+    padding-bottom: 40px;
 }
 
 main .logo-row .block-layout {
@@ -16,9 +17,10 @@ main .logo-row .block-row {
 }
 
 main .logo-row .text-column {
-    margin: auto 0 auto auto;
+    margin: auto 0 16px auto;
     padding-right: 40px;
     max-width: 300px;
+
 }
  
 main .logo-row .text-column > * {
@@ -36,6 +38,10 @@ main .logo-row .image-column {
     display: flex;
     flex-wrap: wrap;
     gap: 40px;
+}
+
+main .logo-row .image-column p {
+    margin: 0;
 }
 
 main .logo-row.numerous .image-column {
@@ -63,7 +69,7 @@ main .logo-row .brand-image {
     }
 
     main .logo-row .text-column  {
-       margin: auto;
+       margin: auto auto 16px auto;
          padding-right: initial;   
     }
     main .logo-row .text-column > * {
