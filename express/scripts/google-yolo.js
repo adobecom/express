@@ -3,7 +3,7 @@ import BlockMediator from './block-mediator.min.js';
 
 const branchLinkOriginPattern = /^https:\/\/adobesparkpost(-web)?\.app\.link/;
 function isBranchLink(url) {
-  return branchLinkOriginPattern.test(new URL(url).origin);
+  return url && branchLinkOriginPattern.test(new URL(url).origin);
 }
 function getRedirectUri() {
   const url = getMetadata('pep-destination')
