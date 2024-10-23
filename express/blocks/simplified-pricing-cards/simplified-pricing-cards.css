@@ -25,11 +25,11 @@ main .section>.simplified-pricing-cards-wrapper {
   flex-wrap: wrap;
   gap: 16px;
   width: fit-content;
-  margin: 48px auto auto auto;
+  margin: 16px auto auto auto;
 }
 
 .simplified-pricing-cards .card {
-  width: var(--card-width);
+  width: calc(var(--card-width) - 32px);
   position: relative;
   padding: 16px;
   border: 2px solid var(--color-gray-300);
@@ -57,7 +57,7 @@ main .section>.simplified-pricing-cards-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(var(--card-width) - 20px); 
+  /* width: calc(var(--card-width) - 20px);  */
   gap: 10px;
   z-index: 2;
 }
@@ -138,7 +138,7 @@ main .section>.simplified-pricing-cards-wrapper {
   display: block;
   width: unset;
   height: unset;
-  font-size: var(--type-detail-m-lh);
+  font-size: 14px;
 }
 
 .simplified-pricing-cards .card-header p:nth-of-type(2) em {
@@ -147,7 +147,7 @@ main .section>.simplified-pricing-cards-wrapper {
 }
 
 
-.simplified-pricing-cards .card-header p:nth-of-type(1) em {
+.simplified-pricing-cards .card-header p:nth-of-type(1) {
   display: none;
   margin: 0;
   width: 0;
@@ -290,7 +290,7 @@ main .section>.simplified-pricing-cards-wrapper {
 }
 
 .simplified-pricing-cards .toggle-switch-wrapper {
-  margin-right: -20px;
+  margin-right: 4px;
 
 }
 
@@ -443,7 +443,6 @@ main .section>.simplified-pricing-cards-wrapper {
   }
 
   .simplified-pricing-cards .toggle-switch-wrapper {
-    margin: auto -20px auto 10px;
     display: flex;
     flex-direction: row-reverse;
     flex-grow: 1;
@@ -505,11 +504,12 @@ main .section>.simplified-pricing-cards-wrapper {
     display: none;
   }
 
+
   .simplified-pricing-cards .card-header p:nth-of-type(2) {
     display: none;
   }
 
-  .simplified-pricing-cards .card-header p:nth-of-type(1) em {
+  .simplified-pricing-cards .card-header p:nth-of-type(1) {
     display: block;
     width: unset;
     height: unset;
@@ -553,11 +553,10 @@ main .section>.simplified-pricing-cards-wrapper {
   .simplified-pricing-cards .card {
     gap: 8px;
     padding: 20px;
-    margin: unset;
+    margin: unset ;
   }
 
-  .simplified-pricing-cards .card-header {
-    justify-content: unset;
+  .simplified-pricing-cards .card-header { 
     gap: unset;
     margin: auto;
     padding: 5px;
@@ -615,8 +614,7 @@ main .section>.simplified-pricing-cards-wrapper {
     gap: 8px;
     padding: 20px;
   }
-  .simplified-pricing-cards .card-header {
-    justify-content: unset;
+  .simplified-pricing-cards .card-header { 
     gap: 5px;
     width: 100%;
  
