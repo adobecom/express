@@ -407,7 +407,7 @@ main .section>.simplified-pricing-cards-wrapper {
 }
 
 .simplified-pricing-cards .pricing-footer div{
- width: calc(var(--card-width) + 20px);
+ width: calc(var(--card-width));
  margin: auto;
 }
 
@@ -464,14 +464,7 @@ main .section>.simplified-pricing-cards-wrapper {
 
   .simplified-pricing-cards a.button.compare-all-button {
     margin-top: 40px;
-  }
-   
-  .simplified-pricing-cards .pricing-footer div{
-    width: unset;
-  }
-
-
-  
+  } 
 }
 
 /* Desktop styles */

@@ -15,9 +15,6 @@ export function adjustElementPosition() {
     } else if (rect.left < 0) {
       element.classList.remove('overflow-right');
       element.classList.add('overflow-left');
-    } else {
-      element.classList.remove('overflow-right');
-      element.classList.remove('overflow-left');
     }
   }
 }
