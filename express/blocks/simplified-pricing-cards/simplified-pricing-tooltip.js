@@ -45,6 +45,6 @@ export function handleTooltip(pricingArea) {
   iconWrapper.append(icon);
   iconWrapper.append(span);
   tooltipDiv.append(iconWrapper);
-  iconWrapper.addEventListener('click', adjustElementPosition)
+  iconWrapper.addEventListener('click', adjustElementPosition);
   window.addEventListener('resize', adjustElementPosition);
 }
