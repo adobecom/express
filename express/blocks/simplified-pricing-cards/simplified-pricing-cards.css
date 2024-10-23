@@ -244,8 +244,10 @@ main .section>.simplified-pricing-cards-wrapper {
   margin-top: 20px;
   min-height: unset;
 }
-.simplified-pricing-cards .card-cta-group .button.primary {
-  height: 100%;
+
+.simplified-pricing-cards .card-cta-group strong .button {
+  position: relative;
+  top: 4px;
 }
 
 .simplified-pricing-cards .card-cta-group:not(.hide) {
