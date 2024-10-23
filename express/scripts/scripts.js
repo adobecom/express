@@ -50,8 +50,8 @@ const config = {
   codeRoot: '/express',
   contentRoot: '/express',
   jarvis: {
-    id: 'Acom_Express',
-    version: '1.0',
+    id: getMetadata('jarvis-surface-id') || 'Acom_Express',
+    version: getMetadata('jarvis-surface-version') || '1.0',
     onDemand: !jarvisImmediatelyVisible,
   },
   links: 'on',
