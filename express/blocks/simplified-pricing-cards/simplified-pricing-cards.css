@@ -289,11 +289,6 @@ main .section>.simplified-pricing-cards-wrapper {
 
 }
 
-.simplified-pricing-cards .toggle-switch-wrapper {
-  margin-right: 4px;
-
-}
-
 .simplified-pricing-cards .card.hide .toggle-switch {
   rotate: 180deg;
 }
