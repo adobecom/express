@@ -56,6 +56,12 @@ main .logo-row .brand-image {
     object-fit: contain;
 }
 
+@media (max-width: 420) {
+    main .logo-row .image-column {
+        max-width: 325px;
+    }
+}
+
 @media (max-width: 900px) {
     main .logo-row .block-row {
         display: block;
@@ -66,6 +72,7 @@ main .logo-row .brand-image {
         flex-wrap: wrap;
         justify-content: center; 
         gap: 10px;
+  
     }
 
     main .logo-row .text-column  {
@@ -84,7 +91,7 @@ main .logo-row .brand-image {
 }
 
 /* Surface Pro */
-@media (max-width: 913px) {
+@media (max-width: 1024px) {
     main .logo-row .image-column {
         gap: 10px;
     }
