@@ -553,6 +553,7 @@ main .section>.simplified-pricing-cards-wrapper {
   .simplified-pricing-cards .card {
     gap: 8px;
     padding: 20px;
+    margin: unset;
   }
 
   .simplified-pricing-cards .card-header {
