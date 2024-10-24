@@ -338,7 +338,12 @@ export default async function loadGeoRouting(
   try {
     let akamaiCode = await getAkamaiCode();
     if (akamaiCode && !getCodes(urlGeoData).includes(akamaiCode)) {
-      const localeMatches = getMatches(json.georouting.data, akamaiCode);
+      let localeMatches = getMatches(json.georouting.data, akamaiCode);
+      if (akamaiCode === 'gb') {
+        localeMatches = localeMatches.filter((localeMatch) => localeMatch.prefix !== 'gb');
+      } else if (akamaiCode === 'uk') {
+        localeMatches = localeMatches.filter((localeMatch) => localeMatch.prefix !== 'uk');
+      }
       const details = await getDetails(urlGeoData, localeMatches, json.geos.data);
       if (details) {
         await showModal(details);
