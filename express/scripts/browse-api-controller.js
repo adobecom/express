@@ -4,6 +4,7 @@ import {
 } from './utils.js';
 import { memoize } from './hofs.js';
 
+const clientId = 'AdobeExpressWeb';
 const endpoints = {
   stage: {
     // cdn: 'https://www.stage.adobe.com/ax-uss-api/',
@@ -58,7 +59,7 @@ export default async function getData() {
       headers: {
         'Content-Type': 'application/vnd.adobe.search-request+json',
         'x-api-key': endpoint.key,
-        'x-gw-ims-client-id': 'express',
+        'x-gw-ims-client-id': clientId,
       },
       body: JSON.stringify(data),
     });
