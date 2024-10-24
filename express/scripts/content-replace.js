@@ -349,7 +349,7 @@ async function updateNonBladeContent(main) {
 
   if (templateX) {
     await replaceDefaultPlaceholders(templateX, {
-      link: getMetadata('create-link-x') || getMetadata('create-link') || '/',
+      link: getMetadata(`create-link-${document.body.dataset.device}`) || getMetadata('create-link-x') || getMetadata('create-link') || '/',
       tasks: getMetadata('tasks-x'),
     });
   }
