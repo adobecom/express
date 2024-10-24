@@ -115,6 +115,13 @@
   overflow: hidden;
 }
 
+main .gen-ai-cards.homepage .carousel-container a.button.carousel-arrow::before {
+  width: 7px;
+  height: 7px;
+  border-top: solid 3px var(--color-gray-700);
+  border-right: solid 3px var(--color-gray-700);
+}
+
 main .gen-ai-cards.homepage .card .media-wrapper {
   border-radius: 8px;
 }
@@ -245,12 +252,14 @@ main .gen-ai-cards.homepage .carousel-container .carousel-fader-left {
   top: 45px;
   right: 42px;
   left: auto; 
+  pointer-events: none;
 }
 
 main .gen-ai-cards.homepage .carousel-container .carousel-fader-right {
   align-items: end;
   top: 45px;
   right: 15px;
+  pointer-events: none;
 }
 .gen-ai-cards.homepage .gen-ai-cards-heading-section {
   margin-left: 20px;
