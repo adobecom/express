@@ -369,7 +369,6 @@
 
   .grid-marquee .drawer video {
     width: var(--d-img-w);
-    height: var(--d-img-h);
   }
 
   .grid-marquee .drawer div[role='tablist'] {
