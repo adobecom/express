@@ -23,6 +23,7 @@ describe('table-of-contents', () => {
     block.dataset.config = JSON.stringify(config);
 
     decorate(block, 'table-of-contents', document);
+    
 
     const tocEntries = document.querySelectorAll('.toc-entry');
     tocEntries.forEach((entry) => {
