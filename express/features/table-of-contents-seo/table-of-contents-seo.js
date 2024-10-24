@@ -1,5 +1,4 @@
 /* eslint-disable import/named, import/extensions */
-
 import {
   createTag,
   getIconElement,
@@ -52,8 +51,17 @@ function setNormalStyle(element) {
 
 function addHoverEffect(tocEntries) {
   tocEntries.forEach(({ tocItem }) => {
-    tocItem.addEventListener('mouseenter', () => setBoldStyle(tocItem));
-    tocItem.addEventListener('mouseleave', () => setNormalStyle(tocItem));
+    tocItem.addEventListener('mouseenter', () => {
+      if (!tocItem.classList.contains('active')) {
+        setBoldStyle(tocItem);
+      }
+    });
+
+    tocItem.addEventListener('mouseleave', () => {
+      if (!tocItem.classList.contains('active')) {
+        setNormalStyle(tocItem);
+      }
+    });
   });
 }
 
@@ -101,7 +109,7 @@ function addTOCItemClickEvent(tocItem, heading) {
     } else {
       console.error(`Element with id "${heading.id}" not found.`);
     }
-    document.querySelector('.toc-content').classList.toggle('open');
+    document.querySelector('.toc-content')?.classList.toggle('open');
   });
 }
 
@@ -111,12 +119,15 @@ function findCorrespondingHeading(headingText, doc) {
 }
 
 function toggleSticky(tocClone, sticky) {
+  const main = document.querySelector('main .section.section-wrapper');
   if (window.scrollY >= sticky + MOBILE_NAV_HEIGHT) {
     tocClone.classList.add('sticky');
     tocClone.style.top = `${MOBILE_NAV_HEIGHT}px`;
+    main.style.marginBottom = '60px';
   } else {
     tocClone.classList.remove('sticky');
     tocClone.style.top = '';
+    main.style.marginBottom = '0';
   }
 }
 
@@ -253,6 +264,24 @@ function setTOCPosition(toc, tocContainer) {
 
   tocContainer.style.position = targetTop <= window.scrollY + viewportMidpoint ? 'fixed' : 'absolute';
   tocContainer.style.display = 'block';
+
+  const footer = document.querySelector('footer');
+
+  if (footer) {
+    const footerRect = footer.getBoundingClientRect();
+    const footerTop = Math.round(window.scrollY + footerRect.top);
+    const tocBottom = Math.round(window.scrollY + tocContainer.getBoundingClientRect().bottom);
+
+    const positionDifference = tocBottom - footerTop;
+
+    if (positionDifference >= 0) {
+      tocContainer.style.position = 'absolute';
+      tocContainer.style.top = `${footerTop - tocContainer.offsetHeight + 92}px`;
+    } else if (targetTop <= window.scrollY + viewportMidpoint) {
+      tocContainer.style.position = 'fixed';
+      tocContainer.style.top = `${viewportMidpoint}px`;
+    }
+  }
 }
 
 function handleSetTOCPos(toc, tocContainer) {
