@@ -105,7 +105,7 @@ main .section .discover-cards {
         margin-right: auto;
     }
     .discover-cards .gallery-control {
-        padding-top: 4px;
+        padding-top: 9px;
     }
     .discover-cards .cards-container .card picture img.short { 
         width: 351px;

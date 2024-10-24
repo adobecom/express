@@ -115,6 +115,10 @@
   overflow: hidden;
 }
 
+main .gen-ai-cards.homepage .card .media-wrapper {
+  border-radius: 8px;
+}
+
 .gen-ai-cards.homepage .card .media-wrapper {
   width: 262px;
   height: 274px;
