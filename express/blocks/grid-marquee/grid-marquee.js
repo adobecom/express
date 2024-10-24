@@ -142,11 +142,38 @@ function toCard(drawer) {
   return { card, lazyCB };
 }
 
+async function formatDynamicCartLink(a, plan) {
+  try {
+    const {
+      fetchPlanOnePlans,
+      buildUrl,
+    } = await import('../../scripts/utils/pricing.js');
+    const pattern = new RegExp(/.*commerce.*adobe\.com.*/gm);
+    if (pattern.test(a.href)) {
+      let response;
+      if (!plan) {
+        response = await fetchPlanOnePlans(a.href);
+      } else {
+        response = plan;
+      }
+      const newTrialHref = buildUrl(response.url, response.country,
+        response.language, response.offerId);
+      a.href = newTrialHref;
+    }
+  } catch (error) {
+    window.lana.log(`Failed to fetch prices for page plan: ${error}`);
+  }
+  return a;
+}
+
 function decorateHeadline(headline) {
   const ctas = headline.querySelectorAll('a');
   if (!ctas.length) return headline;
   ctas[0].parentElement.classList.add('ctas');
-  ctas.forEach((cta) => cta.classList.add('button'));
+  ctas.forEach((cta) => {
+    cta.classList.add('button');
+    formatDynamicCartLink(cta);
+  });
   ctas[0].classList.add('primaryCTA');
   headline.classList.add('headline');
   return headline;

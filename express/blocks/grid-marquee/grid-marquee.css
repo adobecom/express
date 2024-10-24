@@ -53,7 +53,6 @@
   position: absolute;
   top: 50%;
   object-fit: fill;
-  max-width: none;
   width: 250%;
   transform: translate(-50%, -35%);
   max-height: 600px;
@@ -379,9 +378,5 @@
     border-top: none;
     padding: 6px 16px;
     font-size: var(--body-font-size-l);
-  }
-
-  .grid-marquee .card {
-    padding: 16px;
   }
 }
