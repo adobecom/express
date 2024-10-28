@@ -79,28 +79,29 @@ function buildMultifunctionToolBox(wrapper, data) {
 
 function buildDualAction(block, data) {
   block.children[0].remove()
+  console.log(data)
   const header = createTag('div', {
     class:
       'dual-action-header'
   })
-  header.textContent = "Header"
+  header.textContent =  data.mainCta.text
   block.append(header)
-  block.append(buildAction(data))
-  block.append(buildAction(data))
+  block.append(buildAction(data, 0, 'accent'))
+  block.append(buildAction(data, 1, 'outline'))
 }
 
-function buildAction() {
+function buildAction(data, index, buttonType) {
   const wrapper = createTag('div', { class: "floating-button-inner-row dual-action-row" })
 
   const text = createTag('div', { class: 'dual-action-text' })
-  text.textContent = 'ABC'
-  const a = createTag('a', { class: 'button dual-action-link' })
-  a.textContent = 'DEF'
-  a.href = 'www.adobe.com'
-  wrapper.append(getIconElement('download-app-icon-22', 22))
+  text.textContent = data.tools[index].iconText
+  const a = data.tools[index].anchor
+  a.classList.add('button')
+  a.classList.add(buttonType)
+  a.classList.add('dual-action-link')
+  wrapper.append(data.tools[index].icon,)
   wrapper.append(text)
-  wrapper.append(a)
-  console.log(wrapper)
+  wrapper.append(a) 
   return wrapper
 
 }

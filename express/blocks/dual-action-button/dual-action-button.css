@@ -206,10 +206,9 @@ main .dual-action-text, main .floating-button-wrapper.dual-action-button .floati
 
 main .floating-button-wrapper.dual-action-button .floating-button {
     background-color: white;
-    border-radius: 16px;
-    color: black;
-    border: 1px solid black;
-    background-color: gray;
+    border-radius: 16px; 
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f8f8f8;
     background: solid;
     padding: 10px;
     width: calc(100% - 20px);
@@ -222,4 +221,32 @@ main .floating-button-wrapper.dual-action-button .floating-button {
 main .dual-action-row {
     display: flex;
     gap: 10px;
+}
+
+main .dual-action-header {
+    font-size: 14pt;
+    font-weight: 600;
+    margin: 10px auto;
+}
+
+main .floating-button-wrapper.dual-action-button .floating-button a.button {
+    color: var(--color-white);
+    background-color: var(--color-info-accent);
+    border-color: var(--color-info-accent);
+}   
+
+main .floating-button-wrapper.dual-action-button .floating-button a.button.accent {
+    color: var(--color-white);
+    background-color: var(--color-info-accent);
+    border-color: var(--color-info-accent);
+}   
+
+main .floating-button-wrapper.dual-action-button .floating-button a.button.outline {
+    background-color: var(--color-white);
+    border: 2px solid var(--color-black);
+    color: black;
+}
+
+main .floating-button-wrapper.dual-action-button.floating-button--hidden .floating-button {
+    margin-bottom: unset;
 }
