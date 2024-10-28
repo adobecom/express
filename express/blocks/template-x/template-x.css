@@ -173,6 +173,10 @@ main .template-x.horizontal.three-templates .carousel-container .carousel-platfo
     margin-right: 0px;
 }
 
+.template-x.horizontal.three-templates .template-x-inner-wrapper .carousel-container {
+    width: 100vw;
+}
+
 .template-x.horizontal.four-templates .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
     width: 216px;
     height: 324px;
@@ -1733,6 +1737,10 @@ main .template-x .api-templates-toolbar .search-bar-wrapper.collapsed .search-dr
         text-align: left;
         padding-top: 32px;
     }
+    .template-x.horizontal.three-templates .template-x-inner-wrapper .carousel-container {
+        width: 105%;
+    }
+    
 }
 
 /* Carousel styles (Template-x specific) */

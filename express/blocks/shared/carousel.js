@@ -240,35 +240,41 @@ export function onCarouselCSSLoad(selector, parent, options) {
   setInitialState(platform, options);
 }
 
-function applyMarginToFirstElement(elements) {
+function applyMarginToFirstElement(elements, isMobile = false) {
   if (elements.length > 0) {
+    if (!isMobile) {
+      elements[0].style.marginLeft = 'unset';
+      return;
+    }
+
     const viewportWidth = window.innerWidth;
     const cardWidth = elements[0].offsetWidth;
+    const marginLeft = (viewportWidth - cardWidth) / 2;
     const innerWrapper = elements[0].closest('.template-x-inner-wrapper');
-
     if (innerWrapper) {
       innerWrapper.style.paddingRight = '0px';
     }
-
-    const marginLeft = (viewportWidth - cardWidth) / 2;
     elements[0].style.marginLeft = `${marginLeft}px`;
   }
 }
 
-function handleCenterMobileCarousel() {
+function handleCenterCarousel(isMobile = false) {
   const fourTemplateElements = document.querySelectorAll('.template-x.four-templates .template.carousel-element');
   const threeTemplateElements = document.querySelectorAll('.template-x.three-templates .template.carousel-element');
-
-  applyMarginToFirstElement(fourTemplateElements);
-  applyMarginToFirstElement(threeTemplateElements);
+  applyMarginToFirstElement(fourTemplateElements, isMobile);
+  applyMarginToFirstElement(threeTemplateElements, isMobile);
 }
 
 export default async function buildCarousel(selector, parent, options = {}) {
-  const isFourOrThreeTemplates = document.querySelector(
+  const isTemplateXCenteredCarousel = document.querySelector(
     '.template-x.four-templates, .template-x.three-templates',
   );
   const isMobile = getDeviceType() === 'MOBILE';
-  if (isFourOrThreeTemplates && isMobile) handleCenterMobileCarousel();
+  if (isTemplateXCenteredCarousel && isMobile) {
+    handleCenterCarousel(isMobile);
+  } else if (isTemplateXCenteredCarousel) {
+    handleCenterCarousel(isMobile);
+  }
 
   // Load CSS then build the carousel
   return new Promise((resolve) => {
