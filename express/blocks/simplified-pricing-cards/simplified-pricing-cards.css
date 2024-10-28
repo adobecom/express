@@ -413,6 +413,11 @@ main .section>.simplified-pricing-cards-wrapper {
  margin: auto;
 }
 
+
+.simplified-pricing-cards.card-promo-padding {
+  padding-top: 80px;
+}
+
 /* Tablet styles */
 @media (min-width: 601px) and (max-width: 1200px) {
   .simplified-pricing-cards {
@@ -547,11 +552,12 @@ main .section>.simplified-pricing-cards-wrapper {
   }
 
   .simplified-pricing-cards .card-header { 
-    gap: unset;
-    margin: auto;
+    gap: unset; 
     padding: 5px;
 
   }
+
+
 
   .simplified-pricing-cards .card-header p {
     font-size: var(--type-detail-m-lh);

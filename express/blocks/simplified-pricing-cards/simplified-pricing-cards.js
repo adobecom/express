@@ -182,7 +182,7 @@ function decorateHeader(header, planExplanation) {
   hideButtonWrapper.append(hideButton);
 }
 
-function decorateCardBorder(card, source) {
+function decorateCardBorder(card, source, el) {
   const pattern = /\(\((.*?)\)\)/g;
   const matches = Array.from(source.textContent?.matchAll(pattern));
   if (matches.length > 0) {
@@ -192,11 +192,13 @@ function decorateCardBorder(card, source) {
     if (source.textContent !== '') {
       source.classList.add('promo-eyebrow-text');
       card.classList.add('promo-text');
+
+      el.classList.add('card-promo-padding')
     } else {
       source.style.display = 'none';
     }
   }
-  source.style.display = 'none';
+ // source.style.display = 'none';
 }
 
 export default async function init(el) {
@@ -212,7 +214,7 @@ export default async function init(el) {
     if (cardIndex > 0) {
       card.classList.add('hide');
     }
-    decorateCardBorder(card, rows[1].children[0]);
+    decorateCardBorder(card, rows[1].children[0], el);
     decorateHeader(rows[0].children[0], rows[2].children[0]);
     await createPricingSection(placeholders, rows[3].children[0],
       rows[4].children[0]);
