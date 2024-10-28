@@ -144,25 +144,21 @@ function toCard(drawer) {
 
 async function formatDynamicCartLink(a, plan) {
   try {
+    const pattern = new RegExp(/.*commerce.*adobe\.com.*/gm);
+    if (!pattern.test(a.href)) return a;
+    a.style.visibility = 'hidden';
     const {
       fetchPlanOnePlans,
       buildUrl,
     } = await import('../../scripts/utils/pricing.js');
-    const pattern = new RegExp(/.*commerce.*adobe\.com.*/gm);
-    if (pattern.test(a.href)) {
-      let response;
-      if (!plan) {
-        response = await fetchPlanOnePlans(a.href);
-      } else {
-        response = plan;
-      }
-      const newTrialHref = buildUrl(response.url, response.country,
-        response.language, response.offerId);
-      a.href = newTrialHref;
-    }
+    const response = plan || await fetchPlanOnePlans(a.href);
+    const newTrialHref = buildUrl(response.url, response.country,
+      response.language, response.offerId);
+    a.href = newTrialHref;
   } catch (error) {
     window.lana.log(`Failed to fetch prices for page plan: ${error}`);
   }
+  a.style.visibility = 'visible';
   return a;
 }
 
