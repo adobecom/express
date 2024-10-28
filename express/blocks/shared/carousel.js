@@ -99,13 +99,55 @@ export function onCarouselCSSLoad(selector, parent, options) {
     platform.scrollLeft -= increment;
   };
 
+  const moveCarouselToCenter = (direction) => {
+    const elements = platform.querySelectorAll('.template.carousel-element');
+    const currentScroll = platform.scrollLeft;
+
+    const visibleElement = Array.from(elements).find((el) => {
+      const elRect = el.getBoundingClientRect();
+      return elRect.left >= 0 && elRect.right <= window.innerWidth;
+    });
+
+    const targetElement = direction === 'next'
+      ? visibleElement?.nextElementSibling
+      : visibleElement?.previousElementSibling;
+
+    if (targetElement) {
+      elements.forEach((el) => {
+        el.style.opacity = el === targetElement ? '1' : '0.5';
+      });
+
+      targetElement.style.scrollMarginLeft = '130px';
+
+      const cardWidth = targetElement.offsetWidth;
+      const newScrollPos = direction === 'next'
+        ? currentScroll + cardWidth
+        : currentScroll - cardWidth;
+
+      platform.scrollTo({
+        left: newScrollPos,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   faderLeft.addEventListener('click', () => {
-    const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
-    moveCarousel(increment);
+    const isMobileCenteredCarousel = document.querySelectorAll('.template-x.four-templates');
+    if (isMobileCenteredCarousel) {
+      moveCarouselToCenter('prev');
+    } else {
+      const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
+      moveCarousel(increment);
+    }
   });
   faderRight.addEventListener('click', () => {
-    const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
-    moveCarousel(-increment);
+    const isMobileCenteredCarousel = document.querySelectorAll('.template-x.four-templates');
+    if (isMobileCenteredCarousel) {
+      moveCarouselToCenter('next');
+    } else {
+      const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
+      moveCarousel(-increment);
+    }
   });
 
   // Carousel loop functionality (if enabled)
@@ -183,8 +225,38 @@ export function onCarouselCSSLoad(selector, parent, options) {
   setInitialState(platform, options);
 }
 
+function applyMarginToFirstElement(elements) {
+  if (elements.length > 0) {
+    const viewportWidth = window.innerWidth;
+    const cardWidth = elements[0].offsetWidth;
+    const innerWrapper = elements[0].closest('.template-x-inner-wrapper');
+
+    if (innerWrapper) {
+      innerWrapper.style.paddingRight = '0px';
+    }
+
+    const marginLeft = (viewportWidth - cardWidth) / 2;
+    elements[0].style.marginLeft = `${marginLeft}px`;
+  }
+}
+
+function handleCenteredMobileCarousel() {
+  const fourTemplateElements = document.querySelectorAll('.template-x.four-templates .template.carousel-element');
+  const threeTemplateElements = document.querySelectorAll('.template-x.three-templates .template.carousel-element');
+
+  applyMarginToFirstElement(fourTemplateElements);
+  applyMarginToFirstElement(threeTemplateElements);
+}
+
 export default async function buildCarousel(selector, parent, options = {}) {
-  // Load CSS then build carousel
+  const isFourOrThreeTemplates = document.querySelector(
+    '.template-x.four-templates, .template-x.three-templates',
+  );
+  const isSmallViewport = window.innerWidth < 600;
+
+  if (isFourOrThreeTemplates && isSmallViewport) handleCenteredMobileCarousel();
+
+  // Load CSS then build the carousel
   return new Promise((resolve) => {
     loadStyle('/express/blocks/shared/carousel.css', () => {
       onCarouselCSSLoad(selector, parent, options);
