@@ -2441,6 +2441,12 @@ async function loadPostLCP(config) {
   } else {
     loadMartech();
   }
+  const georouting = getMetadata('georouting') || config.geoRouting;
+  const isHomepage = window.location.pathname.endsWith('/express/');
+  if (georouting === 'on' && isHomepage) {
+    const { default: loadGeoRouting } = await import('../features/georoutingv2/georoutingv2.js');
+    await loadGeoRouting(config, createTag, getMetadata, loadBlock, loadStyle);
+  }
   loadGnav();
   loadTemplate();
   const { default: loadFonts } = await import('./fonts.js');
@@ -2622,7 +2628,9 @@ export async function loadArea(area = document) {
   // appending express-specific branch parameters
   const links = isDoc ? area.querySelectorAll('main a[href*="adobesparkpost"]') : area.querySelectorAll(':scope a[href*="adobesparkpost"]');
   if (links.length) {
-    import('./branchlinks.js').then((mod) => mod.default(links));
+    window.addEventListener('express:lcp:loaded', () => {
+      import('./branchlinks.js').then((mod) => mod.default(links));
+    });
   }
 
   const areaBlocks = [];
@@ -2673,6 +2681,10 @@ export function titleCase(str) {
     splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
   }
   return splitStr.join(' ');
+}
+
+export function pickRandomFromArray(arr) {
+  return arr[Math.floor(arr.length * Math.random())];
 }
 
 export function createIntersectionObserver({
