@@ -125,7 +125,7 @@ function toCard(drawer) {
   panelsFrag.append(...panels);
   panels.forEach((panel) => panel.classList.add('panel'));
   const videoAnchor = face.querySelector('a');
-  videoAnchor.parentElement.tagName === 'P' ? videoAnchor.parentElement.remove() : videoAnchor?.remove();
+  videoAnchor?.remove();
   const card = createTag('button', {
     class: 'card',
     'aria-controls': `drawer-${titleText}`,
@@ -205,6 +205,7 @@ export default function init(el) {
   logo.classList.add('express-logo');
   const cards = items.map((item) => toCard(item));
   const cardsContainer = createTag('div', { class: 'cards-container' }, cards.map(({ card }) => card));
+  [...cardsContainer.querySelectorAll('p:empty')].forEach((p) => p.remove());
   foreground.append(logo, decorateHeadline(headline), cardsContainer, ...(el.classList.contains('ratings') ? [makeRatings()] : []));
   background.classList.add('background');
   el.append(foreground);
