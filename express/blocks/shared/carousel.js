@@ -8,7 +8,6 @@ const getDeviceType = (() => {
   let deviceType = window.innerWidth >= MOBILE_SIZE ? DESKTOP : MOBILE;
   const updateDeviceType = () => {
     deviceType = window.innerWidth >= MOBILE_SIZE ? DESKTOP : MOBILE;
-    console.log('deviceType', deviceType);
   };
   window.addEventListener('resize', debounce(updateDeviceType, 100));
   return () => deviceType;
@@ -257,7 +256,6 @@ function applyMarginToFirstElement(elements) {
 }
 
 function handleCenterMobileCarousel() {
-  console.log('are we here');
   const fourTemplateElements = document.querySelectorAll('.template-x.four-templates .template.carousel-element');
   const threeTemplateElements = document.querySelectorAll('.template-x.three-templates .template.carousel-element');
 
