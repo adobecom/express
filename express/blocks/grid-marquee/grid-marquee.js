@@ -125,7 +125,7 @@ function toCard(drawer) {
   panelsFrag.append(...panels);
   panels.forEach((panel) => panel.classList.add('panel'));
   const videoAnchor = face.querySelector('a');
-  videoAnchor?.remove();
+  videoAnchor.parentElement.tagName === 'P' ? videoAnchor.parentElement.remove() : videoAnchor?.remove();
   const card = createTag('button', {
     class: 'card',
     'aria-controls': `drawer-${titleText}`,
