@@ -1,4 +1,18 @@
 import { createTag, loadStyle } from '../../scripts/utils.js';
+import { debounce } from '../../scripts/hofs.js';
+
+const MOBILE_SIZE = 600;
+const MOBILE = 'MOBILE';
+const DESKTOP = 'DESKTOP';
+const getDeviceType = (() => {
+  let deviceType = window.innerWidth >= MOBILE_SIZE ? DESKTOP : MOBILE;
+  const updateDeviceType = () => {
+    deviceType = window.innerWidth >= MOBILE_SIZE ? DESKTOP : MOBILE;
+    console.log('deviceType', deviceType);
+  };
+  window.addEventListener('resize', debounce(updateDeviceType, 100));
+  return () => deviceType;
+})();
 
 function correctCenterAlignment(plat) {
   if (plat.parentElement.offsetWidth <= plat.offsetWidth) return;
@@ -133,7 +147,8 @@ export function onCarouselCSSLoad(selector, parent, options) {
 
   faderLeft.addEventListener('click', () => {
     const isMobileCenteredCarousel = document.querySelectorAll('.template-x.four-templates');
-    if (isMobileCenteredCarousel) {
+    const isMobile = getDeviceType() === 'MOBILE';
+    if (isMobileCenteredCarousel && isMobile) {
       moveCarouselToCenter('prev');
     } else {
       const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
@@ -142,7 +157,8 @@ export function onCarouselCSSLoad(selector, parent, options) {
   });
   faderRight.addEventListener('click', () => {
     const isMobileCenteredCarousel = document.querySelectorAll('.template-x.four-templates');
-    if (isMobileCenteredCarousel) {
+    const isMobile = getDeviceType() === 'MOBILE';
+    if (isMobileCenteredCarousel && isMobile) {
       moveCarouselToCenter('next');
     } else {
       const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
@@ -240,7 +256,8 @@ function applyMarginToFirstElement(elements) {
   }
 }
 
-function handleCenteredMobileCarousel() {
+function handleCenterMobileCarousel() {
+  console.log('are we here');
   const fourTemplateElements = document.querySelectorAll('.template-x.four-templates .template.carousel-element');
   const threeTemplateElements = document.querySelectorAll('.template-x.three-templates .template.carousel-element');
 
@@ -252,9 +269,8 @@ export default async function buildCarousel(selector, parent, options = {}) {
   const isFourOrThreeTemplates = document.querySelector(
     '.template-x.four-templates, .template-x.three-templates',
   );
-  const isSmallViewport = window.innerWidth < 600;
-
-  if (isFourOrThreeTemplates && isSmallViewport) handleCenteredMobileCarousel();
+  const isMobile = getDeviceType() === 'MOBILE';
+  if (isFourOrThreeTemplates && isMobile) handleCenterMobileCarousel();
 
   // Load CSS then build the carousel
   return new Promise((resolve) => {
