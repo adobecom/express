@@ -98,7 +98,7 @@ export function getTrackingAppendedURL(url, placeholders, options = {}) {
   ];
   const { referrer } = window.document;
   const pageUrl = window.location.pathname;
-  const { experiment } = window.hlx;
+  const { experiment } = window.hlx || {};
 
   const experimentStatus = experiment ? experiment.status.toLocaleLowerCase() : null;
 

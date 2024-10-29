@@ -106,8 +106,7 @@ export default function createToggle(placeholders, pricingSections, groupID, adj
       : basePlan;
     const label = placeholders?.[planLabelID];
     const buttonID = `${groupID}:${basePlan}`;
-    // urgent update
-    const isDefault = i === (BlockMediator.get(groupID) === 'ABM' ? 1 : 0);
+    const isDefault = i === 0;
     const button = createTag('button', {
       class: isDefault ? 'checked' : '',
       id: buttonID,
