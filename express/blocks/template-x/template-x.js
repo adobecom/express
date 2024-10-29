@@ -1225,6 +1225,9 @@ function decorateHoliday(block, props) {
   const heading = templateTitle.querySelector('h4');
   const subheading = templateTitle.querySelector('p');
   const link = templateTitle.querySelector('.template-title-link');
+  console.log(templateTitle)
+  const icon = templateTitle.querySelector('.view-all-link-wrapper .icon')
+  console.log(icon)
   const linkWrapper = link.closest('p');
   const toggle = createTag('div', { class: 'toggle-button' });
   const topElements = createTag('div', { class: 'toggle-bar-top' });
@@ -1242,20 +1245,21 @@ function decorateHoliday(block, props) {
   block.classList.add(props.textColor);
   toggleBar.classList.add('toggle-bar');
   topElements.append(heading);
- 
+
 
   bottomElements.append(subheading);
   toggleBar.append(topElements, bottomElements);
   block.style.backgroundColor = props.backgroundColor;
 
   if (mobileViewport) {
-    block.classList.add('mobile');
-    toggle.append(link, toggleChev);
-    block.append(toggle);
-  } else {
-    topElements.append(link);
-    topElements.append(toggleChev)
+    block.classList.add('mobile');;
+
   }
+  
+  topElements.append(link);
+  if (icon) topElements.append(icon)
+  topElements.append(toggleChev)
+
   linkWrapper.remove();
   initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev);
 }
