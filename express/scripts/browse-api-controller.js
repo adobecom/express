@@ -4,18 +4,14 @@ import {
 } from './utils.js';
 import { memoize } from './hofs.js';
 
-const clientId = 'AdobeExpressWeb';
 const endpoints = {
   stage: {
-    // cdn: 'https://www.stage.adobe.com/ax-uss-api/',
-    cdn: 'https://hz-template-search-stage.adobe.io/uss/v3/query',
+    cdn: 'https://www.stage.adobe.com/ax-uss-api/',
     url: 'https://hz-template-search-stage.adobe.io/uss/v3/query',
-    key: 'spaas-service-eng',
   },
   prod: {
     cdn: 'https://www.adobe.com/ax-uss-api/',
     url: 'https://hz-template-search.adobe.io/uss/v3/query',
-    key: window.atob('dGVtcGxhdGUtbGlzdC1saW5rbGlzdC1mYWNldA=='),
   },
 };
 
@@ -48,18 +44,13 @@ export default async function getData() {
 
   let result = null;
   const endpoint = endpoints[getHelixEnv().name];
-  let targetURl = endpoint.url;
 
-  if (['www.adobe.com', 'www.stage.adobe.com'].includes(window.location.hostname)) {
-    targetURl = endpoint.cdn;
-  }
   try {
-    result = await mFetch(targetURl, {
+    result = await mFetch(endpoint.cdn, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/vnd.adobe.search-request+json',
-        'x-api-key': endpoint.key,
-        'x-gw-ims-client-id': clientId,
+        'x-gw-ims-client-id': getConfig().imsClientId,
       },
       body: JSON.stringify(data),
     });
