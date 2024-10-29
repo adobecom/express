@@ -142,7 +142,7 @@ function toCard(drawer) {
   return { card, lazyCB };
 }
 
-async function formatDynamicCartLink(a, plan) {
+async function formatDynamicCartLink(a) {
   try {
     const pattern = new RegExp(/.*commerce.*adobe\.com.*/gm);
     if (!pattern.test(a.href)) return a;
@@ -151,7 +151,7 @@ async function formatDynamicCartLink(a, plan) {
       fetchPlanOnePlans,
       buildUrl,
     } = await import('../../scripts/utils/pricing.js');
-    const response = plan || await fetchPlanOnePlans(a.href);
+    const response = await fetchPlanOnePlans(a.href);
     const newTrialHref = buildUrl(response.url, response.country,
       response.language, response.offerId);
     a.href = newTrialHref;
