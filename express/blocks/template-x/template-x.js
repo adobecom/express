@@ -1242,19 +1242,21 @@ function decorateHoliday(block, props) {
   block.classList.add(props.textColor);
   toggleBar.classList.add('toggle-bar');
   topElements.append(heading);
-  toggle.append(link, toggleChev);
-  linkWrapper.remove();
+ 
+
   bottomElements.append(subheading);
   toggleBar.append(topElements, bottomElements);
   block.style.backgroundColor = props.backgroundColor;
 
   if (mobileViewport) {
     block.classList.add('mobile');
+    toggle.append(link, toggleChev);
     block.append(toggle);
   } else {
-    toggleBar.append(toggle);
+    topElements.append(link);
+    topElements.append(toggleChev)
   }
-
+  linkWrapper.remove();
   initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev);
 }
 
