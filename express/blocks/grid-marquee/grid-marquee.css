@@ -6,7 +6,7 @@
   --d-img-w: 256px;
   --d-img-h: 199px;
 }
-.grid-marquee.block {
+.grid-marquee {
   max-width: initial;
 }
 .grid-marquee .express-logo {
