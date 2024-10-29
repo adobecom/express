@@ -10,7 +10,7 @@ export default function decorate(block, name, doc) {
   const heading = howto.closest('.section').querySelector('h2, h3, h4');
   const rows = Array.from(howto.children);
 
-  let numberStepStart = 1;
+  let numberStepStart;
   const isStepNumberDefined = rows[0].innerHTML.includes('number-step-start');
   if (isStepNumberDefined) {
     numberStepStart = +rows[0].querySelectorAll('div')[1].innerText.trim();
@@ -91,9 +91,9 @@ export default function decorate(block, name, doc) {
 
   const templateXVariant = block?.classList.contains('template-x');
   const templateXContainer = templateXVariant && createTag('div', { class: 'template-x-container' });
-  if (document.body.dataset.device === 'desktop') {
+  if (document.body.dataset.device === 'desktop' && templateXVariant) {
     templateXContainer.classList.add('desktop');
-  } else {
+  } else if (templateXVariant) {
     templateXContainer.classList.remove('desktop');
   }
 
@@ -133,7 +133,7 @@ export default function decorate(block, name, doc) {
       const text = createTag('div', { class: 'tip-text' });
       text.append(h3);
       text.append(p);
-      const number = createTag('div', { class: 'tip-number' }, `<span>${i + numberStepStart - 1}</span>`);
+      const number = createTag('div', { class: 'tip-number' }, `<span>${numberStepStart ? i + numberStepStart : i + 1}</span>`);
       cells[0].remove();
       cells[1].innerHTML = '';
       cells[1].classList.add('tip');

@@ -106,7 +106,7 @@ function buildOriginalLayout(block) {
 
   const toggleButton = createTag('a', { class: 'collapsible-row-toggle-btn button' });
   toggleButton.textContent = 'View more';
-  block.append(toggleButton);
+  collapsibleRows.length > 3 && block.append(toggleButton);
 
   toggleButton.addEventListener('click', () => {
     const hiddenItems = block.querySelectorAll('.collapsible-row-accordion');
