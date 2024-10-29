@@ -1925,14 +1925,10 @@ async function buildAutoBlocks(main) {
   }
 
   async function loadFloatingCTA(BlockMediator) {
-
-    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button','dual-action-button'];
-    console.log(validButtonVersion)
+    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'dual-action-button'];
     const device = document.body.dataset?.device;
     const blockName = getMetadata(`${device}-floating-cta`);
-    console.log(blockName)
     if (blockName && validButtonVersion.includes(blockName) && lastDiv) {
-
       const button = buildBlock(blockName, device);
       button.classList.add('meta-powered');
       lastDiv.append(button);
