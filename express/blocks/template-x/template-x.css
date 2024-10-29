@@ -2209,7 +2209,9 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     padding: 0 10px 0 0;
 }
 
-
+main .template-x.holiday.seasonal {
+    z-index: 9;
+}   
 
 main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top{
     display: block;
@@ -2261,6 +2263,7 @@ main .template-x.holiday.seasonal .toggle-button-chev {
 
 main .template-x.holiday.seasonal.expanded .toggle-button-chev {
     transform: none;
+    z-index: 10;
 }
 main .template-x.holiday.seasonal.expanded .toggle-button-chev::before  {
      transform: rotate(-45deg);
@@ -2303,9 +2306,60 @@ main .template-x.holiday.seasonal .toggle-button-chev::before {
         margin-left: 16px;
         margin-right: 16px;
     }
+
+    main .template-x.holiday.seasonal {
+        position: absolute;
+        top: 0;
+    }
+
+    main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top{
+        display: block;
+        margin-top: 20px;
+    }
+
+    main .template-x.holiday.seasonal .template-title {
+        width: 100%;
+    }
+    
+        
+    main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top   {
+       width: calc(100% - 80px);
+       margin-left: 10px;
+       margin-top: 10px;
+       margin-bottom: 10px;
+    }
+
+    main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top > picture:first-of-type{
+        display: none;
+    }
+    
+    main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top > * {
+        margin-top: 16px;
+        margin-left: unset;
+        text-decoration: underline;
+    }
+       
+    main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top .toggle-button-chev {
+        left: calc(100% - 60px);
+    }
+    main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top > h4 {
+        margin-top: 0px;
+    }
 }
 
-@media (max-width: 900px) {
+@media (min-width: 601px) and (max-width: 900px) {
+
+    main .template-x.holiday.seasonal {
+        position: absolute;
+        top: 0;
+    }
+
+    main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top > h4 {
+        margin-top: 12px;
+        margin-bottom: 14px;
+        font-size: var(--body)
+    }
+
     .template-x.horizontal.holiday .toggle-bar p {
         display: none;
     }
@@ -2328,6 +2382,12 @@ main .template-x.holiday.seasonal .toggle-button-chev::before {
 }
 
 @media (max-width: 1200px) {
+
+    main .template-x.holiday.seasonal {
+        position: absolute;
+        top: 0;
+    }
+
     .template-x.horizontal.holiday .toggle-bar p {
         font-size: 14px;
     }

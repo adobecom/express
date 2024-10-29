@@ -1173,31 +1173,24 @@ async function decorateToolbar(block, props) {
 function initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev) {
   const onToggle = () => {
     block.classList.toggle('expanded');
-
-    if (document.body.dataset.device === 'mobile' || block.classList.contains('mobile')) {
-      const tglBtn = block.querySelector('.toggle-button');
-      const heading = templateTitle.querySelector('.toggle-bar-top > h4');
-
-      if (tglBtn && heading) {
-        const rect = heading.getBoundingClientRect();
-        if (!block.classList.contains('expanded')) {
-          tglBtn.style.marginLeft = `${rect.x}px`;
-        } else {
-          tglBtn.style.removeProperty('margin-left');
-        }
-      }
-    }
   };
-  const templateImages = block.querySelectorAll('.template');
 
+  const templateImages = block.querySelectorAll('.template');
   templateImages.forEach((template) => {
     template.addEventListener('click', (e) => {
       e.stopPropagation();
     });
   });
 
-  toggleChev.addEventListener('click', onToggle);
-  toggle.addEventListener('click', () => onToggle());
+  toggleChev.addEventListener('click', (e) => {
+    e.stopPropagation();
+    onToggle()
+
+  });
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    onToggle()
+  } );
   document.addEventListener('click', (e) => {
     if (e.target.closest('.carousel-fader-right') || e.target.closest('.carousel-fader-left')) {
       return;
