@@ -14,10 +14,13 @@ main .section .discover-cards {
     padding-left: 20px;
     padding-right: 20px;
 }
+.discover-cards .cards-container {
+    max-width: 1700px;
+}
 .discover-cards .cards-container .card {
     min-width: 294px;
     height: 427px;
-    border-radius: 8px;
+    border-radius: 16px;
     border: 1px solid;
     border-image: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2)) 1;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
@@ -63,7 +66,7 @@ main .section .discover-cards {
 .discover-cards .card .button-container {
     position: absolute;
     bottom: 5px;
-    left: 3px;
+    left: 6px;
     right: 16px;
     text-align: left;
 }
@@ -83,6 +86,7 @@ main .section .discover-cards {
 @media (min-width: 600px) {  
     .discover-cards .cards-container .card {
         min-width: 399px;
+        max-width: 399px;
         height: 478px;
     }
     .discover-cards .center-title h3 {
@@ -116,9 +120,17 @@ main .section .discover-cards {
     .discover-cards .cards-container .card:first-child {
         margin-left: 60px;
     }
+    .discover-cards .card .button-container {
+        bottom: 11px;
+        left: 13px;
+    }
 }
 
 @media (min-width: 1200px) {  
+    .discover-cards .cards-container {
+        margin-left: auto;
+        margin-right: auto;
+    }
     .discover-cards .cards-container.gallery {
         scroll-padding-left: 100px;
     }  
