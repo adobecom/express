@@ -2430,8 +2430,11 @@ async function loadPostLCP(config) {
     loadMartech();
   }
   const georouting = getMetadata('georouting') || config.geoRouting;
-  const isHomepage = window.location.pathname.endsWith('/express/');
-  if (georouting === 'on' && isHomepage) {
+  const permittedPaths = ['/express/', '/entitled',
+    '/business', '/teams',
+    '/nonprofits', '/learn/students', 'pricing'];
+  const isPermitted = permittedPaths.some((path) => window.location.pathname.endsWith(path));
+  if (georouting === 'on' && isPermitted) {
     const { default: loadGeoRouting } = await import('../features/georoutingv2/georoutingv2.js');
     await loadGeoRouting(config, createTag, getMetadata, loadBlock, loadStyle);
   }
