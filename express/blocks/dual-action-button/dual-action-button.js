@@ -8,8 +8,6 @@ import {
   createFloatingButton,
 } from '../shared/floating-cta.js';
 
-
-
 function buildAction(entry, buttonType) {
   const wrapper = createTag('div', { class: 'floating-button-inner-row dual-action-row' });
   const text = createTag('div', { class: 'dual-action-text' });
