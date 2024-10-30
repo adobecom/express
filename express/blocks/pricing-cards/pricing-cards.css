@@ -441,7 +441,7 @@ End border style variants
 }
 
 .pricing-cards .card-feature-list {
-  display: none;
+  display: block;
   align-self: flex-start;
 }
 
@@ -505,12 +505,18 @@ End border style variants
   box-sizing: border-box;
 }
 
-@media screen and (min-width: 900px) {
+@media (min-width: 768px) and (max-width: 1279px) {
   :root {
-    --card-width: 400px;
+    --card-width: 580px;
   }
 
   .pricing-cards .card-feature-list {
     display: block;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --card-width: 400px;
   }
 }
