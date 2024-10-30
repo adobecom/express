@@ -1,6 +1,6 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
-  createTag, getMetadata
+  createTag, getMetadata,
 } from '../../scripts/utils.js';
 
 import {
@@ -23,7 +23,7 @@ function buildAction(entry, buttonType) {
 }
 
 function buildDualAction(block, data) {
-  console.log(data)
+  console.log(data);
   block.children[0].remove();
   const header = createTag('div', {
     class:
@@ -44,23 +44,21 @@ export function createMultiFunctionButton(block, data, audience) {
 }
 
 function deviceCheck() {
-  var ua = navigator.userAgent.toLowerCase();
-  var isAndroid = ua.indexOf("android") > -1;
+  const ua = navigator.userAgent.toLowerCase();
+  const isAndroid = ua.indexOf('android') > -1;
   if (getMetadata('device-check') === 'yes' && getMetadata('ram-check') === 'yes') {
     if (navigator.deviceMemory <= 4 && isAndroid) {
-      return true
-    } 
+      return true;
+    }
   }
-  return false
+  return false;
 }
 
 export default async function decorate(block) {
- 
-
   if (!deviceCheck()) {
-    const {default : decorate} = await import ('../floating-button/floating-button.js')
-    decorate(block)
-    return
+    const { default: decorateNormal } = await import('../floating-button/floating-button.js');
+    decorateNormal(block);
+    return;
   }
   addTempWrapper(block, 'multifunction-button');
   if (!block.classList.contains('meta-powered')) return;
