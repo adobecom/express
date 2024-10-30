@@ -1,0 +1,73 @@
+.section .ribbon-banner {
+  text-align: left;
+  max-width: initial;
+  font-weight: 700;
+  padding: 0 16px;
+  font-size: var(--body-font-size-s);
+}
+.ribbon-banner .row {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  line-height: 20.8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.ribbon-banner a.button {
+  margin: 0;
+  white-space: nowrap;
+  overflow: initial;
+}
+.ribbon-banner.dark a.button {
+  background-color: initial;
+  color: white;
+  border-color: white;
+}
+.ribbon-banner.light a.button {
+  background-color: initial;
+  border-color: #222;
+}
+.ribbon-banner.gradient a.button {
+  background-color: initial;
+  color: white;
+  border-color: white;
+}
+
+.ribbon-banner strong {
+  font-weight: 900;
+  font-size: var(--body-font-size-m);
+}
+
+.ribbon-banner.light {
+  background: #E0E2FF;
+  color: #222;
+}
+
+.ribbon-banner.light strong {
+  background-image: linear-gradient(98.07deg, #FF477B -21.45%, #5C5CE0 101.65%);
+  color: transparent;
+  background-clip: text;
+}
+
+.ribbon-banner.dark {
+  background: black;
+  color: white;
+}
+
+.ribbon-banner.gradient {
+  background: linear-gradient(97.82deg, #FF477B 3.22%, #5C5CE0 52.98%, #318FFF 101.72%),
+linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15));
+  color: white;
+}
+
+@media screen and (min-width: 768px) {
+  .section .ribbon-banner {
+    text-align: center;
+    font-size: var(--body-font-size-m);
+  }
+  .ribbon-banner strong {
+    font-size: var(--body-font-size-l);
+  }
+}
