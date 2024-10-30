@@ -414,7 +414,7 @@ main .section>.simplified-pricing-cards-wrapper {
 }
 
 /* Tablet styles */
-@media (min-width: 601px) and (max-width: 1200px) {
+@media (min-width: 768px) and (max-width: 1279px) {
   .simplified-pricing-cards {
     --card-width: 580px;
     --header-size: 28px;
@@ -470,7 +470,9 @@ main .section>.simplified-pricing-cards-wrapper {
 }
 
 /* Desktop styles */
-@media (min-width: 1201px) {
+
+
+@media (min-width: 1280px) {
   .simplified-pricing-cards {
     --card-width: 300px;
     --header-size: 28px;
@@ -511,10 +513,10 @@ main .section>.simplified-pricing-cards-wrapper {
     display: flex;
   }
 
-  .simplified-pricing-cards .card {
-    gap: 10px; 
-      padding-top: initial;
-      padding-bottom: initial;
+  .simplified-pricing-cards .card { 
+      gap: 8px;
+      padding: 20px;
+      margin: unset ;
  
   }
 
@@ -527,8 +529,7 @@ main .section>.simplified-pricing-cards-wrapper {
   }
 
 
-}
-
+} 
 @media (min-width: 1201px) and (max-width: 1399px) {
   .simplified-pricing-cards {
     --card-width: 270px;
@@ -577,10 +578,9 @@ main .section>.simplified-pricing-cards-wrapper {
   .simplified-pricing-cards .pricing-footer div{
     width: unset;
   }
+} 
 
-}
-
-@media (min-width: 1400px) {
+@media (min-width: 1680px) {
   .simplified-pricing-cards {
     --header-size: 28px;
     --header-offer-size: 16px;
@@ -604,8 +604,6 @@ main .section>.simplified-pricing-cards-wrapper {
   .simplified-pricing-cards .card-header { 
     gap: 5px;
     width: 100%;
- 
-
   }
 
   .simplified-pricing-cards .card-header p {
@@ -622,9 +620,7 @@ main .section>.simplified-pricing-cards-wrapper {
     width: unset;
     height: unset;
   }
-
   
-
   .simplified-pricing-cards a.button.compare-all-button {
     margin-top: 40px;
   }
