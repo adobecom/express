@@ -129,16 +129,21 @@ describe('Frictionless Quick Action Block', () => {
     await init(block);
 
     const dropzoneContainer = block.querySelector('.dropzone-container');
-    const inputClickStub = sinon.stub(block.querySelector('input[type="file"]'), 'click');
+    const inputElement = block.querySelector('input[type="file"]');
+    const inputClickStub = sinon.stub(inputElement, 'click');
 
-    const event = new MouseEvent('click');
-    dropzoneContainer.dispatchEvent(event);
+    const clickEvent = new MouseEvent('click');
+    dropzoneContainer.dispatchEvent(clickEvent);
+    expect(inputClickStub.calledOnce).to.be.true;
 
     const dragenterEvent = new Event('dragenter');
     dropzoneContainer.dispatchEvent(dragenterEvent);
 
     expect(dropzoneContainer.classList.contains('highlight')).to.be.true;
-    expect(inputClickStub.calledOnce).to.be.true;
+
+    const dragleaveEvent = new Event('dragleave');
+    dropzoneContainer.dispatchEvent(dragleaveEvent);
+    expect(dropzoneContainer.classList.contains('highlight')).to.be.false;
 
     inputClickStub.restore();
   });
