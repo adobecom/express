@@ -84,11 +84,23 @@ describe('Frictionless Quick Action Block', () => {
     const dropzoneContainer = block.querySelector(':scope .dropzone-container');
     dropzoneContainer.dispatchEvent(dropEvent);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => {
+      const observer = new MutationObserver((mutationsList) => {
+        for (const mutation of mutationsList) {
+          if (mutation.type === 'childList') {
+            const errorToast = document.querySelector('.error-toast');
+            if (errorToast) {
+              observer.disconnect();
+              resolve();
+            }
+          }
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
 
     const errorToast = document.querySelector('.error-toast');
     expect(errorToast).to.not.be.null;
-
     expect(errorToast.textContent).to.include('File size not supported');
   });
   it('handles popstate event correctly', async () => {
@@ -131,17 +143,21 @@ describe('Frictionless Quick Action Block', () => {
     inputClickStub.restore();
   });
 
-  it('should handle click on dropzone container', async () => {
+  it('should handle click on dropzone container and trigger input click', async () => {
     document.body.innerHTML = await readFile({ path: './mocks/crop-image-quick-action.html' });
     const block = document.body.querySelector('.frictionless-quick-action');
     await init(block);
 
     const dropzoneContainer = block.querySelector('.dropzone-container');
+    const inputElement = block.querySelector('input[type="file"]');
 
-    const event = new MouseEvent('click');
-    dropzoneContainer.dispatchEvent(event);
+    const inputClickStub = sinon.stub(inputElement, 'click');
 
-    expect(dropzoneContainer).to.not.be.null;
+    dropzoneContainer.dispatchEvent(new MouseEvent('click'));
+
+    expect(inputClickStub.calledOnce).to.be.true;
+
+    inputClickStub.restore();
   });
 
   it('should add the metadata and test if the logo got added', async () => {
