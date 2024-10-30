@@ -331,7 +331,7 @@ export function collectFloatingButtonData() {
       text: getMetadata('main-cta-text'),
     },
     bubbleSheet: getMetadata('floating-cta-bubble-sheet'),
-    live: getMetadata('floating-cta-live'),
+    live: getMetadata('floating-cta-live')
   };
 
   for (let i = 1; i < CTA_ICON_COUNT; i += 1) {
