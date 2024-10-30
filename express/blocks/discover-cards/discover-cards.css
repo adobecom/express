@@ -20,9 +20,8 @@ main .section .discover-cards {
 .discover-cards .cards-container .card {
     min-width: 294px;
     height: 427px;
+    border: 1px solid white;
     border-radius: 16px;
-    border: 1px solid;
-    border-image: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2)) 1;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
     flex: 1 1 calc(33.33% - 32px);
     box-sizing: border-box;
