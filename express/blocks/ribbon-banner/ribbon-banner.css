@@ -12,25 +12,32 @@
   justify-content: center;
   gap: 1rem;
 }
-
-.ribbon-banner a.button {
+.section .ribbon-banner a.button {
   margin: 0;
   white-space: nowrap;
   overflow: initial;
-}
-.ribbon-banner.dark a.button {
   background-color: initial;
+}
+.section .ribbon-banner a.button:hover {
+  background-color: initial;
+}
+.ribbon-banner.dark a.button,
+.ribbon-banner.gradient a.button {
   color: white;
   border-color: white;
+}
+.ribbon-banner.dark a.button:hover,
+.ribbon-banner.gradient a.button:hover {
+  border-color: #e1e1e1;
+  color: #e1e1e1;
 }
 .ribbon-banner.light a.button {
-  background-color: initial;
   border-color: #222;
+  color: #222;
 }
-.ribbon-banner.gradient a.button {
-  background-color: initial;
-  color: white;
-  border-color: white;
+.ribbon-banner.light a.button:hover {
+  border-color: black;
+  color: black;
 }
 
 .ribbon-banner strong {
