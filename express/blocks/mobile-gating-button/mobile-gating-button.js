@@ -1,6 +1,6 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
-  createTag, getMetadata,
+  createTag, getMetadata,getMobileOperatingSystem
 } from '../../scripts/utils.js';
 
 import {
@@ -9,25 +9,25 @@ import {
 } from '../shared/floating-cta.js';
 
 function buildAction(entry, buttonType) {
-  const wrapper = createTag('div', { class: 'floating-button-inner-row dual-action-row' });
-  const text = createTag('div', { class: 'dual-action-text' });
+  const wrapper = createTag('div', { class: 'floating-button-inner-row mobile-gating-row' });
+  const text = createTag('div', { class: 'mobile-gating-text' });
   text.textContent = entry.iconText;
   const a = entry.anchor;
   a.classList.add(buttonType);
   a.classList.add('button');
-  a.classList.add('dual-action-link');
+  a.classList.add('mobile-gating-link');
   wrapper.append(entry.icon);
   wrapper.append(text);
   wrapper.append(a);
   return wrapper;
 }
 
-function buildDualAction(block, data) {
+function buildMobileGating(block, data) {
   console.log(data);
   block.children[0].remove();
   const header = createTag('div', {
     class:
-      'dual-action-header',
+      'mobile-gating-header',
   });
   header.textContent = data.mainCta.text;
   block.append(header);
@@ -38,15 +38,14 @@ function buildDualAction(block, data) {
 export function createMultiFunctionButton(block, data, audience) {
   const buttonWrapper = createFloatingButton(block, audience, data);
   buttonWrapper.classList.add('multifunction');
-  buttonWrapper.classList.add('dual-action-button');
-  buildDualAction(buttonWrapper.querySelector('.floating-button'), data);
+  buttonWrapper.classList.add('mobile-gating-button');
+  buildMobileGating(buttonWrapper.querySelector('.floating-button'), data);
   return buttonWrapper;
 }
 
 function deviceCheck() {
-  const ua = navigator.userAgent.toLowerCase();
-  const isAndroid = ua.indexOf('android') > -1;
-  if (getMetadata('device-check') === 'yes' && getMetadata('ram-check') === 'yes') {
+  const isAndroid =  getMobileOperatingSystem() === "Android";
+  if (getMetadata('floating-cta-device-and-ram-check') === 'yes') {
     if (navigator.deviceMemory <= 4 && isAndroid) {
       return true;
     }
