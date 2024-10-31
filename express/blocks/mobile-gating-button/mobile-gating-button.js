@@ -23,7 +23,6 @@ function buildAction(entry, buttonType) {
 }
 
 function buildMobileGating(block, data) {
-  console.log(data);
   block.children[0].remove();
   const header = createTag('div', {
     class:
