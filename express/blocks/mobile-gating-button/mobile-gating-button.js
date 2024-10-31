@@ -1,6 +1,6 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
-  createTag, getMetadata,getMobileOperatingSystem
+  createTag, getMetadata, getMobileOperatingSystem,
 } from '../../scripts/utils.js';
 
 import {
@@ -44,7 +44,7 @@ export function createMultiFunctionButton(block, data, audience) {
 }
 
 function deviceCheck() {
-  const isAndroid =  getMobileOperatingSystem() === "Android";
+  const isAndroid = getMobileOperatingSystem() === 'Android';
   if (getMetadata('floating-cta-device-and-ram-check') === 'yes') {
     if (navigator.deviceMemory <= 4 && isAndroid) {
       return true;
