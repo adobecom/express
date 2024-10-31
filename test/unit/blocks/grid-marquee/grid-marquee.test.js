@@ -1,6 +1,9 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 import { delay } from '../../../helpers/waitfor.js';
+import { setConfig } from '../../../../express/scripts/utils.js';
+
+setConfig({});
 
 const { default: decorate } = await import(
   '../../../../express/blocks/grid-marquee/grid-marquee.js'

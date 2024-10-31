@@ -1,5 +1,5 @@
 // eslint-disable-next-line object-curly-newline
-import { getConfig, getMetadata, loadIms, loadLink, loadScript, getMobileOperatingSystem } from './utils.js';
+import { getConfig, getMetadata, loadIms, loadLink, loadScript } from './utils.js';
 
 const ALLOY_SEND_EVENT = 'alloy_sendEvent';
 const ALLOY_SEND_EVENT_ERROR = 'alloy_sendEvent_error';
@@ -214,37 +214,12 @@ const loadMartechFiles = async (config, url, edgeConfigId) => {
     };
     window.edgeConfigId = edgeConfigId;
 
-    // TODO: remove after aexg4848
-    let trackEligibility = null;
-    if (getMetadata('target-only-mobile-web') === 'on') {
-      if (navigator.userAgent.includes('Mobile') && getMobileOperatingSystem() === 'Android' && navigator.deviceMemory >= 4) {
-        setDeep(window, 'alloy_all.data.__adobe.target.mobile_web_enough_ram', true);
-        trackEligibility = true;
-      } else {
-        setDeep(window, 'alloy_all.data.__adobe.target.mobile_web_enough_ram', false);
-        trackEligibility = false;
-      }
-    }
-
     const env = ['stage', 'local'].includes(config.env.name) ? '.qa' : '';
     // TODO: milo is hosting their own martech script in repo
     const martechPath = `main.standard${env}.min.js`;
     await loadScript(`https://www.adobe.com/marketingtech/${martechPath}`);
     // eslint-disable-next-line no-underscore-dangle
     window._satellite.track('pageload');
-    // TODO: remove after aexg4848
-    if (trackEligibility !== null) {
-      // eslint-disable-next-line no-underscore-dangle
-      window._satellite.track('event', {
-        data: {
-          web: {
-            webInteraction: {
-              name: `mobile_web_enough_ram: ${trackEligibility.toString()}`,
-            },
-          },
-        },
-      });
-    }
   };
 
   await filesLoadedPromise();
