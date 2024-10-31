@@ -2420,9 +2420,21 @@ export async function loadTemplate() {
   await Promise.all([styleLoaded, scriptLoaded]);
 }
 
+function loadTOC() {
+  if (getMetadata('toc-seo') === 'on') {
+    const handler = () => {
+      loadStyle('/express/features/table-of-contents-seo/table-of-contents-seo.css');
+      import('../features/table-of-contents-seo/table-of-contents-seo.js').then(({ default: setTOCSEO }) => setTOCSEO());
+    };
+    window.addEventListener('express:LCP:loaded', handler);
+  }
+}
+
 async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
+  loadTOC();
+
   window.dispatchEvent(new Event('express:LCP:loaded'));
   if (config.mep?.targetEnabled === 'gnav') {
     await loadMartech({ persEnabled: true, postLCP: true });
