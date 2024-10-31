@@ -67,7 +67,6 @@ export default function decorate(block, name, doc) {
   if (isStepNumberDefined) {
     numberStepStart = +rows[0].querySelectorAll('div')[1].innerText.trim();
     rows[0].remove();
-    rows.splice(0, 1);
   }
 
   const narrowVariant = block?.classList.contains('narrow');
