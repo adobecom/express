@@ -7,7 +7,8 @@ import {
 } from '../../scripts/utils.js';
 
 let currDrawer = null;
-const desktopMQ = window.matchMedia('(min-width: 1200px)');
+const largeMQ = window.matchMedia('(min-width: 1280px)');
+const mediumMQ = window.matchMedia('(min-width: 768px)');
 const reduceMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 function drawerOff() {
@@ -217,8 +218,11 @@ export default function init(el) {
     ob.unobserve(el);
     cards.forEach((card) => card.lazyCB());
   }).observe(el);
-  desktopMQ.addEventListener('change', () => {
+  largeMQ.addEventListener('change', () => {
     isTouch = false;
+    drawerOff();
+  });
+  mediumMQ.addEventListener('change', () => {
     drawerOff();
   });
 }
