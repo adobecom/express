@@ -13,12 +13,8 @@ function buildAction(entry, buttonType) {
   const text = createTag('div', { class: 'mobile-gating-text' });
   text.textContent = entry.iconText;
   const a = entry.anchor;
-  a.classList.add(buttonType);
-  a.classList.add('button');
-  a.classList.add('mobile-gating-link');
-  wrapper.append(entry.icon);
-  wrapper.append(text);
-  wrapper.append(a);
+  a.classList.add(buttonType, 'button', 'mobile-gating-link');
+  wrapper.append(entry.icon, text, a); 
   return wrapper;
 }
 
@@ -29,27 +25,29 @@ function buildMobileGating(block, data) {
       'mobile-gating-header',
   });
   header.textContent = data.mainCta.text;
-  block.append(header);
-  block.append(buildAction(data.tools[0], 'accent'));
-  block.append(buildAction(data.tools[1], 'outline'));
+  block.append(header,buildAction(data.tools[0], 'accent'),buildAction(data.tools[1], 'outline'));
 }
 
 export function createMultiFunctionButton(block, data, audience) {
   const buttonWrapper = createFloatingButton(block, audience, data);
-  buttonWrapper.classList.add('multifunction');
-  buttonWrapper.classList.add('mobile-gating-button');
+  buttonWrapper.classList.add('multifunction', 'mobile-gating-button');
   buildMobileGating(buttonWrapper.querySelector('.floating-button'), data);
   return buttonWrapper;
 }
+
+// Checks if the device is a lower tier android and enables the mobile gating if it is.
+// If there is no metadata check enabled, still enable the gating block in case authors want it.
 
 function deviceCheck() {
   const isAndroid = getMobileOperatingSystem() === 'Android';
   if (getMetadata('floating-cta-device-and-ram-check') === 'yes') {
     if (navigator.deviceMemory <= 4 && isAndroid) {
       return true;
+    } else {
+      return false
     }
   }
-  return false;
+  return true;
 }
 
 export default async function decorate(block) {
