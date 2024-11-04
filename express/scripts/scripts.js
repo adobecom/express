@@ -14,6 +14,7 @@ import {
 const locales = {
   '': { ietf: 'en-US', tk: 'jdq5hay.css' },
   br: { ietf: 'pt-BR', tk: 'inq1xob.css' },
+  cn: { ietf: 'zh-Hans-CN', tk: 'puu3xkp' },
   de: { ietf: 'de-DE', tk: 'vin7zsi.css' },
   dk: { ietf: 'da-DK', tk: 'aaz7dvd.css' },
   es: { ietf: 'es-ES', tk: 'oln4yqj.css' },
@@ -28,6 +29,7 @@ const locales = {
   nl: { ietf: 'nl-NL', tk: 'cya6bri.css' },
   no: { ietf: 'no-NO', tk: 'aaz7dvd.css' },
   se: { ietf: 'sv-SE', tk: 'fpk1pcd.css' },
+  tr: { ietf: 'tr-TR', tk: 'ley8vds.css' },
   tw: { ietf: 'zh-Hant-TW', tk: 'jay0ecd' },
   uk: { ietf: 'en-GB', tk: 'pps7abe.css' },
 };
