@@ -183,7 +183,16 @@ export function runQuickAction(quickAction, data, block) {
 
 async function startSDK(data = '', quickAction, block) {
   const urlParams = new URLSearchParams(window.location.search);
-  const CDN_URL = urlParams.get('sdk-override') || 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
+  const urlOverride = urlParams.get('sdk-override');
+  let valid = false;
+  if (urlOverride) {
+    try {
+      if (new URL(urlOverride).host === 'dev.cc-embed.adobe.com') valid = true;
+    } catch (e) {
+      window.lana.log('Invalid SDK URL');
+    }
+  }
+  const CDN_URL = valid ? urlOverride : 'https://cc-embed.adobe.com/sdk/1p/v4/CCEverywhere.js';
   const clientId = 'AdobeExpressWeb';
 
   await loadScript(CDN_URL);
