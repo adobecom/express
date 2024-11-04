@@ -138,10 +138,7 @@ export default function decorate(block, name, doc) {
       if (isVideo) {
         const video = createTag('video', { width: '320', height: '240', controls: true });
         const sourceMp4 = createTag('source', { src: p.innerHTML, type: 'video/mp4' });
-
         video.appendChild(sourceMp4);
-        video.appendChild(document.createTextNode('Your browser does not support the video tag.'));
-
         content = video;
       } else {
         content = p;
