@@ -2209,6 +2209,10 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
     padding: 0 10px 0 0;
 }
 
+main .template-x.holiday.seasonal.dark .toggle-bar {
+    color: white;
+}
+
 main .template-x.holiday.seasonal {
     z-index: 9;
 }   
