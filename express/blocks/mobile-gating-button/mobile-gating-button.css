@@ -79,6 +79,6 @@ main .mobile-gating-button .floating-button a.button:any-link.outline {
     color: black;
 }
 
-main .mobile-gating-button.floating-button--hidden .floating-button {
-    margin-bottom: unset;
+main .mobile-gating-button.floating-button--hidden .floating-button.block {
+    margin-bottom: -10px
 }
