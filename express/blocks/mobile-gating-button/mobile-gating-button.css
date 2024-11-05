@@ -29,8 +29,8 @@ main .mobile-gating-button  .mobile-gating-header-row .mobile-gating-exit {
 
 main .mobile-gating-button  .mobile-gating-header-row .mobile-gating-exit img {
     position: absolute;
-    top: 20.5px;
-    right: 20.5px;
+    top: 20.8px;
+    right: 20.8px;
 }
 
 main  .mobile-gating-button .floating-button.block {
@@ -39,7 +39,7 @@ main  .mobile-gating-button .floating-button.block {
     box-shadow: 0px 0px 12px 0px #00000029;
     background-color: #f8f8f8;
     padding: 16px;
-    width: calc(100% - 10px);
+    width: calc(100% - 16px);
     margin: 5px;
     display: flex;
     flex-direction: column;
