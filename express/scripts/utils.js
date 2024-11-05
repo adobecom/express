@@ -1925,7 +1925,7 @@ async function buildAutoBlocks(main) {
   }
 
   async function loadFloatingCTA(BlockMediator) {
-    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button', 'mobile-gating-button'];
+    const validButtonVersion = ['floating-button', 'multifunction-button', 'mobile-gating-button'];
     const device = document.body.dataset?.device;
     const blockName = getMetadata(`${device}-floating-cta`);
     if (blockName && validButtonVersion.includes(blockName) && lastDiv) {
@@ -2441,7 +2441,8 @@ async function loadPostLCP(config) {
     loadMartech();
   }
   const georouting = getMetadata('georouting') || config.geoRouting;
-  if (georouting === 'on') {
+  const isHomepage = window.location.pathname.endsWith('/express/');
+  if (georouting === 'on' && isHomepage) {
     const { default: loadGeoRouting } = await import('../features/georoutingv2/georoutingv2.js');
     await loadGeoRouting(config, createTag, getMetadata, loadBlock, loadStyle);
   }
@@ -2624,12 +2625,12 @@ export async function loadArea(area = document) {
   wordBreakJapanese(area);
 
   // appending express-specific branch parameters
-  const links = isDoc ? area.querySelectorAll('main a[href*="adobesparkpost"]') : area.querySelectorAll(':scope a[href*="adobesparkpost"]');
-  if (links.length) {
-    window.addEventListener('express:lcp:loaded', () => {
+  window.addEventListener('express:LCP:loaded', () => {
+    const links = isDoc ? area.querySelectorAll('main a[href*="adobesparkpost"]') : area.querySelectorAll(':scope a[href*="adobesparkpost"]');
+    if (links.length) {
       import('./branchlinks.js').then((mod) => mod.default(links));
-    });
-  }
+    }
+  });
 
   const areaBlocks = [];
   for (const section of sections) {
