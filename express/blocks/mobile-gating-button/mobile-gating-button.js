@@ -46,14 +46,14 @@ export function createMultiFunctionButton(block, data, audience) {
 // If there is no metadata check enabled, still enable the gating block in case authors want it.
 
 function androidDeviceAndRamCheck() {
-  const isAndroid = getMobileOperatingSystem() === 'Android';
-  if (getMetadata('floating-cta-device-and-ram-check') === 'yes') {
-    if (navigator.deviceMemory >= 4 && isAndroid) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // const isAndroid = getMobileOperatingSystem() === 'Android';
+  // if (getMetadata('floating-cta-device-and-ram-check') === 'yes') {
+  //   if (navigator.deviceMemory >= 4 && isAndroid) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
   return true;
 }
 
