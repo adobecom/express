@@ -1,0 +1,82 @@
+.section .ribbon-banner {
+  text-align: left;
+  max-width: initial;
+  font-weight: 700;
+  font-size: var(--body-font-size-s);
+}
+.ribbon-banner .row {
+  padding: 12px 16px;
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.section .ribbon-banner a.button {
+  margin: 0;
+  white-space: nowrap;
+  overflow: initial;
+  background-color: initial;
+}
+.section .ribbon-banner a.button:hover {
+  background-color: initial;
+}
+.ribbon-banner.dark a.button,
+.ribbon-banner.gradient a.button {
+  color: white;
+  border-color: white;
+}
+.ribbon-banner.dark a.button:hover,
+.ribbon-banner.gradient a.button:hover {
+  border-color: #e1e1e1;
+  color: #e1e1e1;
+}
+.ribbon-banner.light a.button {
+  border-color: #222;
+  color: #222;
+}
+.ribbon-banner.light a.button:hover {
+  border-color: black;
+  color: black;
+}
+
+.ribbon-banner strong {
+  font-weight: 900;
+  font-size: var(--body-font-size-m);
+}
+
+.ribbon-banner.light {
+  background: #E0E2FF;
+  color: #222;
+}
+
+.ribbon-banner.light strong {
+  background-image: linear-gradient(98.07deg, #FF477B -21.45%, #5C5CE0 101.65%);
+  color: transparent;
+  background-clip: text;
+}
+
+.ribbon-banner.dark {
+  background: black;
+  color: white;
+}
+
+.ribbon-banner.dark strong {
+  color: #FA0F00;
+}
+
+.ribbon-banner.gradient {
+  background: linear-gradient(97.82deg, #FF477B 3.22%, #5C5CE0 52.98%, #318FFF 101.72%),
+linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15));
+  color: white;
+}
+
+@media screen and (min-width: 768px) {
+  .section .ribbon-banner {
+    text-align: center;
+    font-size: var(--body-font-size-m);
+  }
+  .ribbon-banner strong {
+    font-size: var(--body-font-size-l);
+  }
+}

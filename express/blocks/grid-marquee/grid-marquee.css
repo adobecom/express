@@ -6,7 +6,7 @@
   --d-img-w: 256px;
   --d-img-h: 199px;
 }
-.grid-marquee.block {
+.grid-marquee {
   max-width: initial;
 }
 .grid-marquee .express-logo {
@@ -74,7 +74,6 @@
   gap: 8px;
   justify-content: center;
   justify-items: center;
-  margin: auto;
 }
 
 .grid-marquee .card {
@@ -354,7 +353,7 @@
   .grid-marquee .drawer[aria-hidden='true'] {
     opacity: 0;
     visibility: hidden;
-    bottom: initial;
+    transform: initial;
   }
 
   .grid-marquee .drawer .title-row {
