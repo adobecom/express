@@ -35,10 +35,10 @@ export function createMultiFunctionButton(block, data, audience) {
   return buttonWrapper;
 }
 
-// Checks if the device is a lower tier android and enables the mobile gating if it is.
+// Checks if the device is an android and has sufficient RAM, enables the mobile gating if it is.
 // If there is no metadata check enabled, still enable the gating block in case authors want it.
 
-function deviceCheck() {
+function androidDeviceAndRamCheck() {
   const isAndroid = getMobileOperatingSystem() === 'Android';
   if (getMetadata('floating-cta-device-and-ram-check') === 'yes') {
     if (4 <= navigator.deviceMemory && isAndroid) {
@@ -51,7 +51,7 @@ function deviceCheck() {
 }
 
 export default async function decorate(block) {
-  if (!deviceCheck()) {
+  if (!androidDeviceAndRamCheck()) {
     const { default: decorateNormal } = await import('../floating-button/floating-button.js');
     decorateNormal(block);
     return;
