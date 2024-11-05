@@ -55,7 +55,8 @@ main .mobile-gating-row {
 main .mobile-gating-header {
     font-size: 18px;
     font-weight: 700; 
-    text-align: left;
+    text-align: center;
+    margin-bottom: 8px;
 }
 
 main .mobile-gating-button .floating-button a.button:any-link {
