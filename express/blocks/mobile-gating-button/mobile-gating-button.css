@@ -61,6 +61,7 @@ main .mobile-gating-header {
 main .mobile-gating-button .floating-button a.button:any-link {
     border-radius: 20px;
     font-size: 16px;;
+    min-width: 136px;
     width: 40%;
     color: var(--color-white);
     background-color: var(--color-info-accent);
