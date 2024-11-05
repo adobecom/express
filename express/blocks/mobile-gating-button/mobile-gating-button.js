@@ -1,6 +1,6 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
-  createTag, getMetadata, getMobileOperatingSystem,
+  createTag, getIconElement, getMetadata, getMobileOperatingSystem,
 } from '../../scripts/utils.js';
 
 import {
@@ -20,12 +20,19 @@ function buildAction(entry, buttonType) {
 
 function buildMobileGating(block, data) {
   block.children[0].remove();
+  const headerRow = createTag('div', { class : 'mobile-gating-header-row'})
   const header = createTag('div', {
     class:
       'mobile-gating-header',
   });
   header.textContent = data.mainCta.text;
-  block.append(header, buildAction(data.tools[0], 'accent'), buildAction(data.tools[1], 'outline'));
+  const exit = createTag('div', { class : 'mobile-gating-exit'})
+  exit.addEventListener('click', () => {
+    block.parentElement.classList.add('floating-button--hidden')
+  })
+  exit.append(getIconElement('close-button-x', 14))
+  headerRow.append(header, exit)
+  block.append(headerRow, buildAction(data.tools[0], 'accent'), buildAction(data.tools[1], 'outline'));
 }
 
 export function createMultiFunctionButton(block, data, audience) {
