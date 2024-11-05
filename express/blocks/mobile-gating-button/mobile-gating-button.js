@@ -41,7 +41,7 @@ export function createMultiFunctionButton(block, data, audience) {
 function androidDeviceAndRamCheck() {
   const isAndroid = getMobileOperatingSystem() === 'Android';
   if (getMetadata('floating-cta-device-and-ram-check') === 'yes') {
-    if (4 <= navigator.deviceMemory && isAndroid) {
+    if (navigator.deviceMemory >= 4 && isAndroid) {
       return true;
     } else {
       return false;
