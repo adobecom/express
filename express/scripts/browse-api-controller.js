@@ -6,14 +6,15 @@ import { memoize } from './hofs.js';
 
 const endpoints = {
   stage: {
-    cdn: 'https://www.stage.adobe.com/ax-uss-api/',
+    cdn: 'https://www.stage.adobe.com/ax-uss-api-v2/',
     url: 'https://hz-template-search-stage.adobe.io/uss/v3/query',
   },
   prod: {
-    cdn: 'https://www.adobe.com/ax-uss-api/',
+    cdn: 'https://www.adobe.com/ax-uss-api-v2/',
     url: 'https://hz-template-search.adobe.io/uss/v3/query',
   },
 };
+const experienceId = 'default-seo-experience';
 
 const mFetch = memoize((url, data) => fetch(url, data).then((r) => (r.ok ? r.json() : null)), {
   ttl: 1000 * 60 * 60 * 24,
@@ -28,7 +29,7 @@ export default async function getData() {
     .reverse()
     .join(' ');
   const data = {
-    experienceId: 'default-templates-search-seo',
+    experienceId,
     querySuggestion: {
       facet: {
         'function:querySuggestions': {},
@@ -43,14 +44,15 @@ export default async function getData() {
   };
 
   let result = null;
-  const endpoint = endpoints[getHelixEnv().name];
+  const urlParams = new URLSearchParams(window.location.search);
+  const env = urlParams.get('ckg-env') || getHelixEnv().name;
+  const endpoint = endpoints[env];
 
   try {
     result = await mFetch(endpoint.cdn, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/vnd.adobe.search-request+json',
-        'x-gw-ims-client-id': getConfig().imsClientId,
       },
       body: JSON.stringify(data),
     });
