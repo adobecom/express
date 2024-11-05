@@ -1,3 +1,7 @@
+main  .mobile-gating-button {
+    z-index: 10;
+}
+
 main .mobile-gating-text {
     height: fit-content;
     margin: auto;
