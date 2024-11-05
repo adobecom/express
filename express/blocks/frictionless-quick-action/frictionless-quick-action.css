@@ -134,7 +134,8 @@
     background-color: #f06dad;
 }
 .frictionless-quick-action.block .quick-action-container {
-    height: 667px;
+    /* height: 667px; */
+    height: 787px;
 }
 
 .frictionless-quick-action.block .quick-action-container > * {
