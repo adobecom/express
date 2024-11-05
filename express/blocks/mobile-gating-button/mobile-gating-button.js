@@ -14,7 +14,7 @@ function buildAction(entry, buttonType) {
   text.textContent = entry.iconText;
   const a = entry.anchor;
   a.classList.add(buttonType, 'button', 'mobile-gating-link');
-  wrapper.append(entry.icon, text, a); 
+  wrapper.append(entry.icon, text, a);
   return wrapper;
 }
 
@@ -25,7 +25,7 @@ function buildMobileGating(block, data) {
       'mobile-gating-header',
   });
   header.textContent = data.mainCta.text;
-  block.append(header,buildAction(data.tools[0], 'accent'),buildAction(data.tools[1], 'outline'));
+  block.append(header, buildAction(data.tools[0], 'accent'), buildAction(data.tools[1], 'outline'));
 }
 
 export function createMultiFunctionButton(block, data, audience) {
@@ -44,7 +44,7 @@ function deviceCheck() {
     if (navigator.deviceMemory <= 4 && isAndroid) {
       return true;
     } else {
-      return false
+      return false;
     }
   }
   return true;
