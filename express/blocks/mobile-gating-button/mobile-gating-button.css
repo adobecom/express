@@ -14,10 +14,6 @@ main .mobile-gating-text, main .mobile-gating-button .floating-button .mobile-ga
     margin: auto;
 }
 
-main .mobile-gating-button .mobile-gating-header-row {
-    display: flex;
-}
-
 main .mobile-gating-button  .mobile-gating-header-row .mobile-gating-exit {
     border-radius: 24px;
     margin-left: auto;
@@ -25,12 +21,6 @@ main .mobile-gating-button  .mobile-gating-header-row .mobile-gating-exit {
     font-size: 14px;
     height: 24px;
     background: var(--Palette-sx-gray-100, #E9E9E9);
-}
-
-main .mobile-gating-button  .mobile-gating-header-row .mobile-gating-exit img {
-    position: absolute;
-    top: 20.8px;
-    right: 20.8px;
 }
 
 main  .mobile-gating-button .floating-button.block {
