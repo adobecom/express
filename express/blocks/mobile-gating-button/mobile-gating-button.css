@@ -1,4 +1,4 @@
-main  .mobile-gating-button {
+main  .floating-button-wrapper.mobile-gating-button, main .mobile-gating-button {
     z-index: 10;
 }
 
