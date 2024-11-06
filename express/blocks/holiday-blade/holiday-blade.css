@@ -1,0 +1,91 @@
+main .section >.holiday-blade {
+    max-width: 100%;
+    width: 100%;
+    height: 48px;
+    z-index: 6;
+    position: relative;
+    overflow: hidden;
+}
+
+main .holiday-blade video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+main .holiday-blade > div {
+    z-index: 3;
+    position: relative;
+}
+
+
+main .holiday-blade > div h4 {
+    text-align: left; 
+    font-size: var(--body-font-size-m);
+}
+
+
+main .holiday-blade .toggle-button-chev {
+    cursor: pointer;
+    display: block;
+    float: left;
+    width: 32px;
+    height: 32px;
+    margin: 10px 7px;
+    background: var(--color-white);
+    box-shadow: 0 4px 8px 2px rgba(102, 102, 102, 0.1);
+    border-radius: 50%;
+    pointer-events: auto;
+    border: none;
+    transform: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+ 
+main .holiday-blade.expanded .toggle-button-chev::before  {
+     transform: rotate(-45deg);
+     top: 1.5px;
+}
+
+ main .holiday-blade .toggle-button-chev::before {
+    content: '';
+    position: absolute;
+    margin-top: 11px;
+    width: 8px;
+    height: 8px;
+    left: 10.5px;
+    top: -1.5px;
+    border-top: solid 2px var(--color-gray-700);
+    border-right: solid 2px var(--color-gray-700);
+    transform: rotate(135deg);
+}  
+
+
+main .holiday-blade.expanded .toggle-button-chev {
+    transform: rotate(-135deg);
+    transform: none;
+    z-index: 10;
+}
+ 
+main .holiday-blade > div > div:first-of-type{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 16px;
+    font-size: 18px;
+    height: 24px;
+    padding: 12px;
+}
+
+main .holiday-blade div div > * { 
+    margin : 0;
+}
+
+
+main .holiday-blade.expanded {
+    height: 100%;
+    overflow:  unset;
+}

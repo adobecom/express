@@ -1218,9 +1218,7 @@ function decorateHoliday(block, props) {
   const heading = templateTitle.querySelector('h4');
   const subheading = templateTitle.querySelector('p');
   const link = templateTitle.querySelector('.template-title-link');
-  console.log(templateTitle)
   const icon = templateTitle.querySelector('.view-all-link-wrapper .icon')
-  console.log(icon)
   const linkWrapper = link.closest('p');
   const toggle = createTag('div', { class: 'toggle-button' });
   const topElements = createTag('div', { class: 'toggle-bar-top' });

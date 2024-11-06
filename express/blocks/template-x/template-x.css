@@ -2233,7 +2233,8 @@ main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top > picture:first-
     float: unset;
 }
 
-main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top > a, .icon {
+main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top > a, 
+main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top > .icon {
     margin-top: 16px;
     margin-left: 10px;
     text-decoration: underline;
