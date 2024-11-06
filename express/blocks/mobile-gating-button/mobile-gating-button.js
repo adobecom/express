@@ -1,6 +1,7 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
-  createTag, getIconElement, getMetadata, getMobileOperatingSystem,
+  createTag,
+  getMetadata, getMobileOperatingSystem,
 } from '../../scripts/utils.js';
 
 import {
