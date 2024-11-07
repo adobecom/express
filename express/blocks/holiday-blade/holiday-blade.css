@@ -86,6 +86,165 @@ main .holiday-blade div div > * {
 
 
 main .holiday-blade.expanded {
-    height: 100%;
+    height: 300px;
     overflow:  unset;
+}
+
+main .holiday-blade .template .still-wrapper .image-wrapper {
+    position: relative;
+}
+
+
+main .holiday-blade .template {
+    position: relative;
+    min-height: 200px;
+    display: inline-flex;
+    width: 165px;
+    margin: 24px 11px 18px 11px;
+}
+
+main .holiday-blade   .button-container:focus-within{
+    visibility: visible;
+    opacity: 20 !important;
+}
+
+main .holiday-blade  .button-container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    text-align: center;
+    transition: opacity .3s ease-in-out;
+    will-change: opacity;
+    border-radius: 12px;
+    min-height: unset;
+    box-sizing: border-box;
+    height: calc(100% + 40px);
+    width: calc(100% + 24px);
+    opacity: 0;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    box-shadow: 0 0 6px #00000029;
+}
+
+main .holiday-blade .template .button-container:hover {
+    z-index: 99;
+}
+
+main .holiday-blade .template:hover:not(.placeholder) .button-container{
+    opacity: 1;
+    pointer-events: initial;
+    z-index: 2;
+}
+
+main .holiday-blade .template .button-container .media-wrapper {
+    position: relative;
+    height: 100%;
+    flex-basis: 100%;
+    width: 100%;
+}
+
+main .holiday-blade .template .button-container a.button {
+    max-width: 100%;
+    margin: 6px 6px 0;
+    box-sizing: border-box;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 16px;
+}
+
+main .holiday-blade  .template .button-container a.cta-link {
+    display: block;
+    width: 100%;
+    height: calc(100% - 34px);
+    white-space: nowrap;
+    font-weight: var(--body-font-weight);
+}
+
+ main .holiday-blade .template .button-container .media-wrapper .icon-share-arrow {
+    cursor: pointer;
+    pointer-events: auto;
+    width: 12px;
+    height: 12px;
+    padding: 4px;
+    background-color: white;
+    overflow: visible;
+}
+
+ main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    border-radius: 50%;
+    height: 20px;
+}
+
+main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
+    visibility: hidden;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 130px;
+    background-color: #33AB84;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: calc(100% + 12px);
+    font-size: var(--body-font-size-s);
+}
+
+main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip .icon-checkmark-green {
+    width: 10px;
+    height: 10px;
+    border-radius: 30px;
+    background-color: var(--color-white);
+    padding: 2px;
+}
+
+
+main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip.flipped {
+    left: unset;
+    right: calc(100% + 12px);
+}
+
+main .holiday-blade.template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #33AB84 transparent transparent;
+}
+
+main .holiday-blade .template:nth-last-of-type(2) .button-container .media-wrapper .share-icon-wrapper .shared-tooltip::after {
+    right: unset;
+    left: 100%;
+    border-color: transparent transparent transparent #33AB84;
+}
+
+main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip.flipped::after {
+    right: unset;
+    left: 100%;
+    transform: rotate(180deg);
+}
+
+
+main .holiday-blade .carousel {
+    height: 200px;
+}
+main .holiday-blade .carousel-container .carousel-platform {
+    height: 200px;
 }

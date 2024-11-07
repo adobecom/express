@@ -56,7 +56,7 @@ async function getTemplates(response, phs, fallbackMsg) {
   };
 }
 
-async function fetchAndRenderTemplates(props) {
+export async function fetchAndRenderTemplates(props) {
   const [placeholders, { response, fallbackMsg }] = await Promise.all(
     [fetchPlaceholders(), fetchTemplates(props)],
   );
@@ -1255,7 +1255,7 @@ function decorateHoliday(block, props) {
   initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev);
 }
 
-async function decorateTemplates(block, props) {
+export async function decorateTemplates(block, props) {
   const impression = gatherPageImpression(props);
   updateImpressionCache(impression);
   const innerWrapper = block.querySelector('.template-x-inner-wrapper');
@@ -1599,7 +1599,7 @@ async function buildTemplateList(block, props, type = []) {
   if (!props.templateStats) {
     await processContentRow(block, props);
   }
-
+  console.log(props)
   const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
 
   if (templates?.length > 0) {
