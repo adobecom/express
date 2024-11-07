@@ -113,7 +113,7 @@ async function startSDK(data = '', quickAction, block) {
   const exportConfig = [
     {
       id: 'download-button',
-      // label: 'Download',
+      label: 'Download to phone',
       action: {
         target: 'download',
       },
@@ -128,7 +128,7 @@ async function startSDK(data = '', quickAction, block) {
     },
     {
       id: 'edit-in-express',
-      // label: 'Edit in Adobe Express for free',
+      label: 'Edit in Adobe Express for free',
       action: {
         target: 'express',
       },
