@@ -27,10 +27,10 @@ export default async function getData() {
     .filter(Boolean)
     .map((s) => s.trim())
     .filter(
-      // api only tracks subpaths
+      // subpaths only
       (s) => !['express', 'templates', 'colors', locale.prefix.replace('/', '')].includes(s),
     )
-    // capitalize since result size for flyer is much bigger than for Flyer
+    // capitalize as flyer's res payload size > Flyer's
     .map((s) => s && String(s[0]).toUpperCase() + String(s).slice(1))
     .reverse()
     .join(' ');
