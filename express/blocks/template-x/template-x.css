@@ -1834,9 +1834,14 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
 }
 
 .template-x.horizontal.holiday.light-text,
+.template-x.horizontal.seasonal.holiday.light-text .toggle-bar-top a,
 .template-x.horizontal.holiday.light-text .toggle-button a,
 .template-x.horizontal.holiday.light-text .template-link {
     color: var(--color-white);
+}
+
+.template-x.horizontal.seasonal.holiday.light-text .toggle-bar-top a~img {
+    filter: invert(100%);
 }
 
 .template-x.horizontal.holiday.light-text .toggle-button .toggle-button-chev {
