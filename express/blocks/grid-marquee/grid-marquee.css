@@ -1,10 +1,7 @@
 .grid-marquee {
   --m-img-w: 152px;
-  --m-img-h: 103px;
   --t-img-w: 304px;
-  --t-img-h: 227px;
-  --d-img-w: 256px;
-  --d-img-h: 199px;
+  --d-img-w: 254px;
 }
 .section .grid-marquee {
   max-width: initial;
@@ -108,9 +105,6 @@
 .grid-marquee .face img {
   border-radius: 8px;
   width: var(--m-img-w);
-  height: var(--m-img-h);
-  object-fit: cover;
-  object-position: center;
 }
 
 .grid-marquee .drawer {
@@ -144,9 +138,7 @@
 }
 
 .grid-marquee .drawer .title-row {
-  padding-top: 6px;
-  padding-bottom: 8px;
-  padding: 6px 16px 0;
+  padding: 0px 16px 12px;
   font-size: 1.125rem;
   display: flex;
   align-items: center;
@@ -185,6 +177,10 @@
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+.grid-marquee .panel .drawer-cta:hover {
+  text-decoration: underline;
 }
 
 .grid-marquee .drawer .icon {
@@ -288,7 +284,6 @@
   }
   .grid-marquee .face img {
     width: var(--t-img-w);
-    height: var(--t-img-h);
   }
   /* .grid-marquee .drawer {
     transition: opacity .4s ease, visibility .4s;
@@ -345,7 +340,6 @@
 
   .grid-marquee .face img {
     width: var(--d-img-w);
-    height: var(--d-img-h);
   }
 
   .grid-marquee .face {
