@@ -22,10 +22,16 @@ const mFetch = memoize((url, data) => fetch(url, data).then((r) => (r.ok ? r.jso
 
 export default async function getData() {
   const { locale } = getConfig();
-  const textQuery = window.location.pathname.split('/')
+  const textQuery = window.location.pathname
+    .split('/')
     .filter(Boolean)
     .map((s) => s.trim())
-    .filter((s) => !['express', 'templates', 'colors', locale.prefix.replace('/', '')].includes(s))
+    .filter(
+      // api only tracks subpaths
+      (s) => !['express', 'templates', 'colors', locale.prefix.replace('/', '')].includes(s),
+    )
+    // capitalize since result size for flyer is much bigger than for Flyer
+    .map((s) => s && String(s[0]).toUpperCase() + String(s).slice(1))
     .reverse()
     .join(' ');
   const data = {
