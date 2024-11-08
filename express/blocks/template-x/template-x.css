@@ -2349,6 +2349,10 @@ main .template-x.holiday.seasonal .toggle-button-chev::before {
         margin-left: unset;
         text-decoration: underline;
     }
+
+    main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top > a {
+        margin-left: 0px;
+    }
        
     main .template-x.holiday.seasonal .toggle-bar > .toggle-bar-top .toggle-button-chev {
         left: calc(100% - 60px);
