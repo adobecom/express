@@ -1184,13 +1184,12 @@ function initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev) {
 
   toggleChev.addEventListener('click', (e) => {
     e.stopPropagation();
-    onToggle()
-
+    onToggle();
   });
   toggle.addEventListener('click', (e) => {
     e.stopPropagation();
-    onToggle()
-  } );
+    onToggle();
+  });
   document.addEventListener('click', (e) => {
     if (e.target.closest('.carousel-fader-right') || e.target.closest('.carousel-fader-left')) {
       return;
@@ -1218,7 +1217,7 @@ function decorateHoliday(block, props) {
   const heading = templateTitle.querySelector('h4');
   const subheading = templateTitle.querySelector('p');
   const link = templateTitle.querySelector('.template-title-link');
-  const icon = templateTitle.querySelector('.view-all-link-wrapper .icon')
+  const icon = templateTitle.querySelector('.view-all-link-wrapper .icon');
   const linkWrapper = link.closest('p');
   const toggle = createTag('div', { class: 'toggle-button' });
   const topElements = createTag('div', { class: 'toggle-bar-top' });
@@ -1237,19 +1236,17 @@ function decorateHoliday(block, props) {
   toggleBar.classList.add('toggle-bar');
   topElements.append(heading);
 
-
   bottomElements.append(subheading);
   toggleBar.append(topElements, bottomElements);
   block.style.backgroundColor = props.backgroundColor;
 
   if (mobileViewport) {
-    block.classList.add('mobile');;
-
+    block.classList.add('mobile');
   }
-  
+
   topElements.append(link);
-  if (icon) topElements.append(icon)
-  topElements.append(toggleChev)
+  if (icon) topElements.append(icon);
+  topElements.append(toggleChev);
 
   linkWrapper.remove();
   initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev);
@@ -1599,7 +1596,7 @@ async function buildTemplateList(block, props, type = []) {
   if (!props.templateStats) {
     await processContentRow(block, props);
   }
-  console.log(props)
+  console.log(props);
   const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
 
   if (templates?.length > 0) {
