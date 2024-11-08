@@ -1843,6 +1843,7 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     border-color: var(--color-white);
 }
 
+.template-x.horizontal.holiday.dark-text .toggle-bar-top a,
 .template-x.horizontal.holiday.dark-text,
 .template-x.horizontal.holiday.dark-text .toggle-button a,
 .template-x.horizontal.holiday.dark-text .template-link {
