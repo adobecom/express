@@ -1925,7 +1925,7 @@ async function buildAutoBlocks(main) {
   }
 
   async function loadFloatingCTA(BlockMediator) {
-    const validButtonVersion = ['floating-button', 'multifunction-button', 'bubble-ui-button'];
+    const validButtonVersion = ['floating-button', 'multifunction-button'];
     const device = document.body.dataset?.device;
     const blockName = getMetadata(`${device}-floating-cta`);
 
@@ -2614,12 +2614,12 @@ export async function loadArea(area = document) {
   wordBreakJapanese(area);
 
   // appending express-specific branch parameters
-  const links = isDoc ? area.querySelectorAll('main a[href*="adobesparkpost"]') : area.querySelectorAll(':scope a[href*="adobesparkpost"]');
-  if (links.length) {
-    window.addEventListener('express:LCP:loaded', () => {
+  window.addEventListener('express:LCP:loaded', () => {
+    const links = isDoc ? area.querySelectorAll('main a[href*="adobesparkpost"]') : area.querySelectorAll(':scope a[href*="adobesparkpost"]');
+    if (links.length) {
       import('./branchlinks.js').then((mod) => mod.default(links));
-    });
-  }
+    }
+  });
 
   const areaBlocks = [];
   for (const section of sections) {
