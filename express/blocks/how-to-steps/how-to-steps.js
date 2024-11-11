@@ -131,11 +131,26 @@ export default function decorate(block, name, doc) {
       h3.innerHTML = cells[0].textContent.trim();
       const p = createTag('p');
       p.innerHTML = cells[1].innerHTML;
+
+      const isVideo = p.innerHTML.includes('.mp4');
+      let content;
+
+      if (isVideo) {
+        const video = createTag('video', { width: '320', height: '240', controls: true });
+        const sourceMp4 = createTag('source', { src: p.innerHTML.trim(), type: 'video/mp4' });
+        video.appendChild(sourceMp4);
+        content = video;
+      } else {
+        content = p;
+      }
+
       const text = createTag('div', { class: 'tip-text' });
       text.append(h3);
-      text.append(p);
+      text.append(content);
+
       const number = createTag('div', { class: 'tip-number' });
       number.innerHTML = `<span>${index}</span>`;
+
       cells[0].remove();
       cells[1].innerHTML = '';
       cells[1].classList.add('tip');
