@@ -342,7 +342,7 @@ main .gen-ai-cards.homepage .carousel-container .carousel-fader-right.arrow-hidd
 
 @media (min-width: 1280px) {
   .gen-ai-cards.homepage .carousel-element.card .media-wrapper {
-    width: 325px;
+    width: 352px;
   }
   .gen-ai-cards.homepage .carousel-element.card {
     width: 380px;
@@ -350,7 +350,7 @@ main .gen-ai-cards.homepage .carousel-container .carousel-fader-right.arrow-hidd
   }
   .gen-ai-cards.homepage .card .text-wrapper {
     text-align: left;
-    margin: 20px 20px 12px;
+    margin: 20px 15px 15px;
   }
   main .gen-ai-cards.homepage .gen-ai-cards-heading {
     font-size: 36px;
