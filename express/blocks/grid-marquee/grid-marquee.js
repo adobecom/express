@@ -12,6 +12,7 @@ const mediumMQ = window.matchMedia('(min-width: 768px)');
 const reduceMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 function drawerOff() {
+  return;
   if (!currDrawer) return;
   currDrawer.closest('.card').setAttribute('aria-expanded', false);
   currDrawer.setAttribute('aria-hidden', true);
@@ -57,6 +58,10 @@ async function decorateDrawer(videoSrc, poster, titleText, panels, panelsFrag, d
   const icons = panelsFrag.querySelectorAll('.icon');
   const anchors = [...panelsFrag.querySelectorAll('a')];
   anchors.forEach((anchor, i) => {
+    const parent = anchor.parentElement;
+    if (parent.tagName === 'P') {
+      parent.classList.add('drawer-cta-wrapper');
+    }
     anchor.classList.add('drawer-cta');
     const icon = icons[i];
     const match = icon && iconRegex.exec(icon.className);
