@@ -353,7 +353,7 @@ main .gen-ai-cards.homepage .carousel-container .carousel-fader-right.arrow-hidd
     margin: 20px 15px 15px;
   }
   main .gen-ai-cards.homepage .gen-ai-cards-heading {
-    font-size: 36px;
+    font-size: var(--heading-font-size-m);
   }
 }
 
