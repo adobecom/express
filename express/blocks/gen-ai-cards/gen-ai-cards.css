@@ -66,8 +66,8 @@
 }
 
 .gen-ai-cards.homepage .carousel-element.card {
-  width: 292px;
-  height: 396px;
+  width: 290px;
+  height: 392px;
 }
 
 .gen-ai-cards .carousel-left-trigger ~ .card {
@@ -84,7 +84,7 @@
 }
 
 .gen-ai-cards .card .text-wrapper p.cta-card-title {
-  font-size: var(--body-font-size-m);
+  font-size: 17px;
   line-height: var(--body-font-size-m);
   font-weight: 700;
 }
@@ -340,8 +340,8 @@ main .gen-ai-cards.homepage .carousel-container .carousel-fader-right.arrow-hidd
     width: 325px;
   }
   .gen-ai-cards.homepage .carousel-element.card {
-    width: 357px;
-    height: 396px;
+    width: 380px;
+    height: 392px;
   }
   .gen-ai-cards.homepage .card .text-wrapper {
     text-align: left;
