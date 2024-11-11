@@ -103,7 +103,6 @@ main .quotes.singular .quote-container .mobile-container {
 }
 
 main .quotes.singular .quote-container .mobile-container .quote {
-  /* max-width: 375px; */
   margin: 0;
 }
 
