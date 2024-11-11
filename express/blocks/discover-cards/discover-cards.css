@@ -82,7 +82,12 @@ main .section .discover-cards {
     margin-left: 20px;
 }
 
-@media (min-width: 768px) {  
+@media (min-width: 1280px) {  
+    .discover-cards .center-title h3 {
+        font-size: 36px;
+        margin-top: 50px;
+        margin-bottom: 20px;
+    }
     .discover-cards .cards-container .card {
         min-width: 399px;
         max-width: 399px;
@@ -120,12 +125,7 @@ main .section .discover-cards {
     }
 }
 
-@media (min-width: 1280px) {  
-    .discover-cards .center-title h3 {
-        font-size: 36px;
-        margin-top: 50px;
-        margin-bottom: 20px;
-    }
+@media (min-width: 1680px) {  
     .discover-cards .cards-container {
         margin: auto;
     }
