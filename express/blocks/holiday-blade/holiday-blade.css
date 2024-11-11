@@ -1,18 +1,13 @@
-main .section >.holiday-blade {
+main .section>.holiday-blade {
     max-width: 100%;
     width: 100%;
-    height: 48px;
+    height: 100px;
     z-index: 6;
     position: relative;
     overflow: hidden;
 }
 
 main .holiday-blade video {
-    /* position: absolute;
-    top: 0;
-    left: 0;
-    height: 300px;
-    width: unset; */
 
     position: absolute;
     top: 0;
@@ -24,17 +19,26 @@ main .holiday-blade video {
     pointer-events: none;
 }
 
-main .holiday-blade > div {
+main .holiday-blade>div {
     z-index: 3;
     position: relative;
 }
 
 
-main .holiday-blade > div h4 {
-    text-align: left; 
+main .holiday-blade>div h4 {
+    text-align: left;
     font-size: var(--body-font-size-m);
 }
 
+main .holiday-blade .toggle-bar~p a {
+    position: relative;
+    top: -2.5px;
+    display: inline;
+}
+
+main .holiday-blade .toggle-bar {
+    display: none;
+}
 
 main .holiday-blade .toggle-button-chev {
     cursor: pointer;
@@ -53,13 +57,13 @@ main .holiday-blade .toggle-button-chev {
     right: 0;
     top: 0;
 }
- 
-main .holiday-blade.expanded .toggle-button-chev::before  {
-     transform: rotate(-45deg);
-     top: 1.5px;
+
+main .holiday-blade.expanded .toggle-button-chev::before {
+    transform: rotate(-45deg);
+    top: 1.5px;
 }
 
- main .holiday-blade .toggle-button-chev::before {
+main .holiday-blade .toggle-button-chev::before {
     content: '';
     position: absolute;
     margin-top: 11px;
@@ -70,7 +74,8 @@ main .holiday-blade.expanded .toggle-button-chev::before  {
     border-top: solid 2px var(--color-gray-700);
     border-right: solid 2px var(--color-gray-700);
     transform: rotate(135deg);
-}  
+}
+
 
 
 main .holiday-blade.expanded .toggle-button-chev {
@@ -78,8 +83,8 @@ main .holiday-blade.expanded .toggle-button-chev {
     transform: none;
     z-index: 10;
 }
- 
-main .holiday-blade > div > div:first-of-type{
+
+main .holiday-blade>div>div:first-of-type {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -88,17 +93,19 @@ main .holiday-blade > div > div:first-of-type{
     font-size: 18px;
     height: 24px;
     padding: 12px;
- 
+    margin-right: 50px;
+
 }
 
-main .holiday-blade div div > * { 
-    margin : 0;
+main .holiday-blade div div>* {
+    margin: 0;
+    margin-right: auto;
 }
 
 
 main .holiday-blade.expanded {
     height: 350px;
-    overflow:  unset;
+    overflow: unset;
 }
 
 main .holiday-blade .template .still-wrapper .image-wrapper {
@@ -155,12 +162,12 @@ main .holiday-blade .template {
     margin: 24px 11px 18px 11px;
 }
 
-main .holiday-blade   .button-container:focus-within{
+main .holiday-blade .button-container:focus-within {
     visibility: visible;
     opacity: 20 !important;
 }
 
-main .holiday-blade  .button-container{
+main .holiday-blade .button-container {
     position: absolute;
     border-radius: 16px;
     top: 50%;
@@ -189,7 +196,7 @@ main .holiday-blade .template .button-container:hover {
     z-index: 99;
 }
 
-main .holiday-blade .template:hover:not(.placeholder) .button-container{
+main .holiday-blade .template:hover:not(.placeholder) .button-container {
     opacity: 1;
     pointer-events: initial;
     z-index: 2;
@@ -213,7 +220,7 @@ main .holiday-blade .template .button-container a.button {
     min-height: 16px;
 }
 
-main .holiday-blade  .template .button-container a.cta-link {
+main .holiday-blade .template .button-container a.cta-link {
     display: block;
     width: 100%;
     height: calc(100% - 34px);
@@ -221,7 +228,7 @@ main .holiday-blade  .template .button-container a.cta-link {
     font-weight: var(--body-font-weight);
 }
 
- main .holiday-blade .template .button-container .media-wrapper .icon-share-arrow {
+main .holiday-blade .template .button-container .media-wrapper .icon-share-arrow {
     cursor: pointer;
     pointer-events: auto;
     width: 12px;
@@ -231,7 +238,7 @@ main .holiday-blade  .template .button-container a.cta-link {
     overflow: visible;
 }
 
- main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper {
+main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -298,8 +305,63 @@ main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapp
 main .holiday-blade .carousel {
     height: 200px;
 }
+
 main .holiday-blade .carousel-container .carousel-platform {
     height: 200px;
     padding-bottom: 30px;
     padding-top: 30px;
-} 
+}
+
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+    main .section>.holiday-blade {
+        max-width: 100%;
+   
+        height: 100px;
+        z-index: 6;
+        position: relative;
+        overflow: hidden;
+        width: 1200px;
+    }
+
+    main .holiday-blade div div>* {
+        margin: unset;
+    }
+
+    main .holiday-blade .toggle-bar {
+        display: block;
+        width: 1200px;
+    }
+
+    main .holiday-blade.expanded {
+        height: 350px;
+        overflow: unset;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    main .section>.holiday-blade {
+        max-width: 100%;
+        width: 100%;
+        height: 48px;
+        z-index: 6;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    main .holiday-blade .toggle-bar {
+        display: block;
+        width: initial;
+    } 
+
+    main .holiday-blade div div>* {
+        margin: unset;
+    }
+
+    main .holiday-blade.expanded {
+        height: 350px;
+        overflow: unset;
+    }
+
+}
