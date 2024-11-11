@@ -125,6 +125,10 @@ main .section .discover-cards {
     }
 }
 
+@media (min-width: 768px) {
+
+}
+
 @media (min-width: 1200px) {  
     .discover-cards .cards-container {
         margin: auto;
