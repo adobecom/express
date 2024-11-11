@@ -86,7 +86,7 @@ main .holiday-blade div div > * {
 
 
 main .holiday-blade.expanded {
-    height: 300px;
+    height: 350px;
     overflow:  unset;
 }
 
@@ -94,12 +94,51 @@ main .holiday-blade .template .still-wrapper .image-wrapper {
     position: relative;
 }
 
+main .holiday-blade .template .media-wrapper img:first-of-type,
+main .holiday-blade .template .still-wrapper .image-wrapper img:first-of-type {
+    height: 200px;
+    width: auto;
+    pointer-events: none;
+    object-fit: cover;
+    display: block;
+}
+
+main .holiday-blade .still-wrapper .image-wrapper .media-type-icon {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    bottom: 8px;
+    left: 8px;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #00000033;
+    transition: transform .3s ease-in-out;
+    will-change: transform;
+}
+
+main .holiday-blade .still-wrapper .image-wrapper .free-tag {
+    position: absolute;
+    height: 24px;
+    display: flex;
+    border-radius: 1000px;
+    align-items: center;
+    font-weight: 500;
+    width: max-content;
+    top: 8px;
+    right: 8px;
+    color: var(--color-white);
+    font-size: 12px;
+    line-height: 16px;
+    padding: 0 12px;
+    background: #000000B3;
+}
+
 
 main .holiday-blade .template {
     position: relative;
-    min-height: 200px;
+    height: 200px;
     display: inline-flex;
-    width: 165px;
+    width: auto;
     margin: 24px 11px 18px 11px;
 }
 
@@ -120,12 +159,12 @@ main .holiday-blade  .button-container{
     border-radius: 12px;
     min-height: unset;
     box-sizing: border-box;
-    height: calc(100% + 40px);
+    height: calc(100% + 50px);
     width: calc(100% + 24px);
     opacity: 0;
     background-color: white;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: center;
     justify-content: space-between;
     padding: 8px;
@@ -247,4 +286,6 @@ main .holiday-blade .carousel {
 }
 main .holiday-blade .carousel-container .carousel-platform {
     height: 200px;
-}
+    padding-bottom: 30px;
+    padding-top: 30px;
+} 
