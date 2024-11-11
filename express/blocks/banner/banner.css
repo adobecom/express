@@ -18,7 +18,7 @@ main .section.banner-standout-container {
 }
 
 main div:has(> .banner.cool) {
-  padding: 40px 0;
+  padding: 24px 0;
 }
 
 main .section.banner-compact-container {
@@ -142,6 +142,9 @@ main .banner.cool h2 {
 }
 
 @media (min-width: 768px) {
+  main div:has(> .banner.cool) {
+    padding: 40px 0;
+  }
   main .banner.cool {
     padding: 0 32px;
     max-width: unset;
@@ -159,7 +162,7 @@ main .banner.cool h2 {
 
 @media (min-width: 1280px) {
   main div:has(> .banner.cool) {
-    padding: 65px 0;
+    padding: 48px 0;
   }
   main .banner.cool {
     padding: 0 40px;
