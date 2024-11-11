@@ -175,7 +175,6 @@ main .quotes.singular .mobile-container .author-photo picture img {
 }
 
 main .quotes.singular .quote-details {
-  /* width: 90%; */
   margin: 0 16px;
   font-size: 22px;
   font-weight: 800;
@@ -208,17 +207,13 @@ main .quotes.singular .mobile-container .author-panel .author-photo {
   main .quotes.singular .quote {
     width: 83.3%;
     max-width: 968px;
-    /* padding: 64px 32px; */
     min-height: 315px;
   }
 }
 
 @media (min-width: 1280px) {
   main .quotes.singular .quote {
-    /* width: 75%;
-    max-width: 830px; */
     width: 75%;
-    /* max-width: unset; */
     font-weight: 600;
   }
   main .quotes.singular .quote-details {
@@ -229,7 +224,6 @@ main .quotes.singular .mobile-container .author-panel .author-photo {
 @media (min-width: 1680px) {
   main .quotes.singular .quote {
     max-width: 1120px;
-    /* width: 75%; */
   }
 }
 
