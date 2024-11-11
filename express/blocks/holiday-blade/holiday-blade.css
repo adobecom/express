@@ -8,10 +8,20 @@ main .section >.holiday-blade {
 }
 
 main .holiday-blade video {
+    /* position: absolute;
+    top: 0;
+    left: 0;
+    height: 300px;
+    width: unset; */
+
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    object-fit: cover;
+    height: 100%;
+    width: 100vw;
+    z-index: -1;
+    pointer-events: none;
 }
 
 main .holiday-blade > div {
@@ -78,6 +88,7 @@ main .holiday-blade > div > div:first-of-type{
     font-size: 18px;
     height: 24px;
     padding: 12px;
+ 
 }
 
 main .holiday-blade div div > * { 
@@ -99,8 +110,10 @@ main .holiday-blade .template .still-wrapper .image-wrapper img:first-of-type {
     height: 200px;
     width: auto;
     pointer-events: none;
+    margin: 0 auto;
     object-fit: cover;
     display: block;
+    border-radius: 16px;
 }
 
 main .holiday-blade .still-wrapper .image-wrapper .media-type-icon {
@@ -149,6 +162,7 @@ main .holiday-blade   .button-container:focus-within{
 
 main .holiday-blade  .button-container{
     position: absolute;
+    border-radius: 16px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -159,7 +173,7 @@ main .holiday-blade  .button-container{
     border-radius: 12px;
     min-height: unset;
     box-sizing: border-box;
-    height: calc(100% + 50px);
+    height: calc(100% + 60px);
     width: calc(100% + 24px);
     opacity: 0;
     background-color: white;
@@ -167,7 +181,7 @@ main .holiday-blade  .button-container{
     flex-direction: column-reverse;
     align-items: center;
     justify-content: space-between;
-    padding: 8px;
+    padding: 16px 8px 8px 8px;
     box-shadow: 0 0 6px #00000029;
 }
 
