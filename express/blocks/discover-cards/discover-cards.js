@@ -42,10 +42,9 @@ export default async function decorate(block) {
   block.appendChild(cardsWrapper);
   await buildGallery(cards, cardsWrapper);
 
-  const imageSize = document.body.dataset.device === 'desktop' ? 'large' : 'small';
   block.style.backgroundImage = `
         linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
         linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 20%),
-        url(/express/blocks/discover-cards/img/cards-bg-${imageSize}.webp)
+        url(/express/blocks/discover-cards/img/cards-bg-large.webp)
       `;
 }
