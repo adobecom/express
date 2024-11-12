@@ -2426,13 +2426,11 @@ export async function fetchAllowedGeoRouterPaths() {
     try {
       const resp = await fetch('/express/allowed-georouter-paths.json');
       const json = await resp.json();
-      console.log('are we here', json);
       json.data.forEach((entry) => {
-        console.log('entry', entry);
         window.allowedGeoRouterPaths.push(entry);
       });
     } catch (e) {
-      // ignore
+      console.error('Error fetching allowed geo-router paths:', e);
     }
   }
   return window.allowedGeoRouterPaths;
