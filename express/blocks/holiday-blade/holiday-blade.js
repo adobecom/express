@@ -18,33 +18,50 @@ import {
 } from '../../scripts/utils.js';
 import renderTemplate from '../template-x/template-rendering.js';
 
+async function batchTemplateRequests(templates, placeholders) {
+    const BATCH_SIZE = 5;
+    const results = [];
+    
+    for (let i = 0; i < templates.length; i += BATCH_SIZE) {
+      const batch = templates.slice(i, i + BATCH_SIZE);
+      const batchPromises = batch.map(template => 
+        renderTemplate(template, placeholders)
+      );
+      const batchResults = await Promise.all(batchPromises);
+      results.push(...batchResults);
+    }
+    
+    return results;
+  }
+  
 async function decorateHoliday(block, props) {
     const rows = block.children
-   
 
-  
+
+
     const toggleBar = rows[0].children[0]
     toggleBar.classList.add('toggle-bar')
     const toggleChev = createTag('div', { class: 'toggle-button-chev' });
     toggleBar.append(toggleChev)
-    
-    const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
-    for (let i = 1; i < 4; i++) {
-        rows[i].innerHTML = ''
-    }
-    const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' })
-    for (let template of templates) {
-        innerWrapper.appendChild(template)
-    }
-    rows[1].appendChild(innerWrapper)
-    decorateTemplates(block, props);
-    buildCarousel(':scope > .template', innerWrapper)
-    attachToggleControls(block, rows[0], toggleChev)
 
     const animation = transformLinkToAnimation(rows[0].children[1].querySelector('a'));
     block.classList.add('animated');
     block.append(animation);
 
+    fetchAndRenderTemplates(props).then((res) => {
+        const { templates, fallbackMsg } = res
+        for (let i = 1; i < 4; i++) {
+            rows[i].innerHTML = ''
+        }
+        const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' })
+        for (let template of templates) {
+            innerWrapper.appendChild(template)
+        }
+        rows[1].appendChild(innerWrapper)
+        decorateTemplates(block, props);
+        buildCarousel(':scope > .template', innerWrapper)
+        attachToggleControls(block, rows[0], toggleChev)
+    })
 }
 
 function attachToggleControls(block, toggleChev) {
@@ -116,24 +133,6 @@ async function fetchAndRenderTemplates(props) {
     return await getTemplates(response, placeholders, fallbackMsg);
 }
 
-// Originally attachFreeInAppPills function
-async function attachFreeInAppPills(block) {
-    const freeInAppText = await fetchPlaceholders().then((json) => json['free-in-app']);
-
-    const templateLinks = block.querySelectorAll('a.template');
-    for (const templateLink of templateLinks) {
-        if (!block.classList.contains('apipowered')
-            && templateLink.querySelectorAll('.icon-premium').length <= 0
-            && !templateLink.classList.contains('placeholder')
-            && !templateLink.querySelector('.icon-free-badge')
-            && freeInAppText) {
-            const $freeInAppBadge = createTag('span', { class: 'icon icon-free-badge' });
-            $freeInAppBadge.textContent = freeInAppText;
-            templateLink.querySelector('div').append($freeInAppBadge);
-        }
-    }
-}
-
 // Originally populateTemplates function
 function populateTemplates(block, props, templates) {
     for (let tmplt of templates) {
@@ -178,10 +177,10 @@ function populateTemplates(block, props, templates) {
 
 async function decorateTemplates(block, props) {
     // Main decorateTemplates logic
-    const impression = gatherPageImpression(props);
-    updateImpressionCache(impression);
-    const innerWrapper = block.querySelector('.holiday-blade-inner-wrapper');
-    const templates = Array.from(innerWrapper.children);
+    // const impression = gatherPageImpression(props);
+    // updateImpressionCache(impression);
+    // const innerWrapper = block.querySelector('.holiday-blade-inner-wrapper');
+    // const templates = Array.from(innerWrapper.children);
 
     block.querySelectorAll(':scope picture > img').forEach((img) => {
         const { src, alt } = img;
@@ -189,19 +188,19 @@ async function decorateTemplates(block, props) {
     });
 
     populateTemplates(block, props, templates);
-    await attachFreeInAppPills(block);
-    const searchId = new URLSearchParams(window.location.search).get('searchId');
-    updateImpressionCache({
-        search_keyword: getMetadata('q') || getMetadata('topics-x') || getMetadata('topics'),
-        result_count: props.total,
-        content_category: 'templates',
-    });
-    if (searchId) trackSearch('view-search-result', searchId);
 
-    const templateLinks = block.querySelectorAll('.template .button-container > a, a.template.placeholder');
-    templateLinks.isSearchOverride = true;
-    const linksPopulated = new CustomEvent('linkspopulated', { detail: templateLinks });
-    document.dispatchEvent(linksPopulated);
+    // const searchId = new URLSearchParams(window.location.search).get('searchId');
+    // updateImpressionCache({
+    //     search_keyword: getMetadata('q') || getMetadata('topics-x') || getMetadata('topics'),
+    //     result_count: props.total,
+    //     content_category: 'templates',
+    // });
+    // if (searchId) trackSearch('view-search-result', searchId);
+
+    // const templateLinks = block.querySelectorAll('.template .button-container > a, a.template.placeholder');
+    // templateLinks.isSearchOverride = true;
+    // const linksPopulated = new CustomEvent('linkspopulated', { detail: templateLinks });
+    // document.dispatchEvent(linksPopulated);
 }
 
 
