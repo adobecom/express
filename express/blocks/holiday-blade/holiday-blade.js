@@ -19,6 +19,7 @@ import {
 import renderTemplate from '../template-x/template-rendering.js';
 
 async function decorateHoliday(block, props) {
+    const rows = block.children
     const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
 
     const animation = transformLinkToAnimation(rows[0].children[1].querySelector('a'));
