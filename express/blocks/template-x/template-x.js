@@ -1599,7 +1599,6 @@ async function buildTemplateList(block, props, type = []) {
   if (!props.templateStats) {
     await processContentRow(block, props);
   }
-  console.log(props)
   const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
 
   if (templates?.length > 0) {

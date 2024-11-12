@@ -1,14 +1,19 @@
-main .section>.holiday-blade {
+main .section> .holiday-blade {
     max-width: 100%;
     width: 100%;
     height: 100px;
     z-index: 6;
     position: relative;
     overflow: hidden;
+    --text-color: black;
+}
+
+main .holiday-blade.light {
+    --text-color: white;
+    color: var(--text-color)
 }
 
 main .holiday-blade video {
-
     position: absolute;
     top: 0;
     left: 0;
@@ -30,13 +35,24 @@ main .holiday-blade>div h4 {
     font-size: var(--body-font-size-m);
 }
 
-main .holiday-blade .toggle-bar~p a {
+main .holiday-blade .toggle-bar a {
     position: relative;
     top: -2.5px;
     display: inline;
+    color: var(--text-color);
+    text-decoration: underline;
+}
+main .holiday-blade .toggle-bar .icon {
+  position: relative;
+  top: -2px
+    
+}
+main .holiday-blade.light .toggle-bar .icon {
+    filter: invert(100)
+
 }
 
-main .holiday-blade .toggle-bar {
+main .holiday-blade .toggle-bar p:first-of-type{
     display: none;
 }
 
@@ -84,7 +100,7 @@ main .holiday-blade.expanded .toggle-button-chev {
     z-index: 10;
 }
 
-main .holiday-blade>div>div:first-of-type {
+main .holiday-blade .toggle-bar {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -104,8 +120,13 @@ main .holiday-blade div div>* {
 
 
 main .holiday-blade.expanded {
-    height: 350px;
+    height: 390px;
     overflow: unset;
+}
+
+main .holiday-blade .carousel-container {
+    position: relative;
+    top: 60px;
 }
 
 main .holiday-blade .template .still-wrapper .image-wrapper {
@@ -316,7 +337,6 @@ main .holiday-blade .carousel-container .carousel-platform {
 @media screen and (min-width: 768px) and (max-width: 1279px) {
     main .section>.holiday-blade {
         max-width: 100%;
-   
         height: 100px;
         z-index: 6;
         position: relative;
@@ -328,7 +348,7 @@ main .holiday-blade .carousel-container .carousel-platform {
         margin: unset;
     }
 
-    main .holiday-blade .toggle-bar {
+    main .holiday-blade .toggle-bar > p:first-of-type {
         display: block;
         width: 1200px;
     }
@@ -336,6 +356,11 @@ main .holiday-blade .carousel-container .carousel-platform {
     main .holiday-blade.expanded {
         height: 350px;
         overflow: unset;
+    }
+
+    main .holiday-blade .carousel-container {
+        position: relative;
+        top: 30px;
     }
 }
 
@@ -350,7 +375,7 @@ main .holiday-blade .carousel-container .carousel-platform {
         width: 100%;
     }
 
-    main .holiday-blade .toggle-bar {
+    main .holiday-blade .toggle-bar p:first-of-type {
         display: block;
         width: initial;
     } 
@@ -364,4 +389,83 @@ main .holiday-blade .carousel-container .carousel-platform {
         overflow: unset;
     }
 
+    main .holiday-blade .carousel-container {
+        position: relative;
+        top: 0;
+    }
+
+}
+
+
+
+
+.holiday-blade .template .button-container .media-wrapper .share-icon-wrapper {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    border-radius: 50%;
+    height: 20px;
+}
+
+.holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
+    visibility: hidden;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 130px;
+    background-color: #33AB84;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: calc(100% + 12px);
+    font-size: var(--body-font-size-s);
+}
+
+.holiday-blade.horizontal .template:nth-last-of-type(2) .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
+    left: unset;
+    right: calc(100% + 12px);
+}
+
+.holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip .icon-checkmark-green {
+    width: 10px;
+    height: 10px;
+    border-radius: 30px;
+    background-color: var(--color-white);
+    padding: 2px;
+}
+
+.holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip.display-tooltip {
+    visibility: visible;
+}
+
+.holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip.flipped {
+    left: unset;
+    right: calc(100% + 12px);
+}
+
+.holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #33AB84 transparent transparent;
+}
+
+.holiday-blade.horizontal .template:nth-last-of-type(2) .button-container .media-wrapper .share-icon-wrapper .shared-tooltip::after {
+    right: unset;
+    left: 100%;
+    border-color: transparent transparent transparent #33AB84;
+}
+
+.holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip.flipped::after {
+    right: unset;
+    left: 100%;
+    transform: rotate(180deg);
 }
