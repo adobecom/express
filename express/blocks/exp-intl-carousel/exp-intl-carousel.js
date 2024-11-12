@@ -112,7 +112,7 @@ export function onCarouselCSSLoad(selector, parent, options) {
       : visibleElement?.previousElementSibling;
 
     if (targetElement) {
-      elements.forEach((el) => {
+      window.innerWidth < 600 && elements.forEach((el) => {
         el.style.opacity = el === targetElement ? '1' : '0.5';
       });
 
