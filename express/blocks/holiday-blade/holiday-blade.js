@@ -33,7 +33,7 @@ async function batchTemplateRequests(templates, placeholders) {
     return results;
   }
   
-function decorateHoliday(block, props) {
+async function decorateHoliday(block, props) {
     const rows = block.children
     const toggleBar = rows[0].children[0]
     toggleBar.classList.add('toggle-bar')
@@ -44,7 +44,7 @@ function decorateHoliday(block, props) {
     block.classList.add('animated');
     block.append(animation);
 
-    fetchAndRenderTemplates(props).then((res) => {
+    fetchAndRenderTemplates(props) 
         // const { templates, fallbackMsg } = res
         // for (let i = 1; i < 4; i++) {
         //     rows[i].innerHTML = ''
@@ -57,7 +57,7 @@ function decorateHoliday(block, props) {
         // decorateTemplates(block, props);
         // buildCarousel(':scope > .template', innerWrapper)
         // attachToggleControls(block, rows[0], toggleChev)
-    })
+ 
 }
 
 function attachToggleControls(block, toggleChev) {
