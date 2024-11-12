@@ -179,8 +179,8 @@ async function decorateTemplates(block, props) {
     // Main decorateTemplates logic
     // const impression = gatherPageImpression(props);
     // updateImpressionCache(impression);
-    // const innerWrapper = block.querySelector('.holiday-blade-inner-wrapper');
-    // const templates = Array.from(innerWrapper.children);
+    const innerWrapper = block.querySelector('.holiday-blade-inner-wrapper');
+    const templates = Array.from(innerWrapper.children);
 
     block.querySelectorAll(':scope picture > img').forEach((img) => {
         const { src, alt } = img;
