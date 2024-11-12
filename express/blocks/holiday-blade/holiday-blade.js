@@ -110,19 +110,19 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     // eslint-disable-next-line no-return-await
     const { templates } = await getTemplates(response, placeholders, fallbackMsg);
 
-    const rows = block.children;
-    for (let i = 1; i < 4; i++) {
-        rows[i].innerHTML = '';
-    }
-    const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' });
-    for (const template of templates) {
-        innerWrapper.appendChild(template);
-    }
-    rows[1].appendChild(innerWrapper);
+    // const rows = block.children;
+    // for (let i = 1; i < 4; i++) {
+    //     rows[i].innerHTML = '';
+    // }
+    // const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' });
+    // for (const template of templates) {
+    //     innerWrapper.appendChild(template);
+    // }
+    // rows[1].appendChild(innerWrapper);
 
-    decorateTemplates(block, props);
-    buildCarousel(':scope > .template', innerWrapper);
-    attachToggleControls(block, rows[0], toggleChev);
+    // decorateTemplates(block, props);
+    // buildCarousel(':scope > .template', innerWrapper);
+    // attachToggleControls(block, rows[0], toggleChev);
 }
 
 // Originally populateTemplates function
