@@ -1,17 +1,4 @@
 import { createTag, loadStyle } from '../../scripts/utils.js';
-import { debounce } from '../../scripts/hofs.js';
-
-const MOBILE_SIZE = 600;
-const MOBILE = 'MOBILE';
-const DESKTOP = 'DESKTOP';
-const getDeviceType = (() => {
-  let deviceType = window.innerWidth >= MOBILE_SIZE ? DESKTOP : MOBILE;
-  const updateDeviceType = () => {
-    deviceType = window.innerWidth >= MOBILE_SIZE ? DESKTOP : MOBILE;
-  };
-  window.addEventListener('resize', debounce(updateDeviceType, 100));
-  return () => deviceType;
-})();
 
 function correctCenterAlignment(plat) {
   if (plat.parentElement.offsetWidth <= plat.offsetWidth) return;
@@ -112,57 +99,13 @@ export function onCarouselCSSLoad(selector, parent, options) {
     platform.scrollLeft -= increment;
   };
 
-  const moveCarouselToCenter = (direction) => {
-    const elements = platform.querySelectorAll('.template.carousel-element');
-    const currentScroll = platform.scrollLeft;
-
-    const visibleElement = Array.from(elements).find((el) => {
-      const elRect = el.getBoundingClientRect();
-      return elRect.left >= 0 && elRect.right <= window.innerWidth;
-    });
-
-    const targetElement = direction === 'next'
-      ? visibleElement?.nextElementSibling
-      : visibleElement?.previousElementSibling;
-
-    if (targetElement) {
-      elements.forEach((el) => {
-        el.style.opacity = el === targetElement ? '1' : '0.5';
-      });
-
-      targetElement.style.scrollMarginLeft = '130px';
-
-      const cardWidth = targetElement.offsetWidth;
-      const newScrollPos = direction === 'next'
-        ? currentScroll + cardWidth
-        : currentScroll - cardWidth;
-
-      platform.scrollTo({
-        left: newScrollPos,
-        behavior: 'smooth',
-      });
-    }
-  };
-
   faderLeft.addEventListener('click', () => {
-    const isMobileCenteredCarousel = document.querySelectorAll('.template-x.four-templates');
-    const isMobile = getDeviceType() === 'MOBILE';
-    if (isMobileCenteredCarousel && isMobile) {
-      moveCarouselToCenter('prev');
-    } else {
-      const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
-      moveCarousel(increment);
-    }
+    const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
+    moveCarousel(increment);
   });
   faderRight.addEventListener('click', () => {
-    const isMobileCenteredCarousel = document.querySelectorAll('.template-x.four-templates');
-    const isMobile = getDeviceType() === 'MOBILE';
-    if (isMobileCenteredCarousel && isMobile) {
-      moveCarouselToCenter('next');
-    } else {
-      const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
-      moveCarousel(-increment);
-    }
+    const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
+    moveCarousel(-increment);
   });
 
   // Carousel loop functionality (if enabled)
@@ -240,43 +183,8 @@ export function onCarouselCSSLoad(selector, parent, options) {
   setInitialState(platform, options);
 }
 
-function applyMarginToFirstElement(elements, isMobile = false) {
-  if (elements.length > 0) {
-    if (!isMobile) {
-      elements[0].style.marginLeft = 'unset';
-      return;
-    }
-
-    const viewportWidth = window.innerWidth;
-    const cardWidth = elements[0].offsetWidth;
-    const marginLeft = (viewportWidth - cardWidth) / 2;
-    const innerWrapper = elements[0].closest('.template-x-inner-wrapper');
-    if (innerWrapper) {
-      innerWrapper.style.paddingRight = '0px';
-    }
-    elements[0].style.marginLeft = `${marginLeft}px`;
-  }
-}
-
-function handleCenterCarousel(isMobile = false) {
-  const fourTemplateElements = document.querySelectorAll('.template-x.four-templates .template.carousel-element');
-  const threeTemplateElements = document.querySelectorAll('.template-x.three-templates .template.carousel-element');
-  applyMarginToFirstElement(fourTemplateElements, isMobile);
-  applyMarginToFirstElement(threeTemplateElements, isMobile);
-}
-
 export default async function buildCarousel(selector, parent, options = {}) {
-  const isTemplateXCenteredCarousel = document.querySelector(
-    '.template-x.four-templates, .template-x.three-templates',
-  );
-  const isMobile = getDeviceType() === 'MOBILE';
-  if (isTemplateXCenteredCarousel && isMobile) {
-    handleCenterCarousel(isMobile);
-  } else if (isTemplateXCenteredCarousel) {
-    handleCenterCarousel(isMobile);
-  }
-
-  // Load CSS then build the carousel
+  // Load CSS then build carousel
   return new Promise((resolve) => {
     loadStyle('/express/blocks/shared/carousel.css', () => {
       onCarouselCSSLoad(selector, parent, options);
