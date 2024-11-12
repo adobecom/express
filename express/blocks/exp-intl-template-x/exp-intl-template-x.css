@@ -224,6 +224,11 @@ main .exp-intl-template-x.horizontal .carousel-container .carousel-platform.righ
     height: 324px;
 }
 
+.exp-intl-template-x.one-template.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    width: unset;
+    height: unset;
+}
+
 main .exp-intl-template-x.sixcols .masonry-col, main .exp-intl-template-x.fullwidth .masonry-col {
     max-width: 175px;
 }
