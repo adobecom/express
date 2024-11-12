@@ -20,19 +20,19 @@ import renderTemplate from '../template-x/template-rendering.js';
 async function batchTemplateRequests(templates, placeholders) {
     const BATCH_SIZE = 5;
     const results = [];
-    
+
     for (let i = 0; i < templates.length; i += BATCH_SIZE) {
-      const batch = templates.slice(i, i + BATCH_SIZE);
-      const batchPromises = batch.map(template => 
-        renderTemplate(template, placeholders)
-      );
-      const batchResults = await Promise.all(batchPromises);
-      results.push(...batchResults);
+        const batch = templates.slice(i, i + BATCH_SIZE);
+        const batchPromises = batch.map(template =>
+            renderTemplate(template, placeholders)
+        );
+        const batchResults = await Promise.all(batchPromises);
+        results.push(...batchResults);
     }
-    
+
     return results;
-  }
-  
+}
+
 async function decorateHoliday(block, props) {
     const rows = block.children
     const toggleBar = rows[0].children[0]
@@ -44,20 +44,9 @@ async function decorateHoliday(block, props) {
     block.classList.add('animated');
     block.append(animation);
 
-    // const res = await fetchAndRenderTemplates(props)
-    //     const { templates, fallbackMsg } = res
-    //     for (let i = 1; i < 4; i++) {
-    //         rows[i].innerHTML = ''
-    //     }
-    //     const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' })
-    //     for (let template of templates) {
-    //         innerWrapper.appendChild(template)
-    //     }
-    //     rows[1].appendChild(innerWrapper)
-    //     decorateTemplates(block, props);
-    //     buildCarousel(':scope > .template', innerWrapper)
-    //     attachToggleControls(block, rows[0], toggleChev)
- 
+    fetchAndRenderTemplates(block, props, toggleChev)
+
+
 }
 
 function attachToggleControls(block, toggleChev) {
@@ -92,7 +81,7 @@ function attachToggleControls(block, toggleChev) {
     }, 3000);
 }
 
-async function fetchAndRenderTemplates(props) {
+async function fetchAndRenderTemplates(block, props, toggleChev) {
     // Original getTemplates function logic
     async function getTemplates(response, phs, fallbackMsg) {
         const filtered = response.items.filter((item) => isValidTemplate(item));
@@ -126,7 +115,21 @@ async function fetchAndRenderTemplates(props) {
     props.total = response.metadata.totalHits;
 
     // eslint-disable-next-line no-return-await
-    return await getTemplates(response, placeholders, fallbackMsg);
+    const { templates } = await getTemplates(response, placeholders, fallbackMsg);
+    const rows = block.children
+
+    //     const { templates, fallbackMsg } = res
+    for (let i = 1; i < 4; i++) {
+        rows[i].innerHTML = ''
+    }
+    const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' })
+    for (let template of templates) {
+        innerWrapper.appendChild(template)
+    }
+    rows[1].appendChild(innerWrapper)
+    decorateTemplates(block, props);
+    buildCarousel(':scope > .template', innerWrapper)
+    attachToggleControls(block, rows[0], toggleChev)
 }
 
 // Originally populateTemplates function
@@ -152,7 +155,7 @@ function decorateTemplates(block, props) {
 }
 
 async function updateImpressionCacheLocal(block, props) {
-    const {getMetadata} = await import ('../../scripts/utils.js');
+    const { getMetadata } = await import('../../scripts/utils.js');
 
     const impression = gatherPageImpression(props);
     updateImpressionCache(impression);
