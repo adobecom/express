@@ -24,6 +24,7 @@ main .section>.simplified-pricing-cards-wrapper {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+  flex-direction: column;
   width: fit-content;
   margin: 16px auto auto auto;
 }
@@ -368,10 +369,6 @@ main .section>.simplified-pricing-cards-wrapper {
 .simplified-pricing-cards .card-wrapper .card.hide .card-cta-group {
   display: none;
 }
-/* 
-.simplified-pricing-cards .card.gradient-promo.promo-text {
-  margin-top: var(--spacing-xl);
-} */
 
 .simplified-pricing-cards .promo-eyebrow-text {
   position: absolute;
@@ -478,7 +475,7 @@ main .section>.simplified-pricing-cards-wrapper {
 
 @media (min-width: 1280px) {
   .simplified-pricing-cards {
-    --card-width: 300px;
+    --card-width: 270px;
     --header-size: 28px;
     --header-offer-size: 16px;
    padding-top: 40px;
@@ -490,6 +487,7 @@ main .section>.simplified-pricing-cards-wrapper {
 
   .simplified-pricing-cards .card-wrapper {
     margin: auto;
+    flex-direction: row;
   } 
 
   .simplified-pricing-cards .pricing-area-wrapper {
@@ -500,6 +498,9 @@ main .section>.simplified-pricing-cards-wrapper {
     display: none;
   }
 
+  .simplified-pricing-cards .card-header p em {
+    margin-right: 0px;
+  }
 
   .simplified-pricing-cards .card-header p:nth-of-type(2) {
     display: none;
@@ -534,8 +535,15 @@ main .section>.simplified-pricing-cards-wrapper {
 
 }
 
+@media (min-width: 1440px) {
+  .simplified-pricing-cards {
+    --card-width: 294px;
+  }
+}
+
 @media (min-width: 1680px) {
   .simplified-pricing-cards {
+    --card-width: 294px;
     --header-size: 28px;
     --header-offer-size: 16px;
   }
