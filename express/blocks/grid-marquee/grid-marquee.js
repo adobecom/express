@@ -12,7 +12,6 @@ const mediumMQ = window.matchMedia('(min-width: 768px)');
 const reduceMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 function drawerOff() {
-  return;
   if (!currDrawer) return;
   currDrawer.closest('.card').setAttribute('aria-expanded', false);
   currDrawer.setAttribute('aria-hidden', true);
