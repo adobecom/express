@@ -2420,6 +2420,34 @@ export async function loadTemplate() {
   await Promise.all([styleLoaded, scriptLoaded]);
 }
 
+export async function fetchAllowedGeoRouterPaths() {
+  if (!window.allowedGeoRouterPaths) {
+    window.allowedGeoRouterPaths = [];
+    try {
+      const resp = await fetch('/express/allowed-georouter-paths.json');
+      const json = await resp.json();
+      console.log('are we here', json);
+      json.data.forEach((entry) => {
+        console.log('entry', entry);
+        window.allowedGeoRouterPaths.push(entry);
+      });
+    } catch (e) {
+      // ignore
+    }
+  }
+  return window.allowedGeoRouterPaths;
+}
+
+async function initGeoRouting(config) {
+  const permittedPaths = await fetchAllowedGeoRouterPaths();
+  const georouting = getMetadata('georouting') || config.geoRouting;
+  const isPermitted = permittedPaths.some(({ path }) => window.location.pathname.endsWith(path));
+  if (georouting === 'on' && isPermitted) {
+    const { default: loadGeoRouting } = await import('../features/georoutingv2/georoutingv2.js');
+    await loadGeoRouting(config, createTag, getMetadata, loadBlock, loadStyle);
+  }
+}
+
 async function loadPostLCP(config) {
   // post LCP actions go here
   sampleRUM('lcp');
@@ -2429,15 +2457,7 @@ async function loadPostLCP(config) {
   } else {
     loadMartech();
   }
-  const georouting = getMetadata('georouting') || config.geoRouting;
-  const permittedPaths = ['/express/', '/entitled',
-    '/business', '/teams',
-    '/nonprofits', '/learn/students', 'pricing'];
-  const isPermitted = permittedPaths.some((path) => window.location.pathname.endsWith(path));
-  if (georouting === 'on' && isPermitted) {
-    const { default: loadGeoRouting } = await import('../features/georoutingv2/georoutingv2.js');
-    await loadGeoRouting(config, createTag, getMetadata, loadBlock, loadStyle);
-  }
+  initGeoRouting(config);
   loadGnav();
   loadTemplate();
   const { default: loadFonts } = await import('./fonts.js');
