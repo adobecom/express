@@ -112,7 +112,7 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     rows[1].appendChild(innerWrapper);
     setTimeout(() => {
         rows[1].classList.add('content-loaded')
-    }, 10)
+    }, 100)
     
 }
 
