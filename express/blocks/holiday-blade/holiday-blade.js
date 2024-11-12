@@ -120,8 +120,8 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     }
     rows[0].classList.add('content-loaded')
     rows[1].appendChild(innerWrapper);
-    rows[1].classList.add('content-loaded')
-    decorateTemplates(block, props);
+ 
+    decorateTemplates(block, props, rows[1]);
     buildCarousel(':scope > .template', innerWrapper);
     attachToggleControls(block, rows[0], toggleChev);
 }
@@ -133,7 +133,7 @@ function populateTemplates(block, props, templates) {
     }
 }
 
-function decorateTemplates(block, props) {
+function decorateTemplates(block, props, wrapperRow) {
     const innerWrapper = block.querySelector('.holiday-blade-inner-wrapper');
     const templates = Array.from(innerWrapper.children);
 
@@ -143,6 +143,7 @@ function decorateTemplates(block, props) {
     });
 
     populateTemplates(block, props, templates);
+    wrapperRow.classList.add('content-loaded')
 }
 
 async function updateImpressionCacheLocal(block, props) {
