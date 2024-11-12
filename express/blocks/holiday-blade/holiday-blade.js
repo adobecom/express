@@ -44,19 +44,19 @@ async function decorateHoliday(block, props) {
     block.classList.add('animated');
     block.append(animation);
 
-    const res = await fetchAndRenderTemplates(props)
-        const { templates, fallbackMsg } = res
-        for (let i = 1; i < 4; i++) {
-            rows[i].innerHTML = ''
-        }
-        const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' })
-        for (let template of templates) {
-            innerWrapper.appendChild(template)
-        }
-        rows[1].appendChild(innerWrapper)
-        decorateTemplates(block, props);
-        buildCarousel(':scope > .template', innerWrapper)
-        attachToggleControls(block, rows[0], toggleChev)
+    // const res = await fetchAndRenderTemplates(props)
+    //     const { templates, fallbackMsg } = res
+    //     for (let i = 1; i < 4; i++) {
+    //         rows[i].innerHTML = ''
+    //     }
+    //     const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' })
+    //     for (let template of templates) {
+    //         innerWrapper.appendChild(template)
+    //     }
+    //     rows[1].appendChild(innerWrapper)
+    //     decorateTemplates(block, props);
+    //     buildCarousel(':scope > .template', innerWrapper)
+    //     attachToggleControls(block, rows[0], toggleChev)
  
 }
 
