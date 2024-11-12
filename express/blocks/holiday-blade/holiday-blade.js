@@ -14,7 +14,6 @@ import {
 import {
     createOptimizedPicture,
     fetchPlaceholders,
-    getMetadata
 } from '../../scripts/utils.js';
 import renderTemplate from '../template-x/template-rendering.js';
 
@@ -57,7 +56,7 @@ async function decorateHoliday(block, props) {
         rows[1].appendChild(innerWrapper)
         decorateTemplates(block, props);
         // buildCarousel(':scope > .template', innerWrapper)
-        // attachToggleControls(block, rows[0], toggleChev)
+        attachToggleControls(block, rows[0], toggleChev)
     })
 }
 
@@ -153,6 +152,8 @@ function decorateTemplates(block, props) {
 }
 
 async function updateImpressionCacheLocal(block, props) {
+    const {getMetadata} = await import ('../../scripts/utils.js');
+
     const impression = gatherPageImpression(props);
     updateImpressionCache(impression);
     const searchId = new URLSearchParams(window.location.search).get('searchId');
@@ -189,7 +190,7 @@ export default function decorate(block) {
             "size": 151
         },
         "collectionId": collection_id,
-        "limit": rows[3]?.children[1].textContent || 10,
+        "limit": 10 || rows[3]?.children[1].textContent
     }
     decorateHoliday(block, props)
     updateImpressionCacheLocal(block, props)
