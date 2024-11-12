@@ -112,9 +112,25 @@ export function onCarouselCSSLoad(selector, parent, options) {
     platform.scrollLeft -= increment;
   };
 
+  const drawCenterSquare = () => {
+    // Create the square element
+    const square = document.createElement('div');
+    square.style.width = '20px';
+    square.style.height = '20px';
+    square.style.backgroundColor = 'green';
+    square.style.position = 'fixed';
+    square.style.top = '50%';
+    square.style.left = '50%';
+    square.style.transform = 'translate(-50%, -50%)';
+    square.style.zIndex = '1000'; // Ensure it appears above other elements
+
+    // Append to body
+    document.body.appendChild(square);
+  };
+  drawCenterSquare();
+
   const moveCarouselToCenter = (direction) => {
     const elements = platform.querySelectorAll('.template.carousel-element');
-    const currentScroll = platform.scrollLeft;
 
     const visibleElement = Array.from(elements).find((el) => {
       const elRect = el.getBoundingClientRect();
@@ -130,12 +146,12 @@ export function onCarouselCSSLoad(selector, parent, options) {
         el.style.opacity = el === targetElement ? '1' : '0.5';
       });
 
-      targetElement.style.scrollMarginLeft = '130px';
-
+      const viewportWidth = window.innerWidth;
       const cardWidth = targetElement.offsetWidth;
-      const newScrollPos = direction === 'next'
-        ? currentScroll + cardWidth
-        : currentScroll - cardWidth;
+      const dynamicMarginLeft = (viewportWidth - cardWidth) / 2 - 12;
+
+      targetElement.style.scrollMarginLeft = `${dynamicMarginLeft}px`;
+      const newScrollPos = targetElement.offsetLeft - dynamicMarginLeft;
 
       platform.scrollTo({
         left: newScrollPos,
@@ -145,19 +161,20 @@ export function onCarouselCSSLoad(selector, parent, options) {
   };
 
   faderLeft.addEventListener('click', () => {
-    const isMobileCenteredCarousel = document.querySelectorAll('.template-x.four-templates');
-    const isMobile = getDeviceType() === 'MOBILE';
-    if (isMobileCenteredCarousel && isMobile) {
+    const isMobileCenteredCarousel = document.querySelectorAll('.template-x');
+    const isSmallScreen = window.innerWidth < 600;
+    if (isMobileCenteredCarousel && isSmallScreen) {
       moveCarouselToCenter('prev');
     } else {
       const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
       moveCarousel(increment);
     }
   });
+
   faderRight.addEventListener('click', () => {
-    const isMobileCenteredCarousel = document.querySelectorAll('.template-x.four-templates');
-    const isMobile = getDeviceType() === 'MOBILE';
-    if (isMobileCenteredCarousel && isMobile) {
+    const isMobileCenteredCarousel = document.querySelectorAll('.template-x');
+    const isSmallScreen = window.innerWidth < 600;
+    if (isMobileCenteredCarousel && isSmallScreen) {
       moveCarouselToCenter('next');
     } else {
       const increment = Math.max((platform.offsetWidth / 4) * 3, 300);
@@ -222,6 +239,8 @@ export function onCarouselCSSLoad(selector, parent, options) {
       faderRight.classList.remove('arrow-hidden');
       platform.classList.add('left-fader', 'right-fader');
     }
+
+    moveCarouselToCenter('next');
 
     const onIntersect = ([entry], observer) => {
       if (!entry.isIntersecting) return;
