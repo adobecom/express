@@ -136,42 +136,7 @@ async function fetchAndRenderTemplates(props) {
 // Originally populateTemplates function
 function populateTemplates(block, props, templates) {
     for (let tmplt of templates) {
-        const isPlaceholder = tmplt.querySelector(':scope > div:first-of-type > img[src*=".svg"], :scope > div:first-of-type > svg');
-        const linkContainer = tmplt.querySelector(':scope > div:nth-of-type(2)');
-        const rowWithLinkInFirstCol = tmplt.querySelector(':scope > div:first-of-type > a');
-        const innerWrapper = block.querySelector('.holiday-blade-inner-wrapper');
-
-        if (innerWrapper && linkContainer) {
-            const link = linkContainer.querySelector(':scope a');
-            if (link && isPlaceholder) {
-                const aTag = createTag('a', {
-                    href: link.href || '#',
-                });
-                aTag.append(...tmplt.children);
-                tmplt.remove();
-                tmplt = aTag;
-                // convert A to SPAN
-                const newLink = createTag('span', { class: 'template-link' });
-                newLink.append(link.textContent.trim());
-                linkContainer.innerHTML = '';
-                linkContainer.append(newLink);
-            }
-            innerWrapper.append(tmplt);
-        }
-
-        if (rowWithLinkInFirstCol && !tmplt.querySelector('img')) {
-            props.tailButton = rowWithLinkInFirstCol;
-            rowWithLinkInFirstCol.remove();
-        }
-
-        if (!tmplt.querySelectorAll(':scope > div > *').length) {
-            // remove empty row
-            tmplt.remove();
-        }
         tmplt.classList.add('template');
-        if (isPlaceholder) {
-            tmplt.classList.add('placeholder');
-        }
     }
 }
 
@@ -190,7 +155,7 @@ function decorateTemplates(block, props) {
 
 }
 
-async function updateImpressionCacheLocal() {
+async function updateImpressionCacheLocal(block, props) {
     const impression = gatherPageImpression(props);
     updateImpressionCache(impression);
     const searchId = new URLSearchParams(window.location.search).get('searchId');
@@ -230,5 +195,5 @@ export default function decorate(block) {
         "limit": rows[3]?.children[1].textContent || 10,
     }
     decorateHoliday(block, props)
-    updateImpressionCacheLocal()
+    updateImpressionCacheLocal(block, props)
 }
