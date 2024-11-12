@@ -18,6 +18,31 @@ import {
 } from '../../scripts/utils.js';
 import renderTemplate from '../template-x/template-rendering.js';
 
+async function decorateHoliday(block, props) {
+    const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
+
+    const animation = transformLinkToAnimation(rows[0].children[1].querySelector('a'));
+    block.classList.add('animated');
+    block.append(animation);
+
+    const toggleBar = rows[0].children[0]
+    toggleBar.classList.add('toggle-bar')
+    const toggleChev = createTag('div', { class: 'toggle-button-chev' });
+    toggleBar.append(toggleChev)
+
+    for (let i = 1; i < 4; i++) {
+        rows[i].innerHTML = ''
+    }
+    const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' })
+    for (let template of templates) {
+        innerWrapper.appendChild(template)
+    }
+    rows[1].appendChild(innerWrapper)
+    decorateTemplates(block, props);
+    buildCarousel(':scope > .template', innerWrapper)
+    attachToggleControls(block, rows[0], toggleChev)
+}
+
 function attachToggleControls(block, toggleChev) {
     const onToggle = () => {
         block.classList.toggle('expanded');
@@ -148,8 +173,6 @@ function populateTemplates(block, props, templates) {
 }
 
 async function decorateTemplates(block, props) {
-
-
     // Main decorateTemplates logic
     const impression = gatherPageImpression(props);
     updateImpressionCache(impression);
@@ -178,7 +201,7 @@ async function decorateTemplates(block, props) {
 }
 
 
-export default async function decorate(block) {
+export default function decorate(block) {
     const rows = block.children
 
     const locale = rows[1].children[1].textContent
@@ -197,29 +220,8 @@ export default async function decorate(block) {
             "size": 151
         },
         "collectionId": collection_id,
-        "limit" : 10// rows[3]?.children[1].textContent || 10,
+        "limit": 10// rows[3]?.children[1].textContent || 10,
     }
+    decorateHoliday(block, props)
 
-    const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
-
-    const animation = transformLinkToAnimation(rows[0].children[1].querySelector('a'));
-    block.classList.add('animated');
-    block.append(animation);
-
-    const toggleBar = rows[0].children[0]
-    toggleBar.classList.add('toggle-bar')
-    const toggleChev = createTag('div', { class: 'toggle-button-chev' });
-    toggleBar.append(toggleChev)
-
-    for (let i = 1; i < 4;i++) {
-        rows[i].innerHTML = ''
-    }
-    const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' })
-    for (let template of templates) {
-        innerWrapper.appendChild(template)
-    }
-    rows[1].appendChild(innerWrapper)
-    decorateTemplates(block, props);
-    buildCarousel(':scope > .template', innerWrapper)
-    attachToggleControls(block, rows[0], toggleChev)
 }
