@@ -175,10 +175,9 @@ function populateTemplates(block, props, templates) {
     }
 }
 
-async function decorateTemplates(block, props) {
+function decorateTemplates(block, props) {
     // Main decorateTemplates logic
-    // const impression = gatherPageImpression(props);
-    // updateImpressionCache(impression);
+
     const innerWrapper = block.querySelector('.holiday-blade-inner-wrapper');
     const templates = Array.from(innerWrapper.children);
 
@@ -189,18 +188,23 @@ async function decorateTemplates(block, props) {
 
     populateTemplates(block, props, templates);
 
-    // const searchId = new URLSearchParams(window.location.search).get('searchId');
-    // updateImpressionCache({
-    //     search_keyword: getMetadata('q') || getMetadata('topics-x') || getMetadata('topics'),
-    //     result_count: props.total,
-    //     content_category: 'templates',
-    // });
-    // if (searchId) trackSearch('view-search-result', searchId);
+}
 
-    // const templateLinks = block.querySelectorAll('.template .button-container > a, a.template.placeholder');
-    // templateLinks.isSearchOverride = true;
-    // const linksPopulated = new CustomEvent('linkspopulated', { detail: templateLinks });
-    // document.dispatchEvent(linksPopulated);
+async function updateImpressionCacheLocal() {
+    const impression = gatherPageImpression(props);
+    updateImpressionCache(impression);
+    const searchId = new URLSearchParams(window.location.search).get('searchId');
+    updateImpressionCache({
+        search_keyword: getMetadata('q') || getMetadata('topics-x') || getMetadata('topics'),
+        result_count: props.total,
+        content_category: 'templates',
+    });
+    if (searchId) trackSearch('view-search-result', searchId);
+
+    const templateLinks = block.querySelectorAll('.template .button-container > a, a.template.placeholder');
+    templateLinks.isSearchOverride = true;
+    const linksPopulated = new CustomEvent('linkspopulated', { detail: templateLinks });
+    document.dispatchEvent(linksPopulated);
 }
 
 
@@ -226,5 +230,5 @@ export default function decorate(block) {
         "limit": rows[3]?.children[1].textContent || 10,
     }
     decorateHoliday(block, props)
-
+    updateImpressionCacheLocal()
 }
