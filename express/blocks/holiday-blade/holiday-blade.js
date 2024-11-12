@@ -124,13 +124,7 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     decorateTemplates(block, props, rows[1]);
     buildCarousel(':scope > .template', innerWrapper);
     attachToggleControls(block, rows[0], toggleChev);
-}
-
-// Originally populateTemplates function
-function populateTemplates(block, props, templates) {
-    for (const tmplt of templates) {
-        tmplt.classList.add('template');
-    }
+    rows[1].classList.add('content-loaded')
 }
 
 function decorateTemplates(block, props, wrapperRow) {
@@ -142,8 +136,10 @@ function decorateTemplates(block, props, wrapperRow) {
         img.parentNode.replaceWith(createOptimizedPicture(src, alt, true, [{ width: '400' }]));
     });
 
-    populateTemplates(block, props, templates);
-    wrapperRow.classList.add('content-loaded')
+    for (const tmplt of templates) {
+        tmplt.classList.add('template');
+    }
+   
 }
 
 async function updateImpressionCacheLocal(block, props) {
