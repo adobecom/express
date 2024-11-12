@@ -108,9 +108,9 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     decorateTemplates(block,   innerWrapper);
     buildCarousel(':scope > .template', innerWrapper);
     attachToggleControls(block, rows[0], toggleChev);
-
+    
     rows[1].appendChild(innerWrapper);
- //   rows[1].classList.add('content-loaded')
+    rows[1].classList.add('content-loaded')
 }
 
 function decorateTemplates(block, innerWrapper) { 
