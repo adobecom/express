@@ -44,7 +44,7 @@ async function decorateHoliday(block, props) {
     block.classList.add('animated');
     block.append(animation);
 
-    fetchAndRenderTemplates(props) 
+    fetchAndRenderTemplates(props).then((res) => {})
         // const { templates, fallbackMsg } = res
         // for (let i = 1; i < 4; i++) {
         //     rows[i].innerHTML = ''
