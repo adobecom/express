@@ -108,14 +108,13 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     decorateTemplates(block,   innerWrapper);
     buildCarousel(':scope > .template', innerWrapper);
     attachToggleControls(block, rows[0], toggleChev);
-    rows[1].appendChild(innerWrapper);
 
-    rows[1].classList.add('content-loaded')
+    rows[1].appendChild(innerWrapper);
+ //   rows[1].classList.add('content-loaded')
 }
 
 function decorateTemplates(block, innerWrapper) { 
     const templates = innerWrapper.children
-    console.log(innerWrapper)
     innerWrapper.querySelectorAll(':scope picture > img').forEach((img) => {
         const { src, alt } = img;
         img.parentNode.replaceWith(createOptimizedPicture(src, alt, true, [{ width: '400' }]));
