@@ -33,7 +33,7 @@ async function batchTemplateRequests(templates, placeholders) {
     return results;
   }
   
-async function decorateHoliday(block, props) {
+function decorateHoliday(block, props) {
     const rows = block.children
     const toggleBar = rows[0].children[0]
     toggleBar.classList.add('toggle-bar')
