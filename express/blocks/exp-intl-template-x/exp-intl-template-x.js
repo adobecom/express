@@ -13,7 +13,7 @@ import {
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { Masonry } from '../shared/masonry.js';
-import buildCarousel from '../shared/carousel.js';
+import buildCarousel from '../exp-intl-carousel/exp-intl-carousel.js';
 import {
   fetchTemplates,
   isValidTemplate,
@@ -24,7 +24,7 @@ import {
   generateSearchId,
 } from '../../scripts/template-search-api-v3.js';
 import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
-import renderTemplate from './template-rendering.js';
+import renderTemplate from '../template-x/template-rendering.js';
 import isDarkOverlayReadable from '../../scripts/color-tools.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
 
@@ -119,8 +119,8 @@ async function formatHeadingPlaceholder(props) {
   let toolBarHeading = getMetadata('toolbar-heading') ? props.templateStats : placeholders['template-placeholder'];
 
   if (getMetadata('template-search-page') === 'Y'
-    && placeholders['template-search-heading-singular']
-    && placeholders['template-search-heading-plural']) {
+        && placeholders['template-search-heading-singular']
+        && placeholders['template-search-heading-plural']) {
     toolBarHeading = props.total === 1 ? placeholders['template-search-heading-singular'] : placeholders['template-search-heading-plural'];
   }
 
@@ -381,10 +381,10 @@ async function attachFreeInAppPills(block) {
   const templateLinks = block.querySelectorAll('a.template');
   for (const templateLink of templateLinks) {
     if (!block.classList.contains('apipowered')
-      && templateLink.querySelectorAll('.icon-premium').length <= 0
-      && !templateLink.classList.contains('placeholder')
-      && !templateLink.querySelector('.icon-free-badge')
-      && freeInAppText) {
+          && templateLink.querySelectorAll('.icon-premium').length <= 0
+          && !templateLink.classList.contains('placeholder')
+          && !templateLink.querySelector('.icon-free-badge')
+          && freeInAppText) {
       const $freeInAppBadge = createTag('span', { class: 'icon icon-free-badge' });
       $freeInAppBadge.textContent = freeInAppText;
       templateLink.querySelector('div').append($freeInAppBadge);
@@ -398,19 +398,19 @@ function makeTemplateFunctions(placeholders) {
       placeholders: JSON.parse(placeholders['template-filter-premium'] ?? '{}'),
       elements: {},
       icons: placeholders['template-filter-premium-icons']?.replace(/\s/g, '')?.split(',')
-        || ['template-premium-and-free', 'template-free', 'template-premium'],
+            || ['template-premium-and-free', 'template-free', 'template-premium'],
     },
     animated: {
       placeholders: JSON.parse(placeholders['template-filter-animated'] ?? '{}'),
       elements: {},
       icons: placeholders['template-filter-animated-icons']?.replace(/\s/g, '')?.split(',')
-        || ['template-static-and-animated', 'template-static', 'template-animated'],
+            || ['template-static-and-animated', 'template-static', 'template-animated'],
     },
     sort: {
       placeholders: JSON.parse(placeholders['template-x-sort'] ?? '{}'),
       elements: {},
       icons: placeholders['template-x-sort-icons']?.replace(/\s/g, '')?.split(',')
-        || ['sort', 'visibility-on', 'visibility-off', 'order-dsc', 'order-asc'],
+            || ['sort', 'visibility-on', 'visibility-off', 'order-dsc', 'order-asc'],
     },
   };
 
@@ -1339,7 +1339,7 @@ async function decorateTemplates(block, props) {
 async function decorateBreadcrumbs(block) {
   // breadcrumbs are desktop-only
   if (document.body.dataset.device !== 'desktop') return;
-  const { default: getBreadcrumbs } = await import('./breadcrumbs.js');
+  const { default: getBreadcrumbs } = await import('../template-x/breadcrumbs.js');
   const breadcrumbs = await getBreadcrumbs();
   if (breadcrumbs) block.prepend(breadcrumbs);
 }
@@ -1753,8 +1753,7 @@ function determineTemplateXType(props) {
 }
 
 export default async function decorate(block) {
-  addTempWrapper(block, 'template-x');
-
+  addTempWrapper(block, 'exp-intl-template-x');
   const props = constructProps(block);
   block.innerHTML = '';
   await buildTemplateList(block, props, determineTemplateXType(props));
