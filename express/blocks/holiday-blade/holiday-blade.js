@@ -110,7 +110,10 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     attachToggleControls(block, rows[0], toggleChev);
     
     rows[1].appendChild(innerWrapper);
-    rows[1].classList.add('content-loaded')
+    setTimeout(() => {
+        rows[1].classList.add('content-loaded')
+    }, 10)
+    
 }
 
 function decorateTemplates(block, innerWrapper) { 
