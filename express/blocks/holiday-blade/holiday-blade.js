@@ -21,32 +21,59 @@ import renderTemplate from '../template-x/template-rendering.js';
 async function batchTemplateRequests(templates, placeholders) {
     const BATCH_SIZE = 5;
     const results = [];
-    
+
     for (let i = 0; i < templates.length; i += BATCH_SIZE) {
-      const batch = templates.slice(i, i + BATCH_SIZE);
-      const batchPromises = batch.map(template => 
-        renderTemplate(template, placeholders)
-      );
-      const batchResults = await Promise.all(batchPromises);
-      results.push(...batchResults);
+        const batch = templates.slice(i, i + BATCH_SIZE);
+        const batchPromises = batch.map(template =>
+            renderTemplate(template, placeholders)
+        );
+        const batchResults = await Promise.all(batchPromises);
+        results.push(...batchResults);
     }
-    
+
     return results;
-  }
-  
+}
+
+function promiseTransformAnimation(element) {
+    return new Promise((resolve, reject) => {
+        try {
+            // Check if element exists
+            if (!element) {
+                reject(new Error('Animation element not found'));
+                return;
+            }
+
+            const animation = transformLinkToAnimation(element);
+
+            // Handle animation load completion
+            animation.addEventListener('load', () => {
+                resolve(animation);
+            }, { once: true }); // Use once: true to automatically remove listener
+
+            // Handle animation error
+            animation.addEventListener('error', (error) => {
+                reject(new Error(`Animation failed to load: ${error.message}`));
+            }, { once: true });
+
+        } catch (error) {
+            reject(new Error(`Failed to transform animation: ${error.message}`));
+        }
+    });
+}
+
 async function decorateHoliday(block, props) {
     const rows = block.children
-
-
-
     const toggleBar = rows[0].children[0]
     toggleBar.classList.add('toggle-bar')
     const toggleChev = createTag('div', { class: 'toggle-button-chev' });
     toggleBar.append(toggleChev)
 
-    const animation = transformLinkToAnimation(rows[0].children[1].querySelector('a'));
-    block.classList.add('animated');
-    block.append(animation);
+    promiseTransformAnimation(rows[0].children[1].querySelector('a')).then((res) => {
+        const animation = res
+        block.classList.add('animated');
+        block.append(animation);
+    })
+
 
     fetchAndRenderTemplates(props).then((res) => {
         const { templates, fallbackMsg } = res
@@ -194,6 +221,6 @@ export default function decorate(block) {
         "collectionId": collection_id,
         "limit": rows[3]?.children[1].textContent || 10,
     }
-    //decorateHoliday(block, props)
+    decorateHoliday(block, props)
     updateImpressionCacheLocal(block, props)
 }
