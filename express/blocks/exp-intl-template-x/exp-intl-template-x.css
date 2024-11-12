@@ -2503,6 +2503,10 @@ nav ol.templates-breadcrumbs li:not(:first-child):before {
 }
 
 @media (min-width: 900px) {
+    .exp-intl-template-x.one-template.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+        width: 100%;
+    }
+
     .exp-intl-template-x.fullwidth.md-view .template.placeholder {
         width: 258.5px;
     }
