@@ -56,8 +56,8 @@ async function decorateHoliday(block, props) {
         }
         rows[1].appendChild(innerWrapper)
         decorateTemplates(block, props);
-        buildCarousel(':scope > .template', innerWrapper)
-        attachToggleControls(block, rows[0], toggleChev)
+        // buildCarousel(':scope > .template', innerWrapper)
+        // attachToggleControls(block, rows[0], toggleChev)
     })
 }
 
