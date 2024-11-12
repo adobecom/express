@@ -193,5 +193,5 @@ export default function decorate(block) {
         "limit": 10 || rows[3]?.children[1].textContent
     }
     decorateHoliday(block, props)
-    updateImpressionCacheLocal(block, props)
+   // updateImpressionCacheLocal(block, props)
 }
