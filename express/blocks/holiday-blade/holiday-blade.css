@@ -3,7 +3,8 @@ main .section> .holiday-blade {
     width: 100%;
     height: 100px;
     z-index: 6;
-    position: relative;
+    position: absolute;
+    top: 0;
     overflow: hidden;
     --text-color: black;
 }
