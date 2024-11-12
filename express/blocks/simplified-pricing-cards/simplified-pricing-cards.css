@@ -465,8 +465,12 @@ main .section>.simplified-pricing-cards-wrapper {
   }
 
   .simplified-pricing-cards a.button.compare-all-button {
-    margin-top: 40px;
+    margin-top: 24px;
   } 
+
+  .simplified-pricing-cards .pricing-footer {
+    margin-top: -24px;
+  }
 }
 
 /* Desktop styles */
@@ -528,57 +532,7 @@ main .section>.simplified-pricing-cards-wrapper {
     width: unset;
   }
 
-
-} 
-@media (min-width: 1201px) and (max-width: 1399px) {
-  .simplified-pricing-cards {
-    --card-width: 270px;
-    --header-size: 28px;
-    --header-offer-size: 16px;
-  }
-
-  .simplified-pricing-cards .card-wrapper {
-    margin: auto;
-  }
-  
-  .simplified-pricing-cards .card {
-    gap: 8px;
-    padding: 20px;
-    margin: unset ;
-  }
-
-  .simplified-pricing-cards .card-header { 
-    gap: unset;
-  }
-
-  .simplified-pricing-cards .card-header p {
-    font-size: var(--type-detail-m-lh);
-    margin-left: auto
-  }
-
-  .simplified-pricing-cards .card-header p:nth-of-type(2) {
-    display: none;
-  }
-
-  .simplified-pricing-cards .card-header p:nth-of-type(1) {
-    display: block;
-    width: unset;
-    height: unset;
-    padding-top: 5px;
-  }
-
-  .simplified-pricing-cards .card.hide {
-    gap: 10px;
-  }
-
-  .simplified-pricing-cards a.button.compare-all-button {
-    margin-top: 40px;
-  }
-     
-  .simplified-pricing-cards .pricing-footer div{
-    width: unset;
-  }
-} 
+}
 
 @media (min-width: 1680px) {
   .simplified-pricing-cards {
