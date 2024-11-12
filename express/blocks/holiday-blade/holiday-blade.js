@@ -118,8 +118,9 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     for (const template of templates) {
         innerWrapper.appendChild(template);
     }
+    rows[0].classList.add('content-loaded')
     rows[1].appendChild(innerWrapper);
-
+    rows[1].classList.add('content-loaded')
     decorateTemplates(block, props);
     buildCarousel(':scope > .template', innerWrapper);
     attachToggleControls(block, rows[0], toggleChev);
@@ -166,6 +167,7 @@ async function updateImpressionCacheLocal(block, props) {
 export default function decorate(block) {
     const rows = block.children;
     const toggleBar = rows[0].children[0];
+
     toggleBar.classList.add('toggle-bar');
     const locale = rows[1].children[1].textContent;
     const collection_id = rows[2].children[1].textContent;
