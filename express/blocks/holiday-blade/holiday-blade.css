@@ -84,7 +84,7 @@ main .holiday-blade .toggle-bar a {
 }
 main .holiday-blade .toggle-bar .icon {
   position: relative;
-  top: -2px
+  top: 2px;
     
 }
 main .holiday-blade.light .toggle-bar .icon {
