@@ -148,22 +148,20 @@ function populateTemplates(block, props, templates) {
 }
 
 async function decorateTemplates(block, props) {
+
+
+    // Main decorateTemplates logic
+    const impression = gatherPageImpression(props);
+    updateImpressionCache(impression);
+    const innerWrapper = block.querySelector('.holiday-blade-inner-wrapper');
+    const templates = Array.from(innerWrapper.children);
+
     block.querySelectorAll(':scope picture > img').forEach((img) => {
         const { src, alt } = img;
         img.parentNode.replaceWith(createOptimizedPicture(src, alt, true, [{ width: '400' }]));
     });
 
     populateTemplates(block, props, templates);
-
-
-}
-
-async function updateImpressions(block, props) {
-    // Main decorateTemplates logic
-    const impression = gatherPageImpression(props);
-    updateImpressionCache(impression);
-    const innerWrapper = block.querySelector('.holiday-blade-inner-wrapper');
-    const templates = Array.from(innerWrapper.children);
     await attachFreeInAppPills(block);
     const searchId = new URLSearchParams(window.location.search).get('searchId');
     updateImpressionCache({
@@ -199,7 +197,7 @@ export default async function decorate(block) {
             "size": 151
         },
         "collectionId": collection_id,
-        "limit": rows[3]?.children[1].textContent || 20,
+        "limit" : 10// rows[3]?.children[1].textContent || 10,
     }
 
     const { templates, fallbackMsg } = await fetchAndRenderTemplates(props);
@@ -213,7 +211,7 @@ export default async function decorate(block) {
     const toggleChev = createTag('div', { class: 'toggle-button-chev' });
     toggleBar.append(toggleChev)
 
-    for (let i = 1; i < 4; i++) {
+    for (let i = 1; i < 4;i++) {
         rows[i].innerHTML = ''
     }
     const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' })
@@ -224,5 +222,4 @@ export default async function decorate(block) {
     decorateTemplates(block, props);
     buildCarousel(':scope > .template', innerWrapper)
     attachToggleControls(block, rows[0], toggleChev)
-    updateImpressions(block,props)
 }
