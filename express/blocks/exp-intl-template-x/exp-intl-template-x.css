@@ -90,39 +90,39 @@ main.with-holiday-templates-banner > div[class='section section-wrapper template
     padding-right: 0;
 }
 
-main .exp-intl-template-x.horizontal.one-template .exp-intl-template-x-inner-wrapper .carousel-container .button.carousel-arrow.carousel-arrow-left {
+main .exp-intl-template-x.horizontal .exp-intl-template-x-inner-wrapper .carousel-container .button.carousel-arrow.carousel-arrow-left {
     position: absolute;
     right: 42px;
 }
 
-main .exp-intl-template-x.horizontal.one-template .carousel-container .carousel-fader-left {
+main .exp-intl-template-x.horizontal .carousel-container .carousel-fader-left {
     display: contents;
     opacity: 1;
 }
 
-main .exp-intl-template-x.horizontal.one-template .carousel-container .carousel-fader-left.arrow-hidden a {
+main .exp-intl-template-x.horizontal .carousel-container .carousel-fader-left.arrow-hidden a {
     opacity: 0.5;
 }
 
-main .exp-intl-template-x.horizontal.one-template .carousel-container .carousel-fader-right {
+main .exp-intl-template-x.horizontal .carousel-container .carousel-fader-right {
     display: contents;
     opacity: 1;
 }
 
-main .exp-intl-template-x.horizontal.one-template .carousel-container .carousel-fader-right.arrow-hidden a {
+main .exp-intl-template-x.horizontal .carousel-container .carousel-fader-right.arrow-hidden a {
     opacity: 0.5;
 }
 
-main .exp-intl-template-x-wrapper.horizontal .exp-intl-template-x.horizontal.one-template .carousel-container .carousel-platform.right-fader {
+main .exp-intl-template-x-wrapper.horizontal .exp-intl-template-x.horizontal .carousel-container .carousel-platform.right-fader {
     padding-left: 0;
 }
 
-main .exp-intl-template-x.horizontal.one-template  .carousel-container .carousel-platform.left-fader:not(.right-fader) {
+main .exp-intl-template-x.horizontal  .carousel-container .carousel-platform.left-fader:not(.right-fader) {
     mask-image: none;
     -webkit-mask-image: none;
 }
 
-main .exp-intl-template-x.horizontal.one-template .carousel-container .carousel-platform.right-fader:not(.left-fade) {
+main .exp-intl-template-x.horizontal .carousel-container .carousel-platform.right-fader:not(.left-fade) {
     mask-image: none;
     -webkit-mask-image: none;
 }
