@@ -29,8 +29,27 @@ async function decorateHoliday(block, props) {
 }
 
 function attachToggleControls(block, toggleChev) {
-    const onToggle = () => {
-        block.classList.toggle('expanded');
+
+    const onToggle = (e) => {
+        e.stopPropagation()
+        if (e.target.closest('.carousel-fader-right') || e.target.closest('.carousel-fader-left') || e.target.closest('.carousel-container')){
+ 
+            return;
+        } 
+        block.classList.toggle('expanded')
+    };
+
+    const onOutsideToggle = (e) => {
+        e.stopPropagation()
+        if (e.target.closest('.carousel-fader-right') || e.target.closest('.carousel-fader-left') || e.target.closest('.carousel-container')){
+ 
+            return;
+        }
+        if (
+            block.classList.contains('expanded')
+        ) {
+            block.classList.toggle('expanded')
+        }
     };
     const templateImages = block.querySelectorAll('.template');
 
@@ -41,17 +60,8 @@ function attachToggleControls(block, toggleChev) {
     });
 
     toggleChev.addEventListener('click', onToggle);
-    block.addEventListener('click', () => onToggle());
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.carousel-fader-right') || e.target.closest('.carousel-fader-left')) {
-            return;
-        }
-        if (e.target.closest('.holiday-blade') || (
-            block.classList.contains('expanded')
-        )) {
-            onToggle();
-        }
-    });
+    block.querySelector('.toggle-bar').addEventListener('click', onToggle);
+    document.addEventListener('click', onOutsideToggle);
 
     setTimeout(() => {
         if (block.classList.contains('auto-expand')) {
@@ -104,19 +114,20 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
         innerWrapper.appendChild(template);
     }
     rows[0].classList.add('content-loaded')
- 
-    decorateTemplates(block,   innerWrapper);
+
+    decorateTemplates(block, innerWrapper);
     buildCarousel(':scope > .template', innerWrapper);
-    attachToggleControls(block, rows[0], toggleChev);
-    
+
+
     rows[1].appendChild(innerWrapper);
     setTimeout(() => {
         rows[1].classList.add('content-loaded')
     }, 100)
-    
+
+    attachToggleControls(block, toggleChev);
 }
 
-function decorateTemplates(block, innerWrapper) { 
+function decorateTemplates(block, innerWrapper) {
     const templates = innerWrapper.children
     innerWrapper.querySelectorAll(':scope picture > img').forEach((img) => {
         const { src, alt } = img;
@@ -126,7 +137,7 @@ function decorateTemplates(block, innerWrapper) {
     for (const tmplt of templates) {
         tmplt.classList.add('template');
     }
-   
+
 }
 
 async function updateImpressionCacheLocal(block, props) {

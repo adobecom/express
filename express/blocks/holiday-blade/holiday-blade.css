@@ -12,6 +12,32 @@ main .section> .holiday-blade {
     top: 0;
     overflow: hidden;
     --text-color: black;
+    --template-height: 150px;
+}
+
+main .holiday-blade .carousel-container .carousel-fader-left {
+    align-items: end;
+    top: -15px;
+    right: 42px;
+    left: auto;
+    pointer-events: none;
+    width: 10px;
+}
+
+main .holiday-blade .carousel-container .carousel-fader-right {
+    align-items: end;
+    top: -15px;
+    right: 15px;
+    width: 10px;
+}
+
+main .holiday-blade .carousel-container .carousel-arrow {
+    position: absolute;
+}
+
+main .holiday-blade .carousel-container .carousel-arrow-left {
+    position: absolute;
+    left: -50px;
 }
 
 main .holiday-blade.light {
@@ -134,13 +160,13 @@ main .holiday-blade div div>* {
 
 
 main .holiday-blade.expanded {
-    height: 390px;
+    height: 326px;
     overflow: unset;
 }
 
 main .holiday-blade .carousel-container {
     position: relative;
-    top: 60px;
+    top: 20px;
 }
 
 main .holiday-blade .template .still-wrapper .image-wrapper {
@@ -149,7 +175,7 @@ main .holiday-blade .template .still-wrapper .image-wrapper {
 
 main .holiday-blade .template .media-wrapper img:first-of-type,
 main .holiday-blade .template .still-wrapper .image-wrapper img:first-of-type {
-    height: 200px;
+    height: var(--template-height);
     width: auto;
     pointer-events: none;
     margin: 0 auto;
@@ -191,7 +217,7 @@ main .holiday-blade .still-wrapper .image-wrapper .free-tag {
 
 main .holiday-blade .template {
     position: relative;
-    height: 200px;
+    height: var(--template-height);
     display: inline-flex;
     width: auto;
     margin: 24px 11px 18px 11px;
@@ -204,6 +230,7 @@ main .holiday-blade .button-container:focus-within {
 
 main .holiday-blade .button-container {
     position: absolute;
+    pointer-events: none;
     border-radius: 16px;
     top: 50%;
     left: 50%;
@@ -273,6 +300,14 @@ main .holiday-blade .template .button-container .media-wrapper .icon-share-arrow
     overflow: visible;
 }
 
+main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper:hover{
+    display: none;
+}
+
+main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper:focus{
+    display: none;
+}
+
 main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper {
     position: absolute;
     top: 8px;
@@ -282,7 +317,7 @@ main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapp
 }
 
 main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
-    visibility: hidden;
+    
     position: absolute;
     display: flex;
     align-items: center;
