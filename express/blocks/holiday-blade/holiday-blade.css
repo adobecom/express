@@ -4,7 +4,7 @@ main .section.section-wrapper.grid-marquee-ratings-container.holiday-blade-conta
 }
 
 
-main .section> .holiday-blade {
+main .section>.holiday-blade {
     max-width: 100%;
     width: 100%;
     height: 100px;
@@ -48,10 +48,10 @@ main .holiday-blade.light {
 }
 
 
-main .holiday-blade > div:nth-of-type(1):not(.content-loaded),
-main .holiday-blade > div:nth-of-type(2):not(.content-loaded),
-main .holiday-blade > div:nth-of-type(3):not(.content-loaded),
-main .holiday-blade > div:nth-of-type(4):not(.content-loaded) {
+main .holiday-blade>div:nth-of-type(1):not(.content-loaded),
+main .holiday-blade>div:nth-of-type(2):not(.content-loaded),
+main .holiday-blade>div:nth-of-type(3):not(.content-loaded),
+main .holiday-blade>div:nth-of-type(4):not(.content-loaded) {
     display: none;
 }
 
@@ -84,17 +84,18 @@ main .holiday-blade .toggle-bar a {
     color: var(--text-color);
     text-decoration: underline;
 }
+
 main .holiday-blade .toggle-bar .icon {
-  position: relative;
-  top: 2px;
-    
+    position: relative;
+    top: 2px;
+
 }
+
 main .holiday-blade.light .toggle-bar .icon {
     filter: invert(100)
-
 }
 
-main .holiday-blade .toggle-bar p:first-of-type{
+main .holiday-blade .toggle-bar p:first-of-type {
     display: none;
 }
 
@@ -180,7 +181,7 @@ main .holiday-blade .template .media-wrapper img:first-of-type,
 main .holiday-blade .template .still-wrapper .image-wrapper img:first-of-type {
     height: var(--template-height);
     width: auto;
-    pointer-events: none;
+    pointer-events: auto;
     margin: 0 auto;
     object-fit: cover;
     display: block;
@@ -224,10 +225,15 @@ main .holiday-blade .template {
     display: inline-flex;
     width: auto;
     margin: 24px 11px 18px 11px;
-  -webkit-user-select: none; /* Chrome/Safari */ 
--moz-user-select: none; /* Firefox */
--ms-user-select: none; /* IE10+ */
- 
+    -webkit-user-select: none;
+    /* Chrome/Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+ */
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+
 
 }
 
@@ -238,7 +244,7 @@ main .holiday-blade .button-container:focus-within {
 
 main .holiday-blade .button-container {
     position: absolute;
-    pointer-events: none;
+    pointer-events: auto;
     border-radius: 16px;
     top: 50%;
     left: 50%;
@@ -268,7 +274,7 @@ main .holiday-blade .template .button-container:hover {
 
 main .holiday-blade .template:hover:not(.placeholder) .button-container {
     opacity: 1;
-    pointer-events: initial;
+    pointer-events: auto;
     z-index: 2;
 }
 
@@ -277,11 +283,14 @@ main .holiday-blade .template .button-container .media-wrapper {
     height: 100%;
     flex-basis: 100%;
     width: 100%;
-    -webkit-user-select: none; /* Chrome/Safari */ 
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+ */
-     
-    
+    -webkit-user-select: none;
+    /* Chrome/Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+ */
+
+
 }
 
 main .holiday-blade .template .button-container a.button {
@@ -313,13 +322,6 @@ main .holiday-blade .template .button-container .media-wrapper .icon-share-arrow
     overflow: visible;
 }
 
-main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper:hover{
-    display: none;
-}
-
-main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper:focus{
-    display: none;
-}
 
 main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper {
     position: absolute;
@@ -327,10 +329,12 @@ main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapp
     right: 8px;
     border-radius: 50%;
     height: 20px;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
-    
+
     position: absolute;
     display: flex;
     align-items: center;
@@ -410,7 +414,7 @@ main .holiday-blade .carousel-container .carousel-platform {
         margin: unset;
     }
 
-    main .holiday-blade .toggle-bar > p:first-of-type {
+    main .holiday-blade .toggle-bar>p:first-of-type {
         display: block;
         width: 1200px;
     }
@@ -440,7 +444,7 @@ main .holiday-blade .carousel-container .carousel-platform {
     main .holiday-blade .toggle-bar p:first-of-type {
         display: block;
         width: initial;
-    } 
+    }
 
     main .holiday-blade div div>* {
         margin: unset;
