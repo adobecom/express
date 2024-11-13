@@ -189,14 +189,14 @@ main .link-list.large p.button-container .button {
 }
 
 main .link-list.left-align {
-  margin-top: 0px;
+  margin-top: 0;
   margin-bottom: 75px;
 }
 main .link-list.left-align h3 {
-  padding-left: 0px;
+  padding-left: 0;
 }
 main .link-list.left-align .button-container {
-  margin-left: 0px;
+  margin-left: 0;
 }
 
 @media (min-width: 900px) {
