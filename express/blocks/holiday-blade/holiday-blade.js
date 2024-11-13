@@ -70,14 +70,16 @@ function attachToggleControls(block, toggleChev) {
     }, 3000);
 }
 
-function loadTemplatesPromise(props, block, innerWrapper, placeholders, getTemplates) {
+function loadTemplatesPromise(props, block, innerWrapper, placeholders, getTemplates, start) {
     return new Promise(async (resolve, reject) => {
         try {
             // Add loading state
             innerWrapper.classList.add('loading-templates');
 
             // Fetch templates
-            const { response, fallbackMsg } = await fetchTemplates(props);
+            const { response, fallbackMsg } = await fetchTemplates({
+                ...props, start
+            });
 
             // Validate response
             if (!response || !response.items || !Array.isArray(response.items)) {
@@ -95,9 +97,6 @@ function loadTemplatesPromise(props, block, innerWrapper, placeholders, getTempl
 
             // Update DOM once
             innerWrapper.appendChild(fragment);
-
-            // Update props
-            props.start += 5;
 
             // Decorate templates
             await decorateTemplates(block, innerWrapper);
@@ -136,7 +135,7 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' });
     const placeholders = await fetchPlaceholders()
     const p = []
-    for (let i = 0; i < props.limit / 5; i++) {
+    for (let i = 0; i < props.total_limit / 5; i++) {
 
         // p.push(async (props) => {
         //     const { response, fallbackMsg } = await fetchTemplates(props)
@@ -151,7 +150,7 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
         //     props.start += 5
         //     decorateTemplates(block, innerWrapper);
         // })
-        p.push(loadTemplatesPromise(props,block,innerWrapper,placeholders, getTemplates))
+        p.push(loadTemplatesPromise(props,block,innerWrapper,placeholders, getTemplates, i * 5))
     }
     rows[0].classList.add('content-loaded')
     await p[0]
@@ -228,7 +227,8 @@ export default function decorate(block) {
             "size": 151,
         },
         "collectionId": collection_id,
-        "limit": rows[3]?.children[1].textContent || 10,
+        "total_limit" : rows[3]?.children[1].textContent,
+        "limit": 5
     };
     decorateHoliday(block, props);
     updateImpressionCacheLocal(block, props);
