@@ -8,7 +8,7 @@ main .mobile-gating-text {
     text-align: left;
     flex-grow: 1;
     font-weight: 400;
-    font-size: var(--body-font-size-s);
+    font-size: var(--body-font-size-m);
 }
 
 main .mobile-gating-text, main .mobile-fork-button .floating-button .mobile-gating-row .icon{
@@ -23,14 +23,13 @@ main .mobile-fork-button  .mobile-gating-header-row .mobile-gating-exit {
     width: 24px;
     height: 24px;
     font-size: var(--body-font-size-xs);
-    background: var(--Palette-sx-gray-100, var(--gray-200));
+    background: var(--Palette-sx-gray-100, var(--color-gray-200));
 }
 
 main  .mobile-fork-button .floating-button.block {
     background-color: var(--color-white);
     border-radius: 28px;
-    box-shadow: 0px 0px 12px 0px var(--color-gray-800);
-    background-color: var(--gray-100);
+    box-shadow: 0px 0px 12px 0px #00000029;
     padding: 16px;
     width: calc(100% - 16px);
     margin: 5px;
@@ -54,10 +53,10 @@ main .mobile-gating-header {
 
 main .mobile-fork-button .floating-button a.button:any-link {
     border-radius: 20px;
-    font-size: var(--body-font-size-s);
+    font-size: var(--body-font-size-m);
     min-width: 136px;
     width: 40%;
-    color: var(--color-var(--color-white));
+    color: var(--color-white);
     background-color: var(--color-info-accent);
     border-color: var(--color-info-accent);
 }   
@@ -69,8 +68,8 @@ main .mobile-fork-button .floating-button a.button:any-link.accent {
 }   
 
 main .mobile-fork-button .floating-button a.button:any-link.outline {
-    background-color: var(--color-var(--color-white));
-    border: 2px solid var(--Border-Extra-subdued-default, var(--gray-200));
+    background-color: var(--color-white);
+    border: 2px solid var(--Border-Extra-subdued-default, var(--color-gray-200));
     color: var(--color-black);
 }
 

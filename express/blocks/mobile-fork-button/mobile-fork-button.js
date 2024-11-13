@@ -60,7 +60,8 @@ function collectFloatingButtonData() {
     scrollState: 'withLottie',
     showAppStoreBadge: ['on'].includes(getMetadataLocal('show-floating-cta-app-store-badge')?.toLowerCase()),
     toolsToStash: getMetadataLocal('ctas-above-divider'),
-    delay: getMetadataLocal('floating-cta-drawer-delay') || 0, 
+    delay: getMetadataLocal('floating-cta-drawer-delay') || 0,
+    tools: [],
     mainCta: {
       desktopHref: getMetadataLocal('desktop-floating-cta-link'),
       desktopText: getMetadataLocal('desktop-floating-cta-text'),
