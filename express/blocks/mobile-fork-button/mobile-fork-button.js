@@ -58,11 +58,9 @@ function collectFloatingButtonData() {
   const getMetadataLocal = (key) => metadataMap[key]; // customized getMetadata to reduce dom queries
   const data = {
     scrollState: 'withLottie',
-    showAppStoreBadge: ['yes', 'y', 'true', 'on'].includes(getMetadataLocal('show-floating-cta-app-store-badge')?.toLowerCase()),
+    showAppStoreBadge: ['on'].includes(getMetadataLocal('show-floating-cta-app-store-badge')?.toLowerCase()),
     toolsToStash: getMetadataLocal('ctas-above-divider'),
-    useLottieArrow: ['yes', 'y', 'true', 'on'].includes(getMetadataLocal('use-floating-cta-lottie-arrow')?.toLowerCase()),
-    delay: getMetadataLocal('floating-cta-drawer-delay') || 0,
-    tools: [],
+    delay: getMetadataLocal('floating-cta-drawer-delay') || 0, 
     mainCta: {
       desktopHref: getMetadataLocal('desktop-floating-cta-link'),
       desktopText: getMetadataLocal('desktop-floating-cta-text'),
