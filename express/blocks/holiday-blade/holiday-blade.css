@@ -1,9 +1,3 @@
-main .section.section-wrapper.grid-marquee-ratings-container.holiday-blade-container {
-    display: flex;
-    flex-direction: column-reverse;
-}
-
-
 main .section>.holiday-blade {
     max-width: 100%;
     width: 100%;

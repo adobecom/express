@@ -98,22 +98,28 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
   }
   const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' });
   const placeholders = await fetchPlaceholders();
-  const p = [];
-  for (let i = 0; i < 1; i += 1) {
-    p.push(loadTemplatesPromise(props, innerWrapper, placeholders, getTemplates, i * 5, fetchTemplates, createOptimizedPicture));
-  }
-  rows[0].classList.add('content-loaded');
-  await p[0];
-  p.splice(0, 1);
+  await loadTemplatesPromise(props, innerWrapper, placeholders, getTemplates, 0, fetchTemplates, createOptimizedPicture)
 
- 
+  rows[0].classList.add('content-loaded');
+
+  buildCarousel(':scope > .template', innerWrapper);
+
+
+  const p = [];
+  for (let i = 1; i < props.total_limit / 5; i += 1) {
+    p.push(loadTemplatesPromise(props, innerWrapper.querySelector('.carousel-platform') , placeholders, getTemplates, i * 5, fetchTemplates, createOptimizedPicture));
+  }
+
   rows[1].appendChild(innerWrapper);
   attachToggleControls(block, toggleChev);
   setTimeout(() => {
     rows[1].classList.add('content-loaded');
   }, 100);
-//  Promise.all(p);
-  buildCarousel(':scope > .template', innerWrapper);
+  await Promise.all(p);
+
+  const z = innerWrapper.querySelector('.carousel-right-trigger')
+  z.parentNode.appendChild(z)
+ 
 }
 
 async function decorateHoliday(block, props) {
