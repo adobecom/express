@@ -24,7 +24,7 @@ function buildMobileGating(block, data) {
     class:
       'mobile-gating-header',
   });
-  header.textContent = data.mainCta.text;
+  header.textContent = data.forkButtonHeader.text;
   block.append(header, buildAction(data.tools[0], 'accent'), buildAction(data.tools[1], 'outline'));
 }
 
@@ -74,6 +74,7 @@ function collectFloatingButtonData() {
     },
     bubbleSheet: getMetadata('floating-cta-bubble-sheet'),
     live: getMetadata('floating-cta-live'),
+    forkButtonHeader : getMetadata('fork-button-header')
   };
 
   for (let i = 1; i < 3; i += 1) {
