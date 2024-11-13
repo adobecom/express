@@ -220,7 +220,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   main .section .pricing-table-wrapper,
   main .section .pricing-table-wrapper:has(.pricing-table.few-cols),
   main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
-    max-width: 500px;
+    max-width: unset;
   }
   main .section .pricing-table-wrapper .pricing-table {
     margin: 0px 20px;
