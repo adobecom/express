@@ -73,37 +73,21 @@ function attachToggleControls(block, toggleChev) {
 function loadTemplatesPromise(props, block, innerWrapper, placeholders, getTemplates, start) {
     return new Promise(async (resolve, reject) => {
         try {
-            // Add loading state
             innerWrapper.classList.add('loading-templates');
-
-            // Fetch templates
             const { response, fallbackMsg } = await fetchTemplates({
                 ...props, start
             });
-
-            // Validate response
             if (!response || !response.items || !Array.isArray(response.items)) {
                 throw new Error('Invalid template response format');
             }
-
-            // Get and process templates
             const { templates } = await getTemplates(response, placeholders, fallbackMsg);
-
-            // Batch DOM updates
             const fragment = document.createDocumentFragment();
             templates.forEach(template => {
                 fragment.appendChild(template);
             });
-
-            // Update DOM once
             innerWrapper.appendChild(fragment);
-
-            // Decorate templates
             await decorateTemplates(block, innerWrapper);
-
-            // Remove loading state
             innerWrapper.classList.remove('loading-templates');
-
             resolve({ templates, response });
 
         } catch (error) {
@@ -136,20 +120,6 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     const placeholders = await fetchPlaceholders()
     const p = []
     for (let i = 0; i < props.total_limit / 5; i++) {
-
-        // p.push(async (props) => {
-        //     const { response, fallbackMsg } = await fetchTemplates(props)
-        //     if (!response || !response.items || !Array.isArray(response.items)) {
-        //         return;
-        //     }
-        //     const { templates } = await getTemplates(response, placeholders, fallbackMsg);
-        //     for (const template of templates) {
-        //         innerWrapper.appendChild(template);
-        //     }
-        //     console.log(templates)
-        //     props.start += 5
-        //     decorateTemplates(block, innerWrapper);
-        // })
         p.push(loadTemplatesPromise(props,block,innerWrapper,placeholders, getTemplates, i * 5))
     }
     rows[0].classList.add('content-loaded')
@@ -161,17 +131,7 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     setTimeout(() => {
         rows[1].classList.add('content-loaded')
     }, 100)
-
     Promise.all(p)
-    
-
-    // eslint-disable-next-line no-return-await
-
-
-   
-   
-   
- 
 }
 
 function decorateTemplates(block, innerWrapper) {
