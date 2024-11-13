@@ -4,8 +4,7 @@ import {
   getMetadata, getMobileOperatingSystem,
 } from '../../scripts/utils.js';
 
-import {
-  collectFloatingButtonData,
+import { 
   createFloatingButton,
 } from '../shared/floating-cta.js';
 
@@ -41,7 +40,7 @@ export function createMultiFunctionButton(block, data, audience) {
 
 function androidDeviceAndRamCheck() {
   const isAndroid = getMobileOperatingSystem() === 'Android';
-  if (getMetadata('floating-cta-device-and-ram-check') === 'yes') {
+  if (getMetadata('fork-eligibility-check') === 'on') {
     if (navigator.deviceMemory >= 4 && isAndroid) {
       return true;
     } else {
@@ -49,6 +48,58 @@ function androidDeviceAndRamCheck() {
     }
   }
   return true;
+}
+
+export function collectFloatingButtonData() {
+  const metadataMap = Array.from(document.head.querySelectorAll('meta')).reduce((acc, meta) => {
+    if (meta?.name && !meta.property) acc[meta.name] = meta.content || '';
+    return acc;
+  }, {});
+  const getMetadata = (key) => metadataMap[key]; // customized getMetadata to reduce dom queries
+  const data = {
+    scrollState: 'withLottie',
+    showAppStoreBadge: ['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta-app-store-badge')?.toLowerCase()),
+    toolsToStash: getMetadata('ctas-above-divider'),
+    useLottieArrow: ['yes', 'y', 'true', 'on'].includes(getMetadata('use-floating-cta-lottie-arrow')?.toLowerCase()),
+    delay: getMetadata('floating-cta-drawer-delay') || 0,
+    tools: [],
+    mainCta: {
+      desktopHref: getMetadata('desktop-floating-cta-link'),
+      desktopText: getMetadata('desktop-floating-cta-text'),
+      mobileHref: getMetadata('mobile-floating-cta-link'),
+      mobileText: getMetadata('mobile-floating-cta-text'),
+      href: getMetadata('main-cta-link'),
+      text: getMetadata('main-cta-text'),
+    },
+    bubbleSheet: getMetadata('floating-cta-bubble-sheet'),
+    live: getMetadata('floating-cta-live'),
+  };
+
+  for (let i = 1; i < CTA_ICON_COUNT; i += 1) {
+    const iconMetadata = getMetadata(`fork-cta-${i}-icon`);
+    if (!iconMetadata) break;
+    const completeSet = {
+      href: getMetadata(`fork-cta-${i}-link`),
+      text: getMetadata(`fork-cta-${i}-text`),
+      icon: getIconElement(iconMetadata),
+      iconText: getMetadata(`fork-cta-${i}-icon-text`),
+    };
+
+    if (Object.values(completeSet).every((val) => !!val)) {
+      const {
+        href, text, icon, iconText,
+      } = completeSet;
+      const aTag = createTag('a', { title: text, href });
+      aTag.textContent = text;
+      data.tools.push({
+        icon,
+        anchor: aTag,
+        iconText,
+      });
+    }
+  }
+
+  return data;
 }
 
 export default async function decorate(block) {
