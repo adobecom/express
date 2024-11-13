@@ -188,7 +188,28 @@ main .link-list.large p.button-container .button {
   border-radius: 24px;
 }
 
+main .link-list.left-align {
+  margin-top: 0;
+  margin-bottom: 75px;
+}
+main .link-list.left-align h3 {
+  padding-left: 0;
+}
+main .link-list.left-align .button-container {
+  margin-left: 0;
+}
+
 @media (min-width: 900px) {
+  main .link-list.content-group {
+    width: 648px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 70px;
+  }
+  main .link-list.content-group h3 {
+    padding-left: 0;
+  }
   main .link-list-container > div,
   main .link-list-centered-container > div {
     padding: 0 50px;
