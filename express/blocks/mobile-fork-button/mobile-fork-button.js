@@ -1,10 +1,10 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
-  getMetadata, getMobileOperatingSystem, getIconElement
+  getMetadata, getMobileOperatingSystem, getIconElement,
 } from '../../scripts/utils.js';
 
-import { 
+import {
   createFloatingButton,
 } from '../shared/floating-cta.js';
 
@@ -24,7 +24,6 @@ function buildMobileGating(block, data) {
     class:
       'mobile-gating-header',
   });
-  console.log(data.forkButtonHeader)
   header.textContent = data.forkButtonHeader;
   block.append(header, buildAction(data.tools[0], 'accent'), buildAction(data.tools[1], 'outline'));
 }
@@ -41,7 +40,6 @@ export function createMultiFunctionButton(block, data, audience) {
 
 function androidDeviceAndRamCheck() {
   const isAndroid = getMobileOperatingSystem() === 'Android';
-    console.log(getMetadata('fork-eligibility-check'))
   if (getMetadata('fork-eligibility-check') === 'on') {
     if (navigator.deviceMemory >= 4 && isAndroid) {
       return true;
@@ -57,35 +55,35 @@ function collectFloatingButtonData() {
     if (meta?.name && !meta.property) acc[meta.name] = meta.content || '';
     return acc;
   }, {});
-  const getMetadata = (key) => metadataMap[key]; // customized getMetadata to reduce dom queries
+  const getMetadataLocal = (key) => metadataMap[key]; // customized getMetadata to reduce dom queries
   const data = {
     scrollState: 'withLottie',
-    showAppStoreBadge: ['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta-app-store-badge')?.toLowerCase()),
-    toolsToStash: getMetadata('ctas-above-divider'),
-    useLottieArrow: ['yes', 'y', 'true', 'on'].includes(getMetadata('use-floating-cta-lottie-arrow')?.toLowerCase()),
-    delay: getMetadata('floating-cta-drawer-delay') || 0,
+    showAppStoreBadge: ['yes', 'y', 'true', 'on'].includes(getMetadataLocal('show-floating-cta-app-store-badge')?.toLowerCase()),
+    toolsToStash: getMetadataLocal('ctas-above-divider'),
+    useLottieArrow: ['yes', 'y', 'true', 'on'].includes(getMetadataLocal('use-floating-cta-lottie-arrow')?.toLowerCase()),
+    delay: getMetadataLocal('floating-cta-drawer-delay') || 0,
     tools: [],
     mainCta: {
-      desktopHref: getMetadata('desktop-floating-cta-link'),
-      desktopText: getMetadata('desktop-floating-cta-text'),
-      mobileHref: getMetadata('mobile-floating-cta-link'),
-      mobileText: getMetadata('mobile-floating-cta-text'),
-      href: getMetadata('main-cta-link'),
-      text: getMetadata('main-cta-text'),
+      desktopHref: getMetadataLocal('desktop-floating-cta-link'),
+      desktopText: getMetadataLocal('desktop-floating-cta-text'),
+      mobileHref: getMetadataLocal('mobile-floating-cta-link'),
+      mobileText: getMetadataLocal('mobile-floating-cta-text'),
+      href: getMetadataLocal('main-cta-link'),
+      text: getMetadataLocal('main-cta-text'),
     },
-    bubbleSheet: getMetadata('floating-cta-bubble-sheet'),
-    live: getMetadata('floating-cta-live'),
-    forkButtonHeader : getMetadata('fork-button-header')
+    bubbleSheet: getMetadataLocal('floating-cta-bubble-sheet'),
+    live: getMetadataLocal('floating-cta-live'),
+    forkButtonHeader: getMetadataLocal('fork-button-header'),
   };
 
   for (let i = 1; i < 3; i += 1) {
-    const iconMetadata = getMetadata(`fork-cta-${i}-icon`);
+    const iconMetadata = getMetadataLocal(`fork-cta-${i}-icon`);
     if (!iconMetadata) break;
     const completeSet = {
-      href: getMetadata(`fork-cta-${i}-link`),
-      text: getMetadata(`fork-cta-${i}-text`),
+      href: getMetadataLocal(`fork-cta-${i}-link`),
+      text: getMetadataLocal(`fork-cta-${i}-text`),
       icon: getIconElement(iconMetadata),
-      iconText: getMetadata(`fork-cta-${i}-icon-text`),
+      iconText: getMetadataLocal(`fork-cta-${i}-icon-text`),
     };
 
     if (Object.values(completeSet).every((val) => !!val)) {

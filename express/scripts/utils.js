@@ -1928,7 +1928,6 @@ async function buildAutoBlocks(main) {
     const validButtonVersion = ['floating-button', 'multifunction-button', 'mobile-fork-button'];
     const device = document.body.dataset?.device;
     const blockName = getMetadata(`${device}-floating-cta`);
-    console.log(device, validButtonVersion, blockName,validButtonVersion.includes(blockName))
     if (blockName && validButtonVersion.includes(blockName) && lastDiv) {
       const button = buildBlock(blockName, device);
       button.classList.add('meta-powered');
