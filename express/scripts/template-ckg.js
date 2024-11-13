@@ -118,7 +118,7 @@ async function updateLinkList(container, linkPill, list) {
     let clone;
     if (!isSearch(d.pathname)) {
       const pageData = {
-        url: d.pathname,
+        url: `${prefix}${d.pathname}`,
         'short-title': d.displayValue,
       };
 
