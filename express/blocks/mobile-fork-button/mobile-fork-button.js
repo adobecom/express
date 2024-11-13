@@ -1,7 +1,7 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
-  getMetadata, getMobileOperatingSystem,
+  getMetadata, getMobileOperatingSystem, getIconElement
 } from '../../scripts/utils.js';
 
 import { 
@@ -30,7 +30,7 @@ function buildMobileGating(block, data) {
 
 export function createMultiFunctionButton(block, data, audience) {
   const buttonWrapper = createFloatingButton(block, audience, data);
-  buttonWrapper.classList.add('multifunction', 'mobile-gating-button');
+  buttonWrapper.classList.add('multifunction', 'mobile-fork-button');
   buildMobileGating(buttonWrapper.querySelector('.floating-button'), data);
   return buttonWrapper;
 }
@@ -40,6 +40,7 @@ export function createMultiFunctionButton(block, data, audience) {
 
 function androidDeviceAndRamCheck() {
   const isAndroid = getMobileOperatingSystem() === 'Android';
+    console.log(getMetadata('fork-eligibility-check'))
   if (getMetadata('fork-eligibility-check') === 'on') {
     if (navigator.deviceMemory >= 4 && isAndroid) {
       return true;
@@ -75,7 +76,7 @@ function collectFloatingButtonData() {
     live: getMetadata('floating-cta-live'),
   };
 
-  for (let i = 1; i < CTA_ICON_COUNT; i += 1) {
+  for (let i = 1; i < 3; i += 1) {
     const iconMetadata = getMetadata(`fork-cta-${i}-icon`);
     if (!iconMetadata) break;
     const completeSet = {
@@ -117,6 +118,7 @@ export default async function decorate(block) {
   }
 
   const data = collectFloatingButtonData();
+  console.log(data)
   const blockWrapper = createMultiFunctionButton(block, data, audience);
   const blockLinks = blockWrapper.querySelectorAll('a');
   if (blockLinks && blockLinks.length > 0) {
