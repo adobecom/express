@@ -379,6 +379,7 @@ End border style variants
 
 .pricing-cards .billing-toggle.suppressed-billing-toggle {
   visibility: hidden;
+  height: 0;
 } 
 
 .pricing-cards .billing-toggle {
@@ -511,12 +512,34 @@ End border style variants
   }
 
   .pricing-cards .card-feature-list {
-    display: block;
+    display: none;
   }
+
+  .pricing-cards.block .cards-container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: fit-content;
+  }
+
+  .pricing-cards .card {
+    width: var(--card-width);
+  }
+
+  .pricing-cards .cards-container~div {
+    width: var(--card-width);
+  }
+ 
 }
 
 @media (min-width: 1280px) {
   :root {
     --card-width: 400px;
   }
+
+  .pricing-cards .billing-toggle.suppressed-billing-toggle {
+    height: unset;
+  }
+
+
 }
