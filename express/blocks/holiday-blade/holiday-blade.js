@@ -1,20 +1,4 @@
-import {
-  createTag,
-  transformLinkToAnimation,
-  createOptimizedPicture,
-  fetchPlaceholders,
-} from '../../scripts/utils.js';
-import buildCarousel from '../shared/carousel.js';
-
-import {
-  fetchTemplates,
-  gatherPageImpression,
-  isValidTemplate,
-  trackSearch,
-  updateImpressionCache,
-} from '../../scripts/template-search-api-v3.js';
-
-import renderTemplate from '../template-x/template-rendering.js';
+import { createOptimizedPicture } from '../../scripts/utils.js';
 
 function attachToggleControls(block, toggleChev) {
   const onToggle = (e) => {
@@ -55,7 +39,8 @@ function attachToggleControls(block, toggleChev) {
   }, 3000);
 }
 
-function decorateTemplates(innerWrapper) {
+function decorateTemplates(innerWrapper, createOptimizedPicture) {
+
   const templates = innerWrapper.children;
   innerWrapper.querySelectorAll(':scope picture > img').forEach((img) => {
     const { src, alt } = img;
@@ -67,7 +52,8 @@ function decorateTemplates(innerWrapper) {
   }
 }
 
-async function loadTemplatesPromise(props, innerWrapper, placeholders, getTemplates, start) {
+async function loadTemplatesPromise(props, innerWrapper, placeholders, getTemplates, start, fetchTemplates, createOptimizedPicture) { 
+ 
   innerWrapper.classList.add('loading-templates');
   const { response, fallbackMsg } = await fetchTemplates({
     ...props, start,
@@ -80,12 +66,20 @@ async function loadTemplatesPromise(props, innerWrapper, placeholders, getTempla
   templates.forEach((template) => {
     fragment.appendChild(template);
   });
+  console.log(innerWrapper, start)
   innerWrapper.appendChild(fragment);
-  await decorateTemplates(innerWrapper);
+  await decorateTemplates(innerWrapper, createOptimizedPicture);
   innerWrapper.classList.remove('loading-templates');
 }
 
 async function fetchAndRenderTemplates(block, props, toggleChev) {
+  const renderTemplate = (await import('../template-x/template-rendering.js')).default;
+  console.log(renderTemplate)
+  const { isValidTemplate } = await import('../../scripts/template-search-api-v3.js')
+  const { createTag, fetchPlaceholders, createOptimizedPicture } = await import('../../scripts/utils.js')
+  const  buildCarousel = (await import('../shared/carousel.js')).default
+  
+  const { fetchTemplates} = await import('../../scripts/template-search-api-v3.js')
   // Original getTemplates function logic
   async function getTemplates(response, phs, fallbackMsg) {
     const filtered = response.items.filter((item) => isValidTemplate(item));
@@ -105,27 +99,34 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
   const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' });
   const placeholders = await fetchPlaceholders();
   const p = [];
-  for (let i = 0; i < props.total_limit / 5; i += 1) {
-    p.push(loadTemplatesPromise(props, innerWrapper, placeholders, getTemplates, i * 5));
+  for (let i = 0; i < 1; i += 1) {
+    p.push(loadTemplatesPromise(props, innerWrapper, placeholders, getTemplates, i * 5, fetchTemplates, createOptimizedPicture));
   }
   rows[0].classList.add('content-loaded');
   await p[0];
   p.splice(0, 1);
-  buildCarousel(':scope > .template', innerWrapper);
+
+ 
   rows[1].appendChild(innerWrapper);
   attachToggleControls(block, toggleChev);
   setTimeout(() => {
     rows[1].classList.add('content-loaded');
   }, 100);
-  Promise.all(p);
+//  Promise.all(p);
+  buildCarousel(':scope > .template', innerWrapper);
 }
 
 async function decorateHoliday(block, props) {
   const rows = block.children;
   const toggleBar = rows[0].children[0];
   toggleBar.classList.add('toggle-bar');
+
+  const { createTag } = await import('../../scripts/utils.js')
+
+
   const toggleChev = createTag('div', { class: 'toggle-button-chev' });
   toggleBar.append(toggleChev);
+  const { transformLinkToAnimation } = await import('../../scripts/utils.js')
   const animation = transformLinkToAnimation(rows[0].children[1].querySelector('a'));
   block.classList.add('animated');
   block.append(animation);
@@ -134,7 +135,12 @@ async function decorateHoliday(block, props) {
 
 async function updateImpressionCacheLocal(block, props) {
   const { getMetadata } = await import('../../scripts/utils.js');
-
+ 
+  const { 
+    gatherPageImpression,
+    trackSearch,
+    updateImpressionCache,
+  } = await import( '../../scripts/template-search-api-v3.js');
   const impression = gatherPageImpression(props);
   updateImpressionCache(impression);
   const searchId = new URLSearchParams(window.location.search).get('searchId');
