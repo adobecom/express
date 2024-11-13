@@ -63,7 +63,6 @@ async function loadTemplatesPromise(props, innerWrapper, placeholders,
   templates.forEach((template) => {
     fragment.appendChild(template);
   });
-  console.log(innerWrapper, start);
   innerWrapper.appendChild(fragment);
   await decorateTemplates(innerWrapper, createOptimizedPicture);
   innerWrapper.classList.remove('loading-templates');
@@ -71,7 +70,6 @@ async function loadTemplatesPromise(props, innerWrapper, placeholders,
 
 async function fetchAndRenderTemplates(block, props, toggleChev) {
   const renderTemplate = (await import('../template-x/template-rendering.js')).default;
-  console.log(renderTemplate);
   const { isValidTemplate } = await import('../../scripts/template-search-api-v3.js');
   const { createTag, fetchPlaceholders, createOptimizedPicture } = await import('../../scripts/utils.js');
   const buildCarousel = (await import('../shared/carousel.js')).default;
