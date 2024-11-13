@@ -445,13 +445,18 @@ main .holiday-blade .carousel-container .carousel-platform {
     }
 
     main .holiday-blade.expanded {
-        height: 350px;
+        height: 300px;
         overflow: unset;
     }
 
     main .holiday-blade .carousel-container {
         position: relative;
         top: 0;
+    }
+
+    main .holiday-blade .carousel-container .carousel-platform {
+        padding-bottom: 40px;
+        padding-top: 10px;
     }
 
 }
