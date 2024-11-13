@@ -24,7 +24,8 @@ function buildMobileGating(block, data) {
     class:
       'mobile-gating-header',
   });
-  header.textContent = data.forkButtonHeader.text;
+  console.log(data.forkButtonHeader)
+  header.textContent = data.forkButtonHeader;
   block.append(header, buildAction(data.tools[0], 'accent'), buildAction(data.tools[1], 'outline'));
 }
 
@@ -119,7 +120,6 @@ export default async function decorate(block) {
   }
 
   const data = collectFloatingButtonData();
-  console.log(data)
   const blockWrapper = createMultiFunctionButton(block, data, audience);
   const blockLinks = blockWrapper.querySelectorAll('a');
   if (blockLinks && blockLinks.length > 0) {
