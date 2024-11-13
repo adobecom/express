@@ -50,7 +50,7 @@ function androidDeviceAndRamCheck() {
   return true;
 }
 
-export function collectFloatingButtonData() {
+function collectFloatingButtonData() {
   const metadataMap = Array.from(document.head.querySelectorAll('meta')).reduce((acc, meta) => {
     if (meta?.name && !meta.property) acc[meta.name] = meta.content || '';
     return acc;
