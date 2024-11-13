@@ -9,6 +9,7 @@ main .section .feature-list {
 
 main .section .feature-list img {
     height: 48px;
+    width: auto;
 }
 
 main .section .feature-list > div {
