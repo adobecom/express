@@ -180,7 +180,7 @@ export default function decorate(block) {
             "size": 151,
         },
         "collectionId": collection_id,
-        "limit": 10 || rows[3]?.children[1].textContent,
+        "limit": rows[3]?.children[1].textContent || 10,
     };
     decorateHoliday(block, props);
     updateImpressionCacheLocal(block, props);
