@@ -6,9 +6,17 @@ main .section>.holiday-blade {
     position: relative;
     top: 0;
     overflow: hidden;
-    --text-color: black;
+    --text-color: var(--color-black);
     --template-height: 150px;
     transition: height 0.3s ease-in-out;
+}
+
+main .holiday-blade.light  {
+    --text-color: var(--color-white);
+}
+
+main .holiday-blade.light .toggle-bar .icon {
+    filter: invert(0);
 }
 
 main .holiday-blade .carousel-container .carousel-fader-left {
@@ -68,6 +76,7 @@ main .holiday-blade>div {
 
 main .holiday-blade>div h4 {
     text-align: left;
+    color: var(--text-color);
     font-size: var(--body-font-size-l);
 }
 
