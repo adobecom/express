@@ -1,4 +1,8 @@
-const BATCH_LIMIT = 5
+import {
+  createTag, fetchPlaceholders, createOptimizedPicture, transformLinkToAnimation,
+} from '../../scripts/utils.js';
+
+const BATCH_LIMIT = 5;
 
 function attachToggleControls(block, toggleChev) {
   const onToggle = (e) => {
@@ -55,7 +59,7 @@ async function loadTemplatesPromise(props, innerWrapper, placeholders,
   getTemplates, fetchTemplates, createOptimizedPicture, start, total) {
   innerWrapper.classList.add('loading-templates');
   const { response, fallbackMsg } = await fetchTemplates({
-    ...props, start, limit : Math.min(BATCH_LIMIT, total - start)
+    ...props, start, limit: Math.min(BATCH_LIMIT, total - start),
   });
   if (!response || !response.items || !Array.isArray(response.items)) {
     throw new Error('Invalid template response format');
@@ -74,14 +78,12 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
   const [
     { default: renderTemplate },
     { isValidTemplate, fetchTemplates },
-    { createTag, fetchPlaceholders, createOptimizedPicture },
-    { default: buildCarousel }
+    { default: buildCarousel },
   ] = await Promise.all([
     import('../template-x/template-rendering.js'),
     import('../../scripts/template-search-api-v3.js'),
-    import('../../scripts/utils.js'),
-    import('../shared/carousel.js')
-  ]); 
+    import('../shared/carousel.js'),
+  ]);
   const placeholders = await fetchPlaceholders();
 
   async function getTemplates(response, phs, fallbackMsg) {
@@ -100,14 +102,12 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     rows[i].innerHTML = '';
   }
   const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' });
-
-
   rows[0].classList.add('content-loaded');
- 
-  const p = []
+
+  const p = [];
   for (let i = 0; i < props.total_limit / BATCH_LIMIT; i += 1) {
     p.push(loadTemplatesPromise(props, innerWrapper,
-     placeholders, getTemplates,  fetchTemplates, createOptimizedPicture,i * BATCH_LIMIT, props.total_limit));
+      placeholders, getTemplates, fetchTemplates, createOptimizedPicture, i * BATCH_LIMIT, props.total_limit));
   }
   await Promise.all(p);
   buildCarousel(':scope > .template', innerWrapper);
@@ -122,10 +122,8 @@ async function decorateHoliday(block, props) {
   const rows = block.children;
   const toggleBar = rows[0].children[0];
   toggleBar.classList.add('toggle-bar');
-  const { createTag } = await import('../../scripts/utils.js');
   const toggleChev = createTag('div', { class: 'toggle-button-chev' });
   toggleBar.append(toggleChev);
-  const { transformLinkToAnimation } = await import('../../scripts/utils.js');
   const animation = transformLinkToAnimation(rows[0].children[1].querySelector('a'));
   block.classList.add('animated');
   block.append(animation);
