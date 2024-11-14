@@ -57,6 +57,7 @@ main .holiday-blade>div:nth-of-type(4):not(.content-loaded) {
     display: none;
 }
 
+
 main .holiday-blade video {
     position: absolute;
     top: 0;
@@ -67,6 +68,18 @@ main .holiday-blade video {
     z-index: -1;
     pointer-events: none;
 }
+
+main .holiday-blade.static-background .toggle-bar~div img {
+    position: absolute;
+    top: 0;
+    left: 0; 
+    width: 100vw;
+    z-index: -1;
+    pointer-events: none;
+    height: 350px;
+    object-fit: cover;
+}
+
 
 main .holiday-blade>div {
     z-index: 3;

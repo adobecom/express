@@ -124,9 +124,15 @@ async function decorateHoliday(block, props) {
   toggleBar.classList.add('toggle-bar');
   const toggleChev = createTag('div', { class: 'toggle-button-chev' });
   toggleBar.append(toggleChev);
-  const animation = transformLinkToAnimation(rows[0].children[1].querySelector('a'));
-  block.classList.add('animated');
-  block.append(animation);
+  const animationLink = rows[0].children[1].querySelector('a')
+  if (!animationLink) {
+    block.classList.add('static-background');
+  } else {
+    const animation = transformLinkToAnimation(animationLink);
+    block.classList.add('animated');
+    block.append(animation);
+  }
+  
   fetchAndRenderTemplates(block, props, toggleChev);
 }
 
