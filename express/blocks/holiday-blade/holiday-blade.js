@@ -154,5 +154,4 @@ export default function decorate(block) {
     limit: 5,
   };
   decorateHoliday(block, props);
-  updateImpressionCacheLocal(block, props);
 }
