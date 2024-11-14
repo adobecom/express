@@ -290,7 +290,6 @@ main .holiday-blade .template:hover:not(.placeholder) .button-container {
 }
 
 main .holiday-blade .template .button-container .media-wrapper {
-    z-index: 4;
     position: relative;
     height: 100%;
     flex-basis: 100%;

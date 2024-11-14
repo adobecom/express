@@ -119,9 +119,7 @@ async function decorateHoliday(block, props) {
   const rows = block.children;
   const toggleBar = rows[0].children[0];
   toggleBar.classList.add('toggle-bar');
-
   const { createTag } = await import('../../scripts/utils.js');
-
   const toggleChev = createTag('div', { class: 'toggle-button-chev' });
   toggleBar.append(toggleChev);
   const { transformLinkToAnimation } = await import('../../scripts/utils.js');
@@ -129,30 +127,6 @@ async function decorateHoliday(block, props) {
   block.classList.add('animated');
   block.append(animation);
   fetchAndRenderTemplates(block, props, toggleChev);
-}
-
-async function updateImpressionCacheLocal(block, props) {
-  const { getMetadata } = await import('../../scripts/utils.js');
-
-  const {
-    gatherPageImpression,
-    trackSearch,
-    updateImpressionCache,
-  } = await import('../../scripts/template-search-api-v3.js');
-  const impression = gatherPageImpression(props);
-  updateImpressionCache(impression);
-  const searchId = new URLSearchParams(window.location.search).get('searchId');
-  updateImpressionCache({
-    search_keyword: getMetadata('q') || getMetadata('topics-x') || getMetadata('topics'),
-    result_count: props.total,
-    content_category: 'templates',
-  });
-  if (searchId) trackSearch('view-search-result', searchId);
-
-  const templateLinks = block.querySelectorAll('.template .button-container > a, a.template.placeholder');
-  templateLinks.isSearchOverride = true;
-  const linksPopulated = new CustomEvent('linkspopulated', { detail: templateLinks });
-  document.dispatchEvent(linksPopulated);
 }
 
 export default function decorate(block) {
