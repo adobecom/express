@@ -125,10 +125,18 @@ async function decorateHoliday(block, props) {
   toggleBar.classList.add('toggle-bar');
   const toggleChev = createTag('div', { class: 'toggle-button-chev' });
   const staticImage = rows[0].children[1].querySelector('img');
-  block.classList.add('static-background');
-  staticImage.classList.add('static-background-image');
-
+  if (staticImage){
+    block.classList.add('static-background');
+    staticImage.classList.add('static-background-image');
+  }
   toggleBar.append(toggleChev);
+
+  const backgroundStyle = rows[0].children[1].querySelector('strong')
+  if (backgroundStyle) {
+    block.style.background = backgroundStyle.textContent
+    backgroundStyle.remove()
+  }
+
   const animationLink = rows[0].children[1].querySelector('a');
   if (animationLink?.href.includes('.png')) {
     staticImage.href = animationLink.href;
@@ -137,10 +145,6 @@ async function decorateHoliday(block, props) {
     block.classList.add('animated');
     staticImage.remove();
     block.append(animation);
-  } 
- 
-  if (rows.length === 5 &&  rows[4].children[1]?.textContent) { 
-    block.style.background = rows[4].children[1].textContent;
   }
   fetchAndRenderTemplates(block, props, toggleChev);
 }
@@ -176,6 +180,6 @@ export default function decorate(block) {
   } else {
     props.collectionId = collectionId;
   }
-  
+
   decorateHoliday(block, props);
 }

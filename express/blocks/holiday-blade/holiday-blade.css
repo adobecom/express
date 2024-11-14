@@ -226,6 +226,10 @@ main .holiday-blade .still-wrapper .image-wrapper .media-type-icon {
     will-change: transform;
 }
 
+main .holiday-blade br {
+    display: none;
+}
+
 main .holiday-blade .still-wrapper .image-wrapper .free-tag {
     position: absolute;
     height: 24px;
