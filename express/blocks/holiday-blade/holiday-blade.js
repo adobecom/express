@@ -167,7 +167,7 @@ export default function decorate(block) {
     props.q = collectionId;
     props.collectionId = 'urn:aaid:sc:VA6C2:25a82757-01de-4dd9-b0ee-bde51dd3b418';
   } else {
-    props.collecitonId = collectionId;
+    props.collectionId = collectionId;
   }
   decorateHoliday(block, props);
 }
