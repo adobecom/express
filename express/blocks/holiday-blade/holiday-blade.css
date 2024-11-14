@@ -69,7 +69,7 @@ main .holiday-blade video {
     pointer-events: none;
 }
 
-main .holiday-blade.static-background .toggle-bar~div img {
+main .holiday-blade.static-background .static-background-image {
     position: absolute;
     top: 0;
     left: 0; 
@@ -78,6 +78,7 @@ main .holiday-blade.static-background .toggle-bar~div img {
     pointer-events: none;
     height: 350px;
     object-fit: cover;
+    transition: height 0.3s ease-in-out;
 }
 
 
@@ -189,12 +190,12 @@ main .holiday-blade .carousel-container {
     position: relative;
     top: 20px;
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transition: opa1s ease-in-out;
 }
 
 main .holiday-blade.holiday-blade.expanded .carousel-container {
     opacity: 1;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.1s ease-in-out;
 }
 
 main .holiday-blade .template .still-wrapper .image-wrapper {

@@ -56,7 +56,7 @@ function decorateTemplates(innerWrapper) {
 }
 
 async function loadTemplatesPromise(props, innerWrapper, placeholders,
-  getTemplates, fetchTemplates,  start, total) {
+  getTemplates, fetchTemplates, start, total) {
   innerWrapper.classList.add('loading-templates');
   const { response, fallbackMsg } = await fetchTemplates({
     ...props, start, limit: Math.min(BATCH_LIMIT, total - start),
@@ -70,7 +70,7 @@ async function loadTemplatesPromise(props, innerWrapper, placeholders,
     fragment.appendChild(template);
   });
   innerWrapper.appendChild(fragment);
-  await decorateTemplates(innerWrapper );
+  await decorateTemplates(innerWrapper);
   innerWrapper.classList.remove('loading-templates');
 }
 
@@ -124,15 +124,16 @@ async function decorateHoliday(block, props) {
   toggleBar.classList.add('toggle-bar');
   const toggleChev = createTag('div', { class: 'toggle-button-chev' });
   toggleBar.append(toggleChev);
-  const animationLink = rows[0].children[1].querySelector('a')
+  const animationLink = rows[0].children[1].querySelector('a');
   if (!animationLink) {
     block.classList.add('static-background');
+    rows[0].children[1].querySelector('img').classList.add('static-background-image');
   } else {
     const animation = transformLinkToAnimation(animationLink);
     block.classList.add('animated');
     block.append(animation);
   }
-  
+
   fetchAndRenderTemplates(block, props, toggleChev);
 }
 
