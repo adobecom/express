@@ -26,6 +26,7 @@ main .holiday-blade .carousel-container .carousel-fader-left {
     left: auto;
     pointer-events: none;
     width: 10px;
+    height: 270px;
 }
 
 main .holiday-blade .carousel-container .carousel-fader-right {
@@ -33,6 +34,7 @@ main .holiday-blade .carousel-container .carousel-fader-right {
     top: -15px;
     right: 15px;
     width: 10px;
+    height: 270px;
 }
 
 main .holiday-blade .carousel-container .carousel-arrow {
@@ -461,6 +463,13 @@ main .holiday-blade .carousel-container .carousel-platform {
         width: 100%;
         clip-path: polygon(0 0, 100% 0, 100% 350px, 0 350px); 
     }
+    main .holiday-blade .carousel-container .carousel-fader-left,
+    main .holiday-blade .carousel-container .carousel-fader-right {
+        top: 35px;
+        height: 230px;
+        width: 20px;
+    }
+
    
 }
 
@@ -511,7 +520,13 @@ main .holiday-blade .carousel-container .carousel-platform {
         width: 100%;
         clip-path: polygon(0 0, 100% 0, 100% 350px, 0 350px); 
     }
-   
+ 
+    main .holiday-blade .carousel-container .carousel-fader-left,
+    main .holiday-blade .carousel-container .carousel-fader-right {
+        top: 35px;
+        height: 250px;
+        width: 30px;
+    }
 
 }
 
