@@ -73,10 +73,10 @@ main .holiday-blade.static-background .static-background-image {
     position: absolute;
     top: 0;
     left: 0; 
-    width: 100vw;
+    width: 100%;
+    height: 326px;
     z-index: -1;
     pointer-events: none;
-    height: 350px;
     object-fit: cover;
     transition: height 0.3s ease-in-out;
 }
@@ -453,6 +453,12 @@ main .holiday-blade .carousel-container .carousel-platform {
         padding-top: 10px;
         padding-bottom: 50px;
     }
+    main .holiday-blade.static-background .static-background-image {
+        height: 350px;
+        width: 100%;
+        clip-path: polygon(0 0, 100% 0, 100% 350px, 0 350px); 
+    }
+   
 }
 
 @media screen and (min-width: 1280px) {
@@ -496,6 +502,13 @@ main .holiday-blade .carousel-container .carousel-platform {
     main .holiday-blade div div>* {
         font-size: var(--body-font-size-l);
     }
+
+    main .holiday-blade.static-background .static-background-image {
+        height: unset;
+        width: 100%;
+        clip-path: polygon(0 0, 100% 0, 100% 350px, 0 350px); 
+    }
+   
 
 }
 
