@@ -1925,7 +1925,7 @@ async function buildAutoBlocks(main) {
   }
 
   async function loadFloatingCTA(BlockMediator) {
-    const validButtonVersion = ['floating-button', 'multifunction-button', 'mobile-gating-button'];
+    const validButtonVersion = ['floating-button', 'multifunction-button', 'mobile-fork-button'];
     const device = document.body.dataset?.device;
     const blockName = getMetadata(`${device}-floating-cta`);
     if (blockName && validButtonVersion.includes(blockName) && lastDiv) {

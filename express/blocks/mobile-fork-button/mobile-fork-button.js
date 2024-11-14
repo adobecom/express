@@ -1,11 +1,10 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
-  getMetadata, getMobileOperatingSystem,
+  getMetadata, getMobileOperatingSystem, getIconElement,
 } from '../../scripts/utils.js';
 
 import {
-  collectFloatingButtonData,
   createFloatingButton,
 } from '../shared/floating-cta.js';
 
@@ -25,13 +24,13 @@ function buildMobileGating(block, data) {
     class:
       'mobile-gating-header',
   });
-  header.textContent = data.mainCta.text;
+  header.textContent = data.forkButtonHeader;
   block.append(header, buildAction(data.tools[0], 'accent'), buildAction(data.tools[1], 'outline'));
 }
 
 export function createMultiFunctionButton(block, data, audience) {
   const buttonWrapper = createFloatingButton(block, audience, data);
-  buttonWrapper.classList.add('multifunction', 'mobile-gating-button');
+  buttonWrapper.classList.add('multifunction', 'mobile-fork-button');
   buildMobileGating(buttonWrapper.querySelector('.floating-button'), data);
   return buttonWrapper;
 }
@@ -41,7 +40,7 @@ export function createMultiFunctionButton(block, data, audience) {
 
 function androidDeviceAndRamCheck() {
   const isAndroid = getMobileOperatingSystem() === 'Android';
-  if (getMetadata('floating-cta-device-and-ram-check') === 'yes') {
+  if (getMetadata('fork-eligibility-check') === 'on') {
     if (navigator.deviceMemory >= 4 && isAndroid) {
       return true;
     } else {
@@ -49,6 +48,58 @@ function androidDeviceAndRamCheck() {
     }
   }
   return true;
+}
+
+function collectFloatingButtonData() {
+  const metadataMap = Array.from(document.head.querySelectorAll('meta')).reduce((acc, meta) => {
+    if (meta?.name && !meta.property) acc[meta.name] = meta.content || '';
+    return acc;
+  }, {});
+  const getMetadataLocal = (key) => metadataMap[key]; // customized getMetadata to reduce dom queries
+  const data = {
+    scrollState: 'withLottie',
+    showAppStoreBadge: ['on'].includes(getMetadataLocal('show-floating-cta-app-store-badge')?.toLowerCase()),
+    toolsToStash: getMetadataLocal('ctas-above-divider'),
+    delay: getMetadataLocal('floating-cta-drawer-delay') || 0,
+    tools: [],
+    mainCta: {
+      desktopHref: getMetadataLocal('desktop-floating-cta-link'),
+      desktopText: getMetadataLocal('desktop-floating-cta-text'),
+      mobileHref: getMetadataLocal('mobile-floating-cta-link'),
+      mobileText: getMetadataLocal('mobile-floating-cta-text'),
+      href: getMetadataLocal('main-cta-link'),
+      text: getMetadataLocal('main-cta-text'),
+    },
+    bubbleSheet: getMetadataLocal('floating-cta-bubble-sheet'),
+    live: getMetadataLocal('floating-cta-live'),
+    forkButtonHeader: getMetadataLocal('fork-button-header'),
+  };
+
+  for (let i = 1; i < 3; i += 1) {
+    const iconMetadata = getMetadataLocal(`fork-cta-${i}-icon`);
+    if (!iconMetadata) break;
+    const completeSet = {
+      href: getMetadataLocal(`fork-cta-${i}-link`),
+      text: getMetadataLocal(`fork-cta-${i}-text`),
+      icon: getIconElement(iconMetadata),
+      iconText: getMetadataLocal(`fork-cta-${i}-icon-text`),
+    };
+
+    if (Object.values(completeSet).every((val) => !!val)) {
+      const {
+        href, text, icon, iconText,
+      } = completeSet;
+      const aTag = createTag('a', { title: text, href });
+      aTag.textContent = text;
+      data.tools.push({
+        icon,
+        anchor: aTag,
+        iconText,
+      });
+    }
+  }
+
+  return data;
 }
 
 export default async function decorate(block) {
