@@ -478,6 +478,11 @@ main .holiday-blade .carousel-container .carousel-platform {
         padding-bottom: 60px;
     }
 
+
+    main .holiday-blade div div>* {
+        font-size: var(--body-font-size-l);
+    }
+
 }
 
 
