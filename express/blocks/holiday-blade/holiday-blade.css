@@ -431,7 +431,6 @@ main .holiday-blade .carousel-container .carousel-platform {
         z-index: 6;
         position: relative;
         overflow: hidden;
-        width: 1200px;
         --template-height: 180px;
     }
 
