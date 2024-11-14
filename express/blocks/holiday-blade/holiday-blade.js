@@ -69,13 +69,19 @@ async function loadTemplatesPromise(props, innerWrapper, placeholders,
 }
 
 async function fetchAndRenderTemplates(block, props, toggleChev) {
-  const renderTemplate = (await import('../template-x/template-rendering.js')).default;
-  const { isValidTemplate } = await import('../../scripts/template-search-api-v3.js');
-  const { createTag, fetchPlaceholders, createOptimizedPicture } = await import('../../scripts/utils.js');
-  const buildCarousel = (await import('../shared/carousel.js')).default;
+  const [
+    { default: renderTemplate },
+    { isValidTemplate, fetchTemplates },
+    { createTag, fetchPlaceholders, createOptimizedPicture },
+    { default: buildCarousel }
+  ] = await Promise.all([
+    import('../template-x/template-rendering.js'),
+    import('../../scripts/template-search-api-v3.js'),
+    import('../../scripts/utils.js'),
+    import('../shared/carousel.js')
+  ]); 
+  const placeholders = await fetchPlaceholders();
 
-  const { fetchTemplates } = await import('../../scripts/template-search-api-v3.js');
-  // Original getTemplates function logic
   async function getTemplates(response, phs, fallbackMsg) {
     const filtered = response.items.filter((item) => isValidTemplate(item));
     const templates = await Promise.all(
@@ -92,27 +98,21 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
     rows[i].innerHTML = '';
   }
   const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' });
-  const placeholders = await fetchPlaceholders();
-  await loadTemplatesPromise(props, innerWrapper, placeholders,
-    getTemplates, 0, fetchTemplates, createOptimizedPicture);
+
 
   rows[0].classList.add('content-loaded');
-
   buildCarousel(':scope > .template', innerWrapper);
-
-  const p = [];
-  for (let i = 1; i < props.total_limit / 5; i += 1) {
-    p.push(loadTemplatesPromise(props, innerWrapper.querySelector('.carousel-platform'), placeholders, getTemplates, i * 5, fetchTemplates, createOptimizedPicture));
+  const p = []
+  for (let i = 0; i < props.total_limit / 5; i += 1) {
+    p.push(loadTemplatesPromise(props, innerWrapper.querySelector('.carousel-platform'),
+     placeholders, getTemplates,  i * 5, fetchTemplates, createOptimizedPicture));
   }
-
+  await Promise.all(p);
   rows[1].appendChild(innerWrapper);
   attachToggleControls(block, toggleChev);
   setTimeout(() => {
     rows[1].classList.add('content-loaded');
   }, 100);
-  await Promise.all(p);
-  const z = innerWrapper.querySelector('.carousel-right-trigger');
-  z.parentNode.appendChild(z);
 }
 
 async function decorateHoliday(block, props) {
