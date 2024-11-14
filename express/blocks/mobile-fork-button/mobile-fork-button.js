@@ -55,7 +55,7 @@ function collectFloatingButtonData() {
     if (meta?.name && !meta.property) acc[meta.name] = meta.content || '';
     return acc;
   }, {});
-  const getMetadataLocal = (key) => metadataMap[key]; // customized getMetadata to reduce dom queries
+  const getMetadataLocal = (key) => metadataMap[key];
   const data = {
     scrollState: 'withLottie',
     showAppStoreBadge: ['on'].includes(getMetadataLocal('show-floating-cta-app-store-badge')?.toLowerCase()),
