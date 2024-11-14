@@ -1,3 +1,5 @@
+const BATCH_LIMIT = 5
+
 function attachToggleControls(block, toggleChev) {
   const onToggle = (e) => {
     e.stopPropagation();
@@ -50,10 +52,10 @@ function decorateTemplates(innerWrapper, createOptimizedPicture) {
 }
 
 async function loadTemplatesPromise(props, innerWrapper, placeholders,
-  getTemplates, start, fetchTemplates, createOptimizedPicture) {
+  getTemplates, fetchTemplates, createOptimizedPicture, start, total) {
   innerWrapper.classList.add('loading-templates');
   const { response, fallbackMsg } = await fetchTemplates({
-    ...props, start,
+    ...props, start, limit : Math.min(BATCH_LIMIT, total - start)
   });
   if (!response || !response.items || !Array.isArray(response.items)) {
     throw new Error('Invalid template response format');
@@ -101,13 +103,14 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
 
 
   rows[0].classList.add('content-loaded');
-  buildCarousel(':scope > .template', innerWrapper);
+ 
   const p = []
-  for (let i = 0; i < props.total_limit / 5; i += 1) {
-    p.push(loadTemplatesPromise(props, innerWrapper.querySelector('.carousel-platform'),
-     placeholders, getTemplates,  i * 5, fetchTemplates, createOptimizedPicture));
+  for (let i = 0; i < props.total_limit / BATCH_LIMIT; i += 1) {
+    p.push(loadTemplatesPromise(props, innerWrapper,
+     placeholders, getTemplates,  fetchTemplates, createOptimizedPicture,i * BATCH_LIMIT, props.total_limit));
   }
   await Promise.all(p);
+  buildCarousel(':scope > .template', innerWrapper);
   rows[1].appendChild(innerWrapper);
   attachToggleControls(block, toggleChev);
   setTimeout(() => {
@@ -151,7 +154,7 @@ export default function decorate(block) {
     },
     collectionId,
     total_limit: rows[3]?.children[1].textContent,
-    limit: 5,
+    limit: BATCH_LIMIT,
   };
   decorateHoliday(block, props);
 }
