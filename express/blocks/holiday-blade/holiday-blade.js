@@ -65,7 +65,7 @@ async function loadTemplatesPromise(props, innerWrapper, placeholders,
     throw new Error('Invalid template response format');
   }
   const { templates } = await getTemplates(response, placeholders, fallbackMsg);
-  
+
   const fragment = document.createDocumentFragment();
   templates.forEach((template) => {
     fragment.appendChild(template);
@@ -159,15 +159,15 @@ export default function decorate(block) {
       format: 'jpg',
       size: 151,
     },
-   
+
     total_limit: rows[3]?.children[1].textContent,
     limit: BATCH_LIMIT,
   };
   if (isQuery) {
-    props['q'] = collectionId
-    props['collectionId'] =  'urn:aaid:sc:VA6C2:25a82757-01de-4dd9-b0ee-bde51dd3b418'
+    props.q = collectionId;
+    props.collectionId = 'urn:aaid:sc:VA6C2:25a82757-01de-4dd9-b0ee-bde51dd3b418';
   } else {
-    props['collecitonId'] = collectionId
+    props.collecitonId = collectionId;
   }
   decorateHoliday(block, props);
 }
