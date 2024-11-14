@@ -43,7 +43,7 @@ function attachToggleControls(block, toggleChev) {
   }, 3000);
 }
 
-function decorateTemplates(innerWrapper, createOptimizedPicture) {
+function decorateTemplates(innerWrapper) {
   const templates = innerWrapper.children;
   innerWrapper.querySelectorAll(':scope picture > img').forEach((img) => {
     const { src, alt } = img;
@@ -56,7 +56,7 @@ function decorateTemplates(innerWrapper, createOptimizedPicture) {
 }
 
 async function loadTemplatesPromise(props, innerWrapper, placeholders,
-  getTemplates, fetchTemplates, createOptimizedPicture, start, total) {
+  getTemplates, fetchTemplates,  start, total) {
   innerWrapper.classList.add('loading-templates');
   const { response, fallbackMsg } = await fetchTemplates({
     ...props, start, limit: Math.min(BATCH_LIMIT, total - start),
@@ -70,7 +70,7 @@ async function loadTemplatesPromise(props, innerWrapper, placeholders,
     fragment.appendChild(template);
   });
   innerWrapper.appendChild(fragment);
-  await decorateTemplates(innerWrapper, createOptimizedPicture);
+  await decorateTemplates(innerWrapper );
   innerWrapper.classList.remove('loading-templates');
 }
 
@@ -107,7 +107,7 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
   const p = [];
   for (let i = 0; i < props.total_limit / BATCH_LIMIT; i += 1) {
     p.push(loadTemplatesPromise(props, innerWrapper,
-      placeholders, getTemplates, fetchTemplates, createOptimizedPicture, i * BATCH_LIMIT, props.total_limit));
+      placeholders, getTemplates, fetchTemplates, i * BATCH_LIMIT, props.total_limit));
   }
   await Promise.all(p);
   buildCarousel(':scope > .template', innerWrapper);
