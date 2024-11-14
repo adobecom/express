@@ -99,7 +99,7 @@ async function fetchAndRenderTemplates(block, props, toggleChev) {
   }
 
   const rows = block.children;
-  for (let i = 1; i < 4; i += 1) {
+  for (let i = 1; i < rows.length; i += 1) {
     rows[i].innerHTML = '';
   }
   const innerWrapper = createTag('div', { class: 'holiday-blade-inner-wrapper' });
@@ -137,6 +137,10 @@ async function decorateHoliday(block, props) {
     block.classList.add('animated');
     staticImage.remove();
     block.append(animation);
+  } 
+ 
+  if (rows.length === 5 &&  rows[4].children[1]?.textContent) { 
+    block.style.background = rows[4].children[1].textContent;
   }
   fetchAndRenderTemplates(block, props, toggleChev);
 }
@@ -172,5 +176,6 @@ export default function decorate(block) {
   } else {
     props.collectionId = collectionId;
   }
+  
   decorateHoliday(block, props);
 }
