@@ -68,7 +68,7 @@ main .holiday-blade>div {
 
 main .holiday-blade>div h4 {
     text-align: left;
-    font-size: var(--body-font-size-m);
+    font-size: var(--body-font-size-l);
 }
 
 main .holiday-blade .toggle-bar a {
@@ -143,7 +143,7 @@ main .holiday-blade .toggle-bar {
     flex-direction: row;
     justify-content: center;
     gap: 16px;
-    font-size: 18px;
+    font-size: var(--body-font-size-l);
     height: 24px;
     padding: 12px;
     margin-right: 50px;
@@ -153,6 +153,7 @@ main .holiday-blade .toggle-bar {
 main .holiday-blade div div>* {
     margin: 0;
     margin-right: auto;
+    font-size: var(--body-font-size-m);
 }
 
 
@@ -277,14 +278,9 @@ main .holiday-blade .template .button-container .media-wrapper {
     height: 100%;
     flex-basis: 100%;
     width: 100%;
-    -webkit-user-select: none;
-    /* Chrome/Safari */
-    -moz-user-select: none;
-    /* Firefox */
-    -ms-user-select: none;
-    /* IE10+ */
-
-
+    -webkit-user-select: none; 
+    -moz-user-select: none; 
+    -ms-user-select: none; 
 }
 
 main .holiday-blade .template .button-container a.button {
@@ -388,9 +384,9 @@ main .holiday-blade .carousel {
 }
 
 main .holiday-blade .carousel-container .carousel-platform {
-    height: 200px;
-    padding-bottom: 30px;
-    padding-top: 30px;
+        height: 210px;
+        padding-bottom: 30px;
+        padding-top: 15px; 
 }
 
 
@@ -402,6 +398,7 @@ main .holiday-blade .carousel-container .carousel-platform {
         position: relative;
         overflow: hidden;
         width: 1200px;
+        --template-height: 180px;
     }
 
     main .holiday-blade div div>* {
@@ -422,6 +419,10 @@ main .holiday-blade .carousel-container .carousel-platform {
         position: relative;
         top: 30px;
     }
+    main .holiday-blade .carousel-container .carousel-platform {
+        padding-top: 10px;
+        padding-bottom: 50px;
+    }
 }
 
 @media screen and (min-width: 1280px) {
@@ -433,6 +434,7 @@ main .holiday-blade .carousel-container .carousel-platform {
         position: relative;
         overflow: hidden;
         width: 100%;
+        --template-height: 200px;
     }
 
     main .holiday-blade .toggle-bar p:first-of-type {
@@ -444,19 +446,20 @@ main .holiday-blade .carousel-container .carousel-platform {
         margin: unset;
     }
 
+ 
+    main .holiday-blade .carousel-container {
+        position: relative;
+        top: 10px;
+    }
+ 
     main .holiday-blade.expanded {
-        height: 300px;
+        height: 350px;
         overflow: unset;
     }
 
-    main .holiday-blade .carousel-container {
-        position: relative;
-        top: 0;
-    }
-
     main .holiday-blade .carousel-container .carousel-platform {
-        padding-bottom: 40px;
         padding-top: 10px;
+        padding-bottom: 60px;
     }
 
 }
