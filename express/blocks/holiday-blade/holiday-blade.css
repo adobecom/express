@@ -175,6 +175,13 @@ main .holiday-blade.expanded {
 main .holiday-blade .carousel-container {
     position: relative;
     top: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+main .holiday-blade.holiday-blade.expanded .carousel-container {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
 }
 
 main .holiday-blade .template .still-wrapper .image-wrapper {
