@@ -181,7 +181,7 @@ main .holiday-blade div div>* {
 
 
 main .holiday-blade.expanded {
-    height: 326px;
+    height: 350px;
     overflow: unset;
     transition: height 0.3s ease-in-out;
 }
