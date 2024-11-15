@@ -1,4 +1,4 @@
-main .section>.holiday-blade {
+.section .holiday-blade {
     max-width: 100%;
     width: 100%;
     z-index: 6;
@@ -12,7 +12,7 @@ main .section>.holiday-blade {
     transition: height 0.3s ease-in-out;
 }
 
-main .holiday-blade.expanded::after {
+.holiday-blade.expanded::after {
     content: '';
     position: fixed;
     inset: 0;
@@ -21,15 +21,15 @@ main .holiday-blade.expanded::after {
     z-index: -1;
 }
 
-main .holiday-blade.light  {
+.holiday-blade.light  {
     --text-color: var(--color-white);
 }
 
-main .holiday-blade.light .toggle-bar .icon {
+.holiday-blade.light .toggle-bar .icon {
     filter: invert(0);
 }
 
-main .holiday-blade .carousel-container .carousel-fader-left {
+.holiday-blade .carousel-container .carousel-fader-left {
     align-items: end;
     top: 30px;
     right: 42px;
@@ -39,7 +39,7 @@ main .holiday-blade .carousel-container .carousel-fader-left {
  
 }
 
-main .holiday-blade .carousel-container .carousel-fader-right {
+.holiday-blade .carousel-container .carousel-fader-right {
     align-items: end;
     top: 30px;
     right: 15px;
@@ -47,21 +47,21 @@ main .holiday-blade .carousel-container .carousel-fader-right {
  
 }
 
-main .holiday-blade .carousel-container .carousel-arrow {
+.holiday-blade .carousel-container .carousel-arrow {
     position: absolute;
 }
 
-main .holiday-blade .carousel-container .carousel-arrow-left {
+.holiday-blade .carousel-container .carousel-arrow-left {
     position: absolute;
     left: -50px;
 }
 
-main .holiday-blade.light {
+.holiday-blade.light {
     --text-color: white;
     color: var(--text-color)
 }
 
-main .holiday-blade video {
+.holiday-blade video {
     position: absolute;
     top: 0;
     left: 0;
@@ -72,7 +72,7 @@ main .holiday-blade video {
     pointer-events: none;
 }
 
-main .holiday-blade.static-background .static-background-image {
+.holiday-blade.static-background .static-background-image {
     position: absolute;
     top: 0;
     left: 0; 
@@ -85,19 +85,19 @@ main .holiday-blade.static-background .static-background-image {
 }
 
 
-main .holiday-blade>div {
+.holiday-blade>div {
     z-index: 3;
     position: relative;
 }
 
 
-main .holiday-blade>div h4 {
+.holiday-blade>div h4 {
     text-align: left;
     color: var(--text-color);
     font-size: var(--body-font-size-l);
 }
 
-main .holiday-blade .toggle-bar a {
+.holiday-blade .toggle-bar a {
     position: relative;
     top: -2.5px;
     display: inline;
@@ -105,20 +105,20 @@ main .holiday-blade .toggle-bar a {
     text-decoration: underline;
 }
 
-main .holiday-blade .toggle-bar .icon {
+.holiday-blade .toggle-bar .icon {
     position: relative;
     top: 2px;
 }
 
-main .holiday-blade.light .toggle-bar .icon {
+.holiday-blade.light .toggle-bar .icon {
     filter: invert(100)
 }
 
-main .holiday-blade .toggle-bar p:first-of-type {
+.holiday-blade .toggle-bar p:first-of-type {
     display: none;
 }
 
-main .holiday-blade .toggle-button-chev {
+.holiday-blade .toggle-button-chev {
     cursor: pointer;
     display: block;
     float: left;
@@ -136,16 +136,16 @@ main .holiday-blade .toggle-button-chev {
     top: 0;
 }
 
-main .holiday-blade .toggle-button-chev.hide {
+.holiday-blade .toggle-button-chev.hide {
     display: none;
 }
 
-main .holiday-blade.expanded .toggle-button-chev::before {
+.holiday-blade.expanded .toggle-button-chev::before {
     transform: rotate(-45deg);
     top: 1.5px;
 }
 
-main .holiday-blade .toggle-button-chev::before {
+.holiday-blade .toggle-button-chev::before {
     content: '';
     position: absolute;
     margin-top: 11px;
@@ -160,13 +160,13 @@ main .holiday-blade .toggle-button-chev::before {
 
 
 
-main .holiday-blade.expanded .toggle-button-chev {
+.holiday-blade.expanded .toggle-button-chev {
     transform: rotate(-135deg);
     transform: none;
     z-index: 10;
 }
 
-main .holiday-blade .toggle-bar {
+.holiday-blade .toggle-bar {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -178,37 +178,37 @@ main .holiday-blade .toggle-bar {
 
 }
 
-main .holiday-blade div div>* {
+.holiday-blade div div>* {
     margin: 0;
     margin-right: auto;
     font-size: var(--body-font-size-m);
 }
 
 
-main .holiday-blade.expanded {
+.holiday-blade.expanded {
     height: var(--expanded-blade-height);
     overflow: unset;
     transition: height 0.3s ease-in-out;
     z-index: 6;
 }
 
-main .holiday-blade .carousel-container {
+.holiday-blade .carousel-container {
     position: relative;
     opacity: 0;
     transition: opa1s ease-in-out;
 }
 
-main .holiday-blade.holiday-blade.expanded .carousel-container {
+.holiday-blade.holiday-blade.expanded .carousel-container {
     opacity: 1;
     transition: opacity 0.1s ease-in-out;
 }
 
-main .holiday-blade .template .still-wrapper .image-wrapper {
+.holiday-blade .template .still-wrapper .image-wrapper {
     position: relative;
 }
 
-main .holiday-blade .template .media-wrapper img:first-of-type,
-main .holiday-blade .template .still-wrapper .image-wrapper img:first-of-type {
+.holiday-blade .template .media-wrapper img:first-of-type,
+.holiday-blade .template .still-wrapper .image-wrapper img:first-of-type {
     height: var(--template-height);
     width: auto;
     pointer-events: auto;
@@ -218,7 +218,7 @@ main .holiday-blade .template .still-wrapper .image-wrapper img:first-of-type {
     border-radius: 16px;
 }
 
-main .holiday-blade .still-wrapper .image-wrapper .media-type-icon {
+.holiday-blade .still-wrapper .image-wrapper .media-type-icon {
     position: absolute;
     width: 20px;
     height: 20px;
@@ -231,11 +231,11 @@ main .holiday-blade .still-wrapper .image-wrapper .media-type-icon {
     will-change: transform;
 }
 
-main .holiday-blade br {
+.holiday-blade br {
     display: none;
 }
 
-main .holiday-blade .still-wrapper .image-wrapper .free-tag {
+.holiday-blade .still-wrapper .image-wrapper .free-tag {
     position: absolute;
     height: 24px;
     display: flex;
@@ -260,7 +260,7 @@ main .holiday-blade .still-wrapper .image-wrapper .free-tag {
 }
 
 
-main .holiday-blade .template {
+.holiday-blade .template {
     position: relative;
     height: var(--template-height);
     display: inline-flex;
@@ -278,12 +278,12 @@ main .holiday-blade .template {
 
 }
 
-main .holiday-blade .button-container:focus-within {
+.holiday-blade .button-container:focus-within {
     visibility: visible;
     opacity: 20 !important;
 }
 
-main .holiday-blade .button-container {
+.holiday-blade .button-container {
     position: absolute;
     pointer-events: auto;
     border-radius: 16px;
@@ -309,17 +309,17 @@ main .holiday-blade .button-container {
     box-shadow: 0 0 6px #00000029;
 }
 
-/* main .holiday-blade .template .button-container:hover {
+/* .holiday-blade .template .button-container:hover {
     z-index: 99;
 } */
 
-main .holiday-blade .template:hover:not(.placeholder) .button-container {
+.holiday-blade .template:hover:not(.placeholder) .button-container {
     opacity: 1;
     pointer-events: auto;
     z-index: 2;
 }
 
-main .holiday-blade .template .button-container .media-wrapper {
+.holiday-blade .template .button-container .media-wrapper {
     position: relative;
     height: 100%;
     flex-basis: 100%;
@@ -330,7 +330,7 @@ main .holiday-blade .template .button-container .media-wrapper {
     -ms-user-select: none; 
 }
 
-main .holiday-blade .template .button-container a.button {
+.holiday-blade .template .button-container a.button {
     max-width: 100%;
     margin: 6px 6px 0;
     box-sizing: border-box;
@@ -341,7 +341,7 @@ main .holiday-blade .template .button-container a.button {
     min-height: 16px;
 }
 
-main .holiday-blade .template .button-container a.cta-link {
+.holiday-blade .template .button-container a.cta-link {
     display: block;
     width: 100%;
     height: calc(100% - 34px);
@@ -349,7 +349,7 @@ main .holiday-blade .template .button-container a.cta-link {
     font-weight: var(--body-font-weight);
 }
 
-main .holiday-blade .template .button-container .media-wrapper .icon-share-arrow {
+.holiday-blade .template .button-container .media-wrapper .icon-share-arrow {
     cursor: pointer;
     pointer-events: auto;
     width: 12px;
@@ -359,7 +359,7 @@ main .holiday-blade .template .button-container .media-wrapper .icon-share-arrow
     overflow: visible;
 }
 
-main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper {
+.holiday-blade .template .button-container .media-wrapper .share-icon-wrapper {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -369,7 +369,7 @@ main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapp
     -webkit-tap-highlight-color: transparent;
 }
 
-main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
+.holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
 
     position: absolute;
     display: flex;
@@ -387,7 +387,7 @@ main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapp
     font-size: var(--body-font-size-s);
 }
 
-main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip .icon-checkmark-green {
+.holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip .icon-checkmark-green {
     width: 10px;
     height: 10px;
     border-radius: 30px;
@@ -396,12 +396,12 @@ main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapp
 }
 
 
-main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip.flipped {
+.holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip.flipped {
     left: unset;
     right: calc(100% + 12px);
 }
 
-main .holiday-blade.template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip::after {
+.holiday-blade.template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip::after {
     content: " ";
     position: absolute;
     top: 50%;
@@ -412,29 +412,29 @@ main .holiday-blade.template .button-container .media-wrapper .share-icon-wrappe
     border-color: transparent #33AB84 transparent transparent;
 }
 
-main .holiday-blade .template:nth-last-of-type(2) .button-container .media-wrapper .share-icon-wrapper .shared-tooltip::after {
+.holiday-blade .template:nth-last-of-type(2) .button-container .media-wrapper .share-icon-wrapper .shared-tooltip::after {
     right: unset;
     left: 100%;
     border-color: transparent transparent transparent #33AB84;
 }
 
-main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip.flipped::after {
+.holiday-blade .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip.flipped::after {
     right: unset;
     left: 100%;
     transform: rotate(180deg);
 }
 
 
-main .holiday-blade .carousel {
+.holiday-blade .carousel {
     height: 200px;
 }
 
-main .holiday-blade .carousel-container .carousel-platform {
+.holiday-blade .carousel-container .carousel-platform {
     height: 210px; 
 }
 
 @media screen and (min-width: 768px) and (max-width: 1279px) {
-    main .section>.holiday-blade {
+    .section>.holiday-blade {
         max-width: 100%;
         height: 100px;
         z-index: 6;
@@ -443,56 +443,56 @@ main .holiday-blade .carousel-container .carousel-platform {
         --template-height: 180px;
     }
 
-    main .holiday-blade div div>* {
+    .holiday-blade div div>* {
         margin: unset;
     }
 
-    main .holiday-blade .toggle-bar {
+    .holiday-blade .toggle-bar {
         height: unset;
         padding-bottom: 0;
     }
 
-    main .holiday-blade .toggle-bar>p:first-of-type {
+    .holiday-blade .toggle-bar>p:first-of-type {
         display: block;
         width: 1200px;
     }
 
-    main .holiday-blade.expanded {
+    .holiday-blade.expanded {
         height: var(--expanded-blade-height);
         overflow: unset;
     }
 
-    main .holiday-blade .carousel-container {
+    .holiday-blade .carousel-container {
         position: relative;
         top: 0px;
     }
-    main .holiday-blade .carousel-container .carousel-platform {
+    .holiday-blade .carousel-container .carousel-platform {
         padding-top: 10px;
         padding-bottom: 60px;
 
     }
-    main .holiday-blade.static-background .static-background-image {
+    .holiday-blade.static-background .static-background-image {
         height: var(--expanded-blade-height);
         width: 100%;
         clip-path: polygon(0 0, 100% 0, 100% var(--expanded-blade-height), 0 var(--expanded-blade-height)); 
     }
-    main .holiday-blade .carousel-container .carousel-fader-left,
-    main .holiday-blade .carousel-container .carousel-fader-right {
+    .holiday-blade .carousel-container .carousel-fader-left,
+    .holiday-blade .carousel-container .carousel-fader-right {
         top: 20px;
         height: 230px;
         width: 20px;
     }
-    main .holiday-blade .button-container {
+    .holiday-blade .button-container {
         top: 50%;
     }
 
-    main .holiday-blade .carousel-container .carousel-platform {
+    .holiday-blade .carousel-container .carousel-platform {
         height: 210px; 
 }
 }
 
 @media screen and (min-width: 1280px) {
-    main .section>.holiday-blade {
+    .section>.holiday-blade {
         max-width: 100%;
         width: 100%;
         height: 48px;
@@ -503,37 +503,37 @@ main .holiday-blade .carousel-container .carousel-platform {
         --template-height: 200px;
     }
 
-    main .holiday-blade .toggle-bar p:first-of-type {
+    .holiday-blade .toggle-bar p:first-of-type {
         display: block;
         width: initial;
     }
 
-    main .holiday-blade div div>* {
+    .holiday-blade div div>* {
         margin: unset;
     }
 
  
-    main .holiday-blade .carousel-container {
+    .holiday-blade .carousel-container {
         position: relative;
         top: -10px;
     }
  
-    main .holiday-blade.expanded {
+    .holiday-blade.expanded {
         height: var(--expanded-blade-height);
         overflow: unset;
     }
 
-    main .holiday-blade .carousel-container .carousel-platform {
+    .holiday-blade .carousel-container .carousel-platform {
         padding-top: 30px;
         padding-bottom: 30px;
     }
 
-    main .holiday-blade div div>* {
+    .holiday-blade div div>* {
         font-size: var(--body-font-size-l);
     }
  
-    main .holiday-blade .carousel-container .carousel-fader-left,
-    main .holiday-blade .carousel-container .carousel-fader-right {
+    .holiday-blade .carousel-container .carousel-fader-left,
+    .holiday-blade .carousel-container .carousel-fader-right {
         top: 50px;
         height: 250px;
         width: 30px;
