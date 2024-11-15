@@ -17,6 +17,9 @@
 .section .holiday-blade-spacer {
     display: block;
     height: 100px;
+    z-index: 20;
+    margin: 0;
+    width: 100vw;
 }
 
 .holiday-blade.expanded::after {
@@ -499,19 +502,19 @@
 }
 
 @media screen and (min-width: 1280px) {
-    .section>.holiday-blade {
+    .section .holiday-blade {
         max-width: 100%;
         width: 100%;
         z-index: 6;
         position: fixed;
         overflow: hidden;
-        width: 100%;
-        top: 120px;
+        width: 100%; 
+        height: 48px;
         --template-height: 200px;
         --toggle-bar-height: 48px;
     }
 
-    .section>.holiday-blade-spacer {
+    .section .holiday-blade-spacer {
         height: 48px;
     }
 

@@ -115,8 +115,7 @@ function decorateHoliday(block, toggleChev) {
 }
 
 export default function decorate(block) {
-
-  block.parentNode.insertBefore(createTag('div', { class: "holiday-blade-spacer" }), block);
+ 
   const rows = block.children;
   const toggleBar = rows[0].children[0];
 
@@ -144,19 +143,21 @@ export default function decorate(block) {
   }
   const toggleChev = createTag('div', { class: 'toggle-button-chev hide' });
   decorateHoliday(block, toggleChev);
-  new ResizeObserver(entries => {
-    for (const entry of entries) { 
-        block.style.top = entry.target.getBoundingClientRect().top + "px"
+
+  // new ResizeObserver(entries => {
+  //   for (const entry of entries) { 
+  //       block.style.top = entry.target.getBoundingClientRect().top + "px"
  
-    }
-  }).observe(document.querySelector('.holiday-blade-spacer') )
+  //   }
+  // }).observe(document.querySelector('.holiday-blade-spacer') )
 
   new IntersectionObserver(async (entries, ob) => {
     ob.unobserve(block);
     await fetchAndRenderTemplates(block, props);
     enableToggle(block, toggleChev);
-    toggleChev.classList.remove('hide');
-    // const r = document.querySelector('.holiday-blade-spacer').getBoundingClientRect()
-    // block.style.top = r.top + "px"
+    toggleChev.classList.remove('hide'); 
   }).observe(block);
+  const wrapper = createTag('div', {class : 'holiday-blade-spacer'})
+  block.parentNode.insertBefore(wrapper, block)
+  wrapper.append(block)
 }
