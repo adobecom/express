@@ -150,5 +150,7 @@ export default function decorate(block) {
     await fetchAndRenderTemplates(block, props);
     enableToggle(block, toggleChev);
     toggleChev.classList.remove('hide');
+    const r = document.querySelector('.holiday-blade-spacer').getBoundingClientRect()
+    block.style.top = r.top + "px"
   }).observe(block);
 }

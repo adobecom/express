@@ -506,6 +506,7 @@
         position: fixed;
         overflow: hidden;
         width: 100%;
+        top: 120px;
         --template-height: 200px;
         --toggle-bar-height: 48px;
     }
