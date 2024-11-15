@@ -108,7 +108,7 @@ function decorateHoliday(block, toggleChev) {
   } else if (animationLink) {
     const animation = transformLinkToAnimation(animationLink);
     block.classList.add('animated');
-    staticImage.remove();
+    staticImage?.remove();
     block.append(animation);
   }
 }
