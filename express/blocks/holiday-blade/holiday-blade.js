@@ -115,10 +115,10 @@ function decorateHoliday(block, toggleChev) {
 }
 
 export default function decorate(el) {
-  const block = createTag('div', {class: "holiday-blade-inner-content"})
-  block.innerHTML = el.innerHTML
-  el.innerHTML = ''
-  el.append(block)
+  const block = createTag('div', { class: 'holiday-blade-inner-content' });
+  block.innerHTML = el.innerHTML;
+  el.innerHTML = '';
+  el.append(block);
   const rows = block.children;
   const toggleBar = rows[0].children[0];
 
