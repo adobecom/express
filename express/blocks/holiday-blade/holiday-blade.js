@@ -142,14 +142,7 @@ export default function decorate(block) {
     props.collectionId = query;
   }
   const toggleChev = createTag('div', { class: 'toggle-button-chev hide' });
-  decorateHoliday(block, toggleChev);
-
-  // new ResizeObserver(entries => {
-  //   for (const entry of entries) { 
-  //       block.style.top = entry.target.getBoundingClientRect().top + "px"
- 
-  //   }
-  // }).observe(document.querySelector('.holiday-blade-spacer') )
+  decorateHoliday(block, toggleChev); 
 
   new IntersectionObserver(async (entries, ob) => {
     ob.unobserve(block);
