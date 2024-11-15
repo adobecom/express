@@ -2,7 +2,7 @@
     max-width: 100%;
     width: 100%;
     z-index: 6;
-    position: relative;
+    position: fixed;
     top: 0;
     height: 100px;
     overflow: hidden;
@@ -10,6 +10,12 @@
     --template-height: 150px;
     --expanded-blade-height: 372px;
     transition: height 0.3s ease-in-out;
+    top: 68px;
+}
+
+.section .holiday-blade-spacer {
+    display: block;
+    height: 100px;;
 }
 
 .holiday-blade.expanded::after {
@@ -438,8 +444,7 @@
         max-width: 100%;
         height: 100px;
         z-index: 6;
-        position: relative;
-        overflow: hidden;;
+        overflow: hidden;
         --template-height: 180px;
     }
 
@@ -496,8 +501,9 @@
         max-width: 100%;
         width: 100%;
         height: 48px;
+        top: 67px;
         z-index: 6;
-        position: relative;
+        position: fixed;
         overflow: hidden;
         width: 100%;
         --template-height: 200px;
@@ -610,3 +616,19 @@
     left: 100%;
     transform: rotate(180deg);
 }
+
+.holiday-blade{
+
+}
+
+/* .holiday-blade.expanded::before{
+    height: 48px;
+    content: '';
+    width: 100vw;
+    display: block;
+}
+
+.holiday-blade.expanded{
+    position: fixed;
+    top: 120px;
+} */
