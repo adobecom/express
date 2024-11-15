@@ -8,7 +8,7 @@ main .section>.holiday-blade {
     overflow: hidden;
     --text-color: var(--color-black);
     --template-height: 150px;
-    --expanded-blade-height: 350px;
+    --expanded-blade-height: 372px;
     transition: height 0.3s ease-in-out;
 }
 
@@ -31,20 +31,20 @@ main .holiday-blade.light .toggle-bar .icon {
 
 main .holiday-blade .carousel-container .carousel-fader-left {
     align-items: end;
-    top: -15px;
+    top: 30px;
     right: 42px;
     left: auto;
     pointer-events: none;
     width: 10px;
-    height: 270px;
+ 
 }
 
 main .holiday-blade .carousel-container .carousel-fader-right {
     align-items: end;
-    top: -15px;
+    top: 30px;
     right: 15px;
     width: 10px;
-    height: 270px;
+ 
 }
 
 main .holiday-blade .carousel-container .carousel-arrow {
@@ -178,7 +178,6 @@ main .holiday-blade .toggle-bar {
     justify-content: center;
     gap: 16px;
     font-size: var(--body-font-size-l);
-    height: 24px;
     padding: 12px;
     margin-right: 50px;
 
@@ -200,7 +199,6 @@ main .holiday-blade.expanded {
 
 main .holiday-blade .carousel-container {
     position: relative;
-    top: 20px;
     opacity: 0;
     transition: opa1s ease-in-out;
 }
@@ -309,9 +307,9 @@ main .holiday-blade .button-container {
     box-shadow: 0 0 6px #00000029;
 }
 
-main .holiday-blade .template .button-container:hover {
+/* main .holiday-blade .template .button-container:hover {
     z-index: 99;
-}
+} */
 
 main .holiday-blade .template:hover:not(.placeholder) .button-container {
     opacity: 1;
@@ -430,9 +428,7 @@ main .holiday-blade .carousel {
 }
 
 main .holiday-blade .carousel-container .carousel-platform {
-        height: 210px;
-        padding-bottom: 30px;
-        padding-top: 15px; 
+        height: 210px; 
 }
 
 
@@ -442,12 +438,17 @@ main .holiday-blade .carousel-container .carousel-platform {
         height: 100px;
         z-index: 6;
         position: relative;
-        overflow: hidden;
+        overflow: hidden;;
         --template-height: 180px;
     }
 
     main .holiday-blade div div>* {
         margin: unset;
+    }
+
+    main .holiday-blade .toggle-bar {
+        height: unset;
+        padding-bottom: 0;
     }
 
     main .holiday-blade .toggle-bar>p:first-of-type {
@@ -462,11 +463,12 @@ main .holiday-blade .carousel-container .carousel-platform {
 
     main .holiday-blade .carousel-container {
         position: relative;
-        top: 10px;
+        top: 0px;
     }
     main .holiday-blade .carousel-container .carousel-platform {
         padding-top: 10px;
-        padding-bottom: 50px;
+        padding-bottom: 60px;
+
     }
     main .holiday-blade.static-background .static-background-image {
         height: var(--expanded-blade-height);
@@ -475,12 +477,17 @@ main .holiday-blade .carousel-container .carousel-platform {
     }
     main .holiday-blade .carousel-container .carousel-fader-left,
     main .holiday-blade .carousel-container .carousel-fader-right {
-        top: 35px;
+        top: 20px;
         height: 230px;
         width: 20px;
     }
+    main .holiday-blade .button-container {
+        top: 50%;
+    }
 
-   
+    main .holiday-blade .carousel-container .carousel-platform {
+        height: 210px; 
+}
 }
 
 @media screen and (min-width: 1280px) {
@@ -516,8 +523,8 @@ main .holiday-blade .carousel-container .carousel-platform {
     }
 
     main .holiday-blade .carousel-container .carousel-platform {
-        padding-top: 20px;
-        padding-bottom: 60px;
+        padding-top: 30px;
+        padding-bottom: 30px;
     }
 
     main .holiday-blade div div>* {
@@ -526,7 +533,7 @@ main .holiday-blade .carousel-container .carousel-platform {
  
     main .holiday-blade .carousel-container .carousel-fader-left,
     main .holiday-blade .carousel-container .carousel-fader-right {
-        top: 35px;
+        top: 50px;
         height: 250px;
         width: 30px;
     }
