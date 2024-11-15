@@ -61,15 +61,6 @@ main .holiday-blade.light {
     color: var(--text-color)
 }
 
-
-main .holiday-blade>div:nth-of-type(1):not(.content-loaded),
-main .holiday-blade>div:nth-of-type(2):not(.content-loaded),
-main .holiday-blade>div:nth-of-type(3):not(.content-loaded),
-main .holiday-blade>div:nth-of-type(4):not(.content-loaded) {
-    display: none;
-}
-
-
 main .holiday-blade video {
     position: absolute;
     top: 0;
@@ -143,6 +134,10 @@ main .holiday-blade .toggle-button-chev {
     position: absolute;
     right: 0;
     top: 0;
+}
+
+main .holiday-blade .toggle-button-chev.hide {
+    display: none;
 }
 
 main .holiday-blade.expanded .toggle-button-chev::before {
@@ -256,6 +251,13 @@ main .holiday-blade .still-wrapper .image-wrapper .free-tag {
     padding: 0 12px;
     background: #000000B3;
 }
+.holiday-blade .template .still-wrapper .image-wrapper .icon-premium {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    bottom: 8px;
+    right: 8px;
+}
 
 
 main .holiday-blade .template {
@@ -322,6 +324,7 @@ main .holiday-blade .template .button-container .media-wrapper {
     height: 100%;
     flex-basis: 100%;
     width: 100%;
+    user-select: none;
     -webkit-user-select: none; 
     -moz-user-select: none; 
     -ms-user-select: none; 
@@ -355,7 +358,6 @@ main .holiday-blade .template .button-container .media-wrapper .icon-share-arrow
     background-color: white;
     overflow: visible;
 }
-
 
 main .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper {
     position: absolute;
@@ -428,9 +430,8 @@ main .holiday-blade .carousel {
 }
 
 main .holiday-blade .carousel-container .carousel-platform {
-        height: 210px; 
+    height: 210px; 
 }
-
 
 @media screen and (min-width: 768px) and (max-width: 1279px) {
     main .section>.holiday-blade {
@@ -537,11 +538,7 @@ main .holiday-blade .carousel-container .carousel-platform {
         height: 250px;
         width: 30px;
     }
-
 }
-
-
-
 
 .holiday-blade .template .button-container .media-wrapper .share-icon-wrapper {
     position: absolute;
