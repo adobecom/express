@@ -23,10 +23,10 @@ function enableToggle(block, toggleChev) {
       e.stopPropagation();
     });
   });
-  
+
   toggleChev.addEventListener('click', onToggle);
   block.querySelector('.toggle-bar').addEventListener('click', onToggle);
-  block.querySelector('.toggle-bar > p a').setAttribute('target', "_blank")
+  block.querySelector('.toggle-bar > p a').setAttribute('target', '_blank');
   document.addEventListener('click', onOutsideToggle);
 
   setTimeout(() => {
@@ -114,9 +114,11 @@ function decorateHoliday(block, toggleChev) {
   }
 }
 
-export default function decorate(block) {
-
-  block.parentNode.insertBefore(createTag('div', {class : "holiday-blade-spacer"}), block);
+export default function decorate(el) {
+  const block = createTag('div', { class: 'holiday-blade-inner-content' });
+  block.innerHTML = el.innerHTML;
+  el.innerHTML = '';
+  el.append(block);
   const rows = block.children;
   const toggleBar = rows[0].children[0];
 
