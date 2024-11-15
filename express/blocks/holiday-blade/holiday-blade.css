@@ -447,7 +447,7 @@
     .section>.holiday-blade {
         max-width: 100%;
         z-index: 6;
-        top: 120px;
+        top: auto;
         overflow: hidden;
         --toggle-bar-height: 100px;
         --template-height: 180px;
@@ -505,6 +505,7 @@
     .section .holiday-blade {
         max-width: 100%;
         width: 100%;
+        top: auto;
         z-index: 6;
         position: fixed;
         overflow: hidden;
@@ -625,19 +626,3 @@
     left: 100%;
     transform: rotate(180deg);
 }
-
-.holiday-blade{
-
-}
-
-/* .holiday-blade.expanded::before{
-    height: 48px;
-    content: '';
-    width: 100vw;
-    display: block;
-}
-
-.holiday-blade.expanded{
-    position: fixed;
-    top: 120px;
-} */
