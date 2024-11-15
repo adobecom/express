@@ -26,7 +26,7 @@ function enableToggle(block, toggleChev) {
 
   toggleChev.addEventListener('click', onToggle);
   block.querySelector('.toggle-bar').addEventListener('click', onToggle);
-  block.querySelector('.toggle-bar > p a').setAttribute('target', "_blank")
+  block.querySelector('.toggle-bar > p a').setAttribute('target', '_blank');
   document.addEventListener('click', onOutsideToggle);
 
   setTimeout(() => {
@@ -115,7 +115,6 @@ function decorateHoliday(block, toggleChev) {
 }
 
 export default function decorate(block) {
- 
   const rows = block.children;
   const toggleBar = rows[0].children[0];
 
@@ -142,15 +141,15 @@ export default function decorate(block) {
     props.collectionId = query;
   }
   const toggleChev = createTag('div', { class: 'toggle-button-chev hide' });
-  decorateHoliday(block, toggleChev); 
+  decorateHoliday(block, toggleChev);
 
   new IntersectionObserver(async (entries, ob) => {
     ob.unobserve(block);
     await fetchAndRenderTemplates(block, props);
     enableToggle(block, toggleChev);
-    toggleChev.classList.remove('hide'); 
+    toggleChev.classList.remove('hide');
   }).observe(block);
-  const wrapper = createTag('div', {class : 'holiday-blade-spacer'})
-  block.parentNode.insertBefore(wrapper, block)
-  wrapper.append(block)
+  const wrapper = createTag('div', { class: 'holiday-blade-spacer' });
+  block.parentNode.insertBefore(wrapper, block);
+  wrapper.append(block);
 }
