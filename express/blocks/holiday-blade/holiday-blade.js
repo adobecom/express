@@ -153,11 +153,4 @@ export default function decorate(el) {
     enableToggle(block, toggleChev);
     toggleChev.classList.remove('hide');
   }).observe(block);
-
-  // block.classList.remove('holiday-blade', 'block')
-  // block.classList.add('holiday-blade-inner-content')
-  // const wrapper = createTag('div', { class: 'holiday-blade block' });
-  // block.parentNode.insertBefore(wrapper, block);
-  // wrapper.append(block);
-  
 }
