@@ -2,8 +2,7 @@
     max-width: 100%;
     width: 100%;
     z-index: 6;
-    position: fixed;
-    top: 0;
+    position: absolute;
     overflow: hidden;
     --text-color: var(--color-black);
     --template-height: 150px;
@@ -11,7 +10,7 @@
     --toggle-bar-height: 100px;
     height: var(--toggle-bar-height);
     transition: height 0.3s ease-in-out;
-    top: 65px;
+    top: 0px;
 }
 
 .section .holiday-blade-spacer {
@@ -444,7 +443,6 @@
     .section>.holiday-blade {
         max-width: 100%;
         z-index: 6;
-        top: 120px;
         overflow: hidden;
         --toggle-bar-height: 100px;
         --template-height: 180px;
@@ -503,7 +501,6 @@
         max-width: 100%;
         width: 100%;
         z-index: 6;
-        position: fixed;
         overflow: hidden;
         width: 100%;
         --template-height: 200px;
