@@ -23,7 +23,7 @@
     position: fixed;
     inset: 0;
     background-color: var(--color-black);
-    opacity: 0.2;
+    opacity: 0.3;
     z-index: -1;
 }
 
@@ -37,7 +37,7 @@
 
 .holiday-blade .carousel-container .carousel-fader-left {
     align-items: end;
-    top: 30px;
+    top: 20px;
     right: 42px;
     left: auto;
     pointer-events: none;
@@ -47,7 +47,7 @@
 
 .holiday-blade .carousel-container .carousel-fader-right {
     align-items: end;
-    top: 30px;
+    top: 20px;
     right: 15px;
     width: 10px;
  
