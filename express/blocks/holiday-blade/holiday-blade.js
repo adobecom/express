@@ -114,7 +114,11 @@ function decorateHoliday(block, toggleChev) {
   }
 }
 
-export default function decorate(block) {
+export default function decorate(el) {
+  const block = createTag('div', {class: "holiday-blade-inner-content"})
+  block.innerHTML = el.innerHTML
+  el.innerHTML = ''
+  el.append(block)
   const rows = block.children;
   const toggleBar = rows[0].children[0];
 
@@ -149,10 +153,11 @@ export default function decorate(block) {
     enableToggle(block, toggleChev);
     toggleChev.classList.remove('hide');
   }).observe(block);
-  block.classList.remove('holiday-blade', 'block')
-  block.classList.add('holiday-blade-inner-content')
-  const wrapper = createTag('div', { class: 'holiday-blade block' });
-  block.parentNode.insertBefore(wrapper, block);
-  wrapper.append(block);
+
+  // block.classList.remove('holiday-blade', 'block')
+  // block.classList.add('holiday-blade-inner-content')
+  // const wrapper = createTag('div', { class: 'holiday-blade block' });
+  // block.parentNode.insertBefore(wrapper, block);
+  // wrapper.append(block);
   
 }
