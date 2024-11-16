@@ -19,7 +19,6 @@ main .section .discover-cards {
 }
 .discover-cards .cards-container .card {
     min-width: 294px;
-    height: 427px;
     border: 1px solid white;
     border-radius: 16px;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
@@ -82,7 +81,6 @@ main .section .discover-cards {
     .discover-cards .cards-container .card {
         min-width: 399px;
         max-width: 399px;
-        height: 478px;
     }
     .discover-cards .center-title h3 {
         font-size: 36px;
