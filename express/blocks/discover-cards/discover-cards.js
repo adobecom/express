@@ -1,5 +1,6 @@
 import { createTag, yieldToMain } from '../../scripts/utils.js';
 import buildGallery from '../../features/gallery/gallery.js';
+import { debounce } from '../../scripts/hofs.js';
 
 async function syncMinHeights(groups) {
   const maxHeights = groups.map((els) => els
@@ -56,6 +57,9 @@ export default async function decorate(block) {
     obs.unobserve(block);
     syncMinHeights(cardParagraphs);
   }).observe(block);
+  window.addEventListener('resize', debounce(() => {
+    syncMinHeights(cardParagraphs);
+  }, 100));
 
   const imageSize = document.body.dataset.device === 'desktop' ? 'large' : 'small';
   block.style.backgroundImage = `
