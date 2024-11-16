@@ -1,5 +1,15 @@
-import { createTag } from '../../scripts/utils.js';
+import { createTag, yieldToMain } from '../../scripts/utils.js';
 import buildGallery from '../../features/gallery/gallery.js';
+
+async function syncMinHeights(groups) {
+  const maxHeights = groups.map((els) => els
+    .filter((e) => !!e)
+    .reduce((max, e) => Math.max(max, e.offsetHeight), 0));
+  await yieldToMain();
+  maxHeights.forEach((maxHeight, i) => groups[i].forEach((e) => {
+    if (e) e.style.minHeight = `${maxHeight}px`;
+  }));
+}
 
 export default async function decorate(block) {
   const firstChild = block.querySelector(':scope > div:first-child');
@@ -14,7 +24,7 @@ export default async function decorate(block) {
   });
 
   const cards = block.querySelectorAll(':scope > div:not(:first-child)');
-
+  const cardParagraphs = [[]];
   cards.forEach((card) => {
     card.classList.add('card');
 
@@ -28,6 +38,7 @@ export default async function decorate(block) {
         textHeader.classList.add('header');
         textBody.classList.add('body');
         element.classList.add('text-content');
+        cardParagraphs[0].push(element);
       }
 
       element.querySelector('picture img')?.classList.add('short');
@@ -41,6 +52,10 @@ export default async function decorate(block) {
 
   block.appendChild(cardsWrapper);
   await buildGallery(cards, cardsWrapper);
+  new IntersectionObserver((entries, obs) => {
+    obs.unobserve(block);
+    syncMinHeights(cardParagraphs);
+  }).observe(block);
 
   const imageSize = document.body.dataset.device === 'desktop' ? 'large' : 'small';
   block.style.backgroundImage = `
