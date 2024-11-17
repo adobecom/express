@@ -187,6 +187,9 @@ main .section.content-group .default-content-wrapper p {
   margin-top: 25px;
   color: #444444;
 }
+main .section.content-group .default-content-wrapper ul {
+  line-height: 24px;
+}
 
 @media (min-width: 900px) {
   main .section.content-group {
@@ -194,7 +197,7 @@ main .section.content-group .default-content-wrapper p {
     margin-left: auto;
     margin-right: auto;
   }
-  main .section.content-group .default-content-wrapper h2 {
+  main .section.content-group .default-content-wrapper h1 {
     font-size: 44px;
     font-weight: 800;
   }
@@ -202,10 +205,14 @@ main .section.content-group .default-content-wrapper p {
     font-size: 20px;
     font-weight: 800;
   }
-  main .section.content-group .default-content-wrapper p {
+  main .section.content-group .default-content-wrapper p,
+  main .section.content-group .default-content-wrapper ul {
     font-size: 20px;
     font-weight: 400;
     line-height: 24px;
+  }
+  main .section.content-group .default-content-wrapper ul {
+    padding-left: 30px;
   }
 }
 

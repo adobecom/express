@@ -195,6 +195,23 @@ main .blog-posts .card .card-body p {
   font-size: 1rem;
 }
 
+main .blog-posts-container.left-align-header .default-content-wrapper h3 {
+    color: black;
+    font-size: 32px;
+ }
+
+main .carousel .blog-posts .blog-card .blog-card-image {
+    margin: 0 0 24px 0;
+    border-radius: 10px;
+    height: 200px;
+    width: 300px;
+}
+
+main .carousel .blog-posts .blog-card {
+    grid-template-areas: 'image' 'title'  'teaser' 'date';
+    width: 325px;
+}
+
 @media (min-width: 900px) {
     main .blog-posts .blog-card .blog-card-image {
         margin: 0 0 24px 0;
@@ -240,6 +257,11 @@ main .blog-posts .card .card-body p {
 
     .blog main .blog-posts-container > div > h2, main .blog-posts-container div.blog-posts-decoration {
         max-width: 700px;
+    }
+
+    main .blog-posts-container.left-align-header .default-content-wrapper h3 {
+       margin-left: 50px;
+       text-align: left;
     }
 }
 

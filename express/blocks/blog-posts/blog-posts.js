@@ -9,6 +9,7 @@ import {
   getLocale,
   readBlockConfig,
 } from '../../scripts/utils.js';
+import buildCarousel from '../exp-intl-carousel/exp-intl-carousel.js';
 
 const blogPosts = [];
 let blogResults;
@@ -350,4 +351,5 @@ export default async function decorate(block) {
   }
 
   await decorateBlogPosts(block, config);
+  buildCarousel('', block.querySelector('.blog-cards'));
 }
