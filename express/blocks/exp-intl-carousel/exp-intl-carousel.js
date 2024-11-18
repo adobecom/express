@@ -100,12 +100,10 @@ export function onCarouselCSSLoad(selector, parent, options) {
   };
 
   const moveCarouselToCenter = (direction) => {
-    console.log('are we here', direction);
     const elements = platform.querySelectorAll('.template.carousel-element');
 
     const visibleElement = Array.from(elements).find((el) => {
       const elRect = el.getBoundingClientRect();
-      console.log(elRect, window.innerWidth); // Debugging
       return elRect.left >= 0 && elRect.right <= window.innerWidth;
     });
 
@@ -121,8 +119,6 @@ export function onCarouselCSSLoad(selector, parent, options) {
       const viewportWidth = window.innerWidth;
       const cardWidth = targetElement.offsetWidth;
       const dynamicMarginLeft = (viewportWidth - cardWidth) / 2 - 12;
-      console.log({ viewportWidth, cardWidth, dynamicMarginLeft });
-      console.log('targetElement', targetElement);
 
       targetElement.style.scrollMarginLeft = `${dynamicMarginLeft}px`;
       const newScrollPos = targetElement.offsetLeft - dynamicMarginLeft;
@@ -214,7 +210,9 @@ export function onCarouselCSSLoad(selector, parent, options) {
       platform.classList.add('left-fader', 'right-fader');
     }
 
-    moveCarouselToCenter('next');
+    if (window.innerWidth < 600) {
+      moveCarouselToCenter('next');
+    }
 
     const onIntersect = ([entry], observer) => {
       if (!entry.isIntersecting) return;
@@ -229,11 +227,14 @@ export function onCarouselCSSLoad(selector, parent, options) {
     const carouselObserver = new IntersectionObserver(onIntersect, { rootMargin: '1000px', threshold: 0 });
     carouselObserver.observe(scrollable);
   };
-
-  const observer = new MutationObserver(() => {
+  if (window.innerWidth < 600) {
+    const observer = new MutationObserver(() => {
+      setInitialState(platform, options);
+    });
+    observer.observe(platform, { childList: true, subtree: true });
+  } else {
     setInitialState(platform, options);
-  });
-  observer.observe(platform, { childList: true, subtree: true });
+  }
 }
 
 export default async function buildCarousel(selector, parent, options = {}) {
