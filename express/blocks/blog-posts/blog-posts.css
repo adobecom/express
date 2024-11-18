@@ -55,6 +55,10 @@ main .blog-posts .blog-card {
     margin: 28px;
 }
 
+main .carousel .blog-posts .blog-card {
+    display: unset;
+}
+
 main .carousel.blog-posts-container .blog-posts .blog-card {
     margin: unset;
 }
@@ -115,6 +119,12 @@ main .blog-posts .blog-card h3.blog-card-title {
     margin-top: 0;
 }
 
+main .carousel .blog-posts .blog-card h3.blog-card-title {
+    font-size: 28px;
+    margin-bottom: 0;
+    padding: 10px;
+}
+
 main .blog-posts .blog-hero-card h3.blog-card-title {
     font-size: var(--heading-font-size-xl);
     line-height: var(--heading-line-height);
@@ -135,6 +145,10 @@ main .blog-posts .blog-card p.blog-card-teaser {
     grid-area: teaser;
 }
 
+main .carousel .blog-posts .blog-card p.blog-card-teaser {
+    /* margin-top: -32px; */
+    /* padding: 10px; */
+}
 
 main .blog-posts .blog-hero-card p.blog-card-teaser {
     font-family: var(--body-serif-font-family);
@@ -151,6 +165,11 @@ main .blog-posts p.blog-card-date {
     font-family: var(--body-serif-font-family);
     font-weight: var(--heading-font-weight);
     grid-area: date;
+}
+
+main .carousel .blog-posts p.blog-card-date {
+    /* position: absolute;
+    bottom: 10px; */
 }
 
 main .blog-posts .blog-hero-card p.blog-card-date {
@@ -212,7 +231,8 @@ main .carousel .blog-posts .blog-card .blog-card-image {
 }
 
 main .carousel .blog-posts .blog-card .blog-card-image {
-    margin: 0 0 24px 0;
+    margin-top: 18px;
+    margin-bottom: 0;
     border-radius: 10px;
     height: 200px;
     width: auto;
@@ -226,6 +246,7 @@ main .carousel .blog-posts .blog-card {
     grid-template-areas: 'image' 'title'  'teaser' 'date';
     width: 300px;
     height: 500px;
+    background: #f8f8f8;
 }
 
 @media (min-width: 900px) {

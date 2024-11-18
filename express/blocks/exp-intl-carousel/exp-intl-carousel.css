@@ -46,14 +46,18 @@
     height: 45px;
     width: 46px;
     align-items: center;
-    top: 510px;
+    top: 350px;
     right: 50px;
     transition: opacity 0.2s, display 0.2s;
     cursor: pointer;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     z-index: 1;
   }
-  
+
+  main .carousel.blog-posts-container .exp-intl-carousel-container .exp-intl-carousel-fader-left {
+    top: 510px;
+  }
+
   main .exp-intl-carousel-container .exp-intl-carousel-fader-right {
     text-align: left;
     display: flex;
@@ -61,13 +65,17 @@
     height: 45px;
     width: 46px;
     align-items: center;
-    top: 510px;
+    top: 350px;
     right: 0;
     flex-direction: row-reverse;
     transition: opacity 0.2s;
     cursor: pointer;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     z-index: 1;
+  }
+
+  main .carousel.blog-posts-container .exp-intl-carousel-container .exp-intl-carousel-fader-right {
+    top: 510px;
   }
   
   main .exp-intl-carousel-container a.button.exp-intl-carousel-arrow {
