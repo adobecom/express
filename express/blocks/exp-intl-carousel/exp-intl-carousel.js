@@ -210,9 +210,7 @@ export function onCarouselCSSLoad(selector, parent, options) {
       platform.classList.add('left-fader', 'right-fader');
     }
 
-    if (window.innerWidth < 600) {
-      moveCarouselToCenter('next');
-    }
+    moveCarouselToCenter('next');
 
     const onIntersect = ([entry], observer) => {
       if (!entry.isIntersecting) return;
@@ -227,14 +225,10 @@ export function onCarouselCSSLoad(selector, parent, options) {
     const carouselObserver = new IntersectionObserver(onIntersect, { rootMargin: '1000px', threshold: 0 });
     carouselObserver.observe(scrollable);
   };
-  if (window.innerWidth < 600) {
-    const observer = new MutationObserver(() => {
-      setInitialState(platform, options);
-    });
-    observer.observe(platform, { childList: true, subtree: true });
-  } else {
+  const observer = new MutationObserver(() => {
     setInitialState(platform, options);
-  }
+  });
+  observer.observe(platform, { childList: true, subtree: true });
 }
 
 export default async function buildCarousel(selector, parent, options = {}) {
