@@ -27,7 +27,18 @@ main .columns .express-logo.icon {
   padding-bottom: 8px;
   float: unset;
 }
- 
+
+main .columns.blog .column .button-container a {
+  color: #505050;
+  background: none;
+  border: none;
+  text-align: left;
+  padding-left: 0;
+}
+
+main .columns.blog .column h2 {
+  margin-top: 0;
+}
 
 .section.columns-enterprise-container .default-content-wrapper h2 {
   margin-top: 0;
