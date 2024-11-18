@@ -44,10 +44,10 @@
     display: flex;
     position: absolute;
     height: 45px;
-    width: 60px;
+    width: 46px;
     align-items: center;
-    top: 400px;
-    right: 36px;
+    top: 510px;
+    right: 50px;
     transition: opacity 0.2s, display 0.2s;
     cursor: pointer;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
@@ -59,9 +59,9 @@
     display: flex;
     position: absolute;
     height: 45px;
-    width: 60px;
+    width: 46px;
     align-items: center;
-    top: 400px;
+    top: 510px;
     right: 0;
     flex-direction: row-reverse;
     transition: opacity 0.2s;

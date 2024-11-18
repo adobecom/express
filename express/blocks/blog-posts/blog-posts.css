@@ -225,6 +225,7 @@ main .carousel .blog-posts .blog-card .blog-card-image img {
 main .carousel .blog-posts .blog-card {
     grid-template-areas: 'image' 'title'  'teaser' 'date';
     width: 300px;
+    height: 500px;
 }
 
 @media (min-width: 900px) {
