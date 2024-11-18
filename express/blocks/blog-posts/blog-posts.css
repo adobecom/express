@@ -120,6 +120,7 @@ main .blog-posts .blog-card h3.blog-card-title {
 }
 
 main .carousel .blog-posts .blog-card h3.blog-card-title {
+    display: block;
     font-size: 28px;
     margin-bottom: 0;
     padding: 10px;
@@ -146,8 +147,8 @@ main .blog-posts .blog-card p.blog-card-teaser {
 }
 
 main .carousel .blog-posts .blog-card p.blog-card-teaser {
-    /* margin-top: -32px; */
-    /* padding: 10px; */
+    display: block;
+    padding: 10px;
 }
 
 main .blog-posts .blog-hero-card p.blog-card-teaser {
@@ -168,8 +169,7 @@ main .blog-posts p.blog-card-date {
 }
 
 main .carousel .blog-posts p.blog-card-date {
-    /* position: absolute;
-    bottom: 10px; */
+    padding: 10px;
 }
 
 main .blog-posts .blog-hero-card p.blog-card-date {
