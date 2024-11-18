@@ -1,10 +1,6 @@
 /* eslint-disable import/named, import/extensions */
 
-import {
-  createOptimizedPicture,
-  createTag,
-  fetchPlaceholders,
-} from '../../scripts/utils.js';
+import { createOptimizedPicture, createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
 import { embedYoutube } from '../../scripts/embed-videos.js';
 
@@ -26,14 +22,15 @@ function reset(block) {
   fixedImageSize = false;
 }
 
-const loadImage = (img) => new Promise((resolve) => {
-  if (img.complete && img.naturalHeight !== 0) resolve();
-  else {
-    img.onload = () => {
-      resolve();
-    };
-  }
-});
+const loadImage = (img) =>
+  new Promise((resolve) => {
+    if (img.complete && img.naturalHeight !== 0) resolve();
+    else {
+      img.onload = () => {
+        resolve();
+      };
+    }
+  });
 
 function setPictureHeight(block, override) {
   if (!fixedImageSize || override) {
@@ -80,7 +77,6 @@ function initRotation(howToWindow, howToDocument) {
 }
 
 function buildHowToStepsAccordion0(section, block, howToDocument, rows, howToWindow) {
-
   let indexOpenedStep = 0;
 
   // join wrappers together
@@ -154,10 +150,9 @@ function buildHowToStepsAccordion0(section, block, howToDocument, rows, howToWin
     number.setAttribute('data-tip-index', i + 1);
 
     number.addEventListener('click', (e) => {
-
-      console.log("=== The previous indexOpenedStep", indexOpenedStep)
+      console.log('=== The previous indexOpenedStep', indexOpenedStep);
       indexOpenedStep = i;
-      console.log("=== and now it is", indexOpenedStep)
+      console.log('=== and now it is', indexOpenedStep);
 
       if (rotationInterval) {
         howToWindow.clearTimeout(rotationInterval);
@@ -215,12 +210,11 @@ function buildHowToStepsAccordion0(section, block, howToDocument, rows, howToWin
 }
 
 function buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow) {
-
-  console.log("=== SECTION, BLOCK", section, block)
+  console.log('=== SECTION, BLOCK', section, block);
   let indexOpenedStep = 0;
 
   for (const row of rows) {
-    console.log("=== ROW", row)
+    console.log('=== ROW', row);
   }
 }
 
@@ -243,8 +237,6 @@ function setStepDetails(block, indexOpenedStep) {
     }
   });
 }
-
-
 
 function buildAccordion(block, rows, $stepsContent) {
   console.log('=== BLOCK', block);
@@ -283,18 +275,16 @@ function buildAccordion(block, rows, $stepsContent) {
     const $listItemIndicator = createTag('div', { class: 'step-indicator' });
     const $listItemContent = createTag('div', { class: 'step-content' });
 
-
     // $listItem.append(row)
 
     const $detailContainer = stepDetail;
     // createTag('div', { class: 'detail-container' });
 
-    $detailContainer.classList.add('detail-container')
+    $detailContainer.classList.add('detail-container');
     // $detailContainer.append(stepDetail)
 
     $listItem.append($listItemIndicator);
     $listItem.append($listItemContent);
-
 
     $listItemContent.append($newStepTitle);
     $listItemContent.append($detailContainer);
@@ -311,28 +301,27 @@ function buildAccordion(block, rows, $stepsContent) {
 
   // const accordion = buildAccordion(block);
 
-  $stepsContent.append($list)
+  $stepsContent.append($list);
   // block.replaceChildren($list);
 
   // set this in next event cycle when scrollHeight has been established
   setTimeout(() => {
     setStepDetails(block, indexOpenedStep);
-  }, 0)
-
+  }, 0);
 
   // return block;
 }
 
-
 export default async function decorate(block) {
-// return;
-  console.log("=== IN decorate", block)
+  // return;
+  console.log('=== IN decorate', block);
 
   // block.classList.add('trytry')
 
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
   const isVideoVariant = block.classList.contains('video');
+  const isImageVariant = block.classList.contains('image');
 
   // move first image of container outside of div for styling
   const section = block.closest('.section');
@@ -347,51 +336,78 @@ export default async function decorate(block) {
     rows.shift();
   }
 
-  console.log("=== backgroundRow", backgroundRow, backgroundURL, hasBackground);
+  console.log('=== backgroundRow', backgroundRow, backgroundURL, hasBackground);
 
   let picture;
 
-  if (isVideoVariant) {
-    const videoData = rows.shift();
-
-    // remove the added social link from the block DOM
-    block.removeChild(block.children[0]);
-
-    const videoLink = videoData.querySelector('a');
-    const youtubeURL = videoLink?.href;
-    const url = new URL(youtubeURL);
-
-    const videoContainerEl = createTag('div', { class: 'video-container' });
+  if (isVideoVariant || isImageVariant) {
 
 
-    const videoEl = embedYoutube(url);
-    videoEl.classList.add('video-how-to-steps-accordion');
-
-    videoContainerEl.append(videoEl)
     const $stepsContent = createTag('div', { class: 'steps-content' });
 
     if (hasBackground) {
       // videoEl.style.background = `url(${backgroundURL})`
-    //  videoContainerEl.style.background = `url(${backgroundURL})`;
-     $stepsContent.style.background = `url(${backgroundURL})`;
-     $stepsContent.style.backgroundSize = `75%`;
-     $stepsContent.style.backgroundRepeat = `no-repeat`;
-     $stepsContent.style.backgroundPosition = `-10% -10%`;
+      //  videoContainerEl.style.background = `url(${backgroundURL})`;
+      $stepsContent.style.background = `url(${backgroundURL})`;
+      $stepsContent.style.backgroundSize = `75%`;
+      $stepsContent.style.backgroundRepeat = `no-repeat`;
+      $stepsContent.style.backgroundPosition = `-10% -10%`;
+    }
 
+
+
+
+    if (isVideoVariant) {
+      const videoData = rows.shift();
+
+      // remove the added social link from the block DOM
+      block.removeChild(block.children[0]);
+
+      const videoLink = videoData.querySelector('a');
+      const youtubeURL = videoLink?.href;
+      const url = new URL(youtubeURL);
+
+      const videoContainerEl = createTag('div', { class: 'video-container' });
+
+      const videoEl = embedYoutube(url);
+      videoEl.classList.add('video-how-to-steps-accordion');
+
+      videoContainerEl.append(videoEl);
+      $stepsContent.append(videoContainerEl);
+    } else {
+      const imageData = rows.shift();
+
+      // // remove the added social link from the block DOM
+      // block.removeChild(block.children[0]);
+
+      const imageEl = imageData.querySelector('picture');
+      console.log("=== imageEl", imageEl);
+
+      const imageContainerEl = createTag('div', { class: 'image-container' });
+      imageContainerEl.append(imageEl);
+      $stepsContent.append(imageContainerEl);
+      // const youtubeURL = videoLink?.href;
+      // const url = new URL(youtubeURL);
+
+      // const videoContainerEl = createTag('div', { class: 'video-container' });
+
+      // const videoEl = embedYoutube(url);
+      // videoEl.classList.add('video-how-to-steps-accordion');
+
+      // videoContainerEl.append(videoEl);
     }
 
     // section.prepend(videoEl);
-    $stepsContent.append(videoContainerEl)
+
 
     const heading = section.querySelector('h2, h3, h4');
-    console.log("=== heading", heading);
+    console.log('=== heading', heading);
 
     block.replaceChildren(heading, $stepsContent);
     // block.prepend(heading);
     // block.append($stepsContent)
     buildAccordion(block, rows, $stepsContent);
   }
-
 
   // buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow);
   // buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow);
