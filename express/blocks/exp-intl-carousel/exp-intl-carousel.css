@@ -1,12 +1,15 @@
-main .carousel-container {
+  main .exp-intl-carousel-container {
     display: inline-block;
     position: relative;
     height: auto;
     width: 100%;
     margin-bottom: 24px;
-  }
+ }
+ main .carousel.blog-posts-container .exp-intl-carousel-container {
+    width: 300px;
+ }
   
-  main .carousel-container .carousel-platform {
+  main .exp-intl-carousel-container .exp-intl-carousel-platform {
     width: max-content;
     max-width: 100%;
     left: 0;
@@ -26,39 +29,39 @@ main .carousel-container {
     padding-bottom: 6px;
   }
   
-  main .carousel-container:not(.controls-hidden) .carousel-platform::-webkit-scrollbar,
-  main .carousel-container .carousel-platform.infinity-scroll-loaded::-webkit-scrollbar {
+  main .exp-intl-carousel-container:not(.controls-hidden) .exp-intl-carousel-platform::-webkit-scrollbar,
+  main .exp-intl-carousel-container .exp-intl-carousel-platform.infinity-scroll-loaded::-webkit-scrollbar {
     display: none;
   }
   
-  main .carousel-container .carousel-platform > * {
+  main .exp-intl-carousel-container .exp-intl-carousel-platform > * {
     flex-shrink: 0;
     scroll-snap-align: start;
   }
   
-  main .carousel-container .carousel-fader-left {
+  main .exp-intl-carousel-container .exp-intl-carousel-fader-left {
     text-align: left;
     display: flex;
     position: absolute;
-    height: 100%;
+    height: 45px;
     width: 60px;
     align-items: center;
-    top: 0;
-    left: 0;
+    top: 400px;
+    right: 36px;
     transition: opacity 0.2s, display 0.2s;
     cursor: pointer;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     z-index: 1;
   }
   
-  main .carousel-container .carousel-fader-right {
+  main .exp-intl-carousel-container .exp-intl-carousel-fader-right {
     text-align: left;
     display: flex;
     position: absolute;
-    height: 100%;
+    height: 45px;
     width: 60px;
     align-items: center;
-    top: 0;
+    top: 400px;
     right: 0;
     flex-direction: row-reverse;
     transition: opacity 0.2s;
@@ -67,7 +70,7 @@ main .carousel-container {
     z-index: 1;
   }
   
-  main .carousel-container a.button.carousel-arrow {
+  main .exp-intl-carousel-container a.button.exp-intl-carousel-arrow {
     cursor: pointer;
     display: block;
     float: left;
@@ -80,23 +83,23 @@ main .carousel-container {
     pointer-events: auto;
   }
   
-  main .carousel-container .carousel-fader-left.arrow-hidden,
-  main .carousel-container .carousel-fader-right.arrow-hidden {
-    opacity: 0;
+  main .exp-intl-carousel-container .exp-intl-carousel-fader-left.arrow-hidden,
+  main .exp-intl-carousel-container .exp-intl-carousel-fader-right.arrow-hidden {
+    opacity: 0.5;
     pointer-events: none;
   }
   
-  main .carousel-container img,
-  main .carousel-container video {
+  main .exp-intl-carousel-container img,
+  main .exp-intl-carousel-container video {
     pointer-events: none;
   }
   
-  main .carousel-container .carousel-fader-left.arrow-hidden a.button.carousel-arrow,
-  main .carousel-container .carousel-fader-right.arrow-hidden a.button.carousel-arrow {
+  main .exp-intl-carousel-container .exp-intl-carousel-fader-left.arrow-hidden a.button.exp-intl-carousel-arrow,
+  main .exp-intl-carousel-container .exp-intl-carousel-fader-right.arrow-hidden a.button.exp-intl-carousel-arrow {
     pointer-events: none;
   }
   
-  main .carousel-container a.button.carousel-arrow::before {
+  main .exp-intl-carousel-container a.button.exp-intl-carousel-arrow::before {
     content: '';
     position: absolute;
     margin-top: 11px;
@@ -106,56 +109,56 @@ main .carousel-container {
     border-right: solid 2px var(--color-gray-700);
   }
   
-  main .carousel-container a.button.carousel-arrow-left::before {
+  main .exp-intl-carousel-container a.button.exp-intl-carousel-arrow-left::before {
     margin-left: 13px;
     transform: rotate(-135deg);
   }
   
-  main .carousel-container a.button.carousel-arrow-right {
+  main .exp-intl-carousel-container a.button.exp-intl-carousel-arrow-right {
     float: right;
   }
   
-  main .carousel-container a.button.carousel-arrow-right::before {
+  main .exp-intl-carousel-container a.button.exp-intl-carousel-arrow-right::before {
     margin-left: 9px;
     transform: rotate(45deg);
   }
   
   /* Remove snapping in mobile-breakpoint if they scrolled using drag */
-  main .carousel-container.controls-hidden .carousel-platform {
+  main .exp-intl-carousel-container.controls-hidden .exp-intl-carousel-platform {
     scroll-snap-type: none;
   }
   
   @media (min-width: 900px) {
-    main .carousel-container .carousel-platform::-webkit-scrollbar {
+    main .exp-intl-carousel-container .exp-intl-carousel-platform::-webkit-scrollbar {
       display: none;
     }
   
-    main .carousel-container a.button.carousel-arrow {
+    main .exp-intl-carousel-container a.button.exp-intl-carousel-arrow {
       margin: 0 10px;
     }
   
-    main .carousel-container.controls-hidden .carousel-platform {
+    main .exp-intl-carousel-container.controls-hidden .exp-intl-carousel-platform {
       scroll-snap-type: x mandatory;
     }
   }
   
-  main .carousel-container .carousel-platform .carousel-left-trigger,
-  main .carousel-container .carousel-platform .carousel-right-trigger{
+  main .exp-intl-carousel-container .exp-intl-carousel-platform .exp-intl-carousel-left-trigger,
+  main .exp-intl-carousel-container .exp-intl-carousel-platform .exp-intl-carousel-right-trigger{
     justify-self: stretch;
     align-self:stretch;
     width: 1px;
   }
   
-  main .carousel-container .carousel-platform.left-fader:not(.right-fader){
-    -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px));
-    mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px));
+  main .exp-intl-carousel-container .exp-intl-carousel-platform.left-fader:not(.right-fader){
+    -webkit-mask-image: unset;
+    mask-image: unset;
   }
-  main .carousel-container .carousel-platform.right-fader:not(.left-fade){
-    -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px), transparent);
-    mask-image: linear-gradient(to right, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px), transparent);
+  main .exp-intl-carousel-container .exp-intl-carousel-platform.right-fader:not(.left-fade){
+    -webkit-mask-image: unset;
+    mask-image: unset;
   }
-  main .carousel-container .carousel-platform.left-fader.right-fader{
-    -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px), transparent);
-    mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px), transparent);
+  main .exp-intl-carousel-container .exp-intl-carousel-platform.left-fader.right-fader{
+    -webkit-mask-image: unset;
+    mask-image: unset;
   }
   

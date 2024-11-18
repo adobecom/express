@@ -15,11 +15,11 @@ function initToggleTriggers(parent) {
     return parentSection.dataset.toggle && parentSection.style.display === 'none';
   };
 
-  const leftControl = parent.querySelector('.carousel-fader-left');
-  const rightControl = parent.querySelector('.carousel-fader-right');
-  const leftTrigger = parent.querySelector('.carousel-left-trigger');
-  const rightTrigger = parent.querySelector('.carousel-right-trigger');
-  const platform = parent.querySelector('.carousel-platform');
+  const leftControl = parent.querySelector('.exp-intl-carousel-fader-left');
+  const rightControl = parent.querySelector('.exp-intl-carousel-fader-right');
+  const leftTrigger = parent.querySelector('.exp-intl-carousel-left-trigger');
+  const rightTrigger = parent.querySelector('.exp-intl-carousel-right-trigger');
+  const platform = parent.querySelector('.exp-intl-carousel-platform');
 
   // If flex container has a gap, add negative margins to compensate
   const gap = window.getComputedStyle(platform, null).getPropertyValue('gap');
@@ -66,24 +66,24 @@ function initToggleTriggers(parent) {
 export function onCarouselCSSLoad(selector, parent, options) {
   const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
 
-  carouselContent.forEach((el) => el.classList.add('carousel-element'));
+  carouselContent.forEach((el) => el.classList.add('exp-intl-carousel-element'));
 
-  const container = createTag('div', { class: 'carousel-container' });
-  const platform = createTag('div', { class: 'carousel-platform' });
+  const container = createTag('div', { class: 'exp-intl-carousel-container' });
+  const platform = createTag('div', { class: 'exp-intl-carousel-platform' });
 
-  const faderLeft = createTag('div', { class: 'carousel-fader-left arrow-hidden' });
-  const faderRight = createTag('div', { class: 'carousel-fader-right arrow-hidden' });
+  const faderLeft = createTag('div', { class: 'exp-intl-carousel-fader-left arrow-hidden' });
+  const faderRight = createTag('div', { class: 'exp-intl-carousel-fader-right arrow-hidden' });
 
-  const arrowLeft = createTag('a', { class: 'button carousel-arrow carousel-arrow-left' });
-  const arrowRight = createTag('a', { class: 'button carousel-arrow carousel-arrow-right' });
+  const arrowLeft = createTag('a', { class: 'button exp-intl-carousel-arrow exp-intl-carousel-arrow-left' });
+  const arrowRight = createTag('a', { class: 'button exp-intl-carousel-arrow exp-intl-carousel-arrow-right' });
   arrowLeft.title = 'Carousel Left';
   arrowRight.title = 'Carousel Right';
 
   platform.append(...carouselContent);
 
   if (!options.infinityScrollEnabled) {
-    const leftTrigger = createTag('div', { class: 'carousel-left-trigger' });
-    const rightTrigger = createTag('div', { class: 'carousel-right-trigger' });
+    const leftTrigger = createTag('div', { class: 'exp-intl-carousel-left-trigger' });
+    const rightTrigger = createTag('div', { class: 'exp-intl-carousel-right-trigger' });
 
     platform.prepend(leftTrigger);
     platform.append(rightTrigger);
@@ -100,7 +100,7 @@ export function onCarouselCSSLoad(selector, parent, options) {
   };
 
   const moveCarouselToCenter = (direction) => {
-    const elements = platform.querySelectorAll('.template.carousel-element');
+    const elements = platform.querySelectorAll('.template.exp-intl-carousel-element');
 
     const visibleElement = Array.from(elements).find((el) => {
       const elRect = el.getBoundingClientRect();

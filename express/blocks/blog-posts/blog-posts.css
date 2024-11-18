@@ -55,6 +55,10 @@ main .blog-posts .blog-card {
     margin: 28px;
 }
 
+main .carousel.blog-posts-container .blog-posts .blog-card {
+    margin: unset;
+}
+
 main .blog-posts .blog-hero-card {
     display: flex;
     flex-direction: column-reverse;
@@ -204,12 +208,23 @@ main .carousel .blog-posts .blog-card .blog-card-image {
     margin: 0 0 24px 0;
     border-radius: 10px;
     height: 200px;
-    width: 300px;
+    width: auto;
+}
+
+main .carousel .blog-posts .blog-card .blog-card-image {
+    margin: 0 0 24px 0;
+    border-radius: 10px;
+    height: 200px;
+    width: auto;
+}
+
+main .carousel .blog-posts .blog-card .blog-card-image img { 
+    border-radius: 16px 16px 0 0;
 }
 
 main .carousel .blog-posts .blog-card {
     grid-template-areas: 'image' 'title'  'teaser' 'date';
-    width: 325px;
+    width: 300px;
 }
 
 @media (min-width: 900px) {
