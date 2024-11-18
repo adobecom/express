@@ -186,7 +186,7 @@ main .section.section-wrapper .mobile-toc {
   }
   .toc-sharing-icons {
     position: absolute;
-    top: 130%;
+    bottom: -75px;
     height: 30px;
     width: 100%;
     left: 0;
