@@ -148,6 +148,9 @@
     main .exp-intl-carousel-container.controls-hidden .exp-intl-carousel-platform {
       scroll-snap-type: x mandatory;
     }
+    main .carousel.blog-posts-container .exp-intl-carousel-container { 
+      width: unset;
+    }
   }
   
   main .exp-intl-carousel-container .exp-intl-carousel-platform .exp-intl-carousel-left-trigger,

@@ -300,6 +300,9 @@ main .carousel .blog-posts .blog-card {
        margin-left: 50px;
        text-align: left;
     }
+    main .carousel.blog-posts-container .blog-posts .blog-card {
+        margin: 28px;
+    }
 }
 
 @media (min-width: 1200px) {
