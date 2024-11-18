@@ -340,18 +340,18 @@ export function collectFloatingButtonData() {
     const completeSet = {
       href: getMetadata(`cta-${i}-link`),
       text: getMetadata(`cta-${i}-text`),
-      icon: getIconElement(iconMetadata)
+      icon: getIconElement(iconMetadata),
     };
 
     if (Object.values(completeSet).every((val) => !!val)) {
       const {
-        href, text, icon
+        href, text, icon,
       } = completeSet;
       const aTag = createTag('a', { title: text, href });
       aTag.textContent = text;
       data.tools.push({
         icon,
-        anchor: aTag
+        anchor: aTag,
       });
     }
   }
