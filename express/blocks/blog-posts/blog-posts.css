@@ -297,9 +297,10 @@ main .carousel .blog-posts .blog-card {
     }
 
     main .blog-posts-container.left-align-header .default-content-wrapper h3 {
-       margin-left: 50px;
+       margin-left: 95px;
        text-align: left;
     }
+    
     main .carousel.blog-posts-container .blog-posts .blog-card {
         margin: 28px;
     }

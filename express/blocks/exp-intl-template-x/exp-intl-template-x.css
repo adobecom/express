@@ -1745,7 +1745,9 @@ main .exp-intl-template-x .api-templates-toolbar .search-bar-wrapper.collapsed .
     .exp-intl-template-x.horizontal.three-templates .exp-intl-template-x-inner-wrapper .carousel-container {
         width: 105%;
     }
-    
+    .exp-intl-template-x.three-templates.horizontal.fullwidth:not(.holiday) {
+        width: 690px;
+    }
 }
 
 /* Carousel styles (Template-x specific) */
