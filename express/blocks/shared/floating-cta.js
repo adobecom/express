@@ -332,8 +332,7 @@ export function collectFloatingButtonData() {
     },
     bubbleSheet: getMetadata('floating-cta-bubble-sheet'),
     live: getMetadata('floating-cta-live'),
-  };
-
+  }; 
   for (let i = 1; i < CTA_ICON_COUNT; i += 1) {
     const iconMetadata = getMetadata(`cta-${i}-icon`);
     if (!iconMetadata) break;
@@ -341,23 +340,26 @@ export function collectFloatingButtonData() {
       href: getMetadata(`cta-${i}-link`),
       text: getMetadata(`cta-${i}-text`),
       icon: getIconElement(iconMetadata),
-      iconText: getMetadata(`cta-${i}-icon-text`),
     };
 
     if (Object.values(completeSet).every((val) => !!val)) {
       const {
-        href, text, icon, iconText,
+        href, text, icon
       } = completeSet;
       const aTag = createTag('a', { title: text, href });
       aTag.textContent = text;
-      data.tools.push({
+      const tool = {
         icon,
         anchor: aTag,
-        iconText,
-      });
+      }
+
+      const iconText = getMetadata(`cta-${i}-icon-text`)
+      if (iconText) {
+        tool.iconText = iconText
+      }
+      data.tools.push(tool);
     }
   }
-
   return data;
 }
 
