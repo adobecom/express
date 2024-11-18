@@ -349,6 +349,17 @@ main .how-to-steps-accordion-video-container {
   overflow:visible
 }
 
+.how-to-steps-accordion-image-container .image-container {
+  /* width: 587px;
+  min-width: 587px;
+  height: 426px; */
+  width: 534px;
+  min-width: 534px;
+  height: 387px;
+  background-size: 120%;
+  overflow:visible
+}
+
 .how-to-steps-accordion-video-container lite-youtube {
   /* TODO: tmp */
   width: 534px;
