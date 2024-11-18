@@ -330,6 +330,7 @@ function handleActiveTOCHighlighting(tocEntries) {
 function buildMetadataConfigObject() {
   const title = getMetadata('toc-title');
   const showContentNumbers = getMetadata('toc-content-numbers');
+  const showSharingIcons = getMetadata('toc-sharing');
   const contents = [];
   let i = 1;
   let content = getMetadata(`content-${i}`);
@@ -347,9 +348,40 @@ function buildMetadataConfigObject() {
   const config = contents.reduce((acc, el) => ({
     ...acc,
     ...el,
-  }), { title, 'toc-content-numbers': showContentNumbers });
+  }), { title, 'toc-content-numbers': showContentNumbers, 'toc-sharing': showSharingIcons });
 
   return config;
+}
+
+function addLinksToSharingIcons(container) {
+  const images = container.querySelectorAll('img');
+  const imageLinks = [
+    'https://twitter.com',
+    'https://facebook.com',
+    'https://linkedin.com',
+    'https://link.com',
+  ];
+  images.forEach((img, index) => {
+    const link = document.createElement('a');
+    link.href = imageLinks[index] || '#';
+    link.target = '_blank';
+
+    img.parentNode.insertBefore(link, img);
+    link.appendChild(img);
+  });
+}
+
+function addTOCSharingIcons(toc) {
+  const sharingIcons = createTag('div', { class: 'toc-sharing-icons' });
+  const icons = [
+    getIconElement('social-media-link'),
+    getIconElement('social-media-linkedIn'),
+    getIconElement('social-media-facebook'),
+    getIconElement('social-media-x'),
+  ];
+  icons.forEach((icon) => sharingIcons.prepend(icon));
+  addLinksToSharingIcons(sharingIcons);
+  toc.appendChild(sharingIcons);
 }
 
 export default async function setTOCSEO() {
@@ -369,8 +401,7 @@ export default async function setTOCSEO() {
     applyTOCBehavior(toc, tocContainer);
     handleActiveTOCHighlighting(tocEntries);
   } else {
-    setTimeout(() => {
-      tocEntries = addTOCEntries(toc, config, doc);
-    }, 50);
+    tocEntries = addTOCEntries(toc, config, doc);
   }
+  if (config['toc-sharing']) addTOCSharingIcons(toc);
 }

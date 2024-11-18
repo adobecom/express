@@ -36,6 +36,10 @@
   font-weight: var(--font-weight-bold);
 }
 
+.toc {
+  position: relative;
+}
+
 .toc .toc-entry a {
   color: var(--color-info-accent);
   text-decoration: none;
@@ -180,4 +184,18 @@ main .section.section-wrapper .mobile-toc {
   .table-of-contents-seo {
     display: block;
   }
+  .toc-sharing-icons {
+    position: absolute;
+    top: 130%;
+    height: 30px;
+    width: 100%;
+    left: 0;
+  }
+  .toc-sharing-icons img {
+    width: 20px;
+    height: 20px;
+    margin-left: 12px;
+    cursor: pointer;
+  }
 }
+
