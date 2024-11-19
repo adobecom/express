@@ -348,10 +348,12 @@ export default async function decorate(block) {
     if (hasBackground) {
       // videoEl.style.background = `url(${backgroundURL})`
       //  videoContainerEl.style.background = `url(${backgroundURL})`;
-      $stepsContent.style.background = `url(${backgroundURL})`;
-      $stepsContent.style.backgroundSize = `75%`;
-      $stepsContent.style.backgroundRepeat = `no-repeat`;
-      $stepsContent.style.backgroundPosition = `-10% -10%`;
+      // $stepsContent.style.background = `url(${backgroundURL})`;
+      // $stepsContent.style.backgroundSize = `75%`;
+      // $stepsContent.style.backgroundRepeat = `no-repeat`;
+      // $stepsContent.style.backgroundPosition = `-10% -10%`;
+
+      $stepsContent.style.background = `url(${backgroundURL}) -12px -9% / 100% no-repeat`;
     }
 
 
