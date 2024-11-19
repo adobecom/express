@@ -353,7 +353,7 @@ export default async function decorate(block) {
       // $stepsContent.style.backgroundRepeat = `no-repeat`;
       // $stepsContent.style.backgroundPosition = `-10% -10%`;
 
-      $stepsContent.style.background = `url(${backgroundURL}) -12px -9% / 100% no-repeat`;
+      $stepsContent.style.background = `url(${backgroundURL}) -12px -24px / 100% no-repeat`;
     }
 
 

@@ -301,7 +301,8 @@ main .video-how-to-steps-accordion {
 }
 
 .how-to-steps-accordion.block ol li .step-content {
-  margin: 6px 0 9px;
+  /* margin: 6px 0 9px; */
+  margin: 10px 0;
 }
 
 .how-to-steps-accordion.block ol li .step-indicator:has(+ div .closed) {
@@ -314,7 +315,8 @@ main .video-how-to-steps-accordion {
 
 .how-to-steps-accordion.block ol li h3 {
   text-align: left;
-  font-size: 21px;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .how-to-steps-accordion.block .closed {
@@ -322,8 +324,10 @@ main .video-how-to-steps-accordion {
 }
 
 .how-to-steps-accordion.block ol li .detail-container {
-  font-size: 15px;
-  font-weight: 500;
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 20.8px;
+  font-weight: 400;
 }
 
 .how-to-steps-accordion.block ol li .detail-container {
