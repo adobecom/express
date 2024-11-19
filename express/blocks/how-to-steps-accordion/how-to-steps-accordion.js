@@ -346,14 +346,24 @@ export default async function decorate(block) {
     const $stepsContent = createTag('div', { class: 'steps-content' });
 
     if (hasBackground) {
+      // So that background image goes beyond container
+      const $stepsContentBackground = createTag('div', { class: 'steps-content-backg' });
+      const $stepsContentBackgroundImg = createTag('img', { class: 'steps-content-backg-image' });
+
       // videoEl.style.background = `url(${backgroundURL})`
       //  videoContainerEl.style.background = `url(${backgroundURL})`;
       // $stepsContent.style.background = `url(${backgroundURL})`;
       // $stepsContent.style.backgroundSize = `75%`;
       // $stepsContent.style.backgroundRepeat = `no-repeat`;
       // $stepsContent.style.backgroundPosition = `-10% -10%`;
-
-      $stepsContent.style.background = `url(${backgroundURL}) -12px -24px / 100% no-repeat`;
+      $stepsContent.append($stepsContentBackground);
+      $stepsContentBackground.append($stepsContentBackgroundImg);
+      $stepsContentBackgroundImg.src = backgroundURL;
+      // $stepsContentBackground.style.background = `url(${backgroundURL}) -12px -38px / 100% no-repeat`;
+      $stepsContentBackground.style.position = 'absolute';
+      $stepsContentBackground.style.top = '-36px';
+      $stepsContentBackground.style.left = '-24px';
+      $stepsContentBackground.style.zIndex = -1;
     }
 
 
