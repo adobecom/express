@@ -29,10 +29,17 @@ main .how-to-steps-accordion-container > div p.button-container {
   margin: 16px 0;
 }
 
-main .how-to-steps-accordion-container > div > h2 {
+/* main .how-to-steps-accordion-container > div > h2 {
   font-size: var(--heading-font-size-xl);
   text-align: left;
   margin-top: 0;
+} */
+
+main .how-to-steps-accordion h2 {
+  font-size: 22px;
+  text-align: center;
+  padding: 0 24px;
+  /* margin-top: 0; */
 }
 
 main .how-to-steps-accordion-container > div > div {
@@ -275,6 +282,7 @@ main .video-how-to-steps-accordion {
 
   padding-left: 24px;
 
+  padding-left: 0;
   /* margin-bottom: 24px; */
 
   cursor: pointer;
@@ -355,9 +363,10 @@ main .how-to-steps-accordion-video-container {
   /* width: 587px;
   min-width: 587px;
   height: 426px; */
-  width: 580px;
+  /* width: 580px;
   min-width: 580px;
-  height: 387px;
+  height: 387px; */
+  /* margin: 0 24px; */
   background-size: 120%;
   overflow:visible
 }
@@ -396,6 +405,10 @@ main .block.how-to-steps-accordion em {
 main .how-to-steps-accordion.video .steps-content,
 main .how-to-steps-accordion.image .steps-content {
   display: flex;
+  flex-direction: column;
+  padding: 0 24px;
+  /* margin-left: 24px;
+  margin-right: 24px; */
 }
 
 main .how-to-steps-accordion.video ol.steps {
@@ -403,9 +416,17 @@ main .how-to-steps-accordion.video ol.steps {
 }
 
 main .how-to-steps-accordion.image ol.steps {
-  margin-left: 0
+  margin-left: 0;
+  padding: 0;
 }
 
 main .how-to-steps-accordion.image .image-container {
   margin-top: 27px;
+}
+
+main .how-to-steps-accordion.video,
+main .how-to-steps-accordion.image {
+  /* note we don't set margin here because background gradient has to go past into this container */
+  margin: 0;
+  max-width: unset;
 }
