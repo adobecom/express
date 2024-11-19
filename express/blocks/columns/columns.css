@@ -36,6 +36,10 @@ main .columns.blog .column .button-container a {
   padding-left: 0;
 }
 
+main .columns.blog .column.column-picture picture img {
+  border-radius: 16px;
+}
+
 main .columns.blog .column h2 {
   margin-top: 0;
 }
