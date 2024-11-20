@@ -3,12 +3,9 @@ import {
   getConfig,
   loadScript,
   transformLinkToAnimation,
-  addAnimationToggle,
   fetchPlaceholders,
-  getMetadata,
   getIconElement,
 } from '../../scripts/utils.js';
-import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
 import { sendFrictionlessEventToAdobeAnaltics } from '../../scripts/instrument.js';
 
 let ccEverywhere;
@@ -271,35 +268,34 @@ async function startSDKWithUnconvertedFile(file, quickAction, block) {
 
 export default async function decorate(block) {
   const rows = Array.from(block.children);
-  rows[1].classList.add('container');
-  const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
-  const quickAction = quickActionRow?.[0].children[1]?.textContent;
-  if (!quickAction) {
+  const quickActionRow = rows[rows.length - 1];
+  const quickAction = quickActionRow.children[1]?.textContent;
+  if (!quickAction || !(quickAction in QA_CONFIGS)) {
     throw new Error('Invalid Quick Action Type.');
   }
-  quickActionRow[0].remove();
+  quickActionRow.remove();
 
-  const actionAndAnimationRow = rows[1].children;
-  const animationContainer = actionAndAnimationRow[0];
+  rows[0].classList.add('headline');
+  rows[1].classList.add('dropzone-container');
+  const [animationContainer, dropzone] = rows[1].children;
+  animationContainer.classList.add('animation-container');
   const animation = animationContainer.querySelector('a');
-  const dropzone = actionAndAnimationRow[1];
-  const dropzoneBackground = createTag('div', { class: 'dropzone-bg' });
-  const cta = dropzone.querySelector('a.button');
-  const gtcText = dropzone.querySelector('p:last-child');
-  const actionColumn = createTag('div');
-  const dropzoneContainer = createTag('div', { class: 'dropzone-container' });
 
   if (animation && animation.href.includes('.mp4')) {
-    transformLinkToAnimation(animation);
-    addAnimationToggle(animationContainer);
+    const video = transformLinkToAnimation(animation, false);
+    video.addEventListener('ended', () => {
+      dropzone.classList.remove('hide');
+      animationContainer.classList.add('hide');
+    });
+    // click to skip animation
   }
-  if (cta) cta.classList.add('xlarge');
+  dropzone.classList.add('dropzone', 'hide');
+  const dropzoneText = createTag('div', { class: 'text' });
+  while (dropzone.firstChild) {
+    dropzoneText.append(dropzone.firstChild);
+  }
   dropzone.classList.add('dropzone');
-
-  dropzone.prepend(dropzoneBackground);
-  dropzone.before(actionColumn);
-  dropzoneContainer.append(dropzone);
-  actionColumn.append(dropzoneContainer, gtcText);
+  dropzone.append(createTag('div', { class: 'border-wrapper' }, dropzoneText));
   const inputElement = createTag('input', { type: 'file', accept: QA_CONFIGS[quickAction].accept });
   inputElement.onchange = () => {
     const file = inputElement.files[0];
@@ -307,7 +303,7 @@ export default async function decorate(block) {
   };
   block.append(inputElement);
 
-  dropzoneContainer.addEventListener('click', (e) => {
+  dropzone.addEventListener('click', (e) => {
     e.preventDefault();
     if (quickAction === 'generate-qr-code') {
       startSDK('', quickAction, block);
@@ -316,44 +312,6 @@ export default async function decorate(block) {
     }
     document.body.dataset.suppressfloatingcta = 'true';
   });
-
-  function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-
-  function highlight() {
-    dropzoneContainer.classList.add('highlight');
-  }
-
-  function unhighlight() {
-    dropzoneContainer.classList.remove('highlight');
-  }
-
-  ['dragenter', 'dragover'].forEach((eventName) => {
-    dropzoneContainer.addEventListener(eventName, highlight, false);
-  });
-
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
-    dropzoneContainer.addEventListener(eventName, preventDefaults, false);
-  });
-
-  ['dragleave', 'drop'].forEach((eventName) => {
-    dropzoneContainer.addEventListener(eventName, unhighlight, false);
-  });
-
-  dropzoneContainer.addEventListener('drop', async (e) => {
-    const dt = e.dataTransfer;
-    const { files } = dt;
-
-    await Promise.all(
-      [...files].map((file) => startSDKWithUnconvertedFile(file, quickAction, block)),
-    );
-    document.body.dataset.suppressfloatingcta = 'true';
-  }, false);
-
-  const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
-  dropzone.append(freePlanTags);
 
   window.addEventListener('popstate', (e) => {
     const editorModal = selectElementByTagPrefix('cc-everywhere-container-');
@@ -373,11 +331,9 @@ export default async function decorate(block) {
   block.dataset.frictionlesstype = quickAction;
   block.dataset.frictionlessgroup = QA_CONFIGS[quickAction].group ?? 'image';
 
-  if (['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
-    const logo = getIconElement('adobe-express-logo');
-    logo.classList.add('express-logo');
-    block.prepend(logo);
-  }
+  // const logo = getIconElement('adobe-express-logo');
+  // logo.classList.add('express-logo');
+  // block.prepend(logo);
 
   sendFrictionlessEventToAdobeAnaltics(block);
 }
