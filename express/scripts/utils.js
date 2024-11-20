@@ -592,37 +592,29 @@ export function removeIrrelevantSections(area) {
       if (sectionRemove) section.remove();
     }
   });
+}
 
-  // floating CTA vs page CTA with same text or link logics
-  if (['yes', 'y', 'true', 'on'].includes(getMetadata('show-floating-cta')?.toLowerCase())) {
-    const { device } = document.body.dataset;
-    const textToTarget = getMetadata(`${device}-floating-cta-text`)?.trim() || getMetadata('main-cta-text')?.trim();
-    const linkToTarget = getMetadata(`${device}-floating-cta-link`)?.trim() || getMetadata('main-cta-link')?.trim();
-    if (textToTarget || linkToTarget) {
-      const linkToTargetURL = new URL(linkToTarget);
-      const sameUrlCTAs = Array.from(area.querySelectorAll('a:any-link'))
-        .filter((a) => {
-          try {
-            const currURL = new URL(a.href);
-            const sameText = a.textContent.trim() === textToTarget;
-            const samePathname = currURL.pathname === linkToTargetURL?.pathname;
-            const sameHash = currURL.hash === linkToTargetURL?.hash;
-            const isNotInFloatingCta = !a.closest('.block')?.classList.contains('floating-button');
-            const notFloatingCtaIgnore = !a.classList.contains('floating-cta-ignore');
 
-            return (sameText || (samePathname && sameHash))
-              && isNotInFloatingCta && notFloatingCtaIgnore;
-          } catch (err) {
-            window.lana?.log(err);
-            return false;
-          }
-        });
+/** 
+ * Checks if a CTA has the same content as the floating CTA
+ */
 
-      sameUrlCTAs.forEach((cta) => {
-        cta.classList.add('same-fcta');
-      });
-    }
+export function checkCTAContent(block){
+  // Hide CTAs with same url & text as the Floating CTA && is NOT a Floating CTA (in mobile/tablet)
+  if (!getMetadata('main-cta-link')) {
+    return
   }
+  const aTagText = getMetadata('main-cta-text')
+  const aTagURL = new URL(getMetadata('main-cta-link'));
+  const sameUrlCTAs = Array.from(block.querySelectorAll('a.button:any-link'))
+    .filter((a) => {
+      return a.textContent.trim() === aTagText
+      || (new URL(a.href).pathname === aTagURL.pathname && new URL(a.href).hash === aTagURL.hash)
+      && !a.parentElement.parentElement.classList.contains('floating-button')
+    });
+  sameUrlCTAs.forEach((cta) => {
+    cta.classList.add('same-fcta');
+  });
 }
 
 /**

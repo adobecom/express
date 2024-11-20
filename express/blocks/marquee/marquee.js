@@ -6,6 +6,7 @@ import {
   fetchPlaceholders,
   getConfig,
   getMetadata,
+  checkCTAContent
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import BlockMediator from '../../scripts/block-mediator.min.js';
@@ -567,4 +568,5 @@ export default async function decorate(block) {
     addHeaderSizing(block);
   }
   block.classList.add('appear');
+  checkCTAContent(block);
 }

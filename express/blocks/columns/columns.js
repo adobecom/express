@@ -7,6 +7,7 @@ import {
   getIconElement,
   addHeaderSizing,
   getMetadata,
+  checkCTAContent
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
@@ -470,4 +471,6 @@ export default async function decorate(block) {
       });
     });
   }
+
+  checkCTAContent(block);
 }

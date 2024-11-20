@@ -5,6 +5,7 @@ import {
   transformLinkToAnimation,
   getIconElement,
   getMetadata,
+  checkCTAContent
 } from '../../scripts/utils.js';
 import { addFreePlanWidget } from '../../scripts/utils/free-plan.js';
 
@@ -196,4 +197,5 @@ export default async function decorate(block) {
     block.append(await buildApp(block, content));
   }
   decorateMultipleCTAs(block);
+  checkCTAContent(block);
 }

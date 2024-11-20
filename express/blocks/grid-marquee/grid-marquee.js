@@ -4,6 +4,7 @@ import {
   fetchPlaceholders,
   getMobileOperatingSystem,
   yieldToMain,
+  checkCTAContent
 } from '../../scripts/utils.js';
 
 let currDrawer = null;
@@ -221,4 +222,6 @@ export default function init(el) {
     isTouch = false;
     drawerOff();
   });
+
+  checkCTAContent(el);
 }
