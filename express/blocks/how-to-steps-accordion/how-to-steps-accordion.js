@@ -271,7 +271,7 @@ function buildAccordion(block, rows, $stepsContent) {
     //   stepDetail.classList.add('closed');
     // }
 
-    const $listItem = createTag('LI', { class: 'step' });
+    const $listItem = createTag('LI', { class: 'step', tabindex: '0' });
     $list.append($listItem);
 
     const $listItemIndicator = createTag('div', { class: 'step-indicator' });
@@ -300,12 +300,38 @@ function buildAccordion(block, rows, $stepsContent) {
     $listItemContent.append($newStepTitle);
     $listItemContent.append($detailContainer);
 
-    $newStepTitle.addEventListener('click', (ev) => {
-      // ev.stopPropagation();
-      // ev.preventDefault();
-      indexOpenedStep = i;
-      setStepDetails(block, indexOpenedStep);
-    });
+  //   const handleOpenDetails = (ev) => {
+  //     indexOpenedStep = i;
+  //     setStepDetails(block, indexOpenedStep);
+  //     ev.preventDefault();
+  //   }
+
+  //   $newStepTitle.addEventListener('click', (ev) => {
+  //     // ev.stopPropagation();
+  //     // ev.preventDefault();
+  //     indexOpenedStep = i;
+  //     setStepDetails(block, indexOpenedStep);
+  //   }
+  // );
+
+  //   $listItem.addEventListener('keypress', (ev) => {
+  //     // ev.stopPropagation();
+  //     // ev.preventDefault();
+  //     indexOpenedStep = i;
+  //     setStepDetails(block, indexOpenedStep);
+  //     ev.preventDefault();
+  //   });
+
+  const handleOpenDetails = (ev) => {
+    indexOpenedStep = i;
+    setStepDetails(block, indexOpenedStep);
+    ev.preventDefault();
+  };
+
+  $newStepTitle.addEventListener('click', handleOpenDetails);
+  $listItem.addEventListener('keyup', (ev) => (ev.which === 13 && handleOpenDetails(ev)));
+
+
   });
 
   // return $list;

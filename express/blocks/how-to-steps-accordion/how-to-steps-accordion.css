@@ -335,7 +335,7 @@ main .how-to-steps-accordion.video .video-container {
   height: 387px; */
 
   /* background-size: 120%; */
-  overflow:visible
+  /* overflow:visible */
 }
 
 .how-to-steps-accordion-image-container .image-container {
@@ -347,12 +347,13 @@ main .how-to-steps-accordion.video .video-container {
   height: 387px; */
   /* margin: 0 24px; */
   /* background-size: 120%; */
-  overflow:visible
+  /* overflow:visible */
 }
 
 /* .how-to-steps-accordion-video-container  */
 
-main .how-to-steps-accordion.video lite-youtube {
+main .how-to-steps-accordion.video lite-youtube,
+main .how-to-steps-accordion.image picture {
   /* TODO: tmp */
 
   /* width: 534px;
@@ -360,7 +361,8 @@ main .how-to-steps-accordion.video lite-youtube {
 
   /* height: 387px; */
 
-  border-radius: 15px;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .how-to-steps-accordion-video-container .default-content-wrapper {
