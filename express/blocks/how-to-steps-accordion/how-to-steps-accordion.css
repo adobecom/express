@@ -249,7 +249,7 @@ main .video-how-to-steps-accordion {
   /* margin-bottom: 24px; */
 
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.21s;
 
   display: flex;
 }
@@ -301,9 +301,13 @@ main .video-how-to-steps-accordion {
   transition: all 0.7s; */
   max-height: 0;
   overflow: hidden;
-  /* transition: max-height 0.2s ease-out; */
+  transition: max-height 0.21s ease-out;
 
-  transition: all 0.2s ease-out;
+  /* transition: all 0.21s ease-out; */
+}
+
+.how-to-steps-accordion.block ol li .detail-text {
+  padding-top: 10px;
 }
 
 /* so that there is no initial re-paint */
