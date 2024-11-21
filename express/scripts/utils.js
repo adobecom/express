@@ -238,19 +238,6 @@ export function sampleRUM(checkpoint, data = {}, forceSampleRate) {
   }
 }
 
-export function addPublishDependencies(url) {
-  if (!Array.isArray(url)) {
-    // eslint-disable-next-line no-param-reassign
-    url = [url];
-  }
-  window.hlx = window.hlx || {};
-  if (window.hlx.dependencies && Array.isArray(window.hlx.dependencies)) {
-    window.hlx.dependencies.concat(url);
-  } else {
-    window.hlx.dependencies = url;
-  }
-}
-
 export function toClassName(name) {
   return name && typeof name === 'string'
     ? name.trim().toLowerCase().replace(/[^0-9a-z]/gi, '-')
