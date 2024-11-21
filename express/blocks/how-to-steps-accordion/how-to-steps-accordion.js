@@ -231,11 +231,11 @@ function setStepDetails(block, indexOpenedStep) {
     if (i === indexOpenedStep) {
       $detail.classList.remove('closed');
       $detail.style.maxHeight = `${$detail.scrollHeight}px`;
-      $detail.style.marginTop = '10px';
+      // $detail.style.marginTop = '10px';
     } else {
       $detail.classList.add('closed');
       $detail.style.maxHeight = '0';
-      $detail.style.marginTop = '0';
+      // $detail.style.marginTop = '0';
     }
   });
 }
@@ -267,9 +267,9 @@ function buildAccordion(block, rows, $stepsContent) {
     const $newStepTitle = createTag('h3');
     $newStepTitle.replaceChildren(...stepTitle.childNodes);
 
-    if (i !== 0) {
-      stepDetail.classList.add('closed');
-    }
+    // if (i !== 0) {
+    //   stepDetail.classList.add('closed');
+    // }
 
     const $listItem = createTag('LI', { class: 'step' });
     $list.append($listItem);
@@ -279,10 +279,19 @@ function buildAccordion(block, rows, $stepsContent) {
 
     // $listItem.append(row)
 
-    const $detailContainer = stepDetail;
+    const $detailText = stepDetail;
     // createTag('div', { class: 'detail-container' });
 
-    $detailContainer.classList.add('detail-container');
+    $detailText.classList.add('detail-text');
+
+    const $detailContainer = createTag('div', { class: 'detail-container' });
+
+    if (i !== 0) {
+      $detailContainer.classList.add('closed');
+    }
+
+    $detailContainer.append($detailText);
+
     // $detailContainer.append(stepDetail)
 
     $listItem.append($listItemIndicator);
