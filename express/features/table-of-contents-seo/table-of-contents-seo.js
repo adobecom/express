@@ -241,32 +241,30 @@ function addTOCEntries(toc, config, doc) {
 }
 
 function setTOCPosition(toc, tocContainer) {
-  const firstLink = toc.querySelector('.toc-entry a');
-  if (!firstLink || !tocContainer) {
+  const firstDivAfterMain = document.querySelector('main > div');
+  if (!firstDivAfterMain || !tocContainer) {
     return;
   }
 
-  const href = firstLink.getAttribute('href');
-  const partialId = href.slice(1).substring(0, 10);
-  const targetElement = document.querySelector(`[id^="${partialId}"]`);
+  const rect = firstDivAfterMain.getBoundingClientRect();
+  const bottomEdgeOfDiv = Math.round(window.scrollY + rect.bottom);
 
-  if (!targetElement) {
-    return;
-  }
-
-  const rect = targetElement.getBoundingClientRect();
-  const targetTop = Math.round(window.scrollY + rect.top);
-  const viewportMidpoint = window.innerHeight / 2;
-
-  tocContainer.style.top = targetTop <= window.scrollY + viewportMidpoint
-    ? `${viewportMidpoint}px`
-    : `${targetTop}px`;
-
-  tocContainer.style.position = targetTop <= window.scrollY + viewportMidpoint ? 'fixed' : 'absolute';
+  const startPosition = bottomEdgeOfDiv + 90;
+  const tocTop = Math.round(tocContainer.getBoundingClientRect().top + window.scrollY);
+  const distanceToRedLine = startPosition - tocTop;
+  tocContainer.style.top = `${tocContainer.offsetTop + (distanceToRedLine >= 0 ? distanceToRedLine : 0)}px`;
+  tocContainer.style.position = 'absolute';
   tocContainer.style.display = 'block';
 
-  const footer = document.querySelector('footer');
+  const viewportMidpoint = window.innerHeight / 2;
+  const tocHeight = tocContainer.offsetHeight / 2;
+  tocContainer.style.top = startPosition <= window.scrollY + viewportMidpoint
+    ? `${viewportMidpoint + tocHeight}px`
+    : `${startPosition + tocContainer.offsetHeight / 2}px`;
 
+  tocContainer.style.position = startPosition <= window.scrollY + viewportMidpoint ? 'fixed' : 'absolute';
+
+  const footer = document.querySelector('footer');
   if (footer) {
     const footerRect = footer.getBoundingClientRect();
     const footerTop = Math.round(window.scrollY + footerRect.top);
@@ -277,9 +275,6 @@ function setTOCPosition(toc, tocContainer) {
     if (positionDifference >= 0) {
       tocContainer.style.position = 'absolute';
       tocContainer.style.top = `${footerTop - tocContainer.offsetHeight + 92}px`;
-    } else if (targetTop <= window.scrollY + viewportMidpoint) {
-      tocContainer.style.position = 'fixed';
-      tocContainer.style.top = `${viewportMidpoint}px`;
     }
   }
 }
