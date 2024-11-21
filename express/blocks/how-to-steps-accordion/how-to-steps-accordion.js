@@ -231,9 +231,11 @@ function setStepDetails(block, indexOpenedStep) {
     if (i === indexOpenedStep) {
       $detail.classList.remove('closed');
       $detail.style.maxHeight = `${$detail.scrollHeight}px`;
+      $detail.style.marginTop = '10px';
     } else {
       $detail.classList.add('closed');
       $detail.style.maxHeight = '0';
+      $detail.style.marginTop = '0';
     }
   });
 }
