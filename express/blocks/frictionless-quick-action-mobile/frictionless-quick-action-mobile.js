@@ -5,6 +5,7 @@ import {
   transformLinkToAnimation,
   fetchPlaceholders,
   getIconElement,
+  getMobileOperatingSystem,
 } from '../../scripts/utils.js';
 import { sendFrictionlessEventToAdobeAnaltics } from '../../scripts/instrument.js';
 
@@ -70,6 +71,10 @@ function fade(element, action) {
 function selectElementByTagPrefix(p) {
   const allEls = document.body.querySelectorAll(':scope > *');
   return Array.from(allEls).find((e) => e.tagName.toLowerCase().startsWith(p.toLowerCase()));
+}
+
+function isEligibleMFQA() {
+  return navigator.deviceMemory >= 4 && getMobileOperatingSystem() === 'Android';
 }
 
 export function runQuickAction(quickAction, data, block) {
@@ -267,10 +272,18 @@ async function startSDKWithUnconvertedFile(file, quickAction, block) {
 }
 
 export default async function decorate(block) {
+  if (!isEligibleMFQA()) {
+    block.remove();
+    return block;
+  }
+  // remove authored fallback block
+  [...block.closest('.section').children].forEach((b) => {
+    b.classList.contains('mfqa-fallback') && b.remove();
+  });
   const rows = Array.from(block.children);
   const quickActionRow = rows[rows.length - 1];
   const quickAction = quickActionRow.children[1]?.textContent;
-  if (!quickAction || !(quickAction in QA_CONFIGS)) {
+  if (!(quickAction in QA_CONFIGS)) {
     throw new Error('Invalid Quick Action Type.');
   }
   quickActionRow.remove();
@@ -336,4 +349,5 @@ export default async function decorate(block) {
   // block.prepend(logo);
 
   sendFrictionlessEventToAdobeAnaltics(block);
+  return block;
 }
