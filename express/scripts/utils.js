@@ -1442,6 +1442,8 @@ export function loadIms() {
       environment: env.ims,
       useLocalStorage: false,
       api_parameters: { check_token: { guest_allowed: true } },
+      enableGuestAccounts: true,
+      enableGuestTokenForceRefresh: true,
       onReady: () => {
         resolve();
         clearTimeout(timeout);
