@@ -200,7 +200,7 @@ async function startSDK(data = '', quickAction, block) {
   if (!window.CCEverywhere) {
     return;
   }
-
+  document.body.dataset.suppressfloatingcta = 'true';
   if (!ccEverywhere) {
     let { ietf } = getConfig().locale;
     const country = urlParams.get('country');
@@ -321,7 +321,6 @@ export default async function decorate(block) {
     } else {
       inputElement.click();
     }
-    document.body.dataset.suppressfloatingcta = 'true';
   });
 
   window.addEventListener('popstate', (e) => {
