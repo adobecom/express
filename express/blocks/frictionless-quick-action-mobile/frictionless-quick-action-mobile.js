@@ -7,7 +7,6 @@ import {
   getIconElement,
   getMobileOperatingSystem,
 } from '../../scripts/utils.js';
-import { sendFrictionlessEventToAdobeAnaltics } from '../../scripts/instrument.js';
 
 let ccEverywhere;
 let quickActionContainer;
@@ -272,21 +271,20 @@ async function startSDKWithUnconvertedFile(file, quickAction, block) {
 }
 
 export default async function decorate(block) {
-  if (!isEligibleMFQA()) {
-    block.remove();
-    return block;
-  }
-  // remove authored fallback block
-  [...block.closest('.section').children].forEach((b) => {
-    b.classList.contains('mfqa-fallback') && b.remove();
-  });
   const rows = Array.from(block.children);
-  const quickActionRow = rows[rows.length - 1];
+  const [quickActionRow] = rows.filter((row) => row.children[0]?.textContent?.toLowerCase()?.trim() === 'quick-action');
+  quickActionRow?.remove();
+  const [fallbackRow] = rows.filter((row) => row.children[0]?.textContent?.toLowerCase()?.trim() === 'fallback');
+  fallbackRow?.remove();
+  if (fallbackRow && !isEligibleMFQA()) {
+    const fallbackBlock = fallbackRow.querySelector('.block');
+    block.replaceWith(fallbackBlock);
+    return fallbackBlock;
+  }
   const quickAction = quickActionRow.children[1]?.textContent;
   if (!(quickAction in QA_CONFIGS)) {
     throw new Error('Invalid Quick Action Type.');
   }
-  quickActionRow.remove();
 
   rows[0].classList.add('headline');
   rows[1].classList.add('dropzone-container');
@@ -347,7 +345,8 @@ export default async function decorate(block) {
   // const logo = getIconElement('adobe-express-logo');
   // logo.classList.add('express-logo');
   // block.prepend(logo);
-
-  sendFrictionlessEventToAdobeAnaltics(block);
+  import('../../scripts/instrument.js').then(({ sendFrictionlessEventToAdobeAnaltics }) => {
+    sendFrictionlessEventToAdobeAnaltics(block);
+  });
   return block;
 }
