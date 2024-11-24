@@ -288,7 +288,10 @@ export default async function decorate(block) {
 
   rows[0].classList.add('headline');
   rows[1].classList.add('dropzone-container');
-  const [animationContainer, dropzone] = rows[1].children;
+  const dropzone = createTag('button', { class: 'dropzone hide' });
+  const [animationContainer, dropzoneContent] = rows[1].children;
+  while (dropzoneContent.firstChild) dropzone.append(dropzoneContent.firstChild);
+  dropzoneContent.replaceWith(dropzone);
   animationContainer.classList.add('animation-container');
   const animation = animationContainer.querySelector('a');
 
@@ -300,7 +303,6 @@ export default async function decorate(block) {
     });
     // click to skip animation
   }
-  dropzone.classList.add('dropzone', 'hide');
   const dropzoneText = createTag('div', { class: 'text' });
   while (dropzone.firstChild) {
     dropzoneText.append(dropzone.firstChild);
@@ -341,9 +343,9 @@ export default async function decorate(block) {
   block.dataset.frictionlesstype = quickAction;
   block.dataset.frictionlessgroup = QA_CONFIGS[quickAction].group ?? 'image';
 
-  // const logo = getIconElement('adobe-express-logo');
-  // logo.classList.add('express-logo');
-  // block.prepend(logo);
+  const logo = getIconElement('adobe-express-logo');
+  logo.classList.add('express-logo');
+  block.prepend(logo);
   import('../../scripts/instrument.js').then(({ sendFrictionlessEventToAdobeAnaltics }) => {
     sendFrictionlessEventToAdobeAnaltics(block);
   });

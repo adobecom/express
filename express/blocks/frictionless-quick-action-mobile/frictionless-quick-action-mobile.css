@@ -6,11 +6,12 @@
 .section .frictionless-quick-action-mobile {
     padding: 40px 20px;
     max-width: none;
+    text-align: left;
 }
 /* TODO: font-family seems to be inconsistent? */
 
 .frictionless-quick-action-mobile .headline {
-    padding-bottom: 24px;
+    padding-bottom: 8px;
 }
 
 .frictionless-quick-action-mobile h1 {
@@ -23,6 +24,7 @@
 .frictionless-quick-action-mobile .express-logo {
     width: initial;
     height: 30px;
+    padding-bottom: 8px;
 }
 
 .frictionless-quick-action-mobile input {
@@ -52,6 +54,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    text-align: center;
 }
 
 .frictionless-quick-action-mobile .animation-container.hide {
@@ -66,6 +69,8 @@
     align-items: center;
     border-radius: 10px;
     background-color: #f8f8f8;
+    border: 0;
+    padding: 0;
 }
 
 .frictionless-quick-action-mobile .dropzone .border-wrapper {
