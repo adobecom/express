@@ -4,7 +4,8 @@
 }
 
 .section .frictionless-quick-action-mobile {
-    padding: 40px 20px;
+    padding: 24px 20px 0px 20px;
+    margin: auto;
     max-width: none;
     text-align: left;
 }
