@@ -332,6 +332,8 @@ function buildAccordion(block, rows, $stepsContent) {
   $listItem.addEventListener('keyup', (ev) => (ev.which === 13 && handleOpenDetails(ev)));
 
 
+
+
   });
 
   // return $list;
@@ -397,10 +399,56 @@ export default async function decorate(block) {
       $stepsContentBackground.append($stepsContentBackgroundImg);
       $stepsContentBackgroundImg.src = backgroundURL;
       // $stepsContentBackground.style.background = `url(${backgroundURL}) -12px -38px / 100% no-repeat`;
-      $stepsContentBackground.style.position = 'absolute';
-      $stepsContentBackground.style.top = '-36px';
-      $stepsContentBackground.style.left = '-24px';
-      $stepsContentBackground.style.zIndex = -1;
+
+      // $stepsContentBackground.style.position = 'absolute';
+      // $stepsContentBackground.style.width = "100%";
+      // $stepsContentBackground.style.top = '-36px';
+      // $stepsContentBackground.style.left = '-24px';
+      // $stepsContentBackground.style.zIndex = -1;
+
+      // tmp use wrapper for background image instead
+      if (false) {
+      const mediaQueryMobileSize = window.matchMedia('(max-width: 767px)');
+      const mediaQueryTabletSize = window.matchMedia('(min-width: 768px) and (max-width: 1279px)');
+      const mediaQueryDesktopSize = window.matchMedia('(min-width: 1280px) and (max-width: 1679px)');
+      const mediaQueryDesktopXLSize = window.matchMedia('(min-width: 1680px)');
+      // mediaQuery.addListener(handleTabletChange)
+
+      // mediaQuery.addListener(screenTest);
+
+      mediaQueryMobileSize.addEventListener('change', (ev) => {
+        console.log('=== mediaQueryMobileSize change event', ev.matches, ev)
+      })
+
+      mediaQueryTabletSize.addEventListener('change', (ev) => {
+        console.log('=== mediaQueryTabletSize change event', ev.matches, ev);
+
+        if (ev.matches) {
+          $stepsContentBackground.style.top = '-30px';
+          $stepsContentBackground.style.left = '6px';
+          $stepsContentBackground.style.width = '480px';
+          // $stepsContentBackground.style.left = '100px';
+        }
+
+      })
+
+      mediaQueryDesktopSize.addEventListener('change', (ev) => {
+        console.log('=== mediaQueryDesktopSize change event', ev.matches, ev);
+
+        if (ev.matches) {
+          $stepsContentBackground.style.top = '-30px';
+          $stepsContentBackground.style.left = '50px';
+          $stepsContentBackground.style.width = '600px';
+          // $stepsContentBackground.style.left = '100px';
+        }
+      })
+
+      mediaQueryDesktopXLSize.addEventListener('change', (ev) => {
+        console.log('=== mediaQueryDesktopXLSize change event', ev.matches, ev)
+      })
+
+    }
+
     }
 
 
