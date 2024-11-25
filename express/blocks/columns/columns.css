@@ -136,6 +136,11 @@ main .columns .column-picture {
   width: 225px;
 }
 
+main .columns .column-video video {
+  width: 225px;
+  margin: 0;
+}
+
 main .columns h1{
   font-size: var(--heading-font-size-xxl);
   line-height: 1.06;
@@ -945,6 +950,10 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
 
   main .columns .column-picture {
     width:  unset;
+  }
+
+  main .columns .column-video video {
+    width: unset;
   }
 }
 
