@@ -1,5 +1,5 @@
 /* eslint-disable import/named, import/extensions */
-import { createOptimizedPicture, createTag, fetchPlaceholders } from '../../scripts/utils.js';
+import { createTag } from '../../scripts/utils.js';
 import { embedYoutube } from '../../scripts/embed-videos.js';
 
 function setStepDetails(block, indexOpenedStep) {
