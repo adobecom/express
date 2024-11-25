@@ -133,7 +133,7 @@ export default function decorate(el) {
     },
     limit,
   };
-  
+
   if (block.classList.contains('still-only')) props.filters.behaviors = 'still';
   if (block.classList.contains('animated-only')) props.filters.behaviors = 'animated';
   if (block.classList.contains('free-only')) props.filters.premium = 'false';
