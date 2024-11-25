@@ -63,6 +63,7 @@
 }
 
 .frictionless-quick-action-mobile .dropzone {
+    font-family: var(--body-font-family);
     width: var(--animation-w);
     height: var(--animation-h);
     display: flex;
