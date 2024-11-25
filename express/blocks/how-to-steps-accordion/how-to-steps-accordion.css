@@ -533,36 +533,21 @@ main .how-to-steps-accordion.image {
   }
 
   main .how-to-steps-accordion .steps-content .steps-content-backg {
-    /* position: absolute; */
     width: 63%;
-    top: -59px;
-    left: 39px;
-    /* z-index: -1; */
+    top: -42px;
+    left: 45px;
   }
 
   main .how-to-steps-accordion.image .steps-content .steps-content-backg {
-    /* position: absolute; */
     width: 69%;
     top: -59px;
     left: -19px;
-    /* z-index: -1; */
   }
 
   main .how-to-steps-accordion.video .video-container,
   main .how-to-steps-accordion.image .image-container {
-    /* width: 587px;
-    min-width: 587px;
-    height: 426px; */
-
-    /* width: 534px;
-    min-width: 534px;
-    height: 387px; */
-
-    /* background-size: 120%; */
     width: 533px;
     padding: 24px 32px;
-
-    /* overflow:visible */
   }
 
   main .how-to-steps-accordion.video .video-container lite-youtube,
