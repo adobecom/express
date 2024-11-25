@@ -212,7 +212,7 @@ main .video-how-to-steps-accordion {
   }
 }
 
-@media (min-width: 1279px) {
+@media (min-width: 1280px) {
   main div:has(> .video-how-to-steps-accordion) {
     display: flex;
     flex-direction: unset;
@@ -400,6 +400,18 @@ main .how-to-steps-accordion .steps-content {
   margin-right: 24px; */
 }
 
+main .how-to-steps-accordion .steps-content .steps-content-backg {
+  position: absolute;
+  width: 116%;
+  top: -42px;
+  left: -36px;
+  z-index: -1;
+}
+
+main .how-to-steps-accordion .steps-content .steps-content-backg img {
+  width: 100%
+}
+
 /* main .how-to-steps-accordion.video ol.steps {
   margin-left: 90px
 } */
@@ -431,6 +443,14 @@ main .how-to-steps-accordion.image {
   main .how-to-steps-accordion .steps-content {
     max-width: 688px;
     margin: auto;
+  }
+
+  main .how-to-steps-accordion .steps-content .steps-content-backg {
+    /* position: absolute; */
+    width: 66%;
+    top: -39px;
+    left: -9px;
+    /* z-index: -1; */
   }
 
   main .how-to-steps-accordion h2 {
@@ -500,9 +520,52 @@ main .how-to-steps-accordion.image {
   }
 }
 
-@media (min-width: 1279px) {
+@media (min-width: 1280px) {
   main .how-to-steps-accordion-container > div {
     margin: 0 80px;
+  }
+
+  main .how-to-steps-accordion .steps-content {
+    max-width: 950px;
+    margin: auto;
+  }
+
+  main .how-to-steps-accordion .steps-content .steps-content-backg {
+    /* position: absolute; */
+    width: 63%;
+    top: -59px;
+    left: 39px;
+    /* z-index: -1; */
+  }
+
+  main .how-to-steps-accordion.image .steps-content .steps-content-backg {
+    /* position: absolute; */
+    width: 69%;
+    top: -59px;
+    left: -19px;
+    /* z-index: -1; */
+  }
+
+  main .how-to-steps-accordion.video .video-container,
+  main .how-to-steps-accordion.image .image-container {
+    /* width: 587px;
+    min-width: 587px;
+    height: 426px; */
+
+    /* width: 534px;
+    min-width: 534px;
+    height: 387px; */
+
+    /* background-size: 120%; */
+    width: 533px;
+    padding: 24px 32px;
+
+    /* overflow:visible */
+  }
+
+  main .how-to-steps-accordion.video .video-container lite-youtube,
+  main .how-to-steps-accordion.image .image-container picture {
+    width: 533px;
   }
 
   main .how-to-steps-accordion-container > div p.button-container {
