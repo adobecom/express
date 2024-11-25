@@ -70,8 +70,6 @@ function buildAccordion(block, rows, $stepsContent) {
 }
 
 export default async function decorate(block) {
-  const howToWindow = block.ownerDocument.defaultView;
-  const howToDocument = block.ownerDocument;
   const isVideoVariant = block.classList.contains('video');
   const isImageVariant = block.classList.contains('image');
 
@@ -86,8 +84,6 @@ export default async function decorate(block) {
   if (hasBackground) {
     rows.shift();
   }
-
-  let picture;
 
   if (isVideoVariant || isImageVariant) {
     const $stepsContent = createTag('div', { class: 'steps-content' });
