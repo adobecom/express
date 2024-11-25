@@ -63,7 +63,7 @@ function buildAccordion(block, rows, $stepsContent) {
 
   $stepsContent.append($list);
 
-  // set this in next event cycle when scrollHeight has been established
+  // set this in the next event cycle when scrollHeight has been established
   setTimeout(() => {
     setStepDetails(block, indexOpenedStep);
   }, 0);
