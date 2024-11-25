@@ -73,7 +73,6 @@ export default async function decorate(block) {
   const isVideoVariant = block.classList.contains('video');
   const isImageVariant = block.classList.contains('image');
 
-  // move first image of container outside of div for styling
   const section = block.closest('.section');
   const rows = Array.from(block.children);
 
@@ -81,6 +80,7 @@ export default async function decorate(block) {
   const backgroundImage = backgroundRow.querySelector('img');
   const backgroundURL = backgroundImage?.src;
   const hasBackground = !!backgroundURL;
+
   if (hasBackground) {
     rows.shift();
   }
@@ -123,7 +123,6 @@ export default async function decorate(block) {
     }
 
     const heading = section.querySelector('h2, h3, h4');
-
     block.replaceChildren(heading, $stepsContent);
     buildAccordion(block, rows, $stepsContent);
   }
