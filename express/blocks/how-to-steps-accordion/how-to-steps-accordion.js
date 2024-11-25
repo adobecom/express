@@ -74,166 +74,18 @@ function initRotation(howToWindow, howToDocument) {
   }
 }
 
-function buildHowToStepsAccordion0(section, block, howToDocument, rows, howToWindow) {
-  let indexOpenedStep = 0;
-
-  // join wrappers together
-  section.querySelectorAll('.default-content-wrapper').forEach((wrapper, i) => {
-    if (i === 0) {
-      // add block to first wrapper
-      wrapper.append(block);
-      wrapper.className = '';
-    } else if (i >= 1) {
-      // add children from rest of wrappers to first wrapper
-      wrapper.previousElementSibling.append(...wrapper.children);
-      wrapper.remove();
-    }
-  });
-
-  const heading = section.querySelector('h2, h3, h4');
-
-  const includeSchema = block.classList.contains('schema');
-  if (includeSchema) {
-    // this is due to block loader setting how-to-steps-accordion-schema-container
-    // and not how-to-steps-accordion-container as expected
-    section.classList.add('how-to-steps-accordion-container');
-  }
-  const schema = {
-    '@context': 'http://schema.org',
-    '@type': 'HowTo',
-    name: (heading && heading.textContent.trim()) || howToDocument.title,
-    step: [],
-  };
-
-  const numbers = createTag('div', { class: 'tip-numbers', 'aria-role': 'tablist' });
-  block.prepend(numbers);
-  const tips = createTag('div', { class: 'tips' });
-  block.append(tips);
-
-  rows.forEach((row, i) => {
-    row.classList.add('tip');
-    row.classList.add(`tip-${i + 1}`);
-    row.setAttribute('data-tip-index', i + 1);
-
-    const cells = Array.from(row.children);
-
-    const h3 = createTag('h3');
-    h3.innerHTML = cells[0].textContent.trim();
-    const text = createTag('div', { class: 'tip-text' });
-    text.append(h3);
-    text.append(cells[1]);
-
-    row.innerHTML = '';
-    row.append(text);
-
-    tips.prepend(row);
-
-    schema.step.push({
-      '@type': 'HowToStep',
-      position: i + 1,
-      name: h3.textContent.trim(),
-      itemListElement: {
-        '@type': 'HowToDirection',
-        text: text.textContent.trim(),
-      },
-    });
-
-    const number = createTag('div', {
-      class: `tip-number tip-${i + 1}`,
-      tabindex: '0',
-      title: `${i + 1}`,
-      'aria-role': 'tab',
-    });
-    number.innerHTML = `<span>${i + 1}</span>`;
-    number.setAttribute('data-tip-index', i + 1);
-
-    number.addEventListener('click', (e) => {
-      console.log('=== The previous indexOpenedStep', indexOpenedStep);
-      indexOpenedStep = i;
-      console.log('=== and now it is', indexOpenedStep);
-
-      if (rotationInterval) {
-        howToWindow.clearTimeout(rotationInterval);
-      }
-
-      let { target } = e;
-      if (e.target.nodeName.toLowerCase() === 'span') {
-        target = e.target.parentElement;
-      }
-      activate(block, target);
-    });
-
-    number.addEventListener('keyup', (e) => {
-      if (e.which === 13) {
-        e.preventDefault();
-        e.target.click();
-      }
-    });
-
-    numbers.append(number);
-
-    if (i === 0) {
-      row.classList.add('active');
-      number.classList.add('active');
-    }
-  });
-
-  if (includeSchema) {
-    const $schema = createTag('script', { type: 'application/ld+json' });
-    $schema.innerHTML = JSON.stringify(schema);
-    const $head = howToDocument.head;
-    $head.append($schema);
-  }
-
-  if (howToWindow) {
-    howToWindow.addEventListener('resize', () => {
-      reset(block);
-      activate(block, block.querySelector('.tip-number.tip-1'));
-      initRotation(howToWindow, howToDocument);
-    });
-  }
-
-  // set initial states
-  const onIntersect = ([entry], observer) => {
-    if (!entry.isIntersecting) return;
-
-    activate(block, block.querySelector('.tip-number.tip-1'));
-    initRotation(howToWindow, howToDocument);
-
-    observer.unobserve(block);
-  };
-
-  const howToStepsObserver = new IntersectionObserver(onIntersect, { rootMargin: '1000px', threshold: 0 });
-  howToStepsObserver.observe(block);
-}
-
-function buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow) {
-  console.log('=== SECTION, BLOCK', section, block);
-  let indexOpenedStep = 0;
-
-  for (const row of rows) {
-    console.log('=== ROW', row);
-  }
-}
-
 function setStepDetails(block, indexOpenedStep) {
   const listItems = block.querySelectorAll(':scope li');
 
-  console.log('=== listItems', listItems);
   listItems.forEach((item, i) => {
-    // const $detail = listItems[i].querySelector('div');
-    // const $detailContainer = item.querySelector('.detail-container');
     const $detail = item.querySelector('.detail-container');
 
-    console.log('=== detail', $detail, i, indexOpenedStep);
     if (i === indexOpenedStep) {
       $detail.classList.remove('closed');
       $detail.style.maxHeight = `${$detail.scrollHeight}px`;
-      // $detail.style.marginTop = '10px';
     } else {
       $detail.classList.add('closed');
       $detail.style.maxHeight = '0';
-      // $detail.style.marginTop = '0';
     }
   });
 }
@@ -244,8 +96,6 @@ function buildAccordion(block, rows, $stepsContent) {
 
   rows.forEach((row, i) => {
     const [stepTitle, stepDetail] = row.querySelectorAll(':scope div');
-
-    console.log('=== stepTitle', stepTitle, stepTitle.children);
 
     const $newStepTitle = createTag('h3');
     $newStepTitle.replaceChildren(...stepTitle.childNodes);
@@ -292,11 +142,6 @@ function buildAccordion(block, rows, $stepsContent) {
 }
 
 export default async function decorate(block) {
-  // return;
-  console.log('=== IN decorate', block);
-
-  // block.classList.add('trytry')
-
   const howToWindow = block.ownerDocument.defaultView;
   const howToDocument = block.ownerDocument;
   const isVideoVariant = block.classList.contains('video');
@@ -315,8 +160,6 @@ export default async function decorate(block) {
     rows.shift();
   }
 
-  console.log('=== backgroundRow', backgroundRow, backgroundURL, hasBackground);
-
   let picture;
 
   if (isVideoVariant || isImageVariant) {
@@ -326,64 +169,9 @@ export default async function decorate(block) {
       // So that background image goes beyond container
       const $stepsContentBackground = createTag('div', { class: 'steps-content-backg' });
       const $stepsContentBackgroundImg = createTag('img', { class: 'steps-content-backg-image' });
-
-      // videoEl.style.background = `url(${backgroundURL})`
-      //  videoContainerEl.style.background = `url(${backgroundURL})`;
-      // $stepsContent.style.background = `url(${backgroundURL})`;
-      // $stepsContent.style.backgroundSize = `75%`;
-      // $stepsContent.style.backgroundRepeat = `no-repeat`;
-      // $stepsContent.style.backgroundPosition = `-10% -10%`;
       $stepsContent.append($stepsContentBackground);
       $stepsContentBackground.append($stepsContentBackgroundImg);
       $stepsContentBackgroundImg.src = backgroundURL;
-      // $stepsContentBackground.style.background = `url(${backgroundURL}) -12px -38px / 100% no-repeat`;
-
-      // $stepsContentBackground.style.position = 'absolute';
-      // $stepsContentBackground.style.width = "100%";
-      // $stepsContentBackground.style.top = '-36px';
-      // $stepsContentBackground.style.left = '-24px';
-      // $stepsContentBackground.style.zIndex = -1;
-
-      // tmp use wrapper for background image instead
-      if (false) {
-        const mediaQueryMobileSize = window.matchMedia('(max-width: 767px)');
-        const mediaQueryTabletSize = window.matchMedia('(min-width: 768px) and (max-width: 1279px)');
-        const mediaQueryDesktopSize = window.matchMedia('(min-width: 1280px) and (max-width: 1679px)');
-        const mediaQueryDesktopXLSize = window.matchMedia('(min-width: 1680px)');
-        // mediaQuery.addListener(handleTabletChange)
-
-        // mediaQuery.addListener(screenTest);
-
-        mediaQueryMobileSize.addEventListener('change', (ev) => {
-          console.log('=== mediaQueryMobileSize change event', ev.matches, ev);
-        });
-
-        mediaQueryTabletSize.addEventListener('change', (ev) => {
-          console.log('=== mediaQueryTabletSize change event', ev.matches, ev);
-
-          if (ev.matches) {
-            $stepsContentBackground.style.top = '-30px';
-            $stepsContentBackground.style.left = '6px';
-            $stepsContentBackground.style.width = '480px';
-            // $stepsContentBackground.style.left = '100px';
-          }
-        });
-
-        mediaQueryDesktopSize.addEventListener('change', (ev) => {
-          console.log('=== mediaQueryDesktopSize change event', ev.matches, ev);
-
-          if (ev.matches) {
-            $stepsContentBackground.style.top = '-30px';
-            $stepsContentBackground.style.left = '50px';
-            $stepsContentBackground.style.width = '600px';
-            // $stepsContentBackground.style.left = '100px';
-          }
-        });
-
-        mediaQueryDesktopXLSize.addEventListener('change', (ev) => {
-          console.log('=== mediaQueryDesktopXLSize change event', ev.matches, ev);
-        });
-      }
     }
 
     if (isVideoVariant) {
@@ -405,42 +193,17 @@ export default async function decorate(block) {
       $stepsContent.append(videoContainerEl);
     } else {
       const imageData = rows.shift();
-
-      // // remove the added social link from the block DOM
-      // block.removeChild(block.children[0]);
-
       const imageEl = imageData.querySelector('picture');
-      console.log('=== imageEl', imageEl);
-
       const imageContainerEl = createTag('div', { class: 'image-container' });
       imageContainerEl.append(imageEl);
       $stepsContent.append(imageContainerEl);
-      // const youtubeURL = videoLink?.href;
-      // const url = new URL(youtubeURL);
-
-      // const videoContainerEl = createTag('div', { class: 'video-container' });
-
-      // const videoEl = embedYoutube(url);
-      // videoEl.classList.add('video-how-to-steps-accordion');
-
-      // videoContainerEl.append(videoEl);
     }
 
     // section.prepend(videoEl);
 
     const heading = section.querySelector('h2, h3, h4');
-    console.log('=== heading', heading);
 
     block.replaceChildren(heading, $stepsContent);
-    // block.prepend(heading);
-    // block.append($stepsContent)
     buildAccordion(block, rows, $stepsContent);
   }
-
-  // buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow);
-  // buildHowToStepsAccordion(section, block, howToDocument, rows, howToWindow);
-
-  // const accordion = buildAccordion(block);
-  // block.replaceChildren(accordion)
-  // return block;
 }
