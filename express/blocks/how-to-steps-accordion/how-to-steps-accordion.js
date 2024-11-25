@@ -1,7 +1,5 @@
 /* eslint-disable import/named, import/extensions */
-
 import { createOptimizedPicture, createTag, fetchPlaceholders } from '../../scripts/utils.js';
-
 import { embedYoutube } from '../../scripts/embed-videos.js';
 
 let rotationInterval;
@@ -241,25 +239,10 @@ function setStepDetails(block, indexOpenedStep) {
 }
 
 function buildAccordion(block, rows, $stepsContent) {
-  console.log('=== BLOCK', block);
   let indexOpenedStep = 0;
-
-  // const container = document.querySelector(".how-to-steps-accordion-video-container");
-  // console.log("=== container", container)
-  // if (container) container.classList.add("how-to-steps-accordion-container")
-
-  for (const row of rows) {
-    console.log('=== ROW', row);
-  }
-
   const $list = createTag('OL', { class: 'steps' });
-  // const numbers = createTag('div', { class: 'tip-numbers', 'aria-role': 'tablist' });
-
-  // for (const row of block.children)
 
   rows.forEach((row, i) => {
-    console.log('=== ROW', row);
-
     const [stepTitle, stepDetail] = row.querySelectorAll(':scope div');
 
     console.log('=== stepTitle', stepTitle, stepTitle.children);
@@ -267,21 +250,13 @@ function buildAccordion(block, rows, $stepsContent) {
     const $newStepTitle = createTag('h3');
     $newStepTitle.replaceChildren(...stepTitle.childNodes);
 
-    // if (i !== 0) {
-    //   stepDetail.classList.add('closed');
-    // }
-
     const $listItem = createTag('LI', { class: 'step', tabindex: '0' });
     $list.append($listItem);
 
     const $listItemIndicator = createTag('div', { class: 'step-indicator' });
     const $listItemContent = createTag('div', { class: 'step-content' });
 
-    // $listItem.append(row)
-
     const $detailText = stepDetail;
-    // createTag('div', { class: 'detail-container' });
-
     $detailText.classList.add('detail-text');
 
     const $detailContainer = createTag('div', { class: 'detail-container' });
@@ -292,63 +267,28 @@ function buildAccordion(block, rows, $stepsContent) {
 
     $detailContainer.append($detailText);
 
-    // $detailContainer.append(stepDetail)
-
     $listItem.append($listItemIndicator);
     $listItem.append($listItemContent);
 
     $listItemContent.append($newStepTitle);
     $listItemContent.append($detailContainer);
 
-  //   const handleOpenDetails = (ev) => {
-  //     indexOpenedStep = i;
-  //     setStepDetails(block, indexOpenedStep);
-  //     ev.preventDefault();
-  //   }
+    const handleOpenDetails = (ev) => {
+      indexOpenedStep = i;
+      setStepDetails(block, indexOpenedStep);
+      ev.preventDefault();
+    };
 
-  //   $newStepTitle.addEventListener('click', (ev) => {
-  //     // ev.stopPropagation();
-  //     // ev.preventDefault();
-  //     indexOpenedStep = i;
-  //     setStepDetails(block, indexOpenedStep);
-  //   }
-  // );
-
-  //   $listItem.addEventListener('keypress', (ev) => {
-  //     // ev.stopPropagation();
-  //     // ev.preventDefault();
-  //     indexOpenedStep = i;
-  //     setStepDetails(block, indexOpenedStep);
-  //     ev.preventDefault();
-  //   });
-
-  const handleOpenDetails = (ev) => {
-    indexOpenedStep = i;
-    setStepDetails(block, indexOpenedStep);
-    ev.preventDefault();
-  };
-
-  $newStepTitle.addEventListener('click', handleOpenDetails);
-  $listItem.addEventListener('keyup', (ev) => (ev.which === 13 && handleOpenDetails(ev)));
-
-
-
-
+    $newStepTitle.addEventListener('click', handleOpenDetails);
+    $listItem.addEventListener('keyup', (ev) => ev.which === 13 && handleOpenDetails(ev));
   });
 
-  // return $list;
-
-  // const accordion = buildAccordion(block);
-
   $stepsContent.append($list);
-  // block.replaceChildren($list);
 
   // set this in next event cycle when scrollHeight has been established
   setTimeout(() => {
     setStepDetails(block, indexOpenedStep);
   }, 0);
-
-  // return block;
 }
 
 export default async function decorate(block) {
@@ -380,8 +320,6 @@ export default async function decorate(block) {
   let picture;
 
   if (isVideoVariant || isImageVariant) {
-
-
     const $stepsContent = createTag('div', { class: 'steps-content' });
 
     if (hasBackground) {
@@ -408,51 +346,45 @@ export default async function decorate(block) {
 
       // tmp use wrapper for background image instead
       if (false) {
-      const mediaQueryMobileSize = window.matchMedia('(max-width: 767px)');
-      const mediaQueryTabletSize = window.matchMedia('(min-width: 768px) and (max-width: 1279px)');
-      const mediaQueryDesktopSize = window.matchMedia('(min-width: 1280px) and (max-width: 1679px)');
-      const mediaQueryDesktopXLSize = window.matchMedia('(min-width: 1680px)');
-      // mediaQuery.addListener(handleTabletChange)
+        const mediaQueryMobileSize = window.matchMedia('(max-width: 767px)');
+        const mediaQueryTabletSize = window.matchMedia('(min-width: 768px) and (max-width: 1279px)');
+        const mediaQueryDesktopSize = window.matchMedia('(min-width: 1280px) and (max-width: 1679px)');
+        const mediaQueryDesktopXLSize = window.matchMedia('(min-width: 1680px)');
+        // mediaQuery.addListener(handleTabletChange)
 
-      // mediaQuery.addListener(screenTest);
+        // mediaQuery.addListener(screenTest);
 
-      mediaQueryMobileSize.addEventListener('change', (ev) => {
-        console.log('=== mediaQueryMobileSize change event', ev.matches, ev)
-      })
+        mediaQueryMobileSize.addEventListener('change', (ev) => {
+          console.log('=== mediaQueryMobileSize change event', ev.matches, ev);
+        });
 
-      mediaQueryTabletSize.addEventListener('change', (ev) => {
-        console.log('=== mediaQueryTabletSize change event', ev.matches, ev);
+        mediaQueryTabletSize.addEventListener('change', (ev) => {
+          console.log('=== mediaQueryTabletSize change event', ev.matches, ev);
 
-        if (ev.matches) {
-          $stepsContentBackground.style.top = '-30px';
-          $stepsContentBackground.style.left = '6px';
-          $stepsContentBackground.style.width = '480px';
-          // $stepsContentBackground.style.left = '100px';
-        }
+          if (ev.matches) {
+            $stepsContentBackground.style.top = '-30px';
+            $stepsContentBackground.style.left = '6px';
+            $stepsContentBackground.style.width = '480px';
+            // $stepsContentBackground.style.left = '100px';
+          }
+        });
 
-      })
+        mediaQueryDesktopSize.addEventListener('change', (ev) => {
+          console.log('=== mediaQueryDesktopSize change event', ev.matches, ev);
 
-      mediaQueryDesktopSize.addEventListener('change', (ev) => {
-        console.log('=== mediaQueryDesktopSize change event', ev.matches, ev);
+          if (ev.matches) {
+            $stepsContentBackground.style.top = '-30px';
+            $stepsContentBackground.style.left = '50px';
+            $stepsContentBackground.style.width = '600px';
+            // $stepsContentBackground.style.left = '100px';
+          }
+        });
 
-        if (ev.matches) {
-          $stepsContentBackground.style.top = '-30px';
-          $stepsContentBackground.style.left = '50px';
-          $stepsContentBackground.style.width = '600px';
-          // $stepsContentBackground.style.left = '100px';
-        }
-      })
-
-      mediaQueryDesktopXLSize.addEventListener('change', (ev) => {
-        console.log('=== mediaQueryDesktopXLSize change event', ev.matches, ev)
-      })
-
+        mediaQueryDesktopXLSize.addEventListener('change', (ev) => {
+          console.log('=== mediaQueryDesktopXLSize change event', ev.matches, ev);
+        });
+      }
     }
-
-    }
-
-
-
 
     if (isVideoVariant) {
       const videoData = rows.shift();
@@ -478,7 +410,7 @@ export default async function decorate(block) {
       // block.removeChild(block.children[0]);
 
       const imageEl = imageData.querySelector('picture');
-      console.log("=== imageEl", imageEl);
+      console.log('=== imageEl', imageEl);
 
       const imageContainerEl = createTag('div', { class: 'image-container' });
       imageContainerEl.append(imageEl);
@@ -495,7 +427,6 @@ export default async function decorate(block) {
     }
 
     // section.prepend(videoEl);
-
 
     const heading = section.querySelector('h2, h3, h4');
     console.log('=== heading', heading);
