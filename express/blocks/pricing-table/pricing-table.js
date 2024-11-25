@@ -150,7 +150,7 @@ function handleSection(sectionParams) {
         child.innerHTML = INCLUDE_ICON;
         child.classList.add('icon-container')
       } else if (!col.children.length) {
-        child.innerHTML = `<p>${col.innerHTML}</p>`;
+        child.innerHTML = `<p >${col.innerHTML}</p>`;
       }
      
     });

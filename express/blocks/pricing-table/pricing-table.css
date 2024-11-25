@@ -499,6 +499,11 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   position: relative;
 }
 
+.pricing-table .col.icon-container .col-content {
+  position: relative;
+}
+
+.pricing-table .col.icon-container .col-content:after,
 .pricing-table .col .col-content .icon-container:after {
     content: '';
     display: block;
@@ -511,6 +516,8 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
     top: -5.75px;
     opacity: 0.75;
 }
+
+.pricing-table .col.icon-container.excluded-feature .col-content:after,
 .pricing-table .col.dim .col-content .icon-container:after,
 .pricing-table .col.excluded-feature .col-content .icon-container:after {
   background-color: #E6E6E6;
