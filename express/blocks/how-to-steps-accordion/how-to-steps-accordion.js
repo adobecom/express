@@ -2,78 +2,6 @@
 import { createOptimizedPicture, createTag, fetchPlaceholders } from '../../scripts/utils.js';
 import { embedYoutube } from '../../scripts/embed-videos.js';
 
-let rotationInterval;
-let fixedImageSize = false;
-
-function reset(block) {
-  const howToWindow = block.ownerDocument.defaultView;
-
-  howToWindow.clearInterval(rotationInterval);
-  rotationInterval = null;
-
-  const container = block.parentElement.parentElement;
-  const picture = container.querySelector('picture');
-
-  delete picture.style.height;
-  container.classList.remove('no-cover');
-
-  fixedImageSize = false;
-}
-
-const loadImage = (img) =>
-  new Promise((resolve) => {
-    if (img.complete && img.naturalHeight !== 0) resolve();
-    else {
-      img.onload = () => {
-        resolve();
-      };
-    }
-  });
-
-function setPictureHeight(block, override) {
-  if (!fixedImageSize || override) {
-    // trick to fix the image height when vw > 900 and avoid image resize when toggling the tips
-    const container = block.parentElement.parentElement;
-    const picture = container.querySelector('picture');
-    const img = picture.querySelector('img');
-    const panelHeight = block.parentElement.offsetHeight;
-    const imgHeight = img.naturalHeight;
-    picture.style.height = `${panelHeight || imgHeight}px`;
-    fixedImageSize = true;
-  }
-}
-
-function activate(block, target) {
-  if (block.classList.contains('image')) {
-    setPictureHeight(block);
-  }
-  // de-activate all
-  block.querySelectorAll('.tip, .tip-number').forEach((item) => {
-    item.classList.remove('active');
-  });
-
-  // get index of the target
-  const i = parseInt(target.getAttribute('data-tip-index'), 10);
-  // activate corresponding number and tip
-  block.querySelectorAll(`.tip-${i}`).forEach((elem) => elem.classList.add('active'));
-}
-
-function initRotation(howToWindow, howToDocument) {
-  if (howToWindow && !rotationInterval) {
-    rotationInterval = howToWindow.setInterval(() => {
-      howToDocument.querySelectorAll('.tip-numbers').forEach((numbers) => {
-        // find next adjacent sibling of the currently activated tip
-        let activeAdjacentSibling = numbers.querySelector('.tip-number.active+.tip-number');
-        if (!activeAdjacentSibling) {
-          // if no next adjacent, back to first
-          activeAdjacentSibling = numbers.firstElementChild;
-        }
-        activate(numbers.parentElement, activeAdjacentSibling);
-      });
-    }, 5000);
-  }
-}
-
 function setStepDetails(block, indexOpenedStep) {
   const listItems = block.querySelectorAll(':scope li');
 
@@ -149,7 +77,6 @@ export default async function decorate(block) {
 
   // move first image of container outside of div for styling
   const section = block.closest('.section');
-  // const howto = block;
   const rows = Array.from(block.children);
 
   const backgroundRow = block.children[0];
@@ -198,8 +125,6 @@ export default async function decorate(block) {
       imageContainerEl.append(imageEl);
       $stepsContent.append(imageContainerEl);
     }
-
-    // section.prepend(videoEl);
 
     const heading = section.querySelector('h2, h3, h4');
 
