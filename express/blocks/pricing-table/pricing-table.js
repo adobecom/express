@@ -144,15 +144,14 @@ function handleSection(sectionParams) {
       if (!child.innerHTML || child.textContent === '-') {
         col.classList.add('excluded-feature');
         child.innerHTML = EXCLUDE_ICON;
-        child.classList.add('icon-container')
+        child.classList.add('icon-container');
       } else if (child.textContent === '+') {
         col.classList.add('included-feature');
         child.innerHTML = INCLUDE_ICON;
-        child.classList.add('icon-container')
+        child.classList.add('icon-container');
       } else if (!col.children.length) {
         child.innerHTML = `<p >${col.innerHTML}</p>`;
       }
-     
     });
     if (nextRow.classList.contains('toggle-row')) {
       row.classList.add('table-end-row');

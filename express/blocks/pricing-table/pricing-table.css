@@ -512,7 +512,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
     border-radius: 24px;
     width: 24px;
     height: 24px;    
-    left: -5.75px;
+    left: -5.25px;
     top: -5.75px;
     opacity: 0.75;
 }
