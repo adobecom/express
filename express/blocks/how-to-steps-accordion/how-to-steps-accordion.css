@@ -71,13 +71,9 @@ main .how-to-steps-accordion.image picture {
   overflow: hidden;
 }
 
-.how-to-steps-accordion-video-container .default-content-wrapper {
-  display: none;
-}
-
 main .how-to-steps-accordion em {
   font-style: normal;
-  background: linear-gradient(140.08deg, #FF4DD2 67.54%, #FF993B 74.42%);
+  background: linear-gradient(140.08deg, #FF4DD2 67.54%, #FF993B 76.42%);
   background-size: 108% 108%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
