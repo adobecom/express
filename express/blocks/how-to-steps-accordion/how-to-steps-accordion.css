@@ -73,6 +73,7 @@ main .how-to-steps-accordion .tips .tip.active {
   0% {
     opacity: 0.1;
   }
+
   100% {
     opacity: 1;
   }
@@ -82,6 +83,7 @@ main .how-to-steps-accordion .tips .tip.active {
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -91,6 +93,7 @@ main .how-to-steps-accordion .tips .tip.active {
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -100,6 +103,7 @@ main .how-to-steps-accordion .tips .tip.active {
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -109,6 +113,7 @@ main .how-to-steps-accordion .tips .tip.active {
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -184,8 +189,8 @@ main .how-to-steps-accordion-container > picture > img {
 
 /* main div:has(> .video-how-to-steps-accordion) {
   display: flex; */
-  /* note: as requested by KyleC, when it is mobile, put the video under the text */
-  /* flex-direction: column-reverse;
+/* note: as requested by KyleC, when it is mobile, put the video under the text */
+/* flex-direction: column-reverse;
 } */
 
 main .video-how-to-steps-accordion {
@@ -207,8 +212,8 @@ main .video-how-to-steps-accordion {
     width: calc(100% - 48px);
     max-width: fit-content;
 
-      /* TODO: tmp */
-  width: 1200px;
+    /* TODO: tmp */
+    width: 1200px;
   }
 }
 
@@ -220,7 +225,7 @@ main .video-how-to-steps-accordion {
 
   main .video-how-to-steps-accordion {
     margin: 92px 0 0 24px;
-/* TODO */
+    /* TODO */
     margin: 20px 0 0 24px;
     width: calc((100% - 72px) * 0.45);
   }
@@ -435,6 +440,7 @@ main .how-to-steps-accordion.image {
 
 
 @media (min-width: 768px) {
+
   .how-to-steps-accordion-video-container,
   .how-to-steps-accordion-image-container {
     margin: auto;
@@ -450,6 +456,14 @@ main .how-to-steps-accordion.image {
     width: 66%;
     top: -39px;
     left: -9px;
+    /* z-index: -1; */
+  }
+
+  main .how-to-steps-accordion.image .steps-content .steps-content-backg {
+    /* position: absolute; */
+    width: 63%;
+    top: -39px;
+    left: -6px;
     /* z-index: -1; */
   }
 
@@ -566,6 +580,7 @@ main .how-to-steps-accordion.image {
   main .how-to-steps-accordion.video .video-container lite-youtube,
   main .how-to-steps-accordion.image .image-container picture {
     width: 533px;
+    height: 310px;
   }
 
   main .how-to-steps-accordion-container > div p.button-container {
