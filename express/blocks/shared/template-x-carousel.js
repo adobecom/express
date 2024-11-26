@@ -1,8 +1,8 @@
 import buildCarousel from './carousel.js';
 
-export default async function buildTemplateXCarousel(selector, parent, options) {
+export default async function buildTemplateXCarousel(selector, parent, options = {}) {
   const {
-    platform, faderLeft, faderRight, setInitialState,
+    platform, faderLeft, faderRight,
   } = await buildCarousel(selector, parent, options);
 
   const moveCarouselToCenter = (direction) => {
@@ -62,14 +62,9 @@ export default async function buildTemplateXCarousel(selector, parent, options) 
     }
   });
 
-  const newSetInitialState = () => {
-    console.log('are we in the new function');
-  };
-
   return {
     platform,
     faderLeft: newFaderLeft,
     faderRight: newFaderRight,
-    setInitialState: newSetInitialState,
   };
 }
