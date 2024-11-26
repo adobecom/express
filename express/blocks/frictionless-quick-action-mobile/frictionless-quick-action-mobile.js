@@ -270,7 +270,27 @@ async function startSDKWithUnconvertedFile(file, quickAction, block) {
   showErrorToast(block, msg);
 }
 
-export default async function decorate(block) {
+async function injectFreePlan(container) {
+  const { buildFreePlanWidget } = await import('../../scripts/utils/free-plan.js');
+  const freePlan = await buildFreePlanWidget({ typeKey: 'features', checkmarks: true });
+  container.append(freePlan);
+  return container;
+}
+
+function decorateExtra(extra) {
+  const wrapper = extra.querySelector('div');
+  while (wrapper?.firstChild) {
+    extra.append(wrapper.firstChild);
+  }
+  wrapper.remove();
+  const legalText = extra.querySelector('p:last-of-type');
+  legalText.classList.add('legal');
+  const freePlanContainer = createTag('div', { class: 'free-plan-container' });
+  injectFreePlan(freePlanContainer);
+  legalText.before(freePlanContainer);
+}
+
+export default function decorate(block) {
   const rows = Array.from(block.children);
   const [quickActionRow] = rows.filter((row) => row.children[0]?.textContent?.toLowerCase()?.trim() === 'quick-action');
   quickActionRow?.remove();
@@ -288,6 +308,8 @@ export default async function decorate(block) {
 
   rows[0].classList.add('headline');
   rows[1].classList.add('dropzone-container');
+  rows[2].classList.add('extra-container');
+  decorateExtra(rows[2]);
   const dropzone = createTag('button', { class: 'dropzone hide' });
   const [animationContainer, dropzoneContent] = rows[1].children;
   while (dropzoneContent.firstChild) dropzone.append(dropzoneContent.firstChild);

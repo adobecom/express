@@ -1,10 +1,9 @@
 .frictionless-quick-action-mobile {
-    --animation-w: 335px;
     --animation-h: 233px;
 }
 
 .section .frictionless-quick-action-mobile {
-    padding: 24px 20px 0px 20px;
+    padding: 24px 16px 0px 16px;
     margin: auto;
     max-width: none;
     text-align: left;
@@ -46,10 +45,6 @@
     max-width: 444px;
 }
 
-.frictionless-quick-action-mobile video {
-    height: var(--animation-h);
-}
-
 .frictionless-quick-action-mobile .dropzone-container {
     display: flex;
     justify-content: center;
@@ -58,18 +53,28 @@
     text-align: center;
 }
 
+.frictionless-quick-action-mobile .animation-container {
+    width: 100%;
+    height: var(--animation-h);
+}
+
+.frictionless-quick-action-mobile .animation-container video {
+    width: 100%;
+    height: 100%;
+}
+
 .frictionless-quick-action-mobile .animation-container.hide {
     display: none;
 }
 
 .frictionless-quick-action-mobile .dropzone {
     font-family: var(--body-font-family);
-    width: var(--animation-w);
+    width: 100%;
     height: var(--animation-h);
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 10px;
+    border-radius: 12px;
     background-color: #f8f8f8;
     border: 0;
     padding: 0;
@@ -125,6 +130,41 @@
 
 .frictionless-quick-action-mobile .dropzone .button {
     margin-bottom: 0;
+}
+
+.frictionless-quick-action-mobile .extra-container {
+    padding-top: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.frictionless-quick-action-mobile .extra-container p {
+    font-size: var(--body-font-size-xs);
+    text-align: center;
+    margin: 0;
+}
+
+.frictionless-quick-action-mobile.block .free-plan-container {
+    min-height: 15px;
+}
+
+.frictionless-quick-action-mobile.block .free-plan-widget {
+    background-color: unset;
+    flex-direction: row;
+    padding: unset;
+    margin: auto;
+    gap: 8px;
+    font-size: var(--body-font-size-xs);
+}
+
+.frictionless-quick-action-mobile.block .free-plan-widget > div {
+    margin: 10px;
+}
+
+.frictionless-quick-action-mobile.block .free-plan-widget img.icon.icon-checkmark {
+    background-color: #f06dad;
 }
 
 .frictionless-quick-action-mobile .quick-action-container {
