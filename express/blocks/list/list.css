@@ -92,6 +92,10 @@ main .list ol li::before {
 }
 
 @media  (min-width: 768px) {
+    main .section>.list-wrapper {
+      max-width: unset;
+    }
+
     main .list {
       max-width: unset;
       margin: auto;
