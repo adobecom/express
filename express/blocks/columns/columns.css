@@ -950,6 +950,10 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
   main .columns .trial-cta {
     float: left;
   }
+
+  main .columns .columns-video {
+    min-height: 356px;
+  }
 }
 
 @media (min-width: 1200px) {
