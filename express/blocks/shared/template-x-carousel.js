@@ -62,8 +62,12 @@ export default async function buildTemplateXCarousel(selector, parent, options =
     }
   });
 
-  const observer = new MutationObserver(() => {
-    setInitialState(platform, options, moveCarouselToCenter);
+  const observer = new MutationObserver((mutationsList) => {
+    mutationsList.forEach((mutation) => {
+      if (!(mutation.target.classList && mutation.target.classList.contains('media-wrapper'))) {
+        setInitialState(platform, options, moveCarouselToCenter);
+      }
+    });
   });
   observer.observe(platform, { childList: true, subtree: true });
 
