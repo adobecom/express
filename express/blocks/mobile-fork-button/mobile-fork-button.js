@@ -39,18 +39,12 @@ export function createMultiFunctionButton(block, data, audience) {
 // If there is no metadata check enabled, still enable the gating block in case authors want it.
 
 function androidDeviceAndRamCheck() {
+  if (getMetadata('fork-eligibility-check')?.toLowerCase()?.trim() !== 'on') return true;
   const isAndroid = getMobileOperatingSystem() === 'Android';
-  if (getMetadata('fork-eligibility-check') === 'on') {
-    if (navigator.deviceMemory >= 4 && isAndroid) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  return true;
+  return navigator.deviceMemory >= 4 && isAndroid;
 }
 
-function collectFloatingButtonData() {
+function collectFloatingButtonData(useFallback) {
   const metadataMap = Array.from(document.head.querySelectorAll('meta')).reduce((acc, meta) => {
     if (meta?.name && !meta.property) acc[meta.name] = meta.content || '';
     return acc;
@@ -76,13 +70,13 @@ function collectFloatingButtonData() {
   };
 
   for (let i = 1; i < 3; i += 1) {
-    const iconMetadata = getMetadataLocal(`fork-cta-${i}-icon`);
+    const iconMetadata = getMetadataLocal(`fork-cta-${i}-icon${useFallback ? '-fallback' : ''}`);
     if (!iconMetadata) break;
     const completeSet = {
-      href: getMetadataLocal(`fork-cta-${i}-link`),
-      text: getMetadataLocal(`fork-cta-${i}-text`),
+      href: getMetadataLocal(`fork-cta-${i}-link${useFallback ? '-fallback' : ''}`),
+      text: getMetadataLocal(`fork-cta-${i}-text${useFallback ? '-fallback' : ''}`),
       icon: getIconElement(iconMetadata),
-      iconText: getMetadataLocal(`fork-cta-${i}-icon-text`),
+      iconText: getMetadataLocal(`fork-cta-${i}-icon-text${useFallback ? '-fallback' : ''}`),
     };
 
     if (Object.values(completeSet).every((val) => !!val)) {
@@ -103,10 +97,16 @@ function collectFloatingButtonData() {
 }
 
 export default async function decorate(block) {
+  let useFallback = false;
   if (!androidDeviceAndRamCheck()) {
-    const { default: decorateNormal } = await import('../floating-button/floating-button.js');
-    decorateNormal(block);
-    return;
+    const strategy = getMetadata('fallback-strategy')?.toLowerCase()?.trim() || 'single';
+    if (strategy === 'single') {
+      const { default: decorateNormal } = await import('../floating-button/floating-button.js');
+      decorateNormal(block);
+      return;
+    } else if (strategy === 'replace') {
+      useFallback = true;
+    }
   }
   addTempWrapper(block, 'multifunction-button');
   if (!block.classList.contains('meta-powered')) return;
@@ -116,7 +116,7 @@ export default async function decorate(block) {
     block.closest('.section').remove();
   }
 
-  const data = collectFloatingButtonData();
+  const data = collectFloatingButtonData(useFallback);
   const blockWrapper = createMultiFunctionButton(block, data, audience);
   const blockLinks = blockWrapper.querySelectorAll('a');
   if (blockLinks && blockLinks.length > 0) {
