@@ -116,7 +116,9 @@ export function runQuickAction(quickAction, data, block) {
   block.append(quickActionContainer);
   const divs = block.querySelectorAll(':scope > div');
   if (divs[1]) [, uploadContainer] = divs;
+  const extraContainer = block.querySelector('.extra-container');
   fade(uploadContainer, 'out');
+  fade(extraContainer, 'out');
 
   const contConfig = {
     mode: 'inline',
@@ -139,6 +141,7 @@ export function runQuickAction(quickAction, data, block) {
       onIntentChange: () => {
         quickActionContainer?.remove();
         fade(uploadContainer, 'in');
+        fade(extraContainer, 'in');
         document.body.classList.add('editor-modal-loaded');
         window.history.pushState({ hideFrictionlessQa: true }, '', '');
         return {
@@ -277,13 +280,13 @@ async function injectFreePlan(container) {
   return container;
 }
 
-function decorateExtra(extra) {
-  const wrapper = extra.querySelector('div');
+function decorateExtra(extraContainer) {
+  const wrapper = extraContainer.querySelector('div');
   while (wrapper?.firstChild) {
-    extra.append(wrapper.firstChild);
+    extraContainer.append(wrapper.firstChild);
   }
   wrapper.remove();
-  const legalText = extra.querySelector('p:last-of-type');
+  const legalText = extraContainer.querySelector('p:last-of-type');
   legalText.classList.add('legal');
   const freePlanContainer = createTag('div', { class: 'free-plan-container' });
   injectFreePlan(freePlanContainer);
@@ -306,10 +309,12 @@ export default function decorate(block) {
     throw new Error('Invalid Quick Action Type.');
   }
 
-  rows[0].classList.add('headline');
-  rows[1].classList.add('dropzone-container');
-  rows[2].classList.add('extra-container');
-  decorateExtra(rows[2]);
+  const [headline, dropzoneContainer, extraContainer] = rows;
+  headline.classList.add('headline');
+  dropzoneContainer.classList.add('dropzone-container');
+  extraContainer.classList.add('extra-container');
+  decorateExtra(extraContainer);
+
   const dropzone = createTag('button', { class: 'dropzone hide' });
   const [animationContainer, dropzoneContent] = rows[1].children;
   while (dropzoneContent.firstChild) dropzone.append(dropzoneContent.firstChild);
@@ -358,6 +363,7 @@ export default function decorate(block) {
       document.body.classList.remove('editor-modal-loaded');
       inputElement.value = '';
       fade(uploadContainer, 'in');
+      fade(extraContainer, 'in');
       document.body.dataset.suppressfloatingcta = 'false';
     }
   }, { passive: true });
