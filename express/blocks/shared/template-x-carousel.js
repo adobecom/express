@@ -10,12 +10,12 @@ export default async function buildTemplateXCarousel(selector, parent, options =
 
     const visibleElement = Array.from(elements).find((el) => {
       const elRect = el.getBoundingClientRect();
-      return elRect.left >= 0 && elRect.right <= window.innerWidth;
+      return elRect.left >= 0 && elRect.right <= window.innerWidth; // Fully visible
     });
 
     const targetElement = direction === 'next'
-      ? visibleElement?.nextElementSibling
-      : visibleElement?.previousElementSibling;
+      ? visibleElement?.nextElementSibling || elements[0] // Wrap to first card
+      : visibleElement?.previousElementSibling || elements[elements.length - 1];
 
     if (targetElement) {
       window.innerWidth < 600 && elements.forEach((el) => {
@@ -24,10 +24,14 @@ export default async function buildTemplateXCarousel(selector, parent, options =
 
       const viewportWidth = window.innerWidth;
       const cardWidth = targetElement.offsetWidth;
-      const dynamicMarginLeft = (viewportWidth - cardWidth) / 2 - 12;
+      const dynamicMarginLeft = (viewportWidth - cardWidth) / 2;
 
-      targetElement.style.scrollMarginLeft = `${dynamicMarginLeft}px`;
-      const newScrollPos = targetElement.offsetLeft - dynamicMarginLeft;
+      let newScrollPos = targetElement.offsetLeft - dynamicMarginLeft;
+
+      // Clamp the scroll position
+      newScrollPos = Math.max(0, newScrollPos);
+      console.log('platofrm', platform.scrollLeft);
+      console.log('Final Scroll Position:', newScrollPos);
 
       platform.scrollTo({
         left: newScrollPos,
