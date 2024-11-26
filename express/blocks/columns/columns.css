@@ -133,6 +133,12 @@ main .columns:not(.highlight) .column-video .button-container a:before {
 
 main .columns .column-picture {
   margin: 15px 0;
+  width: 225px;
+}
+
+main .columns .column-video video {
+  width: 225px;
+  margin: 0;
 }
 
 main .columns h1{
@@ -196,7 +202,7 @@ main .columns > div {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 0;
+  padding: 16px 0;
 }
 
 main .columns.center .column,
@@ -582,7 +588,6 @@ main .columns.fullsize .hero-animation-overlay {
 
 main .columns.fullsize .hero-animation-overlay video {
   max-height: 40vh;
-  margin-bottom: 40px;
   max-width: 370px;
 }
 
@@ -727,7 +732,6 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
       padding-right: 20px;
       word-break: auto-phrase;
   }
-
 }
 
 @media (min-width: 900px) and (max-width: 1200px) {
@@ -877,6 +881,7 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     flex-direction: row;
     text-align: left;
     align-items: center;
+    padding: 40px 0px;
   }
 
   main .section div.columns > div {
@@ -951,8 +956,17 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     float: left;
   }
 
+
   main .columns .columns-video {
     min-height: 356px;
+  }
+  
+  main .columns .column-picture {
+    width:  unset;
+  }
+
+  main .columns .column-video video {
+    width: unset;
   }
 }
 
@@ -1085,6 +1099,9 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     margin-top: 0;
   } 
 
+  main .columns .column-picture {
+    width:  unset;
+  }
 
 }
 
