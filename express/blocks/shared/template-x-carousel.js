@@ -2,7 +2,7 @@ import buildCarousel from './carousel.js';
 
 export default async function buildTemplateXCarousel(selector, parent, options = {}) {
   const {
-    platform, faderLeft, faderRight,
+    platform, faderLeft, faderRight, setInitialState,
   } = await buildCarousel(selector, parent, options);
 
   const moveCarouselToCenter = (direction) => {
@@ -61,6 +61,11 @@ export default async function buildTemplateXCarousel(selector, parent, options =
       platform.scrollLeft += increment;
     }
   });
+
+  const observer = new MutationObserver(() => {
+    setInitialState(platform, options, moveCarouselToCenter);
+  });
+  observer.observe(platform, { childList: true, subtree: true });
 
   return {
     platform,
