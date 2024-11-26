@@ -39,18 +39,12 @@ export function createMultiFunctionButton(block, data, audience) {
 // If there is no metadata check enabled, still enable the gating block in case authors want it.
 
 function androidDeviceAndRamCheck() {
+  if (getMetadata('fork-eligibility-check')?.toLowerCase()?.trim() !== 'on') return true;
   const isAndroid = getMobileOperatingSystem() === 'Android';
-  if (getMetadata('fork-eligibility-check') === 'on') {
-    if (navigator.deviceMemory >= 4 && isAndroid) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  return true;
+  return navigator.deviceMemory >= 4 && isAndroid;
 }
 
-function collectFloatingButtonData() {
+function collectFloatingButtonData(fallback) {
   const metadataMap = Array.from(document.head.querySelectorAll('meta')).reduce((acc, meta) => {
     if (meta?.name && !meta.property) acc[meta.name] = meta.content || '';
     return acc;
@@ -76,13 +70,17 @@ function collectFloatingButtonData() {
   };
 
   for (let i = 1; i < 3; i += 1) {
-    const iconMetadata = getMetadataLocal(`fork-cta-${i}-icon`);
+    const prefix = `fork-cta-${i}`;
+    const iconMetadata = (fallback && getMetadataLocal(`${prefix}-icon-${fallback}`)) || getMetadataLocal(`${prefix}-icon`);
+    const iconTextMetadata = (fallback && getMetadataLocal(`${prefix}-icon-text-${fallback}`)) || getMetadataLocal(`${prefix}-icon-text`);
+    const hrefMetadata = (fallback && getMetadataLocal(`${prefix}-link-${fallback}`)) || getMetadataLocal(`${prefix}-link`);
+    const textMetadata = (fallback && getMetadataLocal(`${prefix}-text-${fallback}`)) || getMetadataLocal(`${prefix}-text`);
     if (!iconMetadata) break;
     const completeSet = {
-      href: getMetadataLocal(`fork-cta-${i}-link`),
-      text: getMetadataLocal(`fork-cta-${i}-text`),
       icon: getIconElement(iconMetadata),
-      iconText: getMetadataLocal(`fork-cta-${i}-icon-text`),
+      iconText: iconTextMetadata,
+      href: hrefMetadata,
+      text: textMetadata,
     };
 
     if (Object.values(completeSet).every((val) => !!val)) {
@@ -102,8 +100,18 @@ function collectFloatingButtonData() {
   return data;
 }
 
+/**
+ * Returns null if no fallback needed. Otherwise a string for strategy.
+ * @returns {string|null}
+ */
+function useFallback() {
+  if (androidDeviceAndRamCheck()) return null;
+  return getMetadata('fallback-strategy')?.toLowerCase()?.trim() || 'single';
+}
+
 export default async function decorate(block) {
-  if (!androidDeviceAndRamCheck()) {
+  const fallback = useFallback();
+  if (fallback === 'single') {
     const { default: decorateNormal } = await import('../floating-button/floating-button.js');
     decorateNormal(block);
     return;
@@ -116,7 +124,7 @@ export default async function decorate(block) {
     block.closest('.section').remove();
   }
 
-  const data = collectFloatingButtonData();
+  const data = collectFloatingButtonData(fallback);
   const blockWrapper = createMultiFunctionButton(block, data, audience);
   const blockLinks = blockWrapper.querySelectorAll('a');
   if (blockLinks && blockLinks.length > 0) {
