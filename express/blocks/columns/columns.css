@@ -376,7 +376,7 @@ main .columns.highlight > div {
 }
 
 main .columns.highlight.dark {
-  padding-bottom: 20px;
+  padding-bottom: 100px;
 }
 
 main .columns.highlight.dark .columns-video:last-of-type {
