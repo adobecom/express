@@ -381,6 +381,14 @@ main .columns.highlight > div {
   margin: 20px 0;
 }
 
+main .columns.highlight.dark {
+  padding-bottom: 100px;
+}
+
+main .columns.highlight.dark .columns-video:last-of-type {
+  margin-bottom: 0;
+}
+
 main .columns.highlight > div:first-child {
   margin-top: 50px;
 }
@@ -948,6 +956,11 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     float: left;
   }
 
+
+  main .columns .columns-video {
+    min-height: 356px;
+  }
+  
   main .columns .column-picture {
     width:  unset;
   }
