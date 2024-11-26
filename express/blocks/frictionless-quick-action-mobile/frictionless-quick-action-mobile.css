@@ -12,13 +12,13 @@
 /* TODO: font-family seems to be inconsistent? */
 
 .frictionless-quick-action-mobile .headline {
-    padding-bottom: 8px;
+    padding-bottom: 12px;
 }
 
 .frictionless-quick-action-mobile h1 {
-    font-size: 2rem;
+    font-size: 2.125rem;
     text-align: left;
-    line-height: 1.1;
+    line-height: 1.3;
     color: #242424;
 }
 
