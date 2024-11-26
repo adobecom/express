@@ -181,14 +181,20 @@ export function onCarouselCSSLoad(selector, parent, options) {
   };
 
   setInitialState(platform, options);
-  return { platform, faderLeft, faderRight };
+  return {
+    platform, faderLeft, faderRight, setInitialState,
+  };
 }
 
 export default async function buildCarousel(selector, parent, options = {}) {
   return new Promise((resolve) => {
     loadStyle('/express/blocks/shared/carousel.css', () => {
-      const { platform, faderLeft, faderRight } = onCarouselCSSLoad(selector, parent, options);
-      resolve({ platform, faderLeft, faderRight });
+      const {
+        platform, faderLeft, faderRight, setInitialState,
+      } = onCarouselCSSLoad(selector, parent, options);
+      resolve({
+        platform, faderLeft, faderRight, setInitialState,
+      });
     });
   });
 }
