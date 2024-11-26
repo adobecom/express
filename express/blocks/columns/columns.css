@@ -375,6 +375,14 @@ main .columns.highlight > div {
   margin: 20px 0;
 }
 
+main .columns.highlight.dark {
+  padding-bottom: 20px;
+}
+
+main .columns.highlight.dark .columns-video:last-of-type {
+  margin-bottom: 0;
+}
+
 main .columns.highlight > div:first-child {
   margin-top: 50px;
 }
