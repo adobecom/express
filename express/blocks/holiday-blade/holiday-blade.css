@@ -123,7 +123,7 @@
     filter: invert(100)
 }
 
-.holiday-blade-inner-content .toggle-bar p:first-of-type {
+.holiday-blade-inner-content .toggle-bar >*:first-child {
     display: none;
 }
 
@@ -183,7 +183,8 @@
     gap: 16px;
     font-size: var(--body-font-size-l);
     padding: 12px;
-    margin-right: 50px;
+    margin: 0px 50px 0px 0px;
+    color: var(--text-color);
 
 }
 
@@ -191,6 +192,8 @@
     margin: 0;
     margin-right: auto;
     font-size: var(--body-font-size-m);
+    width: 100%;
+    text-align: left;
 }
 
 
@@ -454,17 +457,16 @@
 
     .holiday-blade-inner-content div div>* {
         margin: unset;
+        width: unset;
     }
 
     .holiday-blade-inner-content .toggle-bar {
         height: unset;
         padding-bottom: 0;
+        width: 700px;
+        margin: auto;
     }
 
-    .holiday-blade-inner-content .toggle-bar>p:first-of-type {
-        display: block;
-        width: 1200px;
-    }
 
     .holiday-blade-inner-content.expanded {
         height: var(--expanded-blade-height);
@@ -497,7 +499,19 @@
 
     .holiday-blade-inner-content .carousel-container .carousel-platform {
         height: 210px; 
-}
+    }
+
+    .holiday-blade-inner-content .toggle-bar >*:first-child {
+        display: block;
+    }
+
+
+
+    .holiday-blade-inner-content .toggle-bar >*:first-child:has(picture) {
+        display: block;
+        margin: auto;
+    }
+    
 }
 
 @media screen and (min-width: 1280px) {
@@ -525,8 +539,12 @@
 
     .holiday-blade-inner-content div div>* {
         margin: unset;
+        width: unset;
     }
 
+    .holiday-blade-inner-content .toggle-bar >*:first-child {
+        display: block;
+    }
  
     .holiday-blade-inner-content .carousel-container {
         position: relative;
