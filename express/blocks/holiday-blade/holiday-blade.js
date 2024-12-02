@@ -89,6 +89,7 @@ async function fetchAndRenderTemplates(block, props) {
 function decorateHoliday(block, toggleChev) {
   const rows = block.children;
   const toggleBar = rows[0].children[0];
+  toggleBar.children[0].classList.add('toggle-bar-first-element')
   toggleBar.classList.add('toggle-bar');
   const staticImage = rows[0].children[1].querySelector('img');
   if (staticImage) {
