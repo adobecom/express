@@ -1,5 +1,4 @@
 import buildCarousel from './carousel.js';
-// import buildTemplateXCarousel from './template-x-carousel.js';
 import buildBasicCarousel from './basic-carousel.js';
 
 function loadCarousel(selector, parent, options) {

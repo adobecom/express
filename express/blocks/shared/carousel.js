@@ -158,15 +158,13 @@ export function onCarouselCSSLoad(selector, parent, options) {
   };
 
   // set initial states
-  const setInitialState = (scrollable, opts, moveCarouselToCenter) => {
+  const setInitialState = (scrollable, opts) => {
     if (opts.infinityScrollEnabled) {
       infinityScroll([...carouselContent]);
       faderLeft.classList.remove('arrow-hidden');
       faderRight.classList.remove('arrow-hidden');
       platform.classList.add('left-fader', 'right-fader');
     }
-
-    moveCarouselToCenter && moveCarouselToCenter('next');
 
     const onIntersect = ([entry], observer) => {
       if (!entry.isIntersecting) return;
@@ -183,12 +181,10 @@ export function onCarouselCSSLoad(selector, parent, options) {
   };
 
   setInitialState(platform, options);
-  return {
-    platform, faderLeft, faderRight, setInitialState,
-  };
 }
 
 export default async function buildCarousel(selector, parent, options = {}) {
+  // Load CSS then build carousel
   return new Promise((resolve) => {
     loadStyle('/express/blocks/shared/carousel.css', () => {
       onCarouselCSSLoad(selector, parent, options);
