@@ -35,7 +35,7 @@
 }
 
 .holiday-blade.light .holiday-blade-inner-content .toggle-bar .icon {
-    filter: invert100);
+    filter: invert(100);
 }
 
 .holiday-blade-inner-content .carousel-container .carousel-fader-left {
@@ -54,6 +54,10 @@
     right: 15px;
     width: 10px;
  
+}
+
+.holiday-blade .toggle-bar > p {
+    margin-top: -2px;
 }
 
 .holiday-blade-inner-content .carousel-container .carousel-arrow {
@@ -108,7 +112,6 @@
 
 .holiday-blade-inner-content .toggle-bar a {
     position: relative;
-    top: -2.5px;
     display: inline;
     color: var(--text-color);
     text-decoration: underline;
@@ -116,7 +119,11 @@
 
 .holiday-blade-inner-content .toggle-bar .icon {
     position: relative;
-    top: 2px;
+    top: 4px;
+}
+
+.holiday-blade-inner-content .toggle-bar picture>img {
+    margin-top: 2px;
 }
 
 .holiday-blade-inner-content.light .toggle-bar .icon {
