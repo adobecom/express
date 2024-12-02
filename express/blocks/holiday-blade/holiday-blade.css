@@ -510,11 +510,16 @@
         height: 210px; 
     }
 
+
     .holiday-blade-inner-content .toggle-bar >*:first-child {
         display: block;
         margin: auto;
         width: 80%;
         text-align: center;
+    }
+
+    .holiday-blade-inner-content .toggle-bar >*:first-child:is(h4){
+        margin-top: 10px;
     }
 
  
