@@ -86,8 +86,8 @@ main .basic-carousel-container {
   
   main .basic-carousel-container .basic-carousel-fader-left.arrow-hidden,
   main .basic-carousel-container .basic-carousel-fader-right.arrow-hidden {
-    /* opacity: 0;
-    pointer-events: none; */
+    opacity: 0.5;
+    pointer-events: none;
   }
   
   main .basic-carousel-container img,
