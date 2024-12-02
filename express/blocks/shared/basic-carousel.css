@@ -155,7 +155,7 @@ main .basic-carousel-container {
       margin: 5px;
     }
     main .basic-carousel.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
-      width: 204px;
+      width: 205px;
       height: 304px;
     }
     main .basic-carousel-left-trigger {
