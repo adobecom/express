@@ -464,8 +464,8 @@
         --toggle-bar-height: 100px;
         --template-height: 180px;
     }
-
-    .holiday-blade-inner-content div div>* {
+    .holiday-blade-inner-content .toggle-bar>h4,
+    .holiday-blade-inner-content .toggle-bar>p {
         margin: unset;
         width: unset;
     }
@@ -545,7 +545,8 @@
         width: initial;
     }
 
-    .holiday-blade-inner-content div div>* {
+    .holiday-blade-inner-content .toggle-bar > p, 
+    .holiday-blade-inner-content .toggle-bar > h4{
         margin: unset;
         width: unset;
     }
