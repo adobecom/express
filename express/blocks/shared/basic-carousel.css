@@ -139,6 +139,14 @@ main .basic-carousel-container {
     scroll-snap-type: none;
   }
 
+  main .basic-carousel-container .basic-carousel-platform .basic-carousel-left-trigger,
+  main .basic-carousel-container .basic-carousel-platform .basic-carousel-right-trigger{
+    justify-self: stretch;
+    align-self:stretch;
+    width: 0;
+    margin: 0;
+  }
+
   @media (min-width: 600px) {
     main .template-x.basic-carousel .basic-carousel-container {
       width: 648px;
@@ -170,13 +178,6 @@ main .basic-carousel-container {
     main .basic-carousel-container.controls-hidden .basic-carousel-platform {
       scroll-snap-type: x mandatory;
     }
-  }
-  
-  main .basic-carousel-container .basic-carousel-platform .basic-carousel-left-trigger,
-  main .basic-carousel-container .basic-carousel-platform .basic-carousel-right-trigger{
-    justify-self: stretch;
-    align-self:stretch;
-    width: 1px;
   }
   
   main .basic-carousel-container .basic-carousel-platform.left-fader:not(.right-fader){
