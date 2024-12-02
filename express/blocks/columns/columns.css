@@ -6,7 +6,7 @@ main .columns-container,
 main .columns-dark-container,
 main .columns-center-container,
 main .columns-top-container,
-main .columns-highlight-container {
+main .columns-highlight-container, .columns-highlight-dark-container {
   padding-left: 15px;
   padding-right: 15px;
   padding-bottom: 40px;
@@ -379,10 +379,6 @@ main .columns.highlight > div {
   border-radius: 20px;
   overflow: hidden;
   margin: 20px 0;
-}
-
-main .columns.highlight.dark {
-  padding-bottom: 100px;
 }
 
 main .columns.highlight.dark .columns-video:last-of-type {
