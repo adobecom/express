@@ -458,6 +458,7 @@ export default async function decorate(block) {
 
   // Tracking any video column blocks.
   const columnVideos = block.querySelectorAll('.column-video');
+
   if (columnVideos.length) {
     columnVideos.forEach((columnVideo) => {
       const parent = columnVideo.closest('.columns');
@@ -469,5 +470,9 @@ export default async function decorate(block) {
         sendEventToAnalytics(adobeEventName);
       });
     });
+  }
+  
+  if (Array.from(block.querySelectorAll('.column-picture')).length === 1) {
+    block.classList.add('single-video')
   }
 }

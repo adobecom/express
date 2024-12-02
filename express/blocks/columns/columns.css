@@ -131,12 +131,12 @@ main .columns:not(.highlight) .column-video .button-container a:before {
   content: url(/express/icons/play.svg);
 }
 
-main .columns .column-picture {
+main .columns.single-video .column-picture {
   margin: 15px 0;
   width: 225px;
 }
 
-main .columns .column-video video {
+main .columns.single-video .column-video video {
   width: 225px;
   margin: 0;
 }
@@ -379,14 +379,6 @@ main .columns.highlight > div {
   border-radius: 20px;
   overflow: hidden;
   margin: 20px 0;
-}
-
-main .columns.highlight.dark {
-  padding-bottom: 100px;
-}
-
-main .columns.highlight.dark .columns-video:last-of-type {
-  margin-bottom: 0;
 }
 
 main .columns.highlight > div:first-child {
@@ -956,11 +948,6 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     float: left;
   }
 
-
-  main .columns .columns-video {
-    min-height: 356px;
-  }
-  
   main .columns .column-picture {
     width:  unset;
   }
@@ -1099,7 +1086,7 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
     margin-top: 0;
   } 
 
-  main .columns .column-picture {
+  main .columns .column-picture{
     width:  unset;
   }
 
