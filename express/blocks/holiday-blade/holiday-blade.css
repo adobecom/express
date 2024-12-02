@@ -122,8 +122,11 @@
     top: 4px;
 }
 
-.holiday-blade-inner-content .toggle-bar picture>img {
-    margin-top: 2px;
+.holiday-blade-inner-content .toggle-bar > p:first-of-type picture>img {
+    margin: auto;
+    display: block;
+    margin-top: 4px;
+    width: fit-content;
 }
 
 .holiday-blade-inner-content.light .toggle-bar .icon {
@@ -470,7 +473,6 @@
     .holiday-blade-inner-content .toggle-bar {
         height: unset;
         padding-bottom: 0;
-        width: 700px;
         margin: auto;
     }
 
@@ -510,14 +512,12 @@
 
     .holiday-blade-inner-content .toggle-bar >*:first-child {
         display: block;
-    }
-
-
-
-    .holiday-blade-inner-content .toggle-bar >*:first-child:has(picture) {
-        display: block;
         margin: auto;
+        width: 80%;
+        text-align: center;
     }
+
+ 
     
 }
 
