@@ -135,10 +135,10 @@ export default function decorate(el) {
     limit,
   };
 
-  if (block.classList.contains('still-only')) props.filters.behaviors = 'still';
-  if (block.classList.contains('animated-only')) props.filters.behaviors = 'animated';
-  if (block.classList.contains('free-only')) props.filters.premium = 'false';
-  if (block.classList.contains('premium-only')) props.filters.premium = 'true';
+  if (el.classList.contains('still-only')) props.filters.behaviors = 'still';
+  if (el.classList.contains('animated-only')) props.filters.behaviors = 'animated';
+  if (el.classList.contains('free-only')) props.filters.premium = 'false';
+  if (el.classList.contains('premium-only')) props.filters.premium = 'true';
 
   if (isQuery) {
     props.q = query;
