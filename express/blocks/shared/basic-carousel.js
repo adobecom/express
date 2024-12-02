@@ -2,6 +2,16 @@ import { createTag, loadStyle } from '../../scripts/utils.js';
 
 let currentIndex = 2;
 
+const getVisibleCount = (platform, elements) => {
+  const platformRect = platform.getBoundingClientRect();
+  return Array.from(elements).filter((el) => {
+    const elRect = el.getBoundingClientRect();
+    return (
+      elRect.left >= platformRect.left && elRect.right <= platformRect.right
+    );
+  }).length;
+};
+
 export function onBasicCarouselCSSLoad(selector, parent) {
   const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
 
@@ -33,6 +43,7 @@ export function onBasicCarouselCSSLoad(selector, parent) {
   const elements = platform.querySelectorAll('.template.basic-carousel-element');
 
   const updateCarousel = () => {
+    const visibleCount = getVisibleCount(platform, elements);
     const elementWidth = elements[0].offsetWidth;
     const platformWidth = platform.offsetWidth;
     const maxIndex = elements.length - 1;
@@ -59,17 +70,8 @@ export function onBasicCarouselCSSLoad(selector, parent) {
       });
     }
 
-    if (currentIndex === 0) {
-      faderLeft.classList.add('arrow-hidden');
-    } else {
-      faderLeft.classList.remove('arrow-hidden');
-    }
-
-    if (currentIndex === maxIndex) {
-      faderRight.classList.add('arrow-hidden');
-    } else {
-      faderRight.classList.remove('arrow-hidden');
-    }
+    faderLeft.classList.toggle('arrow-hidden', currentIndex === 0);
+    faderRight.classList.toggle('arrow-hidden', currentIndex === maxIndex - visibleCount + 1);
   };
 
   faderLeft.addEventListener('click', () => {
@@ -83,7 +85,6 @@ export function onBasicCarouselCSSLoad(selector, parent) {
     updateCarousel();
   });
 
-  // Listen for window resize events
   window.addEventListener('resize', updateCarousel);
   updateCarousel();
 }
