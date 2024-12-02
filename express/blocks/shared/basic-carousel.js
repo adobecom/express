@@ -71,7 +71,10 @@ export function onBasicCarouselCSSLoad(selector, parent) {
     }
 
     faderLeft.classList.toggle('arrow-hidden', currentIndex === 0);
-    faderRight.classList.toggle('arrow-hidden', currentIndex === maxIndex - visibleCount + 1);
+    faderRight.classList.toggle(
+      'arrow-hidden',
+      currentIndex + visibleCount >= elements.length,
+    );
   };
 
   faderLeft.addEventListener('click', () => {
@@ -81,6 +84,7 @@ export function onBasicCarouselCSSLoad(selector, parent) {
     }
     if (currentIndex > 0) {
       currentIndex -= visibleCount;
+      currentIndex = Math.max(0, currentIndex);
       updateCarousel();
     }
   });
