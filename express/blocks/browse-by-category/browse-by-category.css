@@ -210,6 +210,5 @@ main .browse-by-category.card.title-text-align-left .browse-by-category-card-tit
 @media (min-width: 900px) {
   main .browse-by-category .browse-by-category-heading-section {
     flex-direction: row;
-    padding: 0 0 0 20px;
   }
 }
