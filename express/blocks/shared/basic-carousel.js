@@ -35,11 +35,9 @@ export function onBasicCarouselCSSLoad(selector, parent) {
   const updateCarousel = () => {
     const elementWidth = elements[0].offsetWidth;
     const platformWidth = platform.offsetWidth;
-    const visibleCount = Math.floor(platformWidth / elementWidth);
-    const maxIndex = Math.max(0, elements.length - visibleCount);
-    currentIndex = Math.min(currentIndex, maxIndex);
+    const maxIndex = elements.length - 1;
 
-    const newScrollPos = currentIndex * elementWidth;
+    const newScrollPos = currentIndex * elementWidth - (platformWidth - elementWidth) / 2;
     platform.scrollTo({
       left: newScrollPos,
       behavior: 'smooth',
