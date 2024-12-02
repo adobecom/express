@@ -90,6 +90,10 @@ main .basic-carousel-container {
     width: 206px;
     height: 310px;
   }
+
+  main .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
+    width: max-content;
+  }
   
   main .basic-carousel-container .basic-carousel-fader-left.arrow-hidden,
   main .basic-carousel-container .basic-carousel-fader-right.arrow-hidden {
