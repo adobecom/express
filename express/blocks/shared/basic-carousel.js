@@ -43,6 +43,16 @@ export function onBasicCarouselCSSLoad(selector, parent) {
       behavior: 'smooth',
     });
 
+    elements.forEach((el, index) => {
+      if (index === currentIndex) {
+        el.style.opacity = '1';
+      } else if (index === currentIndex - 1 || index === currentIndex + 1) {
+        el.style.opacity = '0.5';
+      } else {
+        el.style.opacity = '0.2';
+      }
+    });
+
     if (currentIndex === 0) {
       faderLeft.classList.add('arrow-hidden');
     } else {
