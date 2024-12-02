@@ -133,6 +133,10 @@
     filter: invert(100)
 }
 
+.holiday-blade-inner-content .toggle-bar > h4  {
+    margin-top: 3px;
+}
+
 .holiday-blade-inner-content .toggle-bar .toggle-bar-first-element  {
     display: none;
 }
@@ -200,7 +204,6 @@
 
 .holiday-blade-inner-content div div>* {
     margin: 0;
-    margin-right: auto;
     font-size: var(--body-font-size-m);
     width: 100%;
     text-align: left;
@@ -466,7 +469,7 @@
     }
     .holiday-blade-inner-content .toggle-bar>h4,
     .holiday-blade-inner-content .toggle-bar>p {
-        margin: unset;
+    
         width: unset;
     }
 
