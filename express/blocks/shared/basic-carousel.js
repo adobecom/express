@@ -75,14 +75,18 @@ export function onBasicCarouselCSSLoad(selector, parent) {
   };
 
   faderLeft.addEventListener('click', () => {
+    const visibleCount = getVisibleCount(platform, elements);
     if (currentIndex > 0) {
-      currentIndex -= 1;
+      currentIndex -= visibleCount;
       updateCarousel();
     }
   });
   faderRight.addEventListener('click', () => {
-    currentIndex += 1;
-    updateCarousel();
+    const visibleCount = getVisibleCount(platform, elements);
+    if (currentIndex < elements.length - visibleCount) {
+      currentIndex += visibleCount;
+      updateCarousel();
+    }
   });
 
   window.addEventListener('resize', updateCarousel);
