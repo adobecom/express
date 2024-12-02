@@ -1,6 +1,6 @@
 import { createTag, loadStyle } from '../../scripts/utils.js';
 
-let currentIndex = 0;
+let currentIndex = 1;
 
 export function onBasicCarouselCSSLoad(selector, parent) {
   const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
