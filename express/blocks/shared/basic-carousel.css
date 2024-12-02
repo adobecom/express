@@ -85,7 +85,7 @@ main .basic-carousel-container {
     padding-right: unset;
   }
 
-  /* basic carousel for three card mobile template-x carousel */
+  /* basic carousel for mobile template-x carousel */
   main .basic-carousel.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
     width: 206px;
     height: 310px;
@@ -135,9 +135,27 @@ main .basic-carousel-container {
     transform: rotate(45deg);
   }
   
-  /* Remove snapping in mobile-breakpoint if they scrolled using drag */
   main .basic-carousel-container.controls-hidden .basic-carousel-platform {
     scroll-snap-type: none;
+  }
+
+  @media (min-width: 600px) {
+    main .template-x.basic-carousel .basic-carousel-container {
+      width: 648px;
+    }
+    main .template-x.basic-carousel .basic-carousel-container .template.basic-carousel-element {
+      margin: 5px;
+    }
+    main .basic-carousel.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+      width: 204px;
+      height: 304px;
+    }
+    main .basic-carousel-left-trigger {
+      margin-left: 0;
+    }
+    main .basic-carousel-right-trigger {
+      margin-left: 0;
+    }
   }
   
   @media (min-width: 900px) {
