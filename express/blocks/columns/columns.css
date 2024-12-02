@@ -131,6 +131,10 @@ main .columns:not(.highlight) .column-video .button-container a:before {
   content: url(/express/icons/play.svg);
 }
 
+main .columns .column-picture {
+  margin: 15px 0;
+}
+
 main .columns.single-video .column-picture {
   margin: 15px 0;
   width: 225px;
