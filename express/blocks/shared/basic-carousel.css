@@ -86,7 +86,7 @@ main .basic-carousel-container {
   }
 
   /* basic carousel for three card mobile template-x carousel */
-  main .basic-carousel.template-x.horizontal.three .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+  main .basic-carousel.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
     width: 206px;
     height: 310px;
   }
