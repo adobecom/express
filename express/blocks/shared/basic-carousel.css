@@ -79,6 +79,11 @@ main .basic-carousel-container {
     border-radius: 50%;
     pointer-events: auto;
   }
+  
+  main .template-x-wrapper.horizontal:not(.holiday) > .template-x.basic-carousel.horizontal > *:not(.carousel-container) {
+    padding-left: unset;
+    padding-right: unset;
+  }
 
   /* basic carousel for three card mobile template-x carousel */
   main .basic-carousel.template-x.horizontal.three .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
