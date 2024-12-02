@@ -34,11 +34,28 @@ export function onBasicCarouselCSSLoad(selector, parent) {
 
   const updateCarousel = () => {
     const elementWidth = elements[0].offsetWidth;
+    const platformWidth = platform.offsetWidth;
+    const visibleCount = Math.floor(platformWidth / elementWidth);
+    const maxIndex = Math.max(0, elements.length - visibleCount);
+    currentIndex = Math.min(currentIndex, maxIndex);
+
     const newScrollPos = currentIndex * elementWidth;
     platform.scrollTo({
       left: newScrollPos,
       behavior: 'smooth',
     });
+
+    if (currentIndex === 0) {
+      faderLeft.classList.add('arrow-hidden');
+    } else {
+      faderLeft.classList.remove('arrow-hidden');
+    }
+
+    if (currentIndex === maxIndex) {
+      faderRight.classList.add('arrow-hidden');
+    } else {
+      faderRight.classList.remove('arrow-hidden');
+    }
   };
 
   faderLeft.addEventListener('click', () => {
@@ -48,22 +65,18 @@ export function onBasicCarouselCSSLoad(selector, parent) {
     }
   });
   faderRight.addEventListener('click', () => {
-    if (currentIndex < elements.length - 1) {
-      currentIndex += 1;
-      updateCarousel();
-    }
+    currentIndex += 1;
+    updateCarousel();
   });
+
+  updateCarousel();
 }
 
 export default async function buildBasicCarousel(selector, parent, options = {}) {
   return new Promise((resolve) => {
     loadStyle('/express/blocks/shared/basic-carousel.css', () => {
-      const {
-        platform, faderLeft, faderRight, setInitialState,
-      } = onBasicCarouselCSSLoad(selector, parent, options);
-      resolve({
-        platform, faderLeft, faderRight, setInitialState,
-      });
+      onBasicCarouselCSSLoad(selector, parent, options);
+      resolve();
     });
   });
 }

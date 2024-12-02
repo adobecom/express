@@ -191,12 +191,8 @@ export function onCarouselCSSLoad(selector, parent, options) {
 export default async function buildCarousel(selector, parent, options = {}) {
   return new Promise((resolve) => {
     loadStyle('/express/blocks/shared/carousel.css', () => {
-      const {
-        platform, faderLeft, faderRight, setInitialState,
-      } = onCarouselCSSLoad(selector, parent, options);
-      resolve({
-        platform, faderLeft, faderRight, setInitialState,
-      });
+      onCarouselCSSLoad(selector, parent, options);
+      resolve();
     });
   });
 }

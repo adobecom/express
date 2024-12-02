@@ -40,10 +40,10 @@ main .basic-carousel-container {
     text-align: left;
     display: flex;
     position: absolute;
-    width: 60px;
+    width: 53px;
     align-items: center;
     bottom: -40px;
-    right: 36px;
+    right: 45px;
     transition: opacity 0.2s, display 0.2s;
     cursor: pointer;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
@@ -54,7 +54,7 @@ main .basic-carousel-container {
     text-align: left;
     display: flex;
     position: absolute;
-    width: 60px;
+    width: 53px;
     align-items: center;
     bottom: -40px;
     right: 0;
@@ -78,10 +78,10 @@ main .basic-carousel-container {
     pointer-events: auto;
   }
 
-  /* basic carousel for template-x */
-  main .template-x-carousel.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
-    width: 216px;
-    height: 384px;
+  /* basic carousel for three card mobile template-x carousel */
+  main .basic-carousel.template-x.horizontal.three .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    width: 206px;
+    height: 310px;
   }
   
   main .basic-carousel-container .basic-carousel-fader-left.arrow-hidden,
