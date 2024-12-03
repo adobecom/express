@@ -82,7 +82,7 @@ export function onBasicCarouselCSSLoad(selector, parent) {
       visibleCount = 1;
     }
     if (currentIndex > 0) {
-      currentIndex -= visibleCount;
+      currentIndex -= visibleCount + 1;
       currentIndex = Math.max(0, currentIndex);
       updateCarousel();
     }
@@ -93,7 +93,7 @@ export function onBasicCarouselCSSLoad(selector, parent) {
       visibleCount = 1;
     }
     if (currentIndex < elements.length - visibleCount) {
-      currentIndex += visibleCount;
+      currentIndex += visibleCount + 1;
       updateCarousel();
     }
   });
