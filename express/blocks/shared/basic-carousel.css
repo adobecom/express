@@ -86,24 +86,12 @@ main .basic-carousel-container {
   }
 
   /* basic carousel for mobile template-x carousel */
-  main .basic-carousel.one.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
-    width: 648px;
-    height: 364px;
-  }
-
-  main .basic-carousel.two.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
-    width: 316px;
-    height: 474px;
-  }
-
-  main .basic-carousel.three.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+  main .basic-carousel.one.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow),
+  main .basic-carousel.two.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow),
+  main .basic-carousel.three.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow),
+  main .basic-carousel.four.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
     width: 206px;
     height: 310px;
-  }
-
-  main .basic-carousel.four.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
-    width: 152px;
-    height: 225px;
   }
 
   main .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
@@ -169,15 +157,28 @@ main .basic-carousel-container {
     main .template-x.basic-carousel .basic-carousel-container .template.basic-carousel-element {
       margin: 5px;
     }
-    main .basic-carousel.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
-      width: 205px;
-      height: 304px;
-    }
     main .basic-carousel-left-trigger {
       margin-left: 0;
     }
     main .basic-carousel-right-trigger {
       margin-left: 0;
+    }
+    main .basic-carousel.one.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+      width: 648px;
+      height: 364px;
+    }
+    main .basic-carousel.two.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+      width: 316px;
+      height: 474px;
+    }
+  
+    main .basic-carousel.three.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+      width: 206px;
+      height: 310px;
+    }
+    main .basic-carousel.four.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+      width: 152px;
+      height: 225px;
     }
   }
   

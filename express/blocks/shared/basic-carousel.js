@@ -1,6 +1,6 @@
 import { createTag, loadStyle } from '../../scripts/utils.js';
 
-let currentIndex = 2;
+let currentIndex = 1;
 
 const getVisibleCount = (platform, elements) => {
   const platformRect = platform.getBoundingClientRect();
@@ -13,7 +13,9 @@ const getVisibleCount = (platform, elements) => {
 };
 
 export function onBasicCarouselCSSLoad(selector, parent) {
-  const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
+  const carouselContent = selector
+    ? parent.querySelectorAll(selector)
+    : parent.querySelectorAll(':scope > *');
 
   carouselContent.forEach((el) => el.classList.add('basic-carousel-element'));
 
@@ -43,7 +45,7 @@ export function onBasicCarouselCSSLoad(selector, parent) {
   const elements = platform.querySelectorAll('.template.basic-carousel-element');
 
   const updateCarousel = () => {
-    const visibleCount = getVisibleCount(platform, elements);
+    const visibleCount = window.innerWidth <= 600 ? 1 : getVisibleCount(platform, elements);
     const elementWidth = elements[0].offsetWidth;
     const platformWidth = platform.offsetWidth;
 
@@ -77,23 +79,18 @@ export function onBasicCarouselCSSLoad(selector, parent) {
   };
 
   faderLeft.addEventListener('click', () => {
-    let visibleCount = getVisibleCount(platform, elements);
-    if (window.innerWidth <= 600) {
-      visibleCount = 1;
-    }
+    const visibleCount = window.innerWidth <= 600 ? 1 : getVisibleCount(platform, elements);
     if (currentIndex > 0) {
-      currentIndex -= visibleCount + 1;
+      currentIndex -= visibleCount;
       currentIndex = Math.max(0, currentIndex);
       updateCarousel();
     }
   });
+
   faderRight.addEventListener('click', () => {
-    let visibleCount = getVisibleCount(platform, elements);
-    if (window.innerWidth <= 600) {
-      visibleCount = 1;
-    }
+    const visibleCount = window.innerWidth <= 600 ? 1 : getVisibleCount(platform, elements);
     if (currentIndex < elements.length - visibleCount) {
-      currentIndex += visibleCount + 1;
+      currentIndex += visibleCount;
       updateCarousel();
     }
   });
