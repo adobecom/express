@@ -12,7 +12,7 @@ const getVisibleCount = (platform, elements) => {
   }).length;
 };
 
-export function onBasicCarouselCSSLoad(selector, parent) {
+function initializeCarousel(selector, parent) {
   const carouselContent = selector
     ? parent.querySelectorAll(selector)
     : parent.querySelectorAll(':scope > *');
@@ -99,11 +99,38 @@ export function onBasicCarouselCSSLoad(selector, parent) {
   updateCarousel();
 }
 
+const isStyleSheetPresent = (stylesheetHref) => {
+  for (const sheet of document.styleSheets) {
+    try {
+      if (sheet.href && sheet.href.includes(stylesheetHref)) {
+        return true;
+      }
+    } catch (e) {
+      console.error('stylesheet loading error: ', e);
+    }
+  }
+  return false;
+};
+
+export function onBasicCarouselCSSLoad(selector, parent) {
+  const stylesheetHref = '/express/blocks/shared/basic-carousel.css';
+
+  const waitForCSS = () => new Promise((resolve) => {
+    const interval = setInterval(() => {
+      if (isStyleSheetPresent(stylesheetHref)) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, 50);
+  });
+
+  waitForCSS().then(() => {
+    initializeCarousel(selector, parent);
+  });
+}
+
 export default async function buildBasicCarousel(selector, parent, options = {}) {
-  return new Promise((resolve) => {
-    loadStyle('/express/blocks/shared/basic-carousel.css', () => {
-      onBasicCarouselCSSLoad(selector, parent, options);
-      resolve();
-    });
+  loadStyle('/express/blocks/shared/basic-carousel.css', () => {
+    onBasicCarouselCSSLoad(selector, parent, options);
   });
 }
