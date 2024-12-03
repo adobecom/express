@@ -30,7 +30,7 @@ function buildMobileGating(block, data) {
 
 export function createMultiFunctionButton(block, data, audience) {
   const buttonWrapper = createFloatingButton(block, audience, data);
-  buttonWrapper.classList.add('multifunction', 'mobile-fork-button');
+  buttonWrapper.classList.add('multifunction', 'mobile-fork-button-frictionless');
   buildMobileGating(buttonWrapper.querySelector('.floating-button'), data);
   return buttonWrapper;
 }
@@ -44,7 +44,7 @@ function androidDeviceAndRamCheck() {
   return navigator.deviceMemory >= 4 && isAndroid;
 }
 
-function collectFloatingButtonData() {
+function collectFloatingButtonData(eligible) {
   const metadataMap = Array.from(document.head.querySelectorAll('meta')).reduce((acc, meta) => {
     if (meta?.name && !meta.property) acc[meta.name] = meta.content || '';
     return acc;
@@ -71,10 +71,10 @@ function collectFloatingButtonData() {
 
   for (let i = 1; i < 3; i += 1) {
     const prefix = `fork-cta-${i}`;
-    const iconMetadata = getMetadataLocal(`${prefix}-icon`);
-    const iconTextMetadata = getMetadataLocal(`${prefix}-icon-text`);
-    const hrefMetadata = getMetadataLocal(`${prefix}-link`);
-    const textMetadata = getMetadataLocal(`${prefix}-text`);
+    const iconMetadata = (eligible && getMetadataLocal(`${prefix}-icon-frictionless`)) || getMetadataLocal(`${prefix}-icon`);
+    const iconTextMetadata = (eligible && getMetadataLocal(`${prefix}-icon-text-frictionless`)) || getMetadataLocal(`${prefix}-icon-text`);
+    const hrefMetadata = (eligible && getMetadataLocal(`${prefix}-link-frictionless`)) || getMetadataLocal(`${prefix}-link`);
+    const textMetadata = (eligible && getMetadataLocal(`${prefix}-text-frictionless`)) || getMetadataLocal(`${prefix}-text`);
     if (!iconMetadata) break;
     const completeSet = {
       icon: getIconElement(iconMetadata),
@@ -88,6 +88,14 @@ function collectFloatingButtonData() {
         href, text, icon, iconText,
       } = completeSet;
       const aTag = createTag('a', { title: text, href });
+      if (href.toLowerCase().trim() === '#mobile-fqa-upload') {
+        // mobile-fork-button-frictionless pairs with mobile-fqa
+        // temporary solution before a nicer way for cross-block interactions is found
+        aTag.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.getElementById('mobile-fqa-upload').click();
+        });
+      }
       aTag.textContent = text;
       data.tools.push({
         icon,
@@ -101,11 +109,7 @@ function collectFloatingButtonData() {
 }
 
 export default async function decorate(block) {
-  if (!androidDeviceAndRamCheck()) {
-    const { default: decorateNormal } = await import('../floating-button/floating-button.js');
-    decorateNormal(block);
-    return;
-  }
+  const eligible = androidDeviceAndRamCheck();
   addTempWrapper(block, 'multifunction-button');
   if (!block.classList.contains('meta-powered')) return;
 
@@ -114,7 +118,7 @@ export default async function decorate(block) {
     block.closest('.section').remove();
   }
 
-  const data = collectFloatingButtonData();
+  const data = collectFloatingButtonData(eligible);
   const blockWrapper = createMultiFunctionButton(block, data, audience);
   const blockLinks = blockWrapper.querySelectorAll('a');
   if (blockLinks && blockLinks.length > 0) {
