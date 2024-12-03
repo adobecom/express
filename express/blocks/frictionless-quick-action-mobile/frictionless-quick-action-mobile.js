@@ -11,6 +11,8 @@ import {
 let ccEverywhere;
 let quickActionContainer;
 let uploadContainer;
+let landingHeadlineText;
+let postUploadHeadlineText;
 
 const JPG = 'jpg';
 const JPEG = 'jpeg';
@@ -119,6 +121,11 @@ export function runQuickAction(quickAction, data, block) {
   const extraContainer = block.querySelector('.extra-container');
   fade(uploadContainer, 'out');
   fade(extraContainer, 'out');
+  if (postUploadHeadlineText) {
+    const h1 = block.querySelector('h1');
+    h1.textContent = postUploadHeadlineText;
+    h1.classList.add('post-upload');
+  }
 
   const contConfig = {
     mode: 'inline',
@@ -142,6 +149,11 @@ export function runQuickAction(quickAction, data, block) {
         quickActionContainer?.remove();
         fade(uploadContainer, 'in');
         fade(extraContainer, 'in');
+        if (postUploadHeadlineText) {
+          const h1 = block.querySelector('h1');
+          h1.textContent = landingHeadlineText;
+          h1.classList.remove('post-upload');
+        }
         document.body.classList.add('editor-modal-loaded');
         window.history.pushState({ hideFrictionlessQa: true }, '', '');
         return {
@@ -310,6 +322,12 @@ export default function decorate(block) {
   }
 
   const [headline, dropzoneContainer, extraContainer] = rows;
+  landingHeadlineText = headline.querySelector('h1').textContent;
+  const postUploadHeadline = headline.querySelector('p');
+  if (postUploadHeadline) {
+    postUploadHeadlineText = postUploadHeadline.textContent;
+    postUploadHeadline.remove();
+  }
   headline.classList.add('headline');
   dropzoneContainer.classList.add('dropzone-container');
   extraContainer.classList.add('extra-container');
@@ -366,6 +384,11 @@ export default function decorate(block) {
       inputElement.value = '';
       fade(uploadContainer, 'in');
       fade(extraContainer, 'in');
+      if (postUploadHeadlineText) {
+        const h1 = block.querySelector('h1');
+        h1.textContent = landingHeadlineText;
+        h1.classList.remove('post-upload');
+      }
       document.body.dataset.suppressfloatingcta = 'false';
     }
   }, { passive: true });
