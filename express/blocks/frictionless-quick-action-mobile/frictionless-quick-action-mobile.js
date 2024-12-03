@@ -315,7 +315,7 @@ export default function decorate(block) {
   extraContainer.classList.add('extra-container');
   decorateExtra(extraContainer);
 
-  const dropzone = createTag('button', { class: 'dropzone hide' });
+  const dropzone = createTag('button', { class: 'dropzone hide', id: 'mobile-fqa-upload' });
   const [animationContainer, dropzoneContent] = rows[1].children;
   while (dropzoneContent.firstChild) dropzone.append(dropzoneContent.firstChild);
   dropzoneContent.replaceWith(dropzone);
@@ -345,6 +345,8 @@ export default function decorate(block) {
 
   dropzone.addEventListener('click', (e) => {
     e.preventDefault();
+    dropzone.classList.remove('hide');
+    animationContainer.classList.add('hide');
     if (quickAction === 'generate-qr-code') {
       startSDK('', quickAction, block);
     } else {
