@@ -1,7 +1,7 @@
 import { addTempWrapper } from '../../scripts/decorate.js';
 import {
   createTag,
-  getMetadata, getMobileOperatingSystem, getIconElement,
+  getMobileOperatingSystem, getIconElement,
 } from '../../scripts/utils.js';
 
 import {
@@ -35,11 +35,8 @@ export function createMultiFunctionButton(block, data, audience) {
   return buttonWrapper;
 }
 
-// Checks if the device is an android and has sufficient RAM, enables the mobile gating if it is.
-// If there is no metadata check enabled, still enable the gating block in case authors want it.
-
+// frictionless block always check eligibility
 function androidDeviceAndRamCheck() {
-  if (getMetadata('fork-eligibility-check')?.toLowerCase()?.trim() !== 'on') return true;
   const isAndroid = getMobileOperatingSystem() === 'Android';
   return navigator.deviceMemory >= 4 && isAndroid;
 }
