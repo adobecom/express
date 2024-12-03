@@ -178,6 +178,11 @@
     justify-content: center;
     align-items: center;
 }
+
+.cta-carousel.center-heading .cta-carousel-heading-section h2 {
+    text-align: center;
+}
+
 .cta-carousel.center-heading .cta-carousel-heading-section .cta-carousel-link {
     align-self: flex-end;
     margin-left: auto;
