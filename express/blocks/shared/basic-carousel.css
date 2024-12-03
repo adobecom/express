@@ -94,6 +94,10 @@ main .basic-carousel-container {
     height: 310px;
   }
 
+  main .basic-carousel-container .template.basic-carousel-element {
+    scroll-snap-align: start;
+  }
+
   main .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
     width: max-content;
   }

@@ -1,17 +1,8 @@
 import { createTag, loadStyle } from '../../scripts/utils.js';
 
-const getVisibleCount = (platform, elements) => {
-  const platformRect = platform.getBoundingClientRect();
-  return Array.from(elements).filter((el) => {
-    const elRect = el.getBoundingClientRect();
-    return (
-      elRect.left >= platformRect.left && elRect.right <= platformRect.right
-    );
-  }).length;
-};
-
 function initializeCarousel(selector, parent) {
-  let currentIndex = window.innerWidth <= 600 ? 1 : 0;
+  let currentIndex = 1;
+  let scrollCount = 1;
   const carouselContent = selector
     ? parent.querySelectorAll(selector)
     : parent.querySelectorAll(':scope > *');
@@ -26,8 +17,8 @@ function initializeCarousel(selector, parent) {
 
   const arrowLeft = createTag('a', { class: 'button basic-carousel-arrow basic-carousel-arrow-left' });
   const arrowRight = createTag('a', { class: 'button basic-carousel-arrow basic-carousel-arrow-right' });
-  arrowLeft.title = 'Basic Carousel Left';
-  arrowRight.title = 'Basic Carousel Right';
+  arrowLeft.title = 'Carousel Left';
+  arrowRight.title = 'Carousel Right';
 
   platform.append(...carouselContent);
 
@@ -36,19 +27,20 @@ function initializeCarousel(selector, parent) {
   faderRight.append(arrowRight);
   parent.append(container);
 
-  const leftTrigger = createTag('div', { class: 'basic-carousel-left-trigger' });
-  const rightTrigger = createTag('div', { class: 'basic-carousel-right-trigger' });
+  const elements = platform.querySelectorAll('.basic-carousel-element');
 
-  platform.prepend(leftTrigger);
-  platform.append(rightTrigger);
-  const elements = platform.querySelectorAll('.template.basic-carousel-element');
+  const determineScrollCount = () => {
+    if (platform.closest('.four')) return 4;
+    if (platform.closest('.three')) return 3;
+    if (platform.closest('.two')) return 2;
+    return 1;
+  };
+  scrollCount = window.innerWidth <= 600 ? 1 : determineScrollCount();
 
   const updateCarousel = () => {
-    const visibleCount = window.innerWidth <= 600 ? 1 : getVisibleCount(platform, elements);
     const elementWidth = elements[0].offsetWidth;
-    const platformWidth = platform.offsetWidth;
+    const newScrollPos = currentIndex * elementWidth;
 
-    const newScrollPos = currentIndex * elementWidth - (platformWidth - elementWidth) / 2;
     platform.scrollTo({
       left: newScrollPos,
       behavior: 'smooth',
@@ -71,25 +63,28 @@ function initializeCarousel(selector, parent) {
     }
 
     faderLeft.classList.toggle('arrow-hidden', currentIndex === 0);
-    faderRight.classList.toggle(
-      'arrow-hidden',
-      currentIndex + visibleCount >= elements.length,
-    );
+    faderRight.classList.toggle('arrow-hidden', currentIndex + scrollCount >= elements.length);
   };
 
   faderLeft.addEventListener('click', () => {
-    const visibleCount = window.innerWidth <= 600 ? 1 : getVisibleCount(platform, elements);
     if (currentIndex > 0) {
-      currentIndex -= visibleCount;
+      currentIndex -= scrollCount;
       currentIndex = Math.max(0, currentIndex);
       updateCarousel();
     }
   });
 
   faderRight.addEventListener('click', () => {
-    const visibleCount = window.innerWidth <= 600 ? 1 : getVisibleCount(platform, elements);
-    if (currentIndex < elements.length - visibleCount) {
-      currentIndex += visibleCount;
+    if (currentIndex + scrollCount < elements.length) {
+      currentIndex += scrollCount;
+      updateCarousel();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    const newScrollCount = determineScrollCount();
+    if (newScrollCount !== scrollCount) {
+      scrollCount = newScrollCount;
       updateCarousel();
     }
   });
@@ -105,7 +100,7 @@ const isStyleSheetPresent = (stylesheetHref) => {
         return true;
       }
     } catch (e) {
-      console.error('stylesheet loading error: ', e);
+      console.error('Stylesheet loading error:', e);
     }
   }
   return false;
