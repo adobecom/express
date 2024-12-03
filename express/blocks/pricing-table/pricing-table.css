@@ -145,7 +145,7 @@
 
 .pricing-table .row-heading {
   position: sticky;
-  z-index: 1;
+  z-index: 3;
   background-color: var(--color-white);
 }
 
@@ -193,7 +193,7 @@
 
 /* ---NEW--- */
 :root {
-  --checkmark-color: #268e6c;
+  --checkmark-color:#007A4D;
   --shaded-color: #f8f8f8;
   --border-color: #d9d9d9;
   --border-radius: 8px;
@@ -459,6 +459,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
 }
 .pricing-table .feat-icon {
   display: block;
+  position: relative;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
   -webkit-mask-size: contain;
@@ -466,15 +467,25 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   mask-position: center;
   mask-size: contain;
 }
+
 .pricing-table .dash {
   width: 13px;
-  height: 11.5px;
-  margin-bottom: 4.5px;
-  margin-top: -4.5px;
+  height: 13px; 
   background-color: var(--color-gray-600);
   -webkit-mask-image: url('./dash.svg');
   mask-image: url('./dash.svg');
+  z-index: 2;
 }
+
+.pricing-table .cross {
+  width: 13px;
+  height: 13px; 
+  background-color: var(--color-gray-600);
+  -webkit-mask-image: url('./crossmark.svg');
+  mask-image: url('./crossmark.svg');
+  z-index: 2;
+}
+
 
 .pricing-table .dim .col-content span { 
   background-color: var(--color-gray-600); 
@@ -484,14 +495,52 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
   font-style: normal;
 }
 
+.pricing-table .col-content .icon-container {
+  position: relative;
+}
+
+.pricing-table .col.icon-container .col-content {
+  position: relative;
+}
+
+.pricing-table .col.icon-container .col-content:after,
+.pricing-table .col .col-content .icon-container:after {
+    content: '';
+    display: block;
+    position: absolute;
+    background: var(--Background-Positive-subdued, #CEF8E0);
+    border-radius: 24px;
+    width: 24px;
+    height: 24px;    
+    left: -5.25px;
+    top: -5.75px;
+    opacity: 0.75;
+}
+
+.pricing-table .col.icon-container.excluded-feature .col-content:after,
+.pricing-table .col.dim .col-content .icon-container:after,
+.pricing-table .col.excluded-feature .col-content .icon-container:after {
+  background-color: #E6E6E6;
+}
+
 .pricing-table .check {
   width: 13px;
-  height: 11.5px;
+  height: 13px;
   background-color: var(--checkmark-color);
   -webkit-mask-image: url('./check.svg');
   mask-image: url('./check.svg');
+  z-index: 2;
 }
- 
+
+.pricing-table.vertical-shading .row.shaded {
+  background-color: unset;
+}
+.pricing-table.vertical-shading .row-heading .col:nth-child(2n),
+.pricing-table.vertical-shading .col:nth-child(2n) {
+  background: var(--shaded-color);
+}
+
+
 /* /Table Section Rows */
 
 
@@ -569,6 +618,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
     justify-content: start;
     align-items: center;
     text-align: start;
+    padding-left: 10px;
   }
 
   .pricing-table .row.section-row .col .col-heading p { 
