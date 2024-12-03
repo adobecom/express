@@ -1,7 +1,5 @@
 import { createTag, loadStyle } from '../../scripts/utils.js';
 
-let currentIndex = 1;
-
 const getVisibleCount = (platform, elements) => {
   const platformRect = platform.getBoundingClientRect();
   return Array.from(elements).filter((el) => {
@@ -13,6 +11,7 @@ const getVisibleCount = (platform, elements) => {
 };
 
 function initializeCarousel(selector, parent) {
+  let currentIndex = window.innerWidth <= 600 ? 1 : 0;
   const carouselContent = selector
     ? parent.querySelectorAll(selector)
     : parent.querySelectorAll(':scope > *');
