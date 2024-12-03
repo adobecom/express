@@ -88,6 +88,14 @@ function collectFloatingButtonData(fallback) {
         href, text, icon, iconText,
       } = completeSet;
       const aTag = createTag('a', { title: text, href });
+      if (href === '#mobile-fqa-upload') {
+        // mobile-fork-button often pairs with mobile-fqa
+        // this is a temporary solution before we find a better way for cross-block interactions
+        aTag.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.querySelector(href).click();
+        });
+      }
       aTag.textContent = text;
       data.tools.push({
         icon,
