@@ -1,0 +1,209 @@
+main .basic-carousel-container {
+    display: inline-block;
+    position: relative;
+    height: auto;
+    width: 100%;
+    margin-bottom: 24px;
+  }
+  
+  main .basic-carousel-container .basic-carousel-platform {
+    width: max-content;
+    max-width: 100%;
+    left: 0;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    max-height: 500px;
+    padding-top: 4px;
+    padding-bottom: 6px;
+  }
+  
+  main .basic-carousel-container:not(.controls-hidden) .basic-carousel-platform::-webkit-scrollbar,
+  main .basic-carousel-container .basic-carousel-platform.infinity-scroll-loaded::-webkit-scrollbar {
+    display: none;
+  }
+  
+  main .basic-carousel-container .basic-carousel-platform > * {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    scroll-snap-align: center; 
+    margin: 0 10px;
+  }
+  
+  main .basic-carousel-container .basic-carousel-fader-left {
+    text-align: left;
+    display: flex;
+    position: absolute;
+    width: 53px;
+    align-items: center;
+    bottom: -40px;
+    right: 45px;
+    transition: opacity 0.2s, display 0.2s;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    z-index: 1;
+  }
+  
+  main .basic-carousel-container .basic-carousel-fader-right {
+    text-align: left;
+    display: flex;
+    position: absolute;
+    width: 53px;
+    align-items: center;
+    bottom: -40px;
+    right: 0;
+    flex-direction: row-reverse;
+    transition: opacity 0.2s;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    z-index: 1;
+  }
+  
+  main .basic-carousel-container a.button.basic-carousel-arrow {
+    cursor: pointer;
+    display: block;
+    float: left;
+    width: 32px;
+    height: 32px;
+    margin: 0 7px;
+    background: var(--color-white);
+    box-shadow: 0 4px 8px 2px rgba(102, 102, 102, 0.1);
+    border-radius: 50%;
+    pointer-events: auto;
+  }
+  
+  main .template-x-wrapper.horizontal:not(.holiday) > .template-x.basic-carousel.horizontal > *:not(.carousel-container) {
+    padding-left: unset;
+    padding-right: unset;
+  }
+
+  /* basic carousel for mobile template-x carousel */
+  main .basic-carousel.one.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    width: 648px;
+    height: 364px;
+  }
+
+  main .basic-carousel.two.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    width: 316px;
+    height: 474px;
+  }
+
+  main .basic-carousel.three.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    width: 206px;
+    height: 310px;
+  }
+
+  main .basic-carousel.four.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    width: 152px;
+    height: 225px;
+  }
+
+  main .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
+    width: max-content;
+  }
+  
+  main .basic-carousel-container .basic-carousel-fader-left.arrow-hidden,
+  main .basic-carousel-container .basic-carousel-fader-right.arrow-hidden {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  
+  main .basic-carousel-container img,
+  main .basic-carousel-container video {
+    pointer-events: none;
+  }
+  
+  main .basic-carousel-container .basic-carousel-fader-left.arrow-hidden a.button.basic-carousel-arrow,
+  main .basic-carousel-container .basic-carousel-fader-right.arrow-hidden a.button.basic-carousel-arrow {
+    pointer-events: none;
+  }
+  
+  main .basic-carousel-container a.button.basic-carousel-arrow::before {
+    content: '';
+    position: absolute;
+    margin-top: 11px;
+    width: 8px;
+    height: 8px;
+    border-top: solid 2px var(--color-gray-700);
+    border-right: solid 2px var(--color-gray-700);
+  }
+  
+  main .basic-carousel-container a.button.basic-carousel-arrow-left::before {
+    margin-left: 13px;
+    transform: rotate(-135deg);
+  }
+  
+  main .basic-carousel-container a.button.basic-carousel-arrow-right {
+    float: right;
+  }
+  
+  main .basic-carousel-container a.button.basic-carousel-arrow-right::before {
+    margin-left: 9px;
+    transform: rotate(45deg);
+  }
+  
+  main .basic-carousel-container.controls-hidden .basic-carousel-platform {
+    scroll-snap-type: none;
+  }
+
+  main .basic-carousel-container .basic-carousel-platform .basic-carousel-left-trigger,
+  main .basic-carousel-container .basic-carousel-platform .basic-carousel-right-trigger{
+    justify-self: stretch;
+    align-self:stretch;
+    width: 0;
+    margin: 0;
+  }
+
+  @media (min-width: 600px) {
+    main .template-x.basic-carousel .basic-carousel-container {
+      width: 648px;
+    }
+    main .template-x.basic-carousel .basic-carousel-container .template.basic-carousel-element {
+      margin: 5px;
+    }
+    main .basic-carousel.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+      width: 205px;
+      height: 304px;
+    }
+    main .basic-carousel-left-trigger {
+      margin-left: 0;
+    }
+    main .basic-carousel-right-trigger {
+      margin-left: 0;
+    }
+  }
+  
+  @media (min-width: 900px) {
+    main .basic-carousel-container .basic-carousel-platform::-webkit-scrollbar {
+      display: none;
+    }
+  
+    main .basic-carousel-container a.button.basic-carousel-arrow {
+      margin: 0 10px;
+    }
+  
+    main .basic-carousel-container.controls-hidden .basic-carousel-platform {
+      scroll-snap-type: x mandatory;
+    }
+  }
+  
+  main .basic-carousel-container .basic-carousel-platform.left-fader:not(.right-fader){
+    -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px));
+    mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px));
+  }
+  main .basic-carousel-container .basic-carousel-platform.right-fader:not(.left-fade){
+    -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px), transparent);
+    mask-image: linear-gradient(to right, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px), transparent);
+  }
+  main .basic-carousel-container .basic-carousel-platform.left-fader.right-fader{
+    -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px), transparent);
+    mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 60px, rgba(0,0,0,1) calc(100% - 60px), transparent);
+  }
