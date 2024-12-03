@@ -35,7 +35,7 @@
 }
 
 .holiday-blade.light .holiday-blade-inner-content .toggle-bar .icon {
-    filter: invert100);
+    filter: invert(100);
 }
 
 .holiday-blade-inner-content .carousel-container .carousel-fader-left {
@@ -54,6 +54,10 @@
     right: 15px;
     width: 10px;
  
+}
+
+.holiday-blade .toggle-bar > p {
+    margin-top: -2px;
 }
 
 .holiday-blade-inner-content .carousel-container .carousel-arrow {
@@ -108,7 +112,6 @@
 
 .holiday-blade-inner-content .toggle-bar a {
     position: relative;
-    top: -2.5px;
     display: inline;
     color: var(--text-color);
     text-decoration: underline;
@@ -116,14 +119,25 @@
 
 .holiday-blade-inner-content .toggle-bar .icon {
     position: relative;
-    top: 2px;
+    top: 4px;
+}
+
+.holiday-blade-inner-content .toggle-bar > p:first-of-type picture>img {
+    margin: auto;
+    display: block;
+    margin-top: 4px;
+    width: fit-content;
 }
 
 .holiday-blade-inner-content.light .toggle-bar .icon {
     filter: invert(100)
 }
 
-.holiday-blade-inner-content .toggle-bar p:first-of-type {
+.holiday-blade-inner-content .toggle-bar > h4  {
+    margin-top: 3px;
+}
+
+.holiday-blade-inner-content .toggle-bar .toggle-bar-first-element  {
     display: none;
 }
 
@@ -183,14 +197,16 @@
     gap: 16px;
     font-size: var(--body-font-size-l);
     padding: 12px;
-    margin-right: 50px;
+    margin: 0px 50px 0px 0px;
+    color: var(--text-color);
 
 }
 
 .holiday-blade-inner-content div div>* {
     margin: 0;
-    margin-right: auto;
     font-size: var(--body-font-size-m);
+    width: 100%;
+    text-align: left;
 }
 
 
@@ -451,20 +467,18 @@
         --toggle-bar-height: 100px;
         --template-height: 180px;
     }
-
-    .holiday-blade-inner-content div div>* {
-        margin: unset;
+    .holiday-blade-inner-content .toggle-bar>h4,
+    .holiday-blade-inner-content .toggle-bar>p {
+    
+        width: unset;
     }
 
     .holiday-blade-inner-content .toggle-bar {
         height: unset;
         padding-bottom: 0;
+        margin: auto;
     }
 
-    .holiday-blade-inner-content .toggle-bar>p:first-of-type {
-        display: block;
-        width: 1200px;
-    }
 
     .holiday-blade-inner-content.expanded {
         height: var(--expanded-blade-height);
@@ -497,7 +511,18 @@
 
     .holiday-blade-inner-content .carousel-container .carousel-platform {
         height: 210px; 
-}
+    }
+
+    .holiday-blade-inner-content .toggle-bar .toggle-bar-first-element {
+        display: block;
+        margin: auto;
+        width: 80%;
+        text-align: center;
+    }
+    .holiday-blade-inner-content .toggle-bar h4.toggle-bar-first-element {
+        margin-top: 10px;
+    }
+
 }
 
 @media screen and (min-width: 1280px) {
@@ -523,10 +548,15 @@
         width: initial;
     }
 
-    .holiday-blade-inner-content div div>* {
+    .holiday-blade-inner-content .toggle-bar > p, 
+    .holiday-blade-inner-content .toggle-bar > h4{
         margin: unset;
+        width: unset;
     }
 
+    .holiday-blade-inner-content .toggle-bar .toggle-bar-first-element  {
+        display: block;
+    }
  
     .holiday-blade-inner-content .carousel-container {
         position: relative;
