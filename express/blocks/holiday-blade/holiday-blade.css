@@ -591,6 +591,7 @@
     right: 8px;
     border-radius: 50%;
     height: 20px;
+    width: fit-content;
 }
 
 .holiday-blade-inner-content .template .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
