@@ -20,6 +20,10 @@
     color: #242424;
 }
 
+.frictionless-quick-action-mobile h1.post-upload {
+    font-size: var(--heading-font-size-s);
+}
+
 .frictionless-quick-action-mobile .express-logo {
     width: initial;
     height: 30px;

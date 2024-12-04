@@ -121,7 +121,11 @@ export function runQuickAction(quickAction, data, block) {
   const extraContainer = block.querySelector('.extra-container');
   fade(uploadContainer, 'out');
   fade(extraContainer, 'out');
-  if (postUploadHeadlineText) block.querySelector('h1').textContent = postUploadHeadlineText;
+  if (postUploadHeadlineText) {
+    const h1 = block.querySelector('h1');
+    h1.textContent = postUploadHeadlineText;
+    h1.classList.add('post-upload');
+  }
 
   const contConfig = {
     mode: 'inline',
@@ -145,7 +149,11 @@ export function runQuickAction(quickAction, data, block) {
         quickActionContainer?.remove();
         fade(uploadContainer, 'in');
         fade(extraContainer, 'in');
-        if (postUploadHeadlineText) block.querySelector('h1').textContent = landingHeadlineText;
+        if (postUploadHeadlineText) {
+          const h1 = block.querySelector('h1');
+          h1.textContent = landingHeadlineText;
+          h1.classList.remove('post-upload');
+        }
         document.body.classList.add('editor-modal-loaded');
         window.history.pushState({ hideFrictionlessQa: true }, '', '');
         return {
@@ -377,7 +385,11 @@ export default function decorate(block) {
       inputElement.value = '';
       fade(uploadContainer, 'in');
       fade(extraContainer, 'in');
-      if (postUploadHeadlineText) block.querySelector('h1').textContent = landingHeadlineText;
+      if (postUploadHeadlineText) {
+        const h1 = block.querySelector('h1');
+        h1.textContent = landingHeadlineText;
+        h1.classList.remove('post-upload');
+      }
       document.body.dataset.suppressfloatingcta = 'false';
     }
   }, { passive: true });
