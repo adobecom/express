@@ -3,6 +3,8 @@ import { createTag, loadStyle } from '../../scripts/utils.js';
 function initializeCarousel(selector, parent) {
   let currentIndex = 1;
   let scrollCount = 1;
+  let touchStartX = 0;
+  let touchEndX = 0;
   const carouselContent = selector
     ? parent.querySelectorAll(selector)
     : parent.querySelectorAll(':scope > *');
@@ -88,6 +90,31 @@ function initializeCarousel(selector, parent) {
     }
   });
 
+  platform.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    e.preventDefault();
+  });
+
+  platform.addEventListener('touchmove', (e) => {
+    touchEndX = e.touches[0].clientX;
+    e.preventDefault();
+  });
+
+  platform.addEventListener('touchend', () => {
+    const swipeDistance = touchEndX - touchStartX;
+    if (Math.abs(swipeDistance) > 50) {
+      if (swipeDistance > 0) {
+        if (currentIndex > 0) {
+          currentIndex -= 1;
+          updateCarousel();
+        }
+      } else if (currentIndex + 1 < elements.length) {
+        currentIndex += 1;
+        updateCarousel();
+      }
+    }
+  });
+
   window.addEventListener('resize', () => {
     const newScrollCount = window.innerWidth <= 600 ? 1 : determineScrollCount();
     if (newScrollCount !== scrollCount) {
@@ -96,7 +123,7 @@ function initializeCarousel(selector, parent) {
     }
   });
 
-  window.addEventListener('resize', updateCarousel);
+  // window.addEventListener('resize', updateCarousel);
   updateCarousel();
 }
 
