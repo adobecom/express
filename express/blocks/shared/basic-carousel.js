@@ -89,7 +89,7 @@ function initializeCarousel(selector, parent) {
   });
 
   window.addEventListener('resize', () => {
-    const newScrollCount = determineScrollCount();
+    const newScrollCount = window.innerWidth <= 600 ? 1 : determineScrollCount();
     if (newScrollCount !== scrollCount) {
       scrollCount = newScrollCount;
       updateCarousel();
@@ -104,7 +104,6 @@ const isStyleSheetPresent = (stylesheetHref) => {
   for (const sheet of document.styleSheets) {
     try {
       if (sheet.href && sheet.href.includes(stylesheetHref)) {
-        console.log('here');
         return true;
       }
     } catch (e) {

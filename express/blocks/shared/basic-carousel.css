@@ -185,6 +185,9 @@ main .basic-carousel-container {
       width: 152px;
       height: 225px;
     }
+    main .basic-carousel-container .template.basic-carousel-element {
+      scroll-snap-align: start;
+    }
   }
   
   @media (min-width: 900px) {
@@ -198,9 +201,6 @@ main .basic-carousel-container {
   
     main .basic-carousel-container.controls-hidden .basic-carousel-platform {
       scroll-snap-type: x mandatory;
-    }
-    main .basic-carousel-container .template.basic-carousel-element {
-      scroll-snap-align: start;
     }
   }
   
