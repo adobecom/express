@@ -171,6 +171,9 @@ main .basic-carousel-container {
       width: 316px;
       height: 474px;
     }
+    main .template-x.one .basic-carousel-container .basic-carousel-platform { 
+      height: 440px;
+    }
     main .template-x.two .basic-carousel-container .basic-carousel-platform { 
       height: auto;
     }
