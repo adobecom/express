@@ -325,7 +325,6 @@ export default function decorate(block) {
   landingHeadlineText = headline.querySelector('h1').textContent;
   const postUploadHeadline = headline.querySelector('p');
   if (postUploadHeadline) {
-    landingHeadlineText = headline.textContent;
     postUploadHeadlineText = postUploadHeadline.textContent;
     postUploadHeadline.remove();
   }
