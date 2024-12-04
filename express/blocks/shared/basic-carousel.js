@@ -1,19 +1,13 @@
 import { createTag, loadStyle } from '../../scripts/utils.js';
 
-let currentIndex = 2;
-
-const getVisibleCount = (platform, elements) => {
-  const platformRect = platform.getBoundingClientRect();
-  return Array.from(elements).filter((el) => {
-    const elRect = el.getBoundingClientRect();
-    return (
-      elRect.left >= platformRect.left && elRect.right <= platformRect.right
-    );
-  }).length;
-};
-
-export function onBasicCarouselCSSLoad(selector, parent) {
-  const carouselContent = selector ? parent.querySelectorAll(selector) : parent.querySelectorAll(':scope > *');
+function initializeCarousel(selector, parent) {
+  let currentIndex = 1;
+  let scrollCount = 1;
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const carouselContent = selector
+    ? parent.querySelectorAll(selector)
+    : parent.querySelectorAll(':scope > *');
 
   carouselContent.forEach((el) => el.classList.add('basic-carousel-element'));
 
@@ -42,12 +36,22 @@ export function onBasicCarouselCSSLoad(selector, parent) {
   platform.append(rightTrigger);
   const elements = platform.querySelectorAll('.template.basic-carousel-element');
 
+  const determineScrollCount = () => {
+    if (platform.closest('.four')) return 4;
+    if (platform.closest('.three')) return 3;
+    if (platform.closest('.two')) return 2;
+    return 1;
+  };
+  scrollCount = window.innerWidth <= 600 ? 1 : determineScrollCount();
+
   const updateCarousel = () => {
-    const visibleCount = getVisibleCount(platform, elements);
     const elementWidth = elements[0].offsetWidth;
     const platformWidth = platform.offsetWidth;
 
-    const newScrollPos = currentIndex * elementWidth - (platformWidth - elementWidth) / 2;
+    const newScrollPos = window.innerWidth <= 600
+      ? currentIndex * elementWidth - (platformWidth - elementWidth) / 2
+      : currentIndex * elementWidth;
+
     platform.scrollTo({
       left: newScrollPos,
       behavior: 'smooth',
@@ -59,8 +63,6 @@ export function onBasicCarouselCSSLoad(selector, parent) {
           el.style.opacity = '1';
         } else if (index === currentIndex - 1 || index === currentIndex + 1) {
           el.style.opacity = '0.5';
-        } else {
-          el.style.opacity = '0.2';
         }
       });
     } else {
@@ -70,43 +72,92 @@ export function onBasicCarouselCSSLoad(selector, parent) {
     }
 
     faderLeft.classList.toggle('arrow-hidden', currentIndex === 0);
-    faderRight.classList.toggle(
-      'arrow-hidden',
-      currentIndex + visibleCount >= elements.length,
-    );
+    faderRight.classList.toggle('arrow-hidden', currentIndex + scrollCount >= elements.length);
   };
 
   faderLeft.addEventListener('click', () => {
-    let visibleCount = getVisibleCount(platform, elements);
-    if (window.innerWidth <= 600) {
-      visibleCount = 1;
-    }
     if (currentIndex > 0) {
-      currentIndex -= visibleCount + 1;
+      currentIndex -= scrollCount;
       currentIndex = Math.max(0, currentIndex);
       updateCarousel();
     }
   });
+
   faderRight.addEventListener('click', () => {
-    let visibleCount = getVisibleCount(platform, elements);
-    if (window.innerWidth <= 600) {
-      visibleCount = 1;
-    }
-    if (currentIndex < elements.length - visibleCount) {
-      currentIndex += visibleCount + 1;
+    if (currentIndex + scrollCount < elements.length) {
+      currentIndex += scrollCount;
       updateCarousel();
     }
   });
 
-  window.addEventListener('resize', updateCarousel);
+  platform.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    e.preventDefault();
+  });
+
+  platform.addEventListener('touchmove', (e) => {
+    touchEndX = e.touches[0].clientX;
+    e.preventDefault();
+  });
+
+  platform.addEventListener('touchend', () => {
+    const swipeDistance = touchEndX - touchStartX;
+    if (Math.abs(swipeDistance) > 50) {
+      if (swipeDistance > 0) {
+        if (currentIndex > 0) {
+          currentIndex -= 1;
+          updateCarousel();
+        }
+      } else if (currentIndex + 1 < elements.length) {
+        currentIndex += 1;
+        updateCarousel();
+      }
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    const newScrollCount = window.innerWidth <= 600 ? 1 : determineScrollCount();
+    if (newScrollCount !== scrollCount) {
+      scrollCount = newScrollCount;
+      updateCarousel();
+    }
+  });
+
   updateCarousel();
 }
 
+const isStyleSheetPresent = (stylesheetHref) => {
+  for (const sheet of document.styleSheets) {
+    try {
+      if (sheet.href && sheet.href.includes(stylesheetHref)) {
+        return true;
+      }
+    } catch (e) {
+      console.error('stylesheet loading error: ', e);
+    }
+  }
+  return false;
+};
+
+export function onBasicCarouselCSSLoad(selector, parent) {
+  const stylesheetHref = '/express/blocks/shared/basic-carousel.css';
+
+  const waitForCSS = () => new Promise((resolve) => {
+    const interval = setInterval(() => {
+      if (isStyleSheetPresent(stylesheetHref)) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, 50);
+  });
+
+  waitForCSS().then(() => {
+    initializeCarousel(selector, parent);
+  });
+}
+
 export default async function buildBasicCarousel(selector, parent, options = {}) {
-  return new Promise((resolve) => {
-    loadStyle('/express/blocks/shared/basic-carousel.css', () => {
-      onBasicCarouselCSSLoad(selector, parent, options);
-      resolve();
-    });
+  loadStyle('/express/blocks/shared/basic-carousel.css', () => {
+    onBasicCarouselCSSLoad(selector, parent, options);
   });
 }
