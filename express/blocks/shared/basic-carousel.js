@@ -123,7 +123,6 @@ function initializeCarousel(selector, parent) {
     }
   });
 
-  // window.addEventListener('resize', updateCarousel);
   updateCarousel();
 }
 
