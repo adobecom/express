@@ -382,6 +382,7 @@ function renderHoverWrapper(template, placeholders) {
   btnContainer.append(ctaLink);
 
   btnContainer.addEventListener('mouseenter', enterHandler);
+  btnContainer.addEventListener('carouseltap', enterHandler);
   btnContainer.addEventListener('mouseleave', leaveHandler);
 
   cta.addEventListener('focusin', focusHandler);

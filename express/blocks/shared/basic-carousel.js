@@ -92,6 +92,7 @@ function initializeCarousel(selector, parent) {
 
   platform.addEventListener('touchstart', (e) => {
     touchStartX = e.touches[0].clientX;
+    touchEndX = touchStartX;
     e.preventDefault();
   });
 
@@ -100,7 +101,7 @@ function initializeCarousel(selector, parent) {
     e.preventDefault();
   });
 
-  platform.addEventListener('touchend', () => {
+  platform.addEventListener('touchend', (e) => {
     const swipeDistance = touchEndX - touchStartX;
     if (Math.abs(swipeDistance) > 50) {
       if (swipeDistance > 0) {
@@ -111,6 +112,20 @@ function initializeCarousel(selector, parent) {
       } else if (currentIndex + 1 < elements.length) {
         currentIndex += 1;
         updateCarousel();
+      }
+    } else {
+      const tappedElement = document.elementFromPoint(
+        e.changedTouches[0].clientX,
+        e.changedTouches[0].clientY,
+      );
+      if (tappedElement) {
+        const parentElement = tappedElement.closest('.template.basic-carousel-element');
+        if (parentElement) {
+          const btnContainer = parentElement.querySelector('.button-container');
+          if (btnContainer) {
+            btnContainer.dispatchEvent(new Event('carouseltap'));
+          }
+        }
       }
     }
   });

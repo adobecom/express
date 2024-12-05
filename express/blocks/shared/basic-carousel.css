@@ -95,7 +95,8 @@ main .basic-carousel.four.template-x.horizontal .template:not(.placeholder) img:
 }
 
 main .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
-  width: max-content;
+  /* width: max-content; */
+  opacity: 1;
 }
 
 main .basic-carousel-container .basic-carousel-fader-left.arrow-hidden,
