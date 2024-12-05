@@ -128,7 +128,7 @@ function initializeCarousel(selector, parent) {
       );
       if (tappedElement) {
         const parentElement = tappedElement.closest('.template.basic-carousel-element');
-        if (parentElement) {
+        if (parentElement === elements[currentIndex]) {
           const btnContainer = parentElement.querySelector('.button-container');
           if (btnContainer) {
             btnContainer.dispatchEvent(new Event('carouseltapstart'));
