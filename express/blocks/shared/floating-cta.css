@@ -168,7 +168,8 @@ body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"]
 body[data-device="desktop"] main .floating-button-wrapper[data-audience="desktop"][data-section-status="loaded"] {
     display: flex;
 }
-body[data-suppressfloatingcta="true"] main .floating-button-wrapper[data-audience="desktop"][data-section-status="loaded"] {
+body[data-suppressfloatingcta="true"] main .floating-button-wrapper[data-audience="desktop"][data-section-status="loaded"],
+body[data-suppressfloatingcta="true"] main .floating-button-wrapper[data-audience="mobile"][data-section-status="loaded"] {
     display: none;
 }
 
