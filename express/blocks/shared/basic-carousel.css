@@ -10,7 +10,7 @@ main .basic-carousel-container .basic-carousel-platform {
   width: max-content;
   max-width: 100%;
   left: 0;
-  height: 340px;
+  height: 360px;
   display: flex;
   flex-direction: row;
   align-items: center;

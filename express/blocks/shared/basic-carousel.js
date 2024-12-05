@@ -123,7 +123,10 @@ function initializeCarousel(selector, parent) {
         if (parentElement) {
           const btnContainer = parentElement.querySelector('.button-container');
           if (btnContainer) {
-            btnContainer.dispatchEvent(new Event('carouseltap'));
+            btnContainer.dispatchEvent(new Event('carouseltapstart'));
+            setTimeout(() => {
+              btnContainer.dispatchEvent(new Event('carouseltapend'));
+            }, 0);
           }
         }
       }
@@ -163,7 +166,7 @@ export function onBasicCarouselCSSLoad(selector, parent) {
         clearInterval(interval);
         resolve();
       }
-    }, 50);
+    }, 0);
   });
 
   waitForCSS().then(() => {
