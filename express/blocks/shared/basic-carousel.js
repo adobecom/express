@@ -48,6 +48,14 @@ function initializeCarousel(selector, parent) {
     const elementWidth = elements[0].offsetWidth;
     const platformWidth = platform.offsetWidth;
 
+    for (const element of elements) {
+      const buttonContainer = element.querySelector('.button-container.singleton-hover');
+      if (buttonContainer) {
+        buttonContainer.classList.remove('singleton-hover');
+        break;
+      }
+    }
+
     const newScrollPos = window.innerWidth <= 600
       ? currentIndex * elementWidth - (platformWidth - elementWidth) / 2
       : currentIndex * elementWidth;
