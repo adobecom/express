@@ -21,13 +21,13 @@
     width: 100vw;
 }
 
-.holiday-blade-inner-content.expanded::after {
+.section:has(.holiday-blade-inner-content.expanded)::after {
     content: '';
     position: fixed;
     inset: 0;
     background-color: var(--color-black);
     opacity: 0.3;
-    z-index: -1;
+    z-index: 4;
 }
 
 .holiday-blade.light .holiday-blade-inner-content  {
