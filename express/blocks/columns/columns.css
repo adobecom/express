@@ -132,6 +132,10 @@ main .columns:not(.highlight) .column-video .button-container a:before {
 }
 
 main .columns .column-picture {
+  margin: 15px 0;
+}
+
+main .columns .column-picture {
   margin: 15px 0; 
 }
 
