@@ -135,10 +135,6 @@ main .columns .column-picture {
   margin: 15px 0;
 }
 
-main .columns .column-picture {
-  margin: 15px 0; 
-}
-
 main .columns h1{
   font-size: var(--heading-font-size-xxl);
   line-height: 1.06;
