@@ -99,9 +99,7 @@ main .basic-carousel-container .template.basic-carousel-element .button-containe
   opacity: 1;
 }
 
-main .basic-carousel-container .template.four.basic-carousel-element .button-container.singleton-hover {
-  width: max-content;
-  opacity: 1;
+main .template-x.four .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
   height: 276px;
 }
 
