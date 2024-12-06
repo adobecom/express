@@ -1925,9 +1925,10 @@ async function buildAutoBlocks(main) {
   }
 
   async function loadFloatingCTA(BlockMediator) {
-    const validButtonVersion = ['floating-button', 'multifunction-button', 'mobile-fork-button', 'mobile-fork-button-frictionless'];
+    const validButtonVersion = ['floating-button', 'multifunction-button'];
     const device = document.body.dataset?.device;
     const blockName = getMetadata(`${device}-floating-cta`);
+
     if (blockName && validButtonVersion.includes(blockName) && lastDiv) {
       const button = buildBlock(blockName, device);
       button.classList.add('meta-powered');
@@ -2429,7 +2430,8 @@ async function loadPostLCP(config) {
     loadMartech();
   }
   const georouting = getMetadata('georouting') || config.geoRouting;
-  if (georouting === 'on') {
+  const isHomepage = window.location.pathname.endsWith('/express/');
+  if (georouting === 'on' && isHomepage) {
     const { default: loadGeoRouting } = await import('../features/georoutingv2/georoutingv2.js');
     await loadGeoRouting(config, createTag, getMetadata, loadBlock, loadStyle);
   }

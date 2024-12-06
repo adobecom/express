@@ -1,7 +1,5 @@
 .*
 *.md
-*.json
-!*/**/*.json
 LICENSE
 package.json
 package-lock.json

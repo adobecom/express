@@ -344,9 +344,7 @@ export function collectFloatingButtonData() {
     };
 
     if (Object.values(completeSet).every((val) => !!val)) {
-      const {
-        href, text, icon,
-      } = completeSet;
+      const { href, text, icon } = completeSet;
       const aTag = createTag('a', { title: text, href });
       aTag.textContent = text;
       data.tools.push({
