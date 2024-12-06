@@ -5,6 +5,7 @@ function initializeCarousel(selector, parent) {
   let scrollCount = 1;
   let touchStartX = 0;
   let touchEndX = 0;
+  let scrolling = false;
   const carouselContent = selector
     ? parent.querySelectorAll(selector)
     : parent.querySelectorAll(':scope > *');
@@ -45,6 +46,9 @@ function initializeCarousel(selector, parent) {
   scrollCount = window.innerWidth <= 600 ? 1 : determineScrollCount();
 
   const updateCarousel = () => {
+    if (scrolling) return;
+    scrolling = true;
+
     const elementWidth = elements[0].offsetWidth;
     const platformWidth = platform.offsetWidth;
 
@@ -79,23 +83,25 @@ function initializeCarousel(selector, parent) {
       });
     }
 
+    setTimeout(() => {
+      scrolling = false;
+    }, 300);
+
     faderLeft.classList.toggle('arrow-hidden', currentIndex === 0);
     faderRight.classList.toggle('arrow-hidden', currentIndex + scrollCount >= elements.length);
   };
 
   faderLeft.addEventListener('click', () => {
-    if (currentIndex > 0) {
-      currentIndex -= scrollCount;
-      currentIndex = Math.max(0, currentIndex);
-      updateCarousel();
-    }
+    if (scrolling || currentIndex === 0) return;
+    currentIndex -= scrollCount;
+    currentIndex = Math.max(0, currentIndex);
+    updateCarousel();
   });
 
   faderRight.addEventListener('click', () => {
-    if (currentIndex + scrollCount < elements.length) {
-      currentIndex += scrollCount;
-      updateCarousel();
-    }
+    if (scrolling || currentIndex + scrollCount >= elements.length) return;
+    currentIndex += scrollCount;
+    updateCarousel();
   });
 
   platform.addEventListener('touchstart', (e) => {
