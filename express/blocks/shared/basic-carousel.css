@@ -97,6 +97,7 @@ main .basic-carousel.four.template-x.horizontal .template:not(.placeholder) img:
 main .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
   width: max-content;
   opacity: 1;
+  height: 276px;
 }
 
 main .basic-carousel-container .basic-carousel-fader-left.arrow-hidden,
@@ -188,6 +189,9 @@ main .basic-carousel-container .basic-carousel-platform .basic-carousel-right-tr
   }
   main .basic-carousel-container .template.basic-carousel-element {
     scroll-snap-align: start;
+  }
+  main .basic-carousel.template-x.horizontal .template.basic-carousel-element .button-container.singleton-hover a .media-wrapper img:not(.icon):not(.icon-share-arrow) {
+    width: 170px;
   }
 }
 
