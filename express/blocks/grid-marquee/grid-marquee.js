@@ -7,7 +7,8 @@ import {
 } from '../../scripts/utils.js';
 
 let currDrawer = null;
-const desktopMQ = window.matchMedia('(min-width: 1200px)');
+const largeMQ = window.matchMedia('(min-width: 1280px)');
+const mediumMQ = window.matchMedia('(min-width: 768px)');
 const reduceMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 function drawerOff() {
@@ -47,6 +48,10 @@ async function decorateDrawer(videoSrc, poster, titleText, panels, panelsFrag, d
   const icons = panelsFrag.querySelectorAll('.icon');
   const anchors = [...panelsFrag.querySelectorAll('a')];
   anchors.forEach((anchor, i) => {
+    const parent = anchor.parentElement;
+    if (parent.tagName === 'P') {
+      parent.classList.add('drawer-cta-wrapper');
+    }
     anchor.classList.add('drawer-cta');
     const icon = icons[i];
     const match = icon && iconRegex.exec(icon.className);
@@ -222,8 +227,11 @@ export default function init(el) {
     ob.unobserve(el);
     cards.forEach((card) => card.lazyCB());
   }).observe(el);
-  desktopMQ.addEventListener('change', () => {
+  largeMQ.addEventListener('change', () => {
     isTouch = false;
+    drawerOff();
+  });
+  mediumMQ.addEventListener('change', () => {
     drawerOff();
   });
 }
