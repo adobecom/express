@@ -1065,7 +1065,7 @@ body[data-device="mobile"] main .floating-button-wrapper[data-audience="mobile"]
   display: block;
 }
 
-main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .simplified-pricing-cards, .puf, .split-action, .link-list, .wayfinder, .ratings, .ribbon-banner) a.button.same-fcta {
+main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .simplified-pricing-cards, .split-action, .link-list, .wayfinder, .ratings, .ribbon-banner) a.button.same-fcta {
   display: none;
 }
 
@@ -1105,7 +1105,7 @@ main .long-form.grid-width-6-desktop.narrow .default-content-wrapper {
     text-align: left;
   }
 
-  main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .puf, .link-list, .wayfinder, .ratings) a.button.same-fcta {
+  main > div:not(.banner-container) .block:not(.pricing-summary, .pricing-cards, .pricing-table, .link-list, .wayfinder, .ratings) a.button.same-fcta {
     display: inline-block;
   }
 }
