@@ -66,8 +66,9 @@
 }
 
 .gen-ai-cards.homepage .carousel-element.card {
-  width: 290px;
-  height: 392px;
+  width: 292px;
+  height: 396px;
+  flex-direction: column;
 }
 
 .gen-ai-cards .carousel-left-trigger ~ .card {
