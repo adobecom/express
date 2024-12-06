@@ -44,15 +44,6 @@ async function decorateDrawer(videoSrc, poster, titleText, panels, panelsFrag, d
   });
   titleRow.append(createTag('strong', { class: 'drawer-title' }, titleText), closeButton);
   await yieldToMain();
-  const video = createTag('video', {
-    playsinline: '',
-    muted: '',
-    loop: '',
-    preload: 'metadata',
-    title: titleText,
-    poster,
-  }, `<source src="${videoSrc}" type="video/mp4">`);
-  const videoWrapper = createTag('div', { class: 'video-container' }, video);
 
   const icons = panelsFrag.querySelectorAll('.icon');
   const anchors = [...panelsFrag.querySelectorAll('a')];
@@ -67,8 +58,22 @@ async function decorateDrawer(videoSrc, poster, titleText, panels, panelsFrag, d
     if (match?.[1]) {
       icon.append(getIconElement(match[1]));
     }
-    anchor?.prepend(icon);
+    anchor.prepend(icon);
   });
+
+  const video = createTag('video', {
+    playsinline: '',
+    muted: '',
+    loop: '',
+    preload: 'metadata',
+    title: titleText,
+    poster,
+  }, `<source src="${videoSrc}" type="video/mp4">`);
+  const videoWrapper = createTag('button', { class: 'video-container' }, video);
+  // link video to first anchor
+  videoWrapper.addEventListener('click', () => anchors[0]?.click());
+  videoWrapper.setAttribute('title', anchors[0]?.title);
+
   content.append(titleRow, videoWrapper, panelsFrag);
   drawer.append(content);
   if (panels.length <= 1) {

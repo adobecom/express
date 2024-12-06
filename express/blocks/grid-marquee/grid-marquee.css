@@ -152,11 +152,16 @@
 }
 
 .grid-marquee .drawer .video-container {
+  /* override browser button style */
+  border: 0; 
+  margin: auto;
   border-top: 1px solid #0000001A;
   display: flex;
   justify-content: center;
   width: 100%;
   padding: 16px 0;
+  cursor: pointer;
+  background: none;
 }
 
 .grid-marquee .drawer video {
