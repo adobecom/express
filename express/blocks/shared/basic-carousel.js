@@ -1,7 +1,7 @@
 import { createTag, loadStyle } from '../../scripts/utils.js';
 
 function initializeCarousel(selector, parent) {
-  let currentIndex = 1;
+  let currentIndex = window.innerWidth <= 600 ? 1 : 0;
   let scrollCount = 1;
   let touchStartX = 0;
   let touchEndX = 0;
