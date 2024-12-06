@@ -3,17 +3,16 @@ import {
   getConfig,
   loadScript,
   transformLinkToAnimation,
-  addAnimationToggle,
   fetchPlaceholders,
-  getMetadata,
   getIconElement,
+  getMobileOperatingSystem,
 } from '../../scripts/utils.js';
-import { buildFreePlanWidget } from '../../scripts/utils/free-plan.js';
-import { sendFrictionlessEventToAdobeAnaltics } from '../../scripts/instrument.js';
 
 let ccEverywhere;
 let quickActionContainer;
 let uploadContainer;
+let ui2SDK;
+let ui2Landing;
 
 const JPG = 'jpg';
 const JPEG = 'jpeg';
@@ -56,18 +55,18 @@ const QA_CONFIGS = {
   },
 };
 
-function fade(element, action) {
-  if (action === 'in') {
-    element.classList.remove('hidden');
-    setTimeout(() => {
-      element.classList.remove('transparent');
-    }, 10);
-  } else if (action === 'out') {
-    element.classList.add('transparent');
-    setTimeout(() => {
-      element.classList.add('hidden');
-    }, 200);
-  }
+function fadeIn(element) {
+  element.classList.remove('hidden');
+  setTimeout(() => {
+    element.classList.remove('transparent');
+  }, 10);
+}
+
+function fadeOut(element) {
+  element.classList.add('transparent');
+  setTimeout(() => {
+    element.classList.add('hidden');
+  }, 200);
 }
 
 function selectElementByTagPrefix(p) {
@@ -75,12 +74,16 @@ function selectElementByTagPrefix(p) {
   return Array.from(allEls).find((e) => e.tagName.toLowerCase().startsWith(p.toLowerCase()));
 }
 
+function isEligibleMFQA() {
+  return navigator.deviceMemory >= 4 && getMobileOperatingSystem() === 'Android';
+}
+
 export function runQuickAction(quickAction, data, block) {
   // TODO: need the button labels from the placeholders sheet if the SDK default doens't work.
   const exportConfig = [
     {
       id: 'download-button',
-      // label: 'Download',
+      label: 'Download to Phone',
       action: {
         target: 'download',
       },
@@ -95,7 +98,7 @@ export function runQuickAction(quickAction, data, block) {
     },
     {
       id: 'edit-in-express',
-      // label: 'Edit in Adobe Express for free',
+      label: 'Edit in Adobe Express for free',
       action: {
         target: 'express',
       },
@@ -115,7 +118,7 @@ export function runQuickAction(quickAction, data, block) {
   block.append(quickActionContainer);
   const divs = block.querySelectorAll(':scope > div');
   if (divs[1]) [, uploadContainer] = divs;
-  fade(uploadContainer, 'out');
+  ui2SDK();
 
   const contConfig = {
     mode: 'inline',
@@ -137,7 +140,7 @@ export function runQuickAction(quickAction, data, block) {
     callbacks: {
       onIntentChange: () => {
         quickActionContainer?.remove();
-        fade(uploadContainer, 'in');
+        ui2Landing();
         document.body.classList.add('editor-modal-loaded');
         window.history.pushState({ hideFrictionlessQa: true }, '', '');
         return {
@@ -199,7 +202,7 @@ async function startSDK(data = '', quickAction, block) {
   if (!window.CCEverywhere) {
     return;
   }
-
+  document.body.dataset.suppressfloatingcta = 'true';
   if (!ccEverywhere) {
     let { ietf } = getConfig().locale;
     const country = urlParams.get('country');
@@ -269,37 +272,100 @@ async function startSDKWithUnconvertedFile(file, quickAction, block) {
   showErrorToast(block, msg);
 }
 
-export default async function decorate(block) {
+async function injectFreePlan(container) {
+  const { buildFreePlanWidget } = await import('../../scripts/utils/free-plan.js');
+  const freePlan = await buildFreePlanWidget({ typeKey: 'features', checkmarks: true });
+  container.append(freePlan);
+  return container;
+}
+
+function decorateExtra(extraContainer) {
+  const wrapper = extraContainer.querySelector('div');
+  while (wrapper?.firstChild) {
+    extraContainer.append(wrapper.firstChild);
+  }
+  wrapper.remove();
+  const legalText = extraContainer.querySelector('p:last-of-type');
+  legalText.classList.add('legal');
+  const freePlanContainer = createTag('div', { class: 'free-plan-container' });
+  injectFreePlan(freePlanContainer);
+  legalText.before(freePlanContainer);
+}
+
+export default function decorate(block) {
   const rows = Array.from(block.children);
-  rows[1].classList.add('container');
-  const quickActionRow = rows.filter((r) => r.children && r.children[0].textContent.toLowerCase().trim() === 'quick-action');
-  const quickAction = quickActionRow?.[0].children[1]?.textContent;
-  if (!quickAction) {
+  const [quickActionRow] = rows.filter((row) => row.children[0]?.textContent?.toLowerCase()?.trim() === 'quick-action');
+  quickActionRow?.remove();
+  const [fallbackRow] = rows.filter((row) => row.children[0]?.textContent?.toLowerCase()?.trim() === 'fallback');
+  fallbackRow?.remove();
+  if (fallbackRow && !isEligibleMFQA()) {
+    const fallbackBlock = fallbackRow.querySelector('.block');
+    block.replaceWith(fallbackBlock);
+    return fallbackBlock;
+  }
+  const quickAction = quickActionRow.children[1]?.textContent;
+  if (!(quickAction in QA_CONFIGS)) {
     throw new Error('Invalid Quick Action Type.');
   }
-  quickActionRow[0].remove();
 
-  const actionAndAnimationRow = rows[1].children;
-  const animationContainer = actionAndAnimationRow[0];
+  const [headline, dropzoneContainer, extraContainer] = rows;
+  const h1 = headline.querySelector('h1');
+  const landingHeadlineText = h1.textContent;
+  const postUploadHeadline = headline.querySelector('p');
+  let postUploadHeadlineText;
+  if (postUploadHeadline) {
+    postUploadHeadlineText = postUploadHeadline.textContent;
+    postUploadHeadline.remove();
+  }
+  headline.classList.add('headline');
+  dropzoneContainer.classList.add('dropzone-container');
+  extraContainer.classList.add('extra-container');
+  decorateExtra(extraContainer);
+
+  const logo = getIconElement('adobe-express-logo');
+  logo.classList.add('express-logo');
+  block.prepend(logo);
+
+  ui2SDK = () => {
+    fadeOut(uploadContainer);
+    fadeOut(extraContainer);
+    logo.classList.add('hide');
+    if (postUploadHeadlineText) {
+      h1.textContent = postUploadHeadlineText;
+      h1.classList.add('post-upload');
+    }
+  };
+  ui2Landing = () => {
+    fadeIn(uploadContainer);
+    fadeIn(extraContainer);
+    logo.classList.remove('hide');
+    if (postUploadHeadlineText) {
+      h1.textContent = landingHeadlineText;
+      h1.classList.remove('post-upload');
+    }
+  };
+
+  const dropzone = createTag('button', { class: 'dropzone hide', id: 'mobile-fqa-upload' });
+  const [animationContainer, dropzoneContent] = rows[1].children;
+  while (dropzoneContent.firstChild) dropzone.append(dropzoneContent.firstChild);
+  dropzoneContent.replaceWith(dropzone);
+  animationContainer.classList.add('animation-container');
   const animation = animationContainer.querySelector('a');
-  const dropzone = actionAndAnimationRow[1];
-  const dropzoneBackground = createTag('div', { class: 'dropzone-bg' });
-  const cta = dropzone.querySelector('a.button');
-  const gtcText = dropzone.querySelector('p:last-child');
-  const actionColumn = createTag('div');
-  const dropzoneContainer = createTag('div', { class: 'dropzone-container' });
 
   if (animation && animation.href.includes('.mp4')) {
-    transformLinkToAnimation(animation);
-    addAnimationToggle(animationContainer);
+    const video = transformLinkToAnimation(animation, false);
+    video.addEventListener('ended', () => {
+      dropzone.classList.remove('hide');
+      animationContainer.classList.add('hide');
+    });
+    // click to skip animation
   }
-  if (cta) cta.classList.add('xlarge');
+  const dropzoneText = createTag('div', { class: 'text' });
+  while (dropzone.firstChild) {
+    dropzoneText.append(dropzone.firstChild);
+  }
   dropzone.classList.add('dropzone');
-
-  dropzone.prepend(dropzoneBackground);
-  dropzone.before(actionColumn);
-  dropzoneContainer.append(dropzone);
-  actionColumn.append(dropzoneContainer, gtcText);
+  dropzone.append(createTag('div', { class: 'border-wrapper' }, dropzoneText));
   const inputElement = createTag('input', { type: 'file', accept: QA_CONFIGS[quickAction].accept });
   inputElement.onchange = () => {
     const file = inputElement.files[0];
@@ -307,53 +373,16 @@ export default async function decorate(block) {
   };
   block.append(inputElement);
 
-  dropzoneContainer.addEventListener('click', (e) => {
+  dropzone.addEventListener('click', (e) => {
     e.preventDefault();
+    dropzone.classList.remove('hide');
+    animationContainer.classList.add('hide');
     if (quickAction === 'generate-qr-code') {
       startSDK('', quickAction, block);
     } else {
       inputElement.click();
     }
-    document.body.dataset.suppressfloatingcta = 'true';
   });
-
-  function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-
-  function highlight() {
-    dropzoneContainer.classList.add('highlight');
-  }
-
-  function unhighlight() {
-    dropzoneContainer.classList.remove('highlight');
-  }
-
-  ['dragenter', 'dragover'].forEach((eventName) => {
-    dropzoneContainer.addEventListener(eventName, highlight, false);
-  });
-
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
-    dropzoneContainer.addEventListener(eventName, preventDefaults, false);
-  });
-
-  ['dragleave', 'drop'].forEach((eventName) => {
-    dropzoneContainer.addEventListener(eventName, unhighlight, false);
-  });
-
-  dropzoneContainer.addEventListener('drop', async (e) => {
-    const dt = e.dataTransfer;
-    const { files } = dt;
-
-    await Promise.all(
-      [...files].map((file) => startSDKWithUnconvertedFile(file, quickAction, block)),
-    );
-    document.body.dataset.suppressfloatingcta = 'true';
-  }, false);
-
-  const freePlanTags = await buildFreePlanWidget({ typeKey: 'branded', checkmarks: true });
-  dropzone.append(freePlanTags);
 
   window.addEventListener('popstate', (e) => {
     const editorModal = selectElementByTagPrefix('cc-everywhere-container-');
@@ -365,7 +394,7 @@ export default async function decorate(block) {
       editorModal?.remove();
       document.body.classList.remove('editor-modal-loaded');
       inputElement.value = '';
-      fade(uploadContainer, 'in');
+      ui2Landing();
       document.body.dataset.suppressfloatingcta = 'false';
     }
   }, { passive: true });
@@ -373,11 +402,8 @@ export default async function decorate(block) {
   block.dataset.frictionlesstype = quickAction;
   block.dataset.frictionlessgroup = QA_CONFIGS[quickAction].group ?? 'image';
 
-  if (['on', 'yes'].includes(getMetadata('marquee-inject-logo')?.toLowerCase())) {
-    const logo = getIconElement('adobe-express-logo');
-    logo.classList.add('express-logo');
-    block.prepend(logo);
-  }
-
-  sendFrictionlessEventToAdobeAnaltics(block);
+  import('../../scripts/instrument.js').then(({ sendFrictionlessEventToAdobeAnaltics }) => {
+    sendFrictionlessEventToAdobeAnaltics(block);
+  });
+  return block;
 }
