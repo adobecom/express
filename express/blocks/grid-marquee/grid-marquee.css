@@ -150,6 +150,9 @@
 }
 
 .grid-marquee .drawer .video-container {
+  /* override browser button style */
+  border: 0; 
+  margin: auto;
   border-top: 1px solid #0000001A;
   display: flex;
   justify-content: center;
@@ -357,7 +360,7 @@
   }
 
   .grid-marquee .drawer .video-container {
-    border: 0;
+    border-top: 0;
     padding: 0 16px 12px 16px;
   }
 
