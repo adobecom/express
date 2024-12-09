@@ -723,6 +723,11 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
       padding-right: 20px;
       word-break: auto-phrase;
   }
+  
+  main .section .columns.fullsize .column.column-picture img {
+    width: 225px;
+  }
+
 }
 
 @media (min-width: 900px) and (max-width: 1200px) {
