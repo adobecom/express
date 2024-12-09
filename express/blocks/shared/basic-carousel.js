@@ -10,7 +10,18 @@ function initializeCarousel(selector, parent) {
     ? parent.querySelectorAll(selector)
     : parent.querySelectorAll(':scope > *');
 
-  carouselContent.forEach((el) => el.classList.add('basic-carousel-element'));
+  carouselContent.forEach((el) => {
+    el.classList.add('basic-carousel-element');
+    el.addEventListener('mouseleave', () => {
+      if (window.innerWidth > 600) {
+        const isHover = el.querySelector('.button-container.singleton-hover');
+        if (isHover) {
+          isHover.classList.remove('singleton-hover');
+          isHover.classList.remove('hovering');
+        }
+      }
+    });
+  });
 
   const container = createTag('div', { class: 'basic-carousel-container' });
   const platform = createTag('div', { class: 'basic-carousel-platform' });
@@ -52,11 +63,13 @@ function initializeCarousel(selector, parent) {
     const elementWidth = elements[0].offsetWidth;
     const platformWidth = platform.offsetWidth;
 
-    for (const element of elements) {
-      const buttonContainer = element.querySelector('.button-container.singleton-hover');
-      if (buttonContainer) {
-        buttonContainer.classList.remove('singleton-hover');
-        break;
+    if (window.innerWidth <= 600) {
+      for (const element of elements) {
+        const buttonContainer = element.querySelector('.button-container.singleton-hover');
+        if (buttonContainer) {
+          buttonContainer.classList.remove('singleton-hover');
+          break;
+        }
       }
     }
 
