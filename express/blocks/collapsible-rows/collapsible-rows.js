@@ -31,8 +31,11 @@ function buildTableLayout(block) {
   collapsibleRows.forEach((row) => {
     const { header, subHeader } = row;
 
+    const rowWrapper = createTag('div', { class: 'collapsible-row-wrapper' }); // New wrapper
+    block.append(rowWrapper);
+
     const headerAccordion = createTag('div', { class: 'collapsible-row-accordion expandable header-accordion' });
-    block.append(headerAccordion);
+    rowWrapper.append(headerAccordion);
 
     const headerDiv = createTag('h3', { class: 'collapsible-row-header expandable' });
     headerDiv.innerHTML = header;
@@ -47,7 +50,7 @@ function buildTableLayout(block) {
     headerDiv.appendChild(iconElement);
 
     const subHeaderAccordion = createTag('div', { class: 'collapsible-row-accordion expandable sub-header-accordion' });
-    block.append(subHeaderAccordion);
+    rowWrapper.append(subHeaderAccordion);
 
     const subHeaderDiv = createTag('div', { class: 'collapsible-row-sub-header expandable' });
     subHeaderDiv.innerHTML = subHeader;
