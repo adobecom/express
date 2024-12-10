@@ -472,12 +472,12 @@
     .section .holiday-blade {
         height: 40px;
     }
-    .section>.holiday-blade-inner-content {
+    .section .holiday-blade-inner-content {
         max-width: 100%;
         z-index: 6;
         top: auto;
         overflow: hidden;
-        --toggle-bar-height: 100px;
+        --toggle-bar-height: 45px;
         --template-height: 180px;
     }
     .holiday-blade-inner-content .toggle-bar>h4,
