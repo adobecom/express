@@ -2428,7 +2428,7 @@ async function loadPostLCP(config) {
   } else {
     loadMartech();
   }
-  const georouting = getMetadata('georouting') || config.geoRouting;
+  const georouting = getMetadata('georouting');
   if (georouting === 'on') {
     const { default: loadGeoRouting } = await import('../features/georoutingv2/georoutingv2.js');
     await loadGeoRouting(config, createTag, getMetadata, loadBlock, loadStyle);
