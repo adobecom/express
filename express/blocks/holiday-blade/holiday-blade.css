@@ -10,16 +10,17 @@
     --expanded-blade-height: 372px;
     --toggle-bar-height: 100px;
     min-height: var(--toggle-bar-height);
-    transition: height 0.3s ease-in-out;
+
     font-family: 'adobe-clean';
 }
 
 .section .holiday-blade-inner-content .holiday-blade-inner-wrapper {
     height: 0;
+    transition: height 0.3s ease-in-out;
 }
 
 .section .holiday-blade-inner-content.expanded .holiday-blade-inner-wrapper {
-    height: initial;
+    height: initial; 
 }
 
 .section .holiday-blade {
@@ -27,7 +28,6 @@
     height: 100px;
     z-index: 20;
     margin: 0;
-    width: 100vw;
 }
 
 .section:has(.holiday-blade-inner-content.expanded)::after {
@@ -202,7 +202,7 @@
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: center;
-    gap: 16px;
+    gap: 8px;
     font-size: var(--body-font-size-l);
     padding: 12px;
     margin: 0px 50px 0px 0px;
