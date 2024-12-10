@@ -1216,6 +1216,7 @@ function initExpandCollapseToolbar(block, templateTitle, toggle, toggleChev) {
   }, 3000);
 }
 
+
 function decorateHoliday(block, props) {
   const main = document.querySelector('main');
   const templateXSection = block.closest('div[class="section section-wrapper template-x-container"]');
