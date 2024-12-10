@@ -9,9 +9,17 @@
     --template-height: 150px;
     --expanded-blade-height: 372px;
     --toggle-bar-height: 100px;
-    height: var(--toggle-bar-height);
+    min-height: var(--toggle-bar-height);
     transition: height 0.3s ease-in-out;
     font-family: 'adobe-clean';
+}
+
+.section .holiday-blade-inner-content .holiday-blade-inner-wrapper {
+    height: 0;
+}
+
+.section .holiday-blade-inner-content.expanded .holiday-blade-inner-wrapper {
+    height: initial;
 }
 
 .section .holiday-blade {
@@ -42,18 +50,18 @@
 .holiday-blade-inner-content .carousel-container .carousel-fader-left {
     align-items: end;
     top: 20px;
-    right: 42px;
+    right: 70px;
     left: auto;
     pointer-events: none;
-    width: 10px;
+    width: 30px;
  
 }
 
 .holiday-blade-inner-content .carousel-container .carousel-fader-right {
     align-items: end;
     top: 20px;
-    right: 15px;
-    width: 10px;
+    right: 7px; 
+    width: 30px;
  
 }
 
@@ -69,8 +77,7 @@
 
 .holiday-blade-inner-content .carousel-container .carousel-arrow-left {
     position: absolute;
-    left: -38px;
-
+ 
 }
 
 .holiday-blade-inner-content.light {
@@ -508,7 +515,7 @@
     .holiday-blade-inner-content .carousel-container .carousel-fader-right {
         top: 35px;
         height: 230px;
-        width: 20px;
+        width: 30px;
     }
     .holiday-blade-inner-content .button-container {
         top: 50%;
