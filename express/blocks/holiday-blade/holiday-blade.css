@@ -531,10 +531,6 @@
         width: 80%;
         text-align: center;
     }
-    .holiday-blade-inner-content .toggle-bar h4.toggle-bar-first-element {
-        margin-top: 10px;
-    } 
-
 }
 
 @media screen and (min-width: 1280px) {
