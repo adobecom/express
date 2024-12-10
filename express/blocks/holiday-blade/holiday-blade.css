@@ -133,9 +133,9 @@
     filter: invert(100)
 }
 
-.holiday-blade-inner-content .toggle-bar .toggle-bar-first-element  {
+ .holiday-blade-inner-content .toggle-bar .toggle-bar-first-element:has(img)  {
     display: none;
-}
+}   
 
 .holiday-blade-inner-content .toggle-button-chev {
     cursor: pointer;
@@ -207,10 +207,14 @@
 
 
 .holiday-blade-inner-content.expanded {
-    height: var(--expanded-blade-height);
+    height: fit-content;
     overflow: unset;
     transition: height 0.3s ease-in-out;
     z-index: 6;
+}
+
+.holiday-blade-inner-content.expanded .holiday-blade-inner-wrapper {
+    padding-bottom: 40px;
 }
 
 .holiday-blade-inner-content .carousel-container {
@@ -222,6 +226,7 @@
 .holiday-blade-inner-content.expanded .carousel-container {
     opacity: 1;
     transition: opacity 0.1s ease-in-out;
+    
 }
 
 .holiday-blade-inner-content .template .still-wrapper .image-wrapper {
@@ -476,7 +481,7 @@
 
 
     .holiday-blade-inner-content.expanded {
-        height: var(--expanded-blade-height);
+        height: fit-content;
         overflow: unset;
     }
 
@@ -486,11 +491,10 @@
     }
     .holiday-blade-inner-content .carousel-container .carousel-platform {
         padding-top: 10px;
-        padding-bottom: 60px;
-
+        padding-bottom: 30px;
     }
     .holiday-blade-inner-content.static-background .static-background-image {
-        height: var(--expanded-blade-height);
+      
         width: 100%;
         clip-path: polygon(0 0, 100% 0, 100% var(--expanded-blade-height), 0 var(--expanded-blade-height)); 
     }
@@ -507,8 +511,8 @@
     .holiday-blade-inner-content .carousel-container .carousel-platform {
         height: 210px; 
     }
-
-    .holiday-blade-inner-content .toggle-bar .toggle-bar-first-element {
+ 
+    .holiday-blade-inner-content .toggle-bar .toggle-bar-first-element:has(img) {
         display: block;
         margin: auto;
         width: 80%;
@@ -516,7 +520,7 @@
     }
     .holiday-blade-inner-content .toggle-bar h4.toggle-bar-first-element {
         margin-top: 10px;
-    }
+    } 
 
 }
 
@@ -550,18 +554,18 @@
     .holiday-blade-inner-content .toggle-bar > h4{
         width: unset;
     }
-
+ 
     .holiday-blade-inner-content .toggle-bar .toggle-bar-first-element  {
         display: block;
-    }
+    } 
  
     .holiday-blade-inner-content .carousel-container {
         position: relative;
-        top: -10px;
+        top: -10px; 
     }
  
     .holiday-blade-inner-content.expanded {
-        height: var(--expanded-blade-height);
+        height: fit-content;
         overflow: unset;
     }
 
