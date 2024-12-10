@@ -10,8 +10,6 @@
     --expanded-blade-height: 372px;
     --toggle-bar-height: 100px;
     min-height: var(--toggle-bar-height);
-
-    font-family: 'adobe-clean';
 }
 
 .section .holiday-blade-inner-content .holiday-blade-inner-wrapper {
@@ -127,6 +125,7 @@
     color: var(--text-color);
     font-size: 16px;
     text-decoration: underline;
+    font-family: 'adobe-clean';
 }
 
 .holiday-blade-inner-content .toggle-bar .icon {
