@@ -123,7 +123,10 @@ main .basic-carousel.four.template-x.horizontal .template:not(.placeholder) img:
 }
 
 main .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
-  width: max-content;
+  width: 222px;
+  height: 362px;
+  max-width: none;
+  max-height: none;
   opacity: 1;
 }
 
