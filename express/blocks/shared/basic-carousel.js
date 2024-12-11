@@ -175,13 +175,14 @@ function initializeCarousel(selector, parent) {
           if (isHoverActive) {
             const link = parentElement.querySelector('a');
             if (link) {
-              // Simulate a real click event
-              const clickEvent = new MouseEvent('click', {
-                bubbles: true,
-                cancelable: true,
-                view: window,
-              });
-              link.dispatchEvent(clickEvent);
+              // // Simulate a real click event
+              // const clickEvent = new MouseEvent('click', {
+              //   bubbles: true,
+              //   cancelable: true,
+              //   view: window,
+              // });
+              // link.dispatchEvent(clickEvent);
+              alert(` ${link} we are here`);
             }
           }
           // if (isHoverActive) {
