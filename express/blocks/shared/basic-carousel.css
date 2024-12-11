@@ -7,23 +7,31 @@ main .basic-carousel-container {
 }
 
 main .basic-carousel-container .basic-carousel-platform {
+  /* Position/Layout */
+  position: relative;
+  left: 0;
+
+  /* Box Model */
   width: max-content;
   max-width: 100%;
-  left: 0;
   height: 360px;
+  max-height: 500px;
+  padding-top: 4px;
+  padding-bottom: 6px;
+
+  /* Display/Flex/Grid */
   display: flex;
   flex-direction: row;
   align-items: center;
   flex-wrap: nowrap;
+
+  /* Scroll/Overflow */
   overflow-y: hidden;
   overflow-x: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
-  max-height: 500px;
-  padding-top: 4px;
-  padding-bottom: 6px;
 }
 
 main .basic-carousel-container:not(.controls-hidden) .basic-carousel-platform::-webkit-scrollbar,
@@ -39,32 +47,52 @@ main .basic-carousel-container .basic-carousel-platform > * {
 }
 
 main .basic-carousel-container .basic-carousel-fader-left {
-  text-align: left;
-  display: flex;
+  /* Position/Layout */
   position: absolute;
-  width: 53px;
-  align-items: center;
   bottom: -40px;
   right: 45px;
-  transition: opacity 0.2s, display 0.2s;
-  cursor: pointer;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
   z-index: 1;
+
+  /* Box Model */
+  width: 53px;
+
+  /* Display/Flex/Grid */
+  display: flex;
+  align-items: center;
+  text-align: left;
+
+  /* Interaction */
+  cursor: pointer;
+  pointer-events: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  /* Animation/Transition */
+  transition: opacity 0.2s, display 0.2s;
 }
 
 main .basic-carousel-container .basic-carousel-fader-right {
-  text-align: left;
-  display: flex;
+  /* Position/Layout */
   position: absolute;
-  width: 53px;
-  align-items: center;
   bottom: -40px;
   right: 0;
-  flex-direction: row-reverse;
-  transition: opacity 0.2s;
-  cursor: pointer;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
   z-index: 1;
+
+  /* Box Model */
+  width: 53px;
+
+  /* Display/Flex/Grid */
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  text-align: left;
+
+  /* Interaction */
+  cursor: pointer;
+  pointer-events: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  /* Animation/Transition */
+  transition: opacity 0.2s;
 }
 
 main .basic-carousel-container a.button.basic-carousel-arrow {
