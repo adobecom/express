@@ -175,15 +175,16 @@
     height: 667px;
 }
 
-@media (orientation: landscape) and (max-device-width: 600px) {
+@media  screen and (max-width: 800px) {
     .frictionless-quick-action-mobile .quick-action-container {
         height: 200px;
     }
 
     .frictionless-quick-action-mobile .quick-action-container > * {
         --iframeContainerMinHeight: 200px;
-    }
+        }
 }
+
 
 .frictionless-quick-action-mobile .quick-action-container {
     height: 667px;
