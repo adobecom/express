@@ -405,6 +405,5 @@ export default function decorate(block) {
   import('../../scripts/instrument.js').then(({ sendFrictionlessEventToAdobeAnaltics }) => {
     sendFrictionlessEventToAdobeAnaltics(block);
   });
-
   return block;
 }
