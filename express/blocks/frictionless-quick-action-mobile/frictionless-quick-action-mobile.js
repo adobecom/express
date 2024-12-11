@@ -127,7 +127,8 @@ export function runQuickAction(quickAction, data, block) {
     hideCloseButton: true,
     padding: 0,
     size : {
-      height: 300
+      height: 300,
+      unit: "px"
     }
     
   };
