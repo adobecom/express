@@ -151,6 +151,8 @@ function initializeCarousel(selector, parent) {
   });
 
   platform.addEventListener('touchend', (e) => {
+    // e.preventDefault(); // Prevents default behavior
+    // e.stopPropagation(); // Stops bubbling if needed
     const swipeDistance = touchEndX - touchStartX;
 
     if (Math.abs(swipeDistance) > 50) {
@@ -175,7 +177,9 @@ function initializeCarousel(selector, parent) {
           if (isHoverActive) {
             const link = parentElement.querySelector('a');
             if (link) {
-              window.location.href = link.href; // Navigate to the link
+              // window.location.href = link.href; // Navigate to the link
+              // location.assign(link.href); // More robust for iOS navigation
+              link.click();
             }
           }
           const tappedIndex = Array.from(elements).indexOf(parentElement);
