@@ -417,6 +417,6 @@ export default function decorate(block) {
 
 
   const editorModal = selectElementByTagPrefix('cc-everywhere-container-');
-  editorModal.style.setProperty('--iframe-iframeContainerMinHeight', '300px');
+  editorModal.style.setProperty('--iframeContainerMinHeight', '300px');
   return block;
 }
