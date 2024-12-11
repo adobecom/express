@@ -171,6 +171,13 @@ function initializeCarousel(selector, parent) {
       if (tappedElement) {
         const parentElement = tappedElement.closest('.template.basic-carousel-element');
         if (parentElement) {
+          const isHoverActive = parentElement.querySelector('.button-container.singleton-hover');
+          if (isHoverActive) {
+            const link = parentElement.querySelector('a');
+            if (link) {
+              window.location.href = link.href; // Navigate to the link
+            }
+          }
           const tappedIndex = Array.from(elements).indexOf(parentElement);
           if (tappedIndex !== -1) {
             if (tappedIndex < currentIndex) {
