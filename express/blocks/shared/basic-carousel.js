@@ -28,11 +28,14 @@ function initializeCarousel(selector, parent) {
 
   const faderLeft = createTag('div', { class: 'basic-carousel-fader-left arrow-hidden' });
   const faderRight = createTag('div', { class: 'basic-carousel-fader-right arrow-hidden' });
-
-  const arrowLeft = createTag('a', { class: 'button basic-carousel-arrow basic-carousel-arrow-left' });
-  const arrowRight = createTag('a', { class: 'button basic-carousel-arrow basic-carousel-arrow-right' });
-  arrowLeft.title = 'Basic Carousel Left';
-  arrowRight.title = 'Basic Carousel Right';
+  const arrowLeft = createTag('a', {
+    class: 'button basic-carousel-arrow basic-carousel-arrow-left',
+    'aria-label': 'Scroll carousel left',
+  });
+  const arrowRight = createTag('a', {
+    class: 'button basic-carousel-arrow basic-carousel-arrow-right',
+    'aria-label': 'Scroll carousel right',
+  });
 
   platform.append(...carouselContent);
 
