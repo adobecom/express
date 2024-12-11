@@ -29,8 +29,8 @@ function initializeCarousel(selector, parent) {
   const faderLeft = createTag('div', { class: 'basic-carousel-fader-left arrow-hidden' });
   const faderRight = createTag('div', { class: 'basic-carousel-fader-right arrow-hidden' });
 
-  const arrowLeft = createTag('a', { class: 'button basic-carousel-arrow basic-carousel-arrow-left', 'aria-label': 'Previous slide' });
-  const arrowRight = createTag('a', { class: 'button basic-carousel-arrow basic-carousel-arrow-right', 'aria-label': 'Next slide' });
+  const arrowLeft = createTag('a', { class: 'button basic-carousel-arrow basic-carousel-arrow-left' });
+  const arrowRight = createTag('a', { class: 'button basic-carousel-arrow basic-carousel-arrow-right' });
   arrowLeft.title = 'Basic Carousel Left';
   arrowRight.title = 'Basic Carousel Right';
 
@@ -82,12 +82,6 @@ function initializeCarousel(selector, parent) {
       behavior: 'smooth',
     });
 
-    elements.forEach((el, index) => {
-      const isCurrent = index === currentIndex;
-      el.setAttribute('aria-hidden', !isCurrent);
-      el.setAttribute('tabindex', isCurrent ? '0' : '-1');
-    });
-
     if (window.innerWidth <= 600) {
       elements.forEach((el, index) => {
         if (index === currentIndex) {
@@ -105,26 +99,6 @@ function initializeCarousel(selector, parent) {
     setTimeout(() => {
       scrolling = false;
     }, 300);
-
-    elements.forEach((el, index) => {
-      el.addEventListener('focus', () => {
-        currentIndex = index;
-        if (window.innerWidth <= 600) {
-          updateCarousel();
-        }
-      });
-    });
-
-    platform.addEventListener('scroll', () => {
-      if (window.innerWidth <= 600 && !scrolling) {
-        const { scrollLeft } = platform;
-        const centeredIndex = Math.round(scrollLeft / elementWidth);
-        if (currentIndex !== centeredIndex) {
-          currentIndex = centeredIndex;
-          updateCarousel();
-        }
-      }
-    });
 
     faderLeft.classList.toggle('arrow-hidden', currentIndex === 0);
     faderRight.classList.toggle('arrow-hidden', currentIndex + scrollCount >= elements.length);
@@ -173,24 +147,13 @@ function initializeCarousel(selector, parent) {
       );
       if (tappedElement) {
         const parentElement = tappedElement.closest('.template.basic-carousel-element');
-        if (parentElement) {
-          const tappedIndex = Array.from(elements).indexOf(parentElement);
-          if (tappedIndex !== -1) {
-            if (tappedIndex < currentIndex) {
-              currentIndex = Math.max(0, tappedIndex);
-              updateCarousel();
-            } else if (tappedIndex > currentIndex) {
-              currentIndex = Math.min(elements.length - 1, tappedIndex);
-              updateCarousel();
-            } else {
-              const btnContainer = parentElement.querySelector('.button-container');
-              if (btnContainer) {
-                btnContainer.dispatchEvent(new Event('carouseltapstart'));
-                setTimeout(() => {
-                  btnContainer.dispatchEvent(new Event('carouseltapend'));
-                }, 0);
-              }
-            }
+        if (parentElement === elements[currentIndex]) {
+          const btnContainer = parentElement.querySelector('.button-container');
+          if (btnContainer) {
+            btnContainer.dispatchEvent(new Event('carouseltapstart'));
+            setTimeout(() => {
+              btnContainer.dispatchEvent(new Event('carouseltapend'));
+            }, 0);
           }
         }
       }
