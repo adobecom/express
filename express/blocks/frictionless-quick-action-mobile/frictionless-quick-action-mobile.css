@@ -181,7 +181,7 @@
     height: 667px;
 }
 
-@media screen and (orientation: landscape) and (max-device-width: 400px) {
+@media screen and (orientation: landscape) and (max-height: 420px) {
     .frictionless-quick-action-mobile .quick-action-container {
         height: 300px;
     }
