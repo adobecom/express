@@ -82,6 +82,14 @@ function initializeCarousel(selector, parent) {
       behavior: 'smooth',
     });
 
+    console.log('Current Index:', currentIndex); // <- Add this here.
+
+    elements.forEach((el, index) => {
+      const isCurrent = index === currentIndex;
+      el.setAttribute('aria-hidden', !isCurrent);
+      el.setAttribute('tabindex', isCurrent ? '0' : '-1');
+    });
+
     if (window.innerWidth <= 600) {
       elements.forEach((el, index) => {
         if (index === currentIndex) {
@@ -99,6 +107,26 @@ function initializeCarousel(selector, parent) {
     setTimeout(() => {
       scrolling = false;
     }, 300);
+
+    elements.forEach((el, index) => {
+      el.addEventListener('focus', () => {
+        currentIndex = index;
+        if (window.innerWidth <= 600) {
+          updateCarousel();
+        }
+      });
+    });
+
+    platform.addEventListener('scroll', () => {
+      if (window.innerWidth <= 600 && !scrolling) {
+        const { scrollLeft } = platform;
+        const centeredIndex = Math.round(scrollLeft / elementWidth);
+        if (currentIndex !== centeredIndex) {
+          currentIndex = centeredIndex;
+          updateCarousel();
+        }
+      }
+    });
 
     faderLeft.classList.toggle('arrow-hidden', currentIndex === 0);
     faderRight.classList.toggle('arrow-hidden', currentIndex + scrollCount >= elements.length);
