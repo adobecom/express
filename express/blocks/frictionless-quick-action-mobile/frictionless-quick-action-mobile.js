@@ -406,6 +406,7 @@ export default function decorate(block) {
       ui2Landing();
       document.body.dataset.suppressfloatingcta = 'false';
     }
+    editorModal.style.setProperty('--iframeContainerMinHeight', '300px');
   }, { passive: true });
 
   block.dataset.frictionlesstype = quickAction;
@@ -416,7 +417,6 @@ export default function decorate(block) {
   });
 
 
-  const editorModal = selectElementByTagPrefix('cc-everywhere-container-');
-  editorModal.style.setProperty('--iframeContainerMinHeight', '300px');
+
   return block;
 }
