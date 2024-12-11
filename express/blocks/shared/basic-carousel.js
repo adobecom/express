@@ -10,8 +10,15 @@ function initializeCarousel(selector, parent) {
     ? parent.querySelectorAll(selector)
     : parent.querySelectorAll(':scope > *');
 
-  carouselContent.forEach((el) => {
+  carouselContent.forEach((el, index) => {
     el.classList.add('basic-carousel-element');
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'group');
+    el.setAttribute('aria-label', `Item ${index + 1} of ${carouselContent.length}`);
+
+    el.addEventListener('focus', () => {
+      currentIndex = index;
+    });
     el.addEventListener('mouseleave', () => {
       if (window.innerWidth > 600) {
         const isHover = el.querySelector('.button-container.singleton-hover');
@@ -23,8 +30,13 @@ function initializeCarousel(selector, parent) {
     });
   });
 
-  const container = createTag('div', { class: 'basic-carousel-container' });
   const platform = createTag('div', { class: 'basic-carousel-platform' });
+  const isTemplateXCarousel = platform.closest('.template-x');
+  const container = createTag('div', {
+    class: 'basic-carousel-container',
+    role: 'region',
+    'aria-label': isTemplateXCarousel ? 'Template-X Carousel' : 'Blog Carousel',
+  });
 
   const faderLeft = createTag('div', { class: 'basic-carousel-fader-left arrow-hidden' });
   const faderRight = createTag('div', { class: 'basic-carousel-fader-right arrow-hidden' });
@@ -65,8 +77,6 @@ function initializeCarousel(selector, parent) {
 
     const elementWidth = elements[0].offsetWidth;
     const platformWidth = platform.offsetWidth;
-
-    console.log('currentIndex', currentIndex);
 
     if (window.innerWidth <= 600) {
       for (const element of elements) {
