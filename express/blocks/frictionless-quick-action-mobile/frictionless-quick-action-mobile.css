@@ -183,7 +183,12 @@
 
 @media screen and (orientation: landscape) and (max-device-height: 420px) {
     .frictionless-quick-action-mobile .quick-action-container {
-        height: 200px;
+        height: 330px;
+    }
+
+    .frictionless-quick-action-mobile #remove-background-container.quick-action-container>* {
+        height: 100%;
+        --iframeContainerMaxHeight: 330px !important
     }
 }
 
