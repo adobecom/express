@@ -397,7 +397,6 @@ export default function decorate(block) {
       ui2Landing();
       document.body.dataset.suppressfloatingcta = 'false';
     }
-    editorModal.style.setProperty('--iframeContainerMinHeight', '300px');
   }, { passive: true });
 
   block.dataset.frictionlesstype = quickAction;
