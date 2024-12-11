@@ -182,6 +182,9 @@ main .basic-carousel-container .basic-carousel-platform .basic-carousel-right-tr
 main .template-x .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
   height: 362px;
 }
+main .template-x .basic-carousel-container .template.basic-carousel-element .button-container {
+  height: 362px;
+}
 
 @media (min-width: 600px) {
   main .template-x.basic-carousel .basic-carousel-container {
