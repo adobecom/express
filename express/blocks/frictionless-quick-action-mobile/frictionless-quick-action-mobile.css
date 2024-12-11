@@ -29,6 +29,7 @@
     height: 30px;
     padding-bottom: 8px;
 }
+
 .frictionless-quick-action-mobile .express-logo.hide {
     display: none;
 }
@@ -114,7 +115,7 @@
     display: none;
 }
 
-.frictionless-quick-action-mobile .dropzone-bg + p {
+.frictionless-quick-action-mobile .dropzone-bg+p {
     margin: 0;
     padding: 39px 24px 0 24px;
     font-size: var(--heading-font-size-m);
@@ -122,7 +123,7 @@
     line-height: var(--heading-line-height);
 }
 
-.frictionless-quick-action-mobile .dropzone-bg + p em {
+.frictionless-quick-action-mobile .dropzone-bg+p em {
     font-style: normal;
     color: var(--color-info-accent);
 }
@@ -163,7 +164,7 @@
     font-size: var(--body-font-size-xs);
 }
 
-.frictionless-quick-action-mobile.block .free-plan-widget > div {
+.frictionless-quick-action-mobile.block .free-plan-widget>div {
     margin: 10px;
 }
 
@@ -175,7 +176,23 @@
     height: 667px;
 }
 
-.frictionless-quick-action-mobile .quick-action-container > * {
+
+.frictionless-quick-action-mobile .quick-action-container {
+    height: 667px;
+}
+
+@media screen and (orientation: landscape) and (max-device-height: 420px) {
+    .frictionless-quick-action-mobile #remove-background-container.quick-action-container {
+        height: 330px;
+    }
+
+    .frictionless-quick-action-mobile #remove-background-container.quick-action-container>* {
+        --iframeContainerMaxHeight: 330px !important;
+        --iframeContainerMinHeight: 330px !important;
+    }
+}
+
+.frictionless-quick-action-mobile .quick-action-container>* {
     height: 100%;
 }
 
@@ -183,12 +200,12 @@
     height: 1080px;
 }
 
-.frictionless-quick-action-mobile > div.hidden {
+.frictionless-quick-action-mobile>div.hidden {
     visibility: hidden;
     position: absolute;
 }
 
-.frictionless-quick-action-mobile > div.transparent {
+.frictionless-quick-action-mobile>div.transparent {
     opacity: 0;
 }
 
