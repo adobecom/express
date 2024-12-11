@@ -152,6 +152,7 @@ function initializeCarousel(selector, parent) {
 
   platform.addEventListener('touchend', (e) => {
     const swipeDistance = touchEndX - touchStartX;
+    alert('is this happening');
 
     if (Math.abs(swipeDistance) > 50) {
       if (swipeDistance > 0) {
