@@ -125,6 +125,9 @@ export function runQuickAction(quickAction, data, block) {
     parentElementId: `${quickAction}-container`,
     backgroundColor: 'transparent',
     hideCloseButton: true,
+    padding: 0,
+    height: 300
+    
   };
 
   const docConfig = {

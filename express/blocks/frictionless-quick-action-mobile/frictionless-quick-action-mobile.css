@@ -186,18 +186,6 @@
     .frictionless-quick-action-mobile .quick-action-container {
         height: 300px;
     }
-
-    .frictionless-quick-action-mobile .quick-action-container>* {
-        --iframeContainerMinHeight: 300px;
-        pointer-events: none;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-
-    .frictionless-quick-action-mobile .quick-action-container>*::-webkit-scrollbar {
-        display: none;
-        /* Chrome, Safari and Opera */
-    }
 }
 
 
