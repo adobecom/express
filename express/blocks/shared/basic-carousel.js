@@ -140,6 +140,7 @@ function initializeCarousel(selector, parent) {
   });
 
   platform.addEventListener('touchstart', (e) => {
+    alert('is this here');
     touchStartX = e.touches[0].clientX;
     touchEndX = touchStartX;
     e.preventDefault();
