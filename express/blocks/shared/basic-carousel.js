@@ -147,13 +147,24 @@ function initializeCarousel(selector, parent) {
       );
       if (tappedElement) {
         const parentElement = tappedElement.closest('.template.basic-carousel-element');
-        if (parentElement === elements[currentIndex]) {
-          const btnContainer = parentElement.querySelector('.button-container');
-          if (btnContainer) {
-            btnContainer.dispatchEvent(new Event('carouseltapstart'));
-            setTimeout(() => {
-              btnContainer.dispatchEvent(new Event('carouseltapend'));
-            }, 0);
+        if (parentElement) {
+          const tappedIndex = Array.from(elements).indexOf(parentElement);
+          if (tappedIndex !== -1) {
+            if (tappedIndex < currentIndex) {
+              currentIndex = Math.max(0, tappedIndex);
+              updateCarousel();
+            } else if (tappedIndex > currentIndex) {
+              currentIndex = Math.min(elements.length - 1, tappedIndex);
+              updateCarousel();
+            } else {
+              const btnContainer = parentElement.querySelector('.button-container');
+              if (btnContainer) {
+                btnContainer.dispatchEvent(new Event('carouseltapstart'));
+                setTimeout(() => {
+                  btnContainer.dispatchEvent(new Event('carouseltapend'));
+                }, 0);
+              }
+            }
           }
         }
       }
