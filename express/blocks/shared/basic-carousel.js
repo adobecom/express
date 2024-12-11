@@ -177,11 +177,23 @@ function initializeCarousel(selector, parent) {
           if (isHoverActive) {
             const link = parentElement.querySelector('a');
             if (link) {
-              // window.location.href = link.href; // Navigate to the link
-              // location.assign(link.href); // More robust for iOS navigation
-              link.click();
+              // Explicit navigation logic for Chrome
+              if (navigator.userAgent.toLowerCase().includes('chrome')) {
+                link.click();
+              } else {
+                window.location.href = link.href;
+              }
             }
+            return; // Skip other actions if navigation occurs
           }
+          // if (isHoverActive) {
+          //   const link = parentElement.querySelector('a');
+          //   if (link) {
+          //     // window.location.href = link.href; // Navigate to the link
+          //     // location.assign(link.href); // More robust for iOS navigation
+          //     link.click();
+          //   }
+          // }
           const tappedIndex = Array.from(elements).indexOf(parentElement);
           if (tappedIndex !== -1) {
             if (tappedIndex < currentIndex) {
