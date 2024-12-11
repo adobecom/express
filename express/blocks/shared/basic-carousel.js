@@ -177,14 +177,14 @@ function initializeCarousel(selector, parent) {
           if (isHoverActive) {
             const link = parentElement.querySelector('a');
             if (link) {
-              // Explicit navigation logic for Chrome
-              if (navigator.userAgent.toLowerCase().includes('chrome')) {
-                link.click();
-              } else {
-                window.location.href = link.href;
-              }
+              // Simulate a real click event
+              const clickEvent = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window,
+              });
+              link.dispatchEvent(clickEvent);
             }
-            return; // Skip other actions if navigation occurs
           }
           // if (isHoverActive) {
           //   const link = parentElement.querySelector('a');
