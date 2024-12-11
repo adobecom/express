@@ -29,8 +29,8 @@ function initializeCarousel(selector, parent) {
   const faderLeft = createTag('div', { class: 'basic-carousel-fader-left arrow-hidden' });
   const faderRight = createTag('div', { class: 'basic-carousel-fader-right arrow-hidden' });
 
-  const arrowLeft = createTag('a', { class: 'button basic-carousel-arrow basic-carousel-arrow-left' });
-  const arrowRight = createTag('a', { class: 'button basic-carousel-arrow basic-carousel-arrow-right' });
+  const arrowLeft = createTag('a', { class: 'button basic-carousel-arrow basic-carousel-arrow-left', 'aria-label': 'Previous slide' });
+  const arrowRight = createTag('a', { class: 'button basic-carousel-arrow basic-carousel-arrow-right', 'aria-label': 'Next slide' });
   arrowLeft.title = 'Basic Carousel Left';
   arrowRight.title = 'Basic Carousel Right';
 
