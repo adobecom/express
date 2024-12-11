@@ -187,8 +187,8 @@
     }
 
     .frictionless-quick-action-mobile #remove-background-container.quick-action-container>* {
-        --iframeContainerMaxHeight: 330px;
-        --iframeContainerMinHeight: 330px;
+        --iframeContainerMaxHeight: 330px !important;
+        --iframeContainerMinHeight: 330px !important;
     }
 }
 
