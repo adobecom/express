@@ -82,8 +82,6 @@ function initializeCarousel(selector, parent) {
       behavior: 'smooth',
     });
 
-    console.log('Current Index:', currentIndex); // <- Add this here.
-
     elements.forEach((el, index) => {
       const isCurrent = index === currentIndex;
       el.setAttribute('aria-hidden', !isCurrent);
