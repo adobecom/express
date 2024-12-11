@@ -153,7 +153,6 @@ function initializeCarousel(selector, parent) {
 
   platform.addEventListener('touchend', (e) => {
     const swipeDistance = touchEndX - touchStartX;
-    alert('is this happening touchend');
 
     if (Math.abs(swipeDistance) > 50) {
       if (swipeDistance > 0) {
@@ -172,13 +171,10 @@ function initializeCarousel(selector, parent) {
       );
       if (tappedElement) {
         const parentElement = tappedElement.closest('.template.basic-carousel-element');
-        alert(`parent: ${parentElement.outerHTML}`);
-
         if (parentElement) {
           const isHoverActive = parentElement.querySelector('.button-container.singleton-hover');
           if (isHoverActive) {
             const link = parentElement.querySelector('a');
-            console.log('link', link);
             if (link) {
               window.location.href = link.href;
             }
