@@ -187,7 +187,8 @@
     }
 
     .frictionless-quick-action-mobile .quick-action-container > * {
-        --iframeContainerMinHeight: 300px !important;
+        --iframeContainerMinHeight: 300px;
+        pointer-events: none;
         }
 }
 
