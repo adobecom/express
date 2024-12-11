@@ -175,24 +175,9 @@ function initializeCarousel(selector, parent) {
           if (isHoverActive) {
             const link = parentElement.querySelector('a');
             if (link) {
-              // // Simulate a real click event
-              // const clickEvent = new MouseEvent('click', {
-              //   bubbles: true,
-              //   cancelable: true,
-              //   view: window,
-              // });
-              // link.dispatchEvent(clickEvent);
-              alert(` ${link} we are here`);
+              window.location.href = link.href;
             }
           }
-          // if (isHoverActive) {
-          //   const link = parentElement.querySelector('a');
-          //   if (link) {
-          //     // window.location.href = link.href; // Navigate to the link
-          //     // location.assign(link.href); // More robust for iOS navigation
-          //     link.click();
-          //   }
-          // }
           const tappedIndex = Array.from(elements).indexOf(parentElement);
           if (tappedIndex !== -1) {
             if (tappedIndex < currentIndex) {
