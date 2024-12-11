@@ -186,9 +186,8 @@
         height: 300px;
     }
 
-    .frictionless-quick-action-mobile .quick-action-container #cc-everywhere-root {
-            overflow: hidden;
-            height: 300px;
+    .frictionless-quick-action-mobile .quick-action-container {
+        --iframeContainerMinHeight: 300px !important;
         }
 }
 
