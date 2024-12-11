@@ -126,7 +126,9 @@ export function runQuickAction(quickAction, data, block) {
     backgroundColor: 'transparent',
     hideCloseButton: true,
     padding: 0,
-    height: 300
+    size : {
+      height: 300
+    }
     
   };
 
