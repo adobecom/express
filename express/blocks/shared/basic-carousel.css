@@ -63,6 +63,7 @@ main .basic-carousel-container .basic-carousel-fader-left {
 
   /* Interaction */
   cursor: pointer;
+  pointer-events: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   /* Animation/Transition */
@@ -87,6 +88,7 @@ main .basic-carousel-container .basic-carousel-fader-right {
 
   /* Interaction */
   cursor: pointer;
+  pointer-events: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   /* Animation/Transition */
