@@ -115,6 +115,13 @@ function initializeCarousel(selector, parent) {
       scrolling = false;
     }, 300);
 
+    elements.forEach((el, index) => {
+      el.addEventListener('focus', () => {
+        currentIndex = index;
+        updateCarousel();
+      });
+    });
+
     faderLeft.classList.toggle('arrow-hidden', currentIndex === 0);
     faderRight.classList.toggle('arrow-hidden', currentIndex + scrollCount >= elements.length);
   };
