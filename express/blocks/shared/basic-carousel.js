@@ -170,6 +170,8 @@ function initializeCarousel(selector, parent) {
       );
       if (tappedElement) {
         const parentElement = tappedElement.closest('.template.basic-carousel-element');
+        const test = parentElement.querySelector('a');
+        alert('what is this link: ', JSON.stringify(test));
         if (parentElement) {
           const isHoverActive = parentElement.querySelector('.button-container.singleton-hover');
           if (isHoverActive) {
