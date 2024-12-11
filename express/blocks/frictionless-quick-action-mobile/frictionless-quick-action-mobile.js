@@ -119,21 +119,12 @@ export function runQuickAction(quickAction, data, block) {
   const divs = block.querySelectorAll(':scope > div');
   if (divs[1]) [, uploadContainer] = divs;
   ui2SDK();
-
-  const landscapeSize = {
-    width: window.screen.width,
-    height: 300,
-    unit: "px"
-  }
   
   const contConfig = {
     mode: 'inline',
     parentElementId: `${quickAction}-container`,
     backgroundColor: 'transparent',
     hideCloseButton: true,
-    padding: 0,
- 
-    
   };
 
   const docConfig = {
