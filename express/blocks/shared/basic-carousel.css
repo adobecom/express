@@ -7,31 +7,23 @@ main .basic-carousel-container {
 }
 
 main .basic-carousel-container .basic-carousel-platform {
-  /* Position/Layout */
-  position: relative;
-  left: 0;
-
-  /* Box Model */
   width: max-content;
   max-width: 100%;
+  left: 0;
   height: 360px;
-  max-height: 500px;
-  padding-top: 4px;
-  padding-bottom: 6px;
-
-  /* Display/Flex/Grid */
   display: flex;
   flex-direction: row;
   align-items: center;
   flex-wrap: nowrap;
-
-  /* Scroll/Overflow */
   overflow-y: hidden;
   overflow-x: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
+  max-height: 500px;
+  padding-top: 4px;
+  padding-bottom: 6px;
 }
 
 main .basic-carousel-container:not(.controls-hidden) .basic-carousel-platform::-webkit-scrollbar,
@@ -47,52 +39,32 @@ main .basic-carousel-container .basic-carousel-platform > * {
 }
 
 main .basic-carousel-container .basic-carousel-fader-left {
-  /* Position/Layout */
+  text-align: left;
+  display: flex;
   position: absolute;
+  width: 53px;
+  align-items: center;
   bottom: -40px;
   right: 45px;
-  z-index: 1;
-
-  /* Box Model */
-  width: 53px;
-
-  /* Display/Flex/Grid */
-  display: flex;
-  align-items: center;
-  text-align: left;
-
-  /* Interaction */
-  cursor: pointer;
-  pointer-events: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  /* Animation/Transition */
   transition: opacity 0.2s, display 0.2s;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  z-index: 1;
 }
 
 main .basic-carousel-container .basic-carousel-fader-right {
-  /* Position/Layout */
+  text-align: left;
+  display: flex;
   position: absolute;
+  width: 53px;
+  align-items: center;
   bottom: -40px;
   right: 0;
-  z-index: 1;
-
-  /* Box Model */
-  width: 53px;
-
-  /* Display/Flex/Grid */
-  display: flex;
   flex-direction: row-reverse;
-  align-items: center;
-  text-align: left;
-
-  /* Interaction */
-  cursor: pointer;
-  pointer-events: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  /* Animation/Transition */
   transition: opacity 0.2s;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  z-index: 1;
 }
 
 main .basic-carousel-container a.button.basic-carousel-arrow {
@@ -179,13 +151,8 @@ main .basic-carousel-container .basic-carousel-platform .basic-carousel-right-tr
   margin: 0;
 }
 
-main .template-x.basic-carousel .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
+main .template-x .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
   height: 362px;
-  width: 226px !important;
-}
-
-main .template-x.basic-carousel .basic-carousel-container .template.basic-carousel-element .button-container {
-  height: auto;
 }
 
 @media (min-width: 600px) {
@@ -244,6 +211,22 @@ main .template-x.basic-carousel .basic-carousel-container .template.basic-carous
   }
   main .basic-carousel.four.template-x.horizontal .template.basic-carousel-element .button-container.singleton-hover a .media-wrapper img:not(.icon):not(.icon-share-arrow) {
     width: 170px;
+  }
+  main .template-x.one .basic-carousel-container .template.basic-carousel-element .button-container {
+    width: 664px;
+    height: 416px;
+  }
+  main .template-x.two .basic-carousel-container .template.basic-carousel-element .button-container {
+    width: 332px;
+    height: 526px;
+  }
+  main .template-x.three .basic-carousel-container .template.basic-carousel-element .button-container {
+    width: 222px;
+    height: 362px;
+  }
+  main .template-x.four .basic-carousel-container .template.basic-carousel-element .button-container {
+    width: 168px;
+    height: 277px;
   }
 }
 
