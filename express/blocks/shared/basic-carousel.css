@@ -212,6 +212,10 @@ main .template-x .basic-carousel-container .template.basic-carousel-element .but
   main .basic-carousel.four.template-x.horizontal .template.basic-carousel-element .button-container.singleton-hover a .media-wrapper img:not(.icon):not(.icon-share-arrow) {
     width: 170px;
   }
+  main .template-x .basic-carousel-container .template.basic-carousel-element .button-container {
+    width: 168px !important;
+    height: 277px !important;
+  }
 }
 
 @media (min-width: 900px) {
