@@ -1,7 +1,6 @@
 import { createTag, loadStyle } from '../../scripts/utils.js';
 
 function initializeCarousel(selector, parent) {
-  return;
   let currentIndex = window.innerWidth <= 600 ? 1 : 0;
   let scrollCount = 1;
   let touchStartX = 0;
@@ -135,14 +134,14 @@ function initializeCarousel(selector, parent) {
   });
 
   faderRight.addEventListener('click', () => {
-    alert('faderRight');
+    alert('is this here click');
     if (scrolling || currentIndex + scrollCount >= elements.length) return;
     currentIndex += scrollCount;
     updateCarousel();
   });
 
   platform.addEventListener('touchstart', (e) => {
-    alert('is this here');
+    alert('is this here touchstart');
     touchStartX = e.touches[0].clientX;
     touchEndX = touchStartX;
     e.preventDefault();
@@ -155,7 +154,7 @@ function initializeCarousel(selector, parent) {
 
   platform.addEventListener('touchend', (e) => {
     const swipeDistance = touchEndX - touchStartX;
-    alert('is this happening');
+    alert('is this happening touchend');
 
     if (Math.abs(swipeDistance) > 50) {
       if (swipeDistance > 0) {
