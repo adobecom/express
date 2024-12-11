@@ -66,6 +66,8 @@ function initializeCarousel(selector, parent) {
     const elementWidth = elements[0].offsetWidth;
     const platformWidth = platform.offsetWidth;
 
+    console.log('currentIndex', currentIndex);
+
     if (window.innerWidth <= 600) {
       for (const element of elements) {
         const buttonContainer = element.querySelector('.button-container.singleton-hover');
@@ -133,6 +135,7 @@ function initializeCarousel(selector, parent) {
 
   platform.addEventListener('touchend', (e) => {
     const swipeDistance = touchEndX - touchStartX;
+
     if (Math.abs(swipeDistance) > 50) {
       if (swipeDistance > 0) {
         if (currentIndex > 0) {
@@ -150,13 +153,24 @@ function initializeCarousel(selector, parent) {
       );
       if (tappedElement) {
         const parentElement = tappedElement.closest('.template.basic-carousel-element');
-        if (parentElement === elements[currentIndex]) {
-          const btnContainer = parentElement.querySelector('.button-container');
-          if (btnContainer) {
-            btnContainer.dispatchEvent(new Event('carouseltapstart'));
-            setTimeout(() => {
-              btnContainer.dispatchEvent(new Event('carouseltapend'));
-            }, 0);
+        if (parentElement) {
+          const tappedIndex = Array.from(elements).indexOf(parentElement);
+          if (tappedIndex !== -1) {
+            if (tappedIndex < currentIndex) {
+              currentIndex = Math.max(0, tappedIndex);
+              updateCarousel();
+            } else if (tappedIndex > currentIndex) {
+              currentIndex = Math.min(elements.length - 1, tappedIndex);
+              updateCarousel();
+            } else {
+              const btnContainer = parentElement.querySelector('.button-container');
+              if (btnContainer) {
+                btnContainer.dispatchEvent(new Event('carouseltapstart'));
+                setTimeout(() => {
+                  btnContainer.dispatchEvent(new Event('carouseltapend'));
+                }, 0);
+              }
+            }
           }
         }
       }
