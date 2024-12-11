@@ -177,8 +177,12 @@ main .basic-carousel-container .basic-carousel-platform .basic-carousel-right-tr
   margin: 0;
 }
 
-main .template-x .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
+main .template-x.basic-carousel .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
   height: 362px;
+}
+
+main .template-x.basic-carousel .basic-carousel-container .template.basic-carousel-element .button-container {
+  height: auto;
 }
 
 @media (min-width: 600px) {
