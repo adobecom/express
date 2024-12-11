@@ -132,7 +132,7 @@ export function runQuickAction(quickAction, data, block) {
     backgroundColor: 'transparent',
     hideCloseButton: true,
     padding: 0,
-    size : landscapeSize
+ 
     
   };
 
@@ -414,5 +414,9 @@ export default function decorate(block) {
   import('../../scripts/instrument.js').then(({ sendFrictionlessEventToAdobeAnaltics }) => {
     sendFrictionlessEventToAdobeAnaltics(block);
   });
+
+
+  const editorModal = selectElementByTagPrefix('cc-everywhere-container-');
+  editorModal.style.setProperty('--iframe-iframeContainerMinHeight', '300px');
   return block;
 }
