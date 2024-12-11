@@ -134,6 +134,7 @@ function initializeCarousel(selector, parent) {
   });
 
   faderRight.addEventListener('click', () => {
+    alert('faderRight');
     if (scrolling || currentIndex + scrollCount >= elements.length) return;
     currentIndex += scrollCount;
     updateCarousel();
