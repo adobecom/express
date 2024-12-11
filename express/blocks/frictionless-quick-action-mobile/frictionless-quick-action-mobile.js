@@ -119,7 +119,7 @@ export function runQuickAction(quickAction, data, block) {
   const divs = block.querySelectorAll(':scope > div');
   if (divs[1]) [, uploadContainer] = divs;
   ui2SDK();
-  
+
   const contConfig = {
     mode: 'inline',
     parentElementId: `${quickAction}-container`,
@@ -405,8 +405,6 @@ export default function decorate(block) {
   import('../../scripts/instrument.js').then(({ sendFrictionlessEventToAdobeAnaltics }) => {
     sendFrictionlessEventToAdobeAnaltics(block);
   });
-
-
 
   return block;
 }
