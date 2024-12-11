@@ -152,7 +152,7 @@ function initializeCarousel(selector, parent) {
 
   platform.addEventListener('touchend', (e) => {
     e.preventDefault(); // Prevents default behavior
-    // e.stopPropagation(); // Stops bubbling if needed
+    e.stopPropagation(); // Stops bubbling if needed
     const swipeDistance = touchEndX - touchStartX;
 
     if (Math.abs(swipeDistance) > 50) {
