@@ -212,9 +212,21 @@ main .template-x .basic-carousel-container .template.basic-carousel-element .but
   main .basic-carousel.four.template-x.horizontal .template.basic-carousel-element .button-container.singleton-hover a .media-wrapper img:not(.icon):not(.icon-share-arrow) {
     width: 170px;
   }
-  main .template-x .basic-carousel-container .template.basic-carousel-element .button-container {
-    width: 168px !important;
-    height: 277px !important;
+  main .template-x.one .basic-carousel-container .template.basic-carousel-element .button-container {
+    width: 664px;
+    height: 416px;
+  }
+  main .template-x.two .basic-carousel-container .template.basic-carousel-element .button-container {
+    width: 332px;
+    height: 526px;
+  }
+  main .template-x.three .basic-carousel-container .template.basic-carousel-element .button-container {
+    width: 222px;
+    height: 362px;
+  }
+  main .template-x.four .basic-carousel-container .template.basic-carousel-element .button-container {
+    width: 168px;
+    height: 277px;
   }
 }
 
