@@ -109,6 +109,10 @@ main .how-to-steps-accordion ol.steps {
   padding: 0;
 }
 
+main .how-to-steps-accordion ol.steps .step:hover {
+  background-color: var( --color-gray-100)
+}
+
 main .how-to-steps-accordion.image .image-container {
   margin-top: 20px;
 }
