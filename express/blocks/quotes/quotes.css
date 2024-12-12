@@ -79,6 +79,7 @@ main div:has(> .quotes-wrapper .singular.quotes) {
   padding-top: 0;
 }
 
+main .quotes-singular-container .quotes-wrapper,
 main .quotes-wrapper:has(.singular.quotes) {
   margin-left: 0;
   margin-right: 0;
