@@ -13,7 +13,7 @@ import {
 } from '../../scripts/utils.js';
 import { addTempWrapper } from '../../scripts/decorate.js';
 import { Masonry } from '../shared/masonry.js';
-import buildCarousel from '../shared/carousel.js';
+import loadCarousel from '../shared/carousel-wrapper.js';
 import {
   fetchTemplates,
   isValidTemplate,
@@ -1680,7 +1680,7 @@ async function buildTemplateList(block, props, type = []) {
             });
 
             await decorateTemplates(block, props);
-            buildCarousel(':scope > .template', templatesWrapper);
+            loadCarousel(':scope > .template', templatesWrapper);
             templatesWrapper.style.opacity = 1;
           }
 
@@ -1722,7 +1722,7 @@ async function buildTemplateList(block, props, type = []) {
   if (templates && props.orientation && props.orientation.toLowerCase() === 'horizontal') {
     const innerWrapper = block.querySelector('.template-x-inner-wrapper');
     if (innerWrapper) {
-      buildCarousel(':scope > .template', innerWrapper);
+      loadCarousel(':scope > .template', innerWrapper);
     } else {
       block.remove();
     }
