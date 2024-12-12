@@ -6,10 +6,31 @@ export default async function decorate(block) {
   const isBannerCoolVariant = block.classList.contains('cool');
   const isBannerNarrowVariant = block.classList.contains('narrow');
 
+  const bgImgURL = block.children[0]?.querySelector('img')?.src;
+
+  const header = block.querySelector('h2');
+  if (header) {
+    const headerParent = header.parentElement;
+    if (bgImgURL) {
+      const firstChild = block.children[0];
+      if (firstChild) {
+        block.removeChild(firstChild);
+      }
+      headerParent.classList.add('bg-img-container');
+      headerParent.style.backgroundImage = `url(${bgImgURL})`;
+    }
+  }
+
   if (isBannerStandoutVariant || isBannerCoolVariant) {
     const contentContainer = createTag('div', {
       class: 'content-container',
     });
+
+    if (bgImgURL) {
+      const bannerBgImg = createTag('img', { class: 'banner-bg-image', src: bgImgURL });
+      contentContainer.append(bannerBgImg);
+    }
+
     for (const child of block.children) {
       contentContainer.append(child);
     }
