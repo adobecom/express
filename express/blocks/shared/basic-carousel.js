@@ -180,7 +180,7 @@ function initializeCarousel(selector, parent) {
             const tooltip = shareIconWrapper.querySelector('.shared-tooltip');
             if (tooltip) {
               tooltip.classList.add('display-tooltip');
-              setTimeout(() => tooltip.classList.remove('display-tooltip'), 60000);
+              setTimeout(() => tooltip.classList.remove('display-tooltip'), 2000);
             }
           }).catch((err) => {
             console.error('Failed to copy link:', err);
