@@ -169,33 +169,30 @@ function initializeCarousel(selector, parent) {
       e.changedTouches[0].clientX,
       e.changedTouches[0].clientY,
     );
-    const parentElement = tappedElement.closest('.template.basic-carousel-element');
+    const isBtn = tappedElement.querySelector('.button-container.singleton-hover');
+    const isCard = tappedElement.closest('.template.basic-carousel-element');
     if (tappedElement) {
       const shareIconWrapper = tappedElement.closest('.share-icon-wrapper');
-      const linkHref = parentElement.querySelector('a').href;
-      if (linkHref) {
-        if (shareIconWrapper) {
-          e.stopPropagation();
-          navigator.clipboard.writeText(linkHref).then(() => {
-            const tooltip = shareIconWrapper.querySelector('.shared-tooltip');
-            if (tooltip) {
-              tooltip.classList.add('display-tooltip');
-              setTimeout(() => tooltip.classList.remove('display-tooltip'), 2000);
-            }
-          }).catch((err) => {
-            console.error('Failed to copy link:', err);
-          });
-
-          return;
-        }
+      const linkHref = isCard?.querySelector('a')?.href || isBtn?.querySelector('a')?.href;
+      if (linkHref && shareIconWrapper) {
+        e.stopPropagation();
+        navigator.clipboard.writeText(linkHref).then(() => {
+          const tooltip = shareIconWrapper.querySelector('.shared-tooltip');
+          if (tooltip) {
+            tooltip.classList.add('display-tooltip');
+            setTimeout(() => tooltip.classList.remove('display-tooltip'), 2000);
+          }
+        }).catch((err) => {
+          window.lana?.log('Failed to copy link:', err);
+        });
+        return;
       }
-
-      if (parentElement) {
-        const isHoverActive = parentElement.querySelector('.button-container.singleton-hover');
+      if (isCard && linkHref) {
+        const isHoverActive = isCard?.querySelector('.button-container.singleton-hover');
         if (isHoverActive && linkHref) {
           window.location.href = linkHref;
         }
-        const tappedIndex = Array.from(elements).indexOf(parentElement);
+        const tappedIndex = Array.from(elements).indexOf(isCard);
         if (tappedIndex !== -1) {
           if (tappedIndex < currentIndex) {
             currentIndex = Math.max(0, tappedIndex);
@@ -204,7 +201,7 @@ function initializeCarousel(selector, parent) {
             currentIndex = Math.min(elements.length - 1, tappedIndex);
             updateCarousel();
           } else {
-            const btnContainer = parentElement.querySelector('.button-container');
+            const btnContainer = isCard.querySelector('.button-container');
             if (btnContainer) {
               btnContainer.dispatchEvent(new Event('carouseltapstart'));
               setTimeout(() => {
@@ -213,6 +210,8 @@ function initializeCarousel(selector, parent) {
             }
           }
         }
+      } else if (isBtn && linkHref) {
+        window.location.href = linkHref;
       }
     }
   });
