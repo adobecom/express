@@ -183,7 +183,7 @@ function initializeCarousel(selector, parent) {
             setTimeout(() => tooltip.classList.remove('display-tooltip'), 2000);
           }
         }).catch((err) => {
-          console.error('Failed to copy link:', err);
+          window.lana?.log('Failed to copy link:', err);
         });
         return;
       }
