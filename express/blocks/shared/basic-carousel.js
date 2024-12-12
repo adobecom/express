@@ -134,7 +134,6 @@ function initializeCarousel(selector, parent) {
   });
 
   faderRight.addEventListener('click', () => {
-    alert('is this here click');
     if (scrolling || currentIndex + scrollCount >= elements.length) return;
     currentIndex += scrollCount;
     updateCarousel();
@@ -164,37 +163,53 @@ function initializeCarousel(selector, parent) {
         currentIndex += 1;
         updateCarousel();
       }
-    } else {
-      const tappedElement = document.elementFromPoint(
-        e.changedTouches[0].clientX,
-        e.changedTouches[0].clientY,
-      );
-      if (tappedElement) {
-        const parentElement = tappedElement.closest('.template.basic-carousel-element');
-        if (parentElement) {
-          const isHoverActive = parentElement.querySelector('.button-container.singleton-hover');
-          if (isHoverActive) {
-            const link = parentElement.querySelector('a');
-            if (link) {
-              window.location.href = link.href;
+      return;
+    }
+    const tappedElement = document.elementFromPoint(
+      e.changedTouches[0].clientX,
+      e.changedTouches[0].clientY,
+    );
+    const parentElement = tappedElement.closest('.template.basic-carousel-element');
+    if (tappedElement) {
+      const shareIconWrapper = tappedElement.closest('.share-icon-wrapper');
+      const linkHref = parentElement.querySelector('a').href;
+      if (linkHref) {
+        if (shareIconWrapper) {
+          e.stopPropagation();
+          navigator.clipboard.writeText(linkHref).then(() => {
+            const tooltip = shareIconWrapper.querySelector('.shared-tooltip');
+            if (tooltip) {
+              tooltip.classList.add('display-tooltip');
+              setTimeout(() => tooltip.classList.remove('display-tooltip'), 60000);
             }
-          }
-          const tappedIndex = Array.from(elements).indexOf(parentElement);
-          if (tappedIndex !== -1) {
-            if (tappedIndex < currentIndex) {
-              currentIndex = Math.max(0, tappedIndex);
-              updateCarousel();
-            } else if (tappedIndex > currentIndex) {
-              currentIndex = Math.min(elements.length - 1, tappedIndex);
-              updateCarousel();
-            } else {
-              const btnContainer = parentElement.querySelector('.button-container');
-              if (btnContainer) {
-                btnContainer.dispatchEvent(new Event('carouseltapstart'));
-                setTimeout(() => {
-                  btnContainer.dispatchEvent(new Event('carouseltapend'));
-                }, 0);
-              }
+          }).catch((err) => {
+            console.error('Failed to copy link:', err);
+          });
+
+          return;
+        }
+      }
+
+      if (parentElement) {
+        const isHoverActive = parentElement.querySelector('.button-container.singleton-hover');
+        if (isHoverActive && linkHref) {
+          window.location.href = linkHref;
+        }
+        const tappedIndex = Array.from(elements).indexOf(parentElement);
+        if (tappedIndex !== -1) {
+          if (tappedIndex < currentIndex) {
+            currentIndex = Math.max(0, tappedIndex);
+            updateCarousel();
+          } else if (tappedIndex > currentIndex) {
+            currentIndex = Math.min(elements.length - 1, tappedIndex);
+            updateCarousel();
+          } else {
+            const btnContainer = parentElement.querySelector('.button-container');
+            if (btnContainer) {
+              btnContainer.dispatchEvent(new Event('carouseltapstart'));
+              setTimeout(() => {
+                btnContainer.dispatchEvent(new Event('carouseltapend'));
+              }, 0);
             }
           }
         }
