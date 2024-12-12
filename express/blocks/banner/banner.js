@@ -25,12 +25,6 @@ export default async function decorate(block) {
     const contentContainer = createTag('div', {
       class: 'content-container',
     });
-
-    if (bgImgURL) {
-      const bannerBgImg = createTag('img', { class: 'banner-bg-image', src: bgImgURL });
-      contentContainer.append(bannerBgImg);
-    }
-
     for (const child of block.children) {
       contentContainer.append(child);
     }
