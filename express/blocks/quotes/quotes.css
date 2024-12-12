@@ -75,6 +75,7 @@ main .quotes .quote .author .image img {
   box-sizing: border-box;
 }
 
+main .quotes-singular-container .quotes-wrapper,
 main div:has(> .quotes-wrapper .singular.quotes) {
   padding-top: 0;
 }
