@@ -8,6 +8,14 @@ main div:has(> .banner.cool) {
   background: linear-gradient(170.96deg, #bfe4ff -0.25%, #cecef6 104.12%);
 }
 
+main .section .banner .bg-img-container {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px;
+  max-height: 300px;
+}
+
 main .section.banner-container,
 main .section.banner-light-container {
   padding: 80px 15px;
