@@ -91,10 +91,10 @@ main .how-to-steps-accordion .steps-content {
 main .how-to-steps-accordion .steps-content .steps-content-backg {
   position: absolute;
   width: 100%;
-  top: -88px;
+  top: -140px;
   z-index: -1;
   height: 100%;
-  background-size: cover;
+  transform: scale(0.9);
 }
 
 main .how-to-steps-accordion ol.steps {
@@ -176,6 +176,8 @@ main .how-to-steps-accordion.image {
   main .how-to-steps-accordion .steps-content .steps-content-backg {
     left: -90px;
     width: 67%;
+    transform: scale(0.9);
+    top: -68px;
   }
 }
 
