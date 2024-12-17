@@ -90,11 +90,11 @@ export default async function decorate(block) {
 
     if (hasBackground) {
       // So that background image goes beyond container
-      // const stepsContentBackground = createTag('div', { class: 'steps-content-backg' });
-      // const stepsContentBackgroundImg = createTag('img', { class: 'steps-content-backg-image' });
-      // stepsContent.append(stepsContentBackground);
-      // stepsContentBackground.append(stepsContentBackgroundImg);
-      // stepsContentBackgroundImg.src = backgroundURL;
+      const stepsContentBackground = createTag('div', { class: 'steps-content-backg' });
+      const stepsContentBackgroundImg = createTag('img', { class: 'steps-content-backg-image' });
+      stepsContent.append(stepsContentBackground);
+      stepsContentBackground.append(stepsContentBackgroundImg);
+      stepsContentBackgroundImg.src = backgroundURL;
     }
 
     if (isVideoVariant) {

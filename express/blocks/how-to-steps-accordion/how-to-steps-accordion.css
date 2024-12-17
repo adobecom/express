@@ -90,18 +90,11 @@ main .how-to-steps-accordion .steps-content {
 
 main .how-to-steps-accordion .steps-content .steps-content-backg {
   position: absolute;
-  width: 116%;
-  top: -42px;
-  left: -36px;
+  width: 100%;
+  top: -88px;
   z-index: -1;
-}
-
-main .how-to-steps-accordion.image .steps-content .steps-content-backg {
-  top: -51px;
-}
-
-main .how-to-steps-accordion .steps-content .steps-content-backg img {
-  width: 100%
+  height: 100%;
+  background-size: cover;
 }
 
 main .how-to-steps-accordion ol.steps {
@@ -178,6 +171,11 @@ main .how-to-steps-accordion.image {
 
   main .how-to-steps-accordion .steps-content .steps {
     padding-left: 20px;
+  }
+
+  main .how-to-steps-accordion .steps-content .steps-content-backg {
+    left: -90px;
+    width: 67%;
   }
 }
 
