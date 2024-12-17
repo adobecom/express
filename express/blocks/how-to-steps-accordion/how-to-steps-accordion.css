@@ -91,7 +91,7 @@ main .how-to-steps-accordion .steps-content {
 main .how-to-steps-accordion .steps-content .steps-content-backg {
   position: absolute;
   width: 100%;
-  top: -140px;
+  top: -24vw;
   z-index: -1;
   height: 100%;
   transform: scale(0.9);
