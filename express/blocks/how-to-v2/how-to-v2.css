@@ -4,10 +4,6 @@ main .how-to-v2 h2 {
   padding: 0 24px;
 }
 
-main .video-how-to-v2 {
-  margin-top: 20px;
-}
-
 main .how-to-v2 ol {
   list-style-type: none;
   font-size: 21px;
@@ -106,6 +102,10 @@ main .how-to-v2 ol.steps .step .step-content h3:hover {
   background-color: var( --color-gray-100);
   margin: -8px 0 -8px -16px; 
   padding: 8px 0 8px 16px;
+}
+
+main .how-to-v2.video .video-container {
+  margin-top: 20px;
 }
 
 main .how-to-v2.image .image-container {
