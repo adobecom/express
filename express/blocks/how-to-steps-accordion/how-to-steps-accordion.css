@@ -119,12 +119,19 @@ main .how-to-steps-accordion.image .image-container {
   overflow: hidden;
 }
 
-main .how-to-steps-accordion.image .image-container img {
+main .how-to-steps-accordion.image .image-container img,
+main .how-to-steps-accordion.video .video-container > * {
   border-radius: 16px;
   max-width: 400px;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+main .how-to-steps-accordion.video .video-container > * {
+  margin-left: auto;
+  margin-right: auto;
+  height: unset;
 }
 
 main .how-to-steps-accordion.video,
@@ -184,7 +191,8 @@ main .how-to-steps-accordion.image {
     margin: auto;
   }
 
-  main .how-to-steps-accordion.image .image-container img {
+  main .how-to-steps-accordion.image .image-container img,
+  main .how-to-steps-accordion.video .video-container > * {
     max-height: 300px;
     max-width: 533px;
   }
