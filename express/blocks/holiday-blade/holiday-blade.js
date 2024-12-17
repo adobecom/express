@@ -41,6 +41,7 @@ function decorateTemplateImgs(innerWrapper) {
   });
 }
 
+
 async function loadTemplates(props, placeholders) {
   const [
     { default: renderTemplate },
