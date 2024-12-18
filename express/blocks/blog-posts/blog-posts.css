@@ -201,7 +201,10 @@ main .blog-posts.discover .blog-card .blog-card-image img {
 }
 main .blog-posts.discover .blog-card {
     display: block;
+    width: 320px;
     background: #F8F8F8;
+    margin: unset;       
+    margin-bottom: 20px;
 }
 main .blog-posts.discover .blog-card-image {
     width: 100%;
