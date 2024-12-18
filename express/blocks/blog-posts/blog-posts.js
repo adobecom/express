@@ -266,14 +266,9 @@ function getCard(post, dateFormatter) {
 let language;
 let dateFormatter;
 
-function getDateFormatter(newLanguage) {
+function getDateFormatter(newLanguage, dateConfig = {}) {
   language = newLanguage;
-  dateFormatter = Intl.DateTimeFormat(language, {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
+  dateFormatter = Intl.DateTimeFormat(language, dateConfig);
 }
 
 // Given a blog post element and a config, append all posts defined in the config to blogPosts
@@ -297,7 +292,21 @@ async function decorateBlogPosts(blogPostsElements, config, offset = 0) {
 
   const newLanguage = getConfig().locale.ietf;
   if (!dateFormatter || newLanguage !== language) {
-    getDateFormatter(newLanguage);
+    const isDiscoverVariant = !!blogPostsElements.closest('.discover');
+    const dateConfig = isDiscoverVariant
+      ? {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+      }
+      : {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        timeZone: 'UTC',
+      };
+    getDateFormatter(newLanguage, dateConfig);
   }
 
   if (isHero) {

@@ -195,6 +195,31 @@ main .blog-posts .card .card-body p {
   font-size: 1rem;
 }
 
+/* discover variant */
+main .blog-posts.discover .blog-card .blog-card-image img {
+    border-radius: 16px 16px 0 0;
+}
+main .blog-posts.discover .blog-card {
+    display: block;
+    background: #F8F8F8;
+}
+main .blog-posts.discover .blog-card-image {
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    object-fit: cover;
+}
+main .blog-posts.discover .blog-card .blog-card-title {
+    padding: 20px 20px 0;
+}
+main .blog-posts.discover .blog-card .blog-card-teaser {
+    padding: 0 20px 0;
+}
+main .blog-posts.discover .blog-card .blog-card-date {
+    padding: 15px 10px 20px 20px;
+}
+/*  */
+
 @media (min-width: 900px) {
     main .blog-posts .blog-card .blog-card-image {
         margin: 0 0 24px 0;
@@ -240,6 +265,10 @@ main .blog-posts .card .card-body p {
 
     .blog main .blog-posts-container > div > h2, main .blog-posts-container div.blog-posts-decoration {
         max-width: 700px;
+    }
+
+    main .blog-posts.discover .blog-cards {
+        flex-wrap: unset;
     }
 }
 
