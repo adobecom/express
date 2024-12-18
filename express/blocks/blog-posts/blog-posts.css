@@ -204,7 +204,7 @@ main .blog-posts.discover .blog-card {
     width: 320px;
     background: #F8F8F8;
     margin: unset;       
-    margin-bottom: 20px;
+    margin-top: 20px;
 }
 main .blog-posts.discover .blog-card-image {
     width: 100%;
@@ -272,6 +272,11 @@ main .blog-posts.discover .blog-card .blog-card-date {
 
     main .blog-posts.discover .blog-cards {
         flex-wrap: unset;
+    }
+    /* discover variant */
+    main .blog-posts.discover .blog-card {
+        margin-left: 20px;
+        margin-right: 20px;
     }
 }
 
