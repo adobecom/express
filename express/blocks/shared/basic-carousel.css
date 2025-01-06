@@ -312,7 +312,7 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
     width: 332px;
     height: 526px;
   }
-  /* discover variant - two - hover */
+  /* discover variant - two - button-container */
   main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .button-container {
     height: 370px;
   }
@@ -320,7 +320,7 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
     width: 222px;
     height: 362px;
   }
-  /* discover variant - three - hover */
+  /* discover variant - three - button-container */
   main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .button-container {
     height: 414px;
   }
@@ -332,7 +332,7 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
   main .template-x.four .basic-carousel-container .template.basic-carousel-element .button-container {
     height: 210px;
   }
-  
+
   main .template-x .template.basic-carousel-element .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
     position: absolute;
     display: flex;
