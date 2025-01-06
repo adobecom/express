@@ -219,9 +219,17 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
 }
 
 @media (min-width: 600px) {
-  /* discover variant */
-  main .discover .basic-carousel-container .basic-carousel-platform {
+   /* discover variant - two tile basic-carousel-platform */
+   main .basic-carousel.two.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
+    height: 400px;
+  }
+  /* discover variant - three tile basic-carousel-platform */
+  main .basic-carousel.three.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
     height: 420px;
+  }
+  /* discover variant - four tile basic-carousel-platform */
+  main .basic-carousel.four.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
+    height: 210px;
   }
   main .template-x.basic-carousel .basic-carousel-container {
     width: 648px;
