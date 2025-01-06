@@ -267,6 +267,11 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
     width: 152px;
     height: 225px;
   }
+  /* discover variant - four - hover */
+  main .basic-carousel.four.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    width: 152px;
+    height: 152px;
+  }
   main .basic-carousel-container .template.basic-carousel-element {
     scroll-snap-align: start;
   }
