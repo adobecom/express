@@ -244,6 +244,10 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
     width: 316px;
     height: 474px;
   }
+  /* discover variant - two */
+  main .basic-carousel.two.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    height: 316px;
+  }
   main .template-x.one .basic-carousel-container .basic-carousel-platform { 
     height: 440px;
   }
