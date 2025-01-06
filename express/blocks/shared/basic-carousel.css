@@ -244,8 +244,8 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
     width: 316px;
     height: 474px;
   }
-  /* discover variant - two */
-  main .basic-carousel.two.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+  /* discover variant - two - hover */
+  main .basic-carousel.two.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
     height: 316px;
   }
   main .template-x.one .basic-carousel-container .basic-carousel-platform { 
@@ -260,7 +260,7 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
     height: 310px;
   }
   /* discover variant - three - hover */
-  main .basic-carousel.three.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+  main .basic-carousel.three.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
     height: 365px;
   }
   main .basic-carousel.four.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
@@ -274,7 +274,7 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
     height: 530px;
   }
   /* discover variant - two - hover container */
-  main .template-x.two .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
+  main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
     height: 370px;
   }
   main .template-x.three .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
@@ -299,6 +299,10 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
   main .template-x.two .basic-carousel-container .template.basic-carousel-element .button-container {
     width: 332px;
     height: 526px;
+  }
+  /* discover variant - two - hover */
+  main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .button-container {
+    height: 370px;
   }
   main .template-x.three .basic-carousel-container .template.basic-carousel-element .button-container {
     width: 222px;
