@@ -34,11 +34,6 @@ main .basic-carousel-container .basic-carousel-platform {
   scroll-behavior: smooth;
 }
 
-/* discover variant */
-main .discover .basic-carousel-container .basic-carousel-platform {
-  height: 420px;
-}
-
 main .basic-carousel-container:not(.controls-hidden) .basic-carousel-platform::-webkit-scrollbar,
 main .basic-carousel-container .basic-carousel-platform.infinity-scroll-loaded::-webkit-scrollbar {
   display: none;
@@ -224,6 +219,10 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
 }
 
 @media (min-width: 600px) {
+  /* discover variant */
+  main .discover .basic-carousel-container .basic-carousel-platform {
+    height: 420px;
+  }
   main .template-x.basic-carousel .basic-carousel-container {
     width: 648px;
   }
