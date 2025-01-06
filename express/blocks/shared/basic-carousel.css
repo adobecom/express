@@ -273,6 +273,10 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
   main .template-x.two .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
     height: 530px;
   }
+  /* discover variant - two - hover container */
+  main .template-x.two .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
+    height: 370px;
+  }
   main .template-x.three .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
     height: 365px;
   }
