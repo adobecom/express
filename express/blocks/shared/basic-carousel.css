@@ -34,6 +34,11 @@ main .basic-carousel-container .basic-carousel-platform {
   scroll-behavior: smooth;
 }
 
+/* discover variant */
+main .discover .basic-carousel-container .basic-carousel-platform {
+  height: 420px;
+}
+
 main .basic-carousel-container:not(.controls-hidden) .basic-carousel-platform::-webkit-scrollbar,
 main .basic-carousel-container .basic-carousel-platform.infinity-scroll-loaded::-webkit-scrollbar {
   display: none;
@@ -250,6 +255,10 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
     width: 206px;
     height: 310px;
   }
+  /* discover variant - three - hover */
+  main .basic-carousel.three.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    height: 365px;
+  }
   main .basic-carousel.four.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
     width: 152px;
     height: 225px;
@@ -286,6 +295,10 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
   main .template-x.three .basic-carousel-container .template.basic-carousel-element .button-container {
     width: 222px;
     height: 362px;
+  }
+  /* discover variant - three - hover */
+  main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .button-container {
+    height: 414px;
   }
   main .template-x.four .basic-carousel-container .template.basic-carousel-element .button-container {
     width: 168px;
