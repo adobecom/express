@@ -219,6 +219,11 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
 }
 
 @media (min-width: 600px) {
+  /* discover variant - one tile basic-carousel-platform */
+  main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
+    max-height: unset;
+    height: 704px;
+  }
    /* discover variant - two tile basic-carousel-platform */
    main .basic-carousel.two.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
     height: 400px;
@@ -251,10 +256,6 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
     width: 316px;
     height: 474px;
   }
-  /* discover variant - two - hover */
-  main .basic-carousel.two.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
-    height: 316px;
-  }
   main .template-x.one .basic-carousel-container .basic-carousel-platform { 
     height: 440px;
   }
@@ -266,15 +267,23 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
     width: 206px;
     height: 310px;
   }
-  /* discover variant - three - hover */
-  main .basic-carousel.three.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
-    height: 365px;
-  }
   main .basic-carousel.four.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
     width: 152px;
     height: 225px;
   }
-  /* discover variant - four - hover */
+   /* discover variant - one - img */
+   main .basic-carousel.one.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    height: 648px;
+  }
+   /* discover variant - two - img */
+   main .basic-carousel.two.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    height: 316px;
+  }
+   /* discover variant - three - img */
+   main .basic-carousel.three.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    height: 365px;
+  }
+  /* discover variant - four - img */
   main .basic-carousel.four.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
     width: 152px;
     height: 152px;
@@ -285,17 +294,22 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
   main .template-x.two .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
     height: 530px;
   }
-  /* discover variant - two - hover container */
-  main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
-    height: 370px;
-  }
   main .template-x.three .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
     height: 365px;
   }
   main .template-x.four .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
     height: 276px;
   }
-  /* discover variant - four - hover container */
+  /* discover variant - one - singleton-hover */
+  main .template-x.one.discover .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
+    height: 704px;
+  }
+  /* discover variant - two - singleton-hover */
+  main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
+    height: 370px;
+  }
+  /* discover variant - three - singleton-hover - identical to non-variant rule */
+  /* discover variant - four - singleton-hover */
   main .template-x.four.horizontal .template {
     min-height: unset;
   }
@@ -319,27 +333,31 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
     width: 332px;
     height: 526px;
   }
-  /* discover variant - two - button-container */
-  main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .button-container {
-    height: 370px;
-  }
   main .template-x.three .basic-carousel-container .template.basic-carousel-element .button-container {
     width: 222px;
     height: 362px;
-  }
-  /* discover variant - three - button-container */
-  main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .button-container {
-    height: 414px;
   }
   main .template-x.four .basic-carousel-container .template.basic-carousel-element .button-container {
     width: 168px;
     height: 277px;
   }
+  /* discover variant - one - button-container */
+  main .template-x.one.discover .basic-carousel-container .template.basic-carousel-element .button-container {
+    width: 648px;
+    height: 648px;
+  }
+  /* discover variant - two - button-container */
+  main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .button-container {
+    height: 370px;
+  }
+  /* discover variant - three - button-container */
+  main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .button-container {
+    height: 414px;
+  }
   /* discover variant - four - button-container */
   main .template-x.four .basic-carousel-container .template.basic-carousel-element .button-container {
     height: 210px;
   }
-
   main .template-x .template.basic-carousel-element .button-container .media-wrapper .share-icon-wrapper .shared-tooltip {
     position: absolute;
     display: flex;
