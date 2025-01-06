@@ -420,7 +420,7 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
 
 .pricing-table .row.row-heading .col>div p {
   font-size: 1.125rem;
-  font-weight: 700;
+  font-weight: 900;
 }
 
 .pricing-table .row-heading .col.col-heading p {
@@ -685,6 +685,9 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
     width: 18px;
   }
 
+
+ 
+
   /* /Table Feature Row Content */
 
   /* Collapsed Rows */
@@ -775,4 +778,37 @@ main .section .pricing-table-wrapper:has(.pricing-table.many-cols) {
     top: -5.75px;
     opacity: 0.75;
   }
+}
+
+
+.pricing-table.vertical-shading .row-heading .col-heading.col{
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  background-image: linear-gradient(to right, #e5e5e5 50%, transparent 50%);
+  background-position: bottom;
+  background-size: 15px 1px;
+  background-repeat: repeat-x;
+}
+
+
+
+.pricing-table.vertical-shading .row-heading .col-heading.col:nth-child(2n){
+  background: var(--shaded-color);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  border-bottom: none;
+  background-image: linear-gradient(to right, #e5e5e5 50%, transparent 50%);
+  background-position: bottom;
+  background-size: 15px 1px;
+  background-repeat: repeat-x;
+
+}
+
+
+
+.pricing-table.sticky .row.row-heading.stuck .col-heading.col {
+  background-image: unset;
+  border-bottom: initial;
 }
