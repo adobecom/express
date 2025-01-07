@@ -376,6 +376,7 @@ main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-containe
   }
   /* discover variant - two - singleton-hover */
   main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
+    width: 332px;
     height: 370px;
   }
   /* discover variant - three - singleton-hover - identical to non-variant rule */
