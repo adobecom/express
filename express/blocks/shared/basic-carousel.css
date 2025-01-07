@@ -236,6 +236,10 @@ main .template-x.four.discover .basic-carousel-container .template.basic-carouse
 main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
   height: 370px;
 }
+/* discover variant - two tile basic-carousel-platform */
+main .basic-carousel.two.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
+  height: 400px;
+}
 /* discover variant - three tile basic-carousel-platform */
 main .basic-carousel.three.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
   height: 418px;
@@ -292,8 +296,8 @@ main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-containe
     max-height: unset;
     height: 704px;
   }
-   /* discover variant - two tile basic-carousel-platform */
-   main .basic-carousel.two.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
+  /* discover variant - two tile basic-carousel-platform */
+  main .basic-carousel.two.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
     height: 400px;
   }
   /* discover variant - three tile basic-carousel-platform */
@@ -346,6 +350,7 @@ main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-containe
   }
   /* discover variant - two - img */
   main .basic-carousel.two.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    width: 316px;
     height: 316px;
   }
   /* discover variant - three - img */
