@@ -164,6 +164,10 @@ main .section .collapsible-rows {
     width: 95%;
 }
 
+main .section .collapsible-rows.bold-quote {
+    margin-top: -80px;
+} 
+
 main .section .collapsible-rows.bold-quote h3 {
     font-size: 20px;
     font-weight: bold;
