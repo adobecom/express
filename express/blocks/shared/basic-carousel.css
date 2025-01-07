@@ -272,6 +272,7 @@ main .template-x.three.discover .basic-carousel-container .template.basic-carous
 /* discover variant - one, two, three - basic-carousel-faders */
 main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-container .basic-carousel-fader-left,
 main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-container .basic-carousel-fader-right {
+  pointer-events: none;
   display: none;
 }
 
@@ -284,6 +285,7 @@ main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-containe
   main .basic-carousel.three.discover.template-x.horizontal .basic-carousel-container .basic-carousel-fader-left,
   main .basic-carousel.three.discover.template-x.horizontal .basic-carousel-container .basic-carousel-fader-right {
     display: none;
+    pointer-events: none;
   }
   /* discover variant - one tile basic-carousel-platform */
   main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
