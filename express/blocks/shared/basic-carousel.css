@@ -218,20 +218,20 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
   border-color: transparent transparent transparent #33AB84;
 }
 
-  /* discover variant - one, two, three, four - image-wrapper img */
-  main .template-x.one.discover .basic-carousel-container .template.basic-carousel-element .still-wrapper .image-wrapper img,
-  main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .still-wrapper .image-wrapper img,
-  main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .still-wrapper .image-wrapper img,
-  main .template-x.four.discover .basic-carousel-container .template.basic-carousel-element .still-wrapper .image-wrapper img {
-    object-fit: fill;
-  }
-  /* discover variant - one, two, three, four - button-container media-wrapper img */
-  main .template-x.one.discover .basic-carousel-container .template.basic-carousel-element .button-container .media-wrapper img,
-  main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .button-container .media-wrapper img,
-  main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .button-container .media-wrapper img,
-  main .template-x.four.discover .basic-carousel-container .template.basic-carousel-element .button-container .media-wrapper img {
-    object-fit: fill;
-  }
+/* discover variant - one, two, three, four - image-wrapper img */
+main .template-x.one.discover .basic-carousel-container .template.basic-carousel-element .still-wrapper .image-wrapper img,
+main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .still-wrapper .image-wrapper img,
+main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .still-wrapper .image-wrapper img,
+main .template-x.four.discover .basic-carousel-container .template.basic-carousel-element .still-wrapper .image-wrapper img {
+  object-fit: fill;
+}
+/* discover variant - one, two, three, four - button-container media-wrapper img */
+main .template-x.one.discover .basic-carousel-container .template.basic-carousel-element .button-container .media-wrapper img,
+main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .button-container .media-wrapper img,
+main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .button-container .media-wrapper img,
+main .template-x.four.discover .basic-carousel-container .template.basic-carousel-element .button-container .media-wrapper img {
+  object-fit: fill;
+}
 
 @media (min-width: 600px) {
   /* discover variant - one, two, three - basic-carousel-faders */
