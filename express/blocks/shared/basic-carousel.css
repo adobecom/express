@@ -232,6 +232,24 @@ main .template-x.three.discover .basic-carousel-container .template.basic-carous
 main .template-x.four.discover .basic-carousel-container .template.basic-carousel-element .button-container .media-wrapper img {
   object-fit: fill;
 }
+/* discover variant - three tile basic-carousel-platform */
+main .basic-carousel.three.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
+  height: 418px;
+}
+/* discover variant - three - img */
+main .basic-carousel.three.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+  width: 200px;
+  height: 365px;
+}
+/* discover variant - three - singleton-hover */
+main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
+  height: 418px;
+}
+/* discover variant - three - button-container */
+main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .button-container {
+  width: 216px;
+  height: 418px;
+}
 
 @media (min-width: 600px) {
   /* discover variant - one, two, three - basic-carousel-faders */
@@ -299,12 +317,13 @@ main .template-x.four.discover .basic-carousel-container .template.basic-carouse
    main .basic-carousel.one.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
     height: 648px;
   }
-   /* discover variant - two - img */
-   main .basic-carousel.two.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+  /* discover variant - two - img */
+  main .basic-carousel.two.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
     height: 316px;
   }
-   /* discover variant - three - img */
-   main .basic-carousel.three.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+  /* discover variant - three - img */
+  main .basic-carousel.three.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    width: 206px;
     height: 365px;
   }
   /* discover variant - four - img */
