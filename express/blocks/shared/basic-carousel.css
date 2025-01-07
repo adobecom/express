@@ -232,23 +232,47 @@ main .template-x.three.discover .basic-carousel-container .template.basic-carous
 main .template-x.four.discover .basic-carousel-container .template.basic-carousel-element .button-container .media-wrapper img {
   object-fit: fill;
 }
+/* discover variant - one tile basic-carousel-platform */
+main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
+  height: 370px;
+}
 /* discover variant - three tile basic-carousel-platform */
 main .basic-carousel.three.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
   height: 418px;
+}
+/* discover variant - one - img */
+main .basic-carousel.one.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+  width: 320px;
+  height: 320px;
 }
 /* discover variant - three - img */
 main .basic-carousel.three.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
   width: 200px;
   height: 365px;
 }
+/* discover variant - one - singleton-hover */
+main .template-x.one.discover .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
+  height: 370px;
+}
 /* discover variant - three - singleton-hover */
 main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
   height: 418px;
+}
+/* discover variant - one - button-container */
+main .template-x.one.discover .basic-carousel-container .template.basic-carousel-element .button-container {
+  width: 320px;
+  height: 370px;
 }
 /* discover variant - three - button-container */
 main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .button-container {
   width: 216px;
   height: 418px;
+}
+
+/* discover variant - one, two, three - basic-carousel-faders */
+main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-container .basic-carousel-fader-left,
+main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-container .basic-carousel-fader-right {
+  display: none;
 }
 
 @media (min-width: 600px) {
@@ -313,8 +337,9 @@ main .template-x.three.discover .basic-carousel-container .template.basic-carous
     width: 152px;
     height: 225px;
   }
-   /* discover variant - one - img */
-   main .basic-carousel.one.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+  /* discover variant - one - img */
+  main .basic-carousel.one.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+    width: 648px;
     height: 648px;
   }
   /* discover variant - two - img */
