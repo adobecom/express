@@ -7,15 +7,17 @@
     width: 92%;
 }
 .collapsible-row-accordion {
-    height: 128px;
+    height: 96px;
     margin-bottom: 4px;
     border-radius: 0px 8px 8px 0px;
     border-left: 4px solid #724CDC;
     background: #F8F8F8;
-    padding: 16px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 .collapsible-rows {
     position: relative;
@@ -33,7 +35,6 @@
     font-weight: 400;
     line-height: 24px;
     text-align: left;
-    padding-left: 16px;
     color: #444444;
 }
 .collapsible-row-sub-header {
@@ -43,7 +44,6 @@
     font-weight: 700;
     line-height: 24px;
     text-align: left;
-    padding-left: 16px;
     color: #505050;
 }
 .collapsible-rows .collapsible-row-toggle-btn {
@@ -147,7 +147,6 @@
     margin: 0;
     max-width: none;
 }
-
 .section.section-wrapper .collapsible-rows-background img {
     position: absolute;
     top: 50%;
@@ -158,6 +157,11 @@
     height: 100%;
     max-width: none;
 }
+
+main .section .collapsible-rows.bold-quote h3{
+    font-size: 20px;
+    font-weight: bold;
+} 
 
 @media (min-width: 400px) {
     .collapsible-row-header {
@@ -173,7 +177,7 @@
         height: 78px;
     }
     .collapsible-row-accordion {
-        height: 80px;
+        height: 72px;
         margin-bottom: 4px;
         border-radius: 0px 8px 8px 0px;
         border-left: 4px solid #724CDC;
@@ -224,12 +228,23 @@
     margin-right: auto;
     padding-top: 0;
   }
+  main .collapsible-rows-container .default-content-wrapper {
+    max-width: unset;
+    width: 648px;
+    margin-left: auto;
+    margin-right: auto;
+  }
   main .section .collapsible-rows {
     width: 648px;
-    margin-left: 0;
-    margin-right: 0;
     margin-top: 30px;
   }
+  main .section .collapsible-rows.bold-quote{
+    margin-top: -80px;
+  } 
+  main .section .collapsible-rows.bold-quote h3{
+    font-size: 28px;
+    font-weight: bold;
+  } 
   .collapsible-rows .collapsible-row-accordion {
     margin-left: 0;
     margin-right: 0;

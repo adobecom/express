@@ -188,6 +188,15 @@ main .section.content-group .default-content-wrapper p {
   color: #444444;
 }
 
+@media (min-width: 768px) {
+  main .section.content-group.discover .default-content-wrapper {
+    max-width: unset;
+    width: 648px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 @media (min-width: 900px) {
   main .section.content-group {
     width: 648px;
