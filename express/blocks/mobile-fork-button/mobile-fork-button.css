@@ -1,5 +1,6 @@
 main  .floating-button-wrapper.mobile-fork-button, main .mobile-fork-button {
     z-index: 10;
+    --mfb-font-size: 14px
 }
 
 main .mobile-gating-text {
@@ -8,7 +9,7 @@ main .mobile-gating-text {
     text-align: left;
     flex-grow: 1;
     font-weight: 400;
-    font-size: 14px;
+    font-size: var(--mfb-font-size);
 }
 
 main .mobile-gating-text, main .mobile-fork-button .floating-button .mobile-gating-row .icon{
@@ -53,7 +54,7 @@ main .mobile-gating-header {
 
 main .mobile-fork-button .floating-button a.button:any-link {
     border-radius: 20px;
-    font-size: 14px;
+    font-size: var(--mfb-font-size);
     min-width: 150px;
     margin: auto;
     width: 50%;
