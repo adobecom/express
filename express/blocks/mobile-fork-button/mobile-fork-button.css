@@ -8,7 +8,7 @@ main .mobile-gating-text {
     text-align: left;
     flex-grow: 1;
     font-weight: 400;
-    font-size: var(--body-font-size-m);
+    font-size: 14px;
 }
 
 main .mobile-gating-text, main .mobile-fork-button .floating-button .mobile-gating-row .icon{
@@ -53,9 +53,10 @@ main .mobile-gating-header {
 
 main .mobile-fork-button .floating-button a.button:any-link {
     border-radius: 20px;
-    font-size: var(--body-font-size-m);
-    min-width: 136px;
-    width: 40%;
+    font-size: 12px;
+    min-width: 150px;
+    margin: auto;
+    width: 50%;
     color: var(--color-white);
     background-color: var(--color-info-accent);
     border-color: var(--color-info-accent);
