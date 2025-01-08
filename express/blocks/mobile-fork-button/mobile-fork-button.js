@@ -8,7 +8,7 @@ import {
   createFloatingButton,
 } from '../shared/floating-cta.js';
 
-const LONG_TEXT_CUTOFF = 70
+const LONG_TEXT_CUTOFF = 70;
 
 const getTextWidth = (text, font) => {
   const canvas = document.createElement('canvas');
@@ -54,7 +54,7 @@ function androidDeviceAndRamCheck() {
   return navigator.deviceMemory >= 4 && isAndroid;
 }
 
-function collectFloatingButtonData(block) {
+function collectFloatingButtonData() {
   const metadataMap = Array.from(document.head.querySelectorAll('meta')).reduce((acc, meta) => {
     if (meta?.name && !meta.property) acc[meta.name] = meta.content || '';
     return acc;
@@ -99,8 +99,8 @@ function collectFloatingButtonData(block) {
       } = completeSet;
       const aTag = createTag('a', { title: text, href });
       aTag.textContent = text;
-      if (getTextWidth(text, 16) > LONG_TEXT_CUTOFF){
-        data.longText = true
+      if (getTextWidth(text, 16) > LONG_TEXT_CUTOFF) {
+        data.longText = true;
       }
       data.tools.push({
         icon,

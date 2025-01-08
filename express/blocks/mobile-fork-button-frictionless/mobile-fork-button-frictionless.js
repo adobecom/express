@@ -8,7 +8,7 @@ import {
   createFloatingButton,
 } from '../shared/floating-cta.js';
 
-const LONG_TEXT_CUTOFF = 70
+const LONG_TEXT_CUTOFF = 70;
 
 const getTextWidth = (text, font) => {
   const canvas = document.createElement('canvas');
@@ -104,8 +104,8 @@ function collectFloatingButtonData(eligible) {
         });
       }
       aTag.textContent = text;
-      if (getTextWidth(text, 16) > LONG_TEXT_CUTOFF){
-        data.longText = true
+      if (getTextWidth(text, 16) > LONG_TEXT_CUTOFF) {
+        data.longText = true;
       }
       data.tools.push({
         icon,
