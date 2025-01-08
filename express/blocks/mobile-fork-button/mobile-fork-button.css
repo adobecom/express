@@ -60,6 +60,7 @@ main .mobile-fork-button .floating-button a.button:any-link {
     color: var(--color-white);
     background-color: var(--color-info-accent);
     border-color: var(--color-info-accent);
+    padding: 5px;
 }   
 
 main .mobile-fork-button .floating-button a.button:any-link.accent {
