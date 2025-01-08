@@ -1,6 +1,10 @@
 main  .floating-button-wrapper.mobile-fork-button-frictionless, main .mobile-fork-button-frictionless {
     z-index: 10;
-    --mfb-font-size: 14px
+    --mfb-font-size: 16px;
+}
+
+main .mobile-fork-button-frictionless.long-text {
+    --mfb-font-size: 14px;
 }
 
 main .mobile-gating-text {
