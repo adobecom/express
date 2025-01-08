@@ -41,7 +41,7 @@ main  .mobile-fork-button .floating-button.block {
 main .mobile-gating-row {
     display: flex;
     gap: 10px;
-    height: 40px;
+    min-height: 40px;
 }
 
 main .mobile-gating-header {
@@ -53,14 +53,14 @@ main .mobile-gating-header {
 
 main .mobile-fork-button .floating-button a.button:any-link {
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 14px;
     min-width: 150px;
     margin: auto;
     width: 50%;
     color: var(--color-white);
     background-color: var(--color-info-accent);
     border-color: var(--color-info-accent);
-    padding: 5px;
+ 
 }   
 
 main .mobile-fork-button .floating-button a.button:any-link.accent {
