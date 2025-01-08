@@ -218,6 +218,10 @@ main .template-x .template.basic-carousel-element .button-container .media-wrapp
   border-color: transparent transparent transparent #33AB84;
 }
 
+main .template-x.two.basic-carousel.discover {
+  margin-top: -30px;
+}
+
 /* discover variant - one, two, three, four - image-wrapper img */
 main .template-x.one.discover .basic-carousel-container .template.basic-carousel-element .still-wrapper .image-wrapper img,
 main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .still-wrapper .image-wrapper img,
@@ -238,7 +242,7 @@ main .basic-carousel.one.discover.template-x.horizontal .basic-carousel-containe
 }
 /* discover variant - two tile basic-carousel-platform */
 main .basic-carousel.two.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
-  height: 400px;
+  height: 330px;
 }
 /* discover variant - three tile basic-carousel-platform */
 main .basic-carousel.three.discover.template-x.horizontal .basic-carousel-container .basic-carousel-platform {
