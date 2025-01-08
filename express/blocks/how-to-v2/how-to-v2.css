@@ -4,6 +4,11 @@ main .how-to-v2 h2 {
   padding: 0 24px;
 }
 
+main .content-group.discover .how-to-v2 h2 {
+  font-size: 32px;
+  margin-top: 0;
+}
+
 main .how-to-v2 ol {
   list-style-type: none;
   font-size: 21px;
