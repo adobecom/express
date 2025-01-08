@@ -249,6 +249,11 @@ main .basic-carousel.one.discover.template-x.horizontal .template:not(.placehold
   width: 320px;
   height: 320px;
 }
+/* discover variant - two - img */
+main .basic-carousel.two.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
+  width: 216px;
+  height: 216px;
+}
 /* discover variant - three - img */
 main .basic-carousel.three.discover.template-x.horizontal .template:not(.placeholder) img:not(.icon):not(.icon-share-arrow) {
   width: 200px;
@@ -258,6 +263,11 @@ main .basic-carousel.three.discover.template-x.horizontal .template:not(.placeho
 main .template-x.one.discover .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
   height: 370px;
 }
+/* discover variant - two - singleton-hover */
+main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
+  width: 216px;
+  height: 268px;
+}
 /* discover variant - three - singleton-hover */
 main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .button-container.singleton-hover {
   height: 418px;
@@ -266,6 +276,10 @@ main .template-x.three.discover .basic-carousel-container .template.basic-carous
 main .template-x.one.discover .basic-carousel-container .template.basic-carousel-element .button-container {
   width: 320px;
   height: 370px;
+}
+/* discover variant - two - button-container */
+main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .button-container {
+  height: 268px;
 }
 /* discover variant - three - button-container */
 main .template-x.three.discover .basic-carousel-container .template.basic-carousel-element .button-container {
