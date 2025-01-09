@@ -8,6 +8,16 @@ import {
   createFloatingButton,
 } from '../shared/floating-cta.js';
 
+const LONG_TEXT_CUTOFF = 70;
+
+const getTextWidth = (text, font) => {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  context.font = font;
+  const metrics = context.measureText(text);
+  return metrics.width;
+};
+
 function buildAction(entry, buttonType) {
   const wrapper = createTag('div', { class: 'floating-button-inner-row mobile-gating-row' });
   const text = createTag('div', { class: 'mobile-gating-text' });
@@ -94,6 +104,9 @@ function collectFloatingButtonData(eligible) {
         });
       }
       aTag.textContent = text;
+      if (getTextWidth(text, 16) > LONG_TEXT_CUTOFF) {
+        data.longText = true;
+      }
       data.tools.push({
         icon,
         anchor: aTag,
@@ -122,4 +135,5 @@ export default async function decorate(block) {
     const linksPopulated = new CustomEvent('linkspopulated', { detail: blockLinks });
     document.dispatchEvent(linksPopulated);
   }
+  if (data.longText) blockWrapper.classList.add('long-text');
 }
