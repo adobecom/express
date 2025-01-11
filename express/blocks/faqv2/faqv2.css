@@ -162,7 +162,7 @@
 }
 
 .section .faqv2-background img {
-	position: absolute;
+	position: fixed;
 	top: 50%;
 	left: 50%;
 	object-fit: cover;
@@ -281,13 +281,17 @@
 
     .faqv2.longform .faqv2-accordion.expandable.sub-header-accordion {
         border-radius: 0;
-        background: white;
+        background: transparent;
         margin-bottom: 0;
     }
     .faqv2.longform .faqv2-accordion.expandable.header-accordion {
         height: 100%;
         border-radius: 0;
         margin-bottom: 0;
-        background: white;
+        background: transparent;
+    }
+    .faqv2.longform .faqv2-background {
+        background-color: white;
     }
 }
+
