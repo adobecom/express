@@ -1,6 +1,7 @@
 import { createTag } from '../../scripts/utils.js';
 
 function buildTableLayout(block) {
+  const isLongFormVariant = block.classList.contains('longform');
   const parentDiv = block.closest('.section');
   parentDiv?.classList.add('faqv2-grey-bg', 'faqv2-section-padding');
   const rows = Array.from(block.children);
@@ -59,7 +60,7 @@ function buildTableLayout(block) {
     subHeaderAccordion.append(subHeaderDiv);
 
     headerDiv.addEventListener('click', () => {
-      headerAccordion.classList.toggle('rounded-corners');
+      !isLongFormVariant && headerAccordion.classList.toggle('rounded-corners');
       const isCollapsed = subHeaderAccordion.classList.toggle('collapsed');
       subHeaderAccordion.style.display = isCollapsed ? 'flex' : 'none';
       subHeaderAccordion.style.paddingTop = 0;
