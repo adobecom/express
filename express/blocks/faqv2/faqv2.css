@@ -240,10 +240,6 @@
 		margin: auto;
 	}
 
-	.faqv2.longform {
-		width: unset;
-	}
-
 	.faqv2 .faqv2-accordion {
 		margin-left: 0;
 		margin-right: 0;
@@ -257,11 +253,15 @@
 	}
 
 	.faqv2.longform {
+        width: unset;
 		display: flex;
 		flex-direction: row;
 		align-items: flex-start;
 		padding: 0 24px;
 	}
+    .faqv2.longform .faqv2-wrapper {
+        margin-bottom: 0;
+    }
 
 	.faqv2.longform .faqv2-accordion.title {
 		flex: 0 0 25%;
