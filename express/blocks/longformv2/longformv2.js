@@ -8,6 +8,7 @@ function buildTableLayout(block) {
   block.innerHTML = '';
   const background = rows.shift();
   background.classList.add('longformv2-background');
+  background.style.pointerEvents = 'none';
   parentDiv.prepend(background);
   const headerText = rows.shift()?.innerText.trim();
 
@@ -68,6 +69,5 @@ function buildTableLayout(block) {
 }
 
 export default async function decorate(block) {
-  console.log('we are here', block);
   buildTableLayout(block);
 }
