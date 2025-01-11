@@ -290,8 +290,12 @@
         margin-bottom: 0;
         background: transparent;
     }
-    .faqv2.longform .faqv2-background {
+    .longform .faqv2-background {
         background-color: white;
+    }
+    .longform.faqv2-section-padding {
+        margin-left: 30px;
+        margin-right: 30px;
     }
 }
 

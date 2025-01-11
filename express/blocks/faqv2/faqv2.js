@@ -4,6 +4,7 @@ function buildTableLayout(block) {
   const isLongFormVariant = block.classList.contains('longform');
   const parentDiv = block.closest('.section');
   parentDiv?.classList.add('faqv2-grey-bg', 'faqv2-section-padding');
+  isLongFormVariant && parentDiv?.classList.add('longform');
   const rows = Array.from(block.children);
   block.innerHTML = '';
 
