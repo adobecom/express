@@ -16,7 +16,14 @@ function buildTableLayout(block) {
   if (headerText) {
     const rowAccordionHeader = createTag('h2', { class: 'faqv2-accordion title' });
     rowAccordionHeader.textContent = headerText;
-    block.prepend(rowAccordionHeader);
+
+    if (isLongFormVariant) {
+      const container = createTag('div', { class: 'faqv2-longform-header-container' });
+      container.appendChild(rowAccordionHeader);
+      block.prepend(container);
+    } else {
+      block.prepend(rowAccordionHeader);
+    }
   }
 
   const container = createTag('div', { class: 'faqv2-accordions-col' });
