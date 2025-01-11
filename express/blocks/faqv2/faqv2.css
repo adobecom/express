@@ -239,6 +239,10 @@
       width: 648px;
       margin: auto;
     }
+    
+    .faqv2.longform {
+        width: unset;
+    }
   
     .faqv2 .faqv2-accordion {
       margin-left: 0;

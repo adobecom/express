@@ -3,19 +3,22 @@ import { createTag } from '../../scripts/utils.js';
 function buildTableLayout(block) {
   const parentDiv = block.closest('.section');
   parentDiv?.classList.add('faqv2-grey-bg', 'faqv2-section-padding');
-
   const rows = Array.from(block.children);
   block.innerHTML = '';
+
   const background = rows.shift();
   background.classList.add('faqv2-background');
   parentDiv.prepend(background);
-  const headerText = rows.shift()?.innerText.trim();
 
+  const headerText = rows.shift()?.innerText.trim();
   if (headerText) {
     const rowAccordionHeader = createTag('h2', { class: 'faqv2-accordion title' });
     rowAccordionHeader.textContent = headerText;
     block.prepend(rowAccordionHeader);
   }
+
+  const container = createTag('div', { class: 'faqv2-accordions-col' });
+  block.appendChild(container);
 
   const collapsibleRows = [];
   rows.forEach((row) => {
@@ -32,7 +35,7 @@ function buildTableLayout(block) {
     const { header, subHeader } = row;
 
     const rowWrapper = createTag('div', { class: 'faqv2-wrapper' });
-    block.append(rowWrapper);
+    container.appendChild(rowWrapper);
 
     const headerAccordion = createTag('div', { class: 'faqv2-accordion expandable header-accordion' });
     rowWrapper.append(headerAccordion);
@@ -46,7 +49,6 @@ function buildTableLayout(block) {
       alt: 'toggle-icon',
       class: 'toggle-icon',
     });
-
     headerDiv.appendChild(iconElement);
 
     const subHeaderAccordion = createTag('div', { class: 'faqv2-accordion expandable sub-header-accordion' });
@@ -62,7 +64,9 @@ function buildTableLayout(block) {
       subHeaderAccordion.style.display = isCollapsed ? 'flex' : 'none';
       subHeaderAccordion.style.paddingTop = 0;
 
-      iconElement.src = isCollapsed ? '/express/icons/minus-heavy.svg' : '/express/icons/plus-heavy.svg';
+      iconElement.src = isCollapsed
+        ? '/express/icons/minus-heavy.svg'
+        : '/express/icons/plus-heavy.svg';
     });
   });
 }
