@@ -300,8 +300,16 @@
         margin-bottom: 0;
         background: transparent;
     }
+    main .longform {
+        border-radius: 16px;
+        height: 587px;
+    }
     .longform .faqv2-background {
         background-color: white;
+        box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.16),
+        0 -2px 4px rgba(0, 0, 0, 0.08); 
+        border-radius: 16px;
     }
     .longform.faqv2-section-padding {
         margin-left: 30px;
@@ -314,4 +322,3 @@
         font-size: 22px;
     }
 }
-
