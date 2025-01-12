@@ -260,7 +260,6 @@
     .faqv2.longform .faqv2-longform-header-container {
         flex: 0 0 50%;
         max-width: 50%;
-        display: flex;
         align-items: center;
         justify-content: center;
     }
@@ -311,5 +310,8 @@
     .faqv2.longform .faqv2-longform-header-container h2.faqv2-accordion.title {
         font-size: 38px;
 	}
+    .faqv2.longform .faqv2-header.expandable {
+        font-size: 22px;
+    }
 }
 
