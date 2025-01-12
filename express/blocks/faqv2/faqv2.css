@@ -80,7 +80,8 @@
 	background: white;
 }
 
-.faqv2-accordion.expandable.header-accordion.rounded-corners {
+.faqv2-accordion.expandable.header-accordion.rounded-corners,
+.faqv2-accordion.expandable.header-accordion {
 	border-radius: 8px 8px 0 0;
 	margin-bottom: 0;
 	background: linear-gradient(to bottom,
