@@ -256,6 +256,7 @@
         flex-direction: row;
         align-items: center;
         width: 100%;
+        padding: 30px 10px;
     }
     .faqv2.longform .faqv2-longform-header-container {
         flex: 0 0 50%;
@@ -302,7 +303,6 @@
     }
     main .longform {
         border-radius: 16px;
-        height: 587px;
     }
     .longform .faqv2-background {
         background-color: white;
