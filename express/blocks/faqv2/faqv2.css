@@ -251,15 +251,25 @@
 		line-height: 24px;
 		margin-left: 0;
 	}
-
-	.faqv2.longform {
-        width: unset;
-		display: flex;
-		flex-direction: row;
-		align-items: flex-start;
-		padding: 0 24px;
-	}
-
+    .faqv2.longform {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        width: 100%;
+    }
+    .faqv2.longform .faqv2-longform-header-container {
+        flex: 0 0 50%;
+        max-width: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+   .faqv2.longform .faqv2-accordions-col {
+        flex: 0 0 50%;
+        max-width: 50%;
+        display: flex;
+        flex-direction: column;
+    }
     .faqv2.longform .faqv2-wrapper {
         margin: 0;
         box-shadow: none;
@@ -268,22 +278,18 @@
         width: auto;
         border-top: 1px solid #8F8F8F;
     }
-
     .faqv2.longform .faqv2-wrapper:first-child {
         border-top: none;
     }
-
 	.faqv2.longform .faqv2-accordion.title {
 		flex: 0 0 25%;
 		margin-right: 24px;
 	}
-
 	.faqv2.longform .faqv2-accordions-col {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
 	}
-
     .faqv2.longform .faqv2-accordion.expandable.sub-header-accordion {
         border-radius: 0;
         background: transparent;
