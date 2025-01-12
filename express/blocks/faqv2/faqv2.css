@@ -254,7 +254,7 @@
     .faqv2.longform {
         display: flex;
         flex-direction: row;
-        align-items: flex-start;
+        align-items: center;
         width: 100%;
     }
     .faqv2.longform .faqv2-longform-header-container {
