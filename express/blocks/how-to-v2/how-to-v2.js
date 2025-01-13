@@ -89,7 +89,7 @@ export default async function decorate(block) {
     const stepsContent = createTag('div', { class: 'steps-content' });
 
     if (hasBackground) {
-      const bgContainer = document.querySelector('.how-to-v2.image');
+      const bgContainer = document.querySelector('.how-to-v2.image') || document.querySelector('.how-to-v2.video');
       if (backgroundURL) {
         bgContainer.style.backgroundImage = `
         linear-gradient(to right, white, transparent 20%),
