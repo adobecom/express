@@ -1,4 +1,4 @@
-import { createTag } from '../../scripts/utils.js';
+import { createTag, fetchPlaceholders } from '../../scripts/utils.js';
 
 function buildTableLayout(block) {
   const isLongFormVariant = block.classList.contains('longform');
@@ -80,7 +80,10 @@ function buildTableLayout(block) {
   });
 }
 
-function buildOriginalLayout(block) {
+async function buildOriginalLayout(block) {
+  const placeholders = await fetchPlaceholders();
+  console.log('placeholders', placeholders);
+
   const collapsibleRows = [];
   const rows = Array.from(block.children);
 
@@ -138,7 +141,9 @@ function buildOriginalLayout(block) {
       }
     });
     isExpanded = !isExpanded;
-    toggleButton.textContent = isExpanded ? 'View less' : 'View more';
+    const viewMoreText = placeholders['view-more'];
+    const viewLessText = placeholders['view-less'];
+    toggleButton.textContent = isExpanded ? viewLessText : viewMoreText;
   });
 }
 
