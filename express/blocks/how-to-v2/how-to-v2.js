@@ -100,6 +100,8 @@ export default async function decorate(block) {
         bgContainer.style.backgroundSize = 'cover';
         bgContainer.style.backgroundPosition = 'center';
         bgContainer.style.backgroundRepeat = 'no-repeat';
+        bgContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+        bgContainer.style.backgroundBlendMode = 'lighten';
       }
     }
 
