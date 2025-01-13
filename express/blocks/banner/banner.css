@@ -45,6 +45,7 @@ main .banner {
 
 main .banner.light {
   color: var(--color-black);
+  max-width: unset;;
 }
 
 main .banner.compact p {
