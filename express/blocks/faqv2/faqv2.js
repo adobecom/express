@@ -70,9 +70,6 @@ function buildTableLayout(block) {
     headerDiv.addEventListener('click', () => {
       !isLongFormVariant && headerAccordion.classList.toggle('rounded-corners');
       const isCollapsed = subHeaderAccordion.classList.toggle('collapsed');
-      subHeaderAccordion.style.display = isCollapsed ? 'flex' : 'none';
-      subHeaderAccordion.style.paddingTop = 0;
-
       iconElement.src = isCollapsed
         ? '/express/icons/minus-heavy.svg'
         : '/express/icons/plus-heavy.svg';
@@ -82,8 +79,6 @@ function buildTableLayout(block) {
 
 async function buildOriginalLayout(block) {
   const placeholders = await fetchPlaceholders();
-  console.log('placeholders', placeholders);
-
   const collapsibleRows = [];
   const rows = Array.from(block.children);
 

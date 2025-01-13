@@ -82,7 +82,7 @@
 
 .faqv2-accordion.expandable.header-accordion.rounded-corners,
 .faqv2-accordion.expandable.header-accordion {
-	border-radius: 8px 8px 0 0;
+	border-radius: 8px;
 	margin-bottom: 0;
 	background: linear-gradient(to bottom,
 			#5C5CE0,
@@ -94,6 +94,7 @@
 .faqv2-accordion.expandable.sub-header-accordion {
 	height: 100%;
 	border-radius: 0 0 8px 8px;
+	padding-top: 0;
 	border: none;
 	display: none;
 	margin-bottom: 6px;
@@ -104,6 +105,9 @@
 			#F2693C,
 			#F08420) left / 1% 100% no-repeat,
 		white;
+}
+.faqv2-accordion.expandable.sub-header-accordion.collapsed {
+	display: flex;
 }
 
 .faqv2-header.expandable {
