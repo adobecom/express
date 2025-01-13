@@ -89,18 +89,22 @@ export default async function decorate(block) {
     const stepsContent = createTag('div', { class: 'steps-content' });
 
     if (hasBackground) {
-      // So that background image goes beyond container
-      const stepsContentBackground = createTag('div', { class: 'steps-content-backg' });
-      const stepsContentBackgroundImg = createTag('img', { class: 'steps-content-backg-image' });
-      stepsContent.append(stepsContentBackground);
-      stepsContentBackground.append(stepsContentBackgroundImg);
-      stepsContentBackgroundImg.src = backgroundURL;
+      const bgContainer = document.querySelector('.how-to-v2.image');
+      if (backgroundURL) {
+        bgContainer.style.backgroundImage = `
+        linear-gradient(to right, white, transparent 20%),
+        linear-gradient(to left, white, transparent 20%),
+        linear-gradient(to bottom, white, transparent 20%),
+        linear-gradient(to top, white, transparent 20%),
+        url("${backgroundURL}")`;
+        bgContainer.style.backgroundSize = 'cover';
+        bgContainer.style.backgroundPosition = 'center';
+        bgContainer.style.backgroundRepeat = 'no-repeat';
+      }
     }
 
     if (isVideoVariant) {
       const videoData = rows.shift();
-
-      // remove the added social link from the block DOM
       block.removeChild(block.children[0]);
 
       const videoLink = videoData.querySelector('a');
