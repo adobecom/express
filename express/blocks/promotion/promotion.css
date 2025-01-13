@@ -53,7 +53,7 @@ main .section .promotion h2 {
 }
 
 main .promotion.narrow {
-  max-width: 850px;
+  max-width: 780px;
   margin: 0 auto; 
 }
 
