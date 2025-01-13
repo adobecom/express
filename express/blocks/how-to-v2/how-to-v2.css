@@ -147,6 +147,10 @@ main .how-to-v2.image {
     font-size: 28px;
   }
 
+  main .content-group.how-to-v2-image-container {
+    width: 100%;
+  }
+
   main .how-to-v2.video,
   main .how-to-v2.image  {
     max-width: 950px;
@@ -179,9 +183,7 @@ main .how-to-v2.image {
   }
 
   main .how-to-v2 .steps-content .steps-content-backg {
-    left: -90px;
-    width: 67%;
-    transform: scale(0.9);
+    opacity: 0.6;
     top: -68px;
   }
 }
