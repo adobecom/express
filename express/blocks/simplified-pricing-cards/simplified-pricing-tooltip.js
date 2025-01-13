@@ -5,14 +5,13 @@ import {
 
 export function adjustElementPosition() {
   const elements = document.querySelectorAll('.tooltip-text');
-
   if (elements.length === 0) return;
   for (const element of elements) {
     const rect = element.getBoundingClientRect();
     if (rect.right > window.innerWidth) {
       element.classList.remove('overflow-left');
       element.classList.add('overflow-right');
-    } else if (rect.left < 0) {
+    } else if (rect.left < 40) {
       element.classList.remove('overflow-right');
       element.classList.add('overflow-left');
     }
@@ -41,7 +40,8 @@ export function handleTooltip(pricingArea) {
   span.innerText = tooltipText;
   const icon = getIconElement('info', 44, 'Info', 'tooltip-icon');
   icon.append(span);
-  const iconWrapper = createTag('span');
+  icon.setAttribute('tabindex', 1);
+  const iconWrapper = createTag('button');
   iconWrapper.append(icon);
   iconWrapper.append(span);
   tooltipDiv.append(iconWrapper);
