@@ -2182,6 +2182,11 @@ main .template-x-wrapper.horizontal > .template-x.horizontal.tabbed > .template-
     font-size: 22px;
 }
 
+.template-x.narrow.left-align-text .text-wrapper,
+.template-x.narrow.left-align-text .text-wrapper h2 { 
+    text-align: left;
+}
+
 nav ol.templates-breadcrumbs {
     list-style: none;
     margin: 0 0 0 16px;

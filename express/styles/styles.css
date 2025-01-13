@@ -1330,7 +1330,7 @@ main .section.long-form .default-content-wrapper h6 {
 @media (min-width: 600px) {
   main .section.long-form .default-content-wrapper {
     padding: 0 40px 60px;
-    max-width: 1070px;
+    max-width: 850px;
   }
 }
 

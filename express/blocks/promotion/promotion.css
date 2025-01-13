@@ -14,6 +14,10 @@ main .promotion .promotion-wrapper {
   margin-top: 56px;
 }
 
+main .promotion.narrow.left-align-text h2 {
+  text-align: left;
+}
+
 main .promotion .promotion-hero {
   margin: 0;
   max-height:365px;

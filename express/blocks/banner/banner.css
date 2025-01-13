@@ -199,9 +199,14 @@ main .banner.cool h2 {
 }
 
 main .grid-width-6-desktop .banner.narrow.desktop {
-  max-width: 850px;
+  max-width: 778px;
   margin: 0 auto;
 }
+
+main .grid-width-6-desktop .banner.narrow h2 {
+  text-align: left;
+}
+
 
 main .banner.narrow {
   max-width: 375px;
