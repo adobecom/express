@@ -5,7 +5,6 @@ import {
 
 export function adjustElementPosition() {
   const elements = document.querySelectorAll('.tooltip-text');
-
   if (elements.length === 0) return;
   for (const element of elements) {
     const rect = element.getBoundingClientRect();
