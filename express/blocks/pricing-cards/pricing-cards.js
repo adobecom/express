@@ -202,7 +202,8 @@ function handleTooltip(pricingArea) {
   span.innerText = tooltipText;
   const icon = getIconElement('info', 44, 'Info', 'tooltip-icon');
   icon.append(span);
-  const iconWrapper = createTag('span');
+  const iconWrapper = createTag('button');
+  icon.setAttribute('tabindex',1) 
   iconWrapper.append(icon);
   iconWrapper.append(span);
   tooltipDiv.append(iconWrapper);
