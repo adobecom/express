@@ -176,12 +176,10 @@ main .section.content-group .default-content-wrapper h2 {
 main .content-group.discover.mobile-text {
   margin-top: -25px;
 }
-main .content-group.discover.mobile-text .default-content-wrapper {
-  margin-bottom: 30px;
-}
-main .content-group.discover.mobile-text h2 {
+main .content-group.discover.mobile-text .default-content-wrapper h2 {
+  margin-top: 70px;
   text-align: left;
-  font-size: 20px;
+  font-size: 32px;
 }
 main .section.content-group .default-content-wrapper h3 {
   font-size: 18px;
