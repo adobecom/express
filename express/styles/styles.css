@@ -1303,7 +1303,6 @@ main > #hero {
   }
 }
 
-/* long-form section: left-align text */
 main .section.long-form .default-content-wrapper {
   box-sizing: border-box;
   padding: 0 20px 60px;
@@ -1317,6 +1316,10 @@ main .section.long-form .default-content-wrapper h4,
 main .section.long-form .default-content-wrapper h5,
 main .section.long-form .default-content-wrapper h6 {
   text-align: left;
+}
+
+main .long-form h1 {
+  font-size: 36px;
 }
 
 main .section.long-form .default-content-wrapper h2,
