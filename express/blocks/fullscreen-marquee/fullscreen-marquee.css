@@ -284,6 +284,15 @@
     max-width: 1160px;
   }
 
+  .fullscreen-marquee.narrow .fullscreen-marquee-heading {
+    text-align: left;
+    width: 850px;
+  }
+
+  .fullscreen-marquee.narrow .fullscreen-marquee-heading h1 {
+    text-align: left;
+  }
+
   .fullscreen-marquee .fullscreen-marquee-heading h1 {
     font-size: 80px;
     line-height: 90px;
