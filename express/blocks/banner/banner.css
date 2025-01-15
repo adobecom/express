@@ -48,6 +48,10 @@ main .banner.light {
   max-width: unset;
 }
 
+.section:has(.banner.discover) {
+  padding: 0px;
+}
+
 main .banner.compact p {
   margin: 24px;
 }
