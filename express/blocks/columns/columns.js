@@ -193,7 +193,17 @@ export default async function decorate(block) {
   addTempWrapper(block, 'columns');
 
   const container = document.querySelector('div.columns.block');
+
   const rows = Array.from(block.children);
+  if (block.classList.contains('bg')) {
+    const background = rows.shift();
+    const bgImgURL = background?.querySelector('img')?.src;
+    block.firstElementChild?.remove();
+    const columnsWrapper = block.closest('.section');
+    if (columnsWrapper && bgImgURL) {
+      columnsWrapper.style.setProperty('--bg-image', `url("${bgImgURL}")`);
+    }
+  }
 
   if (container?.classList.contains('narrow')) {
     let count = 1;
