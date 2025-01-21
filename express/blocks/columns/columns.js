@@ -224,6 +224,14 @@ export default async function decorate(block) {
     });
   }
 
+  if (block.classList.contains('info')) {
+    rows.slice(1).forEach((row) => {
+      row.classList.add('info-icon-row');
+      const textDiv = row.children[1];
+      if (textDiv) textDiv.classList.add('info-text');
+    });
+  }
+
   let numCols = 0;
   if (rows[0]) numCols = rows[0].children.length;
 
