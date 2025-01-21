@@ -40,7 +40,7 @@ main .how-to-v2 ol li .step-indicator:has(+ div .closed) {
 
 main .how-to-v2 ol li h3 {
   text-align: left;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 23.4px;
   font-weight: 700;
 }
@@ -66,8 +66,12 @@ main .how-to-v2 ol li:first-child .detail-container {
   max-height: none;
 }
 
-.section.discover.section-wrapper:has(.how-to-v2) {
+main .section.discover.section-wrapper:has(.how-to-v2) {
   padding-top: 30px;
+}
+
+main .section.discover .how-to-v2 h2 {
+  font-size: 32px;
 }
 
 main .how-to-v2.video lite-youtube,
