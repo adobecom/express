@@ -11,6 +11,11 @@
   background-size: cover;
 }
 
+main .columns.show-cta .column p.button-container a.button.same-fcta {
+  display: block ;
+}
+
+
 main .section:first-of-type .columns:first-of-type {
   min-height: unset;
 }
