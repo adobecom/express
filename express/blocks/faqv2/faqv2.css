@@ -24,6 +24,16 @@
     margin-bottom: 8px;
 }
 
+.faqv2.bold-quote .faqv2-accordion .faqv2-header {
+	font-size: 20px;
+    font-weight: bold;
+}
+
+.section.section-wrapper:has(.faqv2.bold-quote) {
+    padding-top: 0;
+    margin-top: -20px;
+}
+
 .faqv2 {
 	position: relative;
 	z-index: 1;

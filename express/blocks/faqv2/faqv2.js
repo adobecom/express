@@ -99,7 +99,8 @@ async function buildOriginalLayout(block) {
   collapsibleRows.forEach((row, index) => {
     const { header, subHeader } = row;
 
-    const accordion = createTag('div', { class: subHeader ? 'faqv2-accordion' : 'faqv2-accordion short' });
+    const isQuoteOnly = block.classList.contains('quote-only');
+    const accordion = createTag('div', { class: isQuoteOnly ? 'faqv2-accordion short' : 'faqv2-accordion' });
 
     if (index >= visibleCount) {
       accordion.classList.add('collapsed');
