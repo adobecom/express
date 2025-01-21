@@ -66,6 +66,10 @@ main .how-to-v2 ol li:first-child .detail-container {
   max-height: none;
 }
 
+.section.discover.section-wrapper:has(.how-to-v2) {
+  padding-top: 30px;
+}
+
 main .how-to-v2.video lite-youtube,
 main .how-to-v2.image picture {
   border-radius: 16px;
