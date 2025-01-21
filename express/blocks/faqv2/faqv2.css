@@ -29,9 +29,10 @@
     font-weight: bold;
 }
 
-.section.section-wrapper:has(.faqv2.bold-quote) {
+.section.section-wrapper:has(.faqv2.bold-quote),
+.section.section-wrapper:has(.faqv2.quote-only) {
     padding-top: 0;
-    margin-top: -20px;
+    margin-top: 0;
 }
 
 .faqv2 {

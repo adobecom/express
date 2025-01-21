@@ -222,7 +222,10 @@ main .template-x.two.basic-carousel.discover {
   margin-top: -30px;
 }
 
-main .section.section-wrapper:has(.template-x.three.basic-carousel.discover) {
+main .section.section-wrapper:has(.template-x.one.basic-carousel.discover),
+main .section.section-wrapper:has(.template-x.two.basic-carousel.discover),
+main .section.section-wrapper:has(.template-x.three.basic-carousel.discover),
+main .section.section-wrapper:has(.template-x.four.basic-carousel.discover) {
   padding-top: 5px;
 }
 
