@@ -222,6 +222,10 @@ main .template-x.two.basic-carousel.discover {
   margin-top: -30px;
 }
 
+main .section.section-wrapper:has(.template-x.three.basic-carousel.discover) {
+  padding-top: 5px;
+}
+
 /* discover variant - one, two, three, four - image-wrapper img */
 main .template-x.one.discover .basic-carousel-container .template.basic-carousel-element .still-wrapper .image-wrapper img,
 main .template-x.two.discover .basic-carousel-container .template.basic-carousel-element .still-wrapper .image-wrapper img,
