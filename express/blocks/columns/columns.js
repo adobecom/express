@@ -225,11 +225,16 @@ export default async function decorate(block) {
   }
 
   if (block.classList.contains('info')) {
+    const infoContainer = createTag('div', { class: 'info-container' });
+
     rows.slice(1).forEach((row) => {
       row.classList.add('info-icon-row');
       const textDiv = row.children[1];
       if (textDiv) textDiv.classList.add('info-text');
+      infoContainer.appendChild(row);
     });
+
+    block.appendChild(infoContainer);
   }
 
   let numCols = 0;
