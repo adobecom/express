@@ -190,6 +190,19 @@ main .section.discover .default-content-wrapper p {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+@media (min-width: 768px) {
+  main .section.discover .default-content-wrapper {
+    max-width: unset;
+    width: 540px;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  main .section.discover .default-content-wrapper h2 {
+    text-align: left;
+  }
+}
 /*  */
 
 main .section.content-group .default-content-wrapper h3 {
@@ -205,15 +218,6 @@ main .section.content-group .default-content-wrapper p {
   text-align: left;
   margin-top: 25px;
   color: #444444;
-}
-
-@media (min-width: 768px) {
-  main .section.content-group.discover .default-content-wrapper {
-    max-width: unset;
-    width: 648px;
-    margin-left: auto;
-    margin-right: auto;
-  }
 }
 
 @media (min-width: 900px) {
