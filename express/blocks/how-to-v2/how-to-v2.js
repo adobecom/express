@@ -70,6 +70,7 @@ function buildAccordion(block, rows, stepsContent) {
 }
 
 export default async function decorate(block) {
+  console.log('block', block);
   const isVideoVariant = block.classList.contains('video');
   const isImageVariant = block.classList.contains('image');
 

@@ -67,7 +67,7 @@ main .how-to-v2 ol li:first-child .detail-container {
 }
 
 main .section.discover.section-wrapper:has(.how-to-v2) {
-  padding-top: 30px;
+  margin-top: -90px;
 }
 
 main .section.discover .how-to-v2 h2 {

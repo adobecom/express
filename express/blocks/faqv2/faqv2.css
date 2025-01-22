@@ -24,6 +24,10 @@
     margin-bottom: 8px;
 }
 
+.faqv2-accordion.short:last-child {
+	margin-bottom: 50px;
+}
+
 .faqv2.bold-quote .faqv2-accordion .faqv2-header {
 	font-size: 20px;
     font-weight: bold;
