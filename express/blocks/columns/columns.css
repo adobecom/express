@@ -770,6 +770,23 @@ main .columns.fullsize.top .column .columns-iconlist .columns-iconlist-descripti
   }
 }
 
+@media (min-width: 768px) {
+  main .section:has(.discover) > div {
+    max-width: 875px;
+  }
+  main .section:has(.discover) .columns > div {
+    flex-direction: row;
+    text-align: left;
+    align-items: center;
+  }
+  main .section:has(.discover) .columns > div > .column:first-child {
+    order: 1;
+  }
+  main .section:has(.discover) .columns > div > .column-picture {
+    order: 2;
+  }
+}
+
 @media (min-width: 900px) and (max-width: 1200px) {
   :lang(ja) main .columns h1{
     font-size: var(--heading-font-size-xl);
