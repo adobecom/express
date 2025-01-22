@@ -6,6 +6,10 @@
 	width: 92%;
 }
 
+main .section .faqv2 {
+	max-width: 540px;
+}
+
 .faqv2-accordion {
 	height: 128px;
 	margin-bottom: 4px;
