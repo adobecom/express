@@ -178,6 +178,8 @@ main .section.content-group .default-content-wrapper h2 {
 main .section.discover .default-content-wrapper {
   text-align: left;
   margin: 20px;
+  margin-left: auto;
+  margin-right: auto;
 }
 main .section.discover .default-content-wrapper h2 {
   font-size: 32px;
