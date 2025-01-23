@@ -64,6 +64,7 @@ main .columns.discover {
 }
 
 main .columns .info-container {
+  padding-top: 0;
   margin-left: 0;
   margin-right: 0;
 }
