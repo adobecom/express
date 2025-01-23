@@ -45,6 +45,11 @@ main .banner {
 
 main .banner.light {
   color: var(--color-black);
+  max-width: unset;
+}
+
+.section:has(.banner.discover) {
+  padding: 0px;
 }
 
 main .banner.compact p {

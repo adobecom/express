@@ -193,7 +193,17 @@ export default async function decorate(block) {
   addTempWrapper(block, 'columns');
 
   const container = document.querySelector('div.columns.block');
+
   const rows = Array.from(block.children);
+  if (block.classList.contains('bg')) {
+    const background = rows.shift();
+    const bgImgURL = background?.querySelector('img')?.src;
+    block.firstElementChild?.remove();
+    const columnsWrapper = block.closest('.section');
+    if (columnsWrapper && bgImgURL) {
+      columnsWrapper.style.setProperty('--bg-image', `url("${bgImgURL}")`);
+    }
+  }
 
   if (container?.classList.contains('narrow')) {
     let count = 1;
@@ -212,6 +222,19 @@ export default async function decorate(block) {
         });
       }
     });
+  }
+
+  if (block.classList.contains('info')) {
+    const infoContainer = createTag('div', { class: 'info-container' });
+
+    rows.slice(1).forEach((row) => {
+      row.classList.add('info-icon-row');
+      const textDiv = row.children[1];
+      if (textDiv) textDiv.classList.add('info-text');
+      infoContainer.appendChild(row);
+    });
+
+    block.appendChild(infoContainer);
   }
 
   let numCols = 0;

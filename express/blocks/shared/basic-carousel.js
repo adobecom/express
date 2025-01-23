@@ -99,6 +99,11 @@ function initializeCarousel(selector, parent) {
 
     if (window.innerWidth <= 600) {
       elements.forEach((el, index) => {
+        if (platform.closest('.one')) {
+          if (index !== 1) {
+            el.style.visibility = 'hidden';
+          }
+        }
         if (index === currentIndex) {
           el.style.opacity = '1';
         } else if (index === currentIndex - 1 || index === currentIndex + 1) {

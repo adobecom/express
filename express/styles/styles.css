@@ -173,6 +173,55 @@ main .section.content-group .default-content-wrapper h2 {
   margin-top: 0px;
   color: #242424;
 }
+
+/*  discover page default-content-wrapper */
+main .section.discover .default-content-wrapper {
+  text-align: left;
+  margin: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+main .section.discover .default-content-wrapper h2 {
+  text-align: left;
+}
+
+@media (max-width: 400px) {
+  main .section.discover .default-content-wrapper {
+    margin-left: 20px; 
+    margin-right: 20px;
+  }
+}
+
+main .section.discover .default-content-wrapper h2 {
+  font-size: 32px;
+  margin-top: -30px;
+  margin-bottom: 25px;
+}
+main .section.discover .default-content-wrapper p {
+  font-size: 16px;
+  color: #444444;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+@media (min-width: 768px) {
+  main .section.discover .default-content-wrapper {
+    max-width: unset;
+    width: 540px;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (min-width: 1280px) {
+  main .section.discover .default-content-wrapper {
+    max-width: unset;
+    width: 875px;
+  }
+}
+/*  */
+
 main .section.content-group .default-content-wrapper h3 {
   font-size: 18px;
   font-weight: 700;
