@@ -272,6 +272,12 @@ main .section .faqv2 {
 	}
 }
 
+@media (min-width: 768px) {
+	.section:has(.faqv2) {
+		max-width: 540px;
+	}
+}
+
 @media (min-width: 900px) {
 	.faqv2 {
 		width: 648px;
