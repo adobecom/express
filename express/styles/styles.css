@@ -213,6 +213,13 @@ main .section.discover .default-content-wrapper p {
     margin-right: auto;
   }
 }
+
+@media (min-width: 1280px) {
+  main .section.discover .default-content-wrapper {
+    max-width: unset;
+    width: 875px;
+  }
+}
 /*  */
 
 main .section.content-group .default-content-wrapper h3 {
