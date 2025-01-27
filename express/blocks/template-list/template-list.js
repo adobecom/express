@@ -27,6 +27,8 @@ import fetchAllTemplatesMetadata from '../../scripts/all-templates-metadata.js';
 import { memoize } from '../../scripts/hofs.js';
 import getBreadcrumbs from './breadcrumbs.js';
 
+console.log('test');
+
 function wordStartsWithVowels(word) {
   return word.match('^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ].*');
 }
