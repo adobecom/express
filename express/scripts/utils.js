@@ -612,6 +612,44 @@ export function removeIrrelevantSections(area) {
   }
 }
 
+async function formatDynamicCartLink(a) {
+  try {
+    const pattern = /.*commerce.*adobe\.com.*/gm;
+    if (!pattern.test(a.href)) return a;
+    a.style.visibility = 'hidden';
+    const {
+      fetchPlanOnePlans,
+      buildUrl,
+    } = await import('./utils/pricing.js');
+    const {
+      url,
+      country,
+      language,
+      offerId,
+    } = await fetchPlanOnePlans(a.href);
+    const newTrialHref = buildUrl(url, country, language, offerId);
+    a.href = newTrialHref;
+  } catch (error) {
+    window.lana.log(`Failed to fetch prices for page plan: ${error}`);
+  }
+  a.style.visibility = 'visible';
+  return a;
+}
+
+export function decorateLinksCommerceSections(area) {
+  if (!area) return;
+  const selector = area === document ? 'body > main > div' : ':scope > div';
+  area.querySelectorAll(selector).forEach((section) => {
+    const sectionMetaBlock = section.querySelector('div.section-metadata');
+    if (!sectionMetaBlock) return;
+    const sectionMeta = readBlockConfig(sectionMetaBlock);
+    if (!sectionMeta['ax-commerce']) return;
+    [...section.querySelectorAll('a')].forEach((a) => {
+      formatDynamicCartLink(a);
+    });
+  });
+}
+
 /**
  * Decorates a block.
  * @param {Element} block The block element
@@ -2234,6 +2272,7 @@ export function addHeaderSizing($block, classPrefix = 'heading', selector = 'h1,
 
 export function decorateArea(area = document) {
   removeIrrelevantSections(area);
+  decorateLinksCommerceSections(area);
 }
 
 /**
