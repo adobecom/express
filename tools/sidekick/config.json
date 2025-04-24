@@ -2,6 +2,7 @@
   "project": "Express",
   "host": "www.adobe.com",
   "byocdn": true,
+  "trustedHosts": ["milo.adobe.com"],
   "plugins": [
     {
       "id": "metadata",
