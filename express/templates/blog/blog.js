@@ -46,12 +46,18 @@ function copyToClipboard(copyButton) {
 }
 
 const loadImage = (img) => new Promise((resolve) => {
-  if (img.complete && img.naturalHeight !== 0) resolve();
-  else {
-    img.onload = () => {
+  const start = Date.now();
+  const check = () => {
+    if (img.complete && img.naturalHeight !== 0) {
       resolve();
-    };
-  }
+    } else if (Date.now() - start >= 10000) {
+      reject(new Error('Image load timed out'));
+    } else {
+      setTimeout(check, 50);
+    }
+  };
+
+  check();
 });
 
 export default async function decorateBlogPage() {
