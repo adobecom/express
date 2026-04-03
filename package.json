@@ -37,7 +37,7 @@
     "eslint-plugin-import": "2.22.1",
     "fs-extra": "9.0.1",
     "htm": "^3.1.1",
-    "jsdom": "^22.1.0",
+    "jsdom": "^29.0.1",
     "microbundle": "^0.15.1",
     "preact": "^10.18.2",
     "puppeteer": "^23.5.1",
