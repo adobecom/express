@@ -15,7 +15,6 @@ notifications:
         include:
           risk_rating: R3 # Please do not change this unless instructed to do so.
       fields:
-        customfield_11800: MWPW-164516 # Jira epic security tickets will be assigned to.
         customfield_12900: 
           value: Express dev # Team security tickets will be assigned to
         watchers: # Everyone who is an admin on your repository should be a watcher.
